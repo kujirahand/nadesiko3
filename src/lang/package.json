@@ -1,0 +1,30 @@
+{
+  "name": "nadesiko3",
+  "version": "0.0.1",
+  "description": "Japanese Programming Language",
+  "main": "nako3",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "babel ./src -w -o ./js/nako3.js",
+    "build": "babel --compact=true ./src -o ./js/nako3.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kujirahand/nadesiko3.git"
+  },
+  "keywords": [
+    "script"
+  ],
+  "author": "kujirahand",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kujirahand/nadesiko3/issues"
+  },
+  "homepage": "https://github.com/kujirahand/nadesiko3#readme",
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-es2016": "^6.22.0",
+    "babel-preset-es2017": "^6.22.0"
+  }
+}
