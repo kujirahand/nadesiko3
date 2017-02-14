@@ -29,6 +29,11 @@ function nako3_browser_run_script(script) {
 
 function nako3_run(code) {
   console.log("今作ってます。");
+  const Tokenizer = require('./tokenizer.js').Tokenizer;
+  const tok = new Tokenizer(code);
+  tok.tokenize();
+  const tokenlist = tok.result;
+  console.log(tokenlist);
   // tokenize
   // compile
   // run

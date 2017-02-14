@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,14 +71,274 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nmodule.exports = {\n  print: function print(msg) {\n    console.log(msg);\n  }\n};//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiMC5qcyIsInNvdXJjZXMiOlsid2VicGFjazovLy9zcmMvdGVzdC5qcz9mNmMyIl0sInNvdXJjZXNDb250ZW50IjpbIlxubW9kdWxlLmV4cG9ydHMgPSB7XG4gIHByaW50OiBmdW5jdGlvbiAobXNnKSB7XG4gICAgY29uc29sZS5sb2cobXNnKTtcbiAgfVxufTtcblxuXG5cblxuLy8gV0VCUEFDSyBGT09URVIgLy9cbi8vIHNyYy90ZXN0LmpzIl0sIm1hcHBpbmdzIjoiOztBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBSEEiLCJzb3VyY2VSb290IjoiIn0=");
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// tokenizer
+var tokens = __webpack_require__(1);
+
+var Token = function Token(type, token) {
+  _classCallCheck(this, Token);
+
+  this.type = type;
+  this.token = token;
+};
+
+var Tokenizer = function () {
+  function Tokenizer(src) {
+    _classCallCheck(this, Tokenizer);
+
+    this._src = src;
+    this._josi = {};
+    this._dic = {};
+    this._res = [];
+    this.initDic();
+  }
+
+  _createClass(Tokenizer, [{
+    key: "initDic",
+    value: function initDic() {
+      var _this = this;
+
+      // josi
+      var josi = ["について", "とは", "から", "まで", "して", "は", "を", "に", "へ", "で", "と"];
+      josi.forEach(function (e) {
+        _this._josi[e] = true;
+      });
+      this._josilist = josi;
+      // dic
+      this._dic = {
+        "。": ";", "、": ",",
+        "（": "(", "）": ")",
+        "＋": "+", "−": "-", "×": "*", "÷": "/", "＊": "*", "／": "/", "＾": "^",
+        "％": "%"
+      };
+    }
+  }, {
+    key: "tokenize",
+    value: function tokenize() {
+      this._res = [];
+      while (!this.isEOF) {
+        this.getToken();
+      }
+    }
+  }, {
+    key: "peek",
+    value: function peek() {
+      return this._src.charAt(0);
+    }
+  }, {
+    key: "getChar",
+    value: function getChar() {
+      var ch = this._src.charAt(0);
+      this._src = this._src.substr(1);
+      return ch;
+    }
+  }, {
+    key: "skipSpaceRet",
+    value: function skipSpaceRet() {
+      while (!this.isEOF) {
+        var ch = this.peek();
+        if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') {
+          this.getChar();
+        } else break;
+      }
+    }
+  }, {
+    key: "skipSpace",
+    value: function skipSpace() {
+      while (!this.isEOF) {
+        var ch = this.peek();
+        if (ch == ' ' || ch == '\t' || ch == '\r') {
+          this.getChar();
+        } else break;
+      }
+    }
+  }, {
+    key: "pushToken",
+    value: function pushToken(type, token) {
+      if (type == undefined) throw new Exception('token push error');
+      console.log("PUSH", token, type);
+      this._res.push(new Token(type, token));
+    }
+  }, {
+    key: "getToken",
+    value: function getToken() {
+      this.skipSpace();
+      var s = "";
+      var ch = this.peek();
+      if (this._dic[ch] !== undefined) ch = this._dic[ch];
+      // 演算子
+      if (ch == "+" || ch == "-" || ch == "*" || ch == "/" || ch == "%" || ch == "^") {
+        this.pushToken(tokens.OP, ch);
+        this.getChar();
+        return;
+      }
+      // 改行
+      if (ch == '\n') {
+        this.pushToken(tokens.RET, ch);
+        this.getChar();
+        return;
+      }
+      // 数字
+      if ('0' <= ch && ch <= '9') {
+        return this.getNumber();
+      }
+      // 文字列
+      if (ch == "「" || ch == "『" || ch == '"' || ch == "'") {
+        return this.getString(ch);
+      }
+      // その他
+      this.pushToken(tokens.WORD, ch);
+      this.getChar();
+    }
+  }, {
+    key: "isHiragana",
+    value: function isHiragana(c) {
+      return 'ぁ' <= c && c <= 'ん';
+    }
+  }, {
+    key: "checkJosi",
+    value: function checkJosi() {
+      // 助詞判定
+      var ch = this.peek();
+      if (this.isHiragana(ch)) {
+        var hira = "";
+        while (!this.isEOF) {
+          var _ch = this.peek();
+          if (this.isHiragana(_ch)) {
+            hira += _ch;
+            this.getChar();
+            if (typeof this._josi[hira] == "boolean") {
+              this.pushToken(tokens.JOSI, hira);
+              return;
+            }
+          }
+          break;
+        }
+        // 助詞ではなかったので書き戻す
+        this._src = hira + this._src;
+      }
+    }
+  }, {
+    key: "getNumber",
+    value: function getNumber() {
+      var s = "";
+      while (!this.isEOF) {
+        var ch = this.peek();
+        if ('0' <= ch && ch <= '9' || ch == '.') {
+          s += ch;
+          this.getChar();
+        } else break;
+      }
+      this.pushToken(tokens.NUM, parseFloat(s));
+      this.checkJosi();
+    }
+  }, {
+    key: "getString",
+    value: function getString(ch) {
+      // begin char
+      var end_ch = ch;
+      if (ch == "「") end_ch = "」";else if (ch == "『") end_ch = "』";
+      this.getChar();
+      // search end char
+      var s = "";
+      while (!this.isEOF) {
+        var c = this.getChar();
+        if (c == end_ch) break;
+        s += c;
+      }
+      this.pushToken(tokens.STR, s);
+      this.checkJosi();
+    }
+  }, {
+    key: "result",
+    get: function get() {
+      return this._res;
+    }
+  }, {
+    key: "isEOF",
+    get: function get() {
+      return this._src.length == 0;
+    }
+  }]);
+
+  return Tokenizer;
+}();
+
+module.exports = {
+  "Tokenizer": Tokenizer
+};
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar _typeof = typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; };\n\n//\n// nadesiko ver3\n//\nvar test = __webpack_require__(0);\ntest.print('hoge2');\n\nif ((typeof navigator === 'undefined' ? 'undefined' : _typeof(navigator)) == \"object\") {\n  setTimeout(function () {\n    nako3_browser();\n  }, 1);\n}\n\nfunction nako3_browser() {\n  // スクリプトタグの中身を得る\n  var scripts = document.querySelectorAll(\"script\");\n  for (var i = 0; i < scripts.length; i++) {\n    var script = scripts[i];\n    var type = script.type;\n    if (type == \"nako\" || type == \"なでしこ\") {\n      nako3_browser_run_script(script);\n    }\n  }\n}\n\nfunction nako3_browser_run_script(script) {\n  var code = script.text;\n  var type = script.type;\n  var option = script.option;\n  nako3_run(code);\n}\n\nfunction nako3_run(code) {\n  console.log(\"今作ってます。\");\n  // tokenize\n  // compile\n  // run\n}//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiMS5qcyIsInNvdXJjZXMiOlsid2VicGFjazovLy9zcmMvbmFrbzMuanM/ZGYwOSJdLCJzb3VyY2VzQ29udGVudCI6WyIvL1xuLy8gbmFkZXNpa28gdmVyM1xuLy9cbmNvbnN0IHRlc3QgPSByZXF1aXJlKCcuL3Rlc3QnKTtcbnRlc3QucHJpbnQoJ2hvZ2UyJyk7XG5cblxuaWYgKHR5cGVvZihuYXZpZ2F0b3IpID09IFwib2JqZWN0XCIpIHtcbiAgc2V0VGltZW91dCgoKT0+e1xuICAgIG5ha28zX2Jyb3dzZXIoKTtcbiAgfSwxKTtcbn1cblxuZnVuY3Rpb24gbmFrbzNfYnJvd3Nlcigpe1xuICAvLyDjgrnjgq/jg6rjg5fjg4jjgr/jgrDjga7kuK3ouqvjgpLlvpfjgotcbiAgbGV0IHNjcmlwdHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKFwic2NyaXB0XCIpO1xuICBmb3IgKGxldCBpID0gMDsgaSA8IHNjcmlwdHMubGVuZ3RoOyBpKyspIHtcbiAgICBsZXQgc2NyaXB0ID0gc2NyaXB0c1tpXTtcbiAgICBsZXQgdHlwZSA9IHNjcmlwdC50eXBlO1xuICAgIGlmICh0eXBlID09IFwibmFrb1wiIHx8IHR5cGUgPT1cIuOBquOBp+OBl+OBk1wiKSB7XG4gICAgICBuYWtvM19icm93c2VyX3J1bl9zY3JpcHQoc2NyaXB0KTtcbiAgICB9XG4gIH1cbn1cblxuZnVuY3Rpb24gbmFrbzNfYnJvd3Nlcl9ydW5fc2NyaXB0KHNjcmlwdCkge1xuICBsZXQgY29kZSA9IHNjcmlwdC50ZXh0O1xuICBsZXQgdHlwZSA9IHNjcmlwdC50eXBlO1xuICBsZXQgb3B0aW9uID0gc2NyaXB0Lm9wdGlvbjtcbiAgbmFrbzNfcnVuKGNvZGUpO1xufVxuXG5mdW5jdGlvbiBuYWtvM19ydW4oY29kZSkge1xuICBjb25zb2xlLmxvZyhcIuS7iuS9nOOBo+OBpuOBvuOBmeOAglwiKTtcbiAgLy8gdG9rZW5pemVcbiAgLy8gY29tcGlsZVxuICAvLyBydW5cbn1cblxuXG5cblxuXG4vLyBXRUJQQUNLIEZPT1RFUiAvL1xuLy8gc3JjL25ha28zLmpzIl0sIm1hcHBpbmdzIjoiOzs7O0FBQUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOyIsInNvdXJjZVJvb3QiOiIifQ==");
+
+
+module.exports = {
+  NOP: 'NOP',
+  OP: 'OP',
+  RET: 'RET',
+  WORD: 'WORD',
+  NUM: 'NUM',
+  STR: 'STR',
+  JOSI: 'JOSI'
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+//
+// nadesiko ver3
+//
+
+if ((typeof navigator === "undefined" ? "undefined" : _typeof(navigator)) == "object") {
+  setTimeout(function () {
+    nako3_browser();
+  }, 1);
+}
+
+function nako3_browser() {
+  // スクリプトタグの中身を得る
+  var scripts = document.querySelectorAll("script");
+  for (var i = 0; i < scripts.length; i++) {
+    var script = scripts[i];
+    var type = script.type;
+    if (type == "nako" || type == "なでしこ") {
+      nako3_browser_run_script(script);
+    }
+  }
+}
+
+function nako3_browser_run_script(script) {
+  var code = script.text;
+  var type = script.type;
+  var option = script.option;
+  nako3_run(code);
+}
+
+function nako3_run(code) {
+  console.log("今作ってます。");
+  var Tokenizer = __webpack_require__(0).Tokenizer;
+  var tok = new Tokenizer(code);
+  tok.tokenize();
+  var tokenlist = tok.result;
+  console.log(tokenlist);
+  // tokenize
+  // compile
+  // run
+}
 
 /***/ })
 /******/ ]);

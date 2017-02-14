@@ -1,21 +1,15 @@
-
-require('babel-polyfill');
-
-// リリース時は、--releaseをつけてビルドする
-const DEBUG = !process.argv.includes('--release');
-
-export default {
+module.exports = {
   
   entry: {
     nako3: './src/nako3.js',
   },
 
   output: {
-    path: DEBUG ? `${__dirname}/debug` : `${__dirname}/js`,
+    path: `${__dirname}/debug`,
     filename: '[name].js'
   },
   
-  devtool: DEBUG ? 'cheap-module-eval-source-map' : false,  
+  devtool: 'cheap-module-eval-source-map',
 
   module: {
     loaders: [
@@ -29,5 +23,6 @@ export default {
       }
     ]
   }
-}
+};
+
 
