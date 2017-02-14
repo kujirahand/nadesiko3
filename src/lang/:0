@@ -1,6 +1,9 @@
 //
 // nadesiko ver3
 //
+const test = require('./test');
+test.print('hoge');
+
 
 if (typeof(navigator) == "object") {
   setTimeout(()=>{
