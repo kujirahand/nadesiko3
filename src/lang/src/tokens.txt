@@ -8,7 +8,10 @@ IF=もし, FOR=繰返, WHILE=間, EACH=反復
 EOS,SPL
 
 # 構文要素
-STR, NUM, OP, WORD, JOSI
+STR, NUM, OP, WORD, JOSI, EQ
 
 # 計算
 PAREN_BEGIN=(, PAREN_END=)
+
+# PRINT
+PRINT=表示

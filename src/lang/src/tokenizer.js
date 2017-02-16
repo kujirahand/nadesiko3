@@ -74,8 +74,10 @@ class Tokenizer {
   tokenize() {
     this._res = [];
     this._src = this.convertToHalfEx(this._src);
+    this.skipSpace();
     while (!this.isEOF) {
       this.getToken();
+      this.skipSpace();
     }
   }
 
@@ -122,14 +124,13 @@ class Tokenizer {
   }
 
   pushToken(typeNo, token) {
-    if (typeNo == undefined) throw new Exception('token push error');
+    if (typeNo == undefined) throw new Error('token push error');
     const t = new Token(typeNo, token);
     this._res.push(t);
     console.log("PUSH", t.toString());
   }
 
   getToken() {
-    this.skipSpace();
     let s = "";   
     let ch = this.peek();
     // 辞書にある記号か
@@ -163,8 +164,14 @@ class Tokenizer {
       this.getChar();
       return;
     }
-    // 全角文字の連続
-    if (this.checkZenkakuToken(ch)) return;
+    if (ch == "=") {
+      this.pushToken(tokens.EQ, ch);
+      this.getChar();
+      return;
+    }
+    // 全角文字||アルファベットの連続
+    if (this.checkZenAlphaToken(ch)) return;
+    // 英語トークンの
     // その他
     this.pushToken(tokens.WORD, ch);
     this.getChar();
@@ -178,29 +185,29 @@ class Tokenizer {
     }
     return null;
   }
-  // 全角トークンの取得 --- 助詞があるまで取得
-  checkZenkakuToken(ch) {
-    if (charunit.isHankaku(ch)) return false;
-    let word = "", josi = null;
+  // 全角||アルファベットトークンの取得 --- 助詞があるまで取得
+  checkZenAlphaToken(ch) {
+    if (!charunit.isWord(ch)) return false;
+    let word = "";
+    let josi = null;
+    let typeNo = tokens.WORD;
     while (!this.isEOF) {
-      // もしも辞書にある単語だった場合
-      if (typeof(tokens.dict[word]) !== "undefined") {
-        let typeNo = tokens.dict[word];
-        this.pushToken(typeNo, word);
-        this.checkJosi();
-        return true;
-      }
-      // 助詞があった場合
-      josi = this.getJosi();
-      if (josi !== null) break;
-      // その他
       let c = this.peek();
       if (!charunit.isWord(c)) break;
       word += c;
       this.getChar();
+      // もしも辞書にある単語だった場合
+      if (typeof(tokens.dict[word]) !== "undefined") {
+        typeNo = tokens.dict[word];
+        josi = this.getJosi();
+        break;
+      }
+      // 助詞があった場合
+      josi = this.getJosi();
+      if (josi !== null) break;
     }
     if (word.length > 0) {
-      this.pushToken(tokens.WORD, word);
+      this.pushToken(typeNo, word);
     }
     if (josi !== null) {
       this.pushToken(tokens.JOSI, josi);

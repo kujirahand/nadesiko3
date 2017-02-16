@@ -5,7 +5,18 @@ const assert = require('assert');
 const Tokenizer = require('../src/tokenizer.js').Tokenizer;
 
 describe('tokenizer', ()=>{
-
+  it('COMMENT1', ()=> {
+    const list = Tokenizer.split("「hoge」/* rem */");
+    const s = Tokenizer.listToString(list);
+    assert.equal(list.length, 1);
+    assert.equal(s, "hoge:STR");
+  });
+  it('COMMENT2', ()=> {
+    const list = Tokenizer.split("30\n#hoge\n30");
+    const s = Tokenizer.listToString(list);
+    assert.equal(list.length, 3);
+    assert.equal(s, "30:NUM|\n:EOS|30:NUM");
+  });
   it('calc1', ()=> {
     const list = Tokenizer.split("3 + 5");
     const s = Tokenizer.listToString(list);
@@ -24,7 +35,6 @@ describe('tokenizer', ()=>{
     assert.equal(list.length, 7);
     assert.equal(s, "(:PAREN_BEGIN|1:NUM|+:OP|2:NUM|):PAREN_END|*:OP|3:NUM");
   });
-
   it('STRING', ()=> {
     const list = Tokenizer.split("「hoge」");
     const s = Tokenizer.listToString(list);
@@ -32,23 +42,26 @@ describe('tokenizer', ()=>{
     assert.equal(s, "hoge:STR");
   });
   
-  it('COMMENT1', ()=> {
-    const list = Tokenizer.split("「hoge」/* rem */");
-    const s = Tokenizer.listToString(list);
-    assert.equal(list.length, 1);
-    assert.equal(s, "hoge:STR");
-  });
-  it('COMMENT2', ()=> {
-    const list = Tokenizer.split("30\n#hoge\n30");
-    const s = Tokenizer.listToString(list);
-    assert.equal(list.length, 3);
-    assert.equal(s, "30:NUM|\n:EOS|30:NUM");
-  });
   it("sentence", () => {
     const list = Tokenizer.split("「a」と言う");
     const s = Tokenizer.listToString(list);
     assert.equal(list.length, 3);
     assert.equal(s, "a:STR|と:JOSI|言う:WORD");
+  });
+  it('PRINT1', ()=> {
+    const list = Tokenizer.split("30を表示");
+    const s = Tokenizer.listToString(list);
+    assert.equal(s, "30:NUM|を:JOSI|表示:PRINT");
+  });
+  it("PRINT2", () => {
+    const list = Tokenizer.split("\n\n「a」と表示\n");
+    const s = Tokenizer.listToString(list);
+    assert.equal(s, "\n:EOS|\n:EOS|a:STR|と:JOSI|表示:PRINT|\n:EOS");
+  });
+  it("PRINT3-with noise", () => {
+    const list = Tokenizer.split("    \t 「a」と表示。\t    ");
+    const s = Tokenizer.listToString(list);
+    assert.equal(s, "a:STR|と:JOSI|表示:PRINT|;:EOS");
   });
   it("if", () => {
     const list = Tokenizer.split("もし,Aが5以上ならば");
