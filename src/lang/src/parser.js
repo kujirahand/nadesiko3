@@ -1,6 +1,6 @@
 // parser.js
 const tokens = require('./tokens.js');
-const ntypes = require('./nodetypes.js');
+const nodetypes = require('./nodetypes.js');
 const Tokenizer = require("./tokenizer.js")
 const Token = require("./token.js")
 const BlockInfo = require("./blockinfo.js");
@@ -25,7 +25,7 @@ class Parser {
    */
   constructor (list) {
     const block = new BlockInfo();
-    this.root = this.cur = new SNode(ntypes.BLOCK, block);
+    this.root = this.cur = new SNode(nodetypes.BLOCK, block);
     this.block = block;
     this.list = list;
     this.index = 0;
@@ -39,6 +39,10 @@ class Parser {
     return this.root;
   }
   
+  /**
+   * トークンリストを受け取って、パースし、先頭ノードを返す
+   * @return {SNode}
+   */
   static parse(list) {
     const p = new Parser(list);
     p.exec();
@@ -89,7 +93,7 @@ class Parser {
   
   registerSysFunc(block) {
     for (const key in SysFunc) {
-      block.variables[key] = ntypes.FUNC;
+      block.variables[key] = nodetypes.FUNC;
     }
   }
   
@@ -132,11 +136,11 @@ class Parser {
   p_print() {
     // # VALUE JOSI PRINT
     let tmp = this.index;
-    let node_value = this.p_value();
+    let node_value = this.p_formula();
     if (node_value == null) return null;
     if (this.matchType([tokens.JOSI, tokens.PRINT])) {
       this.index += 2;
-      let node_print = new SNode(ntypes.PRINT, "");
+      let node_print = new SNode(nodetypes.PRINT, "");
       node_print.addChild(node_value);
       return node_print;
     }
@@ -150,20 +154,45 @@ class Parser {
       const t_name = this.next();
       const t_eq = this.next();
       const value_node = this.p_value();
-      const let_node = new SNode(ntypes.LET, t_name.token);
-      this.block.variables[t_name] = ntypes.VALUE;
+      const let_node = new SNode(nodetypes.LET, t_name.token);
+      this.block.variables[t_name] = nodetypes.VALUE;
       let_node.addChild(value_node);
       return let_node;
     }
     return null;
   }
-  p_fomula() {
-    const left_n = p_value();
+  p_formula() {
+    // # value
+    const left_n = this.p_value();
     if (left_n == null) return null;
+    // # value OP formula
     const t = this.peek();
     if (t == undefined) return left_n;
     if (t.typeNo !== tokens.OP) return left_n;
-    return null;
+    const op_token = t;
+    this.next();
+    const right_n = this.p_formula();
+    if (right_n == null) throw new ParserError('演算子の後ろに式がありません');
+    // 式の優先度を確かめる
+    const OP_PRIORITY = {
+      "||": 3, "&&": 3,
+      "+": 2, "-": 2,
+      "*": 1, "/": 1
+    };
+    const cur_pri = OP_PRIORITY[op_token.token];
+    const fo_node = new SNode(nodetypes.OP, op_token.token);
+    if (cur_pri < right_n.priority) {
+      console.log("入れ替え");
+      const right_l = right_n.children[0];
+      fo_node.addChild(left_n);
+      fo_node.addChild(right_l);
+      right_n.children[0] = fo_node;
+      return right_n;
+    }
+    // 演算順序入れ替えなしの場合
+    fo_node.addChild(left_n);
+    fo_node.addChild(right_n);
+    return fo_node;
   }
 
   p_value() {
@@ -174,18 +203,27 @@ class Parser {
     // # NUM || STR
     if (t.isType([tokens.NUM, tokens.STR])) {
       this.next();
-      const node_value = new SNode(ntypes.VALUE, t.token);
-      return node_value;
+      const const_value_n = new SNode(nodetypes.VALUE, t.token);
+      return const_value_n;
     }
     // # WORD
-    const v = this.block.find(t.token);
-    if (v == undefined) { // 未定義の変数の時
+    if (t.isType([tokens.WORD])) {
+      const word = t.token;
+      // local variables?
+      const lv = this.block.findThisBlock(word);
+      if (lv !== undefined) { // ローカル変数
+        return new SNode(nodetypes.REF_VAR_LOCAL, word);
+      }
+      const gv = this.block.find(word);
+      if (gv !== undefined) { // ブロックより上の変数
+        return new SNode(nodetypes.REF_VAR, word);
+      }
       throw new ParserError("未定義の変数:" + t.token);
     }
-    // # PAREN_BEGIN p_fomula PAREN_END
+    // # PAREN_BEGIN p_formula PAREN_END
     if (t.typeNo == tokens.PAREN_BEGIN) {
       this.next();
-      const node = p_fomula();
+      const node = this.p_formula();
       const nt = this.peek();
       if (nt == undefined || nt.typeNo != tokens.PAREN_END) {
         throw new ParserError("(...)が未対応");

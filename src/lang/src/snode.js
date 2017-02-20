@@ -4,6 +4,10 @@
 
 const ntypes = require('./nodetypes.js');
 
+/**
+ * 構文木のノードを表すするクラス
+ * @class
+ */
 class SNode {
   
   constructor(typeNo, value) {
@@ -11,6 +15,7 @@ class SNode {
     this.value = value;
     this.children = [];
     this.next = null;
+    this.priority = 0;
   }
   
   addChild(n) {
@@ -36,12 +41,17 @@ class SNode {
   }
   
   toStringEx() {
-    let res = [this.toString()];
+    let res = [];
     // children
     for (const i in this.children) {
       const n = this.children[i];
-      res.push(n.toStringEx());
+      if (n instanceof SNode) {
+        res.push(n.toStringEx());
+      } else {
+        res.push(typeof(n) + ":" + n);
+      }
     }
+    res.push(this.toString());
     return res.join("|");
   }
   

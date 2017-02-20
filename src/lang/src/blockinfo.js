@@ -44,7 +44,7 @@ class BlockInfo {
   find(name) {
     const v = this.variables[name];
     if (v === undefined) {
-      if (parent != null) {
+      if (this.parent != null) {
         return parent.find(name);
       }
     }

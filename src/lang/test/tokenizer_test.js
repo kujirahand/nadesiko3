@@ -44,6 +44,11 @@ describe('tokenizer', ()=>{
     assert.equal(list.length, 7);
     assert.equal(s, "(:PAREN_BEGIN|1:NUM|+:OP|2:NUM|):PAREN_END|*:OP|3:NUM");
   });
+  it('calc4', ()=> {
+    const list = Tokenizer.split("3 <= 5");
+    const s = Tokenizer.listToString(list);
+    assert.equal(s, "3:NUM|<=:OP|5:NUM");
+  });
   it('STRING', ()=> {
     const list = Tokenizer.split("「hoge」");
     const s = Tokenizer.listToString(list);

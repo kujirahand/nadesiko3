@@ -1,9 +1,19 @@
-#
+# 何もしない
 NOP
-#
-LET,VALUE
-PRINT
-#
-NUM,STR,FUNC
-#
 BLOCK
+
+# 代入
+LET,VALUE
+# 値
+NUM,STR
+# 計算
+OP
+# 関数
+FUNC
+
+# 変数の参照
+REF_VAR, REF_VAR_LOCAL
+
+# 特別な構文
+PRINT
+ 

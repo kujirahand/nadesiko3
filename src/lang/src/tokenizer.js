@@ -151,8 +151,14 @@ class Tokenizer {
     if (ch == "#" || ch2 == "//") return this.skipLineComment();
     if (ch2 == "/*") return this.skipRangeComment();
     // 演算子
+    if (ch2 == "<=" || ch2 == ">=" || ch2 == "!=" || 
+        ch2 == "<>" || ch2 == "||" || ch2 == "&&" ) {
+      this.pushToken(tokens.OP, ch2);
+      this.getCharN(2);
+      return;
+    }
     if (ch == "+" || ch == "-" || ch == "*" || ch == "/" || 
-        ch == "%" || ch == "^") {
+        ch == "%" || ch == "^" || ch == "<" || ch == ">") {
       this.pushToken(tokens.OP, ch);
       this.getChar();
       return;

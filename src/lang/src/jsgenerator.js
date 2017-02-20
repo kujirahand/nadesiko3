@@ -1,6 +1,6 @@
 // jsgenerator.js
 
-const ntypes = require('./nodetypes.js');
+const nodetypes = require('./nodetypes.js');
 
 class JSGenerator {
   static generate(node, useHeader = true) {
@@ -27,23 +27,31 @@ class JSGenerator {
     let code = "";
     while (node != null) {
       switch (node.typeNo) {
-        case ntypes.NOP:
+        case nodetypes.NOP:
           code += "";
           break;
-        case ntypes.LET:
+        case nodetypes.LET:
           code += this.c_let(node) + "\n";
           break;
-        case ntypes.PRINT:
+        case nodetypes.PRINT:
           code += this.c_print(node) + "\n";
           break;
-        case ntypes.VALUE:
+        case nodetypes.VALUE:
           code += JSON.stringify(node.value);
           break;
+        case nodetypes.OP:
+          code += this.c_op(node);
       }
       node = node.next;
     }
     console.log(code);
     return code;
+  }
+  c_op(node) {
+    const op = node.value; // 演算子
+    const left = this.c_gen(node.children[0]);
+    const right = this.c_gen(node.children[1]);
+    return "(" + left + op + right + ")";
   }
   c_let(node) {
     const name = node.value;

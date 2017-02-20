@@ -8,6 +8,7 @@ module.exports = {
     "NUM",
     "STR",
     "FUNC",
+    "OP",
     "BLOCK"
   ],
   "NOP": 0,
@@ -17,5 +18,6 @@ module.exports = {
   "NUM": 4,
   "STR": 5,
   "FUNC": 6,
-  "BLOCK": 7
+  "OP": 7,
+  "BLOCK": 8
 };

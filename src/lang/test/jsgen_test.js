@@ -19,6 +19,30 @@ describe('jsgen', ()=>{
     const code = JSGenerator.generate(node, false);
     assert.equal(code, "__print(30);\n");
   });
-
+  it('3+5', ()=> {
+    const list = Tokenizer.split("3+5を表示");
+    const node = Parser.parse(list);
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__print((3+5));\n");
+  });
+  it('1+2*3', ()=> {
+    const list = Tokenizer.split("1+2*3を表示");
+    const node = Parser.parse(list);
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__print((1+(2*3)));\n");
+  });
+  it('(1+2)*3', ()=> {
+    const list = Tokenizer.split("(1+2)*3を表示");
+    const node = Parser.parse(list);
+    console.log("***" + node.toStringAll());
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__print(((1+2)*3));\n");
+  });
+  it('3<=5', ()=> {
+    const list = Tokenizer.split("3<=5を表示");
+    const node = Parser.parse(list);
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__print((3<=5));\n");
+  });
 });
 
