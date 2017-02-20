@@ -45,7 +45,7 @@ class Parser {
    */
   static parse(list) {
     const p = new Parser(list);
-    p.exec();
+    p._parse();
     return p.result;
   }
   
@@ -97,12 +97,11 @@ class Parser {
     }
   }
   
-  exec() {
+  _parse() {
+    // # EOS
+    this._skipEOS();
     while (!this.isEOF) {
       let prev_index = this.index;
-      // console.log("exec=", this.index);
-      // # EOS
-      this.p_skipEOS();
       // # SENTENSE
       const n = this.p_sentense();
       if (n) {
@@ -110,12 +109,14 @@ class Parser {
         this.cur = n;
       } else {
         if (prev_index == this.index) this.next();
+        console.log("SKIP node:", this.peek());
       }
     }
   }
   
-  p_skipEOS() {
+  _skipEOS() {
     while (!this.isEOF) {
+      // # EOS
       const t = this.peek();
       if (t.typeNo == tokens.EOS) {
         this.next();
@@ -125,6 +126,13 @@ class Parser {
     }
   }
   p_sentense() {
+    // # EOL
+    const t = this.peek();
+    if (t == undefined) return null;
+    if (t.typeNo == tokens.EOL) {
+      this.next();
+      return new SNode(nodetypes.EOL, ";");
+    }
     // # LET
     let n = this.p_let(null);
     if (n) return n;
@@ -138,6 +146,7 @@ class Parser {
     let tmp = this.index;
     let node_value = this.p_formula();
     if (node_value == null) return null;
+    console.log("p_print, peek=", this.peek());
     if (this.matchType([tokens.JOSI, tokens.PRINT])) {
       this.index += 2;
       let node_print = new SNode(nodetypes.PRINT, "");
@@ -148,14 +157,15 @@ class Parser {
     return null;
   }
   p_let() {
-    // # WORD EQ VALUE
+    // # WORD EQ formula
     if (this.matchType([tokens.WORD, tokens.EQ])) {
-      console.log("WORD EQ VALUE");
+      console.log("p_let() --- WORD EQ VALUE");
       const t_name = this.next();
+      const vname = t_name.token;
       const t_eq = this.next();
-      const value_node = this.p_value();
-      const let_node = new SNode(nodetypes.LET, t_name.token);
-      this.block.variables[t_name] = nodetypes.VALUE;
+      const value_node = this.p_formula();
+      const let_node = new SNode(nodetypes.LET, vname);
+      this.block.addVar(vname);
       let_node.addChild(value_node);
       return let_node;
     }
@@ -212,10 +222,12 @@ class Parser {
       // local variables?
       const lv = this.block.findThisBlock(word);
       if (lv !== undefined) { // ローカル変数
+        this.next();
         return new SNode(nodetypes.REF_VAR_LOCAL, word);
       }
       const gv = this.block.find(word);
       if (gv !== undefined) { // ブロックより上の変数
+        this.next();
         return new SNode(nodetypes.REF_VAR, word);
       }
       throw new ParserError("未定義の変数:" + t.token);

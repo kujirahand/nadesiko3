@@ -26,10 +26,9 @@ class BlockInfo {
   /**
    * 管理番号を付けて変数を追加する
    * @param {string} vname - 名前
-   * @param {?} info - 変数の情報 
    */
-   addVar(name, info) {
-     // TODO
+   addVar(name) {
+     this.variables[name] = true;
    }
   
   findThisBlock(name) {

@@ -20,7 +20,7 @@ class JSGenerator {
   genHeader() {
     return "" + 
       "const __vars = {};\n" +
-      "const __print = (s)=>{ console.log(s); };\n";
+      "var   __print = (s)=>{ console.log(s); };\n";
   }
   c_gen(node) {
     if (node == null) node = this.root;
@@ -41,11 +41,20 @@ class JSGenerator {
           break;
         case nodetypes.OP:
           code += this.c_op(node);
+          break;
+        case nodetypes.REF_VAR:
+        case nodetypes.REF_VAR_LOCAL:
+          code += this.c_ref_var(node);
+          break;
       }
       node = node.next;
     }
     console.log(code);
     return code;
+  }
+  c_ref_var(node) {
+    const name = node.value;
+    return `__vars['${name}']`;
   }
   c_op(node) {
     const op = node.value; // 演算子

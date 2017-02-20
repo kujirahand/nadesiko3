@@ -1,6 +1,7 @@
 # 何もしない
 NOP
 BLOCK
+EOL
 
 # 代入
 LET,VALUE

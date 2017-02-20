@@ -34,7 +34,6 @@ describe('jsgen', ()=>{
   it('(1+2)*3', ()=> {
     const list = Tokenizer.split("(1+2)*3を表示");
     const node = Parser.parse(list);
-    console.log("***" + node.toStringAll());
     const code = JSGenerator.generate(node, false);
     assert.equal(code, "__print(((1+2)*3));\n");
   });
@@ -43,6 +42,25 @@ describe('jsgen', ()=>{
     const node = Parser.parse(list);
     const code = JSGenerator.generate(node, false);
     assert.equal(code, "__print((3<=5));\n");
+  });
+  it('MULTI LINE1', ()=> {
+    const list = Tokenizer.split("1を表示\n2を表示");
+    const node = Parser.parse(list);
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__print(1);\n__print(2);\n");
+  });
+  it('MULTI LINE2', ()=> {
+    const list = Tokenizer.split("1を表示;2を表示");
+    const node = Parser.parse(list);
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__print(1);\n__print(2);\n");
+  });
+  it('LET & PRINT', ()=> {
+    const list = Tokenizer.split("A=1+2*3;Aを表示");
+    const node = Parser.parse(list);
+    console.log("***" + node.toStringAll());
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__vars['A'] = (1+(2*3));\n__print(__vars['A']);\n");
   });
 });
 

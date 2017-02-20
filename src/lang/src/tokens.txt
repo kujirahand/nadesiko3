@@ -5,7 +5,7 @@ NOP=___NOP___
 IF=もし, FOR=繰返, WHILE=間, EACH=反復
 
 # 構文管理
-EOS,SPL
+EOL
 
 # 構文要素
 STR, NUM, OP, WORD, JOSI, EQ

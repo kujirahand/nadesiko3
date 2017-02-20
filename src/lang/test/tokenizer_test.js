@@ -24,7 +24,7 @@ describe('tokenizer', ()=>{
     const list = Tokenizer.split("30\n#hoge\n30");
     const s = Tokenizer.listToString(list);
     assert.equal(list.length, 3);
-    assert.equal(s, "30:NUM|\n:EOS|30:NUM");
+    assert.equal(s, "30:NUM|\n:EOL|30:NUM");
   });
   it('calc1', ()=> {
     const list = Tokenizer.split("3 + 5");
@@ -70,12 +70,12 @@ describe('tokenizer', ()=>{
   it("PRINT2", () => {
     const list = Tokenizer.split("\n\n「a」と表示\n");
     const s = Tokenizer.listToString(list);
-    assert.equal(s, "\n:EOS|\n:EOS|a:STR|と:JOSI|表示:PRINT|\n:EOS");
+    assert.equal(s, "\n:EOL|\n:EOL|a:STR|と:JOSI|表示:PRINT|\n:EOL");
   });
   it("PRINT3-with noise", () => {
     const list = Tokenizer.split("    \t 「a」と表示。\t    ");
     const s = Tokenizer.listToString(list);
-    assert.equal(s, "a:STR|と:JOSI|表示:PRINT|;:EOS");
+    assert.equal(s, "a:STR|と:JOSI|表示:PRINT|;:EOL");
   });
   it("if", () => {
     const list = Tokenizer.split("もし,Aが5以上ならば");

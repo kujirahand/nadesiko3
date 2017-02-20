@@ -135,7 +135,7 @@ class Tokenizer {
     }
     // 改行
     if (ch == '\n' || ch == ';') {
-      this.pushToken(tokens.EOS, ch);
+      this.pushToken(tokens.EOL, ch);
       this.getChar();
       return;
     }

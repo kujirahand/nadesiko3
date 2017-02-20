@@ -2,22 +2,28 @@
 module.exports = {
   "dict_a": [
     "NOP",
+    "BLOCK",
+    "EOL",
     "LET",
     "VALUE",
-    "PRINT",
     "NUM",
     "STR",
-    "FUNC",
     "OP",
-    "BLOCK"
+    "FUNC",
+    "REF_VAR",
+    "REF_VAR_LOCAL",
+    "PRINT"
   ],
   "NOP": 0,
-  "LET": 1,
-  "VALUE": 2,
-  "PRINT": 3,
-  "NUM": 4,
-  "STR": 5,
-  "FUNC": 6,
+  "BLOCK": 1,
+  "EOL": 2,
+  "LET": 3,
+  "VALUE": 4,
+  "NUM": 5,
+  "STR": 6,
   "OP": 7,
-  "BLOCK": 8
+  "FUNC": 8,
+  "REF_VAR": 9,
+  "REF_VAR_LOCAL": 10,
+  "PRINT": 11
 };

@@ -7,7 +7,9 @@
     "test": "mocha",
     "watch": "webpack --watch",
     "debug": "webpack",
-    "release": "webpack --config webpack.config.release.js"
+    "release": "webpack --config webpack.config.release.js",
+    "tokens": "./src/batch_tokens.js",
+    "nodetypes": "./src/batch_nodetypes.js"
   },
   "repository": {
     "type": "git",
