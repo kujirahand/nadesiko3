@@ -41,9 +41,9 @@ function nako3_browser_run_script(script) {
 function nako3_run(code) {
   console.log("今作ってます。");
   //
-  const Tokenizer = require('./tokenizer.js').Tokenizer;
-  const Parser = require('../src/parser.js').Parser;
-  const JSGenerator = require('../src/JSGenerator').JSGenerator;
+  const Tokenizer = require('./tokenizer.js');
+  const Parser = require('./parser.js');
+  const JSGenerator = require('./JSGenerator');
   //
   const list = Tokenizer.split(code);
   const node = Parser.parse(list);

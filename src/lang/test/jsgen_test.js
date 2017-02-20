@@ -1,7 +1,9 @@
 const assert = require('assert');
-const Tokenizer = require('../src/tokenizer.js').Tokenizer;
-const Parser = require('../src/parser.js').Parser;
-const JSGenerator = require('../src/JSGenerator').JSGenerator;
+
+const src = "../src";
+const Tokenizer = require(`${src}/tokenizer.js`);
+const Parser = require(`${src}/parser.js`);
+const JSGenerator = require(`${src}/JSGenerator`);
 
 describe('jsgen', ()=>{
 

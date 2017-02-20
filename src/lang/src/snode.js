@@ -2,6 +2,8 @@
 // snode.js
 //
 
+const ntypes = require('./nodetypes.js');
+
 class SNode {
   
   constructor(typeNo, value) {
@@ -29,7 +31,8 @@ class SNode {
   toString() {
     let v = this.value;
     if (v == undefined || v == null) v = "";
-    return ntypes.dict_a[this.typeNo]+":"+this.value;
+    if (typeof(v) == "object") v = "*";
+    return ntypes.dict_a[this.typeNo] + ":" + v;
   }
   
   toStringEx() {
@@ -54,9 +57,7 @@ class SNode {
   }
 }
 
-module.exports = {
-  "SNode": SNode
-};
+module.exports = SNode; 
 
 
 

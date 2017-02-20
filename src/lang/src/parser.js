@@ -1,15 +1,28 @@
 // parser.js
-const tokens = require(__dirname + '/tokens.js');
-const ntypes = require(__dirname + '/nodetypes.js');
-const tokenizer_js = require(__dirname + "/tokenizer.js")
-const BlockInfo = require(__dirname + "/blockinfo.js").BlockInfo;
-const SNode = require(__dirname + "/snode.js").SNode;
-const Tokenizer = tokenizer_js.Tokenizer;
-const Token = tokenizer_js.Token;
-const SysFunc = require(__dirname + "/sys_func.js");
+const tokens = require('./tokens.js');
+const ntypes = require('./nodetypes.js');
+const Tokenizer = require("./tokenizer.js")
+const Token = require("./token.js")
+const BlockInfo = require("./blockinfo.js");
+const SysFunc = require("./sys_func.js");
+const SNode = require("./snode.js");
 
+class ParserError extends Error { }
+
+/**
+ * Parser class
+ * @class
+ * @classdesc パーサークラス
+ */
 class Parser {
   
+  /**
+   * @property {BlockInfo} this.block - 構文のブロックを表す
+   * @property {Token[]} list - トークンリストを表す
+   * @property {number} index - 現在解析中のトークン
+   * @property {SNode} root - ノードのルート要素
+   * @property {SNode} cur - 解析直後のノード要素
+   */
   constructor (list) {
     const block = new BlockInfo();
     this.root = this.cur = new SNode(ntypes.BLOCK, block);
@@ -19,6 +32,9 @@ class Parser {
     this.registerSysFunc(this.block);
   }
   
+  /**
+   * @return {SNode} 
+   */
   get result() {
     return this.root;
   }
@@ -34,6 +50,16 @@ class Parser {
   }
   peek() {
     return this.list[this.index];
+  }
+  /**
+   * カーソルからi番目のトークンを調べる
+   * @param {number} i
+   * @return {Token}
+   */
+  getTokenFromCur(i) {
+    const idx = i + this.index;
+    if (idx >= this.list.length) return undefined;
+    return this.list[idx];
   }
   next() {
     return this.list[this.index++];
@@ -125,27 +151,57 @@ class Parser {
       const t_eq = this.next();
       const value_node = this.p_value();
       const let_node = new SNode(ntypes.LET, t_name.token);
-      cur_block.variables[t_name] = ntypes.VALUE;
+      this.block.variables[t_name] = ntypes.VALUE;
       let_node.addChild(value_node);
       return let_node;
     }
     return null;
   }
+  p_fomula() {
+    const left_n = p_value();
+    if (left_n == null) return null;
+    const t = this.peek();
+    if (t == undefined) return left_n;
+    if (t.typeNo !== tokens.OP) return left_n;
+    return null;
+  }
+
   p_value() {
+    // 値として取り得るか
     const t = this.peek();
     if (t == undefined) return null;
+    
     // # NUM || STR
-    if (t.typeNo == tokens.NUM || t.typeNo == tokens.STR) {
-      console.log("p_value=",t);
+    if (t.isType([tokens.NUM, tokens.STR])) {
       this.next();
       const node_value = new SNode(ntypes.VALUE, t.token);
       return node_value;
     }
+    // # WORD
+    const v = this.block.find(t.token);
+    if (v == undefined) { // 未定義の変数の時
+      throw new ParserError("未定義の変数:" + t.token);
+    }
+    // # PAREN_BEGIN p_fomula PAREN_END
+    if (t.typeNo == tokens.PAREN_BEGIN) {
+      this.next();
+      const node = p_fomula();
+      const nt = this.peek();
+      if (nt == undefined || nt.typeNo != tokens.PAREN_END) {
+        throw new ParserError("(...)が未対応");
+      }
+      this.next(); // ")"
+      return node;
+    }
+    //
     return null;
+  }
+  p_calc() {
+    left_node = this.next();
   }
 }
 
-module.exports = {
-  "Parser": Parser,
-  "SNode": SNode,
-};
+module.exports = Parser;
+
+
+

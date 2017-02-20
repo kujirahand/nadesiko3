@@ -1,18 +1,7 @@
 // tokenizer
 const tokens = require(__dirname + '/tokens.js');
 const charunit = require(__dirname + '/charunit.js');
-
-// Token class
-class Token {
-  constructor(typeNo, token) {
-    this.typeNo = typeNo;
-    this.token = token;
-  }
-  toString() {
-    const label = tokens.dict_a[this.typeNo];
-    return `${this.token}:${label}`;
-  }
-}
+const Token = require(__dirname + '/token.js');
 
 // Josi list
 const JosiList = [
@@ -38,7 +27,11 @@ class Tokenizer {
     this._josi = Josi;
     this._josilist = JosiList;
   }
-  
+
+  static get JosiList() {
+    return JosiList;
+  }
+
   get result() {
     return this._res;
   }
@@ -124,7 +117,7 @@ class Tokenizer {
   }
 
   pushToken(typeNo, token) {
-    if (typeNo == undefined) throw new Error('token push error');
+    if (typeNo == undefined) throw new Error('token push error:' + token);
     const t = new Token(typeNo, token);
     this._res.push(t);
     console.log("PUSH", t.toString());
@@ -287,10 +280,6 @@ class Tokenizer {
 }
 
 // exports
-module.exports = {
-  "Tokenizer": Tokenizer,
-  "Token": Token,
-  "JosiList": JosiList
-};
+module.exports = Tokenizer;
 
 

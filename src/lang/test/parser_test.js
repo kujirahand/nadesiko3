@@ -2,8 +2,9 @@
 // parser test
 //
 const assert = require('assert');
-const Tokenizer = require('../src/tokenizer.js').Tokenizer;
-const Parser = require('../src/parser.js').Parser;
+const src = "../src";
+const Tokenizer = require(`${src}/tokenizer.js`);
+const Parser = require(`${src}/parser.js`);
 
 describe('parser', ()=>{
 
@@ -13,19 +14,19 @@ describe('parser', ()=>{
     assert.equal(ts, "a:WORD|=:EQ|3:NUM");
     const node = Parser.parse(list);
     const s = node.toStringAll();
-    assert.equal(s, "NOP:#|LET:a|VALUE:3");
+    assert.equal(s, "BLOCK:*|LET:a|VALUE:3");
   });
   it('print', ()=> {
     const list = Tokenizer.split("30を表示");
     const node = Parser.parse(list);
     const s = node.toStringAll();
-    assert.equal(s, "NOP:#|PRINT:|VALUE:30");
+    assert.equal(s, "BLOCK:*|PRINT:|VALUE:30");
   });
   it('print with noise', ()=> {
     const list = Tokenizer.split("30を表示。\n");
     const node = Parser.parse(list);
     const s = node.toStringAll();
-    assert.equal(s, "NOP:#|PRINT:|VALUE:30");
+    assert.equal(s, "BLOCK:*|PRINT:|VALUE:30");
   });
 
 });

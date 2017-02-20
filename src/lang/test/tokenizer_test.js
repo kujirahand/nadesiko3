@@ -2,9 +2,18 @@
 // tokenizer test
 //
 const assert = require('assert');
-const Tokenizer = require('../src/tokenizer.js').Tokenizer;
+const src = "../src";
+const Tokenizer = require(`${src}/tokenizer.js`);
+const Token = require(`${src}/token.js`);
+const tokens = require(`${src}/tokens.js`);
 
 describe('tokenizer', ()=>{
+  it("Token.isType", ()=> {
+    const t = new Token(tokens.NUM, 300);
+    assert.equal(true, t.isType([tokens.NUM]));
+    assert.equal(false, t.isType([tokens.STR]));
+    assert.equal(true, t.isType([tokens.STR, tokens.NUM]));
+  });
   it('COMMENT1', ()=> {
     const list = Tokenizer.split("「hoge」/* rem */");
     const s = Tokenizer.listToString(list);

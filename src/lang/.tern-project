@@ -1,0 +1,12 @@
+{
+  "libs": [
+    "browser"
+  ],
+  "plugins": {
+    "doc_comment": {},
+    "complete_strings": {},
+    "node": {},
+    "es_modules": {}
+  }
+}
+

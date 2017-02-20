@@ -58,6 +58,4 @@ class JSGenerator {
   }
 }
 
-module.exports = {
-  "JSGenerator": JSGenerator,
-}
+module.exports = JSGenerator;
