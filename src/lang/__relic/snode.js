@@ -16,6 +16,7 @@ class SNode {
     this.children = [];
     this.next = null;
     this.priority = 0;
+    this.josi = ""; // 助詞
   }
   
   addChild(n) {

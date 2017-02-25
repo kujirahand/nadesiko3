@@ -4,7 +4,7 @@ const nodetypes = require('./nodetypes.js');
 const Tokenizer = require("./tokenizer.js")
 const Token = require("./token.js")
 const BlockInfo = require("./blockinfo.js");
-const SysFunc = require("./sys_func.js");
+const sysfunc = require("./sysfunc.js");
 const SNode = require("./snode.js");
 
 class ParserError extends Error { }
@@ -92,7 +92,7 @@ class Parser {
   }
   
   registerSysFunc(block) {
-    for (const key in SysFunc) {
+    for (const key in sysfunc) {
       block.variables[key] = nodetypes.FUNC;
     }
   }
@@ -139,6 +139,66 @@ class Parser {
     // # PRINT
     n = this.p_print(null);
     if (n) return n;
+    // # COMMAND
+    n = this.p_command();
+    if (n) return n;
+    // # PUSH_VALUE
+    n = this.p_push_value();
+    if (n) return n;
+    // other
+    return null;
+  }
+  p_command() {
+    const t = this.peek();
+    const func_name = t.token;
+    const func = this.block.find(func_name);
+    if (!func) return null;
+    this.next();
+    const func_node = new SNode(nodetypes.FUNC, func_name);
+    // 引数の数が合っているか確認
+    if (this.stack.length <= func.fn.length - 1) {
+      throw new ParserError(`『${func_name}』で引数が不足`);
+    }
+    // 引数をスタックから取得/ただし引数の末尾から考慮
+    for (let n = func.fn.length - 1; n >= 0; n--) {
+      const josilist = func.josi[n];
+      let arg_node = this.stack_pop_josi(josilist);
+      if (arg_node == null) {
+        if (n == 0) { // 変数「それ」を補完
+          arg_node = new SNode(nodetypes.REF_VAR_LOCAL, 'それ');
+        } else {
+          throw new ParserError(`『${func_name}』で引数が不足`);
+        }
+      }
+      func_node.children.unshift(arg_node);
+    }
+    return func_node;
+  }
+  stack_pop_josi(josilist) {
+    if (josilist.length == 0) { // 助詞指定なし
+      return this.stack.pop();
+    }
+    // スタックの末尾から合致する助詞を持つノードを検索
+    for (let n = this.stack.length - 1 ; n >= 0; n--) {
+      const node = this.stack[n];
+      if (josilist.indexOf(node.josi) >= 0) {
+        return this.stack.splice(n, 1);
+      }
+    }
+    return null;
+  }
+  p_push_value() {
+    // # FORMULA || FORMULA JOSI
+    let n = this.p_formula();
+    if (n) {
+      // 助詞がある?
+      let t = this.peek();
+      if (this.matchType([nodetypes.JOSI])) {
+        n.josi = t.token;
+        this.next();
+      }
+      this.block.stack.push(n);
+    }
     return null;
   }
   p_print() {

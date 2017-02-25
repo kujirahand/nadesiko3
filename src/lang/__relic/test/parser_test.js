@@ -26,7 +26,7 @@ describe('parser', ()=>{
     const list = Tokenizer.split("30を表示。\n");
     const node = Parser.parse(list);
     const s = node.toStringAll();
-    assert.equal(s, "BLOCK:*|VALUE:30|PRINT:");
+    assert.equal(s, "BLOCK:*|VALUE:30|PRINT:|EOL:;|EOL:;");
   });
 
 });

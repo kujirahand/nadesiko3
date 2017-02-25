@@ -3,7 +3,18 @@
   <head>
     <meta charset="utf-8">
     <title>なでしこ3</title>
-    <script src="debug/nako3.js"></script>
+    <script src="release/nako3.js"></script>
+    <style>
+      #info {
+        font-size:1em;
+        border: 1px solid gray;
+        padding:8px;
+        background-color: #f0fff0; }
+      #srcbox {
+        font-size:1em;
+        background-color: #fffff0;
+        width: 99%; }
+    </style>
     <script type="nako">
       「こんにちは」と表示。
     </script>
@@ -11,8 +22,22 @@
   <body>
     <h1>なでしこ3デモ</h1>
     <div>
-      <p id="info"></p>
+      <textarea id="srcbox" rows="3" cols="60">「こんにちは」と表示。</textarea><br>
+      <button onclick="runbox()">実行</button>
+      <script>
+        function $(id) { return document.getElementById(id); }
+        function runbox() {
+          var src = $("srcbox").value;
+          try {
+            navigator.nako3_run(src);
+          } catch (e) {
+            $("info").innerHTML = "" + e.message;
+            console.log(e);
+          }
+        }
+      </script>
     </div>
+    <div><p id="info"></p></div>
   </body>
 </html>
 

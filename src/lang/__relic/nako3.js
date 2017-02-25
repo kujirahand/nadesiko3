@@ -7,8 +7,6 @@ const __vars = {};
 let __print = (msg) => {
   console.log(msg);
 };
-const peg = require('./nako_parser.js');
-const gen = require('./nako_gen.js');
 
 if (typeof(navigator) == "object") {
   setTimeout(()=>{
@@ -19,15 +17,9 @@ if (typeof(navigator) == "object") {
 function nako3_browser(){
   // 書き換え
   __print = (msg) => {
-    msg = "" + msg;
-    msg = msg
-      .replace("&", "&amp;")
-      .replace(">", "&gt;")
-      .replace("<", "&lt;");
     const e = document.getElementById("info");
-    e.innerHTML += msg + "<br>\n";
+    e.innerHTML += msg;
   };
-  navigator.nako3_run = nako3_run;
   // スクリプトタグの中身を得る
   let scripts = document.querySelectorAll("script");
   for (let i = 0; i < scripts.length; i++) {
@@ -47,17 +39,17 @@ function nako3_browser_run_script(script) {
 }
 
 function nako3_run(code) {
-  console.log("//--- code ---");
-  console.log(code);
-  console.log("//--- /code ---");
-  const ast = peg.parse(code + "\n");
-  const js = gen.generate(ast, false, __print);
+  console.log("今作ってます。");
+  //
+  const Tokenizer = require('./tokenizer.js');
+  const Parser = require('./parser.js');
+  const JSGenerator = require('./JSGenerator');
+  //
+  const list = Tokenizer.split(code);
+  const node = Parser.parse(list);
+  const js = JSGenerator.generate(node, false);
   console.log(js);
   eval(js);
 }
-
-
-
-
 
 

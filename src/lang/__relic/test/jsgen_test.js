@@ -58,6 +58,12 @@ describe('jsgen', ()=>{
   it('LET & PRINT', ()=> {
     const list = Tokenizer.split("A=1+2*3;Aを表示");
     const node = Parser.parse(list);
+    const code = JSGenerator.generate(node, false);
+    assert.equal(code, "__vars['A'] = (1+(2*3));\n__print(__vars['A']);\n");
+  });
+  it('システム関数の実行', ()=> {
+    const list = Tokenizer.split("A=3に5を足す;Aを表示");
+    const node = Parser.parse(list);
     console.log("***" + node.toStringAll());
     const code = JSGenerator.generate(node, false);
     assert.equal(code, "__vars['A'] = (1+(2*3));\n__print(__vars['A']);\n");

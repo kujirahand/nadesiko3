@@ -5,7 +5,7 @@ module.exports = {
   },
 
   output: {
-    path: `${__dirname}/debug`,
+    path: `${__dirname}/release`,
     filename: '[name].js'
   },
   
