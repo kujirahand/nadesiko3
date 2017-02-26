@@ -1,29 +1,34 @@
 // basic_func.js
-
-module.exports= {
-  "足す": {
+var NakoBasicFunc = {
+  "表示": {
+    josi: [["を","と"]],
+    fn: function (s) { NakoBasicFunc.__print(s); },
+  },
+  "言": {
+    josi: [["を","と"]],
+    fn: function (s) { NakoBasicFunc.__print(s); },
+  },
+  "足": {
     josi: [["に","と"],["を"]],
     fn: function (a, b) { return a + b; },
   },
-  "引く": {
+  "引": {
     josi: [["から"],["を"]],
     fn: function (a, b) { return a - b; },
   },
-  "掛ける": {
+  "掛": {
     josi: [["に","と"],["を"]],
     fn: function (a, b) { return a * b; },
   },
-  "割る": {
+  "割": {
     josi: [["を"],["で"]],
     fn: function (a, b) { return a / b; },
   },
-  "表示": {
-    josi: [["を","と"]],
-    fn: function (s) { this.__print(s); },
-  },
   /* --- */
+  __print_log: "",
   __print: function (s) {
     console.log(s);
+    NakoBasicFunc.__print_log += s + "\n";
   },
   /**
    * @param {string} name - Function name
@@ -35,4 +40,6 @@ module.exports= {
     return f.length; // (function(){}).length で関数の引数の数を返す
   }
 };
+
+module.exports= NakoBasicFunc;
 

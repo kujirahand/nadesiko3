@@ -1,6 +1,13 @@
 {
 // ------------------------------------------------
 //   なでしこの文法をPEGで定義したもの
+// -- https://pegjs.org/online を利用して編集すると良い感じ
+// ------------------------------------------------
+function convToHalfS(s) {
+  return s.replace(/[Ａ-Ｚａ-ｚ０-９＿]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 65248);
+  });
+}
 // ------------------------------------------------
 }
 
@@ -10,12 +17,34 @@ sentence
   =  comment
   / indent { return {"type":"EOS","memo":"indent"}; }
   / EOS+ { return {"type":"EOS"}; }
-  / func_call / let / if_stmt
+  / if_stmt / whie_stmt / repeat_times_stmt / for_stmt
+  / func_call / let_stmt
 
 sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
 block_end = "ここまで" /　"ーーー" / else
 else = "違えば"
+
+for_stmt
+  = i:word "を" __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
+    return {"type":"for", "from":kara, "to":made, "block":b, "word": i};
+  }
+
+repeat_times_stmt
+  = cnt:(int / intz) "回" __ b:sentence EOS {
+    return {"type":"repeat_times", "value":cnt, "block": b};
+  }
+  / cnt:(int / intz) "回" __ LF b:block block_end {
+    return {"type":"repeat_times", "value":cnt, "block": b};
+  }
+  / parenL cnt:calc parenR  "回" __ LF b:block block_end {
+    return {"type":"repeat_times", "value":cnt, "block": b};
+  }
+
+whie_stmt
+  = parenL expr:calc parenR  "の間" LF b:block block_end {
+    return {"type":"while", "cond":expr, "block":b};
+  }
 
 if_stmt
   = "もし" __ expr:calc __ josi_naraba __ LF __ tb:block
@@ -39,8 +68,8 @@ func_call
     return {type:"func", "args":args, "name":name};
   }
 
-let 
-  = name:word "=" value:calc EOS { return {"type":"let", "name":name, "value":value}; }
+let_stmt
+  = name:word ("=" / "＝") value:calc EOS { return {"type":"let", "name":name, "value":value}; }
   / word josi_eq calc EOS { return {"type":"let", "name":name, "value":value}; }
 
 // コメント関連
@@ -48,7 +77,7 @@ __ = (whitespace / range_comment)*
 LF = "\n" { return {type:"EOS"}; }
 EOS = __ n:(";" / LF / "。" / josi_continue) { return {type:"EOS"}; }
 whitespace = [ \t\r、　]
-indent = [ 　\t]+
+indent = [ 　\t・]+
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
 line_comment = "//" s:$[^\n]* "\n" { return s; }
 sharp_comment = "#" s:$[^\n]* "\n" { return s; }
@@ -58,10 +87,11 @@ comment
   }
 
 // 数字関連
-number = v:(hex / float / int) { return {"type":"number","value":v }; }
+number = f:"-"? v:(hex / float / int / intz) { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
 hex = "0x" x:$([0-9a-z]i+) { return parseInt("0x" + x, 16); }
 float = d1:$([0-9]+) "." d2:$([0-9]+) { return parseFloat( d1 + "." + d2 ); }
 int = n:$([0-9]+) { return parseInt(n, 10); }
+intz = n:$([０-９]+) { return parseInt(convToHalfS(n), 10); }
 // 文字列関連
 qqchar = c:$([^"]) { return c; }
 qchar  = c:$([^']) { return c; }
@@ -91,8 +121,12 @@ kanji    = [\u4E00-\u9FCF]
 hiragana = [ぁ-ん]
 katakana = [ァ-ヶ]
 alphabet = [_a-zA-Z]
-wordchar = w:(kanji / hiragana / katakana / alphabet) { return w; }
-word "WORD" = chars:$((!josi_word_split wordchar)*) { return { type:"variable", value:chars }; }
+alphaz = [ａ-ｚＡ-Ｚ＿]
+wordchar = w:(kanji / hiragana / katakana / alphabet / alphaz) { return w; }
+word "単語" = chars:$((!josi_word_split wordchar)+) { return { type:"variable", value:convToHalfS(chars) }; }
+
+// memo
+alphachars = a:$(alphabet / alphaz)+ b:$([0-9a-zA-Z_０-９ａ-ｚＡ-Ｚ＿])* { return convToHalfS(a + b ? b : ""); }
 
 // for value
 value
@@ -113,47 +147,50 @@ and_or
   / comp
 
 comp
-  = left:addsub __ "<" __ right:addsub {
+  = left:addsub __ ("<" / "＜") __ right:addsub {
      return { type:"calc", operator: "<", "left": left,  "right": right };
   }
-  / left:addsub __ "<=" __ right:addsub {
+  / left:addsub __ ("<=" / "＜＝" / "≦") __ right:addsub {
      return { type:"calc", operator: "<=", "left": left,  "right": right };
   }
-  / left:addsub __ ">" __ right:addsub {
+  / left:addsub __ (">" / "＞") __ right:addsub {
      return { type:"calc", operator: ">", "left": left,  "right": right };
   }
-  / left:addsub __ ">=" __ right:addsub {
+  / left:addsub __ (">=" / "＞＝" / "≧") __ right:addsub {
      return { type:"calc", operator: ">=", "left": left,  "right": right };
   }
-  / left:addsub __ "==" __ right:addsub {
+  / left:addsub __ ("==" / "=" / "＝") __ right:addsub {
      return { type:"calc", operator: "==", "left": left,  "right": right };
   }
-  / left:addsub __ "!=" __ right:addsub {
+  / left:addsub __ ("!=" / "！＝" / "<>" / "＜＞" / "≠") __ right:addsub {
      return { type:"calc", operator: "!=", "left": left,  "right": right };
   }
   / addsub
 addsub
-   = left:muldiv __ "+" __ right:addsub {
+   = left:muldiv __ ("+" / "＋") __ right:addsub {
      return { type:"calc", operator: "+", "left": left,  "right": right };
    }
-   / left:muldiv __ "-" __ right: addsub {
+   / left:muldiv __ ("-" / "−") __ right: addsub {
      return { type:"calc", operator: "-", "left": left,  "right": right };
+   }
+   / left:muldiv __ ("&" / "＆") __ right: addsub {
+     return { type:"calc", operator: "&", "left": left,  "right": right };
    }
    / muldiv
 muldiv
-  = left:primary __ "*" __ right:muldiv {
+  = left:primary __ ("*" / "＊" / "×") __ right:muldiv {
      return { type:"calc", operator: "*", "left": left,  "right": right };
    }
-  / left:primary __ "/" __ right:muldiv {
+  / left:primary __ ("/" / "／" / "÷") __ right:muldiv {
      return { type:"calc", operator: "/", "left": left,  "right": right };
    }
-  / left:primary __ "%" __ right:muldiv {
+  / left:primary __ ("%" / "％") __ right:muldiv {
      return { type:"calc", operator: "/", "left": left,  "right": right };
    }
    / primary
  primary
-   = "(" calc:calc ")" { return calc; } 
+   = parenL calc:calc parenR { return calc; } 
    / v:value { return v; }
 
-
-
+parenL = "(" / "（"
+parenR = ")" / "）"

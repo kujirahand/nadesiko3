@@ -3,41 +3,80 @@
   <head>
     <meta charset="utf-8">
     <title>なでしこ3</title>
+    <!-- なでしこを使う準備 -->
     <script src="release/nako3.js"></script>
+    <script>
+      // なでしこの関数をカスタマイズ
+      navigator.nako3.getFunc("言").fn = function(msg){ alert(msg); };
+      navigator.nako3.getFunc("表示").fn = function(s) {
+        $("info").innerHTML += tohtml(s) + "<br>";
+      };
+      // なでしこにオリジナル関数をJSで追加
+      navigator.nako3.addFunc("色変更", 
+        [["に","へ"]],
+        function (s) { $("info").style.color = s; });
+      // 簡易DOMアクセス関数など
+      function $(id) { return document.getElementById(id); }
+      function tohtml(s) {
+        s = "" + s;
+        return s.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
+      }
+    </script>
     <style>
       #info {
         font-size:1em;
         border: 1px solid gray;
         padding:8px;
         background-color: #f0fff0; }
+      #err {
+        font-size:1em;
+        border: 1px solid gray;
+        padding:8px;
+        background-color: #fff0f0; }
       #srcbox {
         font-size:1em;
         background-color: #fffff0;
         width: 99%; }
     </style>
-    <script type="nako">
-      「こんにちは」と表示。
+    <script type="なでしこ" id="main_program">
+「#00F」に色変更。
+「こんにちは」と表示。
     </script>
   </head>
   <body>
     <h1>なでしこ3デモ</h1>
     <div>
-      <textarea id="srcbox" rows="3" cols="60">「こんにちは」と表示。</textarea><br>
+      <textarea id="srcbox" rows="5"></textarea><br>
       <button onclick="runbox()">実行</button>
-      <script>
-        function $(id) { return document.getElementById(id); }
-        function runbox() {
-          var src = $("srcbox").value;
-          try {
-            navigator.nako3_run(src);
-          } catch (e) {
-            $("info").innerHTML = "" + e.message;
-            console.log(e);
-          }
-        }
-      </script>
+      <button onclick="resetbox()">クリア</button>
     </div>
+    <div><p id="err"></p></div>
     <div><p id="info"></p></div>
-  </body>
+<script>
+function runbox() {
+  var src = $("srcbox").value;
+  $("err").style.display = "none";
+  try {
+    navigator.nako3.run(src);
+  } catch (e) {
+    let msg = e.message;
+    msg = msg.replace('Expected', '期待する字句は...');
+    msg = msg.replace('but', '。しかし...');
+    msg = msg.replace('found', 'がありました');
+    $("err").style.display = "block";
+    $("err").innerHTML = msg;
+    console.log(e);
+  }
+}
+function resetbox() {
+  $("info").innerHTML = "";
+}
+// テキストボックスを初期化
+$("srcbox").value = $("main_program").text.replace(/^\s*/, '').replace(/\s+$/,'');
+$("err").style.display = "none";
+// type="なでしこ" のスクリプトを実行
+navigator.nako3.runNakoScript();
+</script>
+</body>
 </html>
 
