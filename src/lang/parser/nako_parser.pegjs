@@ -53,20 +53,38 @@ whie_stmt
   }
 
 if_stmt
-  = "もし" __ expr:calc __ josi_naraba __ LF __ tb:block
+  = "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block
       __ else __ LF __ fb:block block_end {
     return {"type":"if", "expr":expr, "block":tb, "false_block":fb };
   }
-  / "もし" __ expr:calc __ josi_naraba __ LF __ tb:block block_end {
+  / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block block_end {
     return {"type":"if", "expr":expr, "block":tb, "false_block":[] };
   }
   // ブロックなしの「もし」文の時
-  / "もし" __ expr:calc __ josi_naraba true_node:sentence EOS else false_node:sentence EOS  {
-    return {"type":"if", "expr":expr, "block":true_node, "false_block":false_node };
+  / "もし" __ expr:if_expr __ josi_naraba t:sentence EOS? else f:sentence EOS {
+    return {"type":"if", "expr":expr, "block":t, "false_block":f };
   }
-  / "もし" __ expr:calc __ josi_naraba true_node:sentence EOS {
+  / "もし" __ expr:if_expr __ josi_naraba true_node:sentence2 EOS {
     return {"type":"if", "expr":expr, "block":true_node, false_block:[] };
   }
+
+if_expr
+  = a:if_value josi __ b:if_value (josi __)? op:if_jop {
+    return {type:"calc", left:a, right:b, operator:op};
+  }
+  / calc
+
+if_jop
+  = "等しい" { return "=="; }
+  / "超"    { return ">"; }
+  / "未満" { return "<"; }
+  / "以上" { return ">="; }
+  / "以下" { return "<="; }
+  / "異なる" { return "!="; }
+
+if_value
+  = v: (number / string / word) { return v; }
+  / parenL v:calc parenR { return v; }
 
 func_arg = v:calc j:josi { return {"type":"arg", "value":v, "josi":j} }
 func_call
@@ -158,7 +176,8 @@ value
   / json_data
 
 // calc
-calc = and_or
+calc
+  = and_or
 
 and_or
   = left:comp __ "||" __ right:comp {
