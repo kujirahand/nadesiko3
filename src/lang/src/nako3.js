@@ -28,10 +28,10 @@ class NakoCompiler {
   }
   generate(ast) {
     const js = this.gen.c_gen(ast);
-    console.log("--- ast ---");
-    console.log(ast);
-    console.log("--- generate ---");
-    console.log(js);
+    // console.log("--- ast ---");
+    // console.log(ast);
+    // console.log("--- generate ---");
+    // console.log(js);
     return js;
   }
   compile(code) {
