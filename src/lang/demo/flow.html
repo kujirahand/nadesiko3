@@ -108,6 +108,24 @@ B=3
       <div><p id="while_txt_info" class="info"></p></div>
       <button onclick="runbox('while_txt')">実行</button><br>
     </div>
+    
+    <div class="sbox">
+      <h4>簡易条件文</h4>
+      <textarea id="if2_txt" class="src" rows="10">
+--------------
+N=10
+もしNが100未満ならば「OK1」と表示。
+もしNが5以上ならば「OK2」と表示。
+もし(N*2)が50以下ならば「OK3」と表示。
+--------------
+N=30
+もしNが10以下ならば「NG」と表示。
+違えば「OK4」と表示。
+--------------
+      </textarea><br>
+      <div><p id="if2_txt_info" class="info"></p></div>
+      <button onclick="runbox('if2_txt')">実行</button>
+    </div>
 <script>
 function runbox(id) {
   if (id == null) { alert('idが設定されていません。'); return; }
