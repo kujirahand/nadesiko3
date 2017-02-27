@@ -77,8 +77,10 @@ func_call
 let_stmt
   = name:word __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let", "name":name, "value":value}; }
   / name:word i:("[" calc "]")+ __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value}; }
-  / name:word ("に"/"へ") value:calc "を代入" EOS  { return {"type":"let", "name":name, "value":value}; }
-  
+  / name:word ("に"/"へ") value:(calc "を")? "代入" EOS  {
+    const v = value ? value[0] : {type:"variable", value:"それ"};
+    return {"type":"let", "name":name, "value":v};
+  }
 
 // コメント関連
 __ = (whitespace / range_comment)*
@@ -210,7 +212,7 @@ muldiv
    }
    / primary
  primary
-   = parenL calc:calc parenR { return calc; } 
+   = parenL calc:calc parenR { return calc; }
    / v:value { return v; }
 
 parenL = "(" / "（"

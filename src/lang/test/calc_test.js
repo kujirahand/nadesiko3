@@ -27,9 +27,4 @@ describe('calc', ()=>{
   it('オブジェクト', ()=> {
     assert.equal(nako.run_reset("a={};a['a']=30;a['a']を表示").log, "30");
   });
-  it('もし', ()=> {
-    assert.equal(nako.run_reset("もし3>1ならば「あ」と表示。").log, "あ");
-    assert.equal(nako.run_reset("もし3<1ならば「あ」と表示。\n"+
-      "違えば「い」と表示。").log, "い");
-  });
 });

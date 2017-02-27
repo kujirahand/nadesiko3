@@ -38,20 +38,22 @@
         background-color: #fffff0;
         width: 99%; }
     </style>
-    <script type="なでしこ" id="main_program">
-「#00F」に色変更。
-「こんにちは」と表示。
-    </script>
   </head>
   <body>
     <h1>なでしこ3デモ</h1>
-    <div>
-      <textarea id="srcbox" rows="5"></textarea><br>
-      <button onclick="runbox(null)">実行</button>
-      <button onclick="resetbox()">クリア</button>
+    <div style="margin-left:12px;">
+      <p>簡易エディタ:</p>
+      <textarea id="srcbox" rows="8">
+「こんにちは！」と表示。
+(1 + 2)×3を表示。
+      </textarea><br>
+      <div>
+        <button onclick="runbox(null)">実行</button>
+        <button onclick="resetbox()">クリア</button>
+      </div>
+      <div><p id="err" style="display:none;"></p></div>
+      <div><p>実行結果:</p><p id="info"></p></div>
     </div>
-    <div><p id="err"></p></div>
-    <div><p id="info"></p></div>
     <hr>
     <h3>試してみよう！</h3>
     <div>
@@ -85,10 +87,6 @@ function runbox(id) {
 function resetbox() {
   $("info").innerHTML = "";
 }
-// テキストボックスを初期化
-$("srcbox").value = $("main_program").text.replace(/^\s*/, '').replace(/\s+$/,'');
-runbox(null);
-</script>
-  </body>
+</script></body>
 </html>
 

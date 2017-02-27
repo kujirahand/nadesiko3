@@ -83,9 +83,6 @@ class NakoGen {
       case "let":
         code += this.c_let(node) + "\n";
         break;
-      case "let":
-        code += this.c_let(node) + "\n";
-        break;
       case "variable":
         code += this.varname(node.value);
         break;
@@ -259,7 +256,9 @@ class NakoGen {
   c_let(node) {
     const name = this.c_gen(node.name);
     const value = this.c_gen(node.value);
-    return `${name} = ${value};`;
+    let code = "";
+    code = `${name} = ${value};\n`;
+    return code;
   }
   c_print(node) {
     return `__print(${code});`;
