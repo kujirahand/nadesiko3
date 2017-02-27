@@ -18,7 +18,8 @@ sentence
   / indent { return {"type":"EOS","memo":"indent"}; }
   / EOS+ { return {"type":"EOS"}; }
   / if_stmt / whie_stmt / repeat_times_stmt / for_stmt
-  / func_call / let_stmt
+  / let_stmt
+  / func_call
 
 sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
@@ -69,8 +70,10 @@ func_call
   }
 
 let_stmt
-  = name:word ("=" / "＝") value:calc EOS { return {"type":"let", "name":name, "value":value}; }
-  / word josi_eq calc EOS { return {"type":"let", "name":name, "value":value}; }
+  = name:word __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let", "name":name, "value":value}; }
+  / name:word i:("[" calc "]")+ __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value}; }
+  / name:word ("に"/"へ") value:calc "を代入" EOS  { return {"type":"let", "name":name, "value":value}; }
+  
 
 // コメント関連
 __ = (whitespace / range_comment)*
@@ -87,26 +90,37 @@ comment
   }
 
 // 数字関連
-number = f:"-"? v:(hex / float / int / intz) { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
+number = f:"-"? v:(hex / float / int / intz) josuusi? { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
 hex = "0x" x:$([0-9a-z]i+) { return parseInt("0x" + x, 16); }
 float = d1:$([0-9]+) "." d2:$([0-9]+) { return parseFloat( d1 + "." + d2 ); }
 int = n:$([0-9]+) { return parseInt(n, 10); }
 intz = n:$([０-９]+) { return parseInt(convToHalfS(n), 10); }
+josuusi = "円" / "個" / "人" / "冊" / "匹" 
+  / "本" / "枚" / "台" / "位"
+  / "年" / "月" / "日" / "才" / "件" / "羽" 
+  / "頭" / "部" / "巻" / "通"
+
 // 文字列関連
-qqchar = c:$([^"]) { return c; }
-qchar  = c:$([^']) { return c; }
-qz1char = c:$([^」]) { return c; }
-qz2char = c:$([^』]) { return c; }
-rawstring = '"' chars:qqchar*  '"' { return chars.join(""); }
-       / "'" chars:qchar*   "'" { return chars.join(""); }
-       / "「" chars:qz1char* "」" { return chars.join(""); }
-       / "『" chars:qz2char* "』" { return chars.join(""); }
-string = s:rawstring { return {type:"string", value:s}; }
+rawstring_pat
+  = '"' s:$[^"]*  '"' { return s; }
+  / "'" s:$[^']*   "'" { return s; }
+  / "『" s:$[^』]* "』" { return s; }
+rawstring = s:rawstring_pat { return {type:"string", value:s, mode:"raw"}; }
+exstring_pat = "「"    "」" { return chars.join(""); }
+exstring = "「" s:$[^」]* "」" { return {type:"string", value:s, mode:"ex"}; }
+string = rawstring / exstring
+
+
+// その他の型
+null = ("null" / "空") { return {type:"null"}; }
+bool = b:(TRUE / FALSE) { return {type:"bool", value: b}; }
+TRUE = "はい" / "真" { return true; }
+FALSE = "いいえ" / "偽" { return false; }
 
 // 助詞関連
 josi = josi_arg / josi_eq
 josi_eq = "は"
-josi_continue =  "して"
+josi_continue =  "して" / "て"
 josi_arg = 
   josi_name:("について" / "ならば" / "なら" /
   "とは" / "から" / "まで" /
@@ -119,7 +133,7 @@ josi_word_split = josi_eq / josi_arg / josi_continue / josi_naraba
 // word
 kanji    = [\u4E00-\u9FCF]
 hiragana = [ぁ-ん]
-katakana = [ァ-ヶ]
+katakana = [ァ-ヶー]
 alphabet = [_a-zA-Z]
 alphaz = [ａ-ｚＡ-Ｚ＿]
 wordchar = w:(kanji / hiragana / katakana / alphabet / alphaz) { return w; }
@@ -131,8 +145,10 @@ alphachars = a:$(alphabet / alphaz)+ b:$([0-9a-zA-Z_０-９ａ-ｚＡ-Ｚ＿])* 
 // for value
 value
   = number 
-  / s:string
-  / w:word
+  / string
+  / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
+  / word
+  / json_data
 
 // calc
 calc = and_or
@@ -194,3 +210,31 @@ muldiv
 
 parenL = "(" / "（"
 parenR = ")" / "）"
+
+json_data
+  = "[" a:json_array "]"  { return {type:"json_array", value:a}; }
+  / "{" a:json_obj "}" { return {type:"json_obj", value:a}; }
+  / "[" __ "]" { return {type:"json_array", value:[]}; }
+  / "{" __ "}" { return {type:"json_obj", value:[]}; } 
+
+json_array
+  = __ a1:json_value __ a2:("," __ json_value __)+ {
+    const a = [a1];
+    a2.forEach(e=>{a.push(e[2]);});
+    return a;
+  }
+  / __ v:json_value __ { return v; }
+
+json_value
+  = number / string / null / bool / json_data
+   
+ json_obj
+  = a1:json_key_value __ a2:("," __ json_key_value)+ { 
+    const a = a2.map(e=>{ return e[2]; });
+    a.unshift(a1);
+    return a;
+  }
+  / a:json_key_value { return [a] }
+ 
+json_key_value
+  = key:string __ ":" __ value:json_value { return {"key": key, "value": value }; }

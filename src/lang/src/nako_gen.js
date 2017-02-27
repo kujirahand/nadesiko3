@@ -54,6 +54,9 @@ class NakoGen {
   getFunc(key) {
     return funcbank[key];
   }
+  varname(name) {
+    return `__vars["${name}"]`;
+  }
   c_gen(node) {
     let code = "";
     if (node == undefined) return "";
@@ -73,7 +76,7 @@ class NakoGen {
         code += node.value;
         break;
       case "string":
-        code += '"' + node.value.replace('"', '\\\"') + '"';
+        code += this.c_string(node);
         break;
       case "let":
         code += this.c_let(node) + "\n";
@@ -102,11 +105,64 @@ class NakoGen {
       case "while":
         code += this.c_while(node);
         break;
+      case "let_array":
+        code += this.c_let_array(node);
+        break;
+      case "ref_array":
+        code += this.c_ref_array(node);
+        break;
+      case "json_array":
+        code += this.c_json_array(node);
+        break;
+      case "json_obj":
+        code += this.c_json_obj(node);
+        break;
+      case "bool":
+        code += (node.value) ? "true" : "false";
+        break;
+      case "null":
+        code += "null";
+        break;
     }
     return code;
   }
-  varname(name) {
-    return `__vars["${name}"]`;
+  c_json_obj(node) {
+    const list = node.value;
+    const codelist = list.map((e)=>{
+      const key = this.c_gen(e.key);
+      const val = this.c_gen(e.value)
+      return `'${key}':${val}`;
+    });
+    return "{" + codelist.join(",") + "}";
+  }
+  c_json_array(node) {
+    const list = node.value;
+    const codelist = list.map((e)=>{
+      return this.c_gen(e);
+    });
+    return "[" + codelist.join(",") + "]";
+  }
+  c_ref_array(node) {
+    const name = this.c_gen(node.name);
+    const list = node.index;
+    let code = name;
+    for (let i = 0; i < list.length; i++) {
+      const idx = this.c_gen(list[i]);
+      code += "[" + idx + "]";
+    }
+    return code;
+  }
+  c_let_array(node) {
+    const name = this.c_gen(node.name);
+    const list = node.index;
+    let code = name;
+    for (let i = 0; i < list.length; i++) {
+      const idx = this.c_gen(list[i]);
+      code += "[" + idx + "]";
+    }
+    const value = this.c_gen(node.value);
+    code += " = " + value + ";\n";
+    return code;
   }
   c_for(node) {
     const kara = this.c_gen(node.from);
@@ -205,6 +261,19 @@ class NakoGen {
   }
   c_print(node) {
     return `__print(${code});`;
+  }
+  c_string(node) {
+    let value = "" + node.value;
+    let mode = node.mode;
+    value = value.replace('"', '\\\"');
+    value = value.replace(/(\r\n|\r|\n)/g, "\\n");
+    if (mode == "ex") {
+      value = value.replace(/\{(.+)\}/, function(a, m) {
+        const ex = m[0];
+        return "\"+__vars['"+ex+"']+\"";
+      });
+    }
+    return '"' + value + '"';
   }
 }
 

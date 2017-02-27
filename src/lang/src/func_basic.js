@@ -2,11 +2,19 @@
 var NakoBasicFunc = {
   "表示": {
     josi: [["を","と"]],
-    fn: function (s) { NakoBasicFunc.__print(s); },
+    fn: function (s) { NakoBasicFunc.__print(s); }
   },
   "言": {
     josi: [["を","と"]],
-    fn: function (s) { NakoBasicFunc.__print(s); },
+    fn: function (s) { NakoBasicFunc.__print(s); }
+  },
+  "尋": {
+    josi: [["と","を"]],
+    fn: function (s) {
+      const r = prompt(s);
+      if (r.match(/^[0-9\.]+$/)) return parseFloat(r);
+      return r;
+    }
   },
   "足": {
     josi: [["に","と"],["を"]],
