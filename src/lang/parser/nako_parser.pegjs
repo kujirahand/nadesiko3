@@ -17,16 +17,21 @@ sentence
   =  comment
   / indent { return {"type":"EOS","memo":"indent"}; }
   / EOS+ { return {"type":"EOS"}; }
+  / end / continue / break
   / if_stmt / whie_stmt / repeat_times_stmt / for_stmt
   / let_stmt
-  / func_call
   / kokomade { return {type:"EOS",memo:"---"}; }
+  / func_call_stmt
+
 
 sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
 block_end =  kokomade / else
 else = "違えば"
-kokomade = "ここまで" /　"ーーー" "ー"* / "---" "-"*
+kokomade = ("ここまで" /　"ーーー" "ー"* / "---" "-"*) EOS
+break = "抜ける" EOS { return {type:"break"}; }
+continue = "続ける" EOS { return {type:"continue"}; }
+end = ("終わる" / "終了") EOS { return {type:"end"}; }
 
 for_stmt
   = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
@@ -61,15 +66,18 @@ if_stmt
     return {"type":"if", "expr":expr, "block":tb, "false_block":[] };
   }
   // ブロックなしの「もし」文の時
-  / "もし" __ expr:if_expr __ josi_naraba t:sentence EOS? else f:sentence EOS {
+  / "もし" __ expr:if_expr __ josi_naraba __ t:sentence EOS? else f:sentence EOS {
     return {"type":"if", "expr":expr, "block":t, "false_block":f };
   }
-  / "もし" __ expr:if_expr __ josi_naraba true_node:sentence2 EOS {
-    return {"type":"if", "expr":expr, "block":true_node, false_block:[] };
+  / "もし" __ expr:if_expr __ josi_naraba __ t:sentence EOS {
+    return {"type":"if", "expr":expr, "block":t, false_block:[] };
   }
 
 if_expr
-  = a:if_value josi __ b:if_value (josi __)? op:if_jop {
+  = a:if_value "が" b:if_value &josi_naraba {
+    return {type:"calc", left:a, right:b, operator:"=="};
+  }
+  / a:if_value josi __ b:if_value (josi __)? op:if_jop {
     return {type:"calc", left:a, right:b, operator:op};
   }
   / calc
@@ -87,7 +95,7 @@ if_value
   / parenL v:calc parenR { return v; }
 
 func_arg = v:calc j:josi { return {"type":"arg", "value":v, "josi":j} }
-func_call
+func_call_stmt
   = args:func_arg* name:word EOS {
     return {type:"func", "args":args, "name":name};
   }
@@ -104,13 +112,13 @@ let_stmt
 __ = (whitespace / range_comment)*
 LF = "\n" { return {type:"EOS"}; }
 EOS = __ n:(";" / LF / "。" / josi_continue) { return {type:"EOS"}; }
-whitespace = [ \t\r、　]
+whitespace = [ \t\r、　,]
+SPC = [\t\r\n 　]*
 indent = [ 　\t・]+
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
-line_comment = "//" s:$[^\n]* "\n" { return s; }
-sharp_comment = "#" s:$[^\n]* "\n" { return s; }
+line_comment = ("//" / "#" / "＃" / "※") s:$[^\n]* "\n" { return s; }
 comment
-  = n:(range_comment / line_comment / sharp_comment) { 
+  = n:(range_comment / line_comment) { 
     return {type:"comment",value:n};
   }
 
@@ -231,31 +239,31 @@ muldiv
    }
    / primary
  primary
-   = parenL calc:calc parenR { return calc; }
-   / v:value { return v; }
+   = parenL v:calc parenR { return v; }
+   / value
 
 parenL = "(" / "（"
 parenR = ")" / "）"
 
 json_data
-  = "[" a:json_array "]"  { return {type:"json_array", value:a}; }
-  / "{" a:json_obj "}" { return {type:"json_obj", value:a}; }
-  / "[" __ "]" { return {type:"json_array", value:[]}; }
-  / "{" __ "}" { return {type:"json_obj", value:[]}; } 
+  = "[" SPC a:json_array SPC "]"  { return {type:"json_array", value:a}; }
+  / "{" SPC a:json_obj SPC "}" { return {type:"json_obj", value:a}; }
+  / "[" SPC "]" { return {type:"json_array", value:[]}; }
+  / "{" SPC "}" { return {type:"json_obj", value:[]}; } 
 
 json_array
-  = __ a1:json_value __ a2:("," __ json_value __)+ {
+  = a1:json_value SPC a2:("," SPC json_value SPC)+ {
     const a = [a1];
     a2.forEach(e=>{a.push(e[2]);});
     return a;
   }
-  / __ v:json_value __ { return v; }
+  / v:json_value { return v; }
 
 json_value
   = number / string / null / bool / json_data
    
  json_obj
-  = a1:json_key_value __ a2:("," __ json_key_value)+ { 
+  = a1:json_key_value SPC a2:("," SPC json_key_value)+ { 
     const a = a2.map(e=>{ return e[2]; });
     a.unshift(a1);
     return a;
@@ -263,4 +271,4 @@ json_value
   / a:json_key_value { return [a] }
  
 json_key_value
-  = key:string __ ":" __ value:json_value { return {"key": key, "value": value }; }
+  = key:string SPC ":" SPC value:json_value { return {"key": key, "value": value }; }

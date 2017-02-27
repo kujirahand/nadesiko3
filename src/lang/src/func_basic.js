@@ -1,12 +1,27 @@
 // basic_func.js
 var NakoBasicFunc = {
+  "定数一覧": {
+    "ナデシコバージョン": "3.0",
+    "はい": true,
+    "いいえ": false,
+    "必要": true,
+    "不要": false,
+    "オン": true,
+    "オフ": false,
+    "改行": "\n",
+    "タブ": "\t",
+    "OK": true,
+    "NG": false
+  },
   "表示": {
     josi: [["を","と"]],
-    fn: function (s) { NakoBasicFunc.__print(s); }
+    fn: function (s) { NakoBasicFunc.__print(s); },
+    return_none: true
   },
   "言": {
     josi: [["を","と"]],
-    fn: function (s) { NakoBasicFunc.__print(s); }
+    fn: function (s) { NakoBasicFunc.__print(s); },
+    return_none: true
   },
   "尋": {
     josi: [["と","を"]],

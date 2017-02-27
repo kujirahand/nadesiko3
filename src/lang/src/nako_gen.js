@@ -37,6 +37,7 @@ class NakoGen {
   }
   gen_sysfunc_code() {
     let code = "";
+    // プログラム中で使った関数を列挙
     for (const key in this.sysfunc) {
       code += this.varname(key) + "=" + this.sysfunc[key].toString() + ";\n";
     }
@@ -73,6 +74,15 @@ class NakoGen {
       case "nop": break;
       case "EOS":
         code += "\n";
+        break;
+      case "break":
+        code += "break;";
+        break;
+      case "continue":
+        code += "continue;";
+        break;
+      case "end": // TODO: どう処理するか?
+        code += "quit();";
         break;
       case "number":
         code += node.value;
@@ -181,7 +191,7 @@ class NakoGen {
     const block = this.c_gen(node.block);
     const code =
       `for(let $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)`+"{\n"+
-      `  __vars['それ'] = $nako_i${id};` + "\n" +
+      `  __vars['それ'] = __vars['回数'] = $nako_i${id};` + "\n" +
       "  " + block + "\n}\n";
     return code;
   }
@@ -243,7 +253,12 @@ class NakoGen {
       this.sysfunc[func_name] = func.fn;
     }
     let args_code = args.join(",");
-    let code = `__vars['それ'] = __vars["${func_name}"](${args_code});`;
+    let code = `__vars["${func_name}"](${args_code});\n`;
+    if (func.return_none) {
+      // return None
+    } else {
+      code = "__vars['それ'] = " + code;
+    }
     return code;
   }
   c_op(node) {
