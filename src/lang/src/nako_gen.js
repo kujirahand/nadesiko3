@@ -67,6 +67,8 @@ class NakoGen {
       }
       return code;
     }
+    if (typeof(node) != "object") return "" + node;
+    // switch
     switch (node.type) {
       case "nop": break;
       case "EOS":
@@ -178,7 +180,7 @@ class NakoGen {
   }
   c_repeat_times(node) {
     const id = this.loop_id++;
-    const value = node.value;
+    const value = this.c_gen(node.value);
     const block = this.c_gen(node.block);
     const code =
       `for(let $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)`+"{\n"+

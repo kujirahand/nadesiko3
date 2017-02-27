@@ -6,9 +6,11 @@ const NakoGen = require('./nako_gen.js');
 
 class NakoCompiler {
   constructor() {
+    this.debug = false;
     this.gen = new NakoGen();
     this.reset();
   }
+  useDebug() { this.debug = true; }
   reset() {
     this.gen.clearLog();
   }
@@ -28,10 +30,12 @@ class NakoCompiler {
   }
   generate(ast) {
     const js = this.gen.c_gen(ast);
-    // console.log("--- ast ---");
-    // console.log(ast);
-    // console.log("--- generate ---");
-    // console.log(js);
+    if (this.debug) {
+      console.log("--- ast ---");
+      console.log(ast);
+      console.log("--- generate ---");
+      console.log(js);
+    }
     return js;
   }
   compile(code) {

@@ -20,14 +20,16 @@ sentence
   / if_stmt / whie_stmt / repeat_times_stmt / for_stmt
   / let_stmt
   / func_call
+  / kokomade { return {type:"EOS",memo:"---"}; }
 
 sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
-block_end = "ここまで" /　"ーーー" / else
+block_end =  kokomade / else
 else = "違えば"
+kokomade = "ここまで" /　"ーーー" "ー"* / "---" "-"*
 
 for_stmt
-  = i:word "を" __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
+  = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
     return {"type":"for", "from":kara, "to":made, "block":b, "word": i};
   }
 
@@ -36,6 +38,9 @@ repeat_times_stmt
     return {"type":"repeat_times", "value":cnt, "block": b};
   }
   / cnt:(int / intz) "回" __ LF b:block block_end {
+    return {"type":"repeat_times", "value":cnt, "block": b};
+  }
+  / parenL cnt:calc parenR "回" __ b:sentence EOS {
     return {"type":"repeat_times", "value":cnt, "block": b};
   }
   / parenL cnt:calc parenR  "回" __ LF b:block block_end {

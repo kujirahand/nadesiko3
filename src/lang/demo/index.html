@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>なでしこ3</title>
     <!-- なでしこを使う準備 -->
-    <script src="release/nako3.js"></script>
+    <script src="../release/nako3.js"></script>
     <script>
       // なでしこの関数をカスタマイズ
       navigator.nako3.getFunc("言").fn = function(msg){ alert(msg); };
@@ -47,14 +47,27 @@
     <h1>なでしこ3デモ</h1>
     <div>
       <textarea id="srcbox" rows="5"></textarea><br>
-      <button onclick="runbox()">実行</button>
+      <button onclick="runbox(null)">実行</button>
       <button onclick="resetbox()">クリア</button>
     </div>
     <div><p id="err"></p></div>
     <div><p id="info"></p></div>
-    
+    <hr>
+    <h3>試してみよう！</h3>
+    <div>
+      <ul>
+        <li><a href="basic.html">基本計算</a></li>
+        <li><a href="flow.html">制御構文</a></li>
+        <li><a href="runscript.html">スクリプトタグになでしこを書く</a></li>
+      </ul>
+    </div>
+      
 <script>
-function runbox() {
+function runbox(id) {
+  if (id != null) {
+    $('srcbox').value = $(id).value;
+    resetbox();
+  }
   var src = $("srcbox").value;
   $("err").style.display = "none";
   try {
@@ -74,9 +87,7 @@ function resetbox() {
 }
 // テキストボックスを初期化
 $("srcbox").value = $("main_program").text.replace(/^\s*/, '').replace(/\s+$/,'');
-$("err").style.display = "none";
-// type="なでしこ" のスクリプトを実行
-navigator.nako3.runNakoScript();
+runbox(null);
 </script>
   </body>
 </html>
