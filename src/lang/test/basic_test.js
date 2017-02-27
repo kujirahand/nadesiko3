@@ -14,6 +14,8 @@ describe('basic', ()=>{
   });
   it('exstring', ()=> {
     assert.equal(nako.run_reset("a=3;「abc{a}」を表示").log, "abc3");
+    assert.equal(nako.run_reset("a=3;「abc｛a｝」を表示").log, "abc3");
+    assert.equal(nako.run_reset("aaa=300;「abc{aaa}」を表示").log, "abc300");
   });
   it('string - lf', ()=> {
     assert.equal(nako.run_reset("「abc\ndef」を表示").log, "abc\ndef");

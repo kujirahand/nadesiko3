@@ -268,10 +268,11 @@ class NakoGen {
     value = value.replace('"', '\\\"');
     value = value.replace(/(\r\n|\r|\n)/g, "\\n");
     if (mode == "ex") {
-      value = value.replace(/\{(.+)\}/, function(a, m) {
-        const ex = m[0];
-        return "\"+__vars['"+ex+"']+\"";
-      });
+      let rf = (a, m) => {
+        return "\"+__vars['"+m+"']+\"";
+      };
+      value = value.replace(/\{(.+?)\}/g, rf);
+      value = value.replace(/｛(.+?)｝/g, rf);
     }
     return '"' + value + '"';
   }
