@@ -51,10 +51,6 @@ var NakoBasicFunc = {
     josi: [["が"],["と"]],
     fn: function (a, b) { return a == b; },
   },
-  "等": {
-    josi: [["が"],["と"]],
-    fn: function (a, b) { return a == b; },
-  },
   /* --- */
   __print_log: "",
   __print: function (s) {
