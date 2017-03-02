@@ -28,6 +28,7 @@ class NakoGen {
   constructor() {
     this.header = this.genHeader();
     this.sysfunc = {};
+    this.userfunc = {};
     this.loop_id = 1;
   }
   genHeader() {
@@ -132,7 +133,23 @@ class NakoGen {
       case "null":
         code += "null";
         break;
+      case "def_func":
+        code += this.c_def_func(node);
+        break;
     }
+    return code;
+  }
+  c_def_func(node) {
+    const name = this.c_gen(node.name);
+    const args = node.args;
+    const block = this.c_gen(node.block);
+    let code = "__vars[" + name + "] = function(){\n";
+    for (let i = 0; i < args.length; i++) {
+      const word = args["word"];
+      const josi = args["josi"];
+      //***
+    }
+    block + "\n}\n";
     return code;
   }
   c_json_obj(node) {

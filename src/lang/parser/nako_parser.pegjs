@@ -22,6 +22,7 @@ sentence
   / let_stmt
   / kokomade { return {type:"EOS",memo:"---"}; }
   / func_call_stmt
+  / def_func
 
 
 sentence2 = !block_end s:sentence { return s; }
@@ -32,6 +33,15 @@ kokomade = ("ここまで" /　"ーーー" "ー"* / "---" "-"*) EOS
 break = "抜ける" EOS { return {type:"break"}; }
 continue = "続ける" EOS { return {type:"continue"}; }
 end = ("終わる" / "終了") EOS { return {type:"end"}; }
+
+def_func
+  = "●" name:word __ "(" args:def_func_arg* ")" __ LF b:block kokomade {
+    return {type:"def_func", "name":name, "args":args, block:b };
+  }
+
+def_func_arg
+  = w:word j:josi
+  { return {"word":w, "josi":j}; }
 
 for_stmt
   = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
@@ -128,10 +138,10 @@ hex = "0x" x:$([0-9a-z]i+) { return parseInt("0x" + x, 16); }
 float = d1:$([0-9]+) "." d2:$([0-9]+) { return parseFloat( d1 + "." + d2 ); }
 int = n:$([0-9]+) { return parseInt(n, 10); }
 intz = n:$([０-９]+) { return parseInt(convToHalfS(n), 10); }
-josuusi = "円" / "個" / "人" / "冊" / "匹" 
-  / "本" / "枚" / "台" / "位"
-  / "年" / "月" / "日" / "才" / "件" / "羽" 
-  / "頭" / "部" / "巻" / "通"
+josuusi
+  = "円" / "個" / "人" / "冊" / "匹"
+  / "本" / "枚" / "台" / "位" / "才" 
+  / "件" / "羽" / "頭" / "部" / "巻"
 
 // 文字列関連
 rawstring_pat

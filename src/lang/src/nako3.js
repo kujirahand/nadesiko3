@@ -73,6 +73,9 @@ class NakoCompiler {
       }
     }
   }
+  readPlugin(obj) {
+    // TODO: なでしこのシステムにプラグインを登録
+  }
 }
 
 // モジュールなら外部から参照できるように
