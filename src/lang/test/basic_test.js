@@ -3,6 +3,7 @@ const NakoCompiler = require('../src/nako3.js');
 
 describe('basic', ()=>{
   const nako = new NakoCompiler();
+  nako.debug = true;
   it('print', ()=> {
     assert.equal(nako.run_reset("3を表示").log, "3");
   });

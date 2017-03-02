@@ -3,6 +3,7 @@
 //
 const NakoPeg = require('./nako_parser.js');
 const NakoGen = require('./nako_gen.js');
+const PluginSystem = require('./plugin_system.js');
 
 class NakoCompiler {
   constructor() {
@@ -12,6 +13,8 @@ class NakoCompiler {
   }
   useDebug() { this.debug = true; }
   reset() {
+    this.gen.clearPlugin();
+    this.gen.addPlugin(PluginSystem);
     this.gen.clearLog();
   }
   addFunc(key, josi, fn) {
@@ -43,16 +46,22 @@ class NakoCompiler {
     const js = this.generate(ast);
     return js;
   }
+  getVars() {
+    return this.gen.getVars();
+  }
+  getVarsCode() {
+    return this.gen.getVarsCode();
+  }
   run(code) {
     const js = this.compile(code);
-    const __vars = this.gen.getVars();
+    const __vars = this.getVars();
     eval(js);
     return this;
   }
   run_reset(code) {
     this.reset();
     const js = this.compile(code);
-    const __vars = this.gen.getVars();
+    const __vars = this.getVars();
     eval(js);
     return this;
   }
@@ -73,8 +82,9 @@ class NakoCompiler {
       }
     }
   }
-  readPlugin(obj) {
-    // TODO: なでしこのシステムにプラグインを登録
+  addPlugin(obj) {
+    // なでしこのシステムにプラグインを登録
+    this.gen.addPlugin(obj);
   }
 }
 

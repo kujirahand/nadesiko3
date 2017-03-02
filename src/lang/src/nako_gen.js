@@ -3,7 +3,6 @@
 //
 
 "use strict";
-const funcbank = require('./func_basic.js');
 class NakoGenError extends Error { }
 
 /**
@@ -11,50 +10,62 @@ class NakoGenError extends Error { }
  */
 class NakoGen {
   
-  static generate(node, useHeader = true, fn_print = null) {
-    const jsgen = new NakoGen();
-    if (fn_print !== null) funcbank["表示"].fn = fn_print;
-    const code = jsgen.c_gen(root);
-    const code_def = jsgen.gen_sysfunc_code() + "\n";
-    const head = jsgen.header;
-    if (useHeader) {
-      return head + "\n" + code_def + code;
-    } else {
-      return code_def + code;
-    }
-  }
-  
-  // ----
   constructor() {
-    this.header = this.genHeader();
-    this.sysfunc = {};
-    this.userfunc = {};
+    this.header = this.getHeader();
+    this.plugins = null; /** プラグインで定義された関数の一覧 */
+    this.used_func = {}; /** JS関数でなでしこ内で利用された関数 */
+    this.nako_func = {}; /** なでしこで定義された関数を保持 */
     this.loop_id = 1;
+    this.sore = this.varname('それ');
   }
-  genHeader() {
+  getHeader() {
     return "" + 
       "const __vars = {};\n" +
       "var   __print = (s)=>{ console.log(s); };\n";
   }
-  gen_sysfunc_code() {
+  getVarsCode() {
     let code = "";
     // プログラム中で使った関数を列挙
-    for (const key in this.sysfunc) {
-      code += this.varname(key) + "=" + this.sysfunc[key].toString() + ";\n";
+    for (const key in this.used_func) {
+      const f = this.used_func[key];
+      if (typeof(f) == "function") {
+        code += this.varname(key) + "=" + this.used_func[key].toString() + ";\n";
+      } else {
+        code += this.varname(key) + "=" + JSON.stringify(f) + ";\n";
+      }
     }
     return code;
   }
   getVars() {
-    return this.sysfunc
+    return this.used_func;
   }
   clearLog() {
-    funcbank["__print_log"] = "";
+    this.plugins["__print_log"] = "";
   }
+  clearPlugin() {
+    this.plugins = null;
+  }
+  /**
+   * プラグイン・オブジェクトを追加
+   */
+  addPlugin(po) {
+    // 最初のプラグインは、オブジェクトをそのまま利用する
+    if (this.plugins == null) {
+      this.plugins = po;
+      return;
+    }
+    // プラグインの値をオブジェクトにコピー
+    for (let key in po) {
+      this.plugins[key] = po[key];
+    }
+  }
+  /** 単体で関数を追加する場合 */
   addFunc(key, josi, fn) {
-    funcbank[key] = { "josi": josi, "fn": fn };
+    this.plugins[key] = { "josi": josi, "fn": fn };
   }
+  /** プラグイン関数を参照したい場合 */
   getFunc(key) {
-    return funcbank[key];
+    return this.plugins[key];
   }
   varname(name) {
     return `__vars["${name}"]`;
@@ -143,7 +154,7 @@ class NakoGen {
     const name = this.c_gen(node.name);
     const args = node.args;
     const block = this.c_gen(node.block);
-    let code = "__vars[" + name + "] = function(){\n";
+    let code = this.varname(name) + " = function(){\n";
     for (let i = 0; i < args.length; i++) {
       const word = args["word"];
       const josi = args["josi"];
@@ -197,7 +208,7 @@ class NakoGen {
     const block = this.c_gen(node.block);
     const code =
       `for(${word}=${kara}; ${word}<=${made}; ${word}++)` + "{\n" +
-      `  __vars['それ'] = ${word};` + "\n" + 
+      `  ${this.sore} = ${word};` + "\n" + 
       "  " + block + "\n" +
       "};\n";
     return code;
@@ -206,9 +217,10 @@ class NakoGen {
     const id = this.loop_id++;
     const value = this.c_gen(node.value);
     const block = this.c_gen(node.block);
+    const kaisu = this.varname('回数');
     const code =
       `for(let $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)`+"{\n"+
-      `  __vars['それ'] = __vars['回数'] = $nako_i${id};` + "\n" +
+      `  ${this.sore} = ${kaisu} = $nako_i${id};` + "\n" +
       "  " + block + "\n}\n";
     return code;
   }
@@ -233,9 +245,11 @@ class NakoGen {
     if (name2 == '') name2 = name;
     return name2;
   }
+  /** 関数の呼び出し */
   c_func(node) {
     const func_name = this.getFuncName(node.name.value);
-    const func = funcbank[func_name];
+    // TODO: 現状、プラグイン関数のみ検索している
+    const func = this.plugins[func_name];
     if (func === undefined) {
       throw new NakoGenError(`関数『${func_name}』が見当たりません。`);
     }
@@ -262,19 +276,20 @@ class NakoGen {
           throw new NakoGenError(
             `関数『${func_name}』の引数『${josi_s}』が見当たりません。`);
         }
-        args.push("__vars['それ']");
+        args.push(this.sore);
       }
     }
     // function
-    if (typeof(this.sysfunc[func_name]) !== "function") {
-      this.sysfunc[func_name] = func.fn;
+    if (typeof(this.used_func[func_name]) !== "function") {
+      this.used_func[func_name] = func.fn;
     }
     let args_code = args.join(",");
-    let code = `__vars["${func_name}"](${args_code});\n`;
+    const func_name_s = this.varname(func_name);
+    let code = `${func_name_s}(${args_code});\n`;
     if (func.return_none) {
       // return None
     } else {
-      code = "__vars['それ'] = " + code;
+      code = this.sore + " = " + code;
     }
     return code;
   }
@@ -302,7 +317,7 @@ class NakoGen {
     value = value.replace(/(\r\n|\r|\n)/g, "\\n");
     if (mode == "ex") {
       let rf = (a, m) => {
-        return "\"+__vars['"+m+"']+\"";
+        return "\"+"+ this.varname(m) +"+\"";
       };
       value = value.replace(/\{(.+?)\}/g, rf);
       value = value.replace(/｛(.+?)｝/g, rf);

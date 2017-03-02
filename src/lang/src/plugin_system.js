@@ -1,29 +1,28 @@
 // basic_func.js
-var NakoBasicFunc = {
-  "定数一覧": {
-    "ナデシコバージョン": "3.0",
-    "はい": true,
-    "いいえ": false,
-    "必要": true,
-    "不要": false,
-    "オン": true,
-    "オフ": false,
-    "改行": "\n",
-    "タブ": "\t",
-    "OK": true,
-    "NG": false
-  },
+var PluginSystem = {
+  "ナデシコバージョン": { type:"const", value:"3.0"},
+  "はい": { type:"const", value:1 },
+  "いいえ": { type:"const", value:0 },
+  "オン": { type:"const", value:1 },
+  "オフ": { type:"const", value:0 },
+  "改行": { type:"const", value:"\n"},
+  "タブ": { type:"const", value:"\t"},
+  "OK": { type:"const", value:1 },
+  "NG": { type:"const", value:0 },
   "表示": {
+    type:"func",
     josi: [["を","と"]],
-    fn: function (s) { NakoBasicFunc.__print(s); },
+    fn: function (s) { PluginSystem.__print(s); },
     return_none: true
   },
   "言": {
+    type:"func",
     josi: [["を","と"]],
-    fn: function (s) { NakoBasicFunc.__print(s); },
+    fn: function (s) { PluginSystem.__print(s); },
     return_none: true
   },
   "尋": {
+    type:"func",
     josi: [["と","を"]],
     fn: function (s) {
       const r = prompt(s);
@@ -32,18 +31,22 @@ var NakoBasicFunc = {
     }
   },
   "足": {
+    type:"func",
     josi: [["に","と"],["を"]],
     fn: function (a, b) { return a + b; },
   },
   "引": {
+    type:"func",
     josi: [["から"],["を"]],
     fn: function (a, b) { return a - b; },
   },
   "掛": {
+    type:"func",
     josi: [["に","と"],["を"]],
     fn: function (a, b) { return a * b; },
   },
   "割": {
+    type:"func",
     josi: [["を"],["で"]],
     fn: function (a, b) { return a / b; },
   },
@@ -51,18 +54,9 @@ var NakoBasicFunc = {
   __print_log: "",
   __print: function (s) {
     console.log(s);
-    NakoBasicFunc.__print_log += s + "\n";
+    PluginSystem.__print_log += s + "\n";
   },
-  /**
-   * @param {string} name - Function name
-   * @return {number}
-   */
-  getArgLength: function (name) {
-    const f = this[name];
-    if (!f) return 0;
-    return f.length; // (function(){}).length で関数の引数の数を返す
-  }
 };
 
-module.exports= NakoBasicFunc;
+module.exports= PluginSystem;
 
