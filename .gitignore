@@ -1,5 +1,5 @@
 # exclude dir
-src/lang/debug
+src/lang/release
 
 # Logs
 logs
