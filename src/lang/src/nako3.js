@@ -46,11 +46,16 @@ class NakoCompiler {
     const js = this.generate(ast);
     return js;
   }
+  /** eval()実行前に直接JSのオブジェクトを取得する場合 */
   getVarsList() {
     return this.gen.getVarsList();
   }
+  /** 完全にJSのコードを取得する場合 */
   getVarsCode() {
     return this.gen.getVarsCode();
+  }
+  getHeader() {
+    return this.gen.getHeader();
   }
   _run(code, is_reset) {
     if (is_reset) this.reset();

@@ -33,7 +33,7 @@ class NakoGen {
     // プログラム中で使った関数を列挙
     for (const key in this.used_func) {
       const f = this.used_func[key];
-      const name = `__varslist[0]["${name}"]`;
+      const name = `__varslist[0]["${key}"]`;
       if (typeof(f) == "function") {
         code += name + "=" + f.toString() + ";\n";
       } else {

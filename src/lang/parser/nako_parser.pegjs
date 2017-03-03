@@ -18,11 +18,11 @@ sentence
   / indent { return {"type":"EOS","memo":"indent"}; }
   / EOS+ { return {"type":"EOS"}; }
   / end / continue / break
+  / def_func
   / if_stmt / whie_stmt / repeat_times_stmt / for_stmt
   / let_stmt
   / kokomade { return {type:"EOS",memo:"---"}; }
   / func_call_stmt
-  / def_func
 
 
 sentence2 = !block_end s:sentence { return s; }
@@ -167,7 +167,7 @@ josi_continue =  "して" / "て"
 josi_arg = 
   josi_name:("について" / "ならば" / "なら" /
   "とは" / "から" / "まで" /
-  "を" / "に" / "へ" / "で" / "と" / "が") {
+  "を" / "に" / "へ" / "で" / "と" / "が" / "の") {
     return josi_name;
   }
 josi_naraba = "ならば"

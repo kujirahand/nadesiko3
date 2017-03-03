@@ -21,4 +21,7 @@ describe('basic', ()=>{
   it('string - lf', ()=> {
     assert.equal(nako.run_reset("「abc\ndef」を表示").log, "abc\ndef");
   });
+  it('システム定数', ()=> {
+    assert.equal(nako.run_reset("ナデシコエンジンを表示").log, "nadesi.com/v3");
+  });
 });
