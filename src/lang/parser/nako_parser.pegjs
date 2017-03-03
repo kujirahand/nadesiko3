@@ -190,8 +190,16 @@ value
   = number 
   / string
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
+  / w:word "(" ar:calc_func_args ")" { return {type:"calc_func", args:ar, name:w}; }
   / word
   / json_data
+
+calc_func_args
+  = SPC v1:calc SPC v2:("," SPC calc)* {
+    const a = [v1];
+    if (v2) v2.forEach(e=>{a.push(e[2]);});
+    return a;
+  }
 
 // calc
 calc

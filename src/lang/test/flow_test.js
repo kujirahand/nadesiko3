@@ -1,7 +1,7 @@
 const assert = require('assert');
 const NakoCompiler = require('../src/nako3.js');
 
-describe('flow', ()=>{
+describe('flow_test', ()=>{
   const nako = new NakoCompiler();
   nako.debug = true;
   const cmp = (code, res) => {
@@ -20,7 +20,7 @@ describe('flow', ()=>{
     cmp("A=3;(A)回、Aを表示。", "3\n3\n3");
   });
   it('の間', ()=> {
-    cmp("N=3;(N>0)の間\nNを表示\nN=N-1\n---", "3\n2\n1");
+    cmp("N=3;\n(N>0)の間\nNを表示\nN=N-1\n---", "3\n2\n1");
   });
   it('繰り返す', ()=> {
     cmp("Nを1から3まで繰り返す\nNを表示\n---", "1\n2\n3");

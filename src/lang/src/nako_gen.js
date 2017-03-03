@@ -115,7 +115,10 @@ class NakoGen {
         code += this.c_op(node);
         break;
       case "func":
-        code += this.c_func(node);
+        code += this.c_func(node, true);
+        break;
+      case "calc_func":
+        code += this.c_func(node, false);
         break;
       case "if":
         code += this.c_if(node);
@@ -202,10 +205,10 @@ class NakoGen {
     const josilist = [];
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-      // console.log("arg=", arg);
-      const word = arg["value"].value;
+      const word = arg["word"].value;
       const josi = [ arg["josi"] ];
       josilist.push(josi);
+      console.log("arg=", arg, "word=", word, "josi=", josi);
       this.__vars[word] = true;
       code += `__vars["${word}"] = arguments[${i}];\n`;
     }
@@ -305,29 +308,9 @@ class NakoGen {
     if (name2 == '') name2 = name;
     return name2;
   }
-  /** 関数の呼び出し */
-  c_func(node) {
-    const func_name = this.getFuncName(node.name.value);
-    let func_name_s;
-    const res = this.find_var(func_name);
-    if (res == null) {
-      throw new NakoGenError(`関数『${func_name}』が見当たりません。`);
-    }
-    let func;
-    if (res.i == 0) { // plugin function
-      func = this.plugins[func_name];
-      func_name_s = `__varslist[0]["${func_name}"]`;
-    } else {
-      func = this.nako_func[func_name];
-      if (func === undefined) {
-        throw new NakoGenError(`『${func_name}』は関数ではありません。`);
-      }
-      func_name_s = `__varslist[${res.i}]["${func_name}"]`;
-    }
-
-    //
+  // 関数の引数を調べる
+  c_func_get_args(func_name, func, node) {
     const args = [];
-    // 関数定義より助詞を一つずつ調べる
     for (let i = 0; i < func.josi.length; i++) {
       const josilist = func.josi[i]; // 関数のi番目の助詞
       let flag = false;
@@ -351,16 +334,54 @@ class NakoGen {
         args.push(this.sore);
       }
     }
+    return args;
+  }
+  c_func_get_args_calctype(func_name, func, node) {
+    const args = [];
+    for (let i = 0; i < node.args.length; i++) {
+      const arg = node.args[i];
+      args.push(this.c_gen(arg.value));
+    }
+    return args;
+  }
+  /** 関数の呼び出し */
+  c_func(node, is_nako_type) {
+    const func_name = this.getFuncName(node.name.value);
+    let func_name_s;
+    const res = this.find_var(func_name);
+    if (res == null) {
+      throw new NakoGenError(`関数『${func_name}』が見当たりません。`);
+    }
+    let func;
+    if (res.i == 0) { // plugin function
+      func = this.plugins[func_name];
+      func_name_s = `__varslist[0]["${func_name}"]`;
+    } else {
+      func = this.nako_func[func_name];
+      if (func === undefined) {
+        throw new NakoGenError(`『${func_name}』は関数ではありません。`);
+      }
+      func_name_s = `__varslist[${res.i}]["${func_name}"]`;
+    }
+    // 関数定義より助詞を一つずつ調べる
+    let args = [];
+    if (is_nako_type) {
+      args = this.c_func_get_args(func_name, func, node);
+    } else {
+      args = this.c_func_get_args_calctype(func_name, func, node);
+    }
     // function
     if (typeof(this.used_func[func_name]) !== "function") {
       this.used_func[func_name] = func.fn;
     }
     let args_code = args.join(",");
-    let code = `${func_name_s}(${args_code});\n`;
+    let code = `${func_name_s}(${args_code})`;
     if (func.return_none) {
-      // return None
+      if (is_nako_type) { code = code + ";\n"; }
     } else {
-      code = this.sore + " = " + code;
+      if (is_nako_type) {
+        code = this.sore + " = " + code + ";\n";
+      }
     }
     return code;
   }

@@ -34,8 +34,6 @@ class NakoCompiler {
   generate(ast) {
     const js = this.gen.c_gen(ast);
     if (this.debug) {
-      console.log("--- ast ---");
-      console.log(ast);
       console.log("--- generate ---");
       console.log(js);
     }
@@ -43,6 +41,10 @@ class NakoCompiler {
   }
   compile(code) {
     const ast = this.parse(code);
+    if (this.debug) {
+      console.log("--- ast ---");
+      console.log(JSON.stringify(ast, null, 2));
+    }
     const js = this.generate(ast);
     return js;
   }

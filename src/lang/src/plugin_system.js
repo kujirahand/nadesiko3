@@ -14,6 +14,7 @@ var PluginSystem = {
   "波カッコ閉じ": { type:"const", value:"}"},
   "OK": { type:"const", value:1 },
   "NG": { type:"const", value:0 },
+  "PI": { type:"const", value:Math.PI },
   "表示": {
     type:"func",
     josi: [["を","と"]],
@@ -50,6 +51,11 @@ var PluginSystem = {
     josi: [["に","と"],["を"]],
     fn: function (a, b) { return a * b; },
   },
+  "倍": {
+    type:"func",
+    josi: [["に","と"],["を"]],
+    fn: function (a, b) { return a * b; },
+  },
   "割": {
     type:"func",
     josi: [["を"],["で"]],
@@ -70,7 +76,17 @@ var PluginSystem = {
     josi: [["の"]],
     fn: function (v) { return typeof(v); },
   },
+  "TYPEOF": {
+    type:"func",
+    josi: [["の"]],
+    fn: function (v) { return typeof(v); },
+  },
   "文字列変換": {
+    type:"func",
+    josi: [["を"]],
+    fn: function (v) { return String(v); },
+  },
+  "TOSTR": {
     type:"func",
     josi: [["を"]],
     fn: function (v) { return String(v); },
@@ -80,15 +96,61 @@ var PluginSystem = {
     josi: [["を"]],
     fn: function (v) { return parseInt(v); },
   },
+  "TOINT": {
+    type:"func",
+    josi: [["を"]],
+    fn: function (v) { return parseInt(v); },
+  },
   "実数変換": {
     type:"func",
     josi: [["を"]],
     fn: function (v) { return parseFloat(v); },
   },
-  "数値変換": {
+  "実数変換": {
     type:"func",
     josi: [["を"]],
     fn: function (v) { return parseFloat(v); },
+  },
+  "TOFLOAT": {
+    type:"func",
+    josi: [["を"]],
+    fn: function (v) { return parseFloat(v); },
+  },
+  "INT": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return parseInt(v); },
+  },
+  "FLOAT": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return parseFloat(v); },
+  },
+  "SIN": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return Math.sin(v); },
+  },
+  "COS": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return Math.cos(v); },
+  },
+  "TAN": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return Math.tan(v); },
+  },
+  "ARCSIN": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return Math.asin(v); },
+  },
+  "ARCCOS": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return Math.acos(v); },
+  },
+  "ARCTAN": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return Math.atan(v); },
+  },
+  "SIGN": {
+    type:"func", josi: [["の"]],
+    fn: function (v) { return (v == 0) ? 0 : (v > 0) ? 1 : -1; },
   },
   /* --- */
   __print_log: {

@@ -4,22 +4,32 @@ const NakoCompiler = require('../src/nako3.js');
 describe('basic', ()=>{
   const nako = new NakoCompiler();
   nako.debug = true;
+  const cmp = (code, res) => {
+    if (nako.debug) {
+      console.log("code=" + code);
+    }
+    assert.equal(nako.run_reset(code).log, res);
+  };
+  // --- test ---
   it('print', ()=> {
-    assert.equal(nako.run_reset("3を表示").log, "3");
+    cmp("3を表示","3");
+    cmp("100を表示","100");
+    cmp("0xFFを表示","255");
   });
   it('string', ()=> {
-    assert.equal(nako.run_reset("「abc」を表示").log, "abc");
+    cmp("「abc」を表示","abc");
+    cmp("\"abc\"を表示","abc");
   });
   it('rawstring', ()=> {
-    assert.equal(nako.run_reset("'abc'を表示").log, "abc");
+    cmp("『abc』を表示","abc");
+    cmp("'abc'を表示","abc");
   });
   it('exstring', ()=> {
-    assert.equal(nako.run_reset("a=3;「abc{a}」を表示").log, "abc3");
-    assert.equal(nako.run_reset("a=3;「abc｛a｝」を表示").log, "abc3");
-    assert.equal(nako.run_reset("aaa=300;「abc{aaa}」を表示").log, "abc300");
+    cmp("a=30;「abc{a}abc」を表示","abc30abc");
+    cmp("a=30;「abc｛a｝abc」を表示","abc30abc");
   });
-  it('string - lf', ()=> {
-    assert.equal(nako.run_reset("「abc\ndef」を表示").log, "abc\ndef");
+  it('string - LF', ()=> {
+    cmp("a=30;「abc\nabc」を表示","abc\nabc");
   });
   it('システム定数', ()=> {
     assert.equal(nako.run_reset("ナデシコエンジンを表示").log, "nadesi.com/v3");

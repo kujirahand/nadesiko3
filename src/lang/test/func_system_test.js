@@ -30,5 +30,10 @@ describe('PluginSystem test', ()=>{
   it('変数型確認', ()=> {
     cmp("30の変数型確認して表示。", "number");
   });
+  it('SIN/COS/TAN', ()=> {
+    cmp("SIN(1)を表示。", Math.sin(1));
+    cmp("COS(1)を表示。", Math.cos(1));
+    cmp("TAN(1)を表示。", Math.tan(1));
+  });
 });
 
