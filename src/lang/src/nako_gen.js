@@ -340,7 +340,7 @@ class NakoGen {
     const args = [];
     for (let i = 0; i < node.args.length; i++) {
       const arg = node.args[i];
-      console.log('arg=', arg);
+      // console.log('arg=', arg);
       args.push(this.c_gen(arg));
     }
     return args;

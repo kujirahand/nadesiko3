@@ -104,7 +104,9 @@ if_value
   = v: (number / string / word) { return v; }
   / parenL v:calc parenR { return v; }
 
-func_arg = v:calc j:josi { return {"type":"arg", "value":v, "josi":j} }
+func_arg
+  = v:calc j:josi { return {"type":"arg", "value":v, "josi":j} }
+
 func_call_stmt
   = args:func_arg* name:word EOS {
     return {type:"func", "args":args, "name":name};
@@ -166,8 +168,8 @@ josi_eq = "は"
 josi_continue =  "して" / "て"
 josi_arg = 
   josi_name:("について" / "ならば" / "なら" /
-  "とは" / "から" / "まで" /
-  "を" / "に" / "へ" / "で" / "と" / "が" / "の") {
+    "とは" / "から" / "まで" / "だけ" /
+    "を" / "に" / "へ" / "で" / "と" / "が" / "の") {
     return josi_name;
   }
 josi_naraba = "ならば"

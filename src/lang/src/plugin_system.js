@@ -17,19 +17,19 @@ var PluginSystem = {
   "NG": { type:"const", value:0 },
   "PI": { type:"const", value:Math.PI },
   /// 標準出力
-  "表示": {
+  "表示": { /// Sを表示
     type:"func",
     josi: [["を","と"]],
     fn: function (s) { PluginSystem.__print(s); },
     return_none: true
   },
-  "言": {
+  "言": { /// Sを表示
     type:"func",
     josi: [["を","と"]],
     fn: function (s) { PluginSystem.__print(s); },
     return_none: true
   },
-  "尋": {
+  "尋": { /// メッセージSと入力ボックスを出して尋ねる
     type:"func",
     josi: [["と","を"]],
     fn: function (s) {
@@ -39,147 +39,147 @@ var PluginSystem = {
     }
   },
   /// 四則演算 
-  "足": {
+  "足": { /// AとBを足す
     type:"func",
     josi: [["に","と"],["を"]],
     fn: function (a, b) { return a + b; },
   },
-  "引": {
+  "引": { /// AからBを引く
     type:"func",
     josi: [["から"],["を"]],
     fn: function (a, b) { return a - b; },
   },
-  "掛": {
+  "掛": { /// AにBを掛ける
     type:"func",
     josi: [["に","と"],["を"]],
     fn: function (a, b) { return a * b; },
   },
-  "倍": {
+  "倍": { /// AのB倍を求める
     type:"func",
-    josi: [["に","と"],["を"]],
+    josi: [["の"],["を"]],
     fn: function (a, b) { return a * b; },
   },
-  "割": {
+  "割": { /// AをBで割る
     type:"func",
     josi: [["を"],["で"]],
     fn: function (a, b) { return a / b; },
   },
-  "割った余": {
+  "割った余": { /// AをBで割った余りを求める
     type:"func",
     josi: [["を"],["で"]],
     fn: function (a, b) { return a % b; },
   },
   /// 特殊命令
-  "JS実行": {
+  "JS実行": { /// JavaScriptのコードSを実行する
     type:"func",
     josi: [["を"],["で"]],
     fn: function (js) { return eval(js); },
   },
   ///型変換
-  "変数型確認": {
+  "変数型確認": { /// 変数Vの型を返す
     type:"func",
     josi: [["の"]],
     fn: function (v) { return typeof(v); },
   },
-  "TYPEOF": {
+  "TYPEOF": {/// 変数Vの型を返す
     type:"func",
     josi: [["の"]],
     fn: function (v) { return typeof(v); },
   },
-  "文字列変換": {
+  "文字列変換": {/// 値Vを文字列に変換
     type:"func",
     josi: [["を"]],
     fn: function (v) { return String(v); },
   },
-  "TOSTR": {
+  "TOSTR": { /// 値Vを文字列に変換
     type:"func",
     josi: [["を"]],
     fn: function (v) { return String(v); },
   },
-  "整数変換": {
+  "整数変換": { /// 値Vを整数に変換
     type:"func",
     josi: [["を"]],
     fn: function (v) { return parseInt(v); },
   },
-  "TOINT": {
+  "TOINT": {/// 値Vを整数に変換
     type:"func",
     josi: [["を"]],
     fn: function (v) { return parseInt(v); },
   },
-  "実数変換": {
+  "実数変換": {/// 値Vを実数に変換
     type:"func",
     josi: [["を"]],
     fn: function (v) { return parseFloat(v); },
   },
-  "実数変換": {
+  "実数変換": {/// 値Vを実数に変換
     type:"func",
     josi: [["を"]],
     fn: function (v) { return parseFloat(v); },
   },
-  "TOFLOAT": {
+  "TOFLOAT": {/// 値Vを実数に変換
     type:"func",
     josi: [["を"]],
     fn: function (v) { return parseFloat(v); },
   },
-  "INT": {
+  "INT": {/// 値Vを整数に変換
     type:"func", josi: [["の"]],
     fn: function (v) { return parseInt(v); },
   },
-  "FLOAT": {
+  "FLOAT": {/// 値Vを実数に変換
     type:"func", josi: [["の"]],
     fn: function (v) { return parseFloat(v); },
   },
-  "HEX": {
+  "HEX": {/// 値Vを16進数に変換
     type:"func", josi: [["の"]],
     fn: function (a) { return parseInt(a).toString(16); },
   },
   /// 三角関数
-  "SIN": {
+  "SIN": {/// ラジアン単位VのSINを求める
     type:"func", josi: [["の"]],
     fn: function (v) { return Math.sin(v); },
   },
-  "COS": {
+  "COS": {/// ラジアン単位VのCOSを求める
     type:"func", josi: [["の"]],
     fn: function (v) { return Math.cos(v); },
   },
-  "TAN": {
+  "TAN": {/// ラジアン単位VのTANを求める
     type:"func", josi: [["の"]],
     fn: function (v) { return Math.tan(v); },
   },
-  "ARCSIN": {
+  "ARCSIN": {/// ラジアン単位VのARCSINを求める
     type:"func", josi: [["の"]],
     fn: function (v) { return Math.asin(v); },
   },
-  "ARCCOS": {
+  "ARCCOS": {/// ラジアン単位VのARCCOSを求める
     type:"func", josi: [["の"]],
     fn: function (v) { return Math.acos(v); },
   },
-  "ARCTAN": {
+  "ARCTAN": {/// ラジアン単位VのARCTANを求める
     type:"func", josi: [["の"]],
     fn: function (v) { return Math.atan(v); },
   },
-  "RAD2DEG": {
+  "RAD2DEG": {/// ラジアンから度に変換
     type:"func", josi: [["を"]],
     fn: function (v) { return v / Math.PI * 180; },
   },
-  "DEG2RAD": {
+  "DEG2RAD": { /// 度からラジアンに変換
     type:"func", josi: [["を"]],
     fn: function (v) { return (v / 180) * Math.PI; },
   },
-  "度変換": {
+  "度変換": { /// ラジアンから度に変換
     type:"func", josi: [["を"]],
     fn: function (v) { return v / Math.PI * 180; },
   },
-  "ラジアン変換": {
+  "ラジアン変換": { /// 度からラジアンに変換
     type:"func", josi: [["を"]],
     fn: function (v) { return (v / 180) * Math.PI; },
   },
   /// 算術関数
-  "SIGN": {
+  "SIGN": { /// Vが0なら0を、0超なら1を、0未満なら-1を返す
     type:"func", josi: [["の"]],
     fn: function (v) { return (v == 0) ? 0 : (v > 0) ? 1 : -1; },
   },
-  "ABS": {
+  "ABS": { /// Vの絶対値を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.abs(a) },
   },
@@ -344,11 +344,75 @@ var PluginSystem = {
     type:"func", josi: [["で"],["から"],["を"]],
     fn: function (s, a, cnt) { return (String(s).substr(a-1,cnt)); }
   },
-  "文字抜き出す": {
+  "文字抜き出す": { /// v1非互換
     type:"func", josi: [["で"],["から"],["を"]],
     fn: function (s, a, cnt) { return (String(s).substr(a-1,cnt)); }
   },
-  
+  "LEFT": {
+    type:"func", josi: [["の","で"],["だけ"]],
+    fn: function (s, cnt) { return (String(s).substr(0, cnt)); }
+  },
+  "文字左部分": { /// v1非互換
+    type:"func", josi: [["の","で"],["だけ"]],
+    fn: function (s, cnt) { return (String(s).substr(0, cnt)); }
+  },
+  "RIGHT": {
+    type:"func", josi: [["の","で"],["だけ"]],
+    fn: function (s, cnt) { s=""+s;return (s.substr(s.length-cnt, cnt)); }
+  },
+  "文字右部分": {
+    type:"func", josi: [["の","で"],["だけ"]],
+    fn: function (s, cnt) { s=""+s;return (s.substr(s.length-cnt, cnt)); }
+  },
+  "切り取": { /// v1非互換 todo
+    type:"func", josi: [["から","の"],["まで","を"]],
+    fn: function (s, a) {
+      s = String(s);
+      const i = s.indexOf(a);
+      if (i < 0) return s;
+      return s.substr(0, i);
+    }
+  },
+  "文字削除": { /// v1非互換
+    type:"func", josi: [["の"],["から"],["だけ","を"]],
+    fn: function (s, a, b) {
+      s = "" + s;
+      const mae = s.substr(0, a - 1);
+      const usi = s.substr((a-1+b));
+      return mae + usi;
+    }
+  },
+  /// 置換・トリム
+  "置換": {
+    type:"func", josi: [["の","で"],["を"],["に","へ"]],
+    fn: function (s, a, b) {
+      s = String(s);
+      const re = new RegExp(a.replace(/(.)/g, "\\$1"),"g");
+      return s.replace(re, b);
+    }
+  },
+  "単置換": {
+    type:"func", josi: [["の","で"],["を"],["に","へ"]],
+    fn: function (s, a, b) {
+      s = String(s);
+      const re = new RegExp(a.replace(/(.)/g, "\\$1"),"");
+      return s.replace(re, b);
+    }
+  },
+  "トリム": {
+    type:"func", josi: [["の","を"]],
+    fn: function (s) {
+      s = String(s).replace(/^\s+/, '').replace(/\s+$/, '');
+      return s;
+    }
+  },
+  "空白除去": {
+    type:"func", josi: [["の","を"]],
+    fn: function (s) {
+      s = String(s).replace(/^\s+/, '').replace(/\s+$/, '');
+      return s;
+    }
+  },
   /* --- */
   __print_log: {
     type:"var",
