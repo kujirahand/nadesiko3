@@ -46,27 +46,32 @@ class NakoCompiler {
     const js = this.generate(ast);
     return js;
   }
-  getVars() {
-    return this.gen.getVars();
+  getVarsList() {
+    return this.gen.getVarsList();
   }
   getVarsCode() {
     return this.gen.getVarsCode();
   }
-  run(code) {
-    const js = this.compile(code);
-    const __vars = this.getVars();
+  _run(code, is_reset) {
+    if (is_reset) this.reset();
+    const js = 
+      // "console.log('__varslist=',__varslist);\n" +
+      // "__varslist[0]['表示']('hogehoge');\n"+ 
+      this.compile(code);
+      //"console.log('__varslist=',__varslist);\n";
+    var __varslist = this.getVarsList();
+    var __vars = __varslist[1];
     eval(js);
     return this;
+  }
+  run(code) {
+    return this._run(code, false);
   }
   run_reset(code) {
-    this.reset();
-    const js = this.compile(code);
-    const __vars = this.getVars();
-    eval(js);
-    return this;
+    return this._run(code, true);
   }
   get log() {
-    let s = this.getFunc("__print_log");
+    let s = this.getFunc("__print_log").value;
     s = s.replace(/\s+$/, '');
     return s;
   }

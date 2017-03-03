@@ -51,10 +51,13 @@ var PluginSystem = {
     fn: function (a, b) { return a / b; },
   },
   /* --- */
-  __print_log: "",
+  __print_log: {
+    type:"var",
+    value:"",
+  },
   __print: function (s) {
     console.log(s);
-    PluginSystem.__print_log += s + "\n";
+    PluginSystem.__print_log.value += s + "\n";
   },
 };
 

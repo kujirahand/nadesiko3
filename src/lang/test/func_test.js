@@ -10,8 +10,15 @@ describe('func_test', ()=>{
     }
     assert.equal(nako.run_reset(code).log, res);
   };
-  it('def_func', ()=> {
+  // --- test ---
+  it('def_func no arg', ()=> {
     cmp("●HOGE()\n「あ」と表示\n---\nHOGE。", "あ");
+  });
+  it('def_func with arg', ()=> {
+    cmp("●HOGE(Aに)\nAと表示\n---\n「姫」にHOGE。", "姫");
+  });
+  it('def_func with arg3', ()=> {
+    cmp("●踊る(AとBがCを)\n「{A}:{B}:{C}」と表示\n---\n「姫」と「殿」が「タンゴ」を踊る。", "姫:殿:タンゴ");
   });
 });
 
