@@ -340,7 +340,8 @@ class NakoGen {
     const args = [];
     for (let i = 0; i < node.args.length; i++) {
       const arg = node.args[i];
-      args.push(this.c_gen(arg.value));
+      console.log('arg=', arg);
+      args.push(this.c_gen(arg));
     }
     return args;
   }
@@ -418,7 +419,8 @@ class NakoGen {
     let value = "" + node.value;
     let mode = node.mode;
     value = value.replace('"', '\\\"');
-    value = value.replace(/(\r\n|\r|\n)/g, "\\n");
+    value = value.replace('\r', '\\r');
+    value = value.replace('\n', '\\n');
     if (mode == "ex") {
       let rf = (a, m) => {
         return "\"+"+ this.varname(m) +"+\"";
