@@ -183,23 +183,23 @@ var PluginSystem = {
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.abs(a) },
   },
-  "EXP": {
+  "EXP": { /// e（自然対数の底）の A 乗の値を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.exp(a) },
   },
-  "HYPOT": {
+  "HYPOT": { /// 直角三角形の二辺の長さA,Bから斜辺を求めて返す。
     type:"func", josi: [["と"],["の"]],
     fn: function (a, b) { return Math.sqrt(a * b) },
   },
-  "LN": {
+  "LN": { /// 実数式 A の自然対数（Ln(A) = 1）を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.log(a) },
   },
-  "LOG": {
+  "LOG": { /// Aの自然対数（底はE）を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.log(a) },
   },
-  "LOGN": {
+  "LOGN": { ///指定された底AでBの対数を計算して返す
     type:"func", josi: [["で"],["の"]],
     fn: function (a, b) {
       if (a == 2) return Math.LOG2E * Math.log(b);
@@ -207,123 +207,123 @@ var PluginSystem = {
       return Math.log(b) / Math.log(a);
     },
   },
-  "FRAC": {
+  "FRAC": { /// 実数Aの小数部分を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return a % 1 },
   },
-  "乱数": {
+  "乱数": { /// 0から(A-1)までの乱数を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.floor(Math.random() * a); },
   },
-  "SQRT": {
+  "SQRT": { /// Aの平方根を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.sqrt(a); },
   },
-  "平方根": {
+  "平方根": { /// Aの平方根を返す
     type:"func", josi: [["の"]],
     fn: function (a) { return Math.sqrt(a); },
   },
-  "RGB": {
+  "RGB": { /// HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255
     type:"func", josi: [["と"],["の"],["で"]],
     fn: function (r,g,b) {
       const z2 = (v)=>{ const v2 = "00" + parseInt(v).toString(16); return v2.substr(v2.length-2,2); };
       return '#' + z2(r) + z2(g) + z2(b);
     },
   },
-  "ROUND": {
+  "ROUND": { /// 実数型の値Vを丸めてもっとも近い整数値を返す
     type:"func", josi: [["を"]],
     fn: function (v) { return Math.round(v); },
   },
-  "四捨五入": {
-    type:"func", josi: [["を"]],
-    fn: function (v) { return Math.round(v); },
+  "四捨五入": { /// 整数Aの一桁目を丸めて返す。
+    type:"func", josi: [["を","の"]],
+    fn: function (v) { return Math.round(v/10)*10; },
   },
-  "CEIL": {
-    type:"func", josi: [["を"]],
-    fn: function (v) { return Math.ceil(v); },
-  },
-  "切り上げ": {
+  "CEIL": { /// 数値を正の無限大方向へ切り上げて返す。
     type:"func", josi: [["を"]],
     fn: function (v) { return Math.ceil(v); },
   },
-  "FLOOR": {
+  "切り上げ": { /// 数値を正の無限大方向へ切り上げて返す。
+    type:"func", josi: [["を"]],
+    fn: function (v) { return Math.ceil(v); },
+  },
+  "FLOOR": { /// 数値を負の無限大方向へ切り下げて返す。
     type:"func", josi: [["を"]],
     fn: function (v) { return Math.floor(v); },
   },
-  "切り捨て": {
+  "切り捨て": { /// 数値を負の無限大方向へ切り下げて返す。
     type:"func", josi: [["を"]],
     fn: function (v) { return Math.floor(v); },
   },
-  "NOT": {
+  "NOT": { /// 値Vが0ならば1、それ以外ならば0を返す
     type:"func", josi: [["の"]],
     fn: function (v) { return (!v) ? 1 : 0; },
   },
   /// 論理演算
-  "OR": {
+  "OR": { /// AとBの論理和を返す。AまたばBが0以外ならば1を、それ以外は0を返す
     type:"func", josi: [["と"],["の"]],
     fn: function (a, b) { return (a || b) ? 1 : 0; },
   },
-  "AND": {
+  "AND": { /// AとBの論理積を返す。日本語の「AかつB」に相当する
     type:"func", josi: [["と"],["の"]],
     fn: function (a, b) { return (a && b) ? 1 : 0; },
   },
-  "XOR": {
+  "XOR": {/// AとBの排他的論理和を返す。
     type:"func", josi: [["と"],["の"]],
     fn: function (a, b) { return (a ^ b) ? 1 : 0; },
   },
   /// ビット演算
-  "SHIFT_L": {
+  "SHIFT_L": { /// VをAビット左へシフトして返す
     type:"func", josi: [["を"],["で"]],
     fn: function (a, b) { return (a << b); },
   },
-  "SHIFT_R": {
+  "SHIFT_R": { /// VをAビット右へシフトして返す
     type:"func", josi: [["を"],["で"]],
     fn: function (a, b) { return (a >> b); },
   },
   /// 文字列処理
-  "文字数": {
+  "文字数": { /// 文字列Vの文字数を返す
     type:"func", josi: [["の"]],
     fn: function (v) { return String(v).length; },
   },
-  "何文字目": {
+  "何文字目": { /// 文字列SでAが何文字目にあるか調べて返す
     type:"func", josi: [["で","の"],["が"]],
     fn: function (s, a) { return String(s).indexOf(a) + 1; },
   },
-  "CHR": {
+  "CHR": { /// 文字コードから文字を返す
     type:"func", josi: [["の"]],
     fn: function (v) { return String.fromCharCode(v); },
   },
-  "ASC": {
+  "ASC": { /// 文字列Vの最初の文字の文字コードを返す
     type:"func", josi: [["の"]],
     fn: function (v) { return String(v).charCodeAt(0); },
   },
-  "文字挿入": {
+  "文字挿入": { /// 文字列SのI文字目に文字列Aを挿入する
     type:"func", josi: [["で","の"],["に","へ"],["を"]],
-    fn: function (s, cnt, a) {
-      if (cnt <= 0) cnt = 1;
+    fn: function (s, i, a) {
+      if (i <= 0) i = 1;
       const ss = String(s);
-      const mae = ss.substr(0, cnt -1);
-      const usi = ss.substr(cnt - 1);
+      const mae = ss.substr(0, i -1);
+      const usi = ss.substr(i - 1);
       return mae + a + usi;
     },
   },
-  "文字検索": {
+  "文字検索": { /// 文字列Sで文字列Aが何文字目にあるか調べて返す
     type:"func", josi: [["で","の"],["を"]],
     fn: function (s, a) { return String(s).indexOf(a) + 1; },
   },
-  "追加": { /// v1非互換
+  "追加": { /// v1非互換:文字列SにAを追加して返す
     type:"func", josi: [["で","に","へ"],["を"]],
     fn: function (s, a) { return String(s) + String(a); },
   },
-  "一行追加": { /// v1非互換
+  "一行追加": { /// v1非互換:文字列SにAと改行を追加して返す
     type:"func", josi: [["で","に","へ"],["を"]],
     fn: function (s, a) { return String(s) + String(a) + "\n"; },
   },
-  "文字列分解": {
+  "文字列分解": {/// 文字列Vを一文字ずつに分解して返す
     type:"func", josi: [["を","の","で"]],
     fn: function (v) { return String(v).split(""); },
   },
-  "リフレイン": { /// v1非互換
+  "リフレイン": { /// v1非互換:文字列VをCNT回繰り返す
     type:"func", josi: [["を","の"],["で"]],
     fn: function (v, cnt) {
       let s = "";
@@ -331,7 +331,7 @@ var PluginSystem = {
       return s;
     },
   },
-  "出現回数": {
+  "出現回数": {///文字列SにAが何回出現するか数える
     type:"func", josi: [["で"],["の"]],
     fn: function (s, a) {
       let cnt = 0;
@@ -340,31 +340,31 @@ var PluginSystem = {
       return cnt;
     },
   },
-  "MID": {
-    type:"func", josi: [["で"],["から"],["を"]],
+  "MID": {/// 文字列SのA文字目からCNT文字を抽出する
+    type:"func", josi: [["で","の"],["から"],["を"]],
     fn: function (s, a, cnt) { return (String(s).substr(a-1,cnt)); }
   },
-  "文字抜き出す": { /// v1非互換
-    type:"func", josi: [["で"],["から"],["を"]],
+  "文字抜き出す": { /// v1非互換:文字列SのA文字目からCNT文字を抽出する
+    type:"func", josi: [["で","の"],["から"],["を"]],
     fn: function (s, a, cnt) { return (String(s).substr(a-1,cnt)); }
   },
-  "LEFT": {
+  "LEFT": {/// 文字列Sの左端からCNT文字を抽出する
     type:"func", josi: [["の","で"],["だけ"]],
     fn: function (s, cnt) { return (String(s).substr(0, cnt)); }
   },
-  "文字左部分": { /// v1非互換
+  "文字左部分": { /// v1非互換:文字列Sの左端からCNT文字を抽出する
     type:"func", josi: [["の","で"],["だけ"]],
     fn: function (s, cnt) { return (String(s).substr(0, cnt)); }
   },
-  "RIGHT": {
+  "RIGHT": {/// 文字列Sの右端からCNT文字を抽出する
     type:"func", josi: [["の","で"],["だけ"]],
     fn: function (s, cnt) { s=""+s;return (s.substr(s.length-cnt, cnt)); }
   },
-  "文字右部分": {
+  "文字右部分": {/// v1非互換:文字列Sの右端からCNT文字を抽出する
     type:"func", josi: [["の","で"],["だけ"]],
     fn: function (s, cnt) { s=""+s;return (s.substr(s.length-cnt, cnt)); }
   },
-  "切り取": { /// v1非互換 todo
+  "切り取": { /// v1非互換: 文字列Sから文字列Aまでの部分を抽出する
     type:"func", josi: [["から","の"],["まで","を"]],
     fn: function (s, a) {
       s = String(s);
@@ -373,7 +373,7 @@ var PluginSystem = {
       return s.substr(0, i);
     }
   },
-  "文字削除": { /// v1非互換
+  "文字削除": { /// v1非互換:文字列SのA文字目からB文字分を削除して返す
     type:"func", josi: [["の"],["から"],["だけ","を"]],
     fn: function (s, a, b) {
       s = "" + s;
@@ -383,7 +383,7 @@ var PluginSystem = {
     }
   },
   /// 置換・トリム
-  "置換": {
+  "置換": {/// 文字列Sのうち文字列AをBに全部置換して返す
     type:"func", josi: [["の","で"],["を"],["に","へ"]],
     fn: function (s, a, b) {
       s = String(s);
@@ -391,7 +391,7 @@ var PluginSystem = {
       return s.replace(re, b);
     }
   },
-  "単置換": {
+  "単置換": { /// 文字列Sのうち、最初に出現するAだけをBに置換して返す
     type:"func", josi: [["の","で"],["を"],["に","へ"]],
     fn: function (s, a, b) {
       s = String(s);
@@ -399,20 +399,146 @@ var PluginSystem = {
       return s.replace(re, b);
     }
   },
-  "トリム": {
+  "トリム": { /// 文字列Sの前後にある空白を削除する
     type:"func", josi: [["の","を"]],
     fn: function (s) {
       s = String(s).replace(/^\s+/, '').replace(/\s+$/, '');
       return s;
     }
   },
-  "空白除去": {
+  "空白除去": {/// 文字列Sの前後にある空白を削除する
     type:"func", josi: [["の","を"]],
     fn: function (s) {
       s = String(s).replace(/^\s+/, '').replace(/\s+$/, '');
       return s;
     }
   },
+  /// JSON
+  "JSONエンコード": { /// オブジェクトvをJSON形式にエンコードする
+    type:"func", josi: [["を","の"]],
+    fn: function (v) { return JSON.stringify(v); }
+  },
+  "JSONデコード": { /// JSON文字列Sをオブジェクトにデコードする
+    type:"func", josi: [["を","の","から"]],
+    fn: function (s) { return JSON.parse(s); }
+  },
+
+  /// 正規表現
+  "正規表現マッチ": {/// 文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは/pat/optで指定)
+    type:"func", josi: [["を","が"],["で","に"]],
+    fn: function (a, b) {
+      let re;
+      let f = b.match(/\/(.+)\/([a-zA-Z]*)/);
+      if (f == null) { // パターンがある場合
+        re = new RegExp(b, "g");
+      } else {
+        re = new RegExp(f[1], f[2]);
+      }
+      return String(a).match(re);
+    }
+  },
+  "正規表現置換": {/// 文字列Sの正規表現パターンAをBに置換して結果を返す(パターンAは/pat/optで指定)
+    type:"func", josi: [["の"],["を","から"],["で","に","へ"]],
+    fn: function (s, a, b) {
+      let re;
+      let f = a.match(/\/(.+)\/([a-zA-Z]*)/);
+      if (f == null) { // パターンがある場合
+        re = new RegExp(a, "g");
+      } else {
+        re = new RegExp(f[1], f[2]);
+      }
+      return String(s).replace(re, b);
+    }
+  },
+  "正規表現区切": {/// 文字列Sを正規表現パターンAで区切って配列で返す(パターンAは/pat/optで指定)
+    type:"func", josi: [["を"],["で"]],
+    fn: function (s, a) {
+      let re;
+      let f = a.match(/\/(.+)\/([a-zA-Z]*)/);
+      if (f == null) { // パターンがある場合
+        re = new RegExp(a, "g");
+      } else {
+        re = new RegExp(f[1], f[2]);
+      }
+      return String(s).split(re);
+    }
+  },
+  /// 指定形式
+  "通貨形式": { /// 数値Vを三桁ごとにカンマで区切る
+    type:"func", josi: [["を","の"]],
+    fn: function (v) { return String(v).replace( /(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');}
+  },
+  "ゼロ埋": { /// 数値VをA桁の0で埋める
+    type:"func", josi: [["を"],["で"]],
+    fn: function (v, a) {
+      v = String(v);
+      let z = "0"; for(let i=0;i<a;i++) z+="0";
+      a = parseInt(a); if(a<v.length)a=v.length;
+      const s = z + String(v);
+      return s.substr(s.length - a, a);
+    }
+  },
+  /// 文字種類
+  "かなか判定": { /// 文字列Sの1文字目がひらがなか判定
+    type:"func", josi: [["を","の","が"]],
+    fn: function (s) {
+      const c = String(s).charCodeAt(0);
+      return (0x3041 <= c && c <= 0x309F);
+    }
+  },
+  "カタカナか判定": { /// 文字列Sの1文字目がカタカナか判定
+    type:"func", josi: [["を","の","が"]],
+    fn: function (s) {
+      const c = String(s).charCodeAt(0);
+      return (0x30A1 <= c && c <= 0x30FA);
+    }
+  },
+  "数字か判定": { /// 文字列Sの1文字目が数字か判定
+    type:"func", josi: [["を","が"]],
+    fn: function (s) {
+      const c = String(s).charAt(0);
+      return ('0' <= c && c <= '9' || '０' <= c && c <= '９');
+    }
+  },
+  "数列か判定": { /// 文字列S全部が数字か判定
+    type:"func", josi: [["を","が"]],
+    fn: function (s) {
+      return (null != String(s).match(/^[0-9\.]+$/));
+    }
+  },
+  /// 配列操作
+  "配列結合": { /// 配列Aを文字列Sでつなげて文字列で返す
+    type:"func", josi: [["を"],["で"]],
+    fn: function (a, s) {
+      if (typeof(a) == "array") { // 配列ならOK
+        return a.join(""+s);
+      }
+      const a2 = String(a).split("\n"); // 配列でなければ無理矢理改行で区切ってみる
+      return a2.join(""+s);
+    }
+  },
+  "配列検索": { /// 配列Aから文字列Sを探してインデックス番号(0起点)を返す。見つからなければ-1を返す。
+    type:"func", josi: [["の","から"],["を"]],
+    fn: function (a, s) {
+      if (typeof(a) == "array") { // 配列ならOK
+        return a.indexOf(s);
+      }
+      return -1;
+    }
+  },
+  "配列要素数": { /// 配列Aの要素数を返す
+    type:"func", josi: [["の"]],
+    fn: function (a) {
+      if (typeof(a) == "array") { // 配列ならOK
+        return a.length;
+      }
+      if (typeof(a) == "object") {
+        return Object.keys(a).length;
+      }
+      return 1;
+    }
+  },
+  
   /* --- */
   __print_log: {
     type:"var",
