@@ -510,7 +510,7 @@ var PluginSystem = {
   "配列結合": { /// 配列Aを文字列Sでつなげて文字列で返す
     type:"func", josi: [["を"],["で"]],
     fn: function (a, s) {
-      if (typeof(a) == "array") { // 配列ならOK
+      if (a instanceof Array) { // 配列ならOK
         return a.join(""+s);
       }
       const a2 = String(a).split("\n"); // 配列でなければ無理矢理改行で区切ってみる
@@ -520,7 +520,7 @@ var PluginSystem = {
   "配列検索": { /// 配列Aから文字列Sを探してインデックス番号(0起点)を返す。見つからなければ-1を返す。
     type:"func", josi: [["の","から"],["を"]],
     fn: function (a, s) {
-      if (typeof(a) == "array") { // 配列ならOK
+      if (a instanceof Array) { // 配列ならOK
         return a.indexOf(s);
       }
       return -1;
@@ -529,7 +529,7 @@ var PluginSystem = {
   "配列要素数": { /// 配列Aの要素数を返す
     type:"func", josi: [["の"]],
     fn: function (a) {
-      if (typeof(a) == "array") { // 配列ならOK
+      if (a instanceof Array) { // 配列ならOK
         return a.length;
       }
       if (typeof(a) == "object") {
@@ -538,7 +538,36 @@ var PluginSystem = {
       return 1;
     }
   },
-  
+  "配列挿入": { /// v1非互換:配列AのI番目(0起点)に要素Sを追加して返す
+    type:"func", josi: [["の"],["に","へ"],["を"]],
+    fn: function (a,i,s) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.splice(i, 0, s);
+      }
+      throw new Error("『配列挿入』で配列以外の要素への挿入。");
+    }
+  },
+  "配列一括挿入": { /// v1非互換:配列AのI番目(0起点)に配列bを追加して返す
+    type:"func", josi: [["の"],["に","へ"],["を"]],
+    fn: function (a, i, b) {
+      if (a instanceof Array && b instanceof Array) { // 配列ならOK
+        for (let j = 0; j < b.length; j++) {
+          a.splice(i + j, 0, b[j]);
+        }
+        return a;
+      }
+      throw new Error("『配列一括挿入』で配列以外の要素への挿入。");
+    }
+  },
+  "配列ソート": { /// 配列Aをソートして返す
+    type:"func", josi: [["の","を"]],
+    fn: function (a) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.sort();
+      }
+      throw new Error("『配列ソート』で配列以外の処理。");
+    }
+  },
   /* --- */
   __print_log: {
     type:"var",
