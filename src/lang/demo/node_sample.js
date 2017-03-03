@@ -11,4 +11,3 @@ const code = head + vars + js;
 
 console.log(code);
 eval(code);
-

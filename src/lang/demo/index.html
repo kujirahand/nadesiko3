@@ -1,96 +1,43 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="ja">
+<head>
     <meta charset="utf-8">
     <title>なでしこ3 ベータ1</title>
     <!-- なでしこを使う準備 -->
     <script src="../release/nako3.js"></script>
-    <script>
-      // なでしこの関数をカスタマイズ
-      navigator.nako3.getFunc("言").fn = function(msg){ alert(msg); };
-      navigator.nako3.getFunc("表示").fn = function(s) {
-        $("info").innerHTML += tohtml(s) + "<br>";
-      };
-      // なでしこにオリジナル関数をJSで追加
-      navigator.nako3.addFunc("色変更", 
-        [["に","へ"]],
-        function (s) { $("info").style.color = s; });
-      // 簡易DOMアクセス関数など
-      function $(id) { return document.getElementById(id); }
-      function tohtml(s) {
-        s = "" + s;
-        return s.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
-      }
-    </script>
-    <style>
-      #info {
-        font-size:1em;
-        border: 1px solid gray;
-        padding:8px;
-        background-color: #f0fff0; }
-      #err {
-        font-size:1em;
-        border: 1px solid gray;
-        padding:8px;
-        background-color: #fff0f0; }
-      #srcbox {
-        font-size:1em;
-        background-color: #fffff0;
-        width: 99%; }
-    </style>
-  </head>
-  <body>
-    <h1>なでしこ3 ベータ1 デモ</h1>
-    <div style="margin-left:12px;">
-      <p>簡易エディタ:</p>
-      <textarea id="srcbox" rows="8">
+    <script src="lib.js"></script>
+    <script src="common.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" type="text/css" href="common.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+<h1>なでしこ3 ベータ1 デモ</h1>
+<div id="editor">
+    <p>簡易エディタ:</p>
+    <textarea id="src_box" rows="8">
 「こんにちは！」と表示。
-(1 + 2)×3を表示。
-      </textarea><br>
-      <div>
-        <button onclick="runbox(null)">実行</button>
-        <button onclick="resetbox()">クリア</button>
-      </div>
-      <div><p id="err" style="display:none;"></p></div>
-      <div><p>実行結果:</p><p id="info"></p></div>
-    </div>
-    <hr>
-    <h3>試してみよう！</h3>
+(1 + 2)×3を表示。</textarea><br>
     <div>
-      <ul>
+        <button onclick="run_box(null)">実行</button>
+        <button onclick="reset_box()">クリア</button>
+    </div>
+    <div><p id="err"></p></div>
+    <div><p>実行結果:</p>
+        <p id="info" class="info"></p></div>
+</div>
+<hr>
+<h3>試してみよう！</h3>
+<div>
+    <ul>
         <li><a href="basic.html">基本計算</a></li>
         <li><a href="flow.html">制御構文</a></li>
         <li><a href="runscript.html">スクリプトタグになでしこを書く</a></li>
-      </ul>
-    </div>
-    <h3>どこまで実装されてる？</h3>
-    <div style="margin-left:12px;">
-      詳しくは、<a href="http://nadesi.com/dev/wiki/go.php?351">こちらを</a>ご覧ください。
-    </div>
-      
-<script>
-function runbox(id) {
-  if (id != null) {
-    $('srcbox').value = $(id).value;
-    resetbox();
-  }
-  var src = $("srcbox").value;
-  $("err").style.display = "none";
-  try {
-    navigator.nako3.run(src);
-  } catch (e) {
-    let msg = e.message;
-    msg = msg.replace('Expected', '期待する字句は...');
-    msg = msg.replace('but', '。しかし...');
-    msg = msg.replace('found', 'がありました');
-    $("err").style.display = "block";
-    $("err").innerHTML = msg;
-    console.log(e);
-  }
-}
-function resetbox() {
-  $("info").innerHTML = "";
-}
-</script></body>
+    </ul>
+</div>
+<h3>どこまで実装されてる？</h3>
+<div id="progress">
+    詳しくは、<a href="http://nadesi.com/dev/wiki/go.php?351">こちらを</a>ご覧ください。
+</div>
+</body>
 </html>
-
