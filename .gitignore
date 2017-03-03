@@ -1,6 +1,5 @@
 # exclude dir
-src/lang/release
-src/lang/parser/*.js
+src/lang/debug
 
 # Logs
 logs
