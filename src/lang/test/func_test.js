@@ -20,5 +20,8 @@ describe('func_test', ()=>{
   it('def_func with arg3', ()=> {
     cmp("●踊る(AとBがCを)\n「{A}:{B}:{C}」と表示\n---\n「姫」と「殿」が「タンゴ」を踊る。", "姫:殿:タンゴ");
   });
+  it('def_func has return', ()=> {
+    cmp("●加算(AにBを)\n(A+B)で戻る\n---\n2に3を加算して表示。", "5");
+  });
 });
 

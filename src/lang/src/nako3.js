@@ -64,7 +64,8 @@ class NakoCompiler {
 
     /** eval()実行前に直接JSのオブジェクトを取得する場合 */
     getVarsList() {
-        return this.gen.getVarsList();
+        const v = this.gen.getVarsList();
+        return [v[0], {}];
     }
 
     /** 完全にJSのコードを取得する場合 */
@@ -78,11 +79,7 @@ class NakoCompiler {
 
     _run(code, is_reset) {
         if (is_reset) this.reset();
-        const js =
-            // "console.log('__varslist=',__varslist);\n" +
-            // "__varslist[0]['表示']('hogehoge');\n"+
-            this.compile(code);
-        //"console.log('__varslist=',__varslist);\n";
+        const js = this.compile(code);
         var __varslist = this.getVarsList();
         var __vars = __varslist[1];
         eval(js);

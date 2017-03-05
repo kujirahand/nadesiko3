@@ -179,6 +179,9 @@ class NakoGen {
             case "def_func":
                 code += this.c_def_func(node);
                 break;
+            case "return":
+                code += this.c_return(node);
+                break;
         }
         return code;
     }
@@ -222,6 +225,13 @@ class NakoGen {
             return `__varslist[${i}]["${name}"]`;
         }
     }
+    
+    c_return(node) {
+        if (node.value) {
+          const value = this.c_gen(node.value);
+          return `return ${value};`;
+        } else { return "return;"; }
+      }
 
     c_def_func(node) {
         const name = this.getFuncName(node.name.value);
@@ -229,7 +239,7 @@ class NakoGen {
         const block = this.c_gen(node.block);
         this.__vars[name] = "func";
         let code = "(function(){\n";
-        code += "  try {\n    __vars = {}; __varslist.push(__vars);\n";
+        code += "  try { __vars = {}; __varslist.push(__vars);\n";
         this.__vars = {};
         this.__varslist.push(this.__vars);
         const josilist = [];
@@ -243,16 +253,17 @@ class NakoGen {
             code += `__vars["${word}"] = arguments[${i}];\n`;
         }
         code += block + "\n";
-        const popcode = "__varslist.pop(); __vars = __varslist[__varslist.length-1];";
+        const popcode = 
+          "__varslist.pop(); " +
+          "__vars = __varslist[__varslist.length-1];";
         code += `  } finally { ${popcode} }\n`;
         code += "\n})\n";
-        const fn = eval(code);
         this.nako_func[name] = {
             "josi": josilist,
-            "fn": fn,
+            "fn": code,
             "type": "func"
         };
-        this.used_func[name] = fn;
+        this.used_func[name] = code;
         // console.log(fn.toString());
         return `__vars["${name}"] = ${code};\n`;
     }
@@ -438,7 +449,7 @@ class NakoGen {
             args = this.c_func_get_args_calctype(func_name, func, node);
         }
         // function
-        if (typeof(this.used_func[func_name]) !== "function") {
+        if (typeof(this.used_func[func_name]) === "undefined") {
             this.used_func[func_name] = func.fn;
         }
         let args_code = args.join(",");
