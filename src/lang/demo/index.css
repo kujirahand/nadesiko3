@@ -2,25 +2,13 @@
     margin-left: 12px;
 }
 
-#info, #err, #src_box {
+#info {
     font-size: 1em;
-}
-
-#info, #err {
     border: 1px solid gray;
     padding: 8px;
-}
-
-#info {
     background-color: #f0fff0;
 }
 
 #err {
-    background-color: #fff0f0;
     display: none;
-}
-
-#src_box {
-    background-color: #fffff0;
-    width: 99%;
 }
