@@ -459,9 +459,9 @@ class NakoGen {
     c_string(node) {
         let value = "" + node.value;
         let mode = node.mode;
-        value = value.replace('"', '\\\"');
-        value = value.replace('\r', '\\r');
-        value = value.replace('\n', '\\n');
+        value = value.replace(/"/g, '\\\"');
+        value = value.replace(/\r/g, '\\r');
+        value = value.replace(/\n/g, '\\n');
         if (mode == "ex") {
             let rf = (a, m) => {
                 return "\"+" + this.varname(m) + "+\"";
