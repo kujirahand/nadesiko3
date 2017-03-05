@@ -15,9 +15,9 @@ function run_box(id) {
         navigator.nako3.run(src);
     } catch (e) {
         let msg = e.message;
-        msg = msg.replace('Expected', '期待する字句は...');
-        msg = msg.replace('but', '。しかし...');
-        msg = msg.replace('found', 'がありました');
+        msg = msg.replace(/Expected/g, '期待する字句は...');
+        msg = msg.replace(/but/g, '。しかし...');
+        msg = msg.replace(/found/g, 'がありました');
         $("err").style.display = "block";
         $("err").innerHTML = msg;
         console.log(e);

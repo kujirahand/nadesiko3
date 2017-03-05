@@ -17,7 +17,7 @@ function $(id) {
 
 function to_html(s) {
     s = "" + s;
-    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+    return s.replace(/&/g, '&amp;').replace(/</, '&lt;').replace(/>/, '&gt;');
 }
 
 function reset_box() {
