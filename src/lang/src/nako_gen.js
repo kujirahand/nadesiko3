@@ -149,6 +149,9 @@ class NakoGen {
             case "for":
                 code += this.c_for(node);
                 break;
+              case "foreach":
+                code += this.c_foreach(node);
+                break;
             case "repeat_times":
                 code += this.c_repeat_times(node);
                 break;
@@ -259,7 +262,7 @@ class NakoGen {
         const codelist = list.map((e) => {
             const key = this.c_gen(e.key);
             const val = this.c_gen(e.value);
-            return `'${key}':${val}`;
+            return `${key}:${val}`;
         });
         return "{" + codelist.join(",") + "}";
     }
@@ -313,6 +316,21 @@ class NakoGen {
         const code =
             `for(${var_code}${word}=${kara}; ${word}<=${made}; ${word}++)` + "{\n" +
             `  ${this.sore} = ${word};` + "\n" +
+            "  " + block + "\n" +
+            "};\n";
+        return code;
+    }
+    
+    c_foreach(node) {
+        const target = this.c_gen(node.target);
+        const block = this.c_gen(node.block);
+        const id = this.loop_id++;
+        const taisyou = this.varname('対象');
+        const key = this.varname('対象キー');
+        const code =
+            `for(var $nako_i${id} in ${target})` + "{\n" +
+            `  ${this.sore} = ${taisyou} = ${target}[$nako_i${id}];` + "\n" +
+            `  ${key} = $nako_i${id};\n` +
             "  " + block + "\n" +
             "};\n";
         return code;

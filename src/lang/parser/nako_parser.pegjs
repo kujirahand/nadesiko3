@@ -19,7 +19,7 @@ sentence
   / EOS+ { return {"type":"EOS"}; }
   / end / continue / break
   / def_func
-  / if_stmt / whie_stmt / repeat_times_stmt / for_stmt
+  / if_stmt / whie_stmt / repeat_times_stmt / for_stmt / foreach_stmt
   / let_stmt
   / kokomade { return {type:"EOS",memo:"---"}; }
   / func_call_stmt
@@ -42,6 +42,11 @@ def_func
 def_func_arg
   = w:word j:josi
   { return {"word":w, "josi":j}; }
+
+foreach_stmt
+  = target:calc "を" __ ("反復" / "反復する") LF b:block block_end {
+    return {"type":"foreach", "target":target, "block":b};
+  }
 
 for_stmt
   = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
