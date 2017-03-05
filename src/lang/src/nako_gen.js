@@ -235,7 +235,7 @@ class NakoGen {
             const word = arg["word"].value;
             const josi = [arg["josi"]];
             josilist.push(josi);
-            console.log("arg=", arg, "word=", word, "josi=", josi);
+            // console.log("arg=", arg, "word=", word, "josi=", josi);
             this.__vars[word] = true;
             code += `__vars["${word}"] = arguments[${i}];\n`;
         }
@@ -299,10 +299,19 @@ class NakoGen {
     c_for(node) {
         const kara = this.c_gen(node.from);
         const made = this.c_gen(node.to);
-        const word = this.c_gen(node.word);
         const block = this.c_gen(node.block);
+        let word = "", var_code = "";
+        if (node.word != "") {
+          word = this.c_gen(node.word);
+          var_code = "";
+        } else {
+          // ループ変数を省略した時は、自動で生成する
+          const id = this.loop_id++;
+          word = `$nako_i${id}`;
+          var_code = "var ";
+        }
         const code =
-            `for(${word}=${kara}; ${word}<=${made}; ${word}++)` + "{\n" +
+            `for(${var_code}${word}=${kara}; ${word}<=${made}; ${word}++)` + "{\n" +
             `  ${this.sore} = ${word};` + "\n" +
             "  " + block + "\n" +
             "};\n";
@@ -315,7 +324,7 @@ class NakoGen {
         const block = this.c_gen(node.block);
         const kaisu = this.varname('回数');
         const code =
-            `for(let $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + "{\n" +
+            `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + "{\n" +
             `  ${this.sore} = ${kaisu} = $nako_i${id};` + "\n" +
             "  " + block + "\n}\n";
         return code;

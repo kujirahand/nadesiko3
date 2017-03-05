@@ -47,6 +47,9 @@ for_stmt
   = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
     return {"type":"for", "from":kara, "to":made, "block":b, "word": i};
   }
+  / kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
+    return {"type":"for", "from":kara, "to":made, "block":b, "word": ""};
+  }
 
 repeat_times_stmt
   = cnt:(int / intz) "回" __ b:sentence EOS {
