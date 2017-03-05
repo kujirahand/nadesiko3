@@ -1,3 +1,15 @@
 {
-  "presets":["es2015","es2016","es2017"]
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 versions",
+            "safari >= 7"
+          ]
+        }
+      }
+    ]
+  ]
 }
