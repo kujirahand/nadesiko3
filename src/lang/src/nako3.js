@@ -12,6 +12,9 @@ class NakoCompiler {
         this.reset();
     }
 
+    /**
+     * デバッグモードに設定する
+     */
     useDebug() {
         this.debug = true;
     }
@@ -62,13 +65,19 @@ class NakoCompiler {
         return js;
     }
 
-    /** eval()実行前に直接JSのオブジェクトを取得する場合 */
+    /**
+     * eval()実行前に直接JSのオブジェクトを取得する場合
+     * @returns {*}
+     */
     getVarsList() {
         const v = this.gen.getVarsList();
         return [v[0], {}];
     }
 
-    /** 完全にJSのコードを取得する場合 */
+    /**
+     * 完全にJSのコードを取得する場合
+     * @returns {*}
+     */
     getVarsCode() {
         return this.gen.getVarsCode();
     }
@@ -100,7 +109,9 @@ class NakoCompiler {
         return s;
     }
 
-    /** ブラウザでtype="なでしこ"というスクリプトを得て実行する */
+    /**
+     * ブラウザでtype="なでしこ"というスクリプトを得て実行する
+     */
     runNakoScript() {
         // スクリプトタグの中身を得る
         let scripts = document.querySelectorAll("script");
