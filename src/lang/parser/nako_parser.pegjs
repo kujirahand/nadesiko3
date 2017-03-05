@@ -17,7 +17,7 @@ sentence
   =  comment
   / indent { return {"type":"EOS","memo":"indent"}; }
   / EOS+ { return {"type":"EOS"}; }
-  / end / continue / break
+  / end / continue / break / return_stmt
   / def_func
   / if_stmt / whie_stmt / repeat_times_stmt / for_stmt / foreach_stmt
   / let_stmt
@@ -42,6 +42,12 @@ def_func
 def_func_arg
   = w:word j:josi
   { return {"word":w, "josi":j}; }
+
+return_word = "戻る" / "戻す"
+
+return_stmt
+  = return_word { return {type:"return",value:null}; }
+  / v:calc ("で"/"を") __ return_word { return {type:"return",value:v}; }
 
 foreach_stmt
   = target:calc "を" __ ("反復" / "反復する") LF b:block block_end {
