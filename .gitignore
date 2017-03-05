@@ -42,3 +42,4 @@ jspm_packages
 
 # IntelliJ IDEA
 .idea/
+*.iml
