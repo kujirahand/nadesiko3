@@ -1,86 +1,105 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>なでしこ3</title>
     <!-- なでしこを使う準備 -->
     <script src="../release/nako3.js"></script>
     <script>
-      var display_id = "info";
-      // なでしこの関数をカスタマイズ
-      navigator.nako3.getFunc("言").fn = function(msg){ alert(msg); };
-      navigator.nako3.getFunc("表示").fn = function(s) {
-        $(display_id).innerHTML += tohtml(s) + "<br>";
-      };
-      // なでしこにオリジナル関数をJSで追加
-      navigator.nako3.addFunc("色変更", 
-        [["に","へ"]],
-        function (s) { $("info").style.color = s; });
-      // 簡易DOMアクセス関数など
-      function $(id) { return document.getElementById(id); }
-      function tohtml(s) {
-        s = "" + s;
-        return s.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
-      }
+        var display_id = "info";
+
+        // なでしこの関数をカスタマイズ
+        navigator.nako3.getFunc("言").fn = function (msg) {
+            alert(msg);
+        };
+
+        navigator.nako3.getFunc("表示").fn = function (s) {
+            $(display_id).innerHTML += tohtml(s) + "<br>";
+        };
+
+        // なでしこにオリジナル関数をJSで追加
+        navigator.nako3.addFunc("色変更",
+            [["に", "へ"]],
+            function (s) {
+                $("info").style.color = s;
+            });
+
+        // 簡易DOMアクセス関数など
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        function tohtml(s) {
+            s = "" + s;
+            return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+        }
     </script>
     <style>
-      .info {
-        font-size:1em;
-        border: 1px solid gray;
-        padding:8px;
-        background-color: #f0fff0; }
-      #err {
-        font-size:1em;
-        border: 1px solid gray;
-        padding:8px;
-        background-color: #fff0f0; }
-      #srcbox {
-        font-size:1em;
-        background-color: #fffff0;
-        width: 99%; }
-      .src {
-        font-size:1em;
-        background-color: #f0f0f0;
-        width: 99%; }
-      .sbox {
-        border-bottom: 1px solid silver;
-        margin: 8px;
-        padding: 8px; }
+        .info {
+            font-size: 1em;
+            border: 1px solid gray;
+            padding: 8px;
+            background-color: #f0fff0;
+        }
+
+        #err {
+            font-size: 1em;
+            border: 1px solid gray;
+            padding: 8px;
+            background-color: #fff0f0;
+        }
+
+        #srcbox {
+            font-size: 1em;
+            background-color: #fffff0;
+            width: 99%;
+        }
+
+        .src {
+            font-size: 1em;
+            background-color: #f0f0f0;
+            width: 99%;
+        }
+
+        .sbox {
+            border-bottom: 1px solid silver;
+            margin: 8px;
+            padding: 8px;
+        }
     </style>
-  </head>
-  <body>
-    <h1>なでしこ3デモ</h1>
-    <hr>
-    <h3>試してみよう！</h3>
-    <div class="sbox">
-      <h4>簡単な計算</h4>
-      <textarea id="calc_txt" class="src" rows="5">
+</head>
+<body>
+<h1>なでしこ3デモ</h1>
+<hr>
+<h3>試してみよう！</h3>
+<div class="sbox">
+    <h4>簡単な計算</h4>
+    <textarea id="calc_txt" class="src" rows="5">
 1+2を表示。
 100÷5を表示。
-(1 + 2)×3を表示。
-      </textarea><br>
-      <button onclick="runbox('calc_txt')">実行</button>
-      <div><p id="calc_txt_info" class="info"></p></div>
-    </div>
+(1 + 2)×3を表示。</textarea><br>
+    <button onclick="runbox('calc_txt')">実行</button>
+    <div><p id="calc_txt_info" class="info"></p></div>
+</div>
 
-    <div class="sbox">
-      <h4>変数を使った計算</h4>
-      <textarea id="var_txt" class="src" rows="10">
+<div class="sbox">
+    <h4>変数を使った計算</h4>
+    <textarea id="var_txt" class="src" rows="10">
 価格=500円
 個数＝3個
 税率=0.08
 合計額=価格×個数
 税額＝合計額×税率
 支払い＝合計額＋税額
-「お支払いは、{支払い}円です！」と表示。
-      </textarea><br>
-      <div><p id="var_txt_info" class="info"></p></div>
-      <button onclick="runbox('var_txt')">実行</button><br>
-    </div>
-    
-    <div class="sbox">
-      <h4>BMIの計算</h4>
-      <textarea id="bmi_txt" class="src" rows="13">
+「お支払いは、{支払い}円です！」と表示。</textarea><br>
+    <div><p id="var_txt_info" class="info"></p></div>
+    <button onclick="runbox('var_txt')">実行</button>
+    <br>
+</div>
+
+<div class="sbox">
+    <h4>BMIの計算</h4>
+    <textarea id="bmi_txt" class="src" rows="13">
 身長＝160
 体重＝50
 身長M=身長÷100
@@ -89,28 +108,31 @@ BMI=体重÷(身長M×身長M)
 肥満度=(体重/適正体重) 
 「BMI ... {BMI}」を表示。
 「肥満度 ... {肥満度}」を表示。
-「適正体重 ... {適正体重}」を表示。
-      </textarea><br>
-      <div><p id="bmi_txt_info" class="info"></p></div>
-      <button onclick="runbox('bmi_txt')">実行</button><br>
-    </div>
-    
-<script>
-function runbox(id) {
-  if (id == null) { alert('idが設定されていません。'); return; }
-  var src = $(id).value;
-  display_id = id + "_info";
-  $(display_id).innerHTML = "";
-  try {
-    navigator.nako3.run(src);
-  } catch (e) {
-    console.log(e);
-  }
-}
-function resetbox() {
-  $("info").innerHTML = "";
-}
-</script>
-  </body>
-</html>
+「適正体重 ... {適正体重}」を表示。</textarea><br>
+    <div><p id="bmi_txt_info" class="info"></p></div>
+    <button onclick="runbox('bmi_txt')">実行</button>
+    <br>
+</div>
 
+<script>
+    function runbox(id) {
+        if (id == null) {
+            alert('idが設定されていません。');
+            return;
+        }
+        var src = $(id).value;
+        display_id = id + "_info";
+        $(display_id).innerHTML = "";
+        try {
+            navigator.nako3.run(src);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function resetbox() {
+        $("info").innerHTML = "";
+    }
+</script>
+</body>
+</html>
