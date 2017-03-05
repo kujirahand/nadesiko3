@@ -24,7 +24,7 @@
     };
 
     navigator.nako3.getFunc("表示").fn = function (s) {
-        $("info").innerHTML += tohtml(s) + "<br>";
+        $("info").innerHTML += to_html(s) + "<br>";
     };
 
     // なでしこにオリジナル関数をJSで追加
@@ -43,7 +43,7 @@
         return document.getElementById(id);
     }
 
-    function tohtml(s) {
+    function to_html(s) {
         s = "" + s;
         return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
     }

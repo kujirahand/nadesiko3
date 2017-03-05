@@ -14,7 +14,7 @@
         };
 
         navigator.nako3.getFunc("表示").fn = function (s) {
-            $(display_id).innerHTML += tohtml(s) + "<br>";
+            $(display_id).innerHTML += to_html(s) + "<br>";
         };
 
         // なでしこにオリジナル関数をJSで追加
@@ -29,7 +29,7 @@
             return document.getElementById(id);
         }
 
-        function tohtml(s) {
+        function to_html(s) {
             s = "" + s;
             return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
         }
@@ -67,7 +67,7 @@
 # --- 変数を指定する場合 ---
 N=5
 (N)回「にゃーん」と表示。</textarea><br>
-    <button onclick="runbox('calc_txt')">実行</button>
+    <button onclick="run_box('calc_txt')">実行</button>
     <div><p id="calc_txt_info" class="info"></p></div>
 </div>
 
@@ -89,7 +89,7 @@ B=30
 　　「Bは50ではない」と表示。
 --------------</textarea><br>
     <div><p id="var_txt_info" class="info"></p></div>
-    <button onclick="runbox('var_txt')">実行</button>
+    <button onclick="run_box('var_txt')">実行</button>
     <p>※インデントによるブロック表現は廃止されました。
         ブロックの末尾には、「ここまで」または「ーーー」や「---」と書きます。「-」の数は3つ以上ならいくつでも大丈夫です。</p>
 </div>
@@ -101,7 +101,7 @@ Nを１から５まで繰り返す
 　　Ｎを表示。
 ここまで。</textarea><br>
     <div><p id="bmi_txt_info" class="info"></p></div>
-    <button onclick="runbox('bmi_txt')">実行</button>
+    <button onclick="run_box('bmi_txt')">実行</button>
     <br>
 </div>
 
@@ -119,7 +119,7 @@ B=3
 　　B=B-1
 ------</textarea><br>
     <div><p id="while_txt_info" class="info"></p></div>
-    <button onclick="runbox('while_txt')">実行</button>
+    <button onclick="run_box('while_txt')">実行</button>
     <br>
 </div>
 
@@ -137,10 +137,10 @@ N=30
 違えば「OK4」と表示。
 --------------</textarea><br>
     <div><p id="if2_txt_info" class="info"></p></div>
-    <button onclick="runbox('if2_txt')">実行</button>
+    <button onclick="run_box('if2_txt')">実行</button>
 </div>
 <script>
-    function runbox(id) {
+    function run_box(id) {
         if (id == null) {
             alert('idが設定されていません。');
             return;
@@ -155,7 +155,7 @@ N=30
         }
     }
 
-    function resetbox() {
+    function reset_box() {
         $("info").innerHTML = "";
     }
 </script>

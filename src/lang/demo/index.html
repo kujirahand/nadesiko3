@@ -12,7 +12,7 @@
         };
 
         navigator.nako3.getFunc("表示").fn = function (s) {
-            $("info").innerHTML += tohtml(s) + "<br>";
+            $("info").innerHTML += to_html(s) + "<br>";
         };
 
         // なでしこにオリジナル関数をJSで追加
@@ -27,7 +27,7 @@
             return document.getElementById(id);
         }
 
-        function tohtml(s) {
+        function to_html(s) {
             s = "" + s;
             return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
         }
@@ -62,8 +62,8 @@
 「こんにちは！」と表示。
 (1 + 2)×3を表示。</textarea><br>
     <div>
-        <button onclick="runbox(null)">実行</button>
-        <button onclick="resetbox()">クリア</button>
+        <button onclick="run_box(null)">実行</button>
+        <button onclick="reset_box()">クリア</button>
     </div>
     <div><p id="err" style="display:none;"></p></div>
     <div><p>実行結果:</p>
@@ -84,10 +84,10 @@
 </div>
 
 <script>
-    function runbox(id) {
+    function run_box(id) {
         if (id != null) {
             $('srcbox').value = $(id).value;
-            resetbox();
+            reset_box();
         }
         var src = $("srcbox").value;
         $("err").style.display = "none";
@@ -104,7 +104,7 @@
         }
     }
 
-    function resetbox() {
+    function reset_box() {
         $("info").innerHTML = "";
     }
 </script>

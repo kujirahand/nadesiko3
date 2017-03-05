@@ -14,7 +14,7 @@
         };
 
         navigator.nako3.getFunc("表示").fn = function (s) {
-            $(display_id).innerHTML += tohtml(s) + "<br>";
+            $(display_id).innerHTML += to_html(s) + "<br>";
         };
 
         // なでしこにオリジナル関数をJSで追加
@@ -29,7 +29,7 @@
             return document.getElementById(id);
         }
 
-        function tohtml(s) {
+        function to_html(s) {
             s = "" + s;
             return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
         }
@@ -78,7 +78,7 @@
 1+2を表示。
 100÷5を表示。
 (1 + 2)×3を表示。</textarea><br>
-    <button onclick="runbox('calc_txt')">実行</button>
+    <button onclick="run_box('calc_txt')">実行</button>
     <div><p id="calc_txt_info" class="info"></p></div>
 </div>
 
@@ -93,7 +93,7 @@
 支払い＝合計額＋税額
 「お支払いは、{支払い}円です！」と表示。</textarea><br>
     <div><p id="var_txt_info" class="info"></p></div>
-    <button onclick="runbox('var_txt')">実行</button>
+    <button onclick="run_box('var_txt')">実行</button>
     <br>
 </div>
 
@@ -110,12 +110,12 @@ BMI=体重÷(身長M×身長M)
 「肥満度 ... {肥満度}」を表示。
 「適正体重 ... {適正体重}」を表示。</textarea><br>
     <div><p id="bmi_txt_info" class="info"></p></div>
-    <button onclick="runbox('bmi_txt')">実行</button>
+    <button onclick="run_box('bmi_txt')">実行</button>
     <br>
 </div>
 
 <script>
-    function runbox(id) {
+    function run_box(id) {
         if (id == null) {
             alert('idが設定されていません。');
             return;
@@ -130,7 +130,7 @@ BMI=体重÷(身長M×身長M)
         }
     }
 
-    function resetbox() {
+    function reset_box() {
         $("info").innerHTML = "";
     }
 </script>
