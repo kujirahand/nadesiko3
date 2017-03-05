@@ -568,11 +568,87 @@ var PluginSystem = {
       throw new Error("『配列ソート』で配列以外の処理。");
     }
   },
-  /* --- */
-  __print_log: {
-    type:"var",
-    value:"",
+  "配列数値ソート": { /// 配列Aをソートして返す
+    type:"func", josi: [["の","を"]],
+    fn: function (a) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.sort((a,b)=>{ return parseFloat(a) - parseFloat(b)});
+      }
+      throw new Error("『配列数値ソート』で配列以外の処理。");
+    }
   },
+  "配列カスタムソート": { /// 配列Aを関数Bでソートして返す
+    type:"func", josi: [["の","を"],["で"]],
+    fn: function (a, f_name, sys) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.sort(sys.__vars[f_name]);
+      }
+      throw new Error("『配列数値ソート』で配列以外の処理。");
+    }
+  },
+  "配列逆順": { /// 配列Aを逆にして返す。Aを書き換える。
+    type:"func", josi: [["の","を"]],
+    fn: function (a) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.reverse();
+      }
+      throw new Error("『配列ソート』で配列以外の処理。");
+    }
+  },
+  "配列シャッフル": { /// 配列Aをシャッフルして返す。Aを書き換える
+    type:"func", josi: [["の","を"]],
+    fn: function (a) {
+      if (a instanceof Array) { // 配列ならOK
+        for(var i = a.length - 1; i > 0; i--){
+          var r = Math.floor(Math.random() * (i + 1));
+          var tmp = a[i];
+          a[i] = a[r];
+          a[r] = tmp;
+        }
+        return a;
+      }
+      throw new Error("『配列シャッフル』で配列以外の処理。");
+    }
+  },
+  "配列切り取": { /// 配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。
+    type:"func", josi: [["の"],["を"]],
+    fn: function (a, i) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.splice(i, 1);
+      }
+      throw new Error("『配列切り取』で配列以外の処理。");
+    }
+  },
+  "配列取り出": { /// 配列AのI番目(0起点)からCNT個の応訴を取り出して返す。Aの内容を書き換える
+    type:"func", josi: [["の"],["から"],["を"]],
+    fn: function (a, i, cnt) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.splice(i, cnt);
+      }
+      throw new Error("『配列切り取』で配列以外の処理。");
+    }
+  },
+  "配列ポップ": { /// 配列Aの末尾を取り出して返す。Aの内容を書き換える。
+    type:"func", josi: [["の","から"]],
+    fn: function (a) {
+      if (a instanceof Array) { // 配列ならOK
+        return a.pop();
+      }
+      throw new Error("『配列ポップ』で配列以外の処理。");
+    }
+  },
+  "配列追加": { /// 配列Aの末尾にBを追加して返す。Aの内容を書き換える。
+    type:"func", josi: [["に","へ"],["を"]],
+    fn: function (a,b) {
+      if (a instanceof Array) { // 配列ならOK
+        a.push(b);
+        return a;
+      }
+      throw new Error("『配列追加』で配列以外の処理。");
+    }
+  },
+  /* --- */
+  __print_log: { type:"var", value:"" },
   __print: function (s) {
     console.log(s);
     PluginSystem.__print_log.value += s + "\n";

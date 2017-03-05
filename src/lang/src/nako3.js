@@ -80,8 +80,8 @@ class NakoCompiler {
     _run(code, is_reset) {
         if (is_reset) this.reset();
         const js = this.compile(code);
-        var __varslist = this.getVarsList();
-        var __vars = __varslist[1];
+        var __varslist = this.__varslist = this.getVarsList();
+        var __vars = this.__vars = this.__varslist[1];
         eval(js);
         return this;
     }

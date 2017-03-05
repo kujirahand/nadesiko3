@@ -32,9 +32,9 @@ class NakoGen {
 
     getHeader() {
         return "" +
-            "var __vars = {};\n" +
-            "var __varslist = [{}, __vars];\n" +
-            "var __print = (s)=>{ console.log(s); };\n";
+            "this.__vars = {};\n" +
+            "this.__varslist = [{}, this.__vars];\n" +
+            "this.__print = (s)=>{ console.log(s); };\n";
     }
 
     getVarsCode() {
@@ -42,7 +42,7 @@ class NakoGen {
         // プログラム中で使った関数を列挙
         for (const key in this.used_func) {
             const f = this.used_func[key];
-            const name = `__varslist[0]["${key}"]`;
+            const name = `this.__varslist[0]["${key}"]`;
             if (typeof(f) == "function") {
                 code += name + "=" + f.toString() + ";\n";
             } else {
@@ -452,6 +452,8 @@ class NakoGen {
         if (typeof(this.used_func[func_name]) === "undefined") {
             this.used_func[func_name] = func.fn;
         }
+        // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
+        args.push("this");
         let args_code = args.join(",");
         let code = `${func_name_s}(${args_code})`;
         if (func.return_none) {
