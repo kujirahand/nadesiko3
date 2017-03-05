@@ -1,64 +1,79 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>なでしこ3</title>
     <!-- なでしこを使う準備 -->
     <script src="../release/nako3.js"></script>
     <script>
-      var display_id = "info";
-      // なでしこの関数をカスタマイズ
-      navigator.nako3.getFunc("言").fn = function(msg){ alert(msg); };
-      navigator.nako3.getFunc("表示").fn = function(s) {
-        $(display_id).innerHTML += tohtml(s) + "<br>";
-      };
-      // なでしこにオリジナル関数をJSで追加
-      navigator.nako3.addFunc("色変更", 
-        [["に","へ"]],
-        function (s) { $("info").style.color = s; });
-      // 簡易DOMアクセス関数など
-      function $(id) { return document.getElementById(id); }
-      function tohtml(s) {
-        s = "" + s;
-        return s.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
-      }
+        var display_id = "info";
+
+        // なでしこの関数をカスタマイズ
+        navigator.nako3.getFunc("言").fn = function (msg) {
+            alert(msg);
+        };
+
+        navigator.nako3.getFunc("表示").fn = function (s) {
+            $(display_id).innerHTML += to_html(s) + "<br>";
+        };
+
+        // なでしこにオリジナル関数をJSで追加
+        navigator.nako3.addFunc("色変更",
+            [["に", "へ"]],
+            function (s) {
+                $("info").style.color = s;
+            });
+
+        // 簡易DOMアクセス関数など
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        function to_html(s) {
+            s = "" + s;
+            return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+        }
     </script>
     <style>
-      .info {
-        font-size:1em;
-        border: 1px solid gray;
-        padding:8px;
-        background-color: #f0fff0; }
-      .src {
-        font-size:1em;
-        background-color: #f0f0f0;
-        width: 99%; }
-      .sbox {
-        border-bottom: 1px solid silver;
-        margin: 8px;
-        padding: 8px; }
+        .info {
+            font-size: 1em;
+            border: 1px solid gray;
+            padding: 8px;
+            background-color: #f0fff0;
+        }
+
+        .src {
+            font-size: 1em;
+            background-color: #f0f0f0;
+            width: 99%;
+        }
+
+        .sbox {
+            border-bottom: 1px solid silver;
+            margin: 8px;
+            padding: 8px;
+        }
     </style>
-  </head>
-  <body>
-    <h1>なでしこ3デモ</h1>
-    <hr>
-    <h3>試してみよう！</h3>
-    <div class="sbox">
-      <h4>単純な繰り返し</h4>
-      <textarea id="calc_txt" class="src" rows="8">
+</head>
+<body>
+<h1>なでしこ3デモ</h1>
+<hr>
+<h3>試してみよう！</h3>
+<div class="sbox">
+    <h4>単純な繰り返し</h4>
+    <textarea id="calc_txt" class="src" rows="8">
 # --- 単純な繰り返し ---
 3回「ワン」と表示。
 # --- 変数を指定する場合 ---
 N=5
-(N)回「にゃーん」と表示。
-      </textarea><br>
-      <button onclick="runbox('calc_txt')">実行</button>
-      <div><p id="calc_txt_info" class="info"></p></div>
-    </div>
+(N)回「にゃーん」と表示。</textarea><br>
+    <button onclick="run_box('calc_txt')">実行</button>
+    <div><p id="calc_txt_info" class="info"></p></div>
+</div>
 
-    <div class="sbox">
-      <h4>条件分岐</h4>
-      <textarea id="var_txt" class="src" rows="10">
+<div class="sbox">
+    <h4>条件分岐</h4>
+    <textarea id="var_txt" class="src" rows="10">
 --------------
 A=50
 もし、A＝50ならば
@@ -72,28 +87,27 @@ B=30
 　　「Bは50」と表示。
 違えば
 　　「Bは50ではない」と表示。
---------------
-      </textarea><br>
-      <div><p id="var_txt_info" class="info"></p></div>
-      <button onclick="runbox('var_txt')">実行</button>
-      <p>※インデントによるブロック表現は廃止されました。
-      ブロックの末尾には、「ここまで」または「ーーー」や「---」と書きます。「-」の数は3つ以上ならいくつでも大丈夫です。</p>
-    </div>
-    
-    <div class="sbox">
-      <h4>ループ変数を用いた繰り返し</h4>
-      <textarea id="bmi_txt" class="src" rows="5">
+--------------</textarea><br>
+    <div><p id="var_txt_info" class="info"></p></div>
+    <button onclick="run_box('var_txt')">実行</button>
+    <p>※インデントによるブロック表現は廃止されました。
+        ブロックの末尾には、「ここまで」または「ーーー」や「---」と書きます。「-」の数は3つ以上ならいくつでも大丈夫です。</p>
+</div>
+
+<div class="sbox">
+    <h4>ループ変数を用いた繰り返し</h4>
+    <textarea id="bmi_txt" class="src" rows="5">
 Nを１から５まで繰り返す
 　　Ｎを表示。
-ここまで。
-      </textarea><br>
-      <div><p id="bmi_txt_info" class="info"></p></div>
-      <button onclick="runbox('bmi_txt')">実行</button><br>
-    </div>
-    
-    <div class="sbox">
-      <h4>指定条件付きの繰り返し</h4>
-      <textarea id="while_txt" class="src" rows="8">
+ここまで。</textarea><br>
+    <div><p id="bmi_txt_info" class="info"></p></div>
+    <button onclick="run_box('bmi_txt')">実行</button>
+    <br>
+</div>
+
+<div class="sbox">
+    <h4>指定条件付きの繰り返し</h4>
+    <textarea id="while_txt" class="src" rows="8">
 A=1
 (A≦3)の間
 　　「{A}回目」を表示
@@ -103,15 +117,15 @@ B=3
 (B>0)の間
 　　「B={B}」を表示。
 　　B=B-1
-------
-      </textarea><br>
-      <div><p id="while_txt_info" class="info"></p></div>
-      <button onclick="runbox('while_txt')">実行</button><br>
-    </div>
-    
-    <div class="sbox">
-      <h4>簡易条件文</h4>
-      <textarea id="if2_txt" class="src" rows="10">
+------</textarea><br>
+    <div><p id="while_txt_info" class="info"></p></div>
+    <button onclick="run_box('while_txt')">実行</button>
+    <br>
+</div>
+
+<div class="sbox">
+    <h4>簡易条件文</h4>
+    <textarea id="if2_txt" class="src" rows="10">
 --------------
 N=10
 もしNが100未満ならば「OK1」と表示。
@@ -121,27 +135,29 @@ N=10
 N=30
 もしNが10以下ならば「NG」と表示。
 違えば「OK4」と表示。
---------------
-      </textarea><br>
-      <div><p id="if2_txt_info" class="info"></p></div>
-      <button onclick="runbox('if2_txt')">実行</button>
-    </div>
+--------------</textarea><br>
+    <div><p id="if2_txt_info" class="info"></p></div>
+    <button onclick="run_box('if2_txt')">実行</button>
+</div>
 <script>
-function runbox(id) {
-  if (id == null) { alert('idが設定されていません。'); return; }
-  var src = $(id).value;
-  display_id = id + "_info";
-  $(display_id).innerHTML = "";
-  try {
-    navigator.nako3.run(src);
-  } catch (e) {
-    console.log(e);
-  }
-}
-function resetbox() {
-  $("info").innerHTML = "";
-}
-</script>
-  </body>
-</html>
+    function run_box(id) {
+        if (id == null) {
+            alert('idが設定されていません。');
+            return;
+        }
+        var src = $(id).value;
+        display_id = id + "_info";
+        $(display_id).innerHTML = "";
+        try {
+            navigator.nako3.run(src);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
+    function reset_box() {
+        $("info").innerHTML = "";
+    }
+</script>
+</body>
+</html>
