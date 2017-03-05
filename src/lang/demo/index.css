@@ -2,13 +2,6 @@
     margin-left: 12px;
 }
 
-#info {
-    font-size: 1em;
-    border: 1px solid gray;
-    padding: 8px;
-    background-color: #f0fff0;
-}
-
 #err {
     display: none;
 }
