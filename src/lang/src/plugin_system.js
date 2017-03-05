@@ -647,6 +647,63 @@ var PluginSystem = {
       throw new Error("『配列追加』で配列以外の処理。");
     }
   },
+  /// 日時処理
+  "今": { /// 現在時刻を「hh:nn:ss」の形式で返す
+    type:"func", josi: [],
+    fn: function () {
+      var t = new Date();
+      var z2 = PluginSystem.z2;
+      return z2(t.getHours())+":"+z2(t.getMinutes())+":"+z2(t.getSeconds());
+    }
+  },
+  "システム時間": { /// UTC(1970/1/1)からの経過時間をミリ秒単位で返す
+    type:"func", josi: [],
+    fn: function () {
+      var t = new Date();
+      return t.getTime();
+    }
+  },
+  "今日": { /// 今日の日付を「YYYY/MM/DD」の形式で返す
+    type:"func", josi: [],
+    fn: function () {
+      var t = new Date();
+      var z2 = PluginSystem.z2;
+      return t.getFullYear()+"/"+z2(t.getMonth()+1)+"/"+z2(t.getDate());
+    }
+  },
+  "今年": { /// 今年で返す
+    type:"func", josi: [],
+    fn: function () {
+      var t = new Date();
+      return t.getFullYear();
+    }
+  },
+  "曜日": { /// 日付Sの曜日を返す
+    type:"func", josi: [["の"]],
+    fn: function (s) {
+      var week = ["日","月","火","水","木","金","土"];
+      var t = new Date(s);
+      return week[t.getDay()];
+    }
+  },
+  "UNIXTIME変換": { /// 日時SをUNIXTIME(ミリ秒付き)に変換して返す
+    type:"func", josi: [["の","を","から"]],
+    fn: function (s) {
+      var t = new Date(s);
+      return t.getTime() / 1000;
+    }
+  },
+  "日時変換": { /// UNIXTIMEを年/月/日に変換
+    type:"func", josi: [["を","から"]],
+    fn: function (tm) {
+      var t = new Date();
+      t.setTime(tm*1000);
+      var z2 = PluginSystem.z2;
+      return t.getFullYear()+"/"+z2(t.getMonth()+1)+"/"+z2(t.getDate()) +
+        " " + z2(t.getHours())+":"+z2(t.getMinutes())+":"+z2(t.getSeconds());
+    }
+  },
+  z2: function (s){ s="00"+s; return s.substr(s.length-2,2); },
   /* --- */
   __print_log: { type:"var", value:"" },
   __print: function (s) {

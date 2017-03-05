@@ -216,6 +216,12 @@ class NakoGen {
             const pv = this.plugins[name];
             if (pv !== undefined) {
                 if (pv.type == "const") return JSON.stringify(pv.value);
+                if (pv.type == "func") {
+                    if (pv.josi.length == 0) {
+                        return `(__varslist[${i}]["${name}"]())`;
+                    }
+                    throw new NakoGenError(`『${name}』が複文で使われました。申し訳ありません。単文で記述してください。(v1非互換)`);
+                }
                 throw new NakoGenError(`『${name}』は関数であり参照できません。`);
             }
         }
