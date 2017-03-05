@@ -7,7 +7,7 @@
     "test": "mocha",
     "watch": "webpack --watch",
     "build": "webpack",
-    "build:parser": "./parser/make.sh && cp ./parser/nako_parser.js ./src/"
+    "build:parser": "pegjs --cache -o src/nako_parser.js parser/nako_parser.pegjs"
   },
   "repository": {
     "type": "git",
