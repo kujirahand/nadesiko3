@@ -1,7 +1,7 @@
 // なでしこの関数をカスタマイズ
-navigator.nako3.getFunc("言").fn = function (msg) {
+navigator.nako3.setFunc("言", function (msg) {
     alert(msg);
-};
+});
 
 // なでしこにオリジナル関数をJSで追加
 navigator.nako3.addFunc("色変更",

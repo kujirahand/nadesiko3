@@ -19,13 +19,13 @@
 <script>
     // --- なでしこのカスタマイズ例 ---
     // 必要に応じて なでしこの関数を カスタマイズ
-    navigator.nako3.getFunc("言").fn = function (msg) {
+    navigator.nako3.setFunc("言", function (msg) {
         alert(msg);
-    };
+    });
 
-    navigator.nako3.getFunc("表示").fn = function (s) {
+    navigator.nako3.setFunc("表示", function (s) {
         $("info").innerHTML += to_html(s) + "<br>";
-    };
+    });
 
     // なでしこにオリジナル関数をJSで追加
     navigator.nako3.addFunc("色変更",

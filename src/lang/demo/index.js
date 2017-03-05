@@ -1,7 +1,7 @@
 // なでしこの関数をカスタマイズ
-navigator.nako3.getFunc("表示").fn = function (s) {
+navigator.nako3.setFunc("表示", function (s) {
     $("info").innerHTML += to_html(s) + "<br>";
-};
+});
 
 // 簡易DOMアクセス関数など
 function run_box(id) {

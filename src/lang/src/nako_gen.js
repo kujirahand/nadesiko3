@@ -81,7 +81,13 @@ class NakoGen {
 
     /** 単体で関数を追加する場合 */
     addFunc(key, josi, fn) {
-        this.plugins[key] = {"josi": josi, "fn": fn};
+        this.plugins[key] = {"josi": josi};
+        this.setFunc(key, fn);
+    }
+
+    setFunc(key, fn) {
+        this.plugins[key].fn = fn;
+        this.__varslist[0][key] = fn;
     }
 
     /** プラグイン関数を参照したい場合 */

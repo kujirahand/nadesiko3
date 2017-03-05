@@ -26,6 +26,10 @@ class NakoCompiler {
         this.gen.addFunc(key, josi, fn);
     }
 
+    setFunc(key, fn) {
+        this.gen.setFunc(key, fn);
+    }
+
     getFunc(key) {
         return this.gen.getFunc(key);
     }
