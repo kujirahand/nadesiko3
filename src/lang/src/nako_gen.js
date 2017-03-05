@@ -13,13 +13,22 @@ class NakoGen {
     constructor() {
         this.header = this.getHeader();
 
-        /** プラグインで定義された関数の一覧 */
+        /**
+         * プラグインで定義された関数の一覧
+         * @type {{}}
+         */
         this.plugins = {};
 
-        /** なでしこで定義した関数の一覧 */
+        /**
+         * なでしこで定義した関数の一覧
+         * @type {{}}
+         */
         this.nako_func = {};
 
-        /** JS関数でなでしこ内で利用された関数 */
+        /**
+         * JS関数でなでしこ内で利用された関数
+         * @type {{}}
+         */
         this.used_func = {};
 
         this.loop_id = 1;
@@ -69,6 +78,7 @@ class NakoGen {
 
     /**
      * プラグイン・オブジェクトを追加
+     * @param po プラグイン・オブジェクト
      */
     addPlugin(po) {
         // プラグインの値をオブジェクトにコピー
@@ -79,7 +89,12 @@ class NakoGen {
         }
     }
 
-    /** 単体で関数を追加する場合 */
+    /**
+     * 単体で関数を追加する場合
+     * @param key 関数名
+     * @param josi 助詞
+     * @param fn 関数
+     */
     addFunc(key, josi, fn) {
         this.plugins[key] = {"josi": josi};
         this.setFunc(key, fn);
@@ -90,7 +105,11 @@ class NakoGen {
         this.__varslist[0][key] = fn;
     }
 
-    /** プラグイン関数を参照したい場合 */
+    /**
+     * プラグイン関数を参照したい場合
+     * @param key プラグイン関数の関数名
+     * @returns プラグイン・オブジェクト
+     */
     getFunc(key) {
         return this.plugins[key];
     }
@@ -372,7 +391,13 @@ class NakoGen {
         return name2;
     }
 
-    // 関数の引数を調べる
+    /**
+     * 関数の引数を調べる
+     * @param func_name 関数名
+     * @param func
+     * @param node
+     * @returns {Array}
+     */
     c_func_get_args(func_name, func, node) {
         const args = [];
         for (let i = 0; i < func.josi.length; i++) {
@@ -411,7 +436,12 @@ class NakoGen {
         return args;
     }
 
-    /** 関数の呼び出し */
+    /**
+     * 関数の呼び出し
+     * @param node
+     * @param  is_nako_type
+     * @returns コード
+     */
     c_func(node, is_nako_type) {
         const func_name = this.getFuncName(node.name.value);
         let func_name_s;
