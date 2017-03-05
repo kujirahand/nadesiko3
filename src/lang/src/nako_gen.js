@@ -90,7 +90,7 @@ class NakoGen {
     }
 
     /**
-     * 単体で関数を追加する場合
+     * 関数を追加する
      * @param key 関数名
      * @param josi 助詞
      * @param fn 関数
@@ -100,13 +100,18 @@ class NakoGen {
         this.setFunc(key, fn);
     }
 
+    /**
+     * 関数をセットする
+     * @param key 関数名
+     * @param fn 関数
+     */
     setFunc(key, fn) {
         this.plugins[key].fn = fn;
         this.__varslist[0][key] = fn;
     }
 
     /**
-     * プラグイン関数を参照したい場合
+     * プラグイン関数を参照する
      * @param key プラグイン関数の関数名
      * @returns プラグイン・オブジェクト
      */
