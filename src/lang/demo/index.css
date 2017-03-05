@@ -1,0 +1,7 @@
+#editor, #progress {
+    margin-left: 12px;
+}
+
+#err {
+    display: none;
+}

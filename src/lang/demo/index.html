@@ -32,42 +32,23 @@
             return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
         }
     </script>
-    <style>
-        #info {
-            font-size: 1em;
-            border: 1px solid gray;
-            padding: 8px;
-            background-color: #f0fff0;
-        }
-
-        #err {
-            font-size: 1em;
-            border: 1px solid gray;
-            padding: 8px;
-            background-color: #fff0f0;
-        }
-
-        #srcbox {
-            font-size: 1em;
-            background-color: #fffff0;
-            width: 99%;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="common.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
 <h1>なでしこ3 ベータ1 デモ</h1>
-<div style="margin-left:12px;">
+<div id="editor">
     <p>簡易エディタ:</p>
-    <textarea id="srcbox" rows="8">
+    <textarea id="src_box" rows="8">
 「こんにちは！」と表示。
 (1 + 2)×3を表示。</textarea><br>
     <div>
         <button onclick="run_box(null)">実行</button>
         <button onclick="reset_box()">クリア</button>
     </div>
-    <div><p id="err" style="display:none;"></p></div>
+    <div><p id="err"></p></div>
     <div><p>実行結果:</p>
-        <p id="info"></p></div>
+        <p id="info" class="info"></p></div>
 </div>
 <hr>
 <h3>試してみよう！</h3>
@@ -79,17 +60,17 @@
     </ul>
 </div>
 <h3>どこまで実装されてる？</h3>
-<div style="margin-left:12px;">
+<div id="progress">
     詳しくは、<a href="http://nadesi.com/dev/wiki/go.php?351">こちらを</a>ご覧ください。
 </div>
 
 <script>
     function run_box(id) {
         if (id != null) {
-            $('srcbox').value = $(id).value;
+            $('src_box').value = $(id).value;
             reset_box();
         }
-        var src = $("srcbox").value;
+        var src = $("src_box").value;
         $("err").style.display = "none";
         try {
             navigator.nako3.run(src);
