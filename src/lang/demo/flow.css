@@ -1,12 +1,17 @@
-.info {
+.info, .src {
     font-size: 1em;
-    border: 1px solid gray;
+}
+
+.info, .sbox {
     padding: 8px;
+}
+
+.info {
+    border: 1px solid gray;
     background-color: #f0fff0;
 }
 
 .src {
-    font-size: 1em;
     background-color: #f0f0f0;
     width: 99%;
 }
@@ -14,5 +19,4 @@
 .sbox {
     border-bottom: 1px solid silver;
     margin: 8px;
-    padding: 8px;
 }
