@@ -32,31 +32,11 @@
             return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
         }
     </script>
-    <style>
-        #info {
-            font-size: 1em;
-            border: 1px solid gray;
-            padding: 8px;
-            background-color: #f0fff0;
-        }
-
-        #err {
-            font-size: 1em;
-            border: 1px solid gray;
-            padding: 8px;
-            background-color: #fff0f0;
-        }
-
-        #src_box {
-            font-size: 1em;
-            background-color: #fffff0;
-            width: 99%;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
 <h1>なでしこ3 ベータ1 デモ</h1>
-<div style="margin-left:12px;">
+<div id="editor">
     <p>簡易エディタ:</p>
     <textarea id="src_box" rows="8">
 「こんにちは！」と表示。
@@ -65,7 +45,7 @@
         <button onclick="run_box(null)">実行</button>
         <button onclick="reset_box()">クリア</button>
     </div>
-    <div><p id="err" style="display:none;"></p></div>
+    <div><p id="err"></p></div>
     <div><p>実行結果:</p>
         <p id="info"></p></div>
 </div>
@@ -79,7 +59,7 @@
     </ul>
 </div>
 <h3>どこまで実装されてる？</h3>
-<div style="margin-left:12px;">
+<div id="progress">
     詳しくは、<a href="http://nadesi.com/dev/wiki/go.php?351">こちらを</a>ご覧ください。
 </div>
 

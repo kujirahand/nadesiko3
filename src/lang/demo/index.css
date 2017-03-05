@@ -1,0 +1,28 @@
+#editor {
+    margin-left: 12px;
+}
+
+#info {
+    font-size: 1em;
+    border: 1px solid gray;
+    padding: 8px;
+    background-color: #f0fff0;
+}
+
+#err {
+    font-size: 1em;
+    border: 1px solid gray;
+    padding: 8px;
+    background-color: #fff0f0;
+    display: none;
+}
+
+#src_box {
+    font-size: 1em;
+    background-color: #fffff0;
+    width: 99%;
+}
+
+#progress {
+    margin-left: 12px;
+}
