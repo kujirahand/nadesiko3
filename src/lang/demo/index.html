@@ -47,7 +47,7 @@
             background-color: #fff0f0;
         }
 
-        #srcbox {
+        #src_box {
             font-size: 1em;
             background-color: #fffff0;
             width: 99%;
@@ -58,7 +58,7 @@
 <h1>なでしこ3 ベータ1 デモ</h1>
 <div style="margin-left:12px;">
     <p>簡易エディタ:</p>
-    <textarea id="srcbox" rows="8">
+    <textarea id="src_box" rows="8">
 「こんにちは！」と表示。
 (1 + 2)×3を表示。</textarea><br>
     <div>
@@ -86,10 +86,10 @@
 <script>
     function run_box(id) {
         if (id != null) {
-            $('srcbox').value = $(id).value;
+            $('src_box').value = $(id).value;
             reset_box();
         }
-        var src = $("srcbox").value;
+        var src = $("src_box").value;
         $("err").style.display = "none";
         try {
             navigator.nako3.run(src);
