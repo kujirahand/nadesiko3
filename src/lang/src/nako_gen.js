@@ -149,7 +149,7 @@ class NakoGen {
             case "for":
                 code += this.c_for(node);
                 break;
-              case "foreach":
+            case "foreach":
                 code += this.c_foreach(node);
                 break;
             case "repeat_times":
@@ -305,13 +305,13 @@ class NakoGen {
         const block = this.c_gen(node.block);
         let word = "", var_code = "";
         if (node.word != "") {
-          word = this.c_gen(node.word);
-          var_code = "";
+            word = this.c_gen(node.word);
+            var_code = "";
         } else {
-          // ループ変数を省略した時は、自動で生成する
-          const id = this.loop_id++;
-          word = `$nako_i${id}`;
-          var_code = "var ";
+            // ループ変数を省略した時は、自動で生成する
+            const id = this.loop_id++;
+            word = `$nako_i${id}`;
+            var_code = "var ";
         }
         const code =
             `for(${var_code}${word}=${kara}; ${word}<=${made}; ${word}++)` + "{\n" +
@@ -320,7 +320,7 @@ class NakoGen {
             "};\n";
         return code;
     }
-    
+
     c_foreach(node) {
         const target = this.c_gen(node.target);
         const block = this.c_gen(node.block);
