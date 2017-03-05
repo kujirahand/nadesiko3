@@ -43,11 +43,11 @@ def_func_arg
   = w:word j:josi
   { return {"word":w, "josi":j}; }
 
-return_word = "戻る"
+return_word = "戻る" / "戻す"
 
 return_stmt
   = return_word EOS { return {type:"return",value:null}; }
-  / v:calc "で" return_word EOS { return {type:"return",value:v}; }
+  / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v}; }
 
 foreach_stmt
   = target:value "を" __ ("反復" / "反復する") LF b:block block_end {
