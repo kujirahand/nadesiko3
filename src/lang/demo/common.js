@@ -21,5 +21,7 @@ function to_html(s) {
 }
 
 function reset_box() {
-    $("info").innerHTML = "";
+    let info = $("info");
+    info.innerHTML = "";
+    info.style.color = "";
 }
