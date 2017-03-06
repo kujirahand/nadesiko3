@@ -1,6 +1,6 @@
 // plugin_node.js
 
-var PluginNode = {
+const PluginNode = {
     /// ファイル入出力
     "開": { /// ファイルSを開く
         type: "func", josi: [["を", "から"]],

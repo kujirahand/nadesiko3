@@ -1,6 +1,6 @@
 // basic_func.js
 
-var PluginSystem = {
+const PluginSystem = {
     /// システム定数
     "ナデシコバージョン": {type: "const", value: "3.0"},
     "ナデシコエンジン": {type: "const", value: "nadesi.com/v3"},
