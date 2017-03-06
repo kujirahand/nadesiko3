@@ -126,21 +126,6 @@ class NakoCompiler {
         s = s.replace(/\s+$/, '');
         return s;
     }
-
-    /**
-     * ブラウザでtype="なでしこ"というスクリプトを得て実行する
-     */
-    runNakoScript() {
-        // スクリプトタグの中身を得る
-        let scripts = document.querySelectorAll("script");
-        for (let i = 0; i < scripts.length; i++) {
-            let script = scripts[i];
-            let type = script.type;
-            if (type == "nako" || type == "なでしこ") {
-                this.run(script.text);
-            }
-        }
-    }
     
     /**
      * プラグイン・オブジェクトを追加(ブラウザ向け)
@@ -165,7 +150,3 @@ class NakoCompiler {
 // モジュールなら外部から参照できるように
 module.exports = NakoCompiler;
 
-// ブラウザなら navigator.nako3 になでしこを登録
-if (typeof(navigator) == "object") {
-    navigator.nako3 = new NakoCompiler();
-}

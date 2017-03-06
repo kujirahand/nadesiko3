@@ -2,9 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>なでしこ3 ベータ1</title>
     <!-- なでしこを使う準備 -->
-    <script src="../release/nako3.js"></script>
+    <script src="../release/wnako3.js"></script>
     <script src="common.js"></script>
     <script src="index.js"></script>
     <link rel="stylesheet" type="text/css" href="common.css">
@@ -12,20 +13,20 @@
 </head>
 <body>
 <h1>なでしこ3 ベータ1 デモ</h1>
-<div id="editor">
-    <p>簡易エディタ:</p>
+<div id="editor" class="edit_div">
+    <p class="edit_head">簡易エディタ:</p>
     <textarea id="src_box" rows="8" title="簡易エディタ">
 「こんにちは！」と表示。
 (1 + 2)×3を表示。</textarea><br>
-    <div>
+    <div class="buttons">
         <button onclick="run_box(null)">実行</button>
         <button onclick="reset_box()">クリア</button>
     </div>
-    <div><p id="err"></p></div>
-    <div><p>実行結果:</p>
+    <div id="err"></div>
+    <div><p class="edit_head">実行結果:</p>
         <p id="info" class="info"></p></div>
 </div>
-<hr>
+<br/>
 <h3>試してみよう！</h3>
 <div>
     <ul>
@@ -36,7 +37,10 @@
 </div>
 <h3>どこまで実装されてる？</h3>
 <div id="progress">
-    詳しくは、<a href="http://nadesi.com/dev/wiki/go.php?351">こちらを</a>ご覧ください。
+    <ul>
+      <li>詳しくは、<a href="http://nadesi.com/dev/wiki/go.php?351">こちらを</a>ご覧ください。</li>
+    </ul>
 </div>
 </body>
 </html>
+

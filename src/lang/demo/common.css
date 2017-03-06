@@ -1,5 +1,53 @@
+h1 {
+    background-color: silver;
+    margin: 0;
+    padding: 0.5em;
+    color: black;
+    font-size: 1.3em;
+
+}
+
+h3 {
+    font-size: 1em;
+    background-color: #e0e0e0;
+    border-bottom: 1px solid gray;
+    margin: 0;
+    padding: 0.5em;
+}
+
+button {
+    font-size: 1.3em;
+    width: 5em;
+    padding: 0.4em;
+    background-color: silver;
+}
+
+.edit_head {
+    font-size:0.8em;
+    color: gray;
+    padding:0.3em;
+    margin:0;
+}
+
+.edit_div {
+    margin: 0.5em;
+    padding: 0em;
+}
+
+.buttons {
+    text-align: center;
+    margin:0px;
+    padding: 0.3em;
+}
+
+#info {
+    margin:0px;
+    padding: 0.5em;
+}
+
 .info, #err, #src_box, .src {
     font-size: 1em;
+    line-height: 1.5em;
 }
 
 .info, #err {

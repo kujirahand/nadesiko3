@@ -1,7 +1,8 @@
 module.exports = {
   
   entry: {
-    nako3: './src/nako3.js',
+    wnako3: './src/wnako3.js',
+    plugin_browser: './src/plugin_browser.js',
   },
 
   output: {
