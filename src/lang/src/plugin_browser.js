@@ -2,7 +2,7 @@
 
 var PluginBrowser = {
     /// 色定数
-    "赤色": {type: "const", value: "#FF0000"},
+    "赤色": {type: "const", value: "red"},
     /// DOM操作
     "ID取得": { /// DOMのIDを取得して返す
         type: "func", josi: [["の", "を"]],
