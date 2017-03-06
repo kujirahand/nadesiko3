@@ -1,4 +1,5 @@
 # nadesiko3
+
 Japanese Programming Language Nadesiko v3 
 
 ## なでしこ3
@@ -28,4 +29,9 @@ Japanese Programming Language Nadesiko v3
 - エディタやサーバー側APIは、PHPで作る(/src/editor)
 
 ## 対応ブラウザ
+
 - Internet Explorer 11 以降
+- Safari / Chrome / FirefoxなどHTML5対応のブラウザ
+- iOS Safari / Android標準ブラウザ
+
+
