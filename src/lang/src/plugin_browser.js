@@ -1,8 +1,15 @@
 // plugin_browser.js
 
 var PluginBrowser = {
-    /// 色定数
+    /// v1互換:色定数
+    "水色": {type: "const", value: "lightblue"},
+    "紫色": {type: "const", value: "purple"},
+    "緑色": {type: "const", value: "green"},
+    "青色": {type: "const", value: "blue"},
     "赤色": {type: "const", value: "red"},
+    "黄色": {type: "const", value: "yellow"},
+    "黒色": {type: "const", value: "black"},
+    "白色": {type: "const", value: "white"},
     /// DOM操作
     "ID取得": { /// DOMのIDを取得して返す
         type: "func", josi: [["の", "を"]],
