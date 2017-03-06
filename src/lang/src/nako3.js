@@ -154,10 +154,11 @@ class NakoCompiler {
     /**
      * プラグイン・ファイルを追加(Node.js向け)
      * @param objName オブジェクト名を登録
-     * @param pluginfile ファイルパス
+     * @param path 取り込むモジュールのファイルパス
+     * @param po 登録するオブジェクト
      */
-    addPluginFile(objName, pluginfile) {
-        this.gen.addPluginFile(objName, pluginfile);
+    addPluginFile(objName, path, po) {
+        this.gen.addPluginFile(objName, path, po);
     }
 }
 

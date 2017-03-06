@@ -1,4 +1,5 @@
 #!/bin/sh
-cd $(dirname $0)
-node cnako3.js $*
+basedir=$(cd $(dirname $0) && pwd)
+cnako3js=$basedir/cnako3.js
+node $cnako3js $*
 

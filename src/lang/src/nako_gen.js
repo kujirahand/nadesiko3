@@ -124,13 +124,13 @@ class NakoGen {
     /**
      * プラグイン・ファイルを追加(Node.js向け)
      * @param objName オブジェクト名を登録
-     * @param pluginfile ファイルパス
+     * @param path ファイルパス
+     * @param po 登録するオブジェクト
      */
-    addPluginFile(objName, pluginfile) {
+    addPluginFile(objName, path, po) {
         if (this.pluginfiles[objName] === undefined) {
-          this.pluginfiles[objName] = pluginfile;
-          const obj = require(pluginfile);
-          this.addPlugin(obj);
+          this.pluginfiles[objName] = path;
+          this.addPlugin(po);
         }
     }
 

@@ -3,10 +3,12 @@
 const fs = require('fs');
 const exec = require('child_process').exec;
 
-const NakoCompiler = require('./nako3.js');
+const NakoCompiler = require(__dirname + '/nako3.js');
+const PluginNode = require(__dirname + '/plugin_node.js');
+
 const nako = new NakoCompiler();
 nako.silent = false;
-nako.addPluginFile('PluginNode', __dirname + "/plugin_node.js");
+nako.addPluginFile('PluginNode', __dirname + "/plugin_node.js", PluginNode);
 
 const opt = checkArguments();
 nako_run(opt);
@@ -90,8 +92,6 @@ function nako_run(opt) {
 // コンパイルモードの場合
 function nako_compile(opt, src) {
   // system
-  nako.addPluginFile('PluginSystem', __dirname + "/plugin_system.js");
-  nako.addPluginFile('PluginNode', __dirname + "/plugin_node.js");
   const js = nako.compile(src);
   const jscode = 
     nako.getHeader() +
