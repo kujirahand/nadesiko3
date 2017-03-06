@@ -13,7 +13,7 @@ var PluginBrowser = {
     "タグ一覧取得": { /// 任意のタグの一覧を取得して返す
         type: "func", josi: [["の", "を"]],
         fn: function (tag) {
-            return document.getElementByTags(tag);
+            return document.getElementsByTagName(tag);
         },
     }
 };
