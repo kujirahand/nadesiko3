@@ -23,7 +23,8 @@ class NakoCompiler {
 
     reset() {
         if (!this.__varslist) { // 初回
-          this.__varslist = [{"私":this},{},{}];
+          this.__varslist = [{},{},{}];
+          this.__self = this;
         } else { // 二回目以降
           this.__varslist = [this.__varslist[0], {}, {}];
         }
@@ -102,6 +103,7 @@ class NakoCompiler {
       const js = this.compile(code);
       var __varslist = this.__varslist = this.getVarsList();
       var __vars = this.__vars = this.__varslist[2];
+      var __self = this.__self;
       if (is_reset) this.clearLog();
       eval(js);
       return this;

@@ -55,16 +55,15 @@ class NakoGen {
          * __varslist[1] なでしこグローバル領域
          * __varslist[2] 最初のローカル変数
          */
-        this.__varslist = [{"私":com}, {}, this.__vars];
+        this.__varslist = [{}, {}, this.__vars];
+        this.__self = com;
     }
 
     getHeader() {
         return "" +
-            "this.__vars = {};\n" +
-            "this.__varslist = [{'私':this}, {}, this.__vars];\n" +
-            "this.__print = (s)=>{ console.log(s); };\n" +
-            "var __vars = this.__vars;\n" +
-            "var __varslist = this.__varslist;\n";
+            "var __varslist = this.__varslist = [{}, {}, {}];\n" +
+            "var __vars = this.__varslist[2];\n" +
+            "var __self = this;\n";
     }
 
     /** 書き出し用 */
@@ -542,7 +541,7 @@ class NakoGen {
             this.used_func[func_name] = func.fn;
         }
         // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
-        args.push("__varslist[0]['私']");
+        args.push("__self");
         let args_code = args.join(",");
         let code = `${func_name_s}(${args_code})`;
         if (func.return_none) {

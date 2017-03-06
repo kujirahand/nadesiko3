@@ -17,8 +17,8 @@ function checkArguments() {
     console.log("cnako3 nakofile");
     process.exit();
   }
-  let mainfile = "", output = "";
-  let flag_compile = false, flag_run = false;
+  let mainfile = "", output = "", source = "";
+  let flag_compile = false, flag_run = false, flag_one_liner = false;
   let i = 2;
   while (i < process.argv.length) {
     const arg = process.argv[i];
@@ -37,6 +37,13 @@ function checkArguments() {
     if (arg == "-run" || arg == "--run") {
       flag_run = true;
       i++;
+      continue;
+    }
+    // ワンライナー
+    if (arg == "-e" || arg == "--eval") {
+      flag_one_liner = true;
+      i++;
+      source = process.argv[i++];
       continue;
     }
     if (arg == "-o") {
@@ -59,12 +66,19 @@ function checkArguments() {
     "compile": flag_compile,
     "run": flag_run,
     "output": output,
+    "source": source,
+    "one_liner": flag_one_liner,
     "debug": nako.debug,
   };
 }
 
 // なでしこを実行
 function nako_run(opt) {
+  if (opt.one_liner) {
+    nako_one_liner(opt);
+    return;
+  }
+  
   const src = fs.readFileSync(opt.mainfile, "utf-8");
   if (opt.compile) {
     nako_compile(opt, src);
@@ -90,6 +104,11 @@ function nako_compile(opt, src) {
       console.log(stdout);
     });
   }
+}
+
+// ワンライナーの場合
+function nako_one_liner(opt) {
+  nako.run_reset(opt.source);
 }
 
 
