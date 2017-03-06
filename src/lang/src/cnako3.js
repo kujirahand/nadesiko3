@@ -3,8 +3,8 @@
 const fs = require('fs');
 const exec = require('child_process').exec;
 
-const NakoCompiler = require(__dirname + '/nako3.js');
-const PluginNode = require(__dirname + '/plugin_node.js');
+const NakoCompiler = require(__dirname + '/nako3');
+const PluginNode = require(__dirname + '/plugin_node');
 
 const nako = new NakoCompiler();
 nako.silent = false;

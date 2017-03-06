@@ -1,5 +1,5 @@
 const assert = require('assert');
-const NakoCompiler = require('../src/nako3.js');
+const NakoCompiler = require('../src/nako3');
 const execSync = require('child_process').execSync;
 
 describe('cnako3', () => {

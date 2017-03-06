@@ -1,5 +1,5 @@
 const assert = require('assert');
-const NakoCompiler = require('../src/nako3.js');
+const NakoCompiler = require('../src/nako3');
 
 describe('関数呼び出しテスト', () => {
     const nako = new NakoCompiler();

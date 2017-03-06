@@ -1,8 +1,8 @@
 // nadesiko for web browser
 // wnako3.js
 
-const NakoCompiler = require('./nako3.js');
-const PluginBrowser = require('./plugin_browser.js');
+const NakoCompiler = require('./nako3');
+const PluginBrowser = require('./plugin_browser');
 
 class WebNakoCompiler extends NakoCompiler {
     /**

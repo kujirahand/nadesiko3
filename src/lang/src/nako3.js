@@ -1,9 +1,9 @@
 //
 // nadesiko ver3
 //
-const NakoPeg = require('./nako_parser.js');
-const NakoGen = require('./nako_gen.js');
-const PluginSystem = require('./plugin_system.js');
+const NakoPeg = require('./nako_parser');
+const NakoGen = require('./nako_gen');
+const PluginSystem = require('./plugin_system');
 
 class NakoCompiler {
     constructor() {
