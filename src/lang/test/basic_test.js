@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3.js');
 
 describe('basic', ()=>{
   const nako = new NakoCompiler();
-  // nako.debug = true;
+  nako.debug = false;
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log("code=" + code);
@@ -11,6 +11,9 @@ describe('basic', ()=>{
     assert.equal(nako.run_reset(code).log, res);
   };
   // --- test ---
+  it('print simple', ()=> {
+    cmp("3を表示","3");
+  });
   it('print', ()=> {
     cmp("3を表示","3");
     cmp("100を表示","100");

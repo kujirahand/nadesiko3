@@ -18,15 +18,22 @@ var PluginSystem = {
   "PI": { type:"const", value:Math.PI },
   /// 標準出力
   "表示": { /// Sを表示
-    type:"func",
-    josi: [["を","と"]],
-    fn: function (s) { PluginSystem.__print(s); },
+    type:"func", josi: [["を","と"]],
+    fn: function (s, sys) {
+      if (!sys.silent) { console.log(s); }
+      sys.__varslist[0]["表示ログ"] += (s + "\n");
+    },
+    return_none: true
+  },
+  "表示ログ": { type:"const", value:"" },
+  "表示ログクリア": { /// 表示ログを空にする
+    type:"func", josi: [[]],
+    fn: function (sys) { sys.__varslist[0]["表示ログ"] = ""; },
     return_none: true
   },
   "言": { /// Sを表示
-    type:"func",
-    josi: [["を","と"]],
-    fn: function (s) { PluginSystem.__print(s); },
+    type:"func", josi: [["を","と"]],
+    fn: function (s) { console.log(s); },
     return_none: true
   },
   "尋": { /// メッセージSと入力ボックスを出して尋ねる
@@ -581,7 +588,7 @@ var PluginSystem = {
     type:"func", josi: [["の","を"],["で"]],
     fn: function (a, f_name, sys) {
       if (a instanceof Array) { // 配列ならOK
-        return a.sort(sys.__vars[f_name]);
+        return a.sort(sys.__varslist[1][f_name]);
       }
       throw new Error("『配列数値ソート』で配列以外の処理。");
     }
@@ -652,7 +659,7 @@ var PluginSystem = {
     type:"func", josi: [],
     fn: function () {
       var t = new Date();
-      var z2 = PluginSystem.z2;
+      var z2=function(s){ s="00"+s; return s.substr(s.length-2,2); };
       return z2(t.getHours())+":"+z2(t.getMinutes())+":"+z2(t.getSeconds());
     }
   },
@@ -667,7 +674,7 @@ var PluginSystem = {
     type:"func", josi: [],
     fn: function () {
       var t = new Date();
-      var z2 = PluginSystem.z2;
+      var z2=function(s){ s="00"+s; return s.substr(s.length-2,2); };
       return t.getFullYear()+"/"+z2(t.getMonth()+1)+"/"+z2(t.getDate());
     }
   },
@@ -698,17 +705,10 @@ var PluginSystem = {
     fn: function (tm) {
       var t = new Date();
       t.setTime(tm*1000);
-      var z2 = PluginSystem.z2;
+      var z2=function(s){ s="00"+s; return s.substr(s.length-2,2); };
       return t.getFullYear()+"/"+z2(t.getMonth()+1)+"/"+z2(t.getDate()) +
         " " + z2(t.getHours())+":"+z2(t.getMinutes())+":"+z2(t.getSeconds());
     }
-  },
-  z2: function (s){ s="00"+s; return s.substr(s.length-2,2); },
-  /* --- */
-  __print_log: { type:"var", value:"" },
-  __print: function (s) {
-    console.log(s);
-    PluginSystem.__print_log.value += s + "\n";
   },
 };
 

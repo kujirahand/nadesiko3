@@ -8,7 +8,9 @@ const PluginSystem = require('./plugin_system.js');
 class NakoCompiler {
     constructor() {
         this.debug = false;
-        this.gen = new NakoGen();
+        this.silent = true;
+        this.gen = new NakoGen(this);
+        this.gen.addPlugin(PluginSystem);
         this.reset();
     }
 
@@ -20,9 +22,13 @@ class NakoCompiler {
     }
 
     reset() {
-        this.gen.clearPlugin();
-        this.gen.addPlugin(PluginSystem);
-        this.gen.clearLog();
+        if (!this.__varslist) { // 初回
+          this.__varslist = [{"私":this},{},{}];
+        } else { // 二回目以降
+          this.__varslist = [this.__varslist[0], {}, {}];
+        }
+        this.__vars = this.__varslist[2];
+        this.clearLog();
     }
 
     addFunc(key, josi, fn) {
@@ -48,19 +54,24 @@ class NakoCompiler {
 
     generate(ast) {
         const js = this.gen.c_gen(ast);
+        const def = this.gen.getDefFuncCode();
         if (this.debug) {
             console.log("--- generate ---");
-            console.log(js);
+            console.log(def + js);
         }
-        return js;
+        return def + js;
     }
 
+    /**
+     * プログラムをコンパイルしてJavaScriptのコードを返す
+     */
     compile(code) {
         const ast = this.parse(code);
         if (this.debug) {
             console.log("--- ast ---");
             console.log(JSON.stringify(ast, null, 2));
         }
+        // generate
         const js = this.generate(ast);
         return js;
     }
@@ -71,7 +82,7 @@ class NakoCompiler {
      */
     getVarsList() {
         const v = this.gen.getVarsList();
-        return [v[0], {}];
+        return [v[0], v[1], {}];
     }
 
     /**
@@ -87,24 +98,29 @@ class NakoCompiler {
     }
 
     _run(code, is_reset) {
-        if (is_reset) this.reset();
-        const js = this.compile(code);
-        var __varslist = this.__varslist = this.getVarsList();
-        var __vars = this.__vars = this.__varslist[1];
-        eval(js);
-        return this;
+      if (is_reset) this.reset();
+      const js = this.compile(code);
+      var __varslist = this.__varslist = this.getVarsList();
+      var __vars = this.__vars = this.__varslist[2];
+      if (is_reset) this.clearLog();
+      eval(js);
+      return this;
     }
-
+    
     run(code) {
         return this._run(code, false);
     }
-
+    
     run_reset(code) {
         return this._run(code, true);
     }
 
+    clearLog() {
+        this.__varslist[0]["表示ログ"] = "";
+    }
+
     get log() {
-        let s = this.getFunc("__print_log").value;
+        var s = this.__varslist[0]["表示ログ"];
         s = s.replace(/\s+$/, '');
         return s;
     }
@@ -123,10 +139,23 @@ class NakoCompiler {
             }
         }
     }
+    
+    /**
+     * プラグイン・オブジェクトを追加(ブラウザ向け)
+     * @param name プラグインの名前
+     * @param po プラグイン・オブジェクト
+     */
+    addPluginObject(name, po) {
+        this.gen.addPluginObject(name, po);
+    }
 
-    addPlugin(obj) {
-        // なでしこのシステムにプラグインを登録
-        this.gen.addPlugin(obj);
+    /**
+     * プラグイン・ファイルを追加(Node.js向け)
+     * @param objName オブジェクト名を登録
+     * @param pluginfile ファイルパス
+     */
+    addPluginFile(objName, pluginfile) {
+        this.gen.addPluginFile(objName, pluginfile);
     }
 }
 

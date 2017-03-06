@@ -10,7 +10,10 @@ class NakoGenError extends Error {
  * 構文木からJSのコードを生成するクラス
  */
 class NakoGen {
-    constructor() {
+    /**
+     * @ param com {NakoCompiler} コンパイラのインスタンス
+     */
+    constructor(com) {
         this.header = this.getHeader();
 
         /**
@@ -18,6 +21,11 @@ class NakoGen {
          * @type {{}}
          */
         this.plugins = {};
+        
+        /**
+         * 利用可能なプラグイン(ファイル 単位)
+         */
+         this.pluginfiles = {};
 
         /**
          * なでしこで定義した関数の一覧
@@ -27,25 +35,39 @@ class NakoGen {
 
         /**
          * JS関数でなでしこ内で利用された関数
+         * 利用した関数を個別にJSで定義する(全関数をインクルードしなくても良いように)
          * @type {{}}
          */
         this.used_func = {};
-
+        
+        /** ループ時の一時変数が被らないようにIDで管理 */
         this.loop_id = 1;
+        
         this.sore = this.varname('それ');
-
+        
+        /**
+         * なでしこのローカル変数管理
+         */ 
         this.__vars = {};
-        this.__varslist = [{}, this.__vars];
-        this.clearPlugin();
+        /**
+         * なでしこのローカル変数をスタックで管理
+         * __varslist[0] プラグイン領域
+         * __varslist[1] なでしこグローバル領域
+         * __varslist[2] 最初のローカル変数
+         */
+        this.__varslist = [{"私":com}, {}, this.__vars];
     }
 
     getHeader() {
         return "" +
             "this.__vars = {};\n" +
-            "this.__varslist = [{}, this.__vars];\n" +
-            "this.__print = (s)=>{ console.log(s); };\n";
+            "this.__varslist = [{'私':this}, {}, this.__vars];\n" +
+            "this.__print = (s)=>{ console.log(s); };\n" +
+            "var __vars = this.__vars;\n" +
+            "var __varslist = this.__varslist;\n";
     }
 
+    /** 書き出し用 */
     getVarsCode() {
         let code = "";
         // プログラム中で使った関数を列挙
@@ -60,20 +82,19 @@ class NakoGen {
         }
         return code;
     }
+    
+    
+    getDefFuncCode() {
+        let code = "";
+        for (const key in this.nako_func) {
+            const f = this.nako_func[key].fn;
+            code += `this.__varslist[1]["${key}"]=${f};\n`;
+        }
+        return code;
+    }
 
     getVarsList() {
         return this.__varslist;
-    }
-
-    clearLog() {
-        this.plugins["__print_log"].value = "";
-    }
-
-    clearPlugin() {
-        this.plugins = {};
-        this.vars = {};
-        this.__varslist = [{}, this.__vars];
-        this.used_func = {};
     }
 
     /**
@@ -86,6 +107,31 @@ class NakoGen {
             const v = po[key];
             this.plugins[key] = v;
             this.__varslist[0][key] = (typeof(v.fn) == "function") ? v.fn : v.value;
+        }
+    }
+    
+    /**
+     * プラグイン・オブジェクトを追加(ブラウザ向け)
+     * @param objName オブジェクト名を登録
+     * @param po 関数リスト
+     */
+    addPluginObject(objName, po) {
+        if (this.pluginfiles[objName] === undefined) {
+          this.pluginfiles[objName] = '*'; // dummy
+          this.addPlugin(po);
+        }
+    }
+    
+    /**
+     * プラグイン・ファイルを追加(Node.js向け)
+     * @param objName オブジェクト名を登録
+     * @param pluginfile ファイルパス
+     */
+    addPluginFile(objName, pluginfile) {
+        if (this.pluginfiles[objName] === undefined) {
+          this.pluginfiles[objName] = pluginfile;
+          const obj = require(pluginfile);
+          this.addPlugin(obj);
         }
     }
 
@@ -244,7 +290,7 @@ class NakoGen {
                     if (pv.josi.length == 0) {
                         return `(__varslist[${i}]["${name}"]())`;
                     }
-                    throw new NakoGenError(`『${name}』が複文で使われました。申し訳ありません。単文で記述してください。(v1非互換)`);
+                    throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`);
                 }
                 throw new NakoGenError(`『${name}』は関数であり参照できません。`);
             }
@@ -267,9 +313,9 @@ class NakoGen {
         const name = this.getFuncName(node.name.value);
         const args = node.args;
         const block = this.c_gen(node.block);
-        this.__vars[name] = "func";
+        // 関数定義は、グローバル領域で。
         let code = "(function(){\n";
-        code += "  try { __vars = {}; __varslist.push(__vars);\n";
+        code += "try { __vars = {}; __varslist.push(__vars);\n";
         this.__vars = {};
         this.__varslist.push(this.__vars);
         const josilist = [];
@@ -278,7 +324,6 @@ class NakoGen {
             const word = arg["word"].value;
             const josi = [arg["josi"]];
             josilist.push(josi);
-            // console.log("arg=", arg, "word=", word, "josi=", josi);
             this.__vars[word] = true;
             code += `__vars["${word}"] = arguments[${i}];\n`;
         }
@@ -286,16 +331,20 @@ class NakoGen {
         const popcode = 
           "__varslist.pop(); " +
           "__vars = __varslist[__varslist.length-1];";
-        code += `  } finally { ${popcode} }\n`;
-        code += "\n})\n";
+        code += `} finally { ${popcode} }\n`;
+        code += `})/* end of ${name} */`;
         this.nako_func[name] = {
             "josi": josilist,
             "fn": code,
             "type": "func"
         };
+        this.__vars = this.__varslist.pop();
         this.used_func[name] = code;
-        // console.log(fn.toString());
-        return `__vars["${name}"] = ${code};\n`;
+        this.__varslist[1][name] = code;
+        // ★この時点では関数のコードを生成しない★
+        // 　プログラム冒頭でコード生成時に関数定義を行う
+        // return `__vars["${name}"] = ${code};\n`;
+        return '';
     }
 
     c_json_obj(node) {
@@ -452,7 +501,6 @@ class NakoGen {
         const args = [];
         for (let i = 0; i < node.args.length; i++) {
             const arg = node.args[i];
-            // console.log('arg=', arg);
             args.push(this.c_gen(arg));
         }
         return args;
@@ -469,7 +517,7 @@ class NakoGen {
         let func_name_s;
         const res = this.find_var(func_name);
         if (res == null) {
-            throw new NakoGenError(`関数『${func_name}』が見当たりません。`);
+            throw new NakoGenError(`関数『${func_name}』が見当たりません。現在有効なプラグイン=[`+JSON.stringify(this.pluginfiles.keys()));
         }
         let func;
         if (res.i == 0) { // plugin function
@@ -494,7 +542,7 @@ class NakoGen {
             this.used_func[func_name] = func.fn;
         }
         // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
-        args.push("this");
+        args.push("__varslist[0]['私']");
         let args_code = args.join(",");
         let code = `${func_name_s}(${args_code})`;
         if (func.return_none) {
@@ -523,8 +571,6 @@ class NakoGen {
         const value = this.c_gen(node.value);
         const name = node.name.value;
         const res = this.find_var(name);
-        // console.log("var=", name, "/", res);
-        // console.log(this.__varslist);
         let is_top = true, code = "";
         if (res == null) {
             this.__vars[name] = true;
