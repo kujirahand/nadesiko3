@@ -30,8 +30,6 @@ Japanese Programming Language Nadesiko v3
 
 ## 対応ブラウザ
 
-- Internet Explorer 11 以降
-- Safari / Chrome / FirefoxなどHTML5対応のブラウザ
-- iOS Safari / Android標準ブラウザ
-
-
+- HTML5対応ブラウザ (Internet Explorer / Safari / Chrome / Firefox 等)
+- iOS Safari
+- Android標準ブラウザ
