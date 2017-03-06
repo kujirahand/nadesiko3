@@ -27,4 +27,5 @@ Japanese Programming Language Nadesiko v3
 - ブラウザで動かすために、基本はJSで作る(/src/lang)
 - エディタやサーバー側APIは、PHPで作る(/src/editor)
 
-
+## 対応ブラウザ
+- Internet Explorer 11 以降
