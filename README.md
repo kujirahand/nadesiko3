@@ -2,14 +2,15 @@
 
 Japanese Programming Language Nadesiko v3 
 
-## なでしこ3
+# なでしこ3
 
-現在開発中です。
+現在鋭意開発中です。
 
-## 目標
+# 開発目標
 
-- 教育用途に特化し母国語に特化したプログラミング言語とする。
-- Webブラウザで動くこととする
+- 母国語に特化したプログラミング言語
+- 教育用途に特化
+- Webブラウザで手軽に試せること
 
 ## 開発物の予定
 
@@ -31,5 +32,13 @@ Japanese Programming Language Nadesiko v3
 ## 対応ブラウザ
 
 - HTML5対応ブラウザ (Internet Explorer / Safari / Chrome / Firefox 等)
-- iOS Safari
-- Android標準ブラウザ
+- スマホブラウザ (iOS Safari / Android標準ブラウザ)
+
+## 電子工作支援ツールとして
+
+- ラズベリーパイ向けのライブラリを用意する
+- GPIOの入出力
+
+## PC向けバッチ処理ツールとして
+
+- なでしこv1で得たノウハウを、macOS/Linuxでも活用できるようにする
