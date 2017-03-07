@@ -15,6 +15,12 @@ h3 {
     padding: 0.5em;
 }
 
+.sbox h4 {
+    font-size: 0.9em;
+    padding: 4px;
+    margin: 0;
+}
+
 button {
     font-size: 1.3em;
     width: 5em;
@@ -78,4 +84,5 @@ button {
 .sbox {
     border-bottom: 1px solid silver;
     margin: 8px;
+    padding: 12px;
 }
