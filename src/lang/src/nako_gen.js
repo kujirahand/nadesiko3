@@ -69,12 +69,12 @@ class NakoGen {
             "var __self = this;\n";
     }
 
-    /** プログラムの実行に必要な関数を書き出す */
+    /** プログラムの実行に必要な関数を書き出す(システム領域) */
     getVarsCode() {
         let code = "";
         // プログラム中で使った関数を列挙して書き出す
         for (const key in this.used_func) {
-            const f = this.used_func[key];
+            const f = this.__varslist[0][key];
             const name = `this.__varslist[0]["${key}"]`;
             if (typeof(f) == "function") {
                 code += name + "=" + f.toString() + ";\n";
@@ -85,12 +85,21 @@ class NakoGen {
         return code;
     }
     
-    
+    /** プログラムの実行に必要な関数定義を書き出す(グローバル領域) */
     getDefFuncCode() {
-        let code = "";
+        let code = "// なでしこの関数定義\n";
+        // なでしこの関数定義を行う
         for (const key in this.nako_func) {
             const f = this.nako_func[key].fn;
             code += `this.__varslist[1]["${key}"]=${f};\n`;
+        }
+        // プラグインの初期化関数を実行する
+        code += "// プラグインの初期化\n";
+        for (const name in this.pluginfiles) {
+          const initkey = `!${name}:初期化`;
+          if (this.used_func[initkey]) {
+            code += `__varslist[0]["!${name}:初期化"](__self)\n`;
+          }
         }
         return code;
     }
@@ -119,8 +128,15 @@ class NakoGen {
      */
     addPluginObject(objName, po) {
         if (this.pluginfiles[objName] === undefined) {
-          this.pluginfiles[objName] = '*'; // dummy
-          this.addPlugin(po);
+            this.pluginfiles[objName] = '*'; // dummy
+            if (typeof(po['初期化']) === "object") {
+                const def = po['初期化'];
+                delete po['初期化'];
+                const initkey = `!${objName}:初期化`;
+                po[initkey] = def;
+                this.used_func[initkey] = true;
+            }
+            this.addPlugin(po);
         }
     }
     
@@ -277,31 +293,35 @@ class NakoGen {
         return null;
     }
 
-    c_get_var(node) {
-        const name = node.value;
+    gen_var(name) {
         const res = this.find_var(name);
         if (res == null) {
             return `__vars["${name}"]/*?*/`;
         }
         const i = res.i;
+        // システム関数・変数の場合
         if (i == 0) {
             const pv = this.plugins[name];
-            if (pv !== undefined) {
-                if (pv.type == "const") return JSON.stringify(pv.value);
-                if (pv.type == "func") {
-                    if (pv.josi.length == 0) {
-                        return `(__varslist[${i}]["${name}"]())`;
-                    }
-                    throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`);
+            if (!pv) return `__vars["${name}"]/*?err?*/`;
+            if (pv.type == "const") return `__varslist[0]["${name}"]`;
+            if (pv.type == "func") {
+                if (pv.josi.length == 0) {
+                    return `(__varslist[${i}]["${name}"]())`;
                 }
-                throw new NakoGenError(`『${name}』は関数であり参照できません。`);
+                throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`);
             }
+            throw new NakoGenError(`『${name}』は関数であり参照できません。`);
         }
         if (res.isTop) {
             return `__vars["${name}"]`;
         } else {
             return `__varslist[${i}]["${name}"]`;
         }
+    }
+
+    c_get_var(node) {
+        const name = node.value;
+        return this.gen_var(name);
     }
     
     c_return(node) {
@@ -341,7 +361,7 @@ class NakoGen {
             "type": "func"
         };
         this.__vars = this.__varslist.pop();
-        this.used_func[name] = code;
+        this.used_func[name] = true;
         this.__varslist[1][name] = code;
         // ★この時点では関数のコードを生成しない★
         // 　プログラム冒頭でコード生成時に関数定義を行う
@@ -541,7 +561,7 @@ class NakoGen {
         }
         // function
         if (typeof(this.used_func[func_name]) === "undefined") {
-            this.used_func[func_name] = func.fn;
+            this.used_func[func_name] = true;
         }
         // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
         args.push("__self");
@@ -598,8 +618,8 @@ class NakoGen {
         value = value.replace(/\r/g, '\\r');
         value = value.replace(/\n/g, '\\n');
         if (mode == "ex") {
-            let rf = (a, m) => {
-                return "\"+" + this.varname(m) + "+\"";
+            let rf = (a, name) => {
+                return "\"+" + this.gen_var(name) + "+\"";
             };
             value = value.replace(/\{(.+?)\}/g, rf);
             value = value.replace(/｛(.+?)｝/g, rf);

@@ -10,7 +10,7 @@ class NakoCompiler {
         this.debug = false;
         this.silent = true;
         this.gen = new NakoGen(this);
-        this.gen.addPlugin(PluginSystem);
+        this.gen.addPluginObject("PluginSystem", PluginSystem);
         this.reset();
     }
 

@@ -1,8 +1,15 @@
 // basic_func.js
 
 const PluginSystem = {
+    "初期化": {
+      type: "func", josi: [],
+      fn: function (sys) {
+        sys.__nako3version = "3.0b2";
+        sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version;
+      }
+    },
     /// システム定数
-    "ナデシコバージョン": {type: "const", value: "3.0"},
+    "ナデシコバージョン": {type: "const", value: "?"},
     "ナデシコエンジン": {type: "const", value: "nadesi.com/v3"},
     "はい": {type: "const", value: 1},
     "いいえ": {type: "const", value: 0},
