@@ -1,9 +1,9 @@
 //
 // nadesiko ver3
 //
-const NakoPeg = require('./nako_parser.js');
-const NakoGen = require('./nako_gen.js');
-const PluginSystem = require('./plugin_system.js');
+const NakoPeg = require('./nako_parser');
+const NakoGen = require('./nako_gen');
+const PluginSystem = require('./plugin_system');
 
 class NakoCompiler {
     constructor() {
@@ -23,10 +23,10 @@ class NakoCompiler {
 
     reset() {
         if (!this.__varslist) { // 初回
-          this.__varslist = [{},{},{}];
-          this.__self = this;
+            this.__varslist = [{}, {}, {}];
+            this.__self = this;
         } else { // 二回目以降
-          this.__varslist = [this.__varslist[0], {}, {}];
+            this.__varslist = [this.__varslist[0], {}, {}];
         }
         this.__vars = this.__varslist[2];
         this.clearLog();
@@ -99,20 +99,20 @@ class NakoCompiler {
     }
 
     _run(code, is_reset) {
-      if (is_reset) this.reset();
-      const js = this.compile(code);
-      var __varslist = this.__varslist = this.getVarsList();
-      var __vars = this.__vars = this.__varslist[2];
-      var __self = this.__self;
-      if (is_reset) this.clearLog();
-      eval(js);
-      return this;
+        if (is_reset) this.reset();
+        const js = this.compile(code);
+        var __varslist = this.__varslist = this.getVarsList();
+        var __vars = this.__vars = this.__varslist[2];
+        var __self = this.__self;
+        if (is_reset) this.clearLog();
+        eval(js);
+        return this;
     }
-    
+
     run(code) {
         return this._run(code, false);
     }
-    
+
     run_reset(code) {
         return this._run(code, true);
     }
@@ -126,7 +126,7 @@ class NakoCompiler {
         s = s.replace(/\s+$/, '');
         return s;
     }
-    
+
     /**
      * プラグイン・オブジェクトを追加(ブラウザ向け)
      * @param name プラグインの名前
@@ -149,4 +149,3 @@ class NakoCompiler {
 
 // モジュールなら外部から参照できるように
 module.exports = NakoCompiler;
-
