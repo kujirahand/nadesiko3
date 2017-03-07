@@ -1,8 +1,8 @@
 module.exports = {
 
     entry: {
-        wnako3: './src/wnako3.js',
-        plugin_browser: './src/plugin_browser.js',
+        wnako3: './src/wnako3.js', // plugin_system + plugin_browser を含む
+        plugin_turtle: './src/plugin_turtle.js',
     },
 
     output: {
@@ -21,6 +21,9 @@ module.exports = {
                     `${__dirname}/src`,
                 ],
                 loader: "babel-loader",
+                query: {
+                  presets: ['env']
+                }
             }
         ]
     }

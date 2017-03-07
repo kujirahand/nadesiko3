@@ -21,6 +21,21 @@
   "bugs": {
     "url": "https://github.com/kujirahand/nadesiko3/issues"
   },
+  "babel": {
+    "presets": [
+      "es2015",
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 1 version",
+            "last 2 Safari versions",
+            "last 2 iOS versions"
+          ]
+        }
+      }
+    ]
+  },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "devDependencies": {
     "babel-cli": "^6.23.0",

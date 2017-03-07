@@ -25,3 +25,13 @@ function reset_box() {
     info.innerHTML = "";
     info.style.color = "";
 }
+
+function ajax_get(url, param, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState != 4) return;
+        callback(xhr.responseText, xhr);
+    };
+    xhr.open( 'GET', url, false);
+    xhr.send(param);
+}

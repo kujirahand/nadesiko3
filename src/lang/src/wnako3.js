@@ -3,7 +3,9 @@
 
 const NakoCompiler = require('./nako3');
 const PluginBrowser = require('./plugin_browser');
-const PluginTurtle = require('./plugin_turtle');
+
+// プラグインテストのため、後から呼び出す
+// const PluginTurtle = require('./plugin_turtle');
 
 class WebNakoCompiler extends NakoCompiler {
     /**
@@ -28,6 +30,6 @@ module.exports = WebNakoCompiler;
 if (typeof(navigator) == "object") {
     const nako3 = navigator.nako3 = new WebNakoCompiler();
     nako3.addPluginObject('PluginBrowser', PluginBrowser);
-    nako3.addPluginObject('PluginTurtle', PluginTurtle);
+    // nako3.addPluginObject('PluginTurtle', PluginTurtle);
 }
 

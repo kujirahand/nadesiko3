@@ -28,6 +28,14 @@ button {
     background-color: silver;
 }
 
+.turtle_canvas {
+    border: 1px solid silver;
+}
+
+.turtle_box {
+    text-align: center;
+}
+
 .edit_head {
     font-size:0.8em;
     color: gray;

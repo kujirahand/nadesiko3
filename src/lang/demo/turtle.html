@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>なでしこ3/タートルグラフィックス</title>
+    <!-- なでしこを使う準備 -->
+    <script src="../release/wnako3.js"></script>
+    <script src="index.js"></script>
+    <script src="common.js"></script>
+    <script src="turtle_test.js"></script>
+    <link rel="stylesheet" type="text/css" href="common.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+<h1>なでしこ3/タートルグラフィックス</h1>
+<div id="editor" class="edit_div">
+    <p class="edit_head">簡易エディタ:</p>
+    <textarea id="src_box" rows="4" title="簡易エディタ">
+カメ作成。
+[0, 0]にカメ移動。
+
+    </textarea>
+    <div class="buttons">
+        <button onclick="run_box(null)">実行</button>
+        <button onclick="reset_box()">クリア</button>
+    </div>
+    <div id="err"></div>
+    <div class="turtle_box"><p class="edit_head">実行結果:</p>
+        <p id="info" class="info"></p>
+        <p><canvas id="turtle_cv" class="turtle_canvas" 
+          width="600" height="600"></canvas></p>
+    </div>
+</div>
+</body>
+</html>
+

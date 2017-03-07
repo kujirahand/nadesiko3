@@ -9,5 +9,8 @@ const vars = nako.getVarsCode();
 const head = nako.getHeader();
 const code = head + vars + js;
 
+console.log("--- generated ---");
 console.log(code);
+console.log("--- eval ---");
 eval(code);
+
