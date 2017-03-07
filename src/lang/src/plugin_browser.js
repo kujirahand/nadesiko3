@@ -1,9 +1,9 @@
 // plugin_browser.js
 const PluginBrowser = {
     /// v1互換:色定数
-    "水色": {type: "const", value: "lightblue"},
-    "紫色": {type: "const", value: "purple"},
-    "緑色": {type: "const", value: "green"},
+    "水色": {type: "const", value: "aqua"},
+    "紫色": {type: "const", value: "fuchsia"},
+    "緑色": {type: "const", value: "lime"},
     "青色": {type: "const", value: "blue"},
     "赤色": {type: "const", value: "red"},
     "黄色": {type: "const", value: "yellow"},
