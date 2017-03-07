@@ -1,6 +1,6 @@
 // plugin_browser.js
 
-var PluginBrowser = {
+const PluginBrowser = {
     /// 色定数
     "赤色": {type: "const", value: "#FF0000"},
     /// DOM操作
