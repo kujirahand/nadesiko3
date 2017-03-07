@@ -208,7 +208,7 @@ value
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
   / w:word "(" ar:calc_func_args ")" { return {type:"calc_func", args:ar, name:w}; }
   / word
-  / json_data
+  / json_stmt
 
 calc_func_args
   = SPC v1:calc SPC v2:("," SPC calc)* {
@@ -279,7 +279,7 @@ muldiv
 parenL = "(" / "（"
 parenR = ")" / "）"
 
-json_data
+json_stmt
   = "[" SPC a:json_array SPC "]"  { return {type:"json_array", value:a}; }
   / "{" SPC a:json_obj SPC "}" { return {type:"json_obj", value:a}; }
   / "[" SPC "]" { return {type:"json_array", value:[]}; }
@@ -294,7 +294,7 @@ json_array
   / v:json_value { return v; }
 
 json_value
-  = number / string / null / bool / json_data
+  = calc / number / string / null / bool / word / json_stmt
    
  json_obj
   = a1:json_key_value SPC a2:("," SPC json_key_value)+ { 
