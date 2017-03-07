@@ -1,3 +1,5 @@
+process.noDeprecation = true;
+
 module.exports = {
     entry: {
         wnako3: './src/wnako3.js', // plugin_system + plugin_browser を含む
