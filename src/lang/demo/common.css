@@ -1,66 +1,62 @@
-h1 {
+h1, button {
     background-color: silver;
-    margin: 0;
-    padding: 0.5em;
-    color: black;
     font-size: 1.3em;
+}
 
+h1, h3, .sbox h4, .edit_head, .buttons, #info {
+    margin: 0;
+}
+
+h1, h3, #info {
+    padding: 0.5em;
+}
+
+h1 {
+    color: black;
+}
+
+h3, .info, #err, #src_box, .src {
+    font-size: 1em;
 }
 
 h3 {
-    font-size: 1em;
     background-color: #e0e0e0;
     border-bottom: 1px solid gray;
-    margin: 0;
-    padding: 0.5em;
 }
 
 .sbox h4 {
     font-size: 0.9em;
     padding: 4px;
-    margin: 0;
 }
 
 button {
-    font-size: 1.3em;
     width: 5em;
     padding: 0.4em;
-    background-color: silver;
 }
 
 .turtle_canvas {
     border: 1px solid silver;
 }
 
-.turtle_box {
+.turtle_box, .buttons {
     text-align: center;
 }
 
+.edit_head, .buttons {
+    padding: 0.3em;
+}
+
 .edit_head {
-    font-size:0.8em;
+    font-size: 0.8em;
     color: gray;
-    padding:0.3em;
-    margin:0;
 }
 
 .edit_div {
     margin: 0.5em;
-    padding: 0em;
-}
-
-.buttons {
-    text-align: center;
-    margin:0px;
-    padding: 0.3em;
-}
-
-#info {
-    margin:0px;
-    padding: 0.5em;
+    padding: 0;
 }
 
 .info, #err, #src_box, .src {
-    font-size: 1em;
     line-height: 1.5em;
 }
 
