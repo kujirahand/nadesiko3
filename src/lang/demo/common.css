@@ -37,25 +37,25 @@ button {
 }
 
 .edit_head {
-    font-size:0.8em;
+    font-size: 0.8em;
     color: gray;
-    padding:0.3em;
-    margin:0;
+    padding: 0.3em;
+    margin: 0;
 }
 
 .edit_div {
     margin: 0.5em;
-    padding: 0em;
+    padding: 0;
 }
 
 .buttons {
     text-align: center;
-    margin:0px;
+    margin: 0;
     padding: 0.3em;
 }
 
 #info {
-    margin:0px;
+    margin: 0;
     padding: 0.5em;
 }
 
