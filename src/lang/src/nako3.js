@@ -17,8 +17,8 @@ class NakoCompiler {
     /**
      * デバッグモードに設定する
      */
-    useDebug() {
-        this.debug = true;
+    useDebug(flag=true) {
+        this.debug = flag;
     }
 
     reset() {

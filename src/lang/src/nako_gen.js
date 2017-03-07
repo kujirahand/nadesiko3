@@ -35,28 +35,31 @@ class NakoGen {
 
         /**
          * JS関数でなでしこ内で利用された関数
-         * 利用した関数を個別にJSで定義する(全関数をインクルードしなくても良いように)
+         * 利用した関数を個別にJSで定義する
+         * (全関数をインクルードしなくても良いように)
          * @type {{}}
          */
         this.used_func = {};
         
         /** ループ時の一時変数が被らないようにIDで管理 */
         this.loop_id = 1;
-        
+       
+        /** それ */
         this.sore = this.varname('それ');
         
-        /**
-         * なでしこのローカル変数管理
-         */ 
-        this.__vars = {};
         /**
          * なでしこのローカル変数をスタックで管理
          * __varslist[0] プラグイン領域
          * __varslist[1] なでしこグローバル領域
-         * __varslist[2] 最初のローカル変数
+         * __varslist[2] 最初のローカル変数 ( == __vars }
          */
         this.__varslist = [{}, {}, this.__vars];
         this.__self = com;
+
+        /**
+         * なでしこのローカル変数(フレームトップ)
+         */ 
+        this.__vars = {};
     }
 
     getHeader() {
@@ -66,10 +69,10 @@ class NakoGen {
             "var __self = this;\n";
     }
 
-    /** 書き出し用 */
+    /** プログラムの実行に必要な関数を書き出す */
     getVarsCode() {
         let code = "";
-        // プログラム中で使った関数を列挙
+        // プログラム中で使った関数を列挙して書き出す
         for (const key in this.used_func) {
             const f = this.used_func[key];
             const name = `this.__varslist[0]["${key}"]`;
