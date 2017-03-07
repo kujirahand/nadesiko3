@@ -39,6 +39,7 @@ const PluginTurtle = {
                 },
                 play: function () {
                     const wait = sys.__getSysValue("カメ速度", 500);
+                    const ctx = sys._turtle.ctx;
                     console.log("play", wait);
                     let has_next = false;
                     for (let i = 0; i < sys._turtle.list.length; i++) {
@@ -50,8 +51,18 @@ const PluginTurtle = {
                             const cmd = m[0];
                             switch (cmd) {
                                 case "mv":
+                                    if (tt.f_down) {
+                                        ctx.beginPath();
+                                        ctx.moveTo(tt.x, tt.y);
+                                        ctx.lineTo(m[1], m[2]);
+                                        ctx.closePath();
+                                        ctx.stroke();
+                                    }
                                     tt.x = m[1];
                                     tt.y = m[2];
+                                    break;
+                                case "color":
+                                    ctx.stokeStyle = m[1];
                                     break;
                             }
                             sys._turtle.drawTurtle(i);
@@ -59,9 +70,7 @@ const PluginTurtle = {
                         }
                     }
                     if (has_next) {
-                        setTimeout( function() {
-                            sys._turtle.play();
-                        }, wait);
+                        setTimeout( () => { sys._turtle.play(); }, wait);
                     }
                 },
             };
@@ -83,6 +92,7 @@ const PluginTurtle = {
                 cy: 32,
                 x: 0,
                 y: 0,
+                f_down: true,
                 f_update: true,
                 f_loaded: false,
                 mlist: [],
@@ -113,15 +123,20 @@ const PluginTurtle = {
                 console.log("[ERROR] カメ描画先が見当たりません。");
                 return;
             }
+            const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d');
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "black";
             const rect = cv.getBoundingClientRect();
             const rx = rect.left + window.pageXOffset;
             const ry = rect.top + window.pageYOffset;
-            sys._turtle.canvas_r = { 
+            const cr = sys._turtle.canvas_r = { 
                 "left":rx, "top":ry,
                 width:rect.width, height: rect.height
             };
-            tt.x = rect.left + rect.width / 2;
-            tt.y = rect.top + rect.height / 2;
+            // デフォルト位置の設定
+            tt.x = rect.width / 2;
+            tt.y = rect.height / 2;
+            console.log(tt.x, tt.y);
             return id;
         }
     },
@@ -157,6 +172,16 @@ const PluginTurtle = {
         },
         return_none: true
     },
+    "カメ描画色変更": { /// カメの描画色をCに変更する
+        type: "func", josi: [["に","へ"]],
+        fn: function (c, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["color", c]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
+
 };
 
 module.exports = PluginTurtle;
