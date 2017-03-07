@@ -4,7 +4,7 @@
 
 - メインHTMLで、wnako3.js を読み込む
   - navigator.nako3 にコンパイラのインスタンスが作成される
-- <script src="plugin_xxx.js>で独自プラグインを読み込む
+- script src="plugin_xxx.js で独自プラグインを読み込む
 - navigator.nako3.addPluginObject(プラグイン名, オブジェクト)
 
 ## プラグイン側の実装
