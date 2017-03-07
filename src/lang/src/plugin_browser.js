@@ -1,6 +1,5 @@
 // plugin_browser.js
-
-var PluginBrowser = {
+const PluginBrowser = {
     /// v1互換:色定数
     "水色": {type: "const", value: "lightblue"},
     "紫色": {type: "const", value: "purple"},
