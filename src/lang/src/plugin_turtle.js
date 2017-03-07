@@ -16,14 +16,22 @@ const PluginTurtle = {
           const tid = sys._tt.turtles.length;
           const img = document.createElement('img');
           img.src = sys.__varslist[0]["カメ画像URL"];
+          img.cx = 32; img.cy = 32;
           img.onload = ()=>{ img.cx = img.width / 2; img.cy = img.height / 2; };
           img.style.position = "absolute";
-          img.style.left = "100px";
-          img.style.top = "100px";
-          const cv_id = sys
-          const cv = document.getElementById("turtle_cv");
-          cv.appendChild(img);
-          const tt = {img:img};
+          document.body.appendChild(img);
+          const cv_id = sys.__varslist[0]['カメ描画先'];
+          let cv = document.getElementById(cv_id);
+          if (!cv) {
+            console.log("[ERROR] カメ描画先が見当たりません。");
+            img.style.left = "1px";
+            img.style.top = "1px";
+          } {
+            const rect = cv.getBoundingClientRect();
+            img.style.left = (rect.left + (rect.width / 2)) + "px";
+            img.style.top = (rect.top + (rect.height / 2)) + "px";
+          }
+          const tt = {img:img, "dir":'u', "pen":true};
           sys._tt.turtles[tid] = tt;
           sys._tt.target = tid;
           return tid;
@@ -48,10 +56,20 @@ const PluginTurtle = {
     "カメ移動": { /// カメの位置を[x,y]へ移動する
         type: "func", josi: [["に","へ"]],
         fn: function (xy, sys) {
-          sys._
         },
         return_none: true
     },
 };
 
 module.exports = PluginTurtle;
+
+// scriptタグで取り込んだ時、自動で登録する
+if (typeof(navigator) == "object") {
+  navigator.nako3.addPluginObject("PluginTurtle", PluginTurtle);
+  navigator.nako3.debug = true;
+}
+
+
+
+
+

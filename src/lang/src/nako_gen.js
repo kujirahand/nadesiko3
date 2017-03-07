@@ -519,7 +519,7 @@ class NakoGen {
         let func_name_s;
         const res = this.find_var(func_name);
         if (res == null) {
-            throw new NakoGenError(`関数『${func_name}』が見当たりません。現在有効なプラグイン=[`+JSON.stringify(this.pluginfiles.keys()));
+            throw new NakoGenError(`関数『${func_name}』が見当たりません。現在有効なプラグイン=[`+JSON.stringify(this.pluginfiles));
         }
         let func;
         if (res.i == 0) { // plugin function
