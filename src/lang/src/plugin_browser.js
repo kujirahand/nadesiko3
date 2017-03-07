@@ -9,6 +9,16 @@ const PluginBrowser = {
     "黄色": {type: "const", value: "yellow"},
     "黒色": {type: "const", value: "black"},
     "白色": {type: "const", value: "white"},
+    //v1非互換:色定数
+    "茶色": {type: "const", value: "maroon"},
+    "灰色": {type: "const", value: "gray"},
+    "金色": {type: "const", value: "gold"},
+    "黄金色": {type: "const", value: "gold"},
+    "銀色": {type: "const", value: "silver"},
+    "白金色": {type: "const", value: "silver"},
+    "オリーブ色": {type: "const", value: "olive"},
+    "ベージュ": {type: "const", value: "beige"},
+    "アリスブルー": {type: "const", value: "aliceblue"},
     /// DOM操作
     "ID取得": { /// DOMのIDを取得して返す
         type: "func", josi: [["の", "を"]],
