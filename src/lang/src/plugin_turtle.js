@@ -131,6 +131,7 @@ const PluginTurtle = {
                                     break;
                                 case "color":
                                     ctx.strokeStyle = m[1];
+                                    console.log(m);
                                     break;
                                 case "size":
                                     ctx.lineWidth = m[1];
@@ -202,6 +203,7 @@ const PluginTurtle = {
             const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d');
             ctx.lineWidth = 4;
             ctx.strokeStyle = "black";
+            ctx.lineCap = "round";
             const rect = cv.getBoundingClientRect();
             const rx = rect.left + window.pageXOffset;
             const ry = rect.top + window.pageYOffset;

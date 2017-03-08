@@ -15,12 +15,13 @@
 </head>
 <body>
 
-<h1>なでしこ3/タートルグラフィックス</h1>
+<h1><a name="top">なでしこ3/タートルグラフィックス</a></h1>
 
 <div class="sbox">
     <h4><a name="sankaku_txt_head">三角描画</a></h4>
     <textarea id="sankaku_txt" class="src" rows="5">
 カメ作成。
+80にカメ速度設定。
 赤色にカメペン色設定。
 Ｎで1から60まで繰り返す
 　　[N*4, N*6]にカメ移動。
@@ -53,6 +54,7 @@
     <h4><a name="hosi_txt_head">星描画</a></h4>
     <textarea id="hosi_txt" class="src" rows="5">
 カメ作成。
+300にカメ速度設定。
 オフにカメペン設定。
 [10,120]にカメ移動。
 オンにカメペン設定。
@@ -75,6 +77,7 @@
 　　ここまで
 -----------
 カメ作成。
+100にカメ速度設定。
 オフにカメペン設定。
 [20,180]にカメ移動。
 90にカメ角度設定。
@@ -108,8 +111,8 @@
 　　60だけカメ左回転。
 　　(サイズ/3)と(深度-1)でフラクタル。
 ----------
-1にカメ速度設定。# 最速に
 カメ作成。
+1にカメ速度設定。# 最速に
 オフにカメペン設定。
 [10,200]にカメ移動。
 90にカメ角度設定。
@@ -123,9 +126,10 @@
 
 <!-- 実行結果を表示するパーツ -->
 <div id="editor" class="edit_div">
-    <div class="turtle_box"><p class="edit_head"><a name="run">実行結果:</a> &nbsp; (<a href="#sankaku_txt" id="backlink">↑戻る</a>)</p>
+    <div class="turtle_box"><p class="edit_head"><a name="run">実行結果:</a></p>
         <p><canvas id="turtle_cv" class="turtle_canvas" 
           width="280" height="380"></canvas></p>
+        <p>(<a href="#sankaku_txt" id="backlink">↑戻る</a>)</p>
     </div>
     <div id="err"></div>
 </div>
@@ -133,6 +137,7 @@
 <div class="sbox">
 <h3>その他</h3>
 <ul>
+  <li><a href="#top">タートルグラフィックス他のサンプル</a></li>
   <li><a href="turtle.html">タートルグラフィックスのエディタへ</a></li>
   <li><a href="index.html">デモのトップページへ</a></li>
 </ul>

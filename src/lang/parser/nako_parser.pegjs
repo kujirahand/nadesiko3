@@ -269,7 +269,7 @@ muldiv
      return { type:"calc", operator: "/", "left": left,  "right": right };
    }
   / left:primary __ ("%" / "％") __ right:muldiv {
-     return { type:"calc", operator: "/", "left": left,  "right": right };
+     return { type:"calc", operator: "%", "left": left,  "right": right };
    }
    / primary
  primary
