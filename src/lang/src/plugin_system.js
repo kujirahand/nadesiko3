@@ -526,6 +526,12 @@ const PluginSystem = {
             return (s.substr(s.length - cnt, cnt));
         }
     },
+    "区切": {/// 文字列Sを区切り文字Aで区切って配列で返す
+        type: "func", josi: [["の", "を"], ["で"]],
+        fn: function (s, a) {
+          return ("" + s).split("" + a);
+        }
+    },
     "切り取": { /// v1非互換: 文字列Sから文字列Aまでの部分を抽出する
         type: "func", josi: [["から", "の"], ["まで", "を"]],
         fn: function (s, a) {

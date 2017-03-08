@@ -19,9 +19,11 @@ sentence
   / EOS+ { return {"type":"EOS"}; }
   / end / continue / break / return_stmt
   / def_func
-  / if_stmt / whie_stmt / repeat_times_stmt / for_stmt / foreach_stmt
+  / if_stmt / while_stmt / repeat_times_stmt / for_stmt / foreach_stmt
   / let_stmt
   / kokomade { return {type:"EOS",memo:"---"}; }
+  / kokokara a:( if_stmt / while_stmt / repeat_times_stmt
+                       for_stmt / foreach_stmt) { return a; }
   / func_call_stmt
 
 
@@ -29,6 +31,7 @@ sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
 block_end =  kokomade / else
 else = "違えば"
+kokokara = "ここから" SPCLF
 kokomade = ("ここまで" /　"ーーー" "ー"* / "---" "-"*) EOS
 break = "抜ける" EOS { return {type:"break"}; }
 continue = "続ける" EOS { return {type:"continue"}; }
@@ -53,6 +56,9 @@ foreach_stmt
   = target:value "を" __ ("反復" / "反復する") LF b:block block_end {
     return {"type":"foreach", "target":target, "block":b};
   }
+  / ("反復" / "反復する") LF b:block block_end {
+    return {"type":"foreach", "target":null, "block":b};
+  }
 
 for_stmt
   = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
@@ -76,7 +82,7 @@ repeat_times_stmt
     return {"type":"repeat_times", "value":cnt, "block": b};
   }
 
-whie_stmt
+while_stmt
   = parenL expr:calc parenR  "の間" LF b:block block_end {
     return {"type":"while", "cond":expr, "block":b};
   }
@@ -139,7 +145,8 @@ __ = (whitespace / range_comment)*
 LF = "\n" { return {type:"EOS"}; }
 EOS = __ n:(";" / LF / "。" / josi_continue) { return {type:"EOS"}; }
 whitespace = [ \t\r、　,]
-SPC = [\t\r\n 　]*
+SPCLF = [\t\r\n 　]*
+SPC = [\t 　]*
 indent = [ 　\t・]+
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
 line_comment = ("//" / "#" / "＃" / "※") s:$[^\n]* "\n" { return s; }
@@ -211,7 +218,7 @@ value
   / json_stmt
 
 calc_func_args
-  = SPC v1:calc SPC v2:("," SPC calc)* {
+  = SPCLF v1:calc SPCLF v2:("," SPCLF calc)* {
     const a = [v1];
     if (v2) v2.forEach(e=>{a.push(e[2]);});
     return a;
@@ -280,13 +287,13 @@ parenL = "(" / "（"
 parenR = ")" / "）"
 
 json_stmt
-  = "[" SPC a:json_array SPC "]"  { return {type:"json_array", value:a}; }
-  / "{" SPC a:json_obj SPC "}" { return {type:"json_obj", value:a}; }
-  / "[" SPC "]" { return {type:"json_array", value:[]}; }
-  / "{" SPC "}" { return {type:"json_obj", value:[]}; } 
+  = "[" SPCLF a:json_array SPCLF "]"  { return {type:"json_array", value:a}; }
+  / "{" SPCLF a:json_obj SPCLF "}" { return {type:"json_obj", value:a}; }
+  / "[" SPCLF "]" { return {type:"json_array", value:[]}; }
+  / "{" SPCLF "}" { return {type:"json_obj", value:[]}; } 
 
 json_array
-  = a1:json_value SPC a2:("," SPC json_value SPC)+ {
+  = a1:json_value SPCLF a2:("," SPCLF json_value SPCLF)+ {
     const a = [a1];
     a2.forEach(e=>{a.push(e[2]);});
     return a;
@@ -297,7 +304,7 @@ json_value
   = calc / number / string / null / bool / word / json_stmt
    
  json_obj
-  = a1:json_key_value SPC a2:("," SPC json_key_value)+ { 
+  = a1:json_key_value SPCLF a2:("," SPCLF json_key_value)+ { 
     const a = a2.map(e=>{ return e[2]; });
     a.unshift(a1);
     return a;
@@ -305,4 +312,4 @@ json_value
   / a:json_key_value { return [a] }
  
 json_key_value
-  = key:string SPC ":" SPC value:json_value { return {"key": key, "value": value }; }
+  = key:string SPCLF ":" SPCLF value:json_value { return {"key": key, "value": value }; }

@@ -326,10 +326,14 @@ class NakoGen {
     }
     
     c_return(node) {
+        let value;
         if (node.value) {
-          const value = this.c_gen(node.value);
-          return `return ${value};`;
-        } else { return "return;"; }
+            value = this.c_gen(node.value);
+            return `return ${value};`;
+        } else {
+            value = this.sore;
+            return "return ${value};"; 
+        }
     }
 
     c_def_func(node) {
@@ -337,8 +341,8 @@ class NakoGen {
         const args = node.args;
         // ローカル変数をPUSHする
         let code = "(function(){\n";
-        code += "try { __vars = {}; __varslist.push(__vars);\n";
-        this.__vars = {};
+        code += "try { __vars = {'それ':''}; __varslist.push(__vars);\n";
+        this.__vars = {'それ':true};
         this.__varslist.push(this.__vars);
         // 引数をローカル変数に設定
         const josilist = [];
@@ -441,14 +445,20 @@ class NakoGen {
     }
 
     c_foreach(node) {
-        const target = this.c_gen(node.target);
+        let target;
+        if (node.target == null) {
+            target = this.sore;
+        } else {
+            target = this.c_gen(node.target);
+        }
         const block = this.c_gen(node.block);
         const id = this.loop_id++;
         const taisyou = this.varname('対象');
         const key = this.varname('対象キー');
         const code =
-            `for(var $nako_i${id} in ${target})` + "{\n" +
-            `  ${this.sore} = ${taisyou} = ${target}[$nako_i${id}];` + "\n" +
+            `var $nako_foreach_v${id}=${target};\n` +
+            `for(var $nako_i${id} in $nako_foreach_v${id})` + "{\n" +
+            `  ${this.sore} = ${taisyou} = $nako_foreach_v${id}[$nako_i${id}];` + "\n" +
             `  ${key} = $nako_i${id};\n` +
             "  " + block + "\n" +
             "};\n";
