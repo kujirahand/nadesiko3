@@ -23,4 +23,11 @@ describe('func_test', () => {
     it('def_func has return', () => {
         cmp("●加算(AにBを)\n(A+B)で戻る\n---\n2に3を加算して表示。", "5");
     });
+    it('再帰テスト', () => {
+        cmp("●NN(vとlevelで)\n"+
+            "もしlevel<=0ならば、vで戻る。\n"+
+            "(v+1)と(level-1)でNN。\n"+
+            "それで戻る。\n---\n"+
+            "0と5でNN。それを表示。", "5");
+    });
 });

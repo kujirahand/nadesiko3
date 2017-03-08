@@ -286,6 +286,7 @@ class NakoGen {
         // __varslist ?
         for (let i = this.__varslist.length - 2; i >= 0; i--) {
             const vlist = this.__varslist[i];
+            if (!vlist) continue;
             if (vlist[name] !== undefined) {
                 return {"i": i, "name": name, isTop: false};
             }
@@ -329,39 +330,45 @@ class NakoGen {
           const value = this.c_gen(node.value);
           return `return ${value};`;
         } else { return "return;"; }
-      }
+    }
 
     c_def_func(node) {
         const name = this.getFuncName(node.name.value);
         const args = node.args;
-        const block = this.c_gen(node.block);
-        // 関数定義は、グローバル領域で。
+        // ローカル変数をPUSHする
         let code = "(function(){\n";
         code += "try { __vars = {}; __varslist.push(__vars);\n";
         this.__vars = {};
         this.__varslist.push(this.__vars);
+        // 引数をローカル変数に設定
         const josilist = [];
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
-            const word = arg["word"].value;
+            const josi_word = arg["word"].value;
             const josi = [arg["josi"]];
             josilist.push(josi);
-            this.__vars[word] = true;
-            code += `__vars["${word}"] = arguments[${i}];\n`;
+            this.__vars[josi_word] = true;
+            code += `__vars["${josi_word}"] = arguments[${i}];\n`;
         }
+        // 関数定義は、グローバル領域で。
+        this.used_func[name] = true;
+        this.__varslist[1][name] = function(){}; // 再帰のために事前に適当な値を設定
+        this.nako_func[name] = {
+            "josi": josilist,
+            "fn": '',
+            "type": "func"
+        };
+        // ブロックを解析
+        const block = this.c_gen(node.block);
         code += block + "\n";
+        // 関数の末尾に、ローカル変数をPOP
         const popcode = 
           "__varslist.pop(); " +
           "__vars = __varslist[__varslist.length-1];";
         code += `} finally { ${popcode} }\n`;
         code += `})/* end of ${name} */`;
-        this.nako_func[name] = {
-            "josi": josilist,
-            "fn": code,
-            "type": "func"
-        };
+        this.nako_func[name]["fn"] = code;
         this.__vars = this.__varslist.pop();
-        this.used_func[name] = true;
         this.__varslist[1][name] = code;
         // ★この時点では関数のコードを生成しない★
         // 　プログラム冒頭でコード生成時に関数定義を行う
@@ -629,3 +636,5 @@ class NakoGen {
 }
 
 module.exports = NakoGen;
+/* vim:set expandtab ts=4 sw=4 sts=4 :*/
+
