@@ -1,4 +1,3 @@
-/* vim:set expandtab ts=4 sw=4 sts=4 :*/
 /**
  * Turtle Graphics for Web browser (nadesiko3)
  * plugin_turtle.js
@@ -17,7 +16,7 @@ const PluginTurtle = {
                 canvas_r: {left:0, top:0, width:640, height: 400},
                 clearAll: function() {
                     const me = this;
-                    console.log('clearAll', me);
+                    console.log('[TURTLE] clearAll');
                     for (let i = 0; i <  me.list.length; i++) {
                         const tt = me.list[i];
                         tt.mlist = []; // ジョブをクリア
@@ -35,26 +34,25 @@ const PluginTurtle = {
                 drawTurtle: function (id) {
                     const tt = this.list[id];
                     const cr = this.canvas_r;
+                    // カメの位置を移動
                     tt.canvas.style.left = (cr.left + tt.x - tt.cx) + "px";
                     tt.canvas.style.top = (cr.top + tt.y - tt.cx) + "px";
-                    if (tt.f_update) {
-                        if (tt.f_loaded) {
-                            tt.f_update = false;
-                            tt.ctx.clearRect(0, 0, 
-                                    tt.canvas.width,
-                                    tt.canvas.height);
-                            if (tt.dir != 270) {
-                                const rad = (tt.dir + 90) * 0.017453292519943295;
-                                tt.ctx.save();
-                                tt.ctx.translate(tt.cx, tt.cy);
-                                tt.ctx.rotate(rad);
-                                tt.ctx.translate(-tt.cx, -tt.cy);
-                                tt.ctx.drawImage(tt.img, 0, 0);
-                                tt.ctx.restore(); 
-                            } else {
-                                tt.ctx.drawImage(tt.img, 0, 0);
-                            }
-                        }
+                    if (!tt.f_update) return;
+                    if (!tt.f_loaded) return;
+                    tt.f_update = false;
+                    tt.ctx.clearRect(0, 0, 
+                            tt.canvas.width,
+                            tt.canvas.height);
+                    if (tt.dir != 270) {
+                        const rad = (tt.dir + 90) * 0.017453292519943295;
+                        tt.ctx.save();
+                        tt.ctx.translate(tt.cx, tt.cy);
+                        tt.ctx.rotate(rad);
+                        tt.ctx.translate(-tt.cx, -tt.cy);
+                        tt.ctx.drawImage(tt.img, 0, 0);
+                        tt.ctx.restore(); 
+                    } else {
+                        tt.ctx.drawImage(tt.img, 0, 0);
                     }
                 },
                 getCur: function () {
@@ -64,8 +62,11 @@ const PluginTurtle = {
                 set_timer: function () {
                     if (this.b_set_timer) return;
                     this.b_set_timer = true;
-                    const wait = sys.__getSysValue("カメ速度", 300);
-                    setTimeout(()=>{ sys._turtle.play();  }, wait);
+                    setTimeout(()=>{
+                        sys._turtle.play();
+                        const tt = this.getCur();
+                        console.log("[TURTLE] Let's go! job=", tt.mlist.length);
+                    }, 1);
                 },
                 line: function (tt, x1, y1, x2, y2) {
                     if (tt) {
@@ -79,16 +80,18 @@ const PluginTurtle = {
                 },
                 play: function () {
                     const me = this;
-                    const wait = sys.__getSysValue("カメ速度", 500);
+                    const wait = sys.__getSysValue("カメ速度", 100);
                     const ctx = sys._turtle.ctx;
-                    // console.log("play", wait);
                     let has_next = false;
                     for (let i = 0; i < sys._turtle.list.length; i++) {
                         const tt = sys._turtle.list[i];
-                        if (!tt.f_loaded) has_next = true;
+                        if (!tt.f_loaded) {
+                            has_next = true;
+                            console.log('[TURTLE] waiting ...');
+                            break;
+                        }
                         if (tt.mlist.length > 0) {
                             const m = tt.mlist.shift();
-                            // console.log(m);
                             const cmd = m[0];
                             switch (cmd) {
                                 case "mv":
@@ -112,7 +115,7 @@ const PluginTurtle = {
                                     tt.y = y2;
                                     break;
                                 case "angle":
-                                    tt.dir = m[1] % 360;
+                                    tt.dir = ((m[1]-90+360) % 360);
                                     tt.f_update = true;
                                     break;
                                 case "rotr":
@@ -126,11 +129,9 @@ const PluginTurtle = {
                                     tt.f_update = true;
                                     break;
                                 case "color":
-                                    console.log(m);
                                     ctx.strokeStyle = m[1];
                                     break;
                                 case "size":
-                                    console.log(m);
                                     ctx.lineWidth = m[1];
                                     break;
                                 case "pen_on":
@@ -143,6 +144,8 @@ const PluginTurtle = {
                     }
                     if (has_next) {
                         setTimeout( () => { sys._turtle.play(); }, wait);
+                    } else {
+                        console.log("[TURTLE] finished.");
                     }
                 },
             };
@@ -262,10 +265,11 @@ const PluginTurtle = {
         return_none: true
     },
     "カメ角度設定": { /// カメの向きをDEGに設定する
-        type: "func", josi: [["だけ"]],
+        type: "func", josi: [["に","へ","の"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
-            tt.mlist.push(["angle", v]);
+            console.log(v);
+            tt.mlist.push(["angle", parseFloat(v)]);
             sys._turtle.set_timer();
         },
         return_none: true
@@ -330,4 +334,5 @@ if (typeof(navigator) == "object") {
   navigator.nako3.addPluginObject("PluginTurtle", PluginTurtle);
 }
 
+/* vim:set expandtab ts=4 sw=4 sts=4 :*/
 
