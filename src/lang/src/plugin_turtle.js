@@ -8,12 +8,30 @@ const PluginTurtle = {
     "初期化": {
         type: "func", josi: [],
         fn: function (sys) {
+            if (sys._turtle) return;
             sys._turtle = {
                 list: [],
                 target: -1,
                 ctx: null,
                 canvas: null,
                 canvas_r: {left:0, top:0, width:640, height: 400},
+                clearAll: function() {
+                    const me = this;
+                    console.log('clearAll', me);
+                    for (let i = 0; i <  me.list.length; i++) {
+                        const tt = me.list[i];
+                        tt.mlist = []; // ジョブをクリア
+                        document.body.removeChild(tt.canvas);
+                    }
+                    me.list = [];
+                    if (me.canvas != null) {
+                        me.ctx.clearRect(0, 0,
+                            me.canvas.width,
+                            me.canvas.height);
+                    }
+                    me.target = -1;
+                    me.b_set_timer = false;
+                },
                 drawTurtle: function (id) {
                     const tt = this.list[id];
                     const cr = this.canvas_r;
@@ -22,10 +40,22 @@ const PluginTurtle = {
                     if (tt.f_update) {
                         if (tt.f_loaded) {
                             tt.f_update = false;
-                            tt.ctx.drawImage(tt.img, 0, 0);
+                            tt.ctx.clearRect(0, 0, 
+                                    tt.canvas.width,
+                                    tt.canvas.height);
+                            if (tt.dir != 270) {
+                                const rad = (tt.dir + 90) * 0.017453292519943295;
+                                tt.ctx.save();
+                                tt.ctx.translate(tt.cx, tt.cy);
+                                tt.ctx.rotate(rad);
+                                tt.ctx.translate(-tt.cx, -tt.cy);
+                                tt.ctx.drawImage(tt.img, 0, 0);
+                                tt.ctx.restore(); 
+                            } else {
+                                tt.ctx.drawImage(tt.img, 0, 0);
+                            }
                         }
                     }
-                    tt.ctx.drawImage(tt.img, 0, 0);
                 },
                 getCur: function () {
                     return this.list[this.target];
@@ -37,32 +67,70 @@ const PluginTurtle = {
                     const wait = sys.__getSysValue("カメ速度", 300);
                     setTimeout(()=>{ sys._turtle.play();  }, wait);
                 },
+                line: function (tt, x1, y1, x2, y2) {
+                    if (tt) {
+                        if (tt.f_down == false) return;
+                    }
+                    const ctx = this.ctx;
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                },
                 play: function () {
+                    const me = this;
                     const wait = sys.__getSysValue("カメ速度", 500);
                     const ctx = sys._turtle.ctx;
-                    console.log("play", wait);
+                    // console.log("play", wait);
                     let has_next = false;
                     for (let i = 0; i < sys._turtle.list.length; i++) {
                         const tt = sys._turtle.list[i];
                         if (!tt.f_loaded) has_next = true;
                         if (tt.mlist.length > 0) {
                             const m = tt.mlist.shift();
-                            console.log(m);
+                            // console.log(m);
                             const cmd = m[0];
                             switch (cmd) {
                                 case "mv":
-                                    if (tt.f_down) {
-                                        ctx.beginPath();
-                                        ctx.moveTo(tt.x, tt.y);
-                                        ctx.lineTo(m[1], m[2]);
-                                        ctx.closePath();
-                                        ctx.stroke();
-                                    }
+                                    // 線を引く
+                                    me.line(tt, tt.x, tt.y, m[1], m[2]);
+                                    // カメの角度を変更
+                                    const mv_rad = Math.atan2(m[1]-tt.x, m[2]-tt.y);
+                                    tt.dir = mv_rad * 57.29577951308232;
+                                    tt.f_update = true;
+                                    // 実際に位置を移動
                                     tt.x = m[1];
                                     tt.y = m[2];
                                     break;
+                                case "fd":
+                                    const fdv = m[1] * m[2];
+                                    const rad = tt.dir * 0.017453292519943295;
+                                    const x2 = tt.x + Math.cos(rad) * fdv;
+                                    const y2 = tt.y + Math.sin(rad) * fdv;
+                                    me.line(tt, tt.x, tt.y, x2, y2);
+                                    tt.x = x2;
+                                    tt.y = y2;
+                                    break;
+                                case "rotr":
+                                    const rv = m[1];
+                                    tt.dir = (tt.dir + rv) % 360;
+                                    tt.f_update = true;
+                                    break;
+                                case "rotl":
+                                    const lv = m[1];
+                                    tt.dir = (tt.dir - lv + 360) % 360;
+                                    tt.f_update = true;
+                                    break;
                                 case "color":
-                                    ctx.stokeStyle = m[1];
+                                    console.log(m);
+                                    ctx.strokeStyle = m[1];
+                                    break;
+                                case "size":
+                                    console.log(m);
+                                    ctx.lineWidth = m[1];
+                                    break;
+                                case "pen_on":
+                                    tt.f_down = m[1];
                                     break;
                             }
                             sys._turtle.drawTurtle(i);
@@ -87,7 +155,7 @@ const PluginTurtle = {
                 img: null,
                 canvas: null,
                 ctx: null,
-                dir: 0,
+                dir: 270, // 上向き
                 cx: 32,
                 cy: 32,
                 x: 0,
@@ -136,7 +204,6 @@ const PluginTurtle = {
             // デフォルト位置の設定
             tt.x = rect.width / 2;
             tt.y = rect.height / 2;
-            console.log(tt.x, tt.y);
             return id;
         }
     },
@@ -172,12 +239,71 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ描画色変更": { /// カメの描画色をCに変更する
+    "カメ進": { /// カメの位置をVだけ進める
+        type: "func", josi: [["だけ"]],
+        fn: function (v, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["fd", v, 1]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
+    "カメ戻": { /// カメの位置をVだけ戻す
+        type: "func", josi: [["だけ"]],
+        fn: function (v, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["fd", v, -1]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
+    "カメ右回転": { /// カメの向きをDEGだけ右に向ける
+        type: "func", josi: [["だけ"]],
+        fn: function (v, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["rotr", v]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
+    "カメ左回転": { /// カメの向きをDEGだけ左に向ける
+        type: "func", josi: [["だけ"]],
+        fn: function (v, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["rotl", v]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
+    "カメペン色変更": { /// カメのペン描画色をCに変更する
         type: "func", josi: [["に","へ"]],
         fn: function (c, sys) {
             const tt = sys._turtle.getCur();
             tt.mlist.push(["color", c]);
             sys._turtle.set_timer();
+        },
+        return_none: true
+    },
+    "カメペンサイズ変更": { /// カメペンのサイズをWに変更する
+        type: "func", josi: [["に","へ"]],
+        fn: function (w, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["size", w]);
+            sys._turtle.set_timer();
+        },
+    },
+    "カメペン有効変更": { /// カメペンを使うかどうかをV(オン/オフ)に変更する
+        type: "func", josi: [["に","へ"]],
+        fn: function (w, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["pen_on", w]);
+            sys._turtle.set_timer();
+        },
+    },
+    "カメ全消去": { /// 表示しているカメを全部消去する
+        type: "func", josi: [],
+        fn: function (sys) {
+            sys._turtle.clearAll();
         },
         return_none: true
     },

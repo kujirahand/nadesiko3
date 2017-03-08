@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>なでしこ3/タートルグラフィックス</title>
+    <!-- なでしこを使う準備 -->
+    <script src="../release/wnako3.js"></script>
+    <script src="../release/plugin_turtle.js"></script>
+    <!-- なでしこを呼び出して使う -->
+    <script src="common.js"></script>
+    <script src="turtle_test.js"></script>
+    <link rel="stylesheet" type="text/css" href="common.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+<h1>なでしこ3/タートルグラフィックス</h1>
+
+<div class="sbox">
+    <h4><a name="sankaku_txt_head">三角描画</a></h4>
+    <textarea id="sankaku_txt" class="src" rows="5">
+カメ作成。
+赤色にカメペン色変更。
+Ｎで1から60まで繰り返す
+　　[N*5, N*5]にカメ移動。
+　　[600-N*5, N*5]にカメ移動。
+ここまで。
+    </textarea>
+    <div><p id="sankaku_txt_info" class="info"></p></div>
+    <button onclick="run_box('sankaku_txt')">実行</button>
+</div>
+
+<div class="sbox">
+    <h4><a name="sikaku_txt_head">四角描画</a></h4>
+    <textarea id="sikaku_txt" class="src" rows="5">
+500にカメ速度設定。
+カメ作成。
+４回
+　　50だけカメ進む。
+　　50だけカメ進む。
+　　50だけカメ進む。
+　　90だけカメ右回転。
+ここまで。
+    </textarea>
+    <div><p id="sikaku_txt_info" class="info"></p></div>
+    <button onclick="run_box('sikaku_txt')">実行</button>
+</div>
+
+
+<div class="sbox">
+    <h4><a name="hosi_txt_head">星描画</a></h4>
+    <textarea id="hosi_txt" class="src" rows="5">
+カメ作成。
+オフにカメペン有効変更。
+[10,120]にカメ移動。
+オンにカメペン有効変更。
+座標リスト＝[[10,120], [590,120],[10,590],[300,10],[590,590],[10,120]]
+座標リストを反復
+　　それにカメ移動。
+ここまで。
+    </textarea>
+    <div><p id="hosi_txt_info" class="info"></p></div>
+    <button onclick="run_box('hosi_txt')">実行</button>
+</div>
+
+<!-- 実行結果を表示するパーツ -->
+<div id="editor" class="edit_div">
+    <div class="turtle_box"><p class="edit_head"><a name="run">実行結果:</a> &nbsp; (<a href="#sankaku_txt" id="backlink">↑戻る</a>)</p>
+        <p><canvas id="turtle_cv" class="turtle_canvas" 
+          width="600" height="600"></canvas></p>
+    </div>
+    <div id="err"></div>
+</div>
+
+
+</body>
+</html>
+

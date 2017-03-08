@@ -9,7 +9,7 @@ function run_box(id) {
         $('src_box').value = $(id).value;
         reset_box();
     }
-    var src = $("src_box").value;
+    var src = $('src_box').value;
     $("err").style.display = "none";
     try {
         navigator.nako3.run(src);
