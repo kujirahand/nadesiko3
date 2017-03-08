@@ -111,6 +111,10 @@ const PluginTurtle = {
                                     tt.x = x2;
                                     tt.y = y2;
                                     break;
+                                case "angle":
+                                    tt.dir = m[1] % 360;
+                                    tt.f_update = true;
+                                    break;
                                 case "rotr":
                                     const rv = m[1];
                                     tt.dir = (tt.dir + rv) % 360;
@@ -207,8 +211,8 @@ const PluginTurtle = {
             return id;
         }
     },
-    "カメ変更": { /// IDを指定して操作対象となるカメを変更する
-        type: "func", josi: [["に", "へ"]],
+    "カメ操作対象設定": { /// IDを指定して操作対象となるカメを変更する
+        type: "func", josi: [["に", "へ", "の"]],
         fn: function (id, sys) {
             sys._turtle.target = id;
         },
@@ -257,6 +261,15 @@ const PluginTurtle = {
         },
         return_none: true
     },
+    "カメ角度設定": { /// カメの向きをDEGに設定する
+        type: "func", josi: [["だけ"]],
+        fn: function (v, sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["angle", v]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
     "カメ右回転": { /// カメの向きをDEGだけ右に向ける
         type: "func", josi: [["だけ"]],
         fn: function (v, sys) {
@@ -275,7 +288,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメペン色変更": { /// カメのペン描画色をCに変更する
+    "カメペン色設定": { /// カメのペン描画色をCに設定する
         type: "func", josi: [["に","へ"]],
         fn: function (c, sys) {
             const tt = sys._turtle.getCur();
@@ -284,7 +297,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメペンサイズ変更": { /// カメペンのサイズをWに変更する
+    "カメペンサイズ設定": { /// カメペンのサイズをWに設定する
         type: "func", josi: [["に","へ"]],
         fn: function (w, sys) {
             const tt = sys._turtle.getCur();
@@ -292,7 +305,7 @@ const PluginTurtle = {
             sys._turtle.set_timer();
         },
     },
-    "カメペン有効変更": { /// カメペンを使うかどうかをV(オン/オフ)に変更する
+    "カメペン設定": { /// カメペンを使うかどうかをV(オン/オフ)に設定する
         type: "func", josi: [["に","へ"]],
         fn: function (w, sys) {
             const tt = sys._turtle.getCur();

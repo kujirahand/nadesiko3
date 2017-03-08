@@ -19,20 +19,25 @@
     <p class="edit_head">簡易エディタ:</p>
     <textarea id="src_box" rows="4" title="簡易エディタ">
 カメ作成。
-Ｎで1から60まで繰り返す
-  [N*5, N*5]にカメ移動。
-  [600-N*5, N*5]にカメ移動。
+[10,10]にカメ移動。
+90にカメ角度設定。
+オンにカメペン設定。
+N=580
+50回
+　　Nだけカメ進む
+　　90だけカメ右回転
+　　N = N - 10
 ここまで。
     </textarea>
     <div class="buttons">
-        <button onclick="run_box(null)">実行</button>
+        <button onclick="run_box('src_box')">実行</button>
         <button onclick="reset_box()">クリア</button>
     </div>
     <div id="err"></div>
-    <div class="turtle_box"><p class="edit_head">実行結果:</p>
+    <div class="turtle_box"><p class="edit_head"><a name="run">実行結果:</a> &nbsp; (<a href="#src_box" id="backlink">↑戻る</a>)</p>
         <p><canvas id="turtle_cv" class="turtle_canvas" 
           width="600" height="600"></canvas></p>
-        <p id="info" class="info"></p>
+        <p id="src_box_info" class="info"></p>
     </div>
 </div>
 </body>
