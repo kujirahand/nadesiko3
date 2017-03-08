@@ -74,6 +74,8 @@ const PluginTurtle = {
                     }
                     const ctx = this.ctx;
                     ctx.beginPath();
+                    ctx.lineWidth = tt.lineWidth;
+                    ctx.strokeStyle = tt.color;
                     ctx.moveTo(x1, y1);
                     ctx.lineTo(x2, y2);
                     ctx.stroke();
@@ -130,11 +132,12 @@ const PluginTurtle = {
                                     tt.f_update = true;
                                     break;
                                 case "color":
-                                    ctx.strokeStyle = m[1];
-                                    console.log(m);
+                                    // ctx.strokeStyle = m[1];
+                                    tt.color = m[1];
                                     break;
                                 case "size":
-                                    ctx.lineWidth = m[1];
+                                    // ctx.lineWidth = m[1];
+                                    tt.lineWidth = m[1];
                                     break;
                                 case "pen_on":
                                     tt.f_down = m[1];
@@ -169,6 +172,8 @@ const PluginTurtle = {
                 cy: 32,
                 x: 0,
                 y: 0,
+                color: 'black',
+                lineWidth: 4,
                 f_down: true,
                 f_update: true,
                 f_loaded: false,
