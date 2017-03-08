@@ -115,7 +115,8 @@ const PluginTurtle = {
                                     tt.y = y2;
                                     break;
                                 case "angle":
-                                    tt.dir = ((m[1]-90+360) % 360);
+                                    const angle = m[1];
+                                    tt.dir = ((angle-90+360) % 360);
                                     tt.f_update = true;
                                     break;
                                 case "rotr":
@@ -268,7 +269,6 @@ const PluginTurtle = {
         type: "func", josi: [["に","へ","の"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
-            console.log(v);
             tt.mlist.push(["angle", parseFloat(v)]);
             sys._turtle.set_timer();
         },

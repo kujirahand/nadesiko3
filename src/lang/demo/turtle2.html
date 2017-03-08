@@ -66,11 +66,39 @@
 </div>
 
 <div class="sbox">
+    <h4><a name="hosi2_txt_head">星描画2</a></h4>
+    <textarea id="hosi2_txt" class="src" rows="5">
+●星描画(歩数で)
+　　5回
+　　　　歩数だけカメ進む。
+　　　　144だけカメ右回転
+　　ここまで
+-----------
+カメ作成。
+オフにカメペン設定。
+[20,180]にカメ移動。
+90にカメ角度設定。
+オンにカメペン設定。
+# 描画開始
+赤色にカメペン色設定。
+250で星描画。
+緑色にカメペン色設定。
+150で星描画。
+黄色にカメペン色設定。
+50で星描画。
+    </textarea>
+    <div><p id="hosi2_txt_info" class="info"></p></div>
+    <button onclick="run_box('hosi2_txt')">実行</button>
+</div>
+
+
+<div class="sbox">
     <h4><a name="fr_txt_head">フラクタル描画</a></h4>
     <textarea id="fr_txt" class="src" rows="5">
 ●フラクタル(サイズと深度で)
 　　もし、深度<0ならば
 　　　　サイズだけカメ進む。
+　　　　戻る。
 　　ここまで。
 　　(サイズ/3)と(深度-1)でフラクタル。
 　　60だけカメ左回転。
@@ -83,8 +111,10 @@
 1にカメ速度設定。# 最速に
 カメ作成。
 オフにカメペン設定。
-[10,300]にカメ移動。
-50と3でフラクタル。
+[10,200]にカメ移動。
+90にカメ角度設定。
+オンにカメペン設定。
+250と3でフラクタル。
     </textarea>
     <div><p id="fr_txt_info" class="info"></p></div>
     <button onclick="run_box('fr_txt')">実行</button>
