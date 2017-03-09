@@ -6,6 +6,8 @@ Japanese Programming Language Nadesiko v3
 HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
 
 - [URL] http://nadesi.com, [http://なでしこ.jp](http://なでしこ.jp)
+- [URL] [なでしこ3/開発WIKI](http://nadesi.com/dev/wiki/go.php?351)
+- [URL] [なでしこ3/ベータ2のデモページ](http://files.nadesi.com/demo/nako3beta2/demo/index.html)
 
 # 開発目標
 
