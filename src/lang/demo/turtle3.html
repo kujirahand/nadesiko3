@@ -148,6 +148,39 @@ A=360/18
     <button onclick="run_box('fr_txt')">実行</button>
 </div>
 
+<div class="sbox">
+    <h4><a name="flower2_txt_head">花びら - 高速 - カメなし</a></h4>
+    <textarea id="flower2_txt" class="src" rows="5">
+●花びら描画(歩数で)
+　　4回
+　　　　60だけカメ右回転。
+　　　　歩数だけカメ進む。
+　　ここまで
+　　９０だけカメ右回転。
+-------
+0にカメ速度設定。
+カメ作成
+カメ非表示。
+緑色にカメペン色設定。
+[60,200]にカメ移動。
+-45にカメ角度設定
+黄色にカメペン色設定。
+8回
+　　もし、それ%2=0ならば
+　　　　紫色にカメペン色設定
+　　違えば、
+　　　　黄色にカメペン色設定
+　　ここまで。
+　　12回
+　　　　30で花びら描画。
+　　ここまで
+　　20だけカメ右回転
+ここまで
+    </textarea>
+    <div><p id="flower2_txt_info" class="info"></p></div>
+    <button onclick="run_box('flower2_txt')">実行</button>
+</div>
+
 
 <!-- 実行結果を表示するパーツ -->
 <div id="editor" class="edit_div">

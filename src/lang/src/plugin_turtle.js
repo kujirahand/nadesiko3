@@ -43,6 +43,7 @@ const PluginTurtle = {
                     tt.ctx.clearRect(0, 0, 
                             tt.canvas.width,
                             tt.canvas.height);
+                    if (!tt.f_visible) return;
                     if (tt.dir != 270) {
                         const rad = (tt.dir + 90) * 0.017453292519943295;
                         tt.ctx.save();
@@ -63,9 +64,9 @@ const PluginTurtle = {
                     if (this.b_set_timer) return;
                     this.b_set_timer = true;
                     setTimeout(()=>{
-                        sys._turtle.play();
                         const tt = this.getCur();
                         console.log("[TURTLE] Let's go! job=", tt.mlist.length);
+                        sys._turtle.play();
                     }, 1);
                 },
                 line: function (tt, x1, y1, x2, y2) {
@@ -80,78 +81,90 @@ const PluginTurtle = {
                     ctx.lineTo(x2, y2);
                     ctx.stroke();
                 },
-                play: function () {
+                do_macro: function (tt, wait) {
                     const me = this;
-                    const wait = sys.__getSysValue("カメ速度", 100);
-                    const ctx = sys._turtle.ctx;
+                    if (!tt.f_loaded && wait > 0) {
+                        console.log('[TURTLE] waiting ...');
+                        return true;
+                    }
+                    const m = tt.mlist.shift();
+                    const cmd = m[0];
+                    switch (cmd) {
+                        case "mv":
+                            // 線を引く
+                            me.line(tt, tt.x, tt.y, m[1], m[2]);
+                            // カメの角度を変更
+                            const mv_rad = Math.atan2(m[1]-tt.x, m[2]-tt.y);
+                            tt.dir = mv_rad * 57.29577951308232;
+                            tt.f_update = true;
+                            // 実際に位置を移動
+                            tt.x = m[1];
+                            tt.y = m[2];
+                            break;
+                        case "fd":
+                            const fdv = m[1] * m[2];
+                            const rad = tt.dir * 0.017453292519943295;
+                            const x2 = tt.x + Math.cos(rad) * fdv;
+                            const y2 = tt.y + Math.sin(rad) * fdv;
+                            me.line(tt, tt.x, tt.y, x2, y2);
+                            tt.x = x2;
+                            tt.y = y2;
+                            break;
+                        case "angle":
+                            const angle = m[1];
+                            tt.dir = ((angle-90+360) % 360);
+                            tt.f_update = true;
+                            break;
+                        case "rotr":
+                            const rv = m[1];
+                            tt.dir = (tt.dir + rv) % 360;
+                            tt.f_update = true;
+                            break;
+                        case "rotl":
+                            const lv = m[1];
+                            tt.dir = (tt.dir - lv + 360) % 360;
+                            tt.f_update = true;
+                            break;
+                        case "color":
+                            // ctx.strokeStyle = m[1];
+                            tt.color = m[1];
+                            break;
+                        case "size":
+                            // ctx.lineWidth = m[1];
+                            tt.lineWidth = m[1];
+                            break;
+                        case "pen_on":
+                            tt.f_down = m[1];
+                            break;
+                        case "visible":
+                            tt.f_visible = m[1];
+                            tt.f_update = true;
+                            break;
+                    }
+                    if (tt.f_loaded) sys._turtle.drawTurtle(tt.id);
+                    return (tt.mlist.length > 0);
+                },
+                do_macro_all: function (wait) {
                     let has_next = false;
                     for (let i = 0; i < sys._turtle.list.length; i++) {
                         const tt = sys._turtle.list[i];
-                        if (!tt.f_loaded) {
-                            has_next = true;
-                            console.log('[TURTLE] waiting ...');
-                            break;
-                        }
-                        if (tt.mlist.length > 0) {
-                            const m = tt.mlist.shift();
-                            const cmd = m[0];
-                            switch (cmd) {
-                                case "mv":
-                                    // 線を引く
-                                    me.line(tt, tt.x, tt.y, m[1], m[2]);
-                                    // カメの角度を変更
-                                    const mv_rad = Math.atan2(m[1]-tt.x, m[2]-tt.y);
-                                    tt.dir = mv_rad * 57.29577951308232;
-                                    tt.f_update = true;
-                                    // 実際に位置を移動
-                                    tt.x = m[1];
-                                    tt.y = m[2];
-                                    break;
-                                case "fd":
-                                    const fdv = m[1] * m[2];
-                                    const rad = tt.dir * 0.017453292519943295;
-                                    const x2 = tt.x + Math.cos(rad) * fdv;
-                                    const y2 = tt.y + Math.sin(rad) * fdv;
-                                    me.line(tt, tt.x, tt.y, x2, y2);
-                                    tt.x = x2;
-                                    tt.y = y2;
-                                    break;
-                                case "angle":
-                                    const angle = m[1];
-                                    tt.dir = ((angle-90+360) % 360);
-                                    tt.f_update = true;
-                                    break;
-                                case "rotr":
-                                    const rv = m[1];
-                                    tt.dir = (tt.dir + rv) % 360;
-                                    tt.f_update = true;
-                                    break;
-                                case "rotl":
-                                    const lv = m[1];
-                                    tt.dir = (tt.dir - lv + 360) % 360;
-                                    tt.f_update = true;
-                                    break;
-                                case "color":
-                                    // ctx.strokeStyle = m[1];
-                                    tt.color = m[1];
-                                    break;
-                                case "size":
-                                    // ctx.lineWidth = m[1];
-                                    tt.lineWidth = m[1];
-                                    break;
-                                case "pen_on":
-                                    tt.f_down = m[1];
-                                    break;
-                            }
-                            sys._turtle.drawTurtle(i);
-                            if (tt.mlist.length > 0) has_next = true;
-                        }
+                        if (this.do_macro(tt, wait)) has_next = true;
                     }
-                    if (has_next) {
-                        setTimeout( () => { sys._turtle.play(); }, wait);
-                    } else {
-                        console.log("[TURTLE] finished.");
+                    return has_next;
+                },
+                play: function () {
+                    const me = this;
+                    const wait = sys.__getSysValue("カメ速度", 100);
+                    let has_next = true;
+                    while (has_next) {
+                        has_next = this.do_macro_all(wait);
+                        if (wait > 0) break;
                     }
+                    if (wait > 0 && has_next) {
+                        setTimeout( () => { me.play(); }, wait);
+                        return;
+                    }
+                    console.log("[TURTLE] finished.");
                 },
             };
         }
@@ -177,6 +190,7 @@ const PluginTurtle = {
                 f_down: true,
                 f_update: true,
                 f_loaded: false,
+                f_visible: true,
                 mlist: [],
             };
             sys._turtle.list.push(tt);
@@ -324,14 +338,31 @@ const PluginTurtle = {
             sys._turtle.set_timer();
         },
     },
-    "カメ全消去": { /// 表示しているカメを全部消去する
+    "カメ全消去": { /// 表示しているカメと描画内容を全部消去する
         type: "func", josi: [],
         fn: function (sys) {
             sys._turtle.clearAll();
         },
         return_none: true
     },
-
+    "カメ非表示": { /// カメの画像を非表示にする。描画に影響しない。
+        type: "func", josi: [],
+        fn: function (sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["visible", false]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
+    "カメ表示": { /// 非表示にしたカメを表示する。
+        type: "func", josi: [],
+        fn: function (sys) {
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["visible", true]);
+            sys._turtle.set_timer();
+        },
+        return_none: true
+    },
 };
 
 module.exports = PluginTurtle;
