@@ -887,6 +887,13 @@ const PluginSystem = {
                 " " + z2(t.getHours()) + ":" + z2(t.getMinutes()) + ":" + z2(t.getSeconds());
         }
     },
+    /// デバッグ支援
+    "エラー発生": { /// 故意にエラーSを発生させる
+        type: "func", josi: [["の","で"]],
+        fn: function (s) {
+            throw new Error(s);  
+        }
+    }
 };
 
 module.exports = PluginSystem;

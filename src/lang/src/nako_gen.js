@@ -1,9 +1,17 @@
 //
 // nako_gen.js
 //
-
 "use strict";
+
 class NakoGenError extends Error {
+    constructor (msg, loc) {
+        if (loc) {
+            msg = "[文法エラー](" + loc.start.line + ":" + loc.start.column + ") " + msg;
+        } else {
+            msg = "[文法エラー] " + msg;
+        }
+        super(msg);
+    }
 }
 
 /**
@@ -87,18 +95,18 @@ class NakoGen {
     
     /** プログラムの実行に必要な関数定義を書き出す(グローバル領域) */
     getDefFuncCode() {
-        let code = "// なでしこの関数定義\n";
+        let code = "__varslist[0].line=0;// なでしこの関数定義\n";
         // なでしこの関数定義を行う
         for (const key in this.nako_func) {
             const f = this.nako_func[key].fn;
             code += `this.__varslist[1]["${key}"]=${f};\n`;
         }
         // プラグインの初期化関数を実行する
-        code += "// プラグインの初期化\n";
+        code += "__varslist[0].line=0;// プラグインの初期化\n";
         for (const name in this.pluginfiles) {
           const initkey = `!${name}:初期化`;
           if (this.used_func[initkey]) {
-            code += `__varslist[0]["!${name}:初期化"](__self)\n`;
+            code += `__varslist[0].line=0;__varslist[0]["!${name}:初期化"](__self)\n`;
           }
         }
         return code;
@@ -182,7 +190,13 @@ class NakoGen {
     getFunc(key) {
         return this.plugins[key];
     }
-
+    
+    c_lineno(node) {
+        if (!node.loc) return '';
+        const lineno = node.loc.start.line;
+        return `__varslist[0].line=${lineno};`;
+    }
+    
     c_gen(node) {
         let code = "";
         if (node == undefined) return "";
@@ -194,11 +208,17 @@ class NakoGen {
             return code;
         }
         if (typeof(node) != "object") return "" + node;
+        // add source map
         // switch
         switch (node.type) {
             case "nop":
                 break;
+            case "comment":
+                code += this.c_lineno(node);
+                code += "/*" + node.value + "*/\n";
+                break;
             case "EOS":
+                code += this.c_lineno(node);
                 code += "\n";
                 break;
             case "break":
@@ -294,24 +314,25 @@ class NakoGen {
         return null;
     }
 
-    gen_var(name) {
+    gen_var(name, loc) {
         const res = this.find_var(name);
+        const lno = (loc) ? loc.start.line : 0;
         if (res == null) {
-            return `__vars["${name}"]/*?*/`;
+            return `__vars["${name}"]/*?:${lno}*/`;
         }
         const i = res.i;
         // システム関数・変数の場合
         if (i == 0) {
             const pv = this.plugins[name];
-            if (!pv) return `__vars["${name}"]/*?err?*/`;
+            if (!pv) return `__vars["${name}"]/*err:${lno}*/`;
             if (pv.type == "const") return `__varslist[0]["${name}"]`;
             if (pv.type == "func") {
                 if (pv.josi.length == 0) {
                     return `(__varslist[${i}]["${name}"]())`;
                 }
-                throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`);
+                throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, loc);
             }
-            throw new NakoGenError(`『${name}』は関数であり参照できません。`);
+            throw new NakoGenError(`『${name}』は関数であり参照できません。`, loc);
         }
         if (res.isTop) {
             return `__vars["${name}"]`;
@@ -322,17 +343,18 @@ class NakoGen {
 
     c_get_var(node) {
         const name = node.value;
-        return this.gen_var(name);
+        return this.gen_var(name, node.loc);
     }
     
     c_return(node) {
+        const lno = this.c_lineno(node);
         let value;
         if (node.value) {
             value = this.c_gen(node.value);
-            return `return ${value};`;
+            return lno + `return ${value};`;
         } else {
             value = this.sore;
-            return "return ${value};"; 
+            return lno + `return ${value};`; 
         }
     }
 
@@ -419,7 +441,7 @@ class NakoGen {
         }
         const value = this.c_gen(node.value);
         code += " = " + value + ";\n";
-        return code;
+        return this.c_lineno(node) + code;
     }
 
     c_for(node) {
@@ -441,7 +463,7 @@ class NakoGen {
             `  ${this.sore} = ${word};` + "\n" +
             "  " + block + "\n" +
             "};\n";
-        return code;
+        return this.c_lineno(node) + code;
     }
 
     c_foreach(node) {
@@ -462,7 +484,7 @@ class NakoGen {
             `  ${key} = $nako_i${id};\n` +
             "  " + block + "\n" +
             "};\n";
-        return code;
+        return this.c_lineno(node) + code;
     }
 
     c_repeat_times(node) {
@@ -474,7 +496,7 @@ class NakoGen {
             `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + "{\n" +
             `  ${this.sore} = ${kaisu} = $nako_i${id};` + "\n" +
             "  " + block + "\n}\n";
-        return code;
+        return this.c_lineno(node) + code;
     }
 
     c_while(node) {
@@ -484,15 +506,17 @@ class NakoGen {
             `while (${cond})` + "{\n" +
             `  ${block}` + "\n" +
             "}\n";
-        return code;
+        return this.c_lineno(node) + code;
     }
 
     c_if(node) {
         const expr = this.c_gen(node.expr);
         const block = this.c_gen(node.block);
         const false_block = this.c_gen(node.false_block);
-        const code = `if (${expr}) { ${block} } else { ${false_block} };\n`;
-        return code;
+        const code =
+            this.c_lineno(node) +
+            `if (${expr}) { ${block} } else { ${false_block} };\n`;
+        return this.c_lineno(node) + code;
     }
 
     getFuncName(name) {
@@ -528,7 +552,7 @@ class NakoGen {
                 if (sore < 0) {
                     const josi_s = josilist.join("|");
                     throw new NakoGenError(
-                        `関数『${func_name}』の引数『${josi_s}』が見当たりません。`);
+                        `関数『${func_name}』の引数『${josi_s}』が見当たりません。`, node.loc);
                 }
                 args.push(this.sore);
             }
@@ -545,6 +569,12 @@ class NakoGen {
         return args;
     }
 
+    getPluginList() {
+      const r = [];
+      for (const name in this.pluginfiles) r.push(name);
+      return r;
+    }
+
     /**
      * 関数の呼び出し
      * @param node
@@ -556,7 +586,7 @@ class NakoGen {
         let func_name_s;
         const res = this.find_var(func_name);
         if (res == null) {
-            throw new NakoGenError(`関数『${func_name}』が見当たりません。現在有効なプラグイン=[`+JSON.stringify(this.pluginfiles));
+            throw new NakoGenError(`関数『${func_name}』が見当たりません。有効プラグイン=[`+this.getPluginList().join(",")+']', node.loc);
         }
         let func;
         if (res.i == 0) { // plugin function
@@ -565,7 +595,7 @@ class NakoGen {
         } else {
             func = this.nako_func[func_name];
             if (func === undefined) {
-                throw new NakoGenError(`『${func_name}』は関数ではありません。`);
+                throw new NakoGenError(`『${func_name}』は関数ではありません。`, node.loc);
             }
             func_name_s = `__varslist[${res.i}]["${func_name}"]`;
         }
@@ -593,7 +623,7 @@ class NakoGen {
                 code = this.sore + " = " + code + ";\n";
             }
         }
-        return code;
+        return this.c_lineno(node) + code;
     }
 
     c_op(node) {
@@ -621,7 +651,7 @@ class NakoGen {
         } else {
             code = `__varslist[${res.i}]["${name}"]=${value};\n`;
         }
-        return code;
+        return this.c_lineno(node) + code;
     }
 
     c_print(node) {

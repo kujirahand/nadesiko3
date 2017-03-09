@@ -1,7 +1,7 @@
 const assert = require('assert');
 const NakoCompiler = require('../src/nako3');
 
-describe('calc', () => {
+describe('calc_test.js', () => {
     const nako = new NakoCompiler();
     // nako.debug = true;
     const cmp = (code, res) => {

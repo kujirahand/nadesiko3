@@ -14,18 +14,15 @@ function convToHalfS(s) {
 start = sentence+
 
 sentence 
-  =  comment
-  / indent { return {"type":"EOS","memo":"indent"}; }
-  / EOS+ { return {"type":"EOS"}; }
+  = blank_stmt
   / end / continue / break / return_stmt
   / def_func
   / if_stmt / while_stmt / repeat_times_stmt / for_stmt / foreach_stmt
   / let_stmt
   / kokomade { return {type:"EOS",memo:"---"}; }
   / kokokara a:( if_stmt / while_stmt / repeat_times_stmt
-                       for_stmt / foreach_stmt) { return a; }
+                 for_stmt / foreach_stmt) { return a; }
   / func_call_stmt
-
 
 sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
@@ -39,7 +36,7 @@ end = ("終わる" / "終了") EOS { return {type:"end"}; }
 
 def_func
   = "●" name:word __ "(" args:def_func_arg* ")" __ LF b:block kokomade {
-    return {type:"def_func", "name":name, "args":args, block:b };
+    return {type:"def_func", "name":name, "args":args, block:b, loc:location() };
   }
 
 def_func_arg
@@ -50,57 +47,57 @@ return_word = "戻る" / "戻す"
 
 return_stmt
   = return_word EOS { return {type:"return",value:null}; }
-  / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v}; }
+  / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v, loc:location()}; }
 
 foreach_stmt
   = target:value "を" __ ("反復" / "反復する") LF b:block block_end {
-    return {"type":"foreach", "target":target, "block":b};
+    return {"type":"foreach", "target":target, "block":b, loc:location()};
   }
   / ("反復" / "反復する") LF b:block block_end {
-    return {"type":"foreach", "target":null, "block":b};
+    return {"type":"foreach", "target":null, "block":b, loc:location()};
   }
 
 for_stmt
   = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
-    return {"type":"for", "from":kara, "to":made, "block":b, "word": i};
+    return {"type":"for", "from":kara, "to":made, "block":b, "word": i, loc:location()};
   }
   / kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
-    return {"type":"for", "from":kara, "to":made, "block":b, "word": ""};
+    return {"type":"for", "from":kara, "to":made, "block":b, "word": "", loc:location()};
   }
 
 repeat_times_stmt
   = cnt:(int / intz) "回" __ b:sentence EOS {
-    return {"type":"repeat_times", "value":cnt, "block": b};
+    return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
   / cnt:(int / intz) "回" __ LF b:block block_end {
-    return {"type":"repeat_times", "value":cnt, "block": b};
+    return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
   / parenL cnt:calc parenR "回" __ b:sentence EOS {
-    return {"type":"repeat_times", "value":cnt, "block": b};
+    return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
   / parenL cnt:calc parenR  "回" __ LF b:block block_end {
-    return {"type":"repeat_times", "value":cnt, "block": b};
+    return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
 
 while_stmt
   = parenL expr:calc parenR  "の間" LF b:block block_end {
-    return {"type":"while", "cond":expr, "block":b};
+    return {"type":"while", "cond":expr, "block":b, loc:location()};
   }
 
 if_stmt
   = "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block
       __ else __ LF __ fb:block block_end {
-    return {"type":"if", "expr":expr, "block":tb, "false_block":fb };
+    return {"type":"if", "expr":expr, "block":tb, "false_block":fb, loc:location()};
   }
   / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block block_end {
-    return {"type":"if", "expr":expr, "block":tb, "false_block":[] };
+    return {"type":"if", "expr":expr, "block":tb, "false_block":[], loc:location()};
   }
   // ブロックなしの「もし」文の時
   / "もし" __ expr:if_expr __ josi_naraba __ t:sentence EOS? else f:sentence EOS {
-    return {"type":"if", "expr":expr, "block":t, "false_block":f };
+    return {"type":"if", "expr":expr, "block":t, "false_block":f, loc:location()};
   }
   / "もし" __ expr:if_expr __ josi_naraba __ t:sentence EOS {
-    return {"type":"if", "expr":expr, "block":t, false_block:[] };
+    return {"type":"if", "expr":expr, "block":t, false_block:[], loc:location()};
   }
 
 if_expr
@@ -131,32 +128,43 @@ func_arg
   = v:calc j:josi { return {"type":"arg", "value":v, "josi":j} }
 
 func_call_stmt
-  = args:func_arg* name:word EOS {
-    return {type:"func", "args":args, "name":name};
+  = name:word EOS {
+    return {type:"func", "args":[], "name":name, loc:location()};
+  }
+  / args:func_arg+ name:word EOS {
+    return {type:"func", "args":args, "name":name, loc:location()};
   }
 
 let_stmt
-  = name:word __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let", "name":name, "value":value}; }
-  / name:word i:("[" calc "]")+ __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value}; }
+  = name:word __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let", "name":name, "value":value, }; loc:location()}
+  / name:word i:("[" calc "]")+ __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value, loc:location()}; }
   / name:word ("に"/"へ") value:(calc "を")? "代入" EOS  {
-    const v = value ? value[0] : {type:"variable", value:"それ"};
+    const v = value ? value[0] : {type:"variable", value:"それ", loc:location()};
     return {"type":"let", "name":name, "value":v};
   }
 
 // コメント関連
 __ = (whitespace / range_comment)*
-LF = "\n" { return {type:"EOS"}; }
-EOS = __ n:(";" / LF / "。" / josi_continue) { return {type:"EOS"}; }
-whitespace = [ \t\r、　,]
-SPCLF = [\t\r\n 　]*
-SPC = [\t 　]*
-indent = [ 　\t・]+
-range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
-line_comment = ("//" / "#" / "＃" / "※") s:$[^\n]* "\n" { return s; }
-comment
-  = n:(range_comment / line_comment) { 
-    return {type:"comment",value:n};
+LF = "\n" {
+    return {type:"EOS", loc:location()};
   }
+EOS = __ n:(";" / LF / "。" / josi_continue) { return {type:"EOS", loc:location()}; }
+whitespace = [ \t\r、　,]
+SPCLF = (SPC / LF)
+SPC = [\t\r 　]*
+range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
+line_comment = ("//" / "#" / "＃" / "※") s:$[^\n]* LF { return s; }
+comment
+  = n:(range_comment / line_comment) {
+    return {type:"comment",value:n,loc:location()};
+  }
+INDENT = [ 　\t]+
+blank_stmt
+  = INDENT { return {type:"nop"} }
+  / comment
+  / c:LF+  { return c[0]; }
+  / c:EOS+ { return c[0]; }
+
 
 // 数字関連
 number = f:"-"? v:(hex / float / int / intz) josuusi? { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
@@ -206,7 +214,7 @@ katakana = [ァ-ヶー]
 alphabet = [_a-zA-Z]
 alphaz = [ａ-ｚＡ-Ｚ＿]
 wordchar = w:(kanji / hiragana / katakana / alphabet / alphaz) { return w; }
-word "単語" = chars:$((!josi_word_split wordchar)+) { return { type:"variable", value:convToHalfS(chars) }; }
+word = chars:$((!josi_word_split wordchar)+) { return { type:"variable", value:convToHalfS(chars), loc:location()}; }
 
 // memo
 alphachars = a:$(alphabet / alphaz)+ b:$([0-9a-zA-Z_０-９ａ-ｚＡ-Ｚ＿])* { return convToHalfS(a + b ? b : ""); }
@@ -290,10 +298,10 @@ parenL = "(" / "（"
 parenR = ")" / "）"
 
 json_stmt
-  = "[" SPCLF a:json_array SPCLF "]"  { return {type:"json_array", value:a}; }
-  / "{" SPCLF a:json_obj SPCLF "}" { return {type:"json_obj", value:a}; }
-  / "[" SPCLF "]" { return {type:"json_array", value:[]}; }
-  / "{" SPCLF "}" { return {type:"json_obj", value:[]}; } 
+  = "[" SPCLF a:json_array SPCLF "]"  { return {type:"json_array", value:a, loc:location()}; }
+  / "{" SPCLF a:json_obj SPCLF "}" { return {type:"json_obj", value:a, loc:location()}; }
+  / "[" SPCLF "]" { return {type:"json_array", value:[], loc:location()}; }
+  / "{" SPCLF "}" { return {type:"json_obj", value:[], loc:location()}; } 
 
 json_array
   = a1:json_value SPCLF a2:("," SPCLF json_value SPCLF)+ {
