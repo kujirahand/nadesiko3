@@ -3,7 +3,7 @@
 ## Webプラグインの追加手順
 
 - メインHTMLで、wnako3.js を読み込む
-  - navigator.nako3 にコンパイラのインスタンスが作成される
+  - `navigator.nako3` にコンパイラのインスタンスが作成される
 - script src="plugin_xxx.js で独自プラグインを読み込む
 
 ## プラグイン側の実装
