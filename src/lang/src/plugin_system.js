@@ -28,6 +28,8 @@ const PluginSystem = {
     "OK": {type: "const", value: 1},
     "NG": {type: "const", value: 0},
     "PI": {type: "const", value: Math.PI},
+    "空": {type: "const", value:""},
+    "NULL": {type: "const", value: null},
     /// 標準出力
     "表示": { /// Sを表示
         type: "func", josi: [["を", "と"]],
@@ -41,7 +43,7 @@ const PluginSystem = {
     },
     "表示ログ": {type: "const", value: ""},
     "表示ログクリア": { /// 表示ログを空にする
-        type: "func", josi: [[]],
+        type: "func", josi: [],
         fn: function (sys) {
             sys.__varslist[0]["表示ログ"] = "";
         },
@@ -55,8 +57,7 @@ const PluginSystem = {
         return_none: true
     },
     "尋": { /// メッセージSと入力ボックスを出して尋ねる
-        type: "func",
-        josi: [["と", "を"]],
+        type: "func", josi: [["と", "を"]],
         fn: function (s) {
             const r = prompt(s);
             if (r.match(/^[0-9\.]+$/)) return parseFloat(r);
@@ -65,115 +66,99 @@ const PluginSystem = {
     },
     /// 四則演算
     "足": { /// AとBを足す
-        type: "func",
-        josi: [["に", "と"], ["を"]],
+        type: "func", josi: [["に", "と"], ["を"]],
         fn: function (a, b) {
             return a + b;
         },
     },
     "引": { /// AからBを引く
-        type: "func",
-        josi: [["から"], ["を"]],
+        type: "func", josi: [["から"], ["を"]],
         fn: function (a, b) {
             return a - b;
         },
     },
     "掛": { /// AにBを掛ける
-        type: "func",
-        josi: [["に", "と"], ["を"]],
+        type: "func", josi: [["に", "と"], ["を"]],
         fn: function (a, b) {
             return a * b;
         },
     },
     "倍": { /// AのB倍を求める
-        type: "func",
-        josi: [["の"], ["を"]],
+        type: "func", josi: [["の"], ["を"]],
         fn: function (a, b) {
             return a * b;
         },
     },
     "割": { /// AをBで割る
-        type: "func",
-        josi: [["を"], ["で"]],
+        type: "func", josi: [["を"], ["で"]],
         fn: function (a, b) {
             return a / b;
         },
     },
     "割った余": { /// AをBで割った余りを求める
-        type: "func",
-        josi: [["を"], ["で"]],
+        type: "func", josi: [["を"], ["で"]],
         fn: function (a, b) {
             return a % b;
         },
     },
     /// 特殊命令
     "JS実行": { /// JavaScriptのコードSを実行する
-        type: "func",
-        josi: [["を"], ["で"]],
+        type: "func", josi: [["を"], ["で"]],
         fn: function (js) {
             return eval(js);
         },
     },
     ///型変換
     "変数型確認": { /// 変数Vの型を返す
-        type: "func",
-        josi: [["の"]],
+        type: "func", josi: [["の"]],
         fn: function (v) {
             return typeof(v);
         },
     },
     "TYPEOF": {/// 変数Vの型を返す
-        type: "func",
-        josi: [["の"]],
+        type: "func", josi: [["の"]],
         fn: function (v) {
             return typeof(v);
         },
     },
     "文字列変換": {/// 値Vを文字列に変換
-        type: "func",
-        josi: [["を"]],
+        type: "func", josi: [["を"]],
         fn: function (v) {
             return String(v);
         },
     },
     "TOSTR": { /// 値Vを文字列に変換
-        type: "func",
-        josi: [["を"]],
+        type: "func", josi: [["を"]],
         fn: function (v) {
             return String(v);
         },
     },
     "整数変換": { /// 値Vを整数に変換
-        type: "func",
-        josi: [["を"]],
+        type: "func", josi: [["を"]],
         fn: function (v) {
             return parseInt(v);
         },
     },
     "TOINT": {/// 値Vを整数に変換
-        type: "func",
-        josi: [["を"]],
+        type: "func", josi: [["を"]],
         fn: function (v) {
             return parseInt(v);
         },
     },
     "実数変換": {/// 値Vを実数に変換
-        type: "func",
-        josi: [["を"]],
+        type: "func", josi: [["を"]],
         fn: function (v) {
             return parseFloat(v);
         },
     },
     "実数変換": {/// 値Vを実数に変換
-        type: "func",
-        josi: [["を"]],
+        type: "func", josi: [["を"]],
         fn: function (v) {
             return parseFloat(v);
         },
     },
     "TOFLOAT": {/// 値Vを実数に変換
-        type: "func",
-        josi: [["を"]],
+        type: "func", josi: [["を"]],
         fn: function (v) {
             return parseFloat(v);
         },
@@ -596,25 +581,37 @@ const PluginSystem = {
     },
 
     /// 正規表現
-    "正規表現マッチ": {/// 文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは/pat/optで指定)
+    "正規表現マッチ": {/// 文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定)
         type: "func", josi: [["を", "が"], ["で", "に"]],
-        fn: function (a, b) {
+        fn: function (a, b, sys) {
             let re;
-            let f = b.match(/\/(.+)\/([a-zA-Z]*)/);
-            if (f == null) { // パターンがある場合
+            let f = b.match(/^\/(.+)\/([a-zA-Z]*)/);
+            if (f == null) { // パターンがない場合
                 re = new RegExp(b, "g");
             } else {
                 re = new RegExp(f[1], f[2]);
             }
-            return String(a).match(re);
+            const m = String(a).match(re);
+            let result = m;
+            if (re.global) {
+                // no groups
+            } else {
+                if (m) {
+                    // has group?
+                    result = m[0];
+                    sys.__varslist[0]["抽出文字列"] = m.slice(1);
+                }
+            }
+            return result;
         }
     },
+    "抽出文字列": { type:"const", value:[] },
     "正規表現置換": {/// 文字列Sの正規表現パターンAをBに置換して結果を返す(パターンAは/pat/optで指定)
         type: "func", josi: [["の"], ["を", "から"], ["で", "に", "へ"]],
         fn: function (s, a, b) {
             let re;
-            let f = a.match(/\/(.+)\/([a-zA-Z]*)/);
-            if (f == null) { // パターンがある場合
+            let f = a.match(/^\/(.+)\/([a-zA-Z]*)/);
+            if (f == null) {
                 re = new RegExp(a, "g");
             } else {
                 re = new RegExp(f[1], f[2]);
@@ -626,8 +623,8 @@ const PluginSystem = {
         type: "func", josi: [["を"], ["で"]],
         fn: function (s, a) {
             let re;
-            let f = a.match(/\/(.+)\/([a-zA-Z]*)/);
-            if (f == null) { // パターンがある場合
+            let f = a.match(/^\/(.+)\/([a-zA-Z]*)/);
+            if (f == null) {
                 re = new RegExp(a, "g");
             } else {
                 re = new RegExp(f[1], f[2]);

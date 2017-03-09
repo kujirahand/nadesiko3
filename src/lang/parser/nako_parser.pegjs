@@ -104,7 +104,10 @@ if_stmt
   }
 
 if_expr
-  = a:if_value "が" b:if_value &josi_naraba {
+  = "そう" &josi_naraba {
+    return {type:"variable", value:"それ"};
+  }
+  / a:if_value "が" b:if_value &josi_naraba {
     return {type:"calc", left:a, right:b, operator:"=="};
   }
   / a:if_value josi __ b:if_value (josi __)? op:if_jop {

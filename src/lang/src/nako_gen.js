@@ -631,6 +631,7 @@ class NakoGen {
     c_string(node) {
         let value = "" + node.value;
         let mode = node.mode;
+        value = value.replace(/\\/g, '\\\\');
         value = value.replace(/"/g, '\\\"');
         value = value.replace(/\r/g, '\\r');
         value = value.replace(/\n/g, '\\n');
