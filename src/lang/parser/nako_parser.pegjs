@@ -149,14 +149,14 @@ let_stmt
   }
 
 def_local_var
-  = name:word "とは" vtype:var_type ("=" / "＝") v:value EOS {
-    return {"type":"def_local_var", name:name, vartype:vtype, v:value, loc:location()};
+  = name:word "とは" SPC vtype:var_type ("=" / "＝") v:calc EOS {
+    return {"type":"def_local_var", name:name, vartype:vtype, value:v, loc:location()};
   }
-  / name:word "とは" vtype:var_type EOS {
+  / name:word "とは" SPC vtype:var_type EOS {
     return {"type":"def_local_var", name:name, vartype:vtype, value:null, loc:location()};
   }
-  / vtype:var_type "の" name:word ("は"/"="/"＝") v:value EOS {
-    return {"type":"def_local_var", name:name, vartype:vtype, v:value, loc:location()};
+  / vtype:var_type "の" name:word ("は"/"="/"＝") SPC v:calc EOS {
+    return {"type":"def_local_var", name:name, vartype:vtype, value:v, loc:location()};
   }
 
 var_type = ("変数"/"定数")
