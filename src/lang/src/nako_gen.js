@@ -4,7 +4,7 @@
 "use strict";
 
 class NakoGenError extends Error {
-    constructor (msg, loc) {
+    constructor(msg, loc) {
         if (loc) {
             msg = "[文法エラー](" + loc.start.line + ":" + loc.start.column + ") " + msg;
         } else {
@@ -29,11 +29,11 @@ class NakoGen {
          * @type {{}}
          */
         this.plugins = {};
-        
+
         /**
          * 利用可能なプラグイン(ファイル 単位)
          */
-         this.pluginfiles = {};
+        this.pluginfiles = {};
 
         /**
          * なでしこで定義した関数の一覧
@@ -48,13 +48,13 @@ class NakoGen {
          * @type {{}}
          */
         this.used_func = {};
-        
+
         /** ループ時の一時変数が被らないようにIDで管理 */
         this.loop_id = 1;
-       
+
         /** それ */
         this.sore = this.varname('それ');
-        
+
         /**
          * なでしこのローカル変数をスタックで管理
          * __varslist[0] プラグイン領域
@@ -66,7 +66,7 @@ class NakoGen {
 
         /**
          * なでしこのローカル変数(フレームトップ)
-         */ 
+         */
         this.__vars = {};
     }
 
@@ -98,7 +98,7 @@ class NakoGen {
         }
         return code;
     }
-    
+
     /** プログラムの実行に必要な関数定義を書き出す(グローバル領域) */
     getDefFuncCode() {
         let code = "__varslist[0].line=0;// なでしこの関数定義\n";
@@ -110,10 +110,10 @@ class NakoGen {
         // プラグインの初期化関数を実行する
         code += "__varslist[0].line=0;// プラグインの初期化\n";
         for (const name in this.pluginfiles) {
-          const initkey = `!${name}:初期化`;
-          if (this.used_func[initkey]) {
-            code += `__varslist[0].line=0;__varslist[0]["!${name}:初期化"](__self)\n`;
-          }
+            const initkey = `!${name}:初期化`;
+            if (this.used_func[initkey]) {
+                code += `__varslist[0].line=0;__varslist[0]["!${name}:初期化"](__self)\n`;
+            }
         }
         return code;
     }
@@ -134,7 +134,7 @@ class NakoGen {
             this.__varslist[0][key] = (typeof(v.fn) == "function") ? v.fn : v.value;
         }
     }
-    
+
     /**
      * プラグイン・オブジェクトを追加(ブラウザ向け)
      * @param objName オブジェクト名を登録
@@ -153,7 +153,7 @@ class NakoGen {
             this.addPlugin(po);
         }
     }
-    
+
     /**
      * プラグイン・ファイルを追加(Node.js向け)
      * @param objName オブジェクト名を登録
@@ -162,8 +162,8 @@ class NakoGen {
      */
     addPluginFile(objName, path, po) {
         if (this.pluginfiles[objName] === undefined) {
-          this.pluginfiles[objName] = path;
-          this.addPlugin(po);
+            this.pluginfiles[objName] = path;
+            this.addPlugin(po);
         }
     }
 
@@ -196,13 +196,13 @@ class NakoGen {
     getFunc(key) {
         return this.plugins[key];
     }
-    
+
     c_lineno(node) {
         if (!node.loc) return '';
         const lineno = node.loc.start.line;
         return `__varslist[0].line=${lineno};`;
     }
-    
+
     c_gen(node) {
         let code = "";
         if (node instanceof Array) {
@@ -354,7 +354,7 @@ class NakoGen {
         const name = node.value;
         return this.gen_var(name, node.loc);
     }
-    
+
     c_return(node) {
         const lno = this.c_lineno(node);
         let value;
@@ -363,7 +363,7 @@ class NakoGen {
             return lno + `return ${value};`;
         } else {
             value = this.sore;
-            return lno + `return ${value};`; 
+            return lno + `return ${value};`;
         }
     }
 
@@ -373,7 +373,7 @@ class NakoGen {
         // ローカル変数をPUSHする
         let code = "(function(){\n";
         code += "try { __vars = {'それ':''}; __varslist.push(__vars);\n";
-        this.__vars = {'それ':true};
+        this.__vars = {'それ': true};
         this.__varslist.push(this.__vars);
         // 引数をローカル変数に設定
         const josilist = [];
@@ -387,7 +387,8 @@ class NakoGen {
         }
         // 関数定義は、グローバル領域で。
         this.used_func[name] = true;
-        this.__varslist[1][name] = function(){}; // 再帰のために事前に適当な値を設定
+        this.__varslist[1][name] = function () {
+        }; // 再帰のために事前に適当な値を設定
         this.nako_func[name] = {
             "josi": josilist,
             "fn": '',
@@ -397,9 +398,9 @@ class NakoGen {
         const block = this.c_gen(node.block);
         code += block + "\n";
         // 関数の末尾に、ローカル変数をPOP
-        const popcode = 
-          "__varslist.pop(); " +
-          "__vars = __varslist[__varslist.length-1];";
+        const popcode =
+            "__varslist.pop(); " +
+            "__vars = __varslist[__varslist.length-1];";
         code += `} finally { ${popcode} }\n`;
         code += `})/* end of ${name} */`;
         this.nako_func[name]["fn"] = code;
@@ -579,9 +580,9 @@ class NakoGen {
     }
 
     getPluginList() {
-      const r = [];
-      for (const name in this.pluginfiles) r.push(name);
-      return r;
+        const r = [];
+        for (const name in this.pluginfiles) r.push(name);
+        return r;
     }
 
     /**
@@ -595,7 +596,7 @@ class NakoGen {
         let func_name_s;
         const res = this.find_var(func_name);
         if (res == null) {
-            throw new NakoGenError(`関数『${func_name}』が見当たりません。有効プラグイン=[`+this.getPluginList().join(",")+']', node.loc);
+            throw new NakoGenError(`関数『${func_name}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(",") + ']', node.loc);
         }
         let func;
         if (res.i == 0) { // plugin function
@@ -702,5 +703,3 @@ class NakoGen {
 }
 
 module.exports = NakoGen;
-/* vim:set expandtab ts=4 sw=4 sts=4 :*/
-

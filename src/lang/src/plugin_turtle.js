@@ -13,11 +13,11 @@ const PluginTurtle = {
                 target: -1,
                 ctx: null,
                 canvas: null,
-                canvas_r: {left:0, top:0, width:640, height: 400},
-                clearAll: function() {
+                canvas_r: {left: 0, top: 0, width: 640, height: 400},
+                clearAll: function () {
                     const me = this;
                     console.log('[TURTLE] clearAll');
-                    for (let i = 0; i <  me.list.length; i++) {
+                    for (let i = 0; i < me.list.length; i++) {
                         const tt = me.list[i];
                         tt.mlist = []; // ジョブをクリア
                         document.body.removeChild(tt.canvas);
@@ -40,9 +40,9 @@ const PluginTurtle = {
                     if (!tt.f_update) return;
                     if (!tt.f_loaded) return;
                     tt.f_update = false;
-                    tt.ctx.clearRect(0, 0, 
-                            tt.canvas.width,
-                            tt.canvas.height);
+                    tt.ctx.clearRect(0, 0,
+                        tt.canvas.width,
+                        tt.canvas.height);
                     if (!tt.f_visible) return;
                     if (tt.dir != 270) {
                         const rad = (tt.dir + 90) * 0.017453292519943295;
@@ -51,7 +51,7 @@ const PluginTurtle = {
                         tt.ctx.rotate(rad);
                         tt.ctx.translate(-tt.cx, -tt.cy);
                         tt.ctx.drawImage(tt.img, 0, 0);
-                        tt.ctx.restore(); 
+                        tt.ctx.restore();
                     } else {
                         tt.ctx.drawImage(tt.img, 0, 0);
                     }
@@ -63,7 +63,7 @@ const PluginTurtle = {
                 set_timer: function () {
                     if (this.b_set_timer) return;
                     this.b_set_timer = true;
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         const tt = this.getCur();
                         console.log("[TURTLE] Let's go! job=", tt.mlist.length);
                         sys._turtle.play();
@@ -94,7 +94,7 @@ const PluginTurtle = {
                             // 線を引く
                             me.line(tt, tt.x, tt.y, m[1], m[2]);
                             // カメの角度を変更
-                            const mv_rad = Math.atan2(m[1]-tt.x, m[2]-tt.y);
+                            const mv_rad = Math.atan2(m[1] - tt.x, m[2] - tt.y);
                             tt.dir = mv_rad * 57.29577951308232;
                             tt.f_update = true;
                             // 実際に位置を移動
@@ -112,7 +112,7 @@ const PluginTurtle = {
                             break;
                         case "angle":
                             const angle = m[1];
-                            tt.dir = ((angle-90+360) % 360);
+                            tt.dir = ((angle - 90 + 360) % 360);
                             tt.f_update = true;
                             break;
                         case "rotr":
@@ -161,7 +161,9 @@ const PluginTurtle = {
                         if (wait > 0) break;
                     }
                     if (wait > 0 && has_next) {
-                        setTimeout( () => { me.play(); }, wait);
+                        setTimeout(() => {
+                            me.play();
+                        }, wait);
                         return;
                     }
                     console.log("[TURTLE] finished.");
@@ -201,7 +203,7 @@ const PluginTurtle = {
             tt.ctx = tt.canvas.getContext('2d');
             tt.canvas.id = id;
             tt.img.src = sys.__getSysValue("カメ画像URL", "turtle.png");
-            tt.img.onload = () => { 
+            tt.img.onload = () => {
                 tt.cx = tt.img.width / 2;
                 tt.cy = tt.img.height / 2;
                 tt.canvas.width = tt.img.width;
@@ -214,7 +216,7 @@ const PluginTurtle = {
             document.body.appendChild(tt.canvas);
             // 描画先をセットする
             const canvas_id = sys.__getSysValue("カメ描画先", "turtle_cv");
-            const cv = sys._turtle.canvas = document.getElementById(canvas_id); 
+            const cv = sys._turtle.canvas = document.getElementById(canvas_id);
             if (!sys._turtle.canvas) {
                 console.log("[ERROR] カメ描画先が見当たりません。");
                 return;
@@ -226,9 +228,9 @@ const PluginTurtle = {
             const rect = cv.getBoundingClientRect();
             const rx = rect.left + window.pageXOffset;
             const ry = rect.top + window.pageYOffset;
-            const cr = sys._turtle.canvas_r = { 
-                "left":rx, "top":ry,
-                width:rect.width, height: rect.height
+            const cr = sys._turtle.canvas_r = {
+                "left": rx, "top": ry,
+                width: rect.width, height: rect.height
             };
             // デフォルト位置の設定
             tt.x = rect.width / 2;
@@ -254,16 +256,16 @@ const PluginTurtle = {
     },
     "カメ速度": {type: "const", value: 100},
     "カメ速度設定": { /// カメの動作速度vに設定(大きいほど遅い)
-        type: "func", josi: [["に","へ"]],
+        type: "func", josi: [["に", "へ"]],
         fn: function (v, sys) {
             sys.__varslist[0]["カメ速度"] = v;
         }
     },
     "カメ移動": { /// カメの位置を[x,y]へ移動する
-        type: "func", josi: [["に","へ"]],
+        type: "func", josi: [["に", "へ"]],
         fn: function (xy, sys) {
             const tt = sys._turtle.getCur();
-            tt.mlist.push(["mv",xy[0], xy[1]]);
+            tt.mlist.push(["mv", xy[0], xy[1]]);
             sys._turtle.set_timer();
         },
         return_none: true
@@ -287,7 +289,7 @@ const PluginTurtle = {
         return_none: true
     },
     "カメ角度設定": { /// カメの向きをDEGに設定する
-        type: "func", josi: [["に","へ","の"]],
+        type: "func", josi: [["に", "へ", "の"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
             tt.mlist.push(["angle", parseFloat(v)]);
@@ -314,7 +316,7 @@ const PluginTurtle = {
         return_none: true
     },
     "カメペン色設定": { /// カメのペン描画色をCに設定する
-        type: "func", josi: [["に","へ"]],
+        type: "func", josi: [["に", "へ"]],
         fn: function (c, sys) {
             const tt = sys._turtle.getCur();
             tt.mlist.push(["color", c]);
@@ -323,7 +325,7 @@ const PluginTurtle = {
         return_none: true
     },
     "カメペンサイズ設定": { /// カメペンのサイズをWに設定する
-        type: "func", josi: [["に","へ"]],
+        type: "func", josi: [["に", "へ"]],
         fn: function (w, sys) {
             const tt = sys._turtle.getCur();
             tt.mlist.push(["size", w]);
@@ -331,7 +333,7 @@ const PluginTurtle = {
         },
     },
     "カメペン設定": { /// カメペンを使うかどうかをV(オン/オフ)に設定する
-        type: "func", josi: [["に","へ"]],
+        type: "func", josi: [["に", "へ"]],
         fn: function (w, sys) {
             const tt = sys._turtle.getCur();
             tt.mlist.push(["pen_on", w]);
@@ -369,8 +371,5 @@ module.exports = PluginTurtle;
 
 // scriptタグで取り込んだ時、自動で登録する
 if (typeof(navigator) == "object") {
-  navigator.nako3.addPluginObject("PluginTurtle", PluginTurtle);
+    navigator.nako3.addPluginObject("PluginTurtle", PluginTurtle);
 }
-
-/* vim:set expandtab ts=4 sw=4 sts=4 :*/
-
