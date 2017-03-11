@@ -197,7 +197,10 @@ FALSE = "いいえ" / "偽" { return false; }
 // 助詞関連
 josi = josi_arg / josi_eq
 josi_eq = "は"
-josi_continue =  "して" / "て"
+josi_continue
+  = "いて" / "えて" / "きて" / "けて" / "して" / "って"
+  / "にて" / "みて" / "めて"
+  
 josi_arg = 
   josi_name:("について" / "ならば" / "なら" /
     "とは" / "から" / "まで" / "だけ" /
