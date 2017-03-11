@@ -2,15 +2,15 @@
 
 const PluginSystem = {
     "初期化": {
-      type: "func", josi: [],
-      fn: function (sys) {
-          sys.__nako3version = "3.0b2";
-          sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version;
-          sys.__getSysValue = function (name, def) {
-              if (sys.__varslist[0][name] === undefined) return def;
-              return sys.__varslist[0][name];
-          };
-      }
+        type: "func", josi: [],
+        fn: function (sys) {
+            sys.__nako3version = "3.0b2";
+            sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version;
+            sys.__getSysValue = function (name, def) {
+                if (sys.__varslist[0][name] === undefined) return def;
+                return sys.__varslist[0][name];
+            };
+        }
     },
     /// システム定数
     "ナデシコバージョン": {type: "const", value: "?"},
@@ -28,7 +28,7 @@ const PluginSystem = {
     "OK": {type: "const", value: 1},
     "NG": {type: "const", value: 0},
     "PI": {type: "const", value: Math.PI},
-    "空": {type: "const", value:""},
+    "空": {type: "const", value: ""},
     "NULL": {type: "const", value: null},
     /// 標準出力
     "表示": { /// Sを表示
@@ -514,7 +514,7 @@ const PluginSystem = {
     "区切": {/// 文字列Sを区切り文字Aで区切って配列で返す
         type: "func", josi: [["の", "を"], ["で"]],
         fn: function (s, a) {
-          return ("" + s).split("" + a);
+            return ("" + s).split("" + a);
         }
     },
     "切り取": { /// v1非互換: 文字列Sから文字列Aまでの部分を抽出する
@@ -605,7 +605,7 @@ const PluginSystem = {
             return result;
         }
     },
-    "抽出文字列": { type:"const", value:[] },
+    "抽出文字列": {type: "const", value: []},
     "正規表現置換": {/// 文字列Sの正規表現パターンAをBに置換して結果を返す(パターンAは/pat/optで指定)
         type: "func", josi: [["の"], ["を", "から"], ["で", "に", "へ"]],
         fn: function (s, a, b) {
@@ -889,9 +889,9 @@ const PluginSystem = {
     },
     /// デバッグ支援
     "エラー発生": { /// 故意にエラーSを発生させる
-        type: "func", josi: [["の","で"]],
+        type: "func", josi: [["の", "で"]],
         fn: function (s) {
-            throw new Error(s);  
+            throw new Error(s);
         }
     }
 };

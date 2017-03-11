@@ -28,10 +28,10 @@ function reset_box() {
 
 function ajax_get(url, param, callback) {
     const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState != 4) return;
         callback(xhr.responseText, xhr);
     };
-    xhr.open( 'GET', url, false);
+    xhr.open('GET', url, false);
     xhr.send(param);
 }
