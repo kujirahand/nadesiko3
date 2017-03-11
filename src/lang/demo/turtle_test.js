@@ -28,9 +28,8 @@ function reset_box_turtle(id) {
     if (id == null) {
         id = "src_box";
     }
-    $(id+'_info').innerHTML = '';
+    $(id + '_info').innerHTML = '';
     var cv = $('turtle_cv');
-    cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
+    cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
     navigator.nako3.run('カメ全消去');
 }
-

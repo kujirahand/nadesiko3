@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3');
 const execSync = require('child_process').execSync;
 const path = require('path');
 
-const cnako3 = path.dirname(__dirname) + '/src/cnako3'; 
+const cnako3 = path.dirname(__dirname) + '/src/cnako3';
 
 describe('node_test(cnako)', () => {
     const debug = false;

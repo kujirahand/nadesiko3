@@ -6,7 +6,7 @@ const NakoGen = require('./nako_gen');
 const PluginSystem = require('./plugin_system');
 
 class NakoRuntimeError extends Error {
-    constructor (msg, env) {
+    constructor(msg, env) {
         const title = "[実行エラー]";
         if (env && env.__varslist && env.__varslist.line) {
             msg = title + "(" + env.__varslist[0].line + ") " + msg;
@@ -30,7 +30,7 @@ class NakoCompiler {
     /**
      * デバッグモードに設定する
      */
-    useDebug(flag=true) {
+    useDebug(flag = true) {
         this.debug = flag;
     }
 
@@ -122,8 +122,8 @@ class NakoCompiler {
             eval(js);
         } catch (e) {
             throw new NakoRuntimeError(
-              e.name + ":" +
-              e.message + "\n" + js, this);
+                e.name + ":" +
+                e.message + "\n" + js, this);
         }
         return this;
     }
