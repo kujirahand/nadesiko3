@@ -5,5 +5,5 @@ insert_final_newline = true
 indent_style = space
 indent_size = 4
 
-[{.babelrc,.stylelintrc,.eslintrc,*.bowerrc,*.jsb3,*.jsb2,*.json,*.yml,*.yaml}]
+[{.babelrc,.stylelintrc,.eslintrc,*.bowerrc,*.jsb3,*.jsb2,*.json,*.yml,*.yaml,*.pegjs}]
 indent_size = 2
