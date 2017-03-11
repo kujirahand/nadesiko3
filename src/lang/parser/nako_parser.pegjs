@@ -19,6 +19,7 @@ sentence
   / def_func
   / if_stmt / while_stmt / repeat_times_stmt / for_stmt / foreach_stmt
   / let_stmt
+  / def_local_var
   / kokomade { return {type:"EOS",memo:"---"}; }
   / kokokara a:( if_stmt / while_stmt / repeat_times_stmt
                  for_stmt / foreach_stmt) { return a; }
@@ -38,6 +39,10 @@ def_func
   = "●" name:word __ "(" args:def_func_arg* ")" __ LF b:block kokomade {
     return {type:"def_func", "name":name, "args":args, block:b, loc:location() };
   }
+  / "●" name:word __ LF b:block kokomade {
+    return {type:"def_func", "name":name, "args":[], block:b, loc:location() };
+  }
+  
 
 def_func_arg
   = w:word j:josi
@@ -142,6 +147,20 @@ let_stmt
     const v = value ? value[0] : {type:"variable", value:"それ", loc:location()};
     return {"type":"let", "name":name, "value":v};
   }
+
+def_local_var
+  = name:word "とは" vtype:var_type ("=" / "＝") v:value EOS {
+    return {"type":"def_local_var", name:name, vartype:vtype, v:value, loc:location()};
+  }
+  / name:word "とは" vtype:var_type EOS {
+    return {"type":"def_local_var", name:name, vartype:vtype, value:null, loc:location()};
+  }
+  / vtype:var_type "の" name:word ("は"/"="/"＝") v:value EOS {
+    return {"type":"def_local_var", name:name, vartype:vtype, v:value, loc:location()};
+  }
+
+var_type = ("変数"/"定数")
+
 
 // コメント関連
 __ = (whitespace / range_comment)*

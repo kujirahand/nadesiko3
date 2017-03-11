@@ -70,6 +70,12 @@ class NakoGen {
         this.__vars = {};
     }
 
+    reset() {
+        this.nako_func = {};
+        this.used_func = {};
+        this.loop_id = 1;
+    }
+
     getHeader() {
         return "" +
             "var __varslist = this.__varslist = [{}, {}, {}];\n" +
@@ -199,7 +205,6 @@ class NakoGen {
     
     c_gen(node) {
         let code = "";
-        if (node == undefined) return "";
         if (node instanceof Array) {
             for (let i = 0; i < node.length; i++) {
                 const n = node[i];
@@ -207,8 +212,9 @@ class NakoGen {
             }
             return code;
         }
+        if (node === null) return "null";
+        if (node === undefined) return "undefined";
         if (typeof(node) != "object") return "" + node;
-        // add source map
         // switch
         switch (node.type) {
             case "nop":
@@ -235,6 +241,9 @@ class NakoGen {
                 break;
             case "string":
                 code += this.c_string(node);
+                break;
+            case "def_local_var":
+                code += this.c_def_local_var(node) + "\n";
                 break;
             case "let":
                 code += this.c_let(node) + "\n";
@@ -651,6 +660,22 @@ class NakoGen {
         } else {
             code = `__varslist[${res.i}]["${name}"]=${value};\n`;
         }
+        return this.c_lineno(node) + code;
+    }
+
+    c_def_local_var(node) {
+        const value = this.c_gen(node.value);
+        const name = node.name.value;
+        const vtype = node.vtype; // 変数 or 定数
+        // 二重定義？
+        if (this.__vars[name] !== undefined) {
+            throw new NakoGenError(
+                    `${vtype}『${name}』の二重定義はできません。`, 
+                    node.loc)
+        }
+        //
+        this.__vars[name] = true;
+        const code = `__vars["${name}"]=${value};\n`;
         return this.c_lineno(node) + code;
     }
 
