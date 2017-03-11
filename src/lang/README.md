@@ -25,4 +25,4 @@ $ npm run watch
 
 srcディレクトリの中のコードを編集すると、releaseディレクトリに結果が出力される。
 
-また、なでしこ3ではEditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171#editorconfig%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB)を参照) に対応している。
+また、なでしこ3ではEditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応している。
