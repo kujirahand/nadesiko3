@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3');
 
 describe('basic', () => {
     const nako = new NakoCompiler();
-    nako.debug = false;
+    nako.debug = true;
     const cmp = (code, res) => {
         if (nako.debug) {
             console.log("code=" + code);
@@ -35,6 +35,6 @@ describe('basic', () => {
         cmp("a=30;「abc\nabc」を表示", "abc\nabc");
     });
     it('システム定数', () => {
-        assert.equal(nako.run_reset("ナデシコエンジンを表示").log, "nadesi.com/v3");
+        cmp("ナデシコエンジンを表示", "nadesi.com/v3");
     });
 });

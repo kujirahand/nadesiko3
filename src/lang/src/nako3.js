@@ -41,7 +41,7 @@ class NakoCompiler {
         } else { // 二回目以降
             this.__varslist = [this.__varslist[0], {}, {}];
         }
-        this.gen.reset();        
+        this.gen.reset();
         this.__vars = this.__varslist[2];
         this.clearLog();
     }

@@ -61,19 +61,21 @@ class NakoGen {
          * __varslist[1] なでしこグローバル領域
          * __varslist[2] 最初のローカル変数 ( == __vars }
          */
-        this.__varslist = [{}, {}, this.__vars];
+        this.__varslist = [{}, {}, {}];
         this.__self = com;
 
         /**
          * なでしこのローカル変数(フレームトップ)
          */
-        this.__vars = {};
+        this.__vars = this.__varslist[2];
     }
 
     reset() {
         this.nako_func = {};
         this.used_func = {};
         this.loop_id = 1;
+        this.__varslist[1] = {};
+        this.__vars = this.__varslist[2] = {}; 
     }
 
     getHeader() {
@@ -127,11 +129,26 @@ class NakoGen {
      * @param po プラグイン・オブジェクト
      */
     addPlugin(po) {
+        // 変数のメタ情報を確認
+        if (this.__varslist[0].meta === undefined) {
+            this.__varslist[0].meta = {};
+        }
         // プラグインの値をオブジェクトにコピー
         for (let key in po) {
             const v = po[key];
             this.plugins[key] = v;
-            this.__varslist[0][key] = (typeof(v.fn) == "function") ? v.fn : v.value;
+            if (v.type == "func") {
+                this.__varslist[0][key] = v.fn;
+            }
+            else if (v.type == "const" || v.type == "var") {
+                this.__varslist[0][key] = v.value;
+                this.__varslist[0].meta[key] = {
+                    readonly: (v.type == "const")
+                };
+            }
+            else {
+                throw new NakoGenError('プラグインの追加でエラー。', null);
+            }
         }
     }
 
@@ -655,6 +672,16 @@ class NakoGen {
             this.__vars[name] = true;
         } else {
             if (res.isTop) is_top = true;
+            // 定数ならエラーを出す
+            if (this.__varslist[res.i].meta) {
+                if (this.__varslist[res.i].meta[name]) {
+                    if (this.__varslist[res.i].meta[name].readonly) {
+                        throw new NakoGenError(
+                            `定数『${name}』に値を代入することはできません。`,
+                            node.loc);
+                    }
+                }
+            }
         }
         if (is_top) {
             code = `__vars["${name}"]=${value};\n`;
@@ -667,7 +694,7 @@ class NakoGen {
     c_def_local_var(node) {
         const value = this.c_gen(node.value);
         const name = node.name.value;
-        const vtype = node.vtype; // 変数 or 定数
+        const vtype = node.vartype; // 変数 or 定数
         // 二重定義？
         if (this.__vars[name] !== undefined) {
             throw new NakoGenError(
@@ -676,6 +703,11 @@ class NakoGen {
         }
         //
         this.__vars[name] = true;
+        if (vtype == "定数") {
+            if (!this.__vars.meta) { this.__vars.meta = {}; }
+            if (!this.__vars.meta[name]) this.__vars.meta[name] = {};
+            this.__vars.meta[name].readonly = true;
+        }
         const code = `__vars["${name}"]=${value};\n`;
         return this.c_lineno(node) + code;
     }
