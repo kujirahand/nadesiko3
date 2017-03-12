@@ -87,65 +87,66 @@ const PluginTurtle = {
                         if (!tt.f_loaded && wait > 0) {
                             console.log('[TURTLE] waiting ...');
                             return true;
+                        } else {
+                            const m = tt.mlist.shift();
+                            const cmd = m[0];
+                            switch (cmd) {
+                                case "mv":
+                                    // 線を引く
+                                    me.line(tt, tt.x, tt.y, m[1], m[2]);
+                                    // カメの角度を変更
+                                    const mv_rad = Math.atan2(m[1] - tt.x, m[2] - tt.y);
+                                    tt.dir = mv_rad * 57.29577951308232;
+                                    tt.f_update = true;
+                                    // 実際に位置を移動
+                                    tt.x = m[1];
+                                    tt.y = m[2];
+                                    break;
+                                case "fd":
+                                    const fdv = m[1] * m[2];
+                                    const rad = tt.dir * 0.017453292519943295;
+                                    const x2 = tt.x + Math.cos(rad) * fdv;
+                                    const y2 = tt.y + Math.sin(rad) * fdv;
+                                    me.line(tt, tt.x, tt.y, x2, y2);
+                                    tt.x = x2;
+                                    tt.y = y2;
+                                    break;
+                                case "angle":
+                                    const angle = m[1];
+                                    tt.dir = ((angle - 90 + 360) % 360);
+                                    tt.f_update = true;
+                                    break;
+                                case "rotr":
+                                    const rv = m[1];
+                                    tt.dir = (tt.dir + rv) % 360;
+                                    tt.f_update = true;
+                                    break;
+                                case "rotl":
+                                    const lv = m[1];
+                                    tt.dir = (tt.dir - lv + 360) % 360;
+                                    tt.f_update = true;
+                                    break;
+                                case "color":
+                                    // ctx.strokeStyle = m[1];
+                                    tt.color = m[1];
+                                    break;
+                                case "size":
+                                    // ctx.lineWidth = m[1];
+                                    tt.lineWidth = m[1];
+                                    break;
+                                case "pen_on":
+                                    tt.f_down = m[1];
+                                    break;
+                                case "visible":
+                                    tt.f_visible = m[1];
+                                    tt.f_update = true;
+                                    break;
+                            }
+                            if (tt.f_loaded) {
+                                sys._turtle.drawTurtle(tt.id);
+                            }
+                            return (tt.mlist.length > 0);
                         }
-                        const m = tt.mlist.shift();
-                        const cmd = m[0];
-                        switch (cmd) {
-                            case "mv":
-                                // 線を引く
-                                me.line(tt, tt.x, tt.y, m[1], m[2]);
-                                // カメの角度を変更
-                                const mv_rad = Math.atan2(m[1] - tt.x, m[2] - tt.y);
-                                tt.dir = mv_rad * 57.29577951308232;
-                                tt.f_update = true;
-                                // 実際に位置を移動
-                                tt.x = m[1];
-                                tt.y = m[2];
-                                break;
-                            case "fd":
-                                const fdv = m[1] * m[2];
-                                const rad = tt.dir * 0.017453292519943295;
-                                const x2 = tt.x + Math.cos(rad) * fdv;
-                                const y2 = tt.y + Math.sin(rad) * fdv;
-                                me.line(tt, tt.x, tt.y, x2, y2);
-                                tt.x = x2;
-                                tt.y = y2;
-                                break;
-                            case "angle":
-                                const angle = m[1];
-                                tt.dir = ((angle - 90 + 360) % 360);
-                                tt.f_update = true;
-                                break;
-                            case "rotr":
-                                const rv = m[1];
-                                tt.dir = (tt.dir + rv) % 360;
-                                tt.f_update = true;
-                                break;
-                            case "rotl":
-                                const lv = m[1];
-                                tt.dir = (tt.dir - lv + 360) % 360;
-                                tt.f_update = true;
-                                break;
-                            case "color":
-                                // ctx.strokeStyle = m[1];
-                                tt.color = m[1];
-                                break;
-                            case "size":
-                                // ctx.lineWidth = m[1];
-                                tt.lineWidth = m[1];
-                                break;
-                            case "pen_on":
-                                tt.f_down = m[1];
-                                break;
-                            case "visible":
-                                tt.f_visible = m[1];
-                                tt.f_update = true;
-                                break;
-                        }
-                        if (tt.f_loaded) {
-                            sys._turtle.drawTurtle(tt.id);
-                        }
-                        return (tt.mlist.length > 0);
                     },
                     do_macro_all: function (wait) {
                         let has_next = false;
