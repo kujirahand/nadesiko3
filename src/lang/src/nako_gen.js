@@ -613,8 +613,9 @@ class NakoGen {
                     const josi_s = josilist.join("|");
                     throw new NakoGenError(
                         `関数『${func_name}』の引数『${josi_s}』が見当たりません。`, node.loc);
+                } else {
+                    args.push(this.sore);
                 }
-                args.push(this.sore);
             }
         }
         return args;
@@ -649,43 +650,43 @@ class NakoGen {
         const res = this.find_var(func_name);
         if (res == null) {
             throw new NakoGenError(`関数『${func_name}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(",") + ']', node.loc);
-        }
-        let func;
-        if (res.i == 0) { // plugin function
-            func = this.plugins[func_name];
-            func_name_s = `__varslist[0]["${func_name}"]`;
         } else {
-            func = this.nako_func[func_name];
-            if (func === undefined) {
-                throw new NakoGenError(`『${func_name}』は関数ではありません。`, node.loc);
+            let func;
+            if (res.i == 0) { // plugin function
+                func = this.plugins[func_name];
+                func_name_s = `__varslist[0]["${func_name}"]`;
+            } else {
+                func = this.nako_func[func_name];
+                if (func === undefined) {
+                    throw new NakoGenError(`『${func_name}』は関数ではありません。`, node.loc);
+                } else {
+                    func_name_s = `__varslist[${res.i}]["${func_name}"]`;
+                }
             }
-            func_name_s = `__varslist[${res.i}]["${func_name}"]`;
-        }
-        // 関数定義より助詞を一つずつ調べる
-        let args = [];
-        if (is_nako_type) {
-            args = this.c_func_get_args(func_name, func, node);
-        } else {
-            args = this.c_func_get_args_calctype(func_name, func, node);
-        }
-        // function
-        if (typeof(this.used_func[func_name]) === "undefined") {
-            this.used_func[func_name] = true;
-        }
-        // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
-        args.push("__self");
-        let args_code = args.join(",");
-        let code = `${func_name_s}(${args_code})`;
-        if (func.return_none) {
+            // 関数定義より助詞を一つずつ調べる
+            let args = [];
             if (is_nako_type) {
-                code = code + ";\n";
+                args = this.c_func_get_args(func_name, func, node);
+            } else {
+                args = this.c_func_get_args_calctype(func_name, func, node);
             }
-        } else {
+            // function
+            if (typeof(this.used_func[func_name]) === "undefined") {
+                this.used_func[func_name] = true;
+            }
+            // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
+            args.push("__self");
+            let args_code = args.join(",");
+            let code = `${func_name_s}(${args_code})`;
             if (is_nako_type) {
-                code = this.sore + " = " + code + ";\n";
+                if (func.return_none) {
+                    code += ";\n";
+                } else {
+                    code = this.sore + " = " + code + ";\n";
+                }
             }
+            return this.c_lineno(node) + code;
         }
-        return this.c_lineno(node) + code;
     }
 
     c_op(node) {
@@ -733,20 +734,21 @@ class NakoGen {
             throw new NakoGenError(
                 `${vtype}『${name}』の二重定義はできません。`,
                 node.loc)
-        }
-        //
-        this.__vars[name] = true;
-        if (vtype == "定数") {
-            if (!this.__vars.meta) {
-                this.__vars.meta = {};
+        } else {
+            //
+            this.__vars[name] = true;
+            if (vtype == "定数") {
+                if (!this.__vars.meta) {
+                    this.__vars.meta = {};
+                }
+                if (!this.__vars.meta[name]) {
+                    this.__vars.meta[name] = {};
+                }
+                this.__vars.meta[name].readonly = true;
             }
-            if (!this.__vars.meta[name]) {
-                this.__vars.meta[name] = {};
-            }
-            this.__vars.meta[name].readonly = true;
+            const code = `__vars["${name}"]=${value};\n`;
+            return this.c_lineno(node) + code;
         }
-        const code = `__vars["${name}"]=${value};\n`;
-        return this.c_lineno(node) + code;
     }
 
     c_print(node) {

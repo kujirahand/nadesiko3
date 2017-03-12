@@ -760,8 +760,9 @@ const PluginSystem = {
         fn: function (a, i, s) {
             if (a instanceof Array) { // 配列ならOK
                 return a.splice(i, 0, s);
+            } else {
+                throw new Error("『配列挿入』で配列以外の要素への挿入。");
             }
-            throw new Error("『配列挿入』で配列以外の要素への挿入。");
         }
     },
     "配列一括挿入": { /// v1非互換:配列AのI番目(0起点)に配列bを追加して返す
@@ -772,8 +773,9 @@ const PluginSystem = {
                     a.splice(i + j, 0, b[j]);
                 }
                 return a;
+            } else {
+                throw new Error("『配列一括挿入』で配列以外の要素への挿入。");
             }
-            throw new Error("『配列一括挿入』で配列以外の要素への挿入。");
         }
     },
     "配列ソート": { /// 配列Aをソートして返す
@@ -781,8 +783,9 @@ const PluginSystem = {
         fn: function (a) {
             if (a instanceof Array) { // 配列ならOK
                 return a.sort();
+            } else {
+                throw new Error("『配列ソート』で配列以外の処理。");
             }
-            throw new Error("『配列ソート』で配列以外の処理。");
         }
     },
     "配列数値ソート": { /// 配列Aをソートして返す
@@ -792,8 +795,9 @@ const PluginSystem = {
                 return a.sort((a, b) => {
                     return parseFloat(a) - parseFloat(b)
                 });
+            } else {
+                throw new Error("『配列数値ソート』で配列以外の処理。");
             }
-            throw new Error("『配列数値ソート』で配列以外の処理。");
         }
     },
     "配列カスタムソート": { /// 配列Aを関数Bでソートして返す
@@ -801,8 +805,9 @@ const PluginSystem = {
         fn: function (a, f_name, sys) {
             if (a instanceof Array) { // 配列ならOK
                 return a.sort(sys.__varslist[1][f_name]);
+            } else {
+                throw new Error("『配列数値ソート』で配列以外の処理。");
             }
-            throw new Error("『配列数値ソート』で配列以外の処理。");
         }
     },
     "配列逆順": { /// 配列Aを逆にして返す。Aを書き換える。
@@ -810,8 +815,9 @@ const PluginSystem = {
         fn: function (a) {
             if (a instanceof Array) { // 配列ならOK
                 return a.reverse();
+            } else {
+                throw new Error("『配列ソート』で配列以外の処理。");
             }
-            throw new Error("『配列ソート』で配列以外の処理。");
         }
     },
     "配列シャッフル": { /// 配列Aをシャッフルして返す。Aを書き換える
@@ -825,8 +831,9 @@ const PluginSystem = {
                     a[r] = tmp;
                 }
                 return a;
+            } else {
+                throw new Error("『配列シャッフル』で配列以外の処理。");
             }
-            throw new Error("『配列シャッフル』で配列以外の処理。");
         }
     },
     "配列切り取": { /// 配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。
@@ -834,8 +841,9 @@ const PluginSystem = {
         fn: function (a, i) {
             if (a instanceof Array) { // 配列ならOK
                 return a.splice(i, 1);
+            } else {
+                throw new Error("『配列切り取』で配列以外の処理。");
             }
-            throw new Error("『配列切り取』で配列以外の処理。");
         }
     },
     "配列取り出": { /// 配列AのI番目(0起点)からCNT個の応訴を取り出して返す。Aの内容を書き換える
@@ -843,8 +851,9 @@ const PluginSystem = {
         fn: function (a, i, cnt) {
             if (a instanceof Array) { // 配列ならOK
                 return a.splice(i, cnt);
+            } else {
+                throw new Error("『配列切り取』で配列以外の処理。");
             }
-            throw new Error("『配列切り取』で配列以外の処理。");
         }
     },
     "配列ポップ": { /// 配列Aの末尾を取り出して返す。Aの内容を書き換える。
@@ -852,8 +861,9 @@ const PluginSystem = {
         fn: function (a) {
             if (a instanceof Array) { // 配列ならOK
                 return a.pop();
+            } else {
+                throw new Error("『配列ポップ』で配列以外の処理。");
             }
-            throw new Error("『配列ポップ』で配列以外の処理。");
         }
     },
     "配列追加": { /// 配列Aの末尾にBを追加して返す。Aの内容を書き換える。
@@ -862,8 +872,9 @@ const PluginSystem = {
             if (a instanceof Array) { // 配列ならOK
                 a.push(b);
                 return a;
+            } else {
+                throw new Error("『配列追加』で配列以外の処理。");
             }
-            throw new Error("『配列追加』で配列以外の処理。");
         }
     },
     /// 日時処理
