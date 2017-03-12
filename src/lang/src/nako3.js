@@ -23,8 +23,8 @@ class NakoCompiler {
         this.silent = true;
         this.filename = 'inline';
         this.gen = new NakoGen(this);
-        this.gen.addPluginObject("PluginSystem", PluginSystem);
         this.reset();
+        this.gen.addPluginObject("PluginSystem", PluginSystem);
     }
 
     /**
