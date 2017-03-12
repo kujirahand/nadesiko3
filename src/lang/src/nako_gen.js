@@ -171,7 +171,7 @@ class NakoGen {
 
     /**
      * プラグイン・オブジェクトを追加(ブラウザ向け)
-     * @param objName オブジェクト名を登録
+     * @param objName オブジェクト名
      * @param po 関数リスト
      */
     addPluginObject(objName, po) {
@@ -190,7 +190,7 @@ class NakoGen {
 
     /**
      * プラグイン・ファイルを追加(Node.js向け)
-     * @param objName オブジェクト名を登録
+     * @param objName オブジェクト名
      * @param path ファイルパス
      * @param po 登録するオブジェクト
      */
