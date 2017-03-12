@@ -29,6 +29,7 @@ class NakoCompiler {
 
     /**
      * デバッグモードに設定する
+     * @param flag デバッグモード
      */
     useDebug(flag = true) {
         this.debug = flag;
@@ -79,6 +80,8 @@ class NakoCompiler {
 
     /**
      * プログラムをコンパイルしてJavaScriptのコードを返す
+     * @param code コード (なでしこ)
+     * @returns コード (JavaScript)
      */
     compile(code) {
         const ast = this.parse(code);
@@ -93,7 +96,7 @@ class NakoCompiler {
 
     /**
      * eval()実行前に直接JSのオブジェクトを取得する場合
-     * @returns {*}
+     * @returns {[*,*,*]}
      */
     getVarsList() {
         const v = this.gen.getVarsList();
@@ -102,7 +105,7 @@ class NakoCompiler {
 
     /**
      * 完全にJSのコードを取得する場合
-     * @returns {*}
+     * @returns {string}
      */
     getVarsCode() {
         return this.gen.getVarsCode();

@@ -32,6 +32,7 @@ class NakoGen {
 
         /**
          * 利用可能なプラグイン(ファイル 単位)
+         * @type {{}}
          */
         this.pluginfiles = {};
 
@@ -49,10 +50,15 @@ class NakoGen {
          */
         this.used_func = {};
 
-        /** ループ時の一時変数が被らないようにIDで管理 */
+        /**
+         * ループ時の一時変数が被らないようにIDで管理
+         * @type {number}
+         */
         this.loop_id = 1;
 
-        /** それ */
+        /**
+         * それ
+         */
         this.sore = this.varname('それ');
 
         /**
@@ -60,12 +66,17 @@ class NakoGen {
          * __varslist[0] プラグイン領域
          * __varslist[1] なでしこグローバル領域
          * __varslist[2] 最初のローカル変数 ( == __vars }
+         * @type {[*]}
+         * @private
          */
         this.__varslist = [{}, {}, {}];
+
         this.__self = com;
 
         /**
          * なでしこのローカル変数(フレームトップ)
+         * @type {*}
+         * @private
          */
         this.__vars = this.__varslist[2];
     }
@@ -85,7 +96,10 @@ class NakoGen {
             "var __self = this;\n";
     }
 
-    /** プログラムの実行に必要な関数を書き出す(システム領域) */
+    /**
+     * プログラムの実行に必要な関数を書き出す(システム領域)
+     * @returns {string}
+     */
     getVarsCode() {
         let code = "";
         // プログラム中で使った関数を列挙して書き出す
@@ -101,7 +115,10 @@ class NakoGen {
         return code;
     }
 
-    /** プログラムの実行に必要な関数定義を書き出す(グローバル領域) */
+    /**
+     * プログラムの実行に必要な関数定義を書き出す(グローバル領域)
+     * @returns {string}
+     */
     getDefFuncCode() {
         let code = "__varslist[0].line=0;// なでしこの関数定義\n";
         // なでしこの関数定義を行う
