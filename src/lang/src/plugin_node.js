@@ -127,14 +127,15 @@ const PluginNode = {
             const enum_r = (base) => {
                 const list = fs.readdirSync(base);
                 for (const f of list) {
-                    if (f == "." || f == "..") continue;
-                    const fullpath = path.join(base, f);
-                    const st = fs.statSync(fullpath);
-                    if (st.isDirectory()) {
-                        enum_r(fullpath);
-                        continue;
+                    if (f != "." && f != "..") {
+                        const fullpath = path.join(base, f);
+                        const st = fs.statSync(fullpath);
+                        if (st.isDirectory()) {
+                            enum_r(fullpath);
+                        } else if (mask_re.test(f)) {
+                            result.push(fullpath);
+                        }
                     }
-                    if (mask_re.test(f)) result.push(fullpath);
                 }
             };
             // 検索実行

@@ -116,12 +116,16 @@ class NakoCompiler {
     }
 
     _run(code, is_reset) {
-        if (is_reset) this.reset();
+        if (is_reset) {
+            this.reset();
+        }
         const js = this.compile(code);
         var __varslist = this.__varslist = this.getVarsList();
         var __vars = this.__vars = this.__varslist[2];
         var __self = this.__self;
-        if (is_reset) this.clearLog();
+        if (is_reset) {
+            this.clearLog();
+        }
         try {
             eval(js);
         } catch (e) {

@@ -7,8 +7,11 @@ const PluginSystem = {
             sys.__nako3version = "3.0b2";
             sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version;
             sys.__getSysValue = function (name, def) {
-                if (sys.__varslist[0][name] === undefined) return def;
-                return sys.__varslist[0][name];
+                if (sys.__varslist[0][name] === undefined) {
+                    return def;
+                } else {
+                    return sys.__varslist[0][name];
+                }
             };
         }
     },
@@ -60,8 +63,11 @@ const PluginSystem = {
         type: "func", josi: [["と", "を"]],
         fn: function (s) {
             const r = prompt(s);
-            if (r.match(/^[0-9\.]+$/)) return parseFloat(r);
-            return r;
+            if (r.match(/^[0-9\.]+$/)) {
+                return parseFloat(r);
+            } else {
+                return r;
+            }
         }
     },
     /// 四則演算
@@ -282,9 +288,14 @@ const PluginSystem = {
     "LOGN": { ///指定された底AでBの対数を計算して返す
         type: "func", josi: [["で"], ["の"]],
         fn: function (a, b) {
-            if (a == 2) return Math.LOG2E * Math.log(b);
-            if (a == 10) return Math.LOG10E * Math.log(b);
-            return Math.log(b) / Math.log(a);
+            switch (a) {
+                case 2:
+                    return Math.LOG2E * Math.log(b);
+                case 10:
+                    return Math.LOG10E * Math.log(b);
+                default:
+                    return Math.log(b) / Math.log(a);
+            }
         },
     },
     "FRAC": { /// 実数Aの小数部分を返す
@@ -423,7 +434,9 @@ const PluginSystem = {
     "文字挿入": { /// 文字列SのI文字目に文字列Aを挿入する
         type: "func", josi: [["で", "の"], ["に", "へ"], ["を"]],
         fn: function (s, i, a) {
-            if (i <= 0) i = 1;
+            if (i <= 0) {
+                i = 1;
+            }
             const ss = String(s);
             const mae = ss.substr(0, i - 1);
             const usi = ss.substr(i - 1);
@@ -458,7 +471,9 @@ const PluginSystem = {
         type: "func", josi: [["を", "の"], ["で"]],
         fn: function (v, cnt) {
             let s = "";
-            for (let i = 0; i < cnt; i++) s += String(v);
+            for (let i = 0; i < cnt; i++) {
+                s += String(v);
+            }
             return s;
         },
     },
@@ -522,8 +537,11 @@ const PluginSystem = {
         fn: function (s, a) {
             s = String(s);
             const i = s.indexOf(a);
-            if (i < 0) return s;
-            return s.substr(0, i);
+            if (i < 0) {
+                return s;
+            } else {
+                return s.substr(0, i);
+            }
         }
     },
     "文字削除": { /// v1非互換:文字列SのA文字目からB文字分を削除して返す
@@ -644,9 +662,13 @@ const PluginSystem = {
         fn: function (v, a) {
             v = String(v);
             let z = "0";
-            for (let i = 0; i < a; i++) z += "0";
+            for (let i = 0; i < a; i++) {
+                z += "0";
+            }
             a = parseInt(a);
-            if (a < v.length) a = v.length;
+            if (a < v.length) {
+                a = v.length;
+            }
             const s = z + String(v);
             return s.substr(s.length - a, a);
         }

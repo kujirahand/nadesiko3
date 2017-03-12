@@ -156,14 +156,12 @@ class NakoGen {
             this.plugins[key] = v;
             if (v.type == "func") {
                 this.__varslist[0][key] = v.fn;
-            }
-            else if (v.type == "const" || v.type == "var") {
+            } else if (v.type == "const" || v.type == "var") {
                 this.__varslist[0][key] = v.value;
                 this.__varslist[0].meta[key] = {
                     readonly: (v.type == "const")
                 };
-            }
-            else {
+            } else {
                 throw new NakoGenError('プラグインの追加でエラー。', null);
             }
         }
@@ -232,9 +230,12 @@ class NakoGen {
     }
 
     c_lineno(node) {
-        if (!node.loc) return '';
-        const lineno = node.loc.start.line;
-        return `__varslist[0].line=${lineno};`;
+        if (node.loc) {
+            const lineno = node.loc.start.line;
+            return `__varslist[0].line=${lineno};`;
+        } else {
+            return '';
+        }
     }
 
     c_gen(node) {
@@ -245,96 +246,100 @@ class NakoGen {
                 code += this.c_gen(n);
             }
             return code;
+        } else if (node === null) {
+            return "null";
+        } else if (node === undefined) {
+            return "undefined";
+        } else if (typeof(node) != "object") {
+            return "" + node;
+        } else {
+            // switch
+            switch (node.type) {
+                case "nop":
+                    break;
+                case "comment":
+                    code += this.c_lineno(node);
+                    code += "/*" + node.value + "*/\n";
+                    break;
+                case "EOS":
+                    code += this.c_lineno(node);
+                    code += "\n";
+                    break;
+                case "break":
+                    code += "break;";
+                    break;
+                case "continue":
+                    code += "continue;";
+                    break;
+                case "end": // TODO: どう処理するか?
+                    code += "quit();";
+                    break;
+                case "number":
+                    code += node.value;
+                    break;
+                case "string":
+                    code += this.c_string(node);
+                    break;
+                case "def_local_var":
+                    code += this.c_def_local_var(node) + "\n";
+                    break;
+                case "let":
+                    code += this.c_let(node) + "\n";
+                    break;
+                case "variable":
+                    code += this.c_get_var(node);
+                    break;
+                case "calc":
+                    code += this.c_op(node);
+                    break;
+                case "func":
+                    code += this.c_func(node, true);
+                    break;
+                case "calc_func":
+                    code += this.c_func(node, false);
+                    break;
+                case "if":
+                    code += this.c_if(node);
+                    break;
+                case "for":
+                    code += this.c_for(node);
+                    break;
+                case "foreach":
+                    code += this.c_foreach(node);
+                    break;
+                case "repeat_times":
+                    code += this.c_repeat_times(node);
+                    break;
+                case "while":
+                    code += this.c_while(node);
+                    break;
+                case "let_array":
+                    code += this.c_let_array(node);
+                    break;
+                case "ref_array":
+                    code += this.c_ref_array(node);
+                    break;
+                case "json_array":
+                    code += this.c_json_array(node);
+                    break;
+                case "json_obj":
+                    code += this.c_json_obj(node);
+                    break;
+                case "bool":
+                    code += (node.value) ? "true" : "false";
+                    break;
+                case "null":
+                    code += "null";
+                    break;
+                case "def_func":
+                    code += this.c_def_func(node);
+                    break;
+                case "return":
+                    code += this.c_return(node);
+                    break;
+            }
+            return code;
         }
-        if (node === null) return "null";
-        if (node === undefined) return "undefined";
-        if (typeof(node) != "object") return "" + node;
-        // switch
-        switch (node.type) {
-            case "nop":
-                break;
-            case "comment":
-                code += this.c_lineno(node);
-                code += "/*" + node.value + "*/\n";
-                break;
-            case "EOS":
-                code += this.c_lineno(node);
-                code += "\n";
-                break;
-            case "break":
-                code += "break;";
-                break;
-            case "continue":
-                code += "continue;";
-                break;
-            case "end": // TODO: どう処理するか?
-                code += "quit();";
-                break;
-            case "number":
-                code += node.value;
-                break;
-            case "string":
-                code += this.c_string(node);
-                break;
-            case "def_local_var":
-                code += this.c_def_local_var(node) + "\n";
-                break;
-            case "let":
-                code += this.c_let(node) + "\n";
-                break;
-            case "variable":
-                code += this.c_get_var(node);
-                break;
-            case "calc":
-                code += this.c_op(node);
-                break;
-            case "func":
-                code += this.c_func(node, true);
-                break;
-            case "calc_func":
-                code += this.c_func(node, false);
-                break;
-            case "if":
-                code += this.c_if(node);
-                break;
-            case "for":
-                code += this.c_for(node);
-                break;
-            case "foreach":
-                code += this.c_foreach(node);
-                break;
-            case "repeat_times":
-                code += this.c_repeat_times(node);
-                break;
-            case "while":
-                code += this.c_while(node);
-                break;
-            case "let_array":
-                code += this.c_let_array(node);
-                break;
-            case "ref_array":
-                code += this.c_ref_array(node);
-                break;
-            case "json_array":
-                code += this.c_json_array(node);
-                break;
-            case "json_obj":
-                code += this.c_json_obj(node);
-                break;
-            case "bool":
-                code += (node.value) ? "true" : "false";
-                break;
-            case "null":
-                code += "null";
-                break;
-            case "def_func":
-                code += this.c_def_func(node);
-                break;
-            case "return":
-                code += this.c_return(node);
-                break;
-        }
-        return code;
     }
 
     varname(name) {
@@ -345,16 +350,16 @@ class NakoGen {
         // __vars ?
         if (this.__vars[name] !== undefined) {
             return {i: this.__varslist.length - 1, "name": name, isTop: true};
-        }
-        // __varslist ?
-        for (let i = this.__varslist.length - 2; i >= 0; i--) {
-            const vlist = this.__varslist[i];
-            if (!vlist) continue;
-            if (vlist[name] !== undefined) {
-                return {"i": i, "name": name, isTop: false};
+        } else {
+            // __varslist ?
+            for (let i = this.__varslist.length - 2; i >= 0; i--) {
+                const vlist = this.__varslist[i];
+                if (vlist && vlist[name] !== undefined) {
+                    return {"i": i, "name": name, isTop: false};
+                }
             }
+            return null;
         }
-        return null;
     }
 
     gen_var(name, loc) {
@@ -367,17 +372,20 @@ class NakoGen {
         // システム関数・変数の場合
         if (i == 0) {
             const pv = this.plugins[name];
-            if (!pv) return `__vars["${name}"]/*err:${lno}*/`;
-            if (pv.type == "const") return `__varslist[0]["${name}"]`;
-            if (pv.type == "func") {
+            if (!pv) {
+                return `__vars["${name}"]/*err:${lno}*/`;
+            } else if (pv.type == "const") {
+                return `__varslist[0]["${name}"]`;
+            } else if (pv.type == "func") {
                 if (pv.josi.length == 0) {
                     return `(__varslist[${i}]["${name}"]())`;
+                } else {
+                    throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, loc);
                 }
-                throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, loc);
+            } else {
+                throw new NakoGenError(`『${name}』は関数であり参照できません。`, loc);
             }
-            throw new NakoGenError(`『${name}』は関数であり参照できません。`, loc);
-        }
-        if (res.isTop) {
+        } else if (res.isTop) {
             return `__vars["${name}"]`;
         } else {
             return `__varslist[${i}]["${name}"]`;
@@ -565,7 +573,9 @@ class NakoGen {
 
     getFuncName(name) {
         let name2 = name.replace(/[ぁ-ん]+$/, '');
-        if (name2 == '') name2 = name;
+        if (name2 == '') {
+            name2 = name;
+        }
         return name2;
     }
 
@@ -587,9 +597,10 @@ class NakoGen {
                 const arg = node.args[j];
                 const ajosi = arg.josi;
                 const k = josilist.indexOf(ajosi);
-                if (k < 0) continue;
-                args.push(this.c_gen(arg.value));
-                flag = true;
+                if (-1 < k) {
+                    args.push(this.c_gen(arg.value));
+                    flag = true;
+                }
             }
             if (!flag) {
                 sore--;
@@ -615,7 +626,9 @@ class NakoGen {
 
     getPluginList() {
         const r = [];
-        for (const name in this.pluginfiles) r.push(name);
+        for (const name in this.pluginfiles) {
+            r.push(name);
+        }
         return r;
     }
 
@@ -688,16 +701,14 @@ class NakoGen {
         if (res == null) {
             this.__vars[name] = true;
         } else {
-            if (res.isTop) is_top = true;
+            if (res.isTop) {
+                is_top = true;
+            }
             // 定数ならエラーを出す
-            if (this.__varslist[res.i].meta) {
-                if (this.__varslist[res.i].meta[name]) {
-                    if (this.__varslist[res.i].meta[name].readonly) {
-                        throw new NakoGenError(
-                            `定数『${name}』に値を代入することはできません。`,
-                            node.loc);
-                    }
-                }
+            if (this.__varslist[res.i].meta && this.__varslist[res.i].meta[name] && this.__varslist[res.i].meta[name].readonly) {
+                throw new NakoGenError(
+                    `定数『${name}』に値を代入することはできません。`,
+                    node.loc);
             }
         }
         if (is_top) {
@@ -724,7 +735,9 @@ class NakoGen {
             if (!this.__vars.meta) {
                 this.__vars.meta = {};
             }
-            if (!this.__vars.meta[name]) this.__vars.meta[name] = {};
+            if (!this.__vars.meta[name]) {
+                this.__vars.meta[name] = {};
+            }
             this.__vars.meta[name].readonly = true;
         }
         const code = `__vars["${name}"]=${value};\n`;
