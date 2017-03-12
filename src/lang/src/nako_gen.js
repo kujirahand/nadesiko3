@@ -367,28 +367,29 @@ class NakoGen {
         const lno = (loc) ? loc.start.line : 0;
         if (res == null) {
             return `__vars["${name}"]/*?:${lno}*/`;
-        }
-        const i = res.i;
-        // システム関数・変数の場合
-        if (i == 0) {
-            const pv = this.plugins[name];
-            if (!pv) {
-                return `__vars["${name}"]/*err:${lno}*/`;
-            } else if (pv.type == "const") {
-                return `__varslist[0]["${name}"]`;
-            } else if (pv.type == "func") {
-                if (pv.josi.length == 0) {
-                    return `(__varslist[${i}]["${name}"]())`;
-                } else {
-                    throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, loc);
-                }
-            } else {
-                throw new NakoGenError(`『${name}』は関数であり参照できません。`, loc);
-            }
-        } else if (res.isTop) {
-            return `__vars["${name}"]`;
         } else {
-            return `__varslist[${i}]["${name}"]`;
+            const i = res.i;
+            // システム関数・変数の場合
+            if (i == 0) {
+                const pv = this.plugins[name];
+                if (!pv) {
+                    return `__vars["${name}"]/*err:${lno}*/`;
+                } else if (pv.type == "const") {
+                    return `__varslist[0]["${name}"]`;
+                } else if (pv.type == "func") {
+                    if (pv.josi.length == 0) {
+                        return `(__varslist[${i}]["${name}"]())`;
+                    } else {
+                        throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, loc);
+                    }
+                } else {
+                    throw new NakoGenError(`『${name}』は関数であり参照できません。`, loc);
+                }
+            } else if (res.isTop) {
+                return `__vars["${name}"]`;
+            } else {
+                return `__varslist[${i}]["${name}"]`;
+            }
         }
     }
 
