@@ -732,7 +732,7 @@ class NakoGen {
     }
 
     c_print(node) {
-        return `__print(${code});`;
+        return `__print(${node});`;
     }
 
     c_string(node) {
