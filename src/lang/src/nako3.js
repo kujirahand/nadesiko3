@@ -118,9 +118,9 @@ class NakoCompiler {
     _run(code, is_reset) {
         if (is_reset) this.reset();
         const js = this.compile(code);
-        const __varslist = this.__varslist = this.getVarsList();
-        const __vars = this.__vars = this.__varslist[2];
-        const __self = this.__self;
+        let __varslist = this.__varslist = this.getVarsList();
+        let __vars = this.__vars = this.__varslist[2];
+        let __self = this.__self;
         if (is_reset) this.clearLog();
         try {
             eval(js);
