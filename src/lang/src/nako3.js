@@ -118,9 +118,9 @@ class NakoCompiler {
     _run(code, is_reset) {
         if (is_reset) this.reset();
         const js = this.compile(code);
-        var __varslist = this.__varslist = this.getVarsList();
-        var __vars = this.__vars = this.__varslist[2];
-        var __self = this.__self;
+        const __varslist = this.__varslist = this.getVarsList();
+        const __vars = this.__vars = this.__varslist[2];
+        const __self = this.__self;
         if (is_reset) this.clearLog();
         try {
             eval(js);
@@ -145,7 +145,7 @@ class NakoCompiler {
     }
 
     get log() {
-        var s = this.__varslist[0]["表示ログ"];
+        let s = this.__varslist[0]["表示ログ"];
         s = s.replace(/\s+$/, '');
         return s;
     }

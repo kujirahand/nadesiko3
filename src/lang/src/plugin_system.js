@@ -774,9 +774,9 @@ const PluginSystem = {
         type: "func", josi: [["の", "を"]],
         fn: function (a) {
             if (a instanceof Array) { // 配列ならOK
-                for (var i = a.length - 1; i > 0; i--) {
-                    var r = Math.floor(Math.random() * (i + 1));
-                    var tmp = a[i];
+                for (let i = a.length - 1; i > 0; i--) {
+                    const r = Math.floor(Math.random() * (i + 1));
+                    const tmp = a[i];
                     a[i] = a[r];
                     a[r] = tmp;
                 }
@@ -826,8 +826,8 @@ const PluginSystem = {
     "今": { /// 現在時刻を「hh:nn:ss」の形式で返す
         type: "func", josi: [],
         fn: function () {
-            var t = new Date();
-            var z2 = function (s) {
+            const t = new Date();
+            const z2 = function (s) {
                 s = "00" + s;
                 return s.substr(s.length - 2, 2);
             };
@@ -837,15 +837,15 @@ const PluginSystem = {
     "システム時間": { /// UTC(1970/1/1)からの経過時間をミリ秒単位で返す
         type: "func", josi: [],
         fn: function () {
-            var t = new Date();
+            const t = new Date();
             return t.getTime();
         }
     },
     "今日": { /// 今日の日付を「YYYY/MM/DD」の形式で返す
         type: "func", josi: [],
         fn: function () {
-            var t = new Date();
-            var z2 = function (s) {
+            const t = new Date();
+            const z2 = function (s) {
                 s = "00" + s;
                 return s.substr(s.length - 2, 2);
             };
@@ -855,31 +855,31 @@ const PluginSystem = {
     "今年": { /// 今年で返す
         type: "func", josi: [],
         fn: function () {
-            var t = new Date();
+            const t = new Date();
             return t.getFullYear();
         }
     },
     "曜日": { /// 日付Sの曜日を返す
         type: "func", josi: [["の"]],
         fn: function (s) {
-            var week = ["日", "月", "火", "水", "木", "金", "土"];
-            var t = new Date(s);
+            const week = ["日", "月", "火", "水", "木", "金", "土"];
+            const t = new Date(s);
             return week[t.getDay()];
         }
     },
     "UNIXTIME変換": { /// 日時SをUNIXTIME(ミリ秒付き)に変換して返す
         type: "func", josi: [["の", "を", "から"]],
         fn: function (s) {
-            var t = new Date(s);
+            const t = new Date(s);
             return t.getTime() / 1000;
         }
     },
     "日時変換": { /// UNIXTIMEを年/月/日に変換
         type: "func", josi: [["を", "から"]],
         fn: function (tm) {
-            var t = new Date();
+            const t = new Date();
             t.setTime(tm * 1000);
-            var z2 = function (s) {
+            const z2 = function (s) {
                 s = "00" + s;
                 return s.substr(s.length - 2, 2);
             };
