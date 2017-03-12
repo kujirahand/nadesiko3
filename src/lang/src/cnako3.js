@@ -13,7 +13,10 @@ nako.addPluginFile('PluginNode', __dirname + "/plugin_node.js", PluginNode);
 const opt = checkArguments();
 nako_run(opt);
 
-// コマンドライン引数を解析
+/**
+ * コマンドライン引数を解析
+ * @returns {{mainfile: string, compile: boolean, run: boolean, output: string, source: string, one_liner: boolean, debug: (boolean|*)}}
+ */
 function checkArguments() {
     if (process.argv.length <= 2) {
         console.log("cnako3 nakofile");
@@ -74,7 +77,10 @@ function checkArguments() {
     };
 }
 
-// なでしこを実行
+/**
+ * なでしこを実行
+ * @param opt
+ */
 function nako_run(opt) {
     if (opt.one_liner) {
         nako_one_liner(opt);
@@ -89,7 +95,11 @@ function nako_run(opt) {
     nako.run_reset(src);
 }
 
-// コンパイルモードの場合
+/**
+ * コンパイルモードの場合
+ * @param opt
+ * @param src
+ */
 function nako_compile(opt, src) {
     // system
     const js = nako.compile(src);
