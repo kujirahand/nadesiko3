@@ -75,7 +75,7 @@ class NakoGen {
         this.used_func = {};
         this.loop_id = 1;
         this.__varslist[1] = {};
-        this.__vars = this.__varslist[2] = {}; 
+        this.__vars = this.__varslist[2] = {};
     }
 
     getHeader() {
@@ -698,13 +698,15 @@ class NakoGen {
         // 二重定義？
         if (this.__vars[name] !== undefined) {
             throw new NakoGenError(
-                    `${vtype}『${name}』の二重定義はできません。`, 
-                    node.loc)
+                `${vtype}『${name}』の二重定義はできません。`,
+                node.loc)
         }
         //
         this.__vars[name] = true;
         if (vtype == "定数") {
-            if (!this.__vars.meta) { this.__vars.meta = {}; }
+            if (!this.__vars.meta) {
+                this.__vars.meta = {};
+            }
             if (!this.__vars.meta[name]) this.__vars.meta[name] = {};
             this.__vars.meta[name].readonly = true;
         }
