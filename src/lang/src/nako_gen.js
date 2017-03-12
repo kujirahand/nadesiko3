@@ -326,7 +326,11 @@ class NakoGen {
                     code += this.c_json_obj(node);
                     break;
                 case "bool":
-                    code += (node.value) ? "true" : "false";
+                    if (node.value) {
+                        code += "true";
+                    } else {
+                        code += "false";
+                    }
                     break;
                 case "null":
                     code += "null";

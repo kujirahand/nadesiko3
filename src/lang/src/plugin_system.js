@@ -252,7 +252,13 @@ const PluginSystem = {
     "SIGN": { /// Vが0なら0を、0超なら1を、0未満なら-1を返す
         type: "func", josi: [["の"]],
         fn: function (v) {
-            return (v == 0) ? 0 : (v > 0) ? 1 : -1;
+            if (v == 0) {
+                return 0;
+            } else if (v > 0) {
+                return 1;
+            } else {
+                return -1;
+            }
         },
     },
     "ABS": { /// Vの絶対値を返す
@@ -371,26 +377,42 @@ const PluginSystem = {
     "NOT": { /// 値Vが0ならば1、それ以外ならば0を返す
         type: "func", josi: [["の"]],
         fn: function (v) {
-            return (!v) ? 1 : 0;
+            if (v) {
+                return 0;
+            } else {
+                return 1;
+            }
         },
     },
     /// 論理演算
     "OR": { /// AとBの論理和を返す。AまたばBが0以外ならば1を、それ以外は0を返す
         type: "func", josi: [["と"], ["の"]],
         fn: function (a, b) {
-            return (a || b) ? 1 : 0;
+            if (a || b) {
+                return 1;
+            } else {
+                return 0;
+            }
         },
     },
     "AND": { /// AとBの論理積を返す。日本語の「AかつB」に相当する
         type: "func", josi: [["と"], ["の"]],
         fn: function (a, b) {
-            return (a && b) ? 1 : 0;
+            if (a && b) {
+                return 1;
+            } else {
+                return 0;
+            }
         },
     },
     "XOR": {/// AとBの排他的論理和を返す。
         type: "func", josi: [["と"], ["の"]],
         fn: function (a, b) {
-            return (a ^ b) ? 1 : 0;
+            if (a ^ b) {
+                return 1;
+            } else {
+                return 0;
+            }
         },
     },
     /// ビット演算

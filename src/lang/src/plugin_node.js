@@ -118,8 +118,11 @@ const PluginNode = {
                 const mask1 = path.basename(s)
                     .replace(/\./g, '\\.')
                     .replace(/\*/g, '.*');
-                mask = (mask1.indexOf(';') < 0) ?
-                    mask1 + "$" : "(" + mask1.replace(/\;/g, '|') + ")$";
+                if (mask1.indexOf(';') < 0) {
+                    mask = mask1 + "$";
+                } else {
+                    mask = "(" + mask1.replace(/\;/g, '|') + ")$";
+                }
             }
             basepath = path.resolve(basepath);
             const mask_re = new RegExp(mask, "i");
