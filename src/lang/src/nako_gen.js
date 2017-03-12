@@ -623,7 +623,7 @@ class NakoGen {
      * 関数の呼び出し
      * @param node
      * @param  is_nako_type
-     * @returns コード
+     * @returns string コード
      */
     c_func(node, is_nako_type) {
         const func_name = this.getFuncName(node.name.value);
