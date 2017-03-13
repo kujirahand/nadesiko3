@@ -169,7 +169,7 @@ class NakoGen {
 
     /**
      * プラグイン・オブジェクトを追加(ブラウザ向け)
-     * @param objName オブジェクト名を登録
+     * @param objName オブジェクト名
      * @param po 関数リスト
      */
     addPluginObject(objName, po) {
@@ -188,7 +188,7 @@ class NakoGen {
 
     /**
      * プラグイン・ファイルを追加(Node.js向け)
-     * @param objName オブジェクト名を登録
+     * @param objName オブジェクト名
      * @param path ファイルパス
      * @param po 登録するオブジェクト
      */
@@ -642,7 +642,7 @@ class NakoGen {
      * 関数の呼び出し
      * @param node
      * @param  is_nako_type
-     * @returns コード
+     * @returns string コード
      */
     c_func(node, is_nako_type) {
         const func_name = this.getFuncName(node.name.value);
@@ -752,7 +752,7 @@ class NakoGen {
     }
 
     c_print(node) {
-        return `__print(${code});`;
+        return `__print(${node});`;
     }
 
     c_string(node) {

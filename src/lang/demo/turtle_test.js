@@ -1,4 +1,4 @@
-var display_id = "info";
+let display_id = "info";
 
 // なでしこの関数をカスタマイズ
 navigator.nako3.setFunc("表示", function (s) {
@@ -11,7 +11,7 @@ function run_box(id) {
         alert('idが設定されていません。');
         return;
     }
-    var src = $(id).value;
+    let src = $(id).value;
     display_id = id + "_info";
     $(display_id).innerHTML = "";
     try {
@@ -29,7 +29,7 @@ function reset_box_turtle(id) {
         id = "src_box";
     }
     $(id + '_info').innerHTML = '';
-    var cv = $('turtle_cv');
+    const cv = $('turtle_cv');
     cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
     navigator.nako3.run('カメ全消去');
 }

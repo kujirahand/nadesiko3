@@ -23,8 +23,8 @@ class NakoCompiler {
         this.silent = true;
         this.filename = 'inline';
         this.gen = new NakoGen(this);
-        this.gen.addPluginObject("PluginSystem", PluginSystem);
         this.reset();
+        this.gen.addPluginObject("PluginSystem", PluginSystem);
     }
 
     /**
@@ -120,12 +120,10 @@ class NakoCompiler {
             this.reset();
         }
         const js = this.compile(code);
-        var __varslist = this.__varslist = this.getVarsList();
-        var __vars = this.__vars = this.__varslist[2];
-        var __self = this.__self;
-        if (is_reset) {
-            this.clearLog();
-        }
+        let __varslist = this.__varslist = this.getVarsList();
+        let __vars = this.__vars = this.__varslist[2];
+        let __self = this.__self;
+        if (is_reset) this.clearLog();
         try {
             eval(js);
         } catch (e) {
@@ -149,7 +147,7 @@ class NakoCompiler {
     }
 
     get log() {
-        var s = this.__varslist[0]["表示ログ"];
+        let s = this.__varslist[0]["表示ログ"];
         s = s.replace(/\s+$/, '');
         return s;
     }

@@ -25,4 +25,10 @@ $ npm run watch
 
 srcディレクトリの中のコードを編集すると、releaseディレクトリに結果が出力される。
 
-また、なでしこ3ではEditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応している。
+また、コマンドラインから以下のコマンドを実行することで、ソースコードをテストできる。
+
+```
+$ npm run test
+```
+
+なお、なでしこ3ではEditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応している。
