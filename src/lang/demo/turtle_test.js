@@ -19,8 +19,11 @@ function run_box(id) {
         navigator.nako3.run(src);
         $('backlink').href = "#" + id + "_head";
         location.href = "#run";
+        $("err").style.display = "none";
     } catch (e) {
         console.log(e);
+        $("err").innerHTML = e.message;
+        $("err").style.display = "block";
     }
 }
 
