@@ -16,6 +16,44 @@ class NakoRuntimeError extends Error {
         super(msg);
     }
 }
+class NakoSyntaxError extends Error {
+    constructor(e) {
+        const title = "[文法エラー]";
+        let pos = "";
+        if (e.location) {
+            pos = "(" + e.location.start.line + ":" + 
+                e.location.start.column + ") ";
+        }
+        let found = "", expected = "", msg;
+        if (e.found) {
+            const a = [];
+            e.found.forEach(q=>{
+                if (!q.text) return;
+                a.push(q.text);
+            });
+            found = a.join(",");
+        } else {
+            found = "終端";
+        }
+        found += "に達しました。";
+        if (e.expected) {
+            const a = [];
+            e.expected.forEach(q=>{
+                if (!q.text) return;
+                a.push(q.text);
+            });
+            if (a.length > 0) {
+                expected = " {|" + a.join("|") + "|}を期待しています。";
+            }
+        }
+        if (e.found == null && e.expected == null) {
+            msg = e.message;
+        } else {
+            msg = found + expected;
+        }
+        super(title + pos + msg);
+    }
+}
 
 class NakoCompiler {
     constructor() {
@@ -64,8 +102,15 @@ class NakoCompiler {
         code = code.replace(/^\s+/, '')
             .replace(/\s+$/, '');
         // convert
-        const ast = NakoPeg.parse(code + "\n");
-        return ast;
+        try {
+            const ast = NakoPeg.parse(code + "\n");
+            return ast;
+        } catch (e) {
+            if (e.name == "SyntaxError") {
+                throw new NakoSyntaxError(e);
+            }
+            throw e; // その他エラー
+        }
     }
 
     generate(ast) {

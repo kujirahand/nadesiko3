@@ -71,31 +71,43 @@ for_stmt
   }
 
 repeat_times_stmt
-  = cnt:(int / intz) "回" __ b:sentence EOS {
+  = cnt:times_cond "回" __ b:sentence EOS {
     return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
-  / cnt:(int / intz) "回" __ LF b:block block_end {
+  / cnt:times_cond "回" __ LF b:block block_end {
     return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
-  / parenL cnt:calc parenR "回" __ b:sentence EOS {
-    return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
+  / cnt:times_cond "回" __ LF b:block "" {
+    error("『(N)回』構文で『ここまで』がありません。", location());
   }
-  / parenL cnt:calc parenR  "回" __ LF b:block block_end {
-    return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
-  }
+
+times_cond
+  = int
+  / intz
+  / "(" c:calc ")" { return c; }
 
 while_stmt
   = parenL expr:calc parenR  "の間" LF b:block block_end {
     return {"type":"while", "cond":expr, "block":b, loc:location()};
   }
+  / parenL expr:calc parenR  "の間" LF b:block "" {
+    error("『(条件)の間』構文で『ここまで』がありません。", location());
+  }
 
 if_stmt
-  = "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block
-      __ else __ LF __ fb:block block_end {
+  = "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block __ 
+    else __ LF __ fb:block block_end {
     return {"type":"if", "expr":expr, "block":tb, "false_block":fb, loc:location()};
+  }
+  / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block __
+    else __ LF __ fb:block "" {
+    error("『もし』構文で『ここまで』がありません。", location());
   }
   / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block block_end {
     return {"type":"if", "expr":expr, "block":tb, "false_block":[], loc:location()};
+  }
+  / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block "" {
+    error("『もし』構文で『ここまで』がありません。", location());
   }
   // ブロックなしの「もし」文の時
   / "もし" __ expr:if_expr __ josi_naraba __ t:sentence EOS? else f:sentence EOS {
