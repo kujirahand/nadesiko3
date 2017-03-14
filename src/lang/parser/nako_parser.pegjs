@@ -42,7 +42,15 @@ def_func
   / "●" name:word __ LF b:block kokomade {
     return {type:"def_func", "name":name, "args":[], block:b, loc:location() };
   }
-  
+  / "●" name:word __ "(" args:def_func_arg* ")" __ LF b:block "" {
+    error("関数の定義で『ここまで』がありません。", location());
+  }
+  / "●" name:word __ LF b:block "" {
+    error("関数の定義で『ここまで』がありません。", location());
+  }
+
+
+
 
 def_func_arg
   = w:word j:josi
@@ -55,20 +63,36 @@ return_stmt
   / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v, loc:location()}; }
 
 foreach_stmt
-  = target:value "を" __ ("反復" / "反復する") LF b:block block_end {
+  = target:value "を" __ hanpuku LF b:block block_end {
     return {"type":"foreach", "target":target, "block":b, loc:location()};
   }
-  / ("反復" / "反復する") LF b:block block_end {
+  / hanpuku LF b:block block_end {
     return {"type":"foreach", "target":null, "block":b, loc:location()};
   }
+  / target:value "を" __ hanpuku LF b:block "" {
+    error("『反復』構文で『ここまで』がありません。", location());
+  }
+  / hanpuku LF b:block "" {
+    error("『反復』構文で『ここまで』がありません。", location());
+  }
+
+hanpuku = "反復" / "反復する"
 
 for_stmt
-  = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
+  = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block block_end {
     return {"type":"for", "from":kara, "to":made, "block":b, "word": i, loc:location()};
   }
-  / kara:calc "から" __ made:calc "まで" __ ("繰り返す" / "繰り返し") LF b:block block_end {
+  / kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block block_end {
     return {"type":"for", "from":kara, "to":made, "block":b, "word": "", loc:location()};
   }
+  / i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block "" {
+    error("『繰り返す』構文で『ここまで』がありません。", location());
+  }
+  / kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block "" {
+    error("『繰り返す』構文で『ここまで』がありません。", location());
+  }
+
+kurikaesu = "繰り返す" / "繰り返し" / "繰返す" / "繰返し"
 
 repeat_times_stmt
   = cnt:times_cond "回" __ b:sentence EOS {
