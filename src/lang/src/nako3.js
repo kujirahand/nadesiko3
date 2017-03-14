@@ -7,12 +7,13 @@ const PluginSystem = require('./plugin_system');
 
 class NakoRuntimeError extends Error {
     constructor(msg, env) {
-        const title = "[実行エラー]";
-        if (env && env.__varslist && env.__varslist.line) {
+        const title = "[実行時エラー]";
+        if (env && env.__varslist && env.__varslist[0].line) {
             msg = title + "(" + env.__varslist[0].line + ") " + msg;
         } else {
             msg = title + " " + msg;
         }
+        console.log(env);
         super(msg);
     }
 }
@@ -170,9 +171,10 @@ class NakoCompiler {
         try {
             eval(js);
         } catch (e) {
+            this.js = js;
             throw new NakoRuntimeError(
                 e.name + ":" +
-                e.message + "\n" + js, this);
+                e.message, this);
         }
         return this;
     }

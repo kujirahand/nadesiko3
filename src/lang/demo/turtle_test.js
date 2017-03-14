@@ -21,8 +21,7 @@ function run_box(id) {
         location.href = "#run";
         $("err").style.display = "none";
     } catch (e) {
-        console.log(e);
-        $("err").innerHTML = e.message;
+        $("err").innerHTML = e.message.replace(/\n/g, "<br>\n");
         $("err").style.display = "block";
     }
 }
