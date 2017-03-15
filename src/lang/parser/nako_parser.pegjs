@@ -288,10 +288,10 @@ value
   / json_stmt
 
 embed_stmt
-  = embed_begin js:$(!embed_end .)+ embed_end { return {type:"embed_code", value:js}; }
+  = "JS" nami_begin3 js:$(!nami_end3 .)+ nami_end3 { return {type:"embed_code", value:js}; }
 
-embed_begin = "JS{{{"
-embed_end = "}}}"
+nami_begin3 = "{{{"
+nami_end3 = "}}}"
 
 calc_func_args
   = SPCLF v1:calc SPCLF v2:("," SPCLF calc)* {
