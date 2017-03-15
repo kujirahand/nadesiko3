@@ -31,8 +31,19 @@ describe('basic', () => {
         cmp("a=30;「abc{a}abc」を表示", "abc30abc");
         cmp("a=30;「abc｛a｝abc」を表示", "abc30abc");
     });
+    it('raw string - R{{{ .. }}}', () => {
+        cmp("a=R{{{abc}}};aを表示", "abc");
+    });
+    it('EX string - S{{{{{ .. }}}}}', () => {
+        cmp("v=30;a=S{{{{{abc{v}abc}}}}};aを表示", "abc30abc");
+    });
     it('string - LF', () => {
         cmp("a=30;「abc\nabc」を表示", "abc\nabc");
+    });
+    it('string - 文字列{{{ ... }}}', () => {
+        cmp("文字列{{{aaa}}}を表示", "aaa");
+        cmp("a=30;文字列{{{aaa{a}bbb}}}を表示", "aaa30bbb");
+        cmp("a=30;文字列｛｛｛aaa{a}bbb｝｝｝を表示", "aaa30bbb");
     });
     it('システム定数', () => {
         cmp("ナデシコエンジンを表示", "nadesi.com/v3");

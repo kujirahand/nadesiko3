@@ -237,9 +237,31 @@ rawstring_pat
   = '"' s:$[^"]*  '"' { return s; }
   / "'" s:$[^']*   "'" { return s; }
   / "『" s:$[^』]* "』" { return s; }
-rawstring = s:rawstring_pat { return {type:"string", value:s, mode:"raw"}; }
-exstring_pat = "「"    "」" { return chars.join(""); }
-exstring = "「" s:$[^」]* "」" { return {type:"string", value:s, mode:"ex"}; }
+  / "R" s:nami_string_pat { return s; }
+
+rawstring
+  = s:rawstring_pat { return {type:"string", value:s, mode:"raw"}; }
+
+exstring_pat
+  = "「" s:$[^」]* "」" { return s; }
+  / "S" s:nami_string_pat { return s; }
+  / "文字列" s:nami_string_pat { return s; }
+
+nami_string_pat
+  = nami_begin5 s:$(!nami_end5 .)* nami_end5 { return s; }
+  / nami_begin4 s:$(!nami_end4 .)* nami_end4 { return s; }
+  / nami_begin3 s:$(!nami_end3 .)* nami_end3 { return s; }
+
+nami_begin5 = "{{{{{"
+nami_end5 = "}}}}}"
+nami_begin4 = "{{{{"
+nami_end4 = "}}}}"
+nami_begin3 = "{{{" / "｛｛｛"
+nami_end3 = "}}}" / "｝｝｝"
+
+exstring
+  = s:exstring_pat { return {type:"string", value:s, mode:"ex"}; }
+
 string = rawstring / exstring
 
 
@@ -287,11 +309,7 @@ value
   / word
   / json_stmt
 
-embed_stmt
-  = "JS" nami_begin3 js:$(!nami_end3 .)+ nami_end3 { return {type:"embed_code", value:js}; }
-
-nami_begin3 = "{{{"
-nami_end3 = "}}}"
+embed_stmt = "JS" js:nami_string_pat { return {type:"embed_code", value:js}; }
 
 calc_func_args
   = SPCLF v1:calc SPCLF v2:("," SPCLF calc)* {
