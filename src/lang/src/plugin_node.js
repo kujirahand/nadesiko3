@@ -118,8 +118,11 @@ const PluginNode = {
                 const mask1 = path.basename(s)
                     .replace(/\./g, '\\.')
                     .replace(/\*/g, '.*');
-                mask = (mask1.indexOf(';') < 0) ?
-                    mask1 + "$" : "(" + mask1.replace(/\;/g, '|') + ")$";
+                if (mask1.indexOf(';') < 0) {
+                    mask = mask1 + "$";
+                } else {
+                    mask = "(" + mask1.replace(/\;/g, '|') + ")$";
+                }
             }
             basepath = path.resolve(basepath);
             const mask_re = new RegExp(mask, "i");
@@ -127,14 +130,15 @@ const PluginNode = {
             const enum_r = (base) => {
                 const list = fs.readdirSync(base);
                 for (const f of list) {
-                    if (f == "." || f == "..") continue;
-                    const fullpath = path.join(base, f);
-                    const st = fs.statSync(fullpath);
-                    if (st.isDirectory()) {
-                        enum_r(fullpath);
-                        continue;
+                    if (f != "." && f != "..") {
+                        const fullpath = path.join(base, f);
+                        const st = fs.statSync(fullpath);
+                        if (st.isDirectory()) {
+                            enum_r(fullpath);
+                        } else if (mask_re.test(f)) {
+                            result.push(fullpath);
+                        }
                     }
-                    if (mask_re.test(f)) result.push(fullpath);
                 }
             };
             // 検索実行

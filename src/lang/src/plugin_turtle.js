@@ -7,168 +7,174 @@ const PluginTurtle = {
     "初期化": {
         type: "func", josi: [],
         fn: function (sys) {
-            if (sys._turtle) return;
-            sys._turtle = {
-                list: [],
-                target: -1,
-                ctx: null,
-                canvas: null,
-                canvas_r: {left: 0, top: 0, width: 640, height: 400},
-                clearAll: function () {
-                    const me = this;
-                    console.log('[TURTLE] clearAll');
-                    for (let i = 0; i < me.list.length; i++) {
-                        const tt = me.list[i];
-                        tt.mlist = []; // ジョブをクリア
-                        document.body.removeChild(tt.canvas);
-                    }
-                    me.list = [];
-                    if (me.canvas != null) {
-                        me.ctx.clearRect(0, 0,
-                            me.canvas.width,
-                            me.canvas.height);
-                    }
-                    me.target = -1;
-                    me.b_set_timer = false;
-                },
-                drawTurtle: function (id) {
-                    const tt = this.list[id];
-                    const cr = this.canvas_r;
-                    // カメの位置を移動
-                    tt.canvas.style.left = (cr.left + tt.x - tt.cx) + "px";
-                    tt.canvas.style.top = (cr.top + tt.y - tt.cx) + "px";
-                    if (!tt.f_update) return;
-                    if (!tt.f_loaded) return;
-                    tt.f_update = false;
-                    tt.ctx.clearRect(0, 0,
-                        tt.canvas.width,
-                        tt.canvas.height);
-                    if (!tt.f_visible) return;
-                    if (tt.dir != 270) {
-                        const rad = (tt.dir + 90) * 0.017453292519943295;
-                        tt.ctx.save();
-                        tt.ctx.translate(tt.cx, tt.cy);
-                        tt.ctx.rotate(rad);
-                        tt.ctx.translate(-tt.cx, -tt.cy);
-                        tt.ctx.drawImage(tt.img, 0, 0);
-                        tt.ctx.restore();
-                    } else {
-                        tt.ctx.drawImage(tt.img, 0, 0);
-                    }
-                },
-                getCur: function () {
-                    return this.list[this.target];
-                },
-                b_set_timer: false,
-                set_timer: function () {
-                    if (this.b_set_timer) return;
-                    this.b_set_timer = true;
-                    setTimeout(() => {
-                        const tt = this.getCur();
-                        console.log("[TURTLE] Let's go! job=", tt.mlist.length);
-                        sys._turtle.play();
-                    }, 1);
-                },
-                line: function (tt, x1, y1, x2, y2) {
-                    if (tt) {
-                        if (tt.f_down == false) return;
-                    }
-                    const ctx = this.ctx;
-                    ctx.beginPath();
-                    ctx.lineWidth = tt.lineWidth;
-                    ctx.strokeStyle = tt.color;
-                    ctx.moveTo(x1, y1);
-                    ctx.lineTo(x2, y2);
-                    ctx.stroke();
-                },
-                do_macro: function (tt, wait) {
-                    const me = this;
-                    if (!tt.f_loaded && wait > 0) {
-                        console.log('[TURTLE] waiting ...');
-                        return true;
-                    }
-                    const m = tt.mlist.shift();
-                    const cmd = m[0];
-                    switch (cmd) {
-                        case "mv":
-                            // 線を引く
-                            me.line(tt, tt.x, tt.y, m[1], m[2]);
-                            // カメの角度を変更
-                            const mv_rad = Math.atan2(m[1] - tt.x, m[2] - tt.y);
-                            tt.dir = mv_rad * 57.29577951308232;
-                            tt.f_update = true;
-                            // 実際に位置を移動
-                            tt.x = m[1];
-                            tt.y = m[2];
-                            break;
-                        case "fd":
-                            const fdv = m[1] * m[2];
-                            const rad = tt.dir * 0.017453292519943295;
-                            const x2 = tt.x + Math.cos(rad) * fdv;
-                            const y2 = tt.y + Math.sin(rad) * fdv;
-                            me.line(tt, tt.x, tt.y, x2, y2);
-                            tt.x = x2;
-                            tt.y = y2;
-                            break;
-                        case "angle":
-                            const angle = m[1];
-                            tt.dir = ((angle - 90 + 360) % 360);
-                            tt.f_update = true;
-                            break;
-                        case "rotr":
-                            const rv = m[1];
-                            tt.dir = (tt.dir + rv) % 360;
-                            tt.f_update = true;
-                            break;
-                        case "rotl":
-                            const lv = m[1];
-                            tt.dir = (tt.dir - lv + 360) % 360;
-                            tt.f_update = true;
-                            break;
-                        case "color":
-                            // ctx.strokeStyle = m[1];
-                            tt.color = m[1];
-                            break;
-                        case "size":
-                            // ctx.lineWidth = m[1];
-                            tt.lineWidth = m[1];
-                            break;
-                        case "pen_on":
-                            tt.f_down = m[1];
-                            break;
-                        case "visible":
-                            tt.f_visible = m[1];
-                            tt.f_update = true;
-                            break;
-                    }
-                    if (tt.f_loaded) sys._turtle.drawTurtle(tt.id);
-                    return (tt.mlist.length > 0);
-                },
-                do_macro_all: function (wait) {
-                    let has_next = false;
-                    for (let i = 0; i < sys._turtle.list.length; i++) {
-                        const tt = sys._turtle.list[i];
-                        if (this.do_macro(tt, wait)) has_next = true;
-                    }
-                    return has_next;
-                },
-                play: function () {
-                    const me = this;
-                    const wait = sys.__getSysValue("カメ速度", 100);
-                    let has_next = true;
-                    while (has_next) {
-                        has_next = this.do_macro_all(wait);
-                        if (wait > 0) break;
-                    }
-                    if (wait > 0 && has_next) {
-                        setTimeout(() => {
-                            me.play();
-                        }, wait);
-                        return;
-                    }
-                    console.log("[TURTLE] finished.");
-                },
-            };
+            if (!sys._turtle) {
+                sys._turtle = {
+                    list: [],
+                    target: -1,
+                    ctx: null,
+                    canvas: null,
+                    canvas_r: {left: 0, top: 0, width: 640, height: 400},
+                    clearAll: function () {
+                        const me = this;
+                        console.log('[TURTLE] clearAll');
+                        for (let i = 0; i < me.list.length; i++) {
+                            const tt = me.list[i];
+                            tt.mlist = []; // ジョブをクリア
+                            document.body.removeChild(tt.canvas);
+                        }
+                        me.list = [];
+                        if (me.canvas != null) {
+                            me.ctx.clearRect(0, 0,
+                                me.canvas.width,
+                                me.canvas.height);
+                        }
+                        me.target = -1;
+                        me.b_set_timer = false;
+                    },
+                    drawTurtle: function (id) {
+                        const tt = this.list[id];
+                        const cr = this.canvas_r;
+                        // カメの位置を移動
+                        tt.canvas.style.left = (cr.left + tt.x - tt.cx) + "px";
+                        tt.canvas.style.top = (cr.top + tt.y - tt.cx) + "px";
+                        if (tt.f_update && tt.f_loaded) {
+                            tt.f_update = false;
+                            tt.ctx.clearRect(0, 0,
+                                tt.canvas.width,
+                                tt.canvas.height);
+                            if (tt.f_visible) {
+                                if (tt.dir == 270) {
+                                    tt.ctx.drawImage(tt.img, 0, 0);
+                                } else {
+                                    const rad = (tt.dir + 90) * 0.017453292519943295;
+                                    tt.ctx.save();
+                                    tt.ctx.translate(tt.cx, tt.cy);
+                                    tt.ctx.rotate(rad);
+                                    tt.ctx.translate(-tt.cx, -tt.cy);
+                                    tt.ctx.drawImage(tt.img, 0, 0);
+                                    tt.ctx.restore();
+                                }
+                            }
+                        }
+                    },
+                    getCur: function () {
+                        return this.list[this.target];
+                    },
+                    b_set_timer: false,
+                    set_timer: function () {
+                        if (!this.b_set_timer) {
+                            this.b_set_timer = true;
+                            setTimeout(() => {
+                                const tt = this.getCur();
+                                console.log("[TURTLE] Let's go! job=", tt.mlist.length);
+                                sys._turtle.play();
+                            }, 1);
+                        }
+                    },
+                    line: function (tt, x1, y1, x2, y2) {
+                        if (!tt || tt.f_down != false) {
+                            const ctx = this.ctx;
+                            ctx.beginPath();
+                            ctx.lineWidth = tt.lineWidth;
+                            ctx.strokeStyle = tt.color;
+                            ctx.moveTo(x1, y1);
+                            ctx.lineTo(x2, y2);
+                            ctx.stroke();
+                        }
+                    },
+                    do_macro: function (tt, wait) {
+                        const me = this;
+                        if (!tt.f_loaded && wait > 0) {
+                            console.log('[TURTLE] waiting ...');
+                            return true;
+                        } else {
+                            const m = tt.mlist.shift();
+                            const cmd = m[0];
+                            switch (cmd) {
+                                case "mv":
+                                    // 線を引く
+                                    me.line(tt, tt.x, tt.y, m[1], m[2]);
+                                    // カメの角度を変更
+                                    const mv_rad = Math.atan2(m[1] - tt.x, m[2] - tt.y);
+                                    tt.dir = mv_rad * 57.29577951308232;
+                                    tt.f_update = true;
+                                    // 実際に位置を移動
+                                    tt.x = m[1];
+                                    tt.y = m[2];
+                                    break;
+                                case "fd":
+                                    const fdv = m[1] * m[2];
+                                    const rad = tt.dir * 0.017453292519943295;
+                                    const x2 = tt.x + Math.cos(rad) * fdv;
+                                    const y2 = tt.y + Math.sin(rad) * fdv;
+                                    me.line(tt, tt.x, tt.y, x2, y2);
+                                    tt.x = x2;
+                                    tt.y = y2;
+                                    break;
+                                case "angle":
+                                    const angle = m[1];
+                                    tt.dir = ((angle - 90 + 360) % 360);
+                                    tt.f_update = true;
+                                    break;
+                                case "rotr":
+                                    const rv = m[1];
+                                    tt.dir = (tt.dir + rv) % 360;
+                                    tt.f_update = true;
+                                    break;
+                                case "rotl":
+                                    const lv = m[1];
+                                    tt.dir = (tt.dir - lv + 360) % 360;
+                                    tt.f_update = true;
+                                    break;
+                                case "color":
+                                    // ctx.strokeStyle = m[1];
+                                    tt.color = m[1];
+                                    break;
+                                case "size":
+                                    // ctx.lineWidth = m[1];
+                                    tt.lineWidth = m[1];
+                                    break;
+                                case "pen_on":
+                                    tt.f_down = m[1];
+                                    break;
+                                case "visible":
+                                    tt.f_visible = m[1];
+                                    tt.f_update = true;
+                                    break;
+                            }
+                            if (tt.f_loaded) {
+                                sys._turtle.drawTurtle(tt.id);
+                            }
+                            return (tt.mlist.length > 0);
+                        }
+                    },
+                    do_macro_all: function (wait) {
+                        let has_next = false;
+                        for (let i = 0; i < sys._turtle.list.length; i++) {
+                            const tt = sys._turtle.list[i];
+                            if (this.do_macro(tt, wait)) {
+                                has_next = true;
+                            }
+                        }
+                        return has_next;
+                    },
+                    play: function () {
+                        const me = this;
+                        const wait = sys.__getSysValue("カメ速度", 100);
+                        let has_next;
+                        do {
+                            has_next = this.do_macro_all(wait);
+                        } while (wait <= 0 && has_next);
+                        if (wait > 0 && has_next) {
+                            setTimeout(() => {
+                                me.play();
+                            }, wait);
+                        } else {
+                            console.log("[TURTLE] finished.");
+                        }
+                    },
+                };
+            }
         }
     },
     /// タートルグラフィックス/カメ操作
@@ -217,25 +223,25 @@ const PluginTurtle = {
             // 描画先をセットする
             const canvas_id = sys.__getSysValue("カメ描画先", "turtle_cv");
             const cv = sys._turtle.canvas = document.getElementById(canvas_id);
-            if (!sys._turtle.canvas) {
+            if (sys._turtle.canvas) {
+                const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d');
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "black";
+                ctx.lineCap = "round";
+                const rect = cv.getBoundingClientRect();
+                const rx = rect.left + window.pageXOffset;
+                const ry = rect.top + window.pageYOffset;
+                const cr = sys._turtle.canvas_r = {
+                    "left": rx, "top": ry,
+                    width: rect.width, height: rect.height
+                };
+                // デフォルト位置の設定
+                tt.x = rect.width / 2;
+                tt.y = rect.height / 2;
+                return id;
+            } else {
                 console.log("[ERROR] カメ描画先が見当たりません。");
-                return;
             }
-            const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d');
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = "black";
-            ctx.lineCap = "round";
-            const rect = cv.getBoundingClientRect();
-            const rx = rect.left + window.pageXOffset;
-            const ry = rect.top + window.pageYOffset;
-            const cr = sys._turtle.canvas_r = {
-                "left": rx, "top": ry,
-                width: rect.width, height: rect.height
-            };
-            // デフォルト位置の設定
-            tt.x = rect.width / 2;
-            tt.y = rect.height / 2;
-            return id;
         }
     },
     "カメ操作対象設定": { /// IDを指定して操作対象となるカメを変更する

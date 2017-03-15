@@ -7,8 +7,11 @@ const PluginSystem = {
             sys.__nako3version = "3.0b3";
             sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version;
             sys.__getSysValue = function (name, def) {
-                if (sys.__varslist[0][name] === undefined) return def;
-                return sys.__varslist[0][name];
+                if (sys.__varslist[0][name] === undefined) {
+                    return def;
+                } else {
+                    return sys.__varslist[0][name];
+                }
             };
         }
     },
@@ -60,8 +63,11 @@ const PluginSystem = {
         type: "func", josi: [["と", "を"]],
         fn: function (s) {
             const r = prompt(s);
-            if (r.match(/^[0-9\.]+$/)) return parseFloat(r);
-            return r;
+            if (r.match(/^[0-9\.]+$/)) {
+                return parseFloat(r);
+            } else {
+                return r;
+            }
         }
     },
     /// 四則演算
@@ -246,7 +252,13 @@ const PluginSystem = {
     "SIGN": { /// Vが0なら0を、0超なら1を、0未満なら-1を返す
         type: "func", josi: [["の"]],
         fn: function (v) {
-            return (v == 0) ? 0 : (v > 0) ? 1 : -1;
+            if (v == 0) {
+                return 0;
+            } else if (v > 0) {
+                return 1;
+            } else {
+                return -1;
+            }
         },
     },
     "ABS": { /// Vの絶対値を返す
@@ -282,9 +294,14 @@ const PluginSystem = {
     "LOGN": { ///指定された底AでBの対数を計算して返す
         type: "func", josi: [["で"], ["の"]],
         fn: function (a, b) {
-            if (a == 2) return Math.LOG2E * Math.log(b);
-            if (a == 10) return Math.LOG10E * Math.log(b);
-            return Math.log(b) / Math.log(a);
+            switch (a) {
+                case 2:
+                    return Math.LOG2E * Math.log(b);
+                case 10:
+                    return Math.LOG10E * Math.log(b);
+                default:
+                    return Math.log(b) / Math.log(a);
+            }
         },
     },
     "FRAC": { /// 実数Aの小数部分を返す
@@ -360,26 +377,42 @@ const PluginSystem = {
     "NOT": { /// 値Vが0ならば1、それ以外ならば0を返す
         type: "func", josi: [["の"]],
         fn: function (v) {
-            return (!v) ? 1 : 0;
+            if (v) {
+                return 0;
+            } else {
+                return 1;
+            }
         },
     },
     /// 論理演算
     "OR": { /// AとBの論理和を返す。AまたばBが0以外ならば1を、それ以外は0を返す
         type: "func", josi: [["と"], ["の"]],
         fn: function (a, b) {
-            return (a || b) ? 1 : 0;
+            if (a || b) {
+                return 1;
+            } else {
+                return 0;
+            }
         },
     },
     "AND": { /// AとBの論理積を返す。日本語の「AかつB」に相当する
         type: "func", josi: [["と"], ["の"]],
         fn: function (a, b) {
-            return (a && b) ? 1 : 0;
+            if (a && b) {
+                return 1;
+            } else {
+                return 0;
+            }
         },
     },
     "XOR": {/// AとBの排他的論理和を返す。
         type: "func", josi: [["と"], ["の"]],
         fn: function (a, b) {
-            return (a ^ b) ? 1 : 0;
+            if (a ^ b) {
+                return 1;
+            } else {
+                return 0;
+            }
         },
     },
     /// ビット演算
@@ -423,7 +456,9 @@ const PluginSystem = {
     "文字挿入": { /// 文字列SのI文字目に文字列Aを挿入する
         type: "func", josi: [["で", "の"], ["に", "へ"], ["を"]],
         fn: function (s, i, a) {
-            if (i <= 0) i = 1;
+            if (i <= 0) {
+                i = 1;
+            }
             const ss = String(s);
             const mae = ss.substr(0, i - 1);
             const usi = ss.substr(i - 1);
@@ -458,7 +493,9 @@ const PluginSystem = {
         type: "func", josi: [["を", "の"], ["で"]],
         fn: function (v, cnt) {
             let s = "";
-            for (let i = 0; i < cnt; i++) s += String(v);
+            for (let i = 0; i < cnt; i++) {
+                s += String(v);
+            }
             return s;
         },
     },
@@ -522,8 +559,11 @@ const PluginSystem = {
         fn: function (s, a) {
             s = String(s);
             const i = s.indexOf(a);
-            if (i < 0) return s;
-            return s.substr(0, i);
+            if (i < 0) {
+                return s;
+            } else {
+                return s.substr(0, i);
+            }
         }
     },
     "文字削除": { /// v1非互換:文字列SのA文字目からB文字分を削除して返す
@@ -644,9 +684,13 @@ const PluginSystem = {
         fn: function (v, a) {
             v = String(v);
             let z = "0";
-            for (let i = 0; i < a; i++) z += "0";
+            for (let i = 0; i < a; i++) {
+                z += "0";
+            }
             a = parseInt(a);
-            if (a < v.length) a = v.length;
+            if (a < v.length) {
+                a = v.length;
+            }
             const s = z + String(v);
             return s.substr(s.length - a, a);
         }
@@ -716,8 +760,9 @@ const PluginSystem = {
         fn: function (a, i, s) {
             if (a instanceof Array) { // 配列ならOK
                 return a.splice(i, 0, s);
+            } else {
+                throw new Error("『配列挿入』で配列以外の要素への挿入。");
             }
-            throw new Error("『配列挿入』で配列以外の要素への挿入。");
         }
     },
     "配列一括挿入": { /// v1非互換:配列AのI番目(0起点)に配列bを追加して返す
@@ -728,8 +773,9 @@ const PluginSystem = {
                     a.splice(i + j, 0, b[j]);
                 }
                 return a;
+            } else {
+                throw new Error("『配列一括挿入』で配列以外の要素への挿入。");
             }
-            throw new Error("『配列一括挿入』で配列以外の要素への挿入。");
         }
     },
     "配列ソート": { /// 配列Aをソートして返す
@@ -737,8 +783,9 @@ const PluginSystem = {
         fn: function (a) {
             if (a instanceof Array) { // 配列ならOK
                 return a.sort();
+            } else {
+                throw new Error("『配列ソート』で配列以外の処理。");
             }
-            throw new Error("『配列ソート』で配列以外の処理。");
         }
     },
     "配列数値ソート": { /// 配列Aをソートして返す
@@ -748,8 +795,9 @@ const PluginSystem = {
                 return a.sort((a, b) => {
                     return parseFloat(a) - parseFloat(b)
                 });
+            } else {
+                throw new Error("『配列数値ソート』で配列以外の処理。");
             }
-            throw new Error("『配列数値ソート』で配列以外の処理。");
         }
     },
     "配列カスタムソート": { /// 配列Aを関数Bでソートして返す
@@ -757,8 +805,9 @@ const PluginSystem = {
         fn: function (a, f_name, sys) {
             if (a instanceof Array) { // 配列ならOK
                 return a.sort(sys.__varslist[1][f_name]);
+            } else {
+                throw new Error("『配列数値ソート』で配列以外の処理。");
             }
-            throw new Error("『配列数値ソート』で配列以外の処理。");
         }
     },
     "配列逆順": { /// 配列Aを逆にして返す。Aを書き換える。
@@ -766,8 +815,9 @@ const PluginSystem = {
         fn: function (a) {
             if (a instanceof Array) { // 配列ならOK
                 return a.reverse();
+            } else {
+                throw new Error("『配列ソート』で配列以外の処理。");
             }
-            throw new Error("『配列ソート』で配列以外の処理。");
         }
     },
     "配列シャッフル": { /// 配列Aをシャッフルして返す。Aを書き換える
@@ -781,8 +831,9 @@ const PluginSystem = {
                     a[r] = tmp;
                 }
                 return a;
+            } else {
+                throw new Error("『配列シャッフル』で配列以外の処理。");
             }
-            throw new Error("『配列シャッフル』で配列以外の処理。");
         }
     },
     "配列切り取": { /// 配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。
@@ -790,8 +841,9 @@ const PluginSystem = {
         fn: function (a, i) {
             if (a instanceof Array) { // 配列ならOK
                 return a.splice(i, 1);
+            } else {
+                throw new Error("『配列切り取』で配列以外の処理。");
             }
-            throw new Error("『配列切り取』で配列以外の処理。");
         }
     },
     "配列取り出": { /// 配列AのI番目(0起点)からCNT個の応訴を取り出して返す。Aの内容を書き換える
@@ -799,8 +851,9 @@ const PluginSystem = {
         fn: function (a, i, cnt) {
             if (a instanceof Array) { // 配列ならOK
                 return a.splice(i, cnt);
+            } else {
+                throw new Error("『配列切り取』で配列以外の処理。");
             }
-            throw new Error("『配列切り取』で配列以外の処理。");
         }
     },
     "配列ポップ": { /// 配列Aの末尾を取り出して返す。Aの内容を書き換える。
@@ -808,8 +861,9 @@ const PluginSystem = {
         fn: function (a) {
             if (a instanceof Array) { // 配列ならOK
                 return a.pop();
+            } else {
+                throw new Error("『配列ポップ』で配列以外の処理。");
             }
-            throw new Error("『配列ポップ』で配列以外の処理。");
         }
     },
     "配列追加": { /// 配列Aの末尾にBを追加して返す。Aの内容を書き換える。
@@ -818,8 +872,9 @@ const PluginSystem = {
             if (a instanceof Array) { // 配列ならOK
                 a.push(b);
                 return a;
+            } else {
+                throw new Error("『配列追加』で配列以外の処理。");
             }
-            throw new Error("『配列追加』で配列以外の処理。");
         }
     },
     /// 日時処理

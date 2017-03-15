@@ -84,15 +84,14 @@ function checkArguments() {
 function nako_run(opt) {
     if (opt.one_liner) {
         nako_one_liner(opt);
-        return;
+    } else {
+        const src = fs.readFileSync(opt.mainfile, "utf-8");
+        if (opt.compile) {
+            nako_compile(opt, src);
+        } else {
+            nako.run_reset(src);
+        }
     }
-
-    const src = fs.readFileSync(opt.mainfile, "utf-8");
-    if (opt.compile) {
-        nako_compile(opt, src);
-        return;
-    }
-    nako.run_reset(src);
 }
 
 /**
@@ -110,7 +109,9 @@ function nako_compile(opt, src) {
     fs.writeFileSync(opt.output, jscode, "utf-8");
     if (opt.run) {
         exec(`node ${opt.output}`, function (err, stdout, stderr) {
-            if (err) console.log("[ERROR]", stderr);
+            if (err) {
+                console.log("[ERROR]", stderr);
+            }
             console.log(stdout);
         });
     }
