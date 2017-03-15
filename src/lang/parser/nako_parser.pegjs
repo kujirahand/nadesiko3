@@ -205,7 +205,7 @@ LF = "\n" {
   }
 EOS = __ n:(";" / LF / "。" / josi_continue) { return {type:"EOS", loc:location()}; }
 whitespace = [ \t\r、　,]
-SPCLF = (SPC / LF)
+SPCLF = [\t\r\n 　]*
 SPC = [\t\r 　]*
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
 line_comment = ("//" / "#" / "＃" / "※") s:$[^\n]* LF { return s; }

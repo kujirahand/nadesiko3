@@ -4,7 +4,7 @@ const PluginSystem = {
     "初期化": {
         type: "func", josi: [],
         fn: function (sys) {
-            sys.__nako3version = "3.0b2";
+            sys.__nako3version = "3.0b3";
             sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version;
             sys.__getSysValue = function (name, def) {
                 if (sys.__varslist[0][name] === undefined) return def;

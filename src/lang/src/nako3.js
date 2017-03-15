@@ -27,12 +27,8 @@ class NakoSyntaxError extends Error {
         }
         let found = "", expected = "", msg;
         if (e.found) {
-            const a = [];
-            e.found.forEach(q=>{
-                if (!q.text) return;
-                a.push(q.text);
-            });
-            found = a.join(",");
+            if (e.found == "\n") found = "改行";
+            else found = e.found.toString();
         } else {
             found = "終端";
         }
@@ -60,6 +56,8 @@ class NakoCompiler {
     constructor() {
         this.debug = false;
         this.silent = true;
+        this.debug_show_parser = false;
+        this.debug_show_code = true;
         this.filename = 'inline';
         this.gen = new NakoGen(this);
         this.reset();
@@ -117,7 +115,7 @@ class NakoCompiler {
     generate(ast) {
         const js = this.gen.c_gen(ast);
         const def = this.gen.getDefFuncCode();
-        if (this.debug) {
+        if (this.debug && this.debug_show_code) {
             console.log("--- generate ---");
             console.log(def + js);
         }
@@ -131,7 +129,7 @@ class NakoCompiler {
      */
     compile(code) {
         const ast = this.parse(code);
-        if (this.debug) {
+        if (this.debug && this.debug_show_parser) {
             console.log("--- ast ---");
             console.log(JSON.stringify(ast, null, 2));
         }

@@ -32,3 +32,23 @@ $ npm run test
 ```
 
 なお、なでしこ3ではEditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応している。
+
+## コマンドラインからなでしこを使う方法
+
+なでしこ3では、コマンドラインからなでしこを実行できる、cnako3(Windowsは、cnako3.bat)というスクリプトを用意しています。今後、なでしこの各種バッチファイルは、なでしこ自身で記述されます。
+
+環境変数に、このREADME.mdのパスを、NAKO_HOMEとして登録し、パスを NAKO_HOME/src に通してください。以下、macOS/Linuxでの.bashrcの記述例です。
+
+```
+HOME=/Users/kujira
+export NAKO_HOME=$HOME/nadesiko3/src/lang
+export PATH=$PATH:$NAKO_HOME/src
+```
+
+### コマンドライン版なでしこの利用方法
+
+なでしこのコマンド一覧ファイルを生成するバッチを実行する。
+
+```
+$ cnako3 $NAKO_HOME/batch/pickup_command.nako
+```
