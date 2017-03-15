@@ -281,10 +281,17 @@ alphachars = a:$(alphabet / alphaz)+ b:$([0-9a-zA-Z_０-９ａ-ｚＡ-Ｚ＿])* 
 value
   = number 
   / string
+  / embed_stmt
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
   / w:word "(" ar:calc_func_args ")" { return {type:"calc_func", args:ar, name:w}; }
   / word
   / json_stmt
+
+embed_stmt
+  = embed_begin js:$(!embed_end .)+ embed_end { return {type:"embed_code", value:js}; }
+
+embed_begin = "JS{{{"
+embed_end = "}}}"
 
 calc_func_args
   = SPCLF v1:calc SPCLF v2:("," SPCLF calc)* {

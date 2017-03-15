@@ -321,6 +321,9 @@ class NakoGen {
             case "json_obj":
                 code += this.c_json_obj(node);
                 break;
+            case "embed_code":
+                code += node.value;
+                break;
             case "bool":
                 code += (node.value) ? "true" : "false";
                 break;
