@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3');
 
 describe('basic', () => {
     const nako = new NakoCompiler();
-    nako.debug = true;
+    // nako.debug = true;
     const cmp = (code, res) => {
         if (nako.debug) {
             console.log("code=" + code);
