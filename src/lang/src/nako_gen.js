@@ -687,11 +687,12 @@ class NakoGen {
         const value = this.c_gen(node.value);
         const name = node.name.value;
         const res = this.find_var(name);
-        console.log("@", name, res);
-        let is_top = false, code = "";
+        let is_top, code = "";
         if (res == null) {
             this.__vars[name] = true;
+            is_top = true;
         } else {
+            is_top = false;
             if (res.isTop) is_top = true;
             // 定数ならエラーを出す
             if (this.__varslist[res.i].meta) {

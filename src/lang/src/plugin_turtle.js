@@ -140,6 +140,10 @@ const PluginTurtle = {
                             tt.f_visible = m[1];
                             tt.f_update = true;
                             break;
+                        case "change_image":
+                            tt.f_loaded = false;
+                            tt.img.src = m[1];
+                            break;
                     }
                     if (tt.f_loaded) sys._turtle.drawTurtle(tt.id);
                     return (tt.mlist.length > 0);
@@ -257,7 +261,9 @@ const PluginTurtle = {
     "カメ画像変更": { /// カメの画像をURLに変更する
         type: "func", josi: [["に", "へ"]],
         fn: function (url, sys) {
-            sys.__varslist[0]["カメ画像URL"] = url;
+            const tt = sys._turtle.getCur();
+            tt.mlist.push(["change_image", url]);
+            sys._turtle.set_timer();
         },
         return_none: true
     },

@@ -18,11 +18,29 @@
 <h1><a name="top">なでしこ3/タートルグラフィックス その3</a></h1>
 
 <div class="sbox">
+    <h4><a name="sankaku_txt_head">定期的にカメ画像を変更する</a></h4>
+    <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
+カメ画像URLは「nako.png」
+カメ作成。
+200にカメ速度設定。
+N=20
+30回
+　　もし、それ%2=0ならば
+　　　　「turtle.png」にカメ画像変更
+　　違えば
+　　　　「nako.png」にカメ画像変更
+　　ここまで
+　　Nだけカメ進む
+　　90だけカメ右回転
+　　N = N - 5
+ここまで。</textarea>
+    <div><p id="sankaku_txt_info" class="info"></p></div>
+    <button onclick="run_box('sankaku_txt')">実行</button>
+</div>
+
+<div class="sbox">
     <h4><a name="sankaku_txt_head">ぐるぐる八角</a></h4>
     <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
-カメ描画先＝「aaa_cv」
-カメ画像URL＝「aaa.gif」
-###
 カメ作成。
 40にカメ速度設定。
 青色にカメペン色設定。
@@ -37,11 +55,10 @@
 ここまで。</textarea>
     <div><p id="sankaku_txt_info" class="info"></p></div>
     <button onclick="run_box('sankaku_txt')">実行</button>
-    <canvas id="aaa_cv" width="300" height="300"></canvas>
 </div>
 
 <div class="sbox">
-    <h4><a name="sankaku_txt_head">ぐるぐる八角</a></h4>
+    <h4><a name="sankaku_txt_head">ぐるぐる八角 - ナコ版</a></h4>
     <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
 「nako.png」にカメ画像変更。
 カメ作成。
