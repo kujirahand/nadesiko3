@@ -289,7 +289,7 @@ class NakoGen {
                 code += this.c_op(node);
                 break;
             case "not":
-                code += "(!" + this.c_gen(node.value) + ")";
+                code += "((" + this.c_gen(node.value) + ")?0:1)";
                 break;
             case "func":
                 code += this.c_func(node, true);

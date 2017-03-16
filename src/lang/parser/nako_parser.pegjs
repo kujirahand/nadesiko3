@@ -173,7 +173,7 @@ if_value
   / parenL v:calc parenR { return v; }
 
 func_arg
-  = v:calc j:josi { return {"type":"arg", "value":v, "josi":j} }
+  = v:calc j:josi whitespace* { return {"type":"arg", "value":v, "josi":j} }
 
 func_call_stmt
   = name:word EOS {
@@ -389,7 +389,7 @@ primary2
   }
   / primary
   
- primary
+primary
    = parenL v:calc parenR { return v; }
    / "!" v:value { return { type:"not", value:v }; }
    / value
