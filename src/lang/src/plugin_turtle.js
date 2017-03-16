@@ -212,13 +212,20 @@ const PluginTurtle = {
                 sys._turtle.drawTurtle(tt.id);
                 console.log("turtle.onload");
             };
+            tt.img.onerror = () => {
+                console.log("カメの読み込みに失敗");
+                tt.f_loaded = true;
+                tt.f_visible = false;
+                sys._turtle.drawTurtle(tt.id);
+            };
             tt.canvas.style.position = "absolute";
             document.body.appendChild(tt.canvas);
             // 描画先をセットする
             const canvas_id = sys.__getSysValue("カメ描画先", "turtle_cv");
+            console.log("カメ描画先=", canvas_id, sys.__varslist[0]["カメ描画先"]);
             const cv = sys._turtle.canvas = document.getElementById(canvas_id);
             if (!sys._turtle.canvas) {
-                console.log("[ERROR] カメ描画先が見当たりません。");
+                console.log("[ERROR] カメ描画先が見当たりません。" + canvas_id);
                 return;
             }
             const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d');
@@ -245,8 +252,8 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ描画先": {type: "const", value: "turtle_cv"},
-    "カメ画像URL": {type: "const", value: "turtle.png"},
+    "カメ描画先": {type: "var", value: "turtle_cv"},
+    "カメ画像URL": {type: "var", value: "turtle.png"},
     "カメ画像変更": { /// カメの画像をURLに変更する
         type: "func", josi: [["に", "へ"]],
         fn: function (url, sys) {

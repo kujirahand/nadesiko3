@@ -16,6 +16,7 @@ function run_box(id) {
     $(display_id).innerHTML = "";
     try {
         src = "カメ全消去\n" + src;
+        navigator.nako3.debug = false;
         navigator.nako3.run(src);
         $('backlink').href = "#" + id + "_head";
         location.href = "#run";

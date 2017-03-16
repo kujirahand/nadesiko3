@@ -20,6 +20,29 @@
 <div class="sbox">
     <h4><a name="sankaku_txt_head">ぐるぐる八角</a></h4>
     <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
+カメ描画先＝「aaa_cv」
+カメ画像URL＝「aaa.gif」
+###
+カメ作成。
+40にカメ速度設定。
+青色にカメペン色設定。
+Ｎで10から100まで繰り返す
+　　もし、(N%3)が0ならば
+　　　　赤色にカメペン色設定。
+　　違えば
+　　　　青色にカメペン色設定。
+　　ここまで。
+　　Nだけカメ進む
+　　45だけカメ右回転
+ここまで。</textarea>
+    <div><p id="sankaku_txt_info" class="info"></p></div>
+    <button onclick="run_box('sankaku_txt')">実行</button>
+    <canvas id="aaa_cv" width="300" height="300"></canvas>
+</div>
+
+<div class="sbox">
+    <h4><a name="sankaku_txt_head">ぐるぐる八角</a></h4>
+    <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
 「nako.png」にカメ画像変更。
 カメ作成。
 40にカメ速度設定。

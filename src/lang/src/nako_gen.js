@@ -371,7 +371,7 @@ class NakoGen {
         if (i == 0) {
             const pv = this.plugins[name];
             if (!pv) return `__vars["${name}"]/*err:${lno}*/`;
-            if (pv.type == "const") return `__varslist[0]["${name}"]`;
+            if (pv.type == "const" || pv.type == "var") return `__varslist[0]["${name}"]`;
             if (pv.type == "func") {
                 if (pv.josi.length == 0) {
                     return `(__varslist[${i}]["${name}"]())`;
@@ -687,7 +687,8 @@ class NakoGen {
         const value = this.c_gen(node.value);
         const name = node.name.value;
         const res = this.find_var(name);
-        let is_top = true, code = "";
+        console.log("@", name, res);
+        let is_top = false, code = "";
         if (res == null) {
             this.__vars[name] = true;
         } else {
