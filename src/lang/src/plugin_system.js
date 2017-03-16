@@ -552,6 +552,43 @@ const PluginSystem = {
             return s;
         }
     },
+    /// 文字変換
+    "大文字変換": {/// アルファベットの文字列Sを大文字に変換 /// おおもじへんかん
+        type: "func", josi: [["の","を"]],
+        fn: function (s) {
+            return String(s).toUpperCase();
+        },
+    },
+    "小文字変換": {/// アルファベットの文字列Sを小文字に変換 /// こもじへんかん
+        type: "func", josi: [["の","を"]],
+        fn: function (s) {
+            return String(s).toLowerCase();
+        },
+    },
+    "平仮名変換": {/// 文字列Sのひらがなをカタカナに変換 /// ひらがなへんかん
+        type: "func", josi: [["の","を"]],
+        fn: function (s) {
+            const kanaToHira = (str)=> {
+                return String(str).replace(/[\u30a1-\u30f6]/g, function(m) {
+                    var chr = m.charCodeAt(0) - 0x60;
+                    return String.fromCharCode(chr);
+                });
+            }
+            return kanaToHira(s);
+        },
+    },
+    "カタカナ変換": {/// 文字列Sのひらがなをカタカナに変換 /// かたかなへんかん
+        type: "func", josi: [["の","を"]],
+        fn: function (s) {
+            const hiraToKana = (str)=> {
+                return String(str).replace(/[\u3041-\u3096]/g, function(m) {
+                    var chr = m.charCodeAt(0) + 0x60;
+                    return String.fromCharCode(chr);
+                });
+            }
+            return hiraToKana(s);
+        },
+    },
     /// JSON
     "JSONエンコード": { /// オブジェクトvをJSON形式にエンコードする /// JSONえんこーど
         type: "func", josi: [["を", "の"]],
