@@ -190,6 +190,10 @@ let_stmt
     const v = value ? value[0] : {type:"variable", value:"それ", loc:location()};
     return {"type":"let", "name":name, "value":v};
   }
+  / value:(calc "を")? name:word ("に"/"へ") "代入" EOS  {
+    const v = value ? value[0] : {type:"variable", value:"それ", loc:location()};
+    return {"type":"let", "name":name, "value":v};
+  }
 
 def_local_var
   = name:word "とは" SPC vtype:var_type ("=" / "＝") v:calc EOS {
