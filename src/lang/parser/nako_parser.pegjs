@@ -63,11 +63,17 @@ return_stmt
   / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v, loc:location()}; }
 
 foreach_stmt
-  = target:value "を" __ hanpuku LF b:block block_end {
-    return {"type":"foreach", "target":target, "block":b, loc:location()};
+  = name:word "で" target:value "を" hanpuku LF b:block block_end {
+    return {"type":"foreach", "target":target, "block":b, "name":name, loc:location()};
+  }
+  / target:value "を" name:word "で" hanpuku LF b:block block_end {
+    return {"type":"foreach", "target":target, "block":b, "name":name, loc:location()};
+  }
+  / target:value "を" __ hanpuku LF b:block block_end {
+    return {"type":"foreach", "target":target, "block":b, "name":null, loc:location()};
   }
   / hanpuku LF b:block block_end {
-    return {"type":"foreach", "target":null, "block":b, loc:location()};
+    return {"type":"foreach", "target":null, "block":b, "name":null, loc:location()};
   }
   / target:value "を" __ hanpuku LF b:block "" {
     error("『反復』構文で『ここまで』がありません。", location());

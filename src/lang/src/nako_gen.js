@@ -522,14 +522,17 @@ class NakoGen {
         }
         const block = this.c_gen(node.block);
         const id = this.loop_id++;
-        const taisyou = this.varname('対象');
         const key = this.varname('対象キー');
+        const name = (node.name) ? node.name.value : "対象";
+        this.__vars[name] = true;
+        this.__vars['対象キー'] = true;
+        const name_s = this.varname(name);
         const code =
             `var $nako_foreach_v${id}=${target};\n` +
             `for(var $nako_i${id} in $nako_foreach_v${id})` + "{\n" +
-            `  ${this.sore} = ${taisyou} = $nako_foreach_v${id}[$nako_i${id}];` + "\n" +
-            `  ${key} = $nako_i${id};\n` +
-            "  " + block + "\n" +
+            `${name_s} = ${this.sore} = $nako_foreach_v${id}[$nako_i${id}];` + "\n" +
+            `${key} = $nako_i${id};\n` +
+            "" + block + "\n" +
             "};\n";
         return this.c_lineno(node) + code;
     }
