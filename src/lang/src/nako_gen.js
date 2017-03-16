@@ -288,6 +288,9 @@ class NakoGen {
             case "calc":
                 code += this.c_op(node);
                 break;
+            case "not":
+                code += "(!" + this.c_gen(node.value) + ")";
+                break;
             case "func":
                 code += this.c_func(node, true);
                 break;
@@ -680,6 +683,9 @@ class NakoGen {
         let op = node.operator; // 演算子
         const right = this.c_gen(node.right);
         const left = this.c_gen(node.left);
+        if (op == "^") {
+            return "(Math.pow(" + left + "," + right + "))";
+        }
         if (op == "&") {
             op = '+ "" +';
         }

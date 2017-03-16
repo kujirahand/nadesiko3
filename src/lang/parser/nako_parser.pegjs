@@ -330,10 +330,10 @@ calc
   = and_or
 
 and_or
-  = left:comp __ "||" __ right:comp {
+  = left:comp __ ("||" / "または") __ right:comp {
     return { type:"calc", operator:"||", "left":left, "right":right };
   }
-  / left:comp __ "&&" __ right:comp {
+  / left:comp __ ("&&" / "かつ") __ right:comp {
     return { type:"calc", operator:"&&", "left":left, "right":right };
   }
   / comp
@@ -358,6 +358,7 @@ comp
      return { type:"calc", operator: "!=", "left": left,  "right": right };
   }
   / addsub
+
 addsub
    = left:muldiv __ ("+" / "＋") __ right:addsub {
      return { type:"calc", operator: "+", "left": left,  "right": right };
@@ -369,19 +370,28 @@ addsub
      return { type:"calc", operator: "&", "left": left,  "right": right };
    }
    / muldiv
+
 muldiv
-  = left:primary __ ("*" / "＊" / "×") __ right:muldiv {
+  = left:primary2 __ ("*" / "＊" / "×") __ right:muldiv {
      return { type:"calc", operator: "*", "left": left,  "right": right };
    }
-  / left:primary __ ("/" / "／" / "÷") __ right:muldiv {
+  / left:primary2 __ ("/" / "／" / "÷") __ right:muldiv {
      return { type:"calc", operator: "/", "left": left,  "right": right };
    }
-  / left:primary __ ("%" / "％") __ right:muldiv {
+  / left:primary2 __ ("%" / "％") __ right:muldiv {
      return { type:"calc", operator: "%", "left": left,  "right": right };
    }
-   / primary
+   / primary2
+   
+primary2
+  = left:primary __ ("^" / "＾") __ right:primary2 {
+    return { type:"calc", operator: "^", "left": left,  "right": right };
+  }
+  / primary
+  
  primary
    = parenL v:calc parenR { return v; }
+   / "!" v:value { return { type:"not", value:v }; }
    / value
 
 parenL = "(" / "（"
