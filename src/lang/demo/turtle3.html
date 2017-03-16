@@ -20,19 +20,23 @@
 <div class="sbox">
     <h4><a name="sankaku_txt_head">定期的にカメ画像を変更する</a></h4>
     <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
-カメ画像URLは「nako.png」
+# 画像のURLの配列を変数に代入
+画像リストは["turtle.png", "nako.png"]
+画像Iは1
+カメ画像URLは画像リスト[画像I]
+
+# カメを作成する
 カメ作成。
 200にカメ速度設定。
 N=20
-30回
-　　もし、それ%2=0ならば
-　　　　「turtle.png」にカメ画像変更
-　　違えば
-　　　　「nako.png」にカメ画像変更
+40回
+　　もし、それ%5=0ならば
+　　　　画像I=(画像I+1)%2
+　　　　画像リスト[画像I]にカメ画像変更。
 　　ここまで
 　　Nだけカメ進む
 　　90だけカメ右回転
-　　N = N - 5
+　　N = N + 5
 ここまで。</textarea>
     <div><p id="sankaku_txt_info" class="info"></p></div>
     <button onclick="run_box('sankaku_txt')">実行</button>
