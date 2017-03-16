@@ -17,20 +17,21 @@ sentence
   = blank_stmt
   / end / continue / break / return_stmt
   / def_func
+  / kokokara flow_stmt:(
+      if_stmt / while_stmt / repeat_times_stmt /
+      for_stmt / foreach_stmt) { return flow_stmt; }
+  / kokomade { return {type:"EOS",memo:"---"}; }
   / if_stmt / while_stmt / repeat_times_stmt / for_stmt / foreach_stmt
   / let_stmt
   / def_local_var
-  / kokomade { return {type:"EOS",memo:"---"}; }
-  / kokokara a:( if_stmt / while_stmt / repeat_times_stmt
-                 for_stmt / foreach_stmt) { return a; }
   / func_call_stmt
 
 sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
 block_end =  kokomade / else
 else = "違えば"
-kokokara = "ここから" SPCLF
-kokomade = ("ここまで" /　"ーーー" "ー"* / "---" "-"*) EOS
+kokokara = "ここから" whitespace*
+kokomade = ("ここまで" /　"ーー" "ー"+ / "--" "-"+) EOS
 break = "抜ける" EOS { return {type:"break"}; }
 continue = "続ける" EOS { return {type:"continue"}; }
 end = ("終わる" / "終了") EOS { return {type:"end"}; }
