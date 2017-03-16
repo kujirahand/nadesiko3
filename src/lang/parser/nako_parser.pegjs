@@ -36,13 +36,13 @@ continue = "続ける" EOS { return {type:"continue"}; }
 end = ("終わる" / "終了") EOS { return {type:"end"}; }
 
 def_func
-  = "●" name:word __ "(" args:def_func_arg* ")" __ LF b:block kokomade {
+  = "●" name:word __ parenL args:def_func_arg* parenR __ LF b:block kokomade {
     return {type:"def_func", "name":name, "args":args, block:b, loc:location() };
   }
   / "●" name:word __ LF b:block kokomade {
     return {type:"def_func", "name":name, "args":[], block:b, loc:location() };
   }
-  / "●" name:word __ "(" args:def_func_arg* ")" __ LF b:block "" {
+  / "●" name:word __ parenL args:def_func_arg* parenR __ LF b:block "" {
     error("関数の定義で『ここまで』がありません。", location());
   }
   / "●" name:word __ LF b:block "" {
@@ -114,7 +114,7 @@ repeat_times_stmt
 times_cond
   = int
   / intz
-  / "(" c:calc ")" { return c; }
+  / parenL c:calc parenR { return c; }
 
 while_stmt
   = parenL expr:calc parenR  "の間" LF b:block block_end {
@@ -311,7 +311,7 @@ value
   / string
   / embed_stmt
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
-  / w:word "(" ar:calc_func_args ")" { return {type:"calc_func", args:ar, name:w}; }
+  / w:word parenL ar:calc_func_args parenR { return {type:"calc_func", args:ar, name:w}; }
   / word
   / json_stmt
 
