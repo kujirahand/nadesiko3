@@ -44,10 +44,10 @@ def_func
     return {type:"def_func", "name":name, "args":[], block:b, loc:location() };
   }
   / "●" name:word __ parenL args:def_func_arg* parenR __ LF b:block "" {
-    error("関数の定義で『ここまで』がありません。", location());
+    error("関数『"+name.value+"』の定義で『ここまで』がありません。", location());
   }
   / "●" name:word __ LF b:block "" {
-    error("関数の定義で『ここまで』がありません。", location());
+    error("関数『"+name.value+"』の定義で『ここまで』がありません。", location());
   }
 
 def_func_arg
@@ -57,7 +57,7 @@ def_func_arg
 return_word = "戻る" / "戻す"
 
 return_stmt
-  = return_word EOS { return {type:"return",value:null}; }
+  = return_word EOS { return {type:"return",value:null,loc:location()}; }
   / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v, loc:location()}; }
 
 foreach_stmt

@@ -267,8 +267,8 @@ class NakoGen {
             case "continue":
                 code += "continue;";
                 break;
-            case "end": // TODO: どう処理するか?
-                code += "quit();";
+            case "end":
+                code += "__varslist[0]['終']();";
                 break;
             case "number":
                 code += node.value;
@@ -396,6 +396,10 @@ class NakoGen {
     }
 
     c_return(node) {
+        // 関数の中であれば利用可能
+        if (this.__vars['関数名'] === undefined) {
+            throw new NakoGenError('『戻る』がありますが、関数定義内のみで使用可能です。', node.loc);
+        }
         const lno = this.c_lineno(node);
         let value;
         if (node.value) {
@@ -413,7 +417,7 @@ class NakoGen {
         // ローカル変数をPUSHする
         let code = "(function(){\n";
         code += "try { __vars = {'それ':''}; __varslist.push(__vars);\n";
-        this.__vars = {'それ': true};
+        this.__vars = {'それ': true, '関数名': name};
         this.__varslist.push(this.__vars);
         // 引数をローカル変数に設定
         const josilist_tmp = [];
