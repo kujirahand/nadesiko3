@@ -211,8 +211,8 @@ __ = (whitespace / range_comment)*
 LF = "\n" {
     return {type:"EOS", loc:location()};
   }
-EOS = __ n:(";" / LF / "。" / josi_continue) { return {type:"EOS", loc:location()}; }
-whitespace = [ \t\r、　,]
+EOS = __ n:(";" / LF / "。" / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
+whitespace = [ \t\r、　,・]
 SPCLF = [\t\r\n 　]*
 SPC = [\t\r 　]*
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
@@ -221,7 +221,7 @@ comment
   = n:(range_comment / line_comment) {
     return {type:"comment",value:n,loc:location()};
   }
-INDENT = [ 　\t]+
+INDENT = [ 　\t・]+
 blank_stmt
   = INDENT { return {type:"nop"} }
   / comment
