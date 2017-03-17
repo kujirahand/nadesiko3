@@ -588,13 +588,19 @@ const PluginSystem = {
         },
     },
     /// JSON
-    "JSONエンコード": { /// オブジェクトvをJSON形式にエンコードする /// JSONえんこーど
+    "JSONエンコード": { /// オブジェクトVをJSON形式にエンコードして返す /// JSONえんこーど
         type: "func", josi: [["を", "の"]],
         fn: function (v) {
             return JSON.stringify(v);
         }
     },
-    "JSONデコード": { /// JSON文字列Sをオブジェクトにデコードする /// JSONでこーど
+    "JSONエンコード整形": { /// オブジェクトVをJSON形式にエンコードして整形して返す /// JSONえんこーどせいけい
+        type: "func", josi: [["を", "の"]],
+        fn: function (v) {
+            return JSON.stringify(v,null,2);
+        }
+    },
+    "JSONデコード": { /// JSON文字列Sをオブジェクトにデコードして返す /// JSONでこーど
         type: "func", josi: [["を", "の", "から"]],
         fn: function (s) {
             return JSON.parse(s);
