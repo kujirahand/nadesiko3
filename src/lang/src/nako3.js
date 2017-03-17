@@ -167,6 +167,7 @@ class NakoCompiler {
         let __self = this.__self;
         if (is_reset) this.clearLog();
         try {
+            __varslist[0].line = -1; // コンパイルエラーを調べるため
             eval(js);
         } catch (e) {
             this.js = js;

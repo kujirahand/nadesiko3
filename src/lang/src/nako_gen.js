@@ -55,6 +55,12 @@ class NakoGen {
          * @type {number}
          */
         this.loop_id = 1;
+        
+        /**
+         * 変換中の処理が、ループの中かどうかを判定する
+         * @type {boolen}
+         */
+        this.flag_loop = false;
 
         /**
          * それ
@@ -262,10 +268,10 @@ class NakoGen {
                 code += "\n";
                 break;
             case "break":
-                code += "break;";
+                code += this.c_check_loop(node, "break");
                 break;
             case "continue":
-                code += "continue;";
+                code += this.c_check_loop(node, "continue");
                 break;
             case "end":
                 code += "__varslist[0]['終']();";
@@ -397,7 +403,7 @@ class NakoGen {
 
     c_return(node) {
         // 関数の中であれば利用可能
-        if (this.__vars['関数名'] === undefined) {
+        if (typeof(this.__vars['!関数']) == "undefined") {
             throw new NakoGenError('『戻る』がありますが、関数定義内のみで使用可能です。', node.loc);
         }
         const lno = this.c_lineno(node);
@@ -410,6 +416,15 @@ class NakoGen {
             return lno + `return ${value};`;
         }
     }
+    
+    c_check_loop(node, cmd) {
+        // ループの中であれば利用可能
+        if (!this.flag_loop) {
+            const cmdj = (cmd == "continue") ? "続ける" : "抜ける";
+            throw new NakoGenError(`『${cmdj}』文がありますが、それは繰り返しの中で利用してください。`, node.loc);
+        }
+        return this.c_lineno(node.loc) + cmd + ";";
+    }
 
     c_def_func(node) {
         const name = this.getFuncName(node.name.value);
@@ -417,7 +432,7 @@ class NakoGen {
         // ローカル変数をPUSHする
         let code = "(function(){\n";
         code += "try { __vars = {'それ':''}; __varslist.push(__vars);\n";
-        this.__vars = {'それ': true, '関数名': name};
+        this.__vars = {'それ': true, '!関数': name};
         this.__varslist.push(this.__vars);
         // 引数をローカル変数に設定
         const josilist_tmp = [];
@@ -516,10 +531,20 @@ class NakoGen {
         return this.c_lineno(node) + code;
     }
 
+    c_gen_loop(node) {
+        const tmp_flag = this.flag_loop;
+        this.flag_loop = true;
+        try {
+            return this.c_gen(node);
+        } finally {
+            this.flag_loop = tmp_flag;
+        }
+    }
+
     c_for(node) {
         const kara = this.c_gen(node.from);
         const made = this.c_gen(node.to);
-        const block = this.c_gen(node.block);
+        const block = this.c_gen_loop(node.block);
         let word = "", var_code = "";
         if (node.word != "") {
             word = this.c_gen(node.word);
@@ -545,7 +570,7 @@ class NakoGen {
         } else {
             target = this.c_gen(node.target);
         }
-        const block = this.c_gen(node.block);
+        const block = this.c_gen_loop(node.block);
         const id = this.loop_id++;
         const key = this.varname('対象キー');
         const name = (node.name) ? node.name.value : "対象";
@@ -565,7 +590,7 @@ class NakoGen {
     c_repeat_times(node) {
         const id = this.loop_id++;
         const value = this.c_gen(node.value);
-        const block = this.c_gen(node.block);
+        const block = this.c_gen_loop(node.block);
         const kaisu = this.varname('回数');
         const code =
             `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + "{\n" +
@@ -576,7 +601,7 @@ class NakoGen {
 
     c_while(node) {
         const cond = this.c_gen(node.cond);
-        const block = this.c_gen(node.block);
+        const block = this.c_gen_loop(node.block);
         const code =
             `while (${cond})` + "{\n" +
             `  ${block}` + "\n" +

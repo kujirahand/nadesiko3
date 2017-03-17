@@ -32,6 +32,12 @@ const PluginNode = {
             return r.toString();
         },
     },
+    "終": { /// Nodeでプログラム実行を強制終了する /// 終わる
+        type: "func", josi: [],
+        fn: function (s) {
+            process.exit();
+        },
+    },
     "カレントディレクトリ取得": { /// カレントディレクトリを返す /// かれんとでぃれくとりしゅとく
         type: "func", josi: [],
         fn: function () {

@@ -525,9 +525,7 @@ const PluginSystem = {
     "置換": {/// 文字列Sのうち文字列AをBに全部置換して返す /// ちかん
         type: "func", josi: [["の", "で"], ["を"], ["に", "へ"]],
         fn: function (s, a, b) {
-            s = String(s);
-            const re = new RegExp(a.replace(/(.)/g, "\\$1"), "g");
-            return s.replace(re, b);
+            return String(s).split(a).join(b);
         }
     },
     "単置換": { /// 文字列Sのうち、最初に出現するAだけをBに置換して返す /// たんちかん

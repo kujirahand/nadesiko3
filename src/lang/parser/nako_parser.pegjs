@@ -32,8 +32,8 @@ block_end =  kokomade / else
 else = "違えば"
 kokokara = "ここから" whitespace*
 kokomade = ("ここまで" /　"ーー" "ー"+ / "--" "-"+) EOS
-break = "抜ける" EOS { return {type:"break"}; }
-continue = "続ける" EOS { return {type:"continue"}; }
+break = "抜ける" EOS { return {type:"break", loc:location()}; }
+continue = "続ける" EOS { return {type:"continue", loc:location()}; }
 end = ("終わる" / "終了") EOS { return {type:"end"}; }
 
 def_func
