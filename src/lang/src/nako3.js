@@ -13,7 +13,7 @@ class NakoRuntimeError extends Error {
         } else {
             msg = title + " " + msg;
         }
-        console.log(env);
+        // console.log(env);
         super(msg);
     }
 }
@@ -37,7 +37,8 @@ class NakoSyntaxError extends Error {
             const a = [];
             e.expected.forEach(q=>{
                 if (!q.text) return;
-                a.push(q.text);
+                const qq = q.text.replace(/\n/g, '改行').replace(/[\r\t]/, '');
+                if (qq != "") a.push(qq);
             });
             if (a.length > 0) {
                 expected = " {|" + a.join("|") + "|}を期待しています。";

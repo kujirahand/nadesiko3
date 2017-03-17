@@ -57,6 +57,9 @@ const PluginTurtle = {
                     }
                 },
                 getCur: function () {
+                    if (this.list.length == 0) {
+                        throw Error("最初に『カメ作成』命令を呼び出してください。");
+                    }
                     return this.list[this.target];
                 },
                 b_set_timer: false,
@@ -176,7 +179,7 @@ const PluginTurtle = {
         }
     },
     /// タートルグラフィックス/カメ操作
-    "カメ作成": { /// タートルグラフィックスを開始してカメのIDを返す
+    "カメ作成": { /// タートルグラフィックスを開始してカメのIDを返す /// かめさくせい
         type: "func", josi: [],
         fn: function (sys) {
             // カメの情報を sys._turtle リストに追加
@@ -249,16 +252,16 @@ const PluginTurtle = {
             return id;
         }
     },
-    "カメ操作対象設定": { /// IDを指定して操作対象となるカメを変更する
+    "カメ操作対象設定": { /// IDを指定して操作対象となるカメを変更する /// かめそうさたいしょうせってい
         type: "func", josi: [["に", "へ", "の"]],
         fn: function (id, sys) {
             sys._turtle.target = id;
         },
         return_none: true
     },
-    "カメ描画先": {type: "var", value: "turtle_cv"},
-    "カメ画像URL": {type: "var", value: "turtle.png"},
-    "カメ画像変更": { /// カメの画像をURLに変更する
+    "カメ描画先": {type: "var", value: "turtle_cv"}, /// かめびょうがさき
+    "カメ画像URL": {type: "var", value: "turtle.png"}, /// かめがぞうURL
+    "カメ画像変更": { /// カメの画像をURLに変更する /// かめがぞうへんこう
         type: "func", josi: [["に", "へ"]],
         fn: function (url, sys) {
             const tt = sys._turtle.getCur();
@@ -267,14 +270,14 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ速度": {type: "const", value: 100},
-    "カメ速度設定": { /// カメの動作速度vに設定(大きいほど遅い)
+    "カメ速度": {type: "const", value: 100}, /// かめそくど
+    "カメ速度設定": { /// カメの動作速度vに設定(大きいほど遅い) /// かめそくどせってい
         type: "func", josi: [["に", "へ"]],
         fn: function (v, sys) {
             sys.__varslist[0]["カメ速度"] = v;
         }
     },
-    "カメ移動": { /// カメの位置を[x,y]へ移動する
+    "カメ移動": { /// カメの位置を[x,y]へ移動する /// かめいどう
         type: "func", josi: [["に", "へ"]],
         fn: function (xy, sys) {
             const tt = sys._turtle.getCur();
@@ -283,7 +286,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ進": { /// カメの位置をVだけ進める
+    "カメ進": { /// カメの位置をVだけ進める /// かめすすむ
         type: "func", josi: [["だけ"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
@@ -292,7 +295,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ戻": { /// カメの位置をVだけ戻す
+    "カメ戻": { /// カメの位置をVだけ戻す /// かめもどる
         type: "func", josi: [["だけ"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
@@ -301,7 +304,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ角度設定": { /// カメの向きをDEGに設定する
+    "カメ角度設定": { /// カメの向きをDEGに設定する /// かめかくどせってい
         type: "func", josi: [["に", "へ", "の"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
@@ -310,7 +313,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ右回転": { /// カメの向きをDEGだけ右に向ける
+    "カメ右回転": { /// カメの向きをDEGだけ右に向ける /// かめみぎかいてん
         type: "func", josi: [["だけ"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
@@ -319,7 +322,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ左回転": { /// カメの向きをDEGだけ左に向ける
+    "カメ左回転": { /// カメの向きをDEGだけ左に向ける /// かめひだりかいてん
         type: "func", josi: [["だけ"]],
         fn: function (v, sys) {
             const tt = sys._turtle.getCur();
@@ -328,7 +331,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメペン色設定": { /// カメのペン描画色をCに設定する
+    "カメペン色設定": { /// カメのペン描画色をCに設定する /// かめぺんいろせってい
         type: "func", josi: [["に", "へ"]],
         fn: function (c, sys) {
             const tt = sys._turtle.getCur();
@@ -337,7 +340,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメペンサイズ設定": { /// カメペンのサイズをWに設定する
+    "カメペンサイズ設定": { /// カメペンのサイズをWに設定する /// かめぺんさいずせってい
         type: "func", josi: [["に", "へ"]],
         fn: function (w, sys) {
             const tt = sys._turtle.getCur();
@@ -345,7 +348,7 @@ const PluginTurtle = {
             sys._turtle.set_timer();
         },
     },
-    "カメペン設定": { /// カメペンを使うかどうかをV(オン/オフ)に設定する
+    "カメペン設定": { /// カメペンを使うかどうかをV(オン/オフ)に設定する /// かめぺんせってい
         type: "func", josi: [["に", "へ"]],
         fn: function (w, sys) {
             const tt = sys._turtle.getCur();
@@ -353,14 +356,14 @@ const PluginTurtle = {
             sys._turtle.set_timer();
         },
     },
-    "カメ全消去": { /// 表示しているカメと描画内容を全部消去する
+    "カメ全消去": { /// 表示しているカメと描画内容を全部消去する /// かめぜんしょうきょ
         type: "func", josi: [],
         fn: function (sys) {
             sys._turtle.clearAll();
         },
         return_none: true
     },
-    "カメ非表示": { /// カメの画像を非表示にする。描画に影響しない。
+    "カメ非表示": { /// カメの画像を非表示にする。描画に影響しない。 /// かめひひょうじ
         type: "func", josi: [],
         fn: function (sys) {
             const tt = sys._turtle.getCur();
@@ -369,7 +372,7 @@ const PluginTurtle = {
         },
         return_none: true
     },
-    "カメ表示": { /// 非表示にしたカメを表示する。
+    "カメ表示": { /// 非表示にしたカメを表示する。 /// かめひょうじ
         type: "func", josi: [],
         fn: function (sys) {
             const tt = sys._turtle.getCur();

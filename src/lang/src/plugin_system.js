@@ -23,7 +23,7 @@ const PluginSystem = {
     "タブ": {type: "const", value: "\t"}, /// たぶ
     "カッコ": {type: "const", value: "「"}, /// かっこ
     "カッコ閉じ": {type: "const", value: "」"}, /// かっことじ
-    "波カッコ": {type: "const", value: "{}"}, /// なみかっこ
+    "波カッコ": {type: "const", value: "{"}, /// なみかっこ
     "波カッコ閉じ": {type: "const", value: "}"}, /// なみかっことじ
     "OK": {type: "const", value: 1}, ///
     "NG": {type: "const", value: 0}, ///
@@ -94,7 +94,7 @@ const PluginSystem = {
         },
     },
     /// 特殊命令
-    "JS実行": { /// JavaScriptのコードSを実行する
+    "JS実行": { /// JavaScriptのコードSを実行する /// JSじっこう
         type: "func", josi: [["を"], ["で"]],
         fn: function (js) {
             return eval(js);
@@ -490,20 +490,20 @@ const PluginSystem = {
             return (s.substr(s.length - cnt, cnt));
         }
     },
-    "文字右部分": {/// 文字列Sの右端からCNT文字を抽出する(v1非互換)
+    "文字右部分": {/// 文字列Sの右端からCNT文字を抽出する(v1非互換) /// もじみぎぶぶん
         type: "func", josi: [["の", "で"], ["だけ"]],
         fn: function (s, cnt) {
             s = "" + s;
             return (s.substr(s.length - cnt, cnt));
         }
     },
-    "区切": {/// 文字列Sを区切り文字Aで区切って配列で返す
+    "区切": {/// 文字列Sを区切り文字Aで区切って配列で返す /// くぎる
         type: "func", josi: [["の", "を"], ["で"]],
         fn: function (s, a) {
             return ("" + s).split("" + a);
         }
     },
-    "切り取": { /// 文字列Sから文字列Aまでの部分を抽出する(v1非互換)
+    "切り取": { /// 文字列Sから文字列Aまでの部分を抽出する(v1非互換) /// きりとる
         type: "func", josi: [["から", "の"], ["まで", "を"]],
         fn: function (s, a) {
             s = String(s);
@@ -512,7 +512,7 @@ const PluginSystem = {
             return s.substr(0, i);
         }
     },
-    "文字削除": { /// 文字列SのA文字目からB文字分を削除して返す(v1非互換)
+    "文字削除": { /// 文字列SのA文字目からB文字分を削除して返す(v1非互換) /// もじさくじょ
         type: "func", josi: [["の"], ["から"], ["だけ", "を"]],
         fn: function (s, a, b) {
             s = "" + s;

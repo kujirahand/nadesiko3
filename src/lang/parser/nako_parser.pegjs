@@ -21,6 +21,7 @@ sentence
       if_stmt / while_stmt / repeat_times_stmt /
       for_stmt / foreach_stmt) { return flow_stmt; }
   / kokomade { return {type:"EOS",memo:"---"}; }
+  / embed_stmt
   / if_stmt / while_stmt / repeat_times_stmt / for_stmt / foreach_stmt
   / let_stmt
   / def_local_var
@@ -35,6 +36,8 @@ kokomade = ("ここまで" /　"ーー" "ー"+ / "--" "-"+) EOS
 break = "抜ける" EOS { return {type:"break", loc:location()}; }
 continue = "続ける" EOS { return {type:"continue", loc:location()}; }
 end = ("終わる" / "終了") EOS { return {type:"end"}; }
+
+embed_stmt = "JS" js:nami_string_pat { return {type:"embed_code", value:js}; }
 
 def_func
   = "●" name:word __ parenL args:def_func_arg* parenR __ LF b:block kokomade {
@@ -316,8 +319,6 @@ value
   / w:word parenL ar:calc_func_args parenR { return {type:"calc_func", args:ar, name:w}; }
   / word
   / json_stmt
-
-embed_stmt = "JS" js:nami_string_pat { return {type:"embed_code", value:js}; }
 
 calc_func_args
   = SPCLF v1:calc SPCLF v2:("," SPCLF calc)* {
