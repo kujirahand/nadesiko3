@@ -416,13 +416,29 @@ class NakoGen {
         this.__vars = {'それ': true};
         this.__varslist.push(this.__vars);
         // 引数をローカル変数に設定
-        const josilist = [];
+        const josilist_tmp = [];
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
             const josi_word = arg["word"].value;
-            const josi = [arg["josi"]];
-            josilist.push(josi);
+            const josi = arg["josi"];
+            let flag_double = false;
+            for (let j = 0; j < josilist_tmp.length; j++) {
+                const q = josilist_tmp[j];
+                if (q[0] !== josi_word) continue;
+                flag_double = j;
+                josilist_tmp[j][1].push(josi);
+                flag_double = true;
+                break;
+            }
+            if (!flag_double) josilist_tmp.push([josi_word, [josi]]);
             this.__vars[josi_word] = true;
+        }
+        const josilist = [];
+        for (let i = 0; i < josilist_tmp.length; i++) {
+            const c = josilist_tmp[i];
+            const josi_word = c[0];
+            const josi2 = c[1];
+            josilist.push(josi2);
             code += `__vars["${josi_word}"] = arguments[${i}];\n`;
         }
         // 関数定義は、グローバル領域で。

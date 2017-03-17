@@ -50,11 +50,8 @@ def_func
     error("関数の定義で『ここまで』がありません。", location());
   }
 
-
-
-
 def_func_arg
-  = w:word j:josi
+  = w:word j:josi ("|" / "｜")*
   { return {"word":w, "josi":j}; }
 
 return_word = "戻る" / "戻す"

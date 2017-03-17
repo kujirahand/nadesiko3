@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3');
 
 describe('func_test', () => {
     const nako = new NakoCompiler();
-    // nako.debug = true;
+    //nako.debug = true;
     const cmp = (code, res) => {
         if (nako.debug) {
             console.log("code=" + code);
@@ -58,5 +58,12 @@ describe('func_test', () => {
     it('ローカル定数1', () => {
         cmp("定数のN=30\n" +
             "Nを表示。", "30");
+    });
+    it('助詞の複数定義', () => {
+        cmp('●加算処理（AにBを|AとBの）\n' +
+            '(A+B)を戻す。\n' +
+            '---\n' + 
+            '10に20を加算処理して表示。\n' +
+            '20と10の加算処理して表示。\n', '30\n30');
     });
 });
