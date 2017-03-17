@@ -453,6 +453,8 @@ class NakoGen {
         // ブロックを解析
         const block = this.c_gen(node.block);
         code += block + "\n";
+        // 関数の最後に、変数「それ」をreturnするようにする
+        code += `return (${this.sore});\n`;
         // 関数の末尾に、ローカル変数をPOP
         const popcode =
             "__varslist.pop(); " +
