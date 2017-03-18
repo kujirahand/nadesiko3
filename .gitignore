@@ -1,5 +1,4 @@
 # exclude dir
-release
 src/nako_parser.js
 
 # Logs
