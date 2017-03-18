@@ -210,7 +210,7 @@ var_type = ("変数"/"定数")
 
 
 // コメント関連
-__ = (whitespace / range_comment / "_" LF)*
+__ = (whitespace / range_comment / "_" whitespace* LF)*
 
 LF = "\n" {
     return {type:"EOS", loc:location()};
