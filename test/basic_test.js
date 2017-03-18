@@ -62,4 +62,7 @@ describe('basic', () => {
         cmp('「aabbcc」の「aa」を「」に置換してFに代入。Fを表示','bbcc');
         cmp('「aabbcc」の「aa」を「」に置換して「bb」を「」に置換してFに代入。Fを表示','cc');
     });
+    it('文字列 - &と改行', ()=>{
+        cmp('「aaa」& _\n「bbb」を表示。', 'aaabbb');
+    });
 });

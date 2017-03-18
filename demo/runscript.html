@@ -2,51 +2,33 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>なでしこ3</title>
+    <title>なでしこ3 - script要素を実行するデモ</title>
     <!-- なでしこを使う準備 -->
-    <script src="../release/wnako3.js"></script>
-    <script type="なでしこ" id="main_program">
-        「#00F」に色変更。
-        「こんにちは。なでしこでメッセージを表示しています！」と表示。
-        「画面を右クリックして
-        [ページのソースを表示]で
-        プログラムを見てください。」を表示。
+    <script src="../release/wnako3.js?run"></script>
+    <script type="なでしこ">
+        # # # # # # # # # # # # # # # # #
+        # なでしこのプログラムをここに書く
+        # # # # # # # # # # # # # # # # #
+        
+        # input#a_txtタグに値を設定する
+        「input#a_txt」のDOM要素取得
+        「こんにちは★」をDOMテキスト設定。
+        
+        # 続けて、スタイルを指定する
+        「backgroundColor」に青色をDOMスタイル設定。
+        「color」に白色をDOMスタイル設定。
+        「fontSize」に「45px」をDOMスタイル設定。
+        
+        # メッセージを表示
+        情報＝「画面を右クリックして」
+        情報＝情報＆「『ページのソースを表示』から、」
+        情報＝情報＆「このプログラムを表示できます。」
+        「#info」に情報をDOMテキスト設定。
     </script>
 </head>
 <body>
 <h1>なでしこ3デモ - script要素を実行する方法</h1>
 <div><p id="info"></p></div>
-<script>
-    // --- なでしこのカスタマイズ例 ---
-    // 必要に応じて なでしこの関数を カスタマイズ
-    navigator.nako3.setFunc("言", function (msg) {
-        alert(msg);
-    });
-
-    navigator.nako3.setFunc("表示", function (s) {
-        $("info").innerHTML += to_html(s) + "<br>";
-    });
-
-    // なでしこにオリジナル関数をJSで追加
-    navigator.nako3.addFunc("色変更",
-        [["に", "へ"]],
-        function (s) {
-            $("info").style.color = s;
-        });
-    // --- ここまで ---
-
-    // --- スクリプトを実行するには、以下を一行書くだけ！ ---
-    navigator.nako3.runNakoScript();
-
-    // 簡易DOMアクセス関数など
-    function $(id) {
-        return document.getElementById(id);
-    }
-
-    function to_html(s) {
-        s = "" + s;
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-</script>
+<div><input type="text" id="a_txt" style="width:300px"></div>
 </body>
 </html>

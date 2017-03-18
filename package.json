@@ -6,6 +6,7 @@
   "scripts": {
     "test": "mocha",
     "watch": "webpack --watch",
+    "start": "node server.js",
     "build": "webpack",
     "build:parser": "pegjs --cache -o src/nako_parser.js src/nako_parser.pegjs",
     "pickup:command": "node src/cnako3.js batch/pickup_command.nako -debug"
@@ -48,5 +49,9 @@
     "pump": "^1.0.2",
     "source-map": "^0.5.6",
     "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "express": "^4.15.2",
+    "serve-index": "^1.8.0"
   }
 }
