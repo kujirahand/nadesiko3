@@ -1,6 +1,6 @@
 # exclude dir
-src/lang/release
-src/lang/src/nako_parser.js
+release
+src/nako_parser.js
 
 # Logs
 logs
