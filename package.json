@@ -7,7 +7,7 @@
     "test": "mocha",
     "watch": "webpack --watch",
     "build": "webpack",
-    "build:parser": "pegjs --cache -o src/nako_parser.js parser/nako_parser.pegjs",
+    "build:parser": "pegjs --cache -o src/nako_parser.js src/nako_parser.pegjs",
     "pickup:command": "node src/cnako3.js batch/pickup_command.nako -debug"
   },
   "repository": {
