@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>なでしこ3</title>
+    <!-- なでしこを使う準備 -->
+    <script src="../release/wnako3.js"></script>
+    <script src="common.js"></script>
+    <script src="basic_flow.js"></script>
+    <link rel="stylesheet" type="text/css" href="common.css">
+    <link rel="stylesheet" type="text/css" href="basic.css">
+</head>
+<body>
+<h1>なでしこ3デモ</h1>
+<hr>
+<h3>試してみよう！</h3>
+<div class="sbox">
+    <h4>簡単な計算</h4>
+    <textarea id="calc_txt" class="src" rows="5" title="簡単な計算">
+1+2を表示。
+100÷5を表示。
+(1 + 2)×3を表示。</textarea><br>
+    <button onclick="run_box('calc_txt')">実行</button>
+    <div><p id="calc_txt_info" class="info"></p></div>
+</div>
+
+<div class="sbox">
+    <h4>変数を使った計算</h4>
+    <textarea id="var_txt" class="src" rows="10" title="変数を使った計算">
+価格=500円
+個数＝3個
+税率=0.08
+合計額=価格×個数
+税額＝合計額×税率
+支払い＝合計額＋税額
+「お支払いは、{支払い}円です！」と表示。</textarea><br>
+    <div><p id="var_txt_info" class="info"></p></div>
+    <button onclick="run_box('var_txt')">実行</button>
+    <br>
+</div>
+
+<div class="sbox">
+    <h4>BMIの計算</h4>
+    <textarea id="bmi_txt" class="src" rows="13" title="BMIの計算">
+身長＝160
+体重＝50
+身長M=身長÷100
+BMI=体重÷(身長M×身長M)
+適正体重＝身長M×身長M×22
+肥満度=(体重/適正体重) 
+「BMI ... {BMI}」を表示。
+「肥満度 ... {肥満度}」を表示。
+「適正体重 ... {適正体重}」を表示。</textarea><br>
+    <div><p id="bmi_txt_info" class="info"></p></div>
+    <button onclick="run_box('bmi_txt')">実行</button>
+    <br>
+</div>
+</body>
+</html>
