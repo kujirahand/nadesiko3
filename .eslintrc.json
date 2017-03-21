@@ -3,7 +3,7 @@
     "plugins": [],
     "parserOptions": {},
     "env": {"node": true, "es6":true},
-    "globals": {},
+    "globals": {'describe', 'it', 'before'},
     "rules": {}
 }
 
