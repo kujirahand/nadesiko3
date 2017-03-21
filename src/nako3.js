@@ -116,7 +116,7 @@ class NakoCompiler {
   }
 
   generate (ast) {
-    const js = this.gen.c_gen(ast)
+    const js = this.gen.convGen(ast)
     const def = this.gen.getDefFuncCode()
     if (this.debug && this.debug_show_code) {
       console.log('--- generate ---')
