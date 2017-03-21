@@ -30,7 +30,7 @@ const PluginTurtle = {
                             me.canvas.height)
           }
           me.target = -1
-          me.b_set_timer = false
+          me.flagSetTimer = false
         },
         drawTurtle: function (id) {
           const tt = this.list[id]
@@ -39,7 +39,7 @@ const PluginTurtle = {
           tt.canvas.style.left = (cr.left + tt.x - tt.cx) + 'px'
           tt.canvas.style.top = (cr.top + tt.y - tt.cx) + 'px'
           if (!tt.f_update) return
-          if (!tt.f_loaded) return
+          if (!tt.flagLoaded) return
           tt.f_update = false
           tt.ctx.clearRect(0, 0,
                         tt.canvas.width,
@@ -63,10 +63,10 @@ const PluginTurtle = {
           }
           return this.list[this.target]
         },
-        b_set_timer: false,
-        set_timer: function () {
-          if (this.b_set_timer) return
-          this.b_set_timer = true
+        flagSetTimer: false,
+        setTimer: function () {
+          if (this.flagSetTimer) return
+          this.flagSetTimer = true
           setTimeout(() => {
             const tt = this.getCur()
             console.log("[TURTLE] Let's go! job=", tt.mlist.length)
@@ -75,7 +75,7 @@ const PluginTurtle = {
         },
         line: function (tt, x1, y1, x2, y2) {
           if (tt) {
-            if (tt.f_down === false) return
+            if (!tt.flagDown) return
           }
           const ctx = this.ctx
           ctx.beginPath()
@@ -85,23 +85,23 @@ const PluginTurtle = {
           ctx.lineTo(x2, y2)
           ctx.stroke()
         },
-        do_macro: function (tt, wait) {
+        doMacro: function (tt, wait) {
           const me = this
-          if (!tt.f_loaded && wait > 0) {
+          if (!tt.flagLoaded && wait > 0) {
             console.log('[TURTLE] waiting ...')
             return true
           }
           const m = tt.mlist.shift()
-          const cmd = m[0]
+          const cmd = (m !== undefined) ? m[0] : ''
           switch (cmd) {
             case 'mv':
-                            // 線を引く
+              // 線を引く
               me.line(tt, tt.x, tt.y, m[1], m[2])
-                            // カメの角度を変更
+              // カメの角度を変更
               const mvRad = Math.atan2(m[1] - tt.x, m[2] - tt.y)
               tt.dir = mvRad * 57.29577951308232
               tt.f_update = true
-                            // 実際に位置を移動
+              // 実際に位置を移動
               tt.x = m[1]
               tt.y = m[2]
               break
@@ -130,33 +130,31 @@ const PluginTurtle = {
               tt.f_update = true
               break
             case 'color':
-                            // ctx.strokeStyle = m[1];
               tt.color = m[1]
               break
             case 'size':
-                            // ctx.lineWidth = m[1];
               tt.lineWidth = m[1]
               break
-            case 'pen_on':
-              tt.f_down = m[1]
+            case 'penOn':
+              tt.flagDown = m[1]
               break
             case 'visible':
               tt.f_visible = m[1]
               tt.f_update = true
               break
-            case 'change_image':
-              tt.f_loaded = false
+            case 'changeImage':
+              tt.flagLoaded = false
               tt.img.src = m[1]
               break
           }
-          if (tt.f_loaded) sys._turtle.drawTurtle(tt.id)
+          if (tt.flagLoaded) sys._turtle.drawTurtle(tt.id)
           return (tt.mlist.length > 0)
         },
-        do_macro_all: function (wait) {
+        doMacroAll: function (wait) {
           let hasNext = false
           for (let i = 0; i < sys._turtle.list.length; i++) {
             const tt = sys._turtle.list[i]
-            if (this.do_macro(tt, wait)) hasNext = true
+            if (this.doMacro(tt, wait)) hasNext = true
           }
           return hasNext
         },
@@ -165,7 +163,7 @@ const PluginTurtle = {
           const wait = sys.__getSysValue('カメ速度', 100)
           let hasNext = true
           while (hasNext) {
-            hasNext = this.do_macro_all(wait)
+            hasNext = this.doMacroAll(wait)
             if (wait > 0) break
           }
           if (wait > 0 && hasNext) {
@@ -198,9 +196,9 @@ const PluginTurtle = {
         y: 0,
         color: 'black',
         lineWidth: 4,
-        f_down: true,
+        flagDown: true,
         f_update: true,
-        f_loaded: false,
+        flagLoaded: false,
         f_visible: true,
         mlist: []
       }
@@ -217,13 +215,13 @@ const PluginTurtle = {
         tt.cy = tt.img.height / 2
         tt.canvas.width = tt.img.width
         tt.canvas.height = tt.img.height
-        tt.f_loaded = true
+        tt.flagLoaded = true
         sys._turtle.drawTurtle(tt.id)
         console.log('turtle.onload')
       }
       tt.img.onerror = () => {
         console.log('カメの読み込みに失敗')
-        tt.f_loaded = true
+        tt.flagLoaded = true
         tt.f_visible = false
         sys._turtle.drawTurtle(tt.id)
       }
@@ -271,8 +269,8 @@ const PluginTurtle = {
     josi: [['に', 'へ']],
     fn: function (url, sys) {
       const tt = sys._turtle.getCur()
-      tt.mlist.push(['change_image', url])
-      sys._turtle.set_timer()
+      tt.mlist.push(['changeImage', url])
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -290,7 +288,7 @@ const PluginTurtle = {
     fn: function (xy, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['mv', xy[0], xy[1]])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -300,7 +298,7 @@ const PluginTurtle = {
     fn: function (v, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['fd', v, 1])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -310,7 +308,7 @@ const PluginTurtle = {
     fn: function (v, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['fd', v, -1])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -320,7 +318,7 @@ const PluginTurtle = {
     fn: function (v, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['angle', parseFloat(v)])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -330,7 +328,7 @@ const PluginTurtle = {
     fn: function (v, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['rotr', v])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -340,7 +338,7 @@ const PluginTurtle = {
     fn: function (v, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['rotl', v])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -350,7 +348,7 @@ const PluginTurtle = {
     fn: function (c, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['color', c])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -360,7 +358,7 @@ const PluginTurtle = {
     fn: function (w, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['size', w])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     }
   },
   'カメペン設定': { /// カメペンを使うかどうかをV(オン/オフ)に設定する /// かめぺんせってい
@@ -368,8 +366,8 @@ const PluginTurtle = {
     josi: [['に', 'へ']],
     fn: function (w, sys) {
       const tt = sys._turtle.getCur()
-      tt.mlist.push(['pen_on', w])
-      sys._turtle.set_timer()
+      tt.mlist.push(['penOn', w])
+      sys._turtle.setTimer()
     }
   },
   'カメ全消去': { /// 表示しているカメと描画内容を全部消去する /// かめぜんしょうきょ
@@ -386,7 +384,7 @@ const PluginTurtle = {
     fn: function (sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['visible', false])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   },
@@ -396,7 +394,7 @@ const PluginTurtle = {
     fn: function (sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['visible', true])
-      sys._turtle.set_timer()
+      sys._turtle.setTimer()
     },
     return_none: true
   }
