@@ -1,0 +1,4 @@
+// editor.js
+function showCommandList() {
+}
+

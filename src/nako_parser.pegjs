@@ -305,11 +305,10 @@ hiragana = [ぁ-ん]
 katakana = [ァ-ヶー]
 alphabet = [_a-zA-Z]
 alphaz = [ａ-ｚＡ-Ｚ＿]
+numchars = [0-9０-９]
 wordchar = w:(kanji / hiragana / katakana / alphabet / alphaz) { return w; }
-word = chars:$((!josi_word_split wordchar)+) { return { type:"variable", value:convToHalfS(chars), loc:location()}; }
-
-// memo
-alphachars = a:$(alphabet / alphaz)+ b:$([0-9a-zA-Z_０-９ａ-ｚＡ-Ｚ＿])* { return convToHalfS(a + b ? b : ""); }
+wordchar2 = w:(kanji / hiragana / katakana / alphabet / alphaz / numchars) { return w; }
+word = !numchars chars:$((!josi_word_split wordchar2)+) { return { type:"variable", value:convToHalfS(chars), loc:location()}; }
 
 // for value
 value

@@ -8,6 +8,7 @@
     <script src="../release/wnako3.js"></script>
     <script src="common.js"></script>
     <script src="index.js"></script>
+    <script src="editor.js"></script>
     <link rel="stylesheet" type="text/css" href="common.css">
     <link rel="stylesheet" type="text/css" href="index.css">
 </head>
@@ -18,6 +19,13 @@
     <textarea id="src_box" rows="8" title="簡易エディタ">
 「こんにちは！」と表示。
 (1 + 2)×3を表示。</textarea><br>
+    <div>
+        <div>
+            <button onclick="showCommandList()">命令一覧</button>
+        </div>
+        <div>
+        </div>
+    </div>
     <div class="buttons">
         <button onclick="run_box(null)">実行</button>
         <button onclick="reset_box()">クリア</button>

@@ -9,7 +9,7 @@
     "start": "node server.js",
     "build": "webpack",
     "build:parser": "pegjs --cache -o src/nako_parser.js src/nako_parser.pegjs",
-    "pickup:command": "node src/cnako3.js batch/pickup_command.nako -debug"
+    "build:command": "node src/cnako3.js batch/build_command.nako3"
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "express": "^4.15.2",
-    "serve-index": "^1.8.0"
+    "serve-index": "^1.8.0",
+    "superagent": "^3.5.1"
   }
 }
