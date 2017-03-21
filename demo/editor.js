@@ -1,4 +1,3 @@
 // editor.js
-function showCommandList() {
+function showCommandList () {
 }
-
