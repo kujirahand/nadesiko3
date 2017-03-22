@@ -693,10 +693,6 @@ const PluginSystem = {
       return JSON.parse(s)
     }
   },
-<<<<<<< HEAD
-=======
-
->>>>>>> 54ca972d7ce84b0c0af73637d66aea3f46994251
   /// 正規表現
   '正規表現マッチ': {/// 文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定) /// せいきひょうげんまっち
     type: 'func',
