@@ -32,6 +32,6 @@ function ajaxGet (url, param, callback) {
     if (xhr.readyState !== 4) return
     callback(xhr.responseText, xhr)
   }
-  xhr.open('GET', url, false)
+  xhr.open('GET', url)
   xhr.send(param)
 }

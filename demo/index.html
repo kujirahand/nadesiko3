@@ -6,11 +6,16 @@
     <title>なでしこ3</title>
     <!-- なでしこを使う準備 -->
     <script src="../release/wnako3.js"></script>
+    <!-- common -->
     <script src="common.js"></script>
-    <script src="index.js"></script>
-    <script src="editor.js"></script>
     <link rel="stylesheet" type="text/css" href="common.css">
+    <!-- index -->
+    <script src="index.js"></script>
     <link rel="stylesheet" type="text/css" href="index.css">
+    <!-- editor -->
+    <script src="../release/editor.js"></script>
+    <link rel="stylesheet" type="text/css" href="editor.css">
+
 </head>
 <body>
 <h1>なでしこ3のデモ</h1>
@@ -19,20 +24,18 @@
     <textarea id="src_box" rows="8" title="簡易エディタ">
 「こんにちは！」と表示。
 (1 + 2)×3を表示。</textarea><br>
-    <div>
-        <div>
-            <button onclick="showCommandList()">命令一覧</button>
-        </div>
-        <div>
-        </div>
-    </div>
+    <!-- buttons -->
     <div class="buttons">
         <button onclick="runBox(null)">実行</button>
         <button onclick="resetBox()">クリア</button>
     </div>
     <div id="err"></div>
-    <div><p class="edit_head">実行結果:</p>
-        <p id="info" class="info"></p></div>
+    <div>
+      <p class="edit_head">実行結果:</p>
+      <p id="info" class="info"></p>
+    </div>
+    <!-- command-list -->
+    <div id="command-list"></div>
 </div>
 
 <br/>
