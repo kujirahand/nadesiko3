@@ -3,14 +3,14 @@ const NakoCompiler = require('../src/nako3')
 
 describe('basic', () => {
   const nako = new NakoCompiler()
-    // nako.debug = true;
+  // nako.debug = true;
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
     }
     assert.equal(nako.runReset(code).log, res)
   }
-    // --- test ---
+  // --- test ---
   it('print simple', () => {
     cmp('3を表示', '3')
   })
@@ -68,9 +68,9 @@ describe('basic', () => {
     cmp('A= 1 + 1 + 1 + 1 + 1 + _\r\n1 + 1\r\nAを表示', '7')
     cmp('A= 1 + 1 + 1 + 1 + 1 + _  \r\n1 + 1  \r\nAを表示', '7')
     cmp('A = 1 + _\n' +
-            '    5 + _\n' +
-            '    3\n' +
-            'Aを表示。', '9')
+      '    5 + _\n' +
+      '    3\n' +
+      'Aを表示。', '9')
   })
   it('名前に数字を持つ変数を使う', () => {
     cmp('A1=30;B1=20;「{A1}{B1}」を表示。', '3020')

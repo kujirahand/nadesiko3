@@ -26,8 +26,8 @@ const PluginTurtle = {
           me.list = []
           if (me.canvas != null) {
             me.ctx.clearRect(0, 0,
-                            me.canvas.width,
-                            me.canvas.height)
+              me.canvas.width,
+              me.canvas.height)
           }
           me.target = -1
           me.flagSetTimer = false
@@ -35,15 +35,15 @@ const PluginTurtle = {
         drawTurtle: function (id) {
           const tt = this.list[id]
           const cr = this.canvas_r
-                    // カメの位置を移動
+          // カメの位置を移動
           tt.canvas.style.left = (cr.left + tt.x - tt.cx) + 'px'
           tt.canvas.style.top = (cr.top + tt.y - tt.cx) + 'px'
           if (!tt.f_update) return
           if (!tt.flagLoaded) return
           tt.f_update = false
           tt.ctx.clearRect(0, 0,
-                        tt.canvas.width,
-                        tt.canvas.height)
+            tt.canvas.width,
+            tt.canvas.height)
           if (!tt.f_visible) return
           if (tt.dir !== 270) {
             const rad = (tt.dir + 90) * 0.017453292519943295
@@ -177,12 +177,12 @@ const PluginTurtle = {
       }
     }
   },
-    /// タートルグラフィックス/カメ操作
+  /// タートルグラフィックス/カメ操作
   'カメ作成': { /// タートルグラフィックスを開始してカメのIDを返す /// かめさくせい
     type: 'func',
     josi: [],
     fn: function (sys) {
-            // カメの情報を sys._turtle リストに追加
+      // カメの情報を sys._turtle リストに追加
       const id = sys._turtle.list.length
       const tt = {
         id: id,
@@ -204,7 +204,7 @@ const PluginTurtle = {
       }
       sys._turtle.list.push(tt)
       sys._turtle.target = id
-            // 画像を読み込む
+      // 画像を読み込む
       tt.img = document.createElement('img')
       tt.canvas = document.createElement('canvas')
       tt.ctx = tt.canvas.getContext('2d')
@@ -227,7 +227,7 @@ const PluginTurtle = {
       }
       tt.canvas.style.position = 'absolute'
       document.body.appendChild(tt.canvas)
-            // 描画先をセットする
+      // 描画先をセットする
       const canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
       console.log('カメ描画先=', canvasId, sys.__varslist[0]['カメ描画先'])
       const cv = sys._turtle.canvas = document.getElementById(canvasId)
@@ -248,7 +248,7 @@ const PluginTurtle = {
         width: rect.width,
         height: rect.height
       }
-            // デフォルト位置の設定
+      // デフォルト位置の設定
       tt.x = rect.width / 2
       tt.y = rect.height / 2
       return id

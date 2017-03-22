@@ -39,19 +39,20 @@
       ]
     ]
   },
-  "standard": {
-    "globals": ["it", "describe", "before" ]
-  },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-loader": "^6.3.2",
     "babel-preset-env": "^1.2.0",
+    "eslint-config-standard": "^7.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
     "mocha": "^3.2.0",
     "pegjs": "^0.10.0",
     "pump": "^1.0.2",
     "source-map": "^0.5.6",
-    "standard": "^9.0.2",
     "webpack": "^2.2.1"
   },
   "dependencies": {

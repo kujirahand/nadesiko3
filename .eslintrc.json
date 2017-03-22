@@ -1,9 +1,12 @@
 {
-    "extends": ["eslint:recommended"],
-    "plugins": [],
-    "parserOptions": {},
-    "env": {"node": true, "es6":true},
-    "globals": {'describe', 'it', 'before'},
-    "rules": {}
+  "extends": [
+    "standard"
+  ],
+  "env": {
+    "mocha": true,
+    "browser": true
+  },
+  "rules": {
+    "no-eval": "off"
+  }
 }
-

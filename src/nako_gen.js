@@ -18,72 +18,72 @@ class NakoGenError extends Error {
  * 構文木からJSのコードを生成するクラス
  */
 class NakoGen {
-    /**
-     * @ param com {NakoCompiler} コンパイラのインスタンス
-     */
+  /**
+   * @ param com {NakoCompiler} コンパイラのインスタンス
+   */
   constructor (com) {
     this.header = this.getHeader()
 
-        /**
-         * プラグインで定義された関数の一覧
-         * @type {{}}
-         */
+    /**
+     * プラグインで定義された関数の一覧
+     * @type {{}}
+     */
     this.plugins = {}
 
-        /**
-         * 利用可能なプラグイン(ファイル 単位)
-         * @type {{}}
-         */
+    /**
+     * 利用可能なプラグイン(ファイル 単位)
+     * @type {{}}
+     */
     this.pluginfiles = {}
 
-        /**
-         * なでしこで定義した関数の一覧
-         * @type {{}}
-         */
+    /**
+     * なでしこで定義した関数の一覧
+     * @type {{}}
+     */
     this.nako_func = {}
 
-        /**
-         * JS関数でなでしこ内で利用された関数
-         * 利用した関数を個別にJSで定義する
-         * (全関数をインクルードしなくても良いように)
-         * @type {{}}
-         */
+    /**
+     * JS関数でなでしこ内で利用された関数
+     * 利用した関数を個別にJSで定義する
+     * (全関数をインクルードしなくても良いように)
+     * @type {{}}
+     */
     this.used_func = {}
 
-        /**
-         * ループ時の一時変数が被らないようにIDで管理
-         * @type {number}
-         */
+    /**
+     * ループ時の一時変数が被らないようにIDで管理
+     * @type {number}
+     */
     this.loop_id = 1
 
-        /**
-         * 変換中の処理が、ループの中かどうかを判定する
-         * @type {boolen}
-         */
+    /**
+     * 変換中の処理が、ループの中かどうかを判定する
+     * @type {boolen}
+     */
     this.flagLoop = false
 
-        /**
-         * それ
-         */
+    /**
+     * それ
+     */
     this.sore = this.varname('それ')
 
-        /**
-         * なでしこのローカル変数をスタックで管理
-         * __varslist[0] プラグイン領域
-         * __varslist[1] なでしこグローバル領域
-         * __varslist[2] 最初のローカル変数 ( == __vars }
-         * @type {[*]}
-         * @private
-         */
+    /**
+     * なでしこのローカル変数をスタックで管理
+     * __varslist[0] プラグイン領域
+     * __varslist[1] なでしこグローバル領域
+     * __varslist[2] 最初のローカル変数 ( == __vars }
+     * @type {[*]}
+     * @private
+     */
     this.__varslist = [{}, {}, {}]
 
     this.__self = com
 
-        /**
-         * なでしこのローカル変数(フレームトップ)
-         * @type {*}
-         * @private
-         */
+    /**
+     * なでしこのローカル変数(フレームトップ)
+     * @type {*}
+     * @private
+     */
     this.__vars = this.__varslist[2]
   }
 
@@ -97,18 +97,18 @@ class NakoGen {
 
   getHeader () {
     return '' +
-            'var __varslist = this.__varslist = [{}, {}, {}];\n' +
-            'var __vars = this.__varslist[2];\n' +
-            'var __self = this;\n'
+      'var __varslist = this.__varslist = [{}, {}, {}];\n' +
+      'var __vars = this.__varslist[2];\n' +
+      'var __self = this;\n'
   }
 
-    /**
-     * プログラムの実行に必要な関数を書き出す(システム領域)
-     * @returns {string}
-     */
+  /**
+   * プログラムの実行に必要な関数を書き出す(システム領域)
+   * @returns {string}
+   */
   getVarsCode () {
     let code = ''
-        // プログラム中で使った関数を列挙して書き出す
+    // プログラム中で使った関数を列挙して書き出す
     for (const key in this.used_func) {
       const f = this.__varslist[0][key]
       const name = `this.__varslist[0]["${key}"]`
@@ -121,18 +121,18 @@ class NakoGen {
     return code
   }
 
-    /**
-     * プログラムの実行に必要な関数定義を書き出す(グローバル領域)
-     * @returns {string}
-     */
+  /**
+   * プログラムの実行に必要な関数定義を書き出す(グローバル領域)
+   * @returns {string}
+   */
   getDefFuncCode () {
     let code = '__varslist[0].line=0;// なでしこの関数定義\n'
-        // なでしこの関数定義を行う
+    // なでしこの関数定義を行う
     for (const key in this.nako_func) {
       const f = this.nako_func[key].fn
       code += `this.__varslist[1]["${key}"]=${f};\n`
     }
-        // プラグインの初期化関数を実行する
+    // プラグインの初期化関数を実行する
     code += '__varslist[0].line=0;// プラグインの初期化\n'
     for (const name in this.pluginfiles) {
       const initkey = `!${name}:初期化`
@@ -147,16 +147,16 @@ class NakoGen {
     return this.__varslist
   }
 
-    /**
-     * プラグイン・オブジェクトを追加
-     * @param po プラグイン・オブジェクト
-     */
+  /**
+   * プラグイン・オブジェクトを追加
+   * @param po プラグイン・オブジェクト
+   */
   addPlugin (po) {
-        // 変数のメタ情報を確認
+    // 変数のメタ情報を確認
     if (this.__varslist[0].meta === undefined) {
       this.__varslist[0].meta = {}
     }
-        // プラグインの値をオブジェクトにコピー
+    // プラグインの値をオブジェクトにコピー
     for (let key in po) {
       const v = po[key]
       this.plugins[key] = v
@@ -173,11 +173,11 @@ class NakoGen {
     }
   }
 
-    /**
-     * プラグイン・オブジェクトを追加(ブラウザ向け)
-     * @param objName オブジェクト名
-     * @param po 関数リスト
-     */
+  /**
+   * プラグイン・オブジェクトを追加(ブラウザ向け)
+   * @param objName オブジェクト名
+   * @param po 関数リスト
+   */
   addPluginObject (objName, po) {
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = '*' // dummy
@@ -192,12 +192,12 @@ class NakoGen {
     }
   }
 
-    /**
-     * プラグイン・ファイルを追加(Node.js向け)
-     * @param objName オブジェクト名
-     * @param path ファイルパス
-     * @param po 登録するオブジェクト
-     */
+  /**
+   * プラグイン・ファイルを追加(Node.js向け)
+   * @param objName オブジェクト名
+   * @param path ファイルパス
+   * @param po 登録するオブジェクト
+   */
   addPluginFile (objName, path, po) {
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = path
@@ -205,32 +205,32 @@ class NakoGen {
     }
   }
 
-    /**
-     * 関数を追加する
-     * @param key 関数名
-     * @param josi 助詞
-     * @param fn 関数
-     */
+  /**
+   * 関数を追加する
+   * @param key 関数名
+   * @param josi 助詞
+   * @param fn 関数
+   */
   addFunc (key, josi, fn) {
     this.plugins[key] = {'josi': josi}
     this.setFunc(key, fn)
   }
 
-    /**
-     * 関数をセットする
-     * @param key 関数名
-     * @param fn 関数
-     */
+  /**
+   * 関数をセットする
+   * @param key 関数名
+   * @param fn 関数
+   */
   setFunc (key, fn) {
     this.plugins[key].fn = fn
     this.__varslist[0][key] = fn
   }
 
-    /**
-     * プラグイン関数を参照する
-     * @param key プラグイン関数の関数名
-     * @returns プラグイン・オブジェクト
-     */
+  /**
+   * プラグイン関数を参照する
+   * @param key プラグイン関数の関数名
+   * @returns プラグイン・オブジェクト
+   */
   getFunc (key) {
     return this.plugins[key]
   }
@@ -253,7 +253,7 @@ class NakoGen {
     if (node === null) return 'null'
     if (node === undefined) return 'undefined'
     if (typeof (node) !== 'object') return '' + node
-        // switch
+    // switch
     switch (node.type) {
       case 'nop':
         break
@@ -352,11 +352,11 @@ class NakoGen {
   }
 
   findVar (name) {
-        // __vars ?
+    // __vars ?
     if (this.__vars[name] !== undefined) {
       return {i: this.__varslist.length - 1, 'name': name, isTop: true}
     }
-        // __varslist ?
+    // __varslist ?
     for (let i = this.__varslist.length - 2; i >= 0; i--) {
       const vlist = this.__varslist[i]
       if (!vlist) continue
@@ -374,7 +374,7 @@ class NakoGen {
       return `__vars["${name}"]/*?:${lno}*/`
     }
     const i = res.i
-        // システム関数・変数の場合
+    // システム関数・変数の場合
     if (i === 0) {
       const pv = this.plugins[name]
       if (!pv) return `__vars["${name}"]/*err:${lno}*/`
@@ -400,7 +400,7 @@ class NakoGen {
   }
 
   convReturn (node) {
-        // 関数の中であれば利用可能
+    // 関数の中であれば利用可能
     if (typeof (this.__vars['!関数']) === 'undefined') {
       throw new NakoGenError('『戻る』がありますが、関数定義内のみで使用可能です。', node.loc)
     }
@@ -416,7 +416,7 @@ class NakoGen {
   }
 
   convCheckLoop (node, cmd) {
-        // ループの中であれば利用可能
+    // ループの中であれば利用可能
     if (!this.flagLoop) {
       const cmdj = (cmd === 'continue') ? '続ける' : '抜ける'
       throw new NakoGenError(`『${cmdj}』文がありますが、それは繰り返しの中で利用してください。`, node.loc)
@@ -427,12 +427,12 @@ class NakoGen {
   convDefFunc (node) {
     const name = this.getFuncName(node.name.value)
     const args = node.args
-        // ローカル変数をPUSHする
+    // ローカル変数をPUSHする
     let code = '(function(){\n'
     code += "try { __vars = {'それ':''}; __varslist.push(__vars);\n"
     this.__vars = {'それ': true, '!関数': name}
     this.__varslist.push(this.__vars)
-        // 引数をローカル変数に設定
+    // 引数をローカル変数に設定
     const josilistTmp = []
     for (let i = 0; i < args.length; i++) {
       const arg = args[i]
@@ -458,7 +458,7 @@ class NakoGen {
       josilist.push(josi2)
       code += `__vars["${josiWord}"] = arguments[${i}];\n`
     }
-        // 関数定義は、グローバル領域で。
+    // 関数定義は、グローバル領域で。
     this.used_func[name] = true
     this.__varslist[1][name] = function () {
     } // 再帰のために事前に適当な値を設定
@@ -467,23 +467,23 @@ class NakoGen {
       'fn': '',
       'type': 'func'
     }
-        // ブロックを解析
+    // ブロックを解析
     const block = this.convGen(node.block)
     code += block + '\n'
-        // 関数の最後に、変数「それ」をreturnするようにする
+    // 関数の最後に、変数「それ」をreturnするようにする
     code += `return (${this.sore});\n`
-        // 関数の末尾に、ローカル変数をPOP
+    // 関数の末尾に、ローカル変数をPOP
     const popcode =
-            '__varslist.pop(); ' +
-            '__vars = __varslist[__varslist.length-1];'
+      '__varslist.pop(); ' +
+      '__vars = __varslist[__varslist.length-1];'
     code += `} finally { ${popcode} }\n`
     code += `})/* end of ${name} */`
     this.nako_func[name]['fn'] = code
     this.__vars = this.__varslist.pop()
     this.__varslist[1][name] = code
-        // ★この時点では関数のコードを生成しない★
-        // プログラム冒頭でコード生成時に関数定義を行う
-        // return `__vars["${name}"] = ${code};\n`;
+    // ★この時点では関数のコードを生成しない★
+    // プログラム冒頭でコード生成時に関数定義を行う
+    // return `__vars["${name}"] = ${code};\n`;
     return ''
   }
 
@@ -549,16 +549,16 @@ class NakoGen {
       word = this.convGen(node.word)
       varCode = ''
     } else {
-            // ループ変数を省略した時は、自動で生成する
+      // ループ変数を省略した時は、自動で生成する
       const id = this.loop_id++
       word = `$nako_i${id}`
       varCode = 'var '
     }
     const code =
-            `for(${varCode}${word}=${kara}; ${word}<=${made}; ${word}++)` + '{\n' +
-            `  ${this.sore} = ${word};` + '\n' +
-            '  ' + block + '\n' +
-            '};\n'
+      `for(${varCode}${word}=${kara}; ${word}<=${made}; ${word}++)` + '{\n' +
+      `  ${this.sore} = ${word};` + '\n' +
+      '  ' + block + '\n' +
+      '};\n'
     return this.convLineno(node) + code
   }
 
@@ -577,12 +577,12 @@ class NakoGen {
     this.__vars['対象キー'] = true
     const nameS = this.varname(name)
     const code =
-            `var $nako_foreach_v${id}=${target};\n` +
-            `for(var $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
-            `${nameS} = ${this.sore} = $nako_foreach_v${id}[$nako_i${id}];` + '\n' +
-            `${key} = $nako_i${id};\n` +
-            '' + block + '\n' +
-            '};\n'
+      `var $nako_foreach_v${id}=${target};\n` +
+      `for(var $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
+      `${nameS} = ${this.sore} = $nako_foreach_v${id}[$nako_i${id}];` + '\n' +
+      `${key} = $nako_i${id};\n` +
+      '' + block + '\n' +
+      '};\n'
     return this.convLineno(node) + code
   }
 
@@ -592,9 +592,9 @@ class NakoGen {
     const block = this.convGenLoop(node.block)
     const kaisu = this.varname('回数')
     const code =
-            `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + '{\n' +
-            `  ${this.sore} = ${kaisu} = $nako_i${id};` + '\n' +
-            '  ' + block + '\n}\n'
+      `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + '{\n' +
+      `  ${this.sore} = ${kaisu} = $nako_i${id};` + '\n' +
+      '  ' + block + '\n}\n'
     return this.convLineno(node) + code
   }
 
@@ -602,9 +602,9 @@ class NakoGen {
     const cond = this.convGen(node.cond)
     const block = this.convGenLoop(node.block)
     const code =
-            `while (${cond})` + '{\n' +
-            `  ${block}` + '\n' +
-            '}\n'
+      `while (${cond})` + '{\n' +
+      `  ${block}` + '\n' +
+      '}\n'
     return this.convLineno(node) + code
   }
 
@@ -613,8 +613,8 @@ class NakoGen {
     const block = this.convGen(node.block)
     const falseBlock = this.convGen(node.false_block)
     const code =
-            this.convLineno(node) +
-            `if (${expr}) { ${block} } else { ${falseBlock} };\n`
+      this.convLineno(node) +
+      `if (${expr}) { ${block} } else { ${falseBlock} };\n`
     return this.convLineno(node) + code
   }
 
@@ -624,20 +624,20 @@ class NakoGen {
     return name2
   }
 
-    /**
-     * 関数の引数を調べる
-     * @param funcName 関数名
-     * @param func
-     * @param node
-     * @returns {Array}
-     */
+  /**
+   * 関数の引数を調べる
+   * @param funcName 関数名
+   * @param func
+   * @param node
+   * @returns {Array}
+   */
   convFuncGetArgs (funcName, func, node) {
     const args = []
     for (let i = 0; i < func.josi.length; i++) {
       const josilist = func.josi[i] // 関数のi番目の助詞
       let flag = false
       let sore = 1
-            // 今回呼び出す関数の助詞を一つずつ調べる
+      // 今回呼び出す関数の助詞を一つずつ調べる
       for (let j = 0; j < node.args.length; j++) {
         const arg = node.args[j]
         const ajosi = arg.josi
@@ -651,7 +651,7 @@ class NakoGen {
         if (sore < 0) {
           const josiS = josilist.join('|')
           throw new NakoGenError(
-                        `関数『${funcName}』の引数『${josiS}』が見当たりません。`, node.loc)
+            `関数『${funcName}』の引数『${josiS}』が見当たりません。`, node.loc)
         }
         args.push(this.sore)
       }
@@ -674,12 +674,12 @@ class NakoGen {
     return r
   }
 
-    /**
-     * 関数の呼び出し
-     * @param node
-     * @param  isNakoType
-     * @returns string コード
-     */
+  /**
+   * 関数の呼び出し
+   * @param node
+   * @param  isNakoType
+   * @returns string コード
+   */
   convFunc (node, isNakoType) {
     const funcName = this.getFuncName(node.name.value)
     let funcNameS
@@ -698,18 +698,18 @@ class NakoGen {
       }
       funcNameS = `__varslist[${res.i}]["${funcName}"]`
     }
-        // 関数定義より助詞を一つずつ調べる
+    // 関数定義より助詞を一つずつ調べる
     let args = []
     if (isNakoType) {
       args = this.convFuncGetArgs(funcName, func, node)
     } else {
       args = this.convFuncGetArgsCalcType(funcName, func, node)
     }
-        // function
+    // function
     if (typeof (this.used_func[funcName]) === 'undefined') {
       this.used_func[funcName] = true
     }
-        // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
+    // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
     args.push('__self')
     let argsCode = args.join(',')
     let code = `${funcNameS}(${argsCode})`
@@ -750,13 +750,13 @@ class NakoGen {
     } else {
       isTop = false
       if (res.isTop) isTop = true
-            // 定数ならエラーを出す
+      // 定数ならエラーを出す
       if (this.__varslist[res.i].meta) {
         if (this.__varslist[res.i].meta[name]) {
           if (this.__varslist[res.i].meta[name].readonly) {
             throw new NakoGenError(
-                            `定数『${name}』に値を代入することはできません。`,
-                            node.loc)
+              `定数『${name}』に値を代入することはできません。`,
+              node.loc)
           }
         }
       }
@@ -773,13 +773,13 @@ class NakoGen {
     const value = this.convGen(node.value)
     const name = node.name.value
     const vtype = node.vartype // 変数 or 定数
-        // 二重定義？
+    // 二重定義？
     if (this.__vars[name] !== undefined) {
       throw new NakoGenError(
-                `${vtype}『${name}』の二重定義はできません。`,
-                node.loc)
+        `${vtype}『${name}』の二重定義はできません。`,
+        node.loc)
     }
-        //
+    //
     this.__vars[name] = true
     if (vtype === '定数') {
       if (!this.__vars.meta) {
