@@ -9,7 +9,7 @@ navigator.nako3.setFunc('表示', function (s) {
 // 簡易DOMアクセス関数など
 function runBox (id) {
   if (id == null) {
-    windoiw.alert('idが設定されていません。')
+    window.alert('idが設定されていません。')
     return
   }
   let src = $(id).value
