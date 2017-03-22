@@ -15,7 +15,7 @@ describe('node_test(cnako)', () => {
     }
     assert.equal(result, exRes)
   }
-    // --- test ---
+  // --- test ---
   it('print simple', () => {
     cmp('3を表示', '3')
     cmp('1+2*3を表示', '7')

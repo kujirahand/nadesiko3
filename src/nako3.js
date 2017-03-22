@@ -13,7 +13,7 @@ class NakoRuntimeError extends Error {
     } else {
       msg = title + ' ' + msg
     }
-        // console.log(env);
+    // console.log(env);
     super(msg)
   }
 }
@@ -23,7 +23,7 @@ class NakoSyntaxError extends Error {
     let pos = ''
     if (e.location) {
       pos = '(' + e.location.start.line + ':' +
-                e.location.start.column + ') '
+        e.location.start.column + ') '
     }
     let found = ''
     let expected = ''
@@ -67,10 +67,10 @@ class NakoCompiler {
     this.gen.addPluginObject('PluginSystem', PluginSystem)
   }
 
-    /**
-     * デバッグモードに設定する
-     * @param flag デバッグモード
-     */
+  /**
+   * デバッグモードに設定する
+   * @param flag デバッグモード
+   */
   useDebug (flag = true) {
     this.debug = flag
   }
@@ -100,10 +100,10 @@ class NakoCompiler {
   }
 
   parse (code) {
-        // trim
+    // trim
     code = code.replace(/^\s+/, '')
-            .replace(/\s+$/, '')
-        // convert
+      .replace(/\s+$/, '')
+    // convert
     try {
       const ast = NakoPeg.parse(code + '\n')
       return ast
@@ -125,35 +125,35 @@ class NakoCompiler {
     return def + js
   }
 
-    /**
-     * プログラムをコンパイルしてJavaScriptのコードを返す
-     * @param code コード (なでしこ)
-     * @returns コード (JavaScript)
-     */
+  /**
+   * プログラムをコンパイルしてJavaScriptのコードを返す
+   * @param code コード (なでしこ)
+   * @returns コード (JavaScript)
+   */
   compile (code) {
     const ast = this.parse(code)
     if (this.debug && this.debug_show_parser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
     }
-        // generate
+    // generate
     const js = this.generate(ast)
     return js
   }
 
-    /**
-     * eval()実行前に直接JSのオブジェクトを取得する場合
-     * @returns {[*,*,*]}
-     */
+  /**
+   * eval()実行前に直接JSのオブジェクトを取得する場合
+   * @returns {[*,*,*]}
+   */
   getVarsList () {
     const v = this.gen.getVarsList()
     return [v[0], v[1], {}]
   }
 
-    /**
-     * 完全にJSのコードを取得する場合
-     * @returns {string}
-     */
+  /**
+   * 完全にJSのコードを取得する場合
+   * @returns {string}
+   */
   getVarsCode () {
     return this.gen.getVarsCode()
   }
@@ -175,8 +175,8 @@ class NakoCompiler {
     } catch (e) {
       this.js = js
       throw new NakoRuntimeError(
-                e.name + ':' +
-                e.message, this)
+        e.name + ':' +
+        e.message, this)
     }
     return this
   }
@@ -199,21 +199,21 @@ class NakoCompiler {
     return s
   }
 
-    /**
-     * プラグイン・オブジェクトを追加(ブラウザ向け)
-     * @param name プラグインの名前
-     * @param po プラグイン・オブジェクト
-     */
+  /**
+   * プラグイン・オブジェクトを追加(ブラウザ向け)
+   * @param name プラグインの名前
+   * @param po プラグイン・オブジェクト
+   */
   addPluginObject (name, po) {
     this.gen.addPluginObject(name, po)
   }
 
-    /**
-     * プラグイン・ファイルを追加(Node.js向け)
-     * @param objName オブジェクト名を登録
-     * @param path 取り込むモジュールのファイルパス
-     * @param po 登録するオブジェクト
-     */
+  /**
+   * プラグイン・ファイルを追加(Node.js向け)
+   * @param objName オブジェクト名を登録
+   * @param path 取り込むモジュールのファイルパス
+   * @param po 登録するオブジェクト
+   */
   addPluginFile (objName, path, po) {
     this.gen.addPluginFile(objName, path, po)
   }

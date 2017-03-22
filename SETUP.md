@@ -1,5 +1,7 @@
 # なでしこ3 - 開発環境のセットアップ方法
 
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
+
 Node.jsをインストールしておく。
 
 コマンドラインから以下を実行して、必要なライブラリをインストール。

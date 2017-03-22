@@ -1,6 +1,6 @@
 // plugin_browser.js
 const PluginBrowser = {
-    /// 色定数
+  /// 色定数
   '水色': {type: 'const', value: 'aqua'}, /// みずいろ
   '紫色': {type: 'const', value: 'fuchsia'}, /// むらさきいろ
   '緑色': {type: 'const', value: 'lime'}, /// みどりいろ
@@ -18,7 +18,7 @@ const PluginBrowser = {
   'オリーブ色': {type: 'const', value: 'olive'}, /// おりーぶいろ
   'ベージュ色': {type: 'const', value: 'beige'}, /// べーじゅいろ
   'アリスブルー色': {type: 'const', value: 'aliceblue'}, /// ありすぶるーいろ
-    /// システム
+  /// システム
   '終': { /// ブラウザでプログラムの実行を強制終了する /// おわる
     type: 'func',
     josi: [],
@@ -27,7 +27,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-    /// ダイアログ
+  /// ダイアログ
   '言': { /// メッセージダイアログにSを表示 /// いう
     type: 'func',
     josi: [['と', 'を']],
@@ -45,7 +45,7 @@ const PluginBrowser = {
       return r
     }
   },
-    /// DOM操作
+  /// DOM操作
   'DOM要素ID取得': { /// DOMの要素をIDを指定して取得 /// DOMようそIDしゅとく
     type: 'func',
     josi: [['の', 'を']],
@@ -160,15 +160,15 @@ const PluginBrowser = {
       return dom.style[s]
     }
   },
-    /// HTML操作
+  /// HTML操作
   'HTML変換': { /// 文字列をHTMLに変換して返す /// HTMLへんかん
     type: 'func',
     josi: [['を']],
     fn: function (text) {
       return String(text)
-                .replace(/&/g, '&amp;')
-                .replace(/>/g, '&gt;')
-                .replace(/</g, '&lt;')
+        .replace(/&/g, '&amp;')
+        .replace(/>/g, '&gt;')
+        .replace(/</g, '&lt;')
     }
   }
 }

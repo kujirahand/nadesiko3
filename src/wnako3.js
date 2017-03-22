@@ -4,11 +4,11 @@ const NakoCompiler = require('./nako3')
 const PluginBrowser = require('./plugin_browser')
 
 class WebNakoCompiler extends NakoCompiler {
-    /**
-     * ブラウザでtype="なでしこ"というスクリプトを得て実行する
-     */
+  /**
+   * ブラウザでtype="なでしこ"というスクリプトを得て実行する
+   */
   runNakoScript () {
-        // スクリプトタグの中身を得る
+    // スクリプトタグの中身を得る
     let scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
       let script = scripts[i]
@@ -20,8 +20,8 @@ class WebNakoCompiler extends NakoCompiler {
   }
 
   checkScriptTagParam () {
-        // src属性で、?runが指定されていれば、
-        // type=なでしこ のスクリプトを自動実行する
+    // src属性で、?runが指定されていれば、
+    // type=なでしこ のスクリプトを自動実行する
     let scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
       let script = scripts[i]

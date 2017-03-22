@@ -37,19 +37,19 @@ function checkArguments () {
       i++
       continue
     }
-        // コンパイルモードを使うか
+    // コンパイルモードを使うか
     if (arg === '-c' || arg === '--compile') {
       flagCompile = true
       i++
       continue
     }
-        // コンパイルモードでも実行するか
+    // コンパイルモードでも実行するか
     if (arg === '-run' || arg === '--run') {
       flagRun = true
       i++
       continue
     }
-        // ワンライナー
+    // ワンライナー
     if (arg === '-e' || arg === '--eval') {
       flagOneLiner = true
       i++
@@ -106,12 +106,12 @@ function nakoRun (opt) {
  * @param src
  */
 function nakoCompile (opt, src) {
-    // system
+  // system
   const js = nako.compile(src)
   const jscode =
-        nako.getHeader() +
-        nako.getVarsCode() +
-        js
+    nako.getHeader() +
+    nako.getVarsCode() +
+    js
   fs.writeFileSync(opt.output, jscode, 'utf-8')
   if (opt.run) {
     exec(`node ${opt.output}`, function (err, stdout, stderr) {

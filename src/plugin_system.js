@@ -437,7 +437,7 @@ const PluginSystem = {
       return (a >> b)
     }
   },
-    /// 文字列処理
+  /// 文字列処理
   '文字数': { /// 文字列Vの文字数を返す /// もじすう
     type: 'func',
     josi: [['の']],
@@ -693,6 +693,10 @@ const PluginSystem = {
       return JSON.parse(s)
     }
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 54ca972d7ce84b0c0af73637d66aea3f46994251
   /// 正規表現
   '正規表現マッチ': {/// 文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定) /// せいきひょうげんまっち
     type: 'func',
@@ -708,10 +712,10 @@ const PluginSystem = {
       const m = String(a).match(re)
       let result = m
       if (re.global) {
-                // no groups
+        // no groups
       } else {
         if (m) {
-                    // has group?
+          // has group?
           result = m[0]
           sys.__varslist[0]['抽出文字列'] = m.slice(1)
         }
@@ -1027,7 +1031,7 @@ const PluginSystem = {
         return s.substr(s.length - 2, 2)
       }
       return t.getFullYear() + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate()) +
-                ' ' + z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
+        ' ' + z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
     }
   },
   /// デバッグ支援

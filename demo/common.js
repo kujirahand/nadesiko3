@@ -5,10 +5,10 @@ navigator.nako3.setFunc('言', function (msg) {
 
 // なでしこにオリジナル関数をJSで追加
 navigator.nako3.addFunc('色変更',
-    [['に', 'へ']],
-    function (s) {
-      $('info').style.color = s
-    })
+  [['に', 'へ']],
+  function (s) {
+    $('info').style.color = s
+  })
 
 // 簡易DOMアクセス関数など
 function $ (id) {
