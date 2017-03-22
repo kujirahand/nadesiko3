@@ -3,7 +3,7 @@ let displayId = 'info'
 
 // なでしこの関数をカスタマイズ
 navigator.nako3.setFunc('表示', function (s) {
-  $(displayId).innerHTML += to_html(s) + '<br>'
+  $(displayId).innerHTML += toHtml(s) + '<br>'
 })
 
 // 簡易DOMアクセス関数など
