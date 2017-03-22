@@ -1,7 +1,7 @@
 // plugin_node.js
 
 const PluginNode = {
-    /// ファイル入出力
+  /// ファイル入出力
   '開': { /// ファイルSを開く /// ひらく
     type: 'func',
     josi: [['を', 'から']],
@@ -108,10 +108,10 @@ const PluginNode = {
       if (s.indexOf('*') >= 0) { // ワイルドカードがある場合
         const searchPath = path.dirname(s)
         const mask1 = path.basename(s)
-                    .replace(/\./g, '\\.')
-                    .replace(/\*/g, '.*')
+          .replace(/\./g, '\\.')
+          .replace(/\*/g, '.*')
         const mask2 = (mask1.indexOf(';') < 0)
-                    ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
+          ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
         const maskRE = new RegExp(mask2, 'i')
         const list = fs.readdirSync(searchPath)
         const list2 = list.filter((n) => maskRE.test(n))
@@ -129,20 +129,20 @@ const PluginNode = {
       const fs = require('fs')
       const path = require('path')
       const result = []
-            // ワイルドカードの有無を確認
+      // ワイルドカードの有無を確認
       let mask = '.*'
       let basepath = s
       if (s.indexOf('*') >= 0) {
         basepath = path.dirname(s)
         const mask1 = path.basename(s)
-                    .replace(/\./g, '\\.')
-                    .replace(/\*/g, '.*')
+          .replace(/\./g, '\\.')
+          .replace(/\*/g, '.*')
         mask = (mask1.indexOf(';') < 0)
-                    ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
+          ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
       }
       basepath = path.resolve(basepath)
       const maskRE = new RegExp(mask, 'i')
-            // 再帰関数を定義
+      // 再帰関数を定義
       const enumR = (base) => {
         const list = fs.readdirSync(base)
         for (const f of list) {
@@ -156,7 +156,7 @@ const PluginNode = {
           if (maskRE.test(f)) result.push(fullpath)
         }
       }
-            // 検索実行
+      // 検索実行
       enumR(basepath)
       return result
     }

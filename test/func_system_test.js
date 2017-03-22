@@ -3,14 +3,14 @@ const NakoCompiler = require('../src/nako3')
 
 describe('PluginSystem test', () => {
   const nako = new NakoCompiler()
-    // nako.debug = true;
+  // nako.debug = true;
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
     }
     assert.equal(nako.runReset(code).log, res)
   }
-    // --- test ---
+  // --- test ---
   it('ナデシコエンジンを表示', () => {
     cmp('ナデシコエンジンを表示', 'nadesi.com/v3')
   })
@@ -97,16 +97,16 @@ describe('PluginSystem test', () => {
     cmp('「aa,bb,cc」の「/[a-z]+/g」を「x」で正規表現置換して表示。', 'x,x,x')
   })
   it('正規表現マッチ - /.../を省略', () => {
-        // パターンを省略するとグローバルマッチ
+    // パターンを省略するとグローバルマッチ
     cmp('「aa,bb,cc」を「[a-z]+」で正規表現マッチ。JSONエンコード。表示。', '["aa","bb","cc"]')
-        // グループを指定しても、結果は無視
+    // グループを指定しても、結果は無視
     cmp('「aa,bb,cc」を「([a-z]+)」で正規表現マッチ。JSONエンコード。表示。', '["aa","bb","cc"]')
   })
   it('正規表現マッチ - /.../あり グルーピングなし', () => {
     cmp('「12-34-56」を「/[0-9]+\\-/」で正規表現マッチ。JSONエンコード。表示。', '"12-"')
   })
   it('正規表現マッチ - /.../あり グルーピングあり', () => {
-        // グループ(..)を指定した場合
+    // グループ(..)を指定した場合
     cmp('「12-34-56」を「/([0-9]+)\\-/」で正規表現マッチ。JSONエンコード。表示。抽出文字列をJSONエンコードして表示。', '"12-"\n["12"]')
   })
   it('正規表現マッチ2', () => {
@@ -140,7 +140,7 @@ describe('PluginSystem test', () => {
   })
   it('配列カスタムソート', () => {
     cmp('●HOGE(aをbで)\n(b-a)を戻す\n---\n' +
-            'A=[1,5,3];Aを「HOGE」で配列カスタムソート。Aを「:」で配列結合。表示。', '5:3:1')
+      'A=[1,5,3];Aを「HOGE」で配列カスタムソート。Aを「:」で配列結合。表示。', '5:3:1')
   })
   it('配列逆順', () => {
     cmp('A=[1,2,3];Aを配列逆順。Aを「:」で配列結合。表示。', '3:2:1')
