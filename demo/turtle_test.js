@@ -3,13 +3,13 @@ let displayId = 'info'
 
 // なでしこの関数をカスタマイズ
 navigator.nako3.setFunc('表示', function (s) {
-  $(displayId).innerHTML += to_html(s) + '<br>'
+  $(displayId).innerHTML += toHtml(s) + '<br>'
 })
 
 // 簡易DOMアクセス関数など
 function runBox (id) {
   if (id == null) {
-    windoiw.alert('idが設定されていません。')
+    window.alert('idが設定されていません。')
     return
   }
   let src = $(id).value
