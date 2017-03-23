@@ -35,10 +35,6 @@ $ npm run test
 
 ## 開発時の約束
 
-### インデント・タブに関して
-
-なお、なでしこ3ではEditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応している。
-
 ### コーディング規約について
 
 コーディング規約は、[JavaScript Standard Style](https://standardjs.com/)に準拠するものとする。
@@ -50,6 +46,7 @@ apm install linter
 apm install linter-js-standard
 ```
 
+また、EditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応しているので、これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
 
 ## コマンドラインからなでしこを使う方法
 
@@ -77,7 +74,7 @@ demoディレクトリに、なでしこをWebブラウザから使うデモが�
 
 大抵の機能は、WebブラウザにHTMLファイルをドラッグ＆ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないのと利用することはできない。
 
-なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、http://localhost:8081でサーバーが起動。
+なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:8081](http://localhost:8081)でサーバーが起動。
 
 ```
 $ npm start
@@ -89,4 +86,18 @@ $ npm start
 
 ```
 $ npm run build:command
+```
+
+### Node.jsのパッケージの更新方法
+コマンドラインから以下を実行して、npm-check-updatesをインストール。
+
+```
+$ npm install -g npm-check-updates
+```
+
+コマンドラインから以下を実行して、Node.jsのパッケージを更新。
+
+```
+$ npm-check-updates -u
+$ npm update
 ```
