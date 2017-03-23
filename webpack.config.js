@@ -1,4 +1,3 @@
-const webpack = require('webpack')
 const path = require('path')
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
