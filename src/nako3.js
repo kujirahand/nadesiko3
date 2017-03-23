@@ -46,7 +46,7 @@ class NakoSyntaxError extends Error {
         expected = ' {|' + a.join('|') + '|}を期待しています。'
       }
     }
-    if (e.found == null && e.expected == null) {
+    if (e.found === null && e.expected === null) {
       msg = e.message
     } else {
       msg = found + expected
