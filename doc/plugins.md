@@ -4,7 +4,7 @@
 
 メインHTMLで以下のファイルを読み込む
 - wnako3.js
-  - `navigator.nako3` にコンパイラのインスタンスが作成される
+  - navigator.nako3にコンパイラのインスタンスが作成される
 - 独自プラグイン
 
 ## プラグイン側の実装
@@ -71,10 +71,3 @@ if (typeof (navigator) === 'object') {
   ...
 }
 ```
-
-
-
-
-
-
-
