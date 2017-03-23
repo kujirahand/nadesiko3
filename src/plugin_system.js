@@ -651,7 +651,7 @@ const PluginSystem = {
     fn: function (s) {
       const kanaToHira = (str) => {
         return String(str).replace(/[\u30a1-\u30f6]/g, function (m) {
-          var chr = m.charCodeAt(0) - 0x60
+          const chr = m.charCodeAt(0) - 0x60
           return String.fromCharCode(chr)
         })
       }
@@ -664,7 +664,7 @@ const PluginSystem = {
     fn: function (s) {
       const hiraToKana = (str) => {
         return String(str).replace(/[\u3041-\u3096]/g, function (m) {
-          var chr = m.charCodeAt(0) + 0x60
+          const chr = m.charCodeAt(0) + 0x60
           return String.fromCharCode(chr)
         })
       }
