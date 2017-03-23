@@ -1,7 +1,7 @@
 'use strict'
 
-const NakoCompiler = require('../src/nako3')
-const PluginSystem = require('../src/plugin_system')
+const NakoCompiler = require('../../src/nako3')
+const PluginSystem = require('../../src/plugin_system')
 
 const nako = new NakoCompiler()
 const js = nako.compile('「こんにちは」と表示。')
