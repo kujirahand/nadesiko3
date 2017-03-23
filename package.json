@@ -40,6 +40,18 @@
       "react"
     ]
   },
+  "eslintConfig": {
+    "extends": [
+      "standard"
+    ],
+    "env": {
+      "mocha": true,
+      "browser": true
+    },
+    "rules": {
+      "no-eval": "off"
+    }
+  },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "devDependencies": {
     "babel-cli": "^6.23.0",
