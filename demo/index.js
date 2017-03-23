@@ -6,7 +6,7 @@ navigator.nako3.setFunc('表示', function (s) {
 
 // 簡易DOMアクセス関数など
 function runBox (id) {
-  if (id != null) {
+  if (id !== null) {
     $('src_box').value = $(id).value
     resetBox()
   }

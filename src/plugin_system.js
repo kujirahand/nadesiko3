@@ -700,7 +700,7 @@ const PluginSystem = {
     fn: function (a, b, sys) {
       let re
       let f = b.match(/^\/(.+)\/([a-zA-Z]*)/)
-      if (f == null) { // パターンがない場合
+      if (f === null) { // パターンがない場合
         re = new RegExp(b, 'g')
       } else {
         re = new RegExp(f[1], f[2])
@@ -726,7 +726,7 @@ const PluginSystem = {
     fn: function (s, a, b) {
       let re
       let f = a.match(/^\/(.+)\/([a-zA-Z]*)/)
-      if (f == null) {
+      if (f === null) {
         re = new RegExp(a, 'g')
       } else {
         re = new RegExp(f[1], f[2])
@@ -740,7 +740,7 @@ const PluginSystem = {
     fn: function (s, a) {
       let re
       let f = a.match(/^\/(.+)\/([a-zA-Z]*)/)
-      if (f == null) {
+      if (f === null) {
         re = new RegExp(a, 'g')
       } else {
         re = new RegExp(f[1], f[2])
@@ -798,7 +798,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'が']],
     fn: function (s) {
-      return (String(s).match(/^[0-9.]+$/) != null)
+      return (String(s).match(/^[0-9.]+$/) !== null)
     }
   },
   /// 配列操作

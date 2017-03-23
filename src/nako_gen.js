@@ -58,7 +58,7 @@ class NakoGen {
 
     /**
      * 変換中の処理が、ループの中かどうかを判定する
-     * @type {boolen}
+     * @type {boolean}
      */
     this.flagLoop = false
 
@@ -272,7 +272,7 @@ class NakoGen {
         code += this.convCheckLoop(node, 'continue')
         break
       case 'end':
-        code += "__varslist[0]['終']();"
+        code += '__varslist[0][\'終\']();'
         break
       case 'number':
         code += node.value
@@ -370,7 +370,7 @@ class NakoGen {
   genVar (name, loc) {
     const res = this.findVar(name)
     const lno = (loc) ? loc.start.line : 0
-    if (res == null) {
+    if (res === null) {
       return `__vars["${name}"]/*?:${lno}*/`
     }
     const i = res.i
@@ -429,7 +429,7 @@ class NakoGen {
     const args = node.args
     // ローカル変数をPUSHする
     let code = '(function(){\n'
-    code += "try { __vars = {'それ':''}; __varslist.push(__vars);\n"
+    code += 'try { __vars = {\'それ\':\'\'}; __varslist.push(__vars);\n'
     this.__vars = {'それ': true, '!関数': name}
     this.__varslist.push(this.__vars)
     // 引数をローカル変数に設定
@@ -564,7 +564,7 @@ class NakoGen {
 
   convForeach (node) {
     let target
-    if (node.target == null) {
+    if (node.target === null) {
       target = this.sore
     } else {
       target = this.convGen(node.target)
@@ -684,7 +684,7 @@ class NakoGen {
     const funcName = this.getFuncName(node.name.value)
     let funcNameS
     const res = this.findVar(funcName)
-    if (res == null) {
+    if (res === null) {
       throw new NakoGenError(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(',') + ']', node.loc)
     }
     let func
@@ -744,12 +744,11 @@ class NakoGen {
     const res = this.findVar(name)
     let isTop
     let code = ''
-    if (res == null) {
+    if (res === null) {
       this.__vars[name] = true
       isTop = true
     } else {
-      isTop = false
-      if (res.isTop) isTop = true
+      isTop = res.isTop
       // 定数ならエラーを出す
       if (this.__varslist[res.i].meta) {
         if (this.__varslist[res.i].meta[name]) {
