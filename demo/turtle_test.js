@@ -8,7 +8,7 @@ navigator.nako3.setFunc('表示', function (s) {
 
 // 簡易DOMアクセス関数など
 function runBox (id) {
-  if (id == null) {
+  if (id === null) {
     window.alert('idが設定されていません。')
     return
   }
@@ -29,7 +29,7 @@ function runBox (id) {
 }
 
 function resetBoxTurtle (id) {
-  if (id == null) {
+  if (id === null) {
     id = 'src_box'
   }
   $(id + '_info').innerHTML = ''

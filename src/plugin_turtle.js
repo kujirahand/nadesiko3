@@ -24,7 +24,7 @@ const PluginTurtle = {
             document.body.removeChild(tt.canvas)
           }
           me.list = []
-          if (me.canvas != null) {
+          if (me.canvas !== null) {
             me.ctx.clearRect(0, 0,
               me.canvas.width,
               me.canvas.height)
@@ -69,7 +69,7 @@ const PluginTurtle = {
           this.flagSetTimer = true
           setTimeout(() => {
             const tt = this.getCur()
-            console.log("[TURTLE] Let's go! job=", tt.mlist.length)
+            console.log('[TURTLE] Let\'s go! job=', tt.mlist.length)
             sys._turtle.play()
           }, 1)
         },

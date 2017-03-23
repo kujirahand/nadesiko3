@@ -4,11 +4,9 @@ const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
 
-
 process.noDeprecation = true
 
 module.exports = {
-  
   entry: {
     wnako3: path.join(srcPath, 'wnako3.js'), // plugin_system+plugin_browser含む
     plugin_turtle: path.join(srcPath, 'plugin_turtle.js'),
@@ -38,7 +36,7 @@ module.exports = {
         loader: 'babel-loader',
         test: /\.js$/,
         exclude: /node_modules/,
-        include: [ srcPath  ],
+        include: [srcPath],
         query: {
           presets: ['env']
         }
@@ -46,5 +44,3 @@ module.exports = {
     ]
   }
 }
-
-

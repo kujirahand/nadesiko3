@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 class CommandList extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { flagShow: false }
+    this.state = {flagShow: false}
     this.files = [
       'plugin_browser.js',
       'plugin_turtle.js',
@@ -14,6 +14,7 @@ class CommandList extends React.Component {
     ]
     this.listItems = []
   }
+
   render () {
     let items = []
     if (this.state.flagShow) {
@@ -27,11 +28,14 @@ class CommandList extends React.Component {
         <div style={frameStyle}>
           <button id='cmd_button' onClick={this.clickShow.bind(this)}>命令表示</button>
         </div>
-        <div><ul>{items}</ul></div>
+        <div>
+          <ul>{items}</ul>
+        </div>
       </div>
     )
     return frame
   }
+
   componentDidMount () {
     ajaxGet('../release/command.json', {}, (text, xhr) => {
       const listItems = []
@@ -68,6 +72,7 @@ class CommandList extends React.Component {
       this.listItems = listItems
     })
   }
+
   clickCommand (e) {
     if (!e.target) return
     const paste = e.target.getAttribute('data-paste')
@@ -80,6 +85,7 @@ class CommandList extends React.Component {
     txt.value = left + paste + right
     txt.focus()
   }
+
   clickShow (e) {
     const b = !this.state.flagShow
     this.setState({'flagShow': b})
