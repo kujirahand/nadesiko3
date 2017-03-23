@@ -12,22 +12,23 @@
 プラグインの実体は、Object。
 
 ```
-{ "命令名":{ 定義 }, "命令名": { 定義 } ... }
+{ '命令名': { 定義 }, '命令名': { 定義 } ... }
 ```
 
 ### 定義：関数
 
 ```
 {
-  type:"func", josi: [["を","から"], ["まで"]],
-  fn: function(s) { ... }
+  type: 'func',
+  josi: [['を', 'から'], ['まで']],
+  fn: function (s) { ... }
 }
 ```
 
 ### 定義：定数
 
 ```
-{ type: "const", value: 100 }
+{ type: 'const', value: 100 }
 ```
 
 ### プラグインの自動登録
@@ -35,8 +36,8 @@
 プラグインの末尾に以下のコードを仕込むことによって、scriptタグで読み込んだと同時に、システムに登録することができる。
 
 ```
-if (typeof(navigator) == "object") {
-  navigator.nako3.addPluginObject(プラグイン名, オブジェクト);
+if (typeof (navigator) === 'object') {
+  navigator.nako3.addPluginObject(プラグイン名, オブジェクト)
 }
 ```
 
@@ -48,9 +49,10 @@ if (typeof(navigator) == "object") {
 
 ```
 {
-  type:"func", josi: [],
-  fn:function (sys) {
-    console.log(sys);
+  type: 'func',
+  josi: [],
+  fn: function (sys) {
+    console.log(sys)
   }
 }
 ```
@@ -61,9 +63,10 @@ if (typeof(navigator) == "object") {
 
 ```
 {
-  "初期化": {
-    type:"func", josi:[],
-    fn: fuction (sys) { ... }
+  '初期化': {
+    type: 'func',
+    josi: [],
+    fn: function (sys) { ... }
   }
   ...
 }
