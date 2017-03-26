@@ -7,7 +7,7 @@ HTML/JavaScriptをベースとしているので、PC/スマホ/タブレット�
 
 - [URL] http://nadesi.com, [http://なでしこ.jp](http://なでしこ.jp)
 - [URL] [なでしこ3/開発WIKI](http://nadesi.com/dev/wiki/go.php?351)
-- [URL] [なでしこ3/ベータ3のデモページ](http://files.nadesi.com/nako3/0.0.3/demo/index.html)
+- [URL] [なでしこ3/ベータ4のデモページ](https://nadesi.com/v3/0.0.4/demo/index.html)
 
 # 開発目標
 
