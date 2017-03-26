@@ -691,6 +691,9 @@ class NakoGen {
     if (res.i === 0) { // plugin function
       func = this.plugins[funcName]
       funcNameS = `__varslist[0]["${funcName}"]`
+      if (func.type !== 'func') {
+        throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.loc)
+      }
     } else {
       func = this.nako_func[funcName]
       if (func === undefined) {

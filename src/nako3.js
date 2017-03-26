@@ -25,16 +25,15 @@ class NakoSyntaxError extends Error {
       pos = '(' + e.location.start.line + ':' +
         e.location.start.column + ') '
     }
-    let found = ''
+    let found = '『'
     let expected = ''
     let msg
     if (e.found) {
-      if (e.found === '\n') found = '改行'
-      else found = e.found.toString()
+      found += (e.found == '\n') ? '改行' : e.found.toString()
     } else {
-      found = '終端'
+      found += '終端'
     }
-    found += 'に達しました。'
+    found += '』に達しました。'
     if (e.expected) {
       const a = []
       e.expected.forEach(q => {
@@ -43,7 +42,7 @@ class NakoSyntaxError extends Error {
         if (qq !== '') a.push(qq)
       })
       if (a.length > 0) {
-        expected = ' {|' + a.join('|') + '|}を期待しています。'
+        expected = '次の文字を期待しています。→|' + a.join('|') + '|'
       }
     }
     if (e.found === null && e.expected === null) {
