@@ -40,7 +40,8 @@ class CommandList extends React.Component {
     ajaxGet('../release/command.json', {}, (text, xhr) => {
       const listItems = []
       const cmd = JSON.parse(text)
-      const groupStyle = {'color': 'gray'}
+      const groupStyle = {'color': '#55c'}
+      const cmdStyle = {'marginLeft': '12px'}
       const itemStyle = {}
       for (let i = 0; i < this.files.length; i++) {
         const fname = this.files[i]
@@ -66,7 +67,7 @@ class CommandList extends React.Component {
             ))
           }
           const gidLI = gid + '_li'
-          listItems.push(<li key={gidLI}>{a}</li>)
+          listItems.push(<li key={gidLI} style={cmdStyle}>{a}</li>)
         }
       }
       this.listItems = listItems

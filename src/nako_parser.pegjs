@@ -186,7 +186,7 @@ func_call_stmt
 let_stmt
   = name:word __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let", "name":name, "value":value, }; loc:location()}
   / name:word i:("[" calc "]")+ __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value, loc:location()}; }
-  / name:word ("に"/"へ") value:(calc "を")? "代入" EOS  {
+  / name:word i:(("@"/"＠") value)+ __ ("=" / "＝" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value, loc:location()}; }  / name:word ("に"/"へ") value:(calc "を")? "代入" EOS  {
     const v = value ? value[0] : {type:"variable", value:"それ", loc:location()};
     return {"type":"let", "name":name, "value":v};
   }
@@ -316,6 +316,7 @@ value
   / string
   / embed_stmt
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
+  / w:word i:(("@"/"＠") calc)+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
   / w:word parenL ar:calc_func_args parenR { return {type:"calc_func", args:ar, name:w}; }
   / word
   / json_stmt
