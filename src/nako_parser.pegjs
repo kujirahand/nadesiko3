@@ -13,7 +13,7 @@ function convToHalfS(s) {
 
 start = sentence+
 
-sentence 
+sentence
   = blank_stmt
   / end / continue / break / return_stmt
   / def_func
@@ -126,7 +126,7 @@ while_stmt
   }
 
 if_stmt
-  = "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block __ 
+  = "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block __
     else __ LF __ fb:block block_end {
     return {"type":"if", "expr":expr, "block":tb, "false_block":fb, loc:location()};
   }
@@ -234,14 +234,14 @@ blank_stmt
 
 
 // 数字関連
-number = f:"-"? v:(hex / float / int / intz) josuusi? { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
+number = f:("-" / "－") ? v:(hex / float / int / intz) josuusi? { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
 hex = "0x" x:$([0-9a-z]i+) { return parseInt("0x" + x, 16); }
 float = d1:$([0-9]+) "." d2:$([0-9]+) { return parseFloat( d1 + "." + d2 ); }
 int = n:$([0-9]+) { return parseInt(n, 10); }
 intz = n:$([０-９]+) { return parseInt(convToHalfS(n), 10); }
 josuusi
   = "円" / "個" / "人" / "冊" / "匹"
-  / "本" / "枚" / "台" / "位" / "才" 
+  / "本" / "枚" / "台" / "位" / "才"
   / "件" / "羽" / "頭" / "部" / "巻"
 
 // 文字列関連
@@ -289,8 +289,8 @@ josi_eq = "は"
 josi_continue
   = "いて" / "えて" / "きて" / "けて" / "して" / "って"
   / "にて" / "みて" / "めて"
-  
-josi_arg = 
+
+josi_arg =
   josi_name:("について" / "ならば" / "なら" /
     "とは" / "から" / "まで" / "だけ" /
     "を" / "に" / "へ" / "で" / "と" / "が" / "の") {
@@ -312,7 +312,7 @@ word = !numchars chars:$((!josi_word_split wordchar2)+) { return { type:"variabl
 
 // for value
 value
-  = number 
+  = number
   / string
   / embed_stmt
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
@@ -366,7 +366,7 @@ addsub
    = left:muldiv __ ("+" / "＋") __ right:addsub {
      return { type:"calc", operator: "+", "left": left,  "right": right };
    }
-   / left:muldiv __ ("-" / "−") __ right: addsub {
+   / left:muldiv __ ("-" / "−" / "－") __ right: addsub {
      return { type:"calc", operator: "-", "left": left,  "right": right };
    }
    / left:muldiv __ ("&" / "＆") __ right: addsub {
@@ -385,13 +385,13 @@ muldiv
      return { type:"calc", operator: "%", "left": left,  "right": right };
    }
    / primary2
-   
+
 primary2
   = left:primary __ ("^" / "＾") __ right:primary2 {
     return { type:"calc", operator: "^", "left": left,  "right": right };
   }
   / primary
-  
+
 primary
    = parenL v:calc parenR { return v; }
    / "!" v:value { return { type:"not", value:v }; }
@@ -404,7 +404,7 @@ json_stmt
   = "[" SPCLF a:json_array SPCLF "]"  { return {type:"json_array", value:a, loc:location()}; }
   / "{" SPCLF a:json_obj SPCLF "}" { return {type:"json_obj", value:a, loc:location()}; }
   / "[" SPCLF "]" { return {type:"json_array", value:[], loc:location()}; }
-  / "{" SPCLF "}" { return {type:"json_obj", value:[], loc:location()}; } 
+  / "{" SPCLF "}" { return {type:"json_obj", value:[], loc:location()}; }
 
 json_array
   = a1:json_value SPCLF a2:("," SPCLF json_value SPCLF)+ {
@@ -416,14 +416,14 @@ json_array
 
 json_value
   = calc / number / string / null / bool / word / json_stmt
-   
+
  json_obj
-  = a1:json_key_value SPCLF a2:("," SPCLF json_key_value)+ { 
+  = a1:json_key_value SPCLF a2:("," SPCLF json_key_value)+ {
     const a = a2.map(e=>{ return e[2]; });
     a.unshift(a1);
     return a;
   }
   / a:json_key_value { return [a] }
- 
+
 json_key_value
   = key:string SPCLF ":" SPCLF value:json_value { return {"key": key, "value": value }; }
