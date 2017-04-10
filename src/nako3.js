@@ -29,7 +29,7 @@ class NakoSyntaxError extends Error {
     let expected = ''
     let msg
     if (e.found) {
-      found += (e.found == '\n') ? '改行' : e.found.toString()
+      found += (e.found === '\n') ? '改行' : e.found.toString()
     } else {
       found += '終端'
     }
