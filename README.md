@@ -1,12 +1,13 @@
-Japanese Programming Language Nadesiko v3 
+Japanese Programming Language Nadesiko v3
 
 # なでしこ3
 
 日本語のプログラミング言語「なでしこ」（第三版）は、現在鋭意開発中です。
 HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
 
-- [URL] http://nadesi.com, [http://なでしこ.jp](http://なでしこ.jp)
-- [URL] [なでしこ3/開発WIKI](http://nadesi.com/dev/wiki/go.php?351)
+- [URL] https://nadesi.com, [http://なでしこ.jp](http://なでしこ.jp)
+- [URL] [なでしこ3/マニュアル](https://nadesi.com/doc3/)
+- [URL] [なでしこ3/開発WIKI](https://nadesi.com/dev/wiki/go.php?351)
 - [URL] [なでしこ3/ベータ4のデモページ](https://nadesi.com/v3/0.0.4/demo/index.html)
 
 # 開発目標
@@ -41,4 +42,3 @@ HTML/JavaScriptをベースとしているので、PC/スマホ/タブレット�
 ## 開発環境をセットアップする
 
 なでしこを開発するために、開発環境を整えようという方は、SETUP.md をご覧ください。
-
