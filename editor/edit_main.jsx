@@ -96,13 +96,5 @@ class CommandList extends React.Component {
   }
 }
 
-function showCommandList () {
-  // render
-  ReactDOM.render(
-    <CommandList />,
-    document.getElementById('command-list'))
-}
-
-setTimeout(() => {
-  showCommandList()
-}, 100)
+// render
+ReactDOM.render(<CommandList />, document.getElementById('command-list'))
