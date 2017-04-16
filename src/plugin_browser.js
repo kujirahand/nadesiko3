@@ -18,6 +18,7 @@ const PluginBrowser = {
   'オリーブ色': {type: 'const', value: 'olive'}, /// おりーぶいろ
   'ベージュ色': {type: 'const', value: 'beige'}, /// べーじゅいろ
   'アリスブルー色': {type: 'const', value: 'aliceblue'}, /// ありすぶるーいろ
+
   /// システム
   '終': { /// ブラウザでプログラムの実行を強制終了する /// おわる
     type: 'func',
@@ -27,6 +28,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
+
   /// ダイアログ
   '言': { /// メッセージダイアログにSを表示 /// いう
     type: 'func',
@@ -45,6 +47,7 @@ const PluginBrowser = {
       return r
     }
   },
+
   /// DOM操作
   'DOM要素ID取得': { /// DOMの要素をIDを指定して取得 /// DOMようそIDしゅとく
     type: 'func',
@@ -160,6 +163,7 @@ const PluginBrowser = {
       return dom.style[s]
     }
   },
+
   /// HTML操作
   'HTML変換': { /// 文字列をHTMLに変換して返す /// HTMLへんかん
     type: 'func',

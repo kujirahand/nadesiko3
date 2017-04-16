@@ -13,6 +13,7 @@ const PluginSystem = {
       }
     }
   },
+
   /// システム定数
   'ナデシコバージョン': {type: 'const', value: '?'}, /// なでしこばーじょん
   'ナデシコエンジン': {type: 'const', value: 'nadesi.com/v3'}, /// なでしこえんじん
@@ -31,6 +32,7 @@ const PluginSystem = {
   'PI': {type: 'const', value: Math.PI}, /// PI
   '空': {type: 'const', value: ''}, /// から
   'NULL': {type: 'const', value: null}, /// NULL
+
   /// 標準出力
   '表示': { /// Sを表示 /// ひょうじ
     type: 'func',
@@ -60,6 +62,7 @@ const PluginSystem = {
     },
     return_none: true
   },
+
   /// 四則演算
   '足': { /// AとBを足す /// たす
     type: 'func',
@@ -103,6 +106,7 @@ const PluginSystem = {
       return a % b
     }
   },
+
   /// 特殊命令
   'JS実行': { /// JavaScriptのコードSを実行する /// JSじっこう
     type: 'func',
@@ -111,6 +115,7 @@ const PluginSystem = {
       return eval(js)
     }
   },
+
   /// 型変換
   '変数型確認': { /// 変数Vの型を返す /// へんすうかたかくにん
     type: 'func',
@@ -189,6 +194,7 @@ const PluginSystem = {
       return parseInt(a).toString(16)
     }
   },
+
   /// 三角関数
   'SIN': {/// ラジアン単位VのSINを求める ///
     type: 'func',
@@ -260,6 +266,7 @@ const PluginSystem = {
       return (v / 180) * Math.PI
     }
   },
+
   /// 算術関数
   'SIGN': { /// Vが0なら0を、0超なら1を、0未満なら-1を返す ///
     type: 'func',
@@ -400,6 +407,7 @@ const PluginSystem = {
       return (!v) ? 1 : 0
     }
   },
+
   /// 論理演算
   'OR': { /// AとBの論理和を返す。AまたばBが0以外ならば1を、それ以外は0を返す ///
     type: 'func',
@@ -422,6 +430,7 @@ const PluginSystem = {
       return (a ^ b) ? 1 : 0
     }
   },
+
   /// ビット演算
   'SHIFT_L': { /// VをAビット左へシフトして返す ///
     type: 'func',
@@ -437,6 +446,7 @@ const PluginSystem = {
       return (a >> b)
     }
   },
+
   /// 文字列処理
   '文字数': { /// 文字列Vの文字数を返す /// もじすう
     type: 'func',
@@ -597,6 +607,7 @@ const PluginSystem = {
       return mae + usi
     }
   },
+
   /// 置換・トリム
   '置換': {/// 文字列Sのうち文字列AをBに全部置換して返す /// ちかん
     type: 'func',
@@ -630,6 +641,7 @@ const PluginSystem = {
       return s
     }
   },
+
   /// 文字変換
   '大文字変換': {/// アルファベットの文字列Sを大文字に変換 /// おおもじへんかん
     type: 'func',
@@ -671,6 +683,7 @@ const PluginSystem = {
       return hiraToKana(s)
     }
   },
+
   /// JSON
   'JSONエンコード': { /// オブジェクトVをJSON形式にエンコードして返す /// JSONえんこーど
     type: 'func',
@@ -693,6 +706,7 @@ const PluginSystem = {
       return JSON.parse(s)
     }
   },
+
   /// 正規表現
   '正規表現マッチ': {/// 文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定) /// せいきひょうげんまっち
     type: 'func',
@@ -748,6 +762,7 @@ const PluginSystem = {
       return String(s).split(re)
     }
   },
+
   /// 指定形式
   '通貨形式': { /// 数値Vを三桁ごとにカンマで区切る /// つうかけいしき
     type: 'func',
@@ -769,6 +784,7 @@ const PluginSystem = {
       return s.substr(s.length - a, a)
     }
   },
+
   /// 文字種類
   'かなか判定': { /// 文字列Sの1文字目がひらがなか判定 /// かなかはんてい
     type: 'func',
@@ -801,6 +817,7 @@ const PluginSystem = {
       return (String(s).match(/^[0-9.]+$/) !== null)
     }
   },
+
   /// 配列操作
   '配列結合': { /// 配列Aを文字列Sでつなげて文字列で返す /// はいれつけつごう
     type: 'func',
@@ -958,6 +975,7 @@ const PluginSystem = {
       throw new Error('『配列追加』で配列以外の処理。')
     }
   },
+
   /// 日時処理
   '今': { /// 現在時刻を「hh:nn:ss」の形式で返す /// いま
     type: 'func',
@@ -1030,6 +1048,7 @@ const PluginSystem = {
         ' ' + z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
     }
   },
+
   /// デバッグ支援
   'エラー発生': { /// 故意にエラーSを発生させる /// えらーはっせい
     type: 'func',
