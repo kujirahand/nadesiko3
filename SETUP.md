@@ -39,7 +39,7 @@ $ npm run test
 
 コーディング規約は、[JavaScript Standard Style](https://standardjs.com/)に準拠するものとする。
 
-ATOMエディタを使っている婆愛は、以下のプラグインを導入すると非常に便利。
+ATOMエディタを使っている場合は、以下のプラグインを導入すると非常に便利。
 
 ```
 apm install linter
