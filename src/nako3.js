@@ -3,6 +3,7 @@
 //
 const NakoPeg = require('./nako_parser')
 const NakoGen = require('./nako_gen')
+const NakoPrepare = require('./nako_prepare')
 const PluginSystem = require('./plugin_system')
 
 class NakoRuntimeError extends Error {
@@ -62,6 +63,7 @@ class NakoCompiler {
     this.debug_show_code = true
     this.filename = 'inline'
     this.gen = new NakoGen(this)
+    this.prepare = new NakoPrepare()
     this.reset()
     this.gen.addPluginObject('PluginSystem', PluginSystem)
   }
@@ -99,6 +101,8 @@ class NakoCompiler {
   }
 
   parse (code) {
+    // 変換
+    code = this.prepare.convert(code)
     // trim
     code = code.replace(/^\s+/, '')
       .replace(/\s+$/, '')
