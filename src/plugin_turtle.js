@@ -161,12 +161,12 @@ const PluginTurtle = {
         play: function () {
           const me = this
           const wait = sys.__getSysValue('カメ速度', 100)
-          let hasNext = true
-          while (hasNext) {
-            hasNext = this.doMacroAll(wait)
-            if (wait > 0) break
-          }
-          if (wait > 0 && hasNext) {
+          let hasNext = this.doMacroAll(wait)
+          if (wait <= 0) {
+            while (hasNext) {
+              hasNext = this.doMacroAll(wait)
+            }
+          } else if (hasNext) {
             setTimeout(() => {
               me.play()
             }, wait)
