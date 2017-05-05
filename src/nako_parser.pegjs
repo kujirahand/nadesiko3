@@ -213,7 +213,7 @@ whitespace = [ \t\r、　,・]
 SPCLF = [\t\r\n 　]*
 SPC = [\t\r 　]*
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
-line_comment = ("//" / "#" / "＃" / "※") s:$[^\n]* LF { return s; }
+line_comment = ("//" / "#" / "※") s:$[^\n]* LF { return s; }
 comment
   = n:(range_comment / line_comment) {
     return {type:"comment",value:n,loc:location()};
