@@ -119,18 +119,18 @@ while_stmt
   }
 
 if_stmt
-  = "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block __
-    else __ LF __ fb:block block_end {
+  = "もし" __ expr:if_expr __ josi_naraba __ EOS __ tb:block __
+    else __ EOS __ fb:block block_end {
     return {"type":"if", "expr":expr, "block":tb, "false_block":fb, loc:location()};
   }
-  / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block __
-    else __ LF __ fb:block "" {
+  / "もし" __ expr:if_expr __ josi_naraba __ EOS __ tb:block __
+    else __ EOS __ fb:block "" {
     error("『もし』構文で『ここまで』がありません。", location());
   }
-  / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block block_end {
+  / "もし" __ expr:if_expr __ josi_naraba __ EOS __ tb:block block_end {
     return {"type":"if", "expr":expr, "block":tb, "false_block":[], loc:location()};
   }
-  / "もし" __ expr:if_expr __ josi_naraba __ LF __ tb:block "" {
+  / "もし" __ expr:if_expr __ josi_naraba __ EOS __ tb:block "" {
     error("『もし』構文で『ここまで』がありません。", location());
   }
   // ブロックなしの「もし」文の時
