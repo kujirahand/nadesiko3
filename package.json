@@ -49,7 +49,8 @@
       "browser": true
     },
     "rules": {
-      "no-eval": "off"
+      "no-eval": "off",
+      "react/jsx-uses-vars": 1
     }
   },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
@@ -64,6 +65,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.1",
     "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.2.0",
     "pegjs": "^0.10.0",
