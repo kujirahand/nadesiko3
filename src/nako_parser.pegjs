@@ -208,7 +208,8 @@ __ = (whitespace / range_comment / "_" whitespace* LF)*
 LF = "\n" {
     return {type:"EOS", loc:location()};
   }
-EOS = __ n:(";" / LF / "。" / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
+EOS = __ (EOS2 / comment)
+EOS2 = n:(";" / LF / "。" / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
 whitespace = [ \t\r、　,・]
 SPCLF = [\t\r\n 　]*
 SPC = [\t\r 　]*
