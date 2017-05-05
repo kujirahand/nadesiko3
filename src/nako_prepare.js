@@ -53,6 +53,7 @@ class NakoPrepare {
   convert (src) {
     let flagStr = false
     let flagStr2 = false
+    let flagComment = false
     let endOfStr
     let res = ''
     let i = 0
@@ -120,6 +121,18 @@ class NakoPrepare {
           endOfStr = '}}}'
           continue
         }
+        continue
+      }
+      if (flagComment && c === '\n') {
+        flagComment = false
+        res += c1
+        i++
+        continue
+      }
+      if (!flagComment && c1 === '#') {
+        flagComment = true
+        res += '。' + c1
+        i++
         continue
       }
       // 変換したものを追加
