@@ -129,6 +129,12 @@ class NakoPrepare {
         i++
         continue
       }
+      if (!flagComment && c === '※') {
+        flagComment = true
+        res += '。' + c
+        i++
+        continue
+      }
       if (!flagComment && c1 === '#') {
         flagComment = true
         res += '。' + c1
