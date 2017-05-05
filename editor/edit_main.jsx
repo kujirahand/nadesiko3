@@ -3,10 +3,37 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-class CommandList extends React.Component {
+class CommandListButton extends React.Component {
   constructor (props) {
     super(props)
     this.state = {flagShow: false}
+  }
+
+  render () {
+    const frameStyle = {
+      paddingTop: '8px'
+    }
+    const frame = (
+      <div style={frameStyle}>
+        <button id='cmd_button' onClick={this.clickShow.bind(this)}>命令表示</button>
+      </div>
+    )
+    return frame
+  }
+
+  clickShow (e) {
+    const b = !this.state.flagShow
+    this.setState({'flagShow': b})
+    const btn = document.getElementById('cmd_button')
+    const s = (b) ? '命令隠す' : '命令表示'
+    ReactDOM.render(<span>{s}</span>, btn)
+    ReactDOM.render(<CommandList flagShow={b} />, document.getElementById('command-list'))
+  }
+}
+
+class CommandList extends React.Component {
+  constructor (props) {
+    super(props)
     this.files = [
       'plugin_browser.js',
       'plugin_turtle.js',
@@ -17,20 +44,14 @@ class CommandList extends React.Component {
 
   render () {
     let items = []
-    if (this.state.flagShow) {
+    if (this.props.flagShow) {
       items = this.listItems
-    }
-    const frameStyle = {
-      paddingTop: '8px'
     }
     const frame = (
       <div>
-        <div style={frameStyle}>
-          <button id='cmd_button' onClick={this.clickShow.bind(this)}>命令表示</button>
-        </div>
-        <div>
-          <ul>{items}</ul>
-        </div>
+        <ul>
+          {items}
+        </ul>
       </div>
     )
     return frame
@@ -86,15 +107,8 @@ class CommandList extends React.Component {
     txt.value = left + paste + right
     txt.focus()
   }
-
-  clickShow (e) {
-    const b = !this.state.flagShow
-    this.setState({'flagShow': b})
-    const btn = document.getElementById('cmd_button')
-    const s = (b) ? '命令隠す' : '命令表示'
-    ReactDOM.render(<span>{s}</span>, btn)
-  }
 }
 
 // render
+ReactDOM.render(<CommandListButton />, document.getElementById('command-list-button'))
 ReactDOM.render(<CommandList />, document.getElementById('command-list'))
