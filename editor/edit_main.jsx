@@ -15,7 +15,7 @@ class CommandListButton extends React.Component {
     }
     const frame = (
       <div style={frameStyle}>
-        <button id='cmd_button' onClick={this.clickShow.bind(this)}>命令表示</button>
+        <button id='cmd_button' onClick={this.clickShow.bind(this)}><span>命令表示</span></button>
       </div>
     )
     return frame
