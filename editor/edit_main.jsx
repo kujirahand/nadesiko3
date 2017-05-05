@@ -95,7 +95,7 @@ class CommandList extends React.Component {
     })
   }
 
-  clickCommand (e) {
+  static clickCommand (e) {
     if (!e.target) return
     const paste = e.target.getAttribute('data-paste')
     console.log(paste)
