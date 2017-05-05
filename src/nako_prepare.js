@@ -30,6 +30,7 @@ class NakoPrepare {
       0x3164: true  // HANGUL FILLER
     }
   }
+
   // 一文字だけ変換
   convert1ch (ch) {
     const c = ch.charCodeAt(0)
@@ -48,6 +49,7 @@ class NakoPrepare {
     if (c >= 0x2000 && c <= 0x2060) return ' '
     return ch
   }
+
   convert (src) {
     let flagStr = false
     let flagStr2 = false
