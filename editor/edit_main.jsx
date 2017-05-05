@@ -64,8 +64,7 @@ class CommandList extends React.Component {
       const groupStyle = {'color': '#55c'}
       const cmdStyle = {'marginLeft': '12px'}
       const itemStyle = {}
-      for (let i = 0; i < this.files.length; i++) {
-        const fname = this.files[i]
+      for (const fname of this.file) {
         const glist = cmd[fname]
         if (!glist) continue // 読み込みに失敗した場合
         for (const groupName in glist) {
@@ -73,8 +72,7 @@ class CommandList extends React.Component {
           listItems.push(<li key={gid} style={groupStyle}>{groupName}</li>)
           const group = glist[groupName]
           const a = []
-          for (const g in group) {
-            const c = group[g]
+          for (const c of group) {
             const cType = c[0]
             const cName = c[1]
             const cArgs = String(c[2] + '/').split('/')[0]
