@@ -54,7 +54,7 @@ class NakoPrepare {
     let flagStr = false
     let flagStr2 = false
     let flagComment = false
-    let flagSlashComment = false
+    let flagSlash = false
     let endOfStr
     let res = ''
     let i = 0
@@ -124,18 +124,18 @@ class NakoPrepare {
         }
         continue
       }
-      if (!flagComment && flagSlashComment) {
+      if (!flagComment && flagSlash) {
         if (c1 === '/') {
           flagComment = true
           res += '。'
         }
         res += '/' + c1
-        flagSlashComment = false
+        flagSlash = false
         i++
         continue
       }
-      if (!flagComment && !flagSlashComment && c1 === '/') {
-        flagSlashComment = true
+      if (!flagComment && !flagSlash && c1 === '/') {
+        flagSlash = true
         i++
         continue
       }
