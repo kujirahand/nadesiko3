@@ -51,7 +51,10 @@
     "rules": {
       "no-eval": "off",
       "react/jsx-uses-vars": 1
-    }
+    },
+    "plugins": [
+      "react"
+    ]
   },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "devDependencies": {
