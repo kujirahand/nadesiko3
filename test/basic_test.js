@@ -77,6 +77,12 @@ describe('basic', () => {
   })
   it('ラインコメントが正しく処理されない問題 (#112)', () => {
     cmp('A=50 # hogehoge\nAを表示', '50')
+    cmp('A=50 ＃ hogehoge\nAを表示', '50')
+    cmp('A=50 // hogehoge\nAを表示', '50')
+    cmp('A=50 ／／ hogehoge\nAを表示', '50')
     cmp('A=50\nもしA=50ならば # hogehoge\nAを表示\n---\n', '50')
+    cmp('A=50\nもしA=50ならば ＃ hogehoge\nAを表示\n---\n', '50')
+    cmp('A=50\nもしA=50ならば // hogehoge\nAを表示\n---\n', '50')
+    cmp('A=50\nもしA=50ならば ／／ hogehoge\nAを表示\n---\n', '50')
   })
 })
