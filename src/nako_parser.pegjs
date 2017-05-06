@@ -34,16 +34,16 @@ end = ("終わる" / "終了") EOS { return {type:"end"}; }
 embed_stmt = "JS" js:nami_string_pat { return {type:"embed_code", value:js}; }
 
 def_func
-  = "●" name:word __ parenL args:def_func_arg* parenR __ LF b:block kokomade {
+  = "●" name:word __ parenL args:def_func_arg* parenR __ EOS b:block kokomade {
     return {type:"def_func", "name":name, "args":args, block:b, loc:location() };
   }
-  / "●" name:word __ LF b:block kokomade {
+  / "●" name:word __ EOS b:block kokomade {
     return {type:"def_func", "name":name, "args":[], block:b, loc:location() };
   }
-  / "●" name:word __ parenL args:def_func_arg* parenR __ LF b:block "" {
+  / "●" name:word __ parenL args:def_func_arg* parenR __ EOS b:block "" {
     error("関数『"+name.value+"』の定義で『ここまで』がありません。", location());
   }
-  / "●" name:word __ LF b:block "" {
+  / "●" name:word __ EOS b:block "" {
     error("関数『"+name.value+"』の定義で『ここまで』がありません。", location());
   }
 
@@ -58,38 +58,38 @@ return_stmt
   / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v, loc:location()}; }
 
 foreach_stmt
-  = name:word "で" target:value "を" hanpuku LF b:block block_end {
+  = name:word "で" target:value "を" hanpuku EOS b:block block_end {
     return {"type":"foreach", "target":target, "block":b, "name":name, loc:location()};
   }
-  / target:value "を" name:word "で" hanpuku LF b:block block_end {
+  / target:value "を" name:word "で" hanpuku EOS b:block block_end {
     return {"type":"foreach", "target":target, "block":b, "name":name, loc:location()};
   }
-  / target:value "を" __ hanpuku LF b:block block_end {
+  / target:value "を" __ hanpuku EOS b:block block_end {
     return {"type":"foreach", "target":target, "block":b, "name":null, loc:location()};
   }
-  / hanpuku LF b:block block_end {
+  / hanpuku EOS b:block block_end {
     return {"type":"foreach", "target":null, "block":b, "name":null, loc:location()};
   }
-  / target:value "を" __ hanpuku LF b:block "" {
+  / target:value "を" __ hanpuku EOS b:block "" {
     error("『反復』構文で『ここまで』がありません。", location());
   }
-  / hanpuku LF b:block "" {
+  / hanpuku EOS b:block "" {
     error("『反復』構文で『ここまで』がありません。", location());
   }
 
 hanpuku = "反復" / "反復する"
 
 for_stmt
-  = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block block_end {
+  = i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ kurikaesu EOS b:block block_end {
     return {"type":"for", "from":kara, "to":made, "block":b, "word": i, loc:location()};
   }
-  / kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block block_end {
+  / kara:calc "から" __ made:calc "まで" __ kurikaesu EOS b:block block_end {
     return {"type":"for", "from":kara, "to":made, "block":b, "word": "", loc:location()};
   }
-  / i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block "" {
+  / i:word ("を" / "で") __ kara:calc "から" __ made:calc "まで" __ kurikaesu EOS b:block "" {
     error("『繰り返す』構文で『ここまで』がありません。", location());
   }
-  / kara:calc "から" __ made:calc "まで" __ kurikaesu LF b:block "" {
+  / kara:calc "から" __ made:calc "まで" __ kurikaesu EOS b:block "" {
     error("『繰り返す』構文で『ここまで』がありません。", location());
   }
 
@@ -99,10 +99,10 @@ repeat_times_stmt
   = cnt:times_cond "回" __ b:sentence EOS {
     return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
-  / cnt:times_cond "回" __ LF b:block block_end {
+  / cnt:times_cond "回" __ EOS b:block block_end {
     return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
-  / cnt:times_cond "回" __ LF b:block "" {
+  / cnt:times_cond "回" __ EOS b:block "" {
     error("『(N)回』構文で『ここまで』がありません。", location());
   }
 
@@ -111,10 +111,10 @@ times_cond
   / parenL c:calc parenR { return c; }
 
 while_stmt
-  = parenL expr:calc parenR  "の間" LF b:block block_end {
+  = parenL expr:calc parenR  "の間" EOS b:block block_end {
     return {"type":"while", "cond":expr, "block":b, loc:location()};
   }
-  / parenL expr:calc parenR  "の間" LF b:block "" {
+  / parenL expr:calc parenR  "の間" EOS b:block "" {
     error("『(条件)の間』構文で『ここまで』がありません。", location());
   }
 
@@ -208,7 +208,7 @@ __ = (whitespace / range_comment / "_" whitespace* LF)*
 LF = "\n" {
     return {type:"EOS", loc:location()};
   }
-EOS = __ (EOS2 / comment)
+EOS = __ (EOS2 / line_comment)
 EOS2 = n:(";" / LF / "。" / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
 whitespace = [ \t\r、　,・]
 SPCLF = [\t\r\n 　]*
