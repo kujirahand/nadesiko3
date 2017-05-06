@@ -64,7 +64,7 @@ class CommandList extends React.Component {
       const groupStyle = {'color': '#55c'}
       const cmdStyle = {'marginLeft': '12px'}
       const itemStyle = {}
-      for (const fname of this.file) {
+      for (const fname of this.files) {
         const glist = cmd[fname]
         if (!glist) continue // 読み込みに失敗した場合
         for (const groupName in glist) {
