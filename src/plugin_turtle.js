@@ -94,6 +94,11 @@ const PluginTurtle = {
           const m = tt.mlist.shift()
           const cmd = (m !== undefined) ? m[0] : ''
           switch (cmd) {
+            case 'xy':
+              // 起点を移動する
+              tt.x = m[1]
+              tt.y = m[2]
+              break
             case 'mv':
               // 線を引く
               me.line(tt, tt.x, tt.y, m[1], m[2])
@@ -289,6 +294,16 @@ const PluginTurtle = {
     fn: function (xy, sys) {
       const tt = sys._turtle.getCur()
       tt.mlist.push(['mv', xy[0], xy[1]])
+      sys._turtle.setTimer()
+    },
+    return_none: true
+  },
+  'カメ起点移動': { /// カメの描画起点位置を[x,y]へ移動する /// かめきてんいどう
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (xy, sys) {
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['xy', xy[0], xy[1]])
       sys._turtle.setTimer()
     },
     return_none: true
