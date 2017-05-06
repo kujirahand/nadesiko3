@@ -11,10 +11,15 @@ describe('prepare', () => {
     assert.equal(b, 'SRSR')
   })
   it('simple-multibytes', () => {
-    const a = p.convert('単語')
-    assert.equal(a, '単語')
-    const b = p.convert('イカリ光')
-    assert.equal(b, 'イカリ光')
+    const a_ = '単語'
+    const a = p.convert(a_)
+    assert.equal(a, a_)
+    const b_ = 'イカリ光'
+    const b = p.convert(b_)
+    assert.equal(b, b_)
+    const c_ = 'A=50 ※ hogehoge\nAを表示'
+    const c = p.convert(c_)
+    assert.equal(c, c_)
   })
   it('convert num flag', () => {
     const a = p.convert('１２３')
