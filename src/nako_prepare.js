@@ -26,6 +26,18 @@ class NakoPrepare {
     // 参考) http://anti.rosx.net/etc/memo/002_space.html
     this.SPACES = {
       0x20: true,
+      0x2000: true, // EN QUAD
+      0x2002: true, // EN SPACE
+      0x2003: true, // EM SPACE
+      0x2004: true, // THREE-PER-EM SPACE
+      0x2005: true, // FOUR-PER-EM SPACE
+      0x2006: true, // SIX-PER-EM SPACE
+      0x2007: true, // FIGURE SPACE
+      0x2009: true, // THIN SPACE
+      0x200A: true, // HAIR SPACE
+      0x200B: true, // ZERO WIDTH SPACE
+      0x202F: true, // NARROW NO-BREAK SPACE
+      0x205F: true, // MEDIUM MATHEMATICAL SPACE
       0x3000: true, // 全角スペース
       0x3164: true  // HANGUL FILLER
     }
@@ -45,8 +57,6 @@ class NakoPrepare {
     if (this.HYPHENS[c]) return '-'
     if (this.TILDES[c]) return '~'
     if (this.SPACES[c]) return ' '
-    // スペースエリア
-    if (c >= 0x2000 && c <= 0x2060) return ' '
     return ch
   }
 
@@ -92,11 +102,6 @@ class NakoPrepare {
         i++
         flagStr = true
         endOfStr = '』'
-        continue
-      }
-      if (c === '※') {
-        res += c
-        i++
         continue
       }
       const c1 = this.convert1ch(c)
