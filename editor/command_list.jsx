@@ -1,5 +1,5 @@
-/* globals ajaxGet */
 import React from 'react'
+import { ajaxGet } from './common'
 import PropTypes from 'prop-types'
 import CommandGroup from './command_group'
 
