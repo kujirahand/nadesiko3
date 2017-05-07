@@ -99,7 +99,7 @@ const PluginTurtle = {
               tt.x = m[1]
               tt.y = m[2]
               break
-            case 'mv':
+            case 'mv': {
               // 線を引く
               me.line(tt, tt.x, tt.y, m[1], m[2])
               // カメの角度を変更
@@ -110,7 +110,8 @@ const PluginTurtle = {
               tt.x = m[1]
               tt.y = m[2]
               break
-            case 'fd':
+            }
+            case 'fd': {
               const fdv = m[1] * m[2]
               const rad = tt.dir * 0.017453292519943295
               const x2 = tt.x + Math.cos(rad) * fdv
@@ -119,21 +120,25 @@ const PluginTurtle = {
               tt.x = x2
               tt.y = y2
               break
-            case 'angle':
+            }
+            case 'angle': {
               const angle = m[1]
               tt.dir = ((angle - 90 + 360) % 360)
               tt.f_update = true
               break
-            case 'rotr':
+            }
+            case 'rotr': {
               const rv = m[1]
               tt.dir = (tt.dir + rv) % 360
               tt.f_update = true
               break
-            case 'rotl':
+            }
+            case 'rotl': {
               const lv = m[1]
               tt.dir = (tt.dir - lv + 360) % 360
               tt.f_update = true
               break
+            }
             case 'color':
               tt.color = m[1]
               break

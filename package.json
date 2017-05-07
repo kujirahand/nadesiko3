@@ -42,15 +42,15 @@
   },
   "eslintConfig": {
     "extends": [
-      "standard"
+      "standard",
+      "eslint:recommended",
+      "plugin:react/recommended"
     ],
     "env": {
-      "mocha": true,
-      "browser": true
+      "mocha": true
     },
     "rules": {
-      "no-eval": "off",
-      "react/jsx-uses-vars": 1
+      "no-console": "off"
     },
     "plugins": [
       "react"
