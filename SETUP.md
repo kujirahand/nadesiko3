@@ -101,3 +101,24 @@ $ npm install -g npm-check-updates
 $ npm-check-updates -u
 $ npm update --no-optional
 ```
+
+### Electron
+コマンドラインから以下を実行して、electronとasarをインストール。
+
+```
+$ npm install -g electron asar
+```
+
+以下のコマンドを実行することで、Electronによるなでしこが起動。
+
+```
+$ npm run electron
+```
+
+ビルドは以下のコマンドで行う。
+
+```
+$ npm run build:electron
+```
+
+ビルドしたenako3.asarを配布可能な形式にする方法については[Electronでアプリケーションを作ってみよう - Qiita](http://qiita.com/Quramy/items/a4be32769366cfe55778#配布してみる)を参照。
