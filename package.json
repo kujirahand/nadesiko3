@@ -5,7 +5,7 @@
   "main": "nako3",
   "scripts": {
     "test": "mocha",
-    "start": "node server.js",
+    "start": "lite-server",
     "build": "webpack",
     "build:parser": "pegjs --cache -o src/nako_parser.js src/nako_parser.pegjs",
     "build:command": "node src/cnako3.js batch/build_command.nako3",
@@ -70,17 +70,16 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-standard": "^3.0.1",
+    "lite-server": "^2.3.0",
     "mocha": "^3.2.0",
     "pegjs": "^0.10.0",
     "pump": "^1.0.2",
     "source-map": "^0.5.6",
+    "uuid": "^3.0.1",
     "webpack": "^2.3.0"
   },
   "dependencies": {
-    "express": "^4.15.2",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "serve-index": "^1.8.0",
-    "superagent": "^3.5.1"
+    "react-dom": "^15.4.2"
   }
 }
