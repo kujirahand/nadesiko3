@@ -25,7 +25,7 @@ export default class CommandGroup extends React.Component {
         const right = org.substr(cur)
         txt.value = left + paste + right
         txt.focus()
-      }} data-paste={paste}>[{cName}]&nbsp;</span>)
+      }} data-paste={paste} style={{cursor: 'pointer'}}>[{cName}]&nbsp;</span>)
     }
     return (
       <li>
