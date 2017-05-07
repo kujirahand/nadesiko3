@@ -7,6 +7,7 @@ Node.jsをインストールしておく。
 コマンドラインから以下を実行して、必要なライブラリをインストール。
 
 ```
+$ npm install -g npm-check-updates electron asar
 $ npm install --no-optional
 ```
 
@@ -89,11 +90,6 @@ $ npm run build:command
 ```
 
 ### Node.jsのパッケージの更新方法
-コマンドラインから以下を実行して、npm-check-updatesをインストール。
-
-```
-$ npm install -g npm-check-updates
-```
 
 コマンドラインから以下を実行して、Node.jsのパッケージを更新。
 
@@ -103,11 +99,6 @@ $ npm update --no-optional
 ```
 
 ### Electron
-コマンドラインから以下を実行して、electronとasarをインストール。
-
-```
-$ npm install -g electron asar
-```
 
 以下のコマンドを実行することで、Electronによるなでしこが起動。
 
