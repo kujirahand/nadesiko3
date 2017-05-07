@@ -6,9 +6,11 @@
   "scripts": {
     "test": "mocha",
     "start": "lite-server",
+    "electron": "electron src/enako3.js",
     "build": "webpack",
     "build:parser": "pegjs --cache -o src/nako_parser.js src/nako_parser.pegjs",
     "build:command": "node src/cnako3.js batch/build_command.nako3",
+    "build:electron": "asar pack src/enako3.js release/enako3.asar",
     "watch": "webpack --watch"
   },
   "repository": {
@@ -42,15 +44,15 @@
   },
   "eslintConfig": {
     "extends": [
-      "standard"
+      "standard",
+      "eslint:recommended",
+      "plugin:react/recommended"
     ],
     "env": {
-      "mocha": true,
-      "browser": true
+      "mocha": true
     },
     "rules": {
-      "no-eval": "off",
-      "react/jsx-uses-vars": 1
+      "no-console": "off"
     },
     "plugins": [
       "react"
@@ -73,6 +75,7 @@
     "lite-server": "^2.3.0",
     "mocha": "^3.2.0",
     "pegjs": "^0.10.0",
+    "prop-types": "^15.5.8",
     "pump": "^1.0.2",
     "source-map": "^0.5.6",
     "uuid": "^3.0.1",

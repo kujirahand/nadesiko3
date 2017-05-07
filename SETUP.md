@@ -7,6 +7,7 @@ Node.jsをインストールしておく。
 コマンドラインから以下を実行して、必要なライブラリをインストール。
 
 ```
+$ npm install -g npm-check-updates electron asar
 $ npm install --no-optional
 ```
 
@@ -72,9 +73,9 @@ $ cnako3 $NAKO_HOME/batch/pickup_command.nako
 
 demoディレクトリに、なでしこをWebブラウザから使うデモがある。
 
-大抵の機能は、WebブラウザにHTMLファイルをドラッグ＆ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないのと利用することはできない。
+大抵の機能は、WebブラウザにHTMLファイルをドラッグ＆ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないと利用することはできない。
 
-なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:8081](http://localhost:8081)でサーバーが起動。
+なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:3000](http://localhost:3000)でサーバーが起動。
 
 ```
 $ npm start
@@ -89,11 +90,6 @@ $ npm run build:command
 ```
 
 ### Node.jsのパッケージの更新方法
-コマンドラインから以下を実行して、npm-check-updatesをインストール。
-
-```
-$ npm install -g npm-check-updates
-```
 
 コマンドラインから以下を実行して、Node.jsのパッケージを更新。
 
@@ -101,3 +97,19 @@ $ npm install -g npm-check-updates
 $ npm-check-updates -u
 $ npm update --no-optional
 ```
+
+### Electron
+
+以下のコマンドを実行することで、Electronによるなでしこが起動。
+
+```
+$ npm run electron
+```
+
+ビルドは以下のコマンドで行う。
+
+```
+$ npm run build:electron
+```
+
+ビルドしたenako3.asarを配布可能な形式にする方法については[Electronでアプリケーションを作ってみよう - Qiita](http://qiita.com/Quramy/items/a4be32769366cfe55778#配布してみる)を参照。

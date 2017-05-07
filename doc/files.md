@@ -37,3 +37,7 @@ PEGJSによって、なでしこ構文から、構文木を生成するもの。
 ### src/wnako3.js
 
 Webブラウザ用。
+
+### src/enako3.js
+
+Electronによるアプリ本体。
