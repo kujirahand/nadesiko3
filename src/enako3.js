@@ -1,7 +1,7 @@
 'use strict'
 
 const path = require('path')
-const electron = require('enako3')
+const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu
