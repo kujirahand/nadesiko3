@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>なでしこ3 - script要素を実行するデモ</title>
-    <!-- なでしこを使う準備 -->
-    <script src="../release/wnako3.js?run"></script>
-    <script type="なでしこ">
-        # # # # # # # # # # # # # # # # #
-        # なでしこのプログラムをここに書く
-        # # # # # # # # # # # # # # # # #
-        
-        # input#a_txtタグに値を設定する
-        「input#a_txt」のDOM要素取得
-        「こんにちは★」をDOMテキスト設定。
-        
-        # 続けて、スタイルを指定する
-        「backgroundColor」に青色をDOMスタイル設定。
-        「color」に白色をDOMスタイル設定。
-        「fontSize」に「45px」をDOMスタイル設定。
-        
-        # メッセージを表示
-        情報＝「画面を右クリックして」
-        情報＝情報＆「『ページのソースを表示』から、」
-        情報＝情報＆「このプログラムを表示できます。」
-        「#info」に情報をDOMテキスト設定。
-    </script>
+  <meta charset="utf-8">
+  <title>なでしこ3 - script要素を実行するデモ</title>
+  <!-- なでしこを使う準備 -->
+  <script src="../release/wnako3.js?run"></script>
+  <script type="なでしこ">
+    # # # # # # # # # # # # # # # # #
+    # なでしこのプログラムをここに書く
+    # # # # # # # # # # # # # # # # #
+
+    # input#a_txtタグに値を設定する
+    「input#a_txt」のDOM要素取得
+    「こんにちは★」をDOMテキスト設定。
+
+    # 続けて、スタイルを指定する
+    「backgroundColor」に青色をDOMスタイル設定。
+    「color」に白色をDOMスタイル設定。
+    「fontSize」に「45px」をDOMスタイル設定。
+  </script>
 </head>
 <body>
 <h1>なでしこ3デモ - script要素を実行する方法</h1>
 <div>
-    <div><p id="info"></p></div>
-    <div><input type="text" id="a_txt" style="width:300px"></div>
-    <br/>
+  <div>
+    <p>
+      以下のいずれかの方法で、このプログラムを表示することができます。
+    <ul>
+      <li>画面を右クリック &rarr; 『ページのソースを表示』をクリック</li>
+      <li>開発者ツールを開く</li>
+    </ul>
+    </p>
+  </div>
+  <div><input type="text" id="a_txt" style="width:300px"></div>
+  <br />
 </div>
 <hr>
 <div>
-    <ul>
-        <li><a href="index.html">デモトップへ戻る</a></li>
-    </ul>
+  <ul>
+    <li><a href="index.html">デモトップへ戻る</a></li>
+  </ul>
 </div>
 </body>
 </html>
