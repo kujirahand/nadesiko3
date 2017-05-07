@@ -45,4 +45,20 @@ describe('prepare', () => {
     const b = p.convert('１２３S{{{{{１２３}}}}}１２３')
     assert.equal(b, '123S{{{{{１２３}}}}}123')
   })
+  it('line comment 1', () => {
+    const a = p.convert('N=36 # 何角形かを指定')
+    assert.equal(a, 'N=36 。# 何角形かを指定')
+    const b = p.convert('N=36 ＃ 何角形かを指定')
+    assert.equal(b, 'N=36 。# 何角形かを指定')
+  })
+  it('line comment 2', () => {
+    const a = p.convert('N=36 // 何角形かを指定')
+    assert.equal(a, 'N=36 。// 何角形かを指定')
+    const b = p.convert('N=36 ／／ 何角形かを指定')
+    assert.equal(b, 'N=36 。// 何角形かを指定')
+  })
+  it('line comment 3', () => {
+    const a = p.convert('N=36 ※ 何角形かを指定')
+    assert.equal(a, 'N=36 。※ 何角形かを指定')
+  })
 })

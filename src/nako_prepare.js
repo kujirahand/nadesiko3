@@ -63,6 +63,8 @@ class NakoPrepare {
   convert (src) {
     let flagStr = false
     let flagStr2 = false
+    let flagComment = false
+    let flagSlash = false
     let endOfStr
     let res = ''
     let i = 0
@@ -130,6 +132,39 @@ class NakoPrepare {
           endOfStr = '}}}'
           continue
         }
+        continue
+      }
+      if (!flagComment && flagSlash) {
+        if (c1 === '/') {
+          flagComment = true
+          res += '。'
+        }
+        res += '/' + c1
+        flagSlash = false
+        i++
+        continue
+      }
+      if (!flagComment && !flagSlash && c1 === '/') {
+        flagSlash = true
+        i++
+        continue
+      }
+      if (flagComment && c === '\n') {
+        flagComment = false
+        res += c1
+        i++
+        continue
+      }
+      if (!flagComment && c === '※') {
+        flagComment = true
+        res += '。' + c
+        i++
+        continue
+      }
+      if (!flagComment && c1 === '#') {
+        flagComment = true
+        res += '。' + c1
+        i++
         continue
       }
       // 変換したものを追加
