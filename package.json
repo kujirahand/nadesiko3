@@ -73,6 +73,7 @@
     "lite-server": "^2.3.0",
     "mocha": "^3.2.0",
     "pegjs": "^0.10.0",
+    "prop-types": "^15.5.8",
     "pump": "^1.0.2",
     "source-map": "^0.5.6",
     "uuid": "^3.0.1",
