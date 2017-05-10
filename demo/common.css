@@ -15,7 +15,7 @@ h1 {
   color: black;
 }
 
-h3, .info, #err, #src_box, .src {
+h3, .info, .err, #src_box, .src {
   font-size: 1em;
 }
 
@@ -57,11 +57,11 @@ button {
   padding: 0;
 }
 
-.info, #err, #src_box, .src {
+.info, .err, #src_box, .src {
   line-height: 1.5em;
 }
 
-.info, #err {
+.info, .err {
   border: 1px solid gray;
   padding: 8px;
 }
@@ -70,8 +70,9 @@ button {
   background-color: #f0fff0;
 }
 
-#err {
+.err {
   background-color: #fff0f0;
+  display: none;
 }
 
 #src_box, .src {
