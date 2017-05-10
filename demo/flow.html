@@ -1,99 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>なでしこ3</title>
-    <!-- なでしこを使う準備 -->
-    <script src="../release/wnako3.js"></script>
-    <script src="common.js"></script>
-    <script src="basic_flow.js"></script>
-    <link rel="stylesheet" type="text/css" href="common.css">
-    <link rel="stylesheet" type="text/css" href="flow.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>なでしこ3</title>
+  <!-- common -->
+  <link rel="stylesheet" type="text/css" href="common.css">
+  <!-- flow -->
+  <link rel="stylesheet" type="text/css" href="flow.css">
 </head>
 <body>
 <h1>なでしこ3デモ</h1>
 <hr>
 <h3>試してみよう！</h3>
 <div class="sbox">
-    <h4>単純な繰り返し</h4>
-    <textarea id="calc_txt" class="src" rows="8" title="単純な繰り返し">
-# --- 単純な繰り返し ---
-3回「ワン」と表示。
-# --- 変数を指定する場合 ---
-N=5
-(N)回「にゃーん」と表示。</textarea><br>
-    <button onclick="runBox('calc_txt')">実行</button>
-    <div><p id="calc_txt_info" class="info"></p></div>
+  <h4>単純な繰り返し</h4>
+  <div class="editor-component">
+    <script type="application/json">
+      {
+        "title": "単純な繰り返し",
+        "code": "# --- 単純な繰り返し ---\n3回「ワン」と表示。\n# --- 変数を指定する場合 ---\nN=5\n(N)回「にゃーん」と表示。"
+      }
+    </script>
+  </div>
 </div>
 
 <div class="sbox">
-    <h4>条件分岐</h4>
-    <textarea id="var_txt" class="src" rows="10" title="条件分岐">
---------------
-A=50
-もし、A＝50ならば
-　　「Aは50」と表示。
-違えば
-　　「Aは50ではない」と表示。
-ここまで。
---------------
-B=30
-もし、B＝50ならば
-　　「Bは50」と表示。
-違えば
-　　「Bは50ではない」と表示。
---------------</textarea><br>
-    <div><p id="var_txt_info" class="info"></p></div>
-    <button onclick="runBox('var_txt')">実行</button>
-    <p>※インデントによるブロック表現は廃止されました。
-        ブロックの末尾には、「ここまで」または「ーーー」や「---」と書きます。「-」の数は3つ以上ならいくつでも大丈夫です。</p>
+  <h4>条件分岐</h4>
+  <div class="editor-component">
+    <script type="application/json">
+      {
+        "title": "条件分岐",
+        "code": "--------------\nA=50\nもし、A＝50ならば\n「Aは50」と表示。\n違えば\n「Aは50ではない」と表示。\nここまで。\n--------------\nB=30\nもし、B＝50ならば\n「Bは50」と表示。\n違えば\n「Bは50ではない」と表示。\n--------------"
+      }
+    </script>
+  </div>
+  <p>※インデントによるブロック表現は廃止されました。
+    ブロックの末尾には、「ここまで」または「ーーー」や「---」と書きます。「-」の数は3つ以上ならいくつでも大丈夫です。</p>
 </div>
 
 <div class="sbox">
-    <h4>ループ変数を用いた繰り返し</h4>
-    <textarea id="bmi_txt" class="src" rows="5" title="ループ変数を用いた繰り返し">
-Nを１から５まで繰り返す
-　　Ｎを表示。
-ここまで。</textarea><br>
-    <div><p id="bmi_txt_info" class="info"></p></div>
-    <button onclick="runBox('bmi_txt')">実行</button>
-    <br>
+  <h4>ループ変数を用いた繰り返し</h4>
+  <div class="editor-component">
+    <script type="application/json">
+      {
+        "title": "ループ変数を用いた繰り返し",
+        "code": "Nを１から５まで繰り返す\nＮを表示。\nここまで。"
+      }
+    </script>
+  </div>
 </div>
 
 <div class="sbox">
-    <h4>指定条件付きの繰り返し</h4>
-    <textarea id="while_txt" class="src" rows="8" title="指定条件付きの繰り返し">
-A=1
-(A≦3)の間
-　　「{A}回目」を表示
-　　A=A+1
-------
-B=3
-(B>0)の間
-　　「B={B}」を表示。
-　　B=B-1
-------</textarea><br>
-    <div><p id="while_txt_info" class="info"></p></div>
-    <button onclick="runBox('while_txt')">実行</button>
-    <br>
+  <h4>指定条件付きの繰り返し</h4>
+  <div class="editor-component">
+    <script type="application/json">
+      {
+        "title": "指定条件付きの繰り返し",
+        "code": "A=1\n(A≦3)の間\n「{A}回目」を表示\nA=A+1\n------\nB=3\n(B>0)の間\n「B={B}」を表示。\nB=B-1\n------"
+      }
+    </script>
+  </div>
 </div>
 
 <div class="sbox">
-    <h4>簡易条件文</h4>
-    <textarea id="if2_txt" class="src" rows="10" title="簡易条件文">
---------------
-N=10
-もしNが100未満ならば「OK1」と表示。
-もしNが5以上ならば「OK2」と表示。
-もし(N*2)が50以下ならば「OK3」と表示。
---------------
-N=30
-もしNが10以下ならば「NG」と表示。
-違えば「OK4」と表示。
---------------</textarea><br>
-    <div><p id="if2_txt_info" class="info"></p></div>
-    <button onclick="runBox('if2_txt')">実行</button>
+  <h4>簡易条件文</h4>
+  <div class="editor-component">
+    <script type="application/json">
+      {
+        "title": "簡易条件文",
+        "code": "--------------\nN=10\nもしNが100未満ならば「OK1」と表示。\nもしNが5以上ならば「OK2」と表示。\nもし(N*2)が50以下ならば「OK3」と表示。\n--------------\nN=30\nもしNが10以下ならば「NG」と表示。\n違えば「OK4」と表示。\n--------------"
+      }
+    </script>
+  </div>
 </div>
+
+<!-- editor -->
+<!--React.jsのスクリプトはHTMLの末尾で読み込む-->
+<script src="../release/editor.js"></script>
 </body>
 </html>

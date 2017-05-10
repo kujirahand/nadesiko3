@@ -26,6 +26,7 @@ module.exports = {
         test: /\.jsx$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+        include: [editorPath, srcPath],
         query: {
           presets: ['env', 'react']
         }

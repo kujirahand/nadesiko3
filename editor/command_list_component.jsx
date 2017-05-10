@@ -12,7 +12,7 @@ export default class CommandListComponent extends React.Component {
     return (
       <div>
         <CommandListButton flagShow={this.state.flagShow}
-                           onChanged={(e) => this.setState({'flagShow': !this.state.flagShow})} />
+                           onChanged={() => this.setState({'flagShow': !this.state.flagShow})} />
         <CommandList flagShow={this.state.flagShow} />
       </div>
     )

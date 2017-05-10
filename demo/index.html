@@ -4,13 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>なでしこ3</title>
-  <!-- なでしこを使う準備 -->
-  <script src="../release/wnako3.js"></script>
   <!-- common -->
-  <script src="common.js"></script>
   <link rel="stylesheet" type="text/css" href="common.css">
   <!-- index -->
-  <script src="index.js"></script>
   <link rel="stylesheet" type="text/css" href="index.css">
   <!-- editor -->
   <link rel="stylesheet" type="text/css" href="editor.css">
@@ -20,18 +16,13 @@
 <h1>なでしこ3のデモ</h1>
 <div id="editor" class="edit_div">
   <p class="edit_head">簡易エディタ:</p>
-  <textarea id="src_box" rows="8" title="簡易エディタ">
-「こんにちは！」と表示。
-(1 + 2)×3を表示。</textarea><br>
-  <!-- buttons -->
-  <div class="buttons">
-    <button onclick="runBox(null)">実行</button>
-    <button onclick="resetBox()">クリア</button>
-  </div>
-  <div id="err"></div>
-  <div>
-    <p class="edit_head">実行結果:</p>
-    <p id="info" class="info"></p>
+  <div class="editor-component">
+    <script type="application/json">
+      {
+        "title": "簡易エディタ",
+        "code": "「こんにちは！」と表示。\n(1 + 2)×3を表示。"
+      }
+    </script>
   </div>
   <!-- command-list -->
   <div id="command-list-component"></div>
@@ -48,8 +39,9 @@
     <li><a href="runscript.html">スクリプトタグになでしこを書く</a></li>
   </ul>
 </div>
-</body>
+
 <!-- editor -->
 <!--React.jsのスクリプトはHTMLの末尾で読み込む-->
 <script src="../release/editor.js"></script>
+</body>
 </html>
