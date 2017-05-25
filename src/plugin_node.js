@@ -1,8 +1,8 @@
 // plugin_node.js
 
 const PluginNode = {
-  /// ファイル入出力
-  '開': { /// ファイルSを開く /// ひらく
+  // @ファイル入出力
+  '開': { // @ファイルSを開く // @ひらく
     type: 'func',
     josi: [['を', 'から']],
     fn: function (s) {
@@ -10,7 +10,7 @@ const PluginNode = {
       return fs.readFileSync(s, 'utf-8')
     }
   },
-  '読': { /// ファイルSを開く /// よむ
+  '読': { // @ファイルSを開く // @よむ
     type: 'func',
     josi: [['を', 'から']],
     fn: function (s) {
@@ -18,7 +18,7 @@ const PluginNode = {
       return fs.readFileSync(s, 'utf-8')
     }
   },
-  '保存': { /// ファイルFヘSを書き込む /// ほぞん
+  '保存': { // @ファイルFヘSを書き込む // @ほぞん
     type: 'func',
     josi: [['へ', 'に'], ['を']],
     fn: function (f, s) {
@@ -27,7 +27,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '起動': { /// シェルコマンドSを起動 /// きどう
+  '起動': { // @シェルコマンドSを起動 // @きどう
     type: 'func',
     josi: [['を']],
     fn: function (s) {
@@ -36,14 +36,14 @@ const PluginNode = {
       return r.toString()
     }
   },
-  '終': { /// Nodeでプログラム実行を強制終了する /// 終わる
+  '終': { // @Nodeでプログラム実行を強制終了する // @終わる
     type: 'func',
     josi: [],
     fn: function (s) {
       process.exit()
     }
   },
-  'カレントディレクトリ取得': { /// カレントディレクトリを返す /// かれんとでぃれくとりしゅとく
+  'カレントディレクトリ取得': { // @カレントディレクトリを返す // @かれんとでぃれくとりしゅとく
     type: 'func',
     josi: [],
     fn: function () {
@@ -52,7 +52,7 @@ const PluginNode = {
       return path.resolve(cwd)
     }
   },
-  'カレントディレクトリ変更': { /// カレントディレクトリをDIRに変更する /// かれんとでぃれくとりへんこう
+  'カレントディレクトリ変更': { // @カレントディレクトリをDIRに変更する // @かれんとでぃれくとりへんこう
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (dir) {
@@ -60,7 +60,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '作業フォルダ取得': { /// カレントディレクトリを返す /// さぎょうふぉるだしゅとく
+  '作業フォルダ取得': { // @カレントディレクトリを返す // @さぎょうふぉるだしゅとく
     type: 'func',
     josi: [],
     fn: function () {
@@ -69,7 +69,7 @@ const PluginNode = {
       return path.resolve(cwd)
     }
   },
-  '作業フォルダ変更': { /// カレントディレクトリをDIRに変更する /// さぎょうふぉるだへんこう
+  '作業フォルダ変更': { // @カレントディレクトリをDIRに変更する // @さぎょうふぉるだへんこう
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (dir) {
@@ -77,7 +77,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '母艦パス取得': { /// スクリプトのあるディレクトリを返す /// ぼかんぱすしゅとく
+  '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
     type: 'func',
     josi: [],
     fn: function () {
@@ -92,14 +92,14 @@ const PluginNode = {
       return path.dirname(path.resolve(nakofile))
     }
   },
-  '環境変数取得': { /// 環境変数の一覧を返す /// かんきょうへんすうしゅとく
+  '環境変数取得': { // @環境変数の一覧を返す // @かんきょうへんすうしゅとく
     type: 'func',
     josi: [],
     fn: function () {
       return process.env
     }
   },
-  'ファイル列挙': { /// パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 /// ふぁいるれっきょ
+  'ファイル列挙': { // @パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 // @ふぁいるれっきょ
     type: 'func',
     josi: [['の', 'を', 'で']],
     fn: function (s) {
@@ -122,7 +122,7 @@ const PluginNode = {
       }
     }
   },
-  '全ファイル列挙': { /// パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。 /// ぜんふぁいるれっきょ
+  '全ファイル列挙': { // @パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。 // @ぜんふぁいるれっきょ
     type: 'func',
     josi: [['の', 'を', 'で']],
     fn: function (s) {
@@ -161,7 +161,7 @@ const PluginNode = {
       return result
     }
   },
-  'ファイル名抽出': { /// フルパスのファイル名Sからファイル名部分を抽出して返す /// ふぁいるめいちゅうしゅつ
+  'ファイル名抽出': { // @フルパスのファイル名Sからファイル名部分を抽出して返す // @ふぁいるめいちゅうしゅつ
     type: 'func',
     josi: [['から', 'の']],
     fn: function (s) {
@@ -169,7 +169,7 @@ const PluginNode = {
       return path.basename(s)
     }
   },
-  'パス抽出': { /// ファイル名Sからパス部分を抽出して返す /// ぱすちゅうしゅつ
+  'パス抽出': { // @ファイル名Sからパス部分を抽出して返す // @ぱすちゅうしゅつ
     type: 'func',
     josi: [['から', 'の']],
     fn: function (s) {
@@ -177,7 +177,7 @@ const PluginNode = {
       return path.dirname(s)
     }
   },
-  '存在': { /// ファイルPATHが存在するか確認して返す /// そんざい
+  '存在': { // @ファイルPATHが存在するか確認して返す // @そんざい
     type: 'func',
     josi: [['が', 'の']],
     fn: function (path) {
