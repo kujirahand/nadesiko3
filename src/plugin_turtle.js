@@ -183,6 +183,78 @@ const PluginTurtle = {
             return
           }
           console.log('[TURTLE] finished.')
+        },
+        createTurtle: function (imageUrl, sys) {
+          // カメの情報を sys._turtle リストに追加
+          const id = sys._turtle.list.length
+          const tt = {
+            id: id,
+            img: null,
+            canvas: null,
+            ctx: null,
+            dir: 270, // 上向き
+            cx: 32,
+            cy: 32,
+            x: 0,
+            y: 0,
+            color: 'black',
+            lineWidth: 4,
+            flagDown: true,
+            f_update: true,
+            flagLoaded: false,
+            f_visible: true,
+            mlist: []
+          }
+          sys._turtle.list.push(tt)
+          sys._turtle.target = id
+          // 画像を読み込む
+          tt.img = document.createElement('img')
+          tt.canvas = document.createElement('canvas')
+          tt.ctx = tt.canvas.getContext('2d')
+          tt.canvas.id = id
+          tt.img.src = imageUrl
+          tt.img.onload = () => {
+            tt.cx = tt.img.width / 2
+            tt.cy = tt.img.height / 2
+            tt.canvas.width = tt.img.width
+            tt.canvas.height = tt.img.height
+            tt.flagLoaded = true
+            sys._turtle.drawTurtle(tt.id)
+            console.log('turtle.onload')
+          }
+          tt.img.onerror = () => {
+            console.log('カメの読み込みに失敗')
+            tt.flagLoaded = true
+            tt.f_visible = false
+            sys._turtle.drawTurtle(tt.id)
+          }
+          tt.canvas.style.position = 'absolute'
+          document.body.appendChild(tt.canvas)
+          // 描画先をセットする
+          const canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
+          console.log('カメ描画先=', canvasId, sys.__varslist[0]['カメ描画先'])
+          const cv = sys._turtle.canvas = document.getElementById(canvasId)
+          if (!sys._turtle.canvas) {
+            console.log('[ERROR] カメ描画先が見当たりません。' + canvasId)
+            return
+          }
+          const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d')
+          ctx.lineWidth = 4
+          ctx.strokeStyle = 'black'
+          ctx.lineCap = 'round'
+          const rect = cv.getBoundingClientRect()
+          const rx = rect.left + window.pageXOffset
+          const ry = rect.top + window.pageYOffset
+          sys._turtle.canvas_r = {
+            'left': rx,
+            'top': ry,
+            width: rect.width,
+            height: rect.height
+          }
+          // デフォルト位置の設定
+          tt.x = rect.width / 2
+          tt.y = rect.height / 2
+          return id
         }
       }
     }
@@ -193,75 +265,26 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      // カメの情報を sys._turtle リストに追加
-      const id = sys._turtle.list.length
-      const tt = {
-        id: id,
-        img: null,
-        canvas: null,
-        ctx: null,
-        dir: 270, // 上向き
-        cx: 32,
-        cy: 32,
-        x: 0,
-        y: 0,
-        color: 'black',
-        lineWidth: 4,
-        flagDown: true,
-        f_update: true,
-        flagLoaded: false,
-        f_visible: true,
-        mlist: []
-      }
-      sys._turtle.list.push(tt)
-      sys._turtle.target = id
-      // 画像を読み込む
-      tt.img = document.createElement('img')
-      tt.canvas = document.createElement('canvas')
-      tt.ctx = tt.canvas.getContext('2d')
-      tt.canvas.id = id
-      tt.img.src = sys.__getSysValue('カメ画像URL', 'turtle.png')
-      tt.img.onload = () => {
-        tt.cx = tt.img.width / 2
-        tt.cy = tt.img.height / 2
-        tt.canvas.width = tt.img.width
-        tt.canvas.height = tt.img.height
-        tt.flagLoaded = true
-        sys._turtle.drawTurtle(tt.id)
-        console.log('turtle.onload')
-      }
-      tt.img.onerror = () => {
-        console.log('カメの読み込みに失敗')
-        tt.flagLoaded = true
-        tt.f_visible = false
-        sys._turtle.drawTurtle(tt.id)
-      }
-      tt.canvas.style.position = 'absolute'
-      document.body.appendChild(tt.canvas)
-      // 描画先をセットする
-      const canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
-      console.log('カメ描画先=', canvasId, sys.__varslist[0]['カメ描画先'])
-      const cv = sys._turtle.canvas = document.getElementById(canvasId)
-      if (!sys._turtle.canvas) {
-        console.log('[ERROR] カメ描画先が見当たりません。' + canvasId)
-        return
-      }
-      const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d')
-      ctx.lineWidth = 4
-      ctx.strokeStyle = 'black'
-      ctx.lineCap = 'round'
-      const rect = cv.getBoundingClientRect()
-      const rx = rect.left + window.pageXOffset
-      const ry = rect.top + window.pageYOffset
-      sys._turtle.canvas_r = {
-        'left': rx,
-        'top': ry,
-        width: rect.width,
-        height: rect.height
-      }
-      // デフォルト位置の設定
-      tt.x = rect.width / 2
-      tt.y = rect.height / 2
+      const imageUrl = sys.__getSysValue('カメ画像URL', 'turtle.png')
+      const id = sys._turtle.createTurtle(imageUrl, sys)
+      return id
+    }
+  },
+  'ゾウ作成': { // @ゾウの画像でタートルグラフィックスを開始してIDを返す // @ぞうさくせい
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const imageUrl = 'turtle-elephant.png'
+      const id = sys._turtle.createTurtle(imageUrl, sys)
+      return id
+    }
+  },
+  'パンダ作成': { // @パンダの画像でタートルグラフィックスを開始してIDを返す // @ぱんださくせい
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const imageUrl = 'turtle-panda.png'
+      const id = sys._turtle.createTurtle(imageUrl, sys)
       return id
     }
   },

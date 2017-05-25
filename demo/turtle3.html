@@ -18,6 +18,36 @@
 <h1><a name="top">なでしこ3/タートルグラフィックス その3</a></h1>
 
 <div class="sbox">
+    <h4><a name="sankaku_txt_head">ゾウやパンダを作成する</a></h4>
+    <textarea id="sankaku_txt" class="src" rows="5" title="ゾウやパンダ作成">
+100にカメ速度設定。
+# --- ゾウ
+ゾウ作成。
+[80, 80]にカメ起点移動
+90にカメ角度設定
+N=50
+20回
+　　Nだけカメ進む
+　　90だけカメ右回転
+　　N=N+3
+ここまで。
+# --- パンダ
+パンダ作成。
+[200, 200]にカメ起点移動
+90にカメ角度設定
+N=50
+20回
+　　Nだけカメ進む
+　　90だけカメ右回転
+　　N=N+3
+ここまで。
+    </textarea>
+    <div><p id="sankaku_txt_info" class="info"></p></div>
+    <button onclick="runBox('sankaku_txt')">実行</button>
+</div>
+
+
+<div class="sbox">
     <h4><a name="sankaku_txt_head">定期的にカメ画像を変更する</a></h4>
     <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
 # 画像のURLの配列を変数に代入
