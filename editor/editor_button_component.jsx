@@ -14,7 +14,7 @@ export default function EditorButtonComponent (props) {
         } catch (e) {
           props.onErrorChanged(e)
         }
-      }}>
+      }} style={{width: '7em'}}>
         ダウンロード
       </button>
       <button onClick={() => {
