@@ -112,7 +112,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を'], ['で']],
     fn: function (js) {
-      return eval(js)
+      return eval(js) // eslint-disable-line
     }
   },
 

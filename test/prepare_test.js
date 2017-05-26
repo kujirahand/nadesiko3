@@ -14,10 +14,10 @@ describe('prepare', () => {
     const a_ = '単語'
     const a = p.convert(a_)
     assert.equal(a, a_)
-    const b_ = 'イカリ光'
+    const b_ = '牛乳|美貌|麦油|破棄'
     const b = p.convert(b_)
     assert.equal(b, b_)
-    const c_ = 'A=50 ※ hogehoge\nAを表示'
+    const c_ = 'A=50 #hogehoge\nAを表示'
     const c = p.convert(c_)
     assert.equal(c, c_)
   })
@@ -44,5 +44,15 @@ describe('prepare', () => {
     assert.equal(a, '123S{{{１２３}}}123')
     const b = p.convert('１２３S{{{{{１２３}}}}}１２３')
     assert.equal(b, '123S{{{{{１２３}}}}}123')
+  })
+  it('CR+LF', () => {
+    const a = p.convert('123\r\n456\r789')
+    assert.equal(a, '123\n456\n789')
+  })
+  it('convertTable', () => {
+    const a = p.convert('123※456')
+    assert.equal(a, '123#456')
+    const b = p.convert('123、456。')
+    assert.equal(b, '123,456;')
   })
 })

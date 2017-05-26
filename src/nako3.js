@@ -169,12 +169,12 @@ class NakoCompiler {
     if (isReset) this.reset()
     const js = this.compile(code)
     let __varslist = this.__varslist = this.getVarsList()
-    let __vars = this.__vars = this.__varslist[2]
-    let __self = this.__self
+    let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
+    let __self = this.__self // eslint-disable-line
     if (isReset) this.clearLog()
     try {
       __varslist[0].line = -1 // コンパイルエラーを調べるため
-      eval(js)
+      eval(js) // eslint-disable-line
     } catch (e) {
       this.js = js
       throw new NakoRuntimeError(

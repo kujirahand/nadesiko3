@@ -41,11 +41,20 @@ class NakoPrepare {
       0x3000: true, // 全角スペース
       0x3164: true  // HANGUL FILLER
     }
+    // その他の変換
+    this.convertTable = {
+      0x09: ' ', // TAB --> SPC
+      0x203B: '#', // '※' --- コメント
+      0x3001: ',', // 句点
+      0x3002: ';'  // 読点
+    }
   }
 
   // 一文字だけ変換
   convert1ch (ch) {
     const c = ch.charCodeAt(0)
+    // テーブルによる変換
+    if (this.convertTable[c]) return this.convertTable[c]
     // ASCIIエリア
     if (c < 0x7F) return ch
     // 全角半角単純変換可能 --- '！' - '～'
@@ -65,6 +74,8 @@ class NakoPrepare {
     let flagStr2 = false
     let endOfStr
     let res = ''
+    // 改行コードを統一
+    src = src.replace(/(\r\n|\r)/g, '\n')
     let i = 0
     while (i < src.length) {
       const c = src.charAt(i)
