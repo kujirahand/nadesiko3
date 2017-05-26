@@ -86,7 +86,6 @@
   },
   "dependencies": {
     "commander": "^2.9.0",
-    "date-utils": "^1.2.21",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   }
