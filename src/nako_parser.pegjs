@@ -34,18 +34,16 @@ end = ("終わる" / "終了") EOS { return {type:"end"}; }
 embed_stmt = "JS" js:nami_string_pat { return {type:"embed_code", value:js}; }
 
 def_func
-  = "●" name:word __ parenL args:def_func_arg* parenR __ EOS b:block kokomade {
-    return {type:"def_func", "name":name, "args":args, block:b, loc:location() };
+  = "●" def:def_func_name EOS b:block kokomade {
+   return {type:"def_func", "name":def.name, "args":def.args, block:b, loc:location() };
   }
-  / "●" name:word __ EOS b:block kokomade {
-    return {type:"def_func", "name":name, "args":[], block:b, loc:location() };
+  / "●" def:def_func_name EOS b:block "" {
+    error("関数『"+def.name.value+"』の定義で『ここまで』がありません。", location());
   }
-  / "●" name:word __ parenL args:def_func_arg* parenR __ EOS b:block "" {
-    error("関数『"+name.value+"』の定義で『ここまで』がありません。", location());
-  }
-  / "●" name:word __ EOS b:block "" {
-    error("関数『"+name.value+"』の定義で『ここまで』がありません。", location());
-  }
+
+def_func_name
+  = name:word SPC parenL args:def_func_arg* parenR SPC { return {"name": name, "args": args} }
+  / name:word SPC { return {"name": name, "args":[] } }
 
 def_func_arg
   = w:word j:josi "|"?

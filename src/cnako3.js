@@ -19,7 +19,7 @@ app
   .option('-d, --debug', 'デバッグモードの指定')
   .option('-c, --compile', 'コンパイルモードの指定')
   .option('-r, --run', 'コンパイルモードでも実行する')
-  .option('-e, --eval', '直接プログラムを実行するワンライナーモード')
+  .option('-e, --eval [src]', '直接プログラムを実行するワンライナーモード')
   .option('-o, --output', '出力ファイル名の指定')
   .option('-s, --silent', 'サイレントモードの指定')
   .parse(process.argv)

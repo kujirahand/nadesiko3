@@ -72,6 +72,7 @@ class NakoPrepare {
   }
 
   convert (src) {
+    if (!src) return ''
     let flagStr = false
     let flagStr2 = false
     let endOfStr
