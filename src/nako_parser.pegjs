@@ -210,9 +210,9 @@ LF = "\n" {
   }
 EOS = __ (EOS2 / line_comment)
 EOS2 = n:(";" / LF / "。" / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
-whitespace = [ \t\r、　,・]
-SPCLF = [\t\r\n 　]*
-SPC = [\t\r 　]*
+whitespace = [ \t、　,・]
+SPCLF = [\t\n 　]*
+SPC = [\t 　]*
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
 line_comment = ("//" / "#" / "※") s:$[^\n]* LF { return s; }
 comment
