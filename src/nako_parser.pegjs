@@ -34,15 +34,16 @@ end = ("終わる" / "終了") EOS { return {type:"end"}; }
 embed_stmt = "JS" js:nami_string_pat { return {type:"embed_code", value:js}; }
 
 def_func
-  = "●" def:def_func_name EOS b:block kokomade {
+  = "●" def:def_func_name "とは"? EOS b:block kokomade {
    return {type:"def_func", "name":def.name, "args":def.args, block:b, loc:location() };
   }
-  / "●" def:def_func_name EOS b:block "" {
+  / "●" def:def_func_name "とは"? EOS b:block "" {
     error("関数『"+def.name.value+"』の定義で『ここまで』がありません。", location());
   }
 
 def_func_name
-  = name:word SPC parenL args:def_func_arg* parenR SPC { return {"name": name, "args": args} }
+  = parenL args:def_func_arg* parenR SPC name:word SPC { return {"name": name, "args": args} }
+  / name:word SPC parenL args:def_func_arg* parenR SPC { return {"name": name, "args": args} }
   / name:word SPC { return {"name": name, "args":[] } }
 
 def_func_arg
