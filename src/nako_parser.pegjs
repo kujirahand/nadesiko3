@@ -226,7 +226,7 @@ blank_stmt
 // 数字関連
 number = f:"-"? v:(hex / float / int) josuusi? { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
 hex = "0x" x:$([0-9a-z]i+) { return parseInt("0x" + x, 16); }
-float = d1:$([0-9]+) "." d2:$([0-9]+) { return parseFloat( d1 + "." + d2 ); }
+float = d1:$([0-9]+) "." d2:$([0-9]+) d3:$("e" ("+" / "-") [0-9]+)? { return parseFloat( d1 + "." + d2 + d3 ); }
 int = n:$([0-9]+) { return parseInt(n, 10); }
 josuusi
   = "円" / "個" / "人" / "冊" / "匹"
