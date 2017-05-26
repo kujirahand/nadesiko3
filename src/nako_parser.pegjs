@@ -211,12 +211,12 @@ __    = (whitespace / range_comment / "_" whitespace* LF)*
 EOS   = __ (EOS2 / line_comment)
 EOS2  = n:(";" / LF / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
-line_comment = ("//" / "#" / "※") s:$[^\n]* LF { return s; }
+line_comment = ("//" / "#") s:$[^\n]* LF { return s; }
 comment
   = n:(range_comment / line_comment) {
     return {type:"comment",value:n,loc:location()};
   }
-INDENT = [ 　\t・]+
+INDENT = [ ・]+
 blank_stmt
   = INDENT { return {type:"nop"} }
   / comment
