@@ -11,6 +11,19 @@ const nako = new NakoCompiler()
 nako.silent = false
 nako.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
 
+const app = require('commander')
+app
+  .version('0.0.6')
+  .usage('[options] nakofile')
+  .option('-V, --version', 'バージョン情報の表示')
+  .option('-d, --debug', 'デバッグモードの指定')
+  .option('-c, --compile', 'コンパイルモードの指定')
+  .option('-r, --run', 'コンパイルモードでも実行する')
+  .option('-e, --eval', '直接プログラムを実行するワンライナーモード')
+  .option('-o, --output', '出力ファイル名の指定')
+  .option('-s, --silent', 'サイレントモードの指定')
+  .parse(process.argv)
+
 const opt = checkArguments()
 nakoRun(opt)
 
@@ -23,61 +36,22 @@ function checkArguments () {
     console.log('cnako3 nakofile')
     process.exit()
   }
-  let mainfile = ''
-  let output = ''
-  let source = ''
-  let flagCompile = false
-  let flagRun = false
-  let flagOneLiner = false
-  let i = 2
-  while (i < process.argv.length) {
-    const arg = process.argv[i]
-    if (arg === '-debug' || arg === '--debug') {
-      nako.debug = true
-      i++
-      continue
-    }
-    // コンパイルモードを使うか
-    if (arg === '-c' || arg === '--compile') {
-      flagCompile = true
-      i++
-      continue
-    }
-    // コンパイルモードでも実行するか
-    if (arg === '-run' || arg === '--run') {
-      flagRun = true
-      i++
-      continue
-    }
-    // ワンライナー
-    if (arg === '-e' || arg === '--eval') {
-      flagOneLiner = true
-      i++
-      source = process.argv[i++]
-      continue
-    }
-    if (arg === '-o') {
-      i++
-      output = arg
-      i++
-    }
-    if (mainfile === '') {
-      mainfile = process.argv[i]
-      i++
-      continue
-    }
-    i++
+  let mainfile = app.args[0]
+  let output = app.output
+  if (/\.(nako|nako3)$/.test(mainfile)) {
+    if (!output) output = mainfile.replace(/\.(nako|nako3)$/, '.js')
+  } else {
+    if (!output) output = mainfile + '.js'
+    mainfile += '.nako3'
   }
-  if (output === '') {
-    output = mainfile + '.js'
-  }
+  nako.debug = app.debug || false
   return {
     'mainfile': mainfile,
-    'compile': flagCompile,
-    'run': flagRun,
     'output': output,
-    'source': source,
-    'one_liner': flagOneLiner,
+    'compile': app.compile || false,
+    'run': app.run || false,
+    'source': app.eval || '',
+    'one_liner': app.eval || false,
     'debug': nako.debug
   }
 }

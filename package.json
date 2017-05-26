@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Japanese Programming Language",
   "main": "nako3",
   "scripts": {
@@ -85,6 +85,7 @@
     "webpack": "^2.3.0"
   },
   "dependencies": {
+    "commander": "^2.9.0",
     "date-utils": "^1.2.21",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
