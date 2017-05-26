@@ -48,7 +48,7 @@ def_func
   }
 
 def_func_arg
-  = w:word j:josi "|"*
+  = w:word j:josi "|"?
   { return {"word":w, "josi":j}; }
 
 return_word = "戻る" / "戻す"
@@ -166,7 +166,7 @@ if_value
   / parenL v:calc parenR { return v; }
 
 func_arg
-  = v:calc j:josi whitespace* { return {"type":"arg", "value":v, "josi":j} }
+  = v:calc j:josi wordbreak { return {"type":"arg", "value":v, "josi":j} }
 
 func_call_stmt
   = name:word EOS {
@@ -177,9 +177,9 @@ func_call_stmt
   }
 
 let_stmt
-  = name:word __ ("=" / josi_eq) __ value:calc EOS { return {"type":"let", "name":name, "value":value, }; loc:location()}
-  / name:word i:("[" calc "]")+ __ ("=" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value, loc:location()}; }
-  / name:word i:("@" value)+ __ ("=" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value, loc:location()}; }  / name:word ("に"/"へ") value:(calc "を")? "代入" EOS  {
+  = name:word wordbreak ("=" / josi_eq) __ value:calc EOS { return {"type":"let", "name":name, "value":value, }; loc:location()}
+  / name:word i:("[" calc "]")+ wordbreak ("=" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value, loc:location()}; }
+  / name:word i:("@" value)+ wordbreak ("=" / josi_eq) __ value:calc EOS { return {"type":"let_array", "name":name, "index": i.map(e=>{return e[1];}), "value":value, loc:location()}; }  / name:word ("に"/"へ") value:(calc "を")? "代入" EOS  {
     const v = value ? value[0] : {type:"variable", value:"それ", loc:location()};
     return {"type":"let", "name":name, "value":v};
   }
@@ -189,13 +189,13 @@ let_stmt
   }
 
 def_local_var
-  = name:word "とは" SPC vtype:var_type "="  v:calc EOS {
+  = name:word "とは" wordbreak vtype:var_type "="  v:calc EOS {
     return {"type":"def_local_var", name:name, vartype:vtype, value:v, loc:location()};
   }
-  / name:word "とは" SPC vtype:var_type EOS {
+  / name:word "とは" wordbreak vtype:var_type EOS {
     return {"type":"def_local_var", name:name, vartype:vtype, value:null, loc:location()};
   }
-  / vtype:var_type "の" name:word ("は"/"=") SPC v:calc EOS {
+  / vtype:var_type "の" wordbreak name:word ("は"/"=") wordbreak v:calc EOS {
     return {"type":"def_local_var", name:name, vartype:vtype, value:v, loc:location()};
   }
 
@@ -203,7 +203,8 @@ var_type = ("変数"/"定数")
 
 
 // コメント関連
-whitespace = [ ,・]
+wordbreak = " "* ","? " "*
+whitespace = [ ,]
 SPCLF = [ \n]*
 SPC   = " "*
 LF    = "\n" { return {type:"EOS", loc:location()}; }
