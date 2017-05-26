@@ -203,16 +203,13 @@ var_type = ("変数"/"定数")
 
 
 // コメント関連
-__ = (whitespace / range_comment / "_" whitespace* LF)*
-
-LF = "\n" {
-    return {type:"EOS", loc:location()};
-  }
-EOS = __ (EOS2 / line_comment)
-EOS2 = n:(";" / LF / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
-whitespace = [ \t,・]
-SPCLF = [ \t\n]*
-SPC = [ \t]*
+whitespace = [ ,・]
+SPCLF = [ \n]*
+SPC   = " "*
+LF    = "\n" { return {type:"EOS", loc:location()}; }
+__    = (whitespace / range_comment / "_" whitespace* LF)*
+EOS   = __ (EOS2 / line_comment)
+EOS2  = n:(";" / LF / josi_continue whitespace*) { return {type:"EOS", loc:location()}; }
 range_comment = "/*" s:$(!"*/" .)* "*/" { return s; }
 line_comment = ("//" / "#" / "※") s:$[^\n]* LF { return s; }
 comment
@@ -225,7 +222,6 @@ blank_stmt
   / comment
   / c:LF+  { return c[0]; }
   / c:EOS+ { return c[0]; }
-
 
 // 数字関連
 number = f:"-"? v:(hex / float / int) josuusi? { if (f==="-") { v *= -1; } return {"type":"number","value":v }; }
