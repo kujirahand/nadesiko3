@@ -2,8 +2,19 @@ import 'date-utils'
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default function EditorFormComponent (props) {
-  return <textarea className="src" rows="10" onChange={props.onChange} title={props.title} value={props.code} />
+export default class EditorFormComponent extends React.Component {
+  focus () {
+    this.textarea.focus()
+  }
+
+  pos () {
+    return this.textarea.selectionStart
+  }
+
+  render () {
+    return <textarea className="src" rows="10" ref={(e) => this.textarea = e}
+                     onChange={this.props.onChange} title={this.props.title} value={this.props.code} />
+  }
 }
 
 EditorFormComponent.propTypes = {

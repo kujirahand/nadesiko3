@@ -41,7 +41,8 @@ export default class CommandList extends React.Component {
         if (!glist) continue // 読み込みに失敗した場合
         for (const groupName in glist) {
           const gid = 'key_' + groupName
-          this.listItems.push(<CommandGroup key={gid} gid={gid} groupName={groupName} group={glist[groupName]} />)
+          this.listItems.push(<CommandGroup key={gid} gid={gid} groupName={groupName}
+                                            group={glist[groupName]} onClick={this.props.onClick} />)
         }
       }
     })
@@ -49,5 +50,6 @@ export default class CommandList extends React.Component {
 }
 
 CommandList.propTypes = {
-  flagShow: PropTypes.bool.isRequired
+  flagShow: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired
 }
