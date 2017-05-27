@@ -11,6 +11,11 @@ const nako = new NakoCompiler()
 nako.silent = false
 nako.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
 
+// コマンド引数がないならば、ヘルプを表示
+if (process.argv.length <= 2) {
+  process.argv.push('-h')
+}
+
 const app = require('commander')
 const packages = require('../package.json')
 app
@@ -32,10 +37,6 @@ nakoRun(opt)
  * @returns {{mainfile: string, compile: boolean, run: boolean, output: string, source: string, one_liner: boolean, debug: (boolean|*)}}
  */
 function checkArguments () {
-  if (process.argv.length <= 2) {
-    console.log('cnako3 nakofile')
-    process.exit()
-  }
   let mainfile = app.args[0]
   let output = app.output
   if (/\.(nako|nako3)$/.test(mainfile)) {
