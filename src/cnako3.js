@@ -12,10 +12,10 @@ nako.silent = false
 nako.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
 
 const app = require('commander')
+const packages = require('../package.json')
 app
-  .version('0.0.6')
+  .version(packages.version, '-v, --version')
   .usage('[options] nakofile')
-  .option('-V, --version', 'バージョン情報の表示')
   .option('-d, --debug', 'デバッグモードの指定')
   .option('-c, --compile', 'コンパイルモードの指定')
   .option('-r, --run', 'コンパイルモードでも実行する')
