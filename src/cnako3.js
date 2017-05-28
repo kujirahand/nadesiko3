@@ -20,7 +20,7 @@ const app = require('commander')
 const packages = require('../package.json')
 app
   .version(packages.version, '-v, --version')
-  .usage('[options] nakofile')
+  .usage('[Options] nakofile')
   .option('-d, --debug', 'デバッグモードの指定')
   .option('-c, --compile', 'コンパイルモードの指定')
   .option('-r, --run', 'コンパイルモードでも実行する')
