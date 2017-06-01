@@ -328,6 +328,9 @@ class NakoGen {
       case 'json_obj':
         code += this.convJsonObj(node)
         break
+      case 'func_obj':
+        code += this.convFuncObj(node)
+        break
       case 'embed_code':
         code += node.value
         break
@@ -424,13 +427,11 @@ class NakoGen {
     return this.convLineno(node.loc) + cmd + ';'
   }
 
-  convDefFunc (node) {
-    const name = this.getFuncName(node.name.value)
-    const args = node.args
-    // ローカル変数をPUSHする
+  convDefFuncCommon (node, name, args) {
     let code = '(function(){\n'
     code += 'try { __vars = {\'それ\':\'\'}; __varslist.push(__vars);\n'
     this.__vars = {'それ': true, '!関数': name}
+    // ローカル変数をPUSHする
     this.__varslist.push(this.__vars)
     // 引数をローカル変数に設定
     const josilistTmp = []
@@ -459,13 +460,15 @@ class NakoGen {
       code += `__vars["${josiWord}"] = arguments[${i}];\n`
     }
     // 関数定義は、グローバル領域で。
-    this.used_func[name] = true
-    this.__varslist[1][name] = function () {
-    } // 再帰のために事前に適当な値を設定
-    this.nako_func[name] = {
-      'josi': josilist,
-      'fn': '',
-      'type': 'func'
+    if (name) {
+      this.used_func[name] = true
+      this.__varslist[1][name] = function () {
+      } // 再帰のために事前に適当な値を設定
+      this.nako_func[name] = {
+        'josi': josilist,
+        'fn': '',
+        'type': 'func'
+      }
     }
     // ブロックを解析
     const block = this.convGen(node.block)
@@ -477,14 +480,31 @@ class NakoGen {
       '__varslist.pop(); ' +
       '__vars = __varslist[__varslist.length-1];'
     code += `} finally { ${popcode} }\n`
-    code += `})/* end of ${name} */`
-    this.nako_func[name]['fn'] = code
+    code += `}/* end ${name} */)`
+    if (name) {
+      this.nako_func[name]['fn'] = code
+    }
     this.__vars = this.__varslist.pop()
-    this.__varslist[1][name] = code
+    if (name) {
+      this.__varslist[1][name] = code
+    }
+    return code
+  }
+
+  convDefFunc (node) {
+    const name = this.getFuncName(node.name.value)
+    const args = node.args
+    this.convDefFuncCommon(node, name, args)
     // ★この時点では関数のコードを生成しない★
     // プログラム冒頭でコード生成時に関数定義を行う
     // return `__vars["${name}"] = ${code};\n`;
     return ''
+  }
+
+  convFuncObj (node) {
+    const args = node.args
+    const code = this.convDefFuncCommon(node, '', args)
+    return code
   }
 
   convJsonObj (node) {
@@ -697,7 +717,9 @@ class NakoGen {
     } else {
       func = this.nako_func[funcName]
       if (func === undefined) {
-        throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.loc)
+        // throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.loc)
+        // 無名関数の可能性
+        func = { return_none: false }
       }
       funcNameS = `__varslist[${res.i}]["${funcName}"]`
     }

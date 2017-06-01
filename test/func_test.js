@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3')
 
 describe('func_test', () => {
   const nako = new NakoCompiler()
-  // nako.debug = true;
+  // nako.debug = true
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -79,5 +79,18 @@ describe('func_test', () => {
       '---\n' +
       '10に20を加算処理して表示。\n' +
       '20と10の加算処理して表示。\n', '30\n30')
+  })
+  it('英語言語っぽい関数定義', () => {
+    cmp('●加算処理（A,B）\n' +
+      'それは、A+B。\n' +
+      '---\n' +
+      '加算処理(10,20)を表示。\n' +
+      '加算処理(20,10)を表示。\n', '30\n30')
+  })
+  it('無名関数', () => {
+    cmp('F=関数(a,b)それはa+b;ここまで。\n' +
+      'F(3,5)を表示。\n', '8')
+    cmp('F=関数(a,b)それは(a+b);←\n' +
+        'F(3,5)を表示。\n', '8')
   })
 })

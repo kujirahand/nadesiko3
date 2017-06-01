@@ -11,12 +11,9 @@ sentence
   = blank_stmt
   / end / continue / break / return_stmt
   / def_func
-  / kokokara flow_stmt:(
-      if_stmt / while_stmt / repeat_times_stmt /
-      for_stmt / foreach_stmt) { return flow_stmt; }
   / kokomade { return {type:"EOS",memo:"---"}; }
   / embed_stmt
-  / if_stmt / while_stmt / repeat_times_stmt / for_stmt / foreach_stmt
+  / kokokara? flow_stmt:(if_stmt / while_stmt / repeat_times_stmt / for_stmt / foreach_stmt) { return flow_stmt; }
   / let_stmt
   / def_local_var
   / func_call_stmt
@@ -25,8 +22,8 @@ sentence2 = !block_end s:sentence { return s; }
 block = s:sentence2* { return s; }
 block_end =  kokomade / else
 else = "違えば"
-kokokara = "ここから" whitespace*
-kokomade = ("ここまで" /　"--" "-"+) EOS
+kokokara = ("ここから" / "→") whitespace*
+kokomade = ("ここまで" /　"--" "-"+ / "←")
 break = "抜ける" EOS { return {type:"break", loc:location()}; }
 continue = "続ける" EOS { return {type:"continue", loc:location()}; }
 end = ("終わる" / "終了") EOS { return {type:"end"}; }
@@ -34,10 +31,10 @@ end = ("終わる" / "終了") EOS { return {type:"end"}; }
 embed_stmt = "JS" js:nami_string_pat { return {type:"embed_code", value:js}; }
 
 def_func
-  = "●" def:def_func_name "とは"? EOS b:block kokomade {
+  = "●" def:def_func_name "とは"? __ kokokara? EOS b:block kokomade {
    return {type:"def_func", "name":def.name, "args":def.args, block:b, loc:location() };
   }
-  / "●" def:def_func_name "とは"? EOS b:block "" {
+  / "●" def:def_func_name "とは"? __ kokokara? EOS b:block "" {
     error("関数『"+def.name.value+"』の定義で『ここまで』がありません。", location());
   }
 
@@ -47,7 +44,7 @@ def_func_name
   / name:word SPC { return {"name": name, "args":[] } }
 
 def_func_arg
-  = w:word j:josi "|"?
+  = w:word j:josi? ("|" / ",")? SPC
   { return {"word":w, "josi":j}; }
 
 return_word = "戻る" / "戻す"
@@ -56,17 +53,25 @@ return_stmt
   = return_word EOS { return {type:"return",value:null,loc:location()}; }
   / v:calc ("で"/"を") return_word EOS { return {type:"return",value:v, loc:location()}; }
 
+func_obj
+  = "関数" SPC parenL args:def_func_arg* parenR kokokara? b:block block_end {
+    return {type:"func_obj", "args":args, block:b, loc:location() };
+  }
+  / "関数" SPC parenL args:def_func_arg* parenR kokokara? b:block "" {
+    error("無名関数の定義で『ここまで』がありません。", location());
+  }
+
 foreach_stmt
-  = name:word "で" target:value "を" hanpuku EOS b:block block_end {
+  = name:word "で" target:value "を" hanpuku kokokara? EOS b:block block_end {
     return {"type":"foreach", "target":target, "block":b, "name":name, loc:location()};
   }
-  / target:value "を" name:word "で" hanpuku EOS b:block block_end {
+  / target:value "を" name:word "で" hanpuku kokokara? EOS b:block block_end {
     return {"type":"foreach", "target":target, "block":b, "name":name, loc:location()};
   }
-  / target:value "を" __ hanpuku EOS b:block block_end {
+  / target:value "を" __ hanpuku kokokara? EOS b:block block_end {
     return {"type":"foreach", "target":target, "block":b, "name":null, loc:location()};
   }
-  / hanpuku EOS b:block block_end {
+  / hanpuku kokokara? EOS b:block block_end {
     return {"type":"foreach", "target":null, "block":b, "name":null, loc:location()};
   }
   / target:value "を" __ hanpuku EOS b:block "" {
@@ -92,13 +97,13 @@ for_stmt
     error("『繰り返す』構文で『ここまで』がありません。", location());
   }
 
-kurikaesu = "繰り返す" / "繰り返し" / "繰返す" / "繰返し"
+kurikaesu = ("繰り返す" / "繰り返し" / "繰返す" / "繰返し") __ kokokara?
 
 repeat_times_stmt
   = cnt:times_cond "回" __ b:sentence EOS {
     return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
-  / cnt:times_cond "回" __ EOS b:block block_end {
+  / cnt:times_cond "回" __ kokokara? __ EOS b:block block_end {
     return {"type":"repeat_times", "value":cnt, "block": b, loc:location()};
   }
   / cnt:times_cond "回" __ EOS b:block "" {
@@ -110,7 +115,7 @@ times_cond
   / parenL c:calc parenR { return c; }
 
 while_stmt
-  = parenL expr:calc parenR  "の間" EOS b:block block_end {
+  = parenL expr:calc parenR  "の間" __ kokokara? EOS b:block block_end {
     return {"type":"while", "cond":expr, "block":b, loc:location()};
   }
   / parenL expr:calc parenR  "の間" EOS b:block "" {
@@ -303,6 +308,7 @@ word = !numchars chars:$((!josi_word_split wordchar2)+) { return { type:"variabl
 value
   = number
   / string
+  / func_obj
   / embed_stmt
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
   / w:word i:("@" calc)+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }

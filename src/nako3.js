@@ -43,7 +43,7 @@ class NakoSyntaxError extends Error {
         if (qq !== '') a.push(qq)
       })
       if (a.length > 0) {
-        expected = '次の文字を期待しています。→|' + a.join('|') + '|'
+        expected = '次の文字を期待しています。|' + a.join('|') + '|'
       }
     }
     if (e.found === null && e.expected === null) {
