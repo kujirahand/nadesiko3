@@ -9,7 +9,7 @@ import CommandListComponent from './command_list_component'
 export default class EditorComponent extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {code: props.code, flagInfoChanged: false, err: null}
+    this.state = {code: props.code, err: null}
     this.info = []
   }
 
@@ -21,11 +21,11 @@ export default class EditorComponent extends React.Component {
         <EditorButtonComponent nako3={this.props.nako3} code={this.state.code}
                                onInformationChanged={(s) => {
                                  this.info.push(s)
-                                 this.setState({flagInfoChanged: true})
+                                 this.setState({err: null})
                                }}
                                onReset={() => {
-                                 this.setState({flagInfoChanged: false, err: null})
                                  this.info = []
+                                 this.setState({err: null})
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
         <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} />
