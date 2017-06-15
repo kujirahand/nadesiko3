@@ -298,10 +298,12 @@ josi_word_split = josi_eq / josi_arg / josi_continue / josi_naraba
 kanji    = [\u4E00-\u9FCF]
 hiragana = [ぁ-ん]
 katakana = [ァ-ヶー]
+emoji    = [\u1F60-\u1F6F]
+uni_extra = [\uD800-\uDBFF] [\uDC00-\uDFFF]
 alphabet = [_a-zA-Z]
 numchars = [0-9]
-wordchar = w:(kanji / hiragana / katakana / alphabet) { return w; }
-wordchar2 = w:(kanji / hiragana / katakana / alphabet / numchars) { return w; }
+wordchar = w:(kanji / emoji / uni_extra / hiragana / katakana / alphabet) { return w; }
+wordchar2 = w:(kanji / emoji / uni_extra / hiragana / katakana / alphabet / numchars) { return w; }
 word = !numchars chars:$((!josi_word_split wordchar2)+) { return { type:"variable", value:chars, loc:location()}; }
 
 // for value
