@@ -313,8 +313,8 @@ value
   / w:word i:("[" calc "]")+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
   / w:word i:("@" calc)+ { return {type:"ref_array", name:w, index:i.map(e=>{ return e[1]; })}; }
   / w:word parenL ar:calc_func_args parenR { return {type:"calc_func", args:ar, name:w}; }
-  / word
   / json_stmt
+  / word
 
 calc_func_args
   = SPCLF v1:calc SPCLF v2:("," SPCLF calc)* {
@@ -398,7 +398,7 @@ parenR = ")"
 json_stmt
   = "[" SPCLF a:json_array SPCLF "]"  { return {type:"json_array", value:a, loc:location()}; }
   / "{" SPCLF a:json_obj SPCLF "}" { return {type:"json_obj", value:a, loc:location()}; }
-  / "[" SPCLF "]" { return {type:"json_array", value:[], loc:location()}; }
+  / ("[" SPCLF "]" / "空配列") { return {type:"json_array", value:[], loc:location()}; }
   / "{" SPCLF "}" { return {type:"json_obj", value:[], loc:location()}; }
 
 json_array
