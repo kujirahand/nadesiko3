@@ -5,7 +5,7 @@ const PluginSystem = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__nako3version = '3.0b3'
+      sys.__nako3version = '0.0.6'
       sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version
       sys.__getSysValue = function (name, def) {
         if (sys.__varslist[0][name] === undefined) return def
@@ -31,6 +31,7 @@ const PluginSystem = {
   'NG': {type: 'const', value: 0}, // @NG
   'PI': {type: 'const', value: Math.PI}, // @PI
   '空': {type: 'const', value: ''}, // @から
+  '空配列': {type: 'const', value: []}, // @からはいれつ
   'NULL': {type: 'const', value: null}, // @NULL
 
   // @標準出力
