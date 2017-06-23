@@ -1,4 +1,5 @@
 // PEGJSに掛ける前に全角文字を半角に揃える
+// ただし、文字列部分だけは、そのまま全角で出力するようにする
 // for https://github.com/kujirahand/nadesiko3/issues/94
 
 class NakoPrepare {
