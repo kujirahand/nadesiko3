@@ -14,17 +14,19 @@ const rules = [
   { name: 'eol', pattern: /^\n/ },
   { name: 'eol', pattern: /^;/ },
   { name: 'space', pattern: /^(\s+|,)/ },
+  { name: 'line_comment', pattern: /^#[^\n]+/ },
+  { name: 'line_comment', pattern: /^\/\/[^\n]+/ },
   { name: 'def_func', pattern: /^(●|関数)/ },
   { name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt },
   { name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat },
   { name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat },
   { name: 'number', pattern: /^[0-9]+/, readJosi: true, cb: parseInt },
-  { name: 'kokokara', pattern: /^(ここから|→)/ },
-  { name: 'kokomade', pattern: /^(ここまで|←|-{3,})/ },
+  { name: 'ここから', pattern: /^(ここから|→)/ },
+  { name: 'ここまで', pattern: /^(ここまで|←|-{3,})/ },
   { name: '代入', pattern: /^代入/, readJosi: true },
-  { name: 'if', pattern: /^もし/ },
-  { name: 'then', pattern: /^(ならば|なら)/, readJosi: true },
-  { name: 'else', pattern: /^違/, readJosi: true },
+  { name: 'もし', pattern: /^もしも?/ },
+  { name: 'ならば', pattern: /^(ならば|なら)/ },
+  { name: '違えば', pattern: /^違(えば)?/ },
   { name: '回', pattern: /^回/ },
   { name: 'while', pattern: /^間/ },
   { name: 'each', pattern: /^反復/, readJosi: true },
@@ -62,12 +64,10 @@ const rules = [
   { name: '{', pattern: /^\{/ },
   { name: '}', pattern: /^\}/, readJosi: true },
   { name: ':', pattern: /^:/ },
-  { name: '_', pattern: /^_[^_0-9a-zA-Z]/ },
-  { name: 'line_comment', pattern: /^#[^\n]+/ },
-  { name: 'line_comment', pattern: /^\/\/[^\n]+/ },
+  { name: '_eol', pattern: /^_\s*\n/ },
   // 絵文字変数 = (絵文字)英数字*
-  { name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/ },
-  { name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/ }, // 絵文字
+  { name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/, readJosi: true },
+  { name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/, readJosi: true }, // 絵文字
   // 単語句
   {
     name: 'word',
@@ -159,8 +159,8 @@ class NakoLexer {
         continue
       }
       // _ 改行 を飛ばす
-      if (t.type === '_' && tokens[i + 1] && tokens[i + 1].type === 'eol') {
-        tokens.splice(i, 2)
+      if (t.type === '_eol') {
+        tokens.splice(i, 1)
         continue
       }
       // コメントを飛ばす
@@ -235,6 +235,10 @@ class NakoLexer {
             src = src.substr(j[0].length)
           }
         }
+        if (value === '違') {
+          console.log(value, src.substr(0, 3))
+          process.exit()
+        }
         this.result.push({
           type: rule.name,
           value: value,
@@ -303,7 +307,6 @@ function cbString (beginTag, closeTag, src) {
   let josi = ''
   let numEOL = 0
   src = src.substr(beginTag.length) // skip beginTag
-  console.log(src)
   if (closeTag === '}}}') { // 可変閉じタグ
     const sm = src.match(/^\{{3,}/)
     const cnt = sm[0].length
@@ -331,20 +334,6 @@ function cbString (beginTag, closeTag, src) {
   }
 
   return {src: src, res: res, josi: josi, numEOL: numEOL}
-}
-
-function cbCloseParser (src) {
-  let res = ''
-  let josi = ''
-  res = src.charAt(0)
-  src = src.substr(1) // skip close tag
-  // 文字列直後の助詞を取得
-  const j = josiRE.exec(src)
-  if (j) {
-    josi = j[0]
-    src = src.substr(j[0].length)
-  }
-  return {src: src, res: res, josi: josi, numEOL: 0}
 }
 
 module.exports = NakoLexer

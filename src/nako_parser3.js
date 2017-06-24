@@ -109,23 +109,33 @@ class NakoParser {
   }
   ySentenceList () {
     const blocks = []
-    let line = 0
-    if (this.accept([this.ySentence])) {
-      blocks.push(this.y[0])
-      line = this.y[0].line
-    } else {
-      throw new NakoSyntaxError('構文解析に失敗:' + this.nodeToStr(this.peek()), line)
-    }
+    let line = -1
     while (!this.isEOF()) {
       if (!this.accept([this.ySentence])) break
       blocks.push(this.y[0])
+      if (line < 0) line = this.y[0].line
     }
-    return {type: 'block', block: blocks, line}
+    if (blocks.length === 0) {
+      throw new NakoSyntaxError('構文解析に失敗:' + this.nodeToStr(this.peek()), line)
+    }
+    return { type: 'block', block: blocks, line }
+  }
+  yBlock () {
+    const blocks = []
+    let line = -1
+    while (!this.isEOF()) {
+      if (this.checkTypes(['違えば', 'ここまで'])) break
+      if (!this.accept([this.ySentence])) break
+      blocks.push(this.y[0])
+      if (line < 0) line = this.y[0].line
+    }
+    return { type: 'block', block: blocks, line }
   }
   ySentence () {
     if (this.check('eol')) return this.get()
     if (this.check('embed_code')) return this.get()
     if (this.accept([this.yLet])) return this.y[0]
+    if (this.accept([this.yIF])) return this.y[0]
     if (this.accept([this.yCall])) return this.y[0]
     return null
   }
@@ -147,6 +157,38 @@ class NakoParser {
   pushStack (item) {
     // console.log('PUSH:', item)
     this.stack.push(item)
+  }
+
+  yIF () {
+    if (!this.check('もし')) return null
+    const mosi = this.get() // skip もし
+    const cond = this.yCalc()
+    let trueBlock = null
+    let falseBlock = null
+    if (this.check('ならば')) this.get() // skip ならば
+    if (this.check('eol')) { // BLOCK
+      this.get() // skip eol
+      trueBlock = this.yBlock()
+      if (this.check('違えば')) {
+        this.get()
+        falseBlock = this.yBlock()
+      }
+      if (this.check('ここまで')) this.get()
+    } else {
+      trueBlock = this.ySentence()
+      if (this.check('違えば')) {
+        this.get()
+        falseBlock = this.ySentence()
+      }
+    }
+    return {
+      type: 'if',
+      expr: cond,
+      block: trueBlock,
+      false_block: falseBlock,
+      josi: '',
+      line: mosi.line
+    }
   }
 
   yGetArg () {

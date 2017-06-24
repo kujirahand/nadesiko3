@@ -201,4 +201,5 @@ c.debugShowLexer = true
 c.silent = false
 // c.run('3に5を掛けて表示')
 // c.run('a=[];a[1]=30;a[1]を表示')
-c.run(';;A=50 ※ hogehoge\nAを表示;;')
+// c.runReset(';;A=50 // hogehoge\nAを表示;')
+c.runReset(';;A= 1 + 1 + 1 + 1 + 1 + _\r\n1 + 1 + 1\r\nAを表示;')

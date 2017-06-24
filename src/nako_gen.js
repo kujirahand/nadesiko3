@@ -239,7 +239,7 @@ class NakoGen {
   }
 
   convLineno (node) {
-    if (!node.line) return ''
+    if (node.line === undefined) return ''
     return `__varslist[0].line=${node.line};`
   }
 
@@ -270,7 +270,7 @@ class NakoGen {
         code += '/*' + node.value + '*/\n'
         break
       case 'eol':
-        code += this.convLineno(node) + ';\n'
+        code += this.convLineno(node) + '\n'
         break
       case 'break':
         code += this.convCheckLoop(node, 'break')
@@ -642,11 +642,13 @@ class NakoGen {
   convIf (node) {
     const expr = this.convGen(node.expr)
     const block = this.convGen(node.block)
-    const falseBlock = this.convGen(node.false_block)
+    const falseBlock = (node.false_block === null)
+      ? ''
+      : 'else {' + this.convGen(node.false_block) + '};\n'
     const code =
       this.convLineno(node) +
-      `if (${expr}) { ${block} } else { ${falseBlock} };\n`
-    return this.convLineno(node) + code
+      `if (${expr}) {\n  ${block}\n}` + falseBlock
+    return code
   }
 
   getFuncName (name) {
@@ -724,16 +726,25 @@ class NakoGen {
   }
 
   convOp (node) {
+    const OP_TBL = {
+      '&': '+""+',
+      'eq': '==',
+      'gt': '>',
+      'lt': '<',
+      'gteq': '>=',
+      'lteq': '<='
+    }
     let op = node.operator // 演算子
     const right = this.convGen(node.right)
     const left = this.convGen(node.left)
+    // 階乗
     if (op === '^') {
       return '(Math.pow(' + left + ',' + right + '))'
     }
-    if (op === '&') {
-      op = '+ "" +'
-    }
-    return '(' + left + op + right + ')'
+    // 一般的なオペレータ
+    if (OP_TBL[op]) op = OP_TBL[op]
+    //
+    return `(${left} ${op} ${right})`
   }
 
   convLet (node) {
