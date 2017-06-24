@@ -21,6 +21,7 @@ const rules = [
   { name: 'number', pattern: /^[0-9]+/, cb: parseInt },
   { name: 'kokokara', pattern: /^(ここから|→)/ },
   { name: 'kokomade', pattern: /^(ここまで|←|-{3,})/ },
+  { name: '代入', pattern: /^代入[ぁ-ん]*/ },
   { name: 'if', pattern: /^もし/ },
   { name: 'then', pattern: /^(ならば|なら)/ },
   { name: 'else', pattern: /^違[ぁ-ん]*/ },
@@ -49,7 +50,10 @@ const rules = [
   { name: ']', pattern: /^]/, cbParser: cbCloseParser },
   { name: '(', pattern: /^\(/ },
   { name: ')', pattern: /^\)/, cbParser: cbCloseParser },
-  { name: 'string_ex', pattern: /^\{{3}/, cbParser: src => cbString('{{{', '}}}', src) },
+  { name: 'embed_code', pattern: /^JS\{{3}/, cbParser: src => cbString('JS', '}}}', src) },
+  { name: 'string', pattern: /^R\{{3}/, cbParser: src => cbString('R', '}}}', src) },
+  { name: 'string_ex', pattern: /^S\{{3}/, cbParser: src => cbString('S', '}}}', src) },
+  { name: 'string_ex', pattern: /^文字列\{{3}/, cbParser: src => cbString('文字列', '}}}', src) },
   { name: 'string_ex', pattern: /^「/, cbParser: src => cbString('「', '」', src) },
   { name: 'string', pattern: /^『/, cbParser: src => cbString('『', '』', src) },
   { name: 'string_ex', pattern: /^"/, cbParser: src => cbString('"', '"', src) },
@@ -175,7 +179,7 @@ class NakoLexer {
           const rp = rule.cbParser(src)
           if (rule.name === 'string_ex') {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
-            const list = rp.res.split(/[{}]/)
+            const list = rp.res.split(/[{}｛｝]/)
             if (list.length >= 1 && list.length % 2 === 0) {
               throw new Error('字句解析エラー(' + line + '): 展開あり文字列で値の埋め込み{...}が対応していません。')
             }
@@ -285,6 +289,14 @@ function cbString (beginTag, closeTag, src) {
   let josi = ''
   let numEOL = 0
   src = src.substr(beginTag.length) // skip beginTag
+  console.log(src)
+  if (closeTag === '}}}') { // 可変閉じタグ
+    const sm = src.match(/^\{{3,}/)
+    const cnt = sm[0].length
+    closeTag = ''
+    for (let i = 0; i < cnt; i++) closeTag += '}'
+    src = src.substr(cnt)
+  }
   const i = src.indexOf(closeTag)
   if (i < 0) { // not found
     res = src
@@ -311,7 +323,7 @@ function cbCloseParser (src) {
   let res = ''
   let josi = ''
   res = src.charAt(0)
-  src = src.substr(1)
+  src = src.substr(1) // skip close tag
   // 文字列直後の助詞を取得
   const j = josiRE.exec(src)
   if (j) {

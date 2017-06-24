@@ -123,7 +123,8 @@ class NakoParser {
     return {type: 'block', block: blocks, line}
   }
   ySentence () {
-    if (this.accept(['eol'])) return this.y[0]
+    if (this.check('eol')) return this.get()
+    if (this.check('embed_code')) return this.get()
     if (this.accept([this.yLet])) return this.y[0]
     if (this.accept([this.yCall])) return this.y[0]
     return null
@@ -185,6 +186,14 @@ class NakoParser {
   yCall () {
     if (this.isEOF()) return null
     while (!this.isEOF()) {
+      // 代入
+      if (this.check('代入')) {
+        const dainyu = this.get()
+        const value = this.popStack(['を'])
+        const word = this.popStack(['へ', 'に'])
+        if (!word || word.type !== 'word') throw NakoSyntaxError('代入文で代入先の変数が見当たりません。', dainyu.line)
+        return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
+      }
       // 関数
       if (this.check('func')) {
         const t = this.get()
@@ -214,6 +223,7 @@ class NakoParser {
         }
         // **して、** の場合も一度切る
         if (keizokuJosi.indexOf(t.josi) >= 0) {
+          funcNode.josi = ''
           return funcNode
         }
         // 続き
@@ -432,7 +442,9 @@ class NakoParser {
     // 変数
     const word = this.yValueWord()
     if (word) return word
-
+    // 埋め込み文字列
+    if (this.check('embed_code')) return this.get()
+    // その他
     return null
   }
   yValueWord () {

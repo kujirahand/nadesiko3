@@ -270,7 +270,7 @@ class NakoGen {
         code += '/*' + node.value + '*/\n'
         break
       case 'eol':
-        // code += this.convLineno(node) + '// EOL\n'
+        code += this.convLineno(node) + ';\n'
         break
       case 'break':
         code += this.convCheckLoop(node, 'break')
@@ -341,7 +341,7 @@ class NakoGen {
         code += this.convFuncObj(node)
         break
       case 'embed_code':
-        code += node.value
+        code += '' + node.value + ''
         break
       case 'bool':
         code += (node.value) ? 'true' : 'false'
@@ -715,14 +715,10 @@ class NakoGen {
     let argsCode = args.join(',')
     let code = `${funcNameS}(${argsCode})`
     if (func.return_none) {
-      if (isNakoType) {
-        code = `${code}\n`
-      }
+      code = `${code};\n`
     } else {
-      if (isNakoType) {
-        // code = this.sore + ' = ' + code + ';\n'
-        code = `(()=>{ const tmp=${this.sore}=${code}; return tmp })()\n`
-      }
+      code = `(()=>{ const tmp=${this.sore}=${code}; return tmp })()`
+      if (node.josi === '') code += ';\n'
     }
     return this.convLineno(node) + code
   }
@@ -741,7 +737,10 @@ class NakoGen {
   }
 
   convLet (node) {
-    const value = this.convGen(node.value)
+    // もし値が省略されていたら、変数「それ」に代入する
+    let value = this.sore
+    if (node.value) value = this.convGen(node.value)
+    // 変数名
     const name = node.name.value
     const res = this.findVar(name)
     let isTop
@@ -763,9 +762,9 @@ class NakoGen {
       }
     }
     if (isTop) {
-      code = `__vars["${name}"]=${value}`
+      code = `__vars["${name}"]=${value};`
     } else {
-      code = `__varslist[${res.i}]["${name}"]=${value}`
+      code = `__varslist[${res.i}]["${name}"]=${value};`
     }
     return this.convLineno(node) + code + '\n'
   }
