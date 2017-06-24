@@ -307,6 +307,7 @@ class NakoParser {
     return t
   }
   yCalc () {
+    if (this.check('eol')) return null
     const t = this.yLoOp()
     if (!t) return null
     // 関数の呼び出しがある場合

@@ -45,9 +45,15 @@ describe('prepare', () => {
     const b = p.convert('１２３S{{{{{１２３}}}}}１２３')
     assert.equal(b, '123S{{{{{１２３}}}}}123')
   })
-  it('CR+LF', () => {
+  it('CR+LF1', () => {
     const a = p.convert('123\r\n456\r789')
     assert.equal(a, '123\n456\n789')
+    const b = p.convert('123_ \r\n456 \n789')
+    assert.equal(b, '123_ \n456 \n789')
+  })
+  it('CR+LF2', () => {
+    const a = p.convert('A= 1 + _ \r\n1 + 2  \nAを表示')
+    assert.equal(a, 'A= 1 + _ \n1 + 2  \nAを表示')
   })
   it('convertTable', () => {
     const a = p.convert('123※456')

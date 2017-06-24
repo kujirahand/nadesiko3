@@ -15,20 +15,20 @@ const rules = [
   { name: 'eol', pattern: /^;/ },
   { name: 'space', pattern: /^(\s+|,)/ },
   { name: 'def_func', pattern: /^(●|関数)/ },
-  { name: 'number', pattern: /^0x[0-9a-fA-F]+/, cb: parseInt },
-  { name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, cb: parseFloat },
-  { name: 'number', pattern: /^[0-9]+\.[0-9]+/, cb: parseFloat },
-  { name: 'number', pattern: /^[0-9]+/, cb: parseInt },
+  { name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt },
+  { name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat },
+  { name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat },
+  { name: 'number', pattern: /^[0-9]+/, readJosi: true, cb: parseInt },
   { name: 'kokokara', pattern: /^(ここから|→)/ },
   { name: 'kokomade', pattern: /^(ここまで|←|-{3,})/ },
-  { name: '代入', pattern: /^代入[ぁ-ん]*/ },
+  { name: '代入', pattern: /^代入/, readJosi: true },
   { name: 'if', pattern: /^もし/ },
-  { name: 'then', pattern: /^(ならば|なら)/ },
-  { name: 'else', pattern: /^違[ぁ-ん]*/ },
+  { name: 'then', pattern: /^(ならば|なら)/, readJosi: true },
+  { name: 'else', pattern: /^違/, readJosi: true },
   { name: '回', pattern: /^回/ },
   { name: 'while', pattern: /^間/ },
-  { name: 'each', pattern: /^反復[ぁ-ん]*/ },
-  { name: 'for', pattern: /^(繰返|繰り返)[ぁ-ん]*/ },
+  { name: 'each', pattern: /^反復/, readJosi: true },
+  { name: 'for', pattern: /^(繰返|繰り返)/, readJosi: true },
   { name: 'gteq', pattern: /^(>=|=>)/ },
   { name: 'lteq', pattern: /^(<=|=<)/ },
   { name: 'noteq', pattern: /^(<>|!=)/ },
@@ -46,10 +46,11 @@ const rules = [
   { name: '/', pattern: /^\// },
   { name: '%', pattern: /^%/ },
   { name: '^', pattern: /^\^/ },
+  { name: '&', pattern: /^&/ },
   { name: '[', pattern: /^\[/ },
-  { name: ']', pattern: /^]/, cbParser: cbCloseParser },
+  { name: ']', pattern: /^]/, readJosi: true },
   { name: '(', pattern: /^\(/ },
-  { name: ')', pattern: /^\)/, cbParser: cbCloseParser },
+  { name: ')', pattern: /^\)/, readJosi: true },
   { name: 'embed_code', pattern: /^JS\{{3}/, cbParser: src => cbString('JS', '}}}', src) },
   { name: 'string', pattern: /^R\{{3}/, cbParser: src => cbString('R', '}}}', src) },
   { name: 'string_ex', pattern: /^S\{{3}/, cbParser: src => cbString('S', '}}}', src) },
@@ -59,8 +60,11 @@ const rules = [
   { name: 'string_ex', pattern: /^"/, cbParser: src => cbString('"', '"', src) },
   { name: 'string', pattern: /^'/, cbParser: src => cbString('\'', '\'', src) },
   { name: '{', pattern: /^\{/ },
-  { name: '}', pattern: /^\}/, cbParser: cbCloseParser },
+  { name: '}', pattern: /^\}/, readJosi: true },
   { name: ':', pattern: /^:/ },
+  { name: '_', pattern: /^_[^_0-9a-zA-Z]/ },
+  { name: 'line_comment', pattern: /^#[^\n]+/ },
+  { name: 'line_comment', pattern: /^\/\/[^\n]+/ },
   // 絵文字変数 = (絵文字)英数字*
   { name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/ },
   { name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/ }, // 絵文字
@@ -154,6 +158,16 @@ class NakoLexer {
         tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
         continue
       }
+      // _ 改行 を飛ばす
+      if (t.type === '_' && tokens[i + 1] && tokens[i + 1].type === 'eol') {
+        tokens.splice(i, 2)
+        continue
+      }
+      // コメントを飛ばす
+      if (t.type === 'line_comment') {
+        tokens.splice(i, 1)
+        continue
+      }
       i++
     }
   }
@@ -214,7 +228,7 @@ class NakoLexer {
           value = line++
         }
         let josi = ''
-        if (rule.name === 'number') {
+        if (rule.readJosi) {
           const j = josiRE.exec(src)
           if (j) {
             josi = j[0]
@@ -229,7 +243,7 @@ class NakoLexer {
         })
         break
       }
-      if (!ok) throw new Error(`字句解析で未知の語句(${line}):` + src.substr(0, 3) + '...')
+      if (!ok) throw new Error(`字句解析で未知の語句(${line}): ` + src.substr(0, 3) + '...')
     }
   }
 }

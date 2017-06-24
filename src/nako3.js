@@ -201,4 +201,4 @@ c.debugShowLexer = true
 c.silent = false
 // c.run('3に5を掛けて表示')
 // c.run('a=[];a[1]=30;a[1]を表示')
-c.run(';;「aabbcc」の「aa」を「」に置換して、「bb」を「」に置換して,Fに代入。Fを表示')
+c.run(';;A=50 ※ hogehoge\nAを表示;;')
