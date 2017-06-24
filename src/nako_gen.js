@@ -270,7 +270,7 @@ class NakoGen {
         code += '/*' + node.value + '*/\n'
         break
       case 'eol':
-        code += this.convLineno(node) + '\n'
+        code += this.convLineno(node) + '// ' + node.value + '\n'
         break
       case 'break':
         code += this.convCheckLoop(node, 'break')

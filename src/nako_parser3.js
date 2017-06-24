@@ -84,9 +84,9 @@ class NakoParser {
   unget () {
     if (this.index > 0) this.index--
   }
-  peek () {
+  peek (i = 0) {
     if (this.isEOF()) return null
-    return this.tokens[this.index]
+    return this.tokens[this.index + i]
   }
   pushIndex () {
     this.indexStack.push(this.index)
@@ -163,6 +163,8 @@ class NakoParser {
     if (!this.check('もし')) return null
     const mosi = this.get() // skip もし
     const cond = this.yCalc()
+    if (cond === null) throw new NakoSyntaxError('もし文で条件指定のエラー。', mosi.line)
+    // TODO: 特別構文の確認 - もし、NがBならば
     let trueBlock = null
     let falseBlock = null
     if (this.check('ならば')) this.get() // skip ならば

@@ -16,6 +16,7 @@ const rules = [
   { name: 'space', pattern: /^(\s+|,)/ },
   { name: 'line_comment', pattern: /^#[^\n]+/ },
   { name: 'line_comment', pattern: /^\/\/[^\n]+/ },
+  { name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment },
   { name: 'def_func', pattern: /^(●|関数)/ },
   { name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt },
   { name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat },
@@ -139,6 +140,7 @@ class NakoLexer {
   }
 
   replaceWord (tokens) {
+    let comment = []
     let i = 0
     while (i < tokens.length) {
       const t = tokens[i]
@@ -164,9 +166,15 @@ class NakoLexer {
         continue
       }
       // コメントを飛ばす
-      if (t.type === 'line_comment') {
+      if (t.type === 'line_comment' || t.type === 'range_comment') {
+        comment.push(t.value)
         tokens.splice(i, 1)
         continue
+      }
+      // 改行にコメントを埋め込む
+      if (t.type === 'eol') {
+        t.value = comment.join('/')
+        comment = []
       }
       i++
     }
@@ -212,9 +220,8 @@ class NakoLexer {
             src = rp.src
             break
           }
-          const word = rp.res
           src = rp.src
-          const rr = { type: rule.name, value: word, josi: rp.josi, line: line }
+          const rr = { type: rule.name, value: rp.res, josi: rp.josi, line: line }
           this.result.push(rr)
           line += rp.numEOL
           break
@@ -333,6 +340,27 @@ function cbString (beginTag, closeTag, src) {
     if (res.charAt(i) === '\n') numEOL++
   }
 
+  return {src: src, res: res, josi: josi, numEOL: numEOL}
+}
+
+function cbRangeComment (src) {
+  let res = ''
+  let josi = ''
+  let numEOL = 0
+  src = src.substr(2) // skip /*
+  const i = src.indexOf('*/')
+  if (i < 0) { // not found
+    res = src
+    src = ''
+  } else {
+    res = src.substr(0, i)
+    src = src.substr(i + 2)
+  }
+  res = res.replace(/(^\s+|\s+$)/, '') // trim
+  // 改行を数える
+  for (let i = 0; i < res.length; i++) {
+    if (res.charAt(i) === '\n') numEOL++
+  }
   return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
 
