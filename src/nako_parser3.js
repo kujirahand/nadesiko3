@@ -2,19 +2,31 @@
  * nadesiko v3 parser (demo version)
  */
 const operatorTypes = [
-  '+', '-', '*', '/', '%',
-  'EQ', 'NOTEQ', 'GT', 'GTEQ', 'LT', 'LTEQ',
-  'AND', 'OR'
+  '+', '-', '*', '/', '%', '^', '&',
+  'eq', 'noteq', 'gt', 'gteq', 'lt', 'lteq',
+  'and', 'or'
 ]
+const keizokuJosi = [
+  'いて', 'えて', 'きて', 'けて', 'して', 'って', 'にて', 'みて', 'めて', 'ねて'
+]
+
+class NakoSyntaxError extends Error {
+  constructor (msg, line) {
+    const title = `[文法エラー](${line}): ${msg}`
+    super(title)
+  }
+}
 
 class NakoParser {
   constructor () {
+    this.debug = false
     this.index = 0
     this.tokens = []
     this.stack = []
     this.funclist = {}
     this.indexStack = []
     this.y = []
+    this.skipFuncInCalc = false
   }
   setFuncList (funclist) {
     this.funclist = funclist
@@ -38,11 +50,11 @@ class NakoParser {
     const y = []
     const tmpIndex = this.index
     const rollback = () => {
-      console.log('accept=rollback', types, this.tokens[this.index])
+      // console.log('accept=rollback', types, this.tokens[this.index])
       this.index = tmpIndex
       return false
     }
-    console.log('accept=try', types)
+    // console.log('accept=try', types)
     for (let i = 0; i < types.length; i++) {
       if (this.isEOF()) return rollback()
       const type = types[i]
@@ -62,7 +74,7 @@ class NakoParser {
       throw new Error('System Error : accept broken')
     }
     this.y = y
-    console.log('accept=ok', types, y)
+    // console.log('accept=ok', types, y)
     return true
   }
   get () {
@@ -93,23 +105,25 @@ class NakoParser {
     }
   }
   startParser () {
-    return this.ySentenceList(null)
+    return this.ySentenceList()
   }
   ySentenceList () {
     const blocks = []
+    let line = 0
     if (this.accept([this.ySentence])) {
       blocks.push(this.y[0])
+      line = this.y[0].line
     } else {
-      return false
+      throw new NakoSyntaxError('構文解析に失敗:' + this.nodeToStr(this.peek()), line)
     }
     while (!this.isEOF()) {
       if (!this.accept([this.ySentence])) break
       blocks.push(this.y[0])
     }
-    return {type: 'block', block: blocks}
+    return {type: 'block', block: blocks, line}
   }
   ySentence () {
-    if (this.accept(['EOL'])) return this.y[0]
+    if (this.accept(['eol'])) return this.y[0]
     if (this.accept([this.yLet])) return this.y[0]
     if (this.accept([this.yCall])) return this.y[0]
     return null
@@ -121,25 +135,30 @@ class NakoParser {
       const t = this.stack[bi]
       if (josiList.length === 0 || josiList.indexOf(t.josi) >= 0) {
         this.stack.splice(bi, 1) // remove stack
-        console.log('POP :', t)
+        // console.log('POP :', t)
         return t
       }
     }
     // 該当する助詞が見つからなかった場合
     return null
   }
+
   pushStack (item) {
-    console.log('PUSH:', item)
+    // console.log('PUSH:', item)
     this.stack.push(item)
   }
+
   yGetArg () {
-    if (this.checkTypes(['NUMBER', 'STRING', 'WORD'])) {
-      let t = this.get()
+    if (this.checkTypes(['number', 'string', 'word'])) {
+      let t = this.yValue()
       if (this.checkTypes(operatorTypes)) {
         this.unget()
-        t = this.yCalc(null)
+        t = this.yCalcNoFunc()
       }
       return t
+    }
+    if (this.checkTypes(['(', '{', '[', '-'])) {
+      return this.yCalcNoFunc()
     }
     return null
   }
@@ -160,13 +179,14 @@ class NakoParser {
       }
       break
     }
-    if (!isClose) throw new Error(`C風関数『${func.value}』でカッコが閉じていません`)
+    if (!isClose) throw new NakoSyntaxError(`C風関数『${func.value}』でカッコが閉じていません`, func.line)
   }
+
   yCall () {
     if (this.isEOF()) return null
     while (!this.isEOF()) {
       // 関数
-      if (this.check('FUNC')) {
+      if (this.check('func')) {
         const t = this.get()
         const f = t.meta
         const args = []
@@ -174,7 +194,7 @@ class NakoParser {
           this.yGetArgParen(t)
           for (let i = 0; i < f.josi.length; i++) {
             const popArg = this.popStack([])
-            if (!popArg) throw new Error(`関数『${t.value}』の引数指定エラー`)
+            if (!popArg) throw new NakoSyntaxError(`関数『${t.value}』の引数指定エラー`, t.line)
             args.unshift(popArg)
           }
         } else { // なでしこ風関数呼び出し
@@ -185,9 +205,19 @@ class NakoParser {
             if (popArg === null) numCount++
           }
           // 1つだけなら、変数「それ」で補完される
-          if (numCount >= 2) throw new Error(`関数『${t.value}』の引数指定エラー`)
+          if (numCount >= 2) throw new NakoSyntaxError(`関数『${t.value}』の引数指定エラー`, t.line)
         }
-        this.pushStack({type: 'FUNC', name: t.value, args: args, josi: t.josi, line: t.line})
+        const funcNode = {type: 'func', name: t.value, args: args, josi: t.josi, line: t.line}
+        // 言い切りならそこで一度切る
+        if (t.josi === '') {
+          return funcNode
+        }
+        // **して、** の場合も一度切る
+        if (keizokuJosi.indexOf(t.josi) >= 0) {
+          return funcNode
+        }
+        // 続き
+        this.pushStack(funcNode)
         continue
       }
       // 引数
@@ -198,35 +228,93 @@ class NakoParser {
       }
       break
     }
+    // 助詞が余ってしまった場合
+    if (this.stack.length > 0) {
+      let names = ''
+      let line = 0
+      this.stack.forEach(n => {
+        const name = this.nodeToStr(n)
+        names += name
+        line = n.line
+      })
+      if (this.debug) {
+        console.log('--- stack dump ---')
+        console.log(JSON.stringify(this.stack, null, 2))
+        console.log('peek: ', JSON.stringify(this.peek(), null, 2))
+      }
+      throw new NakoSyntaxError(`余剰単語${names}があります`, line)
+    }
     return this.popStack([])
   }
 
+  nodeToStr (node) {
+    if (!node) return `(NULL)`
+    let name = node.name
+    if (node.type === 'op') {
+      name = '演算子[' + node.operator + ']'
+    }
+    if (!name) name = node.value
+    if (typeof name !== 'string') name = node.type
+    if (this.debug) name += '→' + JSON.stringify(node, null, 2)
+    return `『${name}』`
+  }
+
   yLet () {
-    if (this.accept(['WORD', 'EQ', this.yCalc])) {
-      return {type: 'let', name: this.y[0], value: this.y[2]}
+    if (this.accept(['word', 'eq', this.yCalc])) {
+      return {
+        type: 'let',
+        name: this.y[0],
+        value: this.y[2],
+        line: this.y[0].line
+      }
     }
-    if (this.accept(['WORD', '@', this.yCalc, 'EQ', this.yCalc])) {
-      return {type: 'let_array', name: this.y[0], index: this.y[1], value: this.y[4]}
+    if (this.accept(['word', '@', this.yValue, 'eq', this.yCalc])) {
+      return {
+        type: 'let_array',
+        name: this.y[0],
+        index: [this.y[2]],
+        value: this.y[4],
+        line: this.y[0].line
+      }
     }
-    if (this.accept(['WORD', '[', this.yCalc, ']', 'EQ', this.yCalc])) {
-      return {type: 'let_array', name: this.y[0], index: this.y[1], value: this.y[5]}
+    if (this.accept(['word', '[', this.yCalc, ']', 'eq', this.yCalc])) {
+      return {
+        type: 'let_array',
+        name: this.y[0],
+        index: [this.y[2]],
+        value: this.y[5],
+        line: this.y[0].line
+      }
     }
     return null
   }
 
+  yCalcNoFunc () {
+    const tmp = this.skipFuncInCalc
+    this.skipFuncInCalc = true
+    const t = this.yCalc()
+    this.skipFuncInCalc = tmp
+    return t
+  }
   yCalc () {
-    if (this.accept([this.yLoOp])) return this.y[0]
-    return null
+    const t = this.yLoOp()
+    if (!t) return null
+    // 関数の呼び出しがある場合
+    if (this.skipFuncInCalc === false && t.josi !== '') {
+      this.pushStack(t)
+      return this.yCall()
+    }
+    return t
   }
   yLoOp () {
-    if (!this.accept([this.yCmpOp])) return false
+    if (!this.accept([this.yCmpOp])) return null
     let p = this.y[0]
     while (!this.isEOF()) {
-      if (this.accept(['AND', this.yCmpOp])) {
+      if (this.accept(['and', this.yCmpOp])) {
         p = {type: 'op', operator: 'and', left: p, right: this.y[1], josi: this.y[1].josi}
         continue
       }
-      if (this.accept(['OR', this.yCmpOp])) {
+      if (this.accept(['or', this.yCmpOp])) {
         p = {type: 'op', operator: 'or', left: p, right: this.y[1], josi: this.y[1].josi}
         continue
       }
@@ -235,14 +323,14 @@ class NakoParser {
     return p
   }
   yCmpOp () {
-    if (!this.accept([this.yPlusMinus])) return false
+    if (!this.accept([this.yPlusMinus])) return null
     let p = this.y[0]
     while (!this.isEOF()) {
-      if (this.accept(['EQ', this.yPlusMinus])) {
+      if (this.accept(['eq', this.yPlusMinus])) {
         p = {type: 'op', operator: 'eq', left: p, right: this.y[1], josi: this.y[1].josi}
         continue
       }
-      if (this.accept(['NOTEQ', this.yPlusMinus])) {
+      if (this.accept(['noteq', this.yPlusMinus])) {
         p = {type: 'op', operator: 'noteq', left: p, right: this.y[1], josi: this.y[1].josi}
         continue
       }
@@ -251,7 +339,7 @@ class NakoParser {
     return p
   }
   yPlusMinus () {
-    if (!this.accept([this.yMulDiv])) return false
+    if (!this.accept([this.yMulDiv])) return null
     let p = this.y[0]
     while (!this.isEOF()) {
       if (this.accept(['+', this.yMulDiv])) {
@@ -262,12 +350,16 @@ class NakoParser {
         p = {type: 'op', operator: '-', left: p, right: this.y[1], josi: this.y[1].josi}
         continue
       }
+      if (this.accept(['&', this.yMulDiv])) {
+        p = {type: 'op', operator: '&', left: p, right: this.y[1], josi: this.y[1].josi}
+        continue
+      }
       break
     }
     return p
   }
   yMulDiv () {
-    if (!this.accept([this.yPriCalc])) return false
+    if (!this.accept([this.yPriCalc])) return null
     let p = this.y[0]
     while (!this.isEOF()) {
       if (this.accept(['*', this.yPriCalc])) {
@@ -278,24 +370,113 @@ class NakoParser {
         p = {type: 'op', operator: '/', left: p, right: this.y[1], josi: this.y[1].josi}
         continue
       }
+      if (this.accept(['%', this.yPriCalc])) {
+        p = {type: 'op', operator: '/', left: p, right: this.y[1], josi: this.y[1].josi}
+        continue
+      }
       break
     }
     return p
   }
   yPriCalc () {
-    if (this.accept([this.yValue])) return this.y[0]
+    if (!this.accept([this.yValue])) return null
+    let p = this.y[0]
+    while (!this.isEOF()) {
+      if (this.accept(['^', this.yValue])) {
+        p = {type: 'op', operator: '^', left: p, right: this.y[1], josi: this.y[1].josi}
+        continue
+      }
+      break
+    }
+    return p
+  }
+  yValue () {
+    // 丸括弧
+    if (this.accept(['(', this.yCalc, ')'])) {
+      this.y[1].josi = this.y[2].josi
+      return this.y[1]
+    }
+    // マイナス記号
+    if (this.check('-')) {
+      const m = this.get() // skip '-'
+      const v = this.yCalcNoFunc()
+      return {
+        type: 'op',
+        operator: '*',
+        left: {type: 'number', value: -1, line: m.line},
+        right: v,
+        josi: v.josi,
+        line: m.line
+      }
+    }
+    // NOT
+    if (this.check('not')) {
+      const m = this.get() // skip '!'
+      const v = this.yCalcNoFunc()
+      return {
+        type: 'not',
+        value: v,
+        josi: v.josi,
+        line: m.line
+      }
+    }
+    // JSON object
+    const a = this.yJSONArray()
+    if (a) return a
+    const o = this.yJSONObject()
+    if (o) return o
+    // プリミティブな値
+    if (this.checkTypes(['number', 'string'])) {
+      return this.get()
+    }
+    // 変数
+    const word = this.yValueWord()
+    if (word) return word
+
+    return null
+  }
+  yValueWord () {
+    if (this.check('word')) {
+      const word = this.get()
+      if (this.checkTypes(['@', '['])) {
+        const list = []
+        let josi = ''
+        while (!this.isEOF()) {
+          let idx = null
+          if (this.accept(['@', this.yCalcNoFunc])) {
+            idx = this.y[1]
+            josi = idx.josi
+          }
+          if (this.accept(['[', this.yCalcNoFunc, ']'])) {
+            idx = this.y[1]
+            josi = this.y[2].josi
+          }
+          if (idx === null) break
+          list.push(idx)
+        }
+        if (list.length === 0) throw new NakoSyntaxError(`配列『${word.value}』アクセスで指定ミス`, word.line)
+        return {
+          type: 'ref_array',
+          name: word,
+          index: list,
+          josi: josi,
+          line: word.line
+        }
+      }
+      return word
+    }
     return null
   }
   yJSONObjectValue () {
     const a = []
     while (!this.isEOF()) {
       if (this.check('}')) break
-      if (this.accept(['WORD', ':', this.yCalc])) {
+      if (this.accept(['word', ':', this.yCalc])) {
         a.push({
           key: this.y[0],
           value: this.y[2]
         })
-      } else if (this.accept(['STRING', ':', this.yCalc])) {
+      } else if (this.accept(['string', ':', this.yCalc])) {
         a.push({
           key: this.y[0],
           value: this.y[2]
@@ -306,8 +487,22 @@ class NakoParser {
     return a
   }
   yJSONObject () {
-    if (this.accept(['{', '}'])) return {type: 'json_object', value: [], line: this.y[0].line}
-    if (this.accept(['{', this.yJSONObjectValue, '}'])) return {type: 'json_object', value: this.y[1], line: this.y[0].line}
+    if (this.accept(['{', '}'])) {
+      return {
+        type: 'json_obj',
+        value: [],
+        josi: this.y[1].josi,
+        line: this.y[0].line
+      }
+    }
+    if (this.accept(['{', this.yJSONObjectValue, '}'])) {
+      return {
+        type: 'json_obj',
+        value: this.y[1],
+        josi: this.y[2].josi,
+        line: this.y[0].line
+      }
+    }
     return null
   }
   yJSONArrayValue () {
@@ -324,22 +519,21 @@ class NakoParser {
     return a
   }
   yJSONArray () {
-    if (this.accept(['[', ']'])) return {type: 'json_array', value: [], line: this.y[0].line}
-    if (this.accept(['[', this.yJSONArrayValue, ']'])) return {type: 'json_array', value: this.y[1], line: this.y[0].line}
-    return null
-  }
-  yValue () {
-    if (this.accept(['(', this.yCalc, ')'])) return this.y[1]
-    const a = this.yJSONArray()
-    if (a) return a
-    const o = this.yJSONObject()
-    if (o) return o
-    if (this.checkTypes(['NUMBER', 'STRING', 'WORD'])) {
-      const n = this.peek()
-      if (n.josi !== '') { // 助詞が空でない→関数の呼び出しがある
-        return this.yCall()
+    if (this.accept(['[', ']'])) {
+      return {
+        type: 'json_array',
+        value: [],
+        josi: this.y[1].josi,
+        line: this.y[0].line
       }
-      return this.get()
+    }
+    if (this.accept(['[', this.yJSONArrayValue, ']'])) {
+      return {
+        type: 'json_array',
+        value: this.y[1],
+        josi: this.y[2].josi,
+        line: this.y[0].line
+      }
     }
     return null
   }

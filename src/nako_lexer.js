@@ -11,29 +11,32 @@ const josiList = [
 const josiRE = new RegExp('^(' + josiList.join('|') + ')')
 const rules = [
   // 上から順にマッチさせていく
-  { name: 'EOL', pattern: /^\n/ },
-  { name: 'EOL', pattern: /^;/ },
-  { name: 'SPACE', pattern: /^(\s+|,)/ },
-  { name: 'DEF_FUNC', pattern: /^(●|関数)/ },
-  { name: 'NUMBER', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, cb: parseFloat },
-  { name: 'NUMBER', pattern: /^[0-9]+\.[0-9]+/, cb: parseFloat },
-  { name: 'NUMBER', pattern: /^[0-9]+/, cb: parseInt },
-  { name: 'NUMBER', pattern: /^0x[0-9a-fA-F]/, cb: parseInt },
-  { name: 'KOKOKARA', pattern: /^(ここから|→)/ },
-  { name: 'KOKOMADE', pattern: /^(ここまで|←|-{3,})/ },
-  { name: 'IF', pattern: /^もし/ },
-  { name: 'THEN', pattern: /^(ならば|なら)/ },
-  { name: 'ELSE', pattern: /^違[ぁ-ん]*/ },
+  { name: 'eol', pattern: /^\n/ },
+  { name: 'eol', pattern: /^;/ },
+  { name: 'space', pattern: /^(\s+|,)/ },
+  { name: 'def_func', pattern: /^(●|関数)/ },
+  { name: 'number', pattern: /^0x[0-9a-fA-F]+/, cb: parseInt },
+  { name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, cb: parseFloat },
+  { name: 'number', pattern: /^[0-9]+\.[0-9]+/, cb: parseFloat },
+  { name: 'number', pattern: /^[0-9]+/, cb: parseInt },
+  { name: 'kokokara', pattern: /^(ここから|→)/ },
+  { name: 'kokomade', pattern: /^(ここまで|←|-{3,})/ },
+  { name: 'if', pattern: /^もし/ },
+  { name: 'then', pattern: /^(ならば|なら)/ },
+  { name: 'else', pattern: /^違[ぁ-ん]*/ },
   { name: '回', pattern: /^回/ },
-  { name: 'WHILE', pattern: /^間/ },
-  { name: 'EACH', pattern: /^反復[ぁ-ん]*/ },
-  { name: 'FOR', pattern: /^(繰返|繰り返)[ぁ-ん]*/ },
-  { name: 'GTEQ', pattern: /^(>=|=>)/ },
-  { name: 'LTEQ', pattern: /^(<=|=<)/ },
-  { name: 'NOTEQ', pattern: /^(<>|!=)/ },
-  { name: 'EQ', pattern: /^=/ },
-  { name: 'GT', pattern: /^>/ },
-  { name: 'LT', pattern: /^</ },
+  { name: 'while', pattern: /^間/ },
+  { name: 'each', pattern: /^反復[ぁ-ん]*/ },
+  { name: 'for', pattern: /^(繰返|繰り返)[ぁ-ん]*/ },
+  { name: 'gteq', pattern: /^(>=|=>)/ },
+  { name: 'lteq', pattern: /^(<=|=<)/ },
+  { name: 'noteq', pattern: /^(<>|!=)/ },
+  { name: 'eq', pattern: /^=/ },
+  { name: 'not', pattern: /^!/ },
+  { name: 'gt', pattern: /^>/ },
+  { name: 'lt', pattern: /^</ },
+  { name: 'and', pattern: /^&&/ },
+  { name: 'or', pattern: /^\|\|/ },
   { name: '=', pattern: /^=/ },
   { name: '@', pattern: /^@/ },
   { name: '+', pattern: /^\+/ },
@@ -41,24 +44,25 @@ const rules = [
   { name: '*', pattern: /^\*/ },
   { name: '/', pattern: /^\// },
   { name: '%', pattern: /^%/ },
+  { name: '^', pattern: /^\^/ },
   { name: '[', pattern: /^\[/ },
-  { name: ']', pattern: /^]/ },
+  { name: ']', pattern: /^]/, cbParser: cbCloseParser },
   { name: '(', pattern: /^\(/ },
-  { name: ')', pattern: /^\)/ },
-  { name: 'STRING', pattern: /^\{{3}/, cbParser: src => cbString('{{{', '}}}', src) },
-  { name: 'STRING', pattern: /^「/, cbParser: src => cbString('「', '」', src) },
-  { name: 'STRING', pattern: /^『/, cbParser: src => cbString('『', '』', src) },
-  { name: 'STRING', pattern: /^"/, cbParser: src => cbString('"', '"', src) },
-  { name: 'STRING', pattern: /^'/, cbParser: src => cbString('\'', '\'', src) },
+  { name: ')', pattern: /^\)/, cbParser: cbCloseParser },
+  { name: 'string_ex', pattern: /^\{{3}/, cbParser: src => cbString('{{{', '}}}', src) },
+  { name: 'string_ex', pattern: /^「/, cbParser: src => cbString('「', '」', src) },
+  { name: 'string', pattern: /^『/, cbParser: src => cbString('『', '』', src) },
+  { name: 'string_ex', pattern: /^"/, cbParser: src => cbString('"', '"', src) },
+  { name: 'string', pattern: /^'/, cbParser: src => cbString('\'', '\'', src) },
   { name: '{', pattern: /^\{/ },
-  { name: '}', pattern: /^\}/ },
+  { name: '}', pattern: /^\}/, cbParser: cbCloseParser },
   { name: ':', pattern: /^:/ },
   // 絵文字変数 = (絵文字)英数字*
-  { name: 'WORD', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/ },
-  { name: 'WORD', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/ }, // 絵文字
+  { name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/ },
+  { name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/ }, // 絵文字
   // 単語句
   {
-    name: 'WORD',
+    name: 'word',
     pattern: /^[_a-zA-Z\u4E00-\u9FCFぁ-んァ-ヶ]/,
     cbParser: cbWordParser
   }
@@ -73,7 +77,6 @@ class NakoLexer {
       last_column: 0,
       last_line: 0
     }
-    this.result = []
     this.funclist = {}
   }
   setFuncList (list) {
@@ -86,8 +89,7 @@ class NakoLexer {
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
     this.checkSyntaxMark(this.result)
-    this.result.push({type: 'EOF'})
-    console.log(this.result)
+    this.result.push({type: 'eof'})
     return this.result
   }
 
@@ -100,28 +102,28 @@ class NakoLexer {
       this.yylineno = t.line
       return t.type
     }
-    return 'EOF'
+    return 'eof'
   }
 
   preDefineFunc (tokens) {
     // 関数を先読みして定義 TODO
     let i = 0
     while (i < tokens.length) {
-      if (tokens[i].type !== 'DEF_FUNC') {
+      if (tokens[i].type !== 'def_func') {
         i++
         continue
       }
       i++ // skip "●"
-      if (tokens[i] && tokens[i].type === 'PA_B') {
+      if (tokens[i] && tokens[i].type === 'pa_b') {
         while (tokens[i]) {
-          if (tokens[i] === 'PA_E') {
+          if (tokens[i] === 'pa_e') {
             i++
             break
           }
           i++
         }
       }
-      if (tokens[i] && tokens[i].type === 'WORD') {
+      if (tokens[i] && tokens[i].type === 'word') {
         const key = tokens[i].value
         this.funclist[key] = []
       }
@@ -133,10 +135,10 @@ class NakoLexer {
     while (i < tokens.length) {
       const t = tokens[i]
       // 関数の認識と、もし文の単文と複文の判別処理
-      if (t.type === 'WORD') {
+      if (t.type === 'word') {
         const f = this.funclist[t.value]
-        if (f) {
-          t.type = 'FUNC'
+        if (f && f.type === 'func') {
+          t.type = 'func'
           t.meta = f
           continue
         }
@@ -145,7 +147,7 @@ class NakoLexer {
       if (t.josi === undefined) t.josi = ''
       if (t.josi === 'は') {
         t.josi = ''
-        tokens.splice(i + 1, 0, {type: 'EQ', line: t.line})
+        tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
         continue
       }
       i++
@@ -153,22 +155,10 @@ class NakoLexer {
   }
 
   checkSyntaxMark (tokens) {
-    // FOR文のMARKをチェック
-    let i = 0
-    let eolMarker = 0
-    while (i < tokens.length) {
-      const t = tokens[i]
-      if (t.type === 'EOL') eolMarker = i
-      if (t.type === 'FOR') {
-        tokens.splice(eolMarker, 0, {type: 'FOR_MARKER', line: t.line})
-        i += 2
-        continue
-      }
-      i++
-    }
   }
 
   tokenize (src) {
+    this.result = []
     let line = 0
     while (src !== '') {
       let ok = false
@@ -176,13 +166,34 @@ class NakoLexer {
         const m = rule.pattern.exec(src)
         if (!m) continue
         ok = true
-        if (rule.name === 'SPACE') {
+        if (rule.name === 'space') {
           src = src.substr(m[0].length)
           continue
         }
         // 特別なパーサを通すか？
         if (rule.cbParser) {
           const rp = rule.cbParser(src)
+          if (rule.name === 'string_ex') {
+            // 展開あり文字列 → aaa{x}bbb{x}cccc
+            const list = rp.res.split(/[{}]/)
+            if (list.length >= 1 && list.length % 2 === 0) {
+              throw new Error('字句解析エラー(' + line + '): 展開あり文字列で値の埋め込み{...}が対応していません。')
+            }
+            for (let i = 0; i < list.length; i++) {
+              const josi = (i === list.length - 1) ? rp.josi : ''
+              if (i % 2 === 0) {
+                const rr = { type: 'string', value: list[i], josi, line }
+                this.result.push(rr)
+              } else {
+                this.result.push({ type: '&', value: '&', josi: '', line })
+                this.result.push({ type: 'word', value: list[i], josi: '', line })
+                this.result.push({ type: '&', value: '&', josi: '', line })
+              }
+            }
+            line += rp.numEOL
+            src = rp.src
+            break
+          }
           const word = rp.res
           src = rp.src
           const rr = { type: rule.name, value: word, josi: rp.josi, line: line }
@@ -195,11 +206,11 @@ class NakoLexer {
         if (rule.cb) value = rule.cb(value)
         // ソースを進める
         src = src.substr(m[0].length)
-        if (rule.name === 'EOL') {
+        if (rule.name === 'eol' && rule.value === '\n') {
           value = line++
         }
         let josi = ''
-        if (rule.name === 'NUMBER') {
+        if (rule.name === 'number') {
           const j = josiRE.exec(src)
           if (j) {
             josi = j[0]
@@ -229,7 +240,7 @@ function cbWordParser (src) {
     alphabet = [_a-zA-Z]
     numchars = [0-9]
   */
-  const kanakanji = /^[\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶ]+/
+  const kanakanji = /^[\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
   const hira = /^[ぁ-ん]/
   let res = ''
   let josi = ''
@@ -261,7 +272,12 @@ function cbWordParser (src) {
   if (!hira.test(res)) {
     res = res.replace(/[ぁ-ん]+/g, '')
   }
-  return { src: src, res: res, josi: josi, numEOL: 0 }
+  // 助詞だけの語句の場合
+  if (res === '' && josi !== '') {
+    res = josi
+    josi = ''
+  }
+  return {src: src, res: res, josi: josi, numEOL: 0}
 }
 
 function cbString (beginTag, closeTag, src) {
@@ -288,7 +304,21 @@ function cbString (beginTag, closeTag, src) {
     if (res.charAt(i) === '\n') numEOL++
   }
 
-  return { src: src, res: res, josi: josi, numEOL: numEOL }
+  return {src: src, res: res, josi: josi, numEOL: numEOL}
+}
+
+function cbCloseParser (src) {
+  let res = ''
+  let josi = ''
+  res = src.charAt(0)
+  src = src.substr(1)
+  // 文字列直後の助詞を取得
+  const j = josiRE.exec(src)
+  if (j) {
+    josi = j[0]
+    src = src.substr(j[0].length)
+  }
+  return {src: src, res: res, josi: josi, numEOL: 0}
 }
 
 module.exports = NakoLexer
