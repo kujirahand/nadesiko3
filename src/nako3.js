@@ -189,6 +189,18 @@ class NakoCompiler {
   addPluginFile (objName, path, po) {
     this.gen.addPluginFile(objName, path, po)
   }
+
+  addFunc (key, josi, fn) {
+    this.gen.addFunc(key, josi, fn)
+  }
+
+  setFunc (key, fn) {
+    this.gen.setFunc(key, fn)
+  }
+
+  getFunc (key) {
+    return this.gen.getFunc(key)
+  }
 }
 
 module.exports = NakoCompiler
@@ -200,5 +212,5 @@ c.debug = true
 c.debug_show_parser = true
 c.debugShowLexer = true
 c.silent = false
-c.runReset('「abc,def,ghi」から「,」まで切り取る。それを表示。\n')
+c.runReset('-34に５を足して表示\n')
 */

@@ -1,6 +1,7 @@
 // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
-// 予約後
+const { opPriority } = require('./nako_parser_const')
+// 予約語句
 const reserveWords = {
   '回': '回',
   '間': '間',
@@ -67,8 +68,8 @@ const rules = [
   { name: '@', pattern: /^@/ },
   { name: '+', pattern: /^\+/ },
   { name: '-', pattern: /^-/ },
-  { name: '*', pattern: /^\*/ },
-  { name: '/', pattern: /^\// },
+  { name: '*', pattern: /^(×|\*)/ },
+  { name: '/', pattern: /^(÷|\/)/ },
   { name: '%', pattern: /^%/ },
   { name: '^', pattern: /^\^/ },
   { name: '&', pattern: /^&/ },
@@ -188,6 +189,10 @@ class NakoLexer {
   replaceWord (tokens) {
     let comment = []
     let i = 0
+    const getLastType = () => {
+      if (i <= 0) return 'eol'
+      return tokens[i - 1].type
+    }
     while (i < tokens.length) {
       const t = tokens[i]
       if (t.type === 'word') {
@@ -201,6 +206,17 @@ class NakoLexer {
           t.type = 'func'
           t.meta = f
           continue
+        }
+      }
+      // 数字につくマイナス記号を判定
+      // (ng) 5 - 3 || word - 3
+      // (ok) (行頭)-3 || 1 * -3 || Aに -3を 足す
+      if (t.type === '-' && tokens[i + 1] && tokens[i + 1].type === 'number') {
+        // 一つ前の語句が、(行頭|演算子|助詞付きの語句)なら 負数である
+        const ltype = getLastType()
+        if (ltype === 'eol' || opPriority[ltype] || tokens[i - 1].josi !== '') {
+          tokens.splice(i, 1) // remove '-'
+          tokens[i + 1].value *= -1
         }
       }
       // 助詞の「は」を = に展開、また、「とは」を一つの単語にする
