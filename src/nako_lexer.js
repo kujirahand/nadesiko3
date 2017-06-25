@@ -216,7 +216,7 @@ class NakoLexer {
         const ltype = getLastType()
         if (ltype === 'eol' || opPriority[ltype] || tokens[i - 1].josi !== '') {
           tokens.splice(i, 1) // remove '-'
-          tokens[i + 1].value *= -1
+          tokens[i].value *= -1
         }
       }
       // 助詞の「は」を = に展開、また、「とは」を一つの単語にする

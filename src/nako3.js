@@ -212,5 +212,5 @@ c.debug = true
 c.debug_show_parser = true
 c.debugShowLexer = true
 c.silent = false
-c.runReset('-34に５を足して表示\n')
+c.runReset('-45を表示\n')
 */
