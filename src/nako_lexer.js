@@ -1,6 +1,19 @@
 // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
+// 予約後
+const reserveWords = {
+  '回': '回',
+  '間': '間',
+  '繰返': '繰り返す',
+  '反復': '反復',
+  '抜': '抜ける',
+  '続': '続ける',
+  '戻': '戻る',
+  '代入': '代入'
+}
+// 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
 
+// 助詞の一覧
 const josiList = [
   'について', 'くらい', 'なのか', 'までを', 'までの',
   'とは', 'から', 'まで', 'だけ', 'より', 'ほど', 'など',
@@ -8,6 +21,16 @@ const josiList = [
   'めて', 'ねて', 'では',
   'は', 'を', 'に', 'へ', 'で', 'と', 'が', 'の'
 ]
+const tararebaJosiList = [
+  'でなければ', 'ならば', 'なら', 'たら', 'れば'
+]
+// 一覧をプログラムで扱いやすいよう変換
+const tararebaJosiMap = []
+tararebaJosiList.forEach(e => {
+  josiList.push(e)
+  tararebaJosiMap[e] = true
+})
+josiList.sort((a, b) => b.length - a.length) // 文字数の長い順に並び替え
 const josiRE = new RegExp('^(' + josiList.join('|') + ')')
 const rules = [
   // 上から順にマッチさせていく
@@ -24,17 +47,13 @@ const rules = [
   { name: 'number', pattern: /^[0-9]+/, readJosi: true, cb: parseInt },
   { name: 'ここから', pattern: /^(ここから|→)/ },
   { name: 'ここまで', pattern: /^(ここまで|←|-{3,})/ },
-  { name: '代入', pattern: /^代入/, readJosi: true },
   { name: 'もし', pattern: /^もしも?/ },
-  { name: 'ならば', pattern: /^(ならば|なら|でなければ)/ },
+  // ならば ← 助詞として定義
   { name: '違えば', pattern: /^違(えば)?/ },
-  { name: '回', pattern: /^回/ },
-  { name: 'while', pattern: /^間/ },
-  { name: 'each', pattern: /^反復/, readJosi: true },
-  { name: 'for', pattern: /^(繰返|繰り返)/, readJosi: true },
-  { name: 'gteq', pattern: /^(>=|=>)/ },
-  { name: 'lteq', pattern: /^(<=|=<)/ },
-  { name: 'noteq', pattern: /^(<>|!=)/ },
+  // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
+  { name: 'gteq', pattern: /^(≧|>=|=>)/ },
+  { name: 'lteq', pattern: /^(≦|<=|=<)/ },
+  { name: 'noteq', pattern: /^(≠|<>|!=)/ },
   { name: 'eq', pattern: /^=/ },
   { name: 'not', pattern: /^!/ },
   { name: 'gt', pattern: /^>/ },
@@ -79,13 +98,6 @@ const rules = [
 
 class NakoLexer {
   constructor () {
-    this.yytext = {}
-    this.yyloc = this.yylloc = {
-      first_column: 0,
-      first_line: 0,
-      last_column: 0,
-      last_line: 0
-    }
     this.funclist = {}
   }
   setFuncList (list) {
@@ -102,39 +114,64 @@ class NakoLexer {
     return this.result
   }
 
-  lex () {
-    if (this.result.length > 0) {
-      const t = this.result.shift()
-      console.log('...', t)
-      this.yytext = t
-      this.yyloc.first_line = this.yyloc.last_line = t.line
-      this.yylineno = t.line
-      return t.type
-    }
-    return 'eof'
-  }
-
   preDefineFunc (tokens) {
-    // 関数を先読みして定義 TODO
+    // 関数を先読みして定義
     let i = 0
+    const readArgs = () => {
+      const args = []
+      const keys = {}
+      if (tokens[i].type !== '(') return []
+      i++
+      while (tokens[i]) {
+        if (tokens[i].type === ')') {
+          i++
+          break
+        }
+        if (tokens[i].type === '|') {
+          i++
+          continue
+        }
+        const t = tokens[i]
+        args.push(t)
+        if (!keys[t.value]) keys[t.value] = []
+        keys[t.value].push(t.josi)
+        i++
+      }
+      const result = []
+      const already = {}
+      for (const arg of args) {
+        if (!already[arg.value]) {
+          const josi = keys[arg.value]
+          result.push(josi)
+          already[arg.value] = true
+        }
+      }
+      return result
+    }
     while (i < tokens.length) {
       if (tokens[i].type !== 'def_func') {
         i++
         continue
       }
       i++ // skip "●"
-      if (tokens[i] && tokens[i].type === 'pa_b') {
-        while (tokens[i]) {
-          if (tokens[i] === 'pa_e') {
-            i++
-            break
-          }
-          i++
-        }
+      let josi = null
+      // 関数名の前に引数定義
+      if (tokens[i] && tokens[i].type === '(') {
+        josi = readArgs()
       }
       if (tokens[i] && tokens[i].type === 'word') {
-        const key = tokens[i].value
-        this.funclist[key] = []
+        const key = tokens[i++].value
+        // 関数名の後で引数定義
+        if (josi === null && tokens[i] && tokens[i].type === '(') {
+          josi = readArgs()
+        } else {
+          josi = []
+        }
+        this.funclist[key] = {
+          fn: null,
+          josi: josi,
+          type: 'func'
+        }
       }
     }
   }
@@ -144,8 +181,13 @@ class NakoLexer {
     let i = 0
     while (i < tokens.length) {
       const t = tokens[i]
-      // 関数の認識と、もし文の単文と複文の判別処理
       if (t.type === 'word') {
+        // 予約語の変換
+        if (reserveWords[t.value]) {
+          t.type = reserveWords[t.value]
+          continue
+        }
+        // 関数を変換
         const f = this.funclist[t.value]
         if (f && f.type === 'func') {
           t.type = 'func'
@@ -158,6 +200,14 @@ class NakoLexer {
       if (t.josi === 'は') {
         t.josi = ''
         tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
+        continue
+      }
+      // 助詞のならばをトークンとする
+      if (tararebaJosiMap[t.josi]) {
+        const josi = (t.josi !== 'でなければ') ? 'ならば' : 'でなければ'
+        t.josi = ''
+        tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line})
+        i += 2
         continue
       }
       // _ 改行 を飛ばす
@@ -231,8 +281,9 @@ class NakoLexer {
         if (rule.cb) value = rule.cb(value)
         // ソースを進める
         src = src.substr(m[0].length)
-        if (rule.name === 'eol' && rule.value === '\n') {
+        if (rule.name === 'eol' && value === '\n') {
           value = line++
+          console.log('LINE=', line)
         }
         let josi = ''
         if (rule.readJosi) {

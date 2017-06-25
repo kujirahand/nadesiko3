@@ -100,11 +100,46 @@ const PluginSystem = {
       return a / b
     }
   },
-  '割った余': { // @AをBで割った余りを求める // @わったあまり
+  '割余': { // @AをBで割った余りを求める // @わったあまり
     type: 'func',
     josi: [['を'], ['で']],
     fn: function (a, b) {
       return a % b
+    }
+  },
+  '以上': { // @AがB以上か // @いじょう
+    type: 'func',
+    josi: [['が'], []],
+    fn: function (a, b) {
+      return a >= b
+    }
+  },
+  '以下': { // @AがB以下か // @いか
+    type: 'func',
+    josi: [['が'], []],
+    fn: function (a, b) {
+      return a <= b
+    }
+  },
+  '未満': { // @AがB未満か // @みまん
+    type: 'func',
+    josi: [['が'], []],
+    fn: function (a, b) {
+      return a < b
+    }
+  },
+  '超': { // @AがB超か // @ちょう
+    type: 'func',
+    josi: [['が'], []],
+    fn: function (a, b) {
+      return a > b
+    }
+  },
+  '等': { // @AがBと等しいか // @ひとしい
+    type: 'func',
+    josi: [['が'], ['と']],
+    fn: function (a, b) {
+      return a === b
     }
   },
 

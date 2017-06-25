@@ -270,7 +270,7 @@ class NakoGen {
         code += '/*' + node.value + '*/\n'
         break
       case 'eol':
-        code += this.convLineno(node) + '// ' + node.value + '\n'
+        code += ';' + this.convLineno(node) + '// ' + node.value + '\n'
         break
       case 'break':
         code += this.convCheckLoop(node, 'break')
@@ -448,7 +448,7 @@ class NakoGen {
     const josilistTmp = []
     for (let i = 0; i < args.length; i++) {
       const arg = args[i]
-      const josiWord = arg['word'].value
+      const josiWord = arg.value
       const josi = arg['josi']
       let flagDouble = false
       for (let j = 0; j < josilistTmp.length; j++) {
@@ -576,14 +576,14 @@ class NakoGen {
     const block = this.convGenLoop(node.block)
     let word = ''
     let varCode = ''
-    if (node.word !== '') {
+    if (node.word !== null) {
       word = this.convGen(node.word)
       varCode = ''
     } else {
       // ループ変数を省略した時は、自動で生成する
       const id = this.loop_id++
       word = `$nako_i${id}`
-      varCode = 'var '
+      varCode = 'let '
     }
     const code =
       `for(${varCode}${word}=${kara}; ${word}<=${made}; ${word}++)` + '{\n' +
@@ -608,8 +608,8 @@ class NakoGen {
     this.__vars['対象キー'] = true
     const nameS = this.varname(name)
     const code =
-      `var $nako_foreach_v${id}=${target};\n` +
-      `for(var $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
+      `let $nako_foreach_v${id}=${target};\n` +
+      `for (let $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
       `${nameS} = ${this.sore} = $nako_foreach_v${id}[$nako_i${id}];` + '\n' +
       `${key} = $nako_i${id};\n` +
       '' + block + '\n' +
@@ -647,7 +647,7 @@ class NakoGen {
       : 'else {' + this.convGen(node.false_block) + '};\n'
     const code =
       this.convLineno(node) +
-      `if (${expr}) {\n  ${block}\n}` + falseBlock
+      `if (${expr}) {\n  ${block}\n}` + falseBlock + ';\n'
     return code
   }
 
@@ -720,15 +720,19 @@ class NakoGen {
       code = `${code};\n`
     } else {
       code = `(()=>{ const tmp=${this.sore}=${code}; return tmp })()`
-      if (node.josi === '') code += ';\n'
+      // ...して
+      if (node.josi === 'して') {
+        code += ';\n'
+      }
     }
-    return this.convLineno(node) + code
+    return code
   }
 
   convOp (node) {
     const OP_TBL = {
       '&': '+""+',
       'eq': '==',
+      'noteq': '!=',
       'gt': '>',
       'lt': '<',
       'gteq': '>=',
