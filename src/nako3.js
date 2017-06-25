@@ -202,4 +202,5 @@ c.silent = false
 // c.run('3に5を掛けて表示')
 // c.run('a=[];a[1]=30;a[1]を表示')
 // c.runReset(';;A=50 // hogehoge\nAを表示;')
-c.runReset(';/* aaa */\n3を表示\n2*3を表示;')
+// c.runReset(';表示(1+2*3);')
+c.runReset(';表示(1+2);')

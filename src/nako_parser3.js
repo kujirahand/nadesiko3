@@ -1,14 +1,10 @@
 /**
  * nadesiko v3 parser (demo version)
  */
-const operatorTypes = [
-  '+', '-', '*', '/', '%', '^', '&',
-  'eq', 'noteq', 'gt', 'gteq', 'lt', 'lteq',
-  'and', 'or'
-]
-const keizokuJosi = [
-  'いて', 'えて', 'きて', 'けて', 'して', 'って', 'にて', 'みて', 'めて', 'ねて'
-]
+const {
+  opPriority,
+  keizokuJosi
+} = require('./nako_parser_const')
 
 class NakoSyntaxError extends Error {
   constructor (msg, line) {
@@ -42,6 +38,15 @@ class NakoParser {
   check (ttype) {
     return (this.tokens[this.index].type === ttype)
   }
+  check2 (a) {
+    for (let i = 0; i < a.length; i++) {
+      const idx = i + this.index
+      if (this.tokens.length <= idx) return false
+      const t = this.tokens[idx]
+      if (t.type !== a[i]) return false
+    }
+    return true
+  }
   checkTypes (a) {
     const type = this.tokens[this.index].type
     return (a.indexOf(type) >= 0)
@@ -69,6 +74,11 @@ class NakoParser {
         const r = f(null)
         if (r === null) return rollback()
         y[i] = r
+        continue
+      }
+      if (type instanceof Array) {
+        if (!this.checkTypes(type)) return rollback()
+        y[i] = this.get()
         continue
       }
       throw new Error('System Error : accept broken')
@@ -140,6 +150,7 @@ class NakoParser {
     return null
   }
   popStack (josiList) {
+    if (!josiList) return this.stack.pop()
     // 末尾から josiList にマッチする助詞を探す
     for (let i = 0; i < this.stack.length; i++) {
       const bi = this.stack.length - i - 1
@@ -159,12 +170,18 @@ class NakoParser {
     this.stack.push(item)
   }
 
+  yIFCond () {
+    // もしの条件の取得
+    // TODO: もし、AがBならば
+    const a = this.yCalc()
+    return a
+  }
+
   yIF () {
     if (!this.check('もし')) return null
     const mosi = this.get() // skip もし
-    const cond = this.yCalc()
+    const cond = this.yIFCond()
     if (cond === null) throw new NakoSyntaxError('もし文で条件指定のエラー。', mosi.line)
-    // TODO: 特別構文の確認 - もし、NがBならば
     let trueBlock = null
     let falseBlock = null
     if (this.check('ならば')) this.get() // skip ならば
@@ -194,26 +211,76 @@ class NakoParser {
   }
 
   yGetArg () {
-    if (this.checkTypes(['number', 'string', 'word'])) {
-      let t = this.yValue()
-      if (this.checkTypes(operatorTypes)) {
-        this.unget()
-        t = this.yCalcNoFunc()
+    const args = []
+    // stack=[1,+,2,*,3]
+    while (!this.isEOF()) {
+      if (this.checkTypes(['number', 'string', 'word', '(', '{', '[', '-'])) {
+        let t = this.yValue()
+        args.push(t)
+        const op = this.peek()
+        if (op && opPriority[op.type]) {
+          args.push(this.get())
+          continue
+        }
+        break
       }
-      return t
+      break
     }
-    if (this.checkTypes(['(', '{', '[', '-'])) {
-      return this.yCalcNoFunc()
+    if (args.length === 0) return null
+    if (args.length === 1) return args[0]
+    return this.infixToAST(args)
+  }
+  infixToPolish (list) {
+    // 中間記法から逆ポーランドに変換
+    const priority = (t) => {
+      if (opPriority[t.type]) return opPriority[t.type]
+      return 10
     }
-    return null
+    const stack = []
+    const polish = []
+    while (list.length > 0) {
+      const t = list.shift()
+      while (stack.length > 0) { // 優先順位を見て移動する
+        const sTop = stack[stack.length - 1]
+        if (priority(t) > priority(sTop)) break
+        polish.push(stack.pop())
+      }
+      stack.push(t)
+    }
+    // 残った要素を積み替える
+    while (stack.length > 0) polish.push(stack.pop())
+    return polish
+  }
+  infixToAST (list) {
+    // 逆ポーランドを構文木に
+    const josi = list[list.length - 1].josi
+    const polish = this.infixToPolish(list)
+    const stack = []
+    for (const t of polish) {
+      if (!opPriority[t.type]) { // 演算子ではない
+        stack.push(t)
+        continue
+      }
+      const b = stack.pop()
+      const a = stack.pop()
+      const op = {
+        type: 'op',
+        operator: t.type,
+        left: a,
+        right: b,
+        line: a.line,
+        josi: josi
+      }
+      stack.push(op)
+    }
+    return stack.pop()
   }
 
-  yGetArgParen (func) { // C言語風呼び出しで(...)の引数をスタックに載せる
-    this.get() // skip '('
+  yGetArgParen (func) { // C言語風呼び出しでカッコの中を取得
     let isClose = false
+    const si = this.stack.length
     while (!this.isEOF()) {
       if (this.check(')')) {
-        this.get() // skip ')'
         isClose = true
         break
       }
@@ -225,6 +292,12 @@ class NakoParser {
       break
     }
     if (!isClose) throw new NakoSyntaxError(`C風関数『${func.value}』でカッコが閉じていません`, func.line)
+    const a = []
+    while (si < this.stack.length) {
+      const v = this.popStack()
+      a.unshift(v)
+    }
+    return a
   }
 
   yCall () {
@@ -239,27 +312,25 @@ class NakoParser {
         return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
       }
       // 関数
+      if (this.check2(['func', '('])) { // C言語風
+        const t = this.yValue()
+        if (t.type === 'func' && (t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0)) {
+          t.josi = ''
+          return t // 関数なら値とする
+        }
+      }
       if (this.check('func')) {
         const t = this.get()
         const f = t.meta
         const args = []
-        if (this.check('(')) { // C言語風関数呼び出し
-          this.yGetArgParen(t)
-          for (let i = 0; i < f.josi.length; i++) {
-            const popArg = this.popStack([])
-            if (!popArg) throw new NakoSyntaxError(`関数『${t.value}』の引数指定エラー`, t.line)
-            args.unshift(popArg)
-          }
-        } else { // なでしこ風関数呼び出し
-          let numCount = 0
-          for (const arg of f.josi) {
-            const popArg = this.popStack(arg)
-            args.push(popArg)
-            if (popArg === null) numCount++
-          }
-          // 1つだけなら、変数「それ」で補完される
-          if (numCount >= 2) throw new NakoSyntaxError(`関数『${t.value}』の引数指定エラー`, t.line)
+        let numCount = 0
+        for (const arg of f.josi) {
+          const popArg = this.popStack(arg)
+          args.push(popArg)
+          if (popArg === null) numCount++
         }
+        // 1つだけなら、変数「それ」で補完される
+        if (numCount >= 2) throw new NakoSyntaxError(`関数『${t.value}』の引数指定エラー`, t.line)
         const funcNode = {type: 'func', name: t.value, args: args, josi: t.josi, line: t.line}
         // 言い切りならそこで一度切る
         if (t.josi === '') {
@@ -275,9 +346,9 @@ class NakoParser {
         continue
       }
       // 引数
-      const value = this.yGetArg()
-      if (value) {
-        this.pushStack(value)
+      const t = this.yGetArg()
+      if (t) {
+        this.pushStack(t)
         continue
       }
       break
@@ -352,7 +423,7 @@ class NakoParser {
   }
   yCalc () {
     if (this.check('eol')) return null
-    const t = this.yLoOp()
+    const t = this.yValue()
     if (!t) return null
     // 関数の呼び出しがある場合
     if (this.skipFuncInCalc === false && t.josi !== '') {
@@ -361,91 +432,11 @@ class NakoParser {
     }
     return t
   }
-  yLoOp () {
-    if (!this.accept([this.yCmpOp])) return null
-    let p = this.y[0]
-    while (!this.isEOF()) {
-      if (this.accept(['and', this.yCmpOp])) {
-        p = {type: 'op', operator: 'and', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      if (this.accept(['or', this.yCmpOp])) {
-        p = {type: 'op', operator: 'or', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      break
-    }
-    return p
-  }
-  yCmpOp () {
-    if (!this.accept([this.yPlusMinus])) return null
-    let p = this.y[0]
-    while (!this.isEOF()) {
-      if (this.accept(['eq', this.yPlusMinus])) {
-        p = {type: 'op', operator: 'eq', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      if (this.accept(['noteq', this.yPlusMinus])) {
-        p = {type: 'op', operator: 'noteq', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      break
-    }
-    return p
-  }
-  yPlusMinus () {
-    if (!this.accept([this.yMulDiv])) return null
-    let p = this.y[0]
-    while (!this.isEOF()) {
-      if (this.accept(['+', this.yMulDiv])) {
-        p = {type: 'op', operator: '+', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      if (this.accept(['-', this.yMulDiv])) {
-        p = {type: 'op', operator: '-', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      if (this.accept(['&', this.yMulDiv])) {
-        p = {type: 'op', operator: '&', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      break
-    }
-    return p
-  }
-  yMulDiv () {
-    if (!this.accept([this.yPriCalc])) return null
-    let p = this.y[0]
-    while (!this.isEOF()) {
-      if (this.accept(['*', this.yPriCalc])) {
-        p = {type: 'op', operator: '*', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      if (this.accept(['/', this.yPriCalc])) {
-        p = {type: 'op', operator: '/', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      if (this.accept(['%', this.yPriCalc])) {
-        p = {type: 'op', operator: '/', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      break
-    }
-    return p
-  }
-  yPriCalc () {
-    if (!this.accept([this.yValue])) return null
-    let p = this.y[0]
-    while (!this.isEOF()) {
-      if (this.accept(['^', this.yValue])) {
-        p = {type: 'op', operator: '^', left: p, right: this.y[1], josi: this.y[1].josi}
-        continue
-      }
-      break
-    }
-    return p
-  }
   yValue () {
+    // プリミティブな値
+    if (this.checkTypes(['number', 'string'])) {
+      return this.get()
+    }
     // 丸括弧
     if (this.accept(['(', this.yCalc, ')'])) {
       this.y[1].josi = this.y[2].josi
@@ -480,13 +471,24 @@ class NakoParser {
     if (a) return a
     const o = this.yJSONObject()
     if (o) return o
-    // プリミティブな値
-    if (this.checkTypes(['number', 'string'])) {
-      return this.get()
-    }
     // 変数
     const word = this.yValueWord()
     if (word) return word
+    // 関数(...)
+    if (this.check2(['func', '('])) {
+      const f = this.peek()
+      if (this.accept(['func', '(', this.yGetArgParen, ')'])) {
+        return {
+          type: 'func',
+          name: this.y[0].value,
+          args: this.y[2],
+          line: this.y[0].line,
+          josi: this.y[3].josi
+        }
+      } else {
+        throw new NakoSyntaxError('C風関数呼び出しのエラー', f.line)
+      }
+    }
     // 埋め込み文字列
     if (this.check('embed_code')) return this.get()
     // その他
