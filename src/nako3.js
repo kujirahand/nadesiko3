@@ -203,4 +203,4 @@ c.silent = false
 // c.run('a=[];a[1]=30;a[1]を表示')
 // c.runReset(';;A=50 // hogehoge\nAを表示;')
 // c.runReset(';表示(1+2*3);')
-c.runReset(';表示(1+2);')
+c.runReset(';A=JS{{{31}}};Aを表示;')

@@ -26,7 +26,7 @@ const rules = [
   { name: 'ここまで', pattern: /^(ここまで|←|-{3,})/ },
   { name: '代入', pattern: /^代入/, readJosi: true },
   { name: 'もし', pattern: /^もしも?/ },
-  { name: 'ならば', pattern: /^(ならば|なら)/ },
+  { name: 'ならば', pattern: /^(ならば|なら|でなければ)/ },
   { name: '違えば', pattern: /^違(えば)?/ },
   { name: '回', pattern: /^回/ },
   { name: 'while', pattern: /^間/ },
@@ -241,10 +241,6 @@ class NakoLexer {
             josi = j[0]
             src = src.substr(j[0].length)
           }
-        }
-        if (value === '違') {
-          console.log(value, src.substr(0, 3))
-          process.exit()
         }
         this.result.push({
           type: rule.name,

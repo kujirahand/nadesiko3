@@ -1,10 +1,7 @@
 /**
  * nadesiko v3 parser (demo version)
  */
-const {
-  opPriority,
-  keizokuJosi
-} = require('./nako_parser_const')
+const { opPriority, keizokuJosi, valueTypes } = require('./nako_parser_const')
 
 class NakoSyntaxError extends Error {
   constructor (msg, line) {
@@ -42,6 +39,7 @@ class NakoParser {
     for (let i = 0; i < a.length; i++) {
       const idx = i + this.index
       if (this.tokens.length <= idx) return false
+      if (a[i] === '*') continue // ワイルドカード(どんなタイプも許容)
       const t = this.tokens[idx]
       if (t.type !== a[i]) return false
     }
@@ -170,10 +168,36 @@ class NakoParser {
     this.stack.push(item)
   }
 
-  yIFCond () {
-    // もしの条件の取得
-    // TODO: もし、AがBならば
-    const a = this.yCalc()
+  yIFCond () { // もしの条件の取得
+    // 「もし、AがBならば」という記述方法の確認
+    const a = this.yGetArg()
+    if (!a) return null
+    if (a.josi === 'が') {
+      if (this.check2(['*', 'ならば'])) {
+        const b = this.get()
+        const naraba = this.get()
+        return {
+          type: 'op',
+          operator: (naraba.value !== 'でなければ') ? 'noteq' : 'eq',
+          left: a,
+          right: b,
+          line: a.line,
+          josi: ''
+        }
+      }
+    }
+    // 「Aでなければ」を確認
+    if (this.check('ならば')) {
+      const naraba = this.get()
+      if (naraba.value === 'でなければ') {
+        return {
+          type: 'not',
+          value: a,
+          line: a.line,
+          josi: ''
+        }
+      }
+    }
     return a
   }
 
@@ -184,7 +208,6 @@ class NakoParser {
     if (cond === null) throw new NakoSyntaxError('もし文で条件指定のエラー。', mosi.line)
     let trueBlock = null
     let falseBlock = null
-    if (this.check('ならば')) this.get() // skip ならば
     if (this.check('eol')) { // BLOCK
       this.get() // skip eol
       trueBlock = this.yBlock()
@@ -214,7 +237,7 @@ class NakoParser {
     const args = []
     // stack=[1,+,2,*,3]
     while (!this.isEOF()) {
-      if (this.checkTypes(['number', 'string', 'word', '(', '{', '[', '-'])) {
+      if (this.checkTypes(valueTypes)) {
         let t = this.yValue()
         args.push(t)
         const op = this.peek()
@@ -423,7 +446,7 @@ class NakoParser {
   }
   yCalc () {
     if (this.check('eol')) return null
-    const t = this.yValue()
+    const t = this.yGetArg()
     if (!t) return null
     // 関数の呼び出しがある場合
     if (this.skipFuncInCalc === false && t.josi !== '') {
