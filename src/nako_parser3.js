@@ -19,7 +19,6 @@ class NakoParser {
     this.funclist = {}
     this.indexStack = []
     this.y = []
-    this.skipFuncInCalc = false
   }
   setFuncList (funclist) {
     this.funclist = funclist
@@ -41,6 +40,10 @@ class NakoParser {
       if (this.tokens.length <= idx) return false
       if (a[i] === '*') continue // ワイルドカード(どんなタイプも許容)
       const t = this.tokens[idx]
+      if (a[i] instanceof Array) {
+        if (a[i].indexOf(t.type) < 0) return false
+        continue
+      }
       if (t.type !== a[i]) return false
     }
     return true
@@ -178,33 +181,35 @@ class NakoParser {
     this.stack.push(item)
   }
 
+  yDefFuncReadArgs () {
+    if (!this.check('(')) return null
+    const a = []
+    this.get() // skip '('
+    while (!this.isEOF()) {
+      if (this.check(')')) {
+        this.get()
+        break
+      }
+      a.push(this.get())
+    }
+    return a
+  }
+
   yDefFunc () {
     if (!this.check('def_func')) return null
-    const readArgs = () => { // lexerでも解析しているが再度詳しく
-      const a = []
-      this.get() // skip '('
-      while (!this.isEOF()) {
-        if (this.check(')')) {
-          this.get()
-          break
-        }
-        a.push(this.get())
-      }
-      return a
-    }
     const def = this.get() // ●
     let defArgs = []
     if (this.check('(')) {
-      defArgs = readArgs()
+      defArgs = this.yDefFuncReadArgs() // // lexerでも解析しているが再度詳しく
     }
     const funcName = this.get()
-    console.log('funcName=', funcName)
     if (funcName.type !== 'func') {
       throw new NakoSyntaxError('関数の宣言でエラー『' + this.nodeToStr(funcName) + '』', funcName.line)
     }
     if (this.check('(')) {
-      defArgs = readArgs()
+      defArgs = this.yDefFuncReadArgs()
     }
+    if (this.check('とは')) this.get()
     let block = null
     let multiline = false
     if (this.check('ここから')) multiline = true
@@ -342,8 +347,10 @@ class NakoParser {
     return polish
   }
   infixToAST (list) {
+    if (list.length === 0) return null
     // 逆ポーランドを構文木に
     const josi = list[list.length - 1].josi
+    const line = list[list.length - 1].line
     const polish = this.infixToPolish(list)
     const stack = []
     for (const t of polish) {
@@ -353,6 +360,13 @@ class NakoParser {
       }
       const b = stack.pop()
       const a = stack.pop()
+      if (a === undefined || b === undefined) {
+        if (this.debug) {
+          console.log('--- 計算式(逆ポーランド) ---')
+          console.log(polish)
+        }
+        throw new NakoSyntaxError('計算式でエラー', line)
+      }
       const op = {
         type: 'op',
         operator: t.type,
@@ -514,6 +528,22 @@ class NakoParser {
     }
   }
 
+  yMumeiFunc () { // 無名関数の定義
+    if (!this.check('def_func')) return null
+    const def = this.get()
+    if (!this.check('(')) throw new NakoSyntaxError('無名関数の定義エラー', def.line)
+    const args = this.yDefFuncReadArgs()
+    const block = this.yBlock()
+    if (this.check('ここまで')) this.get()
+    return {
+      type: 'func_obj',
+      args,
+      block,
+      line: def.line,
+      josi: ''
+    }
+  }
+
   yCall () {
     if (this.isEOF()) return null
     while (!this.isEOF()) {
@@ -534,7 +564,7 @@ class NakoParser {
       // 戻す
       if (this.check('戻る')) return this.yReturn()
       // 関数
-      if (this.check2(['func', '('])) { // C言語風
+      if (this.check2([['func', 'word'], '('])) { // C言語風
         const t = this.yValue()
         if (t.type === 'func' && (t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0)) {
           t.josi = ''
@@ -609,6 +639,7 @@ class NakoParser {
   }
 
   yLet () {
+    // 通常の変数
     if (this.accept(['word', 'eq', this.yCalc])) {
       return {
         type: 'let',
@@ -635,22 +666,55 @@ class NakoParser {
         line: this.y[0].line
       }
     }
+    // ローカル変数定義
+    if (this.accept(['word', 'とは'])) {
+      const word = this.y[0]
+      if (!this.checkTypes(['変数', '定数'])) {
+        throw new NakoSyntaxError('ローカル変数『' + word.value + '』の定義エラー', word.line)
+      }
+      const vtype = this.get() // 変数
+      // 初期値がある？
+      let value = null
+      if (this.check('eq')) {
+        this.get()
+        value = this.yCalc()
+      }
+      return {
+        type: 'def_local_var',
+        name: word,
+        vartype: vtype.type,
+        value,
+        line: word.line
+      }
+    }
+    // ローカル変数定義（その２）
+    if (this.accept(['変数', 'word', 'eq', this.yCalc])) {
+      return {
+        type: 'def_local_var',
+        name: this.y[1],
+        vartype: '変数',
+        value: this.y[3],
+        line: this.y[0].line
+      }
+    }
+    if (this.accept(['定数', 'word', 'eq', this.yCalc])) {
+      return {
+        type: 'def_local_var',
+        name: this.y[1],
+        vartype: '定数',
+        value: this.y[3],
+        line: this.y[0].line
+      }
+    }
     return null
   }
 
-  yCalcNoFunc () {
-    const tmp = this.skipFuncInCalc
-    this.skipFuncInCalc = true
-    const t = this.yCalc()
-    this.skipFuncInCalc = tmp
-    return t
-  }
   yCalc () {
     if (this.check('eol')) return null
     const t = this.yGetArg()
     if (!t) return null
     // 関数の呼び出しがある場合
-    if (this.skipFuncInCalc === false && t.josi !== '') {
+    if (t.josi !== '') {
       this.pushStack(t)
       return this.yCall()
     }
@@ -683,7 +747,7 @@ class NakoParser {
     // マイナス記号
     if (this.check('-')) {
       const m = this.get() // skip '-'
-      const v = this.yCalcNoFunc()
+      const v = this.yCalc()
       return {
         type: 'op',
         operator: '*',
@@ -696,7 +760,7 @@ class NakoParser {
     // NOT
     if (this.check('not')) {
       const m = this.get() // skip '!'
-      const v = this.yCalcNoFunc()
+      const v = this.yCalc()
       return {
         type: 'not',
         value: v,
@@ -709,13 +773,10 @@ class NakoParser {
     if (a) return a
     const o = this.yJSONObject()
     if (o) return o
-    // 変数
-    const word = this.yValueWord()
-    if (word) return word
-    // 関数(...)
-    if (this.check2(['func', '('])) {
+    // C風関数呼び出し FUNC(...)
+    if (this.check2([['func', 'word'], '('])) {
       const f = this.peek()
-      if (this.accept(['func', '(', this.yGetArgParen, ')'])) {
+      if (this.accept([['func', 'word'], '(', this.yGetArgParen, ')'])) {
         const fobj = {
           type: 'func',
           name: this.y[0].value,
@@ -730,22 +791,28 @@ class NakoParser {
     }
     // 埋め込み文字列
     if (this.check('embed_code')) return this.get()
+    // 無名関数(関数オブジェクト)
+    if (this.check('def_func')) return this.yMumeiFunc()
+    // 変数
+    const word = this.yValueWord()
+    if (word) return word
     // その他
     return null
   }
   yValueWord () {
     if (this.check('word')) {
       const word = this.get()
+      if (this.skipRefArray) return word
       if (word.josi === '' && this.checkTypes(['@', '['])) {
         const list = []
         let josi = ''
         while (!this.isEOF()) {
           let idx = null
-          if (this.accept(['@', this.yCalcNoFunc])) {
+          if (this.accept(['@', this.yValue])) {
             idx = this.y[1]
             josi = idx.josi
           }
-          if (this.accept(['[', this.yCalcNoFunc, ']'])) {
+          if (this.accept(['[', this.yCalc, ']'])) {
             idx = this.y[1]
             josi = this.y[2].josi
           }

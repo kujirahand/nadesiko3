@@ -9,7 +9,10 @@ const reserveWords = {
   '抜': '抜ける',
   '続': '続ける',
   '戻': '戻る',
-  '代入': '代入'
+  '代入': '代入',
+  '変数': '変数',
+  '定数': '定数',
+  'それ': 'word'
 }
 // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
 
@@ -40,7 +43,7 @@ const rules = [
   { name: 'line_comment', pattern: /^#[^\n]+/ },
   { name: 'line_comment', pattern: /^\/\/[^\n]+/ },
   { name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment },
-  { name: 'def_func', pattern: /^(●|関数)/ },
+  { name: 'def_func', pattern: /^(●|関数定義|関数)/ },
   { name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt },
   { name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat },
   { name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat },
@@ -58,8 +61,8 @@ const rules = [
   { name: 'not', pattern: /^!/ },
   { name: 'gt', pattern: /^>/ },
   { name: 'lt', pattern: /^</ },
-  { name: 'and', pattern: /^&&/ },
-  { name: 'or', pattern: /^\|\|/ },
+  { name: 'and', pattern: /^(かつ|&&)/ },
+  { name: 'or', pattern: /^(または|\|\|)/ },
   { name: '=', pattern: /^=/ },
   { name: '@', pattern: /^@/ },
   { name: '+', pattern: /^\+/ },
@@ -73,6 +76,7 @@ const rules = [
   { name: ']', pattern: /^]/, readJosi: true },
   { name: '(', pattern: /^\(/ },
   { name: ')', pattern: /^\)/, readJosi: true },
+  { name: '|', pattern: /^\|/ },
   { name: 'embed_code', pattern: /^JS\{{3}/, cbParser: src => cbString('JS', '}}}', src) },
   { name: 'string', pattern: /^R\{{3}/, cbParser: src => cbString('R', '}}}', src) },
   { name: 'string_ex', pattern: /^S\{{3}/, cbParser: src => cbString('S', '}}}', src) },
@@ -148,13 +152,20 @@ class NakoLexer {
       }
       return result
     }
+    let lastTokenType = 'eol'
     while (i < tokens.length) {
       if (tokens[i].type !== 'def_func') {
+        lastTokenType = tokens[i].type
+        i++
+        continue
+      }
+      // 無名関数の定義を誤って関数定義としない
+      if (lastTokenType !== 'eol') {
         i++
         continue
       }
       i++ // skip "●"
-      let josi = null
+      let josi = []
       // 関数名の前に引数定義
       if (tokens[i] && tokens[i].type === '(') {
         josi = readArgs()
@@ -162,10 +173,8 @@ class NakoLexer {
       if (tokens[i] && tokens[i].type === 'word') {
         const key = tokens[i++].value
         // 関数名の後で引数定義
-        if (josi === null && tokens[i] && tokens[i].type === '(') {
+        if (josi.length === 0 && tokens[i] && tokens[i].type === '(') {
           josi = readArgs()
-        } else {
-          josi = []
         }
         this.funclist[key] = {
           fn: null,
@@ -185,7 +194,6 @@ class NakoLexer {
         // 予約語の変換
         if (reserveWords[t.value]) {
           t.type = reserveWords[t.value]
-          continue
         }
         // 関数を変換
         const f = this.funclist[t.value]
@@ -195,11 +203,18 @@ class NakoLexer {
           continue
         }
       }
-      // 助詞の「は」を = に展開
+      // 助詞の「は」を = に展開、また、「とは」を一つの単語にする
       if (t.josi === undefined) t.josi = ''
       if (t.josi === 'は') {
-        t.josi = ''
         tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
+        i += 2
+        t.josi = ''
+        continue
+      }
+      if (t.josi === 'とは') {
+        tokens.splice(i + 1, 0, {type: t.josi, line: t.line})
+        t.josi = ''
+        i += 2
         continue
       }
       // 助詞のならばをトークンとする
@@ -283,7 +298,6 @@ class NakoLexer {
         src = src.substr(m[0].length)
         if (rule.name === 'eol' && value === '\n') {
           value = line++
-          console.log('LINE=', line)
         }
         let josi = ''
         if (rule.readJosi) {

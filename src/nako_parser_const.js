@@ -26,7 +26,12 @@ const keizokuJosi = [
 ]
 
 const valueTypes = [
-  'number', 'string', 'word', 'embed_code', '(', '{', '[', '-', 'not'
+  'number',
+  'string',
+  'word',
+  'embed_code',
+  '(', '{', '[', '-', 'not',
+  'def_func'
 ]
 
 module.exports = {

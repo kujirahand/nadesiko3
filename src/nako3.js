@@ -207,4 +207,6 @@ c.silent = false
 // c.runReset(';;それは[1,2,3];ここから反復\n表示\n---\n;;')
 //c.runReset('足す(2,3)を表示')
 //c.runReset('●HOGE(AにBを)\n(A+B)を戻す;---;\nHOGE(1,2)を表示;')
-c.runReset('●(Sの)表示処理とは\nSを表示\n---\n「殿」の表示処理。')
+// c.runReset('A=[];A@0=5;A@0を表示\n')
+c.runReset('F=関数(a,b)それはa+b;ここまで。\n' +
+      'F(3,5)を表示。\n')

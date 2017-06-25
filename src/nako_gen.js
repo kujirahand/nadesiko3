@@ -785,7 +785,7 @@ class NakoGen {
   }
 
   convDefLocalVar (node) {
-    const value = this.convGen(node.value)
+    const value = (node.value === null) ? 'null' : this.convGen(node.value)
     const name = node.name.value
     const vtype = node.vartype // 変数 or 定数
     // 二重定義？
