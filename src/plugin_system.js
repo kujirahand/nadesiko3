@@ -744,17 +744,18 @@ const PluginSystem = {
   },
 
   // @正規表現
-  '正規表現マッチ': {// @文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定) // @せいきひょうげんまっち
+  '正規表現マッチ': {// @文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定。optにgの指定がなければ部分マッチが『抽出文字列』に入る) // @せいきひょうげんまっち
     type: 'func',
     josi: [['を', 'が'], ['で', 'に']],
     fn: function (a, b, sys) {
       let re
-      let f = b.match(/^\/(.+)\/([a-zA-Z]*)/)
+      let f = b.match(/^\/(.+)\/([a-zA-Z]*)$/)
       if (f === null) { // パターンがない場合
         re = new RegExp(b, 'g')
       } else {
         re = new RegExp(f[1], f[2])
       }
+      const sa = sys.__varslist[0]['抽出文字列'] = []
       const m = String(a).match(re)
       let result = m
       if (re.global) {
@@ -762,8 +763,10 @@ const PluginSystem = {
       } else {
         if (m) {
           // has group?
-          result = m[0]
-          sys.__varslist[0]['抽出文字列'] = m.slice(1)
+          if (m.length > 0) {
+            result = m[0]
+            for (let i = 1; i < m.length; i++) sa[i - 1] = m[i]
+          }
         }
       }
       return result

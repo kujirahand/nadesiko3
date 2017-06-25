@@ -212,5 +212,5 @@ c.debug = true
 c.debug_show_parser = true
 c.debugShowLexer = true
 c.silent = false
-c.runReset('定数定義＝トリム("  aaa ");定数定義を表示')
+c.runReset('3を表示')
 */

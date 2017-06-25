@@ -14,6 +14,7 @@ const reserveWords = {
   '変数': '変数',
   '定数': '定数',
   'それ': 'word',
+  'そう': 'word', // 「それ」のエイリアス
   '関数': 'def_func' // 無名関数の定義用
 }
 // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
@@ -37,6 +38,9 @@ tararebaJosiList.forEach(e => {
 })
 josiList.sort((a, b) => b.length - a.length) // 文字数の長い順に並び替え
 const josiRE = new RegExp('^(' + josiList.join('|') + ')')
+const kanakanji = /^[\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
+const hira = /^[ぁ-ん]/
+// 字句解析ルールの一覧
 const rules = [
   // 上から順にマッチさせていく
   { name: 'eol', pattern: /^\n/ },
@@ -115,8 +119,8 @@ class NakoLexer {
     // 関数の定義があれば funclist を更新
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
-    this.checkSyntaxMark(this.result)
-    this.result.push({type: 'eof'})
+    const line = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
+    this.result.push({type: 'eof', line, josi: ''})
     return this.result
   }
 
@@ -200,6 +204,8 @@ class NakoLexer {
         // 予約語の変換
         if (reserveWords[t.value]) {
           t.type = reserveWords[t.value]
+          // 「それ」のエイリアス「そう」を「それ」に置換
+          if (t.value === 'そう') t.value = 'それ'
         }
         // 関数を変換
         const f = this.funclist[t.value]
@@ -262,9 +268,6 @@ class NakoLexer {
     }
   }
 
-  checkSyntaxMark (tokens) {
-  }
-
   tokenize (src) {
     this.result = []
     let line = 0
@@ -293,6 +296,7 @@ class NakoLexer {
                 const rr = { type: 'string', value: list[i], josi, line }
                 this.result.push(rr)
               } else {
+                list[i] = trimOkurigana(list[i])
                 this.result.push({ type: '&', value: '&', josi: '', line })
                 this.result.push({ type: 'word', value: list[i], josi: '', line })
                 this.result.push({ type: '&', value: '&', josi: '', line })
@@ -337,6 +341,13 @@ class NakoLexer {
   }
 }
 
+function trimOkurigana (s) {
+  if (!hira.test(s)) {
+    s = s.replace(/[ぁ-ん]+/g, '')
+  }
+  return s
+}
+
 function cbWordParser (src) {
   /*
     kanji    = [\u4E00-\u9FCF]
@@ -347,8 +358,6 @@ function cbWordParser (src) {
     alphabet = [_a-zA-Z]
     numchars = [0-9]
   */
-  const kanakanji = /^[\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
-  const hira = /^[ぁ-ん]/
   let res = ''
   let josi = ''
   while (src !== '') {
@@ -376,9 +385,7 @@ function cbWordParser (src) {
     break // other chars
   }
   // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
-  if (!hira.test(res)) {
-    res = res.replace(/[ぁ-ん]+/g, '')
-  }
+  res = trimOkurigana(res)
   // 助詞だけの語句の場合
   if (res === '' && josi !== '') {
     res = josi

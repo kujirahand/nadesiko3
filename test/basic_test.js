@@ -26,6 +26,7 @@ describe('basic', () => {
   it('rawstring', () => {
     cmp('『abc』を表示', 'abc')
     cmp('\'abc\'を表示', 'abc')
+    cmp('『abc{30}abc』を表示', 'abc{30}abc')
   })
   it('exstring', () => {
     cmp('a=30;「abc{a}abc」を表示', 'abc30abc')
