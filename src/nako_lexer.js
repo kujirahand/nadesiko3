@@ -13,7 +13,8 @@ const reserveWords = {
   '代入': '代入',
   '変数': '変数',
   '定数': '定数',
-  'それ': 'word'
+  'それ': 'word',
+  '関数': 'def_func' // 無名関数の定義用
 }
 // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
 
@@ -41,10 +42,10 @@ const rules = [
   { name: 'eol', pattern: /^\n/ },
   { name: 'eol', pattern: /^;/ },
   { name: 'space', pattern: /^(\s+|,)/ },
-  { name: 'line_comment', pattern: /^#[^\n]+/ },
-  { name: 'line_comment', pattern: /^\/\/[^\n]+/ },
+  { name: 'line_comment', pattern: /^#[^\n]*/ },
+  { name: 'line_comment', pattern: /^\/\/[^\n]*/ },
   { name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment },
-  { name: 'def_func', pattern: /^(●|関数定義|関数)/ },
+  { name: 'def_func', pattern: /^●/ },
   { name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt },
   { name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat },
   { name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat },
@@ -284,7 +285,7 @@ class NakoLexer {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
             const list = rp.res.split(/[{}｛｝]/)
             if (list.length >= 1 && list.length % 2 === 0) {
-              throw new Error('字句解析エラー(' + line + '): 展開あり文字列で値の埋め込み{...}が対応していません。')
+              throw new Error('字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。')
             }
             for (let i = 0; i < list.length; i++) {
               const josi = (i === list.length - 1) ? rp.josi : ''
@@ -331,7 +332,7 @@ class NakoLexer {
         })
         break
       }
-      if (!ok) throw new Error(`字句解析で未知の語句(${line}): ` + src.substr(0, 3) + '...')
+      if (!ok) throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')
     }
   }
 }

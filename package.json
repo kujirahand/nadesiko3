@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Japanese Programming Language",
   "main": "nako3",
   "scripts": {
@@ -8,8 +8,6 @@
     "start": "lite-server",
     "electron": "electron src/enako3.js",
     "build": "webpack",
-    "build:parser": "pegjs --cache -o src/nako_parser.js src/nako_parser.pegjs",
-    "build:parserSimple": "pegjs -o src/nako_parser.js src/nako_parser.pegjs",
     "build:command": "node src/cnako3.js batch/build_command.nako3",
     "build:electron": "asar pack src/enako3.js release/enako3.asar",
     "watch": "webpack --watch"

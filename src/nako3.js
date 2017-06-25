@@ -15,7 +15,7 @@ class NakoRuntimeError extends Error {
   constructor (msg, env) {
     const title = '[実行時エラー]'
     if (env && env.__varslist && env.__varslist[0].line) {
-      msg = title + '(' + env.__varslist[0].line + ') ' + msg
+      msg = title + '(' + (env.__varslist[0].line + 1) + ') ' + msg
     } else {
       msg = title + ' ' + msg
     }
@@ -212,5 +212,5 @@ c.debug = true
 c.debug_show_parser = true
 c.debugShowLexer = true
 c.silent = false
-c.runReset('-45を表示\n')
+c.runReset('定数定義＝トリム("  aaa ");定数定義を表示')
 */

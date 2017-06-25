@@ -5,7 +5,7 @@ const { opPriority, keizokuJosi, valueTypes } = require('./nako_parser_const')
 
 class NakoSyntaxError extends Error {
   constructor (msg, line) {
-    const title = `[文法エラー](${line}): ${msg}`
+    const title = `[文法エラー](` + (line + 1) + `): ${msg}`
     super(title)
   }
 }
@@ -306,17 +306,21 @@ class NakoParser {
   }
 
   yGetArg () {
-    const args = []
+    // 値を一つ読む
+    let value1 = this.yValue()
+    if (value1 === null) return null
+    // 計算式がある場合を考慮
+    const args = [value1]
     while (!this.isEOF()) {
-      if (this.checkTypes(valueTypes)) {
-        let t = this.yValue()
-        args.push(t)
-        const op = this.peek()
-        if (op && opPriority[op.type]) {
-          args.push(this.get())
-          continue
-        }
-        break
+      // 演算子がある？
+      const op = this.peek()
+      if (op && opPriority[op.type]) {
+        args.push(this.get())
+        // 演算子後の値を取得
+        const v = this.yValue()
+        if (v === null) throw new NakoSyntaxError('計算式で演算子後に値がありません', value1.line)
+        args.push(v)
+        continue
       }
       break
     }
@@ -648,22 +652,68 @@ class NakoParser {
         line: this.y[0].line
       }
     }
-    if (this.accept(['word', '@', this.yValue, 'eq', this.yCalc])) {
-      return {
-        type: 'let_array',
-        name: this.y[0],
-        index: [this.y[2]],
-        value: this.y[4],
-        line: this.y[0].line
+    if (this.check2(['word', '@'])) {
+      // 一次元配列
+      if (this.accept(['word', '@', this.yValue, 'eq', this.yCalc])) {
+        return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2]],
+          value: this.y[4],
+          line: this.y[0].line
+        }
+      }
+      // 二次元配列
+      if (this.accept(['word', '@', this.yValue, '@', this.yValue, 'eq', this.yCalc])) {
+        return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2], this.y[4]],
+          value: this.y[6],
+          line: this.y[0].line
+        }
+      }
+      // 三次元配列
+      if (this.accept(['word', '@', this.yValue, '@', this.yValue, '@', this.yValue, 'eq', this.yCalc])) {
+        return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2], this.y[4], this.y[6]],
+          value: this.y[8],
+          line: this.y[0].line
+        }
       }
     }
-    if (this.accept(['word', '[', this.yCalc, ']', 'eq', this.yCalc])) {
-      return {
-        type: 'let_array',
-        name: this.y[0],
-        index: [this.y[2]],
-        value: this.y[5],
-        line: this.y[0].line
+    if (this.check2(['word', '['])) {
+      // 一次元配列
+      if (this.accept(['word', '[', this.yCalc, ']', 'eq', this.yCalc])) {
+        return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2]],
+          value: this.y[5],
+          line: this.y[0].line
+        }
+      }
+      // 二次元配列
+      if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc])) {
+        return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2], this.y[5]],
+          value: this.y[8],
+          line: this.y[0].line
+        }
+      }
+      // 三次元配列
+      if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc])) {
+        return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2], this.y[5], this.y[8]],
+          value: this.y[11],
+          line: this.y[0].line
+        }
       }
     }
     // ローカル変数定義
@@ -835,6 +885,7 @@ class NakoParser {
   yJSONObjectValue () {
     const a = []
     while (!this.isEOF()) {
+      if (this.check('eol')) this.get()
       if (this.check('}')) break
       if (this.accept(['word', ':', this.yCalc])) {
         a.push({
@@ -871,12 +922,13 @@ class NakoParser {
     return null
   }
   yJSONArrayValue () {
-    const v = this.yCalc()
-    if (v === null) return null
-    const a = [v]
+    if (this.check('eol')) this.get()
+    const v1 = this.yCalc()
+    if (v1 === null) return null
+    const a = [v1]
     while (!this.isEOF()) {
+      if (this.check('eol')) this.get()
       if (this.check(']')) break
-      if (this.check(',')) this.get() // skip ','
       const v2 = this.yCalc()
       if (v2 === null) break
       a.push(v2)

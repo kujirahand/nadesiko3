@@ -55,6 +55,10 @@ describe('prepare', () => {
     const a = p.convert('A= 1 + _ \r\n1 + 2  \nAを表示')
     assert.equal(a, 'A= 1 + _ \n1 + 2  \nAを表示')
   })
+  it('Multibyte Flag to Singlebyte Flag', () => {
+    const a = p.convert('！＃＄１２３４５')
+    assert.equal(a, '!#$12345')
+  })
   it('convertTable', () => {
     const a = p.convert('123※456')
     assert.equal(a, '123#456')
