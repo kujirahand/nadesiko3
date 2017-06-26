@@ -113,3 +113,8 @@ $ npm run build:electron
 ```
 
 ビルドしたenako3.asarを配布可能な形式にする方法については[Electronでアプリケーションを作ってみよう - Qiita](http://qiita.com/Quramy/items/a4be32769366cfe55778#配布してみる)を参照。
+
+### ATOMエディタ用のなでしこシンタックスハイライト
+
+``misc/atom-packages/language-nako3`` にATOMエディタ用のハイライトパッケージがある。
+使い方は、[README.md](misc/atom-packages/language-nako3/README.md)を参照のこと。
