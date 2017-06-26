@@ -6,12 +6,6 @@
 ]
 'patterns': [
   {
-    'include': '#line_comments'
-  }
-  {
-    'include': '#comments'
-  }
-  {
     'match': '([#＃][^\\n]*)'
     'name': 'punctuation.definition.comment.nako3'
   }
