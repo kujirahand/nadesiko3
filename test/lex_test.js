@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3')
 
 describe('lex_test', () => {
   const nako = new NakoCompiler()
-  // nako.debug = true
+  nako.debug = false
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -21,5 +21,9 @@ describe('lex_test', () => {
   })
   it('文字列の埋め込み語句のかな省略', () => {
     cmp('見出し=30;「--{見出し}--」を表示', '--30--')
+  })
+  it('はい/いいえ', () => {
+    cmp('はいを表示', '1')
+    cmp('いいえを表示', '0')
   })
 })

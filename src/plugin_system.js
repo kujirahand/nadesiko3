@@ -1,12 +1,10 @@
 // basic_func.js
-
 const PluginSystem = {
   '初期化': {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__nako3version = '0.0.7'
-      sys.__varslist[0]['ナデシコバージョン'] = sys.__nako3version
+      sys.__varslist[0]['ナデシコバージョン'] = '0.1.0'
       sys.__getSysValue = function (name, def) {
         if (sys.__varslist[0][name] === undefined) return def
         return sys.__varslist[0][name]
@@ -149,6 +147,16 @@ const PluginSystem = {
     josi: [['を'], ['で']],
     fn: function (js) {
       return eval(js) // eslint-disable-line
+    }
+  },
+  
+  'ナデシコ': { // @なでしこのコードSを実行する // @なでしこする
+    type: 'func',
+    josi: [['を', 'で']],
+    fn: function (code, sys) {
+      sys.__varslist[0]['表示ログ'] = ''
+      sys.__self.run(code, true)
+      return sys.__varslist[0]['表示ログ']
     }
   },
 
@@ -1085,6 +1093,24 @@ const PluginSystem = {
       }
       return t.getFullYear() + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate()) +
         ' ' + z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
+    }
+  },
+  '秒後実行': { // @無名関数FをN秒後に実行する // @びょうまつ
+    type: 'func',
+    josi: [['を'], []],
+    fn: function (f, n, sys) {
+      setTimeout(() => {
+        f()
+      }, parseFloat(n) * 1000)
+    }
+  },
+  '秒毎実行': { // @無名関数FをN秒ごとに実行する // @びょうごと
+    type: 'func',
+    josi: [['を'], []],
+    fn: function (f, n, sys) {
+      setInterval(() => {
+        f()
+      }, parseFloat(n) * 1000)
     }
   },
 

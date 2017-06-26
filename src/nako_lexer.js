@@ -369,11 +369,13 @@ function cbWordParser (src) {
       continue
     }
     // 助詞？
-    const j = josiRE.exec(src)
-    if (j) {
-      josi = j[0]
-      src = src.substr(j[0].length)
-      break
+    if (res.length > 0) {
+      const j = josiRE.exec(src)
+      if (j) {
+        josi = j[0]
+        src = src.substr(j[0].length)
+        break
+      }
     }
     // ひらがな？
     const h = hira.test(src)

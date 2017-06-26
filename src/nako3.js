@@ -29,9 +29,9 @@ class NakoCompiler {
     //
     this.debug = false
     this.silent = true
-    this.debug_show_parser = false
-    this.debug_show_code = true
-    this.debugShowLexer = false
+    this.debugParser = false
+    this.debugJSCode = true
+    this.debugLexer = false
     this.filename = 'inline'
     this.reset()
     this.gen.addPluginObject('PluginSystem', PluginSystem)
@@ -66,7 +66,7 @@ class NakoCompiler {
   generate (ast) {
     const js = this.gen.convGen(ast)
     const def = this.gen.getDefFuncCode()
-    if (this.debug && this.debug_show_code) {
+    if (this.debug && this.debugJSCode) {
       console.log('--- generate ---')
       console.log(def + js)
     }
@@ -87,13 +87,13 @@ class NakoCompiler {
     code = prepare.convert(code)
     // 単語に分割
     const tokens = lexer.setInput(code)
-    if (this.debug && this.debugShowLexer) {
+    if (this.debug && this.debugLexer) {
       console.log('--- lex ---')
       console.log(JSON.stringify(tokens, null, 2))
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
-    if (this.debug && this.debug_show_parser) {
+    if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
     }
@@ -205,12 +205,12 @@ class NakoCompiler {
 
 module.exports = NakoCompiler
 
-// simple test code
 /*
+// simple test code
 const c = new NakoCompiler()
 c.debug = true
-c.debug_show_parser = true
-c.debugShowLexer = true
+c.debugParser = true
+c.debugLexer = true
 c.silent = false
 c.runReset('3を表示')
 */

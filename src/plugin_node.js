@@ -36,13 +36,6 @@ const PluginNode = {
       return r.toString()
     }
   },
-  '終': { // @Nodeでプログラム実行を強制終了する // @終わる
-    type: 'func',
-    josi: [],
-    fn: function (s) {
-      process.exit()
-    }
-  },
   'カレントディレクトリ取得': { // @カレントディレクトリを返す // @かれんとでぃれくとりしゅとく
     type: 'func',
     josi: [],
@@ -188,6 +181,33 @@ const PluginNode = {
       } catch (err) {
         return false
       }
+    }
+  },
+  // @Nodeプロセス
+  '終': { // @Nodeでプログラム実行を強制終了する // @終わる
+    type: 'func',
+    josi: [],
+    fn: function (s) {
+      process.exit()
+    }
+  },
+  // @コマンドライン
+  '標準入力取得時': { // @標準入力を一行取得した時に、無名関数F(s)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
+    type: 'func',
+    josi: [['を']],
+    fn: function (callback) {
+      const lines = []
+      const reader = require('readline').createInterface({
+        input: process.stdin,
+        output: process.stdout
+      })
+      reader.on('line', function (line) {
+        callback(line)
+        //lines.push(line)
+      })
+      process.stdin.on('end', function () {
+        // callback(lines.join('\n'))
+      })
     }
   }
 }
