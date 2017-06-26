@@ -1,0 +1,11 @@
+{
+  "name": "language-nako3",
+  "version": "0.0.1",
+  "description": "Nadesiko3 syntax highlight for ATOM",
+  "keywords": [ "language" ],
+  "repository": "https://github.com/kujirahand/atom-language-nako3",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0"
+  }
+}
