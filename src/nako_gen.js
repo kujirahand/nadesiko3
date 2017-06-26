@@ -355,6 +355,9 @@ class NakoGen {
       case 'return':
         code += this.convReturn(node)
         break
+      case 'try_except':
+        code += this.convTryExcept(node)
+        break
       default:
         throw new Error('System Error: unknown_type=' + node.type)
     }
@@ -826,6 +829,13 @@ class NakoGen {
       value = value.replace(/｛(.+?)｝/g, rf)
     }
     return '"' + value + '"'
+  }
+
+  convTryExcept (node) {
+    const block = this.convGen(node.block)
+    const errBlock = this.convGen(node.errBlock)
+    return this.convLineno(node.line) +
+      `try {\n${block}\n} catch (e) {\n${errBlock}}\n`
   }
 }
 

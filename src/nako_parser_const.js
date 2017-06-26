@@ -25,17 +25,7 @@ const keizokuJosi = [
   'いて', 'えて', 'きて', 'けて', 'して', 'って', 'にて', 'みて', 'めて', 'ねて'
 ]
 
-const valueTypes = [
-  'number',
-  'string',
-  'word',
-  'embed_code',
-  '(', '{', '[', '-', 'not',
-  'def_func'
-]
-
 module.exports = {
   opPriority,
-  keizokuJosi,
-  valueTypes
+  keizokuJosi
 }

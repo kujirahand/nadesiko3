@@ -1,119 +1,18 @@
 /**
  * nadesiko v3 parser (demo version)
  */
-const { opPriority, keizokuJosi, valueTypes } = require('./nako_parser_const')
+const { opPriority, keizokuJosi } = require('./nako_parser_const')
+const { NakoParserBase, NakoSyntaxError } = require('./nako_parser_base')
 
-class NakoSyntaxError extends Error {
-  constructor (msg, line) {
-    const title = `[文法エラー](` + (line + 1) + `): ${msg}`
-    super(title)
-  }
-}
-
-class NakoParser {
-  constructor () {
-    this.debug = false
-    this.index = 0
-    this.tokens = []
-    this.stack = []
-    this.funclist = {}
-    this.indexStack = []
-    this.y = []
-  }
-  setFuncList (funclist) {
-    this.funclist = funclist
-  }
+class NakoParser extends NakoParserBase {
+  /**
+   * @param tokens 字句解析済みのトークンの配列
+   * @return AST(構文木)
+    */
   parse (tokens) {
     this.index = 0
     this.tokens = tokens
     return this.startParser()
-  }
-  isEOF () {
-    return (this.index >= this.tokens.length)
-  }
-  check (ttype) {
-    return (this.tokens[this.index].type === ttype)
-  }
-  check2 (a) {
-    for (let i = 0; i < a.length; i++) {
-      const idx = i + this.index
-      if (this.tokens.length <= idx) return false
-      if (a[i] === '*') continue // ワイルドカード(どんなタイプも許容)
-      const t = this.tokens[idx]
-      if (a[i] instanceof Array) {
-        if (a[i].indexOf(t.type) < 0) return false
-        continue
-      }
-      if (t.type !== a[i]) return false
-    }
-    return true
-  }
-  checkTypes (a) {
-    const type = this.tokens[this.index].type
-    return (a.indexOf(type) >= 0)
-  }
-  accept (types) {
-    const y = []
-    const tmpIndex = this.index
-    const rollback = () => {
-      // console.log('accept=rollback', types, this.tokens[this.index])
-      this.index = tmpIndex
-      return false
-    }
-    // console.log('accept=try', types)
-    for (let i = 0; i < types.length; i++) {
-      if (this.isEOF()) return rollback()
-      const type = types[i]
-      if (typeof type === 'string') {
-        const token = this.get()
-        if (token.type !== type) return rollback()
-        y[i] = token
-        continue
-      }
-      if (typeof type === 'function') {
-        const f = type.bind(this)
-        const r = f(null)
-        if (r === null) return rollback()
-        y[i] = r
-        continue
-      }
-      if (type instanceof Array) {
-        if (!this.checkTypes(type)) return rollback()
-        y[i] = this.get()
-        continue
-      }
-      throw new Error('System Error : accept broken')
-    }
-    this.y = y
-    // console.log('accept=ok', types, y)
-    return true
-  }
-  get () {
-    if (this.isEOF()) return null
-    return this.tokens[this.index++]
-  }
-  unget () {
-    if (this.index > 0) this.index--
-  }
-  peek (i = 0) {
-    if (this.isEOF()) return null
-    return this.tokens[this.index + i]
-  }
-  pushIndex () {
-    this.indexStack.push(this.index)
-  }
-  rollbackIndex () {
-    if (this.indexStack.length === 0) {
-      throw new Error('System Error: no indexStack')
-    }
-    this.index = this.indexStack.pop()
-    return false
-  }
-  parseTokens () {
-    while (this.index < this.tokens.length) {
-      if (!this.parseToken()) break
-      this.index++
-    }
   }
   startParser () {
     const b = this.ySentenceList()
@@ -137,48 +36,33 @@ class NakoParser {
     }
     return { type: 'block', block: blocks, line }
   }
+
+  ySentence () {
+    // 最初の語句が決まっている構文
+    if (this.check('eol')) return this.get()
+    if (this.check('embed_code')) return this.get()
+    if (this.check('もし')) return this.yIF()
+    if (this.check('エラー監視')) return this.yTryExcept()
+    if (this.accept(['抜ける'])) return {type: 'break', line: this.y[0].line, josi: ''}
+    if (this.accept(['続ける'])) return {type: 'continue', line: this.y[0].line, josi: ''}
+    // 先読みして初めて確定する構文
+    if (this.accept([this.yLet])) return this.y[0]
+    if (this.accept([this.yDefFunc])) return this.y[0]
+    if (this.accept([this.yCall])) return this.y[0] // 関数呼び出しの他、各種構文の実装
+    return null
+  }
+
   yBlock () {
     const blocks = []
     let line = -1
     if (this.check('ここから')) this.get()
     while (!this.isEOF()) {
-      if (this.checkTypes(['違えば', 'ここまで'])) break
+      if (this.checkTypes(['違えば', 'ここまで', 'エラー'])) break
       if (!this.accept([this.ySentence])) break
       blocks.push(this.y[0])
       if (line < 0) line = this.y[0].line
     }
     return { type: 'block', block: blocks, line }
-  }
-  ySentence () {
-    if (this.check('eol')) return this.get()
-    if (this.check('embed_code')) return this.get()
-    if (this.accept(['抜ける'])) return {type: 'break', line: this.y[0].line, josi: ''}
-    if (this.accept(['続ける'])) return {type: 'continue', line: this.y[0].line, josi: ''}
-    if (this.accept([this.yLet])) return this.y[0]
-    if (this.accept([this.yIF])) return this.y[0]
-    if (this.accept([this.yDefFunc])) return this.y[0]
-    if (this.accept([this.yCall])) return this.y[0]
-    return null
-  }
-  popStack (josiList) {
-    if (!josiList) return this.stack.pop()
-    // 末尾から josiList にマッチする助詞を探す
-    for (let i = 0; i < this.stack.length; i++) {
-      const bi = this.stack.length - i - 1
-      const t = this.stack[bi]
-      if (josiList.length === 0 || josiList.indexOf(t.josi) >= 0) {
-        this.stack.splice(bi, 1) // remove stack
-        // console.log('POP :', t)
-        return t
-      }
-    }
-    // 該当する助詞が見つからなかった場合
-    return null
-  }
-
-  pushStack (item) {
-    // console.log('PUSH:', item)
-    this.stack.push(item)
   }
 
   yDefFuncReadArgs () {
@@ -630,18 +514,6 @@ class NakoParser {
     return this.popStack([])
   }
 
-  nodeToStr (node) {
-    if (!node) return `(NULL)`
-    let name = node.name
-    if (node.type === 'op') {
-      name = '演算子[' + node.operator + ']'
-    }
-    if (!name) name = node.value
-    if (typeof name !== 'string') name = node.type
-    if (this.debug) name += '→' + JSON.stringify(node, null, 2)
-    return `『${name}』`
-  }
-
   yLet () {
     // 通常の変数
     if (this.accept(['word', 'eq', this.yCalc])) {
@@ -953,6 +825,28 @@ class NakoParser {
       }
     }
     return null
+  }
+  yTryExcept () {
+    if (!this.check('エラー監視')) return null
+    const kansi = this.get() // skip エラー監視
+    const block = this.yBlock()
+    if (!this.check2(['エラー', 'ならば'])) {
+      throw new NakoSyntaxError(
+        'エラー構文で『エラーならば』がありません。' +
+        '『エラー監視..エラーならば..ここまで』を対で記述します。',
+        kansi.line)
+    }
+    this.get() // skip エラー
+    this.get() // skip ならば
+    const errBlock = this.yBlock()
+    if (this.check('ここまで')) this.get()
+    return {
+      type: 'try_except',
+      block,
+      errBlock,
+      line: kansi.line,
+      josi: ''
+    }
   }
 }
 

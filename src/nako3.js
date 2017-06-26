@@ -204,7 +204,6 @@ class NakoCompiler {
 }
 
 module.exports = NakoCompiler
-
 /*
 // simple test code
 const c = new NakoCompiler()
