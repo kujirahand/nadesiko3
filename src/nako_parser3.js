@@ -10,7 +10,7 @@ class NakoParser extends NakoParserBase {
    * @return AST(構文木)
     */
   parse (tokens) {
-    this.index = 0
+    this.reset()
     this.tokens = tokens
     return this.startParser()
   }

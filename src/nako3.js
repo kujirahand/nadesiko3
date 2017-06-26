@@ -33,6 +33,7 @@ class NakoCompiler {
     this.debugJSCode = true
     this.debugLexer = false
     this.filename = 'inline'
+    this.__varslist = null
     this.reset()
     this.gen.addPluginObject('PluginSystem', PluginSystem)
   }
@@ -113,17 +114,17 @@ class NakoCompiler {
 
   _run (code, isReset) {
     if (isReset) this.reset()
+    if (!this.__varslist[0]['ナデシコバージョン']) {
+      this.__varslist = this.getVarsList()
+    }
     let js = this.compile(code)
-    let __varslist = this.__varslist = this.getVarsList()
+    let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
     let __self = this.__self // eslint-disable-line
-    if (isReset) this.clearLog()
     try {
       __varslist[0].line = -1 // コンパイルエラーを調べるため
-      // js = 'console.log(__varslist[0]);' + js;
       eval(js) // eslint-disable-line
     } catch (e) {
-      console.log(__varslist[0].line)
       this.js = js
       throw new NakoRuntimeError(
         e.name + ':' +
@@ -156,7 +157,7 @@ class NakoCompiler {
    */
   getVarsList () {
     const v = this.gen.getVarsList()
-    return [v[0], v[1], {}]
+    return [v[0], v[1], []]
   }
 
   /**

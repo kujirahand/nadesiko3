@@ -93,6 +93,8 @@ const rules = [
   { name: 'string', pattern: /^『/, cbParser: src => cbString('『', '』', src) },
   { name: 'string_ex', pattern: /^"/, cbParser: src => cbString('"', '"', src) },
   { name: 'string', pattern: /^'/, cbParser: src => cbString('\'', '\'', src) },
+  { name: '」', pattern: /^」/ }, // error
+  { name: '』', pattern: /^』/ }, // error
   { name: '{', pattern: /^\{/ },
   { name: '}', pattern: /^\}/, readJosi: true },
   { name: ':', pattern: /^:/ },

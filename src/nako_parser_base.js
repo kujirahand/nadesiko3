@@ -14,10 +14,18 @@ class NakoParserBase {
   constructor () {
     this.debug = false
     this.debugStack = false
+    this.init()
+  }
+
+  init () {
+    this.funclist = {} // 関数の一覧
+    this.reset()
+  }
+
+  reset () {
     this.tokens = [] // 字句解析済みのトークンの一覧を保存
     this.index = 0 // tokens[] のどこまで読んだかを管理する
     this.stack = [] // 計算用のスタック ... 直接は操作せず、pushStack() popStack() を介して使う
-    this.funclist = {} // 関数の一覧
     this.y = [] // accept()で解析済みのトークンを配列で得るときに使う
   }
 

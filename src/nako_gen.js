@@ -835,7 +835,10 @@ class NakoGen {
     const block = this.convGen(node.block)
     const errBlock = this.convGen(node.errBlock)
     return this.convLineno(node.line) +
-      `try {\n${block}\n} catch (e) {\n${errBlock}}\n`
+      `try {\n${block}\n} catch (e) {\n` +
+      '__varslist[0]["エラーメッセージ"] = e.message;\n' +
+      ';\n' +
+      `${errBlock}}\n`
   }
 }
 

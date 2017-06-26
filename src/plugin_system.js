@@ -31,6 +31,7 @@ const PluginSystem = {
   '空': {type: 'const', value: ''}, // @から
   '空配列': {type: 'const', value: []}, // @からはいれつ
   'NULL': {type: 'const', value: null}, // @NULL
+  'エラーメッセージ': {type: 'const', value: ''}, // @えらーめっせーじ
 
   // @標準出力
   '表示': { // @Sを表示 // @ひょうじ
@@ -149,13 +150,21 @@ const PluginSystem = {
       return eval(js) // eslint-disable-line
     }
   },
-  
+
   'ナデシコ': { // @なでしこのコードSを実行する // @なでしこする
     type: 'func',
     josi: [['を', 'で']],
     fn: function (code, sys) {
       sys.__varslist[0]['表示ログ'] = ''
       sys.__self.run(code, true)
+      return sys.__varslist[0]['表示ログ']
+    }
+  },
+  'ナデシコ続': { // @なでしこのコードSを実行する // @なでしこつづける
+    type: 'func',
+    josi: [['を', 'で']],
+    fn: function (code, sys) {
+      sys.__self.run(code, false)
       return sys.__varslist[0]['表示ログ']
     }
   },
