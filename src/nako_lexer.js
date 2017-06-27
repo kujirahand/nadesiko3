@@ -124,8 +124,8 @@ class NakoLexer {
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
     const line = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-    this.result.push({type: 'eol', line, josi: ''}) // 改行
-    this.result.push({type: 'eof', line, josi: ''}) // ファイル末尾
+    this.result.push({type: 'eol', line, josi: '', value: '---'}) // 改行
+    this.result.push({type: 'eof', line, josi: '', value: ''}) // ファイル末尾
     return this.result
   }
 
@@ -152,47 +152,59 @@ class NakoLexer {
         keys[t.value].push(t.josi)
         i++
       }
+      const varnames = []
       const result = []
       const already = {}
       for (const arg of args) {
         if (!already[arg.value]) {
           const josi = keys[arg.value]
           result.push(josi)
+          varnames.push(arg.value)
           already[arg.value] = true
         }
       }
-      return result
+      return [result, varnames]
     }
-    let lastTokenType = 'eol'
+    // トークンを一つずつ確認
     while (i < tokens.length) {
-      if (tokens[i].type !== 'def_func') {
-        lastTokenType = tokens[i].type
+      // タイプの置換
+      const t = tokens[i]
+      if (t.type === 'word' && reserveWords[t.value]) {
+        t.type = reserveWords[t.value]
+        if (t.value === 'そう') t.value = 'それ'
+      }
+      if (t.type !== 'def_func') {
         i++
         continue
       }
-      // 無名関数の定義を誤って関数定義としない
-      if (lastTokenType !== 'eol') {
-        i++
-        continue
-      }
+      const defToken = t
       i++ // skip "●"
       let josi = []
+      let varnames = []
+      let funcName = ''
       // 関数名の前に引数定義
       if (tokens[i] && tokens[i].type === '(') {
-        josi = readArgs()
+        [josi, varnames] = readArgs()
       }
+      // 関数名
       if (tokens[i] && tokens[i].type === 'word') {
-        const key = tokens[i++].value
-        // 関数名の後で引数定義
-        if (josi.length === 0 && tokens[i] && tokens[i].type === '(') {
-          josi = readArgs()
-        }
-        this.funclist[key] = {
+        funcName = tokens[i++].value
+      }
+      // 関数名の後で引数定義
+      if (josi.length === 0 && tokens[i] && tokens[i].type === '(') {
+        [josi, varnames] = readArgs()
+      }
+      // 関数定義か？
+      if (funcName !== '') {
+        this.funclist[funcName] = {
+          type: 'func',
+          josi,
           fn: null,
-          josi: josi,
-          type: 'func'
+          varnames
         }
       }
+      // 無名関数のために
+      defToken.meta = { josi, varnames }
     }
   }
 
@@ -206,18 +218,14 @@ class NakoLexer {
     while (i < tokens.length) {
       const t = tokens[i]
       if (t.type === 'word') {
-        // 予約語の変換
-        if (reserveWords[t.value]) {
-          t.type = reserveWords[t.value]
-          // 「それ」のエイリアス「そう」を「それ」に置換
-          if (t.value === 'そう') t.value = 'それ'
-        }
-        // 関数を変換
-        const f = this.funclist[t.value]
-        if (f && f.type === 'func') {
-          t.type = 'func'
-          t.meta = f
-          continue
+        if (t.value !== 'それ') {
+          // 関数を変換
+          const f = this.funclist[t.value]
+          if (f && f.type === 'func') {
+            t.type = 'func'
+            t.meta = f
+            continue
+          }
         }
       }
       // 数字につくマイナス記号を判定

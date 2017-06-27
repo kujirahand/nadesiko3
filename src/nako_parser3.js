@@ -16,10 +16,6 @@ class NakoParser extends NakoParserBase {
     this.tokens = tokens
     // 解析開始
     const node = this.startParser()
-    // 解析後に優先度の高いノードを先頭に追加
-    this.priorityNodes.forEach((n) => {
-      node.block.unshift(n)
-    })
     return node
   }
   startParser () {
@@ -79,7 +75,7 @@ class NakoParser extends NakoParserBase {
     this.get() // skip '('
     while (!this.isEOF()) {
       if (this.check(')')) {
-        this.get()
+        this.get() // skip ''
         break
       }
       a.push(this.get())
@@ -120,14 +116,7 @@ class NakoParser extends NakoParserBase {
       line: def.line,
       josi: ''
     }
-    // 優先ノードに追加
-    this.priorityNodes.push(defFuncNode)
-    // ダミーノードを返す
-    return {
-      type: 'nop',
-      line: def.line,
-      josi: ''
-    }
+    return defFuncNode
   }
 
   yIFCond () { // もしの条件の取得
@@ -443,6 +432,7 @@ class NakoParser extends NakoParserBase {
       type: 'func_obj',
       args,
       block,
+      meta: def.meta,
       line: def.line,
       josi: ''
     }

@@ -238,6 +238,28 @@ class NakoGen {
     return this.plugins[key]
   }
 
+  /**
+   * 関数を先に登録してしまう
+   */
+  registerFunction (ast) {
+    if (ast.type !== 'block') {
+      throw new NakoGenError('構文解析に失敗しています。構文は必ずblockが先頭になります')
+    }
+    for (let i = 0; i < ast.block.length; i++) {
+      const t = ast.block[i]
+      if (t.type === 'def_func') {
+        const name = t.name.value
+        this.used_func[name] = true
+        this.__varslist[1][name] = function () { } // 事前に適当な値を設定
+        this.nako_func[name] = {
+          'josi': t.name.meta.josi,
+          'fn': '',
+          'type': 'func'
+        }
+      }
+    }
+  }
+
   convLineno (node) {
     if (node.line === undefined) return ''
     return `__varslist[0].line=${node.line};`
@@ -448,30 +470,10 @@ class NakoGen {
     // ローカル変数をPUSHする
     this.__varslist.push(this.__vars)
     // 引数をローカル変数に設定
-    const josilistTmp = []
-    for (let i = 0; i < args.length; i++) {
-      const arg = args[i]
-      const josiWord = arg.value
-      const josi = arg['josi']
-      let flagDouble = false
-      for (let j = 0; j < josilistTmp.length; j++) {
-        const q = josilistTmp[j]
-        if (q[0] !== josiWord) continue
-        flagDouble = j
-        josilistTmp[j][1].push(josi)
-        flagDouble = true
-        break
-      }
-      if (!flagDouble) josilistTmp.push([josiWord, [josi]])
-      this.__vars[josiWord] = true
-    }
-    const josilist = []
-    for (let i = 0; i < josilistTmp.length; i++) {
-      const c = josilistTmp[i]
-      const josiWord = c[0]
-      const josi2 = c[1]
-      josilist.push(josi2)
-      code += `__vars["${josiWord}"] = arguments[${i}];\n`
+    let meta = (!name) ? node.meta : node.name.meta
+    for (let i = 0; i < meta.varnames.length; i++) {
+      const word = meta.varnames[i]
+      code += `__vars["${word}"] = arguments[${i}];\n`
     }
     // 関数定義は、グローバル領域で。
     if (name) {
@@ -479,7 +481,7 @@ class NakoGen {
       this.__varslist[1][name] = function () {
       } // 再帰のために事前に適当な値を設定
       this.nako_func[name] = {
-        'josi': josilist,
+        'josi': node.name.meta.josi,
         'fn': '',
         'type': 'func'
       }

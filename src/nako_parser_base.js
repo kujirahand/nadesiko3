@@ -27,7 +27,6 @@ class NakoParserBase {
     this.index = 0 // tokens[] のどこまで読んだかを管理する
     this.stack = [] // 計算用のスタック ... 直接は操作せず、pushStack() popStack() を介して使う
     this.y = [] // accept()で解析済みのトークンを配列で得るときに使う
-    this.priorityNodes = [] // 最上位のノード (関数定義などを保持する)
   }
 
   setFuncList (funclist) {

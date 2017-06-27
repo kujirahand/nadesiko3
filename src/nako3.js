@@ -65,6 +65,7 @@ class NakoCompiler {
    * @param ast AST
    */
   generate (ast) {
+    this.gen.registerFunction(ast)
     const js = this.gen.convGen(ast)
     const def = this.gen.getDefFuncCode()
     if (this.debug && this.debugJSCode) {
