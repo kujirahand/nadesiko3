@@ -12,7 +12,13 @@ class NakoParser extends NakoParserBase {
   parse (tokens) {
     this.reset()
     this.tokens = tokens
-    return this.startParser()
+    // 解析開始
+    const node = this.startParser()
+    // 解析後に優先度の高いノードを先頭に追加
+    this.priorityNodes.forEach((n) => {
+      node.block.unshift(n)
+    })
+    return node
   }
   startParser () {
     const b = this.ySentenceList()
@@ -26,10 +32,10 @@ class NakoParser extends NakoParserBase {
     const blocks = []
     let line = -1
     while (!this.isEOF()) {
-      if (!this.accept([this.ySentence])) break
-      // console.log('ySentenceList=', this.nodeToStr(this.y[0]))
-      blocks.push(this.y[0])
-      if (line < 0) line = this.y[0].line
+      const n = this.ySentence()
+      if (!n) break
+      blocks.push(n)
+      if (line < 0) line = n.line
     }
     if (blocks.length === 0) {
       throw new NakoSyntaxError('構文解析に失敗:' + this.nodeToStr(this.peek()), line)
@@ -104,11 +110,19 @@ class NakoParser extends NakoParserBase {
     } else {
       block = this.ySentence()
     }
-    return {
+    const defFuncNode = {
       type: 'def_func',
       name: funcName,
       args: defArgs,
       block,
+      line: def.line,
+      josi: ''
+    }
+    // 優先ノードに追加
+    this.priorityNodes.push(defFuncNode)
+    // ダミーノードを返す
+    return {
+      type: 'nop',
       line: def.line,
       josi: ''
     }
