@@ -173,6 +173,24 @@ const PluginBrowser = {
         .replace(/&/g, '&amp;')
         .replace(/>/g, '&gt;')
         .replace(/</g, '&lt;')
+    },
+
+    // @ローカルストレージ
+    'ローカルストレージ保存': { // @ブラウザのlocalStorageのKにVを保存 // @ろーかるすとれーじほぞん
+      type: 'func',
+      josi: [['に', 'へ'], ['を']],
+      fn: function (key, v) {
+        window.localStorage[key] = JSON.stringify(v)
+      },
+      return_none: true
+    },
+    'ローカルストレージ読': { // @ブラウザのlocalStorageからVを読む // @ろーかるすとれーじよむ
+      type: 'func',
+      josi: [['を', 'から', 'の']],
+      fn: function (key, v) {
+        return JSON.parse(window.localStorage[key])
+      },
+      return_none: false
     }
   }
 }

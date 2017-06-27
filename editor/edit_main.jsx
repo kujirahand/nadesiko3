@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom'
 import WebNakoCompiler from '../src/wnako3'
 import EditorComponent from './editor_component'
 
-const nako3 = new WebNakoCompiler()
+// なでしこコンパイラ唯一のインスタンス
+const nako3 = navigator.nako3
 
 // なでしこの関数をカスタマイズ
 nako3.setFunc('言', (msg) => window.alert(msg))

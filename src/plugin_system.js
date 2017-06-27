@@ -1130,6 +1130,19 @@ const PluginSystem = {
     fn: function (s) {
       throw new Error(s)
     }
+  },
+  'システム関数一覧取得': {
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const f = []
+      for (const key in sys.__varslist[0]) {
+        if (typeof sys.__varslist[0] === 'function') {
+          f.push(key)
+        }
+      }
+      return f
+    }
   }
 }
 

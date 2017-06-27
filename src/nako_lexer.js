@@ -124,7 +124,8 @@ class NakoLexer {
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
     const line = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-    this.result.push({type: 'eof', line, josi: ''})
+    this.result.push({type: 'eol', line, josi: ''}) // 改行
+    this.result.push({type: 'eof', line, josi: ''}) // ファイル末尾
     return this.result
   }
 

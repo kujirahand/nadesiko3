@@ -3,6 +3,8 @@
  */
 const { opPriority, keizokuJosi } = require('./nako_parser_const')
 const { NakoParserBase, NakoSyntaxError } = require('./nako_parser_base')
+const operatorList = []
+for (const key in opPriority) operatorList.push(key)
 
 class NakoParser extends NakoParserBase {
   /**
@@ -216,7 +218,7 @@ class NakoParser extends NakoParserBase {
         args.push(this.get())
         // 演算子後の値を取得
         const v = this.yValue()
-        if (v === null) throw new NakoSyntaxError('計算式で演算子後に値がありません', value1.line)
+        if (v === null) throw new NakoSyntaxError(`計算式で演算子『${op.value}』後に値がありません`, value1.line)
         args.push(v)
         continue
       }
@@ -465,7 +467,7 @@ class NakoParser extends NakoParserBase {
       if (this.check('反復')) return this.yForEach()
       // 戻す
       if (this.check('戻る')) return this.yReturn()
-      // 関数
+      // C言語風関数
       if (this.check2([['func', 'word'], '('])) { // C言語風
         const t = this.yValue()
         if (t.type === 'func' && (t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0)) {
@@ -475,6 +477,7 @@ class NakoParser extends NakoParserBase {
         this.pushStack(t)
         continue
       }
+      // なでしこ式関数
       if (this.check('func')) {
         const t = this.get()
         const f = t.meta
@@ -523,7 +526,7 @@ class NakoParser extends NakoParserBase {
         console.log(JSON.stringify(this.stack, null, 2))
         console.log('peek: ', JSON.stringify(this.peek(), null, 2))
       }
-      throw new NakoSyntaxError(`余剰単語${names}があります`, line)
+      throw new NakoSyntaxError(`『${names}』を読みましたが使い方が分かりません。プラグインが不足しているか、別の関数で利用してください。`, line)
     }
     return this.popStack([])
   }
@@ -709,6 +712,19 @@ class NakoParser extends NakoParserBase {
     if (a) return a
     const o = this.yJSONObject()
     if (o) return o
+    // 一語関数
+    const splitType = operatorList.concat(['eol', ')', ']'])
+    if (this.check2(['func', splitType])) {
+      const f = this.get()
+      const fobj = {
+        type: 'func',
+        name: f.value,
+        args: [],
+        line: f.line,
+        josi: f.josi
+      }
+      return fobj
+    }
     // C風関数呼び出し FUNC(...)
     if (this.check2([['func', 'word'], '('])) {
       const f = this.peek()
