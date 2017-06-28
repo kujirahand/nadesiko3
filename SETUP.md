@@ -14,8 +14,6 @@ $ npm install --no-optional
 コマンドラインから以下のコマンドを実行することで、ソースコードをビルドできる。
 
 ```
-# PEG文法からなでしこ言語のパーサーを生成
-$ npm run build:parser
 # Node.js用のソースコードをWeb用のJSに変換
 $ npm run build
 ```
