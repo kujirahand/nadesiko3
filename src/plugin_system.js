@@ -1137,7 +1137,8 @@ const PluginSystem = {
     fn: function (sys) {
       const f = []
       for (const key in sys.__varslist[0]) {
-        if (typeof sys.__varslist[0] === 'function') {
+        const ff = sys.__varslist[0][key]
+        if (typeof ff === 'function') {
           f.push(key)
         }
       }
