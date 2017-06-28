@@ -1,4 +1,6 @@
 // plugin_browser.js
+const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『CANVAS描画開始』命令に指定します。'
+
 const PluginBrowser = {
   // @色定数
   '水色': {type: 'const', value: 'aqua'}, // @みずいろ
@@ -231,6 +233,123 @@ const PluginBrowser = {
     josi: [],
     fn: function (key) {
       window.localStorage.clear()
+    },
+    return_none: true
+  },
+  // @ ブラウザ上での描画 Canvas API
+  '描画開始': { // @描画先にCanvasを指定して描画API(2D)の利用準備する // @びょうがAPIしょきか
+    type: 'func',
+    josi: [['の', 'へ']],
+    fn: function (cv, sys) {
+      if (typeof cv === 'string') cv = document.getElementById(cv)
+      if (!cv) throw new Error(errMsgCanvasInit)
+      sys.__canvas = cv
+      sys.__ctx = cv.getContext('2d')
+    },
+    return_none: true
+  },
+  '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろしてい
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (v, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.strokeStyle = v
+    },
+    return_none: true
+  },
+  '塗色設定': { // @Canvasへの描画色(fillStyle)を指定する   // @ ぬりいろしてい
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (v, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.fillStyle = v
+    },
+    return_none: true
+  },
+  '線描画': { // @ [x1, y1]から[x2, y2]まで線を描画する // @ せんびょうが
+    type: 'func',
+    josi: [['から'], ['へ', 'まで']],
+    fn: function (a, b, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.beginPath()
+      sys.__ctx.moveTo(a[0], a[1])
+      sys.__ctx.lineTo(b[0], b[1])
+    },
+    return_none: true
+  },
+  '線太設定': { // @ vに線の太さ設定 // @ せんふとさせってい
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (v, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.lineWidth = v
+    },
+    return_none: true
+  },
+  '四角描画': { // @ [x, y, w, h]で矩形を描画する // @ しかくびょうが
+    type: 'func',
+    josi: [['の', 'へ', 'に']],
+    fn: function (b, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.beginPath()
+      sys.__ctx.rect(b[0], b[1], b[2], b[3])
+      sys.__ctx.fill()
+      sys.__ctx.stroke()
+    },
+    return_none: true
+  },
+  '描画クリア': { // @ [x, y, w, h]の範囲を描画クリア // @ びょうがくりあ
+    type: 'func',
+    josi: [['の', 'へ', 'に']],
+    fn: function (b, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.clearRect(b[0], b[1], b[2], b[3])
+    },
+    return_none: true
+  },
+  '円描画': { // @ [x, y]へrの円を描画する // @ えんびょうが
+    type: 'func',
+    josi: [['で', 'の', 'を']],
+    fn: function (xy, r, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.beginPath()
+      sys.__ctx.arc(xy[0], xy[1], r, 0, 2 * Math.PI, false)
+      sys.__ctx.fill()
+      sys.__ctx.stroke()
+    },
+    return_none: true
+  },
+  '多角形描画': { // @ 座標配列vを指定して多角形を描画する // @ たかっけいびょうが
+    type: 'func',
+    josi: [['で', 'の', 'を']],
+    fn: function (a, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.beginPath()
+      const p = a.shift()
+      sys.__ctx.moveTo(p[0], p[1])
+      while (a.length > 0) {
+        const t = a.shift()
+        sys.lineTo(t[0], t[1])
+      }
+      sys.__ctx.lineTo(p[0], p[1])
+      sys.__ctx.fill()
+      sys.__ctx.stroke()
+    },
+    return_none: true
+  },
+  '画像描画': { // @ [x, y, w, h]へ(img要素)idの画像を描画する // @ がぞうびょうが
+    type: 'func',
+    josi: [['へ', 'に'], ['の']],
+    fn: function (xy, id, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (typeof id === 'string') id = document.getElementById(id)
+      if (xy.length === 2) {
+        sys.__ctx.drawImage(id, xy[0], xy[1])
+      } else if (xy.length === 4) {
+        sys.__ctx.drawImage(id, xy[0], xy[1], xy[2], xy[3])
+      } else if (xy.length === 6) {
+        sys.__ctx.drawImage(id, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])
+      }
     },
     return_none: true
   }
