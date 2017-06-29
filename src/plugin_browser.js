@@ -1,5 +1,5 @@
 // plugin_browser.js
-const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『CANVAS描画開始』命令に指定します。'
+const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
 const PluginBrowser = {
   // @色定数
@@ -274,6 +274,7 @@ const PluginBrowser = {
       sys.__ctx.beginPath()
       sys.__ctx.moveTo(a[0], a[1])
       sys.__ctx.lineTo(b[0], b[1])
+      sys.__ctx.stroke()
     },
     return_none: true
   },
@@ -309,7 +310,7 @@ const PluginBrowser = {
   },
   '円描画': { // @ [x, y]へrの円を描画する // @ えんびょうが
     type: 'func',
-    josi: [['で', 'の', 'を']],
+    josi: [['へ', 'に'], ['の']],
     fn: function (xy, r, sys) {
       if (!sys.__ctx) throw new Error(errMsgCanvasInit)
       sys.__ctx.beginPath()
@@ -329,7 +330,7 @@ const PluginBrowser = {
       sys.__ctx.moveTo(p[0], p[1])
       while (a.length > 0) {
         const t = a.shift()
-        sys.lineTo(t[0], t[1])
+        sys.__ctx.lineTo(t[0], t[1])
       }
       sys.__ctx.lineTo(p[0], p[1])
       sys.__ctx.fill()
@@ -337,21 +338,33 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '画像描画': { // @ [x, y, w, h]へ(img要素)idの画像を描画する // @ がぞうびょうが
+  '画像描画': { // @ [x, y, w, h]へファイル名F(またはImage)の画像を描画し、Imageを返す // @ がぞうびょうが
     type: 'func',
     josi: [['へ', 'に'], ['の']],
-    fn: function (xy, id, sys) {
+    fn: function (xy, img, sys) {
       if (!sys.__ctx) throw new Error(errMsgCanvasInit)
-      if (typeof id === 'string') id = document.getElementById(id)
-      if (xy.length === 2) {
-        sys.__ctx.drawImage(id, xy[0], xy[1])
-      } else if (xy.length === 4) {
-        sys.__ctx.drawImage(id, xy[0], xy[1], xy[2], xy[3])
-      } else if (xy.length === 6) {
-        sys.__ctx.drawImage(id, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])
+      const drawFunc = (im) => {
+        if (xy.length === 2) {
+          sys.__ctx.drawImage(im, xy[0], xy[1])
+        } else if (xy.length === 4) {
+          sys.__ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])
+        } else if (xy.length === 6) {
+          sys.__ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])
+        }
+      }
+      if (typeof img === 'string') {
+        const image = new Image()
+        image.src = img
+        image.onload = () => {
+          drawFunc(image)
+        }
+        return image
+      } else {
+        drawFunc(img)
+        return img
       }
     },
-    return_none: true
+    return_none: false
   }
 }
 
