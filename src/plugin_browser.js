@@ -353,7 +353,7 @@ const PluginBrowser = {
         }
       }
       if (typeof img === 'string') {
-        const image = new Image()
+        const image = new window.Image()
         image.src = img
         image.onload = () => {
           drawFunc(image)
@@ -365,6 +365,23 @@ const PluginBrowser = {
       }
     },
     return_none: false
+  },
+  '描画フォント設定': { // @ 描画フォントを指定する(CSSのフォント設定と同じ 例「36px Aria」) // @ びょうがふぉんとせってい
+    type: 'func',
+    josi: [['を', 'の', 'で', 'に']],
+    fn: function (n, sys) {
+      sys.__ctx.font = n
+    },
+    return_none: true
+  },
+  '文字描画': { // @ [x, y]へテキストSを描画する(描画フォント設定でサイズなど指定) // @ がぞうびょうが
+    type: 'func',
+    josi: [['へ', 'に'], ['の', 'を']],
+    fn: function (xy, s, sys) {
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      sys.__ctx.fillText(s, xy[0], xy[1])
+    },
+    return_none: true
   }
 }
 
