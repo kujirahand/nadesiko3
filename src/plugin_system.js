@@ -664,7 +664,7 @@ const PluginSystem = {
   // @置換・トリム
   '置換': {// @文字列Sのうち文字列AをBに全部置換して返す // @ちかん
     type: 'func',
-    josi: [['の', 'で'], ['を'], ['に', 'へ']],
+    josi: [['の', 'で'], ['を', 'から'], ['に', 'へ']],
     fn: function (s, a, b) {
       return String(s).split(a).join(b)
     }
