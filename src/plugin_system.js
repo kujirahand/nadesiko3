@@ -932,17 +932,17 @@ const PluginSystem = {
       throw new Error('『配列一括挿入』で配列以外の要素への挿入。')
     }
   },
-  '配列ソート': { // @配列Aをソートして返す // @はいれつそーと
+  '配列ソート': { // @配列Aをソートして返す(A自体を変更) // @はいれつそーと
     type: 'func',
     josi: [['の', 'を']],
     fn: function (a) {
       if (a instanceof Array) { // 配列ならOK
         return a.sort()
       }
-      throw new Error('『配列ソート』で配列以外の処理。')
+      throw new Error('『配列ソート』で配列以外が指定されました。')
     }
   },
-  '配列数値ソート': { // @配列Aをソートして返す // @はいれつすうちそーと
+  '配列数値ソート': { // @配列Aをソートして返す(A自体を変更) // @はいれつすうちそーと
     type: 'func',
     josi: [['の', 'を']],
     fn: function (a) {
@@ -951,27 +951,35 @@ const PluginSystem = {
           return parseFloat(a) - parseFloat(b)
         })
       }
-      throw new Error('『配列数値ソート』で配列以外の処理。')
+      throw new Error('『配列数値ソート』で配列以外が指定されました。')
     }
   },
-  '配列カスタムソート': { // @配列Aを関数Bでソートして返す // @はいれつかすたむそーと
+  '配列カスタムソート': { // @関数Fで配列Aをソートして返す(引数A自体を変更) // @はいれつかすたむそーと
     type: 'func',
-    josi: [['の', 'を'], ['で']],
-    fn: function (a, fname, sys) {
-      if (a instanceof Array) { // 配列ならOK
-        return a.sort(sys.__varslist[1][fname])
+    josi: [['で'], ['の', 'を']],
+    fn: function (f, a, sys) {
+      let ufunc = f
+      if (typeof f === 'string') {
+        ufunc = sys.__varslist[1][f]
+        if (ufunc === undefined) {
+          ufunc = sys.__varslist[1][f]
+        }
+        if (!ufunc) throw new Error('関数『' + f + '』が見当たりません。')
       }
-      throw new Error('『配列数値ソート』で配列以外の処理。')
+      if (a instanceof Array) { // 配列ならOK
+        return a.sort(ufunc)
+      }
+      throw new Error('『配列カスタムソート』で配列以外が指定されました。')
     }
   },
-  '配列逆順': { // @配列Aを逆にして返す。Aを書き換える。 // @はいれつぎゃくじゅん
+  '配列逆順': { // @配列Aを逆にして返す。Aを書き換える(A自体を変更)。 // @はいれつぎゃくじゅん
     type: 'func',
     josi: [['の', 'を']],
     fn: function (a) {
       if (a instanceof Array) { // 配列ならOK
         return a.reverse()
       }
-      throw new Error('『配列ソート』で配列以外の処理。')
+      throw new Error('『配列ソート』で配列以外が指定されました。')
     }
   },
   '配列シャッフル': { // @配列Aをシャッフルして返す。Aを書き換える // @はいれつしゃっふる
@@ -987,7 +995,7 @@ const PluginSystem = {
         }
         return a
       }
-      throw new Error('『配列シャッフル』で配列以外の処理。')
+      throw new Error('『配列シャッフル』で配列以外が指定されました。')
     }
   },
   '配列切取': { // @配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。 // @はいれつきりとる
@@ -997,7 +1005,7 @@ const PluginSystem = {
       if (a instanceof Array) { // 配列ならOK
         return a.splice(i, 1)
       }
-      throw new Error('『配列切り取』で配列以外の処理。')
+      throw new Error('『配列切り取』で配列以外を指定。')
     }
   },
   '配列取出': { // @配列AのI番目(0起点)からCNT個の応訴を取り出して返す。Aの内容を書き換える // @はいれつとりだし
@@ -1007,7 +1015,7 @@ const PluginSystem = {
       if (a instanceof Array) { // 配列ならOK
         return a.splice(i, cnt)
       }
-      throw new Error('『配列切り取』で配列以外の処理。')
+      throw new Error('『配列切り取』で配列以外を指定。')
     }
   },
   '配列ポップ': { // @配列Aの末尾を取り出して返す。Aの内容を書き換える。 // @はいれつぽっぷ
@@ -1104,7 +1112,14 @@ const PluginSystem = {
         ' ' + z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
     }
   },
-  '秒後実行': { // @無名関数FをN秒後に実行する // @びょうまつ
+  '実行': { // @ 無名関数Fを実行する(Fが無名関数でなければ無視する) // @じっこう
+    type: 'func',
+    josi: [['を', 'に', 'で']],
+    fn: function (f, sys) {
+      if (typeof f === 'function') return f(sys)
+    }
+  },
+  '秒後': { // @無名関数FをN秒後に実行する // @びょうご
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
@@ -1113,7 +1128,7 @@ const PluginSystem = {
       }, parseFloat(n) * 1000)
     }
   },
-  '秒毎実行': { // @無名関数FをN秒ごとに実行する // @びょうごと
+  '秒毎': { // @無名関数FをN秒ごとに実行する // @びょうごと
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {

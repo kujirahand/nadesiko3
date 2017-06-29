@@ -424,8 +424,11 @@ class NakoParser extends NakoParserBase {
   yMumeiFunc () { // 無名関数の定義
     if (!this.check('def_func')) return null
     const def = this.get()
-    if (!this.check('(')) throw new NakoSyntaxError('無名関数の定義エラー', def.line)
-    const args = this.yDefFuncReadArgs()
+    let args = []
+    // 関数の引数定義は省略できる
+    if (this.check('(')) {
+      args = this.yDefFuncReadArgs()
+    }
     const block = this.yBlock()
     if (this.check('ここまで')) this.get()
     return {
@@ -471,15 +474,24 @@ class NakoParser extends NakoParserBase {
       if (this.check('func')) {
         const t = this.get()
         const f = t.meta
+        // (関数)には ... 構文 ... https://github.com/kujirahand/nadesiko3/issues/66
+        let funcObj = null
+        if (t.josi === 'には') {
+          funcObj = this.yMumeiFunc()
+          if (funcObj === null) throw new NakoSyntaxError('『Fには』構文がありましたが、関数定義が見当たりません。', t.line)
+        }
         const args = []
-        let numCount = 0
+        let nullCount = 0
         for (const arg of f.josi) {
-          const popArg = this.popStack(arg)
+          let popArg = this.popStack(arg)
+          if (popArg === null) {
+            nullCount++
+            popArg = funcObj
+          }
           args.push(popArg)
-          if (popArg === null) numCount++
         }
         // 1つだけなら、変数「それ」で補完される
-        if (numCount >= 2) throw new NakoSyntaxError(`関数『${t.value}』の引数指定エラー`, t.line)
+        if (nullCount >= 2) throw new NakoSyntaxError(`関数『${t.value}』の引数が不足しています。`, t.line)
         const funcNode = {type: 'func', name: t.value, args: args, josi: t.josi, line: t.line}
         // 言い切りならそこで一度切る
         if (t.josi === '') {
@@ -516,7 +528,7 @@ class NakoParser extends NakoParserBase {
         console.log(JSON.stringify(this.stack, null, 2))
         console.log('peek: ', JSON.stringify(this.peek(), null, 2))
       }
-      throw new NakoSyntaxError(`『${names}』を読みましたが使い方が分かりません。プラグインが不足しているか、別の関数で利用してください。`, line)
+      throw new NakoSyntaxError(`${names}を読みましたが使い方が分かりません。プラグインが不足しているか、別の関数で利用してください。`, line)
     }
     return this.popStack([])
   }

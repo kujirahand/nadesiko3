@@ -26,7 +26,7 @@ const josiList = [
   'について', 'くらい', 'なのか', 'までを', 'までの',
   'とは', 'から', 'まで', 'だけ', 'より', 'ほど', 'など',
   'いて', 'えて', 'きて', 'けて', 'して', 'って', 'にて', 'みて',
-  'めて', 'ねて', 'では',
+  'めて', 'ねて', 'では', 'には',
   'は', 'を', 'に', 'へ', 'で', 'と', 'が', 'の'
 ]
 const tararebaJosiList = [
@@ -169,10 +169,18 @@ class NakoLexer {
     while (i < tokens.length) {
       // タイプの置換
       const t = tokens[i]
+      // 無名関数の定義：「xxには**」があった場合 ... 暗黙的な関数定義とする
+      if (t.type === 'word' && t.josi === 'には') {
+        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, josi: ''})
+        i++
+        continue
+      }
+      // 予約語の置換
       if (t.type === 'word' && reserveWords[t.value]) {
         t.type = reserveWords[t.value]
         if (t.value === 'そう') t.value = 'それ'
       }
+      // 関数定義の確認
       if (t.type !== 'def_func') {
         i++
         continue
