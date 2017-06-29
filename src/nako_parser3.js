@@ -461,7 +461,7 @@ class NakoParser extends NakoParserBase {
       // 戻す
       if (this.check('戻る')) return this.yReturn()
       // C言語風関数
-      if (this.check2([['func', 'word'], '('])) { // C言語風
+      if (this.check2([['func', 'word'], '(']) && this.peek().josi === '') { // C言語風
         const t = this.yValue()
         if (t.type === 'func' && (t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0)) {
           t.josi = ''
@@ -728,7 +728,7 @@ class NakoParser extends NakoParserBase {
       return fobj
     }
     // C風関数呼び出し FUNC(...)
-    if (this.check2([['func', 'word'], '('])) {
+    if (this.check2([['func', 'word'], '(']) && this.peek().josi === '') {
       const f = this.peek()
       if (this.accept([['func', 'word'], '(', this.yGetArgParen, ')'])) {
         const fobj = {
