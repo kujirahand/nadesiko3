@@ -734,7 +734,7 @@ class NakoGen {
   }
 
   convOp (node) {
-    const OP_TBL = {
+    const OP_TBL = { // トークン名からJS演算子
       '&': '+""+',
       'eq': '==',
       'noteq': '!=',
@@ -743,14 +743,21 @@ class NakoGen {
       'gteq': '>=',
       'lteq': '<='
     }
+    const NUM_OP_TBL = { // 数値限定演算子
+      '+': true, '-': true, '*': true, '/': true, '%': true, '^': true
+    }
     let op = node.operator // 演算子
-    const right = this.convGen(node.right)
-    const left = this.convGen(node.left)
+    let right = this.convGen(node.right)
+    let left = this.convGen(node.left)
+    if (NUM_OP_TBL[op]) {
+      left = `parseFloat(${left})`
+      right = `parseFloat(${right})`
+    }
     // 階乗
     if (op === '^') {
       return '(Math.pow(' + left + ',' + right + '))'
     }
-    // 一般的なオペレータ
+    // 一般的なオペレータに変換
     if (OP_TBL[op]) op = OP_TBL[op]
     //
     return `(${left} ${op} ${right})`
