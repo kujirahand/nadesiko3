@@ -206,7 +206,7 @@ class NakoCompiler {
 }
 
 module.exports = NakoCompiler
-
+/*
 // simple test code
 const c = new NakoCompiler()
 c.debug = true
@@ -214,3 +214,4 @@ c.debugParser = true
 c.debugLexer = true
 c.silent = false
 c.runReset('3を表示')
+*/
