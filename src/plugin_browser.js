@@ -236,7 +236,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  // @ ブラウザ上での描画 Canvas API
+  // @ 描画
   '描画開始': { // @描画先にCanvasを指定して描画API(2D)の利用準備する // @びょうがAPIしょきか
     type: 'func',
     josi: [['の', 'へ']],

@@ -1,4 +1,3 @@
-// basic_func.js
 const PluginSystem = {
   '初期化': {
     type: 'func',
@@ -29,9 +28,15 @@ const PluginSystem = {
   'NG': {type: 'const', value: 0}, // @NG
   'PI': {type: 'const', value: Math.PI}, // @PI
   '空': {type: 'const', value: ''}, // @から
-  '空配列': {type: 'const', value: []}, // @からはいれつ
   'NULL': {type: 'const', value: null}, // @NULL
   'エラーメッセージ': {type: 'const', value: ''}, // @えらーめっせーじ
+  '空配列': { // @空の配列を返す // @からはいれつ
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      return []
+    }
+  },
 
   // @標準出力
   '表示': { // @Sを表示 // @ひょうじ

@@ -8,4 +8,5 @@
 
 「{基本パス}/batch/pickup_command.nako3」をCNAKO実行。
 「{基本パス}/batch/cmd_txt2json.nako3」をCNAKO実行。
+「{基本パス}/batch/cmd_txt2wiki.nako3」をCNAKO実行。
 
