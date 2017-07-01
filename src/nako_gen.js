@@ -202,9 +202,9 @@ class NakoGen {
    * @param po 登録するオブジェクト
    */
   addPluginFile (objName, path, po) {
+    this.addPluginObject(objName, po)
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = path
-      this.addPlugin(po)
     }
   }
 
