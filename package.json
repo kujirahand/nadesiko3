@@ -1,9 +1,11 @@
 {
   "name": "nadesiko3",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Japanese Programming Language",
   "main": "src/nako3.js",
-  "bin": "src/cnako3.js",
+  "bin": {
+    "cnako3": "src/cnako3.js"
+  },
   "scripts": {
     "test": "mocha",
     "start": "lite-server",
