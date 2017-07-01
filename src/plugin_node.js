@@ -1,6 +1,13 @@
 // plugin_node.js
 
 const PluginNode = {
+  '初期化': {
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      sys.__varslist[0]['コマンドライン'] = process.argv
+    }
+  },
   // @ファイル入出力
   '開': { // @ファイルSを開く // @ひらく
     type: 'func',
@@ -209,7 +216,9 @@ const PluginNode = {
         // callback(lines.join('\n'))
       })
     }
-  }
+  },
+  'コマンドライン': {type: 'const', value: ''}, // @こまんどライン
+  
 }
 
 module.exports = PluginNode
