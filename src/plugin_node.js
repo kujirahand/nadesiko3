@@ -199,26 +199,20 @@ const PluginNode = {
     }
   },
   // @コマンドライン
+  'コマンドライン': {type: 'const', value: ''}, // @こまんどらいん
   '標準入力取得時': { // @標準入力を一行取得した時に、無名関数F(s)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
     type: 'func',
     josi: [['を']],
     fn: function (callback) {
-      const lines = []
       const reader = require('readline').createInterface({
         input: process.stdin,
         output: process.stdout
       })
       reader.on('line', function (line) {
         callback(line)
-        //lines.push(line)
-      })
-      process.stdin.on('end', function () {
-        // callback(lines.join('\n'))
       })
     }
-  },
-  'コマンドライン': {type: 'const', value: ''}, // @こまんどライン
-  
+  }
 }
 
 module.exports = PluginNode
