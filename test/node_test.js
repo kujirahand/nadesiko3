@@ -2,12 +2,12 @@ const assert = require('assert')
 const execSync = require('child_process').execSync
 const path = require('path')
 
-const cnako3 = path.dirname(__dirname) + '/src/cnako3'
+const cnako3 = path.dirname(__dirname) + '/src/cnako3.js'
 
 describe('node_test(cnako)', () => {
   const debug = false
   const cmp = (code, exRes) => {
-    const res = execSync(`${cnako3} -e "${code}"`)
+    const res = execSync(`node ${cnako3} -e "${code}"`)
     const result = res.toString().replace(/\s+$/, '')
     if (debug) {
       console.log('code=' + code)
