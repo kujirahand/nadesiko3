@@ -3,7 +3,7 @@ const path = require('path')
 const index = require('../src/index.js')
 
 describe('index_test', () => {
-  const nako = new index.nako3()
+  const nako = new index.compiler()
   nako.addPluginObject('PluginNode', index.PluginNode)
   nako.debug = false
   const cmp = (code, res) => {
