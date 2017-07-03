@@ -3,7 +3,8 @@ const NakoCompiler = require('../src/nako3')
 
 describe('関数呼び出しテスト', () => {
   const nako = new NakoCompiler()
-  // nako.debug = true
+  nako.debugParser = true
+  nako.debug = true
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -41,8 +42,11 @@ describe('関数呼び出しテスト', () => {
       'もし、Bが0以下ならば、Vを戻す。;(V*A)をAの(B-1)で階乗計算して戻す。' +
       'ここまで。;1を2の3で階乗計算して表示。', 8)
   })
-  it('切り取り、代入', () => {
+  it('連続文後の代入', () => {
     cmp('1504191600を日時変換して「 」まで切り取り、対象日に代入。対象日を表示。', '2017/09/01')
+  })
+  it('連続文後の=代入', () => {
+    cmp('対象日=1504191600を日時変換して「 」まで切り取る。対象日を表示。', '2017/09/01')
   })
   // ---
 })

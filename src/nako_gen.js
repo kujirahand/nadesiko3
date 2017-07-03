@@ -330,6 +330,9 @@ class NakoGen {
       case 'calc':
         code += this.convOp(node)
         break
+      case 'renbun':
+        code += this.convRenbun(node)
+        break
       case 'not':
         code += '((' + this.convGen(node.value) + ')?0:1)'
         break
@@ -738,6 +741,12 @@ class NakoGen {
       }
     }
     return code
+  }
+
+  convRenbun (node) {
+    let right = this.convGen(node.right)
+    let left = this.convGen(node.left)
+    return `(() => {${left}; return ${right}})()`
   }
 
   convOp (node) {

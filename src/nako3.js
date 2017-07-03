@@ -213,5 +213,5 @@ c.debug = true
 c.debugParser = true
 c.debugLexer = true
 c.silent = false
-c.runReset('3を表示')
+c.runReset('対象日=1504191600を日時変換して「 」まで切り取る。対象日を表示。')
 */

@@ -652,14 +652,26 @@ class NakoParser extends NakoParserBase {
 
   yCalc () {
     if (this.check('eol')) return null
+    // 値を一つ読む
     const t = this.yGetArg()
     if (!t) return null
-    // 関数の呼び出しがある場合
-    if (t.josi !== '') {
-      this.pushStack(t)
-      return this.yCall()
+    // 助詞がある？ つまり、関数呼び出しがある？
+    if (t.josi === '') return t // 値だけの場合
+    // 関数の呼び出しがあるなら、スタックに載せて関数読み出しを呼ぶ
+    this.pushStack(t)
+    const t1 = this.yCall()
+    // それが連文か確認
+    if (t1.josi !== 'して') return t1 // 連文ではない
+    // 連文なら右側を読んで左側とくっつける
+    const t2 = this.yCalc()
+    if (!t2) return t1
+    return {
+      type: 'renbun',
+      left: t1,
+      right: t2,
+      josi: t2.josi,
+      line: t1.line
     }
-    return t
   }
 
   yValueKakko () {
