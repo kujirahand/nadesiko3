@@ -126,23 +126,30 @@ class NakoGen {
    * @returns {string}
    */
   getDefFuncCode () {
-    let code = '__varslist[0].line=0;// なでしこの関数定義\n'
+    let code = ''
     // なでしこの関数定義を行う
+    let nakoFuncCode = ''
     for (const key in this.nako_func) {
       const f = this.nako_func[key].fn
-      code += `this.__varslist[1]["${key}"]=${f};\n`
+      nakoFuncCode += `this.__varslist[1]["${key}"]=${f};\n`
+    }
+    if (nakoFuncCode !== '') {
+      code += '__varslist[0].line=0;// なでしこの関数定義\n' + nakoFuncCode
     }
     // プラグインの初期化関数を実行する
-    code += '__varslist[0].line=0;// プラグインの初期化\n'
+    let pluginCode = ''
     for (const name in this.pluginfiles) {
       const initkey = `!${name}:初期化`
       if (this.used_func[initkey]) {
         // セミコロンがないとエラーになったので注意
-        code += `__varslist[0]["!${name}:初期化"](__self);\n`
+        pluginCode += `__varslist[0]["!${name}:初期化"](__self);\n`
       }
     }
+    if (pluginCode !== '') {
+      code += '__varslist[0].line=0;// プラグインの初期化\n' + pluginCode
+    }
     // それを初期化
-    code += '__vars["それ"] = "";\n'
+    code += '__vars["それ"] = \'\';\n'
     return code
   }
 
@@ -793,7 +800,7 @@ class NakoGen {
     } else {
       code = `__varslist[${res.i}]["${name}"]=${value};`
     }
-    return this.convLineno(node) + code + '\n'
+    return ';' + this.convLineno(node) + code + '\n'
   }
 
   convDefLocalVar (node) {
