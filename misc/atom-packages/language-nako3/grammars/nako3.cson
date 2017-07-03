@@ -23,11 +23,11 @@
   }
   {
     'match': '(「.*?」)'
-    'name': 'constant.string.nako3'
+    'name': 'constant.string.ex.nako3'
   }
   {
     'match': '(『.*?』)'
-    'name': 'constant.string.nako3'
+    'name': 'constant.string.raw.nako3'
   }
   {
     'match': '(?:[＋ー×÷（）\\(\\)＆\\-\\*&<>=+!])'
@@ -38,7 +38,7 @@
     'name': 'keyword.control.nako3'
   }
   {
-    'match': '(について|くらい|なのか|までを|とは|までの|から|まで|だけ|より|ほど|など|いて|えて|きて|けて|して|って|にて|みて|めて|ねて|では|は|を|に|へ|で|と|が|の)'
+    'match': '(について|くらい|なのか|までを|とは|までの|から|まで|だけ|より|ほど|など|いて|えて|きて|けて|して|って|にて|には|みて|めて|ねて|では|は|を|に|へ|で|と|が|の)'
     'name': 'punctuation.definition.comment.josi.nako3'
   }
 ]
