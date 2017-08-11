@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=320,initial-scale=1">
-    <title>なでしこ3/タートルグラフィックス</title>
-    <!-- なでしこを使う準備 -->
-    <script src="../release/wnako3.js"></script>
-    <script src="../release/plugin_turtle.js"></script>
-    <!-- なでしこを呼び出して使う -->
-    <script src="common.js"></script>
-    <script src="turtle_test.js"></script>
-    <link rel="stylesheet" type="text/css" href="common.css">
-    <link rel="stylesheet" type="text/css" href="index.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=320,initial-scale=1">
+  <title>なでしこ3/タートルグラフィックス</title>
+  <!-- なでしこを使う準備 -->
+  <script src="../release/wnako3.js"></script>
+  <script src="../release/plugin_turtle.js"></script>
+  <!-- なでしこを呼び出して使う -->
+  <script src="common.js"></script>
+  <script src="turtle_test.js"></script>
+  <link rel="stylesheet" type="text/css" href="common.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
 
 <h1><a name="top">なでしこ3/タートルグラフィックス その3</a></h1>
 
 <div class="sbox">
-    <h4><a name="sankaku_txt_head">ゾウやパンダを作成する</a></h4>
-    <textarea id="sankaku_txt" class="src" rows="5" title="ゾウやパンダ作成">
+  <h4><a name="sankaku_txt_head">ゾウやパンダを作成する</a></h4>
+  <textarea id="sankaku_txt" class="src" rows="5" title="ゾウやパンダ作成">
 100にカメ速度設定。
 # --- ゾウ
 ゾウ作成。
@@ -42,14 +42,14 @@ N=50
 　　N=N+3
 ここまで。
     </textarea>
-    <div><p id="sankaku_txt_info" class="info"></p></div>
-    <button onclick="runBox('sankaku_txt')">実行</button>
+  <div><p id="sankaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sankaku_txt')">実行</button>
 </div>
 
 
 <div class="sbox">
-    <h4><a name="sankaku_txt_head">定期的にカメ画像を変更する</a></h4>
-    <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
+  <h4><a name="sankaku_txt_head">定期的にカメ画像を変更する</a></h4>
+  <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
 # 画像のURLの配列を変数に代入
 画像リストは["turtle.png", "nako.png"]
 画像Iは1
@@ -68,13 +68,13 @@ N=20
 　　90だけカメ右回転
 　　N = N + 5
 ここまで。</textarea>
-    <div><p id="sankaku_txt_info" class="info"></p></div>
-    <button onclick="runBox('sankaku_txt')">実行</button>
+  <div><p id="sankaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sankaku_txt')">実行</button>
 </div>
 
 <div class="sbox">
-    <h4><a name="sankaku_txt_head">ぐるぐる八角</a></h4>
-    <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
+  <h4><a name="sankaku_txt_head">ぐるぐる八角</a></h4>
+  <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
 カメ作成。
 40にカメ速度設定。
 青色にカメペン色設定。
@@ -87,13 +87,13 @@ N=20
 　　Nだけカメ進む
 　　45だけカメ右回転
 ここまで。</textarea>
-    <div><p id="sankaku_txt_info" class="info"></p></div>
-    <button onclick="runBox('sankaku_txt')">実行</button>
+  <div><p id="sankaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sankaku_txt')">実行</button>
 </div>
 
 <div class="sbox">
-    <h4><a name="sankaku_txt_head">ぐるぐる八角 - ナコ版</a></h4>
-    <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
+  <h4><a name="sankaku_txt_head">ぐるぐる八角 - ナコ版</a></h4>
+  <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
 「nako.png」にカメ画像変更。
 カメ作成。
 40にカメ速度設定。
@@ -107,13 +107,13 @@ N=20
 　　Nだけカメ進む
 　　45だけカメ右回転
 ここまで。</textarea>
-    <div><p id="sankaku_txt_info" class="info"></p></div>
-    <button onclick="runBox('sankaku_txt')">実行</button>
+  <div><p id="sankaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sankaku_txt')">実行</button>
 </div>
 
 <div class="sbox">
-    <h4><a name="sikaku_txt_head">星星 - 二匹のカメを使う</a></h4>
-    <textarea id="sikaku_txt" class="src" rows="5" title="星星 - 二匹のカメを使う">
+  <h4><a name="sikaku_txt_head">星星 - 二匹のカメを使う</a></h4>
+  <textarea id="sikaku_txt" class="src" rows="5" title="星星 - 二匹のカメを使う">
 ●星描画(歩数で)
 　　5回
 　　　　歩数だけカメ進む
@@ -139,14 +139,14 @@ N=20
 　　45だけカメ右回転。
 　　10だけカメ進む。
 ここまで。</textarea>
-    <div><p id="sikaku_txt_info" class="info"></p></div>
-    <button onclick="runBox('sikaku_txt')">実行</button>
+  <div><p id="sikaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sikaku_txt')">実行</button>
 </div>
 
 
 <div class="sbox">
-    <h4><a name="hosi_txt_head">18角形の描画</a></h4>
-    <textarea id="hosi_txt" class="src" rows="5" title="18角形の描画">
+  <h4><a name="hosi_txt_head">18角形の描画</a></h4>
+  <textarea id="hosi_txt" class="src" rows="5" title="18角形の描画">
 カメ作成。
 「turtle.png」にカメ画像変更。
 100にカメ速度設定。
@@ -159,13 +159,13 @@ A=360/18
 　　20だけカメ進む。
 　　Ａだけカメ左回転。
 ここまで。</textarea>
-    <div><p id="hosi_txt_info" class="info"></p></div>
-    <button onclick="runBox('hosi_txt')">実行</button>
+  <div><p id="hosi_txt_info" class="info"></p></div>
+  <button onclick="runBox('hosi_txt')">実行</button>
 </div>
 
 <div class="sbox">
-    <h4><a name="hosi2_txt_head">花びら</a></h4>
-    <textarea id="hosi2_txt" class="src" rows="5" title="花びら">
+  <h4><a name="hosi2_txt_head">花びら</a></h4>
+  <textarea id="hosi2_txt" class="src" rows="5" title="花びら">
 ●花びら描画(歩数で)
 　　4回
 　　　　60だけカメ右回転。
@@ -181,14 +181,14 @@ A=360/18
 12回
 　　３０で花びら描画。
 ここまで</textarea>
-    <div><p id="hosi2_txt_info" class="info"></p></div>
-    <button onclick="runBox('hosi2_txt')">実行</button>
+  <div><p id="hosi2_txt_info" class="info"></p></div>
+  <button onclick="runBox('hosi2_txt')">実行</button>
 </div>
 
 
 <div class="sbox">
-    <h4><a name="fr_txt_head">あめ玉</a></h4>
-    <textarea id="fr_txt" class="src" rows="5" title="あめ玉">
+  <h4><a name="fr_txt_head">あめ玉</a></h4>
+  <textarea id="fr_txt" class="src" rows="5" title="あめ玉">
 カメ作成。
 1にカメ速度設定。# 最速に
 オフにカメペン設定。
@@ -213,13 +213,13 @@ A=360/18
 　　ここまで
 　　Ｎ＝Ｎ＋５
 ここまで</textarea>
-    <div><p id="fr_txt_info" class="info"></p></div>
-    <button onclick="runBox('fr_txt')">実行</button>
+  <div><p id="fr_txt_info" class="info"></p></div>
+  <button onclick="runBox('fr_txt')">実行</button>
 </div>
 
 <div class="sbox">
-    <h4><a name="flower2_txt_head">花びら - 高速 - カメなし</a></h4>
-    <textarea id="flower2_txt" class="src" rows="5" title="花びら - 高速 - カメなし">
+  <h4><a name="flower2_txt_head">花びら - 高速 - カメなし</a></h4>
+  <textarea id="flower2_txt" class="src" rows="5" title="花びら - 高速 - カメなし">
 ●花びら描画(歩数で)
 　　4回
 　　　　60だけカメ右回転。
@@ -245,31 +245,31 @@ A=360/18
 　　ここまで
 　　20だけカメ右回転
 ここまで</textarea>
-    <div><p id="flower2_txt_info" class="info"></p></div>
-    <button onclick="runBox('flower2_txt')">実行</button>
+  <div><p id="flower2_txt_info" class="info"></p></div>
+  <button onclick="runBox('flower2_txt')">実行</button>
 </div>
 
 
 <!-- 実行結果を表示するパーツ -->
 <div id="editor" class="edit_div">
-    <div class="turtle_box">
-        <p class="edit_head"><a name="run">実行結果:</a></p>
-        <p>
-            <canvas id="turtle_cv" class="turtle_canvas" width="280" height="380"></canvas>
-        </p>
-        <p>(<a href="#sankaku_txt" id="backlink">↑戻る</a>)</p>
-    </div>
+  <div class="turtle_box">
+    <p class="edit_head"><a name="run">実行結果:</a></p>
+    <p>
+      <canvas id="turtle_cv" class="turtle_canvas" width="280" height="380"></canvas>
+    </p>
+    <p>(<a href="#sankaku_txt" id="backlink">↑戻る</a>)</p>
+  </div>
   <div id="err" class="err"></div>
 </div>
 
 <div class="sbox">
-    <h3>その他</h3>
-    <ul>
-        <li><a href="#top">タートルグラフィックスのサンプルその3</a></li>
-        <li><a href="turtle2.html">タートルグラフィックスのサンプルその2</a></li>
-        <li><a href="turtle.html">タートルグラフィックスのエディタへ</a></li>
-        <li><a href="index.html">デモのトップページへ</a></li>
-    </ul>
+  <h3>その他</h3>
+  <ul>
+    <li><a href="#top">タートルグラフィックスのサンプルその3</a></li>
+    <li><a href="turtle2.html">タートルグラフィックスのサンプルその2</a></li>
+    <li><a href="turtle.html">タートルグラフィックスのエディタへ</a></li>
+    <li><a href="index.html">デモのトップページへ</a></li>
+  </ul>
 </div>
 
 </body>
