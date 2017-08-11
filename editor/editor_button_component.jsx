@@ -7,18 +7,6 @@ export default function EditorButtonComponent (props) {
     <div className="buttons">
       <button onClick={() => {
         try {
-          const link = document.createElement('a')
-          link.href = window.URL.createObjectURL(new Blob([props.nako3.compile(props.code)]))
-          link.download = 'nako3_' + new Date().toFormat('YYYYMMDDHH24MISS') + '.js'
-          link.click()
-        } catch (e) {
-          props.onErrorChanged(e)
-        }
-      }} style={{width: '7em'}}>
-        ダウンロード
-      </button>
-      <button onClick={() => {
-        try {
           // なでしこの関数をカスタマイズ
           props.nako3.setFunc('表示', props.onInformationChanged)
 
@@ -26,10 +14,22 @@ export default function EditorButtonComponent (props) {
         } catch (e) {
           props.onErrorChanged(e)
         }
-      }}>
+      }} className="default_button">
         実行
       </button>
-      <button onClick={props.onReset}>クリア</button>
+      <button onClick={props.onReset} className="default_button">クリア</button>
+      <button onClick={() => {
+        try {
+          const link = document.createElement('a')
+          link.href = window.URL.createObjectURL(new Blob([props.nako3.compile(props.code)]))
+          link.download = 'nako3_' + new Date().toFormat('YYYYMMDDHH24MISS') + '.js'
+          link.click()
+        } catch (e) {
+          props.onErrorChanged(e)
+        }
+      }}>
+        ↓
+      </button>
     </div>
   )
 }
