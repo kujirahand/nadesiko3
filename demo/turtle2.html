@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=320,initial-scale=1">
-    <title>なでしこ3/タートルグラフィックス</title>
-    <!-- なでしこを使う準備 -->
-    <script src="../release/wnako3.js"></script>
-    <script src="../release/plugin_turtle.js"></script>
-    <!-- なでしこを呼び出して使う -->
-    <script src="common.js"></script>
-    <script src="turtle_test.js"></script>
-    <link rel="stylesheet" type="text/css" href="common.css">
-    <link rel="stylesheet" type="text/css" href="index.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=320,initial-scale=1">
+  <title>なでしこ3/タートルグラフィックス</title>
+  <!-- なでしこを使う準備 -->
+  <script src="../release/wnako3.js"></script>
+  <script src="../release/plugin_turtle.js"></script>
+  <!-- なでしこを呼び出して使う -->
+  <script src="common.js"></script>
+  <script src="turtle_test.js"></script>
+  <link rel="stylesheet" type="text/css" href="common.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
 
 <h1><a name="top">なでしこ3/タートルグラフィックス その2</a></h1>
 
 <div class="sbox">
-    <h4><a name="sankaku_txt_head">三角描画</a></h4>
-    <textarea id="sankaku_txt" class="src" rows="5" title="三角描画">
+  <h4><a name="sankaku_txt_head">三角描画</a></h4>
+  <textarea id="sankaku_txt" class="src" rows="5" title="三角描画">
 カメ作成。
 80にカメ速度設定。
 赤色にカメペン色設定。
@@ -27,13 +27,13 @@
 　　[N*4, N*6]にカメ移動。
 　　[280-N*4, N*6]にカメ移動。
 ここまで。</textarea>
-    <div><p id="sankaku_txt_info" class="info"></p></div>
-    <button onclick="runBox('sankaku_txt')">実行</button>
+  <div><p id="sankaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sankaku_txt')">実行</button>
 </div>
 
 <div class="sbox">
-    <h4><a name="sikaku_txt_head">四角描画</a></h4>
-    <textarea id="sikaku_txt" class="src" rows="5" title="四角描画">
+  <h4><a name="sikaku_txt_head">四角描画</a></h4>
+  <textarea id="sikaku_txt" class="src" rows="5" title="四角描画">
 500にカメ速度設定。
 カメ作成。
 ４回
@@ -43,14 +43,14 @@
 　　90だけカメ右回転。
 ここまで。
 100にカメ速度設定。</textarea>
-    <div><p id="sikaku_txt_info" class="info"></p></div>
-    <button onclick="runBox('sikaku_txt')">実行</button>
+  <div><p id="sikaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sikaku_txt')">実行</button>
 </div>
 
 
 <div class="sbox">
-    <h4><a name="hosi_txt_head">星描画</a></h4>
-    <textarea id="hosi_txt" class="src" rows="5" title="星描画">
+  <h4><a name="hosi_txt_head">星描画</a></h4>
+  <textarea id="hosi_txt" class="src" rows="5" title="星描画">
 カメ作成。
 300にカメ速度設定。
 [10,120]にカメ起点移動。
@@ -58,13 +58,13 @@
 座標リストを反復
 　　それにカメ移動。
 ここまで。</textarea>
-    <div><p id="hosi_txt_info" class="info"></p></div>
-    <button onclick="runBox('hosi_txt')">実行</button>
+  <div><p id="hosi_txt_info" class="info"></p></div>
+  <button onclick="runBox('hosi_txt')">実行</button>
 </div>
 
 <div class="sbox">
-    <h4><a name="hosi2_txt_head">星描画2</a></h4>
-    <textarea id="hosi2_txt" class="src" rows="5" title="星描画2">
+  <h4><a name="hosi2_txt_head">星描画2</a></h4>
+  <textarea id="hosi2_txt" class="src" rows="5" title="星描画2">
 ●星描画(歩数で)
 　　5回
 　　　　歩数だけカメ進む。
@@ -82,14 +82,14 @@
 150で星描画。
 黄色にカメペン色設定。
 50で星描画。</textarea>
-    <div><p id="hosi2_txt_info" class="info"></p></div>
-    <button onclick="runBox('hosi2_txt')">実行</button>
+  <div><p id="hosi2_txt_info" class="info"></p></div>
+  <button onclick="runBox('hosi2_txt')">実行</button>
 </div>
 
 
 <div class="sbox">
-    <h4><a name="fr_txt_head">フラクタル描画</a></h4>
-    <textarea id="fr_txt" class="src" rows="5" title="フラクタル描画">
+  <h4><a name="fr_txt_head">フラクタル描画</a></h4>
+  <textarea id="fr_txt" class="src" rows="5" title="フラクタル描画">
 ●フラクタル(サイズと深度で)
 　　もし、深度<0ならば
 　　　　サイズだけカメ進む。
@@ -108,31 +108,31 @@
 [10,200]にカメ起点移動。
 90にカメ角度設定。
 250と3でフラクタル。</textarea>
-    <div><p id="fr_txt_info" class="info"></p></div>
-    <button onclick="runBox('fr_txt')">実行</button>
+  <div><p id="fr_txt_info" class="info"></p></div>
+  <button onclick="runBox('fr_txt')">実行</button>
 </div>
 
 
 <!-- 実行結果を表示するパーツ -->
 <div id="editor" class="edit_div">
-    <div class="turtle_box">
-        <p class="edit_head"><a name="run">実行結果:</a></p>
-        <p>
-            <canvas id="turtle_cv" class="turtle_canvas" width="280" height="380"></canvas>
-        </p>
-        <p>(<a href="#sankaku_txt" id="backlink">↑戻る</a>)</p>
-    </div>
+  <div class="turtle_box">
+    <p class="edit_head"><a name="run">実行結果:</a></p>
+    <p>
+      <canvas id="turtle_cv" class="turtle_canvas" width="280" height="380"></canvas>
+    </p>
+    <p>(<a href="#sankaku_txt" id="backlink">↑戻る</a>)</p>
+  </div>
   <div id='err' class="err"></div>
 </div>
 
 <div class="sbox">
-    <h3>その他</h3>
-    <ul>
-        <li><a href="#top">タートルグラフィックスのサンプルその2</a></li>
-        <li><a href="turtle3.html">タートルグラフィックスのサンプルその3</a></li>
-        <li><a href="turtle.html">タートルグラフィックスのエディタへ</a></li>
-        <li><a href="index.html">デモのトップページへ</a></li>
-    </ul>
+  <h3>その他</h3>
+  <ul>
+    <li><a href="#top">タートルグラフィックスのサンプルその2</a></li>
+    <li><a href="turtle3.html">タートルグラフィックスのサンプルその3</a></li>
+    <li><a href="turtle.html">タートルグラフィックスのエディタへ</a></li>
+    <li><a href="index.html">デモのトップページへ</a></li>
+  </ul>
 </div>
 
 </body>
