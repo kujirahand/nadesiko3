@@ -1,4 +1,4 @@
-# なでしこ3 - 開発環境のセットアップ方法
+﻿# なでしこ3 - 開発環境のセットアップ方法
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
 
@@ -8,6 +8,11 @@ Node.jsをインストールしておく。
 
 ```
 $ npm install -g npm-check-updates electron asar
+```
+
+nadesiko3のリポジトリをローカルにダウンロードし展開（もしくはクローン）して、その中（トップディレクトリ）で以下のコマンドを実行する。
+
+```
 $ npm install --no-optional
 ```
 
