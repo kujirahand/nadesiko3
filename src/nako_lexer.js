@@ -71,7 +71,6 @@ const rules = [
   { name: 'lt', pattern: /^</ },
   { name: 'and', pattern: /^(かつ|&&)/ },
   { name: 'or', pattern: /^(または|\|\|)/ },
-  { name: '=', pattern: /^=/ },
   { name: '@', pattern: /^@/ },
   { name: '+', pattern: /^\+/ },
   { name: '-', pattern: /^-/ },
