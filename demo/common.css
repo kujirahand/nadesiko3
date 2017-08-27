@@ -29,8 +29,11 @@ h3 {
   padding: 4px;
 }
 
-button {
+.default_button {
   width: 5em;
+}
+
+button {
   padding: 0.4em;
   cursor: pointer;
 }

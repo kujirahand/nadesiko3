@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>なでしこ3/タートルグラフィックス</title>
-    <!-- なでしこを使う準備 -->
-    <script src="../release/wnako3.js"></script>
-    <script src="../release/plugin_turtle.js"></script>
-    <script src="common.js"></script>
-    <script src="turtle_test.js"></script>
-    <link rel="stylesheet" type="text/css" href="common.css">
-    <link rel="stylesheet" type="text/css" href="index.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>なでしこ3/タートルグラフィックス</title>
+  <!-- なでしこを使う準備 -->
+  <script src="../release/wnako3.js"></script>
+  <script src="../release/plugin_turtle.js"></script>
+  <script src="common.js"></script>
+  <script src="turtle_test.js"></script>
+  <link rel="stylesheet" type="text/css" href="common.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
 <h1><a name="src_box_head">なでしこ3/タートルグラフィックス</a></h1>
 <div id="editor" class="edit_div">
-    <p class="edit_head">簡易エディタ:</p>
-    <textarea id="src_box" rows="4" title="簡易エディタ">
+  <p class="edit_head">簡易エディタ:</p>
+  <textarea id="src_box" rows="4" title="簡易エディタ">
 カメ作成。
 [10,10]にカメ起点移動。
 90にカメ角度設定。
@@ -28,25 +28,25 @@ N=250
 　　90だけカメ右回転
 　　N = N - 10
 ここまで。</textarea>
-    <div class="buttons">
-        <button onclick="runBox('src_box')">実行</button>
-        <button onclick="resetBoxTurtle('src_box')">クリア</button>
-    </div>
+  <div class="buttons">
+    <button onclick="runBox('src_box')" class="default_button">実行</button>
+    <button onclick="resetBoxTurtle('src_box')" class="default_button">クリア</button>
+  </div>
   <div id="err" class="err"></div>
-    <div class="turtle_box">
-        <p class="edit_head"><a name="run">実行結果:</a> &nbsp; (<a href="#src_box" id="backlink">↑戻る</a>)</p>
-        <p>
-            <canvas id="turtle_cv" class="turtle_canvas" width="280" height="380"></canvas>
-        </p>
-        <p id="src_box_info" class="info"></p>
-    </div>
+  <div class="turtle_box">
+    <p class="edit_head"><a name="run">実行結果:</a> &nbsp; (<a href="#src_box" id="backlink">↑戻る</a>)</p>
+    <p>
+      <canvas id="turtle_cv" class="turtle_canvas" width="280" height="380"></canvas>
+    </p>
+    <p id="src_box_info" class="info"></p>
+  </div>
 </div>
 <div class="sbox">
-    <h3>その他</h3>
-    <ul>
-        <li><a href="turtle2.html">タートルグラフィックスの他の例へ</a></li>
-        <li><a href="index.html">デモのトップページへ</a></li>
-    </ul>
+  <h3>その他</h3>
+  <ul>
+    <li><a href="turtle2.html">タートルグラフィックスの他の例へ</a></li>
+    <li><a href="index.html">デモのトップページへ</a></li>
+  </ul>
 </div>
 </body>
 </html>

@@ -10,7 +10,7 @@ export default function CommandListButton (props) {
   }
   return (
     <div style={{paddingTop: '8px'}}>
-      <button onClick={props.onChanged}><span>{str}</span></button>
+      <button onClick={props.onChanged} className="default_button"><span>{str}</span></button>
     </div>
   )
 }
