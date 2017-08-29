@@ -423,11 +423,11 @@ const PluginSystem = {
       return Math.round(v)
     }
   },
-  '四捨五入': { // @整数Aの一桁目を丸めて返す。// @ししゃごにゅう
+  '四捨五入': { // @実数型の値Vを丸めてもっとも近い整数値を返す // @ししゃごにゅう
     type: 'func',
     josi: [['を', 'の']],
     fn: function (v) {
-      return Math.round(v / 10) * 10
+      return Math.round(v)
     }
   },
   'CEIL': { // @数値を正の無限大方向へ切り上げて返す。 // @
