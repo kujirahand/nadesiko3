@@ -10,7 +10,6 @@ describe('calc_test.js', () => {
     }
     assert.equal(nako.runReset(code).log, res)
   }
-
   it('basic', () => {
     cmp('3を表示', '3')
     cmp('3.14を表示', '3.14')
@@ -70,5 +69,12 @@ describe('calc_test.js', () => {
   it('空配列テスト', () => {
     cmp('A=空配列;A@0=30;A@1=50;Aを「:」で配列結合して表示', '30:50')
     cmp('A=空配列;B=空配列;A@0=30;A@1=50;B@0=1;Bを「:」で配列結合して表示', '1')
+  })
+  it('単項演算子 minus number', () => {
+    cmp('-1*5を表示', '-5')
+    cmp('5*-1を表示', '-5')
+  })
+  it('単項演算子 minus word', () => {
+    cmp('A=1;5*-Aを表示', '-5')
   })
 })

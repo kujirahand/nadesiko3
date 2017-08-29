@@ -702,9 +702,9 @@ class NakoParser extends NakoParserBase {
     // 丸括弧
     if (this.check('(')) return this.yValueKakko()
     // マイナス記号
-    if (this.check('-')) {
+    if (this.check2(['-', 'number']) || this.check2(['-', 'word']) || this.check2(['-', 'func'])) {
       const m = this.get() // skip '-'
-      const v = this.yCalc()
+      const v = this.yValue()
       return {
         type: 'op',
         operator: '*',
