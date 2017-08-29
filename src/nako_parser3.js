@@ -717,7 +717,7 @@ class NakoParser extends NakoParserBase {
     // NOT
     if (this.check('not')) {
       const m = this.get() // skip '!'
-      const v = this.yCalc()
+      const v = this.yValue()
       return {
         type: 'not',
         value: v,
