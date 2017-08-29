@@ -437,7 +437,7 @@ const PluginSystem = {
       return Math.ceil(v)
     }
   },
-  '切り上': { // @数値を正の無限大方向へ切り上げて返す。 // @きりあげ
+  '切上': { // @数値を正の無限大方向へ切り上げて返す。 // @きりあげ
     type: 'func',
     josi: [['を']],
     fn: function (v) {
