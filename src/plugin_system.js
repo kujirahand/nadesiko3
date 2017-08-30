@@ -8,6 +8,14 @@ const PluginSystem = {
         if (sys.__varslist[0][name] === undefined) return def
         return sys.__varslist[0][name]
       }
+      sys.__findVar = function (nameStr, def) {
+        if (typeof nameStr === 'function') return nameStr
+        for (let i = sys.__varslist.length - 1; i >= 0; i--) {
+          let scope = sys.__varslist[i]
+          if (scope[nameStr]) return scope[nameStr]
+        }
+        return def
+      }
     }
   },
 
@@ -153,6 +161,13 @@ const PluginSystem = {
     josi: [['を'], ['で']],
     fn: function (js) {
       return eval(js) // eslint-disable-line
+    }
+  },
+  'JSオブジェクト取得': { // @なでしこで定義した関数nameStrのJavaScriptオブジェクトを取得する // @JSおぶじぇくとしゅとく
+    type: 'func',
+    josi: [['の']],
+    fn: function (nameStr, sys) {
+      return sys.__findVar(nameStr, null)
     }
   },
 

@@ -80,6 +80,39 @@ const PluginBrowser = {
       return document.getElementsByTagName(tag)
     }
   },
+  'DOMイベント設定': { // @DOMのEVENTになでしこ関数名funcStrのイベントを設定 // @DOMいべんとせってい
+    type: 'func',
+    josi: [['の'], ['に', 'へ'], ['を']],
+    fn: function (dom, event, funcStr, sys) {
+      if (typeof (dom) === 'string') {
+        dom = document.querySelector(dom)
+      }
+      dom[event] = sys.__findVar(funcStr, null)
+    },
+    return_none: true
+  },
+  'DOMイベント追加': { // @DOMのEVENTになでしこ関数名funcStrのイベントを追加// @DOMいべんとついか
+    type: 'func',
+    josi: [['の'], ['に', 'へ'], ['を']],
+    fn: function (dom, event, funcStr, sys) {
+      if (typeof (dom) === 'string') {
+        dom = document.querySelector(dom)
+      }
+      dom.addEventListener(event, sys.__findVar(funcStr, null))
+    },
+    return_none: true
+  },
+  'DOMイベント削除': { // @DOMのEVENTからなでしこ関数名funcStrのイベントを削除// @DOMいべんとさくじょ
+    type: 'func',
+    josi: [['の'], ['から'], ['を']],
+    fn: function (dom, event, funcStr, sys) {
+      if (typeof (dom) === 'string') {
+        dom = document.querySelector(dom)
+      }
+      dom.removeEventListener(event, sys.__findVar(funcStr, null))
+    },
+    return_none: true
+  },
   'DOMテキスト設定': { // @DOMにテキストを設定 // @DOMてきすとせってい
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
