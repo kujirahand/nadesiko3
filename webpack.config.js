@@ -1,4 +1,6 @@
 const path = require('path')
+const webpack = require("webpack");
+
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
@@ -17,7 +19,11 @@ module.exports = {
     filename: '[name].js'
   },
 
-  devtool: 'cheap-module-eval-source-map',
+  // devtool: 'cheap-module-eval-source-map',
+
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin()
+  ],
 
   module: {
     loaders: [

@@ -63,30 +63,30 @@
   },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-core": "^6.24.0",
-    "babel-loader": "^7.0.0",
-    "babel-preset-env": "^1.2.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.23.0",
     "date-utils": "^1.2.21",
     "eslint": "^3.18.0",
     "eslint-config-standard": "^10.2.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-node": "^4.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^4.2.3",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react": "^7.3.0",
     "eslint-plugin-standard": "^3.0.1",
     "lite-server": "^2.3.0",
-    "mocha": "^3.2.0",
+    "mocha": "^3.5.0",
     "prop-types": "^15.5.8",
     "pump": "^1.0.2",
-    "source-map": "^0.5.6",
-    "uuid": "^3.0.1",
-    "webpack": "^2.3.0"
+    "source-map": "^0.5.7",
+    "uuid": "^3.1.0",
+    "webpack": "^2.7.0"
   },
   "dependencies": {
-    "commander": "^2.9.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "commander": "^2.11.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   }
 }

@@ -1,7 +1,7 @@
 ＃command.json をビルドする
 母艦パス取得してパス抽出して基本パスに代入。
 ●CNAKO実行(Cを)
-　　CMD=「{基本パス}/src/cnako3 {C}」
+　　CMD=「node {基本パス}/src/cnako3.js {C}」
     CMDを表示。
 　　CMDを起動。
 ここまで。
