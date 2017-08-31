@@ -3,7 +3,8 @@ const NakoCompiler = require('../src/nako3')
 
 describe('calc_test.js', () => {
   const nako = new NakoCompiler()
-  // nako.debug = true;
+  // nako.debug = true
+  // nako.debugParser = true
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -77,4 +78,9 @@ describe('calc_test.js', () => {
   it('単項演算子 minus word', () => {
     cmp('A=1;5*-Aを表示', '-5')
   })
+  it('論理演算', () => {
+    cmp('BMI=25;A=((25 ≦ BMI) かつ (BMI < 30));Aを表示', 'true')
+    cmp('BMI=25;A=((18.5 > BMI) または (BMI > 30));Aを表示', 'false')
+  })
+
 })

@@ -757,7 +757,9 @@ class NakoGen {
       'gt': '>',
       'lt': '<',
       'gteq': '>=',
-      'lteq': '<='
+      'lteq': '<=',
+      'and': '&&',
+      'or': '||'
     }
     const NUM_OP_TBL = { // 数値限定演算子
       '+': true, '-': true, '*': true, '/': true, '%': true, '^': true
