@@ -213,7 +213,7 @@ const PluginBrowser = {
       return document.createElement(tag)
     }
   },
-  'DOM子要素追加': { // @DOMの要素PAの子へ要素ELを追加してPを返す // @DOMこようそついか
+  'DOM子要素追加': { // @DOMの要素PAの子へ要素ELを追加してPAを返す // @DOMこようそついか
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     fn: function (pa, el) {
@@ -222,7 +222,7 @@ const PluginBrowser = {
       pa.appendChild(el)
     }
   },
-  'DOM子要素削除': { // @DOMの要素Pの子から要素Eを削除してPを返す // @DOMこようそさくじょ
+  'DOM子要素削除': { // @DOMの要素PAの子から要素ELを削除してPAを返す // @DOMこようそさくじょ
     type: 'func',
     josi: [['から'], ['を']],
     fn: function (pa, el) {
