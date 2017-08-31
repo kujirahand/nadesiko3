@@ -1136,6 +1136,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'に', 'で']],
     fn: function (f, sys) {
+      if (typeof f === 'string') f = sys.__findVar(f)
       if (typeof f === 'function') return f(sys)
     }
   },
@@ -1143,18 +1144,16 @@ const PluginSystem = {
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
-      setTimeout(() => {
-        f()
-      }, parseFloat(n) * 1000)
+      if (typeof f === 'string') f = sys.__findVar(f)
+      setTimeout(f, parseFloat(n) * 1000)
     }
   },
   '秒毎': { // @無名関数FをN秒ごとに実行する // @びょうごと
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
-      setInterval(() => {
-        f()
-      }, parseFloat(n) * 1000)
+      if (typeof f === 'string') f = sys.__findVar(f)
+      setInterval(f, parseFloat(n) * 1000)
     }
   },
 

@@ -19,10 +19,10 @@ module.exports = {
     filename: '[name].js'
   },
 
-  // devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-eval-source-map',
 
   plugins: [
-    new webpack.optimize.UglifyJsPlugin()
+    // new webpack.optimize.UglifyJsPlugin()
   ],
 
   module: {

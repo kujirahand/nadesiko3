@@ -206,6 +206,31 @@ const PluginBrowser = {
       return dom.style[s]
     }
   },
+  'DOM要素作成': { // @DOMにTAGの新規要素を作成 // @DOMようそさくせい
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (tag) {
+      return document.createElement(tag)
+    }
+  },
+  'DOM子要素追加': { // @DOMの要素PAの子へ要素ELを追加してPを返す // @DOMこようそついか
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (pa, el) {
+      if (typeof el === 'string') el = document.querySelector(el)
+      if (typeof pa === 'string') pa = document.querySelector(pa)
+      pa.appendChild(el)
+    }
+  },
+  'DOM子要素削除': { // @DOMの要素Pの子から要素Eを削除してPを返す // @DOMこようそさくじょ
+    type: 'func',
+    josi: [['から'], ['を']],
+    fn: function (pa, el) {
+      if (typeof el === 'string') el = document.querySelector(el)
+      if (typeof pa === 'string') pa = document.querySelector(pa)
+      pa.removeChild(el)
+    }
+  },
 
   // @HTML操作
   'HTML変換': { // @文字列をHTMLに変換して返す // @HTMLへんかん
