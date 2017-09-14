@@ -58,11 +58,11 @@ describe('PluginSystem test', () => {
   })
   it('文字抜き出す', () => {
     cmp('MID(\'abcdef\',1,2)を表示', 'ab')
-    cmp('「abcdef」の1文字目から2文字を文字抜き出しを表示', 'ab')
+    cmp('「abcdef」の1から2を文字抜き出しを表示', 'ab')
     cmp('MID(\'abcdefg\',3,2)を表示', 'cd')
-    cmp('「abcdefg」の3文字目から2文字を文字抜き出しを表示', 'cd')
+    cmp('「abcdefg」の3から2を文字抜き出しを表示', 'cd')
     cmp('MID(\'abcd\',4,2)を表示', 'd')
-    cmp('「abcd」の4文字目から2文字を文字抜き出しを表示', 'd')
+    cmp('「abcd」の4から2を文字抜き出しを表示', 'd')
   })
   it('RIGHT', () => {
     cmp('RIGHT(\'abcdef\',2)を表示', 'ef')
