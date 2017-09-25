@@ -29,9 +29,9 @@ const PluginSystem = {
   '改行': {type: 'const', value: '\n'}, // @かいぎょう
   'タブ': {type: 'const', value: '\t'}, // @たぶ
   'カッコ': {type: 'const', value: '「'}, // @かっこ
-  'カッコ閉じ': {type: 'const', value: '」'}, // @かっことじ
+  'カッコ閉': {type: 'const', value: '」'}, // @かっことじ
   '波カッコ': {type: 'const', value: '{'}, // @なみかっこ
-  '波カッコ閉じ': {type: 'const', value: '}'}, // @なみかっことじ
+  '波カッコ閉': {type: 'const', value: '}'}, // @なみかっことじ
   'OK': {type: 'const', value: 1}, // @OK
   'NG': {type: 'const', value: 0}, // @NG
   'PI': {type: 'const', value: Math.PI}, // @PI
