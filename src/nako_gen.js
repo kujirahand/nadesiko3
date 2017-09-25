@@ -586,36 +586,38 @@ class NakoGen {
   }
 
   convFor (node) {
+    // ループ変数について
+    let word = '__vars[\'__dummy__\']'
+    if (node.word !== null) { // ループ変数を使う時
+      const varName = node.word.value
+      this.__vars[varName] = true
+      word = `__vars['${varName}']`
+    }
+    const idLoop = this.loop_id++
+    const varI = `$nako_i${idLoop}`
+    // ループ条件を確認
     const kara = this.convGen(node.from)
     const made = this.convGen(node.to)
+    // ループ内のブロック内容を得る
     const block = this.convGenLoop(node.block)
-    let word = ''
-    let varCode = ''
-    if (node.word !== null) {
-      word = this.convGen(node.word)
-      varCode = ''
-    } else {
-      // ループ変数を省略した時は、自動で生成する
-      const id = this.loop_id++
-      word = `$nako_i${id}`
-      varCode = 'let '
-    }
-    const idF = this.loop_id++
-    const idL = this.loop_id++
+    // ループ条件を変数に入れる用
+    const varFrom = `$nako_from${idLoop}`
+    const varTo = `$nako_to${idLoop}`
     const code =
-      `const $nako_from${idF} = ${kara};\n` +
-      `const $nako_to${idL} = ${made};\n` +
-      `if($nako_from${idF} <= $nako_to${idL}){\n` +
-      `  for(${varCode}${word}=$nako_from${idF}; ${word}<=$nako_to${idL}; ${word}++)` + '{\n' +
-      `    ${this.sore} = ${word};` + '\n' +
-      '    ' + block + '\n' +
-      '  };\n' +
-      '}else{\n' +
-      `  for(${varCode}${word}=$nako_from${idF}; ${word}>=$nako_to${idL}; ${word}--)` + '{\n' +
-      `    ${this.sore} = ${word};` + '\n' +
-      '    ' + block + '\n' +
-      '  };\n' +
-      '};\n'
+      `\n//[FOR id=${idLoop}]\n` +
+      `const ${varFrom} = ${kara};\n` +
+      `const ${varTo} = ${made};\n` +
+      `if (${varFrom} <= ${varTo}) { // up\n` +
+      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}++) {\n` +
+      `    ${this.sore} = ${word} = ${varI};\n` +
+      `    ${block}\n` +
+      `  };\n` +
+      `} else { // down\n` +
+      `  for (let ${varI} = ${varFrom}; ${varI} >= ${varTo}; ${varI}--) {\n` +
+      `    ${this.sore} = ${word} = ${varI};` + '\n' +
+      `    ${block}\n` +
+      `  };\n` +
+      `};\n//[/FOR id=${idLoop}]\n`
     return this.convLineno(node) + code
   }
 
