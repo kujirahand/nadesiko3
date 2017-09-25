@@ -600,10 +600,21 @@ class NakoGen {
       word = `$nako_i${id}`
       varCode = 'let '
     }
+    const idF = this.loop_id++
+    const idL = this.loop_id++
     const code =
-      `for(${varCode}${word}=${kara}; ${word}<=${made}; ${word}++)` + '{\n' +
-      `  ${this.sore} = ${word};` + '\n' +
-      '  ' + block + '\n' +
+      `const $nako_from${idF} = ${kara};\n` +
+      `const $nako_to${idL} = ${made};\n` +
+      `if($nako_from${idF} <= $nako_to${idL}){\n` +
+      `  for(${varCode}${word}=$nako_from${idF}; ${word}<=$nako_to${idL}; ${word}++)` + '{\n' +
+      `    ${this.sore} = ${word};` + '\n' +
+      '    ' + block + '\n' +
+      '  };\n' +
+      '}else{\n' +
+      `  for(${varCode}${word}=$nako_from${idF}; ${word}>=$nako_to${idL}; ${word}--)` + '{\n' +
+      `    ${this.sore} = ${word};` + '\n' +
+      '    ' + block + '\n' +
+      '  };\n' +
       '};\n'
     return this.convLineno(node) + code
   }

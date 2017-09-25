@@ -77,7 +77,7 @@
     "eslint-plugin-react": "^7.3.0",
     "eslint-plugin-standard": "^3.0.1",
     "lite-server": "^2.3.0",
-    "mocha": "^3.5.0",
+    "mocha": "^3.5.3",
     "prop-types": "^15.5.8",
     "pump": "^1.0.2",
     "source-map": "^0.5.7",
