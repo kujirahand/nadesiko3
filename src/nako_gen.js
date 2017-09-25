@@ -127,14 +127,20 @@ class NakoGen {
    */
   getDefFuncCode () {
     let code = ''
+    // よく使う変数のショートカット
+    code += 'const __v0 = this.__v0 = this.__varslist[0];\n'
+    code += 'const __v1 = this.__v1 = this.__varslist[1];\n'
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
     for (const key in this.nako_func) {
       const f = this.nako_func[key].fn
-      nakoFuncCode += `this.__varslist[1]["${key}"]=${f};\n`
+      nakoFuncCode += '' +
+        `//[DEF_FUNC name='${key}']\n` +
+        `__v1["${key}"]=${f};\n;` +
+        `//[/DEF_FUNC name='${key}']\n`
     }
     if (nakoFuncCode !== '') {
-      code += '__varslist[0].line=0;// なでしこの関数定義\n' + nakoFuncCode
+      code += '__v0.line=0;// なでしこの関数定義\n' + nakoFuncCode
     }
     // プラグインの初期化関数を実行する
     let pluginCode = ''
@@ -142,11 +148,11 @@ class NakoGen {
       const initkey = `!${name}:初期化`
       if (this.used_func[initkey]) {
         // セミコロンがないとエラーになったので注意
-        pluginCode += `__varslist[0]["!${name}:初期化"](__self);\n`
+        pluginCode += `__v0["!${name}:初期化"](__self);\n`
       }
     }
     if (pluginCode !== '') {
-      code += '__varslist[0].line=0;// プラグインの初期化\n' + pluginCode
+      code += '__v0.line=0;// プラグインの初期化\n' + pluginCode
     }
     // それを初期化
     code += '__vars["それ"] = \'\';\n'
@@ -269,7 +275,7 @@ class NakoGen {
 
   convLineno (node) {
     if (node.line === undefined) return ''
-    return `__varslist[0].line=${node.line};`
+    return `__v0.line=${node.line};`
   }
 
   convGen (node) {
@@ -475,15 +481,20 @@ class NakoGen {
 
   convDefFuncCommon (node, name, args) {
     let code = '(function(){\n'
-    code += 'try { __vars = {\'それ\':\'\'}; __varslist.push(__vars);\n'
+    code += '' +
+      'try {\n' +
+      '  __vars = {\'それ\':\'\'};\n' +
+      '  __varslist.push(__vars);\n'
     this.__vars = {'それ': true, '!関数': name}
     // ローカル変数をPUSHする
     this.__varslist.push(this.__vars)
+    // JSの引数と引数をバインド
+    code += `  __vars['引数'] = arguments;\n`
     // 引数をローカル変数に設定
     let meta = (!name) ? node.meta : node.name.meta
     for (let i = 0; i < meta.varnames.length; i++) {
       const word = meta.varnames[i]
-      code += `__vars["${word}"] = arguments[${i}];\n`
+      code += `  __vars['${word}'] = arguments[${i}];\n`
     }
     // 関数定義は、グローバル領域で。
     if (name) {
@@ -500,13 +511,16 @@ class NakoGen {
     const block = this.convGen(node.block)
     code += block + '\n'
     // 関数の最後に、変数「それ」をreturnするようにする
-    code += `return (${this.sore});\n`
+    code += `  return (${this.sore});\n`
     // 関数の末尾に、ローカル変数をPOP
     const popcode =
       '__varslist.pop(); ' +
       '__vars = __varslist[__varslist.length-1];'
-    code += `} finally { ${popcode} }\n`
-    code += `}/* end ${name} */)`
+    code += '' +
+      `  } finally {\n` +
+      `    ${popcode}\n` +
+      `  }\n` +
+      `})`
     if (name) {
       this.nako_func[name]['fn'] = code
     }
