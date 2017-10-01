@@ -929,6 +929,14 @@ const PluginSystem = {
       return 1
     }
   },
+  '要素数': { // @配列Aの要素数を返す // @ようそすう
+    type: 'func',
+    josi: [['の']],
+    fn: function (a, sys) {
+      const f = sys.__getSysValue('配列要素数')
+      return f(a)
+    }
+  },
   '配列挿入': { // @配列AのI番目(0起点)に要素Sを追加して返す(v1非互換) // @はいれつそうにゅう
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
