@@ -10,7 +10,7 @@ module.exports = {
   entry: {
     // IE11対策としてbabel-polyfillを追加。時期が来たら削除する。
     wnako3: ['babel-polyfill', path.join(srcPath, 'wnako3.js')], // plugin_system+plugin_browser含む
-    plugin_turtle: ['babel-polyfill', path.join(srcPath, 'plugin_turtle.js')],
+    plugin_turtle: [path.join(srcPath, 'plugin_turtle.js')],
     editor: ['babel-polyfill', path.join(editorPath, 'edit_main.jsx')]
   },
 
