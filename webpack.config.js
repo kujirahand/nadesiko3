@@ -1,5 +1,4 @@
 const path = require('path')
-const webpack = require("webpack");
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
@@ -9,9 +8,10 @@ process.noDeprecation = true
 
 module.exports = {
   entry: {
-    wnako3: path.join(srcPath, 'wnako3.js'), // plugin_system+plugin_browser含む
-    plugin_turtle: path.join(srcPath, 'plugin_turtle.js'),
-    editor: path.join(editorPath, 'edit_main.jsx')
+    // IE11対策としてbabel-polyfillを追加。時期が来たら削除する。
+    wnako3: ['babel-polyfill', path.join(srcPath, 'wnako3.js')], // plugin_system+plugin_browser含む
+    plugin_turtle: ['babel-polyfill', path.join(srcPath, 'plugin_turtle.js')],
+    editor: ['babel-polyfill', path.join(editorPath, 'edit_main.jsx')]
   },
 
   output: {
@@ -22,7 +22,6 @@ module.exports = {
   devtool: 'cheap-module-eval-source-map',
 
   plugins: [
-    // new webpack.optimize.UglifyJsPlugin()
   ],
 
   module: {
