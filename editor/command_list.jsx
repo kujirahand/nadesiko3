@@ -7,9 +7,9 @@ export default class CommandList extends React.Component {
   constructor (props) {
     super(props)
     this.files = [
-      'plugin_browser.js',
-      'plugin_turtle.js',
-      'plugin_system.js'
+      'plugin_browser',
+      'plugin_turtle',
+      'plugin_system'
     ]
     this.listItems = []
   }
@@ -38,7 +38,10 @@ export default class CommandList extends React.Component {
       const cmd = JSON.parse(text)
       for (const fname of this.files) {
         const glist = cmd[fname]
-        if (!glist) continue // 読み込みに失敗した場合
+        if (!glist) {
+          console.log('command.jsonの[' + fname + ']が読み込めません。')
+          continue // 読み込みに失敗した場合
+          }
         for (const groupName in glist) {
           const gid = 'key_' + groupName
           this.listItems.push(<CommandGroup key={gid} gid={gid} groupName={groupName}
