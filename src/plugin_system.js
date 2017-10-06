@@ -616,9 +616,9 @@ const PluginSystem = {
       return (String(s).substr(a - 1, cnt))
     }
   },
-  '文字抜出': { // @文字列SのA文字目からCNT文字を抽出する(v1非互換) // @もじぬきだす
+  '文字抜出': { // @文字列SのA文字目からCNT文字を抽出する // @もじぬきだす
     type: 'func',
-    josi: [['で', 'の'], ['から'], ['を']],
+    josi: [['で', 'の'], ['から'], ['を', '']],
     fn: function (s, a, cnt) {
       return (String(s).substr(a - 1, cnt))
     }
@@ -630,9 +630,9 @@ const PluginSystem = {
       return (String(s).substr(0, cnt))
     }
   },
-  '文字左部分': { // @文字列Sの左端からCNT文字を抽出する(v1非互換) // @もじひだりぶぶん
+  '文字左部分': { // @文字列Sの左端からCNT文字を抽出する // @もじひだりぶぶん
     type: 'func',
-    josi: [['の', 'で'], ['だけ']],
+    josi: [['の', 'で'], ['だけ', '']],
     fn: function (s, cnt) {
       return (String(s).substr(0, cnt))
     }
@@ -645,9 +645,9 @@ const PluginSystem = {
       return (s.substr(s.length - cnt, cnt))
     }
   },
-  '文字右部分': {// @文字列Sの右端からCNT文字を抽出する(v1非互換) // @もじみぎぶぶん
+  '文字右部分': {// @文字列Sの右端からCNT文字を抽出する // @もじみぎぶぶん
     type: 'func',
-    josi: [['の', 'で'], ['だけ']],
+    josi: [['の', 'で'], ['だけ', '']],
     fn: function (s, cnt) {
       s = '' + s
       return (s.substr(s.length - cnt, cnt))
@@ -670,9 +670,9 @@ const PluginSystem = {
       return s.substr(0, i)
     }
   },
-  '文字削除': { // @文字列SのA文字目からB文字分を削除して返す(v1非互換) // @もじさくじょ
+  '文字削除': { // @文字列SのA文字目からB文字分を削除して返す // @もじさくじょ
     type: 'func',
-    josi: [['の'], ['から'], ['だけ', 'を']],
+    josi: [['の'], ['から'], ['だけ', 'を', '']],
     fn: function (s, a, b) {
       s = '' + s
       const mae = s.substr(0, a - 1)
