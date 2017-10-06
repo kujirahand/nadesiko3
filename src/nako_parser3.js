@@ -681,7 +681,8 @@ class NakoParser extends NakoParserBase {
   yValueKakko () {
     if (!this.check('(')) return null
     const t = this.get() // skip '('
-    const v = this.yGetArg()
+    // const v = this.yGetArg()
+    const v = this.yCalc()
     if (v === null) {
       const v2 = this.get()
       throw new NakoSyntaxError('(...)の解析エラー。『' + this.nodeToStr(v2) + '』の近く', t.line)

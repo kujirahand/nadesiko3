@@ -82,5 +82,8 @@ describe('calc_test.js', () => {
     cmp('BMI=25;A=((25 ≦ BMI) かつ (BMI < 30));Aを表示', 'true')
     cmp('BMI=25;A=((18.5 > BMI) または (BMI > 30));Aを表示', 'false')
   })
+  it('カッコ内の関数呼び出し', () => {
+    cmp('N=("ABC"の文字数);Nを表示。', '3')
+  })
 
 })
