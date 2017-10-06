@@ -761,7 +761,7 @@ class NakoGen {
     if (func.return_none) {
       code = `${code};\n`
     } else {
-      code = `(()=>{ const tmp=${this.sore}=${code}; return tmp })()`
+      code = `(function(){ const tmp=${this.sore}=${code}; return tmp }).call(this)`
       // ...して
       if (node.josi === 'して') {
         code += ';\n'
@@ -773,7 +773,7 @@ class NakoGen {
   convRenbun (node) {
     let right = this.convGen(node.right)
     let left = this.convGen(node.left)
-    return `(() => {${left}; return ${right}})()`
+    return `(function(){${left}; return ${right}}).call(this)`
   }
 
   convOp (node) {
