@@ -41,7 +41,7 @@ export default class CommandList extends React.Component {
         if (!glist) {
           console.log('command.jsonの[' + fname + ']が読み込めません。')
           continue // 読み込みに失敗した場合
-          }
+        }
         for (const groupName in glist) {
           const gid = 'key_' + groupName
           this.listItems.push(<CommandGroup key={gid} gid={gid} groupName={groupName}

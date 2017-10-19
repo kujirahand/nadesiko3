@@ -1,8 +1,8 @@
 /**
  * nadesiko v3 parser (demo version)
  */
-const { opPriority, keizokuJosi } = require('./nako_parser_const')
-const { NakoParserBase, NakoSyntaxError } = require('./nako_parser_base')
+const {opPriority, keizokuJosi} = require('./nako_parser_const')
+const {NakoParserBase, NakoSyntaxError} = require('./nako_parser_base')
 const operatorList = []
 for (const key in opPriority) operatorList.push(key)
 
@@ -10,7 +10,7 @@ class NakoParser extends NakoParserBase {
   /**
    * @param tokens 字句解析済みのトークンの配列
    * @return AST(構文木)
-    */
+   */
   parse (tokens) {
     this.reset()
     this.tokens = tokens
@@ -18,6 +18,7 @@ class NakoParser extends NakoParserBase {
     const node = this.startParser()
     return node
   }
+
   startParser () {
     const b = this.ySentenceList()
     const c = this.get()
@@ -26,6 +27,7 @@ class NakoParser extends NakoParserBase {
     }
     return b
   }
+
   ySentenceList () {
     const blocks = []
     let line = -1
@@ -38,7 +40,7 @@ class NakoParser extends NakoParserBase {
     if (blocks.length === 0) {
       throw new NakoSyntaxError('構文解析に失敗:' + this.nodeToStr(this.peek()), line)
     }
-    return { type: 'block', block: blocks, line }
+    return {type: 'block', block: blocks, line}
   }
 
   ySentence () {
@@ -66,7 +68,7 @@ class NakoParser extends NakoParserBase {
       blocks.push(this.y[0])
       if (line < 0) line = this.y[0].line
     }
-    return { type: 'block', block: blocks, line }
+    return {type: 'block', block: blocks, line}
   }
 
   yDefFuncReadArgs () {
@@ -243,6 +245,7 @@ class NakoParser extends NakoParserBase {
     while (stack.length > 0) polish.push(stack.pop())
     return polish
   }
+
   infixToAST (list) {
     if (list.length === 0) return null
     // 逆ポーランドを構文木に
@@ -307,7 +310,7 @@ class NakoParser extends NakoParserBase {
     let num = this.popStack([])
     let multiline = false
     let block = null
-    if (num === null) num = { type: 'word', value: 'それ', josi: '', line: kai.line }
+    if (num === null) num = {type: 'word', value: 'それ', josi: '', line: kai.line}
     if (this.check('ここから')) {
       this.get()
       multiline = true
@@ -770,6 +773,7 @@ class NakoParser extends NakoParserBase {
     // その他
     return null
   }
+
   yValueWord () {
     if (this.check('word')) {
       const word = this.get()
@@ -803,6 +807,7 @@ class NakoParser extends NakoParserBase {
     }
     return null
   }
+
   yJSONObjectValue () {
     const a = []
     while (!this.isEOF()) {
@@ -823,6 +828,7 @@ class NakoParser extends NakoParserBase {
     }
     return a
   }
+
   yJSONObject () {
     if (this.accept(['{', '}'])) {
       return {
@@ -842,6 +848,7 @@ class NakoParser extends NakoParserBase {
     }
     return null
   }
+
   yJSONArrayValue () {
     if (this.check('eol')) this.get()
     const v1 = this.yCalc()
@@ -856,6 +863,7 @@ class NakoParser extends NakoParserBase {
     }
     return a
   }
+
   yJSONArray () {
     if (this.accept(['[', ']'])) {
       return {
@@ -875,6 +883,7 @@ class NakoParser extends NakoParserBase {
     }
     return null
   }
+
   yTryExcept () {
     if (!this.check('エラー監視')) return null
     const kansi = this.get() // skip エラー監視

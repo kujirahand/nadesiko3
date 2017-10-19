@@ -37,6 +37,13 @@ class NakoCompiler {
     this.reset()
     this.gen.addPluginObject('PluginSystem', PluginSystem)
   }
+
+  get log () {
+    let s = this.__varslist[0]['表示ログ']
+    s = s.replace(/\s+$/, '')
+    return s
+  }
+
   /**
    * デバッグモードに設定する
    * @param flag デバッグモード
@@ -144,12 +151,6 @@ class NakoCompiler {
 
   clearLog () {
     this.__varslist[0]['表示ログ'] = ''
-  }
-
-  get log () {
-    let s = this.__varslist[0]['表示ログ']
-    s = s.replace(/\s+$/, '')
-    return s
   }
 
   /**
