@@ -1,4 +1,4 @@
-// PEGJSに掛ける前に全角文字を半角に揃える
+// 構文解析を行う前に全角文字を半角に揃える
 // ただし、文字列部分だけは、そのまま全角で出力するようにする
 // for https://github.com/kujirahand/nadesiko3/issues/94
 

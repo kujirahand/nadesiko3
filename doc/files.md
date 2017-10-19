@@ -13,13 +13,9 @@
 
 なでしこのソースコードの前置処理を行うもの。主に全角半角の変換処理を行う。
 
-### src/nako_parser.pegjs → nako_parser.js
+### src/nako_parser3.js
 
-PEGJSによって、なでしこ構文から、構文木を生成するもの。
-
-ちなみに、以下のコマンドによってPEG文法のなでしこ規則を、コンパイラに変換する。
-
-``npm run build:parser``
+なでしこ構文から構文木を生成するもの。
 
 ### src/nako_gen.js
 
