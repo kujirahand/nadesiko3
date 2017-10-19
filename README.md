@@ -14,8 +14,8 @@ Japanese Programming Language Nadesiko v3
 
 ## Webブラウザで利用する場合
 
-- [こちらから、Webエディタを利用できます](https://nadesi.com/doc3/go.php?10)
-- [JSファイル(0.1.0)をダウンロード](https://nadesi.com/v3/0.1.0/release/wnako3.js)
+- [こちら](https://nadesi.com/doc3/go.php?10)から、Webエディタを利用できます
+- [JSファイル(0.1.0)](https://nadesi.com/v3/0.1.0/release/wnako3.js)をダウンロード
 
 ## PCで利用する場合
 
