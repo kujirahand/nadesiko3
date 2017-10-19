@@ -5,7 +5,7 @@ Japanese Programming Language Nadesiko v3
 「なでしこ3」とは、日本語のプログラミング言語です。HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
 
 - [URL] [なでしこ3簡易エディタ](https://nadesi.com/doc3/)
-- [URL] [なでしこエディタの一覧)(https://nadesi.com/doc3/go.php?282)
+- [URL] [なでしこエディタの一覧](https://nadesi.com/doc3/go.php?282)
 
 ## 対応機器/Webブラウザ
 
