@@ -1,6 +1,10 @@
 // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
-const { opPriority } = require('./nako_parser_const')
+const {opPriority} = require('./nako_parser_const')
+const Prepare = require('./nako_prepare')
+
+const prepare = new Prepare()
+
 // 予約語句
 const reserveWords = {
   '回': '回',
@@ -318,7 +322,7 @@ class NakoLexer {
               } else {
                 list[i] = trimOkurigana(list[i])
                 this.result.push({ type: '&', value: '&', josi: '', line })
-                this.result.push({ type: 'word', value: list[i], josi: '', line })
+                this.result.push({type: 'word', value: prepare.convert(list[i]), josi: '', line})
                 this.result.push({ type: '&', value: '&', josi: '', line })
               }
             }
