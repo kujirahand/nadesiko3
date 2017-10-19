@@ -7,9 +7,9 @@ export default class CommandList extends React.Component {
   constructor (props) {
     super(props)
     this.files = [
-      'plugin_browser',
-      'plugin_turtle',
-      'plugin_system'
+      'plugin_browser.js',
+      'plugin_turtle.js',
+      'plugin_system.js'
     ]
     this.listItems = []
   }
