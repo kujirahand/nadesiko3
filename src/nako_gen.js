@@ -743,7 +743,7 @@ class NakoGen {
       if (func === undefined) {
         // throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.line)
         // 無名関数の可能性
-        func = { return_none: false }
+        func = {return_none: false}
       }
       funcNameS = `__varslist[${res.i}]["${funcName}"]`
     }

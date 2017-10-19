@@ -7,6 +7,7 @@ class NakoSyntaxError extends Error {
     super(title)
   }
 }
+
 /**
  * なでしこの構文解析のためのユーティリティクラス
  */
@@ -60,18 +61,21 @@ class NakoParserBase {
     if (this.debugStack) console.log('PUSH:', item)
     this.stack.push(item)
   }
+
   /**
    * トークンの末尾に達したか
    */
   isEOF () {
     return (this.index >= this.tokens.length)
   }
+
   /**
    * カーソル位置にある単語の型を確かめる
    */
   check (ttype) {
     return (this.tokens[this.index].type === ttype)
   }
+
   /**
    * カーソル位置以降にある単語の型を確かめる 2単語以上に対応
    * @param a [単語1の型, 単語2の型, ... ]
@@ -90,6 +94,7 @@ class NakoParserBase {
     }
     return true
   }
+
   /**
    * カーソル位置の型を確認するが、複数の種類を確かめられる
    */
@@ -97,6 +102,7 @@ class NakoParserBase {
     const type = this.tokens[this.index].type
     return (a.indexOf(type) >= 0)
   }
+
   /**
    * check2の高度なやつ、型名の他にコールバック関数を指定できる
    * 型にマッチしなければ null を返し、カーソルを巻き戻す
@@ -134,6 +140,7 @@ class NakoParserBase {
     this.y = y
     return true
   }
+
   /**
    * カーソル語句を取得して、カーソルを後ろに移動する
    */
@@ -141,13 +148,16 @@ class NakoParserBase {
     if (this.isEOF()) return null
     return this.tokens[this.index++]
   }
+
   unget () {
     if (this.index > 0) this.index--
   }
+
   peek (i = 0) {
     if (this.isEOF()) return null
     return this.tokens[this.index + i]
   }
+
   nodeToStr (node) {
     if (!node) return `(NULL)`
     let name = node.name

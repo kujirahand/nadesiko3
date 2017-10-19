@@ -1,7 +1,6 @@
 // edit_main.js
 import React from 'react'
 import ReactDOM from 'react-dom'
-import WebNakoCompiler from '../src/wnako3'
 import EditorComponent from './editor_component'
 
 // なでしこコンパイラ唯一のインスタンス
