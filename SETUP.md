@@ -2,17 +2,19 @@
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
 
-Node.jsをインストールしておく。
+[Node.js](https://nodejs.org/ja/)をインストールしておく。
 
-コマンドラインから以下を実行して、必要なライブラリをインストール。
+コマンドラインから以下を実行して、必要なライブラリをシステムにインストール。
 
 ```
 $ npm install -g npm-check-updates electron asar
 ```
 
-nadesiko3のリポジトリをローカルにダウンロードし展開（もしくはクローン）して、その中（トップディレクトリ）で以下のコマンドを実行する。
+コマンドラインから以下を実行して、nadesiko3のリポジトリをcloneし、必要なライブラリをインストール。
 
 ```
+$ git clone https://github.com/kujirahand/nadesiko3
+$ cd nadesiko3
 $ npm install --no-optional
 ```
 
