@@ -1140,7 +1140,7 @@ const PluginSystem = {
         ' ' + z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
     }
   },
-  '実行': { // @ 無名関数Fを実行する(Fが無名関数でなければ無視する) // @じっこう
+  '実行': { // @ 無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する) // @じっこう
     type: 'func',
     josi: [['を', 'に', 'で']],
     fn: function (f, sys) {
@@ -1148,7 +1148,7 @@ const PluginSystem = {
       if (typeof f === 'function') return f(sys)
     }
   },
-  '秒後': { // @無名関数FをN秒後に実行する // @びょうご
+  '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する // @びょうご
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
@@ -1156,7 +1156,7 @@ const PluginSystem = {
       setTimeout(f, parseFloat(n) * 1000)
     }
   },
-  '秒毎': { // @無名関数FをN秒ごとに実行する // @びょうごと
+  '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する // @びょうごと
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
