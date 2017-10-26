@@ -36,7 +36,8 @@ export default class CommandList extends React.Component {
     ajaxGet('../release/command.json', {}, (text, xhr) => {
       this.listItems = []
       const cmd = JSON.parse(text)
-      for (const fname of this.files) {
+      for (let fname of this.files) {
+        fname = fname.replace(/\.js$/, '')
         const glist = cmd[fname]
         if (!glist) {
           console.log('command.jsonの[' + fname + ']が読み込めません。')

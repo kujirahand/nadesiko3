@@ -146,9 +146,8 @@ class NakoGen {
     let pluginCode = ''
     for (const name in this.pluginfiles) {
       const initkey = `!${name}:初期化`
-      if (this.used_func[initkey]) {
-        // セミコロンがないとエラーになったので注意
-        pluginCode += `__v0["!${name}:初期化"](__self);\n`
+      if (this.__varslist[0][initkey]) {
+        pluginCode += `__v0["!${name}:初期化"](__self);\n` // セミコロンがないとエラーになったので注意
       }
     }
     if (pluginCode !== '') {
@@ -169,18 +168,19 @@ class NakoGen {
    */
   addPlugin (po) {
     // 変数のメタ情報を確認
-    if (this.__varslist[0].meta === undefined) {
-      this.__varslist[0].meta = {}
+    const __v0 = this.__varslist[0]
+    if (__v0.meta === undefined) {
+      __v0.meta = {}
     }
     // プラグインの値をオブジェクトにコピー
     for (let key in po) {
       const v = po[key]
       this.plugins[key] = v
       if (v.type === 'func') {
-        this.__varslist[0][key] = v.fn
+        __v0[key] = v.fn
       } else if (v.type === 'const' || v.type === 'var') {
-        this.__varslist[0][key] = v.value
-        this.__varslist[0].meta[key] = {
+        __v0[key] = v.value
+        __v0.meta[key] = {
           readonly: (v.type === 'const')
         }
       } else {

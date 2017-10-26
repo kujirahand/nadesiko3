@@ -2,6 +2,14 @@
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
 const PluginBrowser = {
+  '初期化': {
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      // 今後初期化処理をここに記述
+    }
+  },
+
   // @色定数
   '水色': {type: 'const', value: 'aqua'}, // @みずいろ
   '紫色': {type: 'const', value: 'fuchsia'}, // @むらさきいろ
@@ -252,7 +260,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '開く': { // @ブラウザのlocalStorageからVを読む // @ひらく
+  '開': { // @ブラウザのlocalStorageからVを読む // @ひらく
     type: 'func',
     josi: [['を', 'から', 'の']],
     fn: function (key) {

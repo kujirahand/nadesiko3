@@ -3,7 +3,7 @@ const PluginSystem = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__varslist[0]['ナデシコバージョン'] = '0.1.0'
+      sys.__varslist[0]['ナデシコバージョン'] = 'v3/0.1.7'
       sys.__getSysValue = function (name, def) {
         if (sys.__varslist[0][name] === undefined) return def
         return sys.__varslist[0][name]
