@@ -186,11 +186,11 @@ const PluginBrowser = {
   'DOM属性取得': { // @DOMの属性Sを取得 // @DOMぞくせいしゅとく
     type: 'func',
     josi: [['の', 'から'], ['を']],
-    fn: function (dom, s, v) {
+    fn: function (dom, s) {
       if (typeof (dom) === 'string') {
         dom = document.querySelector(dom)
       }
-      dom[s] = v
+      return dom[s]
     }
   },
   'DOMスタイル設定': { // @DOMのスタイルAに値Bを設定 // @DOMすたいるせってい
@@ -328,7 +328,7 @@ const PluginBrowser = {
   'ローカルストレージ全削除': { // @ブラウザのlocalStorageのデータを全部削除する // @ろーかるすとれーじぜんさくじょ
     type: 'func',
     josi: [],
-    fn: function (key) {
+    fn: function () {
       window.localStorage.clear()
     },
     return_none: true
