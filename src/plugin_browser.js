@@ -333,10 +333,10 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  // @ 描画
-  '描画開始': { // @描画先にCanvasを指定して描画API(2D)の利用準備する // @びょうがAPIしょきか
+  // @描画
+  '描画開始': { // @描画先にCanvasを指定して描画API(2D)の利用準備する // @びょうがかいし
     type: 'func',
-    josi: [['の', 'へ']],
+    josi: [['の', 'へ', 'で']],
     fn: function (cv, sys) {
       if (typeof cv === 'string') cv = document.getElementById(cv)
       if (!cv) throw new Error(errMsgCanvasInit)
@@ -437,27 +437,27 @@ const PluginBrowser = {
   },
   '画像描画': { // @ [x, y, w, h]へファイル名F(またはImage)の画像を描画し、Imageを返す // @ がぞうびょうが
     type: 'func',
-    josi: [['へ', 'に'], ['の']],
+    josi: [['へ', 'に'], ['の', 'を']],
     fn: function (xy, img, sys) {
       if (!sys.__ctx) throw new Error(errMsgCanvasInit)
-      const drawFunc = (im) => {
+      const drawFunc = (im, ctx) => {
         if (xy.length === 2) {
-          sys.__ctx.drawImage(im, xy[0], xy[1])
+          ctx.drawImage(im, xy[0], xy[1])
         } else if (xy.length === 4) {
-          sys.__ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])
+          ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])
         } else if (xy.length === 6) {
-          sys.__ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])
+          ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])
         }
       }
       if (typeof img === 'string') {
         const image = new window.Image()
         image.src = img
         image.onload = () => {
-          drawFunc(image)
+          drawFunc(image, sys.__ctx)
         }
         return image
       } else {
-        drawFunc(img)
+        drawFunc(img, sys.__ctx)
         return img
       }
     },
