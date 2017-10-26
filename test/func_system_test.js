@@ -182,4 +182,7 @@ describe('PluginSystem test', () => {
     cmp('「12345」が数列か判定して表示。', 'true')
     cmp('「あいうえお」が数列か判定して表示。', 'false')
   })
+  it('XOR', () => {
+    cmp('XOR(0xFF, 0xF)を表示。', '240')
+  })
 })

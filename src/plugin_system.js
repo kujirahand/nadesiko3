@@ -482,21 +482,21 @@ const PluginSystem = {
   },
 
   // @論理演算
-  'OR': { // @AとBの論理和を返す。AまたばBが0以外ならば1を、それ以外は0を返す // @
+  'OR': { // @(ビット演算で)AとBの論理和を返す。 // @
     type: 'func',
     josi: [['と'], ['の']],
     fn: function (a, b) {
-      return (a || b) ? 1 : 0
+      return (a || b)
     }
   },
-  'AND': { // @AとBの論理積を返す。日本語の「AかつB」に相当する // @
+  'AND': { // @(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する // @
     type: 'func',
     josi: [['と'], ['の']],
     fn: function (a, b) {
-      return (a && b) ? 1 : 0
+      return (a && b)
     }
   },
-  'XOR': {// @AとBの排他的論理和を返す。// @
+  'XOR': {// @(ビット演算で)AとBの排他的論理和を返す。// @
     type: 'func',
     josi: [['と'], ['の']],
     fn: function (a, b) {
