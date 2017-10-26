@@ -244,6 +244,37 @@ const PluginBrowser = {
     }
   },
   // @ローカルストレージ
+  '保存': { // @ブラウザのlocalStorageのKにVを保存 // @ほぞん
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (key, v) {
+      window.localStorage[key] = JSON.stringify(v)
+    },
+    return_none: true
+  },
+  '開く': { // @ブラウザのlocalStorageからVを読む // @ひらく
+    type: 'func',
+    josi: [['を', 'から', 'の']],
+    fn: function (key) {
+      const v = window.localStorage[key]
+      try {
+        return JSON.parse(v)
+      } catch (e) {
+        console.log('ローカルストレージ『' + key + '』の読み込みに失敗')
+      }
+      return v
+    },
+    return_none: false
+  },
+  '存在': { // @ブラウザのlocalStorageにKEYが存在しているか調べる // @そんざい
+    type: 'func',
+    josi: [['が']],
+    fn: function (key) {
+      const s = window.localStorage.getItem(key)
+      return (s !== null)
+    },
+    return_none: false
+  },
   'ローカルストレージ保存': { // @ブラウザのlocalStorageのKにVを保存 // @ろーかるすとれーじほぞん
     type: 'func',
     josi: [['に', 'へ'], ['を']],

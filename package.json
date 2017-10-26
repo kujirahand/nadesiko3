@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -75,7 +75,7 @@
     "eslint": "^4.9.0",
     "eslint-config-standard": "^10.2.0",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.4.0",
     "eslint-plugin-standard": "^3.0.1",
