@@ -158,7 +158,7 @@ const PluginSystem = {
   // @特殊命令
   'JS実行': { // @JavaScriptのコードSを実行する // @JSじっこう
     type: 'func',
-    josi: [['を'], ['で']],
+    josi: [['を', 'で']],
     fn: function (js) {
       return eval(js) // eslint-disable-line
     }
