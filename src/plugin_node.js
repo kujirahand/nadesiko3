@@ -193,7 +193,7 @@ const PluginNode = {
   '終': { // @Nodeでプログラム実行を強制終了する // @終わる
     type: 'func',
     josi: [],
-    fn: function (s) {
+    fn: function () {
       process.exit()
     }
   },
