@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
