@@ -810,8 +810,9 @@ class NakoParser extends NakoParserBase {
 
   yJSONObjectValue () {
     const a = []
+    const firstToken = this.peek()
     while (!this.isEOF()) {
-      if (this.check('eol')) this.get()
+      while (this.check('eol')) this.get()
       if (this.check('}')) break
       if (this.accept(['word', ':', this.yCalc])) {
         a.push({
@@ -823,8 +824,21 @@ class NakoParser extends NakoParserBase {
           key: this.y[0],
           value: this.y[2]
         })
+      } else if (this.check('word')) {
+        const w = this.get()
+        a.push({
+          key: w,
+          value: w
+        })
+      } else if (this.checkTypes(['string', 'number'])) {
+        const w = this.get()
+        a.push({
+          key: w,
+          value: w
+        })
+      } else {
+        throw new NakoSyntaxError('辞書オブジェクトの宣言で末尾の『}』がありません。', firstToken.line)
       }
-      if (this.check(',')) this.get() // skip ','
     }
     return a
   }
