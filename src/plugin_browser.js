@@ -222,14 +222,42 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'DOMスタイル取得': { // @DOMのスタイルAの値を取得 // @DOMすたいるしゅとく
+  'DOMスタイル取得': { // @DOMのSTYLEの値を取得 // @DOMすたいるしゅとく
     type: 'func',
-    josi: [['の'], ['に', 'へ'], ['を']],
-    fn: function (dom, s, v) {
+    josi: [['の'], ['を']],
+    fn: function (dom, style) {
       if (typeof (dom) === 'string') {
         dom = document.querySelector(dom)
       }
-      return dom.style[s]
+      if (!dom) return ''
+      return dom.style[style]
+    }
+  },
+  'DOMスタイル一括取得': { // @DOMのSTYLE(配列で複数指定)の値を取得 // @DOMすたいるいっかつしゅとく
+    type: 'func',
+    josi: [['の'], ['を']],
+    fn: function (dom, style) {
+      const res = {}
+      if (typeof (dom) === 'string') {
+        dom = document.querySelector(dom)
+      }
+      if (!dom) return res
+      if (style instanceof String) {
+        style = [style]
+      }
+      if (style instanceof Array) {
+        for (let i = 0; i < style.length; i++) {
+          const key = style[i]
+          res[key] = dom.style[key]
+        }
+        return res
+      }
+      if (style instanceof Object) {
+        for (let key in style) {
+          res[key] = dom.style[key]
+        }
+      }
+      return dom.style[style]
     }
   },
   'DOM要素作成': { // @DOMにTAGの新規要素を作成 // @DOMようそさくせい
