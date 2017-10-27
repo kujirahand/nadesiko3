@@ -204,6 +204,24 @@ const PluginBrowser = {
     },
     return_none: true
   },
+  'DOMスタイル一括設定': { // @DOMに(辞書型で)STYLEを一括設定 // @DOMすたいるいっかつせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (dom, v) {
+      if (typeof dom === 'string') {
+        dom = document.querySelectorAll(dom)
+      }
+      if (!dom) return
+      if (dom instanceof window.HTMLElement) dom = [dom]
+      for (let i = 0; i < dom.length; i++) {
+        const e = dom[i]
+        for (const key in v) {
+          e.style[key] = v[key]
+        }
+      }
+    },
+    return_none: true
+  },
   'DOMスタイル取得': { // @DOMのスタイルAの値を取得 // @DOMすたいるしゅとく
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
