@@ -334,11 +334,14 @@ const PluginBrowser = {
     return_none: true
   },
   // @描画
-  '描画開始': { // @描画先にCanvasを指定して描画API(2D)の利用準備する // @びょうがかいし
+  '描画開始': { // @描画先にCanvas(文字列でクエリの指定も可)を指定して描画API(2D)の利用準備する // @びょうがかいし
     type: 'func',
     josi: [['の', 'へ', 'で']],
     fn: function (cv, sys) {
-      if (typeof cv === 'string') cv = document.getElementById(cv)
+      if (typeof cv === 'string') {
+        cv = document.querySelector(cv)
+        if (!cv) cv = document.getElementById(cv)
+      }
       if (!cv) throw new Error(errMsgCanvasInit)
       sys.__canvas = cv
       sys.__ctx = cv.getContext('2d')
