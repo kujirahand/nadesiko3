@@ -815,6 +815,7 @@ class NakoParser extends NakoParserBase {
       while (this.check('eol')) this.get()
       if (this.check('}')) break
       if (this.accept(['word', ':', this.yCalc])) {
+        this.y[0].type = 'string' // キー名の文字列記号省略の場合
         a.push({
           key: this.y[0],
           value: this.y[2]
@@ -826,6 +827,7 @@ class NakoParser extends NakoParserBase {
         })
       } else if (this.check('word')) {
         const w = this.get()
+        w.type = 'string'
         a.push({
           key: w,
           value: w
