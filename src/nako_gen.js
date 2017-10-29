@@ -495,6 +495,7 @@ class NakoGen {
     for (let i = 0; i < meta.varnames.length; i++) {
       const word = meta.varnames[i]
       code += `  __vars['${word}'] = arguments[${i}];\n`
+      this.__vars[word] = true
     }
     // 関数定義は、グローバル領域で。
     if (name) {

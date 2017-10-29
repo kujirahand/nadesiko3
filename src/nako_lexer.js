@@ -30,7 +30,7 @@ const josiList = [
   'について', 'くらい', 'なのか', 'までを', 'までの',
   'とは', 'から', 'まで', 'だけ', 'より', 'ほど', 'など',
   'いて', 'えて', 'きて', 'けて', 'して', 'って', 'にて', 'みて',
-  'めて', 'ねて', 'では', 'には',
+  'めて', 'ねて', 'では', 'には', 'は~',
   'は', 'を', 'に', 'へ', 'で', 'と', 'が', 'の'
 ]
 const tararebaJosiList = [
@@ -175,7 +175,8 @@ class NakoLexer {
       // タイプの置換
       const t = tokens[i]
       // 無名関数の定義：「xxには**」があった場合 ... 暗黙的な関数定義とする
-      if (t.type === 'word' && t.josi === 'には') {
+      if ((t.type === 'word' && t.josi === 'には') || (t.type === 'word' && t.josi === 'は~')) {
+        t.josi = 'には'
         tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, josi: ''})
         i++
         continue
@@ -252,7 +253,7 @@ class NakoLexer {
           tokens[i].value *= -1
         }
       }
-      // 助詞の「は」を = に展開、また、「とは」を一つの単語にする
+      // 助詞の「は」を = に展開
       if (t.josi === undefined) t.josi = ''
       if (t.josi === 'は') {
         tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
@@ -260,6 +261,7 @@ class NakoLexer {
         t.josi = ''
         continue
       }
+      // 「とは」を一つの単語にする
       if (t.josi === 'とは') {
         tokens.splice(i + 1, 0, {type: t.josi, line: t.line})
         t.josi = ''
