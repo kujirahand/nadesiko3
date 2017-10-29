@@ -121,6 +121,86 @@ const PluginBrowser = {
     },
     return_none: true
   },
+  'クリック時': { // 無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onclick'] = func
+    },
+    return_none: true
+  },
+  '変更時': { // 無名関数FでDOMを変更した時に実行するイベントを設定 // @へんこうしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onchange'] = func
+    },
+    return_none: true
+  },
+  'フォーム送信時': { // 無名関数Fでフォームを送信した時に実行するイベントを設定 // @ふぉーむそうしんしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onsubmit'] = func
+    },
+    return_none: true
+  },
+  'キー押時': { // 無名関数FでDOMに対してキーを押した時に実行するイベントを設定 // @きーおしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onkeydown'] = func
+    },
+    return_none: true
+  },
+  'キー離時': { // 無名関数FでDOMに対してキーを離した時に実行するイベントを設定 // @きーはなしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onkeyup'] = func
+    },
+    return_none: true
+  },
+  'マウス押時': { // 無名関数FでDOMに対してキーを押した時に実行するイベントを設定 // @まうすおしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onmousedown'] = func
+    },
+    return_none: true
+  },
+  'マウス移動時': { // 無名関数FでDOMに対してキーを押した時に実行するイベントを設定 // @まうすいどうしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onmousemove'] = func
+    },
+    return_none: true
+  },
+  'マウス離時': { // 無名関数FでDOMに対してキーを離した時に実行するイベントを設定 // @まうすはなしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['onmouseup'] = func
+    },
+    return_none: true
+  },
   'DOMテキスト設定': { // @DOMにテキストを設定 // @DOMてきすとせってい
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
