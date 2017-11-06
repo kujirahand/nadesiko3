@@ -126,9 +126,9 @@ class NakoLexer {
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
     if (isFirst) {
-      const eolLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-      this.result.push({type: 'eol', line: eolLine, josi: '', value: '---'}) // 改行
-      this.result.push({type: 'eof', line: eolLine, josi: '', value: ''}) // ファイル末尾
+      const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
+      this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
+      this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
     }
     return this.result
   }
