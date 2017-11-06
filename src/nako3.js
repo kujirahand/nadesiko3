@@ -121,7 +121,7 @@ class NakoCompiler {
     let tokens = lexer.setInput(code, line, isFirst)
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i]['type'] === 'code') {
-        tokens = tokens.slice(0, i).concat(this.tokenize(tokens[i]['value'], tokens[i]['line'], false)).concat(tokens.slice(i + 1, tokens.length))
+        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], tokens[i]['line'], false))
         i--
       }
     }
