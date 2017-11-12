@@ -1,9 +1,6 @@
 // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
 const {opPriority} = require('./nako_parser_const')
-const Prepare = require('./nako_prepare')
-
-const prepare = new Prepare()
 
 // 予約語句
 const reserveWords = {
@@ -122,15 +119,17 @@ class NakoLexer {
     this.funclist = list
   }
 
-  setInput (code) {
+  setInput (code, line, isFirst) {
     // 最初に全部を区切ってしまう
-    this.tokenize(code)
+    this.tokenize(code, line)
     // 関数の定義があれば funclist を更新
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
-    const line = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-    this.result.push({type: 'eol', line, josi: '', value: '---'}) // 改行
-    this.result.push({type: 'eof', line, josi: '', value: ''}) // ファイル末尾
+    if (isFirst) {
+      const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
+      this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
+      this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
+    }
     return this.result
   }
 
@@ -296,9 +295,8 @@ class NakoLexer {
     }
   }
 
-  tokenize (src) {
+  tokenize (src, line) {
     this.result = []
-    let line = 0
     while (src !== '') {
       let ok = false
       for (const rule of rules) {
@@ -326,7 +324,7 @@ class NakoLexer {
               } else {
                 list[i] = trimOkurigana(list[i])
                 this.result.push({type: '&', value: '&', josi: '', line})
-                this.result.push({type: 'word', value: prepare.convert(list[i]), josi: '', line})
+                this.result.push({type: 'code', value: list[i], josi: '', line})
                 this.result.push({type: '&', value: '&', josi: '', line})
               }
             }
