@@ -83,6 +83,17 @@ class NakoCompiler {
   }
 
   /**
+   * コードを単語に分割する
+   * @param code なでしこのプログラム
+   * @param isFirst 最初の呼び出しかどうか
+   * @param line なでしこのプログラムの行番号
+   * @returns コード (なでしこ)
+   */
+  static tokenize (code, isFirst, line = 0) {
+    return lexer.setInput(prepare.convert(code), isFirst, line)
+  }
+
+  /**
    * コードをパースしてASTにする
    * @param code なでしこのプログラム
    * @return AST
@@ -93,7 +104,13 @@ class NakoCompiler {
     parser.setFuncList(this.gen.plugins)
     parser.debug = this.debug
     // 単語に分割
-    const tokens = this.tokenize(code)
+    const tokens = NakoCompiler.tokenize(code, true)
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i]['type'] === 'code') {
+        tokens.splice(i, 1, ... NakoCompiler.tokenize(tokens[i]['value'], false, tokens[i]['line']))
+        i--
+      }
+    }
     if (this.debug && this.debugLexer) {
       console.log('--- lex ---')
       console.log(JSON.stringify(tokens, null, 2))
@@ -105,27 +122,6 @@ class NakoCompiler {
       console.log(JSON.stringify(ast, null, 2))
     }
     return ast
-  }
-
-  /**
-   * コードを単語に分割する
-   * @param code なでしこのプログラム
-   * @param line なでしこのプログラムの行番号
-   * @param isFirst 最初の呼び出しかどうか
-   * @returns コード (なでしこ)
-   */
-  tokenize (code, line = 0, isFirst = true) {
-    // 前置処理(全角半角を揃える)
-    code = prepare.convert(code)
-    // 単語に分割
-    let tokens = lexer.setInput(code, line, isFirst)
-    for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i]['type'] === 'code') {
-        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], tokens[i]['line'], false))
-        i--
-      }
-    }
-    return tokens
   }
 
   /**
