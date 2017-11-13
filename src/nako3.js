@@ -45,6 +45,21 @@ class NakoCompiler {
   }
 
   /**
+   * コードを単語に分割する
+   * @param code なでしこのプログラム
+   * @param isFirst 最初の呼び出しかどうか
+   * @param line なでしこのプログラムの行番号
+   * @returns コード (なでしこ)
+   */
+  static tokenize (code, isFirst, line = 0) {
+    return lexer.setInput(prepare.convert(code), isFirst, line)
+  }
+
+  static getHeader () {
+    return NakoGen.getHeader()
+  }
+
+  /**
    * デバッグモードに設定する
    * @param flag デバッグモード
    */
@@ -80,17 +95,6 @@ class NakoCompiler {
       console.log(def + js)
     }
     return def + js
-  }
-
-  /**
-   * コードを単語に分割する
-   * @param code なでしこのプログラム
-   * @param isFirst 最初の呼び出しかどうか
-   * @param line なでしこのプログラムの行番号
-   * @returns コード (なでしこ)
-   */
-  static tokenize (code, isFirst, line = 0) {
-    return lexer.setInput(prepare.convert(code), isFirst, line)
   }
 
   /**
@@ -183,10 +187,6 @@ class NakoCompiler {
    */
   getVarsCode () {
     return this.gen.getVarsCode()
-  }
-
-  getHeader () {
-    return this.gen.getHeader()
   }
 
   /**
