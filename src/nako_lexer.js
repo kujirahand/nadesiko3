@@ -119,7 +119,7 @@ class NakoLexer {
     this.funclist = list
   }
 
-  setInput (code, line, isFirst) {
+  setInput (code, isFirst, line) {
     // 最初に全部を区切ってしまう
     this.tokenize(code, line)
     // 関数の定義があれば funclist を更新
