@@ -97,7 +97,7 @@ function nakoCompile (opt, src) {
   // system
   const js = nako.compile(src)
   const jscode =
-    nako.getHeader() +
+    NakoCompiler.getHeader() +
     nako.getVarsCode() +
     js
   fs.writeFileSync(opt.output, jscode, 'utf-8')

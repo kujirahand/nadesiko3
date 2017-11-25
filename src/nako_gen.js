@@ -22,7 +22,7 @@ class NakoGen {
    * @ param com {NakoCompiler} コンパイラのインスタンス
    */
   constructor (com) {
-    this.header = this.getHeader()
+    this.header = NakoGen.getHeader()
 
     /**
      * プラグインで定義された関数の一覧
@@ -65,7 +65,7 @@ class NakoGen {
     /**
      * それ
      */
-    this.sore = this.varname('それ')
+    this.sore = NakoGen.varname('それ')
 
     /**
      * なでしこのローカル変数をスタックで管理
@@ -87,19 +87,38 @@ class NakoGen {
     this.__vars = this.__varslist[2]
   }
 
+  static getHeader () {
+    return '' +
+      'var __varslist = this.__varslist = [{}, {}, {}];\n' +
+      'var __vars = this.__varslist[2];\n' +
+      'var __self = this;\n'
+  }
+
+  static convLineno (node) {
+    if (node.line === undefined) return ''
+    return `__v0.line=${node.line};`
+  }
+
+  static varname (name) {
+    return `__vars["${name}"]`
+  }
+
+  static getFuncName (name) {
+    let name2 = name.replace(/[ぁ-ん]+$/, '')
+    if (name2 === '') name2 = name
+    return name2
+  }
+
+  static convPrint (node) {
+    return `__print(${node});`
+  }
+
   reset () {
     this.nako_func = {}
     this.used_func = {}
     this.loop_id = 1
     this.__varslist[1] = {}
     this.__vars = this.__varslist[2] = {}
-  }
-
-  getHeader () {
-    return '' +
-      'var __varslist = this.__varslist = [{}, {}, {}];\n' +
-      'var __vars = this.__varslist[2];\n' +
-      'var __self = this;\n'
   }
 
   /**
@@ -273,11 +292,6 @@ class NakoGen {
     }
   }
 
-  convLineno (node) {
-    if (node.line === undefined) return ''
-    return `__v0.line=${node.line};`
-  }
-
   convGen (node) {
     let code = ''
     if (node instanceof Array) {
@@ -301,11 +315,11 @@ class NakoGen {
         }
         break
       case 'comment':
-        code += this.convLineno(node)
+        code += NakoGen.convLineno(node)
         code += '/*' + node.value + '*/\n'
         break
       case 'eol':
-        code += ';' + this.convLineno(node) + '// ' + node.value + '\n'
+        code += ';' + NakoGen.convLineno(node) + '// ' + node.value + '\n'
         break
       case 'break':
         code += this.convCheckLoop(node, 'break')
@@ -402,10 +416,6 @@ class NakoGen {
     return code
   }
 
-  varname (name) {
-    return `__vars["${name}"]`
-  }
-
   findVar (name) {
     // __vars ?
     if (this.__vars[name] !== undefined) {
@@ -459,7 +469,7 @@ class NakoGen {
     if (typeof (this.__vars['!関数']) === 'undefined') {
       throw new NakoGenError('『戻る』がありますが、関数定義内のみで使用可能です。', node.line)
     }
-    const lno = this.convLineno(node)
+    const lno = NakoGen.convLineno(node)
     let value
     if (node.value) {
       value = this.convGen(node.value)
@@ -476,7 +486,7 @@ class NakoGen {
       const cmdj = (cmd === 'continue') ? '続ける' : '抜ける'
       throw new NakoGenError(`『${cmdj}』文がありますが、それは繰り返しの中で利用してください。`, node.line)
     }
-    return this.convLineno(node.line) + cmd + ';'
+    return NakoGen.convLineno(node.line) + cmd + ';'
   }
 
   convDefFuncCommon (node, name, args) {
@@ -533,7 +543,7 @@ class NakoGen {
   }
 
   convDefFunc (node) {
-    const name = this.getFuncName(node.name.value)
+    const name = NakoGen.getFuncName(node.name.value)
     const args = node.args
     this.convDefFuncCommon(node, name, args)
     // ★この時点では関数のコードを生成しない★
@@ -587,7 +597,7 @@ class NakoGen {
     }
     const value = this.convGen(node.value)
     code += ' = ' + value + ';\n'
-    return this.convLineno(node) + code
+    return NakoGen.convLineno(node) + code
   }
 
   convGenLoop (node) {
@@ -633,7 +643,7 @@ class NakoGen {
       `    ${block}\n` +
       `  };\n` +
       `};\n//[/FOR id=${idLoop}]\n`
-    return this.convLineno(node) + code
+    return NakoGen.convLineno(node) + code
   }
 
   convForeach (node) {
@@ -645,11 +655,11 @@ class NakoGen {
     }
     const block = this.convGenLoop(node.block)
     const id = this.loop_id++
-    const key = this.varname('対象キー')
+    const key = NakoGen.varname('対象キー')
     const name = (node.name) ? node.name.value : '対象'
     this.__vars[name] = true
     this.__vars['対象キー'] = true
-    const nameS = this.varname(name)
+    const nameS = NakoGen.varname(name)
     const code =
       `let $nako_foreach_v${id}=${target};\n` +
       `for (let $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
@@ -657,19 +667,19 @@ class NakoGen {
       `${key} = $nako_i${id};\n` +
       '' + block + '\n' +
       '};\n'
-    return this.convLineno(node) + code
+    return NakoGen.convLineno(node) + code
   }
 
   convRepeatTimes (node) {
     const id = this.loop_id++
     const value = this.convGen(node.value)
     const block = this.convGenLoop(node.block)
-    const kaisu = this.varname('回数')
+    const kaisu = NakoGen.varname('回数')
     const code =
       `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + '{\n' +
       `  ${this.sore} = ${kaisu} = $nako_i${id};` + '\n' +
       '  ' + block + '\n}\n'
-    return this.convLineno(node) + code
+    return NakoGen.convLineno(node) + code
   }
 
   convWhile (node) {
@@ -679,7 +689,7 @@ class NakoGen {
       `while (${cond})` + '{\n' +
       `  ${block}` + '\n' +
       '}\n'
-    return this.convLineno(node) + code
+    return NakoGen.convLineno(node) + code
   }
 
   convIf (node) {
@@ -689,15 +699,9 @@ class NakoGen {
       ? ''
       : 'else {' + this.convGen(node.false_block) + '};\n'
     const code =
-      this.convLineno(node) +
+      NakoGen.convLineno(node) +
       `if (${expr}) {\n  ${block}\n}` + falseBlock + ';\n'
     return code
-  }
-
-  getFuncName (name) {
-    let name2 = name.replace(/[ぁ-ん]+$/, '')
-    if (name2 === '') name2 = name
-    return name2
   }
 
   convFuncGetArgsCalcType (funcName, func, node) {
@@ -726,7 +730,7 @@ class NakoGen {
    * @returns string コード
    */
   convFunc (node, isNakoType) {
-    const funcName = this.getFuncName(node.name)
+    const funcName = NakoGen.getFuncName(node.name)
     let funcNameS
     const res = this.findVar(funcName)
     if (res === null) {
@@ -839,7 +843,7 @@ class NakoGen {
     } else {
       code = `__varslist[${res.i}]["${name}"]=${value};`
     }
-    return ';' + this.convLineno(node) + code + '\n'
+    return ';' + NakoGen.convLineno(node) + code + '\n'
   }
 
   convDefLocalVar (node) {
@@ -862,11 +866,7 @@ class NakoGen {
       this.__vars.meta[name].readonly = true
     }
     const code = `__vars["${name}"]=${value};\n`
-    return this.convLineno(node) + code
-  }
-
-  convPrint (node) {
-    return `__print(${node});`
+    return NakoGen.convLineno(node) + code
   }
 
   convString (node) {
@@ -889,7 +889,7 @@ class NakoGen {
   convTryExcept (node) {
     const block = this.convGen(node.block)
     const errBlock = this.convGen(node.errBlock)
-    return this.convLineno(node.line) +
+    return NakoGen.convLineno(node.line) +
       `try {\n${block}\n} catch (e) {\n` +
       '__varslist[0]["エラーメッセージ"] = e.message;\n' +
       ';\n' +
