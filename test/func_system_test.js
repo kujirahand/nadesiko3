@@ -10,6 +10,15 @@ describe('PluginSystem test', () => {
     }
     assert.equal(nako.runReset(code).log, res)
   }
+  const cmd = (code) => {
+    if (nako.debug) console.log('code=' + code)
+    nako.runReset(code)
+  }
+
+  beforeEach(() => {
+    cmd('「Asia/Tokyo」でタイムゾーン設定')
+  })
+
   // --- test ---
   it('ナデシコエンジンを表示', () => {
     cmp('ナデシコエンジンを表示', 'nadesi.com/v3')

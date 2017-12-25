@@ -1181,6 +1181,14 @@ const PluginSystem = {
       }
       return f
     }
+  },
+  'タイムゾーン設定': { // @タイムゾーンTをセットする // @たいむぞーんせってい
+    type: 'func',
+    josi: [['で']],
+    fn: function (tz) {
+      const moment = require('moment-timezone')
+      moment.tz.setDefault(tz)
+    }
   }
 }
 
