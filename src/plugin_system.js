@@ -1115,8 +1115,7 @@ const PluginSystem = {
     josi: [['の']],
     fn: function (s) {
       const moment = require('moment-timezone')
-      moment.locale('ja')
-      return moment(s, 'YYYY/MM/DD').format('ddd')
+      return moment(s, 'YYYY/MM/DD').locale('ja').format('ddd')
     }
   },
   'UNIXTIME変換': { // @日時SをUNIXTIMEに変換して返す // @UNIXTIMEへんかん
