@@ -1078,7 +1078,7 @@ const PluginSystem = {
       return moment().format('HH:mm:ss')
     }
   },
-  'システム時間': { // @現在のUNIXTIMEを返す // @しすてむじかん
+  'システム時間': { // @現在のUNIX時間 (UTC(1970/1/1)からの経過秒数) を返す // @しすてむじかん
     type: 'func',
     josi: [],
     fn: function () {
@@ -1118,7 +1118,7 @@ const PluginSystem = {
       return moment(s, 'YYYY/MM/DD').locale('ja').format('ddd')
     }
   },
-  'UNIXTIME変換': { // @日時SをUNIXTIMEに変換して返す // @UNIXTIMEへんかん
+  'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXじかんへんかん
     type: 'func',
     josi: [['の', 'を', 'から']],
     fn: function (s) {
@@ -1126,7 +1126,15 @@ const PluginSystem = {
       return moment(s, 'YYYY/MM/DD HH:mm:ss').unix()
     }
   },
-  '日時変換': { // @UNIXTIMEを「HH:mm:ss」の形式に変換 // @にちじへんかん
+  'UNIXTIME変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す // @UNIXTIMEへんかん
+    type: 'func',
+    josi: [['の', 'を', 'から']],
+    fn: function (s) {
+      const moment = require('moment-timezone')
+      return moment(s, 'YYYY/MM/DD HH:mm:ss').unix()
+    }
+  },
+  '日時変換': { // @UNIX時間 (UTC(1970/1/1)からの経過秒数) を「HH:mm:ss」の形式に変換 // @にちじへんかん
     type: 'func',
     josi: [['を', 'から']],
     fn: function (tm) {
