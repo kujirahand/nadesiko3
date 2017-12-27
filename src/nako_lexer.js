@@ -41,7 +41,7 @@ tararebaJosiList.forEach(e => {
 })
 josiList.sort((a, b) => b.length - a.length) // 文字数の長い順に並び替え
 const josiRE = new RegExp('^(' + josiList.join('|') + ')')
-const kanakanji = /^[\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
+const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
 const hira = /^[ぁ-ん]/
 // 字句解析ルールの一覧
 const rules = [
@@ -105,7 +105,7 @@ const rules = [
   // 単語句
   {
     name: 'word',
-    pattern: /^[_a-zA-Z\u4E00-\u9FCFぁ-んァ-ヶ]/,
+    pattern: /^[_a-zA-Z\u3005\u4E00-\u9FCFぁ-んァ-ヶ]/,
     cbParser: cbWordParser
   }
 ]
@@ -376,7 +376,7 @@ function trimOkurigana (s) {
 
 function cbWordParser (src) {
   /*
-    kanji    = [\u4E00-\u9FCF]
+    kanji    = [\u3005\u4E00-\u9FCF]
     hiragana = [ぁ-ん]
     katakana = [ァ-ヶー]
     emoji    = [\u1F60-\u1F6F]
