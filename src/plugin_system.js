@@ -1102,7 +1102,7 @@ const PluginSystem = {
       return moment().year()
     }
   },
-  '今月': { // @今月を返す // @こんげつ
+  '今月': { // @今月を返す(v1非互換) // @こんげつ
     type: 'func',
     josi: [],
     fn: function () {
