@@ -89,6 +89,7 @@
   },
   "dependencies": {
     "commander": "^2.11.0",
+    "moment-timezone": "^0.5.14",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   }

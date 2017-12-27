@@ -1,6 +1,7 @@
 import 'date-utils'
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment-timezone'
 
 export default function EditorButtonComponent (props) {
   return (
@@ -22,7 +23,7 @@ export default function EditorButtonComponent (props) {
         try {
           const link = document.createElement('a')
           link.href = window.URL.createObjectURL(new Blob([props.nako3.compile(props.code)]))
-          link.download = 'nako3_' + new Date().toFormat('YYYYMMDDHH24MISS') + '.js'
+          link.download = 'nako3_' + moment().format('YYYYMMDDHHmmss') + '.js'
           link.click()
         } catch (e) {
           props.onErrorChanged(e)

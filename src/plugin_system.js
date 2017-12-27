@@ -1070,75 +1070,68 @@ const PluginSystem = {
   },
 
   // @日時処理
-  '今': { // @現在時刻を「hh:nn:ss」の形式で返す // @いま
+  '今': { // @現在時刻を「HH:mm:ss」の形式で返す // @いま
     type: 'func',
     josi: [],
     fn: function () {
-      const t = new Date()
-      const z2 = function (s) {
-        s = '00' + s
-        return s.substr(s.length - 2, 2)
-      }
-      return z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
+      const moment = require('moment-timezone')
+      return moment().format('HH:mm:ss')
     }
   },
-  'システム時間': { // @UTC(1970/1/1)からの経過時間をミリ秒単位で返す // @しすてむじかん
+  'システム時間': { // @現在のUNIXTIMEを返す // @しすてむじかん
     type: 'func',
     josi: [],
     fn: function () {
-      const t = new Date()
-      return t.getTime()
+      const moment = require('moment-timezone')
+      return moment().unix()
     }
   },
   '今日': { // @今日の日付を「YYYY/MM/DD」の形式で返す // @きょう
     type: 'func',
     josi: [],
     fn: function () {
-      const t = new Date()
-      const z2 = function (s) {
-        s = '00' + s
-        return s.substr(s.length - 2, 2)
-      }
-      return t.getFullYear() + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate())
+      const moment = require('moment-timezone')
+      return moment().format('YYYY/MM/DD')
     }
   },
-  '今年': { // @今年で返す // @ことそ
+  '今年': { // @今年の西暦を返す // @ことし
     type: 'func',
     josi: [],
     fn: function () {
-      const t = new Date()
-      return t.getFullYear()
+      const moment = require('moment-timezone')
+      return moment().year()
+    }
+  },
+  '今月': { // @今月を返す // @こんげつ
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().month() + 1
     }
   },
   '曜日': { // @日付Sの曜日を返す // @ようび
     type: 'func',
     josi: [['の']],
     fn: function (s) {
-      const week = ['日', '月', '火', '水', '木', '金', '土']
-      const t = new Date(s)
-      return week[t.getDay()]
+      const moment = require('moment-timezone')
+      return moment(s, 'YYYY/MM/DD').locale('ja').format('ddd')
     }
   },
-  'UNIXTIME変換': { // @日時SをUNIXTIME(ミリ秒付き)に変換して返す // @UNIXTIMEへんかん
+  'UNIXTIME変換': { // @日時SをUNIXTIMEに変換して返す // @UNIXTIMEへんかん
     type: 'func',
     josi: [['の', 'を', 'から']],
     fn: function (s) {
-      const t = new Date(s)
-      return t.getTime() / 1000
+      const moment = require('moment-timezone')
+      return moment(s, 'YYYY/MM/DD HH:mm:ss').unix()
     }
   },
-  '日時変換': { // @UNIXTIMEを年/月/日に変換 // @にちじへんかん
+  '日時変換': { // @UNIXTIMEを「HH:mm:ss」の形式に変換 // @にちじへんかん
     type: 'func',
     josi: [['を', 'から']],
     fn: function (tm) {
-      const t = new Date()
-      t.setTime(tm * 1000)
-      const z2 = function (s) {
-        s = '00' + s
-        return s.substr(s.length - 2, 2)
-      }
-      return t.getFullYear() + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate()) +
-        ' ' + z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
+      const moment = require('moment-timezone')
+      return moment.unix(tm).format('YYYY/MM/DD HH:mm:ss')
     }
   },
   '実行': { // @ 無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する) // @じっこう
@@ -1186,6 +1179,14 @@ const PluginSystem = {
         }
       }
       return f
+    }
+  },
+  'タイムゾーン設定': { // @タイムゾーンTをセットする // @たいむぞーんせってい
+    type: 'func',
+    josi: [['で']],
+    fn: function (tz) {
+      const moment = require('moment-timezone')
+      moment.tz.setDefault(tz)
     }
   }
 }
