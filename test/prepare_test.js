@@ -32,6 +32,8 @@ describe('prepare', () => {
     assert.equal(a, '123「１２３」')
     const b = p.convert('１２３『１２３』１２３')
     assert.equal(b, '123『１２３』123')
+    const c = p.convert('１２３“あいう”')
+    assert.equal(c, '123“あいう”')
   })
   it('str2', () => {
     const a = p.convert('１２３"１２３"１２３')

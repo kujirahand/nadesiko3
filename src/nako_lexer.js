@@ -91,6 +91,7 @@ const rules = [
   {name: 'string_ex', pattern: /^文字列\{{3}/, cbParser: src => cbString('文字列', '}}}', src)},
   {name: 'string_ex', pattern: /^「/, cbParser: src => cbString('「', '」', src)},
   {name: 'string', pattern: /^『/, cbParser: src => cbString('『', '』', src)},
+  {name: 'string_ex', pattern: /^“/, cbParser: src => cbString('“', '”', src)},
   {name: 'string_ex', pattern: /^"/, cbParser: src => cbString('"', '"', src)},
   {name: 'string', pattern: /^'/, cbParser: src => cbString('\'', '\'', src)},
   {name: '」', pattern: /^」/}, // error

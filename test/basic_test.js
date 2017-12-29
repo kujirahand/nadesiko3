@@ -22,6 +22,7 @@ describe('basic', () => {
   it('string', () => {
     cmp('「abc」を表示', 'abc')
     cmp('"abc"を表示', 'abc')
+    cmp('“あいう”を表示', 'あいう')
   })
   it('rawstring', () => {
     cmp('『abc』を表示', 'abc')

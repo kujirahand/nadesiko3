@@ -49,13 +49,13 @@ class NakoPrepare {
       0x3001: ',', // 句点
       0x3002: ';', // 読点
       0x3010: '[', // '【'
-      0x3011: ']'  // '】'
+      0x3011: ']' // '】'
     }
   }
 
   // 一文字だけ変換
   convert1ch (ch) {
-    const c = ch.charCodeAt(0)
+    const c = ch.codePointAt(0)
     // テーブルによる変換
     if (this.convertTable[c]) return this.convertTable[c]
     // ASCIIエリア
@@ -63,7 +63,7 @@ class NakoPrepare {
     // 全角半角単純変換可能 --- '！' - '～'
     if (c >= 0xFF01 && c <= 0xFF5E) {
       const c2 = c - 0xFEE0
-      return String.fromCharCode(c2)
+      return String.fromCodePoint(c2)
     }
     // 問題のエリア
     if (this.HYPHENS[c]) return '-'
@@ -117,6 +117,13 @@ class NakoPrepare {
         i++
         flagStr = true
         endOfStr = '』'
+        continue
+      }
+      if (c === '“') {
+        res += c
+        i++
+        flagStr = true
+        endOfStr = '”'
         continue
       }
       const c1 = this.convert1ch(c)
