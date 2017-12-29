@@ -3,6 +3,8 @@ const execSync = require('child_process').execSync
 const path = require('path')
 
 const cnako3 = path.dirname(__dirname) + '/src/cnako3.js'
+const packagejson = require('../package.json')
+
 
 describe('node_test(cnako)', () => {
   const debug = false
@@ -15,6 +17,10 @@ describe('node_test(cnako)', () => {
     }
     assert.equal(result, exRes)
   }
+  // --- バージョンチェック ---
+  it('ナデシコバージョン', () => {
+    cmp('ナデシコバージョンを表示', packagejson.version)
+  })
   // --- test ---
   it('print simple', () => {
     cmp('3を表示', '3')
