@@ -80,7 +80,7 @@
     "eslint-plugin-react": "^7.4.0",
     "eslint-plugin-standard": "^3.0.1",
     "lite-server": "^2.3.0",
-    "mocha": "^4.0.1",
+    "mocha": "^4.1.0",
     "prop-types": "^15.6.0",
     "pump": "^1.0.2",
     "source-map": "^0.6.1",

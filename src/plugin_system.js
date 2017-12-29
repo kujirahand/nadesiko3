@@ -526,7 +526,8 @@ const PluginSystem = {
     type: 'func',
     josi: [['の']],
     fn: function (v) {
-      return String(v).length
+      if (!Array.from) return String(v).length
+      return Array.from(v).length
     }
   },
   '何文字目': { // @文字列SでAが何文字目にあるか調べて返す // @なんもじめ
@@ -540,14 +541,16 @@ const PluginSystem = {
     type: 'func',
     josi: [['の']],
     fn: function (v) {
-      return String.fromCharCode(v)
+      if (!String.fromCodePoint) return String.fromCharCode(v)
+      return String.fromCodePoint(v)
     }
   },
   'ASC': { // @文字列Vの最初の文字の文字コードを返す // @
     type: 'func',
     josi: [['の']],
     fn: function (v) {
-      return String(v).charCodeAt(0)
+      if (!String.prototype.codePointAt) return String(v).charCodeAt(0)
+      return String(v).codePointAt(0)
     }
   },
   '文字挿入': { // @文字列SのI文字目に文字列Aを挿入する // @もじそうにゅう
@@ -586,7 +589,8 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     fn: function (v) {
-      return String(v).split('')
+      if (!Array.from) return String(v).split('')
+      return Array.from(v)
     }
   },
   'リフレイン': { // @文字列VをCNT回繰り返す(v1非互換) // @りふれいん
