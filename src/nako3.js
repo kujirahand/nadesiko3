@@ -1,27 +1,16 @@
 /**
- * nadesiko v3 (demo version)
+ * nadesiko v3
  */
 const Parser = require('./nako_parser3')
 const Lexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
+const NakoRuntimeError = require('./nako_runtime_error')
 const PluginSystem = require('./plugin_system')
 
 const prepare = new Prepare()
 const parser = new Parser()
 const lexer = new Lexer()
-
-class NakoRuntimeError extends Error {
-  constructor (msg, env) {
-    const title = '[実行時エラー]'
-    if (env && env.__varslist && env.__varslist[0].line) {
-      msg = title + '(' + (env.__varslist[0].line + 1) + ') ' + msg
-    } else {
-      msg = title + ' ' + msg
-    }
-    super(msg)
-  }
-}
 
 class NakoCompiler {
   constructor () {
@@ -111,7 +100,7 @@ class NakoCompiler {
     const tokens = NakoCompiler.tokenize(code, true)
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i]['type'] === 'code') {
-        tokens.splice(i, 1, ... NakoCompiler.tokenize(tokens[i]['value'], false, tokens[i]['line']))
+        tokens.splice(i, 1, ...NakoCompiler.tokenize(tokens[i]['value'], false, tokens[i]['line']))
         i--
       }
     }

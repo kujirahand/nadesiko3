@@ -1,4 +1,7 @@
-// plugin_node.js
+/**
+ * file: plugin_node.js
+ * node.js のためのプラグイン
+ */
 const PluginNode = {
   '初期化': {
     type: 'func',

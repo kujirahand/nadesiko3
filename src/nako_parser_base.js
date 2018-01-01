@@ -1,16 +1,9 @@
 /**
- * なでしこの文法エラーを表示するクラス
- */
-class NakoSyntaxError extends Error {
-  constructor (msg, line) {
-    const title = `[文法エラー](` + (line + 1) + `): ${msg}`
-    super(title)
-  }
-}
-
-/**
  * なでしこの構文解析のためのユーティリティクラス
  */
+
+const NakoSyntaxError = require('./nako_syntax_error')
+
 class NakoParserBase {
   constructor () {
     this.debug = false
