@@ -3,10 +3,10 @@ const path = require('path')
 const NakoCompiler = require('../src/nako3')
 const PluginNode = require('../src/plugin_node')
 
-describe('func_test', () => {
+describe('node_func test', () => {
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
-  nako.debug = false
+  // nako.debug = true
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -30,5 +30,8 @@ describe('func_test', () => {
   })
   it('ASSERT', () => {
     cmd('3と3がASSERT等')
+  })
+  it('プラグインテスト', () => {
+    // cmp('!「../src/plugin_hoge.js」を取り込む。3と5をHOGE足。表示。', '8')
   })
 })

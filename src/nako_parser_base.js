@@ -159,7 +159,12 @@ class NakoParserBase {
     }
     if (!name) name = node.value
     if (typeof name !== 'string') name = node.type
-    if (this.debug) name += '→' + JSON.stringify(node, null, 2)
+    if (this.debug) {
+      name += '→' + JSON.stringify(node, null, 2)
+    } else {
+      if (name === 'number') name = node.value + node.josi
+      if (node.type === 'string') name = '「' + node.value + '」' + node.josi
+    }
     return `『${name}』`
   }
 }

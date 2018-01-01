@@ -410,6 +410,9 @@ class NakoGen {
       case 'try_except':
         code += this.convTryExcept(node)
         break
+      case 'require':
+        code += this.convRequire(node)
+        break
       default:
         throw new Error('System Error: unknown_type=' + node.type)
     }
@@ -894,6 +897,11 @@ class NakoGen {
       '__varslist[0]["エラーメッセージ"] = e.message;\n' +
       ';\n' +
       `${errBlock}}\n`
+  }
+
+  convRequire (node) {
+    return NakoGen.convLineno(node.line) +
+    `require('${node.value}');\n`
   }
 }
 

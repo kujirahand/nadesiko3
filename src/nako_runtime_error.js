@@ -15,4 +15,4 @@ class NakoRuntimeError extends Error {
   }
 }
 
-
+module.exports = NakoRuntimeError

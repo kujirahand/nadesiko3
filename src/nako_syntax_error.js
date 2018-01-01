@@ -8,3 +8,4 @@ class NakoSyntaxError extends Error {
   }
 }
 
+module.exports = NakoSyntaxError

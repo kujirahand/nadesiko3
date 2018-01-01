@@ -25,6 +25,7 @@ class NakoCompiler {
     this.__varslist = null
     this.reset()
     this.gen.addPluginObject('PluginSystem', PluginSystem)
+    lexer.compiler = this
   }
 
   get log () {

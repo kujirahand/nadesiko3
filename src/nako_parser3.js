@@ -51,6 +51,7 @@ class NakoParser extends NakoParserBase {
     if (this.check('エラー監視')) return this.yTryExcept()
     if (this.accept(['抜ける'])) return {type: 'break', line: this.y[0].line, josi: ''}
     if (this.accept(['続ける'])) return {type: 'continue', line: this.y[0].line, josi: ''}
+    if (this.accept(['require', 'string', '取込'])) return {type: 'require', value: this.y[1].value, line: this.y[0].line, josi: ''}
     // 先読みして初めて確定する構文
     if (this.accept([this.yLet])) return this.y[0]
     if (this.accept([this.yDefFunc])) return this.y[0]

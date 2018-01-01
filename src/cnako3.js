@@ -124,5 +124,6 @@ class CNako3 extends NakoCompiler {
   }
 }
 
+// メイン
 const cnako3 = new CNako3()
 cnako3.execCommand()

@@ -3,117 +3,22 @@
 const {opPriority} = require('./nako_parser_const')
 
 // 予約語句
-const reserveWords = {
-  '回': '回',
-  '間': '間',
-  '繰返': '繰り返す',
-  '反復': '反復',
-  '抜': '抜ける',
-  '続': '続ける',
-  '戻': '戻る',
-  '代入': '代入',
-  '変数': '変数',
-  '定数': '定数',
-  'エラー監視': 'エラー監視', // 例外処理:エラーならばと対
-  'エラー': 'エラー',
-  'それ': 'word',
-  'そう': 'word', // 「それ」のエイリアス
-  '関数': 'def_func' // 無名関数の定義用
-}
-// 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
+// (memo)「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
+const reservedWords = require('./nako_reserved_words')
 
 // 助詞の一覧
-const josiList = [
-  'について', 'くらい', 'なのか', 'までを', 'までの',
-  'とは', 'から', 'まで', 'だけ', 'より', 'ほど', 'など',
-  'いて', 'えて', 'きて', 'けて', 'して', 'って', 'にて', 'みて',
-  'めて', 'ねて', 'では', 'には', 'は~',
-  'は', 'を', 'に', 'へ', 'で', 'と', 'が', 'の'
-]
-const tararebaJosiList = [
-  'でなければ', 'ならば', 'なら', 'たら', 'れば'
-]
-// 一覧をプログラムで扱いやすいよう変換
-const tararebaJosiMap = []
-tararebaJosiList.forEach(e => {
-  josiList.push(e)
-  tararebaJosiMap[e] = true
-})
-josiList.sort((a, b) => b.length - a.length) // 文字数の長い順に並び替え
-const josiRE = new RegExp('^(' + josiList.join('|') + ')')
-const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
-const hira = /^[ぁ-ん]/
+const josi = require('./nako_josi_list')
+const josiRE = josi.josiRE
+
 // 字句解析ルールの一覧
-const rules = [
-  // 上から順にマッチさせていく
-  {name: 'eol', pattern: /^\n/},
-  {name: 'eol', pattern: /^;/},
-  {name: 'space', pattern: /^(\s+|,)/},
-  {name: 'line_comment', pattern: /^#[^\n]*/},
-  {name: 'line_comment', pattern: /^\/\/[^\n]*/},
-  {name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment},
-  {name: 'def_func', pattern: /^●/},
-  {name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt},
-  {name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat},
-  {name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat},
-  {name: 'number', pattern: /^[0-9]+/, readJosi: true, cb: parseInt},
-  {name: 'ここから', pattern: /^(ここから|→)/},
-  {name: 'ここまで', pattern: /^(ここまで|←|-{3,})/},
-  {name: 'もし', pattern: /^もしも?/},
-  // ならば ← 助詞として定義
-  {name: '違えば', pattern: /^違(えば)?/},
-  // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
-  {name: 'gteq', pattern: /^(≧|>=|=>)/},
-  {name: 'lteq', pattern: /^(≦|<=|=<)/},
-  {name: 'noteq', pattern: /^(≠|<>|!=)/},
-  {name: 'eq', pattern: /^=/},
-  {name: 'not', pattern: /^!/},
-  {name: 'gt', pattern: /^>/},
-  {name: 'lt', pattern: /^</},
-  {name: 'and', pattern: /^(かつ|&&)/},
-  {name: 'or', pattern: /^(または|\|\|)/},
-  {name: '@', pattern: /^@/},
-  {name: '+', pattern: /^\+/},
-  {name: '-', pattern: /^-/},
-  {name: '*', pattern: /^(×|\*)/},
-  {name: '/', pattern: /^(÷|\/)/},
-  {name: '%', pattern: /^%/},
-  {name: '^', pattern: /^\^/},
-  {name: '&', pattern: /^&/},
-  {name: '[', pattern: /^\[/},
-  {name: ']', pattern: /^]/, readJosi: true},
-  {name: '(', pattern: /^\(/},
-  {name: ')', pattern: /^\)/, readJosi: true},
-  {name: '|', pattern: /^\|/},
-  {name: 'embed_code', pattern: /^JS\{{3}/, cbParser: src => cbString('JS', '}}}', src)},
-  {name: 'string', pattern: /^R\{{3}/, cbParser: src => cbString('R', '}}}', src)},
-  {name: 'string_ex', pattern: /^S\{{3}/, cbParser: src => cbString('S', '}}}', src)},
-  {name: 'string_ex', pattern: /^文字列\{{3}/, cbParser: src => cbString('文字列', '}}}', src)},
-  {name: 'string_ex', pattern: /^「/, cbParser: src => cbString('「', '」', src)},
-  {name: 'string', pattern: /^『/, cbParser: src => cbString('『', '』', src)},
-  {name: 'string_ex', pattern: /^“/, cbParser: src => cbString('“', '”', src)},
-  {name: 'string_ex', pattern: /^"/, cbParser: src => cbString('"', '"', src)},
-  {name: 'string', pattern: /^'/, cbParser: src => cbString('\'', '\'', src)},
-  {name: '」', pattern: /^」/}, // error
-  {name: '』', pattern: /^』/}, // error
-  {name: '{', pattern: /^\{/},
-  {name: '}', pattern: /^\}/, readJosi: true},
-  {name: ':', pattern: /^:/},
-  {name: '_eol', pattern: /^_\s*\n/},
-  // 絵文字変数 = (絵文字)英数字*
-  {name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/, readJosi: true},
-  {name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/, readJosi: true}, // 絵文字
-  // 単語句
-  {
-    name: 'word',
-    pattern: /^[_a-zA-Z\u3005\u4E00-\u9FCFぁ-んァ-ヶ]/,
-    cbParser: cbWordParser
-  }
-]
+const lexRules = require('./nako_lex_rules')
+const rules = lexRules.rules
+const trimOkurigana = lexRules.trimOkurigana
 
 class NakoLexer {
   constructor () {
     this.funclist = {}
+    this.compiler = null // link to NakoCompiler (プラグインの取り込みを行うため)
   }
 
   setFuncList (list) {
@@ -124,14 +29,48 @@ class NakoLexer {
     // 最初に全部を区切ってしまう
     this.tokenize(code, line)
     // 関数の定義があれば funclist を更新
+    this.checkRequire(this.result)
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
+
     if (isFirst) {
       const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
       this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
       this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
     }
     return this.result
+  }
+
+  // プラグインの取り込みを行う
+  checkRequire (tokens) {
+    let i = 0
+    while ((i + 2) < tokens.length) {
+      const tNot = tokens[i]
+      const tFile = tokens[i + 1]
+      const tTorikomu = tokens[i + 2]
+      if (tNot.type === 'not' && tTorikomu.value === '取込') {
+        tNot.type = 'require'
+        if (tFile.type === 'string' || tFile.type === 'string_ex') {
+          tFile.type = 'string'
+          const pname = tFile.value
+          try {
+            const plugmod = require(pname)
+            this.compiler.addPluginFile(pname, pname, plugmod)
+            // this.funclistを更新する
+            for (const key in plugmod) {
+              this.funclist[key] = plugmod[key]
+            }
+          } catch (e) {
+            throw new Error('[取込エラー] 「' + pname + '」を取り込めません。' + e.message)
+          }
+        } else {
+          throw new Error('[字句解析エラー] 『!「ファイル」を取り込む』の書式で記述してください。')
+        }
+        i += 3
+        continue
+      }
+      i++
+    }
   }
 
   preDefineFunc (tokens) {
@@ -182,8 +121,8 @@ class NakoLexer {
         continue
       }
       // 予約語の置換
-      if (t.type === 'word' && reserveWords[t.value]) {
-        t.type = reserveWords[t.value]
+      if (t.type === 'word' && reservedWords[t.value]) {
+        t.type = reservedWords[t.value]
         if (t.value === 'そう') t.value = 'それ'
       }
       // 関数定義の確認
@@ -269,7 +208,7 @@ class NakoLexer {
         continue
       }
       // 助詞のならばをトークンとする
-      if (tararebaJosiMap[t.josi]) {
+      if (josi.tarareba[t.josi]) {
         const josi = (t.josi !== 'でなければ') ? 'ならば' : 'でなければ'
         t.josi = ''
         tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line})
@@ -366,116 +305,6 @@ class NakoLexer {
       if (!ok) throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')
     }
   }
-}
-
-function trimOkurigana (s) {
-  if (!hira.test(s)) {
-    s = s.replace(/[ぁ-ん]+/g, '')
-  }
-  return s
-}
-
-function cbWordParser (src) {
-  /*
-    kanji    = [\u3005\u4E00-\u9FCF]
-    hiragana = [ぁ-ん]
-    katakana = [ァ-ヶー]
-    emoji    = [\u1F60-\u1F6F]
-    uni_extra = [\uD800-\uDBFF] [\uDC00-\uDFFF]
-    alphabet = [_a-zA-Z]
-    numchars = [0-9]
-  */
-  let res = ''
-  let josi = ''
-  while (src !== '') {
-    // カタカナ漢字英数字か？
-    const m = kanakanji.exec(src)
-    if (m) {
-      res += m[0]
-      src = src.substr(m[0].length)
-      continue
-    }
-    // 助詞？
-    if (res.length > 0) {
-      const j = josiRE.exec(src)
-      if (j) {
-        josi = j[0]
-        src = src.substr(j[0].length)
-        break
-      }
-    }
-    // ひらがな？
-    const h = hira.test(src)
-    if (h) {
-      res += src.charAt(0)
-      src = src.substr(1)
-      continue
-    }
-    break // other chars
-  }
-  // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
-  res = trimOkurigana(res)
-  // 助詞だけの語句の場合
-  if (res === '' && josi !== '') {
-    res = josi
-    josi = ''
-  }
-  return {src: src, res: res, josi: josi, numEOL: 0}
-}
-
-function cbString (beginTag, closeTag, src) {
-  let res = ''
-  let josi = ''
-  let numEOL = 0
-  src = src.substr(beginTag.length) // skip beginTag
-  if (closeTag === '}}}') { // 可変閉じタグ
-    const sm = src.match(/^\{{3,}/)
-    const cnt = sm[0].length
-    closeTag = ''
-    for (let i = 0; i < cnt; i++) closeTag += '}'
-    src = src.substr(cnt)
-  }
-  const i = src.indexOf(closeTag)
-  if (i < 0) { // not found
-    res = src
-    src = ''
-  } else {
-    res = src.substr(0, i)
-    src = src.substr(i + closeTag.length)
-  }
-  // 文字列直後の助詞を取得
-  const j = josiRE.exec(src)
-  if (j) {
-    josi = j[0]
-    src = src.substr(j[0].length)
-  }
-  // 改行を数える
-  for (let i = 0; i < res.length; i++) {
-    if (res.charAt(i) === '\n') numEOL++
-  }
-
-  return {src: src, res: res, josi: josi, numEOL: numEOL}
-}
-
-function cbRangeComment (src) {
-  let res = ''
-  let josi = ''
-  let numEOL = 0
-  src = src.substr(2) // skip /*
-  const i = src.indexOf('*/')
-  if (i < 0) { // not found
-    res = src
-    src = ''
-  } else {
-    res = src.substr(0, i)
-    src = src.substr(i + 2)
-  }
-  res = res.replace(/(^\s+|\s+$)/, '') // trim
-  // 改行を数える
-  for (let i = 0; i < res.length; i++) {
-    if (res.charAt(i) === '\n') numEOL++
-  }
-  return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
 
 module.exports = NakoLexer
