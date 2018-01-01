@@ -22,8 +22,9 @@ class NakoCompiler {
     this.debugJSCode = true
     this.debugLexer = false
     this.filename = 'inline'
-    this.__varslist = null
-    this.reset()
+    this.__varslist = [{}, {}, {}]
+    this.__self = this
+    this.__vars = this.__varslist[2]
     this.gen.addPluginObject('PluginSystem', PluginSystem)
     lexer.compiler = this
   }
@@ -61,12 +62,7 @@ class NakoCompiler {
    * 環境のリセット
    */
   reset () {
-    if (!this.__varslist) { // 初回
-      this.__varslist = [{}, {}, {}]
-      this.__self = this
-    } else { // 二回目以降
-      this.__varslist = [this.__varslist[0], {}, {}]
-    }
+    this.__varslist = [this.__varslist[0], {}, {}]
     this.gen.reset()
     this.__vars = this.__varslist[2]
     this.clearLog()

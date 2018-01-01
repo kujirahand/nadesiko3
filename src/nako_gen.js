@@ -114,11 +114,11 @@ class NakoGen {
   }
 
   reset () {
-    this.nako_func = {}
+    // this.nako_func = {}
     this.used_func = {}
     this.loop_id = 1
-    this.__varslist[1] = {}
-    this.__vars = this.__varslist[2] = {}
+    this.__varslist[1] = {} // user global
+    this.__vars = this.__varslist[2] = {} // local
   }
 
   /**
