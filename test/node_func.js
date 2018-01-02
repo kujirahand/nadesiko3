@@ -3,7 +3,7 @@ const path = require('path')
 const NakoCompiler = require('../src/nako3')
 const PluginNode = require('../src/plugin_node')
 
-describe('node_func__test', () => {
+describe('node_func', () => {
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   // nako.debug = true
@@ -30,9 +30,5 @@ describe('node_func__test', () => {
   })
   it('ASSERT', () => {
     cmd('3と3がASSERT等')
-  })
-  it('プラグインテスト', () => {
-    // TODO: このテストファイルを単体でテストするとOKだが、テスト全体をテストするとNGになる
-    // cmp('!「../src/plugin_hoge.js」を取り込む。3と5をHOGE足。表示。', '8')
   })
 })

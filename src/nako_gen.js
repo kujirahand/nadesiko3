@@ -31,12 +31,6 @@ class NakoGen {
     this.plugins = {}
 
     /**
-     * 利用可能なプラグイン(ファイル 単位)
-     * @type {{}}
-     */
-    this.pluginfiles = {}
-
-    /**
      * なでしこで定義した関数の一覧
      * @type {{}}
      */
@@ -75,8 +69,7 @@ class NakoGen {
      * @type {[*]}
      * @private
      */
-    this.__varslist = [{}, {}, {}]
-
+    this.__varslist = com.__varslist
     this.__self = com
 
     /**
@@ -85,6 +78,12 @@ class NakoGen {
      * @private
      */
     this.__vars = this.__varslist[2]
+
+    /**
+     * 利用可能なプラグイン(ファイル 単位)
+     * @type {{}}
+     */
+    this.pluginfiles = com.pluginfiles
   }
 
   static getHeader () {
@@ -118,7 +117,7 @@ class NakoGen {
     this.used_func = {}
     this.loop_id = 1
     this.__varslist[1] = {} // user global
-    this.__vars = this.__varslist[2] = {} // local
+    this.__vars = this.__varslist[2] = {} // user local
   }
 
   /**
@@ -214,17 +213,15 @@ class NakoGen {
    * @param po 関数リスト
    */
   addPluginObject (objName, po) {
-    if (this.pluginfiles[objName] === undefined) {
-      this.pluginfiles[objName] = '*' // dummy
-      if (typeof (po['初期化']) === 'object') {
-        const def = po['初期化']
-        delete po['初期化']
-        const initkey = `!${objName}:初期化`
-        po[initkey] = def
-        this.used_func[initkey] = true
-      }
-      this.addPlugin(po)
+    this.pluginfiles[objName] = '*' // dummy
+    if (typeof (po['初期化']) === 'object') {
+      const def = po['初期化']
+      delete po['初期化']
+      const initkey = `!${objName}:初期化`
+      po[initkey] = def
+      this.used_func[initkey] = true
     }
+    this.addPlugin(po)
   }
 
   /**

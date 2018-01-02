@@ -81,6 +81,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "lite-server": "^2.3.0",
     "mocha": "^4.1.0",
+    "nadesiko3-hoge": "0.0.1",
     "prop-types": "^15.6.0",
     "pump": "^1.0.2",
     "source-map": "^0.6.1",

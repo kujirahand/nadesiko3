@@ -14,19 +14,21 @@ const lexer = new Lexer()
 
 class NakoCompiler {
   constructor () {
-    this.gen = new NakoGen(this)
-    //
     this.debug = false
     this.silent = true
     this.debugParser = false
     this.debugJSCode = true
     this.debugLexer = false
     this.filename = 'inline'
-    this.__varslist = [{}, {}, {}]
+    // 環境のリセット
+    this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
     this.__self = this
     this.__vars = this.__varslist[2]
-    this.gen.addPluginObject('PluginSystem', PluginSystem)
+    this.pluginfiles = {} // プラグインとして取り込んだファイルの一覧
+    // set this
     lexer.compiler = this
+    this.gen = new NakoGen(this)
+    this.gen.addPluginObject('PluginSystem', PluginSystem)
   }
 
   get log () {
@@ -62,9 +64,10 @@ class NakoCompiler {
    * 環境のリセット
    */
   reset () {
+    // スタックのグローバル変数とローカル変数を初期化
     this.__varslist = [this.__varslist[0], {}, {}]
-    this.gen.reset()
     this.__vars = this.__varslist[2]
+    this.gen.reset()
     this.clearLog()
   }
 
@@ -73,8 +76,11 @@ class NakoCompiler {
    * @param ast AST
    */
   generate (ast) {
+    // 先になでしこ自身で定義したユーザー関数をシステムに登録
     this.gen.registerFunction(ast)
+    // JSコードを生成する
     const js = this.gen.convGen(ast)
+    // JSコードを実行するための事前ヘッダ部分の生成
     const def = this.gen.getDefFuncCode()
     if (this.debug && this.debugJSCode) {
       console.log('--- generate ---')
@@ -127,9 +133,6 @@ class NakoCompiler {
 
   _run (code, isReset) {
     if (isReset) this.reset()
-    if (!this.__varslist[0]['ナデシコバージョン']) {
-      this.__varslist = this.getVarsList()
-    }
     let js = this.compile(code)
     let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
