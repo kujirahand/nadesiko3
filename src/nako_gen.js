@@ -114,7 +114,13 @@ class NakoGen {
 
   reset () {
     // this.nako_func = {}
-    this.used_func = {}
+    // 初期化メソッド以外の関数を削除
+    const uf = {}
+    for (const key in this.used_func) {
+      if (key.match(/^!.+:初期化$/)) uf[key] = this.used_func[key]
+    }
+    this.used_func = uf
+    //
     this.loop_id = 1
     this.__varslist[1] = {} // user global
     this.__vars = this.__varslist[2] = {} // user local
@@ -191,7 +197,7 @@ class NakoGen {
       __v0.meta = {}
     }
     // プラグインの値をオブジェクトにコピー
-    for (let key in po) {
+    for (const key in po) {
       const v = po[key]
       this.plugins[key] = v
       if (v.type === 'func') {

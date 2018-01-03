@@ -1193,6 +1193,17 @@ const PluginSystem = {
       return f
     }
   },
+  'プラグイン一覧取得': { // @利用中のプラグイン一覧を得る // @ぷらぐいんいちらんしゅとく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const a = []
+      for (const f in sys.pluginfiles) {
+        a.push(f)
+      }
+      return a
+    }
+  },
   'タイムゾーン設定': { // @タイムゾーンTをセットする // @たいむぞーんせってい
     type: 'func',
     josi: [['で']],
