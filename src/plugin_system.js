@@ -1036,9 +1036,11 @@ const PluginSystem = {
     josi: [['の'], ['を']],
     fn: function (a, i) {
       if (a instanceof Array) { // 配列ならOK
-        return a.splice(i, 1)
+        const b = a.splice(i, 1)
+        if (b instanceof Array) return b[0]
+        return null
       }
-      throw new Error('『配列切り取』で配列以外を指定。')
+      throw new Error('『配列切取』で配列以外を指定。')
     }
   },
   '配列取出': { // @配列AのI番目(0起点)からCNT個の応訴を取り出して返す。Aの内容を書き換える // @はいれつとりだし
@@ -1048,7 +1050,7 @@ const PluginSystem = {
       if (a instanceof Array) { // 配列ならOK
         return a.splice(i, cnt)
       }
-      throw new Error('『配列切り取』で配列以外を指定。')
+      throw new Error('『配列取出』で配列以外を指定。')
     }
   },
   '配列ポップ': { // @配列Aの末尾を取り出して返す。Aの内容を書き換える。 // @はいれつぽっぷ
