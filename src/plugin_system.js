@@ -928,7 +928,7 @@ const PluginSystem = {
       if (a instanceof Array) { // 配列ならOK
         return a.length
       }
-      if (typeof (a) === 'object') {
+      if (a instanceof Object) {
         return Object.keys(a).length
       }
       return 1
@@ -1072,6 +1072,47 @@ const PluginSystem = {
         return a
       }
       throw new Error('『配列追加』で配列以外の処理。')
+    }
+  },
+
+  // @ハッシュ
+  'ハッシュキー列挙': { // @ハッシュAのキー一覧を配列で返す。 // @はっしゅきーれっきょ
+    type: 'func',
+    josi: [['の']],
+    fn: function (a) {
+      const keys = []
+      if (a instanceof Array) { // 配列なら数字を返す
+        for (let i = 0; i < a.length; i++) keys.push(i)
+        return keys
+      }
+      if (a instanceof Object) { // オブジェクトのキーを返す
+        for (const key in a) keys.push(key)
+        return keys
+      }
+      throw new Error('『ハッシュキー列挙』でハッシュ以外が与えられました。')
+    }
+  },
+  'ハッシュ内容列挙': { // @ハッシュAの内容一覧を配列で返す。 // @はっしゅないようれっきょ
+    type: 'func',
+    josi: [['の']],
+    fn: function (a) {
+      const body = []
+      if (a instanceof Object) { // オブジェクトのキーを返す
+        for (const key in a) body.push(a[key])
+        return body
+      }
+      throw new Error('『ハッシュ内容列挙』でハッシュ以外が与えられました。')
+    }
+  },
+  'ハッシュキー削除': { // @ハッシュAからキーKEYを削除して返す。 // @はっしゅきーさくじょ
+    type: 'func',
+    josi: [['から', 'の'], ['を']],
+    fn: function (a, key) {
+      if (a instanceof Object) { // オブジェクトのキーを返す
+        if (a[key]) delete a[key]
+        return a
+      }
+      throw new Error('『ハッシュキー削除』でハッシュ以外が与えられました。')
     }
   },
 
