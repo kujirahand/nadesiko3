@@ -1247,7 +1247,7 @@ const PluginSystem = {
       return a
     }
   },
-  'タイムゾーン設定': { // @タイムゾーンTをセットする // @たいむぞーんせってい
+  'タイムゾーン設定': { // @タイムゾーンTをセットする(v1非互換)(タイムゾーンの一覧は https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List 参照) // @たいむぞーんせってい
     type: 'func',
     josi: [['で']],
     fn: function (tz) {
