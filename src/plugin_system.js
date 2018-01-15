@@ -4,10 +4,12 @@ const PluginSystem = {
     josi: [],
     fn: function (sys) {
       sys.__varslist[0]['ナデシコバージョン'] = '3.0.19'
+      // システム関数を探す
       sys.__getSysValue = function (name, def) {
         if (sys.__varslist[0][name] === undefined) return def
         return sys.__varslist[0][name]
       }
+      // 全ての関数・変数を見つけて返す
       sys.__findVar = function (nameStr, def) {
         if (typeof nameStr === 'function') return nameStr
         for (let i = sys.__varslist.length - 1; i >= 0; i--) {
@@ -15,6 +17,12 @@ const PluginSystem = {
           if (scope[nameStr]) return scope[nameStr]
         }
         return def
+      }
+      // システム関数を実行する(エイリアスを実装するのに使う)
+      sys.__exec = function (func, params) {
+        const f = sys.__findVar(func)
+        if (!f) throw new Error('システム関数でエイリアスの指定ミス:' + func)
+        return f.apply(this, params)
       }
     }
   },
@@ -951,8 +959,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['の']],
     fn: function (a, sys) {
-      const f = sys.__getSysValue('配列要素数')
-      return f(a)
+      return sys.__exec('配列要素数', [a])
     }
   },
   '配列挿入': { // @配列AのI番目(0起点)に要素Sを追加して返す(v1非互換) // @はいれつそうにゅう
@@ -1181,9 +1188,8 @@ const PluginSystem = {
   'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXじかんへんかん
     type: 'func',
     josi: [['の', 'を', 'から']],
-    fn: function (s) {
-      const moment = require('moment-timezone')
-      return moment(s, 'YYYY/MM/DD HH:mm:ss').unix()
+    fn: function (s, sys) {
+      return sys.__exec('UNIXTIME変換', [s])
     }
   },
   'UNIXTIME変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す // @UNIXTIMEへんかん
@@ -1194,7 +1200,7 @@ const PluginSystem = {
       return moment(s, 'YYYY/MM/DD HH:mm:ss').unix()
     }
   },
-  '日時変換': { // @UNIX時間 (UTC(1970/1/1)からの経過秒数) を「HH:mm:ss」の形式に変換 // @にちじへんかん
+  '日時変換': { // @UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換 // @にちじへんかん
     type: 'func',
     josi: [['を', 'から']],
     fn: function (tm) {
