@@ -22,9 +22,8 @@ const PluginNode = {
   '読': { // @ファイルSを開く // @よむ
     type: 'func',
     josi: [['を', 'から']],
-    fn: function (s) {
-      const fs = require('fs')
-      return fs.readFileSync(s, 'utf-8')
+    fn: function (s, sys) {
+      return sys.__exec('開', [s])
     }
   },
   '保存': { // @ファイルFヘSを書き込む // @ほぞん
@@ -193,11 +192,18 @@ const PluginNode = {
     }
   },
   // @Nodeプロセス
-  '終': { // @Nodeでプログラム実行を強制終了する // @終わる
+  '終': { // @Nodeでプログラム実行を強制終了する // @おわる
     type: 'func',
     josi: [],
     fn: function () {
       process.exit()
+    }
+  },
+  '終了': { // @Nodeでプログラム実行を強制終了する // @しゅうりょう
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      sys.__exec('終', [])
     }
   },
   // @コマンドライン
