@@ -90,7 +90,8 @@ class NakoGen {
     return '' +
       'var __varslist = this.__varslist = [{}, {}, {}];\n' +
       'var __vars = this.__varslist[2];\n' +
-      'var __self = this;\n'
+      'var __self = this;\n' +
+      'var __module = {};\n'
   }
 
   static convLineno (node) {
@@ -903,8 +904,9 @@ class NakoGen {
   }
 
   convRequire (node) {
+    const moduleName = node.value
     return NakoGen.convLineno(node.line) +
-    `require('${node.value}');\n`
+    `__module['${moduleName}'] = require('${moduleName}');\n`
   }
 }
 

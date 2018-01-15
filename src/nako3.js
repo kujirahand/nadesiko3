@@ -24,6 +24,7 @@ class NakoCompiler {
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
     this.__self = this
     this.__vars = this.__varslist[2]
+    this.__module = {}
     this.pluginfiles = {} // プラグインとして取り込んだファイルの一覧
     // set this
     lexer.compiler = this
@@ -137,6 +138,7 @@ class NakoCompiler {
     let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
     let __self = this.__self // eslint-disable-line
+    let __module = this.__module // eslint-disable-line
     try {
       __varslist[0].line = -1 // コンパイルエラーを調べるため
       eval(js) // eslint-disable-line

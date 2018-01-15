@@ -1260,6 +1260,17 @@ const PluginSystem = {
       return a
     }
   },
+  'モジュール一覧取得': { // @取り込んだモジュール一覧を得る // @もじゅーるいちらんしゅとく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const a = []
+      for (const f in sys.__module) {
+        a.push(f)
+      }
+      return a
+    }
+  },
   'タイムゾーン設定': { // @タイムゾーンTをセットする(v1非互換)(タイムゾーンの一覧は https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List 参照) // @たいむぞーんせってい
     type: 'func',
     josi: [['で']],
