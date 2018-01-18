@@ -28,7 +28,7 @@ class NakoGen {
      * プラグインで定義された関数の一覧
      * @type {{}}
      */
-    this.plugins = com.plugins
+    this.funclist = com.funclist
 
     /**
      * なでしこで定義した関数の一覧
@@ -83,7 +83,7 @@ class NakoGen {
      * 利用可能なプラグイン(ファイル 単位)
      * @type {{}}
      */
-    this.pluginfiles = com.pluginfiles
+    this.__module = com.__module
   }
 
   static getHeader () {
@@ -169,7 +169,7 @@ class NakoGen {
     }
     // プラグインの初期化関数を実行する
     let pluginCode = ''
-    for (const name in this.pluginfiles) {
+    for (const name in this.__module) {
       const initkey = `!${name}:初期化`
       if (this.__varslist[0][initkey]) {
         pluginCode += `__v0["!${name}:初期化"](__self);\n` // セミコロンがないとエラーになったので注意
@@ -392,7 +392,7 @@ class NakoGen {
   }
 
   findVar (name) {
-    // __vars ?
+    // __vars ? (ローカル変数)
     if (this.__vars[name] !== undefined) {
       return {i: this.__varslist.length - 1, 'name': name, isTop: true}
     }
@@ -416,7 +416,7 @@ class NakoGen {
     const i = res.i
     // システム関数・変数の場合
     if (i === 0) {
-      const pv = this.plugins[name]
+      const pv = this.funclist[name]
       if (!pv) return `__vars["${name}"]/*err:${lno}*/`
       if (pv.type === 'const' || pv.type === 'var') return `__varslist[0]["${name}"]`
       if (pv.type === 'func') {
@@ -694,7 +694,7 @@ class NakoGen {
 
   getPluginList () {
     const r = []
-    for (const name in this.pluginfiles) r.push(name)
+    for (const name in this.__module) r.push(name)
     return r
   }
 
@@ -709,12 +709,13 @@ class NakoGen {
     let funcNameS
     const res = this.findVar(funcName)
     if (res === null) {
-      throw new NakoGenError(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(',') + ']', node.line)
+      console.log(this.funclist)
+      throw new NakoGenError(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node.line)
     }
     let func
     if (res.i === 0) { // plugin function
-      func = this.plugins[funcName]
-      funcNameS = `__varslist[0]["${funcName}"]`
+      func = this.funclist[funcName]
+      funcNameS = `__v0["${funcName}"]`
       if (func.type !== 'func') {
         throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.line)
       }
@@ -873,6 +874,10 @@ class NakoGen {
 
   convRequire (node) {
     const moduleName = node.value
+    if (!this.__module[moduleName]) {
+      const po = require(moduleName)
+      this.__self.addPluginObject(moduleName, po)
+    }
     return NakoGen.convLineno(node.line) +
     `__module['${moduleName}'] = require('${moduleName}');\n`
   }

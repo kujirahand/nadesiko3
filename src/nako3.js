@@ -24,9 +24,9 @@ class NakoCompiler {
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
     this.__self = this
     this.__vars = this.__varslist[2]
-    this.__module = {}
-    this.pluginfiles = {} // プラグインとして取り込んだファイルの一覧
-    this.plugins = {} // プラグインで定義された関数
+    this.__module = {} // requireなどで取り込んだモジュールの一覧
+    this.funclist = {} // プラグインで定義された関数
+    this.pluginfiles = {} // 取り込んだファイル一覧
     // set this
     lexer.compiler = this
     this.gen = new NakoGen(this)
@@ -98,8 +98,8 @@ class NakoCompiler {
    */
   parse (code) {
     // 関数を字句解析と構文解析に登録
-    lexer.setFuncList(this.gen.plugins)
-    parser.setFuncList(this.gen.plugins)
+    lexer.setFuncList(this.funclist)
+    parser.setFuncList(this.funclist)
     parser.debug = this.debug
     // 単語に分割
     const tokens = NakoCompiler.tokenize(code, true)
@@ -194,7 +194,7 @@ class NakoCompiler {
     // プラグインの値をオブジェクトにコピー
     for (const key in po) {
       const v = po[key]
-      this.plugins[key] = v
+      this.funclist[key] = v
       if (v.type === 'func') {
         __v0[key] = v.fn
       } else if (v.type === 'const' || v.type === 'var') {
@@ -214,7 +214,8 @@ class NakoCompiler {
     * @param po 関数リスト
     */
   addPluginObject (objName, po) {
-    this.pluginfiles[objName] = '*' // dummy
+    this.__module[objName] = po
+    this.pluginfiles[objName] = '*'
     if (typeof (po['初期化']) === 'object') {
       const def = po['初期化']
       delete po['初期化']
@@ -245,8 +246,8 @@ class NakoCompiler {
    * @param fn 関数
    */
   addFunc (key, josi, fn) {
-    this.plugins[key] = {'josi': josi}
-    this.setFunc(key, fn)
+    this.funclist[key] = {'josi': josi, 'fn': fn}
+    this.__varslist[0][key] = fn
   }
 
   /**
@@ -255,7 +256,7 @@ class NakoCompiler {
    * @param fn 関数
    */
   setFunc (key, fn) {
-    this.plugins[key].fn = fn
+    this.funclist[key] = {'josi': [], 'fn': fn}
     this.__varslist[0][key] = fn
   }
 
@@ -265,7 +266,7 @@ class NakoCompiler {
    * @returns プラグイン・オブジェクト
    */
   getFunc (key) {
-    return this.plugins[key]
+    return this.funclist[key]
   }
 
 }

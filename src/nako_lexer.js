@@ -22,9 +22,7 @@ class NakoLexer {
   }
 
   setFuncList (listObj) {
-    for (const v in listObj) {
-      this.funclist[v] = listObj[v]
-    }
+    this.funclist = listObj
   }
 
   setInput (code, isFirst, line) {
@@ -63,7 +61,6 @@ class NakoLexer {
               this.funclist[key] = plugmod[key]
             }
           } catch (e) {
-            console.log('hogehoge:', e)
             throw new Error('[取込エラー] 「' + pname + '」を取り込めません。' + e.message)
           }
         } else {
