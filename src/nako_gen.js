@@ -28,7 +28,7 @@ class NakoGen {
      * プラグインで定義された関数の一覧
      * @type {{}}
      */
-    this.plugins = {}
+    this.plugins = com.plugins
 
     /**
      * なでしこで定義した関数の一覧
@@ -192,26 +192,7 @@ class NakoGen {
    * @param po プラグイン・オブジェクト
    */
   addPlugin (po) {
-    // 変数のメタ情報を確認
-    const __v0 = this.__varslist[0]
-    if (__v0.meta === undefined) {
-      __v0.meta = {}
-    }
-    // プラグインの値をオブジェクトにコピー
-    for (const key in po) {
-      const v = po[key]
-      this.plugins[key] = v
-      if (v.type === 'func') {
-        __v0[key] = v.fn
-      } else if (v.type === 'const' || v.type === 'var') {
-        __v0[key] = v.value
-        __v0.meta[key] = {
-          readonly: (v.type === 'const')
-        }
-      } else {
-        throw new NakoGenError('プラグインの追加でエラー。', null)
-      }
-    }
+    return this.__self.addPlugin(po)
   }
 
   /**
@@ -219,16 +200,8 @@ class NakoGen {
    * @param objName オブジェクト名
    * @param po 関数リスト
    */
-  addPluginObject (objName, po) {
-    this.pluginfiles[objName] = '*' // dummy
-    if (typeof (po['初期化']) === 'object') {
-      const def = po['初期化']
-      delete po['初期化']
-      const initkey = `!${objName}:初期化`
-      po[initkey] = def
-      this.used_func[initkey] = true
-    }
-    this.addPlugin(po)
+  addPluginObject (name, po) {
+    this.__self.addPluginObject(name, po)
   }
 
   /**
@@ -238,10 +211,7 @@ class NakoGen {
    * @param po 登録するオブジェクト
    */
   addPluginFile (objName, path, po) {
-    this.addPluginObject(objName, po)
-    if (this.pluginfiles[objName] === undefined) {
-      this.pluginfiles[objName] = path
-    }
+    this.__self.addPluginFile(objName, path, po)
   }
 
   /**
@@ -251,8 +221,7 @@ class NakoGen {
    * @param fn 関数
    */
   addFunc (key, josi, fn) {
-    this.plugins[key] = {'josi': josi}
-    this.setFunc(key, fn)
+    this.__self.addFunc(key, josi, fn)
   }
 
   /**
@@ -261,8 +230,7 @@ class NakoGen {
    * @param fn 関数
    */
   setFunc (key, fn) {
-    this.plugins[key].fn = fn
-    this.__varslist[0][key] = fn
+    this.__self.setFunc(key, fn)
   }
 
   /**
@@ -271,7 +239,7 @@ class NakoGen {
    * @returns プラグイン・オブジェクト
    */
   getFunc (key) {
-    return this.plugins[key]
+    return this.__self.getFunc(key)
   }
 
   /**

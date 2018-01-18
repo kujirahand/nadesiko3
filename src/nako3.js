@@ -26,6 +26,7 @@ class NakoCompiler {
     this.__vars = this.__varslist[2]
     this.__module = {}
     this.pluginfiles = {} // プラグインとして取り込んだファイルの一覧
+    this.plugins = {} // プラグインで定義された関数
     // set this
     lexer.compiler = this
     this.gen = new NakoGen(this)
@@ -181,35 +182,92 @@ class NakoCompiler {
   }
 
   /**
-   * プラグイン・オブジェクトを追加(ブラウザ向け)
-   * @param name プラグインの名前
+   * プラグイン・オブジェクトを追加
    * @param po プラグイン・オブジェクト
    */
-  addPluginObject (name, po) {
-    this.gen.addPluginObject(name, po)
+  addPlugin (po) {
+    // 変数のメタ情報を確認
+    const __v0 = this.__varslist[0]
+    if (__v0.meta === undefined) {
+      __v0.meta = {}
+    }
+    // プラグインの値をオブジェクトにコピー
+    for (const key in po) {
+      const v = po[key]
+      this.plugins[key] = v
+      if (v.type === 'func') {
+        __v0[key] = v.fn
+      } else if (v.type === 'const' || v.type === 'var') {
+        __v0[key] = v.value
+        __v0.meta[key] = {
+          readonly: (v.type === 'const')
+        }
+      } else {
+        throw new Error('プラグインの追加でエラー。', null)
+      }
+    }
+  }
+
+   /**
+    * プラグイン・オブジェクトを追加(ブラウザ向け)
+    * @param objName オブジェクト名
+    * @param po 関数リスト
+    */
+  addPluginObject (objName, po) {
+    this.pluginfiles[objName] = '*' // dummy
+    if (typeof (po['初期化']) === 'object') {
+      const def = po['初期化']
+      delete po['初期化']
+      const initkey = `!${objName}:初期化`
+      po[initkey] = def
+      this.gen.used_func[initkey] = true
+    }
+    this.addPlugin(po)
   }
 
   /**
    * プラグイン・ファイルを追加(Node.js向け)
-   * @param objName オブジェクト名を登録
-   * @param path 取り込むモジュールのファイルパス
+   * @param objName オブジェクト名
+   * @param path ファイルパス
    * @param po 登録するオブジェクト
    */
   addPluginFile (objName, path, po) {
-    this.gen.addPluginFile(objName, path, po)
+    this.addPluginObject(objName, po)
+    if (this.pluginfiles[objName] === undefined) {
+      this.pluginfiles[objName] = path
+    }
   }
 
+  /**
+   * 関数を追加する
+   * @param key 関数名
+   * @param josi 助詞
+   * @param fn 関数
+   */
   addFunc (key, josi, fn) {
-    this.gen.addFunc(key, josi, fn)
+    this.plugins[key] = {'josi': josi}
+    this.setFunc(key, fn)
   }
 
+  /**
+   * 関数をセットする
+   * @param key 関数名
+   * @param fn 関数
+   */
   setFunc (key, fn) {
-    this.gen.setFunc(key, fn)
+    this.plugins[key].fn = fn
+    this.__varslist[0][key] = fn
   }
 
+  /**
+   * プラグイン関数を参照する
+   * @param key プラグイン関数の関数名
+   * @returns プラグイン・オブジェクト
+   */
   getFunc (key) {
-    return this.gen.getFunc(key)
+    return this.plugins[key]
   }
+
 }
 
 module.exports = NakoCompiler
