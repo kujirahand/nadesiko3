@@ -31,4 +31,8 @@ describe('node_func', () => {
   it('ASSERT', () => {
     cmd('3と3がASSERT等')
   })
+  it('環境変数取得', () => {
+    const path = process.env['PATH']
+    cmp('「PATH」の環境変数取得して表示。', path)
+  })
 })

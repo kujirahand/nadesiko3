@@ -93,7 +93,14 @@ const PluginNode = {
       return path.dirname(path.resolve(nakofile))
     }
   },
-  '環境変数取得': { // @環境変数の一覧を返す // @かんきょうへんすうしゅとく
+  '環境変数取得': { // @環境変数Sを返す // @かんきょうへんすうしゅとく
+    type: 'func',
+    josi: [['の']],
+    fn: function (s) {
+      return process.env[s]
+    }
+  },
+  '環境変数一覧取得': { // @環境変数の一覧を返す // @かんきょうへんすういちらんしゅとく
     type: 'func',
     josi: [],
     fn: function () {
