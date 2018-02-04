@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "lite-server",
+    "start": "lite-server --config=demo/bs-config.json",
     "electron": "electron src/enako3.js",
     "build": "webpack",
     "build:command": "node src/cnako3.js batch/build_command.nako3",
