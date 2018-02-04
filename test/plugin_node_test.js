@@ -3,7 +3,7 @@ const path = require('path')
 const NakoCompiler = require('../src/nako3')
 const PluginNode = require('../src/plugin_node')
 
-describe('node_func', () => {
+describe('plugin_node_test', () => {
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   // nako.debug = true
@@ -23,9 +23,11 @@ describe('node_func', () => {
     cmp('1+2*3を表示', '7')
     cmp('A=30;「--{A}--」を表示', '--30--')
   })
-  it('存在', () => {
+  it('存在1', () => {
     cmp('「/xxx/xxx/xxx/xxx」が存在;もしそうならば;「NG」と表示。違えば「OK」と表示。', 'OK')
-    const fname = path.join(__dirname, 'node_func.js')
+  })
+  it('存在2', () => {
+    const fname = path.join(__dirname, 'plugin_node_test.js')
     cmp('「' + fname + '」が存在;もしそうならば;「OK」と表示。違えば「NG」と表示。', 'OK')
   })
   it('ASSERT', () => {

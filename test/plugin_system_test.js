@@ -1,7 +1,7 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
 
-describe('PluginSystem test', () => {
+describe('plugin_system_test', () => {
   const nako = new NakoCompiler()
   // nako.debug = true;
   const cmp = (code, res) => {
