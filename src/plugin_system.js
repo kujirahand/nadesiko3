@@ -482,7 +482,23 @@ const PluginSystem = {
       return Math.floor(v)
     }
   },
-  'NOT': { // @値Vが0ならば1、それ以外ならば0を返す // @
+
+  // @論理演算
+  '論理OR': { // @(ビット演算で)AとBの論理和を返す。 // @
+    type: 'func',
+    josi: [['と'], ['の']],
+    fn: function (a, b) {
+      return (a || b)
+    }
+  },
+  '論理AND': { // @(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する // @
+    type: 'func',
+    josi: [['と'], ['の']],
+    fn: function (a, b) {
+      return (a && b)
+    }
+  },
+  '論理NOT': { // @値Vが0ならば1、それ以外ならば0を返す // @
     type: 'func',
     josi: [['の']],
     fn: function (v) {
@@ -490,19 +506,19 @@ const PluginSystem = {
     }
   },
 
-  // @論理演算
+  // @ビット演算
   'OR': { // @(ビット演算で)AとBの論理和を返す。 // @
     type: 'func',
     josi: [['と'], ['の']],
     fn: function (a, b) {
-      return (a || b)
+      return (a | b)
     }
   },
   'AND': { // @(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する // @
     type: 'func',
     josi: [['と'], ['の']],
     fn: function (a, b) {
-      return (a && b)
+      return (a & b)
     }
   },
   'XOR': {// @(ビット演算で)AとBの排他的論理和を返す。// @
@@ -512,8 +528,13 @@ const PluginSystem = {
       return (a ^ b)
     }
   },
-
-  // @ビット演算
+  'NOT': {// @(ビット演算で)vの各ビットを反転して返す。// @
+    type: 'func',
+    josi: [['の']],
+    fn: function (v) {
+      return (~v)
+    }
+  },
   'SHIFT_L': { // @VをAビット左へシフトして返す // @
     type: 'func',
     josi: [['を'], ['で']],
@@ -521,11 +542,18 @@ const PluginSystem = {
       return (a << b)
     }
   },
-  'SHIFT_R': { // @VをAビット右へシフトして返す // @
+  'SHIFT_R': { // @VをAビット右へシフトして返す(符号を維持する) // @
     type: 'func',
     josi: [['を'], ['で']],
     fn: function (a, b) {
       return (a >> b)
+    }
+  },
+  'SHIFT_UR': { // @VをAビット右へシフトして返す(符号を維持しない、0で埋める) // @
+    type: 'func',
+    josi: [['を'], ['で']],
+    fn: function (a, b) {
+      return (a >>> b)
     }
   },
 
