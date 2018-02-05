@@ -19,16 +19,16 @@ IF "%ERRORLEVEL%"=="9009" (
 // --------------------------------------------
 // ここから Node.js のプログラム
 // --------------------------------------------
-const VERSION = "3.0.24"
 const fs = require('fs')
 const execSync = require('child_process').execSync
+const opener = require('opener')
 
 // なでしこインストールディレクトリを見る
-const root = execSync('npm -g root').toString()
+const root = execSync('npm -g root').toString().replace(/\s+/, '')
 const nadesiko = root + "\\nadesiko3"
-execSync(nadesiko + "\\bin\\nako3-server.bat")
-console.log("ok.");
-
+opener(nadesiko + "\\bin\\nako3server.bat")
+console.log("ok.")
+// process.exit()
 
 
 

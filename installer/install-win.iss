@@ -3,7 +3,7 @@
 
 #define MyAppName "日本語プログラミング言語なでしこ3"
 #define MyAppDir "nadesiko-lang3"
-#define MyAppVersion "3.0.21"
+#define MyAppVersion "3.0.24"
 #define MyAppPublisher "nadesi.com"
 #define MyAppURL "https://nadesi.com/"
 #define MyAppExeName "install-win.bat"
@@ -39,7 +39,6 @@ Source: ".\start-win.bat"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{commonprograms}\{#MyAppDir}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{commonprograms}\エディタを実行"; Filename: "{app}\start-win.bat"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
