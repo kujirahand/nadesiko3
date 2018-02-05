@@ -8,7 +8,7 @@ import WebNakoCompiler from '../src/wnako3'
 const nako3 = navigator.nako3
 
 // なでしこの関数をカスタマイズ
-nako3.setFunc('言', (msg) => window.alert(msg))
+nako3.setFunc('言', [['を', 'と']], (msg) => window.alert(msg))
 
 // なでしこにオリジナル関数をJSで追加
 nako3.addFunc('色変更', [['に', 'へ']], (s) => {document.getElementById('info').style.color = s})

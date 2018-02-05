@@ -4,6 +4,9 @@ const NakoCompiler = require('./nako3')
 const PluginBrowser = require('./plugin_browser')
 
 class WebNakoCompiler extends NakoCompiler {
+  constructor () {
+    super()
+  }
   /**
    * ブラウザでtype="なでしこ"というスクリプトを得て実行する
    */
@@ -34,13 +37,14 @@ class WebNakoCompiler extends NakoCompiler {
   }
 }
 
-module.exports = WebNakoCompiler
-
 // ブラウザなら navigator.nako3 になでしこを登録
 if (typeof (navigator) === 'object') {
   const nako3 = navigator.nako3 = new WebNakoCompiler()
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
+
   setTimeout(() => {
     nako3.checkScriptTagParam()
   }, 1)
+} else {
+  module.exports = WebNakoCompiler
 }

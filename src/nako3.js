@@ -27,10 +27,13 @@ class NakoCompiler {
     this.__module = {} // requireなどで取り込んだモジュールの一覧
     this.funclist = {} // プラグインで定義された関数
     this.pluginfiles = {} // 取り込んだファイル一覧
+    // 必要なオブジェクトを覚えておく
+    this.prepare = prepare
+    this.lexer = lexer
+    this.parser = parser
     // set this
-    lexer.compiler = this
     this.gen = new NakoGen(this)
-    this.gen.addPluginObject('PluginSystem', PluginSystem)
+    this.addPluginObject('PluginSystem', PluginSystem)
   }
 
   get log () {
@@ -46,8 +49,9 @@ class NakoCompiler {
    * @param line なでしこのプログラムの行番号
    * @returns コード (なでしこ)
    */
-  static tokenize (code, isFirst, line = 0) {
-    return lexer.setInput(prepare.convert(code), isFirst, line)
+  tokenize (code, isFirst, line = 0) {
+    const code2 = this.prepare.convert(code)
+    return this.lexer.setInput(code2, isFirst, line)
   }
 
   static getHeader () {
@@ -102,10 +106,10 @@ class NakoCompiler {
     parser.setFuncList(this.funclist)
     parser.debug = this.debug
     // 単語に分割
-    const tokens = NakoCompiler.tokenize(code, true)
+    const tokens = this.tokenize(code, true)
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i]['type'] === 'code') {
-        tokens.splice(i, 1, ...NakoCompiler.tokenize(tokens[i]['value'], false, tokens[i]['line']))
+        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
         i--
       }
     }
@@ -255,8 +259,8 @@ class NakoCompiler {
    * @param key 関数名
    * @param fn 関数
    */
-  setFunc (key, fn) {
-    this.funclist[key] = {'josi': [], 'fn': fn}
+  setFunc (key, josi, fn) {
+    this.funclist[key] = {'josi': josi, 'fn': fn, 'type': 'func'}
     this.__varslist[0][key] = fn
   }
 

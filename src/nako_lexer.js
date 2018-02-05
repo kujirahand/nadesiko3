@@ -18,7 +18,7 @@ const trimOkurigana = lexRules.trimOkurigana
 class NakoLexer {
   constructor () {
     this.funclist = {}
-    this.compiler = null // link to NakoCompiler (プラグインの取り込みを行うため)
+    this.result = []
   }
 
   setFuncList (listObj) {
@@ -52,25 +52,6 @@ class NakoLexer {
         tNot.type = 'require'
         if (tFile.type === 'string' || tFile.type === 'string_ex') {
           tFile.type = 'string'
-          const pname = tFile.value
-          let fullpath = pname
-          try {
-            let plugmod = {}
-            if (fullpath.substr(0, 1) == '.') { // 相対パス指定
-              const path = require('path')
-              const basedir = path.dirname(this.compiler.filename)
-              fullpath = path.resolve(path.join(basedir, pname))
-            }
-            plugmod = require(fullpath)
-            this.compiler.addPluginFile(pname, fullpath, plugmod)
-            tFile.value = fullpath
-            // this.funclistを更新する
-            for (const key in plugmod) {
-              this.funclist[key] = plugmod[key]
-            }
-          } catch (e) {
-            throw new Error('[取込エラー] 「' + pname + '」を取り込めません。' + e.message)
-          }
         } else {
           throw new Error('[字句解析エラー] 『!「ファイル」を取り込む』の書式で記述してください。')
         }
@@ -179,14 +160,12 @@ class NakoLexer {
     while (i < tokens.length) {
       const t = tokens[i]
       if (t.type === 'word') {
-        if (t.value !== 'それ') {
-          // 関数を変換
-          const f = this.funclist[t.value]
-          if (f && f.type === 'func') {
-            t.type = 'func'
-            t.meta = f
-            continue
-          }
+        // 関数を変換
+        let fo = this.funclist[t.value]
+        if (fo && fo.type === 'func') {
+          t.type = 'func'
+          t.meta = fo
+          continue
         }
       }
       // 数字につくマイナス記号を判定

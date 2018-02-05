@@ -76,6 +76,7 @@ class CNako3 extends NakoCompiler {
   // 実行する
   execCommand () {
     const opt = this.checkArguments()
+    if (opt.mainfile) this.filename = opt.mainfile
     if (opt.repl) {
       this.cnakoRepl(opt)
       return
@@ -85,12 +86,20 @@ class CNako3 extends NakoCompiler {
       return
     }
 
-    const src = fs.readFileSync(opt.mainfile, 'utf-8')
+    // メインプログラムを読み込む
+    let src = fs.readFileSync(opt.mainfile, 'utf-8')
     if (opt.compile) {
       this.nakoCompile(opt, src)
       return
     }
     this.runReset(src)
+  }
+  /** コンパイル(override) */
+  compile (src) {
+    const code = this.includePlugin(src)
+    const ast = this.parse(code)
+    const js = this.generate(ast)
+    return js
   }
   /**
    * コンパイルモードの場合
@@ -99,7 +108,6 @@ class CNako3 extends NakoCompiler {
    */
   nakoCompile (opt, src) {
     // system
-    this.filename = opt.mainfile
     const js = this.compile(src)
     const jscode =
       NakoCompiler.getHeader() +
@@ -123,8 +131,51 @@ class CNako3 extends NakoCompiler {
     const src = fs.readFileSync(fname, 'utf-8')
     this.run(src, true)
   }
+  /**
+   * プラグインの取込チェック
+   * @param src
+   * @return プリプロセスを除去したソースコード
+   */
+  includePlugin (src) {
+    let result = ''
+    const srcLF = src.replace(/(\r\n|\r)/g, '\n')
+    const lines = srcLF.split('\n')
+    for (let line of lines) {
+      let s = line.replace(/^\s+/, '') // trim
+      const ch = s.substr(0, 1)
+      if (ch !== '!' && ch !== '！' ) {
+        result += line + '\n'
+        continue
+      }
+      const m = s.match(/["'『「](.+)["'』」]を(取り込|取込)/)
+      if (!m) continue
+      // プラグインの取り込み
+      const pname = m[1]
+      let fullpath = pname
+      try {
+        let plugmod = {}
+        if (fullpath.substr(0, 1) == '.') { // 相対パス指定
+          const basedir = path.dirname(this.filename)
+          fullpath = path.resolve(path.join(basedir, pname))
+        }
+        plugmod = require(fullpath)
+        this.addPluginFile(pname, fullpath, plugmod)
+        // this.funclistを更新する
+        for (const key in plugmod) {
+          this.funclist[key] = plugmod[key]
+        }
+      } catch (e) {
+        throw new Error('[取込エラー] 「' + pname + '」を取り込めません。' + e.message)
+      }
+    }
+    return result
+  }
 }
 
 // メイン
-const cnako3 = new CNako3()
-cnako3.execCommand()
+if (require.main === module) { // 直接実行する
+  const cnako3 = new CNako3()
+  cnako3.execCommand()
+} else { // モジュールとして使う場合
+  module.exports = CNako3
+}

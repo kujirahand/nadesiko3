@@ -9,8 +9,7 @@ export default function EditorButtonComponent (props) {
       <button onClick={() => {
         try {
           // なでしこの関数をカスタマイズ
-          props.nako3.setFunc('表示', props.onInformationChanged)
-
+          props.nako3.setFunc('表示', [['と', 'を', 'の']], props.onInformationChanged)
           props.nako3.run(props.code)
         } catch (e) {
           props.onErrorChanged(e)

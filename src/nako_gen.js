@@ -874,10 +874,6 @@ class NakoGen {
 
   convRequire (node) {
     const moduleName = node.value
-    if (!this.__module[moduleName]) {
-      const po = require(moduleName)
-      this.__self.addPluginObject(moduleName, po)
-    }
     return NakoGen.convLineno(node.line) +
     `__module['${moduleName}'] = require('${moduleName}');\n`
   }
