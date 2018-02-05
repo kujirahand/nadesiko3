@@ -159,7 +159,7 @@ class NakoLexer {
     }
     while (i < tokens.length) {
       const t = tokens[i]
-      if (t.type === 'word') {
+      if (t.type === 'word' && t.value !== 'それ') {
         // 関数を変換
         let fo = this.funclist[t.value]
         if (fo && fo.type === 'func') {

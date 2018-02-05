@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.0.21",
+  "version": "3.0.24",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -10,6 +10,7 @@
   "scripts": {
     "test": "mocha",
     "start": "lite-server --config=demo/bs-config.json",
+    "server": "node src/nako3server.js",
     "electron": "electron src/enako3.js",
     "build": "webpack",
     "build:command": "node src/cnako3.js batch/build_command.nako3",
@@ -22,6 +23,12 @@
   },
   "keywords": [
     "script"
+  ],
+  "files": [
+    "release",
+    "demo",
+    "src",
+    "bin"
   ],
   "author": "kujirahand",
   "license": "MIT",
@@ -91,7 +98,9 @@
   },
   "dependencies": {
     "commander": "^2.11.0",
+    "express": "^4.16.2",
     "moment-timezone": "^0.5.14",
+    "opener": "^1.4.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   }

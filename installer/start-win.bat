@@ -19,7 +19,7 @@ IF "%ERRORLEVEL%"=="9009" (
 // --------------------------------------------
 // Ç±Ç±Ç©ÇÁ Node.js ÇÃÉvÉçÉOÉâÉÄ
 // --------------------------------------------
-const VERSION = "3.0.21"
+const VERSION = "3.0.24"
 const fs = require('fs')
 const execSync = require('child_process').execSync
 
