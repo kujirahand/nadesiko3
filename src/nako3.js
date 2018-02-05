@@ -250,18 +250,18 @@ class NakoCompiler {
    * @param fn 関数
    */
   addFunc (key, josi, fn) {
-    this.funclist[key] = {'josi': josi, 'fn': fn}
+    this.funclist[key] = {'josi': josi, 'fn': fn, 'type': 'func'}
     this.__varslist[0][key] = fn
   }
 
   /**
    * 関数をセットする
    * @param key 関数名
+   * @param josi 助詞
    * @param fn 関数
    */
   setFunc (key, josi, fn) {
-    this.funclist[key] = {'josi': josi, 'fn': fn, 'type': 'func'}
-    this.__varslist[0][key] = fn
+    this.addFunc(key, josi, fn)
   }
 
   /**
@@ -276,12 +276,3 @@ class NakoCompiler {
 }
 
 module.exports = NakoCompiler
-/*
-// simple test code
-const c = new NakoCompiler()
-c.debug = true
-c.debugParser = true
-c.debugLexer = true
-c.silent = false
-c.runReset('対象日=1504191600を日時変換して「 」まで切り取る。対象日を表示。')
-*/
