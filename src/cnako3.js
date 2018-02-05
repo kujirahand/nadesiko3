@@ -99,6 +99,7 @@ class CNako3 extends NakoCompiler {
    */
   nakoCompile (opt, src) {
     // system
+    this.filename = opt.mainfile
     const js = this.compile(src)
     const jscode =
       NakoCompiler.getHeader() +

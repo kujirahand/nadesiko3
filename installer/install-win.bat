@@ -1,10 +1,9 @@
+rem=/* 日本語プログラミング言語「なでしこ」v3
 @echo OFF
-ECHO ------------------------------------
-ECHO なでしこ3 Windows向けインストーラー
-ECHO ------------------------------------
-
-node -v
+node %~0 %*
 IF "%ERRORLEVEL%"=="9009" (
+  ECHO ------------------------------------
+  ECHO なでしこ3 Windows向けインストーラー
   ECHO ------------------------------------
   ECHO [エラーの理由]
   ECHO ------------------------------------
@@ -14,19 +13,27 @@ IF "%ERRORLEVEL%"=="9009" (
   ECHO インストール後、改めて、このバッチファイルを実行してください。
   PAUSE
   EXIT
+) ELSE (
+  PAUSE
+  EXIT
 )
-
-ECHO Node.jsが利用できます
-ECHO ----------------------------------
-ECHO なでしこ3の実行に必要な環境をダウンロードします。
-ECHO 少々お待ちください。
-
-CALL npm -g install nadesiko3
-
-ECHO ok.
-PAUSE
-
-
+*/0;
+// --------------------------------------------
+// ここから Node.js のプログラム
+// --------------------------------------------
+const fs = require('fs')
+const execSync = require('child_process').execSync
+try {
+  // インストールされているかチェック
+  const cnakoVersion =  execSync('cnako3 -v').toString()
+  console.log("INSTALLED version=", cnakoVersion)
+} catch (e) {
+  // console.log(e);
+  console.log("INSTALL NADESIKO3 --- Please wait a moment")
+  const result =  execSync('CALL npm -g install nadesiko3');
+  console.log(result.toString());
+}
+console.log("ok.");
 
 
 

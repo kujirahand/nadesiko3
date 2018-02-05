@@ -53,9 +53,17 @@ class NakoLexer {
         if (tFile.type === 'string' || tFile.type === 'string_ex') {
           tFile.type = 'string'
           const pname = tFile.value
+          let fullpath = pname
           try {
-            const plugmod = require(pname)
-            this.compiler.addPluginFile(pname, pname, plugmod)
+            let plugmod = {}
+            if (fullpath.substr(0, 1) == '.') { // 相対パス指定
+              const path = require('path')
+              const basedir = path.dirname(this.compiler.filename)
+              fullpath = path.resolve(path.join(basedir, pname))
+            }
+            plugmod = require(fullpath)
+            this.compiler.addPluginFile(pname, fullpath, plugmod)
+            tFile.value = fullpath
             // this.funclistを更新する
             for (const key in plugmod) {
               this.funclist[key] = plugmod[key]
