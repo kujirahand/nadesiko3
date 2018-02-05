@@ -22,25 +22,11 @@ IF "%ERRORLEVEL%"=="9009" (
 const VERSION = "3.0.21"
 const fs = require('fs')
 const execSync = require('child_process').execSync
-try {
-  // インストールされているかチェック
-  let cnakoVersion = execSync('cnako3 -v').toString()
-  if (cnakoVersion !== VERSION) {
-    console.log("UPDATE")
-    execSync('CALL npm -g update nadesiko3')
-    cnakoVersion = execSync('cnako3 -v').toString()
-  }
-  console.log("INSTALLED version=", cnakoVersion)
-} catch (e) {
-  // console.log(e);
-  console.log("INSTALL NADESIKO3 --- Please wait a moment")
-  const result =  execSync('CALL npm -g install nadesiko3');
-  console.log(result.toString());
-}
+
 // なでしこインストールディレクトリを見る
 const root = execSync('npm -g root').toString()
 const nadesiko = root + "\\nadesiko3"
-execSync(nadesiko + "\\bin\\nako3-build.bat")
+execSync(nadesiko + "\\bin\\nako3-server.bat")
 console.log("ok.");
 
 

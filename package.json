@@ -4,7 +4,8 @@
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
-    "cnako3": "src/cnako3.js"
+    "cnako3": "src/cnako3.js",
+    "nako3server": "src/nako3server.js"
   },
   "scripts": {
     "test": "mocha",
