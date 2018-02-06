@@ -20,15 +20,20 @@ IF "%ERRORLEVEL%"=="9009" (
 // ここから Node.js のプログラム
 // --------------------------------------------
 const fs = require('fs')
-const execSync = require('child_process').execSync
+const child_process = require('child_process')
+const execSync = child_process.execSync
+const exec = child_process.exec
 const opener = require('opener')
 
-// なでしこインストールディレクトリを見る
+// --------------------------------------------
+// デモサーバーを起動
 const root = execSync('npm -g root').toString().replace(/\s+/, '')
 const nadesiko = root + "\\nadesiko3"
-opener(nadesiko + "\\bin\\nako3server.bat")
-console.log("ok.")
-// process.exit()
+const bat = nadesiko + '\\bin\\nako3server.bat'
+exec('start cmd /c ' + bat)
+setTimeout(function() {
+    process.exit()
+}, 3000)
 
 
 

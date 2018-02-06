@@ -213,6 +213,14 @@ const PluginNode = {
       sys.__exec('終', [])
     }
   },
+  '秒待': { // @NodeでN秒待つ // @びょうまつ
+    type: 'func',
+    josi: [['']],
+    fn: function (sec, sys) {
+      const sleep = require('sleep')
+      sleep.sleep(sec)
+    }
+  },
   // @コマンドライン
   'コマンドライン': {type: 'const', value: ''}, // @こまんどらいん
   '標準入力取得時': { // @標準入力を一行取得した時に、無名関数（あるいは、文字列で関数名を指定）F(s)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
