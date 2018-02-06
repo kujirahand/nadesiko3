@@ -12,14 +12,14 @@ IF "%ERRORLEVEL%"=="9009" (
   PAUSE
   EXIT
 ) ELSE (
-  rem PAUSE
+  PAUSE
   EXIT
 )
 */0;
 // --------------------------------------------
 // Ç±Ç±Ç©ÇÁ Node.js ÇÃÉvÉçÉOÉâÉÄ
 // --------------------------------------------
-const VERSION = "3.0.24"
+const VERSION = "3.0.25"
 // --------------------------------------------
 const fs = require('fs')
 const child_process = require('child_process')

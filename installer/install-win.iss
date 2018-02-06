@@ -3,7 +3,7 @@
 
 #define MyAppName "日本語プログラミング言語なでしこ3"
 #define MyAppDir "nadesiko-lang3"
-#define MyAppVersion "3.0.24"
+#define MyAppVersion "3.0.25"
 #define MyAppPublisher "nadesi.com"
 #define MyAppURL "https://nadesi.com/"
 #define MyAppExeName "install-win.bat"
