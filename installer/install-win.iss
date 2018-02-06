@@ -3,7 +3,7 @@
 
 #define MyAppName "日本語プログラミング言語なでしこ3"
 #define MyAppDir "nadesiko-lang3"
-#define MyAppVersion "3.0.25"
+#define MyAppVersion "3.0.26"
 #define MyAppPublisher "nadesi.com"
 #define MyAppURL "https://nadesi.com/"
 #define MyAppExeName "install-win.bat"
@@ -22,7 +22,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppDir}
 DisableProgramGroupPage=yes
-OutputBaseFilename=setup{#MyAppVersion}
+OutputBaseFilename=nako3-win-setup-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 

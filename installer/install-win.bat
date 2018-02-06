@@ -19,13 +19,12 @@ IF "%ERRORLEVEL%"=="9009" (
 // --------------------------------------------
 // ここから Node.js のプログラム
 // --------------------------------------------
-const VERSION = "3.0.25"
+const VERSION = "3.0.26"
 // --------------------------------------------
 const fs = require('fs')
 const child_process = require('child_process')
 const execSync = child_process.execSync
 const exec = child_process.exec
-const opener = require('opener')
 // --------------------------------------------
 try {
     // インストールされているかチェック
@@ -39,7 +38,7 @@ try {
     }
     console.log("Installed version=", cnakoVersion)
 } catch (e) {
-    console.log(e);
+    // console.log(e);
     console.log("Install nadesiko3...")
     const result = execSync('CALL npm -g install nadesiko3')
     console.log(result.toString());
@@ -53,7 +52,6 @@ exec('start cmd /c ' + bat)
 setTimeout(function() {
     process.exit()
 }, 3000)
-// opener(bat)
 
 // バージョンチェック
 function gtVersion(a, b) {

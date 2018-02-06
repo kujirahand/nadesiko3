@@ -12,7 +12,7 @@ IF "%ERRORLEVEL%"=="9009" (
   PAUSE
   EXIT
 ) ELSE (
-  PAUSE
+  rem PAUSE
   EXIT
 )
 */0;
@@ -23,7 +23,6 @@ const fs = require('fs')
 const child_process = require('child_process')
 const execSync = child_process.execSync
 const exec = child_process.exec
-const opener = require('opener')
 
 // --------------------------------------------
 // デモサーバーを起動

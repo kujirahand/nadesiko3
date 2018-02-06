@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.0.25",
+  "version": "3.0.27",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -102,6 +102,6 @@
     "moment-timezone": "^0.5.14",
     "opener": "^1.4.3",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "react-dom": "^16.0.0"
   }
 }

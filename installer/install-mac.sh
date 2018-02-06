@@ -7,6 +7,7 @@ if [ $NODE_PATH = "" ]; then
   exit
 else
   npm -g install nadesiko3
+  nako3server
   echo "ok."
 fi
 
