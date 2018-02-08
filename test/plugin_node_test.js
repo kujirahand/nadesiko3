@@ -6,7 +6,7 @@ const PluginNode = require('../src/plugin_node')
 describe('plugin_node_test', () => {
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
-  // nako.debug = true
+  nako.debug = false
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -30,6 +30,10 @@ describe('plugin_node_test', () => {
     const fname = path.join(__dirname, 'plugin_node_test.js')
     cmp('「' + fname + '」が存在;もしそうならば;「OK」と表示。違えば「NG」と表示。', 'OK')
   })
+  it('フォルダ存在', () => {
+    cmp('「' + __dirname + '」が存在;もしそうならば;「OK」と表示。違えば「NG」と表示。', 'OK')
+    cmp('「' + __dirname + '/xxx」が存在;もしそうならば;「OK」と表示。違えば「NG」と表示。', 'NG')
+  })
   it('ASSERT', () => {
     cmd('3と3がASSERT等')
   })
@@ -38,11 +42,11 @@ describe('plugin_node_test', () => {
     cmp('「PATH」の環境変数取得して表示。', path)
   })
   it('圧縮解凍', () => {
-    /*
-    cmp('F=「plugin_node_test.js」;' +
-      'Fを「a.zip」へ圧縮。0.1秒待つ。' +
-      '「a.zip」を「tmp」に解凍。' +
-      'S1=「tmp」を読む。S2=Fを読む。(S1=S2)を表示', '1')
-    */
+    const me = path.join(__dirname, 'plugin_node_test.js')
+    cmp('FIN=「'+me+'」;FZIP=「_deleteme.zip」;\n' +
+      'FINをFZIPへ圧縮。0.3秒待つ。FZIPを「tmp/」に解凍。0.3秒待つ。\n'+
+      'S1=「tmp/plugin_node_test.js」を読む。\n'+
+      'S2=FINを読む。\n' +
+      'もし(S1＝S2)ならば,"OK"と表示。\n', 'OK')
   })
 })

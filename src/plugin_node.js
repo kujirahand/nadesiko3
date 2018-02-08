@@ -192,37 +192,50 @@ const PluginNode = {
     }
   },
   // @圧縮・解凍
-  '解凍': { // @ZIPファイルAをBに解凍 // @かいとう
+  '解凍': { // @(v1非互換)ZIPファイルAをBに非同期に解凍(実行には7zが必要-https://goo.gl/YqHSSX) // @かいとう
     type: 'func',
     josi: [['を', 'から'],['に', 'へ']],
-    fn: function (a, b) {
-      const unzip = require('unzip')
-      fs.createReadStream(a)
-        .pipe(unzip.Extract({path: b}));
+    fn: function (a, b, sys) {
+      const Zip = require('node-7z')
+      const zip = new Zip()
+      zip.extractFull(a, b).then(function () {
+        const fn = sys.__v0['解凍後:callback']
+        if (fn) fn(a, b, sys)
+      })
+      .catch(function (err) {
+        throw err
+      })
+      return true
     }
   },
-  '圧縮': { // @ファイルAをBにZIP圧縮 // @あっしゅく
+  '解凍後': { // 解凍完了したときのcallback処理を指定 // @かいとうご
+    type: 'func',
+    josi: [['を']],
+    fn: function (callback, sys) {
+      sys.__v0['解凍後:callback'] = callback
+    }
+  },
+  '圧縮': { // @(v1非互換)ファイルAをBに非同期にZIP圧縮(実行には7zが必要-https://goo.gl/YqHSSX) // @あっしゅく
     type: 'func',
     josi: [['を', 'から'],['に', 'へ']],
-    fn: function (a, b) {
-      const archiver = new require('narchiver')
-      const arc = archiver('zip', {zlib: {level: 9}})
-      const output = fs.createWriteStream(b)
-      output.on('close', () =>{
-        // 完了イベント
+    fn: function (a, b, sys) {
+      const Zip = require('node-7z')
+      const zip = new Zip()
+      zip.add(b, a).then(function (){
+        const fn = sys.__v0['圧縮後:callback']
+        if (fn) fn(a, b, sys)
       })
-      arc.on('warning', (err) => {
-        console.warn('[警告]', err)
+      .catch(function (err) {
+        throw err
       })
-      arc.on('error', (err) => {throw err})
-      arc.pipe(output)
-      //
-      if (isDir(a)) {
-        arc.directory(a, false)
-      } else {
-        arc.file(a, { name: path.basename(a)})
-      }
-      arc.finalize()
+      return true
+    }
+  },
+  '圧縮後': { // 圧縮完了したときのcallback処理を指定 // @あっしゅくご
+    type: 'func',
+    josi: [['を']],
+    fn: function (callback, sys) {
+      sys.__v0['圧縮後:callback'] = callback
     }
   },
   // @Nodeプロセス
@@ -245,7 +258,7 @@ const PluginNode = {
     josi: [['']],
       fn: function (sec, sys) {
         const sleep = require('sleep')
-        sleep.sleep(sec)
+        sleep.msleep(sec * 1000)
     }
   },
   // @コマンドライン
