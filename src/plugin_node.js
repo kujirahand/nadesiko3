@@ -2,6 +2,9 @@
  * file: plugin_node.js
  * node.js のためのプラグイン
  */
+const fs = require('fs')
+const path = require('path')
+
 const PluginNode = {
   '初期化': {
     type: 'func',
@@ -15,7 +18,6 @@ const PluginNode = {
     type: 'func',
     josi: [['を', 'から']],
     fn: function (s) {
-      const fs = require('fs')
       return fs.readFileSync(s, 'utf-8')
     }
   },
@@ -30,7 +32,6 @@ const PluginNode = {
     type: 'func',
     josi: [['へ', 'に'], ['を']],
     fn: function (f, s) {
-      const fs = require('fs')
       fs.writeFileSync(f, s, 'utf-8')
     },
     return_none: true
@@ -49,7 +50,6 @@ const PluginNode = {
     josi: [],
     fn: function () {
       const cwd = process.cwd()
-      const path = require('path')
       return path.resolve(cwd)
     }
   },
@@ -66,7 +66,6 @@ const PluginNode = {
     josi: [],
     fn: function () {
       const cwd = process.cwd()
-      const path = require('path')
       return path.resolve(cwd)
     }
   },
@@ -82,7 +81,6 @@ const PluginNode = {
     type: 'func',
     josi: [],
     fn: function () {
-      const path = require('path')
       let nakofile
       const cmd = path.basename(process.argv[1])
       if (cmd.indexOf('cnako3') < 0) {
@@ -111,8 +109,6 @@ const PluginNode = {
     type: 'func',
     josi: [['の', 'を', 'で']],
     fn: function (s) {
-      const fs = require('fs')
-      const path = require('path')
       if (s.indexOf('*') >= 0) { // ワイルドカードがある場合
         const searchPath = path.dirname(s)
         const mask1 = path.basename(s)
@@ -134,8 +130,6 @@ const PluginNode = {
     type: 'func',
     josi: [['の', 'を', 'で']],
     fn: function (s) {
-      const fs = require('fs')
-      const path = require('path')
       const result = []
       // ワイルドカードの有無を確認
       let mask = '.*'
@@ -173,7 +167,6 @@ const PluginNode = {
     type: 'func',
     josi: [['から', 'の']],
     fn: function (s) {
-      const path = require('path')
       return path.basename(s)
     }
   },
@@ -181,7 +174,6 @@ const PluginNode = {
     type: 'func',
     josi: [['から', 'の']],
     fn: function (s) {
-      const path = require('path')
       return path.dirname(s)
     }
   },
@@ -189,13 +181,25 @@ const PluginNode = {
     type: 'func',
     josi: [['が', 'の']],
     fn: function (path) {
-      const fs = require('fs')
       try {
         fs.statSync(path)
         return true
       } catch (err) {
         return false
       }
+    }
+  },
+  // @圧縮・解凍
+  '解凍': { // @ZIPファイルAをBに解凍 // @かいとう
+    type: 'func',
+    josi: [['を', 'から'],['に', 'へ']],
+    fn: function (a, b) {
+    }
+  },
+  '圧縮': { // @ファイルAをBにZIP圧縮 // @あっしゅく
+    type: 'func',
+    josi: [['を', 'から'],['に', 'へ']],
+    fn: function (a, b) {
     }
   },
   // @Nodeプロセス
@@ -211,6 +215,14 @@ const PluginNode = {
     josi: [],
     fn: function (sys) {
       sys.__exec('終', [])
+    }
+  },
+  '秒待': { // @NodeでN秒待つ // @びょうまつ
+    type: 'func',
+    josi: [['']],
+      fn: function (sec, sys) {
+        const sleep = require('sleep')
+        sleep.sleep(sec)
     }
   },
   // @コマンドライン
