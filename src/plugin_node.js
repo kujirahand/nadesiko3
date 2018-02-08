@@ -181,12 +181,14 @@ const PluginNode = {
     type: 'func',
     josi: [['が', 'の']],
     fn: function (path) {
-      try {
-        fs.statSync(path)
-        return true
-      } catch (err) {
-        return false
-      }
+      return fileExists(path)
+    }
+  },
+  'フォルダ存在': { // @ディレクトリPATHが存在するか確認して返す // @ふぃるだそんざい
+    type: 'func',
+    josi: [['が', 'の']],
+    fn: function (path) {
+      return isDir(path)
     }
   },
   // @圧縮・解凍
@@ -194,12 +196,33 @@ const PluginNode = {
     type: 'func',
     josi: [['を', 'から'],['に', 'へ']],
     fn: function (a, b) {
+      const unzip = require('unzip')
+      fs.createReadStream(a)
+        .pipe(unzip.Extract({path: b}));
     }
   },
   '圧縮': { // @ファイルAをBにZIP圧縮 // @あっしゅく
     type: 'func',
     josi: [['を', 'から'],['に', 'へ']],
     fn: function (a, b) {
+      const archiver = new require('narchiver')
+      const arc = archiver('zip', {zlib: {level: 9}})
+      const output = fs.createWriteStream(b)
+      output.on('close', () =>{
+        // 完了イベント
+      })
+      arc.on('warning', (err) => {
+        console.warn('[警告]', err)
+      })
+      arc.on('error', (err) => {throw err})
+      arc.pipe(output)
+      //
+      if (isDir(a)) {
+        arc.directory(a, false)
+      } else {
+        arc.file(a, { name: path.basename(a)})
+      }
+      arc.finalize()
     }
   },
   // @Nodeプロセス
@@ -248,6 +271,25 @@ const PluginNode = {
       const assert = require('assert')
       assert.equal(a, b)
     }
+  }
+}
+
+// ローカル関数
+function fileExists(f) {
+  try {
+    fs.statSync(f)
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
+function isDir(f) {
+  try {
+    const st = fs.statSync(f)
+    return st.isDirectory()
+  } catch (err) {
+    return false
   }
 }
 

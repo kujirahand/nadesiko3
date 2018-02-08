@@ -37,4 +37,12 @@ describe('plugin_node_test', () => {
     const path = process.env['PATH']
     cmp('「PATH」の環境変数取得して表示。', path)
   })
+  it('圧縮解凍', () => {
+    /*
+    cmp('F=「plugin_node_test.js」;' +
+      'Fを「a.zip」へ圧縮。0.1秒待つ。' +
+      '「a.zip」を「tmp」に解凍。' +
+      'S1=「tmp」を読む。S2=Fを読む。(S1=S2)を表示', '1')
+    */
+  })
 })
