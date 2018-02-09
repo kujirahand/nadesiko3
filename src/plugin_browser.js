@@ -1,6 +1,7 @@
 // plugin_browser.js
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
-import 'whatwg-fetch'
+const fetch = require('node-fetch')
+const FormData = require('form-data')
 
 const PluginBrowser = {
   '初期化': {
@@ -79,6 +80,59 @@ const PluginBrowser = {
     fn: function (callback, url, sys) {
       let options = sys.__v0['AJAXオプション']
       if (options === '') options = {}
+      fetch(url, options).then(res => {
+        return res.text()
+      }).then(text => {
+        sys.__v0['対象'] = text
+        callback(text)
+      }).catch(err => {
+        sys.__v0['AJAX:ONERROR'](err)
+      })
+    }
+  },
+  'POST送信時': { // @AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定 // @POSTそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に'], ['を']],
+    fn: function (callback, url, params, sys) {
+      let flist = []
+      for (let key in params) {
+        const v = params[key]
+        const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
+        flist.push(kv)
+      }
+      const bodyData = flist.join('&')
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: bodyData
+      }
+      fetch(url, options).then(res => {
+        return res.text()
+      }).then(text => {
+        sys.__v0['対象'] = text
+        callback(text)
+      }).catch(err => {
+        sys.__v0['AJAX:ONERROR'](err)
+      })
+    }
+  },
+  'POSTフォーム送信時': { // @AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定 // @POSTふぉーむそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に'], ['を']],
+    fn: function (callback, url, params, sys) {
+      const fd = new FormData()
+      for (var key in params) {
+        fd.set(key, params[key])
+      }
+      let options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        body: fd
+      }
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
@@ -181,7 +235,7 @@ const PluginBrowser = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      dom['onclick'] = func
+      dom.onclick = func
     },
     return_none: true
   },
@@ -431,6 +485,23 @@ const PluginBrowser = {
         .replace(/</g, '&lt;')
     }
   },
+
+  // @URLエンコード
+  'URLエンコード': { // @URLエンコードして返す // @URLえんこーど
+    type: 'func',
+    josi: [['を', 'から']],
+    fn: function (text) {
+      return encodeURIComponent(text)
+    }
+  },
+  'URLデコード': { // @URLデコードして返す // @URLでこーど
+    type: 'func',
+    josi: [['を', 'へ', 'に']],
+    fn: function (text) {
+      return decodeURIComponent(text)
+    }
+  },
+
   // @ローカルストレージ
   '保存': { // @ブラウザのlocalStorageのKにVを保存 // @ほぞん
     type: 'func',

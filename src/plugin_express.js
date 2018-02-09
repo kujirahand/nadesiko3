@@ -5,6 +5,8 @@
 const fs = require('fs')
 const path = require('path')
 const express = require('express')
+const bodyParser = require('body-parser')
+
 let server = null
 let app = null
 let debug = true
@@ -23,7 +25,8 @@ const PluginExpress = {
     }
   },
   // @Webサーバ(Exoress)
-  'WEBサーバクエリ': { type: 'const', value: '' }, // @URLパラメータ // @WEBサーバクエリ
+  'GETデータ': { type: 'const', value: '' }, // @URLパラメータ(GET) // @WEBサーバクエリ
+  'POSTデータ': { type: 'const', value: '' }, // @URLパラメータ(POST) // @WEBサーバクエリ
   'WEBサーバ名前設定': { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
     type: 'func',
     josi: [['に', 'へ']],
@@ -43,6 +46,17 @@ const PluginExpress = {
         console.log('以下のURLで起動しました。')
         console.log('- [URL] http://localhost:' + server.address().port)
       })
+      // POSTを自動的に処理
+      app.use(bodyParser.text({
+        type: 'text/plain'
+      }))
+      app.use(bodyParser.json({
+        type: 'application/json'
+      }))
+      app.use(bodyParser.urlencoded({
+        type: 'application/x-www-form-urlencoded',
+        extended: true
+      }))
       return server
     }
   },
@@ -68,6 +82,7 @@ const PluginExpress = {
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     fn: function (callback, uri, sys) {
+
       app.post(uri, (req, res) => { callbackServerFunc(callback, req, res, sys) })
     },
     return_none: true
@@ -112,7 +127,8 @@ const PluginExpress = {
 function callbackServerFunc(callback, req, res, sys) {
   sys.__v0['WEBサーバ:要求'] = req
   sys.__v0['WEBサーバ:応答'] = res
-  sys.__v0['WEBサーバクエリ'] = req.query
+  sys.__v0['GETデータ'] = req.query
+  sys.__v0['POSTデータ'] = req.body
   callback(req, res)
 }
 

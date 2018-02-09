@@ -1,10 +1,5 @@
 !「../../src/plugin_express.js」を取り込む。
 
-3回
-  対象を表示。
-ここまで
-
-
 # なでしこ3のユーザーフォルダ
 HOME=ホームディレクトリ取得
 USER_DIR=「{HOME}/nadesiko3_user」
@@ -21,7 +16,6 @@ USER_DIR=「{HOME}/nadesiko3_user」
 母艦パスを「../../release」で相対パス展開してRELEASEに代入。
 「/release」をRELEASEへWEBサーバ静的パス指定。
 
-
 # ルーティング
 「/」へWEBサーバGETした時には
   「/html/files.html」へWEBサーバリダイレクト。
@@ -29,4 +23,53 @@ USER_DIR=「{HOME}/nadesiko3_user」
 
 「/test」へWEBサーバGETした時には
   「test」をWEBサーバ出力。
+ここまで
+
+「/files」へWEBサーバGETした時には
+  S=「{USER_DIR}/*.nako3」のファイル列挙
+  SをJSONエンコードしてWEBサーバ出力。
+ここまで
+
+「/load」へWEBサーバGETした時には
+   WEBサーバクエリを表示。
+   FILE=GETデータ["file"]
+    FPATH=「{USER_DIR}/{FILE}」
+    FPATHが存在
+    もし、そうならば
+      FPATHを開く。
+      それをWEBサーバ出力。
+    違えば
+      『# --- ここにプログラムを記述 ---』&改行&『「あ」と表示。』をWEBサーバ出力。
+    ここまで。
+ここまで
+
+「/run」へWEBサーバPOSTした時には
+   「/run」を表示。
+   POSTデータを表示。
+   FILE=POSTデータ["file"]
+   BODY=POSTデータ["body"]
+   もし、(FILE=undefined)または(FILE=空)ならば
+     「エラー: ファイル名がありません」をWEBサーバ出力。
+     戻る。
+   ここまで
+   FPATH=「{USER_DIR}/{FILE}」
+   「FILE=」&FPATHを表示。
+   FPATHへBODYを保存。
+   RES=「cnako3 "{FPATH}"」を起動。
+   RESをWEBサーバ出力。
+ここまで
+
+「/save」へWEBサーバPOSTした時には
+   「/run」を表示。
+   POSTデータを表示。
+   FILE=POSTデータ["file"]
+   BODY=POSTデータ["body"]
+   もし、(FILE=undefined)または(FILE=空)ならば
+     「エラー: ファイル名がありません」をWEBサーバ出力。
+     戻る。
+   ここまで
+   FPATH=「{USER_DIR}/{FILE}」
+   「FILE=」&FPATHを表示。
+   FPATHへBODYを保存。
+   「OK」をWEBサーバ出力。
 ここまで
