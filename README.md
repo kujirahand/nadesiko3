@@ -22,17 +22,15 @@ Japanese Programming Language Nadesiko v3
 ## PCで利用する場合
 
 なでしこ3をPC向けにローカル環境でコマンドラインとして動作させることも可能です。
-その場合、先に、[Node.js](https://nodejs.org/ja/)をインストールします。
 
-- Windowsなら、「installer/install-win.bat」をダブルクリックします。
-- macOSなら、「installer/install-mac.sh」をダブルクリックします。
-- あるいは、コマンドラインから以下のコマンドを実行します。
+- Windowsなら、[配布パッケージ](https://github.com/kujirahand/nadesiko3/releases)より、「nako3-win32.zip」をダウンロードし解凍してください。
+- macOSなら、Node.jsをインストールし、次いで、コマンドラインから以下のコマンドを実行します。
 
 ```
 $ npm install -g nadesiko3
 ```
 
-すると、cnako3というコマンドで、なでしこを利用できます。
+すると、cnako3というコマンドで、なでしこを利用できます。また、Web版のエディタnako3serverと、Node版のエディタnako3editを利用できます。
 
 ## 開発環境をセットアップする
 
