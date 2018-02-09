@@ -6,6 +6,24 @@
 
 コマンドラインから以下を実行して、必要なライブラリをシステムにインストール。
 
+このとき、npm installするときに、なでしこのモジュールで、Native Add-onを使うものがあるため、ビルド環境を整える必要がある。
+
+【Windows】であれば、コンパイル環境が必要になるので、ビルドツールをインストールする。PowerShellから以下のコマンドを実行すると、自動的に必要なツールが入る。(Windowsのユーザー名に日本語が使われているとうまくコンパイルできないという情報もあるので注意。)
+
+また、Gitなどのツールをインストールするために、Chocolatey(https://chocolatey.org/)をインストールしておく。
+
+```
+# npm のビルドツール
+npm install -g windows-build-tools
+npm install -g node-gyp
+# Chocolatey でGitをインストール
+cinst git
+```
+
+【macOS】でもHomebrew(そしてXcode)をインストールしておくと安心。
+
+【共通】以下、共通の作業となる。(electron と asar は GUIをやるときに追加。ネット回線が細い人は抜かして実行しても良い)
+
 ```
 $ npm install -g npm-check-updates electron asar
 ```
@@ -19,19 +37,19 @@ $ npm install --no-optional
 ```
 
 コマンドラインから以下のコマンドを実行することで、ソースコードをビルドできる。
+これは、srcディレクトリの中のコードを編集すると、releaseディレクトリに結果が出力されるものだ。
 
 ```
 # Node.js用のソースコードをWeb用のJSに変換
 $ npm run build
 ```
 
-開発時は、監視ビルドさせることができる。
+開発時、以下のコマンドを実行すれば、監視ビルドさせることができる。
 
 ```
 $ npm run watch
 ```
 
-srcディレクトリの中のコードを編集すると、releaseディレクトリに結果が出力される。
 
 また、コマンドラインから以下のコマンドを実行することで、ソースコードをテストできる。
 
@@ -63,7 +81,9 @@ apm install linter-js-standard
 
 なでしこ3では、コマンドラインからなでしこを実行できる、cnako3(Windowsは、cnako3.bat)というスクリプトを用意。今後、なでしこの各種バッチファイルは、なでしこ自身で記述される。
 
-環境変数に、本ファイルのパスを、NAKO_HOMEとして登録し、パスを NAKO_HOME/src に通す。以下、macOS/Linuxでの.bashrcの記述例。
+ちなみに、``npm install -g nadeisko3`` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、それは安定版のなでしこがインストールされる。
+
+そこで、環境変数に、本ファイルのパスを、NAKO_HOMEとして登録し、パスを NAKO_HOME/src に通す。以下、macOS/Linuxでの.bashrcの記述例。(ユーザー名がkujiraの場合)
 
 ```
 HOME=/Users/kujira
