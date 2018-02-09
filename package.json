@@ -16,7 +16,7 @@
     "build": "webpack",
     "build:command": "cnako3 batch/build_command.nako3",
     "build:electron": "asar pack src/enako3.js release/enako3.asar",
-    "build:win32": "cnako3 installer/installer/make-nako3-win32.nako3",
+    "build:win32": "cnako3 installer/make-nako3-win32.nako3",
     "watch": "webpack --watch"
   },
   "repository": {
