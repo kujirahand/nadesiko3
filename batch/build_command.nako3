@@ -1,12 +1,15 @@
 ＃command.json をビルドする
-母艦パス取得してパス抽出して基本パスに代入。
-●CNAKO実行(Cを)
-　　CMD=「node {基本パス}/src/cnako3.js {C}」
-    CMDを表示。
-　　CMDを起動。
-ここまで。
+基本パス＝母艦パスを「../」で相対パス展開。
 
+基本パスを表示。
 「{基本パス}/batch/pickup_command.nako3」をCNAKO実行。
 「{基本パス}/batch/cmd_txt2json.nako3」をCNAKO実行。
 「{基本パス}/batch/cmd_txt2wiki.nako3」をCNAKO実行。
+
+●CNAKO実行(Cを)
+    「--------」を表示。
+　　CMD=「node {基本パス}/src/cnako3.js {C}」
+    CMDを表示。
+　　CMDを起動待機。
+ここまで。
 

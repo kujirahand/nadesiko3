@@ -9,14 +9,15 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "lite-server --config=demo/bs-config.json",
-    "server": "node src/nako3server.js",
+    "start": "node src/nako3server.js",
+    "server": "lite-server --config=demo/bs-config.json",
+    "nako3edit": "cnako3 tools/nako3edit/index.nako3",
     "electron": "electron src/enako3.js",
     "build": "webpack",
-    "build:command": "node src/cnako3.js batch/build_command.nako3",
+    "build:command": "cnako3 batch/build_command.nako3",
     "build:electron": "asar pack src/enako3.js release/enako3.asar",
-    "watch": "webpack --watch",
-    "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3"
+    "build:win32": "cnako3 installer/installer/make-nako3-win32.nako3",
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
