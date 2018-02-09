@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.0.27",
+  "version": "3.0.28",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -26,10 +26,13 @@
     "script"
   ],
   "files": [
-    "release",
+    "bin",
     "demo",
+    "doc",
     "src",
-    "bin"
+    "test",
+    "tools",
+    "release"
   ],
   "author": "kujirahand",
   "license": "MIT",
