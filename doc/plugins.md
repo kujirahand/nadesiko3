@@ -97,7 +97,9 @@ if (typeof (navigator) === 'object') {
 }
 ```
 
-sys.__findVar(name) や sys.__exec(name, params) は、すべて src/plugin_system.jsで定義されている。
-つまり、システム関数の初期化時に、これらの関数が追加される。
+なお、プラグインでは、以下のメソッドが使えるようになる。(すべて src/plugin_system.jsで定義されている。システム関数の初期化時に、これらの関数が追加される。)
 
+ - sys.__findVar(name)
+ - sys.__exec(name, params)
 
+関数内で、システム・グローバル変数にアクセスするには、``sys.__v0['変数名']``でアクセスできる。
