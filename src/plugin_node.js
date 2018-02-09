@@ -11,6 +11,7 @@ const PluginNode = {
     josi: [],
     fn: function (sys) {
       sys.__varslist[0]['コマンドライン'] = process.argv
+      sys.__v0['母艦パス'] = sys.__exec('母艦パス取得', [])
     }
   },
   // @ファイル入出力
@@ -77,6 +78,7 @@ const PluginNode = {
     },
     return_none: true
   },
+  '母艦パス': { type: 'const', value: ''}, // @スクリプトのあるディレクトリ // @ぼかんぱす
   '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
     type: 'func',
     josi: [],

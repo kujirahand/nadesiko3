@@ -2,7 +2,7 @@
 
 rem --- set env for nadesiko3 ---
 SET NAKO_HOME=%~dp0
-SET PATH=%NAKO_HOME%;%NAKO_HOME%bin;%PATH%
+SET PATH=%NAKO_HOME%bin;%NAKO_HOME%nodejs;%PATH%
 
 rem --- cd here ---
 cd %NAKO_HOME%
@@ -23,7 +23,8 @@ IF "%1" == "/install" (
   SET NAKO_MODE="cmd"
   ECHO install files for windows
   call .\nodejs\node .\installer\setup-win.bat
-)IF %NAKO_MODE%=="server" (
+)
+IF %NAKO_MODE%=="server" (
   rem --- exec server ---
   call .\nodejs\npm run server
 )

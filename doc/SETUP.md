@@ -13,11 +13,12 @@
 また、Gitなどのツールをインストールするために、Chocolatey(https://chocolatey.org/)をインストールしておく。
 
 ```
-# npm のビルドツール
-npm install -g windows-build-tools
-npm install -g node-gyp
 # Chocolatey でGitをインストール
 cinst git
+
+# npm のビルドツール (build tools+python2)
+npm install -g node-gyp
+npm install -g windows-build-tools
 ```
 
 【macOS】でもHomebrew(そしてXcode)をインストールしておくと安心。
