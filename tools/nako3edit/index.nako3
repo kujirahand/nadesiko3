@@ -1,11 +1,14 @@
 !「../../src/plugin_express.js」を取り込む。
 
+3回
+  対象を表示。
+ここまで
+
+
 # なでしこ3のユーザーフォルダ
 HOME=ホームディレクトリ取得
 USER_DIR=「{HOME}/nadesiko3_user」
-もし、(USER_DIRのフォルダ存在する)ならば
-  #---
-違えば
+もし、!(USER_DIRのフォルダ存在)ならば
   USER_DIRにフォルダ作成
 ここまで
 

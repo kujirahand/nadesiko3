@@ -104,6 +104,28 @@ const PluginNode = {
       return result
     }
   },
+  '存在': { // @ファイルPATHが存在するか確認して返す // @そんざい
+    type: 'func',
+    josi: [['が', 'の']],
+    fn: function (path) {
+      return fileExists(path)
+    }
+  },
+  'フォルダ存在': { // @ディレクトリPATHが存在するか確認して返す // @ふぃるだそんざい
+    type: 'func',
+    josi: [['が', 'の']],
+    fn: function (path) {
+      return isDir(path)
+    }
+  },
+  'フォルダ作成': { // @ディレクトリPATHを作成して返す // @ふぃるださくせい
+    type: 'func',
+    josi: [['の', 'を', 'に', 'へ']],
+    fn: function (path) {
+      return fs.mkdirSync(path)
+    }
+  },
+  // @パス操作
   'ファイル名抽出': { // @フルパスのファイル名Sからファイル名部分を抽出して返す // @ふぁいるめいちゅうしゅつ
     type: 'func',
     josi: [['から', 'の']],
@@ -125,28 +147,7 @@ const PluginNode = {
       return path.resolve(path.join(a, b))
     }
   },
-  '存在': { // @ファイルPATHが存在するか確認して返す // @そんざい
-    type: 'func',
-    josi: [['が', 'の']],
-    fn: function (path) {
-      return fileExists(path)
-    }
-  },
-  'フォルダ存在': { // @ディレクトリPATHが存在するか確認して返す // @ふぃるだそんざい
-    type: 'func',
-    josi: [['が', 'の']],
-    fn: function (path) {
-      return isDir(path)
-    }
-  },
-  'フォルダ作成': { // @ディレクトリPATHが存在するか確認して返す // @ふぃるだそんざい
-    type: 'func',
-    josi: [['が', 'の']],
-    fn: function (path) {
-      return isDir(path)
-    }
-  },
-  // @フォルダ操作
+  // @フォルダ取得
   'カレントディレクトリ取得': { // @カレントディレクトリを返す // @かれんとでぃれくとりしゅとく
     type: 'func',
     josi: [],

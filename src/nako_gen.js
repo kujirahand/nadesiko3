@@ -630,11 +630,12 @@ class NakoGen {
     }
     const block = this.convGenLoop(node.block)
     const id = this.loop_id++
-    const key = NakoGen.varname('対象キー')
-    const name = (node.name) ? node.name.value : '対象'
-    this.__vars[name] = true
-    this.__vars['対象キー'] = true
-    const nameS = NakoGen.varname(name)
+    const key = '__v0["対象キー"]'
+    let nameS = '__v0["対象"]'
+    if (node.name) {
+      nameS = NakoGen.varname(node.name.value)
+      this.__vars[node.name] = true
+    }
     const code =
       `let $nako_foreach_v${id}=${target};\n` +
       `for (let $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
@@ -649,7 +650,7 @@ class NakoGen {
     const id = this.loop_id++
     const value = this.convGen(node.value)
     const block = this.convGenLoop(node.block)
-    const kaisu = NakoGen.varname('回数')
+    const kaisu = '__v0["回数"]'
     const code =
       `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + '{\n' +
       `  ${this.sore} = ${kaisu} = $nako_i${id};` + '\n' +
