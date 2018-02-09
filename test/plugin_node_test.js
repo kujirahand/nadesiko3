@@ -46,7 +46,7 @@ describe('plugin_node_test', () => {
     cmp('FIN=「'+me+'」;'+
       'HOME=ホームディレクトリ取得;'+
       'TMP=HOME&"/temp";'+
-      'もし、TMPが存在しないならば、TMPのフォルダ作成。'+
+      'もし、!(TMPが存在する)ならば、TMPのフォルダ作成。'+
       'FZIP=「{TMP}test.zip」;\n' +
       'FINをFZIPへ圧縮。0.3秒待つ。FZIPを「{TMP}/」に解凍。0.3秒待つ。\n'+
       'S1=「{TMP}/plugin_node_test.js」を読む。\n'+
