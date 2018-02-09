@@ -24,6 +24,10 @@ IF "%1" == "/install" (
   ECHO install files for windows
   call .\nodejs\node .\installer\setup-win.bat
 )
+IF "%1" == "/nako3edit" (
+  SET NAKO_MODE="cmd"
+  call .\nodejs\npm run nako3edit
+)
 IF %NAKO_MODE%=="server" (
   rem --- exec server ---
   call .\nodejs\npm run server

@@ -37,13 +37,41 @@ const PluginNode = {
     },
     return_none: true
   },
-  '起動': { // @シェルコマンドSを起動 // @きどう
+  '起動待機': { // @シェルコマンドSを起動し実行終了まで待機する // @きどうたいき
     type: 'func',
     josi: [['を']],
     fn: function (s) {
       const execSync = require('child_process').execSync
       const r = execSync(s)
       return r.toString()
+    }
+  },
+  '起動': { // @シェルコマンドSを起動 // @きどう
+    type: 'func',
+    josi: [['を']],
+    fn: function (s) {
+      const exec = require('child_process').exec
+      exec(s, (err, stdout, stderr) => {
+        if (err) {
+          console.error(stderr)
+        } else {
+          if (stdout) console.log(stdout)
+        }
+      })
+    }
+  },
+  '起動時': { // @シェルコマンドSを起動 // @きどうしたとき
+    type: 'func',
+    josi: [['で'], ['を']],
+    fn: function (callback, s, sys) {
+      const exec = require('child_process').exec
+      exec(s, (err, stdout, stderr) => {
+        if (err) {
+          throw new Error(stderr)
+        } else {
+          callback(stdout)
+        }
+      })
     }
   },
   'ファイル列挙': { // @パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 // @ふぁいるれっきょ

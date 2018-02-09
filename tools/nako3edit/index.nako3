@@ -55,7 +55,7 @@ USER_DIR=「{HOME}/nadesiko3_user」
    FPATH=「{USER_DIR}/{FILE}」
    「FILE=」&FPATHを表示。
    FPATHへBODYを保存。
-   RES=「cnako3 "{FPATH}"」を起動。
+   RES=「cnako3 "{FPATH}"」を起動待機。
    RESをWEBサーバ出力。
 ここまで
 

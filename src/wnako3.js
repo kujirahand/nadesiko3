@@ -41,10 +41,9 @@ class WebNakoCompiler extends NakoCompiler {
 if (typeof (navigator) === 'object') {
   const nako3 = navigator.nako3 = new WebNakoCompiler()
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
-
-  setTimeout(() => {
+  window.addEventListener('DOMContentLoaded', (e) => {
     nako3.checkScriptTagParam()
-  }, 1)
+  })
 } else {
   module.exports = WebNakoCompiler
 }

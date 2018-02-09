@@ -43,9 +43,13 @@ describe('plugin_node_test', () => {
   })
   it('圧縮解凍', () => {
     const me = path.join(__dirname, 'plugin_node_test.js')
-    cmp('FIN=「'+me+'」;FZIP=「_deleteme.zip」;\n' +
-      'FINをFZIPへ圧縮。0.3秒待つ。FZIPを「tmp/」に解凍。0.3秒待つ。\n'+
-      'S1=「tmp/plugin_node_test.js」を読む。\n'+
+    cmp('FIN=「'+me+'」;'+
+      'HOME=ホームディレクトリ取得;'+
+      'TMP=HOME&"/temp";'+
+      'もし、TMPが存在しないならば、TMPのフォルダ作成。'+
+      'FZIP=「{TMP}test.zip」;\n' +
+      'FINをFZIPへ圧縮。0.3秒待つ。FZIPを「{TMP}/」に解凍。0.3秒待つ。\n'+
+      'S1=「{TMP}/plugin_node_test.js」を読む。\n'+
       'S2=FINを読む。\n' +
       'もし(S1＝S2)ならば,"OK"と表示。\n', 'OK')
   })

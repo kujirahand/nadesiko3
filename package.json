@@ -15,7 +15,8 @@
     "build": "webpack",
     "build:command": "node src/cnako3.js batch/build_command.nako3",
     "build:electron": "asar pack src/enako3.js release/enako3.asar",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3"
   },
   "repository": {
     "type": "git",
