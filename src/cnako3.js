@@ -165,7 +165,9 @@ class CNako3 extends NakoCompiler {
           this.funclist[key] = plugmod[key]
         }
       } catch (e) {
-        throw new Error('[取込エラー] 「' + pname + '」を取り込めません。' + e.message)
+        throw new Error(
+          '[取込エラー] プラグイン『' + pname + '』を取り込めません。' +
+          '(path=' + fullpath + ') ' + e.message)
       }
     }
     return result

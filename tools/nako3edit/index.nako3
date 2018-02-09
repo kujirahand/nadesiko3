@@ -1,0 +1,29 @@
+!「../../src/plugin_express.js」を取り込む。
+
+# なでしこ3のユーザーフォルダ
+HOME=ホームディレクトリ取得
+USER_DIR=「{HOME}/nadesiko3_user」
+もし、(USER_DIRのフォルダ存在する)ならば
+  #---
+違えば
+  USER_DIRにフォルダ作成
+ここまで
+
+3030でWEBサーバ起動。
+
+# 静的ディレクトリの指定
+# --- /html
+「/html」を「{母艦パス}/html」へWEBサーバ静的パス指定
+# --- /release
+母艦パスを「../../release」で相対パス展開してRELEASEに代入。
+「/release」をRELEASEへWEBサーバ静的パス指定。
+
+
+# ルーティング
+「/」へWEBサーバGETした時には
+  「/html/files.html」へWEBサーバリダイレクト。
+ここまで
+
+「/test」へWEBサーバGETした時には
+  「test」をWEBサーバ出力。
+ここまで

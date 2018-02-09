@@ -20,12 +20,14 @@
 
 ### 定義：関数
 
+プラグインの実体は、Object。
+
 ```
 {
   '関数名': {
     type: 'func',
     josi: [['を', 'から'], ['まで']],
-    fn: function (aFrom, aTo, sys) { ... }
+    fn: function (aFrom, aTo, sys) { ... },
     return_none: false
   },
   ...

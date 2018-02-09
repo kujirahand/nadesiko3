@@ -1,12 +1,18 @@
 // plugin_browser.js
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
+import 'whatwg-fetch'
 
 const PluginBrowser = {
   '初期化': {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      // 今後初期化処理をここに記述
+      // 定数を初期化
+      sys.__v0['AJAX:ONERROR'] = (err) => { console.log(err) }
+      // オブジェクトを初期化
+      sys.__v0['DOCUMENT'] = document
+      sys.__v0['WINDOW'] = window
+      sys.__v0['NAVIGATOR'] = navigator
     }
   },
 
@@ -66,7 +72,44 @@ const PluginBrowser = {
     }
   },
 
+  // @Ajax
+  'AJAX送信時': { // @AjaxでURLを取得し『対象』にデータを設定 // @AJAXそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に']],
+    fn: function (callback, url, sys) {
+      let options = sys.__v0['AJAXオプション']
+      if (options === '') options = {}
+      fetch(url, options).then(res => {
+        return res.text()
+      }).then(text => {
+        sys.__v0['対象'] = text
+        callback(text)
+      }).catch(err => {
+        sys.__v0['AJAX:ONERROR'](err)
+      })
+    }
+  },
+  'AJAX失敗時': { // @Ajax命令でエラーが起きたとき // @AJAXえらーしっぱいしたとき
+    type: 'func',
+    josi: [['の']],
+    fn: function (callback, sys) {
+      sys.__v0['AJAX:ONERROR'] = callback
+    }
+  },
+  'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
+  'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
+    type: 'func',
+    josi: [['に', 'へ', 'と']],
+    fn: function (option, sys) {
+      sys.__v0['AJAXオプション'] = option
+    },
+    return_none: true
+  },
+
   // @DOM操作
+  'DOCUMENT': { type: 'const', value: '' }, // @ブラウザdocumentオブジェクト // @DOCUMENT
+  'WINDOW': { type: 'const', value: '' }, // @ブラウザwindowオブジェクト // @WINDOW
+  'NAVIGATOR': { type: 'const', value: '' }, // @ブラウザnavigatorオブジェクト // @NAVIGATOR
   'DOM要素ID取得': { // @DOMの要素をIDを指定して取得 // @DOMようそIDしゅとく
     type: 'func',
     josi: [['の', 'を']],
@@ -121,6 +164,17 @@ const PluginBrowser = {
     },
     return_none: true
   },
+  'DOMイベント発火時': { // @DOMのEVENTが発火した時にCALLBACKを実行するように設定 // @DOMいべんとはっかしたとき
+    type: 'func',
+    josi: [['で'], ['の'], ['が']],
+    fn: function (callback, dom, event, sys) {
+      if (typeof (dom) === 'string') {
+        dom = document.querySelector(dom)
+      }
+      dom.addEventListener(event, callback)
+    },
+    return_none: true
+  },
   'クリック時': { // 無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
     type: 'func',
     josi: [['で'], ['を']],
@@ -131,13 +185,13 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '変更時': { // 無名関数FでDOMを変更した時に実行するイベントを設定 // @へんこうしたとき
+  '読込時': { // 無名関数FでDOMを読み個だ時に実行するイベントを設定 // @よみこんだとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      dom['onchange'] = func
+      dom['onload'] = func
     },
     return_none: true
   },

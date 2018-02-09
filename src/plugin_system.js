@@ -47,6 +47,7 @@ const PluginSystem = {
   'NULL': {type: 'const', value: null}, // @NULL
   'undefined': {type: 'const', value: undefined}, // @undefined
   'エラーメッセージ': {type: 'const', value: ''}, // @えらーめっせーじ
+  '対象': {type: 'const', value: ''}, // @たいしょう
   '空配列': { // @空の配列を返す // @からはいれつ
     type: 'func',
     josi: [],

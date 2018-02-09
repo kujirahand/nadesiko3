@@ -10,7 +10,7 @@ const PluginNode = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__varslist[0]['コマンドライン'] = process.argv
+      sys.__v0['コマンドライン'] = process.argv
       sys.__v0['母艦パス'] = sys.__exec('母艦パス取得', [])
     }
   },
@@ -44,67 +44,6 @@ const PluginNode = {
       const execSync = require('child_process').execSync
       const r = execSync(s)
       return r.toString()
-    }
-  },
-  'カレントディレクトリ取得': { // @カレントディレクトリを返す // @かれんとでぃれくとりしゅとく
-    type: 'func',
-    josi: [],
-    fn: function () {
-      const cwd = process.cwd()
-      return path.resolve(cwd)
-    }
-  },
-  'カレントディレクトリ変更': { // @カレントディレクトリをDIRに変更する // @かれんとでぃれくとりへんこう
-    type: 'func',
-    josi: [['に', 'へ']],
-    fn: function (dir) {
-      process.chdir(dir)
-    },
-    return_none: true
-  },
-  '作業フォルダ取得': { // @カレントディレクトリを返す // @さぎょうふぉるだしゅとく
-    type: 'func',
-    josi: [],
-    fn: function () {
-      const cwd = process.cwd()
-      return path.resolve(cwd)
-    }
-  },
-  '作業フォルダ変更': { // @カレントディレクトリをDIRに変更する // @さぎょうふぉるだへんこう
-    type: 'func',
-    josi: [['に', 'へ']],
-    fn: function (dir) {
-      process.chdir(dir)
-    },
-    return_none: true
-  },
-  '母艦パス': { type: 'const', value: ''}, // @スクリプトのあるディレクトリ // @ぼかんぱす
-  '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
-    type: 'func',
-    josi: [],
-    fn: function () {
-      let nakofile
-      const cmd = path.basename(process.argv[1])
-      if (cmd.indexOf('cnako3') < 0) {
-        nakofile = process.argv[1]
-      } else {
-        nakofile = process.argv[2]
-      }
-      return path.dirname(path.resolve(nakofile))
-    }
-  },
-  '環境変数取得': { // @環境変数Sを返す // @かんきょうへんすうしゅとく
-    type: 'func',
-    josi: [['の']],
-    fn: function (s) {
-      return process.env[s]
-    }
-  },
-  '環境変数一覧取得': { // @環境変数の一覧を返す // @かんきょうへんすういちらんしゅとく
-    type: 'func',
-    josi: [],
-    fn: function () {
-      return process.env
     }
   },
   'ファイル列挙': { // @パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 // @ふぁいるれっきょ
@@ -179,6 +118,13 @@ const PluginNode = {
       return path.dirname(s)
     }
   },
+  '相対パス展開': { // @ファイル名AからパスBを展開して返す // @そうたいぱすてんかい
+    type: 'func',
+    josi: [['を'], ['で']],
+    fn: function (a, b) {
+      return path.resolve(path.join(a, b))
+    }
+  },
   '存在': { // @ファイルPATHが存在するか確認して返す // @そんざい
     type: 'func',
     josi: [['が', 'の']],
@@ -191,6 +137,83 @@ const PluginNode = {
     josi: [['が', 'の']],
     fn: function (path) {
       return isDir(path)
+    }
+  },
+  'フォルダ作成': { // @ディレクトリPATHが存在するか確認して返す // @ふぃるだそんざい
+    type: 'func',
+    josi: [['が', 'の']],
+    fn: function (path) {
+      return isDir(path)
+    }
+  },
+  // @フォルダ操作
+  'カレントディレクトリ取得': { // @カレントディレクトリを返す // @かれんとでぃれくとりしゅとく
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const cwd = process.cwd()
+      return path.resolve(cwd)
+    }
+  },
+  'カレントディレクトリ変更': { // @カレントディレクトリをDIRに変更する // @かれんとでぃれくとりへんこう
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (dir) {
+      process.chdir(dir)
+    },
+    return_none: true
+  },
+  '作業フォルダ取得': { // @カレントディレクトリを返す // @さぎょうふぉるだしゅとく
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const cwd = process.cwd()
+      return path.resolve(cwd)
+    }
+  },
+  '作業フォルダ変更': { // @カレントディレクトリをDIRに変更する // @さぎょうふぉるだへんこう
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (dir) {
+      process.chdir(dir)
+    },
+    return_none: true
+  },
+  'ホームディレクトリ取得': { // @ホームディレクトリを取得して返す // @ほーむでぃれくとりしゅとく
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (dir) {
+      return process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"]
+    },
+  },
+  '母艦パス': { type: 'const', value: ''}, // @スクリプトのあるディレクトリ // @ぼかんぱす
+  '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
+    type: 'func',
+    josi: [],
+    fn: function () {
+      let nakofile
+      const cmd = path.basename(process.argv[1])
+      if (cmd.indexOf('cnako3') < 0) {
+        nakofile = process.argv[1]
+      } else {
+        nakofile = process.argv[2]
+      }
+      return path.dirname(path.resolve(nakofile))
+    }
+  },
+  // @環境変数
+  '環境変数取得': { // @環境変数Sを返す // @かんきょうへんすうしゅとく
+    type: 'func',
+    josi: [['の']],
+    fn: function (s) {
+      return process.env[s]
+    }
+  },
+  '環境変数一覧取得': { // @環境変数の一覧を返す // @かんきょうへんすういちらんしゅとく
+    type: 'func',
+    josi: [],
+    fn: function () {
+      return process.env
     }
   },
   // @圧縮・解凍
@@ -215,7 +238,8 @@ const PluginNode = {
     josi: [['を']],
     fn: function (callback, sys) {
       sys.__v0['解凍後:callback'] = callback
-    }
+    },
+    return_none: true
   },
   '圧縮': { // @(v1非互換)ファイルAをBに非同期にZIP圧縮(実行には7zが必要-https://goo.gl/YqHSSX) // @あっしゅく
     type: 'func',
@@ -238,7 +262,8 @@ const PluginNode = {
     josi: [['を']],
     fn: function (callback, sys) {
       sys.__v0['圧縮後:callback'] = callback
-    }
+    },
+    return_none: true
   },
   // @Nodeプロセス
   '終': { // @Nodeでプログラム実行を強制終了する // @おわる
@@ -246,21 +271,38 @@ const PluginNode = {
     josi: [],
     fn: function () {
       process.exit()
-    }
+    },
+    return_none: true
   },
   '終了': { // @Nodeでプログラム実行を強制終了する // @しゅうりょう
     type: 'func',
     josi: [],
     fn: function (sys) {
       sys.__exec('終', [])
-    }
+    },
+    return_none: true
   },
   '秒待': { // @NodeでN秒待つ // @びょうまつ
     type: 'func',
     josi: [['']],
-      fn: function (sec, sys) {
-        const sleep = require('sleep')
-        sleep.msleep(sec * 1000)
+    fn: function (sec, sys) {
+      const sleep = require('sleep')
+      sleep.msleep(sec * 1000)
+    },
+    return_none: true
+  },
+  'OS取得': { // @OSプラットフォームを返す // @OSしゅとく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      return process.platform
+    }
+  },
+  'OSアーキテクチャ取得': { // @OSアーキテクチャを返す // @OSあーきてくちゃしゅとく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      return process.arch
     }
   },
   // @コマンドライン
