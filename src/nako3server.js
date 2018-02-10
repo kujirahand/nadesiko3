@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 /** なでしこ3簡易EXPRESSサーバー */
-const fs = require('fs')
-const execSync = require('child_process').execSync
 
 const express = require('express')
 const app = express()
@@ -10,7 +8,7 @@ const app = express()
 const path = require('path')
 const rootDir = path.resolve(path.join(__dirname, '../'))
 app.use(express.static(rootDir))
-console.log("documentRoot: " + rootDir)
+console.log('documentRoot:', rootDir)
 
 // root => redirect
 app.get('/', function (req, res) {
@@ -22,10 +20,9 @@ let port = 3000
 let server = null
 const callbackStart = () => {
   const opener = require('opener')
-  const host = server.address().address
   const port = server.address().port
-  console.log("サーバーを開始しました")
-  console.log("[URL] http://localhost:%s", port)
+  console.log('+ サーバーを開始しました')
+  console.log('+ [URL] http://localhost:%s', port)
   opener('http://localhost:' + port)
 }
 

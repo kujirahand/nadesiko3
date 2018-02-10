@@ -74,6 +74,14 @@ const PluginNode = {
       })
     }
   },
+  'ブラウザ起動': { // @ブラウザでURLを起動 // @ぶらうざきどう
+    type: 'func',
+    josi: [['を']],
+    fn: function (url) {
+      const opener = require('opener')
+      opener(url)
+    }
+  },
   'ファイル列挙': { // @パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 // @ふぁいるれっきょ
     type: 'func',
     josi: [['の', 'を', 'で']],
@@ -212,10 +220,10 @@ const PluginNode = {
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (dir) {
-      return process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"]
-    },
+      return process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
+    }
   },
-  '母艦パス': { type: 'const', value: ''}, // @スクリプトのあるディレクトリ // @ぼかんぱす
+  '母艦パス': {type: 'const', value: ''}, // @スクリプトのあるディレクトリ // @ぼかんぱす
   '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
     type: 'func',
     josi: [],
@@ -248,15 +256,14 @@ const PluginNode = {
   // @圧縮・解凍
   '解凍': { // @(v1非互換)ZIPファイルAをBに非同期に解凍(実行には7zが必要-https://goo.gl/YqHSSX) // @かいとう
     type: 'func',
-    josi: [['を', 'から'],['に', 'へ']],
+    josi: [['を', 'から'], ['に', 'へ']],
     fn: function (a, b, sys) {
       const Zip = require('node-7z')
       const zip = new Zip()
       zip.extractFull(a, b).then(function () {
         const fn = sys.__v0['解凍後:callback']
         if (fn) fn(a, b, sys)
-      })
-      .catch(function (err) {
+      }).catch(function (err) {
         throw err
       })
       return true
@@ -272,15 +279,14 @@ const PluginNode = {
   },
   '圧縮': { // @(v1非互換)ファイルAをBに非同期にZIP圧縮(実行には7zが必要-https://goo.gl/YqHSSX) // @あっしゅく
     type: 'func',
-    josi: [['を', 'から'],['に', 'へ']],
+    josi: [['を', 'から'], ['に', 'へ']],
     fn: function (a, b, sys) {
       const Zip = require('node-7z')
       const zip = new Zip()
-      zip.add(b, a).then(function (){
+      zip.add(b, a).then(function () {
         const fn = sys.__v0['圧縮後:callback']
         if (fn) fn(a, b, sys)
-      })
-      .catch(function (err) {
+      }).catch(function (err) {
         throw err
       })
       return true
@@ -361,7 +367,7 @@ const PluginNode = {
 }
 
 // ローカル関数
-function fileExists(f) {
+function fileExists (f) {
   try {
     fs.statSync(f)
     return true
@@ -370,7 +376,7 @@ function fileExists(f) {
   }
 }
 
-function isDir(f) {
+function isDir (f) {
   try {
     const st = fs.statSync(f)
     return st.isDirectory()

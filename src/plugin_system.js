@@ -168,18 +168,18 @@ const PluginSystem = {
   },
 
   // @特殊命令
-  'JS実行': { // @JavaScriptのコードSを実行する // @JSじっこう
+  'JS実行': { // @JavaScriptのコードSRCを実行する(変数sysでなでしこシステムを参照できる) // @JSじっこう
     type: 'func',
     josi: [['を', 'で']],
-    fn: function (js) {
-      return eval(js) // eslint-disable-line
+    fn: function (src, sys) {
+      return eval(src) // eslint-disable-line
     }
   },
-  'JSオブジェクト取得': { // @なでしこで定義した関数nameStrのJavaScriptオブジェクトを取得する // @JSおぶじぇくとしゅとく
+  'JSオブジェクト取得': { // @なでしこで定義した関数や変数nameのJavaScriptオブジェクトを取得する // @JSおぶじぇくとしゅとく
     type: 'func',
     josi: [['の']],
-    fn: function (nameStr, sys) {
-      return sys.__findVar(nameStr, null)
+    fn: function (name, sys) {
+      return sys.__findVar(name, null)
     }
   },
 

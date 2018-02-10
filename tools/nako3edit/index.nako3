@@ -7,7 +7,20 @@ USER_DIR=「{HOME}/nadesiko3_user」
   USER_DIRにフォルダ作成
 ここまで
 
-3030でWEBサーバ起動。
+# --- WEBサーバ起動 ---
+PORT=3030
+PORTでWEBサーバ起動。
+WEBサーバ起動成功した時には(NO)
+  「http://localhost:{NO}」をブラウザ起動。
+ここまで
+WEBサーバ起動失敗した時には
+  PORT = PORT + 1
+  もし、PORT> 3050ならば
+    「WEBサーバが起動できませんでした。」と表示。
+    戻る。
+  ここまで
+  PORTでWEBサーバ起動
+ここまで
 
 # 静的ディレクトリの指定
 # --- /html

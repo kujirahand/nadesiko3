@@ -2,8 +2,6 @@
  * file: plugin_express.js
  * Webサーバのためのプラグイン (expressをラップしたもの)
  */
-const fs = require('fs')
-const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 
@@ -19,6 +17,8 @@ const PluginExpress = {
     type: 'func',
     josi: [],
     fn: function (sys) {
+      sys.__v0['WEBサーバ:OK'] = null
+      sys.__v0['WEBサーバ:NG'] = null
       sys.__v0['WEBサーバ:要求'] = null
       sys.__v0['WEBサーバ:応答'] = null
       sys.__v0['WEBサーバクエリ'] = {}
@@ -42,9 +42,19 @@ const PluginExpress = {
     fn: function (portno, sys) {
       app = express()
       server = app.listen(portno, () => {
-        console.log('[' + WEBSERVER_NAME + ']')
-        console.log('以下のURLで起動しました。')
-        console.log('- [URL] http://localhost:' + server.address().port)
+        const pno = server.address().port
+        if (debug) {
+          console.log('* [' + WEBSERVER_NAME + ']')
+          console.log('| 以下のURLで起動しました。')
+          console.log('+- [URL] http://localhost:' + pno)
+        }
+        // --- callback ---
+        const callback = sys.__v0['WEBサーバ:OK']
+        if (callback) callback(pno, sys)
+      })
+      server.on('error', (e) => {
+        const callback = sys.__v0['WEBサーバ:NG']
+        if (callback) callback(e, sys)
       })
       // POSTを自動的に処理
       app.use(bodyParser.text({
@@ -59,6 +69,22 @@ const PluginExpress = {
       }))
       return server
     }
+  },
+  'WEBサーバ起動成功時': { // @WEBサーバ起動が成功した時にcallbackを実行 // @WEBさーばきどうせいこうしたとき
+    type: 'func',
+    josi: [['を']],
+    fn: function (callback, sys) {
+      sys.__v0['WEBサーバ:OK'] = callback
+    },
+    return_none: true
+  },
+  'WEBサーバ起動失敗時': { // @WEBサーバ起動が失敗した時にcallbackを実行 // @WEBさーばきどうしっぱいしたとき
+    type: 'func',
+    josi: [['を']],
+    fn: function (callback, sys) {
+      sys.__v0['WEBサーバ:NG'] = callback
+    },
+    return_none: true
   },
   'WEBサーバ静的パス指定': { // @サーバのHTMLや画像などを配置する静的パスを指定する // @WEBさーばせいてきぱすしてい
     type: 'func',
