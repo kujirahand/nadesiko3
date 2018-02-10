@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.0.29",
+  "version": "3.0.30",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -13,6 +13,7 @@
     "start": "node src/nako3server.js",
     "server": "lite-server --config=demo/bs-config.json",
     "nako3edit": "cnako3 tools/nako3edit/index.nako3",
+    "nako3edit:run": "node tools/nako3edit/run.js",
     "electron": "electron src/enako3.js",
     "build": "webpack",
     "build:command": "cnako3 batch/build_command.nako3",
@@ -113,6 +114,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "request": "^2.83.0",
-    "sleep": "^5.1.1"
+    "sleep": "^5.1.1",
+    "whatwg-fetch": "^2.0.3"
   }
 }

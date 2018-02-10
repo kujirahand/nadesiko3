@@ -1,17 +1,11 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>なでしこ3(Node版)エディタ</title>
   <link href="/html/nako3edit.css" rel="stylesheet" type="text/css" />
-  <script defer src="/release/wnako3.js?run&v=1"></script>
-  <script type="text/javascript">
-    // Add-on function
-    window.addEventListener('load', () => {
-      navigator.nako3.setFunc('表示', [['と', 'を']], (s) => {
-        console.log('[LOG]', s)
-      })
-    })
-  </script>
+  <script defer type="text/javascript" src="/release/wnako3.js?run&v=1"></script>
+  <script defer type="text/javascript" src="/html/edit_plugin.js"></script>
   <script type="なでしこ">
 #-----------
 URL=WINDOW['location']['href']
@@ -20,7 +14,7 @@ URLを「/\?file\=(.*)$/」で正規表現マッチ
 もし、そうならば
   FNAME=URLデコード(抽出文字列[0])
 ここまで
-WINDOWの「onload」に「エディタ初期化」をDOMイベント設定。
+エディタ初期化。
 
 ●エディタ初期化
   「エディタ初期化」を表示。

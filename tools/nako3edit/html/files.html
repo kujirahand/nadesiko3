@@ -1,14 +1,14 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>なでしこ3(Node版)エディタ - ファイル一覧</title>
   <link href="/html/nako3edit.css" rel="stylesheet" type="text/css" />
-  <script defer src="/release/wnako3.js?run&v=1"></script>
+  <script defer type="text/javascript" src="/release/wnako3.js?run"></script>
+  <script defer type="text/javascript" src="/html/edit_plugin.js"></script>
   <script type="なでしこ">
 #-----------
-WINDOWの「load」がDOMイベント発火した時には
-  ファイル一覧取得処理
-ここまで。
+ファイル一覧取得処理
 
 ●ファイル一覧取得処理
   「/files」へAJAX送信した時には
@@ -20,8 +20,15 @@ WINDOWの「load」がDOMイベント発火した時には
       F3 = FをURLエンコード
       HTML=HTML&「<li><a href="/html/edit.html?file={F3}">{F2}</a></li>」
     ここまで
-    「#files_ul」にHTMLをDOM_HTML設定
+    「#files_ul」にHTMLをDOM_HTML設定。
   ここまで。
+  # ---
+  AJAX失敗した時には(err)
+    errをHTML変換してERRに代入。
+    S=「<p style='color: red;'>サーバとの通信に失敗しました。<br />」＆_
+      「サーバ設定かブラウザの設定を確認してください。</p><p>{ERR}</p>」
+    「#files_ul」にSをDOM_HTML設定。
+  ここまで
 ここまで。
 #-----------
   </script>
@@ -29,7 +36,7 @@ WINDOWの「load」がDOMイベント発火した時には
 <body>
   <h1>なでしこ3(Node版) - ファイル一覧</h1>
   <div id="filesbox">
-    <ul id="files_ul"></ul>
+    <ul id="files_ul"><li>現在読み込み中です。少々お待ちください。</li></ul>
   </div>
 </body>
 </html>

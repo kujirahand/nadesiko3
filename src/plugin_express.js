@@ -82,7 +82,6 @@ const PluginExpress = {
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     fn: function (callback, uri, sys) {
-
       app.post(uri, (req, res) => { callbackServerFunc(callback, req, res, sys) })
     },
     return_none: true
@@ -124,13 +123,12 @@ const PluginExpress = {
 }
 
 // GET/POST/PUT/DELETEのコールバック
-function callbackServerFunc(callback, req, res, sys) {
+function callbackServerFunc (callback, req, res, sys) {
   sys.__v0['WEBサーバ:要求'] = req
   sys.__v0['WEBサーバ:応答'] = res
   sys.__v0['GETデータ'] = req.query
   sys.__v0['POSTデータ'] = req.body
   callback(req, res)
 }
-
 
 module.exports = PluginExpress

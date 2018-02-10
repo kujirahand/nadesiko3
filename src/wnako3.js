@@ -2,24 +2,22 @@
 // wnako3.js
 const NakoCompiler = require('./nako3')
 const PluginBrowser = require('./plugin_browser')
-
+const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 class WebNakoCompiler extends NakoCompiler {
-  constructor () {
-    super()
-  }
   /**
    * ブラウザでtype="なでしこ"というスクリプトを得て実行する
    */
-  runNakoScript () {
+  runNakoScript (scripts) {
     // スクリプトタグの中身を得る
-    let scripts = document.querySelectorAll('script')
+    let nakoScriptCount = 0
     for (let i = 0; i < scripts.length; i++) {
       let script = scripts[i]
-      let type = script.type
-      if (type === 'nako' || type === 'なでしこ') {
+      if (script.type.match(NAKO_SCRIPT_RE)) {
+        nakoScriptCount++
         this.run(script.text)
       }
     }
+    console.log('実行したなでしこの個数=', nakoScriptCount)
   }
 
   checkScriptTagParam () {
@@ -30,7 +28,7 @@ class WebNakoCompiler extends NakoCompiler {
       let script = scripts[i]
       let src = script.src || ''
       if (src.indexOf('wnako3.js?run') >= 0) {
-        this.runNakoScript()
+        this.runNakoScript(scripts)
         break
       }
     }
@@ -43,7 +41,7 @@ if (typeof (navigator) === 'object') {
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {
     nako3.checkScriptTagParam()
-  })
+  }, false)
 } else {
   module.exports = WebNakoCompiler
 }

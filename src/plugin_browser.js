@@ -1,7 +1,6 @@
 // plugin_browser.js
+import 'whatwg-fetch'
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
-const fetch = require('node-fetch')
-const FormData = require('form-data')
 
 const PluginBrowser = {
   '初期化': {
@@ -79,13 +78,14 @@ const PluginBrowser = {
     josi: [['の'], ['まで', 'へ', 'に']],
     fn: function (callback, url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') options = {}
+      if (options === '') options = null
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
         sys.__v0['対象'] = text
         callback(text)
       }).catch(err => {
+        console.log('[fetch.error]', err)
         sys.__v0['AJAX:ONERROR'](err)
       })
     }
