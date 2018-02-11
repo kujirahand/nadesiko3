@@ -30,6 +30,7 @@ const PluginSystem = {
   // @システム定数
   'ナデシコバージョン': {type: 'const', value: '?'}, // @なでしこばーじょん
   'ナデシコエンジン': {type: 'const', value: 'nadesi.com/v3'}, // @なでしこえんじん
+  'ナデシコ種類': {type: 'const', value: 'wnako3/cnako3'}, // @なでしこしゅるい
   'はい': {type: 'const', value: 1}, // @はい
   'いいえ': {type: 'const', value: 0}, // @いいえ
   'オン': {type: 'const', value: 1}, // @おん

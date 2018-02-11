@@ -4,6 +4,10 @@ const NakoCompiler = require('./nako3')
 const PluginBrowser = require('./plugin_browser')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 class WebNakoCompiler extends NakoCompiler {
+  constructor () {
+    super()
+    this.__varslist[0]['ナデシコ種類'] = 'wnako3'
+  }
   /**
    * ブラウザでtype="なでしこ"というスクリプトを得て実行する
    */
