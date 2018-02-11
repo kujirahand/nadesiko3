@@ -14,7 +14,7 @@ class CNako3 extends NakoCompiler {
     super()
     this.silent = false
     this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
-    this.__varslist[0]['ナデシコ種類'] = 'wnako3'
+    this.__varslist[0]['ナデシコ種類'] = 'cnako3'
   }
   // CNAKO3で使えるコマンドを登録する
   registerCommands () {

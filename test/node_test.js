@@ -20,6 +20,7 @@ describe('node_test(cnako)', () => {
   // --- バージョンチェック ---
   it('ナデシコバージョン', () => {
     cmp('ナデシコバージョンを表示', packagejson.version)
+    cmp('ナデシコ種類を表示', 'cnako3')
   })
   // --- test ---
   it('print simple', () => {
