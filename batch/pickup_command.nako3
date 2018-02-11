@@ -7,7 +7,8 @@
     'plugin_system.js',
     'plugin_browser.js',
     'plugin_turtle.js',
-    'plugin_node.js'
+    'plugin_node.js',
+    'plugin_express.js'
  ]
 
 関数定義とは変数
