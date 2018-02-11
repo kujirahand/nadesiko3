@@ -7,9 +7,10 @@ class WebNakoCompiler extends NakoCompiler {
   /**
    * ブラウザでtype="なでしこ"というスクリプトを得て実行する
    */
-  runNakoScript (scripts) {
+  runNakoScript () {
     // スクリプトタグの中身を得る
     let nakoScriptCount = 0
+    let scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
       let script = scripts[i]
       if (script.type.match(NAKO_SCRIPT_RE)) {
@@ -28,7 +29,7 @@ class WebNakoCompiler extends NakoCompiler {
       let script = scripts[i]
       let src = script.src || ''
       if (src.indexOf('wnako3.js?run') >= 0) {
-        this.runNakoScript(scripts)
+        this.autoRun = true
         break
       }
     }
@@ -40,7 +41,8 @@ if (typeof (navigator) === 'object') {
   const nako3 = navigator.nako3 = new WebNakoCompiler()
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {
-    nako3.checkScriptTagParam()
+    const autoRun = nako3.checkScriptTagParam()
+    if (autoRun) nako3.runNakoScript()
   }, false)
 } else {
   module.exports = WebNakoCompiler

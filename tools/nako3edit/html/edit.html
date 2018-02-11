@@ -8,12 +8,13 @@
   <script defer type="text/javascript" src="/html/edit_plugin.js"></script>
   <script type="なでしこ">
 #-----------
-URL=WINDOW['location']['href']
+APPKEY=""
+HREF=WINDOW["location"]["href"]
+P=HREFをURLパラメータ解析
+APPKEY=P["appkey"]
+Pを表示。
 FNAME="無題.nako3"
-URLを「/\?file\=(.*)$/」で正規表現マッチ
-もし、そうならば
-  FNAME=URLデコード(抽出文字列[0])
-ここまで
+もし、P["file"]ならば、FNAME=P["file"]
 エディタ初期化。
 
 ●エディタ初期化
@@ -35,7 +36,8 @@ URLを「/\?file\=(.*)$/」で正規表現マッチ
   S=「#body」のDOMテキスト取得
   「/run」へ{
     "file": 「#name」のDOMテキスト取得,
-    "body": 「#body」のDOMテキスト取得
+    "body": 「#body」のDOMテキスト取得,
+    "appkey": APPKEY
   }をPOST送信した時には
     H＝対象をHTML変換して改行を「<br />」に置換。
     「#result」にHをDOMテキスト設定。
@@ -47,7 +49,8 @@ URLを「/\?file\=(.*)$/」で正規表現マッチ
   S=「#body」のDOMテキスト取得
   「/save」へ{
     "file": 「#name」のDOMテキスト取得,
-    "body": 「#body」のDOMテキスト取得
+    "body": 「#body」のDOMテキスト取得,
+    "appkey": APPKEY
   }をPOST送信した時には
     H=対象をHTML変換
     「#result」にHをDOMテキスト設定。

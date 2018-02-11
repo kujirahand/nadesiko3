@@ -73,7 +73,7 @@ const PluginBrowser = {
   },
 
   // @Ajax
-  'AJAX送信時': { // @AjaxでURLを取得し『対象』にデータを設定 // @AJAXそうしんしたとき
+  'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     fn: function (callback, url, sys) {
@@ -88,7 +88,16 @@ const PluginBrowser = {
         console.log('[fetch.error]', err)
         sys.__v0['AJAX:ONERROR'](err)
       })
-    }
+    },
+    return_none: true
+  },
+  'GET送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @GETそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に']],
+    fn: function (callback, url, sys) {
+      sys.__exec('AJAX送信時', [callback, url, sys])
+    },
+    return_none: true
   },
   'POST送信時': { // @AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定 // @POSTそうしんしたとき
     type: 'func',
@@ -499,6 +508,24 @@ const PluginBrowser = {
     josi: [['を', 'へ', 'に']],
     fn: function (text) {
       return decodeURIComponent(text)
+    }
+  },
+  'URLパラメータ解析': { // @URLパラメータを解析してハッシュで返す // @URLぱらめーたかいせき
+    type: 'func',
+    josi: [['を', 'の', 'から']],
+    fn: function (url) {
+      const res = {}
+      const p = url.split('?')
+      if (p.length === 0) return res
+      const params = p[1].split('&')
+      for (const line of params) {
+        const line2 = line + '='
+        const kv = line2.split('=')
+        const k = decodeURIComponent(kv[0])
+        const v = decodeURIComponent(kv[1])
+        res[k] = v
+      }
+      return res
     }
   },
 

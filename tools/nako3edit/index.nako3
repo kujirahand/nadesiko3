@@ -1,15 +1,19 @@
 !「../../src/plugin_express.js」を取り込む。
-
+# ---------------------------------
 # なでしこ3のユーザーフォルダ
+# ---------------------------------
 HOME=ホームディレクトリ取得
 USER_DIR=「{HOME}/nadesiko3_user」
 もし、!(USER_DIRのフォルダ存在)ならば
   USER_DIRにフォルダ作成
 ここまで
 
-# --- WEBサーバ起動 ---
+# ---------------------------------
+# WEBサーバ起動
+# ---------------------------------
+APPKEY = (65535の乱数)&「:」&(65535の乱数)&「:」&(65535の乱数)
 PORT=3030
-PORTでWEBサーバ起動。
+PORTでWEBサーバ起動
 WEBサーバ起動成功した時には(NO)
   「http://localhost:{NO}」をブラウザ起動。
 ここまで
@@ -22,67 +26,86 @@ WEBサーバ起動失敗した時には
   PORTでWEBサーバ起動
 ここまで
 
+# ---------------------------------
 # 静的ディレクトリの指定
-# --- /html
+# ---------------------------------
 「/html」を「{母艦パス}/html」へWEBサーバ静的パス指定
-# --- /release
 母艦パスを「../../release」で相対パス展開してRELEASEに代入。
 「/release」をRELEASEへWEBサーバ静的パス指定。
 
+# ---------------------------------
 # ルーティング
+# ---------------------------------
 「/」へWEBサーバGETした時には
-  「/html/files.html」へWEBサーバリダイレクト。
+  「/html/files.html?appkey={APPKEY}」へWEBサーバリダイレクト。
 ここまで
 
+# ---------------------------------
 「/test」へWEBサーバGETした時には
   「test」をWEBサーバ出力。
 ここまで
 
+# ---------------------------------
 「/files」へWEBサーバGETした時には
   S=「{USER_DIR}/*.nako3」のファイル列挙
   SをJSONエンコードしてWEBサーバ出力。
 ここまで
 
+# ---------------------------------
 「/load」へWEBサーバGETした時には
-   WEBサーバクエリを表示。
-   FILE=GETデータ["file"]
-    FPATH=「{USER_DIR}/{FILE}」
-    FPATHが存在
-    もし、そうならば
-      FPATHを開く。
-      それをWEBサーバ出力。
-    違えば
-      『# --- ここにプログラムを記述 ---』&改行&『「あ」と表示。』をWEBサーバ出力。
-    ここまで。
-ここまで
+  WEBサーバクエリを表示。
+  FILE=GETデータ["file"]
+  FILE=FILEの「.」を「」に置換して、「/」を「」に置換。
+  FPATH=「{USER_DIR}/{FILE}」
+  FPATHが存在
+  もし、そうならば
+    FPATHを開く。
+    それをWEBサーバ出力。
+  違えば
+    『# --- ここにプログラムを記述 ---』&改行&『「こんにちは」と表示。』をWEBサーバ出力。
+  ここまで。
+ここまで。
 
+# ---------------------------------
 「/run」へWEBサーバPOSTした時には
-   「/run」を表示。
-   POSTデータを表示。
-   FILE=POSTデータ["file"]
-   BODY=POSTデータ["body"]
-   もし、(FILE=undefined)または(FILE=空)ならば
-     「エラー: ファイル名がありません」をWEBサーバ出力。
-     戻る。
-   ここまで
-   FPATH=「{USER_DIR}/{FILE}」
-   「FILE=」&FPATHを表示。
-   FPATHへBODYを保存。
-   RES=「cnako3 "{FPATH}"」を起動待機。
-   RESをWEBサーバ出力。
+  はいでサーバ保存実行処理。
 ここまで
 
+# ---------------------------------
 「/save」へWEBサーバPOSTした時には
-   「/run」を表示。
-   POSTデータを表示。
-   FILE=POSTデータ["file"]
-   BODY=POSTデータ["body"]
-   もし、(FILE=undefined)または(FILE=空)ならば
-     「エラー: ファイル名がありません」をWEBサーバ出力。
-     戻る。
-   ここまで
-   FPATH=「{USER_DIR}/{FILE}」
-   「FILE=」&FPATHを表示。
-   FPATHへBODYを保存。
-   「OK」をWEBサーバ出力。
+  いいえでサーバ保存実行処理。
 ここまで
+
+●サーバ保存実行処理(RUNで)
+  FILE=POSTデータ["file"]
+  BODY=POSTデータ["body"]
+  UKEY=POSTデータ["appkey"]
+  もし、UKEY≠APPKEYならば
+    「エラー:APPKEYが違います」をWEBサーバ出力。
+    戻る。
+  違えば
+  ここまで。
+  もし、(FILE=undefined)または(FILE=空)ならば
+    「エラー: ファイル名がありません」をWEBサーバ出力。
+    戻る。
+  ここまで
+  FPATH=「{USER_DIR}/{FILE}」
+  「FILE=」&FPATHを表示。
+  FPATHへBODYを保存。
+  FPATH=「{USER_DIR}/{FILE}」
+  エラー監視
+    FPATHへBODYを保存。
+  エラーならば
+    「NG」をWEBサーバ出力。
+    戻る。
+  ここまで。
+  もし、RUNがはいならば
+    RES=「cnako3 "{FPATH}"」を起動待機。
+    RESをWEBサーバ出力。
+  違えば
+    「OK」をWEBサーバ出力。
+  ここまで。
+ここまで。
+
+
+

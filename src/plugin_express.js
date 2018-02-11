@@ -17,8 +17,8 @@ const PluginExpress = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__v0['WEBサーバ:OK'] = null
-      sys.__v0['WEBサーバ:NG'] = null
+      sys.__v0['WEBサーバ:ONSUCCESS'] = null
+      sys.__v0['WEBサーバ:ONERROR'] = null
       sys.__v0['WEBサーバ:要求'] = null
       sys.__v0['WEBサーバ:応答'] = null
       sys.__v0['WEBサーバクエリ'] = {}
@@ -36,10 +36,10 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバ起動': { // @ポートPORTNOでWebサーバを起動する // @WEBさーばきどう
+  'WEBサーバ起動': { // @ポートPORTNOでWebサーバを起動して成功したら『WEBサーバ起動成功した時』を実行する // @WEBさーばきどう
     type: 'func',
-    josi: [['の', 'で']],
-    fn: function (portno, sys) {
+    josi: [['まで'], ['の', 'で']],
+    fn: function (callback, portno, sys) {
       app = express()
       server = app.listen(portno, () => {
         const pno = server.address().port
@@ -48,12 +48,11 @@ const PluginExpress = {
           console.log('| 以下のURLで起動しました。')
           console.log('+- [URL] http://localhost:' + pno)
         }
-        // --- callback ---
-        const callback = sys.__v0['WEBサーバ:OK']
+        const callback = sys.__v0['WEBサーバ:ONSUCCESS']
         if (callback) callback(pno, sys)
       })
       server.on('error', (e) => {
-        const callback = sys.__v0['WEBサーバ:NG']
+        const callback = sys.__v0['WEBサーバ:ONERROR']
         if (callback) callback(e, sys)
       })
       // POSTを自動的に処理
@@ -74,7 +73,7 @@ const PluginExpress = {
     type: 'func',
     josi: [['を']],
     fn: function (callback, sys) {
-      sys.__v0['WEBサーバ:OK'] = callback
+      sys.__v0['WEBサーバ:ONSUCCESS'] = callback
     },
     return_none: true
   },
@@ -82,7 +81,7 @@ const PluginExpress = {
     type: 'func',
     josi: [['を']],
     fn: function (callback, sys) {
-      sys.__v0['WEBサーバ:NG'] = callback
+      sys.__v0['WEBサーバ:ONERROR'] = callback
     },
     return_none: true
   },

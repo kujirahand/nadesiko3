@@ -4,6 +4,7 @@
  */
 const fs = require('fs')
 const path = require('path')
+const fetch = require('node-fetch')
 
 const PluginNode = {
   '初期化': {
@@ -12,6 +13,7 @@ const PluginNode = {
     fn: function (sys) {
       sys.__v0['コマンドライン'] = process.argv
       sys.__v0['母艦パス'] = sys.__exec('母艦パス取得', [])
+      sys.__v0['AJAX:ONERROR'] = null
     }
   },
   // @ファイル入出力
@@ -355,7 +357,7 @@ const PluginNode = {
       })
     }
   },
-  // @ASSERTテスト
+  // @テスト
   'ASSERT等': { // @ mochaによるテストで、ASSERTでAとBが正しいことを報告する // @ASSERTひとしい
     type: 'func',
     josi: [['と'], ['が']],
@@ -363,6 +365,102 @@ const PluginNode = {
       const assert = require('assert')
       assert.equal(a, b)
     }
+  },
+  // @Ajax
+  'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に']],
+    fn: function (callback, url, sys) {
+      let options = sys.__v0['AJAXオプション']
+      if (options === '') options = null
+      fetch(url, options).then(res => {
+        return res.text()
+      }).then(text => {
+        sys.__v0['対象'] = text
+        callback(text)
+      }).catch(err => {
+        console.log('[fetch.error]', err)
+        sys.__v0['AJAX:ONERROR'](err)
+      })
+    },
+    return_none: true
+  },
+  'GET送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @GETそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に']],
+    fn: function (callback, url, sys) {
+      sys.__exec('AJAX送信時', [callback, url, sys])
+    },
+    return_none: true
+  },
+  'POST送信時': { // @AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定 // @POSTそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に'], ['を']],
+    fn: function (callback, url, params, sys) {
+      let flist = []
+      for (let key in params) {
+        const v = params[key]
+        const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
+        flist.push(kv)
+      }
+      const bodyData = flist.join('&')
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: bodyData
+      }
+      fetch(url, options).then(res => {
+        return res.text()
+      }).then(text => {
+        sys.__v0['対象'] = text
+        callback(text)
+      }).catch(err => {
+        sys.__v0['AJAX:ONERROR'](err)
+      })
+    }
+  },
+  'POSTフォーム送信時': { // @AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定 // @POSTふぉーむそうしんしたとき
+    type: 'func',
+    josi: [['の'], ['まで', 'へ', 'に'], ['を']],
+    fn: function (callback, url, params, sys) {
+      const fd = new FormData()
+      for (var key in params) {
+        fd.set(key, params[key])
+      }
+      let options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        body: fd
+      }
+      fetch(url, options).then(res => {
+        return res.text()
+      }).then(text => {
+        sys.__v0['対象'] = text
+        callback(text)
+      }).catch(err => {
+        sys.__v0['AJAX:ONERROR'](err)
+      })
+    }
+  },
+  'AJAX失敗時': { // @Ajax命令でエラーが起きたとき // @AJAXえらーしっぱいしたとき
+    type: 'func',
+    josi: [['の']],
+    fn: function (callback, sys) {
+      sys.__v0['AJAX:ONERROR'] = callback
+    }
+  },
+  'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
+  'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
+    type: 'func',
+    josi: [['に', 'へ', 'と']],
+    fn: function (option, sys) {
+      sys.__v0['AJAXオプション'] = option
+    },
+    return_none: true
   }
 }
 
