@@ -29,6 +29,9 @@ FNAME="無題.nako3"
   「/load?file={FILE2}&appkey={APPKEY}」へAJAX送信した時には
     「#body」に対象をDOMテキスト設定。
   ここまで。
+  # 戻るリンクをAPPKEYを入れて初期化
+  BACKLINK=「#backlink」のDOM要素取得
+  BACKLINK["href"] = "/html/files.html?appkey={APPKEY}"
 ここまで。
 
 ●P実行処理
@@ -72,6 +75,6 @@ FNAME="無題.nako3"
     <div id="result"></div>
   </div>
   <hr />
-  <div><a href="/html/files.html">→ファイル一覧へ</a></div>
+  <div><a id="backlink" href="#">→ファイル一覧へ</a></div>
 </body>
 </html>

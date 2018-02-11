@@ -515,6 +515,7 @@ const PluginBrowser = {
     josi: [['を', 'の', 'から']],
     fn: function (url) {
       const res = {}
+      if (typeof url !== 'string') return res
       const p = url.split('?')
       if (p.length === 0) return res
       const params = p[1].split('&')
