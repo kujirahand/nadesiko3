@@ -14,8 +14,9 @@ USER_DIR=「{HOME}/nadesiko3_user」
 APPKEY = (65535の乱数)&「:」&(65535の乱数)&「:」&(65535の乱数)
 PORT=3030
 PORTでWEBサーバ起動
-WEBサーバ起動成功した時には(NO)
-  「http://localhost:{NO}」をブラウザ起動。
+WEBサーバ起動成功した時には(PNO)
+  「+- appkey={APPKEY}」を表示。
+  「http://localhost:{PNO}」をブラウザ起動。
 ここまで
 WEBサーバ起動失敗した時には
   PORT = PORT + 1
@@ -53,8 +54,12 @@ WEBサーバ起動失敗した時には
 
 # ---------------------------------
 「/load」へWEBサーバGETした時には
-  WEBサーバクエリを表示。
+  GETデータを表示。
   FILE=GETデータ["file"]
+  UKEY=GETデータ["appkey"]
+  もし、UKEY≠APPKEYならば
+    『### APPKEYが違います ###』とWEBサーバ出力。
+  ここまで
   FILE=FILEの「.」を「」に置換して、「/」を「」に置換。
   FPATH=「{USER_DIR}/{FILE}」
   FPATHが存在
