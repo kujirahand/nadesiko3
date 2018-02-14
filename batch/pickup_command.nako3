@@ -4,11 +4,11 @@
 # --- 基本パスを取得 ---
 母艦パス取得してパス抽出して基本パスに代入。
 プラグイン一覧は[
-    'plugin_system.js',
-    'plugin_browser.js',
-    'plugin_turtle.js',
-    'plugin_node.js',
-    'plugin_express.js'
+    'src/plugin_system.js',
+    'src/plugin_browser.js',
+    'src/plugin_turtle.js',
+    'src/plugin_node.js',
+    'src/plugin_express.js'
  ]
 
 関数定義とは変数
@@ -19,7 +19,7 @@
 
 プラグイン一覧を反復
     カレントプラグイン＝それ
- 　　パスは「{基本パス}/src/{それ}」
+ 　　パスは「{基本パス}/{それ}」
  　　パスをプラグイン要約作成
 ここまで
 表示ログを「{基本パス}/batch/command.txt」に保存。
