@@ -1,0 +1,6 @@
+### なでしこ3 for win32 を自動的に作成する ###
+
+# COPY
+「cnako3 {母艦パス}/make-win32-1.nako3」を起動待機。
+# ZIP
+「cnako3 {母艦パス}/make-win32-2.nako3」を起動待機。
