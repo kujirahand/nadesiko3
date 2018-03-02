@@ -5,7 +5,6 @@ const path = require('path')
 const cnako3 = path.dirname(__dirname) + '/src/cnako3.js'
 const packagejson = require('../package.json')
 
-
 describe('node_test(cnako)', () => {
   const debug = false
   const cmp = (code, exRes) => {
