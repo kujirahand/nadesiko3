@@ -24,8 +24,8 @@ const PluginNode = {
         if (process.platform === 'win32') {
           const nodeDir = path.dirname(process.argv[0])
           const root = path.resolve(path.join(nodeDir, '..'))
-          fpath = path.join(root, 'bin', tool)
-          if (fileExists(fpath)) return fpath
+          fpath = path.join(root, 'bin', tool + '.exe')
+          if (fileExists(fpath)) return `"${fpath}"`
           fpath = tool
         }
         return fpath
