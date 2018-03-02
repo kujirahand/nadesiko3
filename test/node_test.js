@@ -17,7 +17,7 @@ describe('node_test(cnako)', () => {
     assert.equal(result, exRes)
   }
   // --- バージョンチェック ---
-  it('ナデシコバージョン:src/plugin_system.jsを正しく設定してください', () => {
+  it('ナデシコバージョン:src/plugin_system.jsを正しく設定しているか？', () => {
     cmp('ナデシコバージョンを表示', packagejson.version)
     cmp('ナデシコ種類を表示', 'cnako3')
   })

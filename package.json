@@ -109,7 +109,6 @@
     "express": "^4.16.2",
     "form-data": "^2.3.1",
     "moment-timezone": "^0.5.14",
-    "node-7z": "^0.4.0",
     "node-fetch": "^2.0.0",
     "opener": "^1.4.3",
     "react": "^16.0.0",

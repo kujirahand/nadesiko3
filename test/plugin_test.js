@@ -14,6 +14,6 @@ describe('plugin_test', () => {
   }
   // TODO: うまく動かない (ただし単体でテストすると動くので、原因を追及する)
   it('「取り込む」', () => {
-     cmp('!「nadesiko3-hoge」を取り込む。\n3と5をHOGE足して、表示。', '8')
+    cmp('!「nadesiko3-hoge」を取り込む。\n3と5をHOGE足して、表示。', '8')
   })
 })

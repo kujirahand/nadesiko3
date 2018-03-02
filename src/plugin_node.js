@@ -5,6 +5,9 @@
 const fs = require('fs')
 const path = require('path')
 const fetch = require('node-fetch')
+const childProcess = require('child_process')
+const execSync = childProcess.execSync
+const exec = childProcess.exec
 
 const PluginNode = {
   '初期化': {
@@ -12,8 +15,21 @@ const PluginNode = {
     josi: [],
     fn: function (sys) {
       sys.__v0['コマンドライン'] = process.argv
+      sys.__v0['ナデシコランタイムパス'] = process.argv[0]
+      sys.__v0['ナデシコランタイム'] = path.basename(process.argv[0])
       sys.__v0['母艦パス'] = sys.__exec('母艦パス取得', [])
       sys.__v0['AJAX:ONERROR'] = null
+      sys.__getBinPath = (tool) => {
+        let fpath = tool
+        if (process.platform === 'win32') {
+          const nodeDir = path.dirname(process.argv[0])
+          const root = path.resolve(path.join(nodeDir, '..'))
+          fpath = path.join(root, 'bin', tool)
+          if (fileExists(fpath)) return fpath
+          fpath = tool
+        }
+        return fpath
+      }
     }
   },
   // @ファイル入出力
@@ -43,7 +59,6 @@ const PluginNode = {
     type: 'func',
     josi: [['を']],
     fn: function (s) {
-      const execSync = require('child_process').execSync
       const r = execSync(s)
       return r.toString()
     }
@@ -52,7 +67,6 @@ const PluginNode = {
     type: 'func',
     josi: [['を']],
     fn: function (s) {
-      const exec = require('child_process').exec
       exec(s, (err, stdout, stderr) => {
         if (err) {
           console.error(stderr)
@@ -66,7 +80,6 @@ const PluginNode = {
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (callback, s, sys) {
-      const exec = require('child_process').exec
       exec(s, (err, stdout, stderr) => {
         if (err) {
           throw new Error(stderr)
@@ -256,49 +269,50 @@ const PluginNode = {
     }
   },
   // @圧縮・解凍
-  '解凍': { // @(v1非互換)ZIPファイルAをBに非同期に解凍(実行には7zが必要-https://goo.gl/YqHSSX) // @かいとう
+  '圧縮解凍ツールパス': { type: 'const', value: '7z' },
+  '解凍': { // @(v1非互換)ZIPファイルAをBに解凍(実行には7-zipが必要-https://goo.gl/LmKswH) // @かいとう
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     fn: function (a, b, sys) {
-      const Zip = require('node-7z')
-      const zip = new Zip()
-      zip.extractFull(a, b).then(function () {
-        const fn = sys.__v0['解凍後:callback']
-        if (fn) fn(a, b, sys)
-      }).catch(function (err) {
-        throw err
-      })
+      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${path} x "${a}" -o"${b}" -y`
+      execSync(cmd)
       return true
     }
   },
-  '解凍後': { // 解凍完了したときのcallback処理を指定 // @かいとうご
+  '解凍時': { // @解凍処理を行い、処理が完了したときにcallback処理を実行 // @かいとうしたとき
     type: 'func',
-    josi: [['を']],
-    fn: function (callback, sys) {
-      sys.__v0['解凍後:callback'] = callback
+    josi: [['で'], ['を', 'から'], ['に', 'へ']],
+    fn: function (callback, a, b, sys) {
+      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${path} x "${a}" -o"${b}" -y`
+      exec(cmd, (err, stdout, stderr) => {
+        if (err) throw new Error('[エラー]『解凍時』' + err)
+        callback(stdout)
+      })
     },
-    return_none: true
+    return_none: false
   },
-  '圧縮': { // @(v1非互換)ファイルAをBに非同期にZIP圧縮(実行には7zが必要-https://goo.gl/YqHSSX) // @あっしゅく
+  '圧縮': { // @(v1非互換)ファイルAをBにZIP圧縮(実行には7-zipが必要-https://goo.gl/LmKswH) // @あっしゅく
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     fn: function (a, b, sys) {
-      const Zip = require('node-7z')
-      const zip = new Zip()
-      zip.add(b, a).then(function () {
-        const fn = sys.__v0['圧縮後:callback']
-        if (fn) fn(a, b, sys)
-      }).catch(function (err) {
-        throw err
-      })
+      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${path} a -r "${b}" "${a}" -y`
+      execSync(cmd)
       return true
     }
   },
-  '圧縮後': { // 圧縮完了したときのcallback処理を指定 // @あっしゅくご
+  '圧縮時': { // @圧縮処理を行い完了したときにcallback処理を指定 // @あっしゅくしたとき
     type: 'func',
-    josi: [['を']],
-    fn: function (callback, sys) {
-      sys.__v0['圧縮後:callback'] = callback
+    josi: [['で'], ['を', 'から'], ['に', 'へ']],
+    fn: function (callback, a, b, sys) {
+      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${path} a -r "${b}" "${a}" -y`
+      exec(cmd, (err, stdout, stderr) => {
+        if (err) throw new Error('[エラー]『圧縮時』' + err)
+        callback(stdout)
+      })
     },
     return_none: true
   },
@@ -344,6 +358,8 @@ const PluginNode = {
   },
   // @コマンドライン
   'コマンドライン': {type: 'const', value: ''}, // @こまんどらいん
+  'ナデシコランタイム': {type: 'const', value: ''}, // @なでしこらんたいむ
+  'ナデシコランタイムパス': {type: 'const', value: ''}, // @なでしこらんたいむぱす
   '標準入力取得時': { // @標準入力を一行取得した時に、無名関数（あるいは、文字列で関数名を指定）F(s)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
     type: 'func',
     josi: [['を']],
