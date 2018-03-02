@@ -231,6 +231,22 @@ const PluginNode = {
     },
     return_none: false
   },
+  'ファイル情報取得': { // @パスPATHの情報を調べてオブジェクトで返す // @ふぁいるじょうほうしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (path, sys) {
+      return fs.statSync(path)
+    }
+  },
+  'ファイルサイズ取得': { // @パスPATHのファイルサイズを調べて返す // @ふぁいるさいずしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (path, sys) {
+      const st = fs.statSync(path)
+      if (!st) return -1
+      return st.size
+    }
+  },
   // @パス操作
   'ファイル名抽出': { // @フルパスのファイル名Sからファイル名部分を抽出して返す // @ふぁいるめいちゅうしゅつ
     type: 'func',
