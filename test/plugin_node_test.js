@@ -3,6 +3,8 @@ const path = require('path')
 const NakoCompiler = require('../src/nako3')
 const PluginNode = require('../src/plugin_node')
 
+const testFileMe = path.join(__dirname, 'plugin_node_test.js')
+
 describe('plugin_node_test', () => {
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
@@ -27,8 +29,7 @@ describe('plugin_node_test', () => {
     cmp('「/xxx/xxx/xxx/xxx」が存在;もしそうならば;「NG」と表示。違えば「OK」と表示。', 'OK')
   })
   it('存在2', () => {
-    const fname = path.join(__dirname, 'plugin_node_test.js')
-    cmp('「' + fname + '」が存在;もしそうならば;「OK」と表示。違えば「NG」と表示。', 'OK')
+    cmp('「' + testFileMe + '」が存在;もしそうならば;「OK」と表示。違えば「NG」と表示。', 'OK')
   })
   it('フォルダ存在', () => {
     const dir = __dirname
@@ -43,8 +44,7 @@ describe('plugin_node_test', () => {
     cmp('「PATH」の環境変数取得して表示。', path)
   })
   it('圧縮解凍', () => {
-    const me = path.join(__dirname, 'plugin_node_test.js')
-    cmp('FIN=「' + me + '」;' +
+    cmp('FIN=「' + testFileMe + '」;' +
       'HOME=ホームディレクトリ取得;' +
       'TMP=HOME&"/.temp";' +
       'もし、!(TMPが存在する)ならば、TMPのフォルダ作成。' +
@@ -53,5 +53,11 @@ describe('plugin_node_test', () => {
       'S1=「{TMP}/plugin_node_test.js」を読む。\n' +
       'S2=FINを読む。\n' +
       'もし(S1＝S2)ならば,"OK"と表示。\n', 'OK')
+  })
+  it('ファイルサイズ取得', () => {
+    cmp('「' + testFileMe + '」のファイルサイズ取得;もし、それが2000以上ならば;「OK」と表示。違えば「NG」と表示。', 'OK')
+  })
+  it('ファイル情報取得', () => {
+    cmp('「' + testFileMe + '」のファイル情報取得;もし、それ["size"]が2000以上ならば;「OK」と表示。違えば「NG」と表示。', 'OK')
   })
 })
