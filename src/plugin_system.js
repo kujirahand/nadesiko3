@@ -6,8 +6,8 @@ const PluginSystem = {
       sys.__varslist[0]['ナデシコバージョン'] = '3.0.35'
       // システム関数を探す
       sys.__getSysValue = function (name, def) {
-        if (sys.__varslist[0][name] === undefined) return def
-        return sys.__varslist[0][name]
+        if (sys.__v0[name] === undefined) return def
+        return sys.__v0[name]
       }
       // 全ての関数・変数を見つけて返す
       sys.__findVar = function (nameStr, def) {
@@ -23,6 +23,10 @@ const PluginSystem = {
         const f = sys.__findVar(func)
         if (!f) throw new Error('システム関数でエイリアスの指定ミス:' + func)
         return f.apply(this, params)
+      }
+      // システム変数の値を変更する
+      sys.__setVar = function (name, value) {
+        sys.__v0[name] = value
       }
     }
   },

@@ -3,6 +3,7 @@
  * node.js のためのプラグイン
  */
 const fs = require('fs')
+const fse = require('fs-extra')
 const path = require('path')
 const fetch = require('node-fetch')
 const childProcess = require('child_process')
@@ -162,19 +163,73 @@ const PluginNode = {
       return fileExists(path)
     }
   },
-  'フォルダ存在': { // @ディレクトリPATHが存在するか確認して返す // @ふぃるだそんざい
+  'フォルダ存在': { // @ディレクトリPATHが存在するか確認して返す // @ふぉるだそんざい
     type: 'func',
     josi: [['が', 'の']],
     fn: function (path) {
       return isDir(path)
     }
   },
-  'フォルダ作成': { // @ディレクトリPATHを作成して返す // @ふぃるださくせい
+  'フォルダ作成': { // @ディレクトリPATHを作成して返す(再帰的に作成) // @ふぉるださくせい
     type: 'func',
     josi: [['の', 'を', 'に', 'へ']],
     fn: function (path) {
-      return fs.mkdirSync(path)
+      return fse.mkdirpSync(path)
     }
+  },
+  'ファイルコピー': { // @パスAをパスBへファイルコピーする // @ふぁいるこぴー
+    type: 'func',
+    josi: [['から', 'を'], ['に', 'へ']],
+    fn: function (a, b, sys) {
+      return fse.copySync(a, b)
+    }
+  },
+  'ファイルコピー時': { // @パスAをパスBへファイルコピーしてcallbackを実行 // @ふぁいるこぴーしたとき
+    type: 'func',
+    josi: [['で'], ['から', 'を'], ['に', 'へ']],
+    fn: function (callback, a, b, sys) {
+      return fse.copy(a, b, err => {
+        if (err) throw new Error('ファイルコピー時:' + err)
+        callback()
+      })
+    },
+    return_none: false
+  },
+  'ファイル移動': { // @パスAをパスBへ移動する // @ふぁいるいどう
+    type: 'func',
+    josi: [['から', 'を'], ['に', 'へ']],
+    fn: function (a, b, sys) {
+      return fse.moveSync(a, b)
+    }
+  },
+  'ファイル移動時': { // @パスAをパスBへ移動してcallbackを実行 // @ふぁいるいどうしたとき
+    type: 'func',
+    josi: [['で'], ['から', 'を'], ['に', 'へ']],
+    fn: function (callback, a, b, sys) {
+      fse.move(a, b, err => {
+        if (err) throw new Error('ファイル移動時:' + err)
+        callback()
+      })
+    },
+    return_none: false
+  },
+  'ファイル削除': { // @パスPATHを削除する // @ふぁいるさくじょ
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (path, sys) {
+      return fse.removeSync(path)
+    }
+  },
+  'ファイル削除時': { // @パスPATHを削除してcallbackを実行 // @ふぁいるさくじょしたとき
+    type: 'func',
+    josi: [['で'], ['の', 'を']],
+    fn: function (callback, path, sys) {
+      return fse.remove(path, err => {
+        if (err) throw new Error('ファイル削除時:' + err)
+        callback()
+      })
+    },
+    return_none: false
   },
   // @パス操作
   'ファイル名抽出': { // @フルパスのファイル名Sからファイル名部分を抽出して返す // @ふぁいるめいちゅうしゅつ
@@ -270,6 +325,14 @@ const PluginNode = {
   },
   // @圧縮・解凍
   '圧縮解凍ツールパス': { type: 'const', value: '7z' },
+  '圧縮解凍ツールパス変更': { // @圧縮解凍に使うツールを変更する // @あっしゅくかいとうつーるぱすへんこう
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (v, sys) {
+      sys.__setVar('圧縮解凍ツールパス', v)
+    },
+    return_none: true
+  },
   '解凍': { // @(v1非互換)ZIPファイルAをBに解凍(実行には7-zipが必要-https://goo.gl/LmKswH) // @かいとう
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
