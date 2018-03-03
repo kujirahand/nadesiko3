@@ -143,7 +143,13 @@ const PluginNode = {
         for (const f of list) {
           if (f === '.' || f === '..') continue
           const fullpath = path.join(base, f)
-          const st = fs.statSync(fullpath)
+          let st = null
+          try {
+            st = fs.statSync(fullpath)
+          } catch (e) {
+            st = null
+          }
+          if (st == null) continue
           if (st.isDirectory()) {
             enumR(fullpath)
             continue
