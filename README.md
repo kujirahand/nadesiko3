@@ -11,7 +11,7 @@ Japanese Programming Language Nadesiko v3
 
 ## 対応機器/Webブラウザ
 
-- HTML5対応ブラウザ (Internet Explorer / Safari / Chrome / Firefox 等)
+- HTML5対応ブラウザ (Internet Explorer 11 / Safari / Chrome / Firefox 等)
 - スマホブラウザ (iOS Safari / Android標準ブラウザ)
 - PC (Windows/macOS/Linux - Node.jsが動く環境)
 
