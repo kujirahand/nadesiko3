@@ -25,18 +25,20 @@ class WebNakoCompiler extends NakoCompiler {
     console.log('実行したなでしこの個数=', nakoScriptCount)
   }
 
+  /**
+   * type=なでしこ のスクリプトを自動実行するべきかどうかを返す
+   * @returns {boolean} type=なでしこ のスクリプトを自動実行するべきかどうか
+   */
   checkScriptTagParam () {
-    // src属性で、?runが指定されていれば、
-    // type=なでしこ のスクリプトを自動実行する
     let scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
       let script = scripts[i]
       let src = script.src || ''
       if (src.indexOf('wnako3.js?run') >= 0) {
-        this.autoRun = true
-        break
+        return true
       }
     }
+    return false
   }
 }
 
@@ -45,8 +47,8 @@ if (typeof (navigator) === 'object') {
   const nako3 = navigator.nako3 = new WebNakoCompiler()
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {
-    const autoRun = nako3.checkScriptTagParam()
-    if (autoRun) nako3.runNakoScript()
+    const isAutoRun = nako3.checkScriptTagParam()
+    if (isAutoRun) nako3.runNakoScript()
   }, false)
 } else {
   module.exports = WebNakoCompiler
