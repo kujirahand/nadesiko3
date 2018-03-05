@@ -9,6 +9,7 @@ const fetch = require('node-fetch')
 const childProcess = require('child_process')
 const execSync = childProcess.execSync
 const exec = childProcess.exec
+const iconv = require('iconv-lite')
 
 const PluginNode = {
   '初期化': {
@@ -48,11 +49,23 @@ const PluginNode = {
       return sys.__exec('開', [s])
     }
   },
+  'バイナリ読': { // @ファイルSをバイナリ(Buffer)として開く // @ばいなりよむ
+    type: 'func',
+    josi: [['を', 'から']],
+    fn: function (s, sys) {
+      return fs.readFileSync(s)
+    }
+  },
   '保存': { // @ファイルFヘSを書き込む // @ほぞん
     type: 'func',
     josi: [['へ', 'に'], ['を']],
     fn: function (f, s) {
-      fs.writeFileSync(f, s, 'utf-8')
+      // Buffer?
+      if (s instanceof Buffer) {
+        fs.writeFileSync(f, s)
+      } else {
+        fs.writeFileSync(f, s, 'utf-8')
+      }
     },
     return_none: true
   },
@@ -562,6 +575,42 @@ const PluginNode = {
       sys.__v0['AJAXオプション'] = option
     },
     return_none: true
+  },
+  // @文字コード
+  '文字コード変換サポート判定': { // @文字コードCODEをサポートしているか確認 // @もじこーどさぽーとはんてい
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (code, sys) {
+      return iconv.encodingExists(code)
+    }
+  },
+  'SJIS変換': { // @(v1非互換)文字列をShift_JISのバイナリバッファに変換 // @SJISへんかん
+    type: 'func',
+    josi: [['に', 'へ', 'を']],
+    fn: function (str, sys) {
+      return iconv.encode(str, 'Shift_JIS')
+    }
+  },
+  'SJIS取得': { // @Shift_JISのバイナリバッファを文字列に変換 // @SJISしゅとく
+    type: 'func',
+    josi: [['から', 'を', 'で']],
+    fn: function (buf, sys) {
+      return iconv.decode(buf, 'Sfhit_JIS')
+    }
+  },
+  'エンコーディング変換': { // @文字列SをCODEへ変換してバイナリバッファを返す // @ えんこーでぃんぐへんかん
+    type: 'func',
+    josi: [['を'], ['へ', 'で']],
+    fn: function (s, code, sys) {
+      return iconv.encode(s, code)
+    }
+  },
+  'エンコーディング取得': { // @バイナリバッファBUFをCODEから変換して返す // @えんこーでぃんぐしゅとく
+    type: 'func',
+    josi: [['を'], ['から', 'で']],
+    fn: function (buf, code, sys) {
+      return iconv.decode(buf, code)
+    }
   }
 }
 
