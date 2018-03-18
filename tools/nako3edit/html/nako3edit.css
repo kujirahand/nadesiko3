@@ -30,7 +30,8 @@ h1 {
   font-size: 1.2em;
 }
 #result {
-  border: 1px solid gray;
+  background-color: white;
+  border: 1px solid silver;
   margin: 4px;
   padding: 8px;
   font-size: 1em;
@@ -54,3 +55,12 @@ h1 {
   background-color: #ffe0ff;
 }
 
+.titlemenu {
+  font-size: 0.9em;
+  color: yellow;
+}
+
+.titlemenu a {
+  color: yellow;
+  text-decoration: none;
+}

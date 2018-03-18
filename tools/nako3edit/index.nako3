@@ -15,8 +15,11 @@ APPKEY = (65535の乱数)&「:」&(65535の乱数)&「:」&(65535の乱数)
 PORT=3030
 PORTでWEBサーバ起動
 WEBサーバ起動成功した時には(PNO)
-  「+- appkey={APPKEY}」を表示。
-  「http://localhost:{PNO}」をブラウザ起動。
+  URL=「http://localhost:{PNO}?appkey={APPKEY}」
+  「--------------------------------------------------」を表示
+  「* nako3edit にアクセスするには、以下のURLにアクセスします」を表示
+  「* [URL] {URL}」を表示。
+  URLをブラウザ起動。
 ここまで
 WEBサーバ起動失敗した時には
   PORT = PORT + 1
@@ -38,7 +41,11 @@ WEBサーバ起動失敗した時には
 # ルーティング
 # ---------------------------------
 「/」へWEBサーバGETした時には
-  「/html/files.html?appkey={APPKEY}」へWEBサーバリダイレクト。
+  もし、GETデータ["appkey"]＝APPKEYならば
+    「/html/files.html?appkey={APPKEY}」へWEBサーバリダイレクト。
+  違えば
+    「サーバから提供されたappkeyを正しくセットしてください。」をWEBサーバ出力。
+  ここまで。
 ここまで
 
 # ---------------------------------

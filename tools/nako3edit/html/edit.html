@@ -23,15 +23,18 @@ FNAME="無題.nako3"
   「#save_btn」の「onclick」に「P保存処理」をDOMイベント設定。
   もし、FNAME=「new」ならば
     FNAME="無題.nako3"
+    FILE2 = "new"
+  違えば
+    FILE2 = FNAMEをURLエンコード。
   ここまで。
   「#name」にFNAMEをDOMテキスト設定
-  FILE2 = FNAMEをURLエンコード。
   「/load?file={FILE2}&appkey={APPKEY}」へGET送信した時には
     「#body」に対象をDOMテキスト設定。
   ここまで。
   # 戻るリンクをAPPKEYを入れて初期化
-  BACKLINK=「#backlink」のDOM要素取得
-  BACKLINK["href"] = "/html/files.html?appkey={APPKEY}"
+  「.backlink」のDOM要素全取得して反復
+    対象["href"] = "/html/files.html?appkey={APPKEY}"
+  ここまで。
 ここまで。
 
 ●P実行処理
@@ -64,10 +67,10 @@ FNAME="無題.nako3"
   </script>
 </head>
 <body>
-  <h1>なでしこ3(Node版)エディタ</h1>
+  <h1>なでしこ3(Node版)エディタ - <span class="titlemenu"><a class="backlink" href="#">[ファイル一覧]</a></span></h1>
   <div class="editbox">
     <div class="namebox">file: <input type="text" id="name" size="40" /></div>
-    <div><textarea id="body" rows="15" cols="60"></textarea></div>
+    <div><textarea id="body" rows="12" cols="60"></textarea></div>
     <div class="cmd_btn">
       <button id="run_btn">実行(cnako3)</button>
       <button id="save_btn">保存</button>
@@ -75,6 +78,6 @@ FNAME="無題.nako3"
     <div id="result"></div>
   </div>
   <hr />
-  <div><a id="backlink" href="#">→ファイル一覧へ</a></div>
+  <div><a class="backlink" href="#">→ファイル一覧へ</a></div>
 </body>
 </html>

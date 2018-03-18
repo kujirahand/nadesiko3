@@ -187,6 +187,13 @@ const PluginBrowser = {
       return document.querySelector(q)
     }
   },
+  'DOM要素全取得': { // @DOMの要素をクエリqで全部取得して返す // @DOMようそぜんしゅとく
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (q) {
+      return Array.from(document.querySelectorAll(q))
+    }
+  },
   'タグ一覧取得': { // @任意のタグの一覧を取得して返す // @たぐいちらんしゅとく
     type: 'func',
     josi: [['の', 'を']],
