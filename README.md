@@ -1,8 +1,8 @@
-Japanese Programming Language Nadesiko v3
+# 日本語プログラミング言語「なでしこv3」 - Japanese Programming Language Nadesiko v3
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Maintainability](https://api.codeclimate.com/v1/badges/5572db59aa6164217d30/maintainability)](https://codeclimate.com/github/kujirahand/nadesiko3/maintainability)
 
-# 「なでしこ3」とは？
+## 「なでしこ3」とは？
 
 「なでしこ3」とは、日本語のプログラミング言語です。HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
 
@@ -21,10 +21,15 @@ Japanese Programming Language Nadesiko v3
 
 ## PCで利用する場合
 
-なでしこ3をPC向けにローカル環境でコマンドラインとして動作させることも可能です。
+なでしこ3をPC向けにローカル環境で動作させることも可能です。
 
-- Windowsなら、[配布パッケージ](https://github.com/kujirahand/nadesiko3/releases)より、「nako3-win32.zip」をダウンロードし解凍してください。
-- macOSなら、Node.jsをインストールし、次いで、コマンドラインから以下のコマンドを実行します。
+### Windowsで利用する
+
+Windowsなら、[配布パッケージ](https://github.com/kujirahand/nadesiko3/releases)より、「nako3-win32.zip」をダウンロードし解凍してください。
+
+### macOS/Linuxで利用する
+
+macOS/Linuxなら、Node.jsをインストールし、次いで、コマンドラインから以下のコマンドを実行します。
 
 ```
 $ npm install -g nadesiko3
