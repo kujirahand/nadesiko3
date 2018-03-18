@@ -56,15 +56,15 @@ const PluginNode = {
       return fs.readFileSync(s)
     }
   },
-  '保存': { // @ファイルFヘSを書き込む // @ほぞん
+  '保存': { // @データSをファイルFヘ書き込む // @ほぞん
     type: 'func',
-    josi: [['へ', 'に'], ['を']],
-    fn: function (f, s) {
+    josi: [['を'], ['へ', 'に']],
+    fn: function (s, f) {
       // Buffer?
-      if (s instanceof Buffer) {
-        fs.writeFileSync(f, s)
-      } else {
+      if (s instanceof String) {
         fs.writeFileSync(f, s, 'utf-8')
+      } else {
+        fs.writeFileSync(f, s)
       }
     },
     return_none: true
