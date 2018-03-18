@@ -531,10 +531,10 @@ const PluginBrowser = {
   },
 
   // @ローカルストレージ
-  '保存': { // @ブラウザのlocalStorageのKにVを保存 // @ほぞん
+  '保存': { // @ブラウザのlocalStorageのキーKに文字列Vを保存 // @ほぞん
     type: 'func',
-    josi: [['に', 'へ'], ['を']],
-    fn: function (key, v) {
+    josi: [['を'], ['に', 'へ']],
+    fn: function (v, key) {
       window.localStorage[key] = JSON.stringify(v)
     },
     return_none: true
