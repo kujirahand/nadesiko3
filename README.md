@@ -27,8 +27,10 @@
 
 ### Windowsで利用する
 
-[配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)より、「Source code(zip)」をダウンロードし解凍してください。
-Node.jsや必要なモジュール一式を梱包したものです。
+以下のリンクを開いて、「Source code(zip)」をクリックしてダウンロードします。
+これは、Node.jsや必要なモジュール一式を梱包したものです。
+
+- [配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 
 解凍したら「nako3edit.vbs」(PC版)または「start.bat」(Web版)をクリックして、なでしこエディタを起動できます。
 
