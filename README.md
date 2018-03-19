@@ -1,12 +1,12 @@
-# 日本語プログラミング言語「なでしこv3」
+# 日本語プログラミング言語「なでしこ3」
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Maintainability](https://api.codeclimate.com/v1/badges/5572db59aa6164217d30/maintainability)](https://codeclimate.com/github/kujirahand/nadesiko3/maintainability)
 
-## 「なでしこv3」とは？
+## 「なでしこ3」とは？
 
-「なでしこv3」とは、日本語のプログラミング言語です。HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
+「なでしこ3」とは、日本語のプログラミング言語です。HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
 
-- [URL] [なでしこv3のWebサイト](https://nadesi.com/doc3/go.php?10)
+- [URL] [なでしこ3のWebサイト](https://nadesi.com/doc3/go.php?10)
 
 ## 対応機器/Webブラウザ
 
@@ -48,6 +48,6 @@ $ nako3edit
 $ nako3server
 ```
 
-## なでしこv3の開発環境をセットアップ
+## なでしこ3の開発環境をセットアップ
 
-なでしこv3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
+なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。

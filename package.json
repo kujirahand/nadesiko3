@@ -26,7 +26,11 @@
     "url": "git+https://github.com/kujirahand/nadesiko3.git"
   },
   "keywords": [
-    "script"
+    "script",
+    "Japanse Programming Language",
+    "Nadesiko",
+    "日本語プログラミング言語",
+    "なでしこ"
   ],
   "files": [
     "bin",
