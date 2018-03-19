@@ -1,13 +1,12 @@
-# 日本語プログラミング言語「なでしこv3」 - Japanese Programming Language Nadesiko v3
+# 日本語プログラミング言語「なでしこv3」
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Maintainability](https://api.codeclimate.com/v1/badges/5572db59aa6164217d30/maintainability)](https://codeclimate.com/github/kujirahand/nadesiko3/maintainability)
 
-## 「なでしこ3」とは？
+## 「なでしこv3」とは？
 
-「なでしこ3」とは、日本語のプログラミング言語です。HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
+「なでしこv3」とは、日本語のプログラミング言語です。HTML/JavaScriptをベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
 
-- [URL] [なでしこ3簡易エディタ](https://nadesi.com/doc3/)
-- [URL] [なでしこエディタの一覧](https://nadesi.com/doc3/go.php?282)
+- [URL] [なでしこv3のWebサイト](https://nadesi.com/doc3/go.php?10)
 
 ## 対応機器/Webブラウザ
 
@@ -17,7 +16,10 @@
 
 ## Webブラウザで利用する場合
 
-- [こちら](https://nadesi.com/doc3/go.php?10)から、Webエディタを利用できます
+以下、Webエディタ上で、なでしこを実行できます。
+
+- [URL] [なでしこ3簡易エディタ](https://nadesi.com/doc3/go.php?10)
+- [URL] [なでしこエディタの一覧](https://nadesi.com/doc3/go.php?282)
 
 ## PCで利用する場合
 
@@ -25,18 +27,27 @@
 
 ### Windowsで利用する
 
-Windowsなら、[配布パッケージ](https://github.com/kujirahand/nadesiko3/releases)より、「nako3-win32.zip」をダウンロードし解凍してください。
+Windowsなら、[配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)より、「Source code(zip)」をダウンロードし解凍してください。
+解凍したら「nako3edit.vbs」(PC版)または「start.bat」(Web版)をクリックして、なでしこエディタを起動できます。
 
 ### macOS/Linuxで利用する
 
-macOS/Linuxなら、Node.jsをインストールし、次いで、コマンドラインから以下のコマンドを実行します。
+macOS/Linuxなら、先に、Node.jsをインストールし、次いで、コマンドラインから以下のコマンドを実行します。
 
 ```
 $ npm install -g nadesiko3
 ```
 
-すると、cnako3というコマンドで、なでしこを利用できます。また、Web版のエディタnako3serverと、Node版のエディタnako3editを利用できます。
+すると、cnako3というコマンドで、なでしこを利用できます。
+また、以下のコマンドを実行すると、ブラウザ上になでしこの簡易エディタが起動します。
 
-## 開発環境をセットアップする
+```
+# なでしこエディタ(PC版)
+$ nako3edit
+# なでしこエディタ(WEB版)
+$ nako3server
+```
 
-なでしこを開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
+## なでしこv3の開発環境をセットアップ
+
+なでしこv3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。

@@ -25,6 +25,3 @@ nako3edit = """" & home & "\tools\nako3edit\index.nako3" & """"
 
 cmd = node & " " & cnako & " " & nako3edit
 shell.Run(cmd)
-
-rem cmd2 = cmd1 & " " & home & "\tools\nako3edit\run.js"
-rem WScript.Echo(shell.ExpandEnvironmentStrings("%PATH%"))
