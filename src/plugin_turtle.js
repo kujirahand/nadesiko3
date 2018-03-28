@@ -231,10 +231,15 @@ const PluginTurtle = {
           tt.canvas.style.position = 'absolute'
           document.body.appendChild(tt.canvas)
           // 描画先をセットする
-          const canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
-          console.log('カメ描画先=', canvasId, sys.__varslist[0]['カメ描画先'])
-          const cv = sys._turtle.canvas = document.getElementById(canvasId)
-          if (!sys._turtle.canvas) {
+          let canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
+          if (typeof canvasId === 'string') {
+            canvasId = document.getElementById(canvasId) ||
+                       document.querySelector(canvasId)
+            sys.__v0['カメ描画先'] = canvasId
+          }
+          console.log('カメ描画先=', canvasId)
+          const cv = sys._turtle.canvas = canvasId
+          if (!cv) {
             console.log('[ERROR] カメ描画先が見当たりません。' + canvasId)
             return
           }
