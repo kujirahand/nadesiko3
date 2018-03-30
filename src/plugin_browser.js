@@ -160,7 +160,7 @@ const PluginBrowser = {
       sys.__v0['AJAX:ONERROR'] = callback
     }
   },
-  'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
+  'AJAXオプション': { type: 'const', value: '' }, // @AJAXおぷしょん
   'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
@@ -171,9 +171,9 @@ const PluginBrowser = {
   },
 
   // @DOM操作
-  'DOCUMENT': { type: 'const', value: '' }, // @ブラウザdocumentオブジェクト // @DOCUMENT
-  'WINDOW': { type: 'const', value: '' }, // @ブラウザwindowオブジェクト // @WINDOW
-  'NAVIGATOR': { type: 'const', value: '' }, // @ブラウザnavigatorオブジェクト // @NAVIGATOR
+  'DOCUMENT': { type: 'const', value: '' }, // @DOCUMENT
+  'WINDOW': { type: 'const', value: '' }, // @WINDOW
+  'NAVIGATOR': { type: 'const', value: '' }, // @NAVIGATOR
   'DOM要素ID取得': { // @DOMの要素をIDを指定して取得 // @DOMようそIDしゅとく
     type: 'func',
     josi: [['の', 'を']],
@@ -276,8 +276,8 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '押キー': { type: 'const', value: '' }, // @『キー押した時』『キー離した時』のイベントで設定されるキーが設定される // @おされたきー
-  'キー押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定 // @きーおしたとき
+  '押キー': { type: 'const', value: '' }, // @おされたきー
+  'キー押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーおしたとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
@@ -290,7 +290,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'キー離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定 // @きーはなしたとき
+  'キー離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーはなしたとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
@@ -303,7 +303,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'キータイピング時': { // @無名関数FでDOMに対してキーをプレスした時に実行するイベントを設定 // @きーたいぴんぐしたとき
+  'キータイピング時': { // @無名関数FでDOMに対してキーをプレスした時に実行するイベントを設定。『押されたキー』が設定される。 // @きーたいぴんぐしたとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
@@ -316,9 +316,9 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'マウスX': { type: 'const', value: 0 }, // @『マウス押した時』『マウス移動した時』『マウス離した時』のイベントで設定される // @まうすX
-  'マウスY': { type: 'const', value: 0 }, // @『マウス押した時』『マウス移動した時』『マウス離した時』のイベントで設定される // @まうすY
-  'マウス押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定 // @まうすおしたとき
+  'マウスX': { type: 'const', value: 0 }, // @まうすX
+  'マウスY': { type: 'const', value: 0 }, // @まうすY
+  'マウス押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすおしたとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
@@ -334,7 +334,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'マウス移動時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定 // @まうすいどうしたとき
+  'マウス移動時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすいどうしたとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
@@ -349,7 +349,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'マウス離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定 // @まうすはなしたとき
+  'マウス離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすはなしたとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
@@ -557,8 +557,8 @@ const PluginBrowser = {
     }
   },
   // @DOM部品操作
-  'DOM親要素': { type: 'const', value: '' }, // @DOM要素を追加する対象 // @DOMおやようそ
-  'DOM生成個数': { type: 'const', value: 0 }, // @DOM要素を追加した数を記録 // @DOMせいせいこすう
+  'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
+  'DOM生成個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」などのDOM要素を追加する対象を指定(デフォルトはdocument)して親要素のDOMオブジェクトを返す // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
@@ -794,9 +794,11 @@ const PluginBrowser = {
       if (!cv) throw new Error('『描画開始』でCanvasを取得できませんでした。')
       sys.__canvas = cv
       sys.__ctx = cv.getContext('2d')
+      sys.__v0['描画中キャンバス'] = cv
     },
     return_none: true
   },
+  '描画中キャンバス': { type: 'const', value: null }, // @ びょうがちゅうきゃんばす
   '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろしてい
     type: 'func',
     josi: [['に', 'へ']],

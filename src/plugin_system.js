@@ -28,6 +28,15 @@ const PluginSystem = {
       sys.__setVar = function (name, value) {
         sys.__v0[name] = value
       }
+      // 前回設定したタイマーが実行中ならクリア
+      if (sys.__timeout) {
+        for (const t of sys.__timeout) clearTimeout(t)
+      }
+      sys.__timeout = []
+      if (sys.__interval) {
+        for (const t of sys.__interval) clearInterval(t)
+      }
+      sys.__interval = []
     }
   },
 
@@ -1257,7 +1266,12 @@ const PluginSystem = {
     josi: [['を'], []],
     fn: function (f, n, sys) {
       if (typeof f === 'string') f = sys.__findVar(f)
-      setTimeout(f, parseFloat(n) * 1000)
+      const timerId = setTimeout(() => {
+        const i = sys.__timeout.indexOf(timerId)
+        sys.__timeout.splice(i, 1)
+        f(sys)
+      }, parseFloat(n) * 1000)
+      sys.__timeout.unshift(timerId)
     }
   },
   '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する // @びょうごと
@@ -1265,7 +1279,12 @@ const PluginSystem = {
     josi: [['を'], []],
     fn: function (f, n, sys) {
       if (typeof f === 'string') f = sys.__findVar(f)
-      setInterval(f, parseFloat(n) * 1000)
+      const timerId = setInterval(() => {
+        const i = sys.__interval.indexOf(timerId)
+        sys.__interval.splice(i, 1)
+        f(sys)
+      }, parseFloat(n) * 1000)
+      sys.__interval.unshift(timerId)
     }
   },
 

@@ -328,7 +328,7 @@ const PluginNode = {
       return process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
     }
   },
-  '母艦パス': {type: 'const', value: ''}, // @スクリプトのあるディレクトリ // @ぼかんぱす
+  '母艦パス': {type: 'const', value: ''}, // @ぼかんぱす
   '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
     type: 'func',
     josi: [],
