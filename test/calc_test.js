@@ -5,6 +5,7 @@ describe('calc_test.js', () => {
   const nako = new NakoCompiler()
   // nako.debug = true
   // nako.debugParser = true
+  // nako.debugLexer = true
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)

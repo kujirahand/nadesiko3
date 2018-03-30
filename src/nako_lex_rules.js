@@ -12,7 +12,8 @@ module.exports = {
     // 上から順にマッチさせていく
     {name: 'eol', pattern: /^\n/},
     {name: 'eol', pattern: /^;/},
-    {name: 'space', pattern: /^(\s+|,)/},
+    {name: 'space', pattern: /^(\s+|、)/},
+    {name: 'comma', pattern: /^,/},
     {name: 'line_comment', pattern: /^#[^\n]*/},
     {name: 'line_comment', pattern: /^\/\/[^\n]*/},
     {name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment},
@@ -186,4 +187,3 @@ function trimOkurigana (s) {
   }
   return s
 }
-

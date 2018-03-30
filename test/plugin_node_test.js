@@ -52,7 +52,7 @@ describe('plugin_node_test', () => {
       'FINをFZIPへ圧縮。FZIPを「{TMP}/」に解凍。\n' +
       'S1=「{TMP}/plugin_node_test.js」を読む。\n' +
       'S2=FINを読む。\n' +
-      'もし(S1＝S2)ならば,"OK"と表示。\n', 'OK')
+      'もし(S1＝S2)ならば、"OK"と表示。\n', 'OK')
   })
   it('ファイルサイズ取得', () => {
     cmp('「' + testFileMe + '」のファイルサイズ取得;もし、それが2000以上ならば;「OK」と表示。違えば「NG」と表示。', 'OK')

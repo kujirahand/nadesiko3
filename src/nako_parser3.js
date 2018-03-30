@@ -82,6 +82,7 @@ class NakoParser extends NakoParserBase {
         break
       }
       a.push(this.get())
+      if (this.check('comma')) this.get()
     }
     return a
   }
@@ -292,6 +293,7 @@ class NakoParser extends NakoParserBase {
       const v = this.yGetArg()
       if (v) {
         this.pushStack(v)
+        if (this.check('comma')) this.get()
         continue
       }
       break
@@ -476,6 +478,7 @@ class NakoParser extends NakoParserBase {
           return t // 関数なら値とする
         }
         this.pushStack(t)
+        if (this.check('comma')) this.get()
         continue
       }
       // なでしこ式関数
@@ -543,12 +546,18 @@ class NakoParser extends NakoParserBase {
 
   yLet () {
     // 通常の変数
-    if (this.accept(['word', 'eq', this.yCalc])) {
-      return {
-        type: 'let',
-        name: this.y[0],
-        value: this.y[2],
-        line: this.y[0].line
+    if (this.check2(['word', 'eq'])) {
+      if (this.accept(['word', 'eq', this.yCalc])) {
+        return {
+          type: 'let',
+          name: this.y[0],
+          value: this.y[2],
+          line: this.y[0].line
+        }
+      } else {
+        const word = this.peek()
+        const name = word.value
+        throw new NakoSyntaxError(`『${name}』への代入文で計算式に書き間違いがあります。`, word.line)
       }
     }
     if (this.check2(['word', '@'])) {
@@ -842,6 +851,7 @@ class NakoParser extends NakoParserBase {
       } else {
         throw new NakoSyntaxError('辞書オブジェクトの宣言で末尾の『}』がありません。', firstToken.line)
       }
+      if (this.check('comma')) this.get()
     }
     return a
   }
@@ -870,12 +880,14 @@ class NakoParser extends NakoParserBase {
     if (this.check('eol')) this.get()
     const v1 = this.yCalc()
     if (v1 === null) return null
+    if (this.check('comma')) this.get()
     const a = [v1]
     while (!this.isEOF()) {
       if (this.check('eol')) this.get()
       if (this.check(']')) break
       const v2 = this.yCalc()
       if (v2 === null) break
+      if (this.check('comma')) this.get()
       a.push(v2)
     }
     return a

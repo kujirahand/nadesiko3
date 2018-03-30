@@ -79,6 +79,10 @@ class NakoLexer {
           i++
           continue
         }
+        if (tokens[i].type === 'comma') {
+          i++
+          continue
+        }
         const t = tokens[i]
         args.push(t)
         if (!keys[t.value]) keys[t.value] = []

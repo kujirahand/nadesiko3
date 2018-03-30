@@ -64,7 +64,7 @@ describe('prepare', () => {
   it('convertTable', () => {
     const a = p.convert('123※456')
     assert.equal(a, '123#456')
-    const b = p.convert('123、456。')
-    assert.equal(b, '123,456;')
+    const b = p.convert('123、456。') // 読点は変換しない方針に (#276)
+    assert.equal(b, '123、456;')
   })
 })

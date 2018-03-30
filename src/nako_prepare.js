@@ -21,7 +21,7 @@ class NakoPrepare {
       0x2053: true, // Swung Dash - 辞書のみだし
       0x223c: true, // Tilde Operator: 数学で Similar to
       0x301c: true, // Wave Dash(一般的な波ダッシュ)
-      0xFF5E: true  // 全角チルダ
+      0xFF5E: true // 全角チルダ
     }
     // スペース問題
     // 参考) http://anti.rosx.net/etc/memo/002_space.html
@@ -40,13 +40,13 @@ class NakoPrepare {
       0x202F: true, // NARROW NO-BREAK SPACE
       0x205F: true, // MEDIUM MATHEMATICAL SPACE
       0x3000: true, // 全角スペース
-      0x3164: true  // HANGUL FILLER
+      0x3164: true // HANGUL FILLER
     }
     // その他の変換
     this.convertTable = {
-      0x09: ' ',   // TAB --> SPC
+      0x09: ' ', // TAB --> SPC
       0x203B: '#', // '※' --- コメント
-      0x3001: ',', // 句点
+      // 0x3001: ',', // 句点 --- JSON記法で「,」と「、」を区別したいので句点は変換しないことに。
       0x3002: ';', // 読点
       0x3010: '[', // '【'
       0x3011: ']' // '】'
