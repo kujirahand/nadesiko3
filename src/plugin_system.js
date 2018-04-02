@@ -1269,7 +1269,7 @@ const PluginSystem = {
       const timerId = setTimeout(() => {
         const i = sys.__timeout.indexOf(timerId)
         sys.__timeout.splice(i, 1)
-        f(sys)
+        f(timerId, sys)
       }, parseFloat(n) * 1000)
       sys.__timeout.unshift(timerId)
     }
@@ -1282,7 +1282,7 @@ const PluginSystem = {
       const timerId = setInterval(() => {
         const i = sys.__interval.indexOf(timerId)
         sys.__interval.splice(i, 1)
-        f(sys)
+        f(timerId, sys)
       }, parseFloat(n) * 1000)
       sys.__interval.unshift(timerId)
     }
