@@ -1291,7 +1291,7 @@ const PluginSystem = {
       sys.__interval.unshift(timerId)
     }
   },
-  '秒タイマー開始': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『秒毎』と同じ) // @びょうたいまーかいし
+  '秒タイマー開始時': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『秒毎』と同じ) // @びょうたいまーかいししたとき
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
@@ -1300,7 +1300,7 @@ const PluginSystem = {
   },
   'タイマー停止': { // @『秒毎』や『秒タイマー開始』で開始したタイマーを停止する // @たいまーていし
     type: 'func',
-    josi: [['の'], []],
+    josi: [['の', 'で']],
     fn: function (timerId, sys) {
       clearInterval(timerId)
       const i = sys.__interval.indexOf(timerId)
