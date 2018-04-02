@@ -1265,10 +1265,13 @@ const PluginSystem = {
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
+      // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') f = sys.__findVar(f)
+      // 1回限りのタイマーをセット
       const timerId = setTimeout(() => {
+        // 使用中リストに追加したIDを削除
         const i = sys.__timeout.indexOf(timerId)
-        sys.__timeout.splice(i, 1)
+        if (i >= 0) sys.__timeout.splice(i, 1)
         f(timerId, sys)
       }, parseFloat(n) * 1000)
       sys.__timeout.unshift(timerId)
@@ -1278,13 +1281,33 @@ const PluginSystem = {
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {
+      // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') f = sys.__findVar(f)
+      // タイマーをセット
       const timerId = setInterval(() => {
-        const i = sys.__interval.indexOf(timerId)
-        sys.__interval.splice(i, 1)
         f(timerId, sys)
       }, parseFloat(n) * 1000)
+      // タイマーIDを追加
       sys.__interval.unshift(timerId)
+    }
+  },
+  '秒タイマー開始': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『秒毎』と同じ) // @びょうたいまーかいし
+    type: 'func',
+    josi: [['を'], []],
+    fn: function (f, n, sys) {
+      sys.__exec('秒毎', [f, n, sys])
+    }
+  },
+  'タイマー停止': { // @『秒毎』や『秒タイマー開始』で開始したタイマーを停止する // @たいまーていし
+    type: 'func',
+    josi: [['の'], []],
+    fn: function (timerId, sys) {
+      clearInterval(timerId)
+      const i = sys.__interval.indexOf(timerId)
+      if (i >= 0) {
+        sys.__interval.splice(i, 1)
+        sys.__interval.unshift(timerId)
+      }
     }
   },
 
