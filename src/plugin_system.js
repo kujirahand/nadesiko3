@@ -1277,7 +1277,7 @@ const PluginSystem = {
       sys.__timeout.unshift(timerId)
     }
   },
-  '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する // @びょうごと
+  '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『タイマー停止』で停止できる) // @びょうごと
     type: 'func',
     josi: [['を'], []],
     fn: function (f, n, sys) {

@@ -871,6 +871,27 @@ const PluginBrowser = {
     },
     return_none: true
   },
+  '楕円描画': { // @ [x, y, x幅, y幅, 回転, 開始角, 終了角, 左回転か]に楕円を描画する // @ だえんびょうが
+    type: 'func',
+    josi: [['へ', 'に', 'の']],
+    fn: function (args, sys) {
+      console.log(args)
+      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!args) throw new Error('楕円描画の引数配列が無効です')
+      if (args.length < 4) throw new Error('楕円描画の引数配列が不足しています')
+      if (args.length < 7) {
+        if (!args[4]) args[4] = 0
+        if (!args[5]) args[5] = 0
+        if (!args[6]) args[6] = Math.PI * 2
+        if (!args[7]) args[7] = true
+      }
+      sys.__ctx.beginPath()
+      sys.__ctx.ellipse.apply(sys.__ctx, args)
+      sys.__ctx.fill()
+      sys.__ctx.stroke()
+    },
+    return_none: true
+  },
   '多角形描画': { // @ 座標配列vを指定して多角形を描画する // @ たかっけいびょうが
     type: 'func',
     josi: [['で', 'の', 'を']],
