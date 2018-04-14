@@ -177,12 +177,11 @@ const PluginTurtle = {
               hasNext = this.doMacroAll(wait)
             }
           } else if (hasNext) {
-            setTimeout(() => {
-              me.play()
-            }, wait)
+            setTimeout(() => me.play(), wait)
             return
           }
           console.log('[TURTLE] finished.')
+          me.flagSetTimer = false
         },
         createTurtle: function (imageUrl, sys) {
           // カメの情報を sys._turtle リストに追加

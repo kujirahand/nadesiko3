@@ -1,7 +1,8 @@
 let displayId = 'info'
 
 // なでしこの関数をカスタマイズ
-navigator.nako3.setFunc('表示', function (s) {
+navigator.nako3.setFunc('表示', [['と', 'を']], function (s) {
+  console.log(s)
   document.getElementById(displayId).innerHTML += toHtml(s) + '<br>'
 })
 
