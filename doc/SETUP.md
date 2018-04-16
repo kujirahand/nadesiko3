@@ -29,7 +29,7 @@ npm install -g windows-build-tools
 
 Homebrew(そしてXcode)をインストールしておく。
 
-##【共通】
+## 【共通】
 
 以下、共通の作業となる。(electron と asar は GUIをやるときに追加。ネット回線が細い人は抜かして実行しても良い)
 

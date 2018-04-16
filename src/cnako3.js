@@ -49,7 +49,7 @@ class CNako3 extends NakoCompiler {
     const app = this.registerCommands()
     let mainfile = app.args[0]
     let output = app.output
-    if (/\.(nako|nako3)$/.test(mainfile)) {
+    if (/\.(nako|nako3|txt|bak)$/.test(mainfile)) {
       if (!output) output = mainfile.replace(/\.(nako|nako3)$/, '.js')
     } else {
       if (!output) output = mainfile + '.js'

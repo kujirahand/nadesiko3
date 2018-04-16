@@ -1,10 +1,16 @@
 ＃command.json をビルドする
 基本パス＝母艦パスを「../」で相対パス展開。
 
+# バッチを実行
 基本パスを表示。
 「{基本パス}/batch/pickup_command.nako3」をCNAKO実行。
 「{基本パス}/batch/cmd_txt2wiki.nako3」をCNAKO実行。
 「{基本パス}/batch/cmd_txt2json.nako3」をCNAKO実行。
+「{基本パス}/batch/gen_command_nakopad.nako3」をCNAKO実行。
+
+# 必要に応じてファイルをコピー
+「{基本パス}/batch/command_nakopad.txt」から「{基本パス}/installer/nako3-win32-template/bin/tools/command.txt」へファイルコピー。
+
 
 ●CNAKO実行(Cを)
     「--------」を表示。
