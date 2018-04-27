@@ -9,6 +9,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [],
     fn: function (sys) {
+      /* eslint no-global-assign: 0 */
       if (typeof document === 'undefined') document = {'body': {}}
       if (typeof window === 'undefined') window = {}
       if (typeof navigator === 'undefined') navigator = {}

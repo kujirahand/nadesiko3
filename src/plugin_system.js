@@ -814,6 +814,123 @@ const PluginSystem = {
       return hiraToKana(s)
     }
   },
+  '英数全角変換': {// @文字列Sの半角英数文字を全角に変換 // @えいすうぜんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s) {
+      return String(s).replace(/[A-Za-z0-9]/g, function (v) {
+        return String.fromCharCode(v.charCodeAt(0) + 0xFEE0)
+      })
+    }
+  },
+  '英数半角変換': {// @文字列Sの全角英数文字を半角に変換 // @えいすうはんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s) {
+      return String(s).replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (v) {
+        return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
+      })
+    }
+  },
+  '英数記号全角変換': {// @文字列Sの半角英数記号文字を全角に変換 // @えいすうきごうぜんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s) {
+      return String(s).replace(/[\x20-\x7F]/g, function (v) {
+        return String.fromCharCode(v.charCodeAt(0) + 0xFEE0)
+      })
+    }
+  },
+  '英数記号半角変換': {// @文字列Sの記号文字を半角に変換 // @えいすうきごうはんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s) {
+      return String(s).replace(/[\uFF00-\uFF5F]/g, function (v) {
+        return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
+      })
+    }
+  },
+  'カタカナ全角変換': {// @文字列Sの半角カタカナを全角に変換 // @かたかなぜんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s) {
+      // 半角カタカナ
+      const zen1 = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」'
+      const han1 = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ'
+      const zen2 = 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ'
+      const han2 = 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ'
+      let str = ''
+      let i = 0
+      while (i < s.length) {
+        // 濁点の変換
+        const c2 = s.substr(i, 2)
+        const n2 = han2.indexOf(c2)
+        if (n2 >= 0) {
+          str += zen2.charAt(Math.floor(n2 / 2))
+          i += 2
+          continue
+        }
+        // 濁点以外の変換
+        const c = s.charAt(i)
+        const n = han1.indexOf(c)
+        if (n >= 0) {
+          str += zen1.charAt(n)
+          i++
+          continue
+        }
+        str += c
+        i++
+      }
+      return str
+    }
+  },
+  'カタカナ半角変換': {// @文字列Sの全角カタカナを半角に変換 // @かたかなはんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s) {
+      // 半角カタカナ
+      const zen1 = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」'
+      const han1 = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ'
+      const zen2 = 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ'
+      const han2 = 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ'
+      let str = ''
+      for (let i = 0; i < s.length; i++) {
+        let c = s.charAt(i)
+        const n = zen1.indexOf(c)
+        if (n >= 0) {
+          str += han1.charAt(n)
+          continue
+        }
+        const n2 = zen2.indexOf(c)
+        if (n2 >= 0) {
+          str += han2.charAt(n2 * 2) + han2.charAt(n2 * 2 + 1)
+          continue
+        }
+        str += c
+      }
+      return str
+    }
+  },
+  '全角変換': { // @文字列Sの半角文字を全角に変換 // @ぜんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s, sys) {
+      let result = s
+      result = sys.__exec('カタカナ全角変換', [result, sys])
+      result = sys.__exec('英数記号全角変換', [result, sys])
+      return result
+    }
+  },
+  '半角変換': { // @文字列Sの全角文字を半角に変換 // @はんかくへんかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (s, sys) {
+      let result = s
+      result = sys.__exec('カタカナ半角変換', [result, sys])
+      result = sys.__exec('英数記号半角変換', [result, sys])
+      return result
+    }
+  },
 
   // @JSON
   'JSONエンコード': { // @オブジェクトVをJSON形式にエンコードして返す // @JSONえんこーど
