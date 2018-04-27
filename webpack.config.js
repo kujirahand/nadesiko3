@@ -24,7 +24,7 @@ module.exports = {
   plugins: [],
 
   module: {
-    loaders: [
+    rules: [
       // .jsx file
       {
         test: /\.jsx$/,

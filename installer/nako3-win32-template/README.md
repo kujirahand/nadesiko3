@@ -1,4 +1,4 @@
-# 日本語プログラミング言語「なでしこ3」
+# 日本語プログラミング言語「なでしこ3」(Windows版)
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
@@ -21,15 +21,19 @@
 - [なでしこ3簡易エディタ](https://nadesi.com/doc3/go.php?10)
 - [なでしこエディタの一覧](https://nadesi.com/doc3/go.php?282)
 
-## PCで利用する場合
+## Windows PCで利用する場合
 
 なでしこ3をPC向けにローカル環境で動作させることも可能です。
 
-### Windowsで利用する
-
-以下のリンクを開いて、「Source code(zip)」をクリックしてダウンロードします。
+Windows版をダウンロードするには、以下のリンクを開いて、「Source code(zip)」をクリックしてダウンロードします。
 これは、Node.jsや必要なモジュール一式を梱包したものです。
 
 - [配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 
-解凍したら「nako3edit.vbs」(PC版)または「start.bat」(Web版)をクリックして、なでしこエディタを起動できます。
+解凍したら「nakopad.vbs」(PC版)または、「nako3server.vbs」(Web版)をクリックして、なでしこエディタを起動できます。
+
+## より詳しい情報
+
+なでしこ3についての詳しい情報は、以下のWebサイトで入手してください。
+
+- [なでしこ3のWebサイト](https://nadesi.com/doc3/)

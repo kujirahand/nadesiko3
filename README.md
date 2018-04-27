@@ -32,7 +32,7 @@
 
 - [配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 
-解凍したら「nako3edit.vbs」(PC版)または「start.bat」(Web版)をクリックして、なでしこエディタを起動できます。
+解凍したら「nakopad.vbs」(PC版)または「nako3server.vbs」(Web版)をクリックして、なでしこエディタを起動できます。
 
 ### macOS/Linuxで利用する
 

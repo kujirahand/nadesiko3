@@ -1,5 +1,7 @@
 // plugin_browser.js
-import 'whatwg-fetch'
+require('es6-promise').polyfill()
+require('isomorphic-fetch')
+
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
 const PluginBrowser = {
@@ -7,6 +9,10 @@ const PluginBrowser = {
     type: 'func',
     josi: [],
     fn: function (sys) {
+      if (typeof document === 'undefined') document = {'body': {}}
+      if (typeof window === 'undefined') window = {}
+      if (typeof navigator === 'undefined') navigator = {}
+
       // 定数を初期化
       sys.__v0['AJAX:ONERROR'] = (err) => { console.log(err) }
       // オブジェクトを初期化
@@ -35,6 +41,18 @@ const PluginBrowser = {
   'オリーブ色': {type: 'const', value: 'olive'}, // @おりーぶいろ
   'ベージュ色': {type: 'const', value: 'beige'}, // @べーじゅいろ
   'アリスブルー色': {type: 'const', value: 'aliceblue'}, // @ありすぶるーいろ
+  'RGB': { // @赤緑青を256段階でそれぞれ指定して、#RRGGBB形式の値を返す // @RGB
+    type: 'func',
+    josi: [['と'], ['と'], ['で', 'の']],
+    fn: function (r, g, b) {
+      const z2 = (v) => {
+        const v2 = '00' + v.toString(16)
+        return v2.substr(v2.length - 2, 2)
+      }
+      return '#' + z2(r) + z2(g) + z2(b)
+    },
+    return_none: true
+  },
 
   // @システム
   '終': { // @ブラウザでプログラムの実行を強制終了する // @おわる
