@@ -323,9 +323,25 @@ const PluginNode = {
   },
   'ホームディレクトリ取得': { // @ホームディレクトリを取得して返す // @ほーむでぃれくとりしゅとく
     type: 'func',
-    josi: [['に', 'へ']],
-    fn: function (dir) {
+    josi: [],
+    fn: function () {
       return process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
+    }
+  },
+  'デスクトップ': { // @デスクトップパスを取得して返す // @ですくとっぷ
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const home = sys.__exec('ホームディレクトリ取得', [sys])
+      return path.join(home, 'Desktop')
+    }
+  },
+  'マイドキュメント': { // @マイドキュメントのパスを取得して返す // @まいどきゅめんと
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const home = sys.__exec('ホームディレクトリ取得', [sys])
+      return path.join(home, 'Documents')
     }
   },
   '母艦パス': {type: 'const', value: ''}, // @ぼかんぱす
