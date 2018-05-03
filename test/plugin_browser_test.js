@@ -18,4 +18,8 @@ describe('plugin_browser_test', () => {
     cmp('CODE=RGB(0,255,255);CODEを大文字変換して表示', '#00FFFF')
     cmp('CODE=RGB(0,0,0);CODEを大文字変換して表示', '#000000')
   })
+  it('URLパラメータ解析', () => {
+    cmp('「http://hoge.com/」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    cmp('「https://nadesi.com/?a=3&b=5」のURLパラメータ解析;それ["a"]を表示;それ["b"]を表示。', '3\n5')
+  })
 })
