@@ -10,13 +10,15 @@
 #-----------
 APPKEY=""
 HREF=WINDOW["location"]["href"]
+HREFを表示。
 P=HREFをURLパラメータ解析
+Pを表示。
 APPKEY=P["appkey"]
 Pを表示。
 ファイル一覧取得処理
 
 ●ファイル一覧取得処理
-  「/files」へAJAX送信した時には
+  「/files?appkey={APPKEY}」へAJAX送信した時には
     HTML=「<li><a href="/html/edit.html?file=new&appkey={APPKEY}"><span class="newfile">→新規作成</span></a></li>」
     一覧=対象をJSONデコード
     一覧を反復

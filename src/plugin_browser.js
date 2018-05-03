@@ -706,7 +706,7 @@ const PluginBrowser = {
       const res = {}
       if (typeof url !== 'string') return res
       const p = url.split('?')
-      if (p.length === 0) return res
+      if (p.length <= 1) return res
       const params = p[1].split('&')
       for (const line of params) {
         const line2 = line + '='
