@@ -55,6 +55,22 @@ $ nako3edit
 $ nako3server
 ```
 
+### 追加インストール(macOS/Linux)
+
+必要に応じて以下のコマンドをインストールします
+
+macOS
+
+```
+brew install p7zip
+```
+
+Ubuntu/Debian
+
+```
+sudo apt-get install p7zip-full
+```
+
 ## なでしこ3の開発環境をセットアップ
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
