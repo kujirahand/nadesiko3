@@ -197,7 +197,7 @@ const PluginSystem = {
     }
   },
 
-  'ナデシコ': { // @なでしこのコードSを実行する // @なでしこする
+  'ナデシコ': { // @なでしこのコードCODEを実行する // @なでしこする
     type: 'func',
     josi: [['を', 'で']],
     fn: function (code, sys) {
@@ -206,7 +206,7 @@ const PluginSystem = {
       return sys.__varslist[0]['表示ログ']
     }
   },
-  'ナデシコ続': { // @なでしこのコードSを実行する // @なでしこつづける
+  'ナデシコ続': { // @なでしこのコードCODEを実行する // @なでしこつづける
     type: 'func',
     josi: [['を', 'で']],
     fn: function (code, sys) {
@@ -1436,18 +1436,23 @@ const PluginSystem = {
       throw new Error(s)
     }
   },
-  'システム関数一覧取得': {
+  'システム関数一覧取得': { // @システム関数の一覧を取得 // @しすてむかんすういちらんしゅとく
     type: 'func',
     josi: [],
     fn: function (sys) {
       const f = []
-      for (const key in sys.__varslist[0]) {
-        const ff = sys.__varslist[0][key]
-        if (typeof ff === 'function') {
-          f.push(key)
-        }
+      for (const key in sys.__v0) {
+        const ff = sys.__v0[key]
+        if (typeof ff === 'function') f.push(key)
       }
       return f
+    }
+  },
+  'システム関数存在': { // @文字列で関数名を指定してシステム関数が存在するかを調べる // @しすてむかんすうそんざい
+    type: 'func',
+    josi: [['が', 'の']],
+    fn: function (fname, sys) {
+      return (typeof sys.__v0[fname] !== 'undefined')
     }
   },
   'プラグイン一覧取得': { // @利用中のプラグイン一覧を得る // @ぷらぐいんいちらんしゅとく
