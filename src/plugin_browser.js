@@ -483,13 +483,35 @@ const PluginBrowser = {
       return dom[s]
     }
   },
+  'DOM和スタイル': { type: 'const', // @DOMわすたいる
+    value: {
+      '幅': 'width',
+      '高さ': 'height',
+      '背景色': 'background-color',
+      '色': 'color',
+      'マージン': 'margin',
+      '余白': 'padding',
+      '文字サイズ': 'font-size',
+      '行揃え': 'text-align',
+      '左': 'left',
+      '右': 'right',
+      '中央': 'center',
+      'ボーダー': 'border',
+      'ボックス表示': 'display',
+      'なし': 'none',
+      'ブロック': 'block',
+      '表示位置': 'float',
+      '重なり': 'z-index'
+    }
+  },
   'DOMスタイル設定': { // @DOMのスタイルAに値Bを設定 // @DOMすたいるせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
-    fn: function (dom, s, v) {
-      if (typeof (dom) === 'string') {
-        dom = document.querySelector(dom)
-      }
+    fn: function (dom, s, v, sys) {
+      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      const wa = sys.__v0['DOM和スタイル']
+      if (wa[s] !== undefined) s = wa[s]
+      if (wa[v] !== undefined) v = wa[v]
       dom.style[s] = v
     },
     return_none: true
@@ -497,16 +519,21 @@ const PluginBrowser = {
   'DOMスタイル一括設定': { // @DOMに(辞書型で)STYLEを一括設定 // @DOMすたいるいっかつせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom, v) {
-      if (typeof dom === 'string') {
-        dom = document.querySelectorAll(dom)
-      }
+    uses: ['DOM和スタイル'],
+    fn: function (dom, values, sys) {
+      if (typeof dom === 'string') dom = document.querySelectorAll(dom)
       if (!dom) return
       if (dom instanceof window.HTMLElement) dom = [dom]
+      const wa = sys.__v0['DOM和スタイル']
+      // 列挙したDOM一覧を全てスタイル変更する
       for (let i = 0; i < dom.length; i++) {
         const e = dom[i]
-        for (const key in v) {
-          e.style[key] = v[key]
+        for (const key in values) {
+          let s = key
+          let v = values[key]
+          if (wa[s] !== undefined) s = wa[s]
+          if (wa[v] !== undefined) v = wa[v]
+          e.style[s] = v
         }
       }
     },
