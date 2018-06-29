@@ -271,7 +271,10 @@ const PluginBrowser = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      dom.onclick = func
+      dom.onclick = (e) => {
+        sys.__v0['対象'] = e.target
+        return func(e, sys)
+      }
     },
     return_none: true
   },
@@ -281,7 +284,10 @@ const PluginBrowser = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      dom['onload'] = func
+      dom.onload = (e) => {
+        sys.__v0['対象'] = e.target
+        return func(e, sys)
+      }
     },
     return_none: true
   },
@@ -291,7 +297,10 @@ const PluginBrowser = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      dom['onsubmit'] = func
+      dom.onsubmit = (e) => {
+        sys.__v0['対象'] = e.target
+        return func(e, sys)
+      }
     },
     return_none: true
   },
@@ -303,6 +312,7 @@ const PluginBrowser = {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onkeydown'] = (e) => {
+        sys.__v0['対象'] = e.target
         sys.__v0['押キー'] = e.key
         return func(e, sys)
       }
@@ -316,6 +326,7 @@ const PluginBrowser = {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onkeyup'] = (e) => {
+        sys.__v0['対象'] = e.target
         sys.__v0['押キー'] = e.key
         return func(e, sys)
       }
@@ -329,6 +340,7 @@ const PluginBrowser = {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onkeypress'] = (e) => {
+        sys.__v0['対象'] = e.target
         sys.__v0['押キー'] = e.key
         return func(e, sys)
       }
@@ -348,7 +360,8 @@ const PluginBrowser = {
         const box = e.target.getBoundingClientRect()
         sys.__v0['マウスX'] = e.clientX - box.left
         sys.__v0['マウスY'] = e.clientY - box.top
-        func(e, sys)
+        sys.__v0['対象'] = e.target
+        return func(e, sys)
       }
     },
     return_none: true
@@ -363,7 +376,8 @@ const PluginBrowser = {
         const box = e.target.getBoundingClientRect()
         sys.__v0['マウスX'] = e.clientX - box.left
         sys.__v0['マウスY'] = e.clientY - box.top
-        func(e, sys)
+        sys.__v0['対象'] = e.target
+        return feunc(e, sys)
       }
     },
     return_none: true
@@ -378,7 +392,8 @@ const PluginBrowser = {
         const box = e.target.getBoundingClientRect()
         sys.__v0['マウスX'] = e.clientX - box.left
         sys.__v0['マウスY'] = e.clientY - box.top
-        func(e, sys)
+        sys.__v0['対象'] = e.target
+        return func(e, sys)
       }
     },
     return_none: true
