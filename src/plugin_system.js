@@ -3,7 +3,7 @@ const PluginSystem = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__v0['ナデシコバージョン'] = '3.0.43'
+      sys.__v0['ナデシコバージョン'] = '3.0.44'
       // システム関数を探す
       sys.__getSysValue = function (name, def) {
         if (sys.__v0[name] === undefined) return def
@@ -60,6 +60,7 @@ const PluginSystem = {
   '空': {type: 'const', value: ''}, // @から
   'NULL': {type: 'const', value: null}, // @NULL
   'undefined': {type: 'const', value: undefined}, // @undefined
+  '未定義': {type: 'const', value: undefined}, // @みていぎ
   'エラーメッセージ': {type: 'const', value: ''}, // @えらーめっせーじ
   '対象': {type: 'const', value: ''}, // @たいしょう
   '対象キー': {type: 'const', value: ''}, // @たいしょうきー
@@ -97,6 +98,14 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'と']],
     fn: function (s) {
+      console.log(s)
+    },
+    return_none: true
+  },
+  'コンソール表示': { // @Sをコンソール表示する(console.log) // @こんそーるひょうじ
+    type: 'func',
+    josi: [['を', 'と']],
+    fn: function (s, sys) {
       console.log(s)
     },
     return_none: true

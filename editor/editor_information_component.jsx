@@ -17,6 +17,7 @@ export default function EditorInformationComponent (props) {
       <div>
         <p className="edit_head">実行結果:</p>
         <p className="info">{nl2br(props.info)}</p>
+        <div id="nako3_div_1"></div>
       </div>
     </div>
   )
