@@ -11,9 +11,7 @@
 - [なでしこ3のWebサイト](https://nadesi.com/doc3/)
 
 ## 対応機器/Webブラウザ
-
-- HTML5対応ブラウザ (Internet Explorer 11 / Microsoft Edge / Safari / Chrome / Firefox 等)
-- スマホブラウザ (iOS Safari / Android標準ブラウザ)
+- ブラウザ ([browserl.ist: A page to display compatible browsers from a browserslist string.](http://browserl.ist/?q=>+0.5%25%2C+>+0.5%25+in+JP%2C+last+2+versions%2C+Firefox+ESR%2C+not+dead)参照)
 - PC (Windows/macOS/Linux - Node.jsが動く環境)
 
 ## Webブラウザで利用する場合
