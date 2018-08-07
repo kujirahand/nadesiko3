@@ -408,6 +408,14 @@ const PluginBrowser = {
       const tag = dom.tagName.toUpperCase()
       if (tag === 'INPUT' || tag === 'TEXTAREA') {
         dom.value = text
+      } else if (tag === 'SELECT') {
+        for (let i = 0; i < dom.options.length; i++) {
+          const v = dom.options[i].value
+          if (String(v) === text) {
+            dom.selectedIndex = i
+            break
+          }
+        }
       } else {
         dom.innerHTML = text
       }
@@ -424,6 +432,10 @@ const PluginBrowser = {
       const tag = dom.tagName.toUpperCase()
       if (tag === 'INPUT' || tag === 'TEXTAREA') {
         return dom.value
+      } else if (tag === 'SELECT') {
+        const idx = dom.selectedIndex
+        if (idx < 0) return null
+        return dom.options[idx].value
       }
       return dom.innerHTML
     }
@@ -460,6 +472,8 @@ const PluginBrowser = {
     type: 'func',
     josi: [['の', 'から']],
     fn: function (dom, sys) {
+      console.log(dom)
+      console.log(sys)
       return sys.__exec('DOMテキスト取得', [dom, sys])
     }
   },
