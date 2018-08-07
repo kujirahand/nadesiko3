@@ -727,6 +727,23 @@ const PluginBrowser = {
       return inp
     }
   },
+  'セレクトボックス作成': { // @配列optionsの選択肢を持つselect要素を追加しDOMオブジェクトを返す // @せれくとぼっくすさくせい
+    type: 'func',
+    josi: [['の']],
+    fn: function (options, sys) {
+      const parent = sys.__v0['DOM親要素']
+      const dom = document.createElement('select')
+      dom.id = 'nadesi-dom-' + (sys.__v0['DOM生成個数']++)
+      for (let i = 0; i < options.length; i++) {
+        const item = document.createElement('option')
+        item.value = options[i]
+        item.appendChild(document.createTextNode(options[i]))
+        dom.appendChild(item)
+      }
+      parent.appendChild(dom)
+      return dom
+    }
+  },
 
   // @HTML操作
   'HTML変換': { // @文字列をHTMLに変換して返す // @HTMLへんかん
