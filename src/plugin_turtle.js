@@ -445,6 +445,20 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     },
     return_none: true
+  },
+  'カメクリック時': { // @ 操作対象のカメをクリックした時のイベントを設定する // @かめくりっくしたとき
+    type: 'func',
+    josi: [['を']],
+    fn: function (func, sys) {
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      const tid = sys._turtle.target
+      const tt = sys._turtle.list[tid]
+      tt.canvas.onclick = (e) => {
+        sys.__v0['対象'] = e.target
+        return func(e, sys)
+      }
+    },
+    return_none: true
   }
 }
 
