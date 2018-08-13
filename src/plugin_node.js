@@ -451,8 +451,10 @@ const PluginNode = {
     type: 'func',
     josi: [['']],
     fn: function (sec, sys) {
-      const sleep = require('sleep')
-      sleep.msleep(sec * 1000)
+      const msleep = (n) => {
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+      }
+      msleep(sec * 1000)
     },
     return_none: true
   },

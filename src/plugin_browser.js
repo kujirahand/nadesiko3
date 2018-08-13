@@ -545,7 +545,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'DOMスタイル一括設定': { // @DOMに(辞書型で)STYLEを一括設定 // @DOMすたいるいっかつせってい
+  'DOMスタイル一括設定': { // @DOMに(辞書型で)スタイルシート(CSS)を一括設定 // @DOMすたいるいっかつせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     uses: ['DOM和スタイル'],
