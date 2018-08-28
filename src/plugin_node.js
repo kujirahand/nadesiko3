@@ -458,7 +458,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'OS取得': { // @OSプラットフォームを返す // @OSしゅとく
+  'OS取得': { // @OSプラットフォームを返す(darwin|win32|linux) // @OSしゅとく
     type: 'func',
     josi: [],
     fn: function (sys) {
@@ -639,6 +639,25 @@ const PluginNode = {
     fn: function (buf, code, sys) {
       return iconv.decode(buf, code)
     }
+  },
+  // @マウスとキーボード操作
+  'キー送信': { // @Sのキーを送信 // @きーそうしん
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (s, sys) {
+      const keys = require('sendkeys-js')
+      keys.sendKeys(s)
+    },
+    return_none: true
+  },
+  '窓アクティブ': { // @Sの窓をアクティブにする // @まどあくてぃぶ
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (s, sys) {
+      const keys = require('sendkeys-js')
+      keys.activate(s)
+    },
+    return_none: true
   }
 }
 

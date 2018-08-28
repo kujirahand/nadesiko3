@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.0.48",
+  "version": "3.0.49",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -121,10 +121,11 @@
     "iconv-lite": "^0.4.23",
     "moment-timezone": "^0.5.21",
     "node-fetch": "^2.2.0",
-    "npm": "^6.3.0",
+    "npm": "^6.4.0",
     "opener": "^1.4.3",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
+    "sendkeys-js": "0.0.3",
     "ssri": "^6.0.0",
     "whatwg-fetch": "^2.0.4"
   }
