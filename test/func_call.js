@@ -4,7 +4,7 @@ const NakoCompiler = require('../src/nako3')
 describe('関数呼び出しテスト', () => {
   const nako = new NakoCompiler()
   // nako.debugParser = true
-  // nako.debug = true
+  nako.debug = true
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -19,6 +19,7 @@ describe('関数呼び出しテスト', () => {
   beforeEach(() => {
     cmd('「Asia/Tokyo」でタイムゾーン設定')
   })
+  /*
   // --- test ---
   it('関数式の呼び出し - 足す(2,3)を表示。', () => {
     cmp('足す(2,3)を表示。', '5')
@@ -55,6 +56,14 @@ describe('関数呼び出しテスト', () => {
   })
   it('連続文後の=代入', () => {
     cmp('対象日=1504191600を日時変換して「 」まで切り取る。対象日を表示。', '2017/09/01')
+  })
+  it('関数の代入的呼び出し1', () => {
+    cmp('INTに3.5を代入;それを表示;', '3')
+  })
+  */
+  it('関数の代入的呼び出し2', () => {
+    cmp('INT=3.5;それを表示;', '3')
+    cmp('INTは3.5;それを表示;', '3')
   })
   // ---
 })

@@ -459,7 +459,11 @@ class NakoParser extends NakoParserBase {
         const dainyu = this.get()
         const value = this.popStack(['を'])
         const word = this.popStack(['へ', 'に'])
-        if (!word || word.type !== 'word') throw NakoSyntaxError('代入文で代入先の変数が見当たりません。', dainyu.line)
+        if (!word || (word.type !== 'word' && word.type !== 'func')) throw new NakoSyntaxError('代入文で代入先の変数が見当たりません。', dainyu.line)
+        // 関数の代入的呼び出しか？
+        if (word.type === 'func') {
+          return {type: 'func', name: word.name, args: [value], line: dainyu.line, josi: ''}
+        }
         return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
       }
       // 制御構文
@@ -545,6 +549,21 @@ class NakoParser extends NakoParserBase {
   }
 
   yLet () {
+    // 関数への代入的呼び出しの場合
+    if (this.check2(['func', 'eq'])) {
+      if (this.accept(['func', 'eq', this.yCalc])) {
+        return {
+          type: 'func',
+          name: this.y[0].value,
+          args: [this.y[2]],
+          line: this.y[0].line
+        }
+      } else {
+        const word = this.peek()
+        const name = word.name
+        throw new NakoSyntaxError(`『${name}』への代入文で計算式に書き間違いがあります。`, word.line)
+      }
+    }
     // 通常の変数
     if (this.check2(['word', 'eq'])) {
       if (this.accept(['word', 'eq', this.yCalc])) {
