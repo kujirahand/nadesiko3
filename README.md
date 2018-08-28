@@ -11,7 +11,8 @@
 - [なでしこ3のWebサイト](https://nadesi.com/doc3/)
 
 ## 対応機器/Webブラウザ
-- ブラウザ ([browserl.ist: A page to display compatible browsers from a browserslist string.](http://browserl.ist/?q=>+0.5%25%2C+>+0.5%25+in+JP%2C+last+2+versions%2C+Firefox+ESR%2C+not+dead)参照)
+
+- Webブラウザ ([browserl.ist](http://browserl.ist/?q=>+0.5%25%2C+>+0.5%25+in+JP%2C+last+2+versions%2C+Firefox+ESR%2C+not+dead)参照)
 - PC (Windows/macOS/Linux - Node.jsが動く環境)
 
 ## Webブラウザで利用する場合
@@ -30,9 +31,9 @@
 以下のリンクを開いて、「Source code(zip)」をクリックしてダウンロードします。
 これは、Node.jsや必要なモジュール一式を梱包したものです。
 
-- [配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
+- [なでしこ3のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 
-解凍したら「nakopad.vbs」(PC版)または「nako3server.vbs」(Web版)をクリックして、なでしこエディタを起動できます。
+ただし、一部のZIP解凍ツールでエラーが出るようです。[LhaForge](https://forest.watch.impress.co.jp/library/software/lhaforge/)などのツールを利用して解凍してください。解凍したら「nakopad.vbs」(PC版)または「nako3server.vbs」(Web版)をクリックして、なでしこエディタを起動できます。
 
 ### macOS/Linuxで利用する
 
