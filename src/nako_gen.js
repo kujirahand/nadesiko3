@@ -682,15 +682,17 @@ class NakoGen {
 
   convFuncGetArgsCalcType (funcName, func, node) {
     const args = []
+    const opts = {}
     for (let i = 0; i < node.args.length; i++) {
       const arg = node.args[i]
       if (i === 0 && arg === null) {
         args.push(this.sore)
+        opts['sore'] = true
       } else {
         args.push(this.convGen(arg))
       }
     }
-    return args
+    return [args, opts]
   }
 
   getPluginList () {
@@ -730,14 +732,19 @@ class NakoGen {
       funcNameS = `__varslist[${res.i}]["${funcName}"]`
     }
     // 関数定義より助詞を一つずつ調べる
-    let args = []
-    args = this.convFuncGetArgsCalcType(funcName, func, node)
+    const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
+    const args = argsInfo[0]
+    const argsOpts = argsInfo[1]
     // function
     if (typeof (this.used_func[funcName]) === 'undefined') {
       this.used_func[funcName] = true
     }
+    // setter ?
+    if (node['setter']) argsOpts['setter'] = true
     // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
     args.push('__self')
+    if (argsOpts) args.push(JSON.stringify(argsOpts))
+
     let argsCode = args.join(',')
     let code = `${funcNameS}(${argsCode})`
     if (func.return_none) {

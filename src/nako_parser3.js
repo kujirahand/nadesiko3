@@ -462,7 +462,7 @@ class NakoParser extends NakoParserBase {
         if (!word || (word.type !== 'word' && word.type !== 'func')) throw new NakoSyntaxError('代入文で代入先の変数が見当たりません。', dainyu.line)
         // 関数の代入的呼び出しか？
         if (word.type === 'func') {
-          return {type: 'func', name: word.name, args: [value], line: dainyu.line, josi: ''}
+          return {type: 'func', name: word.name, args: [value], setter: true, line: dainyu.line, josi: ''}
         }
         return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
       }
@@ -556,6 +556,7 @@ class NakoParser extends NakoParserBase {
           type: 'func',
           name: this.y[0].value,
           args: [this.y[2]],
+          setter: true,
           line: this.y[0].line
         }
       } else {

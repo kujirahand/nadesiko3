@@ -377,7 +377,7 @@ const PluginBrowser = {
         sys.__v0['マウスX'] = e.clientX - box.left
         sys.__v0['マウスY'] = e.clientY - box.top
         sys.__v0['対象'] = e.target
-        return feunc(e, sys)
+        return func(e, sys)
       }
     },
     return_none: true

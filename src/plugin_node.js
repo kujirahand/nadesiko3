@@ -452,7 +452,7 @@ const PluginNode = {
     josi: [['']],
     fn: function (sec, sys) {
       const msleep = (n) => {
-        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n) // eslint-disable-line no-undef
       }
       msleep(sec * 1000)
     },
@@ -470,6 +470,16 @@ const PluginNode = {
     josi: [],
     fn: function (sys) {
       return process.arch
+    }
+  },
+  // @クリップボード
+  'クリップボード': { // @クリップボードを取得設定（『クリップボード＝値』で書換が可能） // @くりっぷぼーど
+    type: 'func',
+    josi: [['を']],
+    fn: function (v, sys, opt) {
+      const ncp = require('copy-paste')
+      if (opt['setter']) return ncp.copy(v)
+      return ncp.paste()
     }
   },
   // @コマンドライン
