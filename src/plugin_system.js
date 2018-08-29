@@ -3,7 +3,7 @@ const PluginSystem = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__v0['ナデシコバージョン'] = '3.0.49'
+      sys.__v0['ナデシコバージョン'] = '3.0.50'
       // システム関数を探す
       sys.__getSysValue = function (name, def) {
         if (sys.__v0[name] === undefined) return def
