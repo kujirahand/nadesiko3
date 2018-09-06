@@ -14,14 +14,14 @@
 ```
 {
   '定数名': { 定義 },
-  '命令名': { 定義 }, 
+  '命令名': { 定義 },
   ...
 }
 ```
 
 ### 定義：関数
 
-プラグインの実体は、Object。
+プラグインの実体は、Object。実際の関数定義は、fnプロパティに行う。実際の関数の引数に加えて、システムを表すsysを用意する。
 
 ```
 {
@@ -103,11 +103,15 @@ if (typeof (navigator) === 'object') {
   type: 'func',
   josi: [],
   fn: function (sys) {
-    const result = sys.__exec('HOGE', [arg1, arg2, arg3])
+    const result = sys.__exec('HOGE', [arg1, arg2, arg3, sys])
     console.log(result)
   }
 }
 ```
+
+また、関数の引数に与える、sysはなでしこ自身を表す。
+もし、代入的関数呼び出し(setter)であれば、sys.isSetterにtrueの値が入る。
+
 
 なお、プラグインでは、以下のメソッドが使えるようになる。(すべて src/plugin_system.jsで定義されている。システム関数の初期化時に、これらの関数が追加される。)
 

@@ -739,18 +739,22 @@ class NakoGen {
     if (typeof (this.used_func[funcName]) === 'undefined') {
       this.used_func[funcName] = true
     }
-    // setter ?
-    if (node['setter']) argsOpts['setter'] = true
     // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
     args.push('__self')
-    if (argsOpts) args.push(JSON.stringify(argsOpts))
-
+    let funcBegin = ''
+    let funcEnd = ''
+    // setter?
+    if (node['setter']) {
+      funcBegin = ';__self.isSetter = true;'
+      funcEnd = ';__self.isSetter = false;'
+    }
+    // 関数呼び出しコードの構築
     let argsCode = args.join(',')
     let code = `${funcNameS}(${argsCode})`
     if (func.return_none) {
-      code = `${code};\n`
+      code = `${funcBegin}${code};${funcEnd}\n`
     } else {
-      code = `(function(){ const tmp=${this.sore}=${code}; return tmp }).call(this)`
+      code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
       // ...して
       if (node.josi === 'して') {
         code += ';\n'

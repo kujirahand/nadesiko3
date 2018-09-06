@@ -476,9 +476,9 @@ const PluginNode = {
   'クリップボード': { // @クリップボードを取得設定（『クリップボード＝値』で書換が可能） // @くりっぷぼーど
     type: 'func',
     josi: [['を']],
-    fn: function (v, sys, opt) {
+    fn: function (v, sys) {
       const ncp = require('copy-paste')
-      if (opt && opt['setter']) return ncp.copy(v)
+      if (sys.isSetter) return ncp.copy(v)
       return ncp.paste()
     }
   },
