@@ -213,7 +213,7 @@ class NakoCompiler {
     }
   }
 
-   /**
+  /**
     * プラグイン・オブジェクトを追加(ブラウザ向け)
     * @param objName オブジェクト名
     * @param po 関数リスト
@@ -273,7 +273,6 @@ class NakoCompiler {
   getFunc (key) {
     return this.funclist[key]
   }
-
 }
 
 module.exports = NakoCompiler

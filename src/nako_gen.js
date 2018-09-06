@@ -748,6 +748,10 @@ class NakoGen {
       funcBegin = ';__self.isSetter = true;'
       funcEnd = ';__self.isSetter = false;'
     }
+    // 変数「それ」が補完されていることをヒントとして出力
+    if (argsOpts['sore']) {
+      funcBegin += '/*[sore]*/'
+    }
     // 関数呼び出しコードの構築
     let argsCode = args.join(',')
     let code = `${funcNameS}(${argsCode})`
