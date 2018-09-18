@@ -22,8 +22,8 @@ module.exports = {
     {name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat},
     {name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat},
     {name: 'number', pattern: /^[0-9]+/, readJosi: true, cb: parseInt},
-    {name: 'ここから', pattern: /^(ここから|→)/},
-    {name: 'ここまで', pattern: /^(ここまで|←|-{3,})/},
+    {name: 'ここから', pattern: /^(ここから)/},
+    {name: 'ここまで', pattern: /^(ここまで)/},
     {name: 'もし', pattern: /^もしも?/},
     // ならば ← 助詞として定義
     {name: '違えば', pattern: /^違(えば)?/},
