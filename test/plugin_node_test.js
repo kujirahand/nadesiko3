@@ -48,7 +48,7 @@ describe('plugin_node_test', () => {
       'HOME=ホームディレクトリ取得;' +
       'TMP=HOME&"/.temp";' +
       'もし、!(TMPが存在する)ならば、TMPのフォルダ作成。' +
-      'FZIP=「{TMP}test.zip」;\n' +
+      'FZIP=「{TMP}/test.zip」;\n' +
       'FINをFZIPへ圧縮。FZIPを「{TMP}/」に解凍。\n' +
       'S1=「{TMP}/plugin_node_test.js」を読む。\n' +
       'S2=FINを読む。\n' +

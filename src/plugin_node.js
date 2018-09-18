@@ -28,7 +28,7 @@ const PluginNode = {
           const root = path.resolve(path.join(nodeDir, '..'))
           fpath = path.join(root, 'bin', tool + '.exe')
           if (fileExists(fpath)) return `"${fpath}"`
-          fpath = tool
+          return tool
         }
         return fpath
       }
