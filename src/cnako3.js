@@ -144,7 +144,7 @@ class CNako3 extends NakoCompiler {
     for (let line of lines) {
       let s = line.replace(/^\s+/, '') // trim
       const ch = s.substr(0, 1)
-      if (ch !== '!' && ch !== '！' ) {
+      if (ch !== '!' && ch !== '！') {
         result += line + '\n'
         continue
       }
@@ -155,7 +155,7 @@ class CNako3 extends NakoCompiler {
       let fullpath = pname
       try {
         let plugmod = {}
-        if (fullpath.substr(0, 1) == '.') { // 相対パス指定
+        if (fullpath.substr(0, 1) === '.') { // 相対パス指定
           const basedir = path.dirname(this.filename)
           fullpath = path.resolve(path.join(basedir, pname))
         }

@@ -478,7 +478,7 @@ const PluginNode = {
     josi: [['を']],
     fn: function (v, sys) {
       const ncp = require('copy-paste')
-      if (sys.isSetter) return ncp.copy(v)
+      if (sys && sys['isSetter']) return ncp.copy(v)
       return ncp.paste()
     }
   },
