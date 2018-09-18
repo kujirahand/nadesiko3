@@ -69,9 +69,9 @@ Ubuntu/Debian
 
 ```
 # 『圧縮』『解凍』命令のために
-sudo apt-get install p7zip-full
+sudo apt install p7zip-full
 # 『キー送信』命令のために
-sudo apt-get install xdotool
+sudo apt install xdotool
 ```
 
 全てのコマンドが正しく動くかを確認するには、以下のコマンドを実行します。
