@@ -44,9 +44,14 @@ describe('plugin_node_test', () => {
     cmp('「PATH」の環境変数取得して表示。', path)
   })
   it('圧縮解凍', () => {
+    let path7z = '7z'
+    if (process.platform === 'win32') {
+      path7z = path.join(path.dirname(__dirname), 'bin/7z.exe')
+    }
     cmp('FIN=「' + testFileMe + '」;' +
       'HOME=ホームディレクトリ取得;' +
       'TMP=HOME&"/.temp";' +
+      '「' + path7z + '」に圧縮解凍ツールパス変更;' +
       'もし、!(TMPが存在する)ならば、TMPのフォルダ作成。' +
       'FZIP=「{TMP}/test.zip」;\n' +
       'FINをFZIPへ圧縮。FZIPを「{TMP}/」に解凍。\n' +

@@ -24,11 +24,13 @@ const PluginNode = {
       sys.__getBinPath = (tool) => {
         let fpath = tool
         if (process.platform === 'win32') {
-          const nodeDir = path.dirname(process.argv[0])
-          const root = path.resolve(path.join(nodeDir, '..'))
-          fpath = path.join(root, 'bin', tool + '.exe')
-          if (fileExists(fpath)) return `"${fpath}"`
-          return tool
+          if (!fileExists(tool)) {
+            const nodeDir = path.dirname(process.argv[0])
+            const root = path.resolve(path.join(nodeDir, '..'))
+            fpath = path.join(root, 'bin', tool + '.exe')
+            if (fileExists(fpath)) return `"${fpath}"`
+            return tool
+          }
         }
         return fpath
       }
@@ -376,7 +378,7 @@ const PluginNode = {
   },
   // @圧縮・解凍
   '圧縮解凍ツールパス': { type: 'const', value: '7z' },
-  '圧縮解凍ツールパス変更': { // @圧縮解凍に使うツールを変更する // @あっしゅくかいとうつーるぱすへんこう
+  '圧縮解凍ツールパス変更': { // @圧縮解凍に使うツールを取得変更する // @あっしゅくかいとうつーるぱすへんこう
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (v, sys) {
