@@ -1095,6 +1095,85 @@ const PluginBrowser = {
       navigator.geolocation.clearWatch(wid)
     },
     return_none: true
+  },
+  // @音声合成
+  '話': { // @音声合成APIを使って、Sを発話する // @はなす
+    type: 'func',
+    josi: [['と', 'を', 'の']],
+    fn: function (s, sys) {
+      // 話者の特定
+      let voice = sys.__v0['話:話者']
+      if (!voice) voice = sys.__exec('話者設定', ['ja', sys])
+      // インスタンス作成
+      const msg = new SpeechSynthesisUtterance(s)
+      msg.voice = voice
+      if (voice) msg.lang = voice.lang // 必ず話者の特定に成功している訳ではない
+      window.speechSynthesis.speak(msg)
+      console.log('#話す:', s)
+      return s
+    }
+  },
+  '話終時': { // @音声合成APIを使って、Sを発話し発話した後でcallbackを実行 // @はなしおわったとき
+    type: 'func',
+    josi: [['で'], ['と', 'を', 'の']],
+    fn: function (callback, s, sys) {
+      // 話者の特定
+      let voice = sys.__v0['話:話者']
+      if (!voice) voice = sys.__exec('話者設定', ['ja', sys])
+      // インスタンス作成
+      const msg = new SpeechSynthesisUtterance(s)
+      msg.voice = voice
+      if (voice) msg.lang = voice.lang // 必ず話者の特定に成功している訳ではない
+      msg.onend = (e) => {
+        console.log('#話終時')
+        callback(sys)
+      }
+      window.speechSynthesis.speak(msg)
+      console.log('#話す:', s)
+      return s
+    }
+  },
+  '話者一覧取得': { // @音声合成APIの話者一覧を得る // @わしゃいちらんしゅとく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      // 対応している？
+      if (!('SpeechSynthesisUtterance' in window)) {
+        throw new Error('音声合成APIに対応していません')
+      }
+      return window.speechSynthesis.getVoices()
+    }
+  },
+  '話者設定': { // @音声合成APIの話者を指定する // @わしゃせってい
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (v, sys) {
+      // 対応している？
+      if (!('SpeechSynthesisUtterance' in window)) {
+        throw new Error('音声合成APIに対応していません')
+      }
+      // 文字列で値を指定
+      if (typeof v === 'string') {
+        // 話者を特定する
+        const voices = window.speechSynthesis.getVoices()
+        for (const i of voices) {
+          if (i.lang.indexOf(v) >= 0 || i.name === v) {
+            const msg = new SpeechSynthesisUtterance()
+            msg.voice = i
+            msg.lang = i.lang
+            sys.__v0['話:話者'] = i
+            console.log('#話者:', i.name)
+            return i
+          }
+        }
+      }
+      // 話者一覧取得で得たオブジェクトを直接指定した場合
+      if (typeof v === 'object') {
+        sys.__v0['話:話者'] = v
+        return v
+      }
+      return undefined
+    }
   }
 }
 
