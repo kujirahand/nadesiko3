@@ -24,7 +24,7 @@ const PluginExpress = {
       sys.__v0['WEBサーバクエリ'] = {}
     }
   },
-  // @Webサーバ(Exoress)
+  // @Webサーバ(Express)
   'GETデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
   'POSTデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
   'WEBサーバ名前設定': { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
