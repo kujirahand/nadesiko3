@@ -510,6 +510,37 @@ const PluginNode = {
       assert.equal(a, b)
     }
   },
+  // @ネットワーク
+  '自分IPアドレス取得': { // @ネットワークアダプターからIPアドレス(IPv4)を取得して配列で返す // @じぶんIPあどれすしゅとく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const os = require('os')
+      const nif = os.networkInterfaces()
+      const result = []
+      for (let dev in nif) {
+        nif[dev].forEach((detail) => {
+          if (detail.family === 'IPv4') result.push(detail.address)
+        })
+      }
+      return result
+    }
+  },
+  '自分IPV6アドレス取得': { // @ネットワークアダプターからIPアドレス(IPv6)を取得して配列で返す // @じぶんIPV6あどれすしゅとく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const os = require('os')
+      const nif = os.networkInterfaces()
+      const result = []
+      for (let dev in nif) {
+        nif[dev].forEach((detail) => {
+          if (detail.family === 'IPv6') result.push(detail.address)
+        })
+      }
+      return result
+    }
+  },
   // @Ajax
   'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
     type: 'func',

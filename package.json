@@ -12,6 +12,7 @@
     "test": "mocha",
     "start": "node src/nako3server.js",
     "server": "lite-server --config=demo/bs-config.json",
+    "server:ws": "cnako3 tools/ws/echo.nako3",
     "nako3edit": "cnako3 tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
     "electron": "electron src/enako3.js",

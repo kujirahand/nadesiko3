@@ -545,7 +545,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'DOMスタイル一括設定': { // @DOMに(辞書型で)スタイルシート(CSS)を一括設定 // @DOMすたいるいっかつせってい
+  'DOMスタイル一括設定': { // @DOMに(オブジェクト型で)スタイル情報を一括設定 // @DOMすたいるいっかつせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     uses: ['DOM和スタイル'],
@@ -1184,7 +1184,7 @@ const PluginBrowser = {
   '話者速度': {type: 'const', value: 1.0}, // @わしゃそくど
   '話者声高': {type: 'const', value: 1.0}, // @わしゃこわだか
   '話者音量': {type: 'const', value: 1.0}, // @わしゃこおんりょう
-  '話者詳細設定': { // @音声合成APIの話者の設定をJSON形式で設定する。key=(速度|声高|ピッチ|音量) // @わしゃしょうさいせってい
+  '話者詳細設定': { // @音声合成APIの話者の設定をオブジェクト形式で設定する。『速度,声高,ピッチ,音量』を指定 // @わしゃしょうさいせってい
     type: 'func',
     josi: [['で', 'に', 'へ']],
     fn: function (obj, sys) {
@@ -1240,6 +1240,7 @@ const PluginBrowser = {
         console.log('WSエラー', err)
       }
       ws.onmessage = (e) => {
+        console.log(e.data)
         sys.__v0['対象'] = e.data
         const cbMsg = sys.__v0['WS:ONMESSAGE']
         if (cbMsg) cbMsg(sys)
@@ -1254,6 +1255,14 @@ const PluginBrowser = {
     fn: function (s, sys) {
       const ws = sys.__v0['WS:SOCKET']
       ws.send(s)
+    }
+  },
+  'WS切断': { // @アクティブなWebSocketを閉じる // @WSせつだん
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const ws = sys.__v0['WS:SOCKET']
+      ws.close()
     }
   }
 }
