@@ -8,7 +8,7 @@ export default function EditorButtonComponent (props) {
     <div className="buttons">
       <button onClick={() => {
         try {
-          // なでしこの関数をカスタマイズ
+          // なでしこの関数をカスタマイズ --- TODO: なでしこの追加命令は edit_main.jsxで書いているので別途関数を作ってそこでまとめるように
           props.nako3.setFunc('表示', [['と', 'を', 'の']], props.onInformationChanged)
           props.nako3.run(props.code)
         } catch (e) {
