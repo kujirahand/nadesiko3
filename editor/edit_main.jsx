@@ -16,5 +16,10 @@ nako3.addFunc('色変更', [['に', 'へ']], (s) => {document.getElementById('in
 // render
 for (const e of document.getElementsByClassName('editor-component')) {
   const data = JSON.parse(e.getElementsByTagName('script')[0].text)
-  ReactDOM.render(<EditorComponent nako3={nako3} title={data['title']} code={data['code']} />, e)
+  const autoLoad = data['autoLoad']
+  let code = data['code']
+  if (autoLoad && window.localStorage['nako3/editor/code']) {
+    code = window.localStorage['nako3/editor/code']
+  }
+  ReactDOM.render(<EditorComponent nako3={nako3} title={data['title']} code={code} />, e)
 }
