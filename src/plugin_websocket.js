@@ -21,8 +21,6 @@ const PluginWebsocket = {
     }
   },
   // @WebSocketサーバ
-  'GETデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
-  'POSTデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
   'WSサーバ起動': { // @ポートPORTNOでWebサーバを起動して成功したら『WSサーバ起動成功した時』を実行する // @WSさーばきどう
     type: 'func',
     josi: [['の', 'で']],

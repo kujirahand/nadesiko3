@@ -8,7 +8,8 @@
     'src/plugin_browser.js',
     'src/plugin_turtle.js',
     'src/plugin_node.js',
-    'src/plugin_express.js'
+    'src/plugin_express.js',
+    'src/plugin_websocket.js'
  ]
 
 関数定義とは変数
