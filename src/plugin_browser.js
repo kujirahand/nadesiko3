@@ -1108,6 +1108,9 @@ const PluginBrowser = {
       const msg = new SpeechSynthesisUtterance(s)
       msg.voice = voice
       if (voice) msg.lang = voice.lang // 必ず話者の特定に成功している訳ではない
+      msg.rate = sys.__v0['話者速度']
+      msg.pitch = sys.__v0['話者声高']
+      msg.volume = sys.__v0['話者音量']
       window.speechSynthesis.speak(msg)
       console.log('#話す:', s)
       return s
@@ -1124,6 +1127,9 @@ const PluginBrowser = {
       const msg = new SpeechSynthesisUtterance(s)
       msg.voice = voice
       if (voice) msg.lang = voice.lang // 必ず話者の特定に成功している訳ではない
+      msg.rate = sys.__v0['話者速度']
+      msg.pitch = sys.__v0['話者声高']
+      msg.volume = sys.__v0['話者音量']
       msg.onend = (e) => {
         console.log('#話終時')
         callback(sys)
@@ -1173,6 +1179,25 @@ const PluginBrowser = {
         return v
       }
       return undefined
+    }
+  },
+  '話者速度': {type: 'const', value: 1.0}, // @わしゃそくど
+  '話者声高': {type: 'const', value: 1.0}, // @わしゃこわだか
+  '話者音量': {type: 'const', value: 1.0}, // @わしゃこおんりょう
+  '話者詳細設定': { // @音声合成APIの話者の設定をJSON形式で設定する。key=(速度|声高|ピッチ|音量) // @わしゃしょうさいせってい
+    type: 'func',
+    josi: [['で', 'に', 'へ']],
+    fn: function (obj, sys) {
+      const changeFunc = (key, v) => {
+        if (key === '速度') sys.__v0['話者速度'] = v
+        if (key === '声高' || key === 'ピッチ') sys.__v0['話者声高'] = v
+        if (key === '音量') sys.__v0['話者音量'] = v
+      }
+      // 一括変更
+      for (const key in obj) {
+        const v = obj[key]
+        changeFunc(key, v)
+      }
     }
   },
   // @WebSocket
