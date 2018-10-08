@@ -151,7 +151,7 @@ const PluginBrowser = {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
-      for (var key in params) {
+      for (let key in params) {
         fd.set(key, params[key])
       }
       let options = {
