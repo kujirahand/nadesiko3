@@ -103,8 +103,7 @@ class CNako3 extends NakoCompiler {
   compile (src) {
     const code = this.includePlugin(src)
     const ast = this.parse(code)
-    const js = this.generate(ast)
-    return js
+    return this.generate(ast)
   }
 
   /**

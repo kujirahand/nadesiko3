@@ -529,8 +529,7 @@ class NakoGen {
 
   convFuncObj (node) {
     const args = node.args
-    const code = this.convDefFuncCommon(node, '', args)
-    return code
+    return this.convDefFuncCommon(node, '', args)
   }
 
   convJsonObj (node) {
@@ -674,10 +673,8 @@ class NakoGen {
     const falseBlock = (node.false_block === null)
       ? ''
       : 'else {' + this.convGen(node.false_block) + '};\n'
-    const code =
-      NakoGen.convLineno(node) +
+    return NakoGen.convLineno(node) +
       `if (${expr}) {\n  ${block}\n}` + falseBlock + ';\n'
-    return code
   }
 
   convFuncGetArgsCalcType (funcName, func, node) {

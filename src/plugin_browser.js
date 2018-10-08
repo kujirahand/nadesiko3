@@ -87,8 +87,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で', 'の', 'と', 'を']],
     fn: function (s) {
-      const r = window.confirm(s)
-      return r
+      return window.confirm(s)
     }
   },
 
@@ -786,8 +785,7 @@ const PluginBrowser = {
         const line2 = line + '='
         const kv = line2.split('=')
         const k = decodeURIComponent(kv[0])
-        const v = decodeURIComponent(kv[1])
-        res[k] = v
+        res[k] = decodeURIComponent(kv[1])
       }
       return res
     }
@@ -1077,14 +1075,13 @@ const PluginBrowser = {
       if (!('geolocation' in navigator)) {
         throw new Error('関数『位置情報監視時』は使えません。')
       }
-      const wid = navigator.geolocation.watchPosition((position) => {
+      return navigator.geolocation.watchPosition((position) => {
         sys.__v0['対象'] = [
           position.coords.latitude,
           position.coords.longitude
         ]
         cb(position)
       })
-      return wid
     },
     return_none: false
   },

@@ -134,8 +134,7 @@ class NakoCompiler {
    */
   compile (code) {
     const ast = this.parse(code)
-    const js = this.generate(ast)
-    return js
+    return this.generate(ast)
   }
 
   _run (code, isReset) {

@@ -126,11 +126,9 @@ const PluginNode = {
           ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
         const maskRE = new RegExp(mask2, 'i')
         const list = fs.readdirSync(searchPath)
-        const list2 = list.filter((n) => maskRE.test(n))
-        return list2
+        return list.filter((n) => maskRE.test(n))
       } else {
-        const list = fs.readdirSync(s)
-        return list
+        return fs.readdirSync(s)
       }
     }
   },

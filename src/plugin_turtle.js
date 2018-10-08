@@ -269,8 +269,7 @@ const PluginTurtle = {
     josi: [],
     fn: function (sys) {
       const imageUrl = sys.__getSysValue('カメ画像URL', 'turtle.png')
-      const id = sys._turtle.createTurtle(imageUrl, sys)
-      return id
+      return sys._turtle.createTurtle(imageUrl, sys)
     }
   },
   'ゾウ作成': { // @ゾウの画像でタートルグラフィックスを開始してIDを返す // @ぞうさくせい
@@ -278,8 +277,7 @@ const PluginTurtle = {
     josi: [],
     fn: function (sys) {
       const imageUrl = 'turtle-elephant.png'
-      const id = sys._turtle.createTurtle(imageUrl, sys)
-      return id
+      return sys._turtle.createTurtle(imageUrl, sys)
     }
   },
   'パンダ作成': { // @パンダの画像でタートルグラフィックスを開始してIDを返す // @ぱんださくせい
@@ -287,8 +285,7 @@ const PluginTurtle = {
     josi: [],
     fn: function (sys) {
       const imageUrl = 'turtle-panda.png'
-      const id = sys._turtle.createTurtle(imageUrl, sys)
-      return id
+      return sys._turtle.createTurtle(imageUrl, sys)
     }
   },
   'カメ操作対象設定': { // @IDを指定して操作対象となるカメを変更する // @かめそうさたいしょうせってい
