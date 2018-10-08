@@ -232,8 +232,7 @@ const PluginTurtle = {
           // 描画先をセットする
           let canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
           if (typeof canvasId === 'string') {
-            canvasId = document.getElementById(canvasId) ||
-                       document.querySelector(canvasId)
+            canvasId = document.getElementById(canvasId) || document.querySelector(canvasId)
             sys.__v0['カメ描画先'] = canvasId
           }
           console.log('カメ描画先=', canvasId)

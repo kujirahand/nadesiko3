@@ -891,7 +891,7 @@ class NakoGen {
   convRequire (node) {
     const moduleName = node.value
     return NakoGen.convLineno(node.line) +
-    `__module['${moduleName}'] = require('${moduleName}');\n`
+      `__module['${moduleName}'] = require('${moduleName}');\n`
   }
 }
 

@@ -377,7 +377,7 @@ const PluginNode = {
     }
   },
   // @圧縮・解凍
-  '圧縮解凍ツールパス': { type: 'const', value: '7z' },
+  '圧縮解凍ツールパス': {type: 'const', value: '7z'},
   '圧縮解凍ツールパス変更': { // @圧縮解凍に使うツールを取得変更する // @あっしゅくかいとうつーるぱすへんこう
     type: 'func',
     josi: [['に', 'へ']],
@@ -628,7 +628,7 @@ const PluginNode = {
       sys.__v0['AJAX:ONERROR'] = callback
     }
   },
-  'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
+  'AJAXオプション': {type: 'const', value: ''}, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
   'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],

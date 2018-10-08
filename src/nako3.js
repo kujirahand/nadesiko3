@@ -43,6 +43,10 @@ class NakoCompiler {
     return s
   }
 
+  static getHeader () {
+    return NakoGen.getHeader()
+  }
+
   /**
    * コードを単語に分割する
    * @param code なでしこのプログラム
@@ -53,10 +57,6 @@ class NakoCompiler {
   tokenize (code, isFirst, line = 0) {
     const code2 = this.prepare.convert(code)
     return this.lexer.setInput(code2, isFirst, line)
-  }
-
-  static getHeader () {
-    return NakoGen.getHeader()
   }
 
   /**
@@ -214,10 +214,10 @@ class NakoCompiler {
   }
 
   /**
-    * プラグイン・オブジェクトを追加(ブラウザ向け)
-    * @param objName オブジェクト名
-    * @param po 関数リスト
-    */
+   * プラグイン・オブジェクトを追加(ブラウザ向け)
+   * @param objName オブジェクト名
+   * @param po 関数リスト
+   */
   addPluginObject (objName, po) {
     this.__module[objName] = po
     this.pluginfiles[objName] = '*'
