@@ -30,11 +30,15 @@ const PluginSystem = {
       }
       // 前回設定したタイマーが実行中ならクリア
       if (sys.__timeout) {
-        for (const t of sys.__timeout) clearTimeout(t)
+        for (const t of sys.__timeout) {
+          clearTimeout(t)
+        }
       }
       sys.__timeout = []
       if (sys.__interval) {
-        for (const t of sys.__interval) clearInterval(t)
+        for (const t of sys.__interval) {
+          clearInterval(t)
+        }
       }
       sys.__interval = []
     }
@@ -660,7 +664,9 @@ const PluginSystem = {
     josi: [['を', 'の'], ['で']],
     fn: function (v, cnt) {
       let s = ''
-      for (let i = 0; i < cnt; i++) s += String(v)
+      for (let i = 0; i < cnt; i++) {
+        s += String(v)
+      }
       return s
     }
   },
@@ -986,7 +992,9 @@ const PluginSystem = {
           // has group?
           if (m.length > 0) {
             result = m[0]
-            for (let i = 1; i < m.length; i++) sa[i - 1] = m[i]
+            for (let i = 1; i < m.length; i++) {
+              sa[i - 1] = m[i]
+            }
           }
         }
       }
@@ -1037,7 +1045,9 @@ const PluginSystem = {
     fn: function (v, a) {
       v = String(v)
       let z = '0'
-      for (let i = 0; i < a; i++) z += '0'
+      for (let i = 0; i < a; i++) {
+        z += '0'
+      }
       a = parseInt(a)
       if (a < v.length) a = v.length
       const s = z + String(v)
@@ -1050,7 +1060,9 @@ const PluginSystem = {
     fn: function (v, a) {
       v = String(v)
       let z = ' '
-      for (let i = 0; i < a; i++) z += ' '
+      for (let i = 0; i < a; i++) {
+        z += ' '
+      }
       a = parseInt(a)
       if (a < v.length) a = v.length
       const s = z + String(v)
@@ -1273,11 +1285,15 @@ const PluginSystem = {
     fn: function (a) {
       const keys = []
       if (a instanceof Array) { // 配列なら数字を返す
-        for (let i = 0; i < a.length; i++) keys.push(i)
+        for (let i = 0; i < a.length; i++) {
+          keys.push(i)
+        }
         return keys
       }
       if (a instanceof Object) { // オブジェクトのキーを返す
-        for (const key in a) keys.push(key)
+        for (const key in a) {
+          keys.push(key)
+        }
         return keys
       }
       throw new Error('『ハッシュキー列挙』でハッシュ以外が与えられました。')
@@ -1289,7 +1305,9 @@ const PluginSystem = {
     fn: function (a) {
       const body = []
       if (a instanceof Object) { // オブジェクトのキーを返す
-        for (const key in a) body.push(a[key])
+        for (const key in a) {
+          body.push(a[key])
+        }
         return body
       }
       throw new Error('『ハッシュ内容列挙』でハッシュ以外が与えられました。')

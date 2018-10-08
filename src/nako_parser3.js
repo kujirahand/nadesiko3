@@ -4,7 +4,9 @@
 const {opPriority, keizokuJosi} = require('./nako_parser_const')
 const {NakoParserBase, NakoSyntaxError} = require('./nako_parser_base')
 const operatorList = []
-for (const key in opPriority) operatorList.push(key)
+for (const key in opPriority) {
+  operatorList.push(key)
+}
 
 class NakoParser extends NakoParserBase {
   /**
@@ -244,7 +246,9 @@ class NakoParser extends NakoParserBase {
       stack.push(t)
     }
     // 残った要素を積み替える
-    while (stack.length > 0) polish.push(stack.pop())
+    while (stack.length > 0) {
+      polish.push(stack.pop())
+    }
     return polish
   }
 
@@ -842,7 +846,9 @@ class NakoParser extends NakoParserBase {
     const a = []
     const firstToken = this.peek()
     while (!this.isEOF()) {
-      while (this.check('eol')) this.get()
+      while (this.check('eol')) {
+        this.get()
+      }
       if (this.check('}')) break
       if (this.accept(['word', ':', this.yCalc])) {
         this.y[0].type = 'string' // キー名の文字列記号省略の場合

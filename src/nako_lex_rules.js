@@ -156,7 +156,9 @@ function cbString (beginTag, closeTag, src) {
     const sm = src.match(/^\{{3,}/)
     const cnt = sm[0].length
     closeTag = ''
-    for (let i = 0; i < cnt; i++) closeTag += '}'
+    for (let i = 0; i < cnt; i++) {
+      closeTag += '}'
+    }
     src = src.substr(cnt)
   }
   const i = src.indexOf(closeTag)

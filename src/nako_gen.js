@@ -697,7 +697,9 @@ class NakoGen {
 
   getPluginList () {
     const r = []
-    for (const name in this.__module) r.push(name)
+    for (const name in this.__module) {
+      r.push(name)
+    }
     return r
   }
 
