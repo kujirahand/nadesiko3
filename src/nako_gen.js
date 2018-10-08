@@ -470,7 +470,7 @@ class NakoGen {
     return NakoGen.convLineno(node.line) + cmd + ';'
   }
 
-  convDefFuncCommon (node, name, args) {
+  convDefFuncCommon (node, name) {
     let code = '(function(){\n'
     code += '' +
       'try {\n' +
@@ -525,8 +525,7 @@ class NakoGen {
 
   convDefFunc (node) {
     const name = NakoGen.getFuncName(node.name.value)
-    const args = node.args
-    this.convDefFuncCommon(node, name, args)
+    this.convDefFuncCommon(node, name)
     // ★この時点では関数のコードを生成しない★
     // プログラム冒頭でコード生成時に関数定義を行う
     // return `__vars["${name}"] = ${code};\n`;
@@ -534,8 +533,7 @@ class NakoGen {
   }
 
   convFuncObj (node) {
-    const args = node.args
-    return this.convDefFuncCommon(node, '', args)
+    return this.convDefFuncCommon(node, '')
   }
 
   convJsonObj (node) {
