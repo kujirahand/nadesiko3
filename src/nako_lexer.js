@@ -21,28 +21,8 @@ class NakoLexer {
     this.result = []
   }
 
-  setFuncList (listObj) {
-    this.funclist = listObj
-  }
-
-  setInput (code, isFirst, line) {
-    // 最初に全部を区切ってしまう
-    this.tokenize(code, line)
-    // 関数の定義があれば funclist を更新
-    this.checkRequire(this.result)
-    this.preDefineFunc(this.result)
-    this.replaceWord(this.result)
-
-    if (isFirst) {
-      const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-      this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
-      this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
-    }
-    return this.result
-  }
-
   // プラグインの取り込みを行う
-  checkRequire (tokens) {
+  static checkRequire (tokens) {
     let i = 0
     while ((i + 2) < tokens.length) {
       const tNot = tokens[i]
@@ -60,6 +40,26 @@ class NakoLexer {
       }
       i++
     }
+  }
+
+  setFuncList (listObj) {
+    this.funclist = listObj
+  }
+
+  setInput (code, isFirst, line) {
+    // 最初に全部を区切ってしまう
+    this.tokenize(code, line)
+    // 関数の定義があれば funclist を更新
+    NakoLexer.checkRequire(this.result)
+    this.preDefineFunc(this.result)
+    this.replaceWord(this.result)
+
+    if (isFirst) {
+      const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
+      this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
+      this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
+    }
+    return this.result
   }
 
   preDefineFunc (tokens) {

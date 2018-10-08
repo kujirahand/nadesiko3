@@ -113,6 +113,12 @@ class NakoGen {
     return `__print(${node});`
   }
 
+  static convRequire (node) {
+    const moduleName = node.value
+    return NakoGen.convLineno(node.line) +
+      `__module['${moduleName}'] = require('${moduleName}');\n`
+  }
+
   reset () {
     // this.nako_func = {}
     // 初期化メソッド以外の関数を削除
@@ -383,7 +389,7 @@ class NakoGen {
         code += this.convTryExcept(node)
         break
       case 'require':
-        code += this.convRequire(node)
+        code += NakoGen.convRequire(node)
         break
       default:
         throw new Error('System Error: unknown_type=' + node.type)
@@ -883,12 +889,6 @@ class NakoGen {
       '__varslist[0]["エラーメッセージ"] = e.message;\n' +
       ';\n' +
       `${errBlock}}\n`
-  }
-
-  convRequire (node) {
-    const moduleName = node.value
-    return NakoGen.convLineno(node.line) +
-      `__module['${moduleName}'] = require('${moduleName}');\n`
   }
 }
 
