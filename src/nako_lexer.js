@@ -68,7 +68,9 @@ class NakoLexer {
     const readArgs = () => {
       const args = []
       const keys = {}
-      if (tokens[i].type !== '(') return []
+      if (tokens[i].type !== '(') {
+        return []
+      }
       i++
       while (tokens[i]) {
         if (tokens[i].type === ')') {
@@ -116,7 +118,9 @@ class NakoLexer {
       // 予約語の置換
       if (t.type === 'word' && reservedWords[t.value]) {
         t.type = reservedWords[t.value]
-        if (t.value === 'そう') t.value = 'それ'
+        if (t.value === 'そう') {
+          t.value = 'それ'
+        }
       }
       // 関数定義の確認
       if (t.type !== 'def_func') {
@@ -158,7 +162,9 @@ class NakoLexer {
     let comment = []
     let i = 0
     const getLastType = () => {
-      if (i <= 0) return 'eol'
+      if (i <= 0) {
+        return 'eol'
+      }
       return tokens[i - 1].type
     }
     while (i < tokens.length) {
@@ -184,7 +190,9 @@ class NakoLexer {
         }
       }
       // 助詞の「は」を = に展開
-      if (t.josi === undefined) t.josi = ''
+      if (t.josi === undefined) {
+        t.josi = ''
+      }
       if (t.josi === 'は') {
         tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
         i += 2
@@ -232,7 +240,9 @@ class NakoLexer {
       let ok = false
       for (const rule of rules) {
         const m = rule.pattern.exec(src)
-        if (!m) continue
+        if (!m) {
+          continue
+        }
         ok = true
         if (rule.name === 'space') {
           src = src.substr(m[0].length)
@@ -271,7 +281,9 @@ class NakoLexer {
         }
         // 値を変換する必要があるか？
         let value = m[0]
-        if (rule.cb) value = rule.cb(value)
+        if (rule.cb) {
+          value = rule.cb(value)
+        }
         // ソースを進める
         src = src.substr(m[0].length)
         if (rule.name === 'eol' && value === '\n') {
@@ -293,7 +305,9 @@ class NakoLexer {
         })
         break
       }
-      if (!ok) throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')
+      if (!ok) {
+        throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')
+      }
     }
   }
 }

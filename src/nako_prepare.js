@@ -57,23 +57,35 @@ class NakoPrepare {
   convert1ch (ch) {
     const c = ch.codePointAt(0)
     // テーブルによる変換
-    if (this.convertTable[c]) return this.convertTable[c]
+    if (this.convertTable[c]) {
+      return this.convertTable[c]
+    }
     // ASCIIエリア
-    if (c < 0x7F) return ch
+    if (c < 0x7F) {
+      return ch
+    }
     // 全角半角単純変換可能 --- '！' - '～'
     if (c >= 0xFF01 && c <= 0xFF5E) {
       const c2 = c - 0xFEE0
       return String.fromCodePoint(c2)
     }
     // 問題のエリア
-    if (this.HYPHENS[c]) return '-'
-    if (this.TILDES[c]) return '~'
-    if (this.SPACES[c]) return ' '
+    if (this.HYPHENS[c]) {
+      return '-'
+    }
+    if (this.TILDES[c]) {
+      return '~'
+    }
+    if (this.SPACES[c]) {
+      return ' '
+    }
     return ch
   }
 
   convert (src) {
-    if (!src) return ''
+    if (!src) {
+      return ''
+    }
     let flagStr = false
     let flagStr2 = false
     let endOfStr

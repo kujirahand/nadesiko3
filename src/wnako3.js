@@ -3,11 +3,13 @@
 const NakoCompiler = require('./nako3')
 const PluginBrowser = require('./plugin_browser')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
+
 class WebNakoCompiler extends NakoCompiler {
   constructor () {
     super()
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
   }
+
   /**
    * ブラウザでtype="なでしこ"というスクリプトを得て実行する
    */
@@ -48,7 +50,9 @@ if (typeof (navigator) === 'object') {
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {
     const isAutoRun = nako3.checkScriptTagParam()
-    if (isAutoRun) nako3.runNakoScript()
+    if (isAutoRun) {
+      nako3.runNakoScript()
+    }
   }, false)
 } else {
   module.exports = WebNakoCompiler

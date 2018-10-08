@@ -94,7 +94,9 @@ function cbRangeComment (src) {
   res = res.replace(/(^\s+|\s+$)/, '') // trim
   // 改行を数える
   for (let i = 0; i < res.length; i++) {
-    if (res.charAt(i) === '\n') numEOL++
+    if (res.charAt(i) === '\n') {
+      numEOL++
+    }
   }
   return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
@@ -175,7 +177,9 @@ function cbString (beginTag, closeTag, src) {
   }
   // 改行を数える
   for (let i = 0; i < res.length; i++) {
-    if (res.charAt(i) === '\n') numEOL++
+    if (res.charAt(i) === '\n') {
+      numEOL++
+    }
   }
 
   return {src: src, res: res, josi: josi, numEOL: numEOL}

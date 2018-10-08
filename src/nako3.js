@@ -139,7 +139,9 @@ class NakoCompiler {
   }
 
   _run (code, isReset) {
-    if (isReset) this.reset()
+    if (isReset) {
+      this.reset()
+    }
     let js = this.compile(code)
     let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line

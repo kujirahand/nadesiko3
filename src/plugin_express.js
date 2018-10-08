@@ -25,8 +25,8 @@ const PluginExpress = {
     }
   },
   // @Webサーバ(Express)
-  'GETデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
-  'POSTデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
+  'GETデータ': {type: 'const', value: ''}, // @WEBサーバクエリ
+  'POSTデータ': {type: 'const', value: ''}, // @WEBサーバクエリ
   'WEBサーバ名前設定': { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
     type: 'func',
     josi: [['に', 'へ']],
@@ -49,11 +49,15 @@ const PluginExpress = {
           console.log('+- [URL] http://localhost:' + pno)
         }
         const callback = sys.__v0['WEBサーバ:ONSUCCESS']
-        if (callback) callback(pno, sys)
+        if (callback) {
+          callback(pno, sys)
+        }
       })
       server.on('error', (e) => {
         const callback = sys.__v0['WEBサーバ:ONERROR']
-        if (callback) callback(e, sys)
+        if (callback) {
+          callback(e, sys)
+        }
       })
       // POSTを自動的に処理
       app.use(bodyParser.text({
@@ -89,8 +93,12 @@ const PluginExpress = {
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     fn: function (url, path) {
-      if (app == null) throw new Error(ERROR_NO_INIT)
-      if (debug) console.log('static', url, path)
+      if (app == null) {
+        throw new Error(ERROR_NO_INIT)
+      }
+      if (debug) {
+        console.log('static', url, path)
+      }
       app.use(url, express.static(path))
     },
     return_none: true

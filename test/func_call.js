@@ -12,7 +12,9 @@ describe('関数呼び出しテスト', () => {
     assert.equal(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
-    if (nako.debug) console.log('code=' + code)
+    if (nako.debug) {
+      console.log('code=' + code)
+    }
     nako.runReset(code)
   }
 

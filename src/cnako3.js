@@ -50,9 +50,13 @@ class CNako3 extends NakoCompiler {
     let mainfile = app.args[0]
     let output = app.output
     if (/\.(nako|nako3|txt|bak)$/.test(mainfile)) {
-      if (!output) output = mainfile.replace(/\.(nako|nako3)$/, '.js')
+      if (!output) {
+        output = mainfile.replace(/\.(nako|nako3)$/, '.js')
+      }
     } else {
-      if (!output) output = mainfile + '.js'
+      if (!output) {
+        output = mainfile + '.js'
+      }
       mainfile += '.nako3'
     }
     // デバッグモードの指定
@@ -77,7 +81,9 @@ class CNako3 extends NakoCompiler {
   // 実行する
   execCommand () {
     const opt = this.checkArguments()
-    if (opt.mainfile) this.filename = opt.mainfile
+    if (opt.mainfile) {
+      this.filename = opt.mainfile
+    }
     if (opt.repl) {
       this.cnakoRepl(opt)
       return
@@ -117,7 +123,9 @@ class CNako3 extends NakoCompiler {
     fs.writeFileSync(opt.output, jscode, 'utf-8')
     if (opt.run) {
       exec(`node ${opt.output}`, function (err, stdout, stderr) {
-        if (err) console.log('[ERROR]', stderr)
+        if (err) {
+          console.log('[ERROR]', stderr)
+        }
         console.log(stdout)
       })
     }
@@ -149,7 +157,9 @@ class CNako3 extends NakoCompiler {
         continue
       }
       const m = s.match(/["'『「](.+)["'』」]を(取り込|取込)/)
-      if (!m) continue
+      if (!m) {
+        continue
+      }
       // プラグインの取り込み
       const pname = m[1]
       let fullpath = pname

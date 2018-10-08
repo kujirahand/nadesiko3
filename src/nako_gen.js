@@ -95,7 +95,9 @@ class NakoGen {
   }
 
   static convLineno (node) {
-    if (node.line === undefined) return ''
+    if (node.line === undefined) {
+      return ''
+    }
     return `__v0.line=${node.line};`
   }
 
@@ -105,7 +107,9 @@ class NakoGen {
 
   static getFuncName (name) {
     let name2 = name.replace(/[ぁ-ん]+$/, '')
-    if (name2 === '') name2 = name
+    if (name2 === '') {
+      name2 = name
+    }
     return name2
   }
 
@@ -118,7 +122,9 @@ class NakoGen {
     // 初期化メソッド以外の関数を削除
     const uf = {}
     for (const key in this.used_func) {
-      if (key.match(/^!.+:初期化$/)) uf[key] = this.used_func[key]
+      if (key.match(/^!.+:初期化$/)) {
+        uf[key] = this.used_func[key]
+      }
     }
     this.used_func = uf
     //
@@ -273,9 +279,15 @@ class NakoGen {
       }
       return code
     }
-    if (node === null) return 'null'
-    if (node === undefined) return 'undefined'
-    if (typeof (node) !== 'object') return '' + node
+    if (node === null) {
+      return 'null'
+    }
+    if (node === undefined) {
+      return 'undefined'
+    }
+    if (typeof (node) !== 'object') {
+      return '' + node
+    }
     // switch
     switch (node.type) {
       case 'nop':
@@ -399,7 +411,9 @@ class NakoGen {
     // __varslist ?
     for (let i = this.__varslist.length - 2; i >= 0; i--) {
       const vlist = this.__varslist[i]
-      if (!vlist) continue
+      if (!vlist) {
+        continue
+      }
       if (vlist[name] !== undefined) {
         return {'i': i, 'name': name, isTop: false}
       }
@@ -417,8 +431,12 @@ class NakoGen {
     // システム関数・変数の場合
     if (i === 0) {
       const pv = this.funclist[name]
-      if (!pv) return `__vars["${name}"]/*err:${lno}*/`
-      if (pv.type === 'const' || pv.type === 'var') return `__varslist[0]["${name}"]`
+      if (!pv) {
+        return `__vars["${name}"]/*err:${lno}*/`
+      }
+      if (pv.type === 'const' || pv.type === 'var') {
+        return `__varslist[0]["${name}"]`
+      }
       if (pv.type === 'func') {
         if (pv.josi.length === 0) {
           return `(__varslist[${i}]["${name}"]())`
@@ -800,7 +818,9 @@ class NakoGen {
       return '(Math.pow(' + left + ',' + right + '))'
     }
     // 一般的なオペレータに変換
-    if (OP_TBL[op]) op = OP_TBL[op]
+    if (OP_TBL[op]) {
+      op = OP_TBL[op]
+    }
     //
     return `(${left} ${op} ${right})`
   }
@@ -808,7 +828,9 @@ class NakoGen {
   convLet (node) {
     // もし値が省略されていたら、変数「それ」に代入する
     let value = this.sore
-    if (node.value) value = this.convGen(node.value)
+    if (node.value) {
+      value = this.convGen(node.value)
+    }
     // 変数名
     const name = node.name.value
     const res = this.findVar(name)

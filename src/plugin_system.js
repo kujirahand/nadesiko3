@@ -6,22 +6,30 @@ const PluginSystem = {
       sys.__v0['ナデシコバージョン'] = '3.0.52'
       // システム関数を探す
       sys.__getSysValue = function (name, def) {
-        if (sys.__v0[name] === undefined) return def
+        if (sys.__v0[name] === undefined) {
+          return def
+        }
         return sys.__v0[name]
       }
       // 全ての関数・変数を見つけて返す
       sys.__findVar = function (nameStr, def) {
-        if (typeof nameStr === 'function') return nameStr
+        if (typeof nameStr === 'function') {
+          return nameStr
+        }
         for (let i = sys.__varslist.length - 1; i >= 0; i--) {
           let scope = sys.__varslist[i]
-          if (scope[nameStr]) return scope[nameStr]
+          if (scope[nameStr]) {
+            return scope[nameStr]
+          }
         }
         return def
       }
       // システム関数を実行する(エイリアスを実装するのに使う)
       sys.__exec = function (func, params) {
         const f = sys.__findVar(func)
-        if (!f) throw new Error('システム関数でエイリアスの指定ミス:' + func)
+        if (!f) {
+          throw new Error('システム関数でエイリアスの指定ミス:' + func)
+        }
         return f.apply(this, params)
       }
       // システム変数の値を変更する
@@ -422,8 +430,12 @@ const PluginSystem = {
     type: 'func',
     josi: [['で'], ['の']],
     fn: function (a, b) {
-      if (a === 2) return Math.LOG2E * Math.log(b)
-      if (a === 10) return Math.LOG10E * Math.log(b)
+      if (a === 2) {
+        return Math.LOG2E * Math.log(b)
+      }
+      if (a === 10) {
+        return Math.LOG10E * Math.log(b)
+      }
       return Math.log(b) / Math.log(a)
     }
   },
@@ -588,7 +600,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['の']],
     fn: function (v) {
-      if (!Array.from) return String(v).length
+      if (!Array.from) {
+        return String(v).length
+      }
       return Array.from(v).length
     }
   },
@@ -603,7 +617,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['の']],
     fn: function (v) {
-      if (!String.fromCodePoint) return String.fromCharCode(v)
+      if (!String.fromCodePoint) {
+        return String.fromCharCode(v)
+      }
       return String.fromCodePoint(v)
     }
   },
@@ -611,7 +627,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['の']],
     fn: function (v) {
-      if (!String.prototype.codePointAt) return String(v).charCodeAt(0)
+      if (!String.prototype.codePointAt) {
+        return String(v).charCodeAt(0)
+      }
       return String(v).codePointAt(0)
     }
   },
@@ -619,7 +637,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['で', 'の'], ['に', 'へ'], ['を']],
     fn: function (s, i, a) {
-      if (i <= 0) i = 1
+      if (i <= 0) {
+        i = 1
+      }
       const ss = String(s)
       const mae = ss.substr(0, i - 1)
       const usi = ss.substr(i - 1)
@@ -651,7 +671,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     fn: function (v) {
-      if (!Array.from) return String(v).split('')
+      if (!Array.from) {
+        return String(v).split('')
+      }
       return Array.from(v)
     }
   },
@@ -733,7 +755,9 @@ const PluginSystem = {
     fn: function (s, a) {
       s = String(s)
       const i = s.indexOf(a)
-      if (i < 0) return s
+      if (i < 0) {
+        return s
+      }
       return s.substr(0, i)
     }
   },
@@ -1039,7 +1063,9 @@ const PluginSystem = {
       let z = '0'
       for (let i = 0; i < a; i++) z += '0'
       a = parseInt(a)
-      if (a < v.length) a = v.length
+      if (a < v.length) {
+        a = v.length
+      }
       const s = z + String(v)
       return s.substr(s.length - a, a)
     }
@@ -1052,7 +1078,9 @@ const PluginSystem = {
       let z = ' '
       for (let i = 0; i < a; i++) z += ' '
       a = parseInt(a)
-      if (a < v.length) a = v.length
+      if (a < v.length) {
+        a = v.length
+      }
       const s = z + String(v)
       return s.substr(s.length - a, a)
     }
@@ -1188,7 +1216,9 @@ const PluginSystem = {
         if (ufunc === undefined) {
           ufunc = sys.__varslist[1][f]
         }
-        if (!ufunc) throw new Error('関数『' + f + '』が見当たりません。')
+        if (!ufunc) {
+          throw new Error('関数『' + f + '』が見当たりません。')
+        }
       }
       if (a instanceof Array) { // 配列ならOK
         return a.sort(ufunc)
@@ -1228,7 +1258,9 @@ const PluginSystem = {
     fn: function (a, i) {
       if (a instanceof Array) { // 配列ならOK
         const b = a.splice(i, 1)
-        if (b instanceof Array) return b[0]
+        if (b instanceof Array) {
+          return b[0]
+        }
         return null
       }
       throw new Error('『配列切取』で配列以外を指定。')
@@ -1300,7 +1332,9 @@ const PluginSystem = {
     josi: [['から', 'の'], ['を']],
     fn: function (a, key) {
       if (a instanceof Object) { // オブジェクトのキーを返す
-        if (a[key]) delete a[key]
+        if (a[key]) {
+          delete a[key]
+        }
         return a
       }
       throw new Error('『ハッシュキー削除』でハッシュ以外が与えられました。')
@@ -1383,8 +1417,12 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'に', 'で']],
     fn: function (f, sys) {
-      if (typeof f === 'string') f = sys.__findVar(f)
-      if (typeof f === 'function') return f(sys)
+      if (typeof f === 'string') {
+        f = sys.__findVar(f)
+      }
+      if (typeof f === 'function') {
+        return f(sys)
+      }
     }
   },
   '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する // @びょうご
@@ -1392,12 +1430,16 @@ const PluginSystem = {
     josi: [['を'], []],
     fn: function (f, n, sys) {
       // 文字列で指定された関数をオブジェクトに変換
-      if (typeof f === 'string') f = sys.__findVar(f)
+      if (typeof f === 'string') {
+        f = sys.__findVar(f)
+      }
       // 1回限りのタイマーをセット
       const timerId = setTimeout(() => {
         // 使用中リストに追加したIDを削除
         const i = sys.__timeout.indexOf(timerId)
-        if (i >= 0) sys.__timeout.splice(i, 1)
+        if (i >= 0) {
+          sys.__timeout.splice(i, 1)
+        }
         f(timerId, sys)
       }, parseFloat(n) * 1000)
       sys.__timeout.unshift(timerId)
@@ -1408,7 +1450,9 @@ const PluginSystem = {
     josi: [['を'], []],
     fn: function (f, n, sys) {
       // 文字列で指定された関数をオブジェクトに変換
-      if (typeof f === 'string') f = sys.__findVar(f)
+      if (typeof f === 'string') {
+        f = sys.__findVar(f)
+      }
       // タイマーをセット
       const timerId = setInterval(() => {
         f(timerId, sys)
@@ -1452,7 +1496,9 @@ const PluginSystem = {
       const f = []
       for (const key in sys.__v0) {
         const ff = sys.__v0[key]
-        if (typeof ff === 'function') f.push(key)
+        if (typeof ff === 'function') {
+          f.push(key)
+        }
       }
       return f
     }

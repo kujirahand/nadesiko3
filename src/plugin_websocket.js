@@ -35,7 +35,9 @@ const PluginWebsocket = {
         ws.on('message', (msg) => {
           const cbMsg = sys.__v0['WSサーバ:ONMESSAGE']
           sys.__v0['対象'] = msg
-          if (cbMsg) cbMsg(sys)
+          if (cbMsg) {
+            cbMsg(sys)
+          }
         })
       })
       app.on('close', (e) => {
@@ -43,11 +45,15 @@ const PluginWebsocket = {
       })
       app.on('error', (e) => {
         const callback = sys.__v0['WSサーバ:ONERROR']
-        if (callback) callback(e, sys)
+        if (callback) {
+          callback(e, sys)
+        }
       })
       // サーバの成功時
       const callback = sys.__v0['WSサーバ:ONSUCCESS']
-      if (callback) callback(sys)
+      if (callback) {
+        callback(sys)
+      }
       return app
     }
   },
@@ -87,7 +93,9 @@ const PluginWebsocket = {
     type: 'func',
     josi: [['を']],
     fn: function (s, sys) {
-      if (!app) throw new Error(ERROR_NO_INIT)
+      if (!app) {
+        throw new Error(ERROR_NO_INIT)
+      }
       app.clients.forEach((client) => {
         client.send(s)
       })
@@ -98,7 +106,9 @@ const PluginWebsocket = {
     type: 'func',
     josi: [['を']],
     fn: function (s, sys) {
-      if (!app) throw new Error(ERROR_NO_INIT)
+      if (!app) {
+        throw new Error(ERROR_NO_INIT)
+      }
       return app.clients
     },
     return_none: true
