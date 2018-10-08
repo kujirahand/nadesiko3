@@ -142,7 +142,7 @@ class CNako3 extends NakoCompiler {
   /**
    * プラグインの取込チェック
    * @param src
-   * @return プリプロセスを除去したソースコード
+   * @return string プリプロセスを除去したソースコード
    */
   includePlugin (src) {
     let result = ''

@@ -9,7 +9,7 @@ for (const key in opPriority) operatorList.push(key)
 class NakoParser extends NakoParserBase {
   /**
    * @param tokens 字句解析済みのトークンの配列
-   * @return AST(構文木)
+   * @return {{type, block, line}} AST(構文木)
    */
   parse (tokens) {
     this.reset()

@@ -197,7 +197,7 @@ class NakoGen {
 
   /**
    * プラグイン・オブジェクトを追加(ブラウザ向け)
-   * @param objName オブジェクト名
+   * @param name オブジェクト名
    * @param po 関数リスト
    */
   addPluginObject (name, po) {
