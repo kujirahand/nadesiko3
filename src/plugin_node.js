@@ -130,11 +130,9 @@ const PluginNode = {
           ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
         const maskRE = new RegExp(mask2, 'i')
         const list = fs.readdirSync(searchPath)
-        const list2 = list.filter((n) => maskRE.test(n))
-        return list2
+        return list.filter((n) => maskRE.test(n))
       } else {
-        const list = fs.readdirSync(s)
-        return list
+        return fs.readdirSync(s)
       }
     }
   },
@@ -631,7 +629,7 @@ const PluginNode = {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
-      for (var key in params) {
+      for (let key in params) {
         fd.set(key, params[key])
       }
       let options = {

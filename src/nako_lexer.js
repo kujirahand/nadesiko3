@@ -21,28 +21,8 @@ class NakoLexer {
     this.result = []
   }
 
-  setFuncList (listObj) {
-    this.funclist = listObj
-  }
-
-  setInput (code, isFirst, line) {
-    // 最初に全部を区切ってしまう
-    this.tokenize(code, line)
-    // 関数の定義があれば funclist を更新
-    this.checkRequire(this.result)
-    this.preDefineFunc(this.result)
-    this.replaceWord(this.result)
-
-    if (isFirst) {
-      const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-      this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
-      this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
-    }
-    return this.result
-  }
-
   // プラグインの取り込みを行う
-  checkRequire (tokens) {
+  static checkRequire (tokens) {
     let i = 0
     while ((i + 2) < tokens.length) {
       const tNot = tokens[i]
@@ -62,9 +42,30 @@ class NakoLexer {
     }
   }
 
+  setFuncList (listObj) {
+    this.funclist = listObj
+  }
+
+  setInput (code, isFirst, line) {
+    // 最初に全部を区切ってしまう
+    this.tokenize(code, line)
+    // 関数の定義があれば funclist を更新
+    NakoLexer.checkRequire(this.result)
+    this.preDefineFunc(this.result)
+    this.replaceWord(this.result)
+
+    if (isFirst) {
+      const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
+      this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
+      this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
+    }
+    return this.result
+  }
+
   preDefineFunc (tokens) {
     // 関数を先読みして定義
     let i = 0
+    let isFuncPointer = false
     const readArgs = () => {
       const args = []
       const keys = {}
@@ -73,25 +74,26 @@ class NakoLexer {
       }
       i++
       while (tokens[i]) {
-        if (tokens[i].type === ')') {
-          i++
-          break
-        }
-        if (tokens[i].type === '|') {
-          i++
-          continue
-        }
-        if (tokens[i].type === 'comma') {
-          i++
-          continue
-        }
         const t = tokens[i]
-        args.push(t)
-        if (!keys[t.value]) keys[t.value] = []
-        keys[t.value].push(t.josi)
         i++
+        if (t.type === ')') {
+          break
+        } else if (t.type === 'func') {
+          isFuncPointer = true
+        } else if (t.type !== '|' && t.type !== 'comma') {
+          if (isFuncPointer) {
+            t.funcPointer = true
+            isFuncPointer = false
+          }
+          args.push(t)
+          if (!keys[t.value]) {
+            keys[t.value] = []
+          }
+          keys[t.value].push(t.josi)
+        }
       }
       const varnames = []
+      const funcPointers = []
       const result = []
       const already = {}
       for (const arg of args) {
@@ -99,10 +101,15 @@ class NakoLexer {
           const josi = keys[arg.value]
           result.push(josi)
           varnames.push(arg.value)
+          if (arg.funcPointer) {
+            funcPointers.push(arg.value)
+          } else {
+            funcPointers.push(null)
+          }
           already[arg.value] = true
         }
       }
-      return [result, varnames]
+      return [result, varnames, funcPointers]
     }
     // トークンを一つずつ確認
     while (i < tokens.length) {
@@ -131,10 +138,11 @@ class NakoLexer {
       i++ // skip "●"
       let josi = []
       let varnames = []
+      let funcPointers = []
       let funcName = ''
       // 関数名の前に引数定義
       if (tokens[i] && tokens[i].type === '(') {
-        [josi, varnames] = readArgs()
+        [josi, varnames, funcPointers] = readArgs()
       }
       // 関数名
       if (tokens[i] && tokens[i].type === 'word') {
@@ -142,7 +150,7 @@ class NakoLexer {
       }
       // 関数名の後で引数定義
       if (josi.length === 0 && tokens[i] && tokens[i].type === '(') {
-        [josi, varnames] = readArgs()
+        [josi, varnames, funcPointers] = readArgs()
       }
       // 関数定義か？
       if (funcName !== '') {
@@ -150,11 +158,12 @@ class NakoLexer {
           type: 'func',
           josi,
           fn: null,
-          varnames
+          varnames,
+          funcPointers
         }
       }
       // 無名関数のために
-      defToken.meta = {josi, varnames}
+      defToken.meta = {josi, varnames, funcPointers}
     }
   }
 
@@ -247,6 +256,10 @@ class NakoLexer {
         if (rule.name === 'space') {
           src = src.substr(m[0].length)
           continue
+        }
+        // 『関数(』の『関数』のtypeを『def_func』に書き換え
+        if (rule.name === '(' && 0 < this.result.length && this.result[this.result.length - 1].type === 'func') {
+          this.result[this.result.length - 1].type = 'def_func'
         }
         // 特別なパーサを通すか？
         if (rule.cbParser) {

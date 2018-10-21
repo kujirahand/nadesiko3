@@ -9,14 +9,13 @@ for (const key in opPriority) operatorList.push(key)
 class NakoParser extends NakoParserBase {
   /**
    * @param tokens 字句解析済みのトークンの配列
-   * @return AST(構文木)
+   * @return {{type, block, line}} AST(構文木)
    */
   parse (tokens) {
     this.reset()
     this.tokens = tokens
     // 解析開始
-    const node = this.startParser()
-    return node
+    return this.startParser()
   }
 
   startParser () {
@@ -164,7 +163,7 @@ class NakoParser extends NakoParserBase {
     } else {
       block = this.ySentence()
     }
-    const defFuncNode = {
+    return {
       type: 'def_func',
       name: funcName,
       args: defArgs,
@@ -172,7 +171,6 @@ class NakoParser extends NakoParserBase {
       line: def.line,
       josi: ''
     }
-    return defFuncNode
   }
 
   yIFCond () { // もしの条件の取得
@@ -617,16 +615,28 @@ class NakoParser extends NakoParserBase {
         }
         const args = []
         let nullCount = 0
-        for (const arg of f.josi) {
-          let popArg = this.popStack(arg)
+        let valueCount = 0
+        for (let i = 0; i < f.josi.length; i++) {
+          let popArg = this.popStack(f.josi[i])
           if (popArg === null) {
             nullCount++
             popArg = funcObj
+          } else {
+            valueCount++
+          }
+          if (popArg !== null && f.funcPointers !== undefined && f.funcPointers[i] !== null) {
+            if (popArg.type === 'func') { // 引数が関数の参照渡しに該当する場合、typeを『func_pointer』に変更
+              popArg.type = 'func_pointer'
+            } else {
+              throw new NakoSyntaxError(`関数『${t.value}』の引数『${f.varnames[i]}』は関数オブジェクトである必要があります。`, t.line)
+            }
           }
           args.push(popArg)
         }
         // 1つだけなら、変数「それ」で補完される
-        if (nullCount >= 2) throw new NakoSyntaxError(`関数『${t.value}』の引数が不足しています。`, t.line)
+        if (nullCount >= 2 && (0 < valueCount || t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0)) {
+          throw new NakoSyntaxError(`関数『${t.value}』の引数が不足しています。`, t.line)
+        }
         const funcNode = {type: 'func', name: t.value, args: args, josi: t.josi, line: t.line}
         // 言い切りならそこで一度切る
         if (t.josi === '') {
@@ -654,8 +664,7 @@ class NakoParser extends NakoParserBase {
       let names = ''
       let line = 0
       this.stack.forEach(n => {
-        const name = this.nodeToStr(n)
-        names += name
+        names += this.nodeToStr(n)
         line = n.line
       })
       if (this.debug) {
@@ -906,27 +915,25 @@ class NakoParser extends NakoParserBase {
     const splitType = operatorList.concat(['eol', ')', ']'])
     if (this.check2(['func', splitType])) {
       const f = this.get()
-      const fobj = {
+      return {
         type: 'func',
         name: f.value,
         args: [],
         line: f.line,
         josi: f.josi
       }
-      return fobj
     }
     // C風関数呼び出し FUNC(...)
     if (this.check2([['func', 'word'], '(']) && this.peek().josi === '') {
       const f = this.peek()
       if (this.accept([['func', 'word'], '(', this.yGetArgParen, ')'])) {
-        const fobj = {
+        return {
           type: 'func',
           name: this.y[0].value,
           args: this.y[2],
           line: this.y[0].line,
           josi: this.y[3].josi
         }
-        return fobj
       } else {
         throw new NakoSyntaxError('C風関数呼び出しのエラー', f.line)
       }
