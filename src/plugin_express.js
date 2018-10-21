@@ -25,8 +25,8 @@ const PluginExpress = {
     }
   },
   // @Webサーバ(Express)
-  'GETデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
-  'POSTデータ': { type: 'const', value: '' }, // @WEBサーバクエリ
+  'GETデータ': {type: 'const', value: ''}, // @WEBサーバクエリ
+  'POSTデータ': {type: 'const', value: ''}, // @WEBサーバクエリ
   'WEBサーバ名前設定': { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
     type: 'func',
     josi: [['に', 'へ']],

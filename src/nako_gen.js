@@ -113,6 +113,12 @@ class NakoGen {
     return `__print(${node});`
   }
 
+  static convRequire (node) {
+    const moduleName = node.value
+    return NakoGen.convLineno(node.line) +
+      `__module['${moduleName}'] = require('${moduleName}');\n`
+  }
+
   reset () {
     // this.nako_func = {}
     // 初期化メソッド以外の関数を削除
@@ -197,7 +203,7 @@ class NakoGen {
 
   /**
    * プラグイン・オブジェクトを追加(ブラウザ向け)
-   * @param objName オブジェクト名
+   * @param name オブジェクト名
    * @param po 関数リスト
    */
   addPluginObject (name, po) {
@@ -382,7 +388,7 @@ class NakoGen {
         code += this.convTryExcept(node)
         break
       case 'require':
-        code += this.convRequire(node)
+        code += NakoGen.convRequire(node)
         break
       default:
         throw new Error('System Error: unknown_type=' + node.type)
@@ -463,7 +469,7 @@ class NakoGen {
     return NakoGen.convLineno(node.line) + cmd + ';'
   }
 
-  convDefFuncCommon (node, name, args) {
+  convDefFuncCommon (node, name) {
     let code = '(function(){\n'
     code += '' +
       'try {\n' +
@@ -518,8 +524,7 @@ class NakoGen {
 
   convDefFunc (node) {
     const name = NakoGen.getFuncName(node.name.value)
-    const args = node.args
-    this.convDefFuncCommon(node, name, args)
+    this.convDefFuncCommon(node, name)
     // ★この時点では関数のコードを生成しない★
     // プログラム冒頭でコード生成時に関数定義を行う
     // return `__vars["${name}"] = ${code};\n`;
@@ -527,9 +532,7 @@ class NakoGen {
   }
 
   convFuncObj (node) {
-    const args = node.args
-    const code = this.convDefFuncCommon(node, '', args)
-    return code
+    return this.convDefFuncCommon(node, '')
   }
 
   convJsonObj (node) {
@@ -673,10 +676,8 @@ class NakoGen {
     const falseBlock = (node.false_block === null)
       ? ''
       : 'else {' + this.convGen(node.false_block) + '};\n'
-    const code =
-      NakoGen.convLineno(node) +
+    return NakoGen.convLineno(node) +
       `if (${expr}) {\n  ${block}\n}` + falseBlock + ';\n'
-    return code
   }
 
   convFuncGetArgsCalcType (funcName, func, node) {
@@ -888,12 +889,6 @@ class NakoGen {
       '__varslist[0]["エラーメッセージ"] = e.message;\n' +
       ';\n' +
       `${errBlock}}\n`
-  }
-
-  convRequire (node) {
-    const moduleName = node.value
-    return NakoGen.convLineno(node.line) +
-    `__module['${moduleName}'] = require('${moduleName}');\n`
   }
 }
 

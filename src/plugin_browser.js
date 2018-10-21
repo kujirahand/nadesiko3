@@ -87,8 +87,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で', 'の', 'と', 'を']],
     fn: function (s) {
-      const r = window.confirm(s)
-      return r
+      return window.confirm(s)
     }
   },
 
@@ -152,7 +151,7 @@ const PluginBrowser = {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
-      for (var key in params) {
+      for (let key in params) {
         fd.set(key, params[key])
       }
       let options = {
@@ -179,7 +178,7 @@ const PluginBrowser = {
       sys.__v0['AJAX:ONERROR'] = callback
     }
   },
-  'AJAXオプション': { type: 'const', value: '' }, // @AJAXおぷしょん
+  'AJAXオプション': {type: 'const', value: ''}, // @AJAXおぷしょん
   'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
@@ -190,9 +189,9 @@ const PluginBrowser = {
   },
 
   // @DOM操作
-  'DOCUMENT': { type: 'const', value: '' }, // @DOCUMENT
-  'WINDOW': { type: 'const', value: '' }, // @WINDOW
-  'NAVIGATOR': { type: 'const', value: '' }, // @NAVIGATOR
+  'DOCUMENT': {type: 'const', value: ''}, // @DOCUMENT
+  'WINDOW': {type: 'const', value: ''}, // @WINDOW
+  'NAVIGATOR': {type: 'const', value: ''}, // @NAVIGATOR
   'DOM要素ID取得': { // @DOMの要素をIDを指定して取得 // @DOMようそIDしゅとく
     type: 'func',
     josi: [['の', 'を']],
@@ -304,7 +303,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '押キー': { type: 'const', value: '' }, // @おされたきー
+  '押キー': {type: 'const', value: ''}, // @おされたきー
   'キー押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーおしたとき
     type: 'func',
     josi: [['で'], ['を']],
@@ -347,8 +346,8 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'マウスX': { type: 'const', value: 0 }, // @まうすX
-  'マウスY': { type: 'const', value: 0 }, // @まうすY
+  'マウスX': {type: 'const', value: 0}, // @まうすX
+  'マウスY': {type: 'const', value: 0}, // @まうすY
   'マウス押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすおしたとき
     type: 'func',
     josi: [['で'], ['を']],
@@ -512,7 +511,8 @@ const PluginBrowser = {
       return dom[s]
     }
   },
-  'DOM和スタイル': { type: 'const', // @DOMわすたいる
+  'DOM和スタイル': {
+    type: 'const', // @DOMわすたいる
     value: {
       '幅': 'width',
       '高さ': 'height',
@@ -632,8 +632,8 @@ const PluginBrowser = {
     }
   },
   // @DOM部品操作
-  'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
-  'DOM生成個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
+  'DOM親要素': {type: 'const', value: ''}, // @DOMおやようそ
+  'DOM生成個数': {type: 'const', value: 0}, // @DOMせいせいこすう
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」などのDOM要素を追加する対象を指定(デフォルトはdocument)して親要素のDOMオブジェクトを返す // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
@@ -785,8 +785,7 @@ const PluginBrowser = {
         const line2 = line + '='
         const kv = line2.split('=')
         const k = decodeURIComponent(kv[0])
-        const v = decodeURIComponent(kv[1])
-        res[k] = v
+        res[k] = decodeURIComponent(kv[1])
       }
       return res
     }
@@ -880,8 +879,7 @@ const PluginBrowser = {
     josi: [['の', 'へ', 'で']],
     fn: function (cv, sys) {
       if (typeof cv === 'string') {
-        cv = document.querySelector(cv) ||
-             document.getElementById(cv)
+        cv = document.querySelector(cv) || document.getElementById(cv)
       }
       if (!cv) throw new Error('『描画開始』でCanvasを取得できませんでした。')
       sys.__canvas = cv
@@ -890,7 +888,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '描画中キャンバス': { type: 'const', value: null }, // @ びょうがちゅうきゃんばす
+  '描画中キャンバス': {type: 'const', value: null}, // @ びょうがちゅうきゃんばす
   '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろしてい
     type: 'func',
     josi: [['に', 'へ']],
@@ -1077,14 +1075,13 @@ const PluginBrowser = {
       if (!('geolocation' in navigator)) {
         throw new Error('関数『位置情報監視時』は使えません。')
       }
-      const wid = navigator.geolocation.watchPosition((position) => {
+      return navigator.geolocation.watchPosition((position) => {
         sys.__v0['対象'] = [
           position.coords.latitude,
           position.coords.longitude
         ]
         cb(position)
       })
-      return wid
     },
     return_none: false
   },

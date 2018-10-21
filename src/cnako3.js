@@ -16,6 +16,7 @@ class CNako3 extends NakoCompiler {
     this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
   }
+
   // CNAKO3で使えるコマンドを登録する
   registerCommands () {
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
@@ -41,6 +42,7 @@ class CNako3 extends NakoCompiler {
       .parse(process.argv)
     return app
   }
+
   /**
    * コマンドライン引数を解析
    * @returns {{mainfile: string, compile: boolean, run: boolean, output: string, source: string, one_liner: boolean, debug: (boolean|*)}}
@@ -74,6 +76,7 @@ class CNako3 extends NakoCompiler {
       'repl': app.repl || false
     }
   }
+
   // 実行する
   execCommand () {
     const opt = this.checkArguments()
@@ -95,13 +98,14 @@ class CNako3 extends NakoCompiler {
     }
     this.runReset(src)
   }
+
   /** コンパイル(override) */
   compile (src) {
     const code = this.includePlugin(src)
     const ast = this.parse(code)
-    const js = this.generate(ast)
-    return js
+    return this.generate(ast)
   }
+
   /**
    * コンパイルモードの場合
    * @param opt
@@ -122,20 +126,23 @@ class CNako3 extends NakoCompiler {
       })
     }
   }
+
   // ワンライナーの場合
   cnakoOneLiner (opt) {
     this.runReset(opt.source)
   }
+
   // REPL(対話実行環境)の場合
   cnakoRepl (opt) {
     const fname = path.join(__dirname, 'repl.nako3')
     const src = fs.readFileSync(fname, 'utf-8')
     this.run(src, true)
   }
+
   /**
    * プラグインの取込チェック
    * @param src
-   * @return プリプロセスを除去したソースコード
+   * @return string プリプロセスを除去したソースコード
    */
   includePlugin (src) {
     let result = ''

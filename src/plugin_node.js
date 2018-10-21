@@ -126,11 +126,9 @@ const PluginNode = {
           ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
         const maskRE = new RegExp(mask2, 'i')
         const list = fs.readdirSync(searchPath)
-        const list2 = list.filter((n) => maskRE.test(n))
-        return list2
+        return list.filter((n) => maskRE.test(n))
       } else {
-        const list = fs.readdirSync(s)
-        return list
+        return fs.readdirSync(s)
       }
     }
   },
@@ -377,7 +375,7 @@ const PluginNode = {
     }
   },
   // @圧縮・解凍
-  '圧縮解凍ツールパス': { type: 'const', value: '7z' },
+  '圧縮解凍ツールパス': {type: 'const', value: '7z'},
   '圧縮解凍ツールパス変更': { // @圧縮解凍に使うツールを取得変更する // @あっしゅくかいとうつーるぱすへんこう
     type: 'func',
     josi: [['に', 'へ']],
@@ -601,7 +599,7 @@ const PluginNode = {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
-      for (var key in params) {
+      for (let key in params) {
         fd.set(key, params[key])
       }
       let options = {
@@ -628,7 +626,7 @@ const PluginNode = {
       sys.__v0['AJAX:ONERROR'] = callback
     }
   },
-  'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
+  'AJAXオプション': {type: 'const', value: ''}, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
   'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
