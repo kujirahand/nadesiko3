@@ -329,10 +329,9 @@ class NakoGen {
         code += '((' + this.convGen(node.value) + ')?0:1)'
         break
       case 'func':
-        code += this.convFunc(node, true)
-        break
+      case 'func_pointer':
       case 'calc_func':
-        code += this.convFunc(node, false)
+        code += this.convFunc(node)
         break
       case 'if':
         code += this.convIf(node)
@@ -704,10 +703,9 @@ class NakoGen {
   /**
    * 関数の呼び出し
    * @param node
-   * @param  isNakoType
    * @returns string コード
    */
-  convFunc (node, isNakoType) {
+  convFunc (node) {
     const funcName = NakoGen.getFuncName(node.name)
     let funcNameS
     const res = this.findVar(funcName)
@@ -731,37 +729,41 @@ class NakoGen {
       }
       funcNameS = `__varslist[${res.i}]["${funcName}"]`
     }
-    // 関数定義より助詞を一つずつ調べる
-    const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
-    const args = argsInfo[0]
-    const argsOpts = argsInfo[1]
-    // function
-    if (typeof (this.used_func[funcName]) === 'undefined') {
-      this.used_func[funcName] = true
-    }
-    // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
-    args.push('__self')
-    let funcBegin = ''
-    let funcEnd = ''
-    // setter?
-    if (node['setter']) {
-      funcBegin = ';__self.isSetter = true;'
-      funcEnd = ';__self.isSetter = false;'
-    }
-    // 変数「それ」が補完されていることをヒントとして出力
-    if (argsOpts['sore']) {
-      funcBegin += '/*[sore]*/'
-    }
-    // 関数呼び出しコードの構築
-    let argsCode = args.join(',')
-    let code = `${funcNameS}(${argsCode})`
-    if (func.return_none) {
-      code = `${funcBegin}${code};${funcEnd}\n`
-    } else {
-      code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
-      // ...して
-      if (node.josi === 'して') {
-        code += ';\n'
+    let code = funcNameS
+    // 関数の参照渡しでない場合
+    if (node.type !== 'func_pointer') {
+      // 関数定義より助詞を一つずつ調べる
+      const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
+      const args = argsInfo[0]
+      const argsOpts = argsInfo[1]
+      // function
+      if (typeof (this.used_func[funcName]) === 'undefined') {
+        this.used_func[funcName] = true
+      }
+      // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
+      args.push('__self')
+      let funcBegin = ''
+      let funcEnd = ''
+      // setter?
+      if (node['setter']) {
+        funcBegin = ';__self.isSetter = true;'
+        funcEnd = ';__self.isSetter = false;'
+      }
+      // 変数「それ」が補完されていることをヒントとして出力
+      if (argsOpts['sore']) {
+        funcBegin += '/*[sore]*/'
+      }
+      // 関数呼び出しコードの構築
+      let argsCode = args.join(',')
+      code += `(${argsCode})`
+      if (func.return_none) {
+        code = `${funcBegin}${code};${funcEnd}\n`
+      } else {
+        code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
+        // ...して
+        if (node.josi === 'して') {
+          code += ';\n'
+        }
       }
     }
     return code
