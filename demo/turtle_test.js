@@ -29,9 +29,9 @@ function runBox (id) {
 }
 
 function resetBoxTurtle (id) {
-  if (id === null) {
+  if (id === null) 
     id = 'src_box'
-  }
+  
   document.getElementById(id + '_info').innerHTML = ''
   const cv = document.getElementById('turtle_cv')
   cv.getContext('2d').clearRect(0, 0, cv.width, cv.height)

@@ -20,9 +20,9 @@ class CNako3 extends NakoCompiler {
   // CNAKO3で使えるコマンドを登録する
   registerCommands () {
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
-    if (process.argv.length <= 2) {
+    if (process.argv.length <= 2) 
       process.argv.push('-h')
-    }
+    
     // commanderを使って引数を解析する
     const app = require('commander')
     const packages = require('../package.json')
@@ -119,12 +119,12 @@ class CNako3 extends NakoCompiler {
       this.getVarsCode() +
       js
     fs.writeFileSync(opt.output, jscode, 'utf-8')
-    if (opt.run) {
+    if (opt.run) 
       exec(`node ${opt.output}`, function (err, stdout, stderr) {
         if (err) console.log('[ERROR]', stderr)
         console.log(stdout)
       })
-    }
+    
   }
 
   // ワンライナーの場合
@@ -169,9 +169,9 @@ class CNako3 extends NakoCompiler {
         plugmod = require(fullpath)
         this.addPluginFile(pname, fullpath, plugmod)
         // this.funclistを更新する
-        for (const key in plugmod) {
+        for (const key in plugmod) 
           this.funclist[key] = plugmod[key]
-        }
+        
       } catch (e) {
         throw new Error(
           '[取込エラー] プラグイン『' + pname + '』を取り込めません。' +
@@ -186,6 +186,6 @@ class CNako3 extends NakoCompiler {
 if (require.main === module) { // 直接実行する
   const cnako3 = new CNako3()
   cnako3.execCommand()
-} else { // モジュールとして使う場合
+} else  // モジュールとして使う場合
   module.exports = CNako3
-}
+

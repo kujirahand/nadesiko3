@@ -183,8 +183,8 @@ function cbString (beginTag, closeTag, src) {
 }
 
 function trimOkurigana (s) {
-  if (!hira.test(s)) {
+  if (!hira.test(s)) 
     s = s.replace(/[ぁ-ん]+/g, '')
-  }
+  
   return s
 }

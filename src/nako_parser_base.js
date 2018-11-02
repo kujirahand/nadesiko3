@@ -154,14 +154,14 @@ class NakoParserBase {
   nodeToStr (node) {
     if (!node) return `(NULL)`
     let name = node.name
-    if (node.type === 'op') {
+    if (node.type === 'op') 
       name = '演算子[' + node.operator + ']'
-    }
+    
     if (!name) name = node.value
     if (typeof name !== 'string') name = node.type
-    if (this.debug) {
+    if (this.debug) 
       name += '→' + JSON.stringify(node, null, 2)
-    } else {
+     else {
       if (name === 'number') name = node.value + node.josi
       if (node.type === 'string') name = '「' + node.value + '」' + node.josi
     }

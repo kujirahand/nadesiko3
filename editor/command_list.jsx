@@ -16,15 +16,16 @@ export default class CommandList extends React.Component {
 
   render () {
     let items
-    if (this.props.flagShow) {
+    if (this.props.flagShow) 
       items = (
         <ul>
           {this.listItems}
         </ul>
       )
-    } else {
+     else 
       items = null
-    }
+    
+
     return (
       <div>
         {items}

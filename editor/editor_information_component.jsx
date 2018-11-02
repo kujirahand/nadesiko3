@@ -8,9 +8,10 @@ export default function EditorInformationComponent (props) {
   if (props.err) {
     err = <div className="err" style={{display: 'block'}}>{props.err.message}</div>
     console.error(props.err)
-  } else {
+  } else 
     err = null
-  }
+  
+
   return (
     <div>
       {err}
