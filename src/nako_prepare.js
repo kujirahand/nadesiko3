@@ -87,9 +87,9 @@ class NakoPrepare {
       if (flagStr) {
         res += c
         i++
-        if (c === endOfStr) {
+        if (c === endOfStr) 
           flagStr = false
-        }
+        
         continue
       }
       // 多重波括弧の文字列

@@ -23,7 +23,7 @@ const PluginNode = {
       sys.__v0['AJAX:ONERROR'] = null
       sys.__getBinPath = (tool) => {
         let fpath = tool
-        if (process.platform === 'win32') {
+        if (process.platform === 'win32') 
           if (!fileExists(tool)) {
             const nodeDir = path.dirname(process.argv[0])
             const root = path.resolve(path.join(nodeDir, '..'))
@@ -31,7 +31,7 @@ const PluginNode = {
             if (fileExists(fpath)) return `"${fpath}"`
             return tool
           }
-        }
+        
         return fpath
       }
     }
@@ -63,11 +63,11 @@ const PluginNode = {
     josi: [['を'], ['へ', 'に']],
     fn: function (s, f) {
       // Buffer?
-      if (s instanceof String) {
+      if (s instanceof String) 
         fs.writeFileSync(f, s, 'utf-8')
-      } else {
+       else 
         fs.writeFileSync(f, s)
-      }
+      
     },
     return_none: true
   },
@@ -84,11 +84,11 @@ const PluginNode = {
     josi: [['を']],
     fn: function (s) {
       exec(s, (err, stdout, stderr) => {
-        if (err) {
+        if (err) 
           console.error(stderr)
-        } else {
+         else 
           if (stdout) console.log(stdout)
-        }
+        
       })
     }
   },
@@ -97,11 +97,11 @@ const PluginNode = {
     josi: [['で'], ['を']],
     fn: function (callback, s, sys) {
       exec(s, (err, stdout, stderr) => {
-        if (err) {
+        if (err) 
           throw new Error(stderr)
-        } else {
+         else 
           callback(stdout)
-        }
+        
       })
     }
   },
@@ -127,9 +127,9 @@ const PluginNode = {
         const maskRE = new RegExp(mask2, 'i')
         const list = fs.readdirSync(searchPath)
         return list.filter((n) => maskRE.test(n))
-      } else {
+      } else 
         return fs.readdirSync(s)
-      }
+      
     }
   },
   '全ファイル列挙': { // @パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。 // @ぜんふぁいるれっきょ
@@ -351,11 +351,11 @@ const PluginNode = {
     fn: function () {
       let nakofile
       const cmd = path.basename(process.argv[1])
-      if (cmd.indexOf('cnako3') < 0) {
+      if (cmd.indexOf('cnako3') < 0) 
         nakofile = process.argv[1]
-      } else {
+       else 
         nakofile = process.argv[2]
-      }
+      
       return path.dirname(path.resolve(nakofile))
     }
   },
@@ -516,11 +516,11 @@ const PluginNode = {
       const os = require('os')
       const nif = os.networkInterfaces()
       const result = []
-      for (let dev in nif) {
+      for (let dev in nif) 
         nif[dev].forEach((detail) => {
           if (detail.family === 'IPv4') result.push(detail.address)
         })
-      }
+      
       return result
     }
   },
@@ -531,11 +531,11 @@ const PluginNode = {
       const os = require('os')
       const nif = os.networkInterfaces()
       const result = []
-      for (let dev in nif) {
+      for (let dev in nif) 
         nif[dev].forEach((detail) => {
           if (detail.family === 'IPv6') result.push(detail.address)
         })
-      }
+      
       return result
     }
   },
@@ -599,9 +599,9 @@ const PluginNode = {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
-      for (let key in params) {
+      for (let key in params) 
         fd.set(key, params[key])
-      }
+      
       let options = {
         method: 'POST',
         headers: {

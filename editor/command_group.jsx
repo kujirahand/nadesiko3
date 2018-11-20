@@ -8,11 +8,11 @@ export default function CommandGroup (props) {
     const cName = c[1]
     const cArgs = String(c[2] + '/').split('/')[0]
     let paste
-    if (cType === '関数') {
+    if (cType === '関数') 
       paste = cArgs + cName + '。'
-    } else {
+     else 
       paste = cName
-    }
+    
     a.push(<span key={'key_' + cName} onClick={props.onClick}
                  data-paste={paste} style={{cursor: 'pointer'}}>[{cName}]&nbsp;</span>)
   }
