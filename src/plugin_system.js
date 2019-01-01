@@ -1265,6 +1265,13 @@ const PluginSystem = {
       throw new Error('『配列追加』で配列以外の処理。')
     }
   },
+  '配列複製': { // @配列Aを複製して返す。 // @はいれつふくせい
+    type: 'func',
+    josi: [['を']],
+    fn: function (a) {
+      return JSON.parse(JSON.stringify(a))
+    }
+  },
 
   // @ハッシュ
   'ハッシュキー列挙': { // @ハッシュAのキー一覧を配列で返す。 // @はっしゅきーれっきょ
