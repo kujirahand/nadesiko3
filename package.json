@@ -126,7 +126,6 @@
     "iconv-lite": "^0.4.23",
     "moment-timezone": "^0.5.21",
     "node-fetch": "^2.2.0",
-    "npm": "^6.4.0",
     "opener": "^1.4.3",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",

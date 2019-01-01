@@ -91,6 +91,22 @@ const PluginBrowser = {
     }
   },
 
+  // @ブラウザ操作
+  'ブラウザ移動': { // @任意のURLにブラウザ移動(ただし移動後スクリプトの実行は停止する) // @ぶらうざいどう
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (url) {
+      window.location.href = url
+    }
+  },
+  'ブラウザ戻': { // @任意のURLにブラウザ移動(ただし移動後スクリプトの実行は停止する) // @ぶらうざもどる
+    type: 'func',
+    josi: [],
+    fn: function () {
+      window.history.back(-1)
+    }
+  },
+
   // @Ajax
   'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
     type: 'func',
