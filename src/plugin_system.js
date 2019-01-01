@@ -65,6 +65,8 @@ const PluginSystem = {
   '対象': {type: 'const', value: ''}, // @たいしょう
   '対象キー': {type: 'const', value: ''}, // @たいしょうきー
   '回数': {type: 'const', value: ''}, // @かいすう
+  'CR': {type: 'const', value: '\r'}, // @CR
+  'LF': {type: 'const', value: '\n'}, // @LF
   '空配列': { // @空の配列を返す // @からはいれつ
     type: 'func',
     josi: [],
