@@ -1502,6 +1502,34 @@ const PluginSystem = {
       const moment = require('moment-timezone')
       moment.tz.setDefault(tz)
     }
+  },
+  'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
+    type: 'func',
+    josi: [['を', 'の', 'で']],
+    fn: function (str) {
+      const data = []
+      for (const x of str.split('\n')) if (x) data.push(x.split(',').map(x => x.trim()))
+      return data
+    }
+  },
+  'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
+    type: 'func',
+    josi: [['を', 'の', 'で']],
+    fn: function (str) {
+      const data = []
+      for (const x of str.split('\n')) if (x) data.push(x.split('\t').map(x => x.trim()))
+      return data
+    }
+  },
+  '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
+    type: 'func',
+    josi: [['を']],
+    fn: a => a.map(ai => ai.join(',')).join('\n')
+  },
+  '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
+    type: 'func',
+    josi: [['を']],
+    fn: a => a.map(ai => ai.join('\t')).join('\n')
   }
 }
 
