@@ -33,12 +33,12 @@ class NakoParserBase {
    */
   popStack (josiList) {
     if (!josiList) return this.stack.pop()
-    // 末尾から josiList にマッチする助詞を探す
+
+    // josiList にマッチする助詞を探す
     for (let i = 0; i < this.stack.length; i++) {
-      const bi = this.stack.length - i - 1
-      const t = this.stack[bi]
+      const t = this.stack[i]
       if (josiList.length === 0 || josiList.indexOf(t.josi) >= 0) {
-        this.stack.splice(bi, 1) // remove stack
+        this.stack.splice(i, 1) // remove stack
         if (this.debugStack) console.log('POP :', t)
         return t
       }
