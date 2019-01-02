@@ -1507,42 +1507,59 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     fn: (str, sep) => {
+      // 二次元配列
       const data = []
+
+      // 二次元配列の行要素
       let data_row = []
+
+      // ダブルクオーテーションフラグ
+      // (一つ前にダブルクオーテーションがあったかどうか)
       let is_quote = false
+
+      // ダブルクオーテーションで区切った文字列のリスト
       const split_quote = str.split('"')
 
       for (let i = 0; i < split_quote.length; i++) {
         const s_q = split_quote[i]
 
-        if (i % 2 === 0) {
+        if (i % 2 === 0) { //偶数番目の要素 (さらに区切れる可能性がある) のとき
           let s
 
-          if (is_quote) {
+          if (is_quote) { // ダブルクオーテーションが立っているとき、行の末尾の要素を取り出す (今見ている要素と連結させるため)
             s = data_row.pop()
             is_quote = false
           } else s = ''
 
+          // 改行で区切った文字列のリスト
           const split_linesep = (s + s_q).split('\n')
 
           for (let j = 0; j < split_linesep.length; j++) {
+            // 区切り文字で区切った文字列を行の末尾に追加する
             data_row = data_row.concat(split_linesep[j].split(sep))
+
             if (i === split_quote.length - 1 || j < split_linesep.length - 1) {
+              // 行の要素から空文字列を除去
               data_row = data_row.filter(e => e !== '')
+
+              // 二次元配列に行を追加
               if (0 < data_row.length) {
                 data.push(data_row)
                 data_row = []
               }
             }
           }
-        } else if (s_q === '') {
+        } else if (s_q === '') { // 奇数番目の要素で空文字列 (エスケープされたダブルクオーテーション) のとき
+          // ダブルクオーテーション
           const quote = '"'
 
+          // 行の末尾の要素にダブルクオーテーションを追加
           if (data_row.length === 0) data_row.push(quote)
           else data_row[data_row.length - 1] += quote
 
+          // ダブルクオーテーションフラグを立てる
           is_quote = true
-        } else data_row.push(s_q)
+        } else data_row.push(s_q) // 奇数番目の要素 (これ以上区切れない) で、空文字列のでないとき、文字列を行に追加
       }
 
       return data
