@@ -12,7 +12,6 @@
     "test": "mocha",
     "start": "node src/nako3server.js",
     "server": "lite-server --config=demo/bs-config.json",
-    "server:ws": "cnako3 tools/ws/echo.nako3",
     "nako3edit": "cnako3 tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
     "electron": "electron src/enako3.js",
@@ -131,7 +130,6 @@
     "react-dom": "^16.4.2",
     "sendkeys-js": "0.0.4",
     "ssri": "^6.0.0",
-    "whatwg-fetch": "^2.0.4",
-    "ws": "^6.0.0"
+    "whatwg-fetch": "^2.0.4"
   }
 }
