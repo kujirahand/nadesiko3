@@ -1503,7 +1503,7 @@ const PluginSystem = {
       moment.tz.setDefault(tz)
     }
   },
-  'カスタムCSV取得': { // @変則的なCSV形式のデータstrを区切り文字sepとして強制的に二次元配列に変換して返す(v1非互換) // @カスタムCSVしゅとく
+  'カスタムCSV取得': { // @変則的なCSV形式のデータstrを区切り文字sepとして強制的に二次元配列に変換して返す(v1非互換) // @かすたむCSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
     fn: (str, sep) => {
