@@ -1505,7 +1505,7 @@ const PluginSystem = {
   },
   'カスタムCSV取得': { // @変則的なCSV形式のデータstrを区切り文字sepとして強制的に二次元配列に変換して返す(v1非互換) // @かすたむCSVしゅとく
     type: 'func',
-    josi: [['を', 'の', 'で']],
+    josi: [['を'], ['で']],
     fn: (str, sep) => {
       // 二次元配列
       const data = []
@@ -1568,26 +1568,27 @@ const PluginSystem = {
   'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
-    fn: (str, sys) => {
-      return sys.__exec('カスタムCSV取得', [str, ','])
-    }
+    fn: (str, sys) => sys.__exec('カスタムCSV取得', [str, ','])
   },
   'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
-    fn: (str, sys) => {
-      return sys.__exec('カスタムCSV取得', [str, '\t'])
-    }
+    fn: (str, sys) => sys.__exec('カスタムCSV取得', [str, '\t'])
+  },
+  '表カスタムCSV変換': { // @二次元配列Aを区切り文字sepとしてCSV形式に変換して返す(v1非互換) // @ひょうかすたむCSVへんかん
+    type: 'func',
+    josi: [['を'], ['で']],
+    fn: (a, sep) => a.map(r => r.map(e => '"' + String(e).replace('"', '""') + '"').join(sep)).join('\n')
   },
   '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
     type: 'func',
     josi: [['を']],
-    fn: a => a.map(ai => ai.join(',')).join('\n')
+    fn: (a, sys) => sys.__exec('表カスタムCSV変換', [a, ','])
   },
   '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
     type: 'func',
     josi: [['を']],
-    fn: a => a.map(ai => ai.join('\t')).join('\n')
+    fn: (a, sys) => sys.__exec('表カスタムCSV変換', [a, '\t'])
   }
 }
 
