@@ -1559,7 +1559,7 @@ const PluginSystem = {
 
           // ダブルクオーテーションフラグを立てる
           is_quote = true
-        } else data_row.push(s_q) // 奇数番目の要素 (これ以上区切れない) で、空文字列のでないとき、文字列を行に追加
+        } else data_row.push(s_q) // 奇数番目の要素 (これ以上区切れない) で、空文字列でないとき、文字列を行に追加
       }
 
       return data
