@@ -1503,22 +1503,63 @@ const PluginSystem = {
       moment.tz.setDefault(tz)
     }
   },
+  'カスタムCSV取得': { // @変則的なCSV形式のデータstrを区切り文字sepとして強制的に二次元配列に変換して返す(v1非互換) // @カスタムCSVしゅとく
+    type: 'func',
+    josi: [['を', 'の', 'で']],
+    fn: (str, sep) => {
+      const data = []
+      let data_row = []
+      let is_quote = false
+      const split_quote = str.split('"')
+
+      for (let i = 0; i < split_quote.length; i++) {
+        const s_q = split_quote[i]
+
+        if (i % 2 === 0) {
+          let s
+
+          if (is_quote) {
+            s = data_row.pop()
+            is_quote = false
+          } else s = ''
+
+          const split_linesep = (s + s_q).split('\n')
+
+          for (let j = 0; j < split_linesep.length; j++) {
+            data_row = data_row.concat(split_linesep[j].split(sep))
+            if (i === split_quote.length - 1 || j < split_linesep.length - 1) {
+              data_row = data_row.filter(e => e !== '')
+              if (0 < data_row.length) {
+                data.push(data_row)
+                data_row = []
+              }
+            }
+          }
+        } else if (s_q === '') {
+          const quote = '"'
+
+          if (data_row.length === 0) data_row.push(quote)
+          else data_row[data_row.length - 1] += quote
+
+          is_quote = true
+        } else data_row.push(s_q)
+      }
+
+      return data
+    }
+  },
   'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
-    fn: function (str) {
-      const data = []
-      for (const x of str.split('\n')) if (x) data.push(x.split(',').map(x => x.trim()))
-      return data
+    fn: (str, sys) => {
+      return sys.__exec('カスタムCSV取得', [str, ','])
     }
   },
   'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
-    fn: function (str) {
-      const data = []
-      for (const x of str.split('\n')) if (x) data.push(x.split('\t').map(x => x.trim()))
-      return data
+    fn: (str, sys) => {
+      return sys.__exec('カスタムCSV取得', [str, '\t'])
     }
   },
   '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
