@@ -1540,16 +1540,27 @@ const PluginSystem = {
       for (let i = 0; i < split_quote.length; i++) {
         const s_q = split_quote[i]
 
-        if (i % 2 === 0) { //偶数番目の要素 (さらに区切れる可能性がある) のとき
-          let s
+        if (s_q === '') { // エスケープされたダブルクオーテーションのとき
+          // ダブルクオーテーション
+          const quote = '"'
 
-          if (is_quote) { // ダブルクオーテーションが立っているとき、行の末尾の要素を取り出す (今見ている要素と連結させるため)
-            s = data_row.pop()
+          // 行の末尾の要素にダブルクオーテーションを追加
+          if (data_row.length === 0) data_row.push(quote)
+          else data_row[data_row.length - 1] += quote
+
+          // ダブルクオーテーションフラグを立てる
+          is_quote = true
+        } else if (i % 2 === 0) { //偶数番目の要素 (さらに区切れる可能性がある) のとき
+          let s = s_q
+
+          // ダブルクオーテーションが立っているとき、行の末尾の要素を取り出す (今見ている要素と連結させるため)
+          if (is_quote) {
+            s = data_row.pop() + s
             is_quote = false
-          } else s = ''
+          }
 
           // 改行で区切った文字列のリスト
-          const split_linesep = (s + s_q).split('\n')
+          const split_linesep = s.split('\n')
 
           for (let j = 0; j < split_linesep.length; j++) {
             // 区切り文字で区切った文字列を行の末尾に追加する
@@ -1566,17 +1577,10 @@ const PluginSystem = {
               }
             }
           }
-        } else if (s_q === '') { // 奇数番目の要素で空文字列 (エスケープされたダブルクオーテーション) のとき
-          // ダブルクオーテーション
-          const quote = '"'
-
-          // 行の末尾の要素にダブルクオーテーションを追加
-          if (data_row.length === 0) data_row.push(quote)
-          else data_row[data_row.length - 1] += quote
-
-          // ダブルクオーテーションフラグを立てる
-          is_quote = true
-        } else data_row.push(s_q) // 奇数番目の要素 (これ以上区切れない) で、空文字列でないとき、文字列を行に追加
+        } else if (is_quote) { // 奇数番目の要素 (これ以上区切れない) で、ダブルクオーテーションが立っているとき
+          data_row[data_row.length - 1] += s_q
+          is_quote = false
+        } else data_row.push(s_q) // 奇数番目の要素 (これ以上区切れない) で、ダブルクオーテーションが立っていないとき
       }
 
       return data

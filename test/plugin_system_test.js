@@ -258,10 +258,12 @@ describe('plugin_system_test', () => {
   it('CSV取得', () => {
     cmp('a=「1,2,3\n4,5,6」のCSV取得。a[1][2]を表示', '6')
     cmp('a=「"a",b,c\n""a,b,c\na,""b,c\na,b,c""\n"a,\nb",c,d\na,"b,\nc",d\na,b,"c,\nd"」のCSV取得。a[5][1]を表示', 'b,\nc')
+    cmp('a=「1,"a""a",2」のCSV取得。a[0][1]を表示', 'a"a')
   })
   it('TSV取得', () => {
     cmp('a=「1\t2\t3\n4\t5\t6」のTSV取得。a[1][2]を表示', '6')
     cmp('a=「"a"\tb\tc\n""a\tb\tc\na\t""b\tc\na\tb\tc""\n"a\t\nb"\tc\td\na\t"b\t\nc"\td\na\tb\t"c\t\nd"」のCSV取得。a[5][1]を表示', 'b\t\nc')
+    cmp('a=「1\t"a""a"\t2」のTSV取得。a[0][1]を表示', 'a"a')
   })
   it('表CSV変換', () => {
     cmp('[[1,2,"3 \n,"],[4,5,6]]を表CSV変換して表示', '"1","2","3 \n,"\n"4","5","6"')
