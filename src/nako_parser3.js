@@ -500,6 +500,9 @@ class NakoParser extends NakoParserBase {
           funcObj = this.yMumeiFunc()
           if (funcObj === null) throw new NakoSyntaxError('『Fには』構文がありましたが、関数定義が見当たりません。', t.line)
         }
+        if (!f || typeof f['josi'] === undefined) {
+          throw new NakoSyntaxError('関数の定義でエラー。', t.line)
+        }
         const args = []
         let nullCount = 0
         let valueCount = 0
