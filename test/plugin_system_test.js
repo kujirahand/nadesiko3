@@ -269,4 +269,9 @@ describe('plugin_system_test', () => {
   it('表TSV変換', () => {
     cmp('[[1,2,"3 \n\t"],[4,5,6]]を表TSV変換して表示', '"1"\t"2"\t"3 \n\t"\n"4"\t"5"\t"6"')
   })
+  it('JS関数実行', () => {
+    cmp('"Math.floor"を[3.14]でJS関数実行して表示', '3')
+    cmp('"Math.floor"を3.14でJS関数実行して表示', '3')
+    cmp('F="Math.floor"でJS実行;Fを[3.14]でJS関数実行して表示', '3')
+  })
 })

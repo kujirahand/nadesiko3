@@ -207,6 +207,23 @@ const PluginSystem = {
       return sys.__findVar(name, null)
     }
   },
+  'JS関数実行': { // @JavaScriptの関数NAMEを引数ARGS(配列)で実行する // @JSかんすうしゅとく
+    type: 'func',
+    josi: [['を'], ['で']],
+    fn: function (name, args, sys) {
+      // nameが文字列ならevalして関数を得る
+      if (typeof name === 'string') name = eval(name)
+      if (typeof name !== 'function') {
+        throw new Error('JS関数取得で実行できません。')
+      }
+      // argsがArrayでなければArrayに変換する
+      if (!(args instanceof Array)) {
+        args = [args]
+      }
+      // 実行
+      return name.apply(null, args)
+    }
+  },
 
   'ナデシコ': { // @なでしこのコードCODEを実行する // @なでしこする
     type: 'func',
