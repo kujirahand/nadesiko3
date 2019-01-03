@@ -1534,15 +1534,16 @@ const PluginSystem = {
           // ダブルクオーテーションフラグを立てる
           is_quote = true
         } else if (i % 2 === 0) { //偶数番目の要素 (さらに区切れる可能性がある) のとき
-          let s
+          let s = s_q
 
-          if (is_quote) { // ダブルクオーテーションが立っているとき、行の末尾の要素を取り出す (今見ている要素と連結させるため)
-            s = data_row.pop()
+          // ダブルクオーテーションが立っているとき、行の末尾の要素を取り出す (今見ている要素と連結させるため)
+          if (is_quote) {
+            s = data_row.pop() + s
             is_quote = false
-          } else s = ''
+          }
 
           // 改行で区切った文字列のリスト
-          const split_linesep = (s + s_q).split('\n')
+          const split_linesep = s.split('\n')
 
           for (let j = 0; j < split_linesep.length; j++) {
             // 区切り文字で区切った文字列を行の末尾に追加する
