@@ -293,7 +293,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '読込時': { // @無名関数FでDOMを読み個だ時に実行するイベントを設定 // @よみこんだとき
+  '読込時': { // @無名関数FでDOMを読み込んだ時に実行するイベントを設定 // @よみこんだとき
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
@@ -308,7 +308,7 @@ const PluginBrowser = {
   },
   'フォーム送信時': { // @無名関数Fでフォームを送信した時に実行するイベントを設定 // @ふぉーむそうしんしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -322,7 +322,7 @@ const PluginBrowser = {
   '押キー': {type: 'const', value: ''}, // @おされたきー
   'キー押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーおしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -336,7 +336,7 @@ const PluginBrowser = {
   },
   'キー離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーはなしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -350,7 +350,7 @@ const PluginBrowser = {
   },
   'キータイピング時': { // @無名関数FでDOMに対してキーをプレスした時に実行するイベントを設定。『押されたキー』が設定される。 // @きーたいぴんぐしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -366,7 +366,7 @@ const PluginBrowser = {
   'マウスY': {type: 'const', value: 0}, // @まうすY
   'マウス押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすおしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -383,7 +383,7 @@ const PluginBrowser = {
   },
   'マウス移動時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすいどうしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -399,7 +399,7 @@ const PluginBrowser = {
   },
   'マウス離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすはなしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') dom = document.querySelector(dom)
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
