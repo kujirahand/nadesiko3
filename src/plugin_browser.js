@@ -280,6 +280,14 @@ const PluginBrowser = {
     },
     return_none: true
   },
+  'DOMイベント処理停止': { // @キーイベントやマウスイベントで、元々ブラウザが行う処理を中止する // @DOMいべんとしょりていし
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (event, sys) {
+      event.preventDefault()
+    },
+    return_none: true
+  },
   'クリック時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
     type: 'func',
     josi: [['で'], ['を']],
