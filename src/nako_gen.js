@@ -443,7 +443,7 @@ class NakoGen {
 
   convComment (node) {
     let commentSrc = String(node.value)
-    commentSrc = commentSrc.replace('\n', '¶')
+    commentSrc = commentSrc.replace(/\n/g, '¶')
     return '; ' + NakoGen.convLineno(node) + '// ' + commentSrc + '\n'
   }
 
