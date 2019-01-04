@@ -19,7 +19,7 @@ module.exports = {
     filename: '[name].js'
   },
 
-  // devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-eval-source-map',
 
   plugins: [],
 

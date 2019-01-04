@@ -29,13 +29,13 @@ const PluginSystem = {
         sys.__v0[name] = value
       }
       // 前回設定したタイマーが実行中ならクリア
-      if (sys.__timeout) 
+      if (sys.__timeout)
         for (const t of sys.__timeout) clearTimeout(t)
-      
+
       sys.__timeout = []
-      if (sys.__interval) 
+      if (sys.__interval)
         for (const t of sys.__interval) clearInterval(t)
-      
+
       sys.__interval = []
     }
   },
@@ -80,9 +80,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'と']],
     fn: function (s, sys) {
-      if (!sys.silent) 
+      if (!sys.silent)
         console.log(s)
-      
+
       sys.__varslist[0]['表示ログ'] += (s + '\n')
     },
     return_none: true
@@ -213,13 +213,13 @@ const PluginSystem = {
     fn: function (name, args, sys) {
       // nameが文字列ならevalして関数を得る
       if (typeof name === 'string') name = eval(name)
-      if (typeof name !== 'function') {
+      if (typeof name !== 'function')
         throw new Error('JS関数取得で実行できません。')
-      }
+      
       // argsがArrayでなければArrayに変換する
-      if (!(args instanceof Array)) {
+      if (!(args instanceof Array))
         args = [args]
-      }
+
       // 実行
       return name.apply(null, args)
     }
@@ -992,23 +992,23 @@ const PluginSystem = {
       let f = b.match(/^\/(.+)\/([a-zA-Z]*)$/)
       if (f === null)  // パターンがない場合
         re = new RegExp(b, 'g')
-       else 
+       else
         re = new RegExp(f[1], f[2])
-      
+
       const sa = sys.__varslist[0]['抽出文字列'] = []
       const m = String(a).match(re)
       let result = m
       if (re.global) {
         // no groups
-      } else 
-        if (m) 
+      } else
+        if (m)
           // has group?
           if (m.length > 0) {
             result = m[0]
             for (let i = 1; i < m.length; i++) sa[i - 1] = m[i]
           }
-        
-      
+
+
       return result
     }
   },
@@ -1019,11 +1019,11 @@ const PluginSystem = {
     fn: function (s, a, b) {
       let re
       let f = a.match(/^\/(.+)\/([a-zA-Z]*)/)
-      if (f === null) 
+      if (f === null)
         re = new RegExp(a, 'g')
-       else 
+       else
         re = new RegExp(f[1], f[2])
-      
+
       return String(s).replace(re, b)
     }
   },
@@ -1033,11 +1033,11 @@ const PluginSystem = {
     fn: function (s, a) {
       let re
       let f = a.match(/^\/(.+)\/([a-zA-Z]*)/)
-      if (f === null) 
+      if (f === null)
         re = new RegExp(a, 'g')
-       else 
+       else
         re = new RegExp(f[1], f[2])
-      
+
       return String(s).split(re)
     }
   },
@@ -1117,7 +1117,7 @@ const PluginSystem = {
     fn: function (a, s) {
       if (a instanceof Array)  // 配列ならOK
         return a.join('' + s)
-      
+
       const a2 = String(a).split('\n') // 配列でなければ無理矢理改行で区切ってみる
       return a2.join('' + s)
     }
@@ -1128,7 +1128,7 @@ const PluginSystem = {
     fn: function (a, s) {
       if (a instanceof Array)  // 配列ならOK
         return a.indexOf(s)
-      
+
       return -1
     }
   },
@@ -1138,10 +1138,10 @@ const PluginSystem = {
     fn: function (a) {
       if (a instanceof Array)  // 配列ならOK
         return a.length
-      
-      if (a instanceof Object) 
+
+      if (a instanceof Object)
         return Object.keys(a).length
-      
+
       return 1
     }
   },
@@ -1158,7 +1158,7 @@ const PluginSystem = {
     fn: function (a, i, s) {
       if (a instanceof Array)  // 配列ならOK
         return a.splice(i, 0, s)
-      
+
       throw new Error('『配列挿入』で配列以外の要素への挿入。')
     }
   },
@@ -1167,9 +1167,9 @@ const PluginSystem = {
     josi: [['の'], ['に', 'へ'], ['を']],
     fn: function (a, i, b) {
       if (a instanceof Array && b instanceof Array) { // 配列ならOK
-        for (let j = 0; j < b.length; j++) 
+        for (let j = 0; j < b.length; j++)
           a.splice(i + j, 0, b[j])
-        
+
         return a
       }
       throw new Error('『配列一括挿入』で配列以外の要素への挿入。')
@@ -1181,7 +1181,7 @@ const PluginSystem = {
     fn: function (a) {
       if (a instanceof Array)  // 配列ならOK
         return a.sort()
-      
+
       throw new Error('『配列ソート』で配列以外が指定されました。')
     }
   },
@@ -1193,7 +1193,7 @@ const PluginSystem = {
         return a.sort((a, b) => {
           return parseFloat(a) - parseFloat(b)
         })
-      
+
       throw new Error('『配列数値ソート』で配列以外が指定されました。')
     }
   },
@@ -1204,14 +1204,14 @@ const PluginSystem = {
       let ufunc = f
       if (typeof f === 'string') {
         ufunc = sys.__varslist[1][f]
-        if (ufunc === undefined) 
+        if (ufunc === undefined)
           ufunc = sys.__varslist[1][f]
-        
+
         if (!ufunc) throw new Error('関数『' + f + '』が見当たりません。')
       }
       if (a instanceof Array)  // 配列ならOK
         return a.sort(ufunc)
-      
+
       throw new Error('『配列カスタムソート』で配列以外が指定されました。')
     }
   },
@@ -1221,7 +1221,7 @@ const PluginSystem = {
     fn: function (a) {
       if (a instanceof Array)  // 配列ならOK
         return a.reverse()
-      
+
       throw new Error('『配列ソート』で配列以外が指定されました。')
     }
   },
@@ -1259,7 +1259,7 @@ const PluginSystem = {
     fn: function (a, i, cnt) {
       if (a instanceof Array)  // 配列ならOK
         return a.splice(i, cnt)
-      
+
       throw new Error('『配列取出』で配列以外を指定。')
     }
   },
@@ -1269,7 +1269,7 @@ const PluginSystem = {
     fn: function (a) {
       if (a instanceof Array)  // 配列ならOK
         return a.pop()
-      
+
       throw new Error('『配列ポップ』で配列以外の処理。')
     }
   },
@@ -1495,9 +1495,9 @@ const PluginSystem = {
     josi: [],
     fn: function (sys) {
       const a = []
-      for (const f in sys.pluginfiles) 
+      for (const f in sys.pluginfiles)
         a.push(f)
-      
+
       return a
     }
   },
@@ -1506,9 +1506,9 @@ const PluginSystem = {
     josi: [],
     fn: function (sys) {
       const a = []
-      for (const f in sys.__module) 
+      for (const f in sys.__module)
         a.push(f)
-      
+
       return a
     }
   },

@@ -1,4 +1,4 @@
-// なでしこの字句解析を行う
+  // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
 const {opPriority} = require('./nako_parser_const')
 
@@ -30,11 +30,11 @@ class NakoLexer {
       const tTorikomu = tokens[i + 2]
       if (tNot.type === 'not' && tTorikomu.value === '取込') {
         tNot.type = 'require'
-        if (tFile.type === 'string' || tFile.type === 'string_ex') 
+        if (tFile.type === 'string' || tFile.type === 'string_ex')
           tFile.type = 'string'
-         else 
+         else
           throw new Error('[字句解析エラー] 『!「ファイル」を取り込む』の書式で記述してください。')
-        
+
         i += 3
         continue
       }
@@ -74,9 +74,9 @@ class NakoLexer {
       while (tokens[i]) {
         const t = tokens[i]
         i++
-        if (t.type === ')') 
+        if (t.type === ')')
           break
-         else if (t.type === 'func') 
+         else if (t.type === 'func')
           isFuncPointer = true
          else if (t.type !== '|' && t.type !== 'comma') {
           if (isFuncPointer) {
@@ -84,9 +84,9 @@ class NakoLexer {
             isFuncPointer = false
           }
           args.push(t)
-          if (!keys[t.value]) 
+          if (!keys[t.value])
             keys[t.value] = []
-          
+
           keys[t.value].push(t.josi)
         }
       }
@@ -94,19 +94,19 @@ class NakoLexer {
       const funcPointers = []
       const result = []
       const already = {}
-      for (const arg of args) 
+      for (const arg of args)
         if (!already[arg.value]) {
           const josi = keys[arg.value]
           result.push(josi)
           varnames.push(arg.value)
-          if (arg.funcPointer) 
+          if (arg.funcPointer)
             funcPointers.push(arg.value)
-           else 
+           else
             funcPointers.push(null)
-          
+
           already[arg.value] = true
         }
-      
+
       return [result, varnames, funcPointers]
     }
     // トークンを一つずつ確認
@@ -137,19 +137,19 @@ class NakoLexer {
       let funcPointers = []
       let funcName = ''
       // 関数名の前に引数定義
-      if (tokens[i] && tokens[i].type === '(') 
+      if (tokens[i] && tokens[i].type === '(')
         [josi, varnames, funcPointers] = readArgs()
-      
+
       // 関数名
-      if (tokens[i] && tokens[i].type === 'word') 
+      if (tokens[i] && tokens[i].type === 'word')
         funcName = tokens[i++].value
-      
+
       // 関数名の後で引数定義
-      if (josi.length === 0 && tokens[i] && tokens[i].type === '(') 
+      if (josi.length === 0 && tokens[i] && tokens[i].type === '(')
         [josi, varnames, funcPointers] = readArgs()
-      
+
       // 関数定義か？
-      if (funcName !== '') 
+      if (funcName !== '')
         this.funclist[funcName] = {
           type: 'func',
           josi,
@@ -157,7 +157,7 @@ class NakoLexer {
           varnames,
           funcPointers
         }
-      
+
       // 無名関数のために
       defToken.meta = {josi, varnames, funcPointers}
     }
@@ -215,7 +215,7 @@ class NakoLexer {
         i += 2
         continue
       }
-      // _ 改行 を飛ばす
+      // '_' + 改行 を飛ばす (演算子直後に改行を入れたい場合に使う)
       if (t.type === '_eol') {
         tokens.splice(i, 1)
         continue
@@ -248,18 +248,18 @@ class NakoLexer {
           continue
         }
         // 『関数(』の『関数』のtypeを『def_func』に書き換え
-        if (rule.name === '(' && 0 < this.result.length && this.result[this.result.length - 1].type === 'func') 
+        if (rule.name === '(' && 0 < this.result.length && this.result[this.result.length - 1].type === 'func')
           this.result[this.result.length - 1].type = 'def_func'
-        
+
         // 特別なパーサを通すか？
         if (rule.cbParser) {
           const rp = rule.cbParser(src)
           if (rule.name === 'string_ex') {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
             const list = rp.res.split(/[{}｛｝]/)
-            if (list.length >= 1 && list.length % 2 === 0) 
+            if (list.length >= 1 && list.length % 2 === 0)
               throw new Error('字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。')
-            
+
             for (let i = 0; i < list.length; i++) {
               const josi = (i === list.length - 1) ? rp.josi : ''
               if (i % 2 === 0) {
@@ -287,9 +287,9 @@ class NakoLexer {
         if (rule.cb) value = rule.cb(value)
         // ソースを進める
         src = src.substr(m[0].length)
-        if (rule.name === 'eol' && value === '\n') {
+        if (rule.name === 'eol' && value === '\n')
           value = line++
-        }
+
         let josi = ''
         if (rule.readJosi) {
           const j = josiRE.exec(src)

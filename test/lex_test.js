@@ -5,9 +5,9 @@ describe('lex_test', () => {
   const nako = new NakoCompiler()
   nako.debug = false
   const cmp = (code, res) => {
-    if (nako.debug) {
+    if (nako.debug)
       console.log('code=' + code)
-    }
+    
     assert.equal(nako.runReset(code).log, res)
   }
   // --- test ---
@@ -18,6 +18,9 @@ describe('lex_test', () => {
   })
   it('仮名表記の曖昧', () => {
     cmp('『abc』の『a』を「*」に置き換え。表示', '*bc')
+  })
+  it('範囲コメントの処理', () => {
+    cmp('1を表示\n/*2を表示\n3を表示\n*/\n4を表示\n', '1\n4')
   })
   it('文字列の埋め込み語句のかな省略', () => {
     cmp('見出し=30;「--{見出}--」を表示', '--30--')
