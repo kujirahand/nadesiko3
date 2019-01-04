@@ -1520,96 +1520,41 @@ const PluginSystem = {
       moment.tz.setDefault(tz)
     }
   },
-  'カスタムCSV取得': { // @変則的なCSV形式のデータstrを区切り文字sepとして強制的に二次元配列に変換して返す(v1非互換) // @かすたむCSVしゅとく
-    type: 'func',
-    josi: [['を'], ['で']],
-    fn: (str, sep) => {
-      // 二次元配列
-      const data = []
-
-      // 二次元配列の行要素
-      let data_row = []
-
-      // ダブルクオーテーションフラグ
-      // (一つ前にダブルクオーテーションがあったかどうか)
-      let is_quote = false
-
-      // ダブルクオーテーションで区切った文字列のリスト
-      const split_quote = str.split('"')
-
-      for (let i = 0; i < split_quote.length; i++) {
-        const s_q = split_quote[i]
-
-        if (s_q === '') { // エスケープされたダブルクオーテーションのとき
-          // ダブルクオーテーション
-          const quote = '"'
-
-          // 行の末尾の要素にダブルクオーテーションを追加
-          if (data_row.length === 0) data_row.push(quote)
-          else data_row[data_row.length - 1] += quote
-
-          // ダブルクオーテーションフラグを立てる
-          is_quote = true
-        } else if (i % 2 === 0) { //偶数番目の要素 (さらに区切れる可能性がある) のとき
-          let s = s_q
-
-          // ダブルクオーテーションが立っているとき、行の末尾の要素を取り出す (今見ている要素と連結させるため)
-          if (is_quote) {
-            s = data_row.pop() + s
-            is_quote = false
-          }
-
-          // 改行で区切った文字列のリスト
-          const split_linesep = s.split('\n')
-
-          for (let j = 0; j < split_linesep.length; j++) {
-            // 区切り文字で区切った文字列を行の末尾に追加する
-            data_row = data_row.concat(split_linesep[j].split(sep))
-
-            if (i === split_quote.length - 1 || j < split_linesep.length - 1) {
-              // 行の要素から空文字列を除去
-              data_row = data_row.filter(e => e !== '')
-
-              // 二次元配列に行を追加
-              if (0 < data_row.length) {
-                data.push(data_row)
-                data_row = []
-              }
-            }
-          }
-        } else if (is_quote) { // 奇数番目の要素 (これ以上区切れない) で、ダブルクオーテーションが立っているとき
-          data_row[data_row.length - 1] += s_q
-          is_quote = false
-        } else data_row.push(s_q) // 奇数番目の要素 (これ以上区切れない) で、ダブルクオーテーションが立っていないとき
-      }
-
-      return data
-    }
-  },
   'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
-    fn: (str, sys) => sys.__exec('カスタムCSV取得', [str, ','])
+    fn: str => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = ','
+      return CSV.parse(str)
+    }
   },
   'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
-    fn: (str, sys) => sys.__exec('カスタムCSV取得', [str, '\t'])
-  },
-  '表カスタムCSV変換': { // @二次元配列Aを区切り文字sepとしてCSV形式に変換して返す(v1非互換) // @ひょうかすたむCSVへんかん
-    type: 'func',
-    josi: [['を'], ['で']],
-    fn: (a, sep) => a.map(r => r.map(e => '"' + String(e).replace('"', '""') + '"').join(sep)).join('\n')
+    fn: str => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = "\t"
+      return CSV.parse(str)
+    }
   },
   '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
     type: 'func',
     josi: [['を']],
-    fn: (a, sys) => sys.__exec('表カスタムCSV変換', [a, ','])
+    fn: a => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = ','
+      return CSV.stringify(a)
+    }
   },
   '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
     type: 'func',
     josi: [['を']],
-    fn: (a, sys) => sys.__exec('表カスタムCSV変換', [a, '\t'])
+    fn: a => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = '\t'
+      return CSV.stringify(a)
+    }
   }
 }
 
