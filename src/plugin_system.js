@@ -3,7 +3,7 @@ const PluginSystem = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__v0['ナデシコバージョン'] = '3.0.52'
+      sys.__v0['ナデシコバージョン'] = '3.0.53'
       // システム関数を探す
       sys.__getSysValue = function (name, def) {
         if (sys.__v0[name] === undefined) return def
@@ -215,7 +215,7 @@ const PluginSystem = {
       if (typeof name === 'string') name = eval(name)
       if (typeof name !== 'function')
         throw new Error('JS関数取得で実行できません。')
-      
+
       // argsがArrayでなければArrayに変換する
       if (!(args instanceof Array))
         args = [args]
