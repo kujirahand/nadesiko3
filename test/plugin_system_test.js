@@ -267,12 +267,15 @@ describe('plugin_system_test', () => {
     cmp('a=「"a"\tb\tc\n""a\tb\tc\na\t""b\tc\na\tb\tc""\n"a\t\nb"\tc\td\na\t"b\t\nc"\td\na\tb\t"c\t\nd"」のTSV取得。a[5][1]を表示', 'b\t\nc')
     cmp('a=「1\t"a""a"\t2」のTSV取得。a[0][1]を表示', 'a"a')
     cmp('a=「1\t"2""2"\t3\n4\t5\t6」のTSV取得。a[0][1]を表示', '2"2')
+    cmp('a=「1\t\t3\n4\t5\t6」のTSV取得。a[0][2]を表示', '3')
   })
   it('表CSV変換', () => {
     cmp('[[1,2,3],[4,5,6]]を表CSV変換して表示', '1,2,3\r\n4,5,6')
+    cmp('[[1,2,"3\r\n,"],[4,5,6]]を表CSV変換して表示', '1,2,"3\r\n,"\r\n4,5,6')
   })
   it('表TSV変換', () => {
     cmp('[[1,2,3],[4,5,6]]を表TSV変換して表示', '1\t2\t3\r\n4\t5\t6')
+    cmp('[[1,2,"3\r\n\t"],[4,5,6]]を表TSV変換して表示', '1\t2\t"3\r\n\t"\r\n4\t5\t6')
   })
   it('JS関数実行', () => {
     cmp('"Math.floor"を[3.14]でJS関数実行して表示', '3')
