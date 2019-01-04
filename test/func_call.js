@@ -3,8 +3,8 @@ const NakoCompiler = require('../src/nako3')
 
 describe('関数呼び出しテスト', () => {
   const nako = new NakoCompiler()
-  // nako.debugParser = true
-  // nako.debug = true
+  nako.debugParser = false
+  nako.debug = false
   const cmp = (code, res) => {
     if (nako.debug)
       console.log('code=' + code)
@@ -15,7 +15,6 @@ describe('関数呼び出しテスト', () => {
     if (nako.debug) console.log('code=' + code)
     nako.runReset(code)
   }
-
   beforeEach(() => {
     cmd('「Asia/Tokyo」でタイムゾーン設定')
   })
@@ -76,6 +75,12 @@ describe('関数呼び出しテスト', () => {
   it('引数の順番を入れ替えて呼び出す(#342)その2', () => {
     cmp('[8,3,4]の配列カスタムソートには(a,b)\nそれは(a > b)\nここまで。それをJSONエンコードして表示', '[3,4,8]')
     cmp('[8,3,4]を配列カスタムソートには(a,b)\nそれは(a > b)\nここまで。それをJSONエンコードして表示', '[3,4,8]')
+    cmp('[8,3,4]の配列カスタムソートには(a,b)\nそれは(INT(a) > INT(b))\nここまで。それをJSONエンコードして表示', '[3,4,8]')
   })
+
+  it('引数の順番を入れ替えて呼び出す(#342)その3', () => {
+    cmp('[8,3,4]の配列カスタムソートには(a,b)\naと255のXORをAに代入。bと255のXORをBに代入。それは(a>b)\nここまで。それをJSONエンコードして表示', '[3,4,8]')
+  })
+
   // ---
 })

@@ -23,6 +23,7 @@ function runBox (id) {
   document.getElementById(displayId).innerHTML = ''
   try {
     navigator.nako3.debug = false
+
     navigator.nako3.run(src)
     document.getElementById('backlink').href = '#' + id + '_head'
     window.location.href = '#run'

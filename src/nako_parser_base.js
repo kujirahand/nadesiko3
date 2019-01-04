@@ -8,6 +8,7 @@ class NakoParserBase {
   constructor () {
     this.debug = false
     this.debugStack = false
+    this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
     this.init()
   }
 
@@ -45,6 +46,19 @@ class NakoParserBase {
     }
     // 該当する助詞が見つからなかった場合
     return null
+  }
+
+  /**
+   * saveStack と loadStack は対で使う。
+   * 関数定義などでスタックが混乱しないように配慮するためのもの
+   */
+  saveStack () {
+    this.stackList.push(this.stack)
+    this.stack = []
+  }
+
+  loadStack () {
+    this.stack = this.stackList.pop()
   }
 
   /**
@@ -154,12 +168,12 @@ class NakoParserBase {
   nodeToStr (node) {
     if (!node) return `(NULL)`
     let name = node.name
-    if (node.type === 'op') 
+    if (node.type === 'op')
       name = '演算子[' + node.operator + ']'
-    
+
     if (!name) name = node.value
     if (typeof name !== 'string') name = node.type
-    if (this.debug) 
+    if (this.debug)
       name += '→' + JSON.stringify(node, null, 2)
      else {
       if (name === 'number') name = node.value + node.josi
