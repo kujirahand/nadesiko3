@@ -113,7 +113,7 @@
     "source-map": "^0.7.3",
     "uuid": "^3.3.2",
     "webpack": "^4.28.3",
-    "webpack-cli": "^2.1.5"
+    "webpack-cli": "^3.2.0"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
