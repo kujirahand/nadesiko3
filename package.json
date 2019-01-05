@@ -102,7 +102,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-react": "^7.12.2",
+    "eslint-plugin-react": "^7.12.3",
     "eslint-plugin-standard": "^3.1.0",
     "isomorphic-fetch": "^2.2.1",
     "lite-server": "^2.4.0",
@@ -118,7 +118,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "commander": "^2.19.0",
-    "copy-paste": "^1.3.0",
+    "copy-paste-win32fix": "^1.4.0",
     "csv-lite-js": "^0.0.5",
     "express": "^4.16.4",
     "form-data": "^2.3.3",

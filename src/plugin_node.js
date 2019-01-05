@@ -481,8 +481,10 @@ const PluginNode = {
     type: 'func',
     josi: [['を']],
     fn: function (v, sys) {
-      const ncp = require('copy-paste')
+      const ncp = require('copy-paste-win32fix')
+      // copy
       if (sys && sys['isSetter']) return ncp.copy(v)
+      // paste
       return ncp.paste()
     }
   },

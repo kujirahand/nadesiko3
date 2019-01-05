@@ -65,10 +65,14 @@ describe('plugin_node_test', () => {
   it('ファイル情報取得', () => {
     cmp('「' + testFileMe + '」のファイル情報取得;もし、それ["size"]が2000以上ならば;「OK」と表示。違えば「NG」と表示。', 'OK')
   })
-  /*
   it('クリップボード', () => {
-    const rnd = 'a' + Math.random()
-    cmp('クリップボード="' + rnd + '";クリップボードを表示。', rnd)
+    try {
+      const tmp = nako.runReset('クリップボードを表示').log 
+      const rnd = 'a' + Math.random()
+      cmp('クリップボード="' + rnd + '";クリップボードを表示。', rnd)
+      nako.runReset(`クリップボード=${tmp}`)
+    } catch (err) {
+      // テストは必須ではない(Linuxコンソール環境に配慮)
+    }
   })
-  */
 })
