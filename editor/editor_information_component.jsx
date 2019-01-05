@@ -6,11 +6,18 @@ import { nl2br } from './common'
 export default function EditorInformationComponent (props) {
   let err
   if (props.err) {
-    err = <div className="err" style={{display: 'block'}}>{props.err.message}</div>
+    let msg = props.err.message
+    err = <div className="err" style={{display: 'block'}}>
+      {
+          msg.split('\n').map(line => {
+            return (<span>{line}<br /></span>)
+          })
+      }
+      </div>
     console.error(props.err)
-  } else 
+  } else
     err = null
-  
+
 
   return (
     <div>

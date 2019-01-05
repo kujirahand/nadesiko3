@@ -122,15 +122,23 @@ class NakoParser extends NakoParserBase {
     let multiline = false
     if (this.check('ここから')) multiline = true
     if (this.check('eol')) multiline = true
-    if (multiline) {
-      this.saveStack()
-      block = this.yBlock()
-      if (this.check('ここまで')) this.get()
-      this.loadStack()
-    } else {
-      this.saveStack()
-      block = this.ySentence()
-      this.loadStack()
+    try {
+      if (multiline) {
+        this.saveStack()
+        block = this.yBlock()
+        if (this.check('ここまで'))
+          this.get()
+        else
+          throw new NakoSyntaxError('『ここまで』がありません。関数定義の末尾に必要です。', def.line)
+        this.loadStack()
+      } else {
+        this.saveStack()
+        block = this.ySentence()
+        this.loadStack()
+      }
+    } catch (err) {
+      throw new NakoSyntaxError('関数' + this.nodeToStr(funcName) +
+        'の定義で以下のエラーがありました。\n' + err.message, def.line)
     }
 
     return {
