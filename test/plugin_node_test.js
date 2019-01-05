@@ -67,10 +67,8 @@ describe('plugin_node_test', () => {
   })
   it('クリップボード', () => {
     try {
-      const tmp = nako.runReset('クリップボードを表示').log 
       const rnd = 'a' + Math.random()
       cmp('クリップボード="' + rnd + '";クリップボードを表示。', rnd)
-      nako.runReset(`クリップボード=${tmp}`)
     } catch (err) {
       // テストは必須ではない(Linuxコンソール環境に配慮)
     }
