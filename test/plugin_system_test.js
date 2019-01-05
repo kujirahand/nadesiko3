@@ -5,9 +5,9 @@ describe('plugin_system_test', () => {
   const nako = new NakoCompiler()
   // nako.debug = true;
   const cmp = (code, res) => {
-    if (nako.debug) {
+    if (nako.debug)
       console.log('code=' + code)
-    }
+      
     assert.equal(nako.runReset(code).log, res)
   }
   const cmd = (code) => {

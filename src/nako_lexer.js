@@ -247,10 +247,6 @@ class NakoLexer {
           src = src.substr(m[0].length)
           continue
         }
-        // 『関数(』の『関数』のtypeを『def_func』に書き換え
-        if (rule.name === '(' && 0 < this.result.length && this.result[this.result.length - 1].type === 'func')
-          this.result[this.result.length - 1].type = 'def_func'
-
         // 特別なパーサを通すか？
         if (rule.cbParser) {
           const rp = rule.cbParser(src)
