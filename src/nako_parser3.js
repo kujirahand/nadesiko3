@@ -21,9 +21,11 @@ class NakoParser extends NakoParserBase {
   startParser () {
     const b = this.ySentenceList()
     const c = this.get()
-    if (c && c.type !== 'eof')
-      throw new NakoSyntaxError('構文エラー:' + this.nodeToStr(c), c.line)
-
+    if (c && c.type !== 'eof') {
+      const name = this.nodeToStr(c)
+      throw new NakoSyntaxError(
+        `構文解析でエラー。${name}の使い方が間違っています。`, c.line)
+    }
     return b
   }
 
@@ -102,10 +104,18 @@ class NakoParser extends NakoParserBase {
 
     const funcName = this.get()
     if (funcName.type !== 'func')
-      throw new NakoSyntaxError('関数の宣言でエラー『' + this.nodeToStr(funcName) + '』', funcName.line)
+      throw new NakoSyntaxError(
+        '関数' + this.nodeToStr(funcName) +
+        'の宣言でエラー。', funcName.line)
 
-    if (this.check('('))
+    if (this.check('(')) {
+      // 関数引数の二重定義
+      if (defArgs.length > 0)
+        throw new NakoSyntaxError(
+          '関数' + this.nodeToStr(funcName) +
+          'の宣言で、引数定義は名前の前か後に一度だけ可能です。', funcName.line)
       defArgs = this.yDefFuncReadArgs()
+    }
 
     if (this.check('とは')) this.get()
     let block = null
@@ -178,8 +188,15 @@ class NakoParser extends NakoParserBase {
   yIF () {
     if (!this.check('もし')) return null
     const mosi = this.get() // skip もし
-    const cond = this.yIFCond()
-    if (cond === null) throw new NakoSyntaxError('もし文で条件指定のエラー。', mosi.line)
+    let cond = null
+    try {
+      cond = this.yIFCond()
+    } catch (err) {
+      throw new NakoSyntaxError(
+        '『もし』文の条件で次のエラーがあります。\n' + err.message,
+        mosi.line)
+    }
+    if (cond === null) throw new NakoSyntaxError('『もし』文で条件の指定が空です。', mosi.line)
     let trueBlock = null
     let falseBlock = null
     // True Block
@@ -525,7 +542,7 @@ class NakoParser extends NakoParserBase {
         console.log(JSON.stringify(this.stack, null, 2))
         console.log('peek: ', JSON.stringify(this.peek(), null, 2))
       }
-      throw new NakoSyntaxError(`${names}を読みましたが使い方が分かりません。プラグインが不足しているか、別の関数で利用してください。`, line)
+      throw new NakoSyntaxError(`${names}がありますが、使い方が分かりません。`, line)
     }
     return this.popStack([])
   }
@@ -536,7 +553,11 @@ class NakoParser extends NakoParserBase {
     // (関数)には ... 構文 ... https://github.com/kujirahand/nadesiko3/issues/66
     let funcObj = null
     if (t.josi === 'には') {
-      funcObj = this.yMumeiFunc()
+      try {
+        funcObj = this.yMumeiFunc()
+      } catch (err) {
+        throw new NakoSyntaxError(`『${t.value}には...』で無名関数の定義で以下の間違いがあります。\n${err.message}`, t.line)
+      }
       if (funcObj === null) throw new NakoSyntaxError('『Fには』構文がありましたが、関数定義が見当たりません。', t.line)
     }
     if (!f || typeof f['josi'] === 'undefined')
@@ -557,7 +578,7 @@ class NakoParser extends NakoParserBase {
         if (popArg.type === 'func') { // 引数が関数の参照渡しに該当する場合、typeを『func_pointer』に変更
           popArg.type = 'func_pointer'
         } else {
-          throw new NakoSyntaxError(`関数『${t.value}』の引数『${f.varnames[i]}』は関数オブジェクトである必要があります。`, t.line)
+          throw new NakoSyntaxError(`関数『${t.value}』の引数『${f.varnames[i]}』には関数オブジェクトが必要です。`, t.line)
         }
 
       args.push(popArg)
@@ -583,35 +604,49 @@ class NakoParser extends NakoParserBase {
 
   yLet () {
     // 関数への代入的呼び出しの場合
-    if (this.check2(['func', 'eq']))
-      if (this.accept(['func', 'eq', this.yCalc])) {
-        return {
-          type: 'func',
-          name: this.y[0].value,
-          args: [this.y[2]],
-          setter: true,
-          line: this.y[0].line
-        }
-      } else {
-        const word = this.peek()
-        const name = word.name
-        throw new NakoSyntaxError(`『${name}』への代入文で計算式に書き間違いがあります。`, word.line)
-      }
+    if (this.check2(['func', 'eq'])) {
+      const word = this.peek()
+      const name = this.nodeToStr(word)
+      try {
+        if (this.accept(['func', 'eq', this.yCalc]))
+          return {
+            type: 'func',
+            name: this.y[0].value,
+            args: [this.y[2]],
+            setter: true,
+            line: this.y[0].line
+          }
+        else
+          throw new NakoSyntaxError(
+            `関数${name}の代入的呼び出しで計算式が読み取れません。`, word.line)
 
-    // 通常の変数
-    if (this.check2(['word', 'eq']))
-      if (this.accept(['word', 'eq', this.yCalc])) {
-        return {
-          type: 'let',
-          name: this.y[0],
-          value: this.y[2],
-          line: this.y[0].line
-        }
-      } else {
-        const word = this.peek()
-        const name = word.value
-        throw new NakoSyntaxError(`『${name}』への代入文で計算式に書き間違いがあります。`, word.line)
+      } catch (err) {
+        throw new NakoSyntaxError(
+          `関数${name}の代入的呼び出しにエラーがあります。\n${err.message}`, word.line)
       }
+    }
+    // 通常の変数
+    if (this.check2(['word', 'eq'])) {
+      const word = this.peek()
+      const name = this.nodeToStr(word)
+      try {
+        if (this.accept(['word', 'eq', this.yCalc]))
+          return {
+            type: 'let',
+            name: this.y[0],
+            value: this.y[2],
+            line: this.y[0].line
+          }
+        else
+          throw new NakoSyntaxError(
+            `${name}への代入文で計算式に書き間違いがあります。`, word.line)
+
+      } catch (err) {
+        throw new NakoSyntaxError(
+          `${name}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`,
+          word.line)
+      }
+    }
 
     if (this.check2(['word', '@'])) {
       // 一次元配列
@@ -751,10 +786,10 @@ class NakoParser extends NakoParserBase {
     const v = this.yCalc()
     if (v === null) {
       const v2 = this.get()
-      throw new NakoSyntaxError('(...)の解析エラー。『' + this.nodeToStr(v2) + '』の近く', t.line)
+      throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v2) + 'の近く', t.line)
     }
     if (!this.check(')'))
-      throw new NakoSyntaxError('(...)の解析エラー。『' + this.nodeToStr(v) + '』の近く', t.line)
+      throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v) + 'の近く', t.line)
 
     const closeParent = this.get() // skip ')'
     v.josi = closeParent.josi

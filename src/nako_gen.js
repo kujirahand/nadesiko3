@@ -830,7 +830,7 @@ class NakoGen {
         if (this.__varslist[res.i].meta[name]) {
           if (this.__varslist[res.i].meta[name].readonly)
             throw new NakoGenError(
-              `定数『${name}』に値を代入することはできません。`,
+              `定数『${name}』は既に定義済みなので、値を代入することはできません。`,
               node.line)
 
         }
