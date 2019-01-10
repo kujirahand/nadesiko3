@@ -80,6 +80,7 @@ sudo apt install xdotool
 npm test
 ```
 
-## なでしこ3の開発環境をセットアップ
+## なでしこ3の開発に参加する
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
+また、なでしこ3開発者向けの[Gitter](https://gitter.im/nadesiko3/community)への参加も可能です。
