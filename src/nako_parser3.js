@@ -790,7 +790,7 @@ class NakoParser extends NakoParserBase {
   yValueKakko () {
     if (!this.check('(')) return null
     const t = this.get() // skip '('
-    // const v = this.yGetArg()
+    this.saveStack()
     const v = this.yCalc()
     if (v === null) {
       const v2 = this.get()
@@ -800,6 +800,7 @@ class NakoParser extends NakoParserBase {
       throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v) + 'の近く', t.line)
 
     const closeParent = this.get() // skip ')'
+    this.loadStack()
     v.josi = closeParent.josi
     return v
   }
