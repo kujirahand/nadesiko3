@@ -119,7 +119,7 @@
     "body-parser": "^1.18.3",
     "commander": "^2.19.0",
     "copy-paste-win32fix": "^1.4.0",
-    "csv-lite-js": "^0.0.6",
+    "csv-lite-js": "^0.0.7",
     "express": "^4.16.4",
     "form-data": "^2.3.3",
     "fs-extra": "^6.0.0",
