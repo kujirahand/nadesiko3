@@ -73,4 +73,16 @@ describe('plugin_node_test', () => {
       // テストは必須ではない(Linuxコンソール環境に配慮)
     }
   })
+  it('文字エンコーディング', () => {
+    const sjisfile = path.join(__dirname, "sjis.txt")
+    cmp(`「${sjisfile}」をバイナリ読む。` +
+      'SJIS取得。CSV取得してCに代入。C[2][1]を表示',
+      'ホームセンター')
+    cmp(`「${sjisfile}」をバイナリ読む。` +
+      '「Shift_JIS」からエンコーディング取得。' +
+      'CSV取得してCに代入。C[2][1]を表示',
+      'ホームセンター')
+  })
 })
+
+
