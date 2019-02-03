@@ -9,7 +9,6 @@ const fetch = require('node-fetch')
 const childProcess = require('child_process')
 const execSync = childProcess.execSync
 const exec = childProcess.exec
-const iconv = require('iconv-lite')
 
 const PluginNode = {
   '初期化': {
@@ -646,6 +645,7 @@ const PluginNode = {
     type: 'func',
     josi: [['の', 'を']],
     fn: function (code, sys) {
+      const iconv = require('iconv-lite')
       return iconv.encodingExists(code)
     }
   },
@@ -653,6 +653,8 @@ const PluginNode = {
     type: 'func',
     josi: [['に', 'へ', 'を']],
     fn: function (str, sys) {
+      const iconv = require('iconv-lite')
+      iconv.skipDecodeWarning = true
       return iconv.encode(str, 'Shift_JIS')
     }
   },
@@ -660,13 +662,17 @@ const PluginNode = {
     type: 'func',
     josi: [['から', 'を', 'で']],
     fn: function (buf, sys) {
-      return iconv.decode(buf, 'Sfhit_JIS')
+      const iconv = require('iconv-lite')
+      iconv.skipDecodeWarning = true
+      return iconv.decode(Buffer.from(buf), 'sjis')
     }
   },
   'エンコーディング変換': { // @文字列SをCODEへ変換してバイナリバッファを返す // @ えんこーでぃんぐへんかん
     type: 'func',
     josi: [['を'], ['へ', 'で']],
     fn: function (s, code, sys) {
+      const iconv = require('iconv-lite')
+      iconv.skipDecodeWarning = true
       return iconv.encode(s, code)
     }
   },
@@ -674,7 +680,9 @@ const PluginNode = {
     type: 'func',
     josi: [['を'], ['から', 'で']],
     fn: function (buf, code, sys) {
-      return iconv.decode(buf, code)
+      const iconv = require('iconv-lite')
+      iconv.skipDecodeWarning = true
+      return iconv.decode(Buffer.from(buf), code)
     }
   },
   // @マウスとキーボード操作
