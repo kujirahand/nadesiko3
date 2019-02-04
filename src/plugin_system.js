@@ -1203,9 +1203,9 @@ const PluginSystem = {
     fn: function (f, a, sys) {
       let ufunc = f
       if (typeof f === 'string') {
-        ufunc = sys.__varslist[1][f]
+        ufunc = sys.__v1[f]
         if (ufunc === undefined)
-          ufunc = sys.__varslist[1][f]
+          ufunc = sys.__v0[f]
 
         if (!ufunc) throw new Error('関数『' + f + '』が見当たりません。')
       }
