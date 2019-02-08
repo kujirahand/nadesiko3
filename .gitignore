@@ -1,5 +1,5 @@
 # exclude dir
-src/nako_parser.js
+package-lock.json
 
 # Logs
 logs
