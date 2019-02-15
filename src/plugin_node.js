@@ -504,6 +504,16 @@ const PluginNode = {
       })
     }
   },
+  '尋': { // @標準入力を一行取得する // @たずねる
+    type: 'func',
+    josi: [['と', 'を']],
+    fn: function (msg, sys) {
+      const readlineSync = require('readline-sync')
+      const res = readlineSync.question(msg)
+      if (res.match(/^[0-9.]+$/)) return parseFloat(res)
+      return res
+    }
+  },
   // @テスト
   'ASSERT等': { // @ mochaによるテストで、ASSERTでAとBが正しいことを報告する // @ASSERTひとしい
     type: 'func',
