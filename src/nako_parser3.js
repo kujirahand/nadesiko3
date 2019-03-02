@@ -50,6 +50,7 @@ class NakoParser extends NakoParserBase {
     if (this.check('embed_code')) return this.get()
     if (this.check('もし')) return this.yIF()
     if (this.check('エラー監視')) return this.yTryExcept()
+    if (this.check('逐次実行')) return this.yPromise()
     if (this.accept(['抜ける'])) return {type: 'break', line: this.y[0].line, josi: ''}
     if (this.accept(['続ける'])) return {type: 'continue', line: this.y[0].line, josi: ''}
     if (this.accept(['require', 'string', '取込']))
@@ -234,6 +235,44 @@ class NakoParser extends NakoParserBase {
       false_block: falseBlock,
       josi: '',
       line: mosi.line
+    }
+  }
+
+  yPromise () {
+    if (!this.check('逐次実行')) return null
+    const tikuji = this.get() // skip 逐次実行
+    const blocks = []
+    if (!this.check('eol')) throw new NakoSyntaxError('『逐次実行』の直後は改行が必要です', tikuji.line)
+    while (this.check('eol'))
+      this.get() // skip EOL
+    // ブロックを読む
+    for (;;) {
+      var a = this.peek()
+      if (!this.check('先に') && !this.check('次に')) break
+      const tugini = this.get() // skip 次に
+      let block = null
+      if (this.check('eol')) { // block
+        block = this.yBlock()
+        if (!this.check('ここまで')) {
+          throw new NakoSyntaxError(`『${tugini.type}』...『ここまで』を対応させてください。`, tugini.line)
+        }
+        this.get() // skip 'ここまで'
+      } else { // line
+        block = this.ySentence()
+      }
+      blocks.push(block)
+      while (this.check('eol'))
+        this.get() // skip EOL
+    }
+    if (!this.check('ここまで')) {
+      throw new NakoSyntaxError('『逐次実行』...『ここまで』を対応させてください。', tikuji.line)
+    }
+    this.get() // skip 'ここまで'
+    return {
+      type: 'promise',
+      blocks: blocks,
+      josi: '',
+      line: tikuji.line
     }
   }
 
