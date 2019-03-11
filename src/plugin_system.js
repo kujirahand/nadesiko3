@@ -137,7 +137,7 @@ const PluginSystem = {
   },
   '倍': { // @AのB倍を求める // @ばい
     type: 'func',
-    josi: [['の'], ['を']],
+    josi: [['の'], []],
     fn: function (a, b) {
       return a * b
     }

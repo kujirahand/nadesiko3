@@ -7,7 +7,7 @@ describe('plugin_system_test', () => {
   const cmp = (code, res) => {
     if (nako.debug)
       console.log('code=' + code)
-      
+
     assert.equal(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
@@ -27,6 +27,7 @@ describe('plugin_system_test', () => {
     cmp('1に2を足して3を掛けて表示', '9')
     cmp('10を2で割って表示', '5')
     cmp('10を2で割った余り;それを表示', '0')
+    cmp('10の2倍;それを表示', '20')
   })
   it('JS実行', () => {
     cmp('「3+6」をJS実行して表示', '9')
