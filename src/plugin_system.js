@@ -1,9 +1,10 @@
+const PackageJSON = require('../package.json')
 const PluginSystem = {
   '初期化': {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      sys.__v0['ナデシコバージョン'] = '3.0.53'
+      sys.__v0['ナデシコバージョン'] = PackageJSON.version
       // システム関数を探す
       sys.__getSysValue = function (name, def) {
         if (sys.__v0[name] === undefined) return def

@@ -52,7 +52,21 @@ const PluginBrowser = {
       }
       return '#' + z2(r) + z2(g) + z2(b)
     },
-    return_none: true
+    return_none: false
+  },
+  '色混': { // @配列で[RR,GG,BB]を指定して色を混ぜて#RRGGBB形式の値を返す // @いろまぜる
+    type: 'func',
+    josi: [['の']],
+    fn: function (a) {
+      const z2 = (v) => {
+        const v2 = '00' + v.toString(16)
+        return v2.substr(v2.length - 2, 2)
+      }
+      if (!a) throw new Error('『色混ぜる』の引数には配列を指定します')
+      if (a.length < 3) throw new Error('『色混ぜる』の引数には[RR,GG,BB]形式の配列を指定します')
+      return '#' + z2(a[0]) + z2(a[1]) + z2(a[2])
+    },
+    return_none: false
   },
 
   // @システム
