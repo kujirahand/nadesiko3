@@ -64,7 +64,20 @@ class NakoParser extends NakoParserBase {
     // 先読みして初めて確定する構文
     if (this.accept([this.yLet])) return this.y[0]
     if (this.accept([this.yDefFunc])) return this.y[0]
-    if (this.accept([this.yCall])) return this.y[0] // 関数呼び出しの他、各種構文の実装
+    if (this.accept([this.yCall])) { // 関数呼び出しの他、各種構文の実装
+      const c1 = this.y[0]
+      if (c1.josi === 'して') { // 連文をblockとして接続する(もし構文、逐次実行構文などのため)
+        const c2 = this.ySentence()
+        if (c2 !== null) {
+          return {
+            type: 'block',
+            block: [c1, c2],
+            josi: c2.josi
+          }
+        }
+      }
+      return c1
+    }
     return null
   }
 
@@ -265,6 +278,7 @@ class NakoParser extends NakoParserBase {
         this.get() // skip EOL
     }
     if (!this.check('ここまで')) {
+      console.log(blocks, this.peek())
       throw new NakoSyntaxError('『逐次実行』...『ここまで』を対応させてください。', tikuji.line)
     }
     this.get() // skip 'ここまで'

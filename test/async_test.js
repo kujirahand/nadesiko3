@@ -56,7 +56,7 @@ describe('async_test', () => {
       'ここまで。\n'
     )
   })
-  it('タイマーで非同期', (done) => {
+  it('同期タイマー', (done) => {
     global.done = done
     exe(
       '逐次実行\n' +

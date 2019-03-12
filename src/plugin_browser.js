@@ -121,7 +121,7 @@ const PluginBrowser = {
     }
   },
 
-  // @Ajax/HTTP
+  // @AJAXとHTTP
   'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
