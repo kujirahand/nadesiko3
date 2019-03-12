@@ -687,16 +687,23 @@ class NakoGen {
   }
 
   convPromise (node) {
-    let code = ''
+    const pid = this.loop_id++
+    let code = `const __pid${pid} = async () => {\n`
     for (let i = 0; i < node.blocks.length; i++) {
-      const block = this.convGen(node.blocks[i])
-      const blockCode = `new Promise((resolve, reject) => {\n${block};\nresolve();\n})`
-      if (i === 0) {
-        code += `${blockCode}\n`
-      } else {
-        code += `.then(()=>{ return ${blockCode} })\n`
-      }
+      const block = this.convGen(node.blocks[i]).replace(/\s+$/, '') + '\n'
+      const blockCode =
+        'await new Promise((resolve) => {\n' +
+        '  __self.resolve = resolve;\n' +
+        '  __self.resolveCount = 0;\n' +
+        `  ${block}\n` +
+        '  if (__self.resolveCount === 0) resolve();\n' +
+        '\n' +
+        '})\n'
+      code += `${blockCode}`
     }
+    code += `};/* __pid${pid} */\n`
+    code += `__pid${pid}();\n`
+    code += '__self.resolve = undefined;\n'
     return NakoGen.convLineno(node) + code
   }
 

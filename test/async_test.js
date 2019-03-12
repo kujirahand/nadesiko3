@@ -20,16 +20,19 @@ describe('async_test', () => {
   })
 
   // --- async ---
-  it('async_simple', () => {
+  it('async_simple', (done) => {
+    global.done = done
     exe(
       '逐次実行\n' +
       '先に、1と表示\n' +
       '次に、2と表示\n' +
       '次に、表示ログと「1\n2\n」でテスト。\n' +
+      '次に、JS{{{ global.done() }}}' +
       'ここまで。\n'
     )
   })
-  it('async_multiple', () => {
+  it('async_multiple', (done) => {
+    global.done = done
     exe(
       '逐次実行\n' +
       '先に\n' +
@@ -38,6 +41,29 @@ describe('async_test', () => {
       'ここまで\n' +
       '次に、3と表示\n' +
       '次に、表示ログと「1\n2\n3\n」でテスト。\n' +
+      '次に、JS{{{ global.done() }}}' +
+      'ここまで。\n'
+    )
+  })
+  it('戻り値を使う', (done) => {
+    global.done = done
+    exe(
+      '逐次実行\n' +
+      '先に、それは30\n' +
+      '次に、それを表示\n' +
+      '次に、表示ログと「30\n」でテスト。\n' +
+      '次に、JS{{{ global.done() }}}' +
+      'ここまで。\n'
+    )
+  })
+  it('タイマーで非同期', (done) => {
+    global.done = done
+    exe(
+      '逐次実行\n' +
+      '先に、0.1秒待機\n' +
+      '次に、30を表示\n' +
+      '次に、表示ログと「30\n」でテスト。\n' +
+      '次に、JS{{{ global.done() }}}' +
       'ここまで。\n'
     )
   })

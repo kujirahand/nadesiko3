@@ -16,7 +16,7 @@ const PluginAssert = {
   'NAKO3ASSERTバージョン': {type: 'const', value: 0.01},
   'テスト': { // AとBが等しいかテスト // @てすと
     type: 'func',
-    josi: [['と'], ['で', 'が']],
+    josi: [['と'], ['で']],
     fn: function (a, b, sys) {
       assert.equal(a, b)
     },
