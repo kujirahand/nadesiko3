@@ -60,10 +60,20 @@ describe('async_test', () => {
     global.done = done
     exe(
       '逐次実行\n' +
-      '先に、0.1秒待機\n' +
+      '先に、0.01秒待機\n' +
       '次に、30を表示\n' +
       '次に、表示ログと「30\n」でテスト。\n' +
-      '次に、JS{{{ global.done() }}}' +
+      '次に、JS{{{ global.done() }}}\n' +
+      'ここまで。\n'
+    )
+  })
+  it('連文 #373', (done) => {
+    global.done = done
+    exe(
+      '逐次実行\n' +
+      '先に、30に5を足して表示\n' +
+      '次に、表示ログと「35\n」でテスト。\n' +
+      '次に、JS{{{ global.done() }}}。\n' +
       'ここまで。\n'
     )
   })
