@@ -165,7 +165,8 @@ const PluginBrowser = {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     fn: function (callback, url, params, sys) {
-      let bodyData = sys.__exec('POSTデータ生成', params, sys)
+      let bodyData = sys.__exec('POSTデータ生成', [params, sys])
+      console.log("bodyData=", bodyData)
       const options = {
         method: 'POST',
         headers: {
@@ -261,7 +262,7 @@ const PluginBrowser = {
       if (!sys.resolve) throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')
       sys.resolveCount++
       const resolve = sys.resolve
-      let bodyData = sys.__exec('POSTデータ生成', params, sys)
+      let bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
         headers: {

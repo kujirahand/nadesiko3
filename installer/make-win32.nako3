@@ -19,8 +19,9 @@ OUT=ENV["NAKO_WIN32_OUT"]
   「準備が必要です：テンプレートがありません」のエラー発生
   終わり。
 ここまで。
-#
-NODEJS=「{出力先}/nodejs」
+
+# --- Node.jsがあるか？
+NODEJS=「{出力先}/nodejs.7z」
 もし、NODEJSが存在するならば
   「NODEJS存在」と表示。
 違えば
