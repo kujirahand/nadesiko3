@@ -20,6 +20,14 @@ OUT=ENV["NAKO_WIN32_OUT"]
   終わり。
 ここまで。
 
+# --- nakopadがあるか？
+もし、「{テンプレート元}/bin/nakopad.exe」が存在するならば
+  「テンプレート正常:nakopad」と表示。
+違えば
+  「準備が必要です：nakopad.exeをテンプレートのbin/にコピーしてください。」のエラー発生
+  終わり。
+ここまで。
+
 # --- Node.jsがあるか？
 NODEJS=「{出力先}/nodejs.7z」
 もし、NODEJSが存在するならば
