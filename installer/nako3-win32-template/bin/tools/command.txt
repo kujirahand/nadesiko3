@@ -475,7 +475,7 @@
 |WEBサーバDELETE時,"CALLBACKをURIに|URIへ","URIにPOSTメソッドがあった時の処理を指定",0,,命令,WEBさーばDELETEしたとき
 |WEBサーバ出力,"Sを|Sと","クライアントにSを出力",0,,命令,WEBさーばしゅつりょく
 |WEBサーバリダイレクト,"URLへ|URLに","URLにリダイレクトする",0,,命令,WEBさーばりだいれくと
-+ plugin_sqlite3
++ plugin_sqlite3(拡張プラグイン)
 - SQLite3
 |SQLITE3開,"Sを|Sの","SQlite3のデータベースを開いて、データベースオブジェクトを返す",0,,命令,SQLITE3ひらく
 |SQLITE3閉,"","アクティブなSQlite3のデータベースを閉じる",0,,命令,SQLITE3とじる
@@ -485,7 +485,7 @@
 |SQLITE3逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。",0,,命令,SQLITE3ちくじじっこう
 |SQLITE3逐次全取得,"SQLをPARAMSで","逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじぜんしゅとく
 |SQLITE3逐次取得,"SQLをPARAMSで","逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじしゅとく
-+ plugin_odbc
++ plugin_odbc(拡張プラグイン)
 - ODBC
 |ODBC逐次開,"Sを|Sの|Sで","逐次実行構文にて、ODBCのデータベースを開く",0,,命令,ODBCちくじひらく
 |ODBC開,"Sを|Sの|Sで","ODBCのデータベースを同期的に開いてオブジェクトを返す",0,,命令,ODBCひらく
@@ -495,30 +495,30 @@
 |ODBC逐次閉,"","逐次実行構文でODBCで開いているデータベースを閉じる",0,,命令,ODBCちくじとじる
 |ODBCトランザクション開始,"","ODBCでトランザクションを開始する",0,,命令,ODBCとらんざくしょんかいし
 |ODBCトランザクション終了,"","ODBCでトランザクションを終了する",0,,命令,ODBCとらんざくしょんしゅうりょう
-+ plugin_mysql
++ plugin_mysql(拡張プラグイン)
 - MySQL
 |MYSQL開,"Sを|Sの|Sで","データベースを開く",0,,命令,MYSQLひらく
 |MYSQL閉,"","データベースを閉じる",0,,命令,MYSQLとじる
 |MYSQL逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。INSERT句の場合は『対象[insertId]』でIDが得られる。",0,,命令,MYSQLちくじじっこう
-+ plugin_postgresql
++ plugin_postgresql(拡張プラグイン)
 - PostgreSQL
 |PG開,"Sを|Sの|Sで","データベースを開く",0,,命令,PGひらく
 |PG閉,"","データベースを閉じる",0,,命令,PGとじる
 |PG逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。SELECT句以外を実行した時も情報が『対象』に入る。",0,,命令,PGちくじじっこう
-+ plugin_firebase
++ plugin_firebase(拡張プラグイン)
 - Firebase
 |FIREBASE初期化,"CONFIGで","アカウント設定オブジェクトconfigを与えてFirebaseを初期化する",0,,命令,FIREBASEしょきか
 |FIREBASEパス参照,"PATHを","データベースのパスPATHを参照",0,,命令,FIREBASEぱすさんしょう
 |FIREBASE値設定,"PATHにVALUESを|PATHへVALUESの","データベースのパスPATHにオブジェクトVALUESを設定",0,,命令,FIREBASEせっていs
 |FIREBASE値変更時,"CALLBACKでPATHの","パスpathの値(オブジェクト)が変更された時callbackを実行。引数に値(オブジェクト)が得られる。",0,,命令,FIREBASEへんこうしたとき
 |FIREBASE値取得時,"CALLBACKでPATHの","パスpathの値を取得した時callbackを実行。引数に値(オブジェクト)が得られる。",0,,命令,FIREBASEしゅとくしたとき
-+ plugin_googlehome
++ plugin_googlehome(拡張プラグイン)
 - GoogleHome
 |GoogleHome接続,"NAMEへ|NAMEに|NAMEの","LAN内にある名前NAMEのGoogleHomeに接続する",0,,命令,GOOGLEHOMEせつぞく
 |GoogleHome言,"Sと|Sを","GoogleHomeにSと言わせる",0,,命令,GOOGLEHOMEいう
 |GoogleHome話,"Sと|Sを","GoogleHomeにSと言わせる",0,,命令,GOOGLEHOMEはなす
 |GoogleHome再生,"Sを|Sで","GoogleHomeでMP3を再生する",0,,命令,GOOGLEHOMEさいせい
-+ plugin_websocket
++ plugin_websocket(拡張プラグイン)
 - WebSocketサーバ
 |WSサーバ起動,"PORTNOの|PORTNOで","ポートPORTNOでWebサーバを起動して成功したら『WSサーバ起動成功した時』を実行する",0,,命令,WSさーばきどう
 |WSサーバ起動成功時,"CALLBACKを","WSサーバ起動が成功した時にcallbackを実行",0,,命令,WSさーばきどうせいこうしたとき
