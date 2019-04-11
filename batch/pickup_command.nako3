@@ -3,13 +3,25 @@
 # -----------------------------------------------------
 # --- 基本パスを取得 ---
 母艦パス取得してパス抽出して基本パスに代入。
-プラグイン一覧は[
+REPOSパス=基本パスを「../」で相対パス展開。
+
+基本プラグイン一覧は[
     'src/plugin_system.js',
     'src/plugin_browser.js',
     'src/plugin_turtle.js',
     'src/plugin_node.js',
     'src/plugin_express.js'
  ]
+拡張プラグイン一覧は[
+    'nadesiko3-sqlite3/src/plugin_sqlite3.js',
+    'nadesiko3-odbc/src/plugin_odbc.js',
+    'nadesiko3-mssql/src/pluguin_mssql.js',
+    'nadesiko3-mysql/src/plugin_mysql.js',
+    'nadesiko3-postgresql/src/plugin_postgresql.js',
+    'nadesiko3-firebase/plugin_firebase.js',
+    'nadesiko3-googlehome/plugin_googlehome.js',
+    'nadesiko3-websocket/plugin_websocket.js'
+]
 
 関数定義とは変数
 関数説明とは変数
@@ -17,11 +29,24 @@
 ヨミガナとは変数
 カレントプラグインとは変数
 
-プラグイン一覧を反復
+#------------------------
+基本プラグイン一覧を反復
     カレントプラグイン＝それ
  　　パスは「{基本パス}/{それ}」
  　　パスをプラグイン要約作成
 ここまで
+#------------------------
+拡張プラグイン一覧を反復
+    カレントプラグイン＝それ
+ 　　パスは「{REPOSパス}/{それ}」
+　　 #「check={パス}」を表示。
+ 　　パスが存在
+ 　　もし、そうならば
+　　　　 # パスを表示。
+ 　　　　パスをプラグイン要約作成。
+ 　　ここまで。
+ここまで
+#------------------------
 表示ログを「{基本パス}/batch/command.txt」に保存。
 
 ●プラグイン要約作成(Fを)
