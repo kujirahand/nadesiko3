@@ -21,7 +21,7 @@ class CNako3 extends NakoCompiler {
   registerCommands () {
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
     if (process.argv.length <= 2) 
-      process.argv.push('-h')
+      {process.argv.push('-h')}
     
     // commanderを使って引数を解析する
     const app = require('commander')
@@ -52,9 +52,9 @@ class CNako3 extends NakoCompiler {
     let mainfile = app.args[0]
     let output = app.output
     if (/\.(nako|nako3|txt|bak)$/.test(mainfile)) {
-      if (!output) output = mainfile.replace(/\.(nako|nako3)$/, '.js')
+      if (!output) {output = mainfile.replace(/\.(nako|nako3)$/, '.js')}
     } else {
-      if (!output) output = mainfile + '.js'
+      if (!output) {output = mainfile + '.js'}
       mainfile += '.nako3'
     }
     // デバッグモードの指定
@@ -80,7 +80,7 @@ class CNako3 extends NakoCompiler {
   // 実行する
   execCommand () {
     const opt = this.checkArguments()
-    if (opt.mainfile) this.filename = opt.mainfile
+    if (opt.mainfile) {this.filename = opt.mainfile}
     if (opt.repl) {
       this.cnakoRepl(opt)
       return
@@ -120,10 +120,10 @@ class CNako3 extends NakoCompiler {
       js
     fs.writeFileSync(opt.output, jscode, 'utf-8')
     if (opt.run) 
-      exec(`node ${opt.output}`, function (err, stdout, stderr) {
-        if (err) console.log('[ERROR]', stderr)
+      {exec(`node ${opt.output}`, function (err, stdout, stderr) {
+        if (err) {console.log('[ERROR]', stderr)}
         console.log(stdout)
-      })
+      })}
     
   }
 
@@ -156,7 +156,7 @@ class CNako3 extends NakoCompiler {
         continue
       }
       const m = s.match(/["'『「](.+)["'』」]を(取り込|取込)/)
-      if (!m) continue
+      if (!m) {continue}
       // プラグインの取り込み
       const pname = m[1]
       let fullpath = pname
@@ -170,7 +170,7 @@ class CNako3 extends NakoCompiler {
         this.addPluginFile(pname, fullpath, plugmod)
         // this.funclistを更新する
         for (const key in plugmod) 
-          this.funclist[key] = plugmod[key]
+          {this.funclist[key] = plugmod[key]}
         
       } catch (e) {
         throw new Error(
@@ -187,5 +187,5 @@ if (require.main === module) { // 直接実行する
   const cnako3 = new CNako3()
   cnako3.execCommand()
 } else  // モジュールとして使う場合
-  module.exports = CNako3
+  {module.exports = CNako3}
 

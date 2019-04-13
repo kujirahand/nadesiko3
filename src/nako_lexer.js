@@ -31,9 +31,9 @@ class NakoLexer {
       if (tNot.type === 'not' && tTorikomu.value === '取込') {
         tNot.type = 'require'
         if (tFile.type === 'string' || tFile.type === 'string_ex')
-          tFile.type = 'string'
+          {tFile.type = 'string'}
          else
-          throw new Error('[字句解析エラー] 『!「ファイル」を取り込む』の書式で記述してください。')
+          {throw new Error('[字句解析エラー] 『!「ファイル」を取り込む』の書式で記述してください。')}
 
         i += 3
         continue
@@ -69,15 +69,15 @@ class NakoLexer {
     const readArgs = () => {
       const args = []
       const keys = {}
-      if (tokens[i].type !== '(') return []
+      if (tokens[i].type !== '(') {return []}
       i++
       while (tokens[i]) {
         const t = tokens[i]
         i++
         if (t.type === ')')
-          break
+          {break}
          else if (t.type === 'func')
-          isFuncPointer = true
+          {isFuncPointer = true}
          else if (t.type !== '|' && t.type !== 'comma') {
           if (isFuncPointer) {
             t.funcPointer = true
@@ -85,7 +85,7 @@ class NakoLexer {
           }
           args.push(t)
           if (!keys[t.value])
-            keys[t.value] = []
+            {keys[t.value] = []}
 
           keys[t.value].push(t.josi)
         }
@@ -95,17 +95,17 @@ class NakoLexer {
       const result = []
       const already = {}
       for (const arg of args)
-        if (!already[arg.value]) {
+        {if (!already[arg.value]) {
           const josi = keys[arg.value]
           result.push(josi)
           varnames.push(arg.value)
           if (arg.funcPointer)
-            funcPointers.push(arg.value)
+            {funcPointers.push(arg.value)}
            else
-            funcPointers.push(null)
+            {funcPointers.push(null)}
 
           already[arg.value] = true
-        }
+        }}
 
       return [result, varnames, funcPointers]
     }
@@ -123,7 +123,7 @@ class NakoLexer {
       // 予約語の置換
       if (t.type === 'word' && reservedWords[t.value]) {
         t.type = reservedWords[t.value]
-        if (t.value === 'そう') t.value = 'それ'
+        if (t.value === 'そう') {t.value = 'それ'}
       }
       // 関数定義の確認
       if (t.type !== 'def_func') {
@@ -138,25 +138,25 @@ class NakoLexer {
       let funcName = ''
       // 関数名の前に引数定義
       if (tokens[i] && tokens[i].type === '(')
-        [josi, varnames, funcPointers] = readArgs()
+        {[josi, varnames, funcPointers] = readArgs()}
 
       // 関数名
       if (tokens[i] && tokens[i].type === 'word')
-        funcName = tokens[i++].value
+        {funcName = tokens[i++].value}
 
       // 関数名の後で引数定義
       if (josi.length === 0 && tokens[i] && tokens[i].type === '(')
-        [josi, varnames, funcPointers] = readArgs()
+        {[josi, varnames, funcPointers] = readArgs()}
 
       // 関数定義か？
       if (funcName !== '')
-        this.funclist[funcName] = {
+        {this.funclist[funcName] = {
           type: 'func',
           josi,
           fn: null,
           varnames,
           funcPointers
-        }
+        }}
 
       // 無名関数のために
       defToken.meta = {josi, varnames, funcPointers}
@@ -167,7 +167,7 @@ class NakoLexer {
     let comment = []
     let i = 0
     const getLastType = () => {
-      if (i <= 0) return 'eol'
+      if (i <= 0) {return 'eol'}
       return tokens[i - 1].type
     }
     while (i < tokens.length) {
@@ -193,7 +193,7 @@ class NakoLexer {
         }
       }
       // 助詞の「は」を = に展開
-      if (t.josi === undefined) t.josi = ''
+      if (t.josi === undefined) {t.josi = ''}
       if (t.josi === 'は') {
         tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
         i += 2
@@ -241,7 +241,7 @@ class NakoLexer {
       let ok = false
       for (const rule of rules) {
         const m = rule.pattern.exec(src)
-        if (!m) continue
+        if (!m) {continue}
         ok = true
         if (rule.name === 'space') {
           src = src.substr(m[0].length)
@@ -254,7 +254,7 @@ class NakoLexer {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
             const list = rp.res.split(/[{}｛｝]/)
             if (list.length >= 1 && list.length % 2 === 0)
-              throw new Error('字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。')
+              {throw new Error('字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。')}
 
             for (let i = 0; i < list.length; i++) {
               const josi = (i === list.length - 1) ? rp.josi : ''
@@ -280,11 +280,11 @@ class NakoLexer {
         }
         // 値を変換する必要があるか？
         let value = m[0]
-        if (rule.cb) value = rule.cb(value)
+        if (rule.cb) {value = rule.cb(value)}
         // ソースを進める
         src = src.substr(m[0].length)
         if (rule.name === 'eol' && value === '\n')
-          value = line++
+          {value = line++}
 
         let josi = ''
         if (rule.readJosi) {
@@ -302,7 +302,7 @@ class NakoLexer {
         })
         break
       }
-      if (!ok) throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')
+      if (!ok) {throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')}
     }
   }
 }

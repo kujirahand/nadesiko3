@@ -8,7 +8,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      if (sys._turtle) return
+      if (sys._turtle) {return}
       sys._turtle = {
         list: [],
         target: -1,
@@ -25,9 +25,9 @@ const PluginTurtle = {
           }
           me.list = []
           if (me.canvas !== null) 
-            me.ctx.clearRect(0, 0,
+            {me.ctx.clearRect(0, 0,
               me.canvas.width,
-              me.canvas.height)
+              me.canvas.height)}
           
           me.target = -1
           me.flagSetTimer = false
@@ -38,13 +38,13 @@ const PluginTurtle = {
           // カメの位置を移動
           tt.canvas.style.left = (cr.left + tt.x - tt.cx) + 'px'
           tt.canvas.style.top = (cr.top + tt.y - tt.cx) + 'px'
-          if (!tt.f_update) return
-          if (!tt.flagLoaded) return
+          if (!tt.f_update) {return}
+          if (!tt.flagLoaded) {return}
           tt.f_update = false
           tt.ctx.clearRect(0, 0,
             tt.canvas.width,
             tt.canvas.height)
-          if (!tt.f_visible) return
+          if (!tt.f_visible) {return}
           if (tt.dir !== 270) {
             const rad = (tt.dir + 90) * 0.017453292519943295
             tt.ctx.save()
@@ -54,18 +54,18 @@ const PluginTurtle = {
             tt.ctx.drawImage(tt.img, 0, 0)
             tt.ctx.restore()
           } else 
-            tt.ctx.drawImage(tt.img, 0, 0)
+            {tt.ctx.drawImage(tt.img, 0, 0)}
           
         },
         getCur: function () {
           if (this.list.length === 0) 
-            throw Error('最初に『カメ作成』命令を呼び出してください。')
+            {throw Error('最初に『カメ作成』命令を呼び出してください。')}
           
           return this.list[this.target]
         },
         flagSetTimer: false,
         setTimer: function () {
-          if (this.flagSetTimer) return
+          if (this.flagSetTimer) {return}
           this.flagSetTimer = true
           setTimeout(() => {
             const tt = this.getCur()
@@ -75,7 +75,7 @@ const PluginTurtle = {
         },
         line: function (tt, x1, y1, x2, y2) {
           if (tt) 
-            if (!tt.flagDown) return
+            {if (!tt.flagDown) {return}}
           
           const ctx = this.ctx
           ctx.beginPath()
@@ -157,14 +157,14 @@ const PluginTurtle = {
               tt.img.src = m[1]
               break
           }
-          if (tt.flagLoaded) sys._turtle.drawTurtle(tt.id)
+          if (tt.flagLoaded) {sys._turtle.drawTurtle(tt.id)}
           return (tt.mlist.length > 0)
         },
         doMacroAll: function (wait) {
           let hasNext = false
           for (let i = 0; i < sys._turtle.list.length; i++) {
             const tt = sys._turtle.list[i]
-            if (this.doMacro(tt, wait)) hasNext = true
+            if (this.doMacro(tt, wait)) {hasNext = true}
           }
           return hasNext
         },
@@ -173,8 +173,8 @@ const PluginTurtle = {
           const wait = sys.__getSysValue('カメ速度', 100)
           let hasNext = this.doMacroAll(wait)
           if (wait <= 0) 
-            while (hasNext) 
-              hasNext = this.doMacroAll(wait)
+            {while (hasNext) 
+              {hasNext = this.doMacroAll(wait)}}
             
            else if (hasNext) {
             setTimeout(() => me.play(), wait)
@@ -462,5 +462,5 @@ module.exports = PluginTurtle
 
 // scriptタグで取り込んだ時、自動で登録する
 if (typeof (navigator) === 'object') 
-  navigator.nako3.addPluginObject('PluginTurtle', PluginTurtle)
+  {navigator.nako3.addPluginObject('PluginTurtle', PluginTurtle)}
 

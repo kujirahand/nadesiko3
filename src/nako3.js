@@ -109,10 +109,10 @@ class NakoCompiler {
     // 単語に分割
     const tokens = this.tokenize(code, true)
     for (let i = 0; i < tokens.length; i++) 
-      if (tokens[i]['type'] === 'code') {
+      {if (tokens[i]['type'] === 'code') {
         tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
         i--
-      }
+      }}
     
     if (this.debug && this.debugLexer) {
       console.log('--- lex ---')
@@ -138,7 +138,7 @@ class NakoCompiler {
   }
 
   _run (code, isReset) {
-    if (isReset) this.reset()
+    if (isReset) {this.reset()}
     let js = this.compile(code)
     let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
@@ -193,21 +193,21 @@ class NakoCompiler {
     // 変数のメタ情報を確認
     const __v0 = this.__varslist[0]
     if (__v0.meta === undefined) 
-      __v0.meta = {}
+      {__v0.meta = {}}
     
     // プラグインの値をオブジェクトにコピー
     for (const key in po) {
       const v = po[key]
       this.funclist[key] = v
       if (v.type === 'func') 
-        __v0[key] = v.fn
+        {__v0[key] = v.fn}
        else if (v.type === 'const' || v.type === 'var') {
         __v0[key] = v.value
         __v0.meta[key] = {
           readonly: (v.type === 'const')
         }
       } else 
-        throw new Error('プラグインの追加でエラー。', null)
+        {throw new Error('プラグインの追加でエラー。', null)}
       
     }
   }
@@ -239,7 +239,7 @@ class NakoCompiler {
   addPluginFile (objName, path, po) {
     this.addPluginObject(objName, po)
     if (this.pluginfiles[objName] === undefined) 
-      this.pluginfiles[objName] = path
+      {this.pluginfiles[objName] = path}
     
   }
 

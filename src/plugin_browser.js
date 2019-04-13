@@ -10,9 +10,9 @@ const PluginBrowser = {
     josi: [],
     fn: function (sys) {
       /* eslint no-global-assign: 0 */
-      if (typeof document === 'undefined') document = {'body': {}}
-      if (typeof window === 'undefined') window = {}
-      if (typeof navigator === 'undefined') navigator = {}
+      if (typeof document === 'undefined') {document = {'body': {}}}
+      if (typeof window === 'undefined') {window = {}}
+      if (typeof navigator === 'undefined') {navigator = {}}
 
       // 定数を初期化
       sys.__v0['AJAX:ONERROR'] = (err) => { console.log(err) }
@@ -62,8 +62,8 @@ const PluginBrowser = {
         const v2 = '00' + v.toString(16)
         return v2.substr(v2.length - 2, 2)
       }
-      if (!a) throw new Error('『色混ぜる』の引数には配列を指定します')
-      if (a.length < 3) throw new Error('『色混ぜる』の引数には[RR,GG,BB]形式の配列を指定します')
+      if (!a) {throw new Error('『色混ぜる』の引数には配列を指定します')}
+      if (a.length < 3) {throw new Error('『色混ぜる』の引数には[RR,GG,BB]形式の配列を指定します')}
       return '#' + z2(a[0]) + z2(a[1]) + z2(a[2])
     },
     return_none: false
@@ -93,7 +93,7 @@ const PluginBrowser = {
     josi: [['と', 'を']],
     fn: function (s) {
       const r = window.prompt(s)
-      if (r.match(/^[0-9.]+$/)) return parseFloat(r)
+      if (r.match(/^[0-9.]+$/)) {return parseFloat(r)}
       return r
     }
   },
@@ -127,7 +127,7 @@ const PluginBrowser = {
     josi: [['の'], ['まで', 'へ', 'に']],
     fn: function (callback, url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') options = {method: 'GET'}
+      if (options === '') {options = {method: 'GET'}}
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
@@ -190,7 +190,7 @@ const PluginBrowser = {
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
       for (let key in params)
-        fd.set(key, params[key])
+        {fd.set(key, params[key])}
 
       let options = {
         method: 'POST',
@@ -229,11 +229,11 @@ const PluginBrowser = {
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     fn: function (url, sys) {
-      if (!sys.resolve) throw new Error('『AJAX送信』は『逐次実行』構文内で利用する必要があります。')
+      if (!sys.resolve) {throw new Error('『AJAX送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
       let options = sys.__v0['AJAXオプション']
-      if (options === '') options = {method: 'GET'}
+      if (options === '') {options = {method: 'GET'}}
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
@@ -250,7 +250,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['の', 'から', 'を']],
     fn: function (url, sys) {
-      if (!sys.resolve) throw new Error('『HTTP取得』は『逐次実行』構文内で利用する必要があります。')
+      if (!sys.resolve) {throw new Error('『HTTP取得』は『逐次実行』構文内で利用する必要があります。')}
       sys.__exec('AJAX送信', [url, sys])
     },
     return_none: true
@@ -259,7 +259,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     fn: function (callback, url, params, sys) {
-      if (!sys.resolve) throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')
+      if (!sys.resolve) {throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
       let bodyData = sys.__exec('POSTデータ生成', [params, sys])
@@ -285,12 +285,12 @@ const PluginBrowser = {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     fn: function (url, params, sys) {
-      if (!sys.resolve) throw new Error('『POSフォームT送信』は『逐次実行』構文内で利用する必要があります。')
+      if (!sys.resolve) {throw new Error('『POSフォームT送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
       const fd = new FormData()
       for (let key in params)
-        fd.set(key, params[key])
+        {fd.set(key, params[key])}
 
       let options = {
         method: 'POST',
@@ -348,7 +348,7 @@ const PluginBrowser = {
     josi: [['の'], ['に', 'へ'], ['を']],
     fn: function (dom, event, funcStr, sys) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       dom[event] = sys.__findVar(funcStr, null)
     },
@@ -359,7 +359,7 @@ const PluginBrowser = {
     josi: [['の'], ['に', 'へ'], ['を']],
     fn: function (dom, event, funcStr, sys) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       dom.addEventListener(event, sys.__findVar(funcStr, null))
     },
@@ -370,7 +370,7 @@ const PluginBrowser = {
     josi: [['の'], ['から'], ['を']],
     fn: function (dom, event, funcStr, sys) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       dom.removeEventListener(event, sys.__findVar(funcStr, null))
     },
@@ -381,7 +381,7 @@ const PluginBrowser = {
     josi: [['で'], ['の'], ['が']],
     fn: function (callback, dom, event, sys) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       dom.addEventListener(event, callback)
     },
@@ -400,7 +400,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom.onclick = (e) => {
         sys.__v0['対象'] = e.target
@@ -414,7 +414,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom.onload = (e) => {
         sys.__v0['対象'] = e.target
@@ -428,7 +428,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom.onsubmit = (e) => {
         sys.__v0['対象'] = e.target
@@ -443,7 +443,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onkeydown'] = (e) => {
         sys.__v0['対象'] = e.target
@@ -458,7 +458,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onkeyup'] = (e) => {
         sys.__v0['対象'] = e.target
@@ -473,7 +473,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onkeypress'] = (e) => {
         sys.__v0['対象'] = e.target
@@ -490,7 +490,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       // 左上座標を求める
       dom['onmousedown'] = (e) => {
@@ -508,7 +508,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onmousemove'] = (e) => {
         const box = e.target.getBoundingClientRect()
@@ -525,7 +525,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       dom['onmouseup'] = (e) => {
         const box = e.target.getBoundingClientRect()
@@ -543,21 +543,21 @@ const PluginBrowser = {
     josi: [['に', 'の', 'へ'], ['を']],
     fn: function (dom, text) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       const tag = dom.tagName.toUpperCase()
       if (tag === 'INPUT' || tag === 'TEXTAREA')
-        dom.value = text
+        {dom.value = text}
        else if (tag === 'SELECT')
-        for (let i = 0; i < dom.options.length; i++) {
+        {for (let i = 0; i < dom.options.length; i++) {
           const v = dom.options[i].value
           if (String(v) === text) {
             dom.selectedIndex = i
             break
           }
-        }
+        }}
        else
-        dom.innerHTML = text
+        {dom.innerHTML = text}
 
     },
     return_none: true
@@ -567,14 +567,14 @@ const PluginBrowser = {
     josi: [['の', 'から']],
     fn: function (dom) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       const tag = dom.tagName.toUpperCase()
       if (tag === 'INPUT' || tag === 'TEXTAREA')
-        return dom.value
+        {return dom.value}
        else if (tag === 'SELECT') {
         const idx = dom.selectedIndex
-        if (idx < 0) return null
+        if (idx < 0) {return null}
         return dom.options[idx].value
       }
       return dom.innerHTML
@@ -585,7 +585,7 @@ const PluginBrowser = {
     josi: [['に', 'の', 'へ'], ['を']],
     fn: function (dom, text) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       dom.innerHTML = text
     },
@@ -596,7 +596,7 @@ const PluginBrowser = {
     josi: [['の', 'から']],
     fn: function (dom) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       return dom.innerHTML
     }
@@ -636,7 +636,7 @@ const PluginBrowser = {
     josi: [['の'], ['に', 'へ'], ['を']],
     fn: function (dom, s, v) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       dom[s] = v
     },
@@ -647,7 +647,7 @@ const PluginBrowser = {
     josi: [['の', 'から'], ['を']],
     fn: function (dom, s) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
       return dom[s]
     }
@@ -678,10 +678,10 @@ const PluginBrowser = {
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     fn: function (dom, s, v, sys) {
-      if (typeof (dom) === 'string') dom = document.querySelector(dom)
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       const wa = sys.__v0['DOM和スタイル']
-      if (wa[s] !== undefined) s = wa[s]
-      if (wa[v] !== undefined) v = wa[v]
+      if (wa[s] !== undefined) {s = wa[s]}
+      if (wa[v] !== undefined) {v = wa[v]}
       dom.style[s] = v
     },
     return_none: true
@@ -691,9 +691,9 @@ const PluginBrowser = {
     josi: [['に', 'へ'], ['を']],
     uses: ['DOM和スタイル'],
     fn: function (dom, values, sys) {
-      if (typeof dom === 'string') dom = document.querySelectorAll(dom)
-      if (!dom) return
-      if (dom instanceof window.HTMLElement) dom = [dom]
+      if (typeof dom === 'string') {dom = document.querySelectorAll(dom)}
+      if (!dom) {return}
+      if (dom instanceof window.HTMLElement) {dom = [dom]}
       const wa = sys.__v0['DOM和スタイル']
       // 列挙したDOM一覧を全てスタイル変更する
       for (let i = 0; i < dom.length; i++) {
@@ -701,8 +701,8 @@ const PluginBrowser = {
         for (const key in values) {
           let s = key
           let v = values[key]
-          if (wa[s] !== undefined) s = wa[s]
-          if (wa[v] !== undefined) v = wa[v]
+          if (wa[s] !== undefined) {s = wa[s]}
+          if (wa[v] !== undefined) {v = wa[v]}
           e.style[s] = v
         }
       }
@@ -714,9 +714,9 @@ const PluginBrowser = {
     josi: [['の'], ['を']],
     fn: function (dom, style) {
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
-      if (!dom) return ''
+      if (!dom) {return ''}
       return dom.style[style]
     }
   },
@@ -726,11 +726,11 @@ const PluginBrowser = {
     fn: function (dom, style) {
       const res = {}
       if (typeof (dom) === 'string')
-        dom = document.querySelector(dom)
+        {dom = document.querySelector(dom)}
 
-      if (!dom) return res
+      if (!dom) {return res}
       if (style instanceof String)
-        style = [style]
+        {style = [style]}
 
       if (style instanceof Array) {
         for (let i = 0; i < style.length; i++) {
@@ -740,8 +740,8 @@ const PluginBrowser = {
         return res
       }
       if (style instanceof Object)
-        for (let key in style)
-          res[key] = dom.style[key]
+        {for (let key in style)
+          {res[key] = dom.style[key]}}
 
 
       return dom.style[style]
@@ -758,8 +758,8 @@ const PluginBrowser = {
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     fn: function (pa, el) {
-      if (typeof el === 'string') el = document.querySelector(el)
-      if (typeof pa === 'string') pa = document.querySelector(pa)
+      if (typeof el === 'string') {el = document.querySelector(el)}
+      if (typeof pa === 'string') {pa = document.querySelector(pa)}
       pa.appendChild(el)
     }
   },
@@ -767,8 +767,8 @@ const PluginBrowser = {
     type: 'func',
     josi: [['から'], ['を']],
     fn: function (pa, el) {
-      if (typeof el === 'string') el = document.querySelector(el)
-      if (typeof pa === 'string') pa = document.querySelector(pa)
+      if (typeof el === 'string') {el = document.querySelector(el)}
+      if (typeof pa === 'string') {pa = document.querySelector(pa)}
       pa.removeChild(el)
     }
   },
@@ -779,7 +779,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (el, sys) {
-      if (typeof el === 'string') el = document.querySelector(el) || document.getElementById(el)
+      if (typeof el === 'string') {el = document.querySelector(el) || document.getElementById(el)}
       sys.__v0['DOM親要素'] = el
       return el
     }
@@ -918,9 +918,9 @@ const PluginBrowser = {
     josi: [['を', 'の', 'から']],
     fn: function (url) {
       const res = {}
-      if (typeof url !== 'string') return res
+      if (typeof url !== 'string') {return res}
       const p = url.split('?')
-      if (p.length <= 1) return res
+      if (p.length <= 1) {return res}
       const params = p[1].split('&')
       for (const line of params) {
         const line2 = line + '='
@@ -992,7 +992,7 @@ const PluginBrowser = {
     fn: function (key) {
       const keys = []
       for (const key in window.localStorage)
-        keys.push(key)
+        {keys.push(key)}
 
       return keys
     },
@@ -1020,9 +1020,9 @@ const PluginBrowser = {
     josi: [['の', 'へ', 'で']],
     fn: function (cv, sys) {
       if (typeof cv === 'string')
-        cv = document.querySelector(cv) || document.getElementById(cv)
+        {cv = document.querySelector(cv) || document.getElementById(cv)}
 
-      if (!cv) throw new Error('『描画開始』でCanvasを取得できませんでした。')
+      if (!cv) {throw new Error('『描画開始』でCanvasを取得できませんでした。')}
       sys.__canvas = cv
       sys.__ctx = cv.getContext('2d')
       sys.__v0['描画中キャンバス'] = cv
@@ -1034,7 +1034,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (v, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.strokeStyle = v
     },
     return_none: true
@@ -1043,7 +1043,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (v, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.fillStyle = v
     },
     return_none: true
@@ -1052,7 +1052,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['から'], ['へ', 'まで']],
     fn: function (a, b, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
       sys.__ctx.moveTo(a[0], a[1])
       sys.__ctx.lineTo(b[0], b[1])
@@ -1064,7 +1064,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['に', 'へ']],
     fn: function (v, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.lineWidth = v
     },
     return_none: true
@@ -1073,7 +1073,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['の', 'へ', 'に']],
     fn: function (b, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
       sys.__ctx.rect(b[0], b[1], b[2], b[3])
       sys.__ctx.fill()
@@ -1085,7 +1085,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['の', 'へ', 'に']],
     fn: function (b, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.clearRect(b[0], b[1], b[2], b[3])
     },
     return_none: true
@@ -1094,7 +1094,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['へ', 'に'], ['の']],
     fn: function (xy, r, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
       sys.__ctx.arc(xy[0], xy[1], r, 0, 2 * Math.PI, false)
       sys.__ctx.fill()
@@ -1107,14 +1107,14 @@ const PluginBrowser = {
     josi: [['へ', 'に', 'の']],
     fn: function (args, sys) {
       console.log(args)
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
-      if (!args) throw new Error('楕円描画の引数配列が無効です')
-      if (args.length < 4) throw new Error('楕円描画の引数配列が不足しています')
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!args) {throw new Error('楕円描画の引数配列が無効です')}
+      if (args.length < 4) {throw new Error('楕円描画の引数配列が不足しています')}
       if (args.length < 7) {
-        if (!args[4]) args[4] = 0
-        if (!args[5]) args[5] = 0
-        if (!args[6]) args[6] = Math.PI * 2
-        if (!args[7]) args[7] = true
+        if (!args[4]) {args[4] = 0}
+        if (!args[5]) {args[5] = 0}
+        if (!args[6]) {args[6] = Math.PI * 2}
+        if (!args[7]) {args[7] = true}
       }
       sys.__ctx.beginPath()
       sys.__ctx.ellipse.apply(sys.__ctx, args)
@@ -1127,7 +1127,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['で', 'の', 'を']],
     fn: function (a, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
       const p = a.shift()
       sys.__ctx.moveTo(p[0], p[1])
@@ -1145,14 +1145,14 @@ const PluginBrowser = {
     type: 'func',
     josi: [['へ', 'に'], ['の', 'を']],
     fn: function (xy, img, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       const drawFunc = (im, ctx) => {
         if (xy.length === 2)
-          ctx.drawImage(im, xy[0], xy[1])
+          {ctx.drawImage(im, xy[0], xy[1])}
          else if (xy.length === 4)
-          ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])
+          {ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])}
          else if (xy.length === 6)
-          ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])
+          {ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])}
 
       }
       if (typeof img === 'string') {
@@ -1181,7 +1181,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['へ', 'に'], ['の', 'を']],
     fn: function (xy, s, sys) {
-      if (!sys.__ctx) throw new Error(errMsgCanvasInit)
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.fillText(s, xy[0], xy[1])
     },
     return_none: true
@@ -1193,9 +1193,9 @@ const PluginBrowser = {
     josi: [['の', 'に', 'へ']],
     fn: function (func, sys) {
       let cb = func
-      if (typeof cb === 'string') cb = sys.__findVar(cb)
+      if (typeof cb === 'string') {cb = sys.__findVar(cb)}
       if (!('geolocation' in navigator))
-        throw new Error('関数『位置情報取得時』は使えません。')
+        {throw new Error('関数『位置情報取得時』は使えません。')}
 
       navigator.geolocation.getCurrentPosition((position) => {
         sys.__v0['対象'] = [
@@ -1212,9 +1212,9 @@ const PluginBrowser = {
     josi: [['の', 'に', 'へ']],
     fn: function (func, sys) {
       let cb = func
-      if (typeof cb === 'string') cb = sys.__findVar(cb)
+      if (typeof cb === 'string') {cb = sys.__findVar(cb)}
       if (!('geolocation' in navigator))
-        throw new Error('関数『位置情報監視時』は使えません。')
+        {throw new Error('関数『位置情報監視時』は使えません。')}
 
       return navigator.geolocation.watchPosition((position) => {
         sys.__v0['対象'] = [
@@ -1241,11 +1241,11 @@ const PluginBrowser = {
     fn: function (s, sys) {
       // 話者の特定
       let voice = sys.__v0['話:話者']
-      if (!voice) voice = sys.__exec('話者設定', ['ja', sys])
+      if (!voice) {voice = sys.__exec('話者設定', ['ja', sys])}
       // インスタンス作成
       const msg = new SpeechSynthesisUtterance(s)
       msg.voice = voice
-      if (voice) msg.lang = voice.lang // 必ず話者の特定に成功している訳ではない
+      if (voice) {msg.lang = voice.lang} // 必ず話者の特定に成功している訳ではない
       msg.rate = sys.__v0['話者速度']
       msg.pitch = sys.__v0['話者声高']
       msg.volume = sys.__v0['話者音量']
@@ -1260,11 +1260,11 @@ const PluginBrowser = {
     fn: function (callback, s, sys) {
       // 話者の特定
       let voice = sys.__v0['話:話者']
-      if (!voice) voice = sys.__exec('話者設定', ['ja', sys])
+      if (!voice) {voice = sys.__exec('話者設定', ['ja', sys])}
       // インスタンス作成
       const msg = new SpeechSynthesisUtterance(s)
       msg.voice = voice
-      if (voice) msg.lang = voice.lang // 必ず話者の特定に成功している訳ではない
+      if (voice) {msg.lang = voice.lang} // 必ず話者の特定に成功している訳ではない
       msg.rate = sys.__v0['話者速度']
       msg.pitch = sys.__v0['話者声高']
       msg.volume = sys.__v0['話者音量']
@@ -1284,7 +1284,7 @@ const PluginBrowser = {
     fn: function (sys) {
       // 対応している？
       if (!('SpeechSynthesisUtterance' in window))
-        throw new Error('音声合成APIに対応していません')
+        {throw new Error('音声合成APIに対応していません')}
 
       return window.speechSynthesis.getVoices()
     }
@@ -1295,21 +1295,21 @@ const PluginBrowser = {
     fn: function (v, sys) {
       // 対応している？
       if (!('SpeechSynthesisUtterance' in window))
-        throw new Error('音声合成APIに対応していません')
+        {throw new Error('音声合成APIに対応していません')}
 
       // 文字列で値を指定
       if (typeof v === 'string') {
         // 話者を特定する
         const voices = window.speechSynthesis.getVoices()
         for (const i of voices)
-          if (i.lang.indexOf(v) >= 0 || i.name === v) {
+          {if (i.lang.indexOf(v) >= 0 || i.name === v) {
             const msg = new SpeechSynthesisUtterance()
             msg.voice = i
             msg.lang = i.lang
             sys.__v0['話:話者'] = i
             console.log('#話者:', i.name)
             return i
-          }
+          }}
 
       }
       // 話者一覧取得で得たオブジェクトを直接指定した場合
@@ -1328,9 +1328,9 @@ const PluginBrowser = {
     josi: [['で', 'に', 'へ']],
     fn: function (obj, sys) {
       const changeFunc = (key, v) => {
-        if (key === '速度') sys.__v0['話者速度'] = v
-        if (key === '声高' || key === 'ピッチ') sys.__v0['話者声高'] = v
-        if (key === '音量') sys.__v0['話者音量'] = v
+        if (key === '速度') {sys.__v0['話者速度'] = v}
+        if (key === '声高' || key === 'ピッチ') {sys.__v0['話者声高'] = v}
+        if (key === '音量') {sys.__v0['話者音量'] = v}
       }
       // 一括変更
       for (const key in obj) {
@@ -1371,18 +1371,18 @@ const PluginBrowser = {
       const ws = new WebSocket(s)
       ws.onopen = () => {
         const cbOpen = sys.__v0['WS:ONOPEN']
-        if (cbOpen) cbOpen(sys)
+        if (cbOpen) {cbOpen(sys)}
       }
       ws.onerror = (err) => {
         const cbError = sys.__v0['WS:ONERROR']
-        if (cbError) cbError(err, sys)
+        if (cbError) {cbError(err, sys)}
         console.log('WSエラー', err)
       }
       ws.onmessage = (e) => {
         console.log(e.data)
         sys.__v0['対象'] = e.data
         const cbMsg = sys.__v0['WS:ONMESSAGE']
-        if (cbMsg) cbMsg(sys)
+        if (cbMsg) {cbMsg(sys)}
       }
       sys.__v0['WS:SOCKET'] = ws
       return ws

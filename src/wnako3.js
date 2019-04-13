@@ -37,7 +37,7 @@ class WebNakoCompiler extends NakoCompiler {
       let script = scripts[i]
       let src = script.src || ''
       if (src.indexOf('wnako3.js?run') >= 0) 
-        return true
+        {return true}
       
     }
     return false
@@ -50,8 +50,8 @@ if (typeof (navigator) === 'object') {
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {
     const isAutoRun = nako3.checkScriptTagParam()
-    if (isAutoRun) nako3.runNakoScript()
+    if (isAutoRun) {nako3.runNakoScript()}
   }, false)
 } else 
-  module.exports = WebNakoCompiler
+  {module.exports = WebNakoCompiler}
 

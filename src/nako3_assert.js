@@ -18,7 +18,7 @@ const PluginAssert = {
     type: 'func',
     josi: [['と'], ['で']],
     fn: function (a, b, sys) {
-      assert.equal(a, b)
+      assert.strictEqual(a, b)
     },
     return_none: true
   }

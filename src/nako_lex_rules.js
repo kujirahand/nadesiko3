@@ -94,7 +94,7 @@ function cbRangeComment (src) {
   }
   // 改行を数える
   for (let i = 0; i < res.length; i++)
-    if (res.charAt(i) === '\n') numEOL++
+    {if (res.charAt(i) === '\n') {numEOL++}}
 
   res = res.replace(/(^\s+|\s+$)/, '') // trim
   return {src: src, res: res, josi: josi, numEOL: numEOL}
@@ -157,7 +157,7 @@ function cbString (beginTag, closeTag, src) {
     const sm = src.match(/^\{{3,}/)
     const cnt = sm[0].length
     closeTag = ''
-    for (let i = 0; i < cnt; i++) closeTag += '}'
+    for (let i = 0; i < cnt; i++) {closeTag += '}'}
     src = src.substr(cnt)
   }
   const i = src.indexOf(closeTag)
@@ -176,14 +176,14 @@ function cbString (beginTag, closeTag, src) {
   }
   // 改行を数える
   for (let i = 0; i < res.length; i++)
-    if (res.charAt(i) === '\n') numEOL++
+    {if (res.charAt(i) === '\n') {numEOL++}}
 
   return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
 
 function trimOkurigana (s) {
   if (!hira.test(s))
-    s = s.replace(/[ぁ-ん]+/g, '')
+    {s = s.replace(/[ぁ-ん]+/g, '')}
 
   return s
 }

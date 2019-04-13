@@ -19,13 +19,13 @@ const PluginNode = {
       sys.__getBinPath = (tool) => {
         let fpath = tool
         if (process.platform === 'win32')
-          if (!fileExists(tool)) {
+          {if (!fileExists(tool)) {
             const nodeDir = path.dirname(process.argv[0])
             const root = path.resolve(path.join(nodeDir, '..'))
             fpath = path.join(root, 'bin', tool + '.exe')
-            if (fileExists(fpath)) return `"${fpath}"`
+            if (fileExists(fpath)) {return `"${fpath}"`}
             return tool
-          }
+          }}
 
         return fpath
       }
@@ -33,9 +33,9 @@ const PluginNode = {
         let nakofile
         const cmd = path.basename(process.argv[1])
         if (cmd.indexOf('cnako3') < 0)
-          nakofile = process.argv[1]
+          {nakofile = process.argv[1]}
          else
-          nakofile = process.argv[2]
+          {nakofile = process.argv[2]}
 
         return path.dirname(path.resolve(nakofile))
       }
@@ -74,9 +74,9 @@ const PluginNode = {
     fn: function (s, f) {
       // Buffer?
       if (s instanceof String)
-        fs.writeFileSync(f, s, 'utf-8')
+        {fs.writeFileSync(f, s, 'utf-8')}
        else
-        fs.writeFileSync(f, s)
+        {fs.writeFileSync(f, s)}
 
     },
     return_none: true
@@ -95,9 +95,9 @@ const PluginNode = {
     fn: function (s) {
       exec(s, (err, stdout, stderr) => {
         if (err)
-          console.error(stderr)
+          {console.error(stderr)}
          else
-          if (stdout) console.log(stdout)
+          if (stdout) {console.log(stdout)}
 
       })
     }
@@ -108,9 +108,9 @@ const PluginNode = {
     fn: function (callback, s, sys) {
       exec(s, (err, stdout, stderr) => {
         if (err)
-          throw new Error(stderr)
+          {throw new Error(stderr)}
          else
-          callback(stdout)
+          {callback(stdout)}
 
       })
     }
@@ -138,7 +138,7 @@ const PluginNode = {
         const list = fs.readdirSync(searchPath)
         return list.filter((n) => maskRE.test(n))
       } else
-        return fs.readdirSync(s)
+        {return fs.readdirSync(s)}
 
     }
   },
@@ -164,7 +164,7 @@ const PluginNode = {
       const enumR = (base) => {
         const list = fs.readdirSync(base)
         for (const f of list) {
-          if (f === '.' || f === '..') continue
+          if (f === '.' || f === '..') {continue}
           const fullpath = path.join(base, f)
           let st = null
           try {
@@ -172,12 +172,12 @@ const PluginNode = {
           } catch (e) {
             st = null
           }
-          if (st == null) continue
+          if (st == null) {continue}
           if (st.isDirectory()) {
             enumR(fullpath)
             continue
           }
-          if (maskRE.test(f)) result.push(fullpath)
+          if (maskRE.test(f)) {result.push(fullpath)}
         }
       }
       // 検索実行
@@ -218,7 +218,7 @@ const PluginNode = {
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     fn: function (callback, a, b, sys) {
       return fse.copy(a, b, err => {
-        if (err) throw new Error('ファイルコピー時:' + err)
+        if (err) {throw new Error('ファイルコピー時:' + err)}
         callback()
       })
     },
@@ -236,7 +236,7 @@ const PluginNode = {
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     fn: function (callback, a, b, sys) {
       fse.move(a, b, err => {
-        if (err) throw new Error('ファイル移動時:' + err)
+        if (err) {throw new Error('ファイル移動時:' + err)}
         callback()
       })
     },
@@ -254,7 +254,7 @@ const PluginNode = {
     josi: [['で'], ['の', 'を']],
     fn: function (callback, path, sys) {
       return fse.remove(path, err => {
-        if (err) throw new Error('ファイル削除時:' + err)
+        if (err) {throw new Error('ファイル削除時:' + err)}
         callback()
       })
     },
@@ -272,7 +272,7 @@ const PluginNode = {
     josi: [['の', 'から']],
     fn: function (path, sys) {
       const st = fs.statSync(path)
-      if (!st) return -1
+      if (!st) {return -1}
       return st.size
     }
   },
@@ -404,7 +404,7 @@ const PluginNode = {
       const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
       const cmd = `${path} x "${a}" -o"${b}" -y`
       exec(cmd, (err, stdout, stderr) => {
-        if (err) throw new Error('[エラー]『解凍時』' + err)
+        if (err) {throw new Error('[エラー]『解凍時』' + err)}
         callback(stdout)
       })
     },
@@ -427,7 +427,7 @@ const PluginNode = {
       const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
       const cmd = `${path} a -r "${b}" "${a}" -y`
       exec(cmd, (err, stdout, stderr) => {
-        if (err) throw new Error('[エラー]『圧縮時』' + err)
+        if (err) {throw new Error('[エラー]『圧縮時』' + err)}
         callback(stdout)
       })
     },
@@ -482,7 +482,7 @@ const PluginNode = {
     fn: function (v, sys) {
       const ncp = require('copy-paste-win32fix')
       // copy
-      if (sys && sys['isSetter']) return ncp.copy(v)
+      if (sys && sys['isSetter']) {return ncp.copy(v)}
       // paste
       return ncp.paste()
     }
@@ -510,7 +510,7 @@ const PluginNode = {
     fn: function (msg, sys) {
       const readlineSync = require('readline-sync')
       const res = readlineSync.question(msg)
-      if (res.match(/^[0-9.]+$/)) return parseFloat(res)
+      if (res.match(/^[0-9.]+$/)) {return parseFloat(res)}
       return res
     }
   },
@@ -520,7 +520,7 @@ const PluginNode = {
     josi: [['と'], ['が']],
     fn: function (a, b, sys) {
       const assert = require('assert')
-      assert.equal(a, b)
+      assert.strictEqual(a, b)
     }
   },
   // @ネットワーク
@@ -532,9 +532,9 @@ const PluginNode = {
       const nif = os.networkInterfaces()
       const result = []
       for (let dev in nif)
-        nif[dev].forEach((detail) => {
-          if (detail.family === 'IPv4') result.push(detail.address)
-        })
+        {nif[dev].forEach((detail) => {
+          if (detail.family === 'IPv4') {result.push(detail.address)}
+        })}
 
       return result
     }
@@ -547,9 +547,9 @@ const PluginNode = {
       const nif = os.networkInterfaces()
       const result = []
       for (let dev in nif)
-        nif[dev].forEach((detail) => {
-          if (detail.family === 'IPv6') result.push(detail.address)
-        })
+        {nif[dev].forEach((detail) => {
+          if (detail.family === 'IPv6') {result.push(detail.address)}
+        })}
 
       return result
     }
@@ -560,7 +560,7 @@ const PluginNode = {
     josi: [['の'], ['まで', 'へ', 'に']],
     fn: function (callback, url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') options = null
+      if (options === '') {options = null}
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
@@ -615,7 +615,7 @@ const PluginNode = {
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
       for (let key in params)
-        fd.set(key, params[key])
+        {fd.set(key, params[key])}
 
       let options = {
         method: 'POST',

@@ -33,14 +33,14 @@ class NakoParserBase {
    * @param josiList 下ろしたい助詞の配列
    */
   popStack (josiList) {
-    if (!josiList) return this.stack.pop()
+    if (!josiList) {return this.stack.pop()}
 
     // josiList にマッチする助詞を探す
     for (let i = 0; i < this.stack.length; i++) {
       const t = this.stack[i]
       if (josiList.length === 0 || josiList.indexOf(t.josi) >= 0) {
         this.stack.splice(i, 1) // remove stack
-        if (this.debugStack) console.log('POP :', t)
+        if (this.debugStack) {console.log('POP :', t)}
         return t
       }
     }
@@ -65,7 +65,7 @@ class NakoParserBase {
    * 計算用に要素をスタックに積む
    */
   pushStack (item) {
-    if (this.debugStack) console.log('PUSH:', item)
+    if (this.debugStack) {console.log('PUSH:', item)}
     this.stack.push(item)
   }
 
@@ -90,14 +90,14 @@ class NakoParserBase {
   check2 (a) {
     for (let i = 0; i < a.length; i++) {
       const idx = i + this.index
-      if (this.tokens.length <= idx) return false
-      if (a[i] === '*') continue // ワイルドカード(どんなタイプも許容)
+      if (this.tokens.length <= idx) {return false}
+      if (a[i] === '*') {continue} // ワイルドカード(どんなタイプも許容)
       const t = this.tokens[idx]
       if (a[i] instanceof Array) {
-        if (a[i].indexOf(t.type) < 0) return false
+        if (a[i].indexOf(t.type) < 0) {return false}
         continue
       }
-      if (t.type !== a[i]) return false
+      if (t.type !== a[i]) {return false}
     }
     return true
   }
@@ -122,23 +122,23 @@ class NakoParserBase {
       return false
     }
     for (let i = 0; i < types.length; i++) {
-      if (this.isEOF()) return rollback()
+      if (this.isEOF()) {return rollback()}
       const type = types[i]
       if (typeof type === 'string') {
         const token = this.get()
-        if (token.type !== type) return rollback()
+        if (token.type !== type) {return rollback()}
         y[i] = token
         continue
       }
       if (typeof type === 'function') {
         const f = type.bind(this)
         const r = f(null)
-        if (r === null) return rollback()
+        if (r === null) {return rollback()}
         y[i] = r
         continue
       }
       if (type instanceof Array) {
-        if (!this.checkTypes(type)) return rollback()
+        if (!this.checkTypes(type)) {return rollback()}
         y[i] = this.get()
         continue
       }
@@ -152,32 +152,32 @@ class NakoParserBase {
    * カーソル語句を取得して、カーソルを後ろに移動する
    */
   get () {
-    if (this.isEOF()) return null
+    if (this.isEOF()) {return null}
     return this.tokens[this.index++]
   }
 
   unget () {
-    if (this.index > 0) this.index--
+    if (this.index > 0) {this.index--}
   }
 
   peek (i = 0) {
-    if (this.isEOF()) return null
+    if (this.isEOF()) {return null}
     return this.tokens[this.index + i]
   }
 
   nodeToStr (node) {
-    if (!node) return `(NULL)`
+    if (!node) {return `(NULL)`}
     let name = node.name
     if (node.type === 'op')
-      name = '演算子[' + node.operator + ']'
+      {name = '演算子[' + node.operator + ']'}
 
-    if (!name) name = node.value
-    if (typeof name !== 'string') name = node.type
+    if (!name) {name = node.value}
+    if (typeof name !== 'string') {name = node.type}
     if (this.debug)
-      name += '→' + JSON.stringify(node, null, 2)
+      {name += '→' + JSON.stringify(node, null, 2)}
      else {
-      if (name === 'number') name = node.value + node.josi
-      if (node.type === 'string') name = '「' + node.value + '」' + node.josi
+      if (name === 'number') {name = node.value + node.josi}
+      if (node.type === 'string') {name = '「' + node.value + '」' + node.josi}
     }
     return `『${name}』`
   }
