@@ -813,7 +813,10 @@ class NakoGen {
       'gteq': '>=',
       'lteq': '<=',
       'and': '&&',
-      'or': '||'
+      'or': '||',
+      'shift_l': '<<',
+      'shift_r': '>>',
+      'shift_r0': '>>>'
     }
     const NUM_OP_TBL = { // 数値限定演算子
       '+': true, '-': true, '*': true, '/': true, '%': true, '^': true

@@ -28,6 +28,9 @@ module.exports = {
     // ならば ← 助詞として定義
     {name: '違えば', pattern: /^違(えば)?/},
     // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
+    {name: 'shift_r0', pattern: /^>>>/},
+    {name: 'shift_r', pattern: /^>>/},
+    {name: 'shift_l', pattern: /^<</},
     {name: 'gteq', pattern: /^(≧|>=|=>)/},
     {name: 'lteq', pattern: /^(≦|<=|=<)/},
     {name: 'noteq', pattern: /^(≠|<>|!=)/},
