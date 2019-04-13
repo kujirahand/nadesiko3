@@ -80,7 +80,7 @@
       "no-console": "off",
       "curly": [
         "error",
-        "multi"
+        "all"
       ]
     },
     "plugins": [
