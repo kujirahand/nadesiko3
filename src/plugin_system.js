@@ -1256,7 +1256,7 @@ const PluginSystem = {
       throw new Error('『配列切取』で配列以外を指定。')
     }
   },
-  '配列取出': { // @配列AのI番目(0起点)からCNT個の応訴を取り出して返す。Aの内容を書き換える // @はいれつとりだし
+  '配列取出': { // @配列AのI番目(0起点)からCNT個の要素を取り出して返す。Aの内容を書き換える // @はいれつとりだし
     type: 'func',
     josi: [['の'], ['から'], ['を']],
     fn: function (a, i, cnt) {
@@ -1535,6 +1535,7 @@ const PluginSystem = {
       moment.tz.setDefault(tz)
     }
   },
+  // @CSV処理
   'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
