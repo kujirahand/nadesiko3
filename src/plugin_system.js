@@ -1471,7 +1471,7 @@ const PluginSystem = {
       const re = new RegExp(s)
       for (let i = 0; i < a.length; i++) {
         const row = a[i]
-        if (re.match(row[col])) return i
+        if (re.test(row[col])) return i
       }
       return -1
     }
