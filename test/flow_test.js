@@ -3,7 +3,9 @@ const NakoCompiler = require('../src/nako3')
 
 describe('flow_test', () => {
   const nako = new NakoCompiler()
-  // nako.debug = true;
+  // nako.debug = true
+  // nako.debugParser = true
+  // nako.debugLexer = true
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)
@@ -157,10 +159,19 @@ describe('flow_test', () => {
         '　　もし、I=2ならば、抜ける。\n' +
         '　　「い」と表示\n' +
         'ここまで\n', 'あ\nあ\nい\nあ\nあ')
-  })
     cmp('Iを1から3まで繰り返す\n' +
         '　　「あ」と表示\n' +
         '　　もし、I=2ならば、「う」と表示して、抜ける。\n' +
         '　　「い」と表示\n' +
         'ここまで\n', 'あ\nい\nあ\nう')
+  })
+  it('もし文のエラー(#378)', () => {
+    cmp('●AAAとは\n' +
+        '　　列を1から3まで繰り返す。\n' +
+        '   　　列を表示。'+
+        '　　　　もし、列=2ならば、「*」と表示。\n' +
+        '　　ここまで。\n' +
+        'ここまで\n' +
+        'AAA', '1\n2\n*\n3')
+  })
 })

@@ -221,26 +221,37 @@ class NakoParser extends NakoParserBase {
     if (cond === null) {throw new NakoSyntaxError('『もし』文で条件の指定が空です。', mosi.line)}
     let trueBlock = null
     let falseBlock = null
+    let tanbun = false
 
     // True Block
-    if (this.check('eol'))
-      {trueBlock = this.yBlock()}
-    else
-      {trueBlock = this.ySentence()}
+    if (this.check('eol')) {
+      trueBlock = this.yBlock()
+    } else {
+      trueBlock = this.ySentence()
+      tanbun = true
+    }
 
-    while (this.check('eol'))
-      {this.get()} // skip EOL
+    // skip EOL
+    while (this.check('eol')) {this.get()}
 
     // Flase Block
     if (this.check('違えば')) {
       this.get() // skip 違えば
-      if (this.check('eol'))
-        {falseBlock = this.yBlock()}
-      else
-        {falseBlock = this.ySentence()}
+      if (this.check('eol')){
+        falseBlock = this.yBlock()
+      } else {
+        falseBlock = this.ySentence()
+        tanbun = true
+      }
     }
 
-    if (this.check('ここまで')) {this.get()}
+    if (tanbun === false) {
+      if (this.check('ここまで')) {
+        this.get()
+      } else {
+        throw new NakoSyntaxError('『もし』文で『ここまで』がありません。', mosi.line)
+      }
+    }
     return {
       type: 'if',
       expr: cond,
