@@ -1260,9 +1260,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['の'], ['から'], ['を']],
     fn: function (a, i, cnt) {
-      if (a instanceof Array)  // 配列ならOK
-        {return a.splice(i, cnt)}
-
+      if (a instanceof Array) {return a.splice(i, cnt)}
       throw new Error('『配列取出』で配列以外を指定。')
     }
   },
@@ -1270,9 +1268,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['の', 'から']],
     fn: function (a) {
-      if (a instanceof Array)  // 配列ならOK
-        {return a.pop()}
-
+      if (a instanceof Array) {return a.pop()}
       throw new Error('『配列ポップ』で配列以外の処理。')
     }
   },
@@ -1291,6 +1287,16 @@ const PluginSystem = {
     type: 'func',
     josi: [['を']],
     fn: function (a) {
+      return JSON.parse(JSON.stringify(a))
+    }
+  },
+  '配列足': { // @配列Aに配列Bを足し合わせて返す。 // @はいれつたす
+    type: 'func',
+    josi: [['に', 'へ', 'と'],['を']],
+    fn: function (a, b) {
+      if (a instanceof Array) {
+        return a.concat(b)
+      }
       return JSON.parse(JSON.stringify(a))
     }
   },
