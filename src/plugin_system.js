@@ -1300,6 +1300,233 @@ const PluginSystem = {
       return JSON.parse(JSON.stringify(a))
     }
   },
+  // @二次元配列処理
+  '表ソート': { // @配列Aの列番号B(0起点)(あるいはキー名)をキーにしてソートする。Aの内容を書き換える。 // @ひょうそーと
+    type: 'func',
+    josi: [['の'],['を']],
+    fn: function (a, no) {
+      if (!a instanceof Array) { throw new Error('『表ソート』には配列を指定する必要があります。') }
+      a.sort((n, m) => {
+        const ns = n[no]
+        const ms = m[no]
+        return ns - ms
+      })
+      return a
+    }
+  },
+  '表ピックアップ': { // @配列Aの列番号B(0起点)(あるいはキー名)で検索文字列Sを含む行を返す // @ひょうぴっくあっぷ
+    type: 'func',
+    josi: [['の'],['から'],['を','で']],
+    fn: function (a, no, s) {
+      if (!a instanceof Array) { throw new Error('『表ピックアップ』には配列を指定する必要があります。') }
+      return a.filter((row) => String(row[no]).indexOf(s) >= 0)
+    }
+  },
+  '表完全一致ピックアップ': { // @配列Aの列番号B(0起点)(あるいはキー名)で検索文字列Sと一致する行を返す // @ひょうぴっくあっぷ
+    type: 'func',
+    josi: [['の'],['から'],['を','で']],
+    fn: function (a, no, s) {
+      if (!a instanceof Array) { throw new Error('『表完全ピックアップ』には配列を指定する必要があります。') }
+      return a.filter((row) => row[no] == s)
+    }
+  },
+  '表検索': { // @二次元配列AでCOL列目(0起点)からキーSを含む行をROW行目から検索して何行目にあるか返す。見つからなければ-1を返す。 // @ひょうけんさく
+    type: 'func',
+    josi: [['の'],['で','に'],['から'],['を']],
+    fn: function (a, col, row, s) {
+      if (!a instanceof Array) { throw new Error('『表検索』には配列を指定する必要があります。') }
+      for (let i = row; i < a.length; i++) {
+        if (a[i][col] === s) return i
+      }
+      return -1
+    }
+  },
+  '表列数': { // @二次元配列Aの列数を調べて返す。 // @ひょうれつすう
+    type: 'func',
+    josi: [['の']],
+    fn: function (a) {
+      if (!a instanceof Array) { throw new Error('『表列数』には配列を指定する必要があります。') }
+      let cols = 1
+      for (let i = 0; i < a.length; i++) {
+        if (a[i].length > cols) {cols = a[i].length}
+      }
+      return cols
+    }
+  },
+  '表行数': { // @二次元配列Aの行数を調べて返す。 // @ひょうぎょうすう
+    type: 'func',
+    josi: [['の']],
+    fn: function (a) {
+      if (!a instanceof Array) { throw new Error('『表行数』には配列を指定する必要があります。') }
+      return a.length
+    }
+  },
+  '表行列交換': { // @二次元配列Aの行と列を交換して返す。 // @ひょうぎょうれつこうかん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (a, sys) {
+      if (!a instanceof Array) { throw new Error('『表行列交換』には配列を指定する必要があります。') }
+      const cols = sys.__exec('表列数', [a])
+      const rows = a.length
+      const res = []
+      for (let r = 0; r < cols; r++) {
+        const row = []
+        res.push(row)
+        for (let c = 0; c < rows; c++) {
+          row[c] = a[c][r]
+        }
+      }
+      return res
+    }
+  },
+  '表右回転': { // @二次元配列Aを90度回転して返す。 // @ひょうみぎかいてん
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (a, sys) {
+      if (!a instanceof Array) { throw new Error('『表右回転』には配列を指定する必要があります。') }
+      const cols = sys.__exec('表列数', [a])
+      const rows = a.length
+      const res = []
+      for (let r = 0; r < cols; r++) {
+        const row = []
+        res.push(row)
+        for (let c = 0; c < rows; c++) {
+          row[c] = a[rows - c - 1][r]
+        }
+      }
+      return res
+    }
+  },
+  '表重複削除': { // @二次元配列AのI列目にある重複項目を削除して返す。 // @ひょうじゅうふくさくじょ
+    type: 'func',
+    josi: [['の'],['を','で']],
+    fn: function (a, i, sys) {
+      if (!a instanceof Array) { throw new Error('『表重複削除』には配列を指定する必要があります。') }
+      const res = []
+      const keys = {}
+      for (let n = 0; n < a.length; n++) {
+        const k = a[n][i]
+        if (undefined === keys[k]) {
+          keys[k] = true
+          res.push(a[n])
+        }
+      }
+      return res
+    }
+  },
+  '表列取得': { // @二次元配列AのI列目を返す。 // @ひょうれつしゅとく
+    type: 'func',
+    josi: [['の'],['を']],
+    fn: function (a, i, sys) {
+      if (!a instanceof Array) { throw new Error('『表列取得』には配列を指定する必要があります。') }
+      const res = a.map(row => row[i])
+      return res
+    }
+  },
+  '表列挿入': { // @二次元配列Aの(0から数えて)I列目に配列Sを挿入して返す // @ひょうれつそうにゅう
+    type: 'func',
+    josi: [['の'],['に','へ'],['を']],
+    fn: function (a, i, s) {
+      if (!a instanceof Array) { throw new Error('『表列挿入』には配列を指定する必要があります。') }
+      const res = []
+      a.forEach((row, idx) => {
+        let nr = []
+        if (i > 0) { nr = nr.concat(row.slice(0, i)) }
+        nr.push(s[idx])
+        nr = nr.concat(row.slice(i))
+        res.push(nr)
+      })
+      return res
+    }
+  },
+  '表列削除': { // @二次元配列Aの(0から数えて)I列目削除して返す // @ひょうれつそうにゅう
+    type: 'func',
+    josi: [['の'],['を']],
+    fn: function (a, i) {
+      if (!a instanceof Array) { throw new Error('『表列削除』には配列を指定する必要があります。') }
+      const res = []
+      a.forEach((row, idx) => {
+        let nr = row.slice(0)
+        nr.splice(i, 1)
+        res.push(nr)
+      })
+      return res
+    }
+  },
+  '表列合計': { // @二次元配列Aの(0から数えて)I列目を合計して返す。 // @ひょうれつごうけい
+    type: 'func',
+    josi: [['の'],['を','で']],
+    fn: function (a, i) {
+      if (!a instanceof Array) { throw new Error('『表列合計』には配列を指定する必要があります。') }
+      let sum = 0
+      a.forEach((row) => sum += row[i])
+      return sum
+    }
+  },
+  '表曖昧検索': { // @二次元配列AのROW行目からCOL列目(0起点)で正規表現Sにマッチする行を検索して何行目にあるか返す。見つからなければ-1を返す。(v1非互換) // @ひょうれつあいまいけんさく
+    type: 'func',
+    josi: [['の'],['から'],['で'],['を']],
+    fn: function (a, row, col, s) {
+      if (!a instanceof Array) { throw new Error('『表曖昧検索』には配列を指定する必要があります。') }
+      const re = new RegExp(s)
+      for (let i = 0; i < a.length; i++) {
+        const row = a[i]
+        if (re.match(row[col])) return i
+      }
+      return -1
+    }
+  },
+  '表正規表現ピックアップ': { // @二次元配列AでI列目(0起点)から正規表現パターンSにマッチする行をピックアップして返す。 // @ひょうせいきひょうげんぴっくあっぷ
+    type: 'func',
+    josi: [['の','で'],['から'],['を']],
+    fn: function (a, col, s) {
+      if (!a instanceof Array) { throw new Error('『表正規表現ピックアップ』には配列を指定する必要があります。') }
+      const re = new RegExp(s)
+      const res = []
+      for (let i = 0; i < a.length; i++) {
+        const row = a[i]
+        if (re.test(row[col])) { res.push(row.slice(0)) }
+      }
+      return res
+    }
+  },
+  // @CSV操作
+  'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
+    type: 'func',
+    josi: [['を', 'の', 'で']],
+    fn: str => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = ','
+      return CSV.parse(str)
+    }
+  },
+  'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
+    type: 'func',
+    josi: [['を', 'の', 'で']],
+    fn: str => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = "\t"
+      return CSV.parse(str)
+    }
+  },
+  '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
+    type: 'func',
+    josi: [['を']],
+    fn: a => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = ','
+      return CSV.stringify(a)
+    }
+  },
+  '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
+    type: 'func',
+    josi: [['を']],
+    fn: a => {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = '\t'
+      return CSV.stringify(a)
+    }
+  },
 
   // @ハッシュ
   'ハッシュキー列挙': { // @ハッシュAのキー一覧を配列で返す。 // @はっしゅきーれっきょ
@@ -1539,43 +1766,6 @@ const PluginSystem = {
     fn: function (tz) {
       const moment = require('moment-timezone')
       moment.tz.setDefault(tz)
-    }
-  },
-  // @CSV処理
-  'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
-    type: 'func',
-    josi: [['を', 'の', 'で']],
-    fn: str => {
-      const CSV = require('csv-lite-js')
-      CSV.options.delimiter = ','
-      return CSV.parse(str)
-    }
-  },
-  'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
-    type: 'func',
-    josi: [['を', 'の', 'で']],
-    fn: str => {
-      const CSV = require('csv-lite-js')
-      CSV.options.delimiter = "\t"
-      return CSV.parse(str)
-    }
-  },
-  '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
-    type: 'func',
-    josi: [['を']],
-    fn: a => {
-      const CSV = require('csv-lite-js')
-      CSV.options.delimiter = ','
-      return CSV.stringify(a)
-    }
-  },
-  '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
-    type: 'func',
-    josi: [['を']],
-    fn: a => {
-      const CSV = require('csv-lite-js')
-      CSV.options.delimiter = '\t'
-      return CSV.stringify(a)
     }
   }
 }
