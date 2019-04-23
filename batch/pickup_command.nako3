@@ -20,7 +20,8 @@ REPOSパス=基本パスを「../」で相対パス展開。
     'nadesiko3-postgresql/src/plugin_postgresql.js',
     'nadesiko3-firebase/plugin_firebase.js',
     'nadesiko3-googlehome/plugin_googlehome.js',
-    'nadesiko3-websocket/plugin_websocket.js'
+    'nadesiko3-websocket/plugin_websocket.js',
+    'nadesiko3-htmlparser/src/plugin_htmlparser.js'
 ]
 
 関数定義とは変数
