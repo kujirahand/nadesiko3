@@ -73,6 +73,8 @@ class NakoCompiler {
   reset () {
     // スタックのグローバル変数とローカル変数を初期化
     this.__varslist = [this.__varslist[0], {}, {}]
+    this.__v0 = this.__varslist[0]
+    this.__v1 = this.__varslist[1]
     this.__vars = this.__varslist[2]
     this.gen.reset()
     this.clearLog()
@@ -108,12 +110,13 @@ class NakoCompiler {
     parser.debug = this.debug
     // 単語に分割
     const tokens = this.tokenize(code, true)
-    for (let i = 0; i < tokens.length; i++) 
-      {if (tokens[i]['type'] === 'code') {
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i]['type'] === 'code') {
         tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
         i--
-      }}
-    
+      }
+    }
+
     if (this.debug && this.debugLexer) {
       console.log('--- lex ---')
       console.log(JSON.stringify(tokens, null, 2))
@@ -156,11 +159,13 @@ class NakoCompiler {
     return this
   }
 
-  run (code) {
+  run (code, fname) {
+    this.parser.filename = fname
     return this._run(code, false)
   }
 
-  runReset (code) {
+  runReset (code, fname) {
+    this.parser.filename = fname
     return this._run(code, true)
   }
 
@@ -192,23 +197,22 @@ class NakoCompiler {
   addPlugin (po) {
     // 変数のメタ情報を確認
     const __v0 = this.__varslist[0]
-    if (__v0.meta === undefined) 
-      {__v0.meta = {}}
-    
+    if (__v0.meta === undefined){ __v0.meta = {} }
+
     // プラグインの値をオブジェクトにコピー
     for (const key in po) {
       const v = po[key]
       this.funclist[key] = v
-      if (v.type === 'func') 
-        {__v0[key] = v.fn}
-       else if (v.type === 'const' || v.type === 'var') {
+      if (v.type === 'func') {
+        __v0[key] = v.fn
+      } else if (v.type === 'const' || v.type === 'var') {
         __v0[key] = v.value
         __v0.meta[key] = {
           readonly: (v.type === 'const')
         }
-      } else 
-        {throw new Error('プラグインの追加でエラー。', null)}
-      
+      } else {
+        throw new Error('プラグインの追加でエラー。', null)
+      }
     }
   }
 
@@ -238,9 +242,9 @@ class NakoCompiler {
    */
   addPluginFile (objName, path, po) {
     this.addPluginObject(objName, po)
-    if (this.pluginfiles[objName] === undefined) 
-      {this.pluginfiles[objName] = path}
-    
+    if (this.pluginfiles[objName] === undefined) {
+      this.pluginfiles[objName] = path
+    }
   }
 
   /**
