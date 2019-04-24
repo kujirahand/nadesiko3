@@ -9,6 +9,7 @@ class NakoParserBase {
     this.debug = false
     this.debugStack = false
     this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
+    this.filename = ''
     this.init()
   }
 
@@ -22,6 +23,10 @@ class NakoParserBase {
     this.index = 0 // tokens[] のどこまで読んだかを管理する
     this.stack = [] // 計算用のスタック ... 直接は操作せず、pushStack() popStack() を介して使う
     this.y = [] // accept()で解析済みのトークンを配列で得るときに使う
+  }
+
+  setFilename (fname) {
+    this.filename = fname
   }
 
   setFuncList (funclist) {
