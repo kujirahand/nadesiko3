@@ -29,13 +29,13 @@ const PluginSystem = {
         sys.__v0[name] = value
       }
       // 前回設定したタイマーが実行中ならクリア
-      if (sys.__timeout)
-        {for (const t of sys.__timeout) {clearTimeout(t)}}
-
+      if (sys.__timeout) {
+        for (const t of sys.__timeout) { clearTimeout(t) }
+      }
       sys.__timeout = []
-      if (sys.__interval)
-        {for (const t of sys.__interval) {clearInterval(t)}}
-
+      if (sys.__interval) {
+        for (const t of sys.__interval) { clearInterval(t) }
+      }
       sys.__interval = []
     }
   },
@@ -80,9 +80,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'と']],
     fn: function (s, sys) {
-      if (!sys.silent)
-        {console.log(s)}
-
+      if (!sys.silent){ console.log(s) }
       sys.__varslist[0]['表示ログ'] += (s + '\n')
     },
     return_none: true
@@ -1206,15 +1204,12 @@ const PluginSystem = {
     fn: function (f, a, sys) {
       let ufunc = f
       if (typeof f === 'string') {
-        ufunc = sys.__v1[f]
-        if (ufunc === undefined)
-          {ufunc = sys.__v0[f]}
-
-        if (!ufunc) {throw new Error('関数『' + f + '』が見当たりません。')}
+        ufunc = sys.__findVar(f)
+        if (!ufunc) { throw new Error('関数『' + f + '』が見当たりません。') }
       }
-      if (a instanceof Array)  // 配列ならOK
-        {return a.sort(ufunc)}
-
+      if (a instanceof Array) {
+        return a.sort(ufunc)
+      }
       throw new Error('『配列カスタムソート』で配列以外が指定されました。')
     }
   },

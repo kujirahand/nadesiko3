@@ -97,7 +97,7 @@ class CNako3 extends NakoCompiler {
       return
     }
     try {
-      this.runReset(src)
+      this.runReset(src, opt.mainfile)
     } catch (e) {
       if (this.debug) {
           throw e
@@ -202,5 +202,6 @@ class CNako3 extends NakoCompiler {
 if (require.main === module) { // 直接実行する
   const cnako3 = new CNako3()
   cnako3.execCommand()
-} else  // モジュールとして使う場合
-  {module.exports = CNako3}
+} else { // モジュールとして使う場合
+  module.exports = CNako3
+}

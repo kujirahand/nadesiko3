@@ -738,61 +738,57 @@ class NakoGen {
     let funcNameS
     const res = this.findVar(funcName)
     if (res === null) {
-      console.log(this.funclist)
       throw new NakoGenError(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node.line)
     }
     let func
     if (res.i === 0) { // plugin function
       func = this.funclist[funcName]
       funcNameS = `__v0["${funcName}"]`
-      if (func.type !== 'func')
-        {throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.line)}
-
+      if (func.type !== 'func') {
+        throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.line)
+      }
     } else {
       func = this.nako_func[funcName]
-      if (func === undefined)
-        // throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.line)
-        // 無名関数の可能性
-        {func = {return_none: false}}
+      // 無名関数の可能性
+      if (func === undefined) {func = {return_none: false}}
 
       funcNameS = `__varslist[${res.i}]["${funcName}"]`
     }
-    let code = funcNameS
+    // 関数の参照渡しか？
+    if (node.type === 'func_pointer') {
+      return funcNameS
+    }
     // 関数の参照渡しでない場合
-    if (node.type !== 'func_pointer') {
-      // 関数定義より助詞を一つずつ調べる
-      const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
-      const args = argsInfo[0]
-      const argsOpts = argsInfo[1]
-      // function
-      if (typeof (this.used_func[funcName]) === 'undefined')
-        {this.used_func[funcName] = true}
+    // 関数定義より助詞を一つずつ調べる
+    const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
+    const args = argsInfo[0]
+    const argsOpts = argsInfo[1]
+    // function
+    if (typeof (this.used_func[funcName]) === 'undefined') {
+      this.used_func[funcName] = true
+    }
 
-      // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
-      args.push('__self')
-      let funcBegin = ''
-      let funcEnd = ''
-      // setter?
-      if (node['setter']) {
-        funcBegin = ';__self.isSetter = true;'
-        funcEnd = ';__self.isSetter = false;'
-      }
-      // 変数「それ」が補完されていることをヒントとして出力
-      if (argsOpts['sore'])
-        {funcBegin += '/*[sore]*/'}
+    // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
+    args.push('__self')
+    let funcBegin = ''
+    let funcEnd = ''
+    // setter?
+    if (node['setter']) {
+      funcBegin = ';__self.isSetter = true;'
+      funcEnd = ';__self.isSetter = false;'
+    }
+    // 変数「それ」が補完されていることをヒントとして出力
+    if (argsOpts['sore']){funcBegin += '/*[sore]*/'}
 
-      // 関数呼び出しコードの構築
-      let argsCode = args.join(',')
-      code += `(${argsCode})`
-      if (func.return_none)
-        {code = `${funcBegin}${code};${funcEnd}\n`}
-       else {
-        code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
-        // ...して
-        if (node.josi === 'して')
-          {code += ';\n'}
-
-      }
+    // 関数呼び出しコードの構築
+    let argsCode = args.join(',')
+    let code = `${funcNameS}(${argsCode})`
+    if (func.return_none) {
+      code = `${funcBegin}${code};${funcEnd}\n`
+    } else {
+      code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
+      // ...して
+      if (node.josi === 'して'){code += ';\n'}
     }
     return code
   }
