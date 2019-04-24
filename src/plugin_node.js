@@ -461,7 +461,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'OS取得': { // @OSプラットフォームを返す(darwin|win32|linux) // @OSしゅとく
+  'OS取得': { // @OSプラットフォームを返す(darwin/win32/linux) // @OSしゅとく
     type: 'func',
     josi: [],
     fn: function (sys) {
