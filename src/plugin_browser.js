@@ -1403,6 +1403,35 @@ const PluginBrowser = {
       const ws = sys.__v0['WS:SOCKET']
       ws.close()
     }
+  },
+  // @オーディオ
+  'オーディオ開': { // @オーディオファイルのURLを指定して、オーディオを読み込み、Audioオブジェクトを返す // @おーでぃおひらく
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (url, sys) {
+      const a = new Audio()
+      a.src = url
+      return a
+    },
+    return_none: false
+  },
+  'オーディオ再生': { // @AudioオブジェクトOBJを指定してオーディをを再生 // @おーでぃおさいせい
+    type: 'func',
+    josi: [['を']],
+    fn: function (obj, sys) {
+      if (!obj) throw new Error('オーディオ再生する前に、オーディオ開くで音声ファイルを読み込んでください')
+      obj.play()
+    },
+    return_none: true
+  },
+  'オーディオ停止': { // @AudioオブジェクトOBJを指定してオーディをを停止 // @おーでぃおていし
+    type: 'func',
+    josi: [['を']],
+    fn: function (obj, sys) {
+      if (!obj) throw new Error('オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください')
+      obj.pause()
+    },
+    return_none: true
   }
 }
 
