@@ -178,10 +178,40 @@ class CNako3 extends NakoCompiler {
       let fullpath = pname
       try {
         let plugmod = {}
-        if (fullpath.substr(0, 1) === '.') { // 相対パス指定
+        // プラグインフォルダを検索
+        // フルパス指定か相対パスの指定か?
+        const p1 = fullpath.substr(0, 1)
+        if (p1 === '/') {
+          // フルパス指定なので何もしない
+        }
+        else if (p1 === '.') {
+          // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
           const basedir = path.dirname(this.filename)
           fullpath = path.resolve(path.join(basedir, pname))
         }
+        else {
+          // 同じフォルダにあるか？
+          const basedir = path.dirname(this.filename)
+          fullpath = path.resolve(path.join(basedir, pname))
+          if (!fs.existsSync(fullpath)) {
+            // node_modules 以下にあるか？
+            fullpath = path.resolve(path.join(basedir, 'node_modules', pname))
+            if (!fs.existsSync(fullpath)) {
+              // NAKO_HOME 以下にあるか？
+              if (process.env['NAKO_HOME']) {
+                fullpath = path.resolve(path.join(process.env['NAKO_HOME'], 'node_modules', pname))
+              }
+              if (!fs.existsSync(fullpath)) {
+                // NODE_PATH 以下にあるか？
+                fullpath = path.resolve(path.join(process.env.NODE_PATH, 'node_modules', pname))
+                if (!fs.existsSync(fullpath)) {
+                  fullpath = pname
+                }
+              }
+            }
+          }
+        }
+        // モジュールを実際に取り込む
         plugmod = require(fullpath)
         this.addPluginFile(pname, fullpath, plugmod)
         // this.funclistを更新する
