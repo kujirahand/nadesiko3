@@ -486,7 +486,7 @@ const PluginBrowser = {
   },
   'マウスX': {type: 'const', value: 0}, // @まうすX
   'マウスY': {type: 'const', value: 0}, // @まうすY
-  'マウス押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすおしたとき
+  'マウス押時': { // @無名関数FでDOMに対してマウスボタンを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすおしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
@@ -504,7 +504,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'マウス移動時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすいどうしたとき
+  'マウス移動時': { // @無名関数FでDOMに対してマウスカーソルが移動した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすいどうしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
@@ -521,7 +521,7 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  'マウス離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。 // @まうすはなしたとき
+  'マウス離時': { // @無名関数FでDOMに対してマウスボタンを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすはなしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     fn: function (func, dom, sys) {
@@ -533,6 +533,84 @@ const PluginBrowser = {
         sys.__v0['マウスY'] = e.clientY - box.top
         sys.__v0['対象'] = e.target
         sys.__v0['対象イベント'] = e
+        return func(e, sys)
+      }
+    },
+    return_none: true
+  },
+  'タッチX': {type: 'const', value: 0}, // @たっちX
+  'タッチY': {type: 'const', value: 0}, // @たっちY
+  'タッチ配列': {type: 'const', value: []}, // @たっちはいれつ
+  'タッチイベント計算': { // @タッチイベントのイベント変数を与えることで座標などを計算する関数(自動的に呼ばれるので明示的に呼ぶ必要はない) // @たっちいべんとけいさん
+    type: 'func',
+    josi: [['の']],
+    fn: function (e, sys) {
+      const box = e.target.getBoundingClientRect()
+      const touches = e.changedTouches
+      if (touches.length <= 0) return
+      const ts = []
+      for (let i = 0; i < touches.length; i++) {
+        const t = touches[i]
+        const tx = t.pageX - box.left
+        const ty = t.pageY - box.top
+        if (i == 0) {
+          sys.__v0['タッチX'] = tx
+          sys.__v0['タッチY'] = ty
+        }
+        ts.push([tx, ty])
+      }
+      sys.__v0['タッチ配列'] = ts
+      sys.__v0['対象'] = e.target
+      sys.__v0['対象イベント'] = e
+    }
+  },
+  'タッチ開始時': { // @無名関数FでDOMに対してタッチを開始した時に実行するイベントを設定。『タッチX』『タッチY』また『タッチ配列』に配列で[[x1,y1],[x2,y2]...]座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。// @たっちかいししたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['ontouchstart'] = (e) => {
+        sys.__exec('タッチイベント計算', [e, sys])
+        return func(e, sys)
+      }
+    },
+    return_none: true
+  },
+  'タッチ時': { // @無名関数FでDOMに対してタッチして指を動かした時に実行するイベントを設定。『タッチX』『タッチY』また『タッチ配列』に配列で[[x1,y1],[x2,y2]...]座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。// @たっちしたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['ontouchmove'] = (e) => {
+        sys.__exec('タッチイベント計算', [e, sys])
+        return func(e, sys)
+      }
+    },
+    return_none: true
+  },
+  'タッチ終了時': { // @無名関数FでDOMに対してタッチして指を離した時のイベントを設定。『タッチX』『タッチY』また『タッチ配列』に配列で[[x1,y1],[x2,y2]...]座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。// @たっちしゅうりょうしたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['ontouchend'] = (e) => {
+        sys.__exec('タッチイベント計算', [e, sys])
+        return func(e, sys)
+      }
+    },
+    return_none: true
+  },
+  'タッチキャンセル時': { // @無名関数FでDOMに対してタッチイベントをキャンセルした時の動作を設定。『タッチX』『タッチY』また『タッチ配列』に配列で[[x1,y1],[x2,y2]...]座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。// @たっちきゃんせるしたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    fn: function (func, dom, sys) {
+      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      dom['ontouchcancel'] = (e) => {
+        sys.__exec('タッチイベント計算', [e, sys])
         return func(e, sys)
       }
     },
