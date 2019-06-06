@@ -14,7 +14,7 @@
 
 コンパイル環境が必要になるので、ビルドツールをインストールする。PowerShellから以下のコマンドを実行すると、自動的に必要なツールが入る。(Windowsのユーザー名に日本語が使われているとうまくコンパイルできないという情報もあるので注意。)
 
-また、Gitなどのツールをインストールするために、Chocolatey(https://chocolatey.org/)をインストールしておく。
+また、Gitなどのツールをインストールするために、Chocolatey( https://chocolatey.org/ )をインストールしておく。
 
 ```
 # Chocolatey でGitをインストール
@@ -27,7 +27,7 @@ npm install -g windows-build-tools
 
 ## 【macOS】
 
-Homebrew(そしてXcode)をインストールしておく。
+Homebrew( https://brew.sh/index_ja ) (そしてXcode)をインストールしておく。
 
 ## 【共通】
 
