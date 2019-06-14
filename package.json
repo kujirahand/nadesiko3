@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.0.61",
+  "version": "3.0.62",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -107,7 +107,6 @@
     "isomorphic-fetch": "^2.2.1",
     "lite-server": "^2.4.0",
     "mocha": "^5.2.0",
-    "nadesiko3-hoge": "0.0.2",
     "prop-types": "^15.7.2",
     "pump": "^3.0.0",
     "source-map": "^0.7.3",
