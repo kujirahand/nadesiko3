@@ -282,9 +282,6 @@ class NakoLexer {
           value = rule.cb(value)
         }
 
-        let type = rule.name
-        let m_len = m[0].length
-
         if (!isRangeComment) {
           switch (rule.name) {
             case 'line_comment_sharp':
@@ -301,17 +298,13 @@ class NakoLexer {
               break
           }
         } else if (rule.name === 'doctest_code_range_comment_end' || rule.name === 'range_comment_end') {
-          if (rule.name === 'doctest_code_range_comment_end') {
-            m_len -= 2
-          }
           value = value.slice(0, -2)
         }
 
-        if (!isRangeComment && (rule.name === 'line_comment_sharp' || rule.name === 'line_comment_slash')) {
-          type = 'line_comment'
-        } else if ((isRangeComment && rule.name === 'doctest_code_range_comment_end')
-          || (!isRangeComment && rule.name === 'doctest_code_line_comment')) {
-          type = 'doctest_code'
+        let m_len = m[0].length
+
+        if (isRangeComment && rule.name === 'doctest_code_range_comment_end') {
+          m_len -= 2
         }
 
         // ソースを進める
@@ -327,6 +320,17 @@ class NakoLexer {
             josi = j[0]
             src = src.substr(j[0].length)
           }
+        }
+
+        let type
+
+        if (!isRangeComment && (rule.name === 'line_comment_sharp' || rule.name === 'line_comment_slash')) {
+          type = 'line_comment'
+        } else if ((isRangeComment && rule.name === 'doctest_code_range_comment_end')
+          || (!isRangeComment && rule.name === 'doctest_code_line_comment')) {
+          type = 'doctest_code'
+        } else {
+          type = rule.name
         }
 
         if ((!isRangeComment && type === 'range_comment_begin') || (isRangeComment && type === 'range_comment_end')) {
