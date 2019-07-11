@@ -301,14 +301,14 @@ class NakoLexer {
           value = value.slice(0, -2)
         }
 
-        let m_len = m[0].length
+        let mLen = m[0].length
 
         if (isRangeComment && rule.name === 'doctest_code_range_comment_end') {
-          m_len -= 2
+          mLen -= 2
         }
 
         // ソースを進める
-        src = src.substr(m_len)
+        src = src.substr(mLen)
         if (type === 'eol' && value === '\n') {
           value = line++
         }
