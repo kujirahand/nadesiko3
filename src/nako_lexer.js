@@ -285,14 +285,17 @@ class NakoLexer {
         let type = rule.name
         let m_len = m[0].length
 
-        if (isRangeComment && (rule.name === 'doctest_code_range_comment_end' || (rule.name === 'range_comment_end' && value !== '*/'))) {
+        if (!isRangeComment && rule.name === 'doctest_code_line_comment') {
+          value = value.slice(value.indexOf('>'))
+        } else if (isRangeComment && (rule.name === 'doctest_code_range_comment_end' || (rule.name === 'range_comment_end' && value !== '*/'))) {
           m_len -= 2
           value = value.slice(0, -2)
-          if (rule.name === 'doctest_code_range_comment_end') {
-            type = 'doctest_code'
-          } else {
-            type = 'range_comment'
-          }
+        }
+
+        if (isRangeComment && rule.name === 'range_comment_end' && value !== '*/') {
+          type = 'range_comment'
+        } else if ((isRangeComment && rule.name === 'doctest_code_range_comment_end') || (!isRangeComment && rule.name === 'doctest_code_line_comment')) {
+          type = 'doctest_code'
         }
 
         // ソースを進める
