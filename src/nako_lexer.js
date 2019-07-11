@@ -296,9 +296,10 @@ class NakoLexer {
         }
 
         // ソースを進める
-        src = src.substr(m[0].length)
-        if (rule.name === 'eol' && value === '\n')
-          {value = line++}
+        src = src.substr(m_len)
+        if (type === 'eol' && value === '\n') {
+          value = line++
+        }
 
         let josi = ''
         if (rule.readJosi) {
