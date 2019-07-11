@@ -13,6 +13,7 @@ const josiRE = josi.josiRE
 // 字句解析ルールの一覧
 const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
+const rangeCommentRules = lexRules.rangeCommentRules
 const trimOkurigana = lexRules.trimOkurigana
 
 class NakoLexer {
@@ -163,8 +164,7 @@ class NakoLexer {
     }
   }
 
-  replaceWord (tokens) {
-    let comment = []
+  replaceWord(tokens) {
     let i = 0
     const getLastType = () => {
       if (i <= 0) {return 'eol'}
@@ -220,26 +220,24 @@ class NakoLexer {
         tokens.splice(i, 1)
         continue
       }
-      // コメントを飛ばす
-      if (t.type === 'line_comment' || t.type === 'range_comment') {
-        comment.push(t.value)
-        tokens.splice(i, 1)
-        continue
-      }
-      // 改行にコメントを埋め込む
-      if (t.type === 'eol') {
-        t.value = comment.join('/')
-        comment = []
-      }
       i++
     }
   }
 
   tokenize (src, line) {
     this.result = []
+    let isRangeComment = false
     while (src !== '') {
       let ok = false
-      for (const rule of rules) {
+      let rules_
+
+      if (isRangeComment) {
+        rules_ = rangeCommentRules
+      } else {
+        rules_ = rules
+      }
+
+      for (const rule of rules_) {
         const m = rule.pattern.exec(src)
         if (!m) {continue}
         ok = true
@@ -280,7 +278,23 @@ class NakoLexer {
         }
         // 値を変換する必要があるか？
         let value = m[0]
-        if (rule.cb) {value = rule.cb(value)}
+        if (rule.cb) {
+          value = rule.cb(value)
+        }
+
+        let type = rule.name
+        let m_len = m[0].length
+
+        if (isRangeComment && (rule.name === 'doctest_code_range_comment_end' || (rule.name === 'range_comment_end' && value !== '*/'))) {
+          m_len -= 2
+          value = value.slice(0, -2)
+          if (rule.name === 'doctest_code_range_comment_end') {
+            type = 'doctest_code'
+          } else {
+            type = 'range_comment'
+          }
+        }
+
         // ソースを進める
         src = src.substr(m[0].length)
         if (rule.name === 'eol' && value === '\n')
@@ -294,8 +308,13 @@ class NakoLexer {
             src = src.substr(j[0].length)
           }
         }
+
+        if ((!isRangeComment && type === 'range_comment_begin') || (isRangeComment && type === 'range_comment_end' && value === '*/')) {
+          isRangeComment = !isRangeComment
+        }
+
         this.result.push({
-          type: rule.name,
+          type: type,
           value: value,
           line: line,
           josi: josi

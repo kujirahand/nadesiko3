@@ -111,9 +111,16 @@ class NakoCompiler {
     // 単語に分割
     const tokens = this.tokenize(code, true)
     for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i]['type'] === 'code') {
-        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
-        i--
+      switch (tokens[i]['type']) {
+        case 'code':
+          tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
+          i--
+          break
+        case 'doctest_code':
+          tokens[i]['tokenizeValue'] = this.tokenize(tokens[i]['value'].substring(1), false, tokens[i]['line'])
+          break
+        default:
+          break
       }
     }
 
