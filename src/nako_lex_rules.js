@@ -20,7 +20,7 @@ module.exports = {
     {name: 'line_comment_sharp', pattern: /^#[^\n]*/},
     {name: 'doctest_code_line_comment', pattern: /^\/\/\s*>[^\n]*/},
     {name: 'line_comment_slash', pattern: /^\/\/[^\n]*/},
-    {name: 'range_comment_begin', pattern: /^\/\*/},
+    {name: 'range_comment_begin', pattern: /^\/\*[^\n]*/},
     {name: 'def_func', pattern: /^●/},
     {name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt},
     {name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat},

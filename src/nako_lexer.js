@@ -290,6 +290,7 @@ class NakoLexer {
             case 'line_comment_sharp':
               value = value.slice(1)
               break
+            case 'range_comment_begin':
             case 'line_comment_slash':
               value = value.slice(2)
               break
@@ -299,16 +300,17 @@ class NakoLexer {
             default:
               break
           }
-        } else if (rule.name === 'doctest_code_range_comment_end' || (rule.name === 'range_comment_end' && value !== '*/')) {
-          m_len -= 2
+        } else if (rule.name === 'doctest_code_range_comment_end' || rule.name === 'range_comment_end') {
+          if (rule.name === 'doctest_code_range_comment_end') {
+            m_len -= 2
+          }
           value = value.slice(0, -2)
         }
 
-        if (isRangeComment && rule.name === 'range_comment_end' && value !== '*/') {
-          type = 'range_comment'
-        } else if (!isRangeComment && (rule.name === 'line_comment_sharp' || rule.name === 'line_comment_slash')) {
+        if (!isRangeComment && (rule.name === 'line_comment_sharp' || rule.name === 'line_comment_slash')) {
           type = 'line_comment'
-        } else if ((isRangeComment && rule.name === 'doctest_code_range_comment_end') || (!isRangeComment && rule.name === 'doctest_code_line_comment')) {
+        } else if ((isRangeComment && rule.name === 'doctest_code_range_comment_end')
+          || (!isRangeComment && rule.name === 'doctest_code_line_comment')) {
           type = 'doctest_code'
         }
 
@@ -327,8 +329,7 @@ class NakoLexer {
           }
         }
 
-        if ((!isRangeComment && type === 'range_comment_begin') || (isRangeComment && type === 'range_comment_end' && value === '*/')) {
-          value = ''
+        if ((!isRangeComment && type === 'range_comment_begin') || (isRangeComment && type === 'range_comment_end')) {
           isRangeComment = !isRangeComment
         }
 
