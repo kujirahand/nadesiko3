@@ -287,8 +287,9 @@ class NakoLexer {
             case 'line_comment_sharp':
               value = value.slice(1)
               break
-            case 'range_comment_begin':
             case 'line_comment_slash':
+            case 'range_comment_begin':
+            case 'range_comment_single':
               value = value.slice(2)
               break
             case 'doctest_code_line_comment':
@@ -297,7 +298,9 @@ class NakoLexer {
             default:
               break
           }
-        } else if (rule.name === 'doctest_code_range_comment_end' || rule.name === 'range_comment_end') {
+        }
+
+        if ((!isRangeComment && rule.name === 'range_comment_single') || (isRangeComment && (rule.name === 'doctest_code_range_comment_end' || rule.name === 'range_comment_end'))) {
           value = value.slice(0, -2)
         }
 
