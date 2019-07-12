@@ -64,10 +64,7 @@ class NakoParser extends NakoParserBase {
       }}
 
     // 先読みして初めて確定する構文
-    if (this.accept([this.yLet])) {
-      return this.y[0]
-    }
-
+    if (this.accept([this.yLet])) {return this.y[0]}
     if (this.accept([this.yDefFuncWithLineComment]
       || this.accept([this.yDefFuncWithRangeComment])
       || this.accept([this.yDefFuncWithRangeCommentSingle]))) {
