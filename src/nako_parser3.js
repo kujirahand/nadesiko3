@@ -71,6 +71,7 @@ class NakoParser extends NakoParserBase {
       return this.y[0]
     }
 
+    // 行末のコメントをEOLに統合
     if (this.accept(['line_comment', 'eol'])
       || this.accept(['doctest_code', 'eol'])
       || this.accept(['range_comment_single', 'eol'])) {
@@ -79,12 +80,14 @@ class NakoParser extends NakoParserBase {
       return eol
     }
 
+    // 1行のrange_commentをcommentとして処理
     if (this.accept(['range_comment_single'])) {
       let rangeComment = this.y[0]
       rangeComment.type = 'comment'
       return rangeComment
     }
 
+    // 複数行のrange_commentを処理
     if (this.accept(['range_comment_begin', 'eol'])) {
       let value = this.y[0].value + '\n'
 
