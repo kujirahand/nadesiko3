@@ -85,6 +85,7 @@ module.exports = {
     }
   ],
   rangeCommentRules: [
+    // 上から順にマッチさせていく
     eolNewLine,
     space,
     {name: 'doctest_code_range_comment_end', pattern: /^>[^\n]*\*\//},
