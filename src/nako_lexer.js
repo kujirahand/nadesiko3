@@ -304,6 +304,7 @@ class NakoLexer {
 
         let mLen = m[0].length
 
+        // range_commentの終端部を再度読み込ませることで、range_commentの区切り目を明確にする
         if (isRangeComment && rule.name === 'doctest_code_range_comment_end') {
           mLen -= 2
         }
