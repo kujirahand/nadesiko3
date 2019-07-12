@@ -312,7 +312,7 @@ class NakoLexer {
 
         // ソースを進める
         src = src.substr(mLen)
-        if (type === 'eol' && value === '\n') {
+        if (rule.name === 'eol' && value === '\n') {
           value = line++
         }
 
