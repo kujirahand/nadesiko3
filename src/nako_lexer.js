@@ -164,7 +164,7 @@ class NakoLexer {
     }
   }
 
-  replaceWord(tokens) {
+  replaceWord (tokens) {
     let i = 0
     const getLastType = () => {
       if (i <= 0) {return 'eol'}
@@ -278,9 +278,7 @@ class NakoLexer {
         }
         // 値を変換する必要があるか？
         let value = m[0]
-        if (rule.cb) {
-          value = rule.cb(value)
-        }
+        if (rule.cb) {value = rule.cb(value)}
 
         if (!isRangeComment) {
           switch (rule.name) {
@@ -312,9 +310,8 @@ class NakoLexer {
 
         // ソースを進める
         src = src.substr(mLen)
-        if (rule.name === 'eol' && value === '\n') {
-          value = line++
-        }
+        if (rule.name === 'eol' && value === '\n')
+          {value = line++}
 
         let josi = ''
         if (rule.readJosi) {
