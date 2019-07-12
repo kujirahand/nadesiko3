@@ -167,6 +167,7 @@ class NakoGen {
       const f = this.nako_func[key].fn
       nakoFuncCode += '' +
         `//[DEF_FUNC name='${key}']\n` +
+        `/* ${this.nako_func[key].docstring} */\n` +
         `__v1["${key}"]=${f};\n;` +
         `//[/DEF_FUNC name='${key}']\n`
     }
@@ -501,7 +502,17 @@ class NakoGen {
       this.nako_func[name] = {
         'josi': node.name.meta.josi,
         'fn': '',
-        'type': 'func'
+        'type': 'func',
+        'docstring': ''
+      }
+      for (const token of node.docstring) {
+        if (token.type === 'eol') {
+          this.nako_func[name]['docstring'] += '\n'
+        } else if (token.type === 'doctest_code') {
+          this.nako_func[name]['docstring'] += '> ' + this.convGen(token.tokenizeValue)
+        } else {
+          this.nako_func[name]['docstring'] += token.value
+        }
       }
     }
     // ブロックを解析
