@@ -298,7 +298,8 @@ class NakoLexer {
           }
         }
 
-        if ((!isRangeComment && rule.name === 'range_comment_single') || (isRangeComment && (rule.name === 'doctest_code_range_comment_end' || rule.name === 'range_comment_end'))) {
+        if ((!isRangeComment && rule.name === 'range_comment_single')
+          || (isRangeComment && (rule.name === 'doctest_code_range_comment_end' || rule.name === 'range_comment_end'))) {
           value = value.slice(0, -2)
         }
 
