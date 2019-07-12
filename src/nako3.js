@@ -120,6 +120,8 @@ class NakoCompiler {
           i--
           break
         case 'doctest_code':
+          // 単語分割されたDoctestのコード
+          // (valueには元のコードを字句解析せずに入れておくことで、Docstringからのマニュアル作成等に利用できるようにする)
           tokens[i]['tokenizeValue'] = this.tokenize(tokens[i]['value'].substring(1), false, tokens[i]['line'])
           doctestTokens.push(tokens[i])
           break
