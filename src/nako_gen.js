@@ -505,6 +505,8 @@ class NakoGen {
         'type': 'func',
         'docstring': ''
       }
+
+      // Docstringを生成
       for (const token of node.docstring) {
         if (token.type === 'eol') {
           this.nako_func[name]['docstring'] += '\n'
