@@ -205,15 +205,12 @@ class NakoParser extends NakoParserBase {
     return null
   }
 
-  yDefFunc() {
-    if (!this.check('def_func')) {
-      return null
-    }
-    const def = this.get(); // ●
-    let defArgs = [];
-    if (this.check('(')) {
-      defArgs = this.yDefFuncReadArgs()
-    } // // lexerでも解析しているが再度詳しく
+  yDefFunc () {
+    if (!this.check('def_func')) {return null}
+    const def = this.get() // ●
+    let defArgs = []
+    if (this.check('('))
+      {defArgs = this.yDefFuncReadArgs()} // // lexerでも解析しているが再度詳しく
 
     const funcName = this.get()
     if (funcName.type !== 'func')
