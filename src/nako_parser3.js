@@ -68,17 +68,32 @@ class NakoParser extends NakoParserBase {
       return this.y[0]
     }
 
-    // Docstringなしの関数定義含む
-    if (this.accept([this.yDefFuncWithLineComment])) {
+    if (this.accept([this.yDefFuncWithLineComment]
+      || this.accept([this.yDefFuncWithRangeComment])
+      || this.accept([this.yDefFuncWithRangeCommentSingle]))) {
       return this.y[0]
     }
 
-    if (this.accept([this.yDefFuncWithRangeComment])) {
-      return this.y[0]
+    if (this.accept(['line_comment', 'eol'])
+      || this.accept(['doctest_code', 'eol'])
+      || this.accept(['range_comment_single', 'eol'])) {
+      let eol = this.y[1]
+      eol.value = this.y[0].value
+      return eol
     }
 
-    if (this.accept([this.yDefFuncWithRangeCommentSingle])) {
-      return this.y[0]
+    if (this.accept(['range_comment_begin', 'eol'])) {
+      let value = this.y[0].value + '\n'
+
+      while (this.accept(['range_comment', 'eol']) || this.accept(['doctest_code', 'eol'])) {
+        value += this.y[0].value + '\n'
+      }
+
+      if (this.accept(['range_comment_end', 'eol'])) {
+        let eol = this.y[1]
+        eol.value = value + this.y[0].value
+        return eol
+      }
     }
 
     if (this.accept([this.yCall])) { // 関数呼び出しの他、各種構文の実装
