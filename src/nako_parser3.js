@@ -82,6 +82,12 @@ class NakoParser extends NakoParserBase {
       return eol
     }
 
+    if (this.accept(['range_comment_single'])) {
+      let rangeComment = this.y[0]
+      rangeComment.type = 'comment'
+      return rangeComment
+    }
+
     if (this.accept(['range_comment_begin', 'eol'])) {
       let value = this.y[0].value + '\n'
 
@@ -93,6 +99,13 @@ class NakoParser extends NakoParserBase {
         let eol = this.y[1]
         eol.value = value + this.y[0].value
         return eol
+      }
+
+      if (this.accept(['range_comment_end'])) {
+        let rangeComment = this.y[0]
+        rangeComment.type = 'comment'
+        rangeComment.value = value + rangeComment.value
+        return rangeComment
       }
     }
 
