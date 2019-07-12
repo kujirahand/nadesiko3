@@ -64,8 +64,22 @@ class NakoParser extends NakoParserBase {
       }}
 
     // 先読みして初めて確定する構文
-    if (this.accept([this.yLet])) {return this.y[0]}
-    if (this.accept([this.yDefFunc])) {return this.y[0]}
+    if (this.accept([this.yLet])) {
+      return this.y[0]
+    }
+
+    if (this.accept([this.yDefFuncWithLineComment])) {
+      return this.y[0]
+    }
+
+    if (this.accept([this.yDefFuncWithRangeComment])) {
+      return this.y[0]
+    }
+
+    if (this.accept([this.yDefFuncWithRangeCommentSingle])) {
+      return this.y[0]
+    }
+
     if (this.accept([this.yCall])) { // 関数呼び出しの他、各種構文の実装
       const c1 = this.y[0]
       if (c1.josi === 'して') { // 連文をblockとして接続する(もし構文、逐次実行構文などのため)
@@ -111,12 +125,66 @@ class NakoParser extends NakoParserBase {
     return a
   }
 
-  yDefFunc () {
-    if (!this.check('def_func')) {return null}
-    const def = this.get() // ●
-    let defArgs = []
-    if (this.check('('))
-      {defArgs = this.yDefFuncReadArgs()} // // lexerでも解析しているが再度詳しく
+  yDefFuncWithLineComment() {
+    let docstring = []
+
+    while (this.accept(['line_comment', 'eol']) || this.accept(['doctest_code', 'eol'])) {
+      docstring = docstring.concat(this.y)
+    }
+
+    if (this.accept([this.yDefFunc])) {
+      let token = this.y[0]
+      token.docstring = docstring
+      return token
+    } else {
+      return null
+    }
+  }
+
+  yDefFuncWithRangeComment() {
+    let docstring = []
+
+    if (this.accept(['range_comment_begin', 'eol'])) {
+      docstring = docstring.concat(this.y)
+
+      while (this.accept(['range_comment', 'eol']) || this.accept(['doctest_code', 'eol'])) {
+        docstring = docstring.concat(this.y)
+      }
+
+      if (this.accept(['range_comment_end', 'eol'])) {
+        docstring = docstring.concat(this.y)
+        if (this.accept([this.yDefFunc])) {
+          let token = this.y[0]
+          token.docstring = docstring
+          return token
+        }
+      }
+    }
+
+    return null
+  }
+
+  yDefFuncWithRangeCommentSingle() {
+    if (this.accept(['range_comment_single', 'eol'])) {
+      const docstring = this.y
+      if (this.accept([this.yDefFunc])) {
+        let token = this.y[0]
+        token.docstring = docstring
+        return token
+      }
+    }
+    return null
+  }
+
+  yDefFunc() {
+    if (!this.check('def_func')) {
+      return null
+    }
+    const def = this.get(); // ●
+    let defArgs = [];
+    if (this.check('(')) {
+      defArgs = this.yDefFuncReadArgs()
+    } // // lexerでも解析しているが再度詳しく
 
     const funcName = this.get()
     if (funcName.type !== 'func')
