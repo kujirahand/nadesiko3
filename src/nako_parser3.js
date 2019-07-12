@@ -68,6 +68,7 @@ class NakoParser extends NakoParserBase {
       return this.y[0]
     }
 
+    // Docstringなしの関数定義含む
     if (this.accept([this.yDefFuncWithLineComment])) {
       return this.y[0]
     }
