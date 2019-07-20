@@ -13,7 +13,6 @@ const josiRE = josi.josiRE
 // 字句解析ルールの一覧
 const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
-const rangeCommentRules = lexRules.rangeCommentRules
 const trimOkurigana = lexRules.trimOkurigana
 
 class NakoLexer {
@@ -165,6 +164,7 @@ class NakoLexer {
   }
 
   replaceWord (tokens) {
+    let comment = []
     let i = 0
     const getLastType = () => {
       if (i <= 0) {return 'eol'}
@@ -220,24 +220,26 @@ class NakoLexer {
         tokens.splice(i, 1)
         continue
       }
+      // コメントを飛ばす
+      if (t.type === 'line_comment' || t.type === 'range_comment') {
+        comment.push(t.value)
+        tokens.splice(i, 1)
+        continue
+      }
+      // 改行にコメントを埋め込む
+      if (t.type === 'eol') {
+        t.value = comment.join('/')
+        comment = []
+      }
       i++
     }
   }
 
   tokenize (src, line) {
     this.result = []
-    let isRangeComment = false
     while (src !== '') {
       let ok = false
-      let rules_
-
-      if (isRangeComment) {
-        rules_ = rangeCommentRules
-      } else {
-        rules_ = rules
-      }
-
-      for (const rule of rules_) {
+      for (const rule of rules) {
         const m = rule.pattern.exec(src)
         if (!m) {continue}
         ok = true
@@ -279,39 +281,8 @@ class NakoLexer {
         // 値を変換する必要があるか？
         let value = m[0]
         if (rule.cb) {value = rule.cb(value)}
-
-        if (!isRangeComment) {
-          switch (rule.name) {
-            case 'line_comment_sharp':
-              value = value.slice(1)
-              break
-            case 'line_comment_slash':
-            case 'range_comment_begin':
-            case 'range_comment_single':
-              value = value.slice(2)
-              break
-            case 'doctest_code_line_comment':
-              value = value.slice(value.indexOf('>'))
-              break
-            default:
-              break
-          }
-        }
-
-        if ((!isRangeComment && rule.name === 'range_comment_single')
-          || (isRangeComment && (rule.name === 'doctest_code_range_comment_end' || rule.name === 'range_comment_end'))) {
-          value = value.slice(0, -2)
-        }
-
-        let mLen = m[0].length
-
-        // range_commentの終端部を再度読み込ませることで、コメントの区切り目を明確にする
-        if (isRangeComment && rule.name === 'doctest_code_range_comment_end') {
-          mLen -= 2
-        }
-
         // ソースを進める
-        src = src.substr(mLen)
+        src = src.substr(m[0].length)
         if (rule.name === 'eol' && value === '\n')
           {value = line++}
 
@@ -323,24 +294,8 @@ class NakoLexer {
             src = src.substr(j[0].length)
           }
         }
-
-        let type
-
-        if (!isRangeComment && (rule.name === 'line_comment_sharp' || rule.name === 'line_comment_slash')) {
-          type = 'line_comment'
-        } else if ((isRangeComment && rule.name === 'doctest_code_range_comment_end')
-          || (!isRangeComment && rule.name === 'doctest_code_line_comment')) {
-          type = 'doctest_code'
-        } else {
-          type = rule.name
-        }
-
-        if ((!isRangeComment && type === 'range_comment_begin') || (isRangeComment && type === 'range_comment_end')) {
-          isRangeComment = !isRangeComment
-        }
-
         this.result.push({
-          type: type,
+          type: rule.name,
           value: value,
           line: line,
           josi: josi
