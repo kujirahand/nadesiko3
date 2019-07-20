@@ -110,10 +110,23 @@ class NakoCompiler {
     parser.debug = this.debug
     // 単語に分割
     const tokens = this.tokenize(code, true)
+
+    const doctestTokens = []
+
     for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i]['type'] === 'code') {
-        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
-        i--
+      switch (tokens[i]['type']) {
+        case 'code':
+          tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
+          i--
+          break
+        case 'doctest_code':
+          // 単語分割されたDoctestのコード
+          // (valueには元のコードを字句解析せずに入れておくことで、Docstringからのマニュアル作成等に利用できるようにする)
+          tokens[i]['tokenizeValue'] = this.tokenize(tokens[i]['value'].substring(1), false, tokens[i]['line'])
+          doctestTokens.push(tokens[i])
+          break
+        default:
+          break
       }
     }
 
@@ -123,6 +136,11 @@ class NakoCompiler {
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
+
+    for (const token of doctestTokens) {
+      token['tokenizeValue'] = parser.parse(token['tokenizeValue'])
+    }
+
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))

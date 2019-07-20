@@ -65,7 +65,50 @@ class NakoParser extends NakoParserBase {
 
     // 先読みして初めて確定する構文
     if (this.accept([this.yLet])) {return this.y[0]}
-    if (this.accept([this.yDefFunc])) {return this.y[0]}
+    if (this.accept([this.yDefFuncWithLineComment]
+      || this.accept([this.yDefFuncWithRangeComment])
+      || this.accept([this.yDefFuncWithRangeCommentSingle]))) {
+      return this.y[0]
+    }
+
+    // 行末のコメントをEOLに統合
+    if (this.accept(['line_comment', 'eol'])
+      || this.accept(['doctest_code', 'eol'])
+      || this.accept(['range_comment_single', 'eol'])) {
+      let eol = this.y[1]
+      eol.value = this.y[0].value
+      return eol
+    }
+
+    // 1行のrange_commentをcommentとして処理
+    if (this.accept(['range_comment_single'])) {
+      let rangeComment = this.y[0]
+      rangeComment.type = 'comment'
+      return rangeComment
+    }
+
+    // 複数行のrange_commentを処理
+    if (this.accept(['range_comment_begin', 'eol'])) {
+      let value = this.y[0].value + '\n'
+
+      while (this.accept(['range_comment', 'eol']) || this.accept(['doctest_code', 'eol'])) {
+        value += this.y[0].value + '\n'
+      }
+
+      if (this.accept(['range_comment_end', 'eol'])) {
+        let eol = this.y[1]
+        eol.value = value + this.y[0].value
+        return eol
+      }
+
+      if (this.accept(['range_comment_end'])) {
+        let rangeComment = this.y[0]
+        rangeComment.type = 'comment'
+        rangeComment.value = value + rangeComment.value
+        return rangeComment
+      }
+    }
+
     if (this.accept([this.yCall])) { // 関数呼び出しの他、各種構文の実装
       const c1 = this.y[0]
       if (c1.josi === 'して') { // 連文をblockとして接続する(もし構文、逐次実行構文などのため)
@@ -109,6 +152,57 @@ class NakoParser extends NakoParserBase {
       if (this.check('comma')) {this.get()}
     }
     return a
+  }
+
+  yDefFuncWithLineComment() {
+    let docstring = []
+
+    while (this.accept(['line_comment', 'eol']) || this.accept(['doctest_code', 'eol'])) {
+      docstring = docstring.concat(this.y)
+    }
+
+    if (this.accept([this.yDefFunc])) {
+      let token = this.y[0]
+      token.docstring = docstring
+      return token
+    } else {
+      return null
+    }
+  }
+
+  yDefFuncWithRangeComment() {
+    let docstring = []
+
+    if (this.accept(['range_comment_begin', 'eol'])) {
+      docstring = docstring.concat(this.y)
+
+      while (this.accept(['range_comment', 'eol']) || this.accept(['doctest_code', 'eol'])) {
+        docstring = docstring.concat(this.y)
+      }
+
+      if (this.accept(['range_comment_end', 'eol'])) {
+        docstring = docstring.concat(this.y)
+        if (this.accept([this.yDefFunc])) {
+          let token = this.y[0]
+          token.docstring = docstring
+          return token
+        }
+      }
+    }
+
+    return null
+  }
+
+  yDefFuncWithRangeCommentSingle() {
+    if (this.accept(['range_comment_single', 'eol'])) {
+      const docstring = this.y
+      if (this.accept([this.yDefFunc])) {
+        let token = this.y[0]
+        token.docstring = docstring
+        return token
+      }
+    }
+    return null
   }
 
   yDefFunc () {

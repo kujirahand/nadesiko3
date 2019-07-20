@@ -6,17 +6,22 @@ const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
 const josi = require('./nako_josi_list')
 const josiRE = josi.josiRE
 const hira = /^[ぁ-ん]/
+const eolNewLine = {name: 'eol', pattern: /^\n/}
+const space = {name: 'space', pattern: /^(\s+|、)/}
 
 module.exports = {
   rules: [
     // 上から順にマッチさせていく
-    {name: 'eol', pattern: /^\n/},
+    eolNewLine,
     {name: 'eol', pattern: /^;/},
-    {name: 'space', pattern: /^(\s+|、)/},
+    space,
     {name: 'comma', pattern: /^,/},
-    {name: 'line_comment', pattern: /^#[^\n]*/},
-    {name: 'line_comment', pattern: /^\/\/[^\n]*/},
-    {name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment},
+    {name: 'doctest_code_line_comment', pattern: /^#\s*>[^\n]*/},
+    {name: 'line_comment_sharp', pattern: /^#[^\n]*/},
+    {name: 'doctest_code_line_comment', pattern: /^\/\/\s*>[^\n]*/},
+    {name: 'line_comment_slash', pattern: /^\/\/[^\n]*/},
+    {name: 'range_comment_single', pattern: /^\/\*[^\n]*\*\//},
+    {name: 'range_comment_begin', pattern: /^\/\*[^\n]*/},
     {name: 'def_func', pattern: /^●/},
     {name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt},
     {name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat},
@@ -79,28 +84,16 @@ module.exports = {
       cbParser: cbWordParser
     }
   ],
+  rangeCommentRules: [
+    // 上から順にマッチさせていく
+    eolNewLine,
+    space,
+    {name: 'doctest_code_range_comment_end', pattern: /^>[^\n]*\*\//},
+    {name: 'range_comment_end', pattern: /^[^\n]*\*\//},
+    {name: 'doctest_code', pattern: /^>[^\n]*/},
+    {name: 'range_comment', pattern: /^[^\n]*/}
+  ],
   trimOkurigana
-}
-
-function cbRangeComment (src) {
-  let res = ''
-  let josi = ''
-  let numEOL = 0
-  src = src.substr(2) // skip /*
-  const i = src.indexOf('*/')
-  if (i < 0) { // not found
-    res = src
-    src = ''
-  } else {
-    res = src.substr(0, i)
-    src = src.substr(i + 2)
-  }
-  // 改行を数える
-  for (let i = 0; i < res.length; i++)
-    {if (res.charAt(i) === '\n') {numEOL++}}
-
-  res = res.replace(/(^\s+|\s+$)/, '') // trim
-  return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
 
 function cbWordParser (src) {
