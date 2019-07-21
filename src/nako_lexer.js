@@ -250,12 +250,15 @@ class NakoLexer {
         }
         // 特別なパーサを通すか？
         if (rule.cbParser) {
-          let rp
+          if (isDefTest && rule.name === 'word' && !isDefTestFuncName) {
+            isDefTestFuncName = true
+            continue
+          }
 
-          if (isDefTest && rule.name === 'word') {
-            rp = rule.cbParser(src, false)
-          } else {
-            rp = rule.cbParser(src)
+          const rp = rule.cbParser(src)
+
+          if (isDefTestFuncName) {
+            isDefTestFuncName = false
           }
 
           if (rule.name === 'string_ex') {
