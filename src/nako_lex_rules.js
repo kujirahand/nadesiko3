@@ -77,11 +77,11 @@ const rules = {
 }
 
 // 単語句
-for (const bool of [true, false]) {
+for (const isTrimOkurigana of [true, false]) {
   rules.rules.push({
     name: 'word',
     pattern: /^[_a-zA-Z\u3005\u4E00-\u9FCFぁ-んァ-ヶ]/,
-    cbParser: src => cbWordParser(src, bool)
+    cbParser: src => cbWordParser(src, isTrimOkurigana)
   })
 }
 
