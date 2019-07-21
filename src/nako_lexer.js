@@ -238,6 +238,7 @@ class NakoLexer {
   tokenize (src, line) {
     this.result = []
     let isDefTest = false
+    let isDefTestFuncName = false
     while (src !== '') {
       let ok = false
       for (const rule of rules) {
