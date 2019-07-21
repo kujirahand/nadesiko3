@@ -237,6 +237,7 @@ class NakoLexer {
 
   tokenize (src, line) {
     this.result = []
+    let isDefTest = false
     while (src !== '') {
       let ok = false
       for (const rule of rules) {
@@ -249,7 +250,14 @@ class NakoLexer {
         }
         // 特別なパーサを通すか？
         if (rule.cbParser) {
-          const rp = rule.cbParser(src)
+          let rp
+
+          if (isDefTest && rule.name === 'word') {
+            rp = rule.cbParser(src, false)
+          } else {
+            rp = rule.cbParser(src)
+          }
+
           if (rule.name === 'string_ex') {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
             const list = rp.res.split(/[{}｛｝]/)
@@ -294,6 +302,21 @@ class NakoLexer {
             src = src.substr(j[0].length)
           }
         }
+
+        switch (rule.name) {
+          case 'def_test': {
+            isDefTest = true
+            break
+          }
+          case 'eol': {
+            isDefTest = false
+            break
+          }
+          default: {
+            break
+          }
+        }
+
         this.result.push({
           type: rule.name,
           value: value,
