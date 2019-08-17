@@ -6,6 +6,7 @@ const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
 const josi = require('./nako_josi_list')
 const josiRE = josi.josiRE
 const hira = /^[ぁ-ん]/
+
 module.exports = {
   rules: [
     // 上から順にマッチさせていく
@@ -82,7 +83,7 @@ module.exports = {
   trimOkurigana
 }
 
-function cbRangeComment(src) {
+function cbRangeComment (src) {
   let res = ''
   let josi = ''
   let numEOL = 0
