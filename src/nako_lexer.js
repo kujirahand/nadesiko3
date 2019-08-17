@@ -126,7 +126,7 @@ class NakoLexer {
         if (t.value === 'そう') {t.value = 'それ'}
       }
       // 関数定義の確認
-      if (t.type !== 'def_func') {
+      if (t.type !== 'def_test' && t.type !== 'def_func') {
         i++
         continue
       }
