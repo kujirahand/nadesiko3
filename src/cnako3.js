@@ -37,7 +37,7 @@ class CNako3 extends NakoCompiler {
       .option('-o, --output', '出力ファイル名の指定')
       .option('-s, --silent', 'サイレントモードの指定')
       .option('-l, --repl', '対話シェル(REPL)の実行')
-      .option('-t, --test', 'テストの実行')
+      .option('-t, --test', 'コンパイルモードの指定 (mochaでのテスト用コードを出力する)')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
       .parse(process.argv)
