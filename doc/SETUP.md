@@ -113,7 +113,7 @@ $ cnako3 $NAKO_HOME/batch/pickup_command.nako
 
 ```
 $ cnako3 -t hoge.nako3
-$ mocha hoge.js
+$ mocha hoge.spec.js
 ```
 
 ### デモプログラムを動かす方法

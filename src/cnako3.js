@@ -46,18 +46,10 @@ class CNako3 extends NakoCompiler {
 
   /**
    * コマンドライン引数を解析
-   * @returns {{mainfile: string, compile: boolean, run: boolean, output: string, source: string, one_liner: boolean, debug: (boolean|*)}}
+   * @returns {{debug: boolean, compile: any | boolean, test: any | boolean, one_liner: any | boolean, debugAll: any, run: any | boolean, repl: any | boolean, source: any | string}}
    */
   checkArguments () {
     const app = this.registerCommands()
-    let mainfile = app.args[0]
-    let output = app.output
-    if (/\.(nako|nako3|txt|bak)$/.test(mainfile)) {
-      if (!output) {output = mainfile.replace(/\.(nako|nako3)$/, '.js')}
-    } else {
-      if (!output) {output = mainfile + '.js'}
-      mainfile += '.nako3'
-    }
     // デバッグモードの指定
     this.debug = app.debugAll || app.debug || false
     if (app.debugAll) {
@@ -65,9 +57,7 @@ class CNako3 extends NakoCompiler {
       this.debugParser = true
       this.debugJSCode = true
     }
-    return {
-      'mainfile': mainfile,
-      'output': output,
+    let args = {
       'compile': app.compile || false,
       'run': app.run || false,
       'source': app.eval || '',
@@ -77,6 +67,27 @@ class CNako3 extends NakoCompiler {
       'repl': app.repl || false,
       'test': app.test || false
     }
+    args.mainfile = app.args[0]
+    args.output = app.output
+    if (/\.(nako|nako3|txt|bak)$/.test(args.mainfile)) {
+      if (!args.output) {
+        if (args.test) {
+          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.spec.js')
+        } else {
+          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.js')
+        }
+      }
+    } else {
+      if (!args.output) {
+        if (args.test) {
+          args.output = args.mainfile + '.spec.js'
+        } else {
+          args.output = args.mainfile + '.js'
+        }
+      }
+      args.mainfile += '.nako3'
+    }
+    return args
   }
 
   // 実行する
