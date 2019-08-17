@@ -43,6 +43,12 @@ class WebNakoCompiler extends NakoCompiler {
     return false
   }
 
+  /**
+   * コードを生成 (override)
+   * @param ast AST
+   * @param isTest テストかどうか
+   * @returns {string} コード
+   */
   generate(ast, isTest) {
     let code = super.generate(ast, isTest)
 
