@@ -12,8 +12,7 @@ describe('plugin_test', () => {
     const ret = nako.runReset(code)
     assert.equal(ret.log, res)
   }
-  // TODO: うまく動かない (ただし単体でテストすると動くので、原因を追及する)
   it('「取り込む」', () => {
-    cmp('!「nadesiko3-hoge」を取り込む。\n3と5をHOGE足して、表示。', '8')
+    cmp('!「test/nadesiko3-hoge」を取り込む。\n3と5をHOGE足して、表示。', '8')
   })
 })

@@ -41,7 +41,7 @@ $ npm install -g npm-check-updates electron asar
 
 
 ```
-$ git clone https://github.com/kujirahand/nadesiko3
+$ git clone --recursive https://github.com/kujirahand/nadesiko3
 $ cd nadesiko3
 $ npm install --no-optional
 ```
