@@ -118,11 +118,13 @@
     "body-parser": "^1.19.0",
     "commander": "^2.20.0",
     "copy-paste-win32fix": "^1.4.0",
+    "css-loader": "^3.2.0",
     "csv-lite-js": "^0.0.7",
     "express": "^4.16.4",
     "form-data": "^2.3.3",
     "fs-extra": "^6.0.0",
     "iconv-lite": "^0.4.24",
+    "mocha-css": "^1.0.1",
     "moment-timezone": "^0.5.25",
     "node-fetch": "^2.5.0",
     "opener": "^1.5.1",
@@ -131,6 +133,7 @@
     "readline-sync": "^1.4.9",
     "sendkeys-js": "0.0.4",
     "ssri": "^6.0.1",
+    "style-loader": "^1.0.0",
     "whatwg-fetch": "^2.0.4"
   }
 }

@@ -5,6 +5,7 @@ import EditorFormComponent from './editor_form_component'
 import EditorButtonComponent from './editor_button_component'
 import EditorInformationComponent from './editor_information_component'
 import CommandListComponent from './command_list_component'
+import EditorTestInformationComponent from "./editor_test_information_component";
 
 export default class EditorComponent extends React.Component {
   constructor (props) {
@@ -27,8 +28,9 @@ export default class EditorComponent extends React.Component {
                                  this.info = []
                                  this.setState({err: null})
                                }}
-                               onErrorChanged={(e) => this.setState({err: e})} />
-        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} />
+                               onErrorChanged={(e) => this.setState({err: e})}/>
+        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err}/>
+        <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
           this.setState({code: this.state.code.substr(0, this.form.pos()) + e.target.getAttribute('data-paste') + this.state.code.substr(this.form.pos())})
           this.form.focus()

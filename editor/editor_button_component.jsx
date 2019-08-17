@@ -18,6 +18,16 @@ export default function EditorButtonComponent (props) {
       }} className="default_button">
         実行
       </button>
+      <button onClick={() => {
+        try {
+          window.localStorage['nako3/editor/code'] = props.code
+          props.nako3.test(props.code, true)
+        } catch (e) {
+          props.onErrorChanged(e)
+        }
+      }} className="default_button">
+        テスト
+      </button>
       <button onClick={props.onReset} className="default_button">クリア</button>
       <button onClick={() => {
         try {

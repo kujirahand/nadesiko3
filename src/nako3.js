@@ -7,6 +7,7 @@ const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
 const PluginSystem = require('./plugin_system')
+const PluginTest = require('./plugin_test')
 
 const prepare = new Prepare()
 const parser = new Parser()
@@ -35,6 +36,7 @@ class NakoCompiler {
     // set this
     this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
+    this.addPluginObject('PluginAssert', PluginTest)
   }
 
   get log () {
@@ -83,14 +85,15 @@ class NakoCompiler {
   /**
    * コードを生成
    * @param ast AST
+   * @param isTest テストかどうか
    */
-  generate (ast) {
+  generate(ast, isTest) {
     // 先になでしこ自身で定義したユーザー関数をシステムに登録
     this.gen.registerFunction(ast)
     // JSコードを生成する
-    const js = this.gen.convGen(ast)
+    const js = this.gen.convGen(ast, isTest)
     // JSコードを実行するための事前ヘッダ部分の生成
-    const def = this.gen.getDefFuncCode()
+    const def = this.gen.getDefFuncCode(isTest)
     if (this.debug && this.debugJSCode) {
       console.log('--- generate ---')
       console.log(def + js)
@@ -133,16 +136,17 @@ class NakoCompiler {
   /**
    * プログラムをコンパイルしてJavaScriptのコードを返す
    * @param code コード (なでしこ)
+   * @param isTest テストかどうか
    * @returns コード (JavaScript)
    */
-  compile (code) {
+  compile(code, isTest) {
     const ast = this.parse(code)
-    return this.generate(ast)
+    return this.generate(ast, isTest)
   }
 
-  _run (code, isReset) {
+  _run(code, isReset, isTest) {
     if (isReset) {this.reset()}
-    let js = this.compile(code)
+    let js = this.compile(code, isTest)
     let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
     let __self = this.__self // eslint-disable-line
@@ -159,14 +163,19 @@ class NakoCompiler {
     return this
   }
 
-  run (code, fname) {
+  test(code, fname) {
     this.parser.filename = fname
-    return this._run(code, false)
+    return this._run(code, false, true)
+  }
+
+  run(code, fname) {
+    this.parser.filename = fname
+    return this._run(code, false, false)
   }
 
   runReset (code, fname) {
     this.parser.filename = fname
-    return this._run(code, true)
+    return this._run(code, true, false)
   }
 
   clearLog () {
