@@ -44,6 +44,10 @@ module.exports = {
         query: {
           presets: ['env']
         }
+      },
+      {
+        loaders: ['style-loader', 'css-loader'],
+        test: /\.css$/
       }
     ]
   },

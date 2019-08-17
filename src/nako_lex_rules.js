@@ -17,6 +17,7 @@ module.exports = {
     {name: 'line_comment', pattern: /^#[^\n]*/},
     {name: 'line_comment', pattern: /^\/\/[^\n]*/},
     {name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment},
+    {name: 'def_test', pattern: /^●テスト:/},
     {name: 'def_func', pattern: /^●/},
     {name: 'number', pattern: /^0x[0-9a-fA-F]+/, readJosi: true, cb: parseInt},
     {name: 'number', pattern: /^[0-9]+\.[0-9]+[eE][+|-][0-9]+/, readJosi: true, cb: parseFloat},
@@ -103,7 +104,7 @@ function cbRangeComment (src) {
   return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
 
-function cbWordParser (src) {
+function cbWordParser(src, isTrimOkurigana = true) {
   /*
     kanji    = [\u3005\u4E00-\u9FCF]
     hiragana = [ぁ-ん]
@@ -142,7 +143,9 @@ function cbWordParser (src) {
     break // other chars
   }
   // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
-  res = trimOkurigana(res)
+  if (isTrimOkurigana) {
+    res = trimOkurigana(res)
+  }
   // 助詞だけの語句の場合
   if (res === '' && josi !== '') {
     res = josi

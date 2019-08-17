@@ -3,6 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import EditorComponent from './editor_component'
 import WebNakoCompiler from '../src/wnako3'
+import 'mocha-css'
 
 // なでしこコンパイラ唯一のインスタンス
 const nako3 = navigator.nako3
