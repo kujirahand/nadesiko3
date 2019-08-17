@@ -204,10 +204,6 @@ class NakoGen {
       }
 
       if (testCode !== '') {
-        code += '// mocha初期化\n'
-        code += 'mocha.setup("bdd");\n'
-        code += 'mocha.checkLeaks();\n'
-        code += '\n'
         code += '__v0.line=0;// テスト定義\n'
         code += testCode + '\n'
       }
@@ -298,9 +294,9 @@ class NakoGen {
   }
 
   convGen(node, isTest) {
-    let result = this._convGen(node)
+    const result = this._convGen(node)
     if (isTest) {
-      return 'mocha.run();// テスト実行\n'
+      return ''
     } else {
       return result
     }

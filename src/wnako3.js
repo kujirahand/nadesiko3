@@ -42,6 +42,21 @@ class WebNakoCompiler extends NakoCompiler {
     }
     return false
   }
+
+  generate(ast, isTest) {
+    let code = super.generate(ast, isTest)
+
+    if (isTest && code !== '') {
+      code = '// mocha初期化\n' +
+        'mocha.setup("bdd");\n' +
+        'mocha.checkLeaks();\n' +
+        '\n' +
+        code + '\n' +
+        'mocha.run();// テスト実行\n'
+    }
+
+    return code
+  }
 }
 
 // ブラウザなら navigator.nako3 になでしこを登録

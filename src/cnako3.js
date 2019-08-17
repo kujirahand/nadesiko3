@@ -37,6 +37,7 @@ class CNako3 extends NakoCompiler {
       .option('-o, --output', '出力ファイル名の指定')
       .option('-s, --silent', 'サイレントモードの指定')
       .option('-l, --repl', '対話シェル(REPL)の実行')
+      .option('-t, --test', 'テストの実行')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
       .parse(process.argv)
@@ -73,7 +74,8 @@ class CNako3 extends NakoCompiler {
       'one_liner': app.eval || false,
       'debug': this.debug,
       'debugAll': app.debugAll,
-      'repl': app.repl || false
+      'repl': app.repl || false,
+      'test': app.test || false
     }
   }
 
@@ -93,7 +95,11 @@ class CNako3 extends NakoCompiler {
     // メインプログラムを読み込む
     let src = fs.readFileSync(opt.mainfile, 'utf-8')
     if (opt.compile) {
-      this.nakoCompile(opt, src)
+      this.nakoCompile(opt, src, false)
+      return
+    }
+    if (opt.test) {
+      this.nakoCompile(opt, src, true)
       return
     }
     try {
@@ -108,20 +114,21 @@ class CNako3 extends NakoCompiler {
   }
 
   /** コンパイル(override) */
-  compile (src) {
+  compile(src, isTest) {
     const code = this.includePlugin(src)
     const ast = this.parse(code)
-    return this.generate(ast)
+    return this.generate(ast, isTest)
   }
 
   /**
    * コンパイルモードの場合
    * @param opt
    * @param src
+   * @param isTest
    */
-  nakoCompile (opt, src) {
+  nakoCompile(opt, src, isTest) {
     // system
-    const js = this.compile(src)
+    const js = this.compile(src, isTest)
     const jscode =
       NakoCompiler.getHeader() +
       this.getVarsCode() +
