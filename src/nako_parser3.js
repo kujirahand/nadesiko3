@@ -113,14 +113,14 @@ class NakoParser extends NakoParserBase {
   }
 
   yDefTest() {
-    return this._yDef('def_test')
+    return this.yDef('def_test')
   }
 
   yDefFunc() {
-    return this._yDef('def_func')
+    return this.yDef('def_func')
   }
 
-  _yDef(type) {
+  yDef(type) {
     if (!this.check(type)) {
       return null
     }

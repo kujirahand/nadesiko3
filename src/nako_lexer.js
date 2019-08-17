@@ -238,7 +238,6 @@ class NakoLexer {
   tokenize (src, line) {
     this.result = []
     let isDefTest = false
-    let isDefTestFuncName = false
     while (src !== '') {
       let ok = false
       for (const rule of rules) {
@@ -251,15 +250,12 @@ class NakoLexer {
         }
         // 特別なパーサを通すか？
         if (rule.cbParser) {
-          if (isDefTest && rule.name === 'word' && !isDefTestFuncName) {
-            isDefTestFuncName = true
-            continue
-          }
+          let rp
 
-          const rp = rule.cbParser(src)
-
-          if (isDefTestFuncName) {
-            isDefTestFuncName = false
+          if (isDefTest && rule.name === 'word') {
+            rp = rule.cbParser(src, false)
+          } else {
+            rp = rule.cbParser(src)
           }
 
           if (rule.name === 'string_ex') {

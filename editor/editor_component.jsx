@@ -28,8 +28,8 @@ export default class EditorComponent extends React.Component {
                                  this.info = []
                                  this.setState({err: null})
                                }}
-                               onErrorChanged={(e) => this.setState({err: e})}/>
-        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err}/>
+                               onErrorChanged={(e) => this.setState({err: e})} />
+        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} />
         <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
           this.setState({code: this.state.code.substr(0, this.form.pos()) + e.target.getAttribute('data-paste') + this.state.code.substr(this.form.pos())})

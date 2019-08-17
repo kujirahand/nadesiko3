@@ -582,7 +582,7 @@ class NakoGen {
     this.nako_test[name] = {
       'josi': node.name.meta.josi,
       'fn': code,
-      'type': 'test_component.jsx'
+      'type': 'test_func'
     }
 
     // ★この時点ではテストコードを生成しない★

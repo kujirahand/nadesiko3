@@ -1,6 +1,6 @@
 /**
  * file: plugin_test.js
- * node.js のためのプラグイン
+ * テスト実行用プラグイン
  */
 const PluginTest = {
   // @テスト

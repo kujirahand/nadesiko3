@@ -6,7 +6,7 @@ const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
 const josi = require('./nako_josi_list')
 const josiRE = josi.josiRE
 const hira = /^[ぁ-ん]/
-const rules = {
+module.exports = {
   rules: [
     // 上から順にマッチさせていく
     {name: 'eol', pattern: /^\n/},
@@ -71,23 +71,18 @@ const rules = {
     {name: '_eol', pattern: /^_\s*\n/},
     // 絵文字変数 = (絵文字)英数字*
     {name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/, readJosi: true},
-    {name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/, readJosi: true} // 絵文字
+    {name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/, readJosi: true}, // 絵文字
+    // 単語句
+    {
+      name: 'word',
+      pattern: /^[_a-zA-Z\u3005\u4E00-\u9FCFぁ-んァ-ヶ]/,
+      cbParser: cbWordParser
+    }
   ],
   trimOkurigana
 }
 
-// 単語句
-for (const isTrimOkurigana of [true, false]) {
-  rules.rules.push({
-    name: 'word',
-    pattern: /^[_a-zA-Z\u3005\u4E00-\u9FCFぁ-んァ-ヶ]/,
-    cbParser: src => cbWordParser(src, isTrimOkurigana)
-  })
-}
-
-module.exports = rules
-
-function cbRangeComment (src) {
+function cbRangeComment(src) {
   let res = ''
   let josi = ''
   let numEOL = 0
@@ -108,7 +103,7 @@ function cbRangeComment (src) {
   return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
 
-function cbWordParser(src, isTrimOkurigana) {
+function cbWordParser(src, isTrimOkurigana = true) {
   /*
     kanji    = [\u3005\u4E00-\u9FCF]
     hiragana = [ぁ-ん]

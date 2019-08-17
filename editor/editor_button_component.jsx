@@ -21,7 +21,7 @@ export default function EditorButtonComponent (props) {
       <button onClick={() => {
         try {
           window.localStorage['nako3/editor/code'] = props.code
-          props.nako3.test(props.code, true)
+          props.nako3.test(props.code)
         } catch (e) {
           props.onErrorChanged(e)
         }
