@@ -32,7 +32,7 @@ class CNako3 extends NakoCompiler {
       .option('-d, --debug', 'デバッグモードの指定')
       .option('-D, --debugAll', '詳細デバッグモードの指定')
       .option('-c, --compile', 'コンパイルモードの指定')
-      .option('-t, --test', 'コンパイルモードの指定 (mochaでのテスト用コードを出力する)')
+      .option('-t, --test', 'コンパイルモードの指定 (テスト用コードを出力)')
       .option('-r, --run', 'コンパイルモードでも実行する')
       .option('-e, --eval [src]', '直接プログラムを実行するワンライナーモード')
       .option('-o, --output', '出力ファイル名の指定')
