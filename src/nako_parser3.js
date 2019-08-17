@@ -65,6 +65,7 @@ class NakoParser extends NakoParserBase {
 
     // 先読みして初めて確定する構文
     if (this.accept([this.yLet])) {return this.y[0]}
+    if (this.accept([this.yDefTest])) {return this.y[0]}
     if (this.accept([this.yDefFunc])) {return this.y[0]}
     if (this.accept([this.yCall])) { // 関数呼び出しの他、各種構文の実装
       const c1 = this.y[0]
