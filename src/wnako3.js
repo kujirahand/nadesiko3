@@ -54,6 +54,11 @@ class WebNakoCompiler extends NakoCompiler {
 
     if (isTest && code !== '') {
       code = '// mocha初期化\n' +
+        'const stats = document.getElementById(\'mocha-stats\');\n' +
+        'if(stats !== null) {\n' +
+        ' document.getElementById(\'mocha\').removeChild(stats);\n' +
+        '}\n' +
+        'mocha.suite.suites = [];\n' +
         'mocha.setup("bdd");\n' +
         'mocha.checkLeaks();\n' +
         '\n' +
