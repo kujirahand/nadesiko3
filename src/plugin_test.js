@@ -15,7 +15,7 @@ const PluginTest = {
   // @テスト
   'なる': { // @ mochaによるテストで、ASSERTでAとBが正しいことを報告する // @なる
     type: 'func',
-    josi: [['が'], ['に']],
+    josi: [['と'], ['に']],
     fn: function (a, b, sys) {
       const assert = require('assert')
       assert.strictEqual(a, b)
