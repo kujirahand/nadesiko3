@@ -55,6 +55,7 @@ class WebNakoCompiler extends NakoCompiler {
     if (isTest && code !== '') {
       code = '// mocha初期化\n' +
         'mocha.setup("bdd");\n' +
+        'mocha.growl();\n'+
         'mocha.checkLeaks();\n' +
         '\n' +
         code + '\n' +
