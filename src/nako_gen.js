@@ -556,7 +556,8 @@ class NakoGen {
     if (name)
       {this.nako_func[name]['fn'] = code}
 
-    this.__vars = this.__varslist.pop()
+    this.__varslist.pop()
+    this.__vars = this.__varslist[this.__varslist.length-1]
     if (name)
       {this.__varslist[1][name] = code}
 
