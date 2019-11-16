@@ -497,6 +497,30 @@ const PluginSystem = {
       return Math.round(v)
     }
   },
+  '小数点切上': { // @整数Aを少数点第B桁で切り上げして返す // @しょうすうてんきりあげ
+    type: 'func',
+    josi: [['を'],['で']],
+    fn: function (a,b) {
+      const base = Math.pow(10, b)
+      return Math.ceil(a * base) / base
+    }
+  },
+  '小数点切下': { // @整数Aを少数点第B桁で切り下げして返す // @しょうすうてんきりさげ
+    type: 'func',
+    josi: [['を'],['で']],
+    fn: function (a,b) {
+      const base = Math.pow(10, b)
+      return Math.floor(a * base) / base
+    }
+  },
+  '小数点四捨五入': { // @実数Aを少数点第B桁で四捨五入して返す // @しょうすうてんししゃごにゅう
+    type: 'func',
+    josi: [['を'], ['で']],
+    fn: function (a, b) {
+      const base = Math.pow(10, b)
+      return Math.round(a * base) / base
+    }
+  },
   'CEIL': { // @数値を正の無限大方向へ切り上げて返す。 // @
     type: 'func',
     josi: [['を']],
