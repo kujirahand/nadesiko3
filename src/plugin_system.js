@@ -1,3 +1,5 @@
+import hotkeys from 'hotkeys-js'
+
 const PluginSystem = {
   '初期化': {
     type: 'func',
@@ -1761,6 +1763,24 @@ const PluginSystem = {
     fn: function (tz) {
       const moment = require('moment-timezone')
       moment.tz.setDefault(tz)
+    }
+  },
+  'ホットキー登録': { // @ホットキーKEYにEVENTを登録する // @ほっときーとうろく
+    type: 'func',
+    josi: [['に', 'で'], ['を']],
+    fn: function (key, fname, sys) {
+      hotkeys(key, function (event, handler) {
+        // Prevent the default refresh event under WINDOWS system
+        event.preventDefault()
+        sys.__v1[fname]()
+      })
+    }
+  },
+  'ホットキー解除': { // @ホットキーKEYを解除する // @ほっときーかいじょ
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (key) {
+      hotkeys.unbind(key)
     }
   }
 }
