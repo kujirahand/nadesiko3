@@ -357,4 +357,9 @@ describe('plugin_system_test', () => {
     cmp('「しんぶんし」で3から「ん」を文字検索して表示', '4')
     cmp('「しんぶんし」で5から「ん」を文字検索して表示', '0')
   })
+  it('TYPEOF', () => {
+    cmp('TYPEOF(「あ」)を表示', 'string')
+    cmp('TYPEOF(0)を表示', 'number')
+    cmp('もし、NAN判定(INT(「あ」))ならば、「ok」と表示。違えば、「ng」と表示', 'ok')
+  })
 })

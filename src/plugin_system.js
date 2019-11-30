@@ -312,6 +312,13 @@ const PluginSystem = {
       return parseFloat(v)
     }
   },
+  'NAN判定': {// @値VがNaNかどうかを判定 // @NANはんてい
+    type: 'func',
+    josi: [['を']],
+    fn: function (v) {
+      return isNaN(v)
+    }
+  },
   'HEX': {// @値Vを16進数に変換 // @
     type: 'func',
     josi: [['の']],
