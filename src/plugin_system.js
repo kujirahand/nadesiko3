@@ -1295,6 +1295,20 @@ const PluginSystem = {
       return JSON.parse(JSON.stringify(a))
     }
   },
+  '配列最大値': { // @配列Aの値の最大値を調べて返す。 // @はいれつさいだいち
+    type: 'func',
+    josi: [['の']],
+    fn: function (a) {
+      return a.reduce((x, y) => Math.max(x, y))
+    }
+  },
+  '配列最小値': { // @配列Aの値の最小値を調べて返す。 // @はいれつさいしょうち
+    type: 'func',
+    josi: [['の']],
+    fn: function (a) {
+      return a.reduce((x, y) => Math.min(x, y))
+    }
+  },
   // @二次元配列処理
   '表ソート': { // @配列Aの列番号B(0起点)(あるいはキー名)をキーにしてソートする。Aの内容を書き換える。 // @ひょうそーと
     type: 'func',
