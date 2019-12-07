@@ -2,6 +2,8 @@
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
 
+import hotkeys from 'hotkeys-js'
+
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
 const PluginBrowser = {
@@ -1510,6 +1512,23 @@ const PluginBrowser = {
       obj.pause()
     },
     return_none: true
+  },
+  'ホットキー登録': { // @ホットキーKEYにEVENTを登録する // @ほっときーとうろく
+    type: 'func',
+    josi: [['に', 'で'], ['を']],
+    fn: function (key, fname, sys) {
+      hotkeys(key, function (event, handler) {
+        event.preventDefault()
+        sys.__v1[fname]()
+      })
+    }
+  },
+  'ホットキー解除': { // @ホットキーKEYを解除する // @ほっときーかいじょ
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (key) {
+      hotkeys.unbind(key)
+    }
   }
 }
 
