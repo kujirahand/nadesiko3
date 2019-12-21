@@ -38,6 +38,7 @@ class CNako3 extends NakoCompiler {
       .option('-o, --output', '出力ファイル名の指定')
       .option('-s, --silent', 'サイレントモードの指定')
       .option('-l, --repl', '対話シェル(REPL)の実行')
+      .option('-m, --man [command]', 'マニュアルを表示する')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
       .parse(process.argv)
@@ -61,6 +62,7 @@ class CNako3 extends NakoCompiler {
       'compile': app.compile || false,
       'run': app.run || false,
       'source': app.eval || '',
+      'man': app.man || '',
       'one_liner': app.eval || false,
       'debug': this.debug,
       'debugAll': app.debugAll,
@@ -93,6 +95,10 @@ class CNako3 extends NakoCompiler {
   // 実行する
   execCommand () {
     const opt = this.checkArguments()
+    if (opt.man) {
+      this.cnakoMan(opt.man)
+      return
+    }
     if (opt.mainfile) {this.filename = opt.mainfile}
     if (opt.repl) {
       this.cnakoRepl(opt)
@@ -171,6 +177,15 @@ class CNako3 extends NakoCompiler {
     const fname = path.join(__dirname, 'repl.nako3')
     const src = fs.readFileSync(fname, 'utf-8')
     this.run(src, true)
+  }
+
+  // マニュアルを表示する
+  cnakoMan(command) {
+    const commands = require('../release/command_cnako3.json')
+    const data = commands[command]
+    for (const key in data) {
+      console.log(`${key}: ${data[key]}`)
+    }
   }
 
   /**
