@@ -181,10 +181,18 @@ class CNako3 extends NakoCompiler {
 
   // マニュアルを表示する
   cnakoMan(command) {
-    const commands = require('../release/command_cnako3.json')
-    const data = commands[command]
-    for (const key in data) {
-      console.log(`${key}: ${data[key]}`)
+    try {
+      const commands = require('../release/command_cnako3.json')
+      const data = commands[command]
+      for (const key in data) {
+        console.log(`${key}: ${data[key]}`)
+      }
+    } catch (e) {
+      if (e.code === 'MODULE_NOT_FOUND') {
+        console.log('コマンド一覧がありません。以下のコマンドで生成してください。\n$ npm run build:command')
+      } else {
+        throw e
+      }
     }
   }
 
