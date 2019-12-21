@@ -189,7 +189,7 @@ class CNako3 extends NakoCompiler {
       }
     } catch (e) {
       if (e.code === 'MODULE_NOT_FOUND') {
-        console.log('コマンド一覧がありません。以下のコマンドで生成してください。\n$ npm run build:command')
+        console.log('コマンド一覧がないため、マニュアルを表示できません。以下のコマンドでコマンド一覧を生成してください。\n$ npm run build:command')
       } else {
         throw e
       }
