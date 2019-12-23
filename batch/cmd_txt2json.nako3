@@ -50,9 +50,10 @@ P_cnako3={}
 　　　　P[プラグイン名][表題]にVを配列追加。
        V_cnako3={}
        V_cnako3[「タイプ」]=タイプ
+       V_cnako3[「名前」]=名前
+       V_cnako3[「ヨミ」]=ヨミ_cnako3
        V_cnako3[「引数」]=引数
        V_cnako3[「説明」]=説明
-       V_cnako3[「ヨミ」]=ヨミ_cnako3
 　　　　P_cnako3[名前]=V_cnako3
 　　ここまで。
 ここまで。
