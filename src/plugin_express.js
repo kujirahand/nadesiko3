@@ -143,21 +143,32 @@ const PluginExpress = {
     },
     return_none: true
   },
+  'WEBサーバヘッダ出力': { // @クライアントにヘッダOBJを出力 // @WEBさーばへっだしゅつりょく
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (obj, sys) {
+      const res = sys.__v0['WEBサーバ:応答']
+      for (let key in obj) {
+          res.set(key, obj[key])
+      }
+    },
+    return_none: true
+  },
+  'WEBサーバステータス出力': { // @クライアントにステータスNOを出力 // @WEBさーばすてーたすしゅつりょく
+    type: 'func',
+    josi: [['を', 'の']],
+    fn: function (no, sys) {
+      const res = sys.__v0['WEBサーバ:応答']
+      res.sendStatus(no)
+    },
+    return_none: true
+  },
   'WEBサーバ出力': { // @クライアントにSを出力 // @WEBさーばしゅつりょく
     type: 'func',
     josi: [['を', 'と']],
     fn: function (s, sys) {
       const res = sys.__v0['WEBサーバ:応答']
-      res.status(200).send(s)
-    },
-    return_none: true
-  },
-  'WEBサーバ詳細出力': { // @クライアントにステータスNOでSを出力 // @WEBさーばしょうさいしゅつりょく
-    type: 'func',
-    josi: [['で'],['を', 'と']],
-    fn: function (no, s, sys) {
-      const res = sys.__v0['WEBサーバ:応答']
-      res.status(no).send(s)
+      res.send("" + s)
     },
     return_none: true
   },
