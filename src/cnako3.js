@@ -197,6 +197,55 @@ class CNako3 extends NakoCompiler {
   }
 
   /**
+   * プラグインファイルの検索を行う
+   * @param path
+   * @return string フルパス
+   */
+  findPluginFile (pname) {
+    // フルパス指定か?
+    const p1 = pname.substr(0, 1)
+    if (p1 === '/') {
+      // フルパス指定なので何もしない
+      return pname
+    }
+    // 相対パスか?
+    if (p1 === '.') {
+      // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
+      const basedir = path.dirname(this.filename)
+      return path.resolve(path.join(basedir, pname))
+    }
+    // 同じフォルダか?
+    const basedir = path.dirname(this.filename)
+    let fullpath = path.resolve(path.join(basedir, pname))
+    if (fs.existsSync(fullpath)) {
+        return fullpath
+    }
+    // node_modules 以下にあるか？
+    fullpath = path.resolve(path.join(basedir, 'node_modules', pname))
+    if (fs.existsSync(fullpath)) {
+        return fullpath
+    }
+    // NAKO_HOMEか?
+    if (process.env['NAKO_HOME']) {
+      const NAKO_HOME = process.env['NAKO_HOME']
+      // NAKO_HOME/node_modules?
+      fullpath = path.resolve(path.join(NAKO_HOME, 'node_modules', pname))
+      if (fs.existsSync(fullpath)) {
+          return fullpath
+      }
+      // NAKO_HOME/src ?
+      fullpath = path.resolve(path.join(NAKO_HOME, 'src', pname))
+      if (fs.existsSync(fullpath)) {
+          return fullpath
+      }
+    }
+    // NODE_PATH (global) 以下にあるか？
+    fullpath = path.resolve(path.join(process.env.NODE_PATH, 'node_modules', pname))
+    if (fs.existsSync(fullpath)) {
+        return fullpath
+    }
+  }
+  /**
    * プラグインの取込チェック
    * @param src
    * @return string プリプロセスを除去したソースコード
@@ -212,7 +261,7 @@ class CNako3 extends NakoCompiler {
         result += line + '\n'
         continue
       }
-      const m = s.match(/["'『「](.+)["'』」]を(取り込|取込)/)
+      const m = s.match(/[\"'『「](.+)["'』」]を(取り込|取込)/)
       if (!m) {continue}
       // プラグインの取り込み
       const pname = m[1]
@@ -220,38 +269,7 @@ class CNako3 extends NakoCompiler {
       try {
         let plugmod = {}
         // プラグインフォルダを検索
-        // フルパス指定か相対パスの指定か?
-        const p1 = fullpath.substr(0, 1)
-        if (p1 === '/') {
-          // フルパス指定なので何もしない
-        }
-        else if (p1 === '.') {
-          // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
-          const basedir = path.dirname(this.filename)
-          fullpath = path.resolve(path.join(basedir, pname))
-        }
-        else {
-          // 同じフォルダにあるか？
-          const basedir = path.dirname(this.filename)
-          fullpath = path.resolve(path.join(basedir, pname))
-          if (!fs.existsSync(fullpath)) {
-            // node_modules 以下にあるか？
-            fullpath = path.resolve(path.join(basedir, 'node_modules', pname))
-            if (!fs.existsSync(fullpath)) {
-              // NAKO_HOME 以下にあるか？
-              if (process.env['NAKO_HOME']) {
-                fullpath = path.resolve(path.join(process.env['NAKO_HOME'], 'node_modules', pname))
-              }
-              if (!fs.existsSync(fullpath)) {
-                // NODE_PATH 以下にあるか？
-                fullpath = path.resolve(path.join(process.env.NODE_PATH, 'node_modules', pname))
-                if (!fs.existsSync(fullpath)) {
-                  fullpath = pname
-                }
-              }
-            }
-          }
-        }
+        fullpath = this.findPluginFile(fullpath)
         // モジュールを実際に取り込む
         plugmod = require(fullpath)
         this.addPluginFile(pname, fullpath, plugmod)
