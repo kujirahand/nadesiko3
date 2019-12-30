@@ -148,7 +148,16 @@ const PluginExpress = {
     josi: [['を', 'と']],
     fn: function (s, sys) {
       const res = sys.__v0['WEBサーバ:応答']
-      res.send(s)
+      res.status(200).send(s)
+    },
+    return_none: true
+  },
+  'WEBサーバ詳細出力': { // @クライアントにステータスNOでSを出力 // @WEBさーばしょうさいしゅつりょく
+    type: 'func',
+    josi: [['で'],['を', 'と']],
+    fn: function (no, s, sys) {
+      const res = sys.__v0['WEBサーバ:応答']
+      res.status(no).send(s)
     },
     return_none: true
   },
