@@ -1608,6 +1608,13 @@ const PluginSystem = {
       throw new Error('『ハッシュキー削除』でハッシュ以外が与えられました。')
     }
   },
+  'ハッシュキー存在': { // @ハッシュAのキーKEYが存在するか確認 // @はっしゅきーそんざい
+    type: 'func',
+    josi: [['の','に'],['が']],
+    fn: function (a, key) {
+        return key in a
+    }
+  },
 
   // @日時処理
   '今': { // @現在時刻を「HH:mm:ss」の形式で返す // @いま
