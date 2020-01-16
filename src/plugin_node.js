@@ -81,6 +81,28 @@ const PluginNode = {
     },
     return_none: true
   },
+  'SJISファイル読': { // @SJIS形式のファイルSを読み込む // @SJISふぁいるよむ
+    type: 'func',
+    josi: [['を', 'から']],
+    fn: function (s, sys) {
+      const iconv = require('iconv-lite')
+      iconv.skipDecodeWarning = true
+      const buf = fs.readFileSync(s)
+      const text = iconv.decode(Buffer.from(buf), 'sjis')
+      return text      
+    }
+  },
+  'SJISファイル保存': { // @SをSJIS形式でファイルFへ書き込む // @SJISふぁいるほぞん
+    type: 'func',
+    josi: [['を'], ['へ', 'に']],
+    fn: function (s, f, sys) {
+      const iconv = require('iconv-lite')
+      iconv.skipDecodeWarning = true
+      const buf = iconv.encode(s, 'Shift_JIS')
+      fs.writeFileSync(f, buf)
+    },
+    return_none: true
+  },
   '起動待機': { // @シェルコマンドSを起動し実行終了まで待機する // @きどうたいき
     type: 'func',
     josi: [['を']],
