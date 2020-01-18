@@ -1762,7 +1762,7 @@ const PluginSystem = {
       const formats = ['YYYY/MM/DD', 'HH:mm:ss']
 
       for (let format of [formats.join(' ')].concat(formats)) {
-        let t = moment(s, format, true);
+        let t = moment(s, format, true)
         if (t.isValid()) {
           const n = a.match(/[0-9]+/)[0]
 
