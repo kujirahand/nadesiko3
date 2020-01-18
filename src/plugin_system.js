@@ -1688,6 +1688,84 @@ const PluginSystem = {
       return moment.unix(tm).format('YYYY/MM/DD HH:mm:ss')
     }
   },
+  '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
+    type: 'func',
+    josi: [['に'], ['を']],
+    fn: function (s, a) {
+      const moment = require('moment-timezone')
+
+      let t = moment(s, 'HH:mm:ss')
+      const a_ = a.slice(1).split(':')
+      const units = ['hours', 'minutes', 'seconds']
+
+      switch (a.slice(0, 1)) {
+        case '+':
+          for (let i = 0; i < a_.length; i++) {
+            t = t.add(a_[i], units[i])
+          }
+          break
+        case '-':
+          for (let i = 0; i < a_.length; i++) {
+            t = t.subtract(a_[i], units[i])
+          }
+          break
+        default:
+          throw new Error('『時間加算』命令の引数Aは「(+｜-)hh:nn:dd」で指定します。')
+      }
+
+      return t.format('HH:mm:ss')
+    }
+  },
+  '時刻加算': { // @時間SにAを加えて返す。Aは「1(時間|分|秒)」のように指定する (v1非互換)。 // @じこくかさん
+    type: 'func',
+    josi: [['に'], ['を']],
+    fn: function (s, a) {
+      const moment = require('moment-timezone')
+
+      let unit
+
+      switch (a.match(/(時間|分|秒)$/)[0]) {
+        case '時間':
+          unit = 'hours'
+          break
+        case '分':
+          unit = 'minutes'
+          break
+        case '秒':
+          unit = 'seconds'
+          break
+        default:
+          break
+      }
+
+      return moment(s, 'HH:mm:ss').add(a.match(/^[0-9]+/)[0], unit).format('HH:mm:ss')
+    }
+  },
+  '時刻減算': { // @時間SにAを減らして返す。Aは「1(時間|分|秒)」のように指定する (v1非互換)。 // @じこくげんざん
+    type: 'func',
+    josi: [['に'], ['を']],
+    fn: function (s, a) {
+      const moment = require('moment-timezone')
+
+      let unit
+
+      switch (a.match(/(時間|分|秒)$/)[0]) {
+        case '時間':
+          unit = 'hours'
+          break
+        case '分':
+          unit = 'minutes'
+          break
+        case '秒':
+          unit = 'seconds'
+          break
+        default:
+          break
+      }
+
+      return moment(s, 'HH:mm:ss').subtract(a.match(/^[0-9]+/)[0], unit).format('HH:mm:ss')
+    }
+  },
   '実行': { // @ 無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する) // @じっこう
     type: 'func',
     josi: [['を', 'に', 'で']],
