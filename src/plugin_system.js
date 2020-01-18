@@ -1688,6 +1688,16 @@ const PluginSystem = {
       return moment.unix(tm).format('YYYY/MM/DD HH:mm:ss')
     }
   },
+  '日数差': { // @日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @にっすうさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const format = 'YYYY/MM/DD'
+      return moment(b, format).diff(moment(a, format), 'days')
+    }
+  },
   '実行': { // @ 無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する) // @じっこう
     type: 'func',
     josi: [['を', 'に', 'で']],
