@@ -1649,6 +1649,14 @@ const PluginSystem = {
       return moment().add(1, 'days').format('YYYY/MM/DD')
     }
   },
+  '昨日': { // @昨日の日付を「YYYY/MM/DD」の形式で返す (v1非互換) // @きのう
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().subtract(1, 'days').format('YYYY/MM/DD')
+    }
+  },
   '今年': { // @今年の西暦を返す // @ことし
     type: 'func',
     josi: [],
