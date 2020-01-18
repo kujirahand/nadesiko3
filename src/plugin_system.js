@@ -1649,6 +1649,14 @@ const PluginSystem = {
       return moment().year()
     }
   },
+  '来年': { // @	来年が何年かを西暦で返す // @らいねん
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().year() + 1
+    }
+  },
   '今月': { // @今月を返す(v1非互換) // @こんげつ
     type: 'func',
     josi: [],
