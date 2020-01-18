@@ -1654,7 +1654,7 @@ const PluginSystem = {
     josi: [],
     fn: function () {
       const moment = require('moment-timezone')
-      return moment().year() + 1
+      return moment().add(1, 'years').year()
     }
   },
   '去年': { // @去年が何年かを西暦で返す // @きょねん
@@ -1662,7 +1662,7 @@ const PluginSystem = {
     josi: [],
     fn: function () {
       const moment = require('moment-timezone')
-      return moment().year() - 1
+      return moment().subtract(1, 'years').year()
     }
   },
   '今月': { // @今月を返す(v1非互換) // @こんげつ
@@ -1678,7 +1678,7 @@ const PluginSystem = {
     josi: [],
     fn: function () {
       const moment = require('moment-timezone')
-      return moment().month() + 2
+      return moment().add(1, 'months').month() + 1
     }
   },
   '先月': { // @先月が何月かを返す // @せんげつ
@@ -1686,7 +1686,7 @@ const PluginSystem = {
     josi: [],
     fn: function () {
       const moment = require('moment-timezone')
-      return moment().month()
+      return moment().subtract(1, 'months').month() + 1
     }
   },
   '曜日': { // @日付Sの曜日を返す // @ようび
