@@ -1688,6 +1688,16 @@ const PluginSystem = {
       return moment.unix(tm).format('YYYY/MM/DD HH:mm:ss')
     }
   },
+  '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const format = 'YYYY/MM/DD'
+      return moment(b, format).diff(moment(a, format), 'years')
+    }
+  },
   '月数差': { // @日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @げっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
