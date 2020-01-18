@@ -1692,24 +1692,17 @@ const PluginSystem = {
     type: 'func',
     josi: [['に'], ['を']],
     fn: function (s, a, sys) {
-      let func_name
+      const pm = a.slice(0, 1)
 
-      switch (a.slice(0, 1)) {
-        case '+':
-          func_name = '日時加算'
-          break
-        case '-':
-          func_name = '日時減算'
-          break
-        default:
-          throw new Error('『時間加算』命令の引数Aは「(+｜-)hh:nn:dd」で指定します。')
+      if (pm !== '+' && pm !== '-') {
+        throw new Error('『時間加算』命令の引数Aは「(+｜-)hh:nn:dd」で指定します。')
       }
 
       const n = a.slice(1).split(':')
       const units = ['時間', '分', '秒']
 
       for (let i = 0; i < n.length; i++) {
-        s = sys.__exec(func_name, [s, n[i] + units[i]])
+        s = sys.__exec('日時加算', [s, pm + n[i] + units[i]])
       }
 
       return s
@@ -1719,30 +1712,23 @@ const PluginSystem = {
     type: 'func',
     josi: [['に'], ['を']],
     fn: function (s, a, sys) {
-      let func_name
+      const pm = a.slice(0, 1)
 
-      switch (a.slice(0, 1)) {
-        case '+':
-          func_name = '日時加算'
-          break
-        case '-':
-          func_name = '日時減算'
-          break
-        default:
-          throw new Error('『日付加算』命令の引数Aは「(+｜-)yyyy/mm/dd」で指定します。')
+      if (pm !== '+' && pm !== '-') {
+        throw new Error('『日付加算』命令の引数Aは「(+｜-)yyyy/mm/dd」で指定します。')
       }
 
       const n = a.slice(1).split('/')
       const units = ['年', 'ヶ月', '日']
 
       for (let i = 0; i < n.length; i++) {
-        s = sys.__exec(func_name, [s, n[i] + units[i]])
+        s = sys.__exec('日時加算', [s, pm + n[i] + units[i]])
       }
 
       return s
     }
   },
-  '日時加算': { // @日時SにAを加えて返す。Aは「1(年|ヶ月|日|時間|分|秒)」のように指定する (v1非互換)。 // @にちじかさん
+  '日時加算': { // @日時SにAを加えて返す。Aは「(+｜-)1(年|ヶ月|日|時間|分|秒)」のように指定する (v1非互換)。 // @にちじかさん
     type: 'func',
     josi: [['に'], ['を']],
     fn: function (s, a) {
@@ -1776,56 +1762,26 @@ const PluginSystem = {
       const formats = ['YYYY/MM/DD', 'HH:mm:ss']
 
       for (let format of [formats.join(' ')].concat(formats)) {
-        const t = moment(s, format, true)
+        let t = moment(s, format, true);
         if (t.isValid()) {
-          return t.add(a.match(/^[0-9]+/)[0], unit).format(format)
+          const n = a.match(/[0-9]+/)[0]
+
+          switch (a.slice(0, 1)) {
+            case '+':
+              t = t.add(n, unit)
+              break
+            case '-':
+              t = t.subtract(n, unit)
+              break
+            default:
+              throw new Error('『日時加算』命令の引数Aは「(+｜-)1(年|ヶ月|日|時間|分|秒)」のように指定します。')
+          }
+
+          return t.format(format)
         }
       }
 
       throw new Error('日時を正常に加算できませんでした。')
-    }
-  },
-  '日時減算': { // @日時SからAを減らして返す。Aは「1(年|ヶ月|日|時間|分|秒)」のように指定する (v1非互換)。 // @にちじげんざん
-    type: 'func',
-    josi: [['に'], ['を']],
-    fn: function (s, a) {
-      const moment = require('moment-timezone')
-
-      let unit
-
-      switch (a.match(/(年|ヶ月|日|時間|分|秒)$/)[0]) {
-        case '年':
-          unit = 'years'
-          break
-        case 'ヶ月':
-          unit = 'months'
-          break
-        case '日':
-          unit = 'days'
-          break
-        case '時間':
-          unit = 'hours'
-          break
-        case '分':
-          unit = 'minutes'
-          break
-        case '秒':
-          unit = 'seconds'
-          break
-        default:
-          break
-      }
-
-      const formats = ['YYYY/MM/DD', 'HH:mm:ss']
-
-      for (let format of [formats.join(' ')].concat(formats)) {
-        const t = moment(s, format, true)
-        if (t.isValid()) {
-          return t.subtract(a.match(/^[0-9]+/)[0], unit).format(format)
-        }
-      }
-
-      throw new Error('日時を正常に減算できませんでした。')
     }
   },
   '実行': { // @ 無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する) // @じっこう
