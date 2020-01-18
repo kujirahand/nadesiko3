@@ -1691,29 +1691,28 @@ const PluginSystem = {
   '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
     type: 'func',
     josi: [['に'], ['を']],
-    fn: function (s, a) {
-      const moment = require('moment-timezone')
-
-      let t = moment(s, 'HH:mm:ss')
-      const a_ = a.slice(1).split(':')
-      const units = ['hours', 'minutes', 'seconds']
+    fn: function (s, a, sys) {
+      let func_name
 
       switch (a.slice(0, 1)) {
         case '+':
-          for (let i = 0; i < a_.length; i++) {
-            t = t.add(a_[i], units[i])
-          }
+          func_name = '時刻加算'
           break
         case '-':
-          for (let i = 0; i < a_.length; i++) {
-            t = t.subtract(a_[i], units[i])
-          }
+          func_name = '時刻減算'
           break
         default:
           throw new Error('『時間加算』命令の引数Aは「(+｜-)hh:nn:dd」で指定します。')
       }
 
-      return t.format('HH:mm:ss')
+      const n = a.slice(1).split(':')
+      const units = ['時間', '分', '秒']
+
+      for (let i = 0; i < n.length; i++) {
+        s = sys.__exec(func_name, [s, n[i] + units[i]])
+      }
+
+      return s
     }
   },
   '時刻加算': { // @時間SにAを加えて返す。Aは「1(時間|分|秒)」のように指定する (v1非互換)。 // @じこくかさん
