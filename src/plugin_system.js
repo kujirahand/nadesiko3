@@ -1698,6 +1698,32 @@ const PluginSystem = {
       return moment(b, format).diff(moment(a, format), 'days')
     }
   },
+  '時間差': { // @時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @じかんさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const time_format = 'HH:mm:ss'
+
+      for (let format of [['YYYY/MM/DD', time_format].join(' '), time_format]) {
+        const dts = []
+
+        for (let dt of [b, a]) {
+          const t = moment(dt, format, true)
+          if (t.isValid()) {
+            dts.push(t)
+          }
+        }
+
+        if (dts.length === 2) {
+          return dts[0].diff(dts[1], 'hours')
+        }
+      }
+
+      throw new Error('時間差が正常に算出できませんでした。')
+    }
+  },
   '分差': { // @時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @ふんさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
