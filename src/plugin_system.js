@@ -1649,7 +1649,7 @@ const PluginSystem = {
       return moment().year()
     }
   },
-  '来年': { // @	来年が何年かを西暦で返す // @らいねん
+  '来年': { // @来年が何年かを西暦で返す // @らいねん
     type: 'func',
     josi: [],
     fn: function () {
