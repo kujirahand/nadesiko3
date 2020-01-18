@@ -1740,7 +1740,7 @@ const PluginSystem = {
       return moment(s, 'HH:mm:ss').add(a.match(/^[0-9]+/)[0], unit).format('HH:mm:ss')
     }
   },
-  '時刻減算': { // @時間SにAを減らして返す。Aは「1(時間|分|秒)」のように指定する (v1非互換)。 // @じこくげんざん
+  '時刻減算': { // @時間SからAを減らして返す。Aは「1(時間|分|秒)」のように指定する (v1非互換)。 // @じこくげんざん
     type: 'func',
     josi: [['に'], ['を']],
     fn: function (s, a) {
