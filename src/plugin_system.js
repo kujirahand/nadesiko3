@@ -1673,6 +1673,14 @@ const PluginSystem = {
       return moment().month() + 1
     }
   },
+  '来月': { // @来月が何月かを返す // @らいげつ
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().month() + 2
+    }
+  },
   '曜日': { // @日付Sの曜日を返す // @ようび
     type: 'func',
     josi: [['の']],
