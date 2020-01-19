@@ -1665,6 +1665,21 @@ const PluginSystem = {
       return moment(s, 'YYYY/MM/DD').locale('ja').format('ddd')
     }
   },
+  '曜日番号取得': { // @Sに指定した日付の曜日番号をで返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土) // @ようびばんごうしゅとく
+    type: 'func',
+    josi: [['の']],
+    fn: function (s) {
+      const moment = require('moment-timezone')
+
+      let t = moment(s, 'YYYY/MM/DD')
+
+      if (!t.isValid()) {
+        t = moment()
+      }
+
+      return t.locale('ja').format('d')
+    }
+  },
   'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXじかんへんかん
     type: 'func',
     josi: [['の', 'を', 'から']],
