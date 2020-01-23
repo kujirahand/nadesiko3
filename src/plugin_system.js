@@ -1703,6 +1703,113 @@ const PluginSystem = {
       return moment.unix(tm).format('YYYY/MM/DD HH:mm:ss')
     }
   },
+  '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const format = 'YYYY/MM/DD'
+      return moment(b, format).diff(moment(a, format), 'years')
+    }
+  },
+  '月数差': { // @日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @げっすうさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const format = 'YYYY/MM/DD'
+      return moment(b, format).diff(moment(a, format), 'months')
+    }
+  },
+  '日数差': { // @日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @にっすうさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const format = 'YYYY/MM/DD'
+      return moment(b, format).diff(moment(a, format), 'days')
+    }
+  },
+  '時間差': { // @時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @じかんさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const time_format = 'HH:mm:ss'
+
+      for (let format of [['YYYY/MM/DD', time_format].join(' '), time_format]) {
+        const dts = []
+
+        for (let dt of [b, a]) {
+          const t = moment(dt, format, true)
+          if (t.isValid()) {
+            dts.push(t)
+          }
+        }
+
+        if (dts.length === 2) {
+          return dts[0].diff(dts[1], 'hours')
+        }
+      }
+
+      throw new Error('時間差が正常に算出できませんでした。')
+    }
+  },
+  '分差': { // @時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @ふんさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const time_format = 'HH:mm:ss'
+
+      for (let format of [['YYYY/MM/DD', time_format].join(' '), time_format]) {
+        const dts = []
+
+        for (let dt of [b, a]) {
+          const t = moment(dt, format, true)
+          if (t.isValid()) {
+            dts.push(t)
+          }
+        }
+
+        if (dts.length === 2) {
+          return dts[0].diff(dts[1], 'minutes')
+        }
+      }
+
+      throw new Error('分差が正常に算出できませんでした。')
+    }
+  },
+  '秒差': { // @時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @びょうさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b) {
+      const moment = require('moment-timezone')
+
+      const time_format = 'HH:mm:ss'
+
+      for (let format of [['YYYY/MM/DD', time_format].join(' '), time_format]) {
+        const dts = []
+
+        for (let dt of [b, a]) {
+          const t = moment(dt, format, true)
+          if (t.isValid()) {
+            dts.push(t)
+          }
+        }
+
+        if (dts.length === 2) {
+          return dts[0].diff(dts[1], 'seconds')
+        }
+      }
+
+      throw new Error('秒差が正常に算出できませんでした。')
+  },
   '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
     type: 'func',
     josi: [['に'], ['を']],
@@ -1795,7 +1902,6 @@ const PluginSystem = {
           return t.format(format)
         }
       }
-
       throw new Error('日時を正常に加算できませんでした。')
     }
   },
