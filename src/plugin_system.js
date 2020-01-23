@@ -1641,7 +1641,7 @@ const PluginSystem = {
       return moment().format('YYYY/MM/DD')
     }
   },
-  '今年': { // @今年の西暦を返す // @ことし
+  '今年': { // @今年が何年かを西暦で返す // @ことし
     type: 'func',
     josi: [],
     fn: function () {
@@ -1649,7 +1649,7 @@ const PluginSystem = {
       return moment().year()
     }
   },
-  '今月': { // @今月を返す(v1非互換) // @こんげつ
+  '今月': { // @今月が何月かを返す // @こんげつ
     type: 'func',
     josi: [],
     fn: function () {
