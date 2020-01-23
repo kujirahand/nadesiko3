@@ -89,7 +89,7 @@
   },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "@babel/cli": "^7.8.3",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-polyfill": "^6.26.0",
