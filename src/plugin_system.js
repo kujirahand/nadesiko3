@@ -1640,6 +1640,22 @@ const PluginSystem = {
       return moment().format('YYYY/MM/DD')
     }
   },
+  '明日': { // @明日の日付を「YYYY/MM/DD」の形式で返す (v1非互換) // @あす
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().add(1, 'days').format('YYYY/MM/DD')
+    }
+  },
+  '昨日': { // @昨日の日付を「YYYY/MM/DD」の形式で返す (v1非互換) // @きのう
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().subtract(1, 'days').format('YYYY/MM/DD')
+    }
+  },
   '今年': { // @今年が何年かを西暦で返す // @ことし
     type: 'func',
     josi: [],
@@ -1648,12 +1664,44 @@ const PluginSystem = {
       return moment().year()
     }
   },
+  '来年': { // @来年が何年かを西暦で返す // @らいねん
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().add(1, 'years').year()
+    }
+  },
+  '去年': { // @去年が何年かを西暦で返す // @きょねん
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().subtract(1, 'years').year()
+    }
+  },
   '今月': { // @今月が何月かを返す // @こんげつ
     type: 'func',
     josi: [],
     fn: function () {
       const moment = require('moment-timezone')
       return moment().month() + 1
+    }
+  },
+  '来月': { // @来月が何月かを返す // @らいげつ
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().add(1, 'months').month() + 1
+    }
+  },
+  '先月': { // @先月が何月かを返す // @せんげつ
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const moment = require('moment-timezone')
+      return moment().subtract(1, 'months').month() + 1
     }
   },
   '曜日': { // @日付Sの曜日を返す // @ようび
