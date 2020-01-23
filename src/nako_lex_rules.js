@@ -20,8 +20,8 @@ module.exports = {
     {name: 'def_test', pattern: /^●テスト:/},
     {name: 'def_func', pattern: /^●/},
     {name: 'number', pattern: /^0[xX][0-9a-fA-F]+/, readJosi: true, cb: parseInt},
-    {name: 'number', pattern: /^0[oO][0-7]+/, readJosi: true, cb: parseInt},
-    {name: 'number', pattern: /^0[bB][0-1]+/, readJosi: true, cb: parseInt},
+    {name: 'number', pattern: /^0[oO][0-7]+/, readJosi: true, cb: parseInt8},
+    {name: 'number', pattern: /^0[bB][0-1]+/, readJosi: true, cb: parseInt2},
     {name: 'number', pattern: /^([0-9]+(\.[0-9]+|\.)?|\.[0-9]+)[eE][+|-]?[0-9]+/, readJosi: true, cb: parseFloat},
     {name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat},
     {name: 'number', pattern: /^[0-9]+/, readJosi: true, cb: parseInt},
@@ -83,6 +83,15 @@ module.exports = {
     }
   ],
   trimOkurigana
+}
+
+function parseInt2(s) {
+    const ss = s.substring(2)
+    return parseInt(ss, 2)
+}
+function parseInt8(s) {
+    const ss = s.substring(2)
+    return parseInt(ss, 8)
 }
 
 function cbRangeComment (src) {
