@@ -1615,7 +1615,6 @@ const PluginSystem = {
         return key in a
     }
   },
-
   // @日時処理
   '今': { // @現在時刻を「HH:mm:ss」の形式で返す // @いま
     type: 'func',
@@ -1809,6 +1808,7 @@ const PluginSystem = {
       }
 
       throw new Error('秒差が正常に算出できませんでした。')
+    }
   },
   '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
     type: 'func',
@@ -1850,6 +1850,7 @@ const PluginSystem = {
       return s
     }
   },
+
   '日時加算': { // @日時SにAを加えて返す。Aは「(+｜-)1(年|ヶ月|日|時間|分|秒)」のように指定する (v1非互換)。 // @にちじかさん
     type: 'func',
     josi: [['に'], ['を']],
