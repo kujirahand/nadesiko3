@@ -166,7 +166,7 @@ $ npm run build:electron
 最低限のライブラリで良い場合には、``npm install --production``を実行するだけ。
 
 ```
-$ git clnone https://github.com/kujirahand/nadesiko3.git
+$ git clone https://github.com/kujirahand/nadesiko3.git
 $ cd nadesiko3
 $ npm install --production
 ```
