@@ -609,7 +609,7 @@ class NakoParser extends NakoParserBase {
         switch (word.type) {
           case 'func': // 関数の代入的呼び出し
             return {type: 'func', name: word.name, args: [value], setter: true, line: dainyu.line, josi: ''}
-          case 'ref_array':
+          case 'ref_array': // 配列への代入
             return {type: 'let_array', name: word.name, index: word.index, value: value, line: dainyu.line, josi: ''}
           default:
             return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
