@@ -1221,19 +1221,46 @@ const PluginBrowser = {
     },
     return_none: true
   },
-  '画像描画': { // @ [x, y, w, h]へファイル名F(またはImage)の画像を描画し、Imageを返す // @ がぞうびょうが
+  '画像描画': { // @ ファイル名F(またはImage)の画像を[sx, sy, sw, sh]の[dx, dy, dw, dh]へ描画し、Imageを返す // @ がぞうびょうが
     type: 'func',
-    josi: [['へ', 'に'], ['の', 'を']],
-    fn: function (xy, img, sys) {
+    josi: [['の', 'を'], ['の', 'を'], ['へ', 'に']],
+    fn: function (img, sxy, dxy, sys) {
+      if(img && sxy){
+        if (!Array.isArray(sxy) && Array.isArray(img)){ //逆になっていれば入れ替える
+          if (typeof sxy === 'string' || String(sxy.__proto__) === '[object HTMLImageElement]'){
+            let sw = img
+            img = sxy
+            sxy = sw
+          }
+        }
+      }
+      
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       const drawFunc = (im, ctx) => {
-        if (xy.length === 2)
-          {ctx.drawImage(im, xy[0], xy[1])}
-         else if (xy.length === 4)
-          {ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])}
-         else if (xy.length === 6)
-          {ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5])}
+        if (!dxy){
+          if(!sxy){
+            ctx.drawImage(im)
+          }
+          else if(sxy.length >= 2){ //もしsxyがあるのにdxyがなかったらdxyを代わりにする
+            dxy = sxy
+            sxy = undefined
+          }
+        }
+        if (dxy.length === 2)
+          {ctx.drawImage(im, dxy[0], dxy[1])}
+        else if (dxy.length === 4) {
+          if (!sxy) {
+            ctx.drawImage(im, dxy[0], dxy[1], dxy[2], dxy[3])
+          }
+          else if (sxy.length === 4){
+            ctx.drawImage(im, sxy[0], sxy[1], sxy[2], sxy[3], dxy[0], dxy[1], dxy[2], dxy[3])
+          }
+          else {throw new Error('画像描画に使える引数は画像と、描画する座標へ2つか、' +
+          '描画する座標とその位置の4つか、使用する座標と使用する位置と描画する座標と大きさの8つだけです。')}
 
+        }
+        else {throw new Error('画像描画に使える引数は画像と、描画する座標へ2つか、' +
+        '描画する座標とその位置の4つか、使用する座標と使用する位置と描画する座標と大きさの8つだけです。')}
       }
       if (typeof img === 'string') {
         const image = new window.Image()
