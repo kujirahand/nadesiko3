@@ -601,15 +601,19 @@ class NakoParser extends NakoParserBase {
         const dainyu = this.get()
         const value = this.popStack(['を'])
         const word = this.popStack(['へ', 'に'])
-        if (!word || (word.type !== 'word' && word.type !== 'func')) {
+        if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
           throw new NakoSyntaxError('代入文で代入先の変数が見当たりません。',
             dainyu.line, this.filename)
         }
-        // 関数の代入的呼び出しか？
-        if (word.type === 'func')
-          {return {type: 'func', name: word.name, args: [value], setter: true, line: dainyu.line, josi: ''}}
 
-        return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
+        switch (word.type) {
+          case 'func': // 関数の代入的呼び出し
+            return {type: 'func', name: word.name, args: [value], setter: true, line: dainyu.line, josi: ''}
+          case 'ref_array': // 配列への代入
+            return {type: 'let_array', name: word.name, index: word.index, value: value, line: dainyu.line, josi: ''}
+          default:
+            return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
+        }
       }
       // 制御構文
       if (this.check('ここから')) {this.get()}
