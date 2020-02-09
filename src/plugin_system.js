@@ -732,6 +732,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を']],
     fn: function (s, a, cnt) {
+      cnt = cnt ? cnt : undefined
       return (String(s).substr(a - 1, cnt))
     }
   },
@@ -739,6 +740,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を', '']],
     fn: function (s, a, cnt) {
+      cnt = cnt ? cnt : undefined
       return (String(s).substr(a - 1, cnt))
     }
   },
