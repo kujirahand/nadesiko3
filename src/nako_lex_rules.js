@@ -19,12 +19,15 @@ module.exports = {
     {name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment},
     {name: 'def_test', pattern: /^●テスト:/},
     {name: 'def_func', pattern: /^●/},
-    {name: 'number', pattern: /^0[xX][0-9a-fA-F]+/, readJosi: true, cb: parseInt},
-    {name: 'number', pattern: /^0[oO][0-7]+/, readJosi: true, cb: parseInt8},
-    {name: 'number', pattern: /^0[bB][0-1]+/, readJosi: true, cb: parseInt2},
-    {name: 'number', pattern: /^([0-9]+(\.[0-9]+|\.)?|\.[0-9]+)[eE][+|-]?[0-9]+/, readJosi: true, cb: parseFloat},
-    {name: 'number', pattern: /^[0-9]+\.[0-9]+/, readJosi: true, cb: parseFloat},
-    {name: 'number', pattern: /^[0-9]+/, readJosi: true, cb: parseInt},
+    {name: 'number', pattern: /^非数/, readJosi: true, cb: () => { return NaN } },
+    {name: 'number', pattern: /^無限大/, readJosi: true, cb: () => { return Infinity } },
+    {name: 'number', pattern: /^0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*/, readJosi: true, cb: parseNumber},
+    {name: 'number', pattern: /^0[oO][0-7]+(_[0-7]+)*/, readJosi: true, cb: parseNumber},
+    {name: 'number', pattern: /^0[bB][0-1]+(_[0-1]+)*/, readJosi: true, cb: parseNumber},
+    //下の三つは小数点が挟まっている場合、小数点から始まっている場合、小数点がない場合の十進法の数値にマッチします
+    {name: 'number', pattern: /^\d+(_\d+)*\.(\d+(_\d+)*)?([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
+    {name: 'number', pattern: /^\.\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
+    {name: 'number', pattern: /^\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
     {name: 'ここから', pattern: /^(ここから)/},
     {name: 'ここまで', pattern: /^(ここまで)/},
     {name: 'もし', pattern: /^もしも?/},
@@ -203,4 +206,8 @@ function trimOkurigana (s) {
     {s = s.replace(/[ぁ-ん]+/g, '')}
 
   return s
+}
+
+function parseNumber (n) {
+  return Number(n.replace(/_/g,''))
 }
