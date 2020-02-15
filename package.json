@@ -49,7 +49,7 @@
   "babel": {
     "presets": [
       [
-        "env",
+        "@babel/preset-env",
         {
           "targets": {
             "browsers": [
@@ -58,12 +58,14 @@
               "last 2 versions",
               "Firefox ESR",
               "not dead"
-            ],
-            "useBuiltIns": true
-          }
+            ]
+          },
+          "useBuiltIns": "usage",
+          "corejs": 3,
+          "debug": true
         }
       ],
-      "react"
+      "@babel/preset-react"
     ]
   },
   "eslintConfig": {
@@ -90,11 +92,10 @@
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "devDependencies": {
     "@babel/cli": "^7.8.3",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.23.0",
+    "@babel/core": "^7.0.0",
+    "babel-loader": "^8.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
     "date-utils": "^1.2.21",
     "es6-promise": "^4.2.6",
     "eslint": "^4.19.1",
@@ -118,6 +119,7 @@
     "body-parser": "^1.19.0",
     "commander": "^2.20.0",
     "copy-paste-win32fix": "^1.4.0",
+    "core-js": "^3.6.4",
     "css-loader": "^3.2.0",
     "csv-lite-js": "^0.0.7",
     "express": "^4.16.4",
@@ -132,6 +134,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "readline-sync": "^1.4.9",
+    "regenerator-runtime": "^0.13.3",
     "sendkeys-js": "0.0.4",
     "ssri": "^6.0.1",
     "style-loader": "^1.0.0",
