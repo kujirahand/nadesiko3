@@ -67,6 +67,7 @@ const PluginSystem = {
   '回数': {type: 'const', value: ''}, // @かいすう
   'CR': {type: 'const', value: '\r'}, // @CR
   'LF': {type: 'const', value: '\n'}, // @LF
+  'ブラウザ名変換表': {type: 'const', value: require('caniuse-db/data.json').agents}, // @ぶらうざめいへんかんひょう
   '空配列': { // @空の配列を返す // @からはいれつ
     type: 'func',
     josi: [],
@@ -2081,6 +2082,14 @@ const PluginSystem = {
     fn: function (tz) {
       const moment = require('moment-timezone')
       moment.tz.setDefault(tz)
+    }
+  },
+  '対応ブラウザ一覧取得': { // @対応しているブラウザの一覧を取得する // @たいおうぶらうざいちらんしゅとく
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const browserslist = require('browserslist')
+      return browserslist()
     }
   }
 }
