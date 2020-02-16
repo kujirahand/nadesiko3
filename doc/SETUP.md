@@ -137,7 +137,7 @@ $ npm run build:command
 ```
 ### READMEの生成
 
-「対応機器, 対応ブラウザを展開したい場所に `{embed browser}` する」という規則に従って[README.template.md](../README.template.md)を記述し、以下のコマンドを実行します。
+「対応機器, 対応ブラウザを展開したい場所に `{embed browser}` と記述する」という規則に従って[README.template.md](../README.template.md)を記述し、以下のコマンドを実行します。
 
 ```
 $ npm run build:readme
