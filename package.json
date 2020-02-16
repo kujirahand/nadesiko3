@@ -19,6 +19,7 @@
     "build:command": "cnako3 batch/build_command.nako3",
     "build:electron": "asar pack src/enako3.js release/enako3.asar",
     "build:win32": "cnako3 installer/make-win32.nako3",
+    "build:readme": "node tools/readme_generator/generator.js",
     "watch": "webpack --watch --mode development"
   },
   "repository": {
@@ -51,15 +52,6 @@
       [
         "@babel/preset-env",
         {
-          "targets": {
-            "browsers": [
-              "> 0.5%",
-              "> 0.5% in JP",
-              "last 2 versions",
-              "Firefox ESR",
-              "not dead"
-            ]
-          },
           "useBuiltIns": "usage",
           "corejs": 3,
           "debug": true
@@ -68,6 +60,14 @@
       "@babel/preset-react"
     ]
   },
+  "browserslist": [
+    "> 0.5%",
+    "> 0.5% in JP",
+    "last 2 versions",
+    "Firefox ESR",
+    "maintained node versions",
+    "not dead"
+  ],
   "eslintConfig": {
     "extends": [
       "standard",
@@ -113,7 +113,8 @@
     "source-map": "^0.7.3",
     "uuid": "^3.3.2",
     "webpack": "^4.31.0",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.2",
+    "caniuse-db": "^1.0.30001027"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
