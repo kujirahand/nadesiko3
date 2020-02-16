@@ -57,7 +57,7 @@
 			* 72
 			* 71
 			* 68
-		* IE
+		* Internet Explorer
 			* 11
 		* Opera
 			* 66

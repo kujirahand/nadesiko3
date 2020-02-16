@@ -12,7 +12,11 @@ for (const browserStr of browserslist()) {
   if (browser[0] in agents) {
     const browserData = agents[browser[0]]
 
-    browser[0] = browserData.browser
+    if (browserData.browser === 'IE') {
+      browser[0] = 'Internet Explorer'
+    } else {
+      browser[0] = browserData.browser
+    }
 
     switch (browserData.type) {
       case 'mobile':
