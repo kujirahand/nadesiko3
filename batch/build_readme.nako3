@@ -1,3 +1,7 @@
+#
+# README.template.mdを元に対応機器, 対応ブラウザを展開したREADME.mdを生成します。
+# なお、README.template.mdを記述する際は対応機器, 対応ブラウザを展開したい場所に『{embed browser}』と記述する必要があります。
+#
 ブラウザ一覧 = {}
 
 対応ブラウザ一覧取得を反復
