@@ -6,8 +6,9 @@ const NakoSyntaxError = require('./nako_syntax_error')
 
 class NakoParserBase {
   constructor () {
-    this.debug = false
-    this.debugStack = false
+    this.debugAll = false
+    this.debug = false || this.debugAll
+    this.debugStack = false || this.debugAll
     this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
     this.filename = ''
     this.init()

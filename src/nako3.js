@@ -15,11 +15,12 @@ const lexer = new Lexer()
 
 class NakoCompiler {
   constructor () {
-    this.debug = false
+    this.debugAll = false
+    this.debug = false || this.debugAll
     this.silent = true
-    this.debugParser = false
-    this.debugJSCode = true
-    this.debugLexer = false
+    this.debugParser = false || this.debugAll
+    this.debugJSCode = true || this.debugAll
+    this.debugLexer = false || this.debugAll
     this.filename = 'inline'
     // 環境のリセット
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
