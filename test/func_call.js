@@ -73,7 +73,7 @@ describe('関数呼び出しテスト', () => {
       err => {
         assert(err instanceof NakoSyntaxError)
 
-        // エラーメッセージ の内容が正しいか
+        // エラーメッセージの内容が正しいか
         assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出ししようとしています。`) > -1)
         return true
       }
@@ -86,7 +86,7 @@ describe('関数呼び出しテスト', () => {
       err => {
         assert(err instanceof NakoSyntaxError)
 
-        // エラーメッセージ の内容が正しいか
+        // エラーメッセージの内容が正しいか
         assert(err.message.indexOf(`関数『${funcName}』の引数が不足しています。`) > -1)
 
         return true
