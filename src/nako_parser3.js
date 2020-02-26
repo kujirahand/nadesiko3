@@ -719,7 +719,7 @@ class NakoParser extends NakoParserBase {
     if (nullCount >= 2 && (0 < valueCount || t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0))
       {throw new NakoSyntaxError(`関数『${t.value}』の引数が不足しています。`, t.line, this.filename)}
 
-    const funcNode = {type: 'func', name: t.value, args: args, josi: t.josi, line: t.line}
+    const funcNode = {type: 'func', name: t.value, args: args, josi: t.josi, line: t.line, meta: t.meta}
     // 言い切りならそこで一度切る
     if (t.josi === '')
       {return funcNode}
