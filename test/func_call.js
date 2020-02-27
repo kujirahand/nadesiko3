@@ -69,7 +69,7 @@ describe('関数呼び出しテスト', () => {
   it('関数の代入的呼び出しその3', () => {
     const funcName = 'テスト'
     assert.throws(
-      () => cmd(`●${funcName};それは5;ここまで;テスト=8`),
+      () => cmd(`●${funcName};それは5;ここまで;${funcName}=8`),
       err => {
         assert(err instanceof NakoSyntaxError)
 
@@ -82,7 +82,61 @@ describe('関数呼び出しテスト', () => {
   it('関数の代入的呼び出しその4', () => {
     const funcName = 'テスト'
     assert.throws(
-      () => cmd(`●${funcName}(aとbを);それはa+b;ここまで;テスト=8`),
+      () => cmd(`●${funcName}(aとbを);それはa+b;ここまで;${funcName}=8`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`関数『${funcName}』の引数が不足しています。`) > -1)
+
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその5', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName};それは5;ここまで;${funcName}に8を代入`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出ししようとしています。`) > -1)
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその6', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName}(aとbを);それはa+b;ここまで;${funcName}に8を代入`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`関数『${funcName}』の引数が不足しています。`) > -1)
+
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその7', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName};それは5;ここまで;${funcName}は8`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出ししようとしています。`) > -1)
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその8', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName}(aとbを);それはa+b;ここまで;${funcName}は8`),
       err => {
         assert(err instanceof NakoSyntaxError)
 
