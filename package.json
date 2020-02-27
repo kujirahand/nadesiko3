@@ -86,6 +86,7 @@
       ]
     },
     "plugins": [
+      "@babel/plugin-transform-regenerator",
       "react"
     ]
   },
@@ -93,9 +94,11 @@
   "devDependencies": {
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.0.0",
-    "babel-loader": "^8.0.0",
+    "@babel/plugin-transform-regenerator": "^7.8.3",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.0",
+    "caniuse-db": "^1.0.30001027",
     "date-utils": "^1.2.21",
     "es6-promise": "^4.2.6",
     "eslint": "^6.8.0",
@@ -113,8 +116,7 @@
     "source-map": "^0.7.3",
     "uuid": "^3.3.2",
     "webpack": "^4.31.0",
-    "webpack-cli": "^3.3.2",
-    "caniuse-db": "^1.0.30001027"
+    "webpack-cli": "^3.3.2"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
