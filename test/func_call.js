@@ -74,7 +74,7 @@ describe('関数呼び出しテスト', () => {
         assert(err instanceof NakoSyntaxError)
 
         // エラーメッセージの内容が正しいか
-        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出ししようとしています。`) > -1)
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
         return true
       }
     )
@@ -87,7 +87,7 @@ describe('関数呼び出しテスト', () => {
         assert(err instanceof NakoSyntaxError)
 
         // エラーメッセージの内容が正しいか
-        assert(err.message.indexOf(`関数『${funcName}』の引数が不足しています。`) > -1)
+        assert(err.message.indexOf(`引数が2つ以上ある関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
 
         return true
       }
@@ -101,7 +101,7 @@ describe('関数呼び出しテスト', () => {
         assert(err instanceof NakoSyntaxError)
 
         // エラーメッセージの内容が正しいか
-        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出ししようとしています。`) > -1)
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
         return true
       }
     )
@@ -114,7 +114,7 @@ describe('関数呼び出しテスト', () => {
         assert(err instanceof NakoSyntaxError)
 
         // エラーメッセージの内容が正しいか
-        assert(err.message.indexOf(`関数『${funcName}』の引数が不足しています。`) > -1)
+        assert(err.message.indexOf(`引数が2つ以上ある関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
 
         return true
       }
@@ -128,7 +128,7 @@ describe('関数呼び出しテスト', () => {
         assert(err instanceof NakoSyntaxError)
 
         // エラーメッセージの内容が正しいか
-        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出ししようとしています。`) > -1)
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
         return true
       }
     )
@@ -141,7 +141,7 @@ describe('関数呼び出しテスト', () => {
         assert(err instanceof NakoSyntaxError)
 
         // エラーメッセージの内容が正しいか
-        assert(err.message.indexOf(`関数『${funcName}』の引数が不足しています。`) > -1)
+        assert(err.message.indexOf(`引数が2つ以上ある関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
 
         return true
       }

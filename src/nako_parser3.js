@@ -610,11 +610,11 @@ class NakoParser extends NakoParserBase {
           case 'func': // 関数の代入的呼び出し
             switch (word.meta.josi.length) {
               case 0:
-                throw new NakoSyntaxError(`引数がない関数『${word.name}』を代入的呼び出ししようとしています。`, dainyu.line, this.filename)
+                throw new NakoSyntaxError(`引数がない関数『${word.name}』を代入的呼び出しすることはできません。`, dainyu.line, this.filename)
               case 1:
                 return {type: 'func', name: word.name, args: [value], setter: true, line: dainyu.line, josi: ''}
               default:
-                throw new NakoSyntaxError(`関数『${word.name}』の引数が不足しています。`, dainyu.line, this.filename)
+                throw new NakoSyntaxError(`引数が2つ以上ある関数『${word.name}』を代入的呼び出しすることはできません。`, dainyu.line, this.filename)
             }
           case 'ref_array': // 配列への代入
             return {type: 'let_array', name: word.name, index: word.index, value: value, line: dainyu.line, josi: ''}
@@ -743,7 +743,7 @@ class NakoParser extends NakoParserBase {
         if (this.accept(['func', 'eq', this.yCalc])) {
           switch (this.y[0].meta.josi.length) {
             case 0:
-              throw new NakoSyntaxError(`引数がない関数『${this.y[0].value}』を代入的呼び出ししようとしています。`, this.y[0].line, this.filename)
+              throw new NakoSyntaxError(`引数がない関数『${this.y[0].value}』を代入的呼び出しすることはできません。`, this.y[0].line, this.filename)
             case 1:
               return {
                 type: 'func',
@@ -753,7 +753,7 @@ class NakoParser extends NakoParserBase {
                 line: this.y[0].line
               }
             default:
-              throw new NakoSyntaxError(`関数『${this.y[0].value}』の引数が不足しています。`, this.y[0].line, this.filename)
+              throw new NakoSyntaxError(`引数が2つ以上ある関数『${this.y[0].value}』を代入的呼び出しすることはできません。`, this.y[0].line, this.filename)
           }
         } else
           {throw new NakoSyntaxError(
