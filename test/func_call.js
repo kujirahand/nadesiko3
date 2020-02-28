@@ -1,5 +1,6 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
+const NakoSyntaxError = require('../src/nako_parser_base').NakoSyntaxError
 
 describe('関数呼び出しテスト', () => {
   const nako = new NakoCompiler()
@@ -65,6 +66,87 @@ describe('関数呼び出しテスト', () => {
     cmp('INT=3.5;それを表示;', '3')
     cmp('INTは3.5;それを表示;', '3')
   })
+  it('関数の代入的呼び出しその3', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName};それは5;ここまで;${funcName}=8`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその4', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName}(aとbを);それはa+b;ここまで;${funcName}=8`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数が2つ以上ある関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
+
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその5', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName};それは5;ここまで;${funcName}に8を代入`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその6', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName}(aとbを);それはa+b;ここまで;${funcName}に8を代入`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数が2つ以上ある関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
+
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその7', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName};それは5;ここまで;${funcName}は8`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数がない関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
+        return true
+      }
+    )
+  })
+  it('関数の代入的呼び出しその8', () => {
+    const funcName = 'テスト'
+    assert.throws(
+      () => cmd(`●${funcName}(aとbを);それはa+b;ここまで;${funcName}は8`),
+      err => {
+        assert(err instanceof NakoSyntaxError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`引数が2つ以上ある関数『${funcName}』を代入的呼び出しすることはできません。`) > -1)
+
+        return true
+      }
+    )
+  })
   it('関数の引数に関数呼び出しがある場合', () => {
     cmp('A=「ab」;「abcd」の1から(Aの文字数)だけ文字削除。それを表示。', 'cd')
   })
@@ -72,7 +154,7 @@ describe('関数呼び出しテスト', () => {
     cmp('●MYSORT(a,b)とは\n' +
         '(INT(a) - INT(b))で戻る。\n' +
         'ここまで。\n' +
-        'ARY=[8,3,4];' + 
+        'ARY=[8,3,4];' +
         '「MYSORT」でARYを配列カスタムソートしてJSONエンコードして表示', '[3,4,8]')
   })
   it('引数の順番を入れ替えて呼び出す(#342)その1', () => {

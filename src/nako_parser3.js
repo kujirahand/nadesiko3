@@ -608,7 +608,14 @@ class NakoParser extends NakoParserBase {
 
         switch (word.type) {
           case 'func': // 関数の代入的呼び出し
-            return {type: 'func', name: word.name, args: [value], setter: true, line: dainyu.line, josi: ''}
+            switch (word.meta.josi.length) {
+              case 0:
+                throw new NakoSyntaxError(`引数がない関数『${word.name}』を代入的呼び出しすることはできません。`, dainyu.line, this.filename)
+              case 1:
+                return {type: 'func', name: word.name, args: [value], setter: true, line: dainyu.line, josi: ''}
+              default:
+                throw new NakoSyntaxError(`引数が2つ以上ある関数『${word.name}』を代入的呼び出しすることはできません。`, dainyu.line, this.filename)
+            }
           case 'ref_array': // 配列への代入
             return {type: 'let_array', name: word.name, index: word.index, value: value, line: dainyu.line, josi: ''}
           default:
@@ -723,6 +730,7 @@ class NakoParser extends NakoParserBase {
       return funcNode
     }
     // 続き
+    funcNode.meta = f
     this.pushStack(funcNode)
     return null
   }
@@ -733,15 +741,22 @@ class NakoParser extends NakoParserBase {
       const word = this.peek()
       const name = this.nodeToStr(word)
       try {
-        if (this.accept(['func', 'eq', this.yCalc]))
-          {return {
-            type: 'func',
-            name: this.y[0].value,
-            args: [this.y[2]],
-            setter: true,
-            line: this.y[0].line
-          }}
-        else
+        if (this.accept(['func', 'eq', this.yCalc])) {
+          switch (this.y[0].meta.josi.length) {
+            case 0:
+              throw new NakoSyntaxError(`引数がない関数『${this.y[0].value}』を代入的呼び出しすることはできません。`, this.y[0].line, this.filename)
+            case 1:
+              return {
+                type: 'func',
+                name: this.y[0].value,
+                args: [this.y[2]],
+                setter: true,
+                line: this.y[0].line
+              }
+            default:
+              throw new NakoSyntaxError(`引数が2つ以上ある関数『${this.y[0].value}』を代入的呼び出しすることはできません。`, this.y[0].line, this.filename)
+          }
+        } else
           {throw new NakoSyntaxError(
             `関数${name}の代入的呼び出しで計算式が読み取れません。`, word.line, this.filename)}
 
