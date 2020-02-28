@@ -75,6 +75,20 @@ const PluginSystem = {
       return []
     }
   },
+  '空ハッシュ': { // @空のハッシュを返す // @からはっしゅ
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      return {}
+    }
+  },
+  '空オブジェクト': { // @空のオブジェクトを返す // @からおぶじぇくと
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      return sys.__exec('空ハッシュ', [sys])
+    }
+  },
 
   // @標準出力
   '表示': { // @Sを表示 // @ひょうじ
