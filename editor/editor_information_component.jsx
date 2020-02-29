@@ -26,6 +26,7 @@ export default function EditorInformationComponent (props) {
         <p className="edit_head">実行結果:</p>
         <p className="info">{nl2br(props.info)}</p>
         <div id="nako3_div_1"></div>
+        <canvas id={props.canvasId} width="310" height="150"/>
       </div>
     </div>
   )
@@ -33,5 +34,6 @@ export default function EditorInformationComponent (props) {
 
 EditorInformationComponent.propTypes = {
   info: PropTypes.string,
-  err: PropTypes.object
+  err: PropTypes.object,
+  canvasId: PropTypes.string.isRequired
 }
