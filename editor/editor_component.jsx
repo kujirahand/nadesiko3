@@ -19,7 +19,8 @@ export default class EditorComponent extends React.Component {
     const preCode = `# 自動的に実行されるコード (編集不可)\nカメ描画先は『#${canvasId}』。\n『#${canvasId}』へ描画開始。`
     return (
       <div>
-        <EditorFormComponent title={this.props.title} code={preCode} row="3" readOnly={true} />
+        <EditorFormComponent title={this.props.title} code={preCode}
+                             row={preCode.split('\n').length} readOnly={true} />
         <EditorFormComponent title={this.props.title} code={this.state.code} row="10" readOnly={false}
                              ref={(e) => this.form = e} onChange={(e) => this.setState({code: e.target.value})} />
         <EditorButtonComponent nako3={this.props.nako3} preCode={preCode} code={this.state.code}
