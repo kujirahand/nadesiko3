@@ -15,11 +15,12 @@ export default class EditorComponent extends React.Component {
   }
 
   render () {
+    const canvasId = 'nako3_canvas_1'
     return (
       <div>
         <EditorFormComponent title={this.props.title} code={this.state.code}
                              ref={(e) => this.form = e} onChange={(e) => this.setState({code: e.target.value})} />
-        <EditorButtonComponent nako3={this.props.nako3} code={this.state.code}
+        <EditorButtonComponent nako3={this.props.nako3} code={this.state.code} canvasId={canvasId}
                                onInformationChanged={(s) => {
                                  this.info.push(s)
                                  this.setState({err: null})
@@ -30,6 +31,7 @@ export default class EditorComponent extends React.Component {
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
         <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} />
+        <canvas id={canvasId} width="310" height="150"/>
         <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
           this.setState({code: this.state.code.substr(0, this.form.pos()) + e.target.getAttribute('data-paste') + this.state.code.substr(this.form.pos())})
