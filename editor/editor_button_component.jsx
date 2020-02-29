@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment-timezone'
 
 export default function EditorButtonComponent (props) {
+  const preCode = props.preCode + '\n'
   return (
     <div className="buttons">
       <button onClick={() => {
@@ -11,7 +12,7 @@ export default function EditorButtonComponent (props) {
           // なでしこの関数をカスタマイズ --- TODO: なでしこの追加命令は edit_main.jsxで書いているので別途関数を作ってそこでまとめるように
           props.nako3.setFunc('表示', [['と', 'を', 'の']], props.onInformationChanged)
           window.localStorage['nako3/editor/code'] = props.code
-          props.nako3.run(props.code)
+          props.nako3.run(preCode + props.code)
         } catch (e) {
           props.onErrorChanged(e)
         }
@@ -21,7 +22,7 @@ export default function EditorButtonComponent (props) {
       <button onClick={() => {
         try {
           window.localStorage['nako3/editor/code'] = props.code
-          props.nako3.test(props.code)
+          props.nako3.test(preCode + props.code)
         } catch (e) {
           props.onErrorChanged(e)
         }
@@ -32,7 +33,7 @@ export default function EditorButtonComponent (props) {
       <button onClick={() => {
         try {
           const link = document.createElement('a')
-          link.href = window.URL.createObjectURL(new Blob([props.nako3.compile(props.code)]))
+          link.href = window.URL.createObjectURL(new Blob([props.nako3.compile(preCode + props.code)]))
           link.download = 'nako3_' + moment().format('YYYYMMDDHHmmss') + '.js'
           link.click()
         } catch (e) {
@@ -46,6 +47,7 @@ export default function EditorButtonComponent (props) {
 }
 
 EditorButtonComponent.propTypes = {
+  preCode: PropTypes.string.isRequired,
   code: PropTypes.string.isRequired,
   onInformationChanged: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,

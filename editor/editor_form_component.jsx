@@ -12,15 +12,18 @@ export default class EditorFormComponent extends React.Component {
   }
 
   render () {
-    return <textarea className="src" rows="10" ref={(e) => this.textarea = e}
-                     onChange={this.props.onChange} title={this.props.title} value={this.props.code} />
+    return <textarea className="src" rows={this.props.row} ref={(e) => this.textarea = e}
+                     onChange={this.props.onChange} title={this.props.title} value={this.props.code}
+                     readOnly={this.props.readOnly}/>
   }
 }
 
 EditorFormComponent.propTypes = {
   title: PropTypes.string.isRequired,
   code: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
+  row: PropTypes.number.isRequired,
+  readOnly: PropTypes.bool.isRequired,
+  onChange: PropTypes.func
 }
 
 EditorFormComponent.defaultProps = {

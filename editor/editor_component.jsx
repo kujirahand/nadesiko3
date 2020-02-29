@@ -15,11 +15,15 @@ export default class EditorComponent extends React.Component {
   }
 
   render () {
+    const canvasId = 'nako3_canvas_1'
+    const preCodeList = ['# 自動的に実行されるコード (編集不可)', `カメ描画先は『#${canvasId}』。`, `『#${canvasId}』へ描画開始。`]
+    const preCode = preCodeList.join('\n')
     return (
       <div>
-        <EditorFormComponent title={this.props.title} code={this.state.code}
+        <EditorFormComponent title={this.props.title} code={preCode} row={preCodeList.length} readOnly={true} />
+        <EditorFormComponent title={this.props.title} code={this.state.code} row="10" readOnly={false}
                              ref={(e) => this.form = e} onChange={(e) => this.setState({code: e.target.value})} />
-        <EditorButtonComponent nako3={this.props.nako3} code={this.state.code}
+        <EditorButtonComponent nako3={this.props.nako3} preCode={preCode} code={this.state.code}
                                onInformationChanged={(s) => {
                                  this.info.push(s)
                                  this.setState({err: null})
@@ -29,7 +33,7 @@ export default class EditorComponent extends React.Component {
                                  this.setState({err: null})
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
-        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} />
+        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} canvasId={canvasId} />
         <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
           this.setState({code: this.state.code.substr(0, this.form.pos()) + e.target.getAttribute('data-paste') + this.state.code.substr(this.form.pos())})
