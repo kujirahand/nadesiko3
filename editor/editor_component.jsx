@@ -22,7 +22,7 @@ export default class EditorComponent extends React.Component {
         <EditorFormComponent title={this.props.title} code={preCode} row="3" readOnly={true} />
         <EditorFormComponent title={this.props.title} code={this.state.code} row="10" readOnly={false}
                              ref={(e) => this.form = e} onChange={(e) => this.setState({code: e.target.value})} />
-        <EditorButtonComponent nako3={this.props.nako3} preCode={preCode} code={this.state.code} canvasId={canvasId}
+        <EditorButtonComponent nako3={this.props.nako3} preCode={preCode} code={this.state.code}
                                onInformationChanged={(s) => {
                                  this.info.push(s)
                                  this.setState({err: null})

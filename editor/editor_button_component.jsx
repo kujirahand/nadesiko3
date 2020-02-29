@@ -52,6 +52,5 @@ EditorButtonComponent.propTypes = {
   onInformationChanged: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
   onErrorChanged: PropTypes.func.isRequired,
-  nako3: PropTypes.object.isRequired,
-  canvasId: PropTypes.string.isRequired
+  nako3: PropTypes.object.isRequired
 }
