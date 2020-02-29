@@ -16,11 +16,11 @@ export default class EditorComponent extends React.Component {
 
   render () {
     const canvasId = 'nako3_canvas_1'
-    const preCode = `# 自動的に実行されるコード (編集不可)\nカメ描画先は『#${canvasId}』。\n『#${canvasId}』へ描画開始。`
+    const preCodeList = ['# 自動的に実行されるコード (編集不可)', `カメ描画先は『#${canvasId}』。`, `『#${canvasId}』へ描画開始。`]
+    const preCode = preCodeList.join('\n')
     return (
       <div>
-        <EditorFormComponent title={this.props.title} code={preCode}
-                             row={preCode.split('\n').length} readOnly={true} />
+        <EditorFormComponent title={this.props.title} code={preCode} row={preCodeList.length} readOnly={true} />
         <EditorFormComponent title={this.props.title} code={this.state.code} row="10" readOnly={false}
                              ref={(e) => this.form = e} onChange={(e) => this.setState({code: e.target.value})} />
         <EditorButtonComponent nako3={this.props.nako3} preCode={preCode} code={this.state.code}
