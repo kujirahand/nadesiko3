@@ -1,3 +1,5 @@
+const NakoRuntimeError = require('./nako_runtime_error')
+
 const PluginSystem = {
   '初期化': {
     type: 'func',
@@ -67,6 +69,7 @@ const PluginSystem = {
   '回数': {type: 'const', value: ''}, // @かいすう
   'CR': {type: 'const', value: '\r'}, // @CR
   'LF': {type: 'const', value: '\n'}, // @LF
+  '元号データ': {type: 'const', value: require('./era.json')}, // @げんごうでーた
   'ブラウザ名変換表': {type: 'const', value: require('caniuse-db/data.json').agents}, // @ぶらうざめいへんかんひょう
   '空配列': { // @空の配列を返す // @からはいれつ
     type: 'func',
@@ -1765,6 +1768,29 @@ const PluginSystem = {
     fn: function (tm) {
       const moment = require('moment-timezone')
       return moment.unix(tm).format('YYYY/MM/DD HH:mm:ss')
+    }
+  },
+  '和暦変換': { // @Sを和暦に変換する。Sは明治以降の日付が有効。 // @われきへんかん
+    type: 'func',
+    josi: [['を']],
+    fn: function (s, sys) {
+      const moment = require('moment-timezone')
+      const date = moment(s, 'YYYY/MM/DD')
+
+      for (const era of sys.__v0['元号データ']) {
+        const eraBeginDate = moment(era['改元日'], 'YYYY/MM/DD')
+        if (eraBeginDate <= date) {
+          let eraYear = date.format('YYYY') - eraBeginDate.format('YYYY') + 1
+
+          if (eraYear === 1) {
+            eraYear = '元'
+          }
+
+          return era['元号'] + eraYear + '/' + date.format('MM/DD')
+        }
+      }
+
+      throw new NakoRuntimeError('『和暦変換』は明治以前の日付には対応していません。')
     }
   },
   '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ

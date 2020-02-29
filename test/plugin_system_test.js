@@ -1,5 +1,6 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
+const NakoRuntimeError = require('../src/nako_runtime_error')
 
 describe('plugin_system_test', () => {
   const nako = new NakoCompiler()
@@ -442,5 +443,26 @@ describe('plugin_system_test', () => {
     cmp('TYPEOF(「あ」)を表示', 'string')
     cmp('TYPEOF(0)を表示', 'number')
     cmp('もし、NAN判定(INT(「あ」))ならば、「ok」と表示。違えば、「ng」と表示', 'ok')
+  })
+  it('元号データ, 和暦変換', () => {
+    assert.throws(
+      () => cmd('「1868/10/22」を和暦変換。それを表示'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+
+        // エラーメッセージの内容が正しいか
+        assert(err.message.indexOf(`『和暦変換』は明治以前の日付には対応していません。`) > -1)
+        return true
+      }
+    )
+    cmp('「1868/10/23」を和暦変換。それを表示', '明治元/10/23')
+    cmp('「1912/07/29」を和暦変換。それを表示', '明治45/07/29')
+    cmp('「1912/07/30」を和暦変換。それを表示', '大正元/07/30')
+    cmp('「1926/12/24」を和暦変換。それを表示', '大正15/12/24')
+    cmp('「1926/12/25」を和暦変換。それを表示', '昭和元/12/25')
+    cmp('「1989/01/07」を和暦変換。それを表示', '昭和64/01/07')
+    cmp('「1989/01/08」を和暦変換。それを表示', '平成元/01/08')
+    cmp('「2019/04/30」を和暦変換。それを表示', '平成31/04/30')
+    cmp('「2019/05/01」を和暦変換。それを表示', '令和元/05/01')
   })
 })
