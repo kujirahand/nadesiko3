@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment-timezone'
 
 export default function EditorButtonComponent (props) {
-  const preCode = `カメ描画先は『#${props.canvasId}』。\n『#${props.canvasId}』へ描画開始。\n`
+  const preCode = props.preCode + '\n'
   return (
     <div className="buttons">
       <button onClick={() => {
@@ -47,6 +47,7 @@ export default function EditorButtonComponent (props) {
 }
 
 EditorButtonComponent.propTypes = {
+  preCode: PropTypes.string.isRequired,
   code: PropTypes.string.isRequired,
   onInformationChanged: PropTypes.func.isRequired,
   onReset: PropTypes.func.isRequired,
