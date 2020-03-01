@@ -11,7 +11,6 @@
   "scripts": {
     "test": "mocha",
     "start": "node src/nako3server.js",
-    "server": "lite-server --config=demo/bs-config.json",
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
     "electron": "electron src/enako3.js",
@@ -104,7 +103,6 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-standard": "^3.1.0",
-    "lite-server": "^2.4.0",
     "mocha": "^5.2.0",
     "prop-types": "^15.7.2",
     "pump": "^3.0.0",
