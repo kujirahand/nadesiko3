@@ -31,12 +31,6 @@ Homebrew( https://brew.sh/index_ja ) (そしてXcode)をインストールして
 
 ## 【共通】
 
-以下、共通の作業となる。(electron と asar は GUIをやるときに追加。ネット回線が細い人は抜かして実行しても良い)
-
-```
-$ npm install -g npm-check-updates electron asar
-```
-
 コマンドラインから以下を実行して、nadesiko3のリポジトリをcloneし、必要なライブラリをインストール。ただし、Node.jsのバージョンv10以上が必要。もし、Ubuntuで古いのNode.jsをインストールした場合など、nモジュールを利用して最新安定版のNode.jsを利用してください。
 
 
