@@ -13,10 +13,10 @@
     "start": "node src/nako3server.js",
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
-    "electron": "electron src/enako3.js",
+    "electron": "electron .",
     "build": "webpack --mode production",
     "build:command": "node src/cnako3.js batch/build_command.nako3",
-    "build:electron": "asar pack src/enako3.js release/enako3.asar",
+    "build:electron": "electron-packager . --out release/enako3 --asar --all --overwrite",
     "build:win32": "node src/cnako3.js installer/make-win32.nako3",
     "build:readme": "node src/cnako3.js batch/build_readme.nako3",
     "watch": "webpack --watch --mode development"
@@ -119,8 +119,8 @@
     "ssri": "^6.0.1",
     "style-loader": "^1.0.0",
     "whatwg-fetch": "^2.0.4",
-    "asar": "^2.1.0",
     "electron": "^8.0.2",
+    "electron-packager": "^14.2.1",
     "npm-check-updates": "^4.0.3"
   },
   "dependencies": {
