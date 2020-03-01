@@ -118,7 +118,10 @@
     "regenerator-runtime": "^0.13.3",
     "ssri": "^6.0.1",
     "style-loader": "^1.0.0",
-    "whatwg-fetch": "^2.0.4"
+    "whatwg-fetch": "^2.0.4",
+    "asar": "^2.1.0",
+    "electron": "^8.0.2",
+    "npm-check-updates": "^4.0.3"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
