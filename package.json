@@ -121,7 +121,10 @@
     "whatwg-fetch": "^2.0.4",
     "electron": "^8.0.2",
     "electron-packager": "^14.2.1",
-    "npm-check-updates": "^4.0.3"
+    "npm-check-updates": "^4.0.3",
+    "es6-promise": "^4.2.6",
+    "isomorphic-fetch": "^2.2.1",
+    "hotkeys-js": "^3.7.2"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -132,15 +135,12 @@
     "express": "^4.16.4",
     "form-data": "^2.3.3",
     "fs-extra": "^6.0.0",
-    "hotkeys-js": "^3.7.2",
     "iconv-lite": "^0.4.24",
     "moment-timezone": "^0.5.25",
     "node-fetch": "^2.5.0",
     "opener": "^1.5.1",
     "readline-sync": "^1.4.9",
     "sendkeys-js": "0.0.4",
-    "caniuse-db": "^1.0.30001027",
-    "es6-promise": "^4.2.6",
-    "isomorphic-fetch": "^2.2.1"
+    "caniuse-db": "^1.0.30001027"
   }
 }
