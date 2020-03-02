@@ -44,6 +44,21 @@ app.on('ready', () => {
           click: () => BrowserWindow.getFocusedWindow().toggleDevTools()
         }
       ]
+    },
+    {
+      label: 'ヘルプ',
+      submenu: [
+        {
+          label: 'バージョン情報',
+          click: () => {
+            let win = new BrowserWindow({width: 325, height: 100})
+            win.loadURL('file://' + path.join(__dirname, '..', 'demo', 'version.html'))
+            win.on('closed', () => {
+              win = null
+            })
+          }
+        }
+      ]
     }
   ]))
 
