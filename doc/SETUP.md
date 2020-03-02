@@ -160,8 +160,6 @@ $ npm run electron
 $ npm run build:electron
 ```
 
-ビルドしたenako3.asarを配布可能な形式にする方法については[Electronでアプリケーションを作ってみよう - Qiita](http://qiita.com/Quramy/items/a4be32769366cfe55778#配布してみる)を参照。
-
 ## Gitからリポジトリを取得して利用する場合
 
 最低限のライブラリで良い場合には、``npm install --production``を実行するだけ。
