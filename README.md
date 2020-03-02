@@ -1,6 +1,6 @@
 # 日本語プログラミング言語「なでしこ3」
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Maintainability](https://api.codeclimate.com/v1/badges/5572db59aa6164217d30/maintainability)](https://codeclimate.com/github/kujirahand/nadesiko3/maintainability)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Maintainability](https://api.codeclimate.com/v1/badges/5572db59aa6164217d30/maintainability)](https://codeclimate.com/github/kujirahand/nadesiko3/maintainability) [![npm version](https://badge.fury.io/js/nadesiko3.svg)](https://badge.fury.io/js/nadesiko3)
 
 ## 「なでしこ3」とは？
 
