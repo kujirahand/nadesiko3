@@ -10,7 +10,8 @@ module.exports = {
   entry: {
     wnako3: [path.join(srcPath, 'wnako3.js')], // plugin_system+plugin_browser含む
     plugin_turtle: [path.join(srcPath, 'plugin_turtle.js')],
-    editor: [path.join(editorPath, 'edit_main.jsx')]
+    editor: [path.join(editorPath, 'edit_main.jsx')],
+    version: [path.join(editorPath, 'version_main.jsx')]
   },
 
   output: {
