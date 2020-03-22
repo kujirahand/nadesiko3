@@ -13,7 +13,7 @@ process.noDeprecation = true
  */
 class CanIUseDBDataReplacementPlugin extends NormalModuleReplacementPlugin {
   constructor () {
-    super(/caniuse-db\/data\.json/, path.join(releasePath, 'caniuse-db', 'data.json'))
+    super(/caniuse-db\/data\.json/, path.join(__dirname, 'tmp', 'caniuse-db', 'data.json'))
   }
 
   apply (compiler) {
