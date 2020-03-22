@@ -46,6 +46,7 @@ const PluginNode = {
       sys.__v0['AJAX:ONERROR'] = null
     }
   },
+  'ブラウザ名変換表': {type: 'const', value: require('caniuse-db/data.json').agents}, // @ぶらうざめいへんかんひょう
   // @ファイル入出力
   '開': { // @ファイルSを開く // @ひらく
     type: 'func',

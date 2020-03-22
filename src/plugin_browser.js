@@ -44,6 +44,7 @@ const PluginBrowser = {
   'オリーブ色': {type: 'const', value: 'olive'}, // @おりーぶいろ
   'ベージュ色': {type: 'const', value: 'beige'}, // @べーじゅいろ
   'アリスブルー色': {type: 'const', value: 'aliceblue'}, // @ありすぶるーいろ
+  'ブラウザ名変換表': {type: 'const', value: require('./agents.json')}, // @ぶらうざめいへんかんひょう
   'RGB': { // @赤緑青を256段階でそれぞれ指定して、#RRGGBB形式の値を返す // @RGB
     type: 'func',
     josi: [['と'], ['と'], ['で', 'の']],

@@ -70,7 +70,6 @@ const PluginSystem = {
   'CR': {type: 'const', value: '\r'}, // @CR
   'LF': {type: 'const', value: '\n'}, // @LF
   '元号データ': {type: 'const', value: require('./era.json')}, // @げんごうでーた
-  'ブラウザ名変換表': {type: 'const', value: require('caniuse-db/data.json').agents}, // @ぶらうざめいへんかんひょう
   '空配列': { // @空の配列を返す // @からはいれつ
     type: 'func',
     josi: [],
