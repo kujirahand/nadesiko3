@@ -20,7 +20,7 @@
     "build:win32": "node src/cnako3.js installer/make-win32.nako3",
     "build:readme": "node src/cnako3.js batch/build_readme.nako3",
     "watch": "webpack --watch --mode development",
-    "analyze": "webpack-bundle-analyzer data/stats.json"
+    "analyze": "webpack-bundle-analyzer release/stats.json"
   },
   "repository": {
     "type": "git",
