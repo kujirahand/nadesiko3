@@ -1,10 +1,30 @@
 const path = require('path')
+const NormalModuleReplacementPlugin = require('webpack').NormalModuleReplacementPlugin
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
 
 process.noDeprecation = true
+
+/**
+ * caniuse-db/data.json のうち、なでしこ3の関数内で実際に使用しているのは agents だけなので、
+ * caniuse-db/data.json の中身を agents のみにすることで生成物のサイズ削減を図る
+ */
+class CanIUseDBDataReplacementPlugin extends NormalModuleReplacementPlugin {
+  constructor () {
+    super(/caniuse-db\/data\.json/, path.join(releasePath, 'caniuse-db', 'data.json'))
+  }
+
+  apply (compiler) {
+    const fs = require('fs')
+    const data = require('caniuse-db/data.json')
+
+    fs.mkdirSync(path.dirname(this.newResource), {recursive: true})
+    fs.writeFileSync(this.newResource, JSON.stringify({agents: data.agents}))
+    return super.apply(compiler)
+  }
+}
 
 module.exports = {
   entry: {
@@ -21,7 +41,9 @@ module.exports = {
 
   // devtool: 'cheap-module-eval-source-map',
 
-  plugins: [],
+  plugins: [
+    new CanIUseDBDataReplacementPlugin()
+  ],
 
   module: {
     rules: [
