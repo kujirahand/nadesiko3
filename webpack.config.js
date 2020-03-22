@@ -23,6 +23,9 @@ module.exports = {
   // devtool: 'cheap-module-eval-source-map',
 
   plugins: [
+    // moment.jsのロケールファイルをビルド対象から除外
+    // ロケールファイルを使用したい場合は、
+    // ソースコード内で『require('moment/locale/hoge')』のように記述すれば、そのロケールファイルのみビルド対象に含まれる
     new IgnorePlugin(/^\.\/locale$/, /moment$/)
   ],
 
