@@ -129,18 +129,18 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "browserslist": "^4.8.7",
+    "caniuse-db": "^1.0.30001027",
     "commander": "^2.20.0",
     "copy-paste-win32fix": "^1.4.0",
     "csv-lite-js": "^0.0.7",
+    "dayjs": "^1.8.23",
     "express": "^4.16.4",
     "form-data": "^2.3.3",
     "fs-extra": "^6.0.0",
     "iconv-lite": "^0.4.24",
-    "moment-timezone": "^0.5.25",
     "node-fetch": "^2.5.0",
     "opener": "^1.5.1",
     "readline-sync": "^1.4.9",
-    "sendkeys-js": "0.0.4",
-    "caniuse-db": "^1.0.30001027"
+    "sendkeys-js": "0.0.4"
   }
 }

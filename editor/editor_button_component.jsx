@@ -1,7 +1,7 @@
 import 'date-utils'
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment-timezone'
+import dayjs from 'dayjs'
 
 export default function EditorButtonComponent (props) {
   const preCode = props.preCode + '\n'
@@ -34,7 +34,7 @@ export default function EditorButtonComponent (props) {
         try {
           const link = document.createElement('a')
           link.href = window.URL.createObjectURL(new Blob([props.nako3.compile(preCode + props.code)]))
-          link.download = 'nako3_' + moment().format('YYYYMMDDHHmmss') + '.js'
+          link.download = 'nako3_' + dayjs().format('YYYYMMDDHHmmss') + '.js'
           link.click()
         } catch (e) {
           props.onErrorChanged(e)
