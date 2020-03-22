@@ -23,6 +23,7 @@ module.exports = {
   // devtool: 'cheap-module-eval-source-map',
 
   plugins: [
+    // TODO: 日付計算ライブラリを置き換えたら削除
     // moment.jsのロケールファイルをビルド対象から除外
     // ロケールファイルを使用したい場合は、
     // ソースコード内で『require('moment/locale/hoge')』のように記述すれば、そのロケールファイルのみビルド対象に含まれる
