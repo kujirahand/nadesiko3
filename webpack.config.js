@@ -23,7 +23,7 @@ module.exports = {
   // devtool: 'cheap-module-eval-source-map',
 
   plugins: [
-    new StatsPlugin('stats.json', {
+    new StatsPlugin(path.join('..', 'data', 'stats.json'), {
       chunkModules: true
     })
   ],
