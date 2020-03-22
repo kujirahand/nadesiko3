@@ -24,7 +24,7 @@ module.exports = {
 
   plugins: [
     new StatsPlugin('stats.json', {
-      chunkModules: true,
+      chunkModules: true
     })
   ],
 
