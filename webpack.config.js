@@ -1,4 +1,7 @@
 const path = require('path')
+const TerserPlugin = require('terser-webpack-plugin')
+const OccurrenceOrderPlugin = require('webpack').optimize.OccurrenceOrderPlugin
+const AggressiveMergingPlugin = require('webpack').optimize.AggressiveMergingPlugin
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
@@ -21,7 +24,10 @@ module.exports = {
 
   // devtool: 'cheap-module-eval-source-map',
 
-  plugins: [],
+  plugins: [
+    new AggressiveMergingPlugin(),
+    new OccurrenceOrderPlugin()
+  ],
 
   module: {
     rules: [
@@ -54,5 +60,10 @@ module.exports = {
 
   resolve: {
     extensions: ['*', '.webpack.js', '.web.js', '.js', '.jsx']
+  },
+
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()]
   }
 }
