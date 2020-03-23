@@ -1,10 +1,30 @@
 const path = require('path')
+const IgnorePlugin = require('webpack').IgnorePlugin
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
 
 process.noDeprecation = true
+
+/**
+ * caniuse-db/data.json のうち、なでしこ3の関数内で実際に使用しているのは agents だけなので、
+ * caniuse-db/data.json の中身を agents のみにすることで生成物のサイズ削減を図る
+ */
+class CanIUseDBDataReplacementPlugin extends NormalModuleReplacementPlugin {
+  constructor () {
+    super(/caniuse-db\/data\.json/, path.join(__dirname, 'tmp', 'caniuse-db', 'data.json'))
+  }
+
+  apply (compiler) {
+    const fs = require('fs')
+    const data = require('caniuse-db/data.json')
+
+    fs.mkdirSync(path.dirname(this.newResource), {recursive: true})
+    fs.writeFileSync(this.newResource, JSON.stringify({agents: data.agents}))
+    return super.apply(compiler)
+  }
+}
 
 module.exports = {
   entry: {
@@ -21,7 +41,13 @@ module.exports = {
 
   // devtool: 'cheap-module-eval-source-map',
 
-  plugins: [],
+  plugins: [
+    // TODO: 日付計算ライブラリを置き換えたら削除
+    // moment.jsのロケールファイルをビルド対象から除外
+    // ロケールファイルを使用したい場合は、
+    // ソースコード内で『require('moment/locale/hoge')』のように記述すれば、そのロケールファイルのみビルド対象に含まれる
+    new IgnorePlugin(/^\.\/locale$/, /moment$/)
+  ],
 
   module: {
     rules: [
