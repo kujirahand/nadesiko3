@@ -1,9 +1,8 @@
 const path = require('path')
 const StatsPlugin = require('stats-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const OccurrenceOrderPlugin = require('webpack').optimize.OccurrenceOrderPlugin
-const AggressiveMergingPlugin = require('webpack').optimize.AggressiveMergingPlugin
-const NormalModuleReplacementPlugin = require('webpack').NormalModuleReplacementPlugin
+const {NormalModuleReplacementPlugin} = require('webpack')
+const {OccurrenceOrderPlugin, AggressiveMergingPlugin} = require('webpack').optimize
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
