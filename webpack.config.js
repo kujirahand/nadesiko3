@@ -2,6 +2,7 @@ const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
 const OccurrenceOrderPlugin = require('webpack').optimize.OccurrenceOrderPlugin
 const AggressiveMergingPlugin = require('webpack').optimize.AggressiveMergingPlugin
+const NormalModuleReplacementPlugin = require('webpack').NormalModuleReplacementPlugin
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
@@ -45,7 +46,8 @@ module.exports = {
 
   plugins: [
     new AggressiveMergingPlugin(),
-    new OccurrenceOrderPlugin()
+    new OccurrenceOrderPlugin(),
+    new CanIUseDBDataReplacementPlugin()
   ],
 
   module: {
