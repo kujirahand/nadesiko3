@@ -1738,6 +1738,7 @@ const PluginSystem = {
     josi: [['の']],
     fn: function (s) {
       const dayjs = require('dayjs')
+      require('dayjs/locale/ja')
 
       let t = dayjs(s, 'YYYY/MM/DD')
 
