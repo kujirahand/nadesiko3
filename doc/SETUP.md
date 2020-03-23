@@ -35,7 +35,7 @@ Homebrew( https://brew.sh/index_ja ) (そしてXcode)をインストールして
 
 
 ```
-$ git clone --recursive https://github.com/kujirahand/nadesiko3
+$ git clone https://github.com/kujirahand/nadesiko3
 $ cd nadesiko3
 $ npm install --no-optional
 ```
