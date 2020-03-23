@@ -13,6 +13,6 @@ describe('plugin_test', () => {
     assert.equal(ret.log, res)
   }
   it('「取り込む」', () => {
-    cmp('!「test/nadesiko3-hoge」を取り込む。\n3と5をHOGE足して、表示。', '8')
+    cmp('!「nadesiko3-hoge」を取り込む。\n3と5をHOGE足して、表示。', '8')
   })
 })
