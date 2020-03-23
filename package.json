@@ -9,7 +9,7 @@
     "nako3edit": "tools/nako3edit/run.js"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "TZ=Asia/Tokyo mocha",
     "start": "node src/nako3server.js",
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
