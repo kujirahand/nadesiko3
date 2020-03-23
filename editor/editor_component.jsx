@@ -1,4 +1,3 @@
-import 'date-utils'
 import React from 'react'
 import PropTypes from 'prop-types'
 import EditorFormComponent from './editor_form_component'
