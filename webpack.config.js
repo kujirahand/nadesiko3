@@ -1,4 +1,5 @@
 const path = require('path')
+const StatsPlugin = require('stats-webpack-plugin')
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
@@ -21,7 +22,11 @@ module.exports = {
 
   // devtool: 'cheap-module-eval-source-map',
 
-  plugins: [],
+  plugins: [
+    new StatsPlugin('stats.json', {
+      chunkModules: true
+    })
+  ],
 
   module: {
     rules: [
