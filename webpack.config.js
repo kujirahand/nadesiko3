@@ -1,4 +1,5 @@
 const path = require('path')
+const StatsPlugin = require('stats-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const OccurrenceOrderPlugin = require('webpack').optimize.OccurrenceOrderPlugin
 const AggressiveMergingPlugin = require('webpack').optimize.AggressiveMergingPlugin
@@ -47,7 +48,10 @@ module.exports = {
   plugins: [
     new AggressiveMergingPlugin(),
     new OccurrenceOrderPlugin(),
-    new CanIUseDBDataReplacementPlugin()
+    new CanIUseDBDataReplacementPlugin(),
+    new StatsPlugin('stats.json', {
+      chunkModules: true
+    })
   ],
 
   module: {
