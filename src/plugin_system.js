@@ -1795,34 +1795,35 @@ const PluginSystem = {
       throw new NakoRuntimeError('『和暦変換』は明治以前の日付には対応していません。')
     }
   },
-  '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ
+  '日付差': { // @日付AとBの差を種類kindで返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ひづけさ
     type: 'func',
-    josi: [['と', 'から'], ['の', 'までの']],
-    fn: function (a, b) {
+    josi: [['と', 'から'], ['の', 'までの'], ['による']],
+    fn: function (a, b, kind) {
       const dayjs = require('dayjs')
 
       const format = 'YYYY/MM/DD'
-      return dayjs(b, format).diff(dayjs(a, format), 'years')
+      return dayjs(b, format).diff(dayjs(a, format), kind)
+    }
+  },
+  '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b, sys) {
+      return sys.__exec('日付差', [a, b, 'years'])
     }
   },
   '月数差': { // @日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @げっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    fn: function (a, b) {
-      const dayjs = require('dayjs')
-
-      const format = 'YYYY/MM/DD'
-      return dayjs(b, format).diff(dayjs(a, format), 'months')
+    fn: function (a, b, sys) {
+      return sys.__exec('日付差', [a, b, 'months'])
     }
   },
   '日数差': { // @日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @にっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    fn: function (a, b) {
-      const dayjs = require('dayjs')
-
-      const format = 'YYYY/MM/DD'
-      return dayjs(b, format).diff(dayjs(a, format), 'days')
+    fn: function (a, b, sys) {
+      return sys.__exec('日付差', [a, b, 'days'])
     }
   },
   '時間差': { // @時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @じかんさ
