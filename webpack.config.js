@@ -49,9 +49,7 @@ module.exports = {
     new AggressiveMergingPlugin(),
     new OccurrenceOrderPlugin(),
     new CanIUseDBDataReplacementPlugin(),
-    new StatsPlugin('stats.json', {
-      chunkModules: true
-    })
+    new StatsPlugin('stats.json', {chunkModules: true}, null)
   ],
 
   module: {
