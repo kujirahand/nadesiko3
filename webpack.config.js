@@ -1,5 +1,5 @@
 const path = require('path')
-const NormalModuleReplacementPlugin = require('webpack').NormalModuleReplacementPlugin
+const IgnorePlugin = require('webpack').IgnorePlugin
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
@@ -42,7 +42,11 @@ module.exports = {
   // devtool: 'cheap-module-eval-source-map',
 
   plugins: [
-    new CanIUseDBDataReplacementPlugin()
+    // TODO: 日付計算ライブラリを置き換えたら削除
+    // moment.jsのロケールファイルをビルド対象から除外
+    // ロケールファイルを使用したい場合は、
+    // ソースコード内で『require('moment/locale/hoge')』のように記述すれば、そのロケールファイルのみビルド対象に含まれる
+    new IgnorePlugin(/^\.\/locale$/, /moment$/)
   ],
 
   module: {
