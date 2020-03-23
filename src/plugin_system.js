@@ -1826,10 +1826,10 @@ const PluginSystem = {
       return sys.__exec('日付差', [a, b, 'days'])
     }
   },
-  '時間差': { // @時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @じかんさ
+  '時刻差': { // @時間AとBの差を種類kindで返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @じこくさ
     type: 'func',
-    josi: [['と', 'から'], ['の', 'までの']],
-    fn: function (a, b) {
+    josi: [['と', 'から'], ['の', 'までの'], ['による']],
+    fn: function (a, b, kind) {
       const dayjs = require('dayjs')
       const defaultDate = '1980/01/01 '
       const maxCount = 2
@@ -1853,79 +1853,32 @@ const PluginSystem = {
         }
 
         if (dts.length === 2) {
-          return dts[0].diff(dts[1], 'hours')
+          return dts[0].diff(dts[1], kind)
         }
       }
 
       throw new Error('時間差が正常に算出できませんでした。')
     }
   },
+  '時間差': { // @時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @じかんさ
+    type: 'func',
+    josi: [['と', 'から'], ['の', 'までの']],
+    fn: function (a, b, sys) {
+      return sys.__exec('時刻差', [a, b, 'hours'])
+    }
+  },
   '分差': { // @時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @ふんさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    fn: function (a, b) {
-      const dayjs = require('dayjs')
-      const defaultDate = '1980/01/01 '
-      const maxCount = 2
-
-      for (let i = 0; i < maxCount; i++) {
-        let a_ = a
-        let b_ = b
-
-        if (i === maxCount - 1) {
-          b_ = defaultDate + b_
-          a_ = defaultDate + a_
-        }
-
-        const dts = []
-
-        for (let dt of [b_, a_]) {
-          const t = dayjs(dt, 'YYYY/MM/DD HH:mm:ss')
-          if (t.isValid()) {
-            dts.push(t)
-          }
-        }
-
-        if (dts.length === 2) {
-          return dts[0].diff(dts[1], 'minutes')
-        }
-      }
-
-      throw new Error('分差が正常に算出できませんでした。')
+    fn: function (a, b, sys) {
+      return sys.__exec('時刻差', [a, b, 'minutes'])
     }
   },
   '秒差': { // @時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @びょうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    fn: function (a, b) {
-      const dayjs = require('dayjs')
-      const defaultDate = '1980/01/01 '
-      const maxCount = 2
-
-      for (let i = 0; i < maxCount; i++) {
-        let a_ = a
-        let b_ = b
-
-        if (i === maxCount - 1) {
-          b_ = defaultDate + b_
-          a_ = defaultDate + a_
-        }
-
-        const dts = []
-
-        for (let dt of [b_, a_]) {
-          const t = dayjs(dt, 'YYYY/MM/DD HH:mm:ss')
-          if (t.isValid()) {
-            dts.push(t)
-          }
-        }
-
-        if (dts.length === 2) {
-          return dts[0].diff(dts[1], 'seconds')
-        }
-      }
-
-      throw new Error('秒差が正常に算出できませんでした。')
+    fn: function (a, b, sys) {
+      return sys.__exec('時刻差', [a, b, 'seconds'])
     }
   },
   '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
