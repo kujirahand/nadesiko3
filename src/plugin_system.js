@@ -1845,9 +1845,6 @@ const PluginSystem = {
           break
       }
 
-      const dateFormat = 'YYYY/MM/DD'
-      const timeFormat = 'HH:mm:ss'
-      const datetimeFormat = [dateFormat, timeFormat].join(' ')
       const maxCount = 2
 
       for (let i = 0; i < maxCount; i++) {
@@ -1860,7 +1857,7 @@ const PluginSystem = {
             s_ = '1980/01/01 ' + s_
           }
 
-          let t = dayjs(s_, datetimeFormat)
+          let t = dayjs(s_, 'YYYY/MM/DD HH:mm:ss')
 
           if (t.isValid()) {
             dts.push(t)
