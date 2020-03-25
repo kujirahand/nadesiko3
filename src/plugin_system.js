@@ -1802,6 +1802,21 @@ const PluginSystem = {
       const dayjs = require('dayjs')
 
       const format = 'YYYY/MM/DD'
+
+      switch (kind) {
+        case '年':
+          kind = 'years'
+          break
+        case '月':
+          kind = 'months'
+          break
+        case '日':
+          kind = 'days'
+          break
+        default:
+          break
+      }
+
       return dayjs(b, format).diff(dayjs(a, format), kind)
     }
   },
@@ -1809,21 +1824,21 @@ const PluginSystem = {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     fn: function (a, b, sys) {
-      return sys.__exec('日付差', [a, b, 'years'])
+      return sys.__exec('日付差', [a, b, '年'])
     }
   },
   '月数差': { // @日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @げっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     fn: function (a, b, sys) {
-      return sys.__exec('日付差', [a, b, 'months'])
+      return sys.__exec('日付差', [a, b, '月'])
     }
   },
   '日数差': { // @日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @にっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     fn: function (a, b, sys) {
-      return sys.__exec('日付差', [a, b, 'days'])
+      return sys.__exec('日付差', [a, b, '日'])
     }
   },
   '時刻差': { // @時間AとBの差を種類kindで返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @じこくさ
@@ -1833,6 +1848,20 @@ const PluginSystem = {
       const dayjs = require('dayjs')
       const defaultDate = '1980/01/01 '
       const maxCount = 2
+
+      switch (kind) {
+        case '時間':
+          kind = 'hours'
+          break
+        case '分':
+          kind = 'minutes'
+          break
+        case '秒':
+          kind = 'seconds'
+          break
+        default:
+          break
+      }
 
       for (let i = 0; i < maxCount; i++) {
         let a_ = a
@@ -1864,21 +1893,21 @@ const PluginSystem = {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     fn: function (a, b, sys) {
-      return sys.__exec('時刻差', [a, b, 'hours'])
+      return sys.__exec('時刻差', [a, b, '時間'])
     }
   },
   '分差': { // @時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @ふんさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     fn: function (a, b, sys) {
-      return sys.__exec('時刻差', [a, b, 'minutes'])
+      return sys.__exec('時刻差', [a, b, '分'])
     }
   },
   '秒差': { // @時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @びょうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     fn: function (a, b, sys) {
-      return sys.__exec('時刻差', [a, b, 'seconds'])
+      return sys.__exec('時刻差', [a, b, '秒'])
     }
   },
   '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
