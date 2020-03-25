@@ -1730,14 +1730,7 @@ const PluginSystem = {
     fn: function (s) {
       const dayjs = require('dayjs')
       require('dayjs/locale/ja')
-
-      let t = dayjs(s, 'YYYY/MM/DD')
-
-      if (!t.isValid()) {
-        t = dayjs()
-      }
-
-      return t.locale('ja').format('ddd')
+      return dayjs(s, 'YYYY/MM/DD').locale('ja').format('ddd')
     }
   },
   '曜日番号取得': { // @Sに指定した日付の曜日番号をで返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土) // @ようびばんごうしゅとく
