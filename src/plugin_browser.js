@@ -1,6 +1,6 @@
 // plugin_browser.js
 require('es6-promise').polyfill()
-require('isomorphic-fetch')
+require('node-fetch')
 
 const hotkeys = require('hotkeys-js')
 
