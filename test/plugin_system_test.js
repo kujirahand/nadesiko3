@@ -16,10 +16,6 @@ describe('plugin_system_test', () => {
     nako.runReset(code)
   }
 
-  beforeEach(() => {
-    cmd('「Asia/Tokyo」でタイムゾーン設定')
-  })
-
   // --- test ---
   it('ナデシコエンジンを表示', () => {
     cmp('ナデシコエンジンを表示', 'nadesi.com/v3')

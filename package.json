@@ -9,7 +9,7 @@
     "nako3edit": "tools/nako3edit/run.js"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "TZ=Asia/Tokyo mocha",
     "start": "node src/nako3server.js",
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
@@ -98,7 +98,6 @@
     "babel-loader": "^8.0.0",
     "core-js": "^3.6.4",
     "css-loader": "^3.2.0",
-    "date-utils": "^1.2.21",
     "electron": "^8.0.2",
     "electron-packager": "^14.2.1",
     "es6-promise": "^4.2.6",
@@ -127,6 +126,7 @@
     "terser-webpack-plugin": "^2.3.5",
     "uuid": "^3.3.2",
     "webpack": "^4.31.0",
+    "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.2",
     "whatwg-fetch": "^2.0.4"
   },
@@ -137,11 +137,11 @@
     "commander": "^2.20.0",
     "copy-paste-win32fix": "^1.4.0",
     "csv-lite-js": "^0.0.7",
+    "dayjs": "^1.8.23",
     "express": "^4.16.4",
     "form-data": "^2.3.3",
     "fs-extra": "^6.0.0",
     "iconv-lite": "^0.4.24",
-    "moment-timezone": "^0.5.25",
     "node-fetch": "^2.5.0",
     "opener": "^1.5.1",
     "readline-sync": "^1.4.9",
