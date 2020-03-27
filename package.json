@@ -109,7 +109,6 @@
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-standard": "^3.1.0",
     "hotkeys-js": "^3.7.2",
-    "isomorphic-fetch": "^2.2.1",
     "mocha": "^5.2.0",
     "mocha-css": "^1.0.1",
     "nadesiko3-hoge": "0.0.3",
@@ -127,8 +126,7 @@
     "uuid": "^3.3.2",
     "webpack": "^4.31.0",
     "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-cli": "^3.3.2",
-    "whatwg-fetch": "^2.0.4"
+    "webpack-cli": "^3.3.2"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
