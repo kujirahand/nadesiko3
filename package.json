@@ -9,7 +9,7 @@
     "nako3edit": "tools/nako3edit/run.js"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "TZ=Asia/Tokyo mocha",
     "start": "node src/nako3server.js",
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
@@ -136,11 +136,11 @@
     "commander": "^2.20.0",
     "copy-paste-win32fix": "^1.4.0",
     "csv-lite-js": "^0.0.7",
+    "dayjs": "^1.8.23",
     "express": "^4.16.4",
     "form-data": "^2.3.3",
     "fs-extra": "^6.0.0",
     "iconv-lite": "^0.4.24",
-    "moment-timezone": "^0.5.25",
     "nadesiko3-hoge": "0.0.3",
     "node-fetch": "^2.5.0",
     "opener": "^1.5.1",

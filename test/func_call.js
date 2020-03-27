@@ -16,9 +16,6 @@ describe('関数呼び出しテスト', () => {
     if (nako.debug) console.log('code=' + code)
     nako.runReset(code)
   }
-  beforeEach(() => {
-    cmd('「Asia/Tokyo」でタイムゾーン設定')
-  })
   // --- test ---
   it('関数式の呼び出し - 足す(2,3)を表示。', () => {
     cmp('足す(2,3)を表示。', '5')
