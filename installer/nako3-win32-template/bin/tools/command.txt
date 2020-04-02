@@ -553,14 +553,96 @@
 |WEBサーバステータス出力,"NOを|NOの","クライアントにステータスNOを出力",0,,命令,WEBさーばすてーたすしゅつりょく
 |WEBサーバ出力,"Sを|Sと","クライアントにSを出力",0,,命令,WEBさーばしゅつりょく
 |WEBサーバリダイレクト,"URLへ|URLに","URLにリダイレクトする",0,,命令,WEBさーばりだいれくと
++ plugin_sqlite3(拡張プラグイン)
+- SQLite3
+|SQLITE3今挿入ID,"","'?'",0,,変数,SQLITE3いまそうにゅうID
+|SQLITE3開,"Sを|Sの","SQlite3のデータベースを開いて、データベースオブジェクトを返す",0,,命令,SQLITE3ひらく
+|SQLITE3閉,"","アクティブなSQlite3のデータベースを閉じる",0,,命令,SQLITE3とじる
+|SQLITE3切替,"DBに|DBへ","アクティブなSQlite3のデータベースをDB(SQLITE3開くで開いたもの)に切り替える",0,,命令,SQLITE3きりかえる
+|SQLITE3実行後,"FにSQLをPARAMSで","SQLをパラメータPARAMSで実行する。完了するとコールバック関数Fを実行する。",0,,命令,SQLITE3じっこうしたあと
+|SQLITE3取得後,"FにSQLをPARAMSで","SQLをパラメータPARAMSで取得実行する。完了するとコールバック関数Fが実行され、結果は第一引数に与えられる。",0,,命令,SQLITE3じっこうしゅとくしたあと
+|SQLITE3逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。",0,,命令,SQLITE3ちくじじっこう
+|SQLITE3逐次全取得,"SQLをPARAMSで","逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじぜんしゅとく
+|SQLITE3逐次取得,"SQLをPARAMSで","逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじしゅとく
++ plugin_odbc(拡張プラグイン)
+- ODBC
+|ODBC逐次開,"Sを|Sの|Sで","逐次実行構文にて、ODBCのデータベースを開く",0,,命令,ODBCちくじひらく
+|ODBC開,"Sを|Sの|Sで","ODBCのデータベースを同期的に開いてオブジェクトを返す",0,,命令,ODBCひらく
+|ODBC逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。",0,,命令,ODBCちくじじっこう
+|ODBC実行,"SQLをPARAMSで","逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3をしゅとく
+|ODBC閉,"","ODBCで開いているデータベースを閉じる",0,,命令,ODBCとじる
+|ODBC逐次閉,"","逐次実行構文でODBCで開いているデータベースを閉じる",0,,命令,ODBCちくじとじる
+|ODBCトランザクション開始,"","ODBCでトランザクションを開始する",0,,命令,ODBCとらんざくしょんかいし
+|ODBCトランザクション終了,"","ODBCでトランザクションを終了する",0,,命令,ODBCとらんざくしょんしゅうりょう
++ plugin_mssql(拡張プラグイン)
+- SQLServer
+|MSSQL逐次開,"Sを|Sの|Sで","逐次実行構文にてデータベースを開く",0,,命令,MSSQLちくじひらく
+|MSSQL逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。",0,,命令,MSSQLちくじじっこう
+|MSSQL逐次閉,"","開いているデータベースを閉じる",0,,命令,MSSQLとじる
++ plugin_mysql(拡張プラグイン)
+- MySQL
+|MYSQL開,"Sを|Sの|Sで","データベースを開く",0,,命令,MYSQLひらく
+|MYSQL閉,"","データベースを閉じる",0,,命令,MYSQLとじる
+|MYSQL逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。INSERT句の場合は『対象[insertId]』でIDが得られる。",0,,命令,MYSQLちくじじっこう
++ plugin_postgresql(拡張プラグイン)
+- PostgreSQL
+|PG開,"Sを|Sの|Sで","データベースを開く",0,,命令,PGひらく
+|PG閉,"","データベースを閉じる",0,,命令,PGとじる
+|PG逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。SELECT句以外を実行した時も情報が『対象』に入る。",0,,命令,PGちくじじっこう
++ plugin_firebase(拡張プラグイン)
+- Firebase
+|FIREBASE初期化,"CONFIGで","アカウント設定オブジェクトconfigを与えてFirebaseを初期化する",0,,命令,FIREBASEしょきか
+|FIREBASEパス参照,"PATHを","データベースのパスPATHを参照",0,,命令,FIREBASEぱすさんしょう
+|FIREBASE値設定,"PATHにVALUESを|PATHへVALUESの","データベースのパスPATHにオブジェクトVALUESを設定",0,,命令,FIREBASEせっていs
+|FIREBASE値変更時,"CALLBACKでPATHの","パスpathの値(オブジェクト)が変更された時callbackを実行。引数に値(オブジェクト)が得られる。",0,,命令,FIREBASEへんこうしたとき
+|FIREBASE値取得時,"CALLBACKでPATHの","パスpathの値を取得した時callbackを実行。引数に値(オブジェクト)が得られる。",0,,命令,FIREBASEしゅとくしたとき
++ plugin_googlehome(拡張プラグイン)
+- GoogleHome
+|GoogleHome接続,"NAMEへ|NAMEに|NAMEの","LAN内にある名前NAMEのGoogleHomeに接続する",0,,命令,GOOGLEHOMEせつぞく
+|GoogleHome言,"Sと|Sを","GoogleHomeにSと言わせる",0,,命令,GOOGLEHOMEいう
+|GoogleHome話,"Sと|Sを","GoogleHomeにSと言わせる",0,,命令,GOOGLEHOMEはなす
+|GoogleHome再生,"Sを|Sで","GoogleHomeでMP3を再生する",0,,命令,GOOGLEHOMEさいせい
 + plugin_websocket(拡張プラグイン)
 - WebSocketサーバ
 |WSサーバ起動,"PORTNOの|PORTNOで","ポートPORTNOでサーバを起動して成功したら『WSサーバ起動成功した時』を実行する",0,,命令,WSさーばきどう
 |WSSサーバ起動,"CONFの|CONFで","設定CONF{cert:サーバ証明書,key:キーファイル,port:ポート番号}を指定してWSSサーバを起動して成功したら『WSサーバ起動成功した時』を実行する",0,,命令,WSSさーばきどう
-- see https://www.npmjs.com/package/ws#external-https-server
 |WSサーバ起動成功時,"CALLBACKを","WSサーバ起動が成功した時にcallbackを実行",0,,命令,WSさーばきどうせいこうしたとき
 |WSサーバ起動失敗時,"CALLBACKを","WSサーバ起動が失敗した時にcallbackを実行",0,,命令,WSさーばきどうしっぱいしたとき
 |WSサーバ接続時,"CALLBACKを","WSサーバにクライアントが接続してきた時callbackを実行。接続情報は、変数『対象』に入る",0,,命令,WSさーばせつぞくしたとき
 |WSサーバ受信時,"CALLBACKで","WSサーバでメッセージを受信した時に実行される。受信データは『対象』に代入される",0,,命令,WSさーばじゅしんしたとき
 |WSサーバ全送信,"Sを","WSサーバで全員にメッセージSを送信する",0,,命令,WSさーばぜんそうしん
 |WSクライアント一覧取得,"Sを","WSサーバに接続しているクライアントの一覧を返す",0,,命令,WSくらいあんといちらんしゅとく
++ plugin_htmlparser(拡張プラグイン)
+- HTMLパーサ(コンソール)
+|HTML応答ヘッダ,"","''",0,,変数,HTMLおうとうへっだ
+|HTML逐次URL開,"URLを","任意のURLを開いてパースする。",0,,命令,HTMLちくじURLひらく
+|HTMLパース,"HTMLを","任意のHTML文字列をパースする。",0,,命令,HTMLぱーす
+|DOM要素取得,"Qを|Qの|Qから","パース済みHTMLからクエリQに該当するDOMを取得する",0,,命令,DOMようそしゅとく
+|DOM子要素検索,"DOMのQを|DOMから","DOMの子要素Qを取得する",0,,命令,DOMこようそけんさく
+|DOM子要素全取得,"DOMの|DOMから","DOMの子要素を全部取得する",0,,命令,DOMこようそぜんしゅとく
+|DOM親要素取得,"Qを|Qの|Qから","DOMの親要素を取得する",0,,命令,DOMおやようそしゅとく
+|DOM次要素取得,"Qを|Qの|Qから","DOMの親要素を取得する",0,,命令,DOMおやようそしゅとく
+|DOM抽出,"DOMからQを|DOMの","DOMからクエリQを利用して合致するものを抽出する",0,,命令,DOMちゅうしゅつ
+|属性取得,"DOMからKを|DOMの","DOMの属性Kを取得する",0,,命令,ぞくせいしゅとく
+|テキスト取得,"DOMから|DOMの","DOMのテキストを取得する",0,,命令,てきすとしゅとく
+|HTML取得,"DOMから|DOMの","DOMのHTMLを取得する",0,,命令,HTMLしゅとく
+|HTML設定,"DOMにSを|DOMへ","DOMにSを設定する",0,,命令,HTML設定
+|プロパティ取得,"DOMからPROPを|DOMの","DOMのプロパティPROPを取得する",0,,命令,ぷろぱてぃしゅとく
+|値取得,"DOMから|DOMの","DOMの値を取得する",0,,命令,あたいしゅとく
+|値設定,"DOMにVを|DOMへ","DOMの値vを設定する",0,,命令,あたいせってい
+|スタイル取得,"DOMからKを|DOMの","DOMのスタイルKを取得する",0,,命令,すたいるしゅとく
+|データ取得,"DOMからKを|DOMの","DOMのデータkを取得する",0,,命令,でーたしゅとく
+|DOM配列変換,"DOMから|DOMを","DOMを配列に変換する",0,,命令,DOMはいれつへんかん
+|タグ名取得,"DOMから|DOMの","DOMのタグ名を取得する",0,,命令,たぐめいしゅとく
++ plugin_ml(拡張プラグイン)
+- 機械学習
+|SVM開,"OPTIONで","機械学習のアルゴリズムSVMをパラメータOPTIONで開く。 OPTION={type,kernel,gamma,cost}",0,,命令,SVMひらく
+|ランダムフォレスト開,"OPTIONで","機械学習のアルゴリズムRandom ForestをOPTIONで開く。OPTION={seed,maxFeatures,replacement=(true",0,,命令,false),nEstimators}
+|ランダムフォレスト回帰開,"PARAMSで","機械学習のアルゴリズムRandom Forestの回帰をパラメータPARAMSで開く",0,,命令,らんだむふぉれすとかいきひらく
+|学習,"INPUTSとLABELSで","入力配列inputsとラベル配列labelsで機械学習する",0,,命令,がくしゅう
+|予測,"INPUTSを|INPUTSで","入力配列inputsで予測し機械学習の結果を配列で返す",0,,命令,よそく
+|アヤメデータ取得,"","アヤメデータをJSON形式で取得して返す",0,,命令,あやめでーたしゅとく
+|モデル取得,"","現在学習済みのモデルを取得する",0,,命令,もでるしゅとく
+|モデル設定,"Mを|Mの","現在学習済みのモデルMを設定する",0,,命令,もでるせってい
+|データランダム分割,"DATAとLABELをRATEで","データとラベルの組をRATEで分割して{学習:{データ:[..],ラベル:[..]},テスト:{データ:[..],ラベル:[..]}}の形式で返す",0,,命令,でーたらんだむぶんかつ
+|正解率計算,"TとPの|Pで","配列T(正解)とP(予測)の正解率を計算して返す",0,,命令,せいかいりつけいさん

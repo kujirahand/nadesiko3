@@ -1586,7 +1586,7 @@ const PluginBrowser = {
     josi: [['を', 'で', 'の']],
     fn: function (data, sys) {
       const d = {
-        type: 'bar',
+        type: 'line',
         data: data,
         options: sys.__v0['グラフオプション']
       }
