@@ -1486,7 +1486,6 @@ const PluginBrowser = {
         console.log('WSエラー', err)
       }
       ws.onmessage = (e) => {
-        console.log(e.data)
         sys.__v0['対象'] = e.data
         const cbMsg = sys.__v0['WS:ONMESSAGE']
         if (cbMsg) {cbMsg(sys)}
