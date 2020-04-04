@@ -136,12 +136,12 @@ $ npm start
 ```
 $ npm run build:command
 ```
-### READMEの生成
+### 対応機器/Webブラウザの生成
 
-「対応機器, 対応ブラウザを展開したい場所に `{embed browser}` と記述する」という規則に従って[README.template.md](../README.template.md)を記述し、以下のコマンドを実行します。
+コマンドラインから以下を実行して、対応機器/Webブラウザ ([src/browsers.md](src/browsers.md), [doc/browsers.md](doc/browsers.md), [demo/browsers.html](demo/browsers.html)) を生成。
 
 ```
-$ npm run build:readme
+$ npm run build:browsers
 ```
 
 ### Node.jsのパッケージの更新方法
