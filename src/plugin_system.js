@@ -2137,7 +2137,7 @@ const PluginSystem = {
     josi: [['を']],
     fn: function (s) {
       const markdown = require('markdown')
-      return markdown.markdown.toHTML(s)
+      return markdown.parse(s)
     }
   },
   'HTML整形': { // @HTML形式で記述された文字列Sを整形する // @えいちてぃーえむえるせいけい
