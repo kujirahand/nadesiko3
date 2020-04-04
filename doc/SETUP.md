@@ -138,7 +138,10 @@ $ npm run build:command
 ```
 ### 対応機器/Webブラウザの生成
 
-コマンドラインから以下を実行して、対応機器/Webブラウザ ([src/browsers.md](src/browsers.md), [doc/browsers.md](doc/browsers.md), [demo/browsers.html](demo/browsers.html)) を生成。
+コマンドラインから以下を実行して、以下のファイルを生成。
+* [doc/browsers.md](doc/browsers.md): 対応機器/Webブラウザ (マークダウン形式)
+* [src/browsers.md](src/browsers.md): 対応機器/Webブラウザ (マークダウン形式, cnako3用)
+* [demo/browsers.html](demo/browsers.html): 対応機器/Webブラウザ (HTML形式, なでしこ3エディタ用)
 
 ```
 $ npm run build:browsers
