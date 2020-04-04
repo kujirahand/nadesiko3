@@ -466,7 +466,9 @@ describe('plugin_system_test', () => {
   })
   it('HTML整形', () => {
     cmp('「<h1>test</h1>\n\n<ul><li>1234<ul><li>ABCD</li></ul></li></ul>」をHTML整形して表示',
-      '<h1>test</h1>\n\n<ul>\n' +
+      '<h1>test</h1>\n' +
+      '\n' +
+      '<ul>\n' +
       '    <li>1234\n' +
       '        <ul>\n' +
       '            <li>ABCD</li>\n' +
