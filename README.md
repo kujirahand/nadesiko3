@@ -15,7 +15,7 @@
 * Webブラウザ
 	* モバイル
 		* Chrome for Android
-			* 79
+			* 80
 		* Firefox for Android
 			* 68
 		* QQ Browser
@@ -23,7 +23,7 @@
 		* UC Browser for Android
 			* 12.12
 		* Android Browser
-			* 76
+			* 80
 		* Baidu Browser
 			* 7.12
 		* iOS Safari
@@ -34,6 +34,7 @@
 			* 12.0-12.1
 			* 11.3-11.4
 			* 10.3
+			* 9.3
 		* KaiOS Browser
 			* 2.5
 		* Opera Mini
@@ -41,21 +42,21 @@
 		* Opera Mobile
 			* 46
 		* Samsung Internet
+			* 11.1
 			* 10.1
-			* 9.2
 	* PC
 		* Chrome
 			* 80
 			* 79
-			* 78
 			* 49
 		* Edge
 			* 80
 			* 79
 			* 18
 		* Firefox
+			* 74
+			* 73
 			* 72
-			* 71
 			* 68
 		* Internet Explorer
 			* 11
@@ -67,7 +68,7 @@
 			* 12.1
 * PC (Windows/macOS/Linux)
 	* Node
-		* 13.8.0
+		* 13.11.0
 		* 12.16.0
 		* 10.19.0
 
