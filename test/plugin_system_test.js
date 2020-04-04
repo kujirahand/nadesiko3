@@ -469,11 +469,11 @@ describe('plugin_system_test', () => {
       '<h1>test</h1>\n' +
       '\n' +
       '<ul>\n' +
-      '    <li>1234\n' +
-      '        <ul>\n' +
-      '            <li>ABCD</li>\n' +
-      '        </ul>\n' +
-      '    </li>\n' +
+      '  <li>1234\n' +
+      '    <ul>\n' +
+      '      <li>ABCD</li>\n' +
+      '    </ul>\n' +
+      '  </li>\n' +
       '</ul>')
   })
 })

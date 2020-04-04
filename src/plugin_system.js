@@ -2145,7 +2145,7 @@ const PluginSystem = {
     josi: [['を']],
     fn: function (s) {
       const html = require('html')
-      return html.prettyPrint(s)
+      return html.prettyPrint(s, {indent_size: 2})
     }
   }
 }
