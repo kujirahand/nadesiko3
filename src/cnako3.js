@@ -38,6 +38,7 @@ class CNako3 extends NakoCompiler {
       .option('-o, --output', '出力ファイル名の指定')
       .option('-s, --silent', 'サイレントモードの指定')
       .option('-l, --repl', '対話シェル(REPL)の実行')
+      .option('-b, --browsers', '対応機器/Webブラウザを表示する')
       .option('-m, --man [command]', 'マニュアルを表示する')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
@@ -67,7 +68,8 @@ class CNako3 extends NakoCompiler {
       'debug': this.debug,
       'debugAll': app.debugAll,
       'repl': app.repl || false,
-      'test': app.test || false
+      'test': app.test || false,
+      'browsers': app.browsers || false
     }
     args.mainfile = app.args[0]
     args.output = app.output
@@ -97,6 +99,10 @@ class CNako3 extends NakoCompiler {
     const opt = this.checkArguments()
     if (opt.man) {
       this.cnakoMan(opt.man)
+      return
+    }
+    if (opt.browsers) {
+      this.cnakoBrowsers()
       return
     }
     if (opt.mainfile) {this.filename = opt.mainfile}
@@ -194,6 +200,11 @@ class CNako3 extends NakoCompiler {
         throw e
       }
     }
+  }
+
+  // 対応機器/Webブラウザを表示する
+  cnakoBrowsers () {
+    console.log(fs.readFileSync(path.join(__dirname, 'browsers.md'), 'utf-8'))
   }
 
   /**

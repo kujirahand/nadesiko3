@@ -461,4 +461,19 @@ describe('plugin_system_test', () => {
     cmp('「2019/04/30」を和暦変換。それを表示', '平成31/04/30')
     cmp('「2019/05/01」を和暦変換。それを表示', '令和元/05/01')
   })
+  it('マークダウンHTML変換', () => {
+    cmp('「#test\n* 1234\n\t* ABCD」をマークダウンHTML変換して表示', '<h1>test</h1>\n\n<ul><li>1234<ul><li>ABCD</li></ul></li></ul>')
+  })
+  it('HTML整形', () => {
+    cmp('「<h1>test</h1>\n\n<ul><li>1234<ul><li>ABCD</li></ul></li></ul>」をHTML整形して表示',
+      '<h1>test</h1>\n' +
+      '\n' +
+      '<ul>\n' +
+      '  <li>1234\n' +
+      '    <ul>\n' +
+      '      <li>ABCD</li>\n' +
+      '    </ul>\n' +
+      '  </li>\n' +
+      '</ul>')
+  })
 })
