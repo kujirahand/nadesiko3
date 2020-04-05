@@ -1582,7 +1582,7 @@ const PluginBrowser = {
     fn: function (data, sys) {
       // Chart.jsが使えるかチェック
       if (!window['Chart']) {
-        throw new Error('『グラフ描画』のエラー。Chart.jsを取り込んでください。' + errMan)
+        throw new Error('『グラフ描画』のエラー。Chart.jsを取り込んでください。')
       }
       // Canvasが有効？
       if (!sys.__canvas) {
