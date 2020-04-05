@@ -1,3 +1,7 @@
+/**
+ * file: plugin_markup.js
+ * マークアップ言語関連のプラグイン
+ */
 const PluginMarkup = {
   'マークダウンHTML変換': { // @マークダウン形式で記述された文字列SをHTML形式に変換する // @まーくだうんえいちてぃーえむえるへんかん
     type: 'func',
