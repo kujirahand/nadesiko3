@@ -261,8 +261,12 @@ class CNako3 extends NakoCompiler {
     const fileScript = f_check(pathScript)
     if (fileScript) { return fileScript }
         
+    // ランタイムパス/src
+    const pathRuntimeSrc = path.resolve(__dirname)
+    const fileRuntimeSrc = f_check(pathRuntimeSrc)
+    if (fileRuntimeSrc) { return fileRuntimeSrc }
     // ランタイムパス
-    const pathRuntime = path.resolve(__dirname)
+    const pathRuntime = path.dirname(pathRuntimeSrc)
     const fileRuntime = f_check(pathRuntime)
     if (fileRuntime) { return fileRuntime }
         
