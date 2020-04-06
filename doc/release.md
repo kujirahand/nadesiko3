@@ -4,20 +4,39 @@
 
 ## 1.GitHubのリリース機能を使う
 
-ただし、リリース前（コミット前）には、必ず、mochaを実行して、テストが成功するか確認する。
+ただし、リリース前（コミット前）には、必ず、テストを実行して、テストが成功するか確認する。
 
 ```
-mocha test
+npm test
 ```
 
-よくエラーが出る部分で、「ナデシコバージョン」で問題があれば、package.json の version 値と src/plugin_system.js の変数番号が合っているかを確認する。
+なお、よくエラーが出る部分で、「ナデシコバージョン」で問題があれば、package.json の version 値と src/plugin_system.js の変数番号が合っているかを確認する。
 
-## 2.webpackで必要なファイルをビルドする
+## 2.必要なファイルをビルドする
 
-リリース用にwebpackでパックしたソースを生成する(/releaseに生成物が作られる)。
+まず、リリース用にwebpackでパックしたソースを生成する(/releaseに生成物が作られる)。
 
 ```
 npm run build
+```
+
+次に、命令一覧を生成する。
+
+```
+npm run build:command
+```
+
+対応ブラウザを更新する。
+
+```
+npm run build:browsers
+```
+
+Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、git cloneでnadesiko3win32のリポジトリを取得しておく必要がある。
+
+```
+npm run build:win32
+bash ./win32.bash
 ```
 
 ## 3.npmにpublish
@@ -30,11 +49,7 @@ npm publish
 
 ## 4.WEBにアップロード
 
-その後、生成物をWebにアップロード。
-
-https://nadesi.com/v3/(バージョン番号)/ へ、最新版を転送する
-
-``TODO`` --- この部分、結構面倒くさいので、何か良い方法を考える
+必要なら、WEB(nadesi.com/doc3)の簡易エディタを最新版に更新する。
 
 ## 5.Webサイトで最新版を告知
 
