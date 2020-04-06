@@ -15,7 +15,6 @@ const PluginNode = {
     type: 'func',
     josi: [],
     fn: function (sys) {
-      const path = require('path')
       sys.__getBinPath = (tool) => {
         let fpath = tool
         if (process.platform === 'win32')
@@ -413,8 +412,8 @@ const PluginNode = {
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     fn: function (a, b, sys) {
-      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${path} x "${a}" -o"${b}" -y`
+      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${tpath} x "${a}" -o"${b}" -y`
       execSync(cmd)
       return true
     }
@@ -423,8 +422,8 @@ const PluginNode = {
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     fn: function (callback, a, b, sys) {
-      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${path} x "${a}" -o"${b}" -y`
+      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${tpath} x "${a}" -o"${b}" -y`
       exec(cmd, (err, stdout, stderr) => {
         if (err) {throw new Error('[エラー]『解凍時』' + err)}
         callback(stdout)
@@ -436,8 +435,8 @@ const PluginNode = {
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     fn: function (a, b, sys) {
-      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${path} a -r "${b}" "${a}" -y`
+      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${tpath} a -r "${b}" "${a}" -y`
       execSync(cmd)
       return true
     }
@@ -446,8 +445,8 @@ const PluginNode = {
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     fn: function (callback, a, b, sys) {
-      const path = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${path} a -r "${b}" "${a}" -y`
+      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
+      const cmd = `${tpath} a -r "${b}" "${a}" -y`
       exec(cmd, (err, stdout, stderr) => {
         if (err) {throw new Error('[エラー]『圧縮時』' + err)}
         callback(stdout)

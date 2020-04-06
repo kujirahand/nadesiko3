@@ -247,13 +247,13 @@ class NakoCompiler {
   /**
    * プラグイン・ファイルを追加(Node.js向け)
    * @param objName オブジェクト名
-   * @param path ファイルパス
+   * @param fpath ファイルパス
    * @param po 登録するオブジェクト
    */
-  addPluginFile (objName, path, po) {
+  addPluginFile (objName, fpath, po) {
     this.addPluginObject(objName, po)
     if (this.pluginfiles[objName] === undefined) {
-      this.pluginfiles[objName] = path
+      this.pluginfiles[objName] = fpath
     }
   }
 

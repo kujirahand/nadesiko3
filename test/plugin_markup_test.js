@@ -1,7 +1,7 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
-const CNako3 = require('../src/cnako3')
 const PluginMarkup = require('../src/plugin_markup')
+const CNako3 = require('../src/cnako3')
 
 describe('plugin_markup_test', () => {
   const wnako = new NakoCompiler()
@@ -15,7 +15,7 @@ describe('plugin_markup_test', () => {
       let c = code
 
       if (nako === cnako) {
-        c = '!「src/plugin_markup.js」を取り込む。\n' + c
+        c = '!「plugin_markup.js」を取り込む。\n' + c
       }
 
       if (nako.debug) {

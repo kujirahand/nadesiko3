@@ -209,7 +209,7 @@ class CNako3 extends NakoCompiler {
 
   /**
    * プラグインファイルの検索を行う
-   * @param path
+   * @param pname
    * @return string フルパス
    */
   findPluginFile (pname) {
@@ -219,43 +219,73 @@ class CNako3 extends NakoCompiler {
       // フルパス指定なので何もしない
       return pname
     }
+    // 各パスを調べる
+    const exists = (f, desc) => {
+      const result = fs.existsSync(f)
+      // console.log(result, 'exists[', desc, '] =', f)
+      return result
+    }
+    const f_check = (pathTest) => {
+      // 素直にチェック
+      let fpath = path.join(pathTest, pname)
+      if (exists(fpath, 'direct')) { return fpath }
+      
+      // プラグイン名を分解してチェック
+      const m = pname.match(/^(plugin_|nadesiko3\-)([a-zA-Z0-9_-]+)/)
+      if (!m) { return false }
+      const name = m[2]
+      // plugin_xxx.js
+      const plugin_xxx_js = 'plugin_' + name + '.js'
+      fpath = path.join(pathTest, plugin_xxx_js)
+      if (exists(fpath, 'plugin_xxx.js')) { return fpath }
+      fpath = path.join(pathTest, 'src', plugin_xxx_js)
+      if (exists(fpath, 'src/plugin_xxx.js')) { return fpath }
+      // nadesiko3-xxx
+      const nadesiko3_xxx = 'nadesiko3-' + name
+      fpath = path.join(pathTest, nadesiko3_xxx)
+      if (exists(fpath, 'nadesiko3-xxx')) { return fpath }
+      fpath = path.join(pathTest, 'node_modules', nadesiko3_xxx)
+      if (exists(fpath, 'node_modules/nadesiko3-xxx')) { return fpath }
+      return false
+    }
+    let fullpath
     // 相対パスか?
     if (p1 === '.') {
       // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
-      const basedir = path.dirname(this.filename)
-      return path.resolve(path.join(basedir, pname))
+      const pathRelative = path.resolve(path.dirname(this.filename))
+      const fileRelative = f_check(pathRelative)
+      if (fileRelative) { return fileRelative }
     }
-    // 同じフォルダか?
-    const basedir = path.dirname(this.filename)
-    let fullpath = path.resolve(path.join(basedir, pname))
-    if (fs.existsSync(fullpath)) {
-        return fullpath
-    }
-    // node_modules 以下にあるか？
-    fullpath = path.resolve(path.join(basedir, 'node_modules', pname))
-    if (fs.existsSync(fullpath)) {
-        return fullpath
-    }
-    // NAKO_HOMEか?
+    // nako3スクリプトパスか?
+    const pathScript = path.resolve(path.dirname(this.filename))
+    const fileScript = f_check(pathScript)
+    if (fileScript) { return fileScript }
+        
+    // ランタイムパス
+    const pathRuntime = path.resolve(__dirname)
+    const fileRuntime = f_check(pathRuntime)
+    if (fileRuntime) { return fileRuntime }
+        
+    // 環境変数 NAKO_HOMEか?
     if (process.env['NAKO_HOME']) {
-      const NAKO_HOME = process.env['NAKO_HOME']
-      // NAKO_HOME/node_modules?
-      fullpath = path.resolve(path.join(NAKO_HOME, 'node_modules', pname))
-      if (fs.existsSync(fullpath)) {
-          return fullpath
-      }
+      const NAKO_HOME = path.resolve(process.env['NAKO_HOME'])
+      const fileHome = f_check(NAKO_HOME)
+      if (fileHome) { return fileHome }
       // NAKO_HOME/src ?
-      fullpath = path.resolve(path.join(NAKO_HOME, 'src', pname))
-      if (fs.existsSync(fullpath)) {
-          return fullpath
-      }
+      const pathNakoHomeSrc = path.join(NAKO_HOME, 'src')
+      const fileNakoHomeSrc = f_check(pathNakoHomeSrc)
+      if (fileNakoHomeSrc) { return fileNakoHomeSrc }
     }
-    // NODE_PATH (global) 以下にあるか？
-    fullpath = path.resolve(path.join(process.env.NODE_PATH, 'node_modules', pname))
-    if (fs.existsSync(fullpath)) {
-        return fullpath
+    // 環境変数 NODE_PATH (global) 以下にあるか？
+    if (process.env['NODE_PATH']) {
+      const pathNode = path.resolve(process.env['NODE_PATH'])
+      const fileNode = f_check(pathNode)
+      if (fileNode) { return fileNode }
     }
+    // Nodeのパス検索に任せる
+    return pname
   }
+  
   /**
    * プラグインの取込チェック
    * @param src
@@ -289,6 +319,7 @@ class CNako3 extends NakoCompiler {
           {this.funclist[key] = plugmod[key]}
 
       } catch (e) {
+        // console.log(e)
         throw new Error(
           '[取込エラー] プラグイン『' + pname + '』を取り込めません。' +
           '(path=' + fullpath + ') ' + e.message)
