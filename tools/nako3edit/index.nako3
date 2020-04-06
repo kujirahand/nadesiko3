@@ -104,28 +104,36 @@ WEBサーバ起動失敗した時には
     BODY=POSTデータ["body"]
     UKEY=POSTデータ["appkey"]
     もし、UKEY≠APPKEYならば
-    「エラー:APPKEYが違います」をWEBサーバ出力。
-    戻る。
+    　　「エラー:APPKEYが違います」をWEBサーバ出力。
+    　　戻る。
     違えば
     ここまで。
     もし、(FILE=undefined)または(FILE=空)ならば
-    「エラー: ファイル名がありません」をWEBサーバ出力。
-    戻る。
+    　　「エラー: ファイル名がありません」をWEBサーバ出力。
+    　　戻る。
     ここまで
     FPATH=「{USER_DIR}/{FILE}」
     「(保存)FILE=」&FPATHを表示。
     FPATHへBODYを保存。
     FPATH=「{USER_DIR}/{FILE}」
     エラー監視
-    FPATHへBODYを保存。
+    　　FPATHへBODYを保存。
     エラーならば
-    「NG」をWEBサーバ出力。
-    戻る。
+    　　「NG」をWEBサーバ出力。
+    　　戻る。
     ここまで。
     もし、RUNがはいならば
     エラー監視
       「RUN {FPATH}」と表示。
-      RES=「cnako3 "{FPATH}"」を起動待機。
+      F_OS=OS取得。
+      もし、F_OS="win32"ならば
+      　　NODE=母艦パスを「../../nodejs/node.exe」で相対パス展開。
+      　　CNAKO3=母艦パスを「../../src/cnako3.js」で相対パス展開。
+      　　RES=「"{NODE}" "{CNAKO3}" "{FPATH}"」を起動待機。
+      違えば
+      　　CNAKO3=母艦パスを「../../bin/cnako3」で相対パス展開。
+      　　RES=「cnako3 "{FPATH}"」を起動待機。
+      ここまで。
       「---」と表示。
       RESをWEBサーバ出力。
     エラーならば
