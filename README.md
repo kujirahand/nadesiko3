@@ -32,7 +32,7 @@
 
 - [なでしこ3のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 
-ただし、一部のZIP解凍ツールでエラーが出るようです。[LhaForge](https://forest.watch.impress.co.jp/library/software/lhaforge/)などのツールを利用して解凍してください。解凍したら「nakopad.vbs」(PC版)または「nako3server.vbs」(Web版)をクリックして、なでしこエディタを起動できます。
+解凍したら「nako3edit.vbs」(PC版)または「start.vbs」(Web版)をクリックします。すると、なでしこエディタが起動します。
 
 ### macOS/Linuxで利用する
 
