@@ -4,7 +4,6 @@
 # バッチを実行
 基本パスを表示。
 「{基本パス}/batch/pickup_command.nako3」をCNAKO実行。
-「{基本パス}/batch/cmd_txt2wiki.nako3」をCNAKO実行。
 「{基本パス}/batch/cmd_txt2json.nako3」をCNAKO実行。
 「{基本パス}/batch/gen_command_nakopad.nako3」をCNAKO実行。
 
@@ -14,7 +13,7 @@
 
 ●CNAKO実行(Cを)
     「--------」を表示。
-　　CMD=「node {基本パス}/src/cnako3.js {C}」
+    CMD=「node {基本パス}/src/cnako3.js {C}」
     CMDを表示。
-　　CMDを起動待機。
+    CMDを起動待機。
 ここまで。
