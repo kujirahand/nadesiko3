@@ -978,7 +978,7 @@ const PluginBrowser = {
     }
   },
 
-  // @URLエンコード
+  // @URLエンコードとパラメータ
   'URLエンコード': { // @URLエンコードして返す // @URLえんこーど
     type: 'func',
     josi: [['を', 'から']],
