@@ -36,9 +36,10 @@ class WebNakoCompiler extends NakoCompiler {
     for (let i = 0; i < scripts.length; i++) {
       let script = scripts[i]
       let src = script.src || ''
-      if (src.indexOf('wnako3.js?run') >= 0) 
-        {return true}
-      
+      if (src.indexOf('wnako3.js?run') >= 0 || 
+          src.indexOf('wnako3.js&run') >= 0) {
+        return true
+      }
     }
     return false
   }
