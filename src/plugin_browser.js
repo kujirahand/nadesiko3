@@ -978,40 +978,6 @@ const PluginBrowser = {
     }
   },
 
-  // @URLエンコードとパラメータ
-  'URLエンコード': { // @URLエンコードして返す // @URLえんこーど
-    type: 'func',
-    josi: [['を', 'から']],
-    fn: function (text) {
-      return encodeURIComponent(text)
-    }
-  },
-  'URLデコード': { // @URLデコードして返す // @URLでこーど
-    type: 'func',
-    josi: [['を', 'へ', 'に']],
-    fn: function (text) {
-      return decodeURIComponent(text)
-    }
-  },
-  'URLパラメータ解析': { // @URLパラメータを解析してハッシュで返す // @URLぱらめーたかいせき
-    type: 'func',
-    josi: [['を', 'の', 'から']],
-    fn: function (url) {
-      const res = {}
-      if (typeof url !== 'string') {return res}
-      const p = url.split('?')
-      if (p.length <= 1) {return res}
-      const params = p[1].split('&')
-      for (const line of params) {
-        const line2 = line + '='
-        const kv = line2.split('=')
-        const k = decodeURIComponent(kv[0])
-        res[k] = decodeURIComponent(kv[1])
-      }
-      return res
-    }
-  },
-
   // @ローカルストレージ
   '保存': { // @ブラウザのlocalStorageのキーKに文字列Vを保存 // @ほぞん
     type: 'func',
