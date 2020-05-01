@@ -2131,6 +2131,44 @@ const PluginSystem = {
       const browserslist = require('browserslist')
       return browserslist()
     }
+  },
+
+  // @URLエンコードとパラメータ
+  'URLエンコード': { // @URLエンコードして返す // @URLえんこーど
+    type: 'func',
+    josi: [['を', 'から']],
+    fn: function (text) {
+      return encodeURIComponent(text)
+    }
+  },
+  'URLデコード': { // @URLデコードして返す // @URLでこーど
+    type: 'func',
+    josi: [['を', 'へ', 'に']],
+    fn: function (text) {
+      return decodeURIComponent(text)
+    }
+  },
+  'URLパラメータ解析': { // @URLパラメータを解析してハッシュで返す // @URLぱらめーたかいせき
+    type: 'func',
+    josi: [['を', 'の', 'から']],
+    fn: function (url, sys) {
+      const res = {}
+      if (typeof url !== 'string') {
+        return res
+      }
+      const p = url.split('?')
+      if (p.length <= 1) {
+        return res
+      }
+      const params = p[1].split('&')
+      for (const line of params) {
+        const line2 = line + '='
+        const kv = line2.split('=')
+        const k = sys.__exec('URLデコード', [kv[0]])
+        res[k] = sys.__exec('URLデコード', [kv[1]])
+      }
+      return res
+    }
   }
 }
 
