@@ -126,10 +126,10 @@ if (typeof (navigator) === 'object') {
 ```
 {
   type: 'func',
-  josi: [['は']],
+  josi: [['は'], ['で']],
   isVariableJosi: true,
-  fn: function (...a) {
-    const sys = a.pop()
+  fn: function (a, ...b) {
+    const sys = b.pop()
     const result = sys.__exec('HOGE', [arg1, arg2, arg3, sys])
     console.log(result)
   }
