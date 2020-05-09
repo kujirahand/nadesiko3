@@ -139,7 +139,7 @@ const PluginSystem = {
       a.pop()
 
       a.push(b)
-      return a.reduce((c, d) => c + d)
+      return a.reduce((p, c) => p + c)
     }
   },
   '引': { // @AからBを引く // @ひく
