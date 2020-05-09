@@ -120,3 +120,18 @@ if (typeof (navigator) === 'object') {
  - sys.__exec(name, params)
 
 関数内で、システム・グローバル変数にアクセスするには、``sys.__v0['変数名']``でアクセスできる。
+
+なお、最後の助詞を可変長引数として扱う場合、システム変数は末尾の引数の末尾に挿入される。
+
+```
+{
+  type: 'func',
+  josi: [['は']],
+  isVariableJosi: true,
+  fn: function (...a) {
+    const sys = a.pop()
+    const result = sys.__exec('HOGE', [arg1, arg2, arg3, sys])
+    console.log(result)
+  }
+}
+```
