@@ -157,9 +157,13 @@ class NakoCompiler {
       eval(js) // eslint-disable-line
     } catch (e) {
       this.js = js
-      throw new NakoRuntimeError(
-        e.name + ':' +
-        e.message, this)
+      if (e instanceof NakoRuntimeError) {
+        throw e
+      } else {
+        throw new NakoRuntimeError(
+          e.name + ':' +
+          e.message, this)
+      }
     }
     return this
   }
@@ -214,7 +218,13 @@ class NakoCompiler {
       const v = po[key]
       this.funclist[key] = v
       if (v.type === 'func') {
-        __v0[key] = v.fn
+        __v0[key] = (...args) => {
+          try {
+            v.fn(...args)
+          } catch (e) {
+            throw new NakoRuntimeError('関数『' + key + '』:' + e.name + ':' + e.message, this)
+          }
+        }
       } else if (v.type === 'const' || v.type === 'var') {
         __v0[key] = v.value
         __v0.meta[key] = {
