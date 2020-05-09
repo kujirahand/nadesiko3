@@ -135,7 +135,11 @@ const PluginSystem = {
     josi: [['を'], ['に', 'と']],
     isVariableJosi: true,
     fn: function (b, ...a) {
-      return a.reduce((c, d) => typeof d === 'object' ? c + 0 : c + d) + b
+      // 末尾のシステム変数を除外
+      a.pop()
+
+      a.push(b)
+      return a.reduce((c, d) => c + d)
     }
   },
   '引': { // @AからBを引く // @ひく
