@@ -27,7 +27,8 @@
 {
   '関数名': { // @関数の説明 // @ヨミガナ
     type: 'func', // 関数であれば func にする
-    josi: [['を', 'から'], ['まで']], // 助詞を配列で宣言する
+    josi: [['を', 'から'], ['まで']], // 助詞を配列で宣言する (可変長引数として扱いたい助詞は末尾で宣言する)
+    isVariableJosi: false, // 末尾の助詞を可変長引数として扱う場合 true にする
     uses: [], // この関数から別の関数を呼ぶ場合に記述する // (TODO: #282)
     fn: function (aFrom, aTo, sys) { ... }, // 関数の実態
     return_none: false // 戻り値を返すかどうか
@@ -119,3 +120,18 @@ if (typeof (navigator) === 'object') {
  - sys.__exec(name, params)
 
 関数内で、システム・グローバル変数にアクセスするには、``sys.__v0['変数名']``でアクセスできる。
+
+なお、最後の助詞を可変長引数として扱う場合、システム変数は末尾の引数の末尾の要素として挿入される。
+
+```
+{
+  type: 'func',
+  josi: [['は'], ['で']],
+  isVariableJosi: true,
+  fn: function (a, ...b) {
+    const sys = b.pop()
+    const result = sys.__exec('HOGE', [arg1, arg2, arg3, sys])
+    console.log(result)
+  }
+}
+```

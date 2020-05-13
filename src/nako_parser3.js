@@ -697,23 +697,32 @@ class NakoParser extends NakoParserBase {
     let nullCount = 0
     let valueCount = 0
     for (let i = 0; i < f.josi.length; i++) {
-      let popArg = this.popStack(f.josi[i])
-      if (popArg === null) {
-        nullCount++
-        popArg = funcObj
-      } else
-        {valueCount++}
-
-      if (popArg !== null && f.funcPointers !== undefined && f.funcPointers[i] !== null)
-        {if (popArg.type === 'func') { // 引数が関数の参照渡しに該当する場合、typeを『func_pointer』に変更
-          popArg.type = 'func_pointer'
+      while (true) {
+        let popArg = this.popStack(f.josi[i])
+        if (popArg !== null) {
+          valueCount++
+        } else if (i < f.josi.length - 1 || !f.isVariableJosi) {
+          nullCount++
+          popArg = funcObj
         } else {
-          throw new NakoSyntaxError(
-            `関数『${t.value}』の引数『${f.varnames[i]}』には関数オブジェクトが必要です。`,
-            t.line, this.filename)
-        }}
+          break
+        }
 
-      args.push(popArg)
+        if (popArg !== null && f.funcPointers !== undefined && f.funcPointers[i] !== null)
+          {if (popArg.type === 'func') { // 引数が関数の参照渡しに該当する場合、typeを『func_pointer』に変更
+            popArg.type = 'func_pointer'
+          } else {
+            throw new NakoSyntaxError(
+              `関数『${t.value}』の引数『${f.varnames[i]}』には関数オブジェクトが必要です。`,
+              t.line, this.filename)
+          }}
+
+        args.push(popArg)
+
+        if (i < f.josi.length - 1 || !f.isVariableJosi) {
+          break
+        }
+      }
     }
     // 1つだけなら、変数「それ」で補完される
     if (nullCount >= 2 && (0 < valueCount || t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0))
