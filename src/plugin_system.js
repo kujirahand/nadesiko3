@@ -132,9 +132,14 @@ const PluginSystem = {
   // @四則演算
   '足': { // @AとBを足す // @たす
     type: 'func',
-    josi: [['に', 'と'], ['を']],
-    fn: function (a, b) {
-      return a + b
+    josi: [['を'], ['に', 'と']],
+    isVariableJosi: true,
+    fn: function (b, ...a) {
+      // 末尾のシステム変数を除外
+      a.pop()
+
+      a.push(b)
+      return a.reduce((p, c) => p + c)
     }
   },
   '引': { // @AからBを引く // @ひく
