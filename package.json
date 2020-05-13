@@ -132,7 +132,7 @@
     "body-parser": "^1.19.0",
     "browserslist": "^4.8.7",
     "caniuse-db": "^1.0.30001027",
-    "commander": "^2.20.0",
+    "commander": "^5.1.0",
     "copy-paste-win32fix": "^1.4.0",
     "csv-lite-js": "^0.0.7",
     "dayjs": "^1.8.23",
