@@ -220,7 +220,7 @@ class NakoCompiler {
       if (v.type === 'func') {
         __v0[key] = (...args) => {
           try {
-            v.fn(...args)
+            return v.fn(...args)
           } catch (e) {
             throw new NakoRuntimeError('関数『' + key + '』:' + e.name + ':' + e.message, this)
           }
