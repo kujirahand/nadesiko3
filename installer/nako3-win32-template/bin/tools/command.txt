@@ -569,6 +569,16 @@
 |SQLITE3逐次実行,"SQLをPARAMSで","逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。",0,,命令,SQLITE3ちくじじっこう
 |SQLITE3逐次全取得,"SQLをPARAMSで","逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじぜんしゅとく
 |SQLITE3逐次取得,"SQLをPARAMSで","逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじしゅとく
++ plugin_sqlite3sync(拡張プラグイン)
+- SQLite3同期
+|SQLITE3開,"Fを|Fの","SQlite3のデータベースFを開いて、データベースオブジェクトを返す",0,,命令,SQLITE3ひらく
+|SQLITE3閉,"","アクティブなSQlite3のデータベースを閉じる",0,,命令,SQLITE3とじる
+|SQLITE3同期切替,"DBに|DBへ","操作対象のデータベースをDB(『SQLITE3同期開』を使用)に切り替える",0,,命令,SQLITE3どうききりかえる
+|SQLITE3実行,"SQLをPARAMSで","SQLをパラメータPARAMSで実行する。",0,,命令,SQLITE3じっこう
+|INSERT,"TBLにPARAMSを|TBLへ","INSERT文を実行。TBLへハッシュPARAMSを挿入。",0,,命令,INSERT
+|SQLITE3挿入,"TBLにPARAMSを|TBLへ","INSERT文を実行。TBLへハッシュPARAMSを挿入。",0,,命令,SQLITE3そうにゅう
+|UPDATE,"TBLのWHEREをPARAMSに|PARAMSへ","UPDATE文を実行。TBLのWHEREをPARAMSに更新。",0,,命令,UPDATE
+|SQLITE3更新,"TBLのWHEREをPARAMSに|PARAMSへ","UPDATE文を実行。TBLのWHEREをPARAMSに更新。",0,,命令,SQLITE3こうしん
 + plugin_odbc(拡張プラグイン)
 - ODBC
 |ODBC逐次開,"Sを|Sの|Sで","逐次実行構文にて、ODBCのデータベースを開く",0,,命令,ODBCちくじひらく
