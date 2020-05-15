@@ -119,7 +119,7 @@
     "react-dom": "^16.8.6",
     "regenerator-runtime": "^0.13.3",
     "source-map": "^0.7.3",
-    "ssri": "^6.0.1",
+    "ssri": "^8.0.0",
     "stats-webpack-plugin": "^0.7.0",
     "style-loader": "^1.0.0",
     "terser-webpack-plugin": "^3.0.1",
