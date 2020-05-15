@@ -158,7 +158,7 @@ const PluginSystem = {
   },
   '倍': { // @AのB倍を求める // @ばい
     type: 'func',
-    josi: [['の'], []],
+    josi: [['の'], ['']],
     fn: function (a, b) {
       return a * b
     }
@@ -179,28 +179,28 @@ const PluginSystem = {
   },
   '以上': { // @AがB以上か // @いじょう
     type: 'func',
-    josi: [['が'], []],
+    josi: [['が'], ['']],
     fn: function (a, b) {
       return a >= b
     }
   },
   '以下': { // @AがB以下か // @いか
     type: 'func',
-    josi: [['が'], []],
+    josi: [['が'], ['']],
     fn: function (a, b) {
       return a <= b
     }
   },
   '未満': { // @AがB未満か // @みまん
     type: 'func',
-    josi: [['が'], []],
+    josi: [['が'], ['']],
     fn: function (a, b) {
       return a < b
     }
   },
   '超': { // @AがB超か // @ちょう
     type: 'func',
-    josi: [['が'], []],
+    josi: [['が'], ['']],
     fn: function (a, b) {
       return a > b
     }
@@ -2018,9 +2018,9 @@ const PluginSystem = {
       if (typeof f === 'function') {return f(sys)}
     }
   },
-  '秒待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうまつ
+  '秒待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうたいき
     type: 'func',
-    josi: [[]],
+    josi: [['']],
     fn: function (n, sys) {
       if (sys.resolve === undefined) {throw new Error('『秒待機』命令は『逐次実行』構文と一緒に使ってください。')}
       const resolve = sys.resolve
@@ -2032,7 +2032,7 @@ const PluginSystem = {
   },
   '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する // @びょうご
     type: 'func',
-    josi: [['を'], []],
+    josi: [['を'], ['']],
     fn: function (f, n, sys) {
       // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') {f = sys.__findVar(f)}
@@ -2048,7 +2048,7 @@ const PluginSystem = {
   },
   '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『タイマー停止』で停止できる) // @びょうごと
     type: 'func',
-    josi: [['を'], []],
+    josi: [['を'], ['']],
     fn: function (f, n, sys) {
       // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') {f = sys.__findVar(f)}
@@ -2062,7 +2062,7 @@ const PluginSystem = {
   },
   '秒タイマー開始時': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『秒毎』と同じ) // @びょうたいまーかいししたとき
     type: 'func',
-    josi: [['を'], []],
+    josi: [['を'], ['']],
     fn: function (f, n, sys) {
       sys.__exec('秒毎', [f, n, sys])
     }
