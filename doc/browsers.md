@@ -55,6 +55,5 @@
 			* 12.1
 * PC (Windows/macOS/Linux)
 	* Node
-		* 13.11.0
 		* 12.16.0
 		* 10.19.0
