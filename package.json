@@ -112,7 +112,7 @@
     "mocha": "^7.1.2",
     "mocha-css": "^1.0.1",
     "nadesiko3-hoge": "0.0.3",
-    "npm-check-updates": "^6.0.0",
+    "npm-check-updates": "^7.0.1",
     "prop-types": "^15.7.2",
     "pump": "^3.0.0",
     "react": "^16.8.6",
