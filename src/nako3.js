@@ -80,7 +80,6 @@ class NakoCompiler {
     this.__v1 = this.__varslist[1]
     this.__vars = this.__varslist[2]
     this.gen.reset()
-    this.clearLog()
   }
 
   /**
@@ -146,7 +145,8 @@ class NakoCompiler {
   }
 
   _run(code, isReset, isTest) {
-    if (isReset) {this.reset()}
+    this.reset()
+    if (isReset) {this.clearLog()}
     let js = this.compile(code, isTest)
     let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line

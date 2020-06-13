@@ -9,6 +9,10 @@ describe('func_test', () => {
     if (nako.debug) console.log('code=' + code)
     assert.equal(nako.runReset(code).log, res)
   }
+  const cmpWithoutReset = (code, res) => {
+    if (nako.debug) console.log('code=' + code)
+    assert.equal(nako.run(code).log, res)
+  }
   // --- test ---
 
   it('簡単な関数定義', () => {
@@ -67,6 +71,17 @@ describe('func_test', () => {
   it('ローカル定数1', () => {
     cmp('定数のN=30\n' +
       'Nを表示。', '30')
+  })
+  it('ローカル定数2', () => {
+    const _res = '30'
+    let res = _res
+
+    nako.clearLog()
+    for (let i = 0; i < 2; i++) {
+      cmpWithoutReset('定数のN=30\n' +
+        'Nを表示。', res)
+      res += '\n' + _res
+    }
   })
   it('助詞の複数定義', () => {
     cmp('●加算処理（AにBを|AとBの）\n' +
