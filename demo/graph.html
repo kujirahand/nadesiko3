@@ -1,0 +1,67 @@
+<html><body>
+<!-- ライブラリの取り込み -->
+<script type="text/javascript"
+ src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js">
+</script>
+<script type="text/javascript"
+ src="../release/wnako3.js?run">
+</script>
+<!-- 描画先 -->
+<canvas id="chart_cv"></canvas>
+<canvas id="chart_cv2"></canvas>
+<!-- データを与える -->
+<script type="なでしこ3">
+「#chart_cv」へ描画開始。
+dataset = {
+    labels: ['国語', '算数', '理科', '社会'],
+    datasets: [{
+      label: 'タロウ',
+      data: [78, 50, 30, 90],
+      backgroundColor: 'rgba(255,0,0,0.5)'
+    },{
+      label: 'ジロウ',
+      data: [90, 80, 10, 90],
+      backgroundColor: 'rgba(0,0,255,0.5)'
+    }]}
+datasetの線グラフ描画。
+
+###
+「#chart_cv2」へ描画開始。
+data_frame = {
+    type: 'bar',
+    data: dataset,
+    options: {
+    	scales: {
+    		yAxes: [{
+    			ticks: {
+    				#beginAtZero: true,
+    				min:0,
+    				max:100
+    			}
+    		}]}
+    }}
+data_frameのグラフ描画。
+</script>
+<script type="text/javascript">
+/*
+  // データ
+  const data = {
+    labels: ['A', 'B', 'C', 'D', 'E'],
+    datasets: [{
+      label: '国語のテスト',
+      data: [78, 64, 35, 90, 83],
+      backgroundColor: 'rgba(255,100,100, 0.5)'
+    }, {
+      label: '社会のテスト',
+      data: [80, 52, 29, 80, 93],
+      backgroundColor: 'rgba(100,100,2550, 0.5)'
+    }]}
+  // グラフを描画
+  const ctx = document.getElementById('chart_cv')
+  const chart_cv = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {}})
+*/
+</script>
+</body></html>
