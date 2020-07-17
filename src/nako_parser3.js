@@ -779,7 +779,7 @@ class NakoParser extends NakoParserBase {
       const word = this.peek()
       const name = this.nodeToStr(word)
       try {
-        if (this.accept(['word', 'eq', this.yCalc]))
+        if (this.accept(['word', 'eq', this.yCalc]) || this.accept(['word', 'eq', this.ySentence]))
           {return {
             type: 'let',
             name: this.y[0],
