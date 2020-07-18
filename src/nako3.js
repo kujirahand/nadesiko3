@@ -139,13 +139,13 @@ class NakoCompiler {
       used: new Set(),
       def: new Set()
     }
-    const astQueue = [ast]
+    const queue = [ast]
 
-    while (astQueue.length > 0) {
-      const ast_ = astQueue.pop()
+    while (queue.length > 0) {
+      const ast_ = queue.pop()
 
       if (ast_ !== null && ast_ !== undefined && ast_.block !== null && ast_.block !== undefined) {
-        this.getUsedAndDefFuncs(funcs, astQueue, JSON.parse(JSON.stringify(ast_.block)))
+        this.getUsedAndDefFuncs(funcs, queue, JSON.parse(JSON.stringify(ast_.block)))
       }
     }
 
