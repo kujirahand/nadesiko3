@@ -14,7 +14,7 @@ export default class EditorButtonComponent extends React.Component {
       this.props.nako3.setFunc('表示', [['と', 'を', 'の']], this.props.onInformationChanged)
       window.localStorage['nako3/editor/code'] = this.props.code
       this.props.nako3.run(this.preCode + this.props.code)
-      this.props.onUsedFuncsChanged(this.props.nako3.used_funcs)
+      this.props.onUsedFuncsChanged(this.props.nako3.usedFuncs)
     } catch (e) {
       this.props.onErrorChanged(e)
     }
