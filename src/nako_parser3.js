@@ -779,7 +779,7 @@ class NakoParser extends NakoParserBase {
       const word = this.peek()
       const name = this.nodeToStr(word)
       try {
-        if (this.accept(['word', 'eq', this.yCalc]))
+        if (this.accept(['word', 'eq', this.yCalc]) || this.accept(['word', 'eq', this.ySentence]))
           {return {
             type: 'let',
             name: this.y[0],
@@ -934,7 +934,7 @@ class NakoParser extends NakoParserBase {
     if (!this.check('(')) {return null}
     const t = this.get() // skip '('
     this.saveStack()
-    const v = this.yCalc()
+    const v = this.yCalc() || this.ySentence()
     if (v === null) {
       const v2 = this.get()
       throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v2) + 'の近く', t.line, this.filename)
