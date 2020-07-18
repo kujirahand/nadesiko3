@@ -70,11 +70,7 @@ class NakoCompiler {
 
     if (ast.block !== undefined) {
       for (const block of ast.block) {
-        if (block.type === 'func') {
-          funcs.used.add(block.name)
-        } else {
-          this.getUsedAndDefFunc(block, funcs)
-        }
+        this.getUsedAndDefFunc(block, funcs)
       }
     }
 
@@ -82,6 +78,14 @@ class NakoCompiler {
   }
 
   getUsedAndDefFunc (block, funcs) {
+    if (block.type === 'func') {
+      funcs.used.add(block.name)
+    } else {
+      this.getUsedAndDefFuncInOtherBlocks(block, funcs)
+    }
+  }
+
+  getUsedAndDefFuncInOtherBlocks (block, funcs) {
     if (block.type === 'def_func') {
       funcs.def.add(block.name.value)
     }
