@@ -17,23 +17,23 @@ export default class EditorButtonComponent extends React.Component {
     }
 
     for (const block of ast.block) {
-      this.getUsedFunc(block, funcs)
+      if (block.type === 'func') {
+        funcs.used.add(block.name)
+      } else {
+        this.getUsedFunc(block, funcs)
+      }
     }
 
     return funcs
   }
 
   getUsedFunc (block, funcs) {
-    if (block.type === 'func') {
-      funcs.used.add(block.name)
-    } else {
-      if (block.type === 'def_func') {
-        funcs.def.add(block.name.value)
-      }
+    if (block.type === 'def_func') {
+      funcs.def.add(block.name.value)
+    }
 
-      if (block.block !== undefined) {
-        this.getUsedFuncs(block.block, funcs)
-      }
+    if (block.block !== undefined) {
+      this.getUsedFuncs(block.block, funcs)
     }
   }
 
