@@ -13,7 +13,7 @@ export default class EditorComponent extends React.Component {
     this.state = {
       code: props.code,
       err: null,
-      used_funcs: []
+      usedFuncs: []
     }
     this.info = []
   }
@@ -32,13 +32,13 @@ export default class EditorComponent extends React.Component {
                                  this.info.push(s)
                                  this.setState({err: null})
                                }}
-                               onUsedFuncsChanged={(funcs) => this.setState({ used_funcs: Array.from(funcs).sort() })}
+                               onUsedFuncsChanged={(funcs) => this.setState({ usedFuncs: Array.from(funcs).sort() })}
                                onReset={() => {
                                  this.info = []
                                  this.setState({err: null})
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
-        <EditorFunctionInformationComponent used_funcs={this.state.used_funcs}/>
+        <EditorFunctionInformationComponent usedFuncs={this.state.usedFuncs}/>
         <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} canvasId={canvasId} />
         <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
