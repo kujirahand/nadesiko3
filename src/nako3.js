@@ -69,29 +69,39 @@ class NakoCompiler {
     }
 
     if (ast.block !== undefined) {
-      for (const block of ast.block) {
-        this.getUsedAndDefFunc(block, funcs)
+      let block = ast.block
+
+      if (!(block instanceof Array)) {
+        block = [block]
       }
+
+      this.getUseAndDefFuncs2(block, funcs)
     }
 
     return funcs
+  }
+
+  getUseAndDefFuncs2 (ast, funcs) {
+    for (const b of ast) {
+      this.getUsedAndDefFunc(b, funcs)
+    }
   }
 
   getUsedAndDefFunc (block, funcs) {
     if (block.type === 'func') {
       funcs.used.add(block.name)
     } else {
-      this.getUsedAndDefFuncInOtherBlocks(block, funcs)
-    }
-  }
-
-  getUsedAndDefFuncInOtherBlocks (block, funcs) {
-    if (block.type === 'def_func') {
-      funcs.def.add(block.name.value)
+      if (block.type === 'def_func') {
+        funcs.def.add(block.name.value)
+      }
     }
 
     if (block.block !== undefined) {
       this.getUseAndDefFuncs(block.block, funcs)
+    }
+
+    if (block.args !== undefined) {
+      this.getUseAndDefFuncs2(block.args, funcs)
     }
   }
 

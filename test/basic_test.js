@@ -95,4 +95,14 @@ describe('basic', () => {
     cmp('A=50\nもしA=50ならば // hogehoge\nAを表示\nここまで\n', '50')
     cmp('A=50\nもしA=50ならば ／／ hogehoge\nAを表示\nここまで\n', '50')
   })
+  it('used_funcs', () => {
+    const code = '●てすす;今日を表示;ここまで;てすす;「ああ」と表示'
+
+    if (nako.debug) {
+      console.log('code=' + code)
+    }
+
+    nako.runReset(code)
+    assert.deepEqual(nako.used_funcs, new Set(['今日', '表示']))
+  })
 })
