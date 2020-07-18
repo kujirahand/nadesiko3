@@ -95,7 +95,7 @@ describe('basic', () => {
     cmp('A=50\nもしA=50ならば // hogehoge\nAを表示\nここまで\n', '50')
     cmp('A=50\nもしA=50ならば ／／ hogehoge\nAを表示\nここまで\n', '50')
   })
-  it('used_funcs', () => {
+  it('usedFuncs', () => {
     const code = '●てすす;今日を表示;ここまで;てすす;「ああ」と表示'
 
     if (nako.debug) {
