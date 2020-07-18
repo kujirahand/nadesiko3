@@ -50,16 +50,6 @@ class NakoCompiler {
     return NakoGen.getHeader()
   }
 
-  getUsedFuncs (ast) {
-    const funcs = this.getUseAndDefFuncs(ast)
-
-    for (const func of funcs.def) {
-      funcs.used.delete(func)
-    }
-
-    return funcs.used
-  }
-
   getUseAndDefFuncs (ast, funcs = null) {
     if (funcs === null) {
       funcs = {
@@ -68,14 +58,8 @@ class NakoCompiler {
       }
     }
 
-    if (ast.block !== undefined) {
-      let block = ast.block
-
-      if (!(block instanceof Array)) {
-        block = [block]
-      }
-
-      this.getUseAndDefFuncs2(block, funcs)
+    if (ast.block !== null && ast.block !== undefined) {
+      this.getUseAndDefFuncs2(ast.block, funcs)
     }
 
     return funcs
@@ -83,25 +67,26 @@ class NakoCompiler {
 
   getUseAndDefFuncs2 (ast, funcs) {
     for (const b of ast) {
-      this.getUsedAndDefFunc(b, funcs)
-    }
-  }
+      if (b !== null && b !== undefined) {
+        switch (b.type) {
+          case 'func':
+            funcs.used.add(b.name)
+            break
+          case 'def_func':
+            funcs.def.add(b.name.value)
+            break
+          default:
+            break
+        }
 
-  getUsedAndDefFunc (block, funcs) {
-    if (block.type === 'func') {
-      funcs.used.add(block.name)
-    } else {
-      if (block.type === 'def_func') {
-        funcs.def.add(block.name.value)
+        if (b.block !== null && b.block !== undefined) {
+          this.getUseAndDefFuncs(b.block, funcs)
+        }
+
+        if (b.args !== null && b.args !== undefined) {
+          this.getUseAndDefFuncs2(b.args, funcs)
+        }
       }
-    }
-
-    if (block.block !== undefined) {
-      this.getUseAndDefFuncs(block.block, funcs)
-    }
-
-    if (block.args !== undefined) {
-      this.getUseAndDefFuncs2(block.args, funcs)
     }
   }
 
