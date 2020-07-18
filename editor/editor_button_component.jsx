@@ -8,13 +8,14 @@ export default class EditorButtonComponent extends React.Component {
     this.preCode = this.props.preCode + '\n'
   }
 
-  getUsedFuncs (
-    ast,
-    funcs = {
-      used: new Set(),
-      def: new Set()
+  getUsedFuncs (ast, funcs = null) {
+    if (funcs === null) {
+      funcs = {
+        used: new Set(),
+        def: new Set()
+      }
     }
-  ) {
+
     for (const block of ast.block) {
       if (block.type === 'func') {
         funcs.used.add(block.name)
