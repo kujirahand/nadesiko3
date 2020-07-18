@@ -70,16 +70,6 @@ class WebNakoCompiler extends NakoCompiler {
 
     return code
   }
-
-  /**
-   * コードをパースしてASTにする (override)
-   * @param code なでしこのプログラム
-   * @return AST
-   */
-  parse (code) {
-    this.ast = super.parse(code)
-    return this.ast
-  }
 }
 
 // ブラウザなら navigator.nako3 になでしこを登録
