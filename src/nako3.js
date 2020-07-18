@@ -126,13 +126,20 @@ class NakoCompiler {
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
+    this.usedFuncs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
     }
 
-    this.usedFuncs = new Set()
-    const defFuncs = new Set()
+    return ast
+  }
+
+  getUsedFuncs (ast) {
+    const funcs = {
+      used: new Set(),
+      def: new Set()
+    }
     const astQueue = [ast]
 
     while (astQueue.length > 0) {
@@ -147,10 +154,10 @@ class NakoCompiler {
           if (block !== null && block !== undefined) {
             switch (block.type) {
               case 'func':
-                this.usedFuncs.add(block.name)
+                funcs.used.add(block.name)
                 break
               case 'def_func':
-                defFuncs.add(block.name.value)
+                funcs.def.add(block.name.value)
                 break
               default:
                 break
@@ -163,11 +170,11 @@ class NakoCompiler {
       }
     }
 
-    for (const func of defFuncs) {
-      this.usedFuncs.delete(func)
+    for (const func of funcs.def) {
+      funcs.used.delete(func)
     }
 
-    return ast
+    return funcs.used
   }
 
   /**
