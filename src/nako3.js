@@ -50,7 +50,17 @@ class NakoCompiler {
     return NakoGen.getHeader()
   }
 
-  getUsedFuncs (ast, funcs = null) {
+  getUsedFuncs (ast) {
+    const funcs = this.getUseAndDefFuncs(ast)
+
+    for (const func of funcs.def) {
+      funcs.used.delete(func)
+    }
+
+    return funcs.used
+  }
+
+  getUseAndDefFuncs (ast, funcs = null) {
     if (funcs === null) {
       funcs = {
         used: new Set(),
@@ -62,20 +72,20 @@ class NakoCompiler {
       if (block.type === 'func') {
         funcs.used.add(block.name)
       } else {
-        this.getUsedFunc(block, funcs)
+        this.getUsedAndDefFunc(block, funcs)
       }
     }
 
     return funcs
   }
 
-  getUsedFunc (block, funcs) {
+  getUsedAndDefFunc (block, funcs) {
     if (block.type === 'def_func') {
       funcs.def.add(block.name.value)
     }
 
     if (block.block !== undefined) {
-      this.getUsedFuncs(block.block, funcs)
+      this.getUseAndDefFuncs(block.block, funcs)
     }
   }
 
@@ -155,14 +165,7 @@ class NakoCompiler {
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
-    const funcs = this.getUsedFuncs(ast)
-
-    for (const func of funcs.def) {
-      funcs.used.delete(func)
-    }
-
-    this.used_funcs = funcs.used
-
+    this.used_funcs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
