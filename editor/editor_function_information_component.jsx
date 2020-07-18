@@ -2,16 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default function EditorFunctionInformationComponent (props) {
-  return (
-    <div>
+  if (props.used_funcs.length > 0) {
+    return (
       <div>
-        <p className="edit_head">使用した命令 (プログラム内で定義した命令除く):</p>
-        <ul>
-          {props.used_funcs.map(func => (<li key={func}>{func}</li>))}
-        </ul>
+        <div>
+          <div className="edit_head">使用した命令:</div>
+          <p className="info">{props.used_funcs.join(', ')}</p>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  return null
 }
 
 EditorFunctionInformationComponent.propTypes = {
