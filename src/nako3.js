@@ -166,7 +166,13 @@ class NakoCompiler {
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
-    this.used_funcs = this.getUsedFuncs(ast)
+    const funcs = this.getUseAndDefFuncs(ast)
+
+    for (const func of funcs.def) {
+      funcs.used.delete(func)
+    }
+
+    this.used_funcs = funcs.used
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
