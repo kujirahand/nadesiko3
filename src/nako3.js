@@ -59,35 +59,35 @@ class NakoCompiler {
     }
 
     if (ast.block !== null && ast.block !== undefined) {
-      this.getUseAndDefFuncs2(ast.block, funcs)
-    }
+      let queue = JSON.parse(JSON.stringify(ast.block))
 
-    return funcs
-  }
+      while (queue.length > 0) {
+        const block = queue.pop()
 
-  getUseAndDefFuncs2 (ast, funcs) {
-    for (const b of ast) {
-      if (b !== null && b !== undefined) {
-        switch (b.type) {
-          case 'func':
-            funcs.used.add(b.name)
-            break
-          case 'def_func':
-            funcs.def.add(b.name.value)
-            break
-          default:
-            break
-        }
+        if (block !== null && block !== undefined) {
+          switch (block.type) {
+            case 'func':
+              funcs.used.add(block.name)
+              break
+            case 'def_func':
+              funcs.def.add(block.name.value)
+              break
+            default:
+              break
+          }
 
-        if (b.block !== null && b.block !== undefined) {
-          this.getUseAndDefFuncs(b.block, funcs)
-        }
+          if (block.block !== null && block.block !== undefined) {
+            this.getUseAndDefFuncs(block.block, funcs)
+          }
 
-        if (b.args !== null && b.args !== undefined) {
-          this.getUseAndDefFuncs2(b.args, funcs)
+          if (block.args !== null && block.args !== undefined) {
+            queue = queue.concat(block.args)
+          }
         }
       }
     }
+
+    return funcs
   }
 
   /**
