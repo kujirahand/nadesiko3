@@ -126,7 +126,6 @@ class NakoCompiler {
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
-
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
