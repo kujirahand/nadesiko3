@@ -68,11 +68,13 @@ class NakoCompiler {
       }
     }
 
-    for (const block of ast.block) {
-      if (block.type === 'func') {
-        funcs.used.add(block.name)
-      } else {
-        this.getUsedAndDefFunc(block, funcs)
+    if (ast.block !== undefined) {
+      for (const block of ast.block) {
+        if (block.type === 'func') {
+          funcs.used.add(block.name)
+        } else {
+          this.getUsedAndDefFunc(block, funcs)
+        }
       }
     }
 
