@@ -103,6 +103,6 @@ describe('basic', () => {
     }
 
     nako.runReset(code)
-    assert.deepEqual(nako.used_funcs, new Set(['今日', '表示']))
+    assert.deepEqual(nako.usedFuncs, new Set(['今日', '表示']))
   })
 })

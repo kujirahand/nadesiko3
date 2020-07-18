@@ -50,46 +50,6 @@ class NakoCompiler {
     return NakoGen.getHeader()
   }
 
-  getUseAndDefFuncs (ast, funcs = null) {
-    if (funcs === null) {
-      funcs = {
-        used: new Set(),
-        def: new Set()
-      }
-    }
-
-    if (ast.block !== null && ast.block !== undefined) {
-      let queue = JSON.parse(JSON.stringify(ast.block))
-
-      while (queue.length > 0) {
-        const block = queue.pop()
-
-        if (block !== null && block !== undefined) {
-          switch (block.type) {
-            case 'func':
-              funcs.used.add(block.name)
-              break
-            case 'def_func':
-              funcs.def.add(block.name.value)
-              break
-            default:
-              break
-          }
-
-          if (block.block !== null && block.block !== undefined) {
-            this.getUseAndDefFuncs(block.block, funcs)
-          }
-
-          if (block.args !== null && block.args !== undefined) {
-            queue = queue.concat(block.args)
-          }
-        }
-      }
-    }
-
-    return funcs
-  }
-
   /**
    * コードを単語に分割する
    * @param code なでしこのプログラム
@@ -166,17 +126,48 @@ class NakoCompiler {
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
-    const funcs = this.getUseAndDefFuncs(ast)
 
-    for (const func of funcs.def) {
-      funcs.used.delete(func)
-    }
-
-    this.used_funcs = funcs.used
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
     }
+
+    this.usedFuncs = new Set()
+    const defFuncs = new Set()
+    const astQueue = [ast]
+
+    while (astQueue.length > 0) {
+      const ast_ = astQueue.pop()
+
+      if (ast_ !== null && ast_ !== undefined && ast_.block !== null && ast_.block !== undefined) {
+        let blockQueue = JSON.parse(JSON.stringify(ast_.block))
+
+        while (blockQueue.length > 0) {
+          const block = blockQueue.pop()
+
+          if (block !== null && block !== undefined) {
+            switch (block.type) {
+              case 'func':
+                this.usedFuncs.add(block.name)
+                break
+              case 'def_func':
+                defFuncs.add(block.name.value)
+                break
+              default:
+                break
+            }
+
+            astQueue.push(block.block)
+            blockQueue = blockQueue.concat(block.args)
+          }
+        }
+      }
+    }
+
+    for (const func of defFuncs) {
+      this.usedFuncs.delete(func)
+    }
+
     return ast
   }
 
