@@ -131,7 +131,6 @@ class NakoCompiler {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
     }
-
     return ast
   }
 
