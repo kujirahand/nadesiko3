@@ -146,27 +146,7 @@ class NakoCompiler {
       const ast_ = astQueue.pop()
 
       if (ast_ !== null && ast_ !== undefined && ast_.block !== null && ast_.block !== undefined) {
-        let blockQueue = JSON.parse(JSON.stringify(ast_.block))
-
-        while (blockQueue.length > 0) {
-          const block = blockQueue.pop()
-
-          if (block !== null && block !== undefined) {
-            switch (block.type) {
-              case 'func':
-                funcs.used.add(block.name)
-                break
-              case 'def_func':
-                funcs.def.add(block.name.value)
-                break
-              default:
-                break
-            }
-
-            astQueue.push(block.block)
-            blockQueue = blockQueue.concat(block.args)
-          }
-        }
+        this.getUsedAndDefFuncs(funcs, astQueue, JSON.parse(JSON.stringify(ast_.block)))
       }
     }
 
@@ -175,6 +155,28 @@ class NakoCompiler {
     }
 
     return funcs.used
+  }
+
+  getUsedAndDefFuncs (funcs, astQueue, blockQueue) {
+    while (blockQueue.length > 0) {
+      const block = blockQueue.pop()
+
+      if (block !== null && block !== undefined) {
+        switch (block.type) {
+          case 'func':
+            funcs.used.add(block.name)
+            break
+          case 'def_func':
+            funcs.def.add(block.name.value)
+            break
+          default:
+            break
+        }
+
+        astQueue.push(block.block)
+        blockQueue = blockQueue.concat(block.args)
+      }
+    }
   }
 
   /**
