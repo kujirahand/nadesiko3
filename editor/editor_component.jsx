@@ -32,9 +32,7 @@ export default class EditorComponent extends React.Component {
                                  this.info.push(s)
                                  this.setState({err: null})
                                }}
-                               onUsedFuncsChanged={(funcs) => {
-                                 this.setState({ used_funcs: Array.from(funcs).sort() })
-                               }}
+                               onUsedFuncsChanged={(funcs) => this.setState({ used_funcs: Array.from(funcs).sort() })}
                                onReset={() => {
                                  this.info = []
                                  this.setState({err: null})
