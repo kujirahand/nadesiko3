@@ -8,6 +8,7 @@ const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
 const PluginSystem = require('./plugin_system')
 const PluginTest = require('./plugin_test')
+const commandList = require('../release/command_list.json')
 
 const prepare = new Prepare()
 const parser = new Parser()
@@ -135,50 +136,44 @@ class NakoCompiler {
   }
 
   getUsedFuncs (ast) {
-    const funcs = {
-      used: new Set(),
-      def: new Set()
-    }
     const queue = [ast]
+    this.usedFuncs = new Set()
 
     while (queue.length > 0) {
       const ast_ = queue.pop()
 
       if (ast_ !== null && ast_ !== undefined && ast_.block !== null && ast_.block !== undefined) {
-        this.getUsedAndDefFuncs(funcs, queue, JSON.parse(JSON.stringify(ast_.block)))
+        this.getUsedAndDefFuncs(queue, JSON.parse(JSON.stringify(ast_.block)))
       }
     }
 
-    for (const func of funcs.def) {
-      funcs.used.delete(func)
+    for (const func of this.usedFuncs) {
+      if (!commandList.includes(func)) {
+        this.usedFuncs.delete(func)
+      }
     }
 
-    return funcs.used
+    return this.usedFuncs
   }
 
-  getUsedAndDefFuncs (funcs, astQueue, blockQueue) {
+  getUsedAndDefFuncs (astQueue, blockQueue) {
     while (blockQueue.length > 0) {
       const block = blockQueue.pop()
 
       if (block !== null && block !== undefined) {
-        this.getUsedAndDefFunc(block, funcs, astQueue, blockQueue)
+        this.getUsedAndDefFunc(block, astQueue, blockQueue)
       }
     }
   }
 
-  getUsedAndDefFunc (block, funcs, astQueue, blockQueue) {
-    switch (block.type) {
-      case 'func':
-        funcs.used.add(block.name)
-        break
-      case 'def_func':
-        funcs.def.add(block.name.value)
-        break
-      default:
-        break
+  getUsedAndDefFunc (block, astQueue, blockQueue) {
+    if (['func', 'func_pointer'].includes(block.type) && block.name !== null && block.name !== undefined) {
+      this.usedFuncs.add(block.name)
     }
 
+    astQueue.push(block)
     astQueue.push(block.block)
+    blockQueue.push(block.value)
     blockQueue.push.apply(blockQueue, block.args)
   }
 

@@ -10,6 +10,14 @@ describe('basic', () => {
     }
     assert.equal(nako.runReset(code).log, res)
   }
+  const cmpNakoFuncs = (code, res) => {
+    if (nako.debug) {
+      console.log('code=' + code)
+    }
+
+    nako.runReset(code)
+    assert.deepEqual(nako.usedFuncs, res)
+  }
   // --- test ---
   it('print simple', () => {
     cmp('3を表示', '3')
@@ -96,13 +104,6 @@ describe('basic', () => {
     cmp('A=50\nもしA=50ならば ／／ hogehoge\nAを表示\nここまで\n', '50')
   })
   it('usedFuncs', () => {
-    const code = '●てすす;今日を表示;ここまで;てすす;「ああ」と表示'
-
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
-
-    nako.runReset(code)
-    assert.deepEqual(nako.usedFuncs, new Set(['今日', '表示']))
+    cmpNakoFuncs('●({関数}fでaを)演算処理とは;それは、f(a);ここまで;●(aを)二倍処理とは;それはa*2;ここまで;二倍処理で2を演算処理して表示', new Set(['表示']))
   })
 })
