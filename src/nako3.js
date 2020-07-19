@@ -147,13 +147,7 @@ class NakoCompiler {
       }
     }
 
-    for (const func of this.usedFuncs) {
-      if (!commandList.includes(func)) {
-        this.usedFuncs.delete(func)
-      }
-    }
-
-    return this.usedFuncs
+    return this.deleteUnNakoFuncs()
   }
 
   getUsedAndDefFuncs (astQueue, blockQueue) {
@@ -173,6 +167,16 @@ class NakoCompiler {
 
     astQueue.push.apply(astQueue, [block, block.block])
     blockQueue.push.apply(blockQueue, [block.value].concat(block.args))
+  }
+
+  deleteUnNakoFuncs () {
+    for (const func of this.usedFuncs) {
+      if (!commandList.includes(func)) {
+        this.usedFuncs.delete(func)
+      }
+    }
+
+    return this.usedFuncs
   }
 
   /**
