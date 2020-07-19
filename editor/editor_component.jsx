@@ -35,7 +35,7 @@ export default class EditorComponent extends React.Component {
                                onUsedFuncsChanged={(funcs) => this.setState({ usedFuncs: Array.from(funcs).sort() })}
                                onReset={() => {
                                  this.info = []
-                                 this.setState({err: null})
+                                 this.setState({err: null, usedFuncs: []})
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
         <EditorFunctionInformationComponent usedFuncs={this.state.usedFuncs}/>
