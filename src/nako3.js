@@ -171,10 +171,8 @@ class NakoCompiler {
       this.usedFuncs.add(block.name)
     }
 
-    astQueue.push(block)
-    astQueue.push(block.block)
-    blockQueue.push(block.value)
-    blockQueue.push.apply(blockQueue, block.args)
+    astQueue.push.apply(astQueue, [block, block.block])
+    blockQueue.push.apply(blockQueue, [block.value].concat(block.args))
   }
 
   /**
