@@ -155,14 +155,18 @@ class NakoCompiler {
       const block = blockQueue.pop()
 
       if (block !== null && block !== undefined) {
-        if (['func', 'func_pointer'].includes(block.type) && block.name !== null && block.name !== undefined) {
-          this.usedFuncs.add(block.name)
-        }
-
-        astQueue.push.apply(astQueue, [block, block.block])
-        blockQueue.push.apply(blockQueue, [block.value].concat(block.args))
+        this.getUsedAndDefFunc(block, astQueue, blockQueue)
       }
     }
+  }
+
+  getUsedAndDefFunc (block, astQueue, blockQueue) {
+    if (['func', 'func_pointer'].includes(block.type) && block.name !== null && block.name !== undefined) {
+      this.usedFuncs.add(block.name)
+    }
+
+    astQueue.push.apply(astQueue, [block, block.block])
+    blockQueue.push.apply(blockQueue, [block.value].concat(block.args))
   }
 
   deleteUnNakoFuncs () {
