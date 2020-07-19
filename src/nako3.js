@@ -8,7 +8,7 @@ const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
 const PluginSystem = require('./plugin_system')
 const PluginTest = require('./plugin_test')
-const commandList = require('../release/command_list.json')
+const commandList = require('./command_list.json')
 
 const prepare = new Prepare()
 const parser = new Parser()

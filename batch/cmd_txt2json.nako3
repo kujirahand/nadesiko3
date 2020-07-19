@@ -68,4 +68,4 @@ P_cnako3をJSONエンコードしてJ_cnako3に代入。
 P_listをJSONエンコードしてJ_listに代入。
 「{基本パス}/release/command.json」にJを保存。
 「{基本パス}/release/command_cnako3.json」にJ_cnako3を保存。
-「{基本パス}/release/command_list.json」にJ_listを保存。
+「{基本パス}/src/command_list.json」にJ_listを保存。
