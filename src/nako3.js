@@ -8,6 +8,7 @@ const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
 const PluginSystem = require('./plugin_system')
 const PluginTest = require('./plugin_test')
+const commandList = require('./command_list.json')
 
 const prepare = new Prepare()
 const parser = new Parser()
@@ -126,11 +127,56 @@ class NakoCompiler {
     }
     // 構文木を作成
     const ast = parser.parse(tokens)
+    this.usedFuncs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
       console.log(JSON.stringify(ast, null, 2))
     }
     return ast
+  }
+
+  getUsedFuncs (ast) {
+    const queue = [ast]
+    this.usedFuncs = new Set()
+
+    while (queue.length > 0) {
+      const ast_ = queue.pop()
+
+      if (ast_ !== null && ast_ !== undefined && ast_.block !== null && ast_.block !== undefined) {
+        this.getUsedAndDefFuncs(queue, JSON.parse(JSON.stringify(ast_.block)))
+      }
+    }
+
+    return this.deleteUnNakoFuncs()
+  }
+
+  getUsedAndDefFuncs (astQueue, blockQueue) {
+    while (blockQueue.length > 0) {
+      const block = blockQueue.pop()
+
+      if (block !== null && block !== undefined) {
+        this.getUsedAndDefFunc(block, astQueue, blockQueue)
+      }
+    }
+  }
+
+  getUsedAndDefFunc (block, astQueue, blockQueue) {
+    if (['func', 'func_pointer'].includes(block.type) && block.name !== null && block.name !== undefined) {
+      this.usedFuncs.add(block.name)
+    }
+
+    astQueue.push.apply(astQueue, [block, block.block])
+    blockQueue.push.apply(blockQueue, [block.value].concat(block.args))
+  }
+
+  deleteUnNakoFuncs () {
+    for (const func of this.usedFuncs) {
+      if (!commandList.includes(func)) {
+        this.usedFuncs.delete(func)
+      }
+    }
+
+    return this.usedFuncs
   }
 
   /**
