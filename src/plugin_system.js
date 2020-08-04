@@ -874,7 +874,7 @@ const PluginSystem = {
       return String(s).toLowerCase()
     }
   },
-  '平仮名変換': {// @文字列Sのひらがなをカタカナに変換 // @ひらがなへんかん
+  '平仮名変換': {// @文字列Sのカタカナをひらがなに変換 // @ひらがなへんかん
     type: 'func',
     josi: [['の', 'を']],
     fn: function (s) {
