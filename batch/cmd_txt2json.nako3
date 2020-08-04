@@ -8,6 +8,7 @@
 表題＝空。
 P={}
 P_cnako3={}
+P_list=[]
 母艦パスからパス抽出して基本パスに代入。
 「{母艦パス}/command.txt」を開いて、改行で区切る。
 ここから反復
@@ -58,10 +59,13 @@ P_cnako3={}
        V_cnako3[「引数」]=引数
        V_cnako3[「説明」]=説明
 　　　　P_cnako3[名前]=V_cnako3
+      P_listに名前を配列追加
 　　ここまで。
 ここまで。
 PをJSONエンコード整形して表示。
 PをJSONエンコードしてJに代入。
 P_cnako3をJSONエンコードしてJ_cnako3に代入。
+P_listをJSONエンコードしてJ_listに代入。
 「{基本パス}/release/command.json」にJを保存。
 「{基本パス}/release/command_cnako3.json」にJ_cnako3を保存。
+「{基本パス}/src/command_list.json」にJ_listを保存。

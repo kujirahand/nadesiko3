@@ -5,11 +5,16 @@ import EditorButtonComponent from './editor_button_component'
 import EditorInformationComponent from './editor_information_component'
 import CommandListComponent from './command_list_component'
 import EditorTestInformationComponent from "./editor_test_information_component";
+import EditorFunctionInformationComponent from './editor_function_information_component'
 
 export default class EditorComponent extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {code: props.code, err: null}
+    this.state = {
+      code: props.code,
+      err: null,
+      usedFuncs: []
+    }
     this.info = []
   }
 
@@ -27,11 +32,13 @@ export default class EditorComponent extends React.Component {
                                  this.info.push(s)
                                  this.setState({err: null})
                                }}
+                               onUsedFuncsChanged={(funcs) => this.setState({ usedFuncs: Array.from(funcs).sort() })}
                                onReset={() => {
                                  this.info = []
-                                 this.setState({err: null})
+                                 this.setState({err: null, usedFuncs: []})
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
+        <EditorFunctionInformationComponent usedFuncs={this.state.usedFuncs}/>
         <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} canvasId={canvasId} />
         <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
