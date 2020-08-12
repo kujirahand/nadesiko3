@@ -2,7 +2,7 @@
 require('es6-promise').polyfill()
 require('node-fetch')
 
-const hotkeys = require('hotkeys-js')
+const hotkeys = require('hotkeys-js/index.js')
 
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
