@@ -20,6 +20,12 @@ const PluginSystem = {
         }
         return def
       }
+      // 文字列から関数を探す、見当たらなければエラーを出す
+      sys.__findFunc = function (nameStr, parentFunc) {
+        const f = sys.__findVar(nameStr)
+        if (typeof f === 'function') { return f }
+        throw new Error(`『${parentFunc}』に実行できない関数が指定されました。`)
+      }
       // システム関数を実行する(エイリアスを実装するのに使う)
       sys.__exec = function (func, params) {
         const f = sys.__findVar(func)
@@ -1260,8 +1266,7 @@ const PluginSystem = {
     fn: function (f, a, sys) {
       let ufunc = f
       if (typeof f === 'string') {
-        ufunc = sys.__findVar(f)
-        if (!ufunc) { throw new Error('関数『' + f + '』が見当たりません。') }
+        ufunc = sys.__findFunc(f, '配列カスタムソート')
       }
       if (a instanceof Array) {
         return a.sort(ufunc)
@@ -2014,7 +2019,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'に', 'で']],
     fn: function (f, sys) {
-      if (typeof f === 'string') {f = sys.__findVar(f)}
+      if (typeof f === 'string') {f = sys.__findFunc(f, '実行')}
       if (typeof f === 'function') {return f(sys)}
     }
   },
@@ -2035,7 +2040,7 @@ const PluginSystem = {
     josi: [['を'], ['']],
     fn: function (f, n, sys) {
       // 文字列で指定された関数をオブジェクトに変換
-      if (typeof f === 'string') {f = sys.__findVar(f)}
+      if (typeof f === 'string') {f = sys.__findFunc(f, '秒後')}
       // 1回限りのタイマーをセット
       const timerId = setTimeout(() => {
         // 使用中リストに追加したIDを削除
@@ -2051,7 +2056,7 @@ const PluginSystem = {
     josi: [['を'], ['']],
     fn: function (f, n, sys) {
       // 文字列で指定された関数をオブジェクトに変換
-      if (typeof f === 'string') {f = sys.__findVar(f)}
+      if (typeof f === 'string') {f = sys.__findFunc(f, '秒毎')}
       // タイマーをセット
       const timerId = setInterval(() => {
         f(timerId, sys)
