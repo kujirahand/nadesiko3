@@ -6,9 +6,6 @@ import EditorInformationComponent from './editor_information_component'
 import CommandListComponent from './command_list_component'
 import EditorTestInformationComponent from "./editor_test_information_component";
 import EditorFunctionInformationComponent from './editor_function_information_component'
-import AceEditor from 'react-ace'
-import "ace-builds/src-noconflict/theme-github"
-
 
 export default class EditorComponent extends React.Component {
   constructor (props) {
