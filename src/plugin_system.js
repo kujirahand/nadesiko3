@@ -218,6 +218,13 @@ const PluginSystem = {
       return a === b
     }
   },
+  '範囲内': { // @VがAからBの範囲内か // @はんいない
+    type: 'func',
+    josi: [['が'], ['から'], ['の']],
+    fn: function (v, a, b) {
+      return (a <= v) && (v <= b)
+    }
+  },
 
   // @特殊命令
   'JS実行': { // @JavaScriptのコードSRCを実行する(変数sysでなでしこシステムを参照できる) // @JSじっこう
