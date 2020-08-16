@@ -1,8 +1,4 @@
-h1, button {
-  background-color: silver;
-  font-size: 1.3em;
-}
-
+/* reset style */
 h1, h3, .sbox h4, .edit_head, .buttons, #info {
   margin: 0;
 }
@@ -11,8 +7,50 @@ h1, h3, #info {
   padding: 0.5em;
 }
 
-h1 {
+/* title */
+h1#title, h1 {
+  background-color: #fff0f0;
+  margin: 0;
+  padding: 4px;
   color: black;
+  font-size: 1.3em;
+}
+
+/* menubar */
+div.menubar {
+  background-color: #f0e0e0;
+  font-size: 0.8em;
+  color: black;
+  margin: 0; padding: 4px;
+  overflow: hidden;
+}
+div.menubar ul {
+  margin:0; padding: 0;
+  list-style: none;
+}
+div.menubar li {
+  display: inline-block;
+  padding:4px;
+  text-align:center;
+  width: 10em;
+}
+div.menubar li a {
+  color: #444499;
+  width: 100%;
+  padding:0; margin:0;
+}
+
+.about-group {
+  background-color: #fff0f0;
+  padding: 8px;
+  margin: 0;
+}
+.about-group li {
+  padding: 4px;
+}
+.about-group li a {
+  width: 100%;
+  text-align: left;
 }
 
 h3, .info, .err, #src_box, .src {
@@ -24,13 +62,30 @@ h3 {
   border-bottom: 1px solid gray;
 }
 
+
+.helpbox {
+  margin: 3px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid gray;
+}
+
+h4 {
+  font-size: 1.1em;
+  border-bottom: 1px solid silver;
+}
+
+
 .sbox h4 {
   font-size: 0.9em;
   padding: 4px;
 }
 
 .default_button {
-  width: 5em;
+  width: 10em;
+}
+.mini_button {
+  width: 1em;
 }
 
 button {

@@ -3,57 +3,109 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>なでしこ3</title>
+  <title>なでしこ3 - Webエディタ</title>
   <!-- common -->
+  <link rel="stylesheet" type="text/css" href="pure-min.css">
   <link rel="stylesheet" type="text/css" href="common.css">
   <!-- index -->
   <link rel="stylesheet" type="text/css" href="index.css">
   <!-- editor -->
   <link rel="stylesheet" type="text/css" href="editor.css">
-  <!-- mocha -->
-  <script src="https://unpkg.com/mocha/mocha.js"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 </head>
 <body>
-<h1>なでしこ3のデモ</h1>
-<div id="editor" class="edit_div">
-  <p class="edit_head">簡易エディタ:</p>
-  <div class="editor-component">
-    <script type="application/json">
-      {
-        "title": "簡易エディタ",
-        "code": "「こんにちは！」と表示。\n(1 + 2)×3を表示。",
-        "autoLoad": true
-      }
-    </script>
+
+  <!-- header title -->
+  <h1 id="title">
+    <img src="nakopad-icon256.png" alt="なでしこ3" style="height:1.3em;"/>
+    なでしこ3 - Webエディタ
+  </h1>
+
+  <!-- menu bar-->
+  <div class="menubar">
+    <ul>
+      <li><a href="#about" class="pure-button">「なでしこ3」とは</a></li>
+      <li><a href="#help" class="pure-button">ヘルプ</a></li>
+    </ul>
+    <div style="clear:both"></div>
   </div>
-</div>
 
-<br />
+  <!-- editor -->
+  <div id="editor" class="edit_div">
+    <p class="edit_head">簡易エディタ:</p>
+    <div class="editor-component">
+      <script type="application/json">
+        {
+          "title": "簡易エディタ",
+          "code": "「こんにちは！」と表示。\n(1 + 2)×3を表示。",
+          "autoLoad": true
+        }
+      </script>
+    </div>
+  </div>
 
-<h3>参考</h3>
-<div>
-  <ul>
-    <li><a href="http://nadesi.com/doc3">なでしこ3のマニュアル(→Web)</a></li>
-    <li><a href="turtle2.html">タートルグラフィックス(デモ)</a></li>
-    <li><a href="turtle.html">タートルグラフィックス(エディタ)</a></li>
-    <li><a href="flow.html">制御構文のデモ</a></li>
-    <li><a href="runscript.html">スクリプトタグになでしこを書く</a></li>
-  </ul>
-</div>
+  <br />
 
-<div class="sbox">
-  <h3>その他</h3>
-  <ul>
-    <li><a href="browsers.html">対応機器/Webブラウザ</a></li>
-  </ul>
-</div>
+  <!-- about group panel -->
+  <h3><a id="about">「なでしこ3」とは</a></h3>
+  <div class="about-group">
+    <ul>
+      <li><a class="pure-button" href="http://nadesi.com/doc3">なでしこ3のマニュアル(→Web)</a></li>
+      <li><a class="pure-button" href="http://nadesi.com/v3/doc">命令リファレンス(→Web)</a></li>
+      <li><a class="pure-button" href="browsers.html">対応機器/Webブラウザ</a></li>
+    </ul>
+  </div>
 
-<!-- editor -->
-<!--React.jsのスクリプトはHTMLの末尾で読み込む-->
-<script src="../release/wnako3.js"></script>
-<script src="../release/editor.js"></script>
-<script src="../release/plugin_markup.js"></script>
+  <h3><a id="about-demo">デモ</a></h3>
+  <div class="about-group">
+    <ul>
+      <li><a class="pure-button" href="turtle2.html">タートルグラフィックスのデモ</a></li>
+      <li><a class="pure-button" href="flow.html">制御構文のデモ</a></li>
+      <li><a class="pure-button" href="turtle.html">タートルグラフィックス(エディタ)</a></li>
+    </ul>
+  </div>
+
+  <h3><a id="about-doc">文法について</a></h3>
+  <div class="about-group">
+    <ul>
+      <li><a class="pure-button" href="https://nadesi.com/doc3/go.php?8">文法一覧(→WEB)</a></li>
+      <li><a class="pure-button" href="https://nadesi.com/doc3/go.php?4">なでしこ3の基本(→Web)</a></li>
+      <li><a class="pure-button" href="https://nadesi.com/doc3/go.php?5">変数について(→Web)</a></li>
+    </ul>
+  </div>
+
+  <h3><a id="help">ヘルプ</a></h3>
+  <div class="about-group">
+    <div class="helpbox">
+      <h4>Webエディタについて</h4>
+      <div>なでしこ3のWeb版を実行が可能なエディタです。プログラムを入力してエディタ下部にある「実行」ボタンを押してプログラムを実行できます。</div>
+    </div>
+    <div class="helpbox">
+      <h4>「テスト」ボタンについて</h4>
+      <div>テストを実行できます。<a href="https://github.com/kujirahand/nadesiko3/pull/396">詳細はこちら</a>をご覧ください。</div>
+    </div>
+    <div class="helpbox">
+      <h4>「クリア」ボタンについて</h4>
+      <div>実行結果をクリアします。</div>
+    </div>
+    <div class="helpbox">
+      <h4>「↓」ボタンについて</h4>
+      <div>作ったプログラムをダウンロードします。</div>
+    </div>
+    <div class="helpbox">
+      <div><a class="pure-button" href="#title">トップへ</a>
+    </div>
+  </div>
+
+  <!-- editor script -->
+  <!--React.jsのスクリプトはHTMLの末尾で読み込む-->
+  <!-- mocha -->
+  <script src="https://unpkg.com/mocha/mocha.js"></script>
+  <!-- なでしこ-->
+  <script src="../release/wnako3.js"></script>
+  <script src="../release/editor.js"></script>
+  <script src="../release/plugin_markup.js"></script>
+  <!-- Chart.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
 </body>
 </html>

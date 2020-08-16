@@ -6,6 +6,9 @@ import EditorInformationComponent from './editor_information_component'
 import CommandListComponent from './command_list_component'
 import EditorTestInformationComponent from "./editor_test_information_component";
 import EditorFunctionInformationComponent from './editor_function_information_component'
+import AceEditor from 'react-ace'
+import "ace-builds/src-noconflict/theme-github"
+
 
 export default class EditorComponent extends React.Component {
   constructor (props) {
@@ -25,7 +28,7 @@ export default class EditorComponent extends React.Component {
     return (
       <div>
         <EditorFormComponent title={this.props.title} code={preCode} row={preCodeList.length} readOnly={true} />
-        <EditorFormComponent title={this.props.title} code={this.state.code} row="10" readOnly={false}
+        <EditorFormComponent title={this.props.title} code={this.state.code} row={10} readOnly={false}
                              ref={(e) => this.form = e} onChange={(e) => this.setState({code: e.target.value})} />
         <EditorButtonComponent nako3={this.props.nako3} preCode={preCode} code={this.state.code}
                                onInformationChanged={(s) => {
