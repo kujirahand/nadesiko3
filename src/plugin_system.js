@@ -1378,11 +1378,36 @@ const PluginSystem = {
     }
   },
   // @二次元配列処理
-  '表ソート': { // @配列Aの列番号B(0起点)(あるいはキー名)をキーにしてソートする。Aの内容を書き換える。 // @ひょうそーと
+  '表ソート': { // @二次元配列AでB列目(0起点)(あるいはキー名)をキーに文字列順にソートする。Aの内容を書き換える。 // @ひょうそーと
     type: 'func',
-    josi: [['の'],['を']],
+    josi: [['の'], ['を']],
     fn: function (a, no) {
-      if (!a instanceof Array) { throw new Error('『表ソート』には配列を指定する必要があります。') }
+      if (!a instanceof Array) {
+        throw new Error('『表ソート』には配列を指定する必要があります。')
+      }
+      a.sort((n, m) => {
+        const ns = n[no]
+        const ms = m[no]
+
+        if (ns === ms) {
+          return 0
+        } else if (ns < ms) {
+          return -1
+        } else {
+          return 1
+        }
+      })
+      return a
+    }
+  },
+  // @二次元配列処理
+  '表数値ソート': { // @二次元配列AでB列目(0起点)(あるいはキー名)をキーに数値順にソートする。Aの内容を書き換える。 // @ひょうすうちそーと
+    type: 'func',
+    josi: [['の'], ['を']],
+    fn: function (a, no) {
+      if (!a instanceof Array) {
+        throw new Error('『表数値ソート』には配列を指定する必要があります。')
+      }
       a.sort((n, m) => {
         const ns = n[no]
         const ms = m[no]
