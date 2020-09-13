@@ -63,6 +63,7 @@ class WebNakoCompiler extends NakoCompiler {
         'mocha.setup("bdd");\n' +
         'mocha.growl();\n'+
         'mocha.checkLeaks();\n' +
+        'mocha.cleanReferencesAfterRun(false);\n' +
         '\n' +
         code + '\n' +
         'mocha.run();// テスト実行\n'
@@ -80,6 +81,9 @@ if (typeof (navigator) === 'object') {
     const isAutoRun = nako3.checkScriptTagParam()
     if (isAutoRun) {nako3.runNakoScript()}
   }, false)
-} else 
+  window.addEventListener('beforeunload', (e) => {
+    mocha.dispose()
+  })
+} else
   {module.exports = WebNakoCompiler}
 
