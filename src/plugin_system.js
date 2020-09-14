@@ -2212,21 +2212,64 @@ const PluginSystem = {
       return res
     }
   },
-  '漢数字':{
+  '漢数字': { // @引数を数字と解釈して漢数字の文字列を返す // @かんすうじ
     type: 'func',
     josi: [['を','の']],
     fn: function (input) {
       function preprocesser (input) {
-        input = input.replace(/[０-９]/g, s => {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
-        });
+        function if_number_is_exponent (input) {
+          const match = input.match(/[0-9]*\.?[0-9]+[eE][-+]?[0-9]+/)
+          if(match && match[0] === input){
+            const base = input.match(/[0-9]*\.?[0-9]+[eE]/)[0].slice(0,-1)
+            const exponent = input.match(/[eE][-+]?[0-9]+/)[0].slice(1)
+            function movepoint (base, exponent) {
+              const sign = exponent[0]
+              const curpointidx = base.includes(".") ? base.indexOf(".") : base.length
+              const idx = sign === "-" ? curpointidx - parseInt(exponent.slice(1)) : curpointidx + parseInt(exponent.match(/[0-9]+$/)[0])
+              function strIns(str, idx, val){
+                return str.slice(0, idx) + val + str.slice(idx);
+              };
+              if (idx > 0) {
+                if (base.length - curpointidx > idx) {
+                  return strIns(base.replace(".", ""), idx, ".")
+                } else {
+                  if (base.includes(".")) {
+                    return base.replace(".", "") + "0".repeat(idx - base.length + curpointidx)
+                  } else {
+                    return base + "0".repeat(idx - base.length + curpointidx - 1)
+                  }
+                }
+              } else {
+                return "0." + "0".repeat(-idx) + base.replace(".", "")
+              }
+            }
+            input = movepoint (base, exponent)
+          }
+          return input
+        }
+        function asciify (input) {
+          return input.replace(/[０-９]/g, s => {
+            return String.fromCharCode(s.charCodeAt(0) - 65248);
+          });
+        }
+        input = asciify(input)
         if (Number.isNaN(Number(input))) {throw new Error('『漢数字』命令の中に無効な文字が含まれています。')}
-        if (BigInt(input) > 999999999999999999999999999999999999999999999999999999999999999999999999n) {throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。')}
-        return BigInt(input).toString()
+        let output = if_number_is_exponent(input.toString())
+        if (output > 999999999999999999999999999999999999999999999999999999999999999999999999n) {throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。')}
+        return output
       }
-      input = preprocesser (input)
+      input = preprocesser (String(input))
       function separater (str) {
+        let isminus = str.includes(".")
         return str.split("").reverse().reduce(( acc, cur ) => {
+          if (cur === ".") {
+            isminus = false
+            acc.splice(1, 0, ".")
+            return acc
+          } else if (isminus) {
+            acc.splice(1, 0, cur)
+            return acc
+          }
           if (acc[0].length === 軸数字.length) {
             acc.unshift([])
           }
@@ -2238,24 +2281,35 @@ const PluginSystem = {
         function replacer (str) {
           return 基本漢数字[基本算用数字.indexOf(str)]
         }
-        return arr.reverse().reduce(( acc, cur, idx ) => {
-          const unit = cur.reduce(( acc, cur, idx, src ) => {
-            if (cur === "0") {
-              return acc
-            } else if (cur === "1" && 軸数字[ src.length -1 - idx ] !== "") {
-              return acc + 軸数字[ src.length -1 - idx ]
+        let adjuster = 0
+        const result = arr.reverse().reduce(( acc, cur, idx ) => {
+          if (typeof cur === "string") {
+            if (cur === ".") {
+              acc =  "・" + acc
+              adjuster = idx + 1
             } else {
-              return acc + replacer(cur) + 軸数字[ src.length -1 - idx ]
+              acc = replacer(cur) + acc
             }
-          }, "")
-          acc = (unit ? unit + 単位数字[idx] : "")  + acc
+          } else {
+            const unit = cur.reduce(( acc, cur, idx, src ) => {
+              if (cur === "0") {
+                return acc
+              } else if (cur === "1" && 軸数字[ src.length -1 - idx ] !== "") {
+                return acc + 軸数字[ src.length -1 - idx ]
+              } else {
+                return acc + replacer(cur) + 軸数字[ src.length -1 - idx ]
+              }
+            }, "")
+            acc = (unit ? unit + 単位数字[idx - adjuster] : "")  + acc
+          }
           return acc
         }, "")
+        return result[0] === '・' ? '零' + result : result
       }
       return converter(separater(input))
     }
   },
-  '算用数字':{
+  '算用数字': { // @U引数を漢数字と解釈して数値を返す // @さんようすうじ
     type: 'func',
     josi: [['を','の']],
     fn: function (input) {
@@ -2276,6 +2330,10 @@ const PluginSystem = {
             result.push(10 ** (軸数字.indexOf(位)))
           } else if (底) {
             result.push(基本漢数字.indexOf(底))
+          } else if (cur === "・") {
+            result.push(".")
+          } else if (cur === "零") {
+            result.push("0")
           } else {
             throw new Error('『算用数字』命令の中に無効な文字が含まれています。')
           }
@@ -2285,8 +2343,20 @@ const PluginSystem = {
       function separater (arr) {
         let base = []
         let unit = []
+        let isminus = false
         return arr.reduce(( acc, cur, idx ) => {
-          if (cur > 1000) {
+          if (cur === ".") {
+            if(base.length === 0) base.push(0,1)
+            if(base.length === 1) base.push(1)
+            unit.push(base)
+            base = []
+            acc.push(unit)
+            acc.push(".")
+            unit = []
+            isminus = true
+          } else if (isminus) {
+            acc.push(String(cur))
+          } else if (cur > 1000) {
             if(base.length === 0) base.push(0,1)
             if(base.length === 1) base.push(1)
             unit.push(base)
@@ -2302,7 +2372,7 @@ const PluginSystem = {
           } else if (cur < 10) {
             base.push(cur)
           }
-          if (idx + 1 === arr.length) {
+          if (idx + 1 === arr.length && isminus === false) {
             if(base.length === 1) {
               base.push(1)
               unit.push(base)
@@ -2314,7 +2384,7 @@ const PluginSystem = {
       }
       function calculator (arr) {
         return arr.reduce(( acc, cur, idx ) => {
-          return acc + cur.reduce((acc, cur, idx) => {
+          return typeof cur === "string" ? acc + cur :acc + cur.reduce((acc, cur, idx) => {
             return cur > 1000 ? acc * cur : acc + BigInt(cur[0] * cur[1])
           }, 0n)
         }, 0n)
