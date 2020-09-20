@@ -25,7 +25,13 @@
     "no-mixed-zenkaku-and-hankaku-alphabet": true,
     "prefer-tari-tari": true,
     "preset-ja-spacing": true,
-    "preset-ja-technical-writing": true,
+    "preset-ja-technical-writing": {
+        "sentence-length": {
+            exclusionPatterns: [
+                "/\* .*/"
+            ]
+        }
+    },
     "preset-jtf-style": {
         "1.2.1.句点(。)と読点(、)": false,
         "4.3.1.丸かっこ（）": false
