@@ -147,7 +147,7 @@ jobs:
               if (list_res.data.length === 0) {
                 const pulls_create_params = {
                   title: "日本語修正 (修正する場合はPRをマージしてください) #${{github.event.pull_request.number}}",
-                  body: "日本語を修正しました。本PRをマージすると元のPRに修正が適用されます。 #${{github.event.pull_request.number}}",
+                  body: "日本語を修正しました。本PRをマージすると #${{github.event.pull_request.number}} に修正が適用されます。",
                   ...pull_params
                 }
                 console.log("call pulls.create:")
