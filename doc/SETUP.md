@@ -86,7 +86,7 @@ apm install linter-js-standard
 ### ATOMエディタ用のなでしこシンタックスハイライト
 
 ``misc/atom-packages/language-nako3`` にATOMエディタ用のハイライトパッケージがある。
-使い方は、[README.md](misc/atom-packages/language-nako3/README.md)を参照のこと。
+使い方は、[README.md](../misc/atom-packages/language-nako3/README.md)を参照のこと。
 
 ## コマンドラインからなでしこを使う方法
 
@@ -121,7 +121,7 @@ $ mocha hoge.spec.js
 
 demoディレクトリに、なでしこをブラウザから使うデモがある。
 
-大抵の機能は、ブラウザにHTMLファイルをドラッグ&ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないと利用することはできない。
+大抵の機能は、ブラウザにHTMLファイルをドラッグ&ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないと利用できない。
 
 なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:3000](http://localhost:3000)でサーバーが起動。
 
@@ -139,9 +139,9 @@ $ npm run build:command
 ### 対応機器/ブラウザの生成
 
 コマンドラインから以下を実行して、以下のファイルを生成。
-* [doc/browsers.md](doc/browsers.md): 対応機器/ブラウザ (マークダウン形式)
-* [src/browsers.md](src/browsers.md): 対応機器/ブラウザ (マークダウン形式, cnako3用)
-* [demo/browsers.html](demo/browsers.html): 対応機器/ブラウザ (HTML形式, なでしこ3エディタ用)
+* [doc/browsers.md](browsers.md): 対応機器/ブラウザ (マークダウン形式)
+* [src/browsers.md](../src/browsers.md): 対応機器/ブラウザ (マークダウン形式, cnako3用)
+* [demo/browsers.html](../demo/browsers.html): 対応機器/ブラウザ (HTML形式, なでしこ3エディタ用)
 
 ```
 $ npm run build:browsers
