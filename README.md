@@ -1,6 +1,6 @@
 # 日本語プログラミング言語「なでしこ3」
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Maintainability](https://api.codeclimate.com/v1/badges/5572db59aa6164217d30/maintainability)](https://codeclimate.com/github/kujirahand/nadesiko3/maintainability) [![npm version](https://badge.fury.io/js/nadesiko3.svg)](https://badge.fury.io/js/nadesiko3) ![Node.js CI](https://github.com/kujirahand/nadesiko3/workflows/Node.js%20CI/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Maintainability](https://api.codeclimate.com/v1/badges/5572db59aa6164217d30/maintainability)](https://codeclimate.com/github/kujirahand/nadesiko3) [![npm version](https://badge.fury.io/js/nadesiko3.svg)](https://badge.fury.io/js/nadesiko3) ![Node.js CI](https://github.com/kujirahand/nadesiko3/workflows/Node.js%20CI/badge.svg)
 
 ## 「なでしこ3」とは？
 
@@ -10,16 +10,16 @@
 
 - [なでしこ3のWebサイト](https://nadesi.com/doc3/)
 
-## 対応機器/Webブラウザ
+## 対応機器/ブラウザ
 
 [doc/browsers.md](doc/browsers.md) をご覧ください。
 
-## Webブラウザで利用する場合
+## ブラウザで利用する場合
 
 以下、Webエディタ上で、なでしこを実行できます。
 
-- [なでしこ3簡易エディタ](https://nadesi.com/doc3/go.php?10)
-- [なでしこエディタの一覧](https://nadesi.com/doc3/go.php?282)
+- [なでしこ3簡易エディタ](https://nadesi.com/doc3/index.php?%E3%81%AA%E3%81%A7%E3%81%97%E3%81%933%E7%B0%A1%E6%98%93%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF)
+- [なでしこエディタの一覧](https://nadesi.com/doc3/index.php?%E3%81%AA%E3%81%A7%E3%81%97%E3%81%933%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%81%AE%E4%B8%80%E8%A6%A7)
 
 ## PCで利用する場合
 

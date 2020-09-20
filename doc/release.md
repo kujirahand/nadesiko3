@@ -10,7 +10,7 @@
 npm test
 ```
 
-なお、よくエラーが出る部分で、「ナデシコバージョン」で問題があれば、package.json の version 値と src/plugin_system.js の変数番号が合っているかを確認する。
+なお、よくエラーが出る部分で、「ナデシコバージョン」で問題があれば、package.jsonのversion値とsrc/plugin_system.jsの変数番号が合っているかを確認する。
 
 ## 2.必要なファイルをビルドする
 
@@ -47,7 +47,7 @@ package.jsonのバージョン番号を更新したことを確認する。npm p
 npm publish
 ```
 
-## 4.WEBにアップロード
+## 4.Webにアップロード
 
 必要なら、WEB(nadesi.com/doc3)の簡易エディタを最新版に更新する。
 

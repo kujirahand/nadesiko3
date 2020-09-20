@@ -8,16 +8,16 @@
 
 - (日本語母語話者を対象とした) 母国語に特化したプログラミング言語
 - 教育用途に特化
-- Webブラウザで手軽に試せること
+- ブラウザで手軽に試せること
 
 ## どこまでできているのか
 
 - 簡単なWebエディタがあり、最小限の文字入力でプログラミングできる
 - 条件分岐、繰り返しなど、基本的な制御構文が実装されている
 
-## 対応機器/Webブラウザ
+## 対応機器/ブラウザ
 
-- HTML5対応ブラウザ (Internet Explorer / Safari / Chrome / Firefox 等)
+- HTML5対応ブラウザ (Internet Explorer / Safari / Chrome / Firefox等)
 - スマホブラウザ (iOS Safari / Android標準ブラウザ)
 - PC (Windows/macOS/Linux - Node.jsが動く環境)
 
