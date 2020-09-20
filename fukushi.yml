@@ -1,0 +1,1191 @@
+message: ひらがなで表記したほうが読みやすい副詞
+dict:
+  -
+    expected: あいにく
+    extensions: {}
+    tokens:
+      -
+        surface_form: "生憎"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "生憎"
+        reading: "アイニク"
+        pronunciation: "アイニク"
+  -
+    expected: あえて
+    extensions: {}
+    tokens:
+      -
+        surface_form: "敢えて"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "敢えて"
+        reading: "アエテ"
+        pronunciation: "アエテ"
+  -
+    expected: あくまで
+    extensions: {}
+    tokens:
+      -
+        surface_form: "飽くまで"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "飽くまで"
+        reading: "アクマデ"
+        pronunciation: "アクマデ"
+  -
+    expected: あくまで
+    extensions: {}
+    tokens:
+      -
+        surface_form: "飽く迄"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "飽く迄"
+        reading: "アクマデ"
+        pronunciation: "アクマデ"
+  -
+    expected: いったん
+    tokens:
+      -
+        surface_form: "一旦"
+        pos: "副詞"
+  -
+    expected: うすうす
+    extensions: {}
+    tokens:
+      -
+        surface_form: "薄々"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "薄々"
+        reading: "ウスウス"
+        pronunciation: "ウスウス"
+  -
+    expected: あらかじめ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "予め"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "予め"
+        reading: "アラカジメ"
+        pronunciation: "アラカジメ"
+  -
+    expected: あらかた
+    extensions: {}
+    tokens:
+      -
+        surface_form: "粗方"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "粗方"
+        reading: "アラカタ"
+        pronunciation: "アラカタ"
+  -
+    expected: あらためて
+    extensions: {}
+    tokens:
+      -
+        surface_form: "改めて"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "改めて"
+        reading: "アラタメテ"
+        pronunciation: "アラタメテ"
+  -
+    expected: いかに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "如何に"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "如何に"
+        reading: "イカニ"
+        pronunciation: "イカニ"
+  -
+    expected: いかにも
+    extensions: {}
+    tokens:
+      -
+        surface_form: "如何にも"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "如何にも"
+        reading: "イカニモ"
+        pronunciation: "イカニモ"
+  -
+    expected: いたずらに
+    tokens:
+      -
+        surface_form: "徒に"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "徒に"
+        reading: "イタズラニ"
+        pronunciation: "イタズラニ"
+  -
+    expected: いちはやく
+    extensions: {}
+    tokens:
+      -
+        surface_form: "いち早く"
+        pos: "形容詞"
+        pos_detail_1: "自立"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "形容詞・アウオ段"
+        conjugated_form: "連用テ接続"
+        basic_form: "いち早い"
+        reading: "イチハヤク"
+        pronunciation: "イチハヤク"
+  -
+    expected: いまだに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "未だに"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "未だに"
+        reading: "イマダニ"
+        pronunciation: "イマダニ"
+  -
+    expected: いやしくも
+    extensions: {}
+    tokens:
+      -
+        surface_form: "苟も"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "苟も"
+        reading: "イヤシクモ"
+        pronunciation: "イヤシクモ"
+  -
+    expected: いわば
+    extensions: {}
+    tokens:
+      -
+        surface_form: "言わば"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "言わば"
+        reading: "イワバ"
+        pronunciation: "イワバ"
+  -
+    expected: うすうす
+    extensions: {}
+    tokens:
+      -
+        surface_form: "薄々"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "薄々"
+        reading: "ウスウス"
+        pronunciation: "ウスウス"
+  -
+    expected: おおむね
+    extensions: {}
+    tokens:
+      -
+        surface_form: "概ね"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "概ね"
+        reading: "オオムネ"
+        pronunciation: "オームネ"
+  -
+    expected: おしなべて
+    extensions: {}
+    tokens:
+      -
+        surface_form: "押し並べて"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "押し並べて"
+        reading: "オシナベテ"
+        pronunciation: "オシナベテ"
+  -
+    expected: おしなべて
+    extensions: {}
+    tokens:
+      -
+        surface_form: "押しなべて"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "押しなべて"
+        reading: "オシナベテ"
+        pronunciation: "オシナベテ"
+  -
+    expected: おのずから
+    extensions: {}
+    tokens:
+      -
+        surface_form: "自ずから"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "自ずから"
+        reading: "オノズカラ"
+        pronunciation: "オノズカラ"
+  -
+    expected: おのずと
+    extensions: {}
+    tokens:
+      -
+        surface_form: "自ずと"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "自ずと"
+        reading: "オノズト"
+        pronunciation: "オノズト"
+  -
+    expected: およそ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "凡そ"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "凡そ"
+        reading: "オヨソ"
+        pronunciation: "オヨソ"
+  -
+    expected: かえって
+    extensions: {}
+    tokens:
+      -
+        surface_form: "却って"
+        po": "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "却って"
+        reading: "カエッテ"
+        pronunciation: "カエッテ"
+  -
+    expected: かつ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "且つ"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "且つ"
+        reading: "カツ"
+        pronunciation: "カツ"
+  -
+    expected: かつて
+    extensions: {}
+    tokens:
+      -
+        surface_form: "嘗て"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "嘗て"
+        reading: "カツテ"
+        pronunciation: "カツテ"
+  -
+    expected: かねて
+    extensions: {}
+    tokens:
+      -
+        surface_form: "予て"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "予て"
+        reading: "カネテ"
+        pronunciation: "カネテ"
+  -
+    expected: ことごとく
+    extensions: {}
+    tokens:
+      -
+        surface_form: "悉く"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "悉く"
+        reading: "コトゴトク"
+        pronunciation: "コトゴトク"
+  -
+    expected: ことごとく
+    extensions: {}
+    tokens:
+      -
+        surface_form: "尽く"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "尽く"
+        reading: "コトゴトク"
+        pronunciation: "コトゴトク"
+  -
+    expected: こまごま
+    extensions: {}
+    tokens:
+      -
+        surface_form: "細々"
+        pos: "副詞"
+        pos_detail_1: "助詞類接続"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "細々"
+        reading: "コマゴマ"
+        pronunciation: "コマゴマ"
+  -
+    expected: さらに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "更に"
+        pos: "副詞"
+        pos_detail_1: "助詞類接続"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "更に"
+        reading: "サラニ"
+        pronunciation: "サラニ"
+  -
+    expected: しきりに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "頻りに"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "頻りに"
+        reading: "シキリニ"
+        pronunciation: "シキリニ"
+  -
+    expected: しばらく
+    extensions: {}
+    tokens:
+      -
+        surface_form: "暫く"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "暫く"
+        reading: "シバラク"
+        pronunciation: "シバラク"
+  -
+    expected: しょせん
+    extensions: {}
+    tokens:
+      -
+        surface_form: "所詮"
+        pos: "副詞"
+        pos_detail_1: "助詞類接続"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "所詮"
+        reading: "ショセン"
+        pronunciation: "ショセン"
+  -
+    expected: すこぶる
+    extensions: {}
+    tokens:
+      -
+        surface_form: "頗る"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "頗る"
+        reading: "スコブル"
+        pronunciation: "スコブル"
+  -
+    expected: すでに
+    tokens:
+      -
+        surface_form: "既に"
+        pos: "副詞"
+  -
+    expected: せいいっぱい
+    extensions: {}
+    tokens:
+      -
+        surface_form: "精一杯"
+        pos: "名詞"
+        pos_detail_1: "副詞可能"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "精一杯"
+        reading: "セイイッパイ"
+        pronunciation: "セイイッパイ"
+  -
+    expected: せっかく
+    extensions: {}
+    tokens:
+      -
+        surface_form: "折角"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "折角"
+        reading: "セッカク"
+        pronunciation: "セッカク"
+  -
+    expected: ぜひ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "是非"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "是非"
+        reading: "ゼヒ"
+        pronunciation: "ゼヒ"
+  -
+    expected: ぜひとも
+    extensions: {}
+    tokens:
+      -
+        surface_form: "是非"
+        pos: "名詞"
+        pos_detail_1: "サ変接続"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "是非"
+        reading: "ゼヒ"
+        pronunciation: "ゼヒ"
+      -
+        surface_form: "とも"
+        pos: "助詞"
+        pos_detail_1: "副助詞"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "とも"
+        reading: "トモ"
+        pronunciation: "トモ"
+  -
+    expected: たくさん
+    extensions: {}
+    tokens:
+      -
+        surface_form: "沢山"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "沢山"
+        reading: "タクサン"
+        pronunciation: "タクサン"
+  -
+    expected: たちどころに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "立ち所に"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "立ち所に"
+        reading: "タチドコロニ"
+        pronunciation: "タチドコロニ"
+  -
+    expected: たとえ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "仮令"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "仮令"
+        reading: "タトエ"
+        pronunciation: "タトエ"
+  -
+    expected: たとえ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "縦令"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "縦令"
+        reading: "タトエ"
+        pronunciation: "タトエ"
+  -
+    expected: ちょうど
+    extensions: {}
+    tokens:
+      -
+        surface_form: "丁度"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "丁度"
+        reading: "チョウド"
+        pronunciation: "チョード"
+  -
+    expected: とくと
+    extensions: {}
+    tokens:
+      -
+        surface_form: "篤と"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "篤と"
+        reading: "トクト"
+        pronunciation: "トクト"
+  -
+    expected: どだい
+    extensions: {}
+    tokens:
+      -
+        surface_form: "土台"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "土台"
+        reading: "ドダイ"
+        pronunciation: "ドダイ"
+  -
+    expected: とりわけ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "取り分け"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "取り分け"
+        reading: "トリワケ"
+        pronunciation: "トリワケ"
+  -
+    expected: なぜ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "何故"
+        pos: "副詞"
+        pos_detail_1: "助詞類接続"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "何故"
+        reading: "ナゼ"
+        pronunciation: "ナゼ"
+  -
+    expected: ひとえに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "偏に"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "偏に"
+        reading: "ヒトエニ"
+        pronunciation: "ヒトエニ"
+  -
+    expected: ひときわ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "一際"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "一際"
+        reading: "ヒトキワ"
+        pronunciation: "ヒトキワ"
+  -
+    expected: ひとしお
+    extensions: {}
+    tokens:
+      -
+        surface_form: "一入"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "一入"
+        reading: "ヒトシオ"
+        pronunciation: "ヒトシオ"
+  -
+    expected: ひとまず
+    extensions: {}
+    tokens:
+      -
+        surface_form: "一先ず"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "一先ず"
+        reading: "ヒトマズ"
+        pronunciation: "ヒトマズ"
+  -
+    expected: ひとりでに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "独りでに"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "独りでに"
+        reading: "ヒトリデニ"
+        pronunciation: "ヒトリデニ"
+  -
+    expected: ほとんど
+    extensions: {}
+    tokens:
+      -
+        surface_form: "殆ど"
+        pos: "名詞"
+        pos_detail_1: "副詞可能"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "殆ど"
+        reading: "ホトンド"
+        pronunciation: "ホトンド"
+  -
+    expected: まさに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "正に"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "正に"
+        reading: "マサニ"
+        pronunciation: "マサニ"
+  -
+    expected: まして
+    extensions: {}
+    tokens:
+      -
+        surface_form: "況して"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "況して"
+        reading: "マシテ"
+        pronunciation: "マシテ"
+  -
+    expected: まず
+    extensions: {}
+    tokens:
+      -
+        surface_form: "先ず"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "先ず"
+        reading: "マズ"
+        pronunciation: "マズ"
+  -
+    expected: まるで
+    extensions: {}
+    tokens:
+      -
+        surface_form: "丸"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "丸"
+        reading: "マル"
+        pronunciation: "マル"
+      -
+        surface_form: "で"
+        pos: "助詞"
+        pos_detail_1: "格助詞"
+        pos_detail_2: "一般"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "で"
+        reading: "デ"
+        pronunciation: "デ"
+  -
+    expected: まんざら
+    extensions: {}
+    tokens:
+      -
+        surface_form: "満更"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "満更"
+        reading: "マンザラ"
+        pronunciation: "マンザラ"
+  -
+    expected: むげに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "無碍"
+        pos: "名詞"
+        pos_detail_1: "形容動詞語幹"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "無碍"
+        reading: "ムゲ"
+        pronunciation: "ムゲ"
+      -
+        surface_form: "に"
+        pos: "助詞"
+        pos_detail_1: "副詞化"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "に"
+        reading: "ニ"
+        pronunciation: "ニ"
+  -
+    expected: むしろ
+    extensions: {}
+    tokens:
+      -
+        surface_form: "寧ろ"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "寧ろ"
+        reading: "ムシロ"
+        pronunciation: "ムシロ"
+  -
+    expected: 無理やり
+    extensions: {}
+    tokens:
+      -
+        surface_form: "無理矢理"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "無理矢理"
+        reading: "ムリヤリ"
+        pronunciation: "ムリヤリ"
+  -
+    expected: めっぽう
+    extensions: {}
+    tokens:
+      -
+        surface_form: "滅法"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "滅法"
+        reading: "メッポウ"
+        pronunciation: "メッポー"
+  -
+    expected: もしも
+    extensions: {}
+    tokens:
+      -
+        surface_form: "若しも"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "若しも"
+        reading: "モシモ"
+        pronunciation: "モシモ"
+  -
+    expected: もしくは
+    extensions: {}
+    tokens:
+      -
+        surface_form: "若しくは"
+        pos: "接続詞"
+        pos_detail_1: "*"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "若しくは"
+        reading: "モシクハ"
+        pronunciation: "モシクワ"
+  -
+    expected: もちろん
+    extensions: {}
+    tokens:
+      -
+        surface_form: "勿論"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "勿論"
+        reading: "モチロン"
+        pronunciation: "モチロン"
+  -
+    expected: もっとも
+    tokens:
+      -
+        surface_form: "最も"
+        pos: "副詞"
+  -
+    expected: もともと
+    extensions: {}
+    tokens:
+      -
+        surface_form: "元々"
+        pos: "副詞"
+        pos_detail_1: "助詞類接続"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "元々"
+        reading: "モトモト"
+        pronunciation: "モトモト"
+  -
+    expected: もとより
+    extensions: {}
+    tokens:
+      -
+        surface_form: "素より"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "素より"
+        reading: "モトヨリ"
+        pronunciation: "モトヨリ"
+  -
+    expected: もはや
+    extensions: {}
+    tokens:
+      -
+        surface_form: "最早"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "最早"
+        reading: "モハヤ"
+        pronunciation: "モハヤ"
+  -
+    expected: やはり
+    extensions: {}
+    tokens:
+      -
+        surface_form: "矢"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "矢"
+        reading: "ヤ"
+        pronunciation: "ヤ"
+      -
+        surface_form: "張り"
+        pos: "名詞"
+        pos_detail_1: "接尾"
+        pos_detail_2: "一般"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "張り"
+        reading: "バリ"
+        pronunciation: "バリ"
+  -
+    expected: やっぱり
+    extensions: {}
+    tokens:
+      -
+        surface_form: "矢"
+        pos: "名詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "矢"
+        reading: "ヤ"
+        pronunciation: "ヤ"
+      -
+        surface_form: "っ"
+        pos: "動詞"
+        pos_detail_1: "非自立"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "五段・カ行促音便"
+        conjugated_form: "連用タ接続"
+        basic_form: "く"
+        reading: "ッ"
+        pronunciation: "ッ"
+      -
+        surface_form: "張り"
+        pos: "名詞"
+        pos_detail_1: "接尾"
+        pos_detail_2: "一般"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "張り"
+        reading: "ハリ"
+        pronunciation: "ハリ"
+  -
+    expected: ようやく
+    extensions: {}
+    tokens:
+      -
+        surface_form: "漸く"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "漸く"
+        reading: "ヨウヤク"
+        pronunciation: "ヨーヤク"
+  -
+    expected: よほど
+    extensions: {}
+    tokens:
+      -
+        surface_form: "余程"
+        pos: "副詞"
+        pos_detail_1: "一般"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "余程"
+        reading: "ヨホド"
+        pronunciation: "ヨホド"
+  -
+    expected: わずかに
+    extensions: {}
+    tokens:
+      -
+        surface_form: "僅か"
+        pos: "名詞"
+        pos_detail_1: "形容動詞語幹"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "僅か"
+        reading: "ワズカ"
+        pronunciation: "ワズカ"
+      -
+        surface_form: "に"
+        pos: "助詞"
+        pos_detail_1: "副詞化"
+        pos_detail_2: "*"
+        pos_detail_3: "*"
+        conjugated_type: "*"
+        conjugated_form: "*"
+        basic_form: "に"
+        reading: "ニ"
+        pronunciation: "ニ"
