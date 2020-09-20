@@ -26,11 +26,7 @@
     "prefer-tari-tari": true,
     "preset-ja-spacing": true,
     "preset-ja-technical-writing": {
-        "sentence-length": {
-            exclusionPatterns: [
-                "/\* .*/"
-            ]
-        }
+        "sentence-length": false
     },
     "preset-jtf-style": {
         "1.2.1.句点(。)と読点(、)": false,
