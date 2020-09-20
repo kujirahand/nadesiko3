@@ -19,7 +19,7 @@
 
 ### src/nako_gen.js
 
-構文木を元に、JavaScriptのコードを生成するもの
+構文木を元に、JavaScriptのコードを生成するもの。
 
 ### src/plugin_xxx.js
 
@@ -28,11 +28,11 @@
 
 ### src/cnako3.js
 
-バッチファイル実行用。コマンドラインのインターフェイスを実装するモノ
+バッチファイル実行用。コマンドラインのインタフェースを実装するモノ。
 
 ### src/wnako3.js
 
-Webブラウザ用。
+ブラウザ用。
 
 ### src/enako3.js
 

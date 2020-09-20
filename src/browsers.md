@@ -1,4 +1,4 @@
-* Webブラウザ
+* ブラウザ
   * モバイル
     * Chrome for Android
       * 80

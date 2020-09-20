@@ -4,13 +4,13 @@
 
 ## 1.GitHubのリリース機能を使う
 
-ただし、リリース前（コミット前）には、必ず、テストを実行して、テストが成功するか確認する。
+ただし、リリース前（コミット前）には必ずテストを実行して、テストが成功するか確認する。
 
 ```
 npm test
 ```
 
-なお、よくエラーが出る部分で、「ナデシコバージョン」で問題があれば、package.json の version 値と src/plugin_system.js の変数番号が合っているかを確認する。
+なお、よくエラーが出る部分で「ナデシコバージョン」で問題があれば、package.jsonのversion値とsrc/plugin_system.jsの変数番号が合っているかを確認する。
 
 ## 2.必要なファイルをビルドする
 
@@ -32,7 +32,7 @@ npm run build:command
 npm run build:browsers
 ```
 
-Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、git cloneでnadesiko3win32のリポジトリを取得しておく必要がある。
+Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、 `git clone` でnadesiko3win32のリポジトリを取得しておく必要がある。
 
 ```
 npm run build:win32
@@ -41,13 +41,13 @@ bash ./win32.bash
 
 ## 3.npmにpublish
 
-package.jsonのバージョン番号を更新したことを確認する。npm publishでnpmで公開する。
+package.jsonのバージョン番号を更新したことを確認する。npm publishでnpmに公開する。
 
 ```
 npm publish
 ```
 
-## 4.WEBにアップロード
+## 4.Webにアップロード
 
 必要なら、WEB(nadesi.com/doc3)の簡易エディタを最新版に更新する。
 
