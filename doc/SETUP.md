@@ -1,6 +1,6 @@
 # なでしこ3 - 開発環境のセットアップ方法
 
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://standardjs.com/)
 
 なでしこ3自身を開発する手順をまとめたもの。なでしこ3を使うだけならば、以下の手順は不要。
 
@@ -12,7 +12,7 @@
 
 ## 【Windows】
 
-コンパイル環境が必要になるので、ビルドツールをインストールする。PowerShellから以下のコマンドを実行すると、自動的に必要なツールが入る。(Windowsのユーザー名に日本語が使われているとうまくコンパイルできないという情報もあるので注意。)
+コンパイル環境が必要になるので、ビルドツールをインストールする。PowerShellから以下のコマンドを実行すると、自動的に必要なツールが入る。(Windowsのユーザー名に日本語が使われているとうまくコンパイルできないという情報もあるので注意)
 
 また、Gitなどのツールをインストールするために、Chocolatey( https://chocolatey.org/ )をインストールしておく。
 
@@ -81,7 +81,7 @@ apm install linter
 apm install linter-js-standard
 ```
 
-また、EditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](http://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応しているので、これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
+また、EditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](https://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応しているので、これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
 
 ### ATOMエディタ用のなでしこシンタックスハイライト
 
@@ -94,7 +94,7 @@ apm install linter-js-standard
 
 ちなみに、``npm install -g nadeisko3`` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、その場合は安定版のなでしこがインストールされることになる。
 
-環境変数に、本ファイルのパスを、NAKO_HOMEとして登録し、パスを NAKO_HOME/src に通す。以下、macOS/Linuxでの `.bashrc` の記述例。(ユーザー名がkujiraの場合)
+環境変数に、本ファイルのパスを、NAKO_HOMEとして登録し、パスをNAKO_HOME/srcに通す。以下、macOS/Linuxでの `.bashrc` の記述例。(ユーザー名がkujiraの場合)
 
 ```
 HOME=/Users/kujira
@@ -119,9 +119,9 @@ $ mocha hoge.spec.js
 
 ### デモプログラムを動かす方法
 
-demoディレクトリに、なでしこをWebブラウザから使うデモがある。
+demoディレクトリに、なでしこをブラウザから使うデモがある。
 
-大抵の機能は、WebブラウザにHTMLファイルをドラッグ＆ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないと利用することはできない。
+大抵の機能は、ブラウザにHTMLファイルをドラッグ&ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないと利用することはできない。
 
 なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:3000](http://localhost:3000)でサーバーが起動。
 
@@ -136,12 +136,12 @@ $ npm start
 ```
 $ npm run build:command
 ```
-### 対応機器/Webブラウザの生成
+### 対応機器/ブラウザの生成
 
 コマンドラインから以下を実行して、以下のファイルを生成。
-* [doc/browsers.md](doc/browsers.md): 対応機器/Webブラウザ (マークダウン形式)
-* [src/browsers.md](src/browsers.md): 対応機器/Webブラウザ (マークダウン形式, cnako3用)
-* [demo/browsers.html](demo/browsers.html): 対応機器/Webブラウザ (HTML形式, なでしこ3エディタ用)
+* [doc/browsers.md](doc/browsers.md): 対応機器/ブラウザ (マークダウン形式)
+* [src/browsers.md](src/browsers.md): 対応機器/ブラウザ (マークダウン形式, cnako3用)
+* [demo/browsers.html](demo/browsers.html): 対応機器/ブラウザ (HTML形式, なでしこ3エディタ用)
 
 ```
 $ npm run build:browsers
