@@ -81,7 +81,8 @@ apm install linter
 apm install linter-js-standard
 ```
 
-また、EditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](https://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応しているので、これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
+また、EditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](https://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応しています。
+これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
 
 ### ATOMエディタ用のなでしこシンタックスハイライト
 
@@ -90,11 +91,11 @@ apm install linter-js-standard
 
 ## コマンドラインからなでしこを使う方法
 
-なでしこ3では、コマンドラインからなでしこを実行できる、cnako3(Windowsは、cnako3.bat)というスクリプトを用意。今後、なでしこの各種バッチファイルは、なでしこ自身で記述される。
+なでしこ3ではコマンドラインからなでしこを実行できるcnako3(Windowsは、cnako3.bat)というスクリプトを用意。今後、なでしこの各種バッチファイルはなでしこ自身で記述される。
 
 ちなみに、``npm install -g nadeisko3`` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、その場合は安定版のなでしこがインストールされることになる。
 
-環境変数に、本ファイルのパスを、NAKO_HOMEとして登録し、パスをNAKO_HOME/srcに通す。以下、macOS/Linuxでの `.bashrc` の記述例。(ユーザー名がkujiraの場合)
+環境変数に本ファイルのパスをNAKO_HOMEとして登録し、パスをNAKO_HOME/srcに通す。以下、macOS/Linuxでの `.bashrc` の記述例。(ユーザー名がkujiraの場合)
 
 ```
 HOME=/Users/kujira
@@ -121,7 +122,7 @@ $ mocha hoge.spec.js
 
 demoディレクトリに、なでしこをブラウザから使うデモがある。
 
-大抵の機能は、ブラウザにHTMLファイルをドラッグ&ドロップすれば動くが、一部の機能は、ローカルサーバーを動かさないと利用できない。
+大抵の機能はブラウザにHTMLファイルをドラッグ&ドロップすれば動くが、一部の機能はローカルサーバーを動かさないと利用できない。
 
 なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:3000](http://localhost:3000)でサーバーが起動。
 

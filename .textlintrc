@@ -17,7 +17,11 @@
     "ja-hiragana-keishikimeishi": true,
     "ja-unnatural-alphabet": true,
     "ng-word": true,
-    "no-dead-link": true,
+    "no-dead-link": {
+        "ignore": [
+            "http://localhost:3000/"
+        ]
+    },
     "no-mixed-zenkaku-and-hankaku-alphabet": true,
     "prefer-tari-tari": true,
     "preset-ja-spacing": true,

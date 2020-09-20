@@ -4,13 +4,13 @@
 
 ## 1.GitHubのリリース機能を使う
 
-ただし、リリース前（コミット前）には、必ず、テストを実行して、テストが成功するか確認する。
+ただし、リリース前（コミット前）には必ずテストを実行して、テストが成功するか確認する。
 
 ```
 npm test
 ```
 
-なお、よくエラーが出る部分で、「ナデシコバージョン」で問題があれば、package.jsonのversion値とsrc/plugin_system.jsの変数番号が合っているかを確認する。
+なお、よくエラーが出る部分で「ナデシコバージョン」で問題があれば、package.jsonのversion値とsrc/plugin_system.jsの変数番号が合っているかを確認する。
 
 ## 2.必要なファイルをビルドする
 
@@ -41,7 +41,7 @@ bash ./win32.bash
 
 ## 3.npmにpublish
 
-package.jsonのバージョン番号を更新したことを確認する。npm publishでnpmで公開する。
+package.jsonのバージョン番号を更新したことを確認する。npm publishでnpmに公開する。
 
 ```
 npm publish
