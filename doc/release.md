@@ -32,7 +32,7 @@ npm run build:command
 npm run build:browsers
 ```
 
-Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、git cloneでnadesiko3win32のリポジトリを取得しておく必要がある。
+Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、 `git clone` でnadesiko3win32のリポジトリを取得しておく必要がある。
 
 ```
 npm run build:win32

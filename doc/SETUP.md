@@ -1,4 +1,4 @@
-﻿# なでしこ3 - 開発環境のセットアップ方法
+# なでしこ3 - 開発環境のセットアップ方法
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
 
@@ -94,7 +94,7 @@ apm install linter-js-standard
 
 ちなみに、``npm install -g nadeisko3`` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、その場合は安定版のなでしこがインストールされることになる。
 
-環境変数に、本ファイルのパスを、NAKO_HOMEとして登録し、パスを NAKO_HOME/src に通す。以下、macOS/Linuxでの.bashrcの記述例。(ユーザー名がkujiraの場合)
+環境変数に、本ファイルのパスを、NAKO_HOMEとして登録し、パスを NAKO_HOME/src に通す。以下、macOS/Linuxでの `.bashrc` の記述例。(ユーザー名がkujiraの場合)
 
 ```
 HOME=/Users/kujira
