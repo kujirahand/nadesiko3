@@ -16,7 +16,8 @@ REPOSパス=基本パスを「../」で相対パス展開。
     'src/plugin_node.js',
     'src/plugin_express.js',
     'src/plugin_markup.js',
-    'src/plugin_math.js'
+    'src/plugin_math.js',
+    'src/plugin_weykturtle3d.js'
  ]
 拡張プラグイン一覧は[
     'nadesiko3-sqlite3/src/plugin_sqlite3.js',
