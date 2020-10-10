@@ -93,9 +93,11 @@ const PluginBrowser = {
   '尋': { // @メッセージSと入力ボックスを出して尋ねる // @たずねる
     type: 'func',
     josi: [['と', 'を']],
-    fn: function (s) {
+    fn: function (s, sys) {
       const r = window.prompt(s)
-      if (r.match(/^[0-9.]+$/)) {return parseFloat(r)}
+      if (!r) {
+        return sys.__v0['空']
+      } else if (r.match(/^[0-9.]+$/)) {return parseFloat(r)}
       return r
     }
   },
