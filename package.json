@@ -126,7 +126,7 @@
     "uuid": "^8.0.0",
     "webpack": "^4.31.0",
     "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-cli": "^3.3.2",
+    "webpack-cli": "^4.0.0",
     "@textlint-ja/textlint-rule-no-insert-dropping-sa": "^1.0.1",
     "textlint": "^11.7.6",
     "textlint-rule-abbr-within-parentheses": "^1.0.2",
