@@ -103,7 +103,7 @@ const PluginTurtle = {
               // 線を引く
               me.line(tt, tt.x, tt.y, m[1], m[2])
               // カメの角度を変更
-              const mvRad = Math.atan2(m[1] - tt.x, m[2] - tt.y)
+              const mvRad = Math.atan2(m[2] - tt.y, m[1] - tt.x)
               tt.dir = mvRad * 57.29577951308232
               tt.f_update = true
               // 実際に位置を移動
