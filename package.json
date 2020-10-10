@@ -108,6 +108,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-standard": "^4.0.1",
+    "file-loader": "^6.1.1",
     "hotkeys-js": "^3.7.2",
     "mocha": "^8.0.1",
     "mocha-css": "^1.0.1",
@@ -143,7 +144,8 @@
     "textlint-rule-preset-ja-spacing": "^2.0.2",
     "textlint-rule-preset-ja-technical-writing": "^4.0.1",
     "textlint-rule-preset-jtf-style": "^2.3.5",
-    "textlint-rule-spellcheck-tech-word": "^5.0.0"
+    "textlint-rule-spellcheck-tech-word": "^5.0.0",
+    "url-loader": "^4.1.1"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
