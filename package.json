@@ -108,7 +108,6 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-standard": "^4.0.1",
-    "file-loader": "^6.1.1",
     "hotkeys-js": "^3.7.2",
     "mocha": "^8.0.1",
     "mocha-css": "^1.0.1",
