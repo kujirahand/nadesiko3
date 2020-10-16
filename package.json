@@ -124,7 +124,7 @@
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^4.0.0",
     "uuid": "^8.0.0",
-    "webpack": "^4.31.0",
+    "webpack": "^5.1.0",
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^4.0.0",
     "@textlint-ja/textlint-rule-no-insert-dropping-sa": "^1.0.1",
