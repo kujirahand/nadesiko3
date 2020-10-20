@@ -80,6 +80,10 @@ sudo apt install xdotool
 npm test
 ```
 
+## GUI(Electron)を使う
+
+Electronを使うと手軽にGUIを構築できます。Electronについては、[doc/SETUP.md](doc/SETUP.md)を参考にしてください。
+
 ## なでしこ3の開発に参加する
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。

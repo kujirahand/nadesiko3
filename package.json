@@ -99,8 +99,6 @@
     "babel-loader": "^8.0.0",
     "core-js": "^3.6.4",
     "css-loader": "^5.0.0",
-    "electron": "^10.1.0",
-    "electron-packager": "^15.0.0",
     "es6-promise": "^4.2.6",
     "eslint": "^7.2.0",
     "eslint-config-standard": "^14.1.1",

@@ -159,6 +159,13 @@ $ npm update --no-optional
 
 ### Electron
 
+モジュールをインストールする
+
+```
+$ npm install electron
+$ npm install electron-packager
+```
+
 以下のコマンドを実行することで、Electronによるなでしこが起動。
 
 ```
@@ -170,6 +177,8 @@ $ npm run electron
 ```
 $ npm run build:electron
 ```
+
+
 
 ## Gitからリポジトリを取得して利用する場合
 
