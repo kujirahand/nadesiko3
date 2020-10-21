@@ -114,7 +114,7 @@
     "npm-check-updates": "^9.0.1",
     "prop-types": "^15.7.2",
     "pump": "^3.0.0",
-    "react": "^16.8.6",
+    "react": "^17.0.0",
     "react-dom": "^16.8.6",
     "regenerator-runtime": "^0.13.3",
     "source-map": "^0.7.3",
