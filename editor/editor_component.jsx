@@ -38,8 +38,8 @@ export default class EditorComponent extends React.Component {
                                  this.setState({err: null, usedFuncs: []})
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
-        <EditorFunctionInformationComponent usedFuncs={this.state.usedFuncs}/>
         <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} canvasId={canvasId} />
+        <EditorFunctionInformationComponent usedFuncs={this.state.usedFuncs}/>
         <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
           this.setState({code: this.state.code.substr(0, this.form.pos()) + e.target.getAttribute('data-paste') + this.state.code.substr(this.form.pos())})
@@ -48,6 +48,7 @@ export default class EditorComponent extends React.Component {
       </div>
     )
   }
+  
 }
 
 EditorComponent.propTypes = {
@@ -55,3 +56,4 @@ EditorComponent.propTypes = {
   code: PropTypes.string,
   nako3: PropTypes.object.isRequired
 }
+

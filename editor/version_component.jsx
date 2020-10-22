@@ -1,11 +1,11 @@
 import React from 'react'
-import packageInfo from '../package.json'
+import nakoVersion from '../src/nako_version.js'
 
 export default function VersionComponent () {
   return (
     <div>
       日本語プログラミング言語「なでしこ3」<br/>
-      Ver. {packageInfo.version}
+      Ver. {nakoVersion.version}
     </div>
   )
 }
