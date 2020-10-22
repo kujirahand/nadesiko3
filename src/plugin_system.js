@@ -462,7 +462,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['と'], ['の']],
     fn: function (a, b) {
-      return Math.sqrt(a * b)
+      return Math.hypot(a, b)
     }
   },
   'LN': { // @実数式 A の自然対数（Ln(A) = 1）を返す // @
