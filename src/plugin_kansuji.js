@@ -1,4 +1,4 @@
-const PluginMath = {
+const PluginKansuji = {
 
   '初期化': {
     type: 'func',
@@ -7,7 +7,7 @@ const PluginMath = {
     }
   },
   
-  // @算術関数
+  // @漢数字
   '漢数字': { // @引数を数字と解釈して漢数字の文字列を返す // @かんすうじ
     type: 'func',
     josi: [['を','の']],
@@ -202,4 +202,4 @@ const 基本算用数字 = "0123456789".split("")
 const 基本漢数字 = "〇一二三四五六七八九".split("")
 
 
-module.exports = PluginMath
+module.exports = PluginKansuji

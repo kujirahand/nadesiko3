@@ -1,11 +1,11 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
 const NakoRuntimeError = require('../src/nako_runtime_error')
-const PluginMath = require('../src/plugin_math')
+const PluginKansuji = require('../src/plugin_kansuji.js')
 
-describe('plugin_math_test', () => {
+describe('plugin_kansuji_test', () => {
   const nako = new NakoCompiler()
-  nako.addPluginFile('PluginMath', 'plugin_math.js', PluginMath)
+  nako.addPluginFile('PluginKansuji', 'plugin_kansuji.js', PluginKansuji)
   // nako.debug = true;
   const cmp = (code, res) => {
     if (nako.debug)
