@@ -7,6 +7,7 @@ const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
 const PluginSystem = require('./plugin_system')
+const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const commandList = require('./command_list.json')
 
@@ -38,6 +39,7 @@ class NakoCompiler {
     // set this
     this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
+    this.addPluginObject('PluginMath', PluginMath)
     this.addPluginObject('PluginAssert', PluginTest)
   }
 
