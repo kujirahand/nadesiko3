@@ -159,7 +159,7 @@ $ npm update --no-optional
 
 ### Electron
 
-モジュールをインストールする
+モジュールをインストールする。
 
 ```
 $ npm install electron
