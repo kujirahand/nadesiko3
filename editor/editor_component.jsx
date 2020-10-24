@@ -20,7 +20,7 @@ export default class EditorComponent extends React.Component {
 
   render () {
     const canvasId = 'nako3_canvas_1'
-    const preCodeList = ['# 自動的に実行されるコード (編集不可)', `カメ描画先は『#${canvasId}』。`, `『#${canvasId}』へ描画開始。`]
+    const preCodeList = ['# 自動実行されるコード (編集不可)', `カメ描画先は『#${canvasId}』。`, `『#${canvasId}』へ描画開始。`]
     const preCode = preCodeList.join('\n')
     return (
       <div>
