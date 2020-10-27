@@ -168,7 +168,7 @@ const PluginMath = {
     type: 'func',
     josi: [['の']],
     fn: function (a) {
-      return Math.floor(a)
+      return Math.trunc(a)
     }
   },
   '乱数': { // @0から(A-1)までの乱数を返す // @らんすう
