@@ -157,7 +157,7 @@ const PluginMath = {
       return a % 1
     }
   },
-  '少数部分': { // @実数Aの少数部分を返す // @しょうすうぶぶん
+  '小数部分': { // @実数Aの小数部分を返す // @しょうすうぶぶん
     type: 'func',
     josi: [['の']],
     fn: function (a) {
@@ -192,7 +192,7 @@ const PluginMath = {
       return Math.sqrt(a)
     }
   },
-  
+
   // @数値切上切捨丸め
   'ROUND': { // @実数型の値Vを丸めてもっとも近い整数値を返す // @
     type: 'func',
@@ -208,7 +208,7 @@ const PluginMath = {
       return Math.round(v)
     }
   },
-  '小数点切上': { // @整数Aを少数点第B桁で切り上げして返す // @しょうすうてんきりあげ
+  '小数点切上': { // @整数Aを小数点第B桁で切り上げして返す // @しょうすうてんきりあげ
     type: 'func',
     josi: [['を'],['で']],
     fn: function (a,b) {
@@ -216,7 +216,7 @@ const PluginMath = {
       return Math.ceil(a * base) / base
     }
   },
-  '小数点切下': { // @整数Aを少数点第B桁で切り下げして返す // @しょうすうてんきりさげ
+  '小数点切下': { // @整数Aを小数点第B桁で切り下げして返す // @しょうすうてんきりさげ
     type: 'func',
     josi: [['を'],['で']],
     fn: function (a,b) {
@@ -224,7 +224,7 @@ const PluginMath = {
       return Math.floor(a * base) / base
     }
   },
-  '小数点四捨五入': { // @実数Aを少数点第B桁で四捨五入して返す // @しょうすうてんししゃごにゅう
+  '小数点四捨五入': { // @実数Aを小数点第B桁で四捨五入して返す // @しょうすうてんししゃごにゅう
     type: 'func',
     josi: [['を'], ['で']],
     fn: function (a, b) {
