@@ -20,12 +20,6 @@ npm test
 npm run build
 ```
 
-次に、命令一覧を生成する。
-
-```
-npm run build:command
-```
-
 対応ブラウザを更新する。
 
 ```
