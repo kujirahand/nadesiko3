@@ -9,7 +9,7 @@
     "nako3edit": "tools/nako3edit/run.js"
   },
   "scripts": {
-    "test": "TZ=Asia/Tokyo mocha",
+    "test": "cross-env TZ=Asia/Tokyo mocha",
     "start": "node src/nako3server.js",
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
@@ -97,6 +97,7 @@
     "@textlint-ja/textlint-rule-no-insert-dropping-sa": "^1.0.1",
     "babel-loader": "^8.0.0",
     "core-js": "^3.6.4",
+    "cross-env": "^7.0.2",
     "css-loader": "^5.0.0",
     "es6-promise": "^4.2.6",
     "eslint": "^7.2.0",
