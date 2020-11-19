@@ -549,8 +549,8 @@ const PluginBrowser = {
       const ts = []
       for (let i = 0; i < touches.length; i++) {
         const t = touches[i]
-        const tx = t.pageX - box.left
-        const ty = t.pageY - box.top
+        const tx = t.clientX - box.left
+        const ty = t.clientY - box.top
         if (i == 0) {
           sys.__v0['タッチX'] = tx
           sys.__v0['タッチY'] = ty
