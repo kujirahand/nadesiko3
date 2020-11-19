@@ -198,9 +198,6 @@ const PluginBrowser = {
 
       let options = {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
         body: fd
       }
       fetch(url, options).then(res => {
@@ -261,8 +258,8 @@ const PluginBrowser = {
   },
   'POST送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTそうしん
     type: 'func',
-    josi: [['の'], ['まで', 'へ', 'に'], ['を']],
-    fn: function (callback, url, params, sys) {
+    josi: [['まで', 'へ', 'に'], ['を']],
+    fn: function (url, params, sys) {
       if (!sys.resolve) {throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
@@ -289,7 +286,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     fn: function (url, params, sys) {
-      if (!sys.resolve) {throw new Error('『POSフォームT送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) {throw new Error('『POSTフォーム送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
       const fd = new FormData()
@@ -298,9 +295,6 @@ const PluginBrowser = {
 
       let options = {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
         body: fd
       }
       fetch(url, options).then(res => {
