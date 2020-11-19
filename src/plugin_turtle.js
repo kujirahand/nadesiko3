@@ -12,6 +12,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     fn: function (sys) {
+      /* istanbul ignore if */
       if (sys._turtle) {return}
       sys._turtle = {
         list: [],
@@ -38,11 +39,13 @@ const PluginTurtle = {
         },
         drawTurtle: function (id) {
           const tt = this.list[id]
+          if (!tt) {return}
           const cr = this.canvas_r
           // カメの位置を移動
           tt.canvas.style.left = (cr.left + tt.x - tt.cx) + 'px'
           tt.canvas.style.top = (cr.top + tt.y - tt.cx) + 'px'
           if (!tt.f_update) {return}
+          /* istanbul ignore if */
           if (!tt.flagLoaded) {return}
           tt.f_update = false
           tt.ctx.clearRect(0, 0,
@@ -71,13 +74,14 @@ const PluginTurtle = {
         setTimer: function () {
           if (this.flagSetTimer) {return}
           this.flagSetTimer = true
+          console.log('[TURTLE] standby ...')
           setTimeout(() => {
-            const tt = this.getCur()
-            console.log('[TURTLE] Let\'s go! job=', tt.mlist.length)
+            console.log('[TURTLE] Let\'s go!')
             sys._turtle.play()
           }, 1)
         },
         line: function (tt, x1, y1, x2, y2) {
+          /* istanbul ignore else */
           if (tt) 
             {if (!tt.flagDown) {return}}
           
@@ -92,7 +96,7 @@ const PluginTurtle = {
         doMacro: function (tt, wait) {
           const me = this
           if (!tt.flagLoaded && wait > 0) {
-            console.log('[TURTLE] waiting ...')
+            //console.log('[TURTLE] waiting ...')
             return true
           }
           const m = tt.mlist.shift()
@@ -187,7 +191,42 @@ const PluginTurtle = {
           console.log('[TURTLE] finished.')
           me.flagSetTimer = false
         },
+        setupCanvas: function (sys) {
+          // 描画先をセットする
+          let canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
+          if (typeof canvasId === 'string') {
+            canvasId = document.getElementById(canvasId) || document.querySelector(canvasId)
+            sys.__v0['カメ描画先'] = canvasId
+          }
+          console.log('カメ描画先=', canvasId)
+          const cv = sys._turtle.canvas = canvasId
+          if (!cv) {
+            console.log('[ERROR] カメ描画先が見当たりません。' + canvasId)
+            throw Error('カメ描画先が見当たりません。')
+          }
+          const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d')
+          ctx.lineWidth = 4
+          ctx.strokeStyle = 'black'
+          ctx.lineCap = 'round'
+          sys._turtle.resizeCanvas(sys)
+        },
+        resizeCanvas: function (sys) {
+          const cv = sys._turtle.canvas
+          const rect = cv.getBoundingClientRect()
+          const rx = rect.left + window.pageXOffset
+          const ry = rect.top + window.pageYOffset
+          sys._turtle.canvas_r = {
+            'left': rx,
+            'top': ry,
+            width: rect.width,
+            height: rect.height
+          }
+        },
         createTurtle: function (imageUrl, sys) {
+          if (!sys._turtle.canvas) {
+            sys._turtle.setupCanvas(sys)
+          }
+          const cv = sys._turtle.canvas
           // カメの情報を sys._turtle リストに追加
           const id = sys._turtle.list.length
           const tt = {
@@ -215,13 +254,13 @@ const PluginTurtle = {
           tt.canvas = document.createElement('canvas')
           tt.ctx = tt.canvas.getContext('2d')
           tt.canvas.id = id
-          tt.img.src = imageUrl
           tt.img.onload = () => {
             tt.cx = tt.img.width / 2
             tt.cy = tt.img.height / 2
             tt.canvas.width = tt.img.width
             tt.canvas.height = tt.img.height
             tt.flagLoaded = true
+            tt.f_update = true
             sys._turtle.drawTurtle(tt.id)
             console.log('turtle.onload')
           }
@@ -229,38 +268,15 @@ const PluginTurtle = {
             console.log('カメの読み込みに失敗')
             tt.flagLoaded = true
             tt.f_visible = false
+            tt.f_update = true
             sys._turtle.drawTurtle(tt.id)
           }
+          tt.img.src = imageUrl
           tt.canvas.style.position = 'absolute'
           document.body.appendChild(tt.canvas)
-          // 描画先をセットする
-          let canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
-          if (typeof canvasId === 'string') {
-            canvasId = document.getElementById(canvasId) || document.querySelector(canvasId)
-            sys.__v0['カメ描画先'] = canvasId
-          }
-          console.log('カメ描画先=', canvasId)
-          const cv = sys._turtle.canvas = canvasId
-          if (!cv) {
-            console.log('[ERROR] カメ描画先が見当たりません。' + canvasId)
-            return
-          }
-          const ctx = sys._turtle.ctx = sys._turtle.canvas.getContext('2d')
-          ctx.lineWidth = 4
-          ctx.strokeStyle = 'black'
-          ctx.lineCap = 'round'
-          const rect = cv.getBoundingClientRect()
-          const rx = rect.left + window.pageXOffset
-          const ry = rect.top + window.pageYOffset
-          sys._turtle.canvas_r = {
-            'left': rx,
-            'top': ry,
-            width: rect.width,
-            height: rect.height
-          }
           // デフォルト位置の設定
-          tt.x = rect.width / 2
-          tt.y = rect.height / 2
+          tt.x = sys._turtle.canvas_r.width / 2
+          tt.y = sys._turtle.canvas_r.height / 2
           return id
         }
       }
@@ -465,6 +481,7 @@ const PluginTurtle = {
 module.exports = PluginTurtle
 
 // scriptタグで取り込んだ時、自動で登録する
-if (typeof (navigator) === 'object') 
+/* istanbul ignore else */
+if (typeof (navigator) === 'object' && typeof (navigator.nako3)) 
   {navigator.nako3.addPluginObject('PluginTurtle', PluginTurtle)}
 
