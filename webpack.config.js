@@ -60,28 +60,22 @@ module.exports = {
         test: /\.jsx$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        include: [editorPath, srcPath],
-        query: {
-          presets: ['@babel/preset-env', '@babel/preset-react']
-        }
+        include: [editorPath, srcPath]
       },
       // .js file
       {
-        loader: 'babel-loader',
         test: /\.js$/,
+        loader: 'babel-loader',
         exclude: /node_modules/,
-        include: [srcPath],
-        query: {
-          presets: ['@babel/preset-env']
-        }
+        include: [srcPath]
       },
       {
-        loaders: ['style-loader', 'css-loader'],
-        test: /\.css$/
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       },
       {
-        loaders: 'url-loader',
-        test: /\.(jpg|png)$/
+        test: /\.(jpg|png)$/,
+        loader: 'url-loader'
       }
     ]
   },
