@@ -46,19 +46,6 @@
   "bugs": {
     "url": "https://github.com/kujirahand/nadesiko3/issues"
   },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "useBuiltIns": "usage",
-          "corejs": 3,
-          "debug": true
-        }
-      ],
-      "@babel/preset-react"
-    ]
-  },
   "browserslist": [
     "> 0.5%",
     "> 0.5% in JP",
