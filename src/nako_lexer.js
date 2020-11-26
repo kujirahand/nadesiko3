@@ -21,36 +21,19 @@ class NakoLexer {
     this.result = []
   }
 
-  // プラグインの取り込みを行う
-  static checkRequire (tokens) {
-    let i = 0
-    while ((i + 2) < tokens.length) {
-      const tNot = tokens[i]
-      const tFile = tokens[i + 1]
-      const tTorikomu = tokens[i + 2]
-      if (tNot.type === 'not' && tTorikomu.value === '取込') {
-        tNot.type = 'require'
-        if (tFile.type === 'string' || tFile.type === 'string_ex')
-          {tFile.type = 'string'}
-         else
-          {throw new Error('[字句解析エラー] 『!「ファイル」を取り込む』の書式で記述してください。')}
-
-        i += 3
-        continue
-      }
-      i++
-    }
-  }
-
   setFuncList (listObj) {
     this.funclist = listObj
   }
 
-  setInput (code, isFirst, line) {
+  setInput (code, line) {
     // 最初に全部を区切ってしまう
     this.tokenize(code, line)
+    return this.result
+  }
+
+  setInput2 (tokens, isFirst) {
+    this.result = tokens
     // 関数の定義があれば funclist を更新
-    NakoLexer.checkRequire(this.result)
     this.preDefineFunc(this.result)
     this.replaceWord(this.result)
 

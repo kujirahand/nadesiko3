@@ -36,6 +36,10 @@ class NakoCompiler {
     this.prepare = prepare
     this.lexer = lexer
     this.parser = parser
+    //
+    this.beforeParseCallback = (opts) => {
+      return
+    }
     // set this
     this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
@@ -54,15 +58,37 @@ class NakoCompiler {
   }
 
   /**
-   * コードを単語に分割する
+   * コードを単語に分割し属性の補正を行う
    * @param code なでしこのプログラム
    * @param isFirst 最初の呼び出しかどうか
    * @param line なでしこのプログラムの行番号
    * @returns コード (なでしこ)
    */
   tokenize (code, isFirst, line = 0) {
+    const tokens = this.rawtokenize(code, line)
+    return this.converttoken(tokens, isFirst)
+  }
+
+  /**
+   * コードを単語に分割する
+   * @param code なでしこのプログラム
+   * @param line なでしこのプログラムの行番号
+   * @returns トークンのリスト
+   */
+  rawtokenize (code, line) {
     const code2 = this.prepare.convert(code)
-    return this.lexer.setInput(code2, isFirst, line)
+    const tokens = this.lexer.setInput(code2, line)
+    return tokens
+  }
+
+  /**
+   * 単語の属性を構文解析に先立ち補正する
+   * @param tokes トークンのリスト
+   * @param isFirst 最初の呼び出しかどうか
+   * @returns コード (なでしこ)
+   */
+  converttoken (tokens, isFirst) {
+    return this.lexer.setInput2(tokens, isFirst)
   }
 
   /**
@@ -115,7 +141,52 @@ class NakoCompiler {
     parser.setFuncList(this.funclist)
     parser.debug = this.debug
     // 単語に分割
-    const tokens = this.tokenize(code, true)
+    const rawtokens = this.rawtokenize(code, 0)
+    if (this.beforeParseCallback) {
+      const rslt = this.beforeParseCallback({ nako3: this, tokens: rawtokens })
+      if (rslt instanceof Promise) {
+        throw new Error('利用している機能の中に、非同期処理が必要なものが含まれています')
+      }
+    }
+    const tokens = this.converttoken(rawtokens, true)
+
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i]['type'] === 'code') {
+        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
+        i--
+      }
+    }
+
+    if (this.debug && this.debugLexer) {
+      console.log('--- lex ---')
+      console.log(JSON.stringify(tokens, null, 2))
+    }
+    // 構文木を作成
+    const ast = parser.parse(tokens)
+    this.usedFuncs = this.getUsedFuncs(ast)
+    if (this.debug && this.debugParser) {
+      console.log('--- ast ---')
+      console.log(JSON.stringify(ast, null, 2))
+    }
+    return ast
+  }
+
+  async parseAsync (code) {
+    // 関数を字句解析と構文解析に登録
+    lexer.setFuncList(this.funclist)
+    parser.setFuncList(this.funclist)
+    parser.debug = this.debug
+    // 単語に分割
+
+    const rawtokens = this.rawtokenize(code, 0)
+    if (this.beforeParseCallback) {
+      const rslt = this.beforeParseCallback({ nako3: this, tokens: rawtokens })
+      if (rslt instanceof Promise) {
+        await rslt
+      }
+    }
+    const tokens = this.converttoken(rawtokens, true)
+
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i]['type'] === 'code') {
         tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
@@ -192,10 +263,39 @@ class NakoCompiler {
     return this.generate(ast, isTest)
   }
 
+  async compileAsync (code, isTest) {
+    const ast = await this.parseAsync(code)
+    return this.generate(ast, isTest)
+  }
+
   _run(code, isReset, isTest) {
     this.reset()
     if (isReset) {this.clearLog()}
     let js = this.compile(code, isTest)
+    let __varslist = this.__varslist
+    let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
+    let __self = this.__self // eslint-disable-line
+    let __module = this.__module // eslint-disable-line
+    try {
+      __varslist[0].line = -1 // コンパイルエラーを調べるため
+      eval(js) // eslint-disable-line
+    } catch (e) {
+      this.js = js
+      if (e instanceof NakoRuntimeError) {
+        throw e
+      } else {
+        throw new NakoRuntimeError(
+          e.name + ':' +
+          e.message, this)
+      }
+    }
+    return this
+  }
+
+  async _runAsync(code, isReset, isTest) {
+    this.reset()
+    if (isReset) {this.clearLog()}
+    let js = await this.compileAsync(code, isTest)
     let __varslist = this.__varslist
     let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
     let __self = this.__self // eslint-disable-line
@@ -229,6 +329,21 @@ class NakoCompiler {
   runReset (code, fname) {
     this.parser.filename = fname
     return this._run(code, true, false)
+  }
+
+  async testAsync(code, fname) {
+    this.parser.filename = fname
+    return await this._runAsync(code, false, true)
+  }
+
+  async runAsync(code, fname) {
+    this.parser.filename = fname
+    return await this._runAsync(code, false, false)
+  }
+
+  async runResetAsync (code, fname) {
+    this.parser.filename = fname
+    return await this._runAsync(code, true, false)
   }
 
   clearLog () {

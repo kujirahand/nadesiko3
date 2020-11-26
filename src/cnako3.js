@@ -7,6 +7,7 @@ const exec = require('child_process').exec
 
 const path = require('path')
 const NakoCompiler = require(path.join(__dirname, 'nako3'))
+const NakoRequiePlugin = require(path.join(__dirname, 'nako_require_plugin_helper'))
 const PluginNode = require(path.join(__dirname, 'plugin_node'))
 
 class CNako3 extends NakoCompiler {
@@ -15,6 +16,8 @@ class CNako3 extends NakoCompiler {
     this.silent = false
     this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
+    this.beforeParseCallback = this.beforeParse
+    this.requirePlugin = new NakoRequiePlugin(this)
   }
 
   // CNAKO3で使えるコマンドを登録する
@@ -136,13 +139,6 @@ class CNako3 extends NakoCompiler {
     }
   }
 
-  /** コンパイル(override) */
-  compile(src, isTest) {
-    const code = this.includePlugin(src)
-    const ast = this.parse(code)
-    return this.generate(ast, isTest)
-  }
-
   /**
    * コンパイルモードの場合
    * @param opt
@@ -205,6 +201,37 @@ class CNako3 extends NakoCompiler {
   // 対応機器/Webブラウザを表示する
   cnakoBrowsers () {
     console.log(fs.readFileSync(path.join(__dirname, 'browsers.md'), 'utf-8'))
+  }
+
+  // トークンリストからプラグインのインポートを抜き出して処理する
+  beforeParse (opts) {
+    const tokens = opts.tokens
+    const filelist = this.requirePlugin.checkAndPickupRequirePlugin(tokens)
+    if (filelist.length > 0) {
+      const nako3 = opts.nako3
+      const funclist = nako3.funclist
+      for (let i = 0;i < filelist.length; i++) {
+        const pname = filelist[i]
+        let fullpath = pname
+        try {
+          let plugmod = {}
+          // プラグインフォルダを検索
+          fullpath = this.findPluginFile(fullpath)
+          // モジュールを実際に取り込む
+          plugmod = require(fullpath)
+          this.addPluginFile(pname, fullpath, plugmod)
+          // this.funclistを更新する
+          for (const key in plugmod)
+            {funclist[key] = plugmod[key]}
+
+        } catch (e) {
+          // console.log(e)
+          throw new Error(
+            '[取込エラー] プラグイン『' + pname + '』を取り込めません。' +
+            '(path=' + fullpath + ') ' + e.message)
+        }
+      }
+    }
   }
 
   /**
@@ -288,48 +315,6 @@ class CNako3 extends NakoCompiler {
     }
     // Nodeのパス検索に任せる
     return pname
-  }
-  
-  /**
-   * プラグインの取込チェック
-   * @param src
-   * @return string プリプロセスを除去したソースコード
-   */
-  includePlugin (src) {
-    let result = ''
-    const srcLF = src.replace(/(\r\n|\r)/g, '\n')
-    const lines = srcLF.split('\n')
-    for (let line of lines) {
-      let s = line.replace(/^\s+/, '') // trim
-      const ch = s.substr(0, 1)
-      if (ch !== '!' && ch !== '！') {
-        result += line + '\n'
-        continue
-      }
-      const m = s.match(/[\"'『「](.+)["'』」]を(取り込|取込)/)
-      if (!m) {continue}
-      // プラグインの取り込み
-      const pname = m[1]
-      let fullpath = pname
-      try {
-        let plugmod = {}
-        // プラグインフォルダを検索
-        fullpath = this.findPluginFile(fullpath)
-        // モジュールを実際に取り込む
-        plugmod = require(fullpath)
-        this.addPluginFile(pname, fullpath, plugmod)
-        // this.funclistを更新する
-        for (const key in plugmod)
-          {this.funclist[key] = plugmod[key]}
-
-      } catch (e) {
-        // console.log(e)
-        throw new Error(
-          '[取込エラー] プラグイン『' + pname + '』を取り込めません。' +
-          '(path=' + fullpath + ') ' + e.message)
-      }
-    }
-    return result
   }
 }
 
