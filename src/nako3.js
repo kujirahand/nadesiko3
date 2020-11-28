@@ -9,7 +9,6 @@ const NakoRuntimeError = require('./nako_runtime_error')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
-const commandList = require('./command_list.json')
 
 const prepare = new Prepare()
 const parser = new Parser()
@@ -32,6 +31,7 @@ class NakoCompiler {
     this.funclist = {} // プラグインで定義された関数
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
+    this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
     // 必要なオブジェクトを覚えておく
     this.prepare = prepare
     this.lexer = lexer
@@ -244,7 +244,7 @@ class NakoCompiler {
 
   deleteUnNakoFuncs () {
     for (const func of this.usedFuncs) {
-      if (!commandList.includes(func)) {
+      if (!this.commandlist.has(func)) {
         this.usedFuncs.delete(func)
       }
     }
@@ -395,6 +395,9 @@ class NakoCompiler {
         }
       } else {
         throw new Error('プラグインの追加でエラー。', null)
+      }
+      if (key !== '初期化') {
+        this.commandlist.add(key)
       }
     }
   }
