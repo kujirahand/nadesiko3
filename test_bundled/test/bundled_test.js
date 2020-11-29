@@ -41,17 +41,26 @@ describe('bundled test', () => {
         })
         run.dispatchEvent(evt)
 
-        const rsltHead = Array.from(el.querySelectorAll('.edit_head')).find(e => e.textContent === '実行結果:')
-        if (rsltHead) {
-          rslt = rsltHead.parentNode.querySelector('.info')
-          if (rslt) {
-            assert.ok(/こんにちは！\s*<br>\s*9/.test(rslt.innerHTML), 'no cntain "こんにちは！" and "9" in result area')
-          } else {
-            assert.fail('no element result area')
-          }
-        } else {
-          assert.fail('no element result header')
-        }
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            try {
+              const rsltHead = Array.from(el.querySelectorAll('.edit_head')).find(e => e.textContent === '実行結果:')
+              if (rsltHead) {
+                rslt = rsltHead.parentNode.querySelector('.info')
+                if (rslt) {
+                  assert.ok(/こんにちは！\s*<br>\s*9/.test(rslt.innerHTML), 'no cntain "こんにちは！" and "9" in result area')
+                  resolve()
+                } else {
+                  assert.fail('no element result area')
+                }
+              } else {
+                assert.fail('no element result header')
+              }
+            } catch (err) {
+              reject(err)
+            }
+          }, 500)
+        })
       } else {
         assert.fail('no element 実行 button-component class')
       }
