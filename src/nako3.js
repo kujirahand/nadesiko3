@@ -6,6 +6,7 @@ const Lexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
+const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
@@ -76,6 +77,7 @@ class NakoCompiler {
    * @returns トークンのリスト
    */
   rawtokenize (code, line) {
+    code = NakoIndent.convert(code)
     const code2 = this.prepare.convert(code)
     const tokens = this.lexer.setInput(code2, line)
     return tokens
