@@ -274,13 +274,10 @@ class NakoCompiler {
     this.reset()
     if (isReset) {this.clearLog()}
     let js = this.compile(code, isTest)
-    let __varslist = this.__varslist
-    let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
-    let __self = this.__self // eslint-disable-line
-    let __module = this.__module // eslint-disable-line
     try {
-      __varslist[0].line = -1 // コンパイルエラーを調べるため
-      eval(js) // eslint-disable-line
+      this.__varslist[0].line = -1 // コンパイルエラーを調べるため
+      const func = new Function(js) // eslint-disable-line
+      func.apply(this)
     } catch (e) {
       this.js = js
       if (e instanceof NakoRuntimeError) {
@@ -298,13 +295,10 @@ class NakoCompiler {
     this.reset()
     if (isReset) {this.clearLog()}
     let js = await this.compileAsync(code, isTest)
-    let __varslist = this.__varslist
-    let __vars = this.__vars = this.__varslist[2] // eslint-disable-line
-    let __self = this.__self // eslint-disable-line
-    let __module = this.__module // eslint-disable-line
     try {
-      __varslist[0].line = -1 // コンパイルエラーを調べるため
-      eval(js) // eslint-disable-line
+      this.__varslist[0].line = -1 // コンパイルエラーを調べるため
+      const func = new Function(js) // eslint-disable-line
+      func.apply(this)
     } catch (e) {
       this.js = js
       if (e instanceof NakoRuntimeError) {
