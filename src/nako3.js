@@ -77,8 +77,11 @@ class NakoCompiler {
    * @returns トークンのリスト
    */
   rawtokenize (code, line) {
+    // 『##インデント構文』のチェック(#596)
     code = NakoIndent.convert(code)
+    // 全角半角の統一処理
     const code2 = this.prepare.convert(code)
+    // トークン分割
     const tokens = this.lexer.setInput(code2, line)
     return tokens
   }

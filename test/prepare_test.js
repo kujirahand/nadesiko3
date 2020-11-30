@@ -67,4 +67,15 @@ describe('prepare', () => {
     const b = p.convert('123、456。') // 読点は変換しない方針に (#276)
     assert.equal(b, '123、456;')
   })
+  it('リンゴの値段→__リンゴ_的_値段__', () => {
+    // 「AのB=C」のような場合置換する (#631)
+    const a = p.convert('リンゴの値段は300')
+    assert.equal(a, '__リンゴ_的_値段__は300')
+    // 文字列の中は置換しない
+    const b = p.convert('S=「リンゴの値段」')
+    assert.equal(b, 'S=「リンゴの値段」')
+    // 「定数のN=30」のような場合は置換しない
+    const c = p.convert('定数のN=30')
+    assert.equal(c, '定数のN=30')
+  })
 })

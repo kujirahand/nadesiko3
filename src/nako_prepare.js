@@ -78,29 +78,50 @@ class NakoPrepare {
     let flagStr2 = false
     let endOfStr
     let res = ''
+    let str = ''
+    const replaceList = []
+    
     // 改行コードを統一
     src = src.replace(/(\r\n|\r)/g, '\n')
+
+    // 「リンゴの値段」→「__リンゴ_的_値段__」(#631)
+    src.replace(/([\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+?)の([\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+?)(は|\s*\=)/g, (str, p1, p2) => {
+      // 定数宣言は除く
+      if (p1 == '定数' || p1 == '変数') return
+      const key1 = p1 + 'の' + p2
+      const key2 = '__' + p1 + '_的_' + p2 + '__'
+      src = src.split(key1).join(key2) // replace all
+      replaceList.push([key1, key2])
+    })
+
+    
+    // 一文字ずつ全角を半角に置換する
     let i = 0
     while (i < src.length) {
       const c = src.charAt(i)
       // 一般的な文字列のとき
       if (flagStr) {
-        res += c
+        if (c === endOfStr) {
+          flagStr = false
+          replaceList.forEach((key) => { str = str.split(key[1]).join(key[0]) })
+          res += str + endOfStr
+          i++
+          continue
+        }
+        str += c
         i++
-        if (c === endOfStr) 
-          {flagStr = false}
-        
         continue
       }
       // 多重波括弧の文字列
       if (flagStr2) {
         if (src.substr(i, endOfStr.length) === endOfStr) {
           flagStr2 = false
-          res += endOfStr
+          replaceList.forEach((key) => { str = str.split(key[1]).join(key[0]) })
+          res += str + endOfStr
           i += endOfStr.length
           continue
         }
-        res += c
+        str += c
         i++
         continue
       }
@@ -110,6 +131,7 @@ class NakoPrepare {
         i++
         flagStr = true
         endOfStr = '」'
+        str = ''
         continue
       }
       if (c === '『') {
@@ -117,6 +139,7 @@ class NakoPrepare {
         i++
         flagStr = true
         endOfStr = '』'
+        str = ''
         continue
       }
       if (c === '“') {
@@ -124,6 +147,7 @@ class NakoPrepare {
         i++
         flagStr = true
         endOfStr = '”'
+        str = ''
         continue
       }
       const c1 = this.convert1ch(c)
@@ -132,6 +156,7 @@ class NakoPrepare {
         i++
         flagStr = true
         endOfStr = c
+        str = ''
         continue
       }
       if (c1 === 'S' || c1 === 'R') {
@@ -140,16 +165,19 @@ class NakoPrepare {
         if (src.substr(i, 5) === '{{{{{') {
           flagStr2 = true
           endOfStr = '}}}}}'
+          str = ''
           continue
         }
         if (src.substr(i, 4) === '{{{{') {
           flagStr2 = true
           endOfStr = '}}}}'
+          str = ''
           continue
         }
         if (src.substr(i, 3) === '{{{') {
           flagStr2 = true
           endOfStr = '}}}'
+          str = ''
           continue
         }
         continue
