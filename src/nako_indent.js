@@ -5,8 +5,8 @@
  */
 function convert(code) {
     // プログラム冒頭に「##インデント構文」があれば変換
-    const keywords = ['##インデント構文', '＃＃インデント構文', '##ここまでだるい', '＃＃ここまでだるい']
-    const s9 = code.substr(0, 9)
+    const keywords = ['##インデント構文', '##ここまでだるい']
+    const s9 = code.substr(0, 9).replace('＃', '#')
     if (keywords.indexOf(s9) >= 0) {
         return convertGo(code)
     }
