@@ -4,15 +4,16 @@
  */
 const PluginMarkup = {
   // @マークアップ
-  'マークダウンHTML変換': { // @マークダウン形式で記述された文字列SをHTML形式に変換する // @まーくだうんえいちてぃーえむえるへんかん
+  'マークダウンHTML変換': { // @マークダウン形式で記述された文字列SをHTML形式に変換する // @まーくだうんHTMLへんかん
     type: 'func',
     josi: [['を']],
     fn: function (s) {
-      const markdown = require('markdown')
-      return markdown.parse(s)
+      const marked = require('marked')
+      const html = marked(s)
+      return html
     }
   },
-  'HTML整形': { // @HTML形式で記述された文字列Sを整形する // @えいちてぃーえむえるせいけい
+  'HTML整形': { // @HTML形式で記述された文字列Sを整形する // @HTMLせいけい
     type: 'func',
     josi: [['を']],
     fn: function (s) {
