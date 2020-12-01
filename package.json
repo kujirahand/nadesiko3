@@ -18,6 +18,7 @@
     "nako3edit:run": "node tools/nako3edit/run.js",
     "electron": "electron .",
     "build": "node src/cnako3.js batch/build_command.nako3 && webpack --mode production",
+    "build:command": "node src/cnako3.js batch/build_command.nako3",
     "build:electron": "electron-packager . --out release/enako3 --asar --all --overwrite",
     "build:win32": "node src/cnako3.js installer/make-win32.nako3",
     "build:browsers": "node src/cnako3.js batch/build_browsers.nako3",
