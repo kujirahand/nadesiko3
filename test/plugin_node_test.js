@@ -2,12 +2,14 @@ const assert = require('assert')
 const path = require('path')
 const NakoCompiler = require('../src/nako3')
 const PluginNode = require('../src/plugin_node')
+const PluginCSV = require('../src/plugin_csv')
 
 const testFileMe = path.join(__dirname, 'plugin_node_test.js')
 
 describe('plugin_node_test', () => {
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+  nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
   nako.debug = false
   const cmp = (code, res) => {
     if (nako.debug) {

@@ -17,6 +17,7 @@ REPOSパス=基本パスを「../」で相対パス展開。
     'src/plugin_express.js',
     'src/plugin_markup.js',
     'src/plugin_math.js',
+    'src/plugin_csv.js',
     'src/plugin_kansuji.js',
     'src/plugin_weykturtle3d.js'
  ]

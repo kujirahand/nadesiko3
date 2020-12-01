@@ -35,6 +35,7 @@ module.exports = {
     plugin_kansuji: [path.join(srcPath, 'plugin_kansuji.js')],
     plugin_markup: [path.join(srcPath, 'plugin_markup.js')],
     plugin_turtle: [path.join(srcPath, 'plugin_turtle.js')],
+    plugin_csv: [path.join(srcPath, 'plugin_csv.js')],
     editor: [path.join(editorPath, 'edit_main.jsx')],
     version: [path.join(editorPath, 'version_main.jsx')]
   },

@@ -1,0 +1,52 @@
+const PluginCSV = {
+  '初期化': {
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+    }
+  },
+  // @CSV操作
+  'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
+    type: 'func',
+    josi: [['を', 'の', 'で']],
+    fn: function (str) {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = ','
+      return CSV.parse(str)
+    }
+  },
+  'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
+    type: 'func',
+    josi: [['を', 'の', 'で']],
+    fn: function (str) {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = "\t"
+      return CSV.parse(str)
+    }
+  },
+  '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
+    type: 'func',
+    josi: [['を']],
+    fn: function (a) {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = ','
+      return CSV.stringify(a)
+    }
+  },
+  '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
+    type: 'func',
+    josi: [['を']],
+    fn: function (a) {
+      const CSV = require('csv-lite-js')
+      CSV.options.delimiter = '\t'
+      return CSV.stringify(a)
+    }
+  }
+}
+
+module.exports = PluginCSV
+// scriptタグで取り込んだ時、自動で登録する
+/* istanbul ignore else */
+if (typeof (navigator) === 'object' && typeof (navigator.nako3)) 
+  {navigator.nako3.addPluginObject('PluginCSV', PluginCSV)}
+
