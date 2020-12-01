@@ -1579,14 +1579,6 @@ const PluginSystem = {
       return a
     }
   },
-  '対応ブラウザ一覧取得': { // @対応しているブラウザの一覧を取得する // @たいおうぶらうざいちらんしゅとく
-    type: 'func',
-    josi: [],
-    fn: function () {
-      const browserslist = require('browserslist')
-      return browserslist()
-    }
-  },
 
   // @URLエンコードとパラメータ
   'URLエンコード': { // @URLエンコードして返す // @URLえんこーど

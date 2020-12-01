@@ -7,6 +7,14 @@ const PluginCaniuse = {
   },
   // @ブラウザサポート
   'ブラウザ名変換表': {type: 'const', value: require('caniuse-db/data.json').agents}, // @ぶらうざめいへんかんひょう
+  '対応ブラウザ一覧取得': { // @対応しているブラウザの一覧を取得する // @たいおうぶらうざいちらんしゅとく
+    type: 'func',
+    josi: [],
+    fn: function () {
+      const browserslist = require('browserslist')
+      return browserslist()
+    }
+  },
 }
 module.exports = PluginCaniuse
 // scriptタグで取り込んだ時、自動で登録する
