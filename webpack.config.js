@@ -37,6 +37,7 @@ module.exports = {
     plugin_turtle: [path.join(srcPath, 'plugin_turtle.js')],
     plugin_csv: [path.join(srcPath, 'plugin_csv.js')],
     plugin_datetime: [path.join(srcPath, 'plugin_datetime.js')],
+    plugin_caniuse: [path.join(srcPath, 'plugin_caniuse.js')],
     editor: [path.join(editorPath, 'edit_main.jsx')],
     version: [path.join(editorPath, 'version_main.jsx')]
   },
