@@ -97,7 +97,7 @@ function countIndent(line) {
         const ch = line.charAt(i)
         if (ch == ' ') {
             cnt++
-            conttinue
+            continue
         }
         if (ch == '　') {
             cnt += 2
