@@ -6,8 +6,17 @@
 function convert(code) {
     // プログラム冒頭に「##インデント構文」があれば変換
     const keywords = ['##インデント構文', '##ここまでだるい']
-    const s9 = code.substr(0, 9).replace('＃', '#')
-    if (keywords.indexOf(s9) >= 0) {
+    // 最初の30行をチェック
+    const lines = code.split('\n', 30)
+    let bConv = false
+    lines.forEach((line) => {
+        const s9 = line.substr(0, 9).replace('＃', '#')
+        if (keywords.indexOf(s9) >= 0) {
+            bConv = true
+            return true
+        }
+    })
+    if (bConv) {
         return convertGo(code)
     }
     return code
