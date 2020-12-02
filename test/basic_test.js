@@ -50,6 +50,9 @@ describe('basic', () => {
   it('string - LF', () => {
     cmp('a=30;「abc\nabc」を表示', 'abc\nabc')
   })
+  it('space 「・」', () => {
+    cmp('・a=30;・b=50「{a}-{b}」を表示', '30-50')
+  })
   it('string - 文字列{{{ ... }}}', () => {
     cmp('文字列{{{aaa}}}を表示', 'aaa')
     cmp('a=30;文字列{{{aaa{a}bbb}}}を表示', 'aaa30bbb')
