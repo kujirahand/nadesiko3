@@ -75,6 +75,7 @@ module.exports = {
     {name: '}', pattern: /^\}/, readJosi: true},
     {name: ':', pattern: /^:/},
     {name: '_eol', pattern: /^_\s*\n/},
+    {name: 'dec_lineno', pattern: /^‰/},
     // 絵文字変数 = (絵文字)英数字*
     {name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/, readJosi: true},
     {name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/, readJosi: true}, // 絵文字

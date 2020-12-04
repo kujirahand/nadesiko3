@@ -299,6 +299,11 @@ class NakoLexer {
             break
           }
         }
+        // ここまで‰(#682) を処理
+        if (rule.name == 'dec_lineno') {
+          line--
+          continue
+        }
 
         this.result.push({
           type: rule.name,

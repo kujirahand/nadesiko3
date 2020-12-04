@@ -23,7 +23,7 @@ function convert(code) {
 }
 
 function convertGo(code) {
-    const END = 'ここまで'
+    const END = 'ここまで‰'
     const lines = code.split('\n')
     const lines2 = []
     const indentStack = []
