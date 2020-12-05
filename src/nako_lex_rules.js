@@ -79,6 +79,7 @@ module.exports = {
     // 絵文字変数 = (絵文字)英数字*
     {name: 'word', pattern: /^[\uD800-\uDBFF][\uDC00-\uDFFF][_a-zA-Z0-9]*/, readJosi: true},
     {name: 'word', pattern: /^[\u1F60-\u1F6F][_a-zA-Z0-9]*/, readJosi: true}, // 絵文字
+    {name: 'word', pattern: /^《.+?》/, readJosi: true}, // 《特別名前トークン》(#672)
     // 単語句
     {
       name: 'word',
