@@ -97,8 +97,11 @@ const PluginBrowser = {
       const r = window.prompt(s)
       if (!r) {
         return sys.__v0['空']
-      } else if (/^[-+]?[0-9]+(\.[0-9]+)?$/.test(r)) {return parseFloat(r)}
-      else if (/^[-+－＋]?[0-9０-９]+([\.．][0-9０-９]+)?$/.test(r)) {
+      }
+      if (/^[-+]?[0-9]+(\.[0-9]+)?$/.test(r)) {
+        return parseFloat(r)
+      }
+      if (/^[-+－＋]?[0-9０-９]+([\.．][0-9０-９]+)?$/.test(r)) {
         return parseFloat(r.replace(/[－＋０-９．]/g, c => {
           return String.fromCharCode(c.charCodeAt(0) - 0xFEE0)
         }))
