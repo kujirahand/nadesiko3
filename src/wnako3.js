@@ -4,6 +4,7 @@ require('node-fetch')
 
 const NakoCompiler = require('./nako3')
 const NakoRequiePlugin = require('./nako_require_plugin_helper')
+const NakoRequieNako3 = require('./nako_require_nako3_helper')
 const PluginBrowser = require('./plugin_browser')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 
@@ -12,7 +13,8 @@ class WebNakoCompiler extends NakoCompiler {
     super()
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
     this.beforeParseCallback = this.beforeParse
-    this.requirePlugin = new NakoRequiePlugin(this)
+    this.requirePluginHelper = new NakoRequiePlugin(this)
+    this.requireNako3Helper = new NakoRequieNako3(this)
   }
 
   /**
@@ -77,13 +79,33 @@ class WebNakoCompiler extends NakoCompiler {
     return code
   }
 
-  // トークンリストからプラグインのインポートを抜き出して処理する
-  beforeParse (opts) {
-    const tokens = opts.tokens
-    const filelist = this.requirePlugin.checkAndPickupRequirePlugin(tokens)
+  requireNako3 (tokens, filepath, nako3) {
+    const resolveNako3 = (filename, basepath) => {
+      return filename
+    }
+    const importNako3 = filename => {
+      return new Promise((resolve, reject) => {
+        fetch(filename, { mode: 'no-cors' })
+        .then(res => {
+          if (res.ok) {
+            return res.text()
+          }
+          reject(new Error(`fail load nako3(${filename})`))
+        }).then(txt => {
+          const subtokens = nako3.rawtokenize(txt, 0, filename)
+          resolve(this.requireNako3Helper.affectRequireNako3(subtokens, filename, resolveNako3, importNako3))
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    }
+    return this.requireNako3Helper.affectRequireNako3(tokens, filepath, resolveNako3, importNako3)
+  }
+
+  requirePlugin (tokens, nako3) {
+    const filelist = this.requirePluginHelper.checkAndPickupRequirePlugin(tokens)
     if (filelist.length > 0) {
       return new Promise((allresolve, allreject) => {
-        const nako3 = opts.nako3
         const pluginpromise = []
         filelist.forEach(filename => {
           pluginpromise.push(new Promise((resolve, reject) => {
@@ -92,7 +114,7 @@ class WebNakoCompiler extends NakoCompiler {
               if (res.ok) {
                 return res.text()
               }
-              reject(new Error('fail load plugin'))
+              reject(new Error(`fail load plugin(${filename})`))
             }).then(txt => {
               resolve(txt)
             }).catch(err => {
@@ -129,6 +151,28 @@ class WebNakoCompiler extends NakoCompiler {
       })
     }
     return tokens
+  }
+
+  // トークンリストからプラグインのインポートを抜き出して処理する
+  beforeParse (opts) {
+    const tokens = opts.tokens
+    const nako3 = opts.nako3
+    const filepath = opts.filepath
+
+    this.requireNako3Helper.reset()
+
+    const rslt = this.requireNako3(tokens, filepath, nako3)
+    if (rslt instanceof Promise) {
+      return new Promise((resolve, reject) => {
+        rslt.then(subtokens => {
+          resolve(this.requirePlugin(subtokens, nako3))
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    } else {
+      return this.requirePlugin(rslt, nako3)
+    }
   }
 }
 
