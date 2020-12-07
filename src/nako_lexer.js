@@ -25,10 +25,9 @@ class NakoLexer {
     this.funclist = listObj
   }
 
-  setInput (code, line) {
+  setInput (code, line, filename) {
     // 最初に全部を区切ってしまう
-    this.tokenize(code, line)
-    return this.result
+    return this.tokenize(code, line, filename)
   }
 
   setInput2 (tokens, isFirst) {
@@ -39,8 +38,9 @@ class NakoLexer {
 
     if (isFirst) {
       const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-      this.result.push({type: 'eol', line: eofLine, josi: '', value: '---'}) // 改行
-      this.result.push({type: 'eof', line: eofLine, josi: '', value: ''}) // ファイル末尾
+      const filename = (this.result.length > 0) ? this.result[this.result.length - 1].file : ''
+      this.result.push({type: 'eol', line: eofLine, column: 0, file: filename, josi: '', value: '---'}) // 改行
+      this.result.push({type: 'eof', line: eofLine, column: 0, file: filename, josi: '', value: ''}) // ファイル末尾
     }
     return this.result
   }
@@ -99,7 +99,7 @@ class NakoLexer {
       // 無名関数の定義：「xxには**」があった場合 ... 暗黙的な関数定義とする
       if ((t.type === 'word' && t.josi === 'には') || (t.type === 'word' && t.josi === 'は~')) {
         t.josi = 'には'
-        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, josi: ''})
+        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, column: t.column, file: t.file, josi: ''})
         i++
         continue
       }
@@ -178,14 +178,14 @@ class NakoLexer {
       // 助詞の「は」を = に展開
       if (t.josi === undefined) {t.josi = ''}
       if (t.josi === 'は') {
-        tokens.splice(i + 1, 0, {type: 'eq', line: t.line})
+        tokens.splice(i + 1, 0, {type: 'eq', line: t.line, column: t.column, file: t.file})
         i += 2
         t.josi = ''
         continue
       }
       // 「とは」を一つの単語にする
       if (t.josi === 'とは') {
-        tokens.splice(i + 1, 0, {type: t.josi, line: t.line})
+        tokens.splice(i + 1, 0, {type: t.josi, line: t.line, column: t.column, file: t.file})
         t.josi = ''
         i += 2
         continue
@@ -194,7 +194,7 @@ class NakoLexer {
       if (josi.tarareba[t.josi]) {
         const josi = (t.josi !== 'でなければ') ? 'ならば' : 'でなければ'
         t.josi = ''
-        tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line})
+        tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line, column: t.column, file: t.file})
         i += 2
         continue
       }
@@ -218,8 +218,11 @@ class NakoLexer {
     }
   }
 
-  tokenize (src, line) {
-    this.result = []
+  tokenize (src, line, filename) {
+    const result = []
+    let columnCurrent
+    let lineCurrent
+    let column = 1
     let isDefTest = false
     while (src !== '') {
       let ok = false
@@ -228,6 +231,7 @@ class NakoLexer {
         if (!m) {continue}
         ok = true
         if (rule.name === 'space') {
+          column += m[0].length
           src = src.substr(m[0].length)
           continue
         }
@@ -250,38 +254,53 @@ class NakoLexer {
             for (let i = 0; i < list.length; i++) {
               const josi = (i === list.length - 1) ? rp.josi : ''
               if (i % 2 === 0) {
-                const rr = {type: 'string', value: list[i], josi, line}
-                this.result.push(rr)
+                const rr = {type: 'string', value: list[i], file: filename, josi, line, column}
+                result.push(rr)
               } else {
                 list[i] = trimOkurigana(list[i])
-                this.result.push({type: '&', value: '&', josi: '', line})
-                this.result.push({type: 'code', value: list[i], josi: '', line})
-                this.result.push({type: '&', value: '&', josi: '', line})
+                result.push({type: '&', value: '&', josi: '', file: filename, line, column})
+                result.push({type: 'code', value: list[i], josi: '', file: filename, line, column})
+                result.push({type: '&', value: '&', josi: '', file: filename, line, column})
               }
             }
             line += rp.numEOL
+            column += src.length - rp.src.length
             src = rp.src
+            if (rp.numEOL > 0) {
+              column = 1
+            }
             break
           }
+          columnCurrent = column
+          column += src.length - rp.src.length
           src = rp.src
-          const rr = {type: rule.name, value: rp.res, josi: rp.josi, line: line}
-          this.result.push(rr)
+          const rr = {type: rule.name, value: rp.res, josi: rp.josi, line: line, column: columnCurrent, file: filename}
+          result.push(rr)
           line += rp.numEOL
+          if (rp.numEOL > 0) {
+            column = 1
+          }
           break
         }
         // 値を変換する必要があるか？
         let value = m[0]
         if (rule.cb) {value = rule.cb(value)}
         // ソースを進める
+        columnCurrent = column
+        lineCurrent = line
+        column += m[0].length
         src = src.substr(m[0].length)
-        if (rule.name === 'eol' && value === '\n')
-          {value = line++}
+        if (rule.name === 'eol' && value === '\n') {
+          value = line++
+          column = 1
+        }
 
         let josi = ''
         if (rule.readJosi) {
           const j = josiRE.exec(src)
           if (j) {
             josi = j[0]
+            column += j[0].length
             src = src.substr(j[0].length)
           }
         }
@@ -305,16 +324,19 @@ class NakoLexer {
           continue
         }
 
-        this.result.push({
+        result.push({
           type: rule.name,
           value: value,
-          line: line,
+          line: lineCurrent,
+          column: columnCurrent,
+          file: filename,
           josi: josi
         })
         break
       }
       if (!ok) {throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')}
     }
+    return result
   }
 }
 

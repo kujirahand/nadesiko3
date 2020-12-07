@@ -8,6 +8,7 @@ const exec = require('child_process').exec
 const path = require('path')
 const NakoCompiler = require(path.join(__dirname, 'nako3'))
 const NakoRequiePlugin = require(path.join(__dirname, 'nako_require_plugin_helper'))
+const NakoRequieNako3 = require(path.join(__dirname, 'nako_require_nako3_helper'))
 const PluginNode = require(path.join(__dirname, 'plugin_node'))
 
 class CNako3 extends NakoCompiler {
@@ -17,7 +18,8 @@ class CNako3 extends NakoCompiler {
     this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
     this.beforeParseCallback = this.beforeParse
-    this.requirePlugin = new NakoRequiePlugin(this)
+    this.requirePluginHelper = new NakoRequiePlugin(this)
+    this.requireNako3Helper = new NakoRequieNako3(this)
   }
 
   // CNAKO3で使えるコマンドを登録する
@@ -203,12 +205,21 @@ class CNako3 extends NakoCompiler {
     console.log(fs.readFileSync(path.join(__dirname, 'browsers.md'), 'utf-8'))
   }
 
-  // トークンリストからプラグインのインポートを抜き出して処理する
-  beforeParse (opts) {
-    const tokens = opts.tokens
-    const filelist = this.requirePlugin.checkAndPickupRequirePlugin(tokens)
+  requireNako3 (tokens, filepath, nako3) {
+    const resolveNako3 = (filename, basepath) => {
+      return filename
+    }
+    const importNako3 = filename => {
+      const txt = fs.readFileSync(filename, { encoding: 'utf-8' })
+      const subtokens = nako3.rawtokenize(txt, 0, filename)
+      return this.requireNako3Helper.affectRequireNako3(subtokens, filename, resolveNako3, importNako3)
+    }
+    return this.requireNako3Helper.affectRequireNako3(tokens, filepath, resolveNako3, importNako3)
+  }
+
+  requirePlugin (tokens, nako3) {
+    const filelist = this.requirePluginHelper.checkAndPickupRequirePlugin(tokens)
     if (filelist.length > 0) {
-      const nako3 = opts.nako3
       const funclist = nako3.funclist
       for (let i = 0;i < filelist.length; i++) {
         const pname = filelist[i]
@@ -231,6 +242,29 @@ class CNako3 extends NakoCompiler {
             '(path=' + fullpath + ') ' + e.message)
         }
       }
+    }
+    return tokens
+  }
+
+  // トークンリストからプラグインのインポートを抜き出して処理する
+  beforeParse (opts) {
+    const tokens = opts.tokens
+    const nako3 = opts.nako3
+    const filepath = opts.filepath
+
+    this.requireNako3Helper.reset()
+
+    const rslt = this.requireNako3(tokens, filepath, nako3)
+    if (rslt instanceof Promise) {
+      return new Promise((resolve, reject) => {
+        rslt.then(subtokens => {
+          resolve(this.requirePlugin(subtokens, nako3))
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    } else {
+      return this.requirePlugin(rslt, nako3)
     }
   }
 

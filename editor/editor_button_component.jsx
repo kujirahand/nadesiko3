@@ -13,7 +13,7 @@ export default class EditorButtonComponent extends React.Component {
       // なでしこの関数をカスタマイズ --- TODO: なでしこの追加命令は edit_main.jsxで書いているので別途関数を作ってそこでまとめるように
       this.props.nako3.setFunc('表示', [['と', 'を', 'の']], this.props.onInformationChanged)
       window.localStorage['nako3/editor/code'] = this.props.code
-      await this.props.nako3.runAsync(this.preCode + this.props.code)
+      await this.props.nako3.runAsync(this.preCode + this.props.code, 'run-in-editor.nako3')
       this.props.onUsedFuncsChanged(this.props.nako3.usedFuncs)
     } catch (e) {
       this.props.onErrorChanged(e)
@@ -23,7 +23,7 @@ export default class EditorButtonComponent extends React.Component {
   async onTestButtonClick () {
     try {
       window.localStorage['nako3/editor/code'] = this.props.code
-      await this.props.nako3.testAsync(this.preCode + this.props.code)
+      await this.props.nako3.testAsync(this.preCode + this.props.code, 'run-in-editor.nako3')
     } catch (e) {
       this.props.onErrorChanged(e)
     }
