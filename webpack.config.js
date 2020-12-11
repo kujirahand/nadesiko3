@@ -32,12 +32,14 @@ class CanIUseDBDataReplacementPlugin extends NormalModuleReplacementPlugin {
 module.exports = {
   entry: {
     wnako3: [path.join(srcPath, 'wnako3.js')], // plugin_system+plugin_browser含む
+    wwnako3: [path.join(srcPath, 'wwnako3.js')], // plugin_system+plugin_webworker含む
     plugin_kansuji: [path.join(srcPath, 'plugin_kansuji.js')],
     plugin_markup: [path.join(srcPath, 'plugin_markup.js')],
     plugin_turtle: [path.join(srcPath, 'plugin_turtle.js')],
     plugin_csv: [path.join(srcPath, 'plugin_csv.js')],
     plugin_datetime: [path.join(srcPath, 'plugin_datetime.js')],
     plugin_caniuse: [path.join(srcPath, 'plugin_caniuse.js')],
+    plugin_webworker: [path.join(srcPath, 'plugin_webworker.js')],
     editor: [path.join(editorPath, 'edit_main.jsx')],
     version: [path.join(editorPath, 'version_main.jsx')]
   },
