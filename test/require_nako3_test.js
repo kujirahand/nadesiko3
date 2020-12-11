@@ -13,6 +13,6 @@ describe('require_nako3_test', () => {
     assert.equal(ret.log, res)
   }
   it('「ファイルを取り込む」', () => {
-    cmp('!「test/requiretest.nako3」のファイルを取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。', '5\n8')
+    cmp('!「test/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。', '5\n8')
   })
 })

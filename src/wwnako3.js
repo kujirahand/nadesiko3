@@ -1,9 +1,10 @@
 // nadesiko for web browser worker
 // wwnako3.js
 const NakoCompiler = require('./nako3')
-const NakoRequiePlugin = require('./nako_require_plugin_helper')
-const NakoRequieNako3 = require('./nako_require_nako3_helper')
+const NakoRequire = require('./nako_require_helper')
+const PluginBrowserInWorker = require('./plugin_browser_in_worker')
 const PluginWebWorker = require('./plugin_webworker')
+const PluginWorker = require('./plugin_worker')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 
 class WebWorkerNakoCompiler extends NakoCompiler {
@@ -11,16 +12,12 @@ class WebWorkerNakoCompiler extends NakoCompiler {
     super()
     this.__varslist[0]['ナデシコ種類'] = 'wwnako3'
     this.beforeParseCallback = this.beforeParse
-    this.requirePluginHelper = new NakoRequiePlugin(this)
-    this.requireNako3Helper = new NakoRequieNako3(this)
+    this.requireHelper = new NakoRequire(this)
     this.ondata = (data, event) => {
     }
   }
 
   requireNako3 (tokens, filepath, nako3) {
-    const resolveNako3 = (filename, basepath) => {
-      return filename
-    }
     const importNako3 = filename => {
       return new Promise((resolve, reject) => {
         fetch(filename, { mode: 'no-cors' })
@@ -31,18 +28,19 @@ class WebWorkerNakoCompiler extends NakoCompiler {
           reject(new Error(`fail load nako3(${filename})`))
         }).then(txt => {
           const subtokens = nako3.rawtokenize(txt, 0, filename)
-          resolve(this.requireNako3Helper.affectRequireNako3(subtokens, filename, resolveNako3, importNako3))
+          resolve(this.requireHelper.affectRequire(subtokens, filename, this.requireHelper.resolveNako3forBrowser.bind(this.requireHelper), importNako3))
         }).catch(err => {
           reject(err)
         })
       })
     }
-    return this.requireNako3Helper.affectRequireNako3(tokens, filepath, resolveNako3, importNako3)
+    return this.requireHelper.affectRequire(tokens, filepath, this.requireHelper.resolveNako3forBrowser.bind(this.requireHelper), importNako3)
   }
 
   requirePlugin (tokens, nako3) {
-    const filelist = this.requirePluginHelper.checkAndPickupRequirePlugin(tokens)
-    if (filelist.length > 0) {
+    if (this.requireHelper.pluginlist.length > 0) {
+      const funclist = nako3.funclist
+      const filelist = this.requireHelper.pluginlist
       return new Promise((allresolve, allreject) => {
         const pluginpromise = []
         filelist.forEach(filename => {
@@ -65,7 +63,7 @@ class WebWorkerNakoCompiler extends NakoCompiler {
           modules.forEach(module => {
             if (/navigator\.nako3\.addPluginObject/.test(module)) {
               // for auto registration plugin, exetute only
-              eval(module)
+              window.eval(module)
             } else
             if (/module\.exports\s*=/.test(module)) {
               // for commonjs structure plugin
@@ -97,7 +95,7 @@ class WebWorkerNakoCompiler extends NakoCompiler {
     const nako3 = opts.nako3
     const filepath = opts.filepath
 
-    this.requireNako3Helper.reset()
+    this.requireHelper.reset()
 
     const rslt = this.requireNako3(tokens, filepath, nako3)
     if (rslt instanceof Promise) {
@@ -114,88 +112,10 @@ class WebWorkerNakoCompiler extends NakoCompiler {
   }
 }
 
-const PluginWorker = {
-  '初期化': {
-    type: 'func',
-    josi: [],
-    fn: function(sys) {
-    }
-  },
-
-  '対象イベント': {type:'const', value: ''}, // @たいしょういべんと
-  '受信データ': {type:'const', value: ''}, // @たいしょういべんと
-
-  'NAKOワーカーデータ受信時': { // @無名関数Fでなでしこv3エンジンに対してワーカーメッセージによりデータを受信した時に実行するイベントを設定。『受信データ』に受信したデータM。『対象イベント』にイベント引数。 // @NAKOわーかーでーたじゅしんしたとき
-    type: 'func',
-    josi: [['で']],
-    fn: function (func, sys) {
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      sys.ondata = (data, e) => {
-        sys.__v0['受信データ'] = data
-        sys.__v0['対象イベント'] = e
-        return func(e, sys)
-      }
-    },
-    return_none: true
-  },
-  'ワーカーメッセージ受信時': { // @無名関数Fでselfに対してメッセージを受信した時に実行するイベントを設定。『受信データ』に受信したデータ。『対象イベント』にイベント引数。 // @わーかーめっせーじじゅしんしたとき
-    type: 'func',
-    josi: [['で']],
-    fn: function (func, sys) {
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      self.onmessage = (e) => {
-        sys.__v0['受信データ'] = e.data
-        sys.__v0['対象イベント'] = e
-        return func(e, sys)
-      }
-    },
-    return_none: true
-  },
-  'NAKOワーカーデータ返信': { // @起動もとに固有の形式でデータを送信する。 // @NAKOわーかーでーたへんしん
-    type: 'func',
-    josi: [['を']],
-    fn: function (data, sys) {
-      const msg = {
-        type: 'data',
-        data: data
-      }
-      postMessage(msg)
-    },
-    return_none: true
-  },
-  'ワーカーメッセージ返信': { // @起動もとにメッセージを送信する。 // @わーかーめっせーじへんしん
-    type: 'func',
-    josi: [['を']],
-    fn: function (msg, sys) {
-      postMessage(msg)
-    },
-    return_none: true
-  },
-  '表示': { // @メインスレッドに固有の形式で表示データを送信する。 // @ひょうじ
-    type: 'func',
-    josi: [['を']],
-    fn: function (data, sys) {
-      const msg = {
-        type: 'output',
-        data: data
-      }
-      postMessage(msg)
-    },
-    return_none: true
-  },
-  '終了': { // @ワーカーを終了する。 // @しゅうりょう
-    type: 'func',
-    josi: [],
-    fn: function (sys) {
-      close()
-    },
-    return_none: true
-  }
-}
-
 // ブラウザワーカーなら navigator.nako3 になでしこを登録
 if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope) {
   const nako3 = navigator.nako3 = new WebWorkerNakoCompiler()
+  nako3.addPluginObject('PluginBrowserInWorker', PluginBrowserInWorker)
   nako3.addPluginObject('PluginWebWorker', PluginWebWorker)
   nako3.addPluginObject('PluginWorker', PluginWorker)
 
