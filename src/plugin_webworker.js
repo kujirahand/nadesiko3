@@ -165,6 +165,7 @@ const PluginWebWorker = {
 
 if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') {
   navigator.nako3.addPluginObject('PluginWebWorker', PluginWebWorker)
-} else {
+}
+if (typeof (module) === 'object') {
   module.exports = PluginWebWorker
 }

@@ -240,7 +240,6 @@ describe('plugin_turtle_test', () => {
     nako = null
   })
   beforeEach(() => {
-    console.log('recreate nako instance')
     nako = new NakoCompiler()
     // const pluginClone = Object.assign({}, PluginTurtle)
     // nako.addPluginFile('PluginTurtle', 'plugin_turtle.js', pluginClone)
@@ -273,9 +272,10 @@ describe('plugin_turtle_test', () => {
   })
 
   it('auto import for browser', () => {
-    const autoImport = importStatus.getAutoImport()
-    assert.ok(autoImport.imported, 'was import')
-    assert.equal(autoImport.name, 'PluginTurtle')
+    const pluginName = 'PluginTurtle'
+    const imported = importStatus.hasImport(pluginName)
+    assert.ok(imported, 'was import')
+    const autoImport = importStatus.getAutoImport(pluginName)
     assert.equal(typeof (autoImport.obj), 'object')
   })
 

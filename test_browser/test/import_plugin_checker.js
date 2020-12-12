@@ -1,24 +1,24 @@
-const autoImport = {
-  name: '',
-  obj: undefined,
-  imported: false
-}
-
 if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'undefined') {
   navigator.nako3 = {
+    autoImport: {},
     addPluginObject: function (pluginName, pluginObject) {
-      autoImport.name = pluginName
-      autoImport.obj = pluginObject
-      autoImport.imported = true
+      this.autoImport[pluginName] = {
+        name: pluginName,
+        obj: pluginObject,
+        imported: true
+      }
+    },
+    getAutoImport: function (pluginName) {
+      return this.autoImport[pluginName]
+    },
+    hasImport: function (pluginName) {
+      return this.autoImport.hasOwnProperty(pluginName)
     }
   }
 }
 
-const getAutoImport = () => {
-  return autoImport
-}
-
 const importStatus = {
-  getAutoImport: getAutoImport
+  getAutoImport: navigator.nako3.getAutoImport.bind(navigator.nako3),
+  hasImport: navigator.nako3.hasImport.bind(navigator.nako3)
 }
 export { importStatus }
