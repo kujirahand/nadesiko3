@@ -7,8 +7,7 @@ const exec = require('child_process').exec
 
 const path = require('path')
 const NakoCompiler = require(path.join(__dirname, 'nako3'))
-const NakoRequiePlugin = require(path.join(__dirname, 'nako_require_plugin_helper'))
-const NakoRequieNako3 = require(path.join(__dirname, 'nako_require_nako3_helper'))
+const NakoRequire = require(path.join(__dirname, 'nako_require_helper'))
 const PluginNode = require(path.join(__dirname, 'plugin_node'))
 
 class CNako3 extends NakoCompiler {
@@ -18,8 +17,7 @@ class CNako3 extends NakoCompiler {
     this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
     this.beforeParseCallback = this.beforeParse
-    this.requirePluginHelper = new NakoRequiePlugin(this)
-    this.requireNako3Helper = new NakoRequieNako3(this)
+    this.requireHelper = new NakoRequire(this)
   }
 
   // CNAKO3で使えるコマンドを登録する
@@ -206,21 +204,18 @@ class CNako3 extends NakoCompiler {
   }
 
   requireNako3 (tokens, filepath, nako3) {
-    const resolveNako3 = (filename, basepath) => {
-      return filename
-    }
     const importNako3 = filename => {
       const txt = fs.readFileSync(filename, { encoding: 'utf-8' })
       const subtokens = nako3.rawtokenize(txt, 0, filename)
-      return this.requireNako3Helper.affectRequireNako3(subtokens, filename, resolveNako3, importNako3)
+      return this.requireHelper.affectRequire(subtokens, filename, this.requireHelper.resolveNako3forNodejs.bind(this.requireHelper), importNako3)
     }
-    return this.requireNako3Helper.affectRequireNako3(tokens, filepath, resolveNako3, importNako3)
+    return this.requireHelper.affectRequire(tokens, filepath, this.requireHelper.resolveNako3forNodejs.bind(this.requireHelper), importNako3)
   }
 
   requirePlugin (tokens, nako3) {
-    const filelist = this.requirePluginHelper.checkAndPickupRequirePlugin(tokens)
-    if (filelist.length > 0) {
+    if (this.requireHelper.pluginlist.length > 0) {
       const funclist = nako3.funclist
+      const filelist = this.requireHelper.pluginlist
       for (let i = 0;i < filelist.length; i++) {
         const pname = filelist[i]
         let fullpath = pname
@@ -251,8 +246,7 @@ class CNako3 extends NakoCompiler {
     const tokens = opts.tokens
     const nako3 = opts.nako3
     const filepath = opts.filepath
-
-    this.requireNako3Helper.reset()
+    this.requireHelper.reset()
 
     const rslt = this.requireNako3(tokens, filepath, nako3)
     if (rslt instanceof Promise) {

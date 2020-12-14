@@ -1,10 +1,7 @@
 // nadesiko for web browser
 // wnako3.js
-require('node-fetch')
-
 const NakoCompiler = require('./nako3')
-const NakoRequiePlugin = require('./nako_require_plugin_helper')
-const NakoRequieNako3 = require('./nako_require_nako3_helper')
+const NakoRequire = require('./nako_require_helper')
 const PluginBrowser = require('./plugin_browser')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 
@@ -13,8 +10,7 @@ class WebNakoCompiler extends NakoCompiler {
     super()
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
     this.beforeParseCallback = this.beforeParse
-    this.requirePluginHelper = new NakoRequiePlugin(this)
-    this.requireNako3Helper = new NakoRequieNako3(this)
+    this.requireHelper = new NakoRequire(this)
   }
 
   /**
@@ -80,9 +76,6 @@ class WebNakoCompiler extends NakoCompiler {
   }
 
   requireNako3 (tokens, filepath, nako3) {
-    const resolveNako3 = (filename, basepath) => {
-      return filename
-    }
     const importNako3 = filename => {
       return new Promise((resolve, reject) => {
         fetch(filename, { mode: 'no-cors' })
@@ -93,18 +86,19 @@ class WebNakoCompiler extends NakoCompiler {
           reject(new Error(`fail load nako3(${filename})`))
         }).then(txt => {
           const subtokens = nako3.rawtokenize(txt, 0, filename)
-          resolve(this.requireNako3Helper.affectRequireNako3(subtokens, filename, resolveNako3, importNako3))
+          resolve(this.requireHelper.affectRequire(subtokens, filename, this.requireHelper.resolveNako3forBrowser.bind(this.requireHelper), importNako3))
         }).catch(err => {
           reject(err)
         })
       })
     }
-    return this.requireNako3Helper.affectRequireNako3(tokens, filepath, resolveNako3, importNako3)
+    return this.requireHelper.affectRequire(tokens, filepath, this.requireHelper.resolveNako3forBrowser.bind(this.requireHelper), importNako3)
   }
 
   requirePlugin (tokens, nako3) {
-    const filelist = this.requirePluginHelper.checkAndPickupRequirePlugin(tokens)
-    if (filelist.length > 0) {
+    if (this.requireHelper.pluginlist.length > 0) {
+      const funclist = nako3.funclist
+      const filelist = this.requireHelper.pluginlist
       return new Promise((allresolve, allreject) => {
         const pluginpromise = []
         filelist.forEach(filename => {
@@ -159,7 +153,7 @@ class WebNakoCompiler extends NakoCompiler {
     const nako3 = opts.nako3
     const filepath = opts.filepath
 
-    this.requireNako3Helper.reset()
+    this.requireHelper.reset()
 
     const rslt = this.requireNako3(tokens, filepath, nako3)
     if (rslt instanceof Promise) {

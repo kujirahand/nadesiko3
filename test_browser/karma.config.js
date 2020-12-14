@@ -109,11 +109,13 @@ module.exports = function(config) {
   config.set({
     frameworks: ['mocha'],
     files: [
+      {pattern: 'test/wwnako3.js', included: false},
       'test/*_test.js',
       'test/html/*.html',
       {pattern: 'test/image/*.png', included: false, served: true, watched: false, nocache: false}
     ],
     proxies: {
+       '/wwnako3.js': '/base/test/wwnako3.js',
        '/turtle.png': '/base/test/image/turtle_kana.png',
        '/turtle-elephant.png': '/base/test/image/elephant_kana.png',
        '/turtle-panda.png': '/base/test/image/panda_kana.png',
@@ -147,6 +149,7 @@ module.exports = function(config) {
         }
     },
     preprocessors: {
+      'test/wwnako3.js': ['webpack'],
       'test/*_test.js': ['webpack'],
       'test/html/*.html': ['html2js']
     },
