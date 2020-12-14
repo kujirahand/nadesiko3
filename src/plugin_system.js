@@ -740,12 +740,12 @@ const PluginSystem = {
   'カタカナ全角変換': {// @文字列Sの半角カタカナを全角に変換 // @かたかなぜんかくへんかん
     type: 'func',
     josi: [['の', 'を']],
-    fn: function (s) {
+    fn: function (s, sys) {
       // 半角カタカナ
-      const zen1 = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」'
-      const han1 = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ'
-      const zen2 = 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ'
-      const han2 = 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ'
+      const zen1 = sys.__v0['全角カナ一覧']
+      const han1 = sys.__v0['半角カナ一覧']
+      const zen2 = sys.__v0['全角カナ濁音一覧']
+      const han2 = sys.__v0['半角カナ濁音一覧']
       let str = ''
       let i = 0
       while (i < s.length) {
@@ -753,7 +753,7 @@ const PluginSystem = {
         const c2 = s.substr(i, 2)
         const n2 = han2.indexOf(c2)
         if (n2 >= 0) {
-          str += zen2.charAt(Math.floor(n2 / 2))
+          str += zen2.charAt(n2 / 2)
           i += 2
           continue
         }
@@ -774,28 +774,23 @@ const PluginSystem = {
   'カタカナ半角変換': {// @文字列Sの全角カタカナを半角に変換 // @かたかなはんかくへんかん
     type: 'func',
     josi: [['の', 'を']],
-    fn: function (s) {
+    fn: function (s, sys) {
       // 半角カタカナ
-      const zen1 = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」'
-      const han1 = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ'
-      const zen2 = 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ'
-      const han2 = 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ'
-      let str = ''
-      for (let i = 0; i < s.length; i++) {
-        let c = s.charAt(i)
-        const n = zen1.indexOf(c)
-        if (n >= 0) {
-          str += han1.charAt(n)
-          continue
+      const zen1 = sys.__v0['全角カナ一覧']
+      const han1 = sys.__v0['半角カナ一覧']
+      const zen2 = sys.__v0['全角カナ濁音一覧']
+      const han2 = sys.__v0['半角カナ濁音一覧']
+      return s.split('').map((c)=>{
+        const i = zen1.indexOf(c)
+        if (i >= 0) {
+          return han1.charAt(i)
         }
-        const n2 = zen2.indexOf(c)
-        if (n2 >= 0) {
-          str += han2.charAt(n2 * 2) + han2.charAt(n2 * 2 + 1)
-          continue
+        const j = zen2.indexOf(c)
+        if (j >= 0) {
+          return han2.substr(j*2, 2)
         }
-        str += c
-      }
-      return str
+        return c
+      }).join('')
     }
   },
   '全角変換': { // @文字列Sの半角文字を全角に変換 // @ぜんかくへんかん
@@ -818,6 +813,10 @@ const PluginSystem = {
       return result
     }
   },
+  '全角カナ一覧': {type: 'const', value: 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」'}, // @ぜんかくかたかないちらん
+  '全角カナ濁音一覧': {type: 'const', value: 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ'}, // @ぜんかくかたかなだくおんいちらん
+  '半角カナ一覧': {type: 'const', value: 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ'}, // @はんかくかたかないちらん
+  '半角カナ濁音一覧': {type: 'const', value: 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ'}, // @はんかくかたかなだくおんいちらん
 
   // @JSON
   'JSONエンコード': { // @オブジェクトVをJSON形式にエンコードして返す // @JSONえんこーど
