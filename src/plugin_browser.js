@@ -1,7 +1,4 @@
 // plugin_browser.js
-// require('es6-promise').polyfill()
-// require('node-fetch')
-
 const PartBrowserColor = require('./plugin_browser_color.js')
 const PartBrowserSystem = require('./plugin_browser_system.js')
 const PartBrowserDialog = require('./plugin_browser_dialog.js')
