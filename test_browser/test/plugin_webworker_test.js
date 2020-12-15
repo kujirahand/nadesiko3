@@ -38,17 +38,17 @@ describe('plugin_webworker_test', () => {
     nako.addFunc('報告', [['を']], (msg) => {
       msgs.push(msg)
     })
-    const code = `Wは「/wwnako3.js」をワーカー起動
+    const code = `Wは「/wnako3webworker.js」をワーカー起動
 WにNAKOワーカーハンドラ設定
-WのNAKOワーカーデータ返信受信した時には、
+WからNAKOワーカーデータ受信した時には、
 　受信データを報告
 　Wをワーカー終了
 ここまで
-WのNAKOワーカー表示した時には、
+WからNAKOワーカー表示した時には、
 　受信データを報告
 ここまで
 
-Wで「"かかかかか"を表示する;"<>?"をHTML変換して表示する;"おわり"をNAKOワーカーデータ返信」をNAKOワーカープログラム起動
+Wで「"かかかかか"を表示する;"<>?"をHTML変換して表示する;"おわり"をNAKOワーカーデータ送信」をNAKOワーカープログラム起動
 Wに「あいうえお」をNAKOワーカーデータ送信
 `
     nako.runReset(code)

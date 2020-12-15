@@ -3,7 +3,6 @@
 const NakoCompiler = require('./nako3')
 const NakoRequire = require('./nako_require_helper')
 const PluginBrowserInWorker = require('./plugin_browser_in_worker')
-const PluginWebWorker = require('./plugin_webworker')
 const PluginWorker = require('./plugin_worker')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 
@@ -116,7 +115,6 @@ class WebWorkerNakoCompiler extends NakoCompiler {
 if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope) {
   const nako3 = navigator.nako3 = new WebWorkerNakoCompiler()
   nako3.addPluginObject('PluginBrowserInWorker', PluginBrowserInWorker)
-  nako3.addPluginObject('PluginWebWorker', PluginWebWorker)
   nako3.addPluginObject('PluginWorker', PluginWorker)
 
   self.onmessage = (event) => {
