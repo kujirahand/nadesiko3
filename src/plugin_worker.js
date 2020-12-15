@@ -3,11 +3,15 @@ const PluginWorker = {
     type: 'func',
     josi: [],
     fn: function(sys) {
+      sys.__v0['SELF'] = self || {}
+      sys.__v0['依頼主'] = self || {}
     }
   },
 
   '対象イベント': {type:'const', value: ''}, // @たいしょういべんと
   '受信データ': {type:'const', value: ''}, // @たいしょういべんと
+  'SELF': {type:'const', value: ''}, // @SELF
+  '依頼主': {type:'const', value: ''}, // @SELF
 
   'NAKOワーカーデータ受信時': { // @無名関数Fでなでしこv3エンジンに対してワーカーメッセージによりデータを受信した時に実行するイベントを設定。『受信データ』に受信したデータM。『対象イベント』にイベント引数。 // @NAKOわーかーでーたじゅしんしたとき
     type: 'func',
@@ -35,7 +39,7 @@ const PluginWorker = {
     },
     return_none: true
   },
-  'NAKOワーカーデータ返信': { // @起動もとに固有の形式でデータを送信する。 // @NAKOわーかーでーたへんしん
+  'NAKOワーカーデータ送信': { // @起動もとに固有の形式でデータを送信する。 // @NAKOわーかーでーたへんしん
     type: 'func',
     josi: [['を']],
     fn: function (data, sys) {
@@ -47,7 +51,7 @@ const PluginWorker = {
     },
     return_none: true
   },
-  'ワーカーメッセージ返信': { // @起動もとにメッセージを送信する。 // @わーかーめっせーじへんしん
+  'ワーカーメッセージ送信': { // @起動もとにメッセージを送信する。 // @わーかーめっせーじへんしん
     type: 'func',
     josi: [['を']],
     fn: function (msg, sys) {
