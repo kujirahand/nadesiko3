@@ -56,7 +56,8 @@
     "last 2 versions",
     "Firefox ESR",
     "maintained node versions",
-    "not dead"
+    "not dead",
+    "ie 11"
   ],
   "eslintConfig": {
     "extends": [
