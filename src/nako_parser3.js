@@ -570,6 +570,62 @@ class NakoParser extends NakoParserBase {
     }
   }
 
+  ySwitch () {
+    if (!this.check('条件分岐')) {return null}
+    const joukenbunki = this.get()
+    const eol = this.get()
+    const value = this.popStack(['で'])
+    if (!value) {
+      throw new NakoSyntaxError('『(値)で条件分岐』のように記述してください。',
+        joukenbunki.line, this.filename)
+    }
+    if (eol.type != 'eol') {
+      throw new NakoSyntaxError('『条件分岐』の直後は改行してください。',
+        joukenbunki.line, this.filename)
+    }
+    const cases = []
+    while (!this.isEOF()) {
+      if (this.check('ここまで')) {
+        this.get()
+        break
+      }
+      if (this.check('eol')) {
+        this.get()
+        continue
+      }
+      // 違えば？
+      let cond = this.peek()
+      if (cond.type == '違えば') {
+        this.get() // skip 違えば
+      } else {
+        // 「＊＊ならば」を得る
+        cond = this.yValue()
+        const naraba = this.get()
+        if (naraba.type != 'ならば') {
+          console.log(naraba)
+          throw new NakoSyntaxError('『条件分岐』で条件は＊＊ならばと記述してください。',
+            joukenbunki.line, this.filename)
+        }
+      }
+      // 条件にあったときに実行すること
+      const condBlock = this.yBlock()
+      const blockEnd = this.get()
+      if (blockEnd.type != 'ここまで') {
+        throw new NakoSyntaxError('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。',
+          joukenbunki.line, this.filename)
+      }
+      cases.push([cond, condBlock])
+    }
+
+    return {
+      type: 'switch',
+      value,
+      cases,
+      line: joukenbunki.line,
+      josi: ''
+    }
+  }
+
   yMumeiFunc () { // 無名関数の定義
     if (!this.check('def_func')) {return null}
     const def = this.get()
@@ -628,6 +684,7 @@ class NakoParser extends NakoParserBase {
       if (this.check('間')) {return this.yWhile()}
       if (this.check('繰り返す')) {return this.yFor()}
       if (this.check('反復')) {return this.yForEach()}
+      if (this.check('条件分岐')) {return this.ySwitch()}
       // 戻す
       if (this.check('戻る')) {return this.yReturn()}
       // C言語風関数

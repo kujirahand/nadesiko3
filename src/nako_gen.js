@@ -390,6 +390,9 @@ class NakoGen {
       case 'while':
         code += this.convWhile(node)
         break
+      case 'switch':
+        code += this.convSwitch(node)
+        break
       case 'let_array':
         code += this.convLetArray(node)
         break
@@ -729,7 +732,7 @@ class NakoGen {
     return NakoGen.convLineno(node) + code
   }
 
-  convWhile(node) {
+  convWhile (node) {
     const cond = this._convGen(node.cond)
     const block = this.convGenLoop(node.block)
     const code =
@@ -739,7 +742,30 @@ class NakoGen {
     return NakoGen.convLineno(node) + code
   }
 
-  convIf(node) {
+  convSwitch (node) {
+    const value = this._convGen(node.value)
+    const cases = node.cases
+    let body = ''
+    for (let i = 0; i < cases.length; i++) {
+      const cvalue = cases[i][0]
+      const cblock = this.convGenLoop(cases[i][1])
+      if (cvalue.type == '違えば') {
+        body += `  default:\n`
+      } else {
+        const cvalue_code = this._convGen(cvalue)
+        body += `  case ${cvalue_code}:\n`
+      }
+      body += `    ${cblock}\n` +
+              `    break\n`
+    }
+    const code =
+      `switch (${value})` + '{\n' +
+      `${body}` + '\n' +
+      '}\n'
+    return NakoGen.convLineno(node) + code
+  }
+
+  convIf (node) {
     const expr = this._convGen(node.expr)
     const block = this._convGen(node.block)
     const falseBlock = (node.false_block === null)
