@@ -263,7 +263,7 @@ const PluginSystem = {
     josi: [['を', 'で']],
     fn: function (code, sys) {
       sys.__varslist[0]['表示ログ'] = ''
-      sys.__self.run(code, true)
+      sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: true })
       return sys.__varslist[0]['表示ログ']
     }
   },
@@ -271,7 +271,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'で']],
     fn: function (code, sys) {
-      sys.__self.run(code, false)
+      sys.__self.run(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
       return sys.__varslist[0]['表示ログ']
     }
   },
@@ -920,19 +920,20 @@ const PluginSystem = {
       return s.substr(s.length - a, a)
     }
   },
-  'ゼロ埋': { // @数値VをA桁の0で埋める // @ぜろうめ
+  '空白埋': { // @文字列VをA桁の空白で埋める // @くうはくうめ
     type: 'func',
     josi: [['を'], ['で']],
     fn: function (v, a) {
       v = String(v)
-      let z = '0'
-      for (let i = 0; i < a; i++) {z += '0'}
+      let z = ' '
+      for (let i = 0; i < a; i++) {z += ' '}
       a = parseInt(a)
       if (a < v.length) {a = v.length}
       const s = z + String(v)
       return s.substr(s.length - a, a)
     }
   },
+
   // @文字種類
   'かなか判定': { // @文字列Sの1文字目がひらがなか判定 // @かなかはんてい
     type: 'func',
