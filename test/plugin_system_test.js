@@ -11,6 +11,13 @@ describe('plugin_system_test', () => {
 
     assert.equal(nako.runReset(code).log, res)
   }
+  const cmpex = (code, exinfo) => {
+    if (nako.debug) {
+      console.log('code=' + code)
+    }
+
+    assert.throws(() => { nako.runReset(code) }, exinfo)
+  }
   const cmd = (code) => {
     if (nako.debug) console.log('code=' + code)
     nako.runReset(code)
@@ -129,6 +136,13 @@ describe('plugin_system_test', () => {
     cmp('10を3でゼロ埋め。表示。', '010')
     cmp('123を5でゼロ埋め。表示。', '00123')
     cmp('12345を3でゼロ埋め。表示。', '12345')
+  })
+  it('空白埋め', () => {
+    cmp('10を3で空白埋め。表示。', ' 10')
+    cmp('「10」を3で空白埋め。表示。', ' 10')
+    cmp('「010」を4で空白埋め。表示。', ' 010')
+    cmp('「123」を5で空白埋め。表示。', '  123')
+    cmp('「12345」を3で空白埋め。表示。', '12345')
   })
   it('配列要素数', () => {
     cmp('A=[0,1,2,3];Aの配列要素数。表示。', '4')
@@ -362,5 +376,14 @@ describe('plugin_system_test', () => {
   it('HYPOTの問題 #603', () => {
     cmp('HYPOT(1,1)を表示。', '1.4142135623730951')
     cmp('HYPOT(10,5)を表示。', '11.180339887498949')
+  })
+  it('ナデシコする', () => {
+    cmp('「1+2を表示する。」をナデシコする。', '3')
+    cmp('Aは3;「1+Aを表示する。」をナデシコする。', '4')
+    cmp('Bは2;「BはB+3。Bを表示する。」をナデシコする。Bを表示する。', '5\n5')
+    cmp('●Cとは\n5を戻す\nここまで\n「1+C()を表示する。」をナデシコする。C()を表示する。', '6\n5')
+    cmp('「Dは4;Dを表示する。」をナデシコする。3+Dを表示する。', '4\n7')
+    cmp('Eは5;「Eは3;Eを表示する。」をナデシコする。5+Eを表示する。', '3\n8')
+    cmpex('「●Fとは\n2を戻す\nここまで\nF()を表示する。」をナデシコする。7+F()を表示する。', { name: 'Error', message: /関数『F』が見当たりません。/ })
   })
 })

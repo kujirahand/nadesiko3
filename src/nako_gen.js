@@ -171,7 +171,7 @@ class NakoGen {
     code += 'const __module = this.__module;\n'
     code += 'const __v0 = this.__v0 = this.__varslist[0];\n'
     code += 'const __v1 = this.__v1 = this.__varslist[1];\n'
-    code += 'let __vars = this.__vars;\n'
+    code += 'let __vars = this.__vars = this.__varslist[this.__varslist.length - 1];\n'
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
     for (const key in this.nako_func) {

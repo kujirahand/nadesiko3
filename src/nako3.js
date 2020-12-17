@@ -154,6 +154,7 @@ class NakoCompiler {
     lexer.setFuncList(this.funclist)
     parser.setFuncList(this.funclist)
     parser.debug = this.debug
+    this.parser.filename = filename
     // 単語に分割
     let rawtokens = this.rawtokenize(code, 0, filename)
     if (this.beforeParseCallback) {
@@ -191,6 +192,7 @@ class NakoCompiler {
     lexer.setFuncList(this.funclist)
     parser.setFuncList(this.funclist)
     parser.debug = this.debug
+    this.parser.filename = filename
     // 単語に分割
     let rawtokens = this.rawtokenize(code, 0, filename)
     if (this.beforeParseCallback) {
@@ -281,9 +283,18 @@ class NakoCompiler {
   }
 
   _run(code, fname, isReset, isTest) {
-    this.reset()
-    if (isReset) {this.clearLog()}
-    let js = this.compile(code, fname, isTest)
+    const opts = {
+      resetLog: isReset,
+      testOnly: isTest
+    }
+    return this._runEx(code, fname, opts)
+  }
+
+  _runEx(code, fname, opts) {
+    opts = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+    if (opts.resetEnv) {this.reset()}
+    if (opts.resetLog) {this.clearLog()}
+    let js = this.compile(code, fname, opts.testOnly)
     try {
       this.__varslist[0].line = -1 // コンパイルエラーを調べるため
       const func = new Function(js) // eslint-disable-line
@@ -302,9 +313,18 @@ class NakoCompiler {
   }
 
   async _runAsync(code, fname, isReset, isTest) {
-    this.reset()
-    if (isReset) {this.clearLog()}
-    let js = await this.compileAsync(code, fname, isTest)
+    const opts = {
+      resetLog: isReset,
+      testOnly: isTest
+    }
+    return this._runExAsync(code, fname, opts)
+  }
+
+  async _runExAsync(code, fname, opts) {
+    opts = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+    if (opts.resetEnv) {this.reset()}
+    if (opts.resetLog) {this.clearLog()}
+    let js = await this.compileAsync(code, fname, opts.testOnly)
     try {
       this.__varslist[0].line = -1 // コンパイルエラーを調べるため
       const func = new Function(js) // eslint-disable-line
@@ -322,34 +342,36 @@ class NakoCompiler {
     return this
   }
 
+  runEx(code, fname, opts) {
+    return this._runEx(code, fname, opts)
+  }
+
+  async runExAsync(code, fname, opts) {
+    return this._runExAsync(code, fname, opts)
+  }
+
   test(code, fname) {
-    this.parser.filename = fname
-    return this._run(code, fname, false, true)
+    return this._runEx(code, fname, { testOnly: true })
   }
 
   run(code, fname) {
-    this.parser.filename = fname
-    return this._run(code, fname, false, false)
+    return this._runEx(code, fname, { resetLog: false })
   }
 
   runReset (code, fname) {
-    this.parser.filename = fname
-    return this._run(code, fname, true, false)
+    return this._runEx(code, fname, { resetLog: true })
   }
 
   async testAsync(code, fname) {
-    this.parser.filename = fname
-    return await this._runAsync(code, fname, false, true)
+    return await this._runExAsync(code, fname, { testOnly: true })
   }
 
   async runAsync(code, fname) {
-    this.parser.filename = fname
-    return await this._runAsync(code, fname, false, false)
+    return await this._runExAsync(code, fname, { resetLog: false })
   }
 
   async runResetAsync (code, fname) {
-    this.parser.filename = fname
-    return await this._runAsync(code, fname, true, false)
+    return await this._runExAsync(code, fname,  { resetLog: true })
   }
 
   clearLog () {
