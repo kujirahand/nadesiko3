@@ -836,17 +836,21 @@ class NakoParser extends NakoParserBase {
       const word = this.peek()
       const name = this.nodeToStr(word)
       try {
-        if (this.accept(['word', 'eq', this.yCalc]) || this.accept(['word', 'eq', this.ySentence]))
-          {return {
+        if (this.accept(['word', 'eq', this.yCalc]) || this.accept(['word', 'eq', this.ySentence])) {
+          if (this.y[2].type == 'eol') {
+            throw new Error('値が空です。')
+          }
+          return {
             type: 'let',
             name: this.y[0],
             value: this.y[2],
             line: this.y[0].line
-          }}
-        else
-          {throw new NakoSyntaxError(
-            `${name}への代入文で計算式に書き間違いがあります。`, word.line, this.filename)}
-
+          }
+        }
+        else {
+          throw new NakoSyntaxError(
+            `${name}への代入文で計算式に書き間違いがあります。`, word.line, this.filename)
+        }
       } catch (err) {
         throw new NakoSyntaxError(
           `${name}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`,
@@ -942,23 +946,25 @@ class NakoParser extends NakoParserBase {
       }
     }
     // ローカル変数定義（その２）
-    if (this.accept(['変数', 'word', 'eq', this.yCalc]))
-      {return {
+    if (this.accept(['変数', 'word', 'eq', this.yCalc])) {
+      return {
         type: 'def_local_var',
         name: this.y[1],
         vartype: '変数',
         value: this.y[3],
         line: this.y[0].line
-      }}
+      }
+    }
 
-    if (this.accept(['定数', 'word', 'eq', this.yCalc]))
-      {return {
+    if (this.accept(['定数', 'word', 'eq', this.yCalc])) {
+      return {
         type: 'def_local_var',
         name: this.y[1],
         vartype: '定数',
         value: this.y[3],
         line: this.y[0].line
-      }}
+      }
+    }
 
     return null
   }
