@@ -29,7 +29,7 @@ module.exports = {
     {name: 'number', pattern: /^\.\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
     {name: 'number', pattern: /^\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
     {name: 'ここから', pattern: /^(ここから)/},
-    {name: 'ここまで', pattern: /^(ここまで)/},
+    {name: 'ここまで', pattern: /^(ここまで|💧)/},
     {name: 'もし', pattern: /^もしも?/},
     // ならば ← 助詞として定義
     {name: '違えば', pattern: /^違(えば)?/},
@@ -60,7 +60,6 @@ module.exports = {
     {name: '(', pattern: /^\(/},
     {name: ')', pattern: /^\)/, readJosi: true},
     {name: '|', pattern: /^\|/},
-    {name: 'embed_code', pattern: /^JS\{{3}/, cbParser: src => cbString('JS', '}}}', src)},
     {name: 'string', pattern: /^R\{{3}/, cbParser: src => cbString('R', '}}}', src)},
     {name: 'string_ex', pattern: /^S\{{3}/, cbParser: src => cbString('S', '}}}', src)},
     {name: 'string_ex', pattern: /^文字列\{{3}/, cbParser: src => cbString('文字列', '}}}', src)},

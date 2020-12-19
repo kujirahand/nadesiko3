@@ -408,9 +408,6 @@ class NakoGen {
       case 'func_obj':
         code += this.convFuncObj(node)
         break
-      case 'embed_code':
-        code += '' + node.value + ''
-        break
       case 'bool':
         code += (node.value) ? 'true' : 'false'
         break
