@@ -271,7 +271,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'で']],
     fn: function (code, sys) {
-      sys.__self.run(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
+      sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
       return sys.__varslist[0]['表示ログ']
     }
   },
