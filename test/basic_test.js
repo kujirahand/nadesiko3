@@ -41,11 +41,11 @@ describe('basic', () => {
     cmp('a=30;「abc{a}abc」を表示', 'abc30abc')
     cmp('a=30;「abc｛a｝abc」を表示', 'abc30abc')
   })
-  it('raw string - R{{{ .. }}}', () => {
-    cmp('a=R{{{abc}}};aを表示', 'abc')
+  it('raw string - 🌿 .. 🌿', () => {
+    cmp('a=🌿abc🌿;aを表示', 'abc')
   })
-  it('EX string - S{{{{{ .. }}}}}', () => {
-    cmp('v=30;a=S{{{{{abc{v}abc}}}}};aを表示', 'abc30abc')
+  it('EX string - 🌴 .. 🌴', () => {
+    cmp('v=30;a=🌴abc{v}abc🌴;aを表示', 'abc30abc')
   })
   it('string - LF', () => {
     cmp('a=30;「abc\nabc」を表示', 'abc\nabc')
@@ -53,10 +53,10 @@ describe('basic', () => {
   it('space 「・」', () => {
     cmp('・a=30;・b=50「{a}-{b}」を表示', '30-50')
   })
-  it('string - 文字列{{{ ... }}}', () => {
-    cmp('文字列{{{aaa}}}を表示', 'aaa')
-    cmp('a=30;文字列{{{aaa{a}bbb}}}を表示', 'aaa30bbb')
-    cmp('a=30;文字列｛｛｛aaa{a}bbb｝｝｝を表示', 'aaa30bbb')
+  it('string - 🌴 ... 🌴', () => {
+    cmp('🌴aaa🌴を表示', 'aaa')
+    cmp('a=30;🌴aaa{a}bbb🌴を表示', 'aaa30bbb')
+    cmp('a=30;🌿aaa{a}bbb🌿を表示', 'aaa{a}bbb')
   })
   it('システム定数', () => {
     cmp('ナデシコエンジンを表示', 'nadesi.com/v3')
