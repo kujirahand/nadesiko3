@@ -181,6 +181,16 @@ function replaceRetMark(src) {
                 result += c
                 i++
                 continue
+            case '🌴':
+                eos = '🌴'
+                result += c
+                i++
+                continue
+            case '🌿':
+                eos = '🌿'
+                result += c
+                i++
+                continue
             case '【':
                 eos = '】'
                 result += c
