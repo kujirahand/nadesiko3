@@ -42,6 +42,7 @@ module.exports = {
     {name: 'lteq', pattern: /^(≦|<=|=<)/},
     {name: 'noteq', pattern: /^(≠|<>|!=)/},
     {name: 'eq', pattern: /^=/},
+    {name: 'line_comment', pattern: /^!(インデント構文|ここまでだるい)[^\n]*/},
     {name: 'not', pattern: /^!/},
     {name: 'gt', pattern: /^>/},
     {name: 'lt', pattern: /^</},
