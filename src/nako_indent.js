@@ -4,13 +4,13 @@
  * @return String of convert
  */
 function convert(code) {
-    // プログラム冒頭に「##インデント構文」があれば変換
-    const keywords = ['##インデント構文', '##ここまでだるい']
+    // プログラム冒頭に「!インデント構文」があれば変換
+    const keywords = ['!インデント構文', '!ここまでだるい']
     // 最初の30行をチェック
     const lines = code.split('\n', 30)
     let bConv = false
     lines.forEach((line) => {
-        const s9 = line.substr(0, 9).replace('＃', '#')
+        const s9 = line.substr(0, 8).replace('！', '!')
         if (keywords.indexOf(s9) >= 0) {
             bConv = true
             return true
