@@ -130,7 +130,21 @@ if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope
         self.close()
         break
       case 'run':
-        nako3.run(value)
+        nako3.runEx(value, undefined, {resetEnv: false, resetLog: false})
+        break
+      case 'trans':{
+          const codes = []
+          value.forEach(o => {
+            if (o.type === 'func') {
+              nako3.gen.nako_func[o.name] = o.content.meta
+              nako3.funclist[o.name] = o.content.func
+              nako3.__varslist[1][o.name] = () => {}
+            } else
+            if (o.type === 'val') {
+              nako3.__varslist[2][o.name] = o.content
+            }
+          })
+        }
         break
       case 'data':
         if (nako3.ondata) {
