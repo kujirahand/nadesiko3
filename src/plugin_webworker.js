@@ -22,6 +22,9 @@ const PluginWebWorker = {
                 break;
             }
           }
+          work.onerror = (event) => {
+            throw new Error(event.message)
+          }
         },
         inWorker: () => {
           return typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope
@@ -121,7 +124,7 @@ const PluginWebWorker = {
       } else {
         url = sys.__v0['ワーカーURL'] + 'wnako3webworker.js'
       }
-      myWorker = new Worker(url)
+      const myWorker = new Worker(url)
       if (myWorker) {
         sys._webworker.setNakoHandler(myWorker)
       }
@@ -252,6 +255,43 @@ const PluginWebWorker = {
     fn: function (msg, work, sys) {
       if (typeof sys === 'undefined') {sys = work; work = self}
       work.postMessage(msg)
+    },
+    return_none: true
+  },
+  'NAKOワーカー転送': { // @WORKERにユーザー定義関数またはユーザ定義のグローバル変数を転送する。 // @NAKOわーかーてんそう
+    type: 'func',
+    josi: [['を'], ['に','へ']],
+    isVariableJosi: true,
+    fn: function (datas, work, sys) {
+      if (typeof sys === 'undefined') {sys = work; work = self}
+      const obj = []
+      if (typeof datas === 'string') {datas = [datas]}
+      datas.forEach(data => {
+        if (typeof sys.__varslist[2][data] !== 'undefined') {
+          obj.push({
+            type: 'val',
+            name: data,
+            content: sys.__varslist[2][data]
+          })
+        } else
+        if (typeof sys.__varslist[1][data] !== 'undefined') {
+          obj.push({
+            type: 'func',
+            name: data,
+            content: {
+              meta: sys.gen.nako_func[data],
+              func: Object.assign({}, sys.funclist[data], { fn: null })
+            }
+          })
+        }
+      })
+      if (obj.length > 0) {
+        const msg = {
+          type: 'trans',
+          data: obj
+        }
+        work.postMessage(msg)
+      }
     },
     return_none: true
   }
