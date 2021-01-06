@@ -1453,6 +1453,7 @@ const PluginSystem = {
         f(timerId, sys)
       }, parseFloat(n) * 1000)
       sys.__timeout.unshift(timerId)
+      return timerId
     }
   },
   '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『タイマー停止』で停止できる) // @びょうごと
@@ -1467,26 +1468,54 @@ const PluginSystem = {
       }, parseFloat(n) * 1000)
       // タイマーIDを追加
       sys.__interval.unshift(timerId)
+      return timerId
     }
   },
   '秒タイマー開始時': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『秒毎』と同じ) // @びょうたいまーかいししたとき
     type: 'func',
     josi: [['を'], ['']],
     fn: function (f, n, sys) {
-      sys.__exec('秒毎', [f, n, sys])
+      return sys.__exec('秒毎', [f, n, sys])
     }
   },
-  'タイマー停止': { // @『秒毎』や『秒タイマー開始』で開始したタイマーを停止する // @たいまーていし
+  'タイマー停止': { // @『秒毎』『秒後』や『秒タイマー開始』で開始したタイマーを停止する // @たいまーていし
     type: 'func',
     josi: [['の', 'で']],
     fn: function (timerId, sys) {
-      clearInterval(timerId)
       const i = sys.__interval.indexOf(timerId)
       if (i >= 0) {
         sys.__interval.splice(i, 1)
-        sys.__interval.unshift(timerId)
+        clearInterval(timerId)
+        return true
       }
-    }
+      const j = sys.__timeout.indexOf(timerId)
+      if (j >= 0) {
+        sys.__timeout.splice(j, 1)
+        clearTimeout(timerId)
+        return true
+      }
+      return false
+    },
+    return_none: false
+  },
+  '全タイマー停止': { // @『秒毎』『秒後』や『秒タイマー開始』で開始したタイマーを全部停止する // @ぜんたいまーていし
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      // clearInterval
+      for (let i = 0; i < sys.__interval.length; i++) {
+        const timerId = sys.__interval[i];
+        clearInterval(timerId)
+      }
+      sys.__interval = []
+      // clearTimeout
+      for (let i = 0; i < sys.__timeout.length; i++) {
+        const timerId = sys.__timeout[i];
+        clearTimeout(timerId)
+      }
+      sys.__timeout = []
+    },
+    return_none: true
   },
   // @日時処理(簡易)
   '今': { // @現在時刻を「HH:mm:ss」の形式で返す // @いま
