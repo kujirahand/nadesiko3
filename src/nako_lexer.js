@@ -103,6 +103,14 @@ class NakoLexer {
         i++
         continue
       }
+      // N回をN|回に置換
+      if (t.type === 'word' && t.josi === '' && t.value.length >= 2) {
+        if (t.value.match(/回$/)) {
+          t.value = t.value.substr(0, t.value.length - 1)
+          tokens.splice(i + 1, 0, {type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: ''})
+          i++
+        }
+      }
       // 予約語の置換
       if (t.type === 'word' && reservedWords[t.value]) {
         t.type = reservedWords[t.value]
