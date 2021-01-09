@@ -138,10 +138,12 @@ module.exports = {
   'DOM属性設定': { // @DOMの属性Sに値Vを設定 // @DOMぞくせいせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
-    fn: function (dom, s, v) {
+    uses:['DOM和スタイル'],
+    fn: function (dom, s, v, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
-
+      const wa = sys.__v0['DOM和スタイル']
+      if (wa[s]) {s = wa[s]}
       dom[s] = v
     },
     return_none: true
@@ -149,10 +151,12 @@ module.exports = {
   'DOM属性取得': { // @DOMの属性Sを取得 // @DOMぞくせいしゅとく
     type: 'func',
     josi: [['の', 'から'], ['を']],
-    fn: function (dom, s) {
+    uses:['DOM和スタイル'],
+    fn: function (dom, s, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
-
+      const wa = sys.__v0['DOM和スタイル']
+      if (wa[s]) {s = wa[s]}
       return dom[s]
     }
   },
