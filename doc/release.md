@@ -26,13 +26,6 @@ npm run build
 npm run build:browsers
 ```
 
-Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、 `git clone` でnadesiko3win32のリポジトリを取得しておく必要がある。
-
-```
-npm run build:win32
-bash ./win32.bash
-```
-
 ## 3.npmにpublish
 
 package.jsonのバージョン番号を更新したことを確認する。npm publishでnpmに公開する。
@@ -49,5 +42,37 @@ npm publish
 
 リリース内容を告知する。
 
+## 6.Windowsバイナリ版のアップロード
 
+Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、 `git clone` でnadesiko3win32のリポジトリを取得しておく必要がある。
+
+```
+npm run build:win32
+bash ./win32.bash
+```
+
+nadesiko3win32のフォルダに移動
+
+```
+cd ../nadesiko3win32
+```
+
+なお、Windowsで実行してモジュールの最新版を取得
+
+```
+nodejs\npm install --production
+nodejs\npm audit fix
+```
+
+次に、7zipでモジュールを固める。
+
+```
+bin\7z  -mx=9 a node_modules.7z node_modules
+```
+最後にGitにアップする。
+
+```
+git commit -a
+git push
+```
 
