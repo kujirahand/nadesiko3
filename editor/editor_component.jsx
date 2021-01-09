@@ -20,7 +20,12 @@ export default class EditorComponent extends React.Component {
 
   render () {
     const canvasId = 'nako3_canvas_1'
-    const preCodeList = ['# 自動実行されるコード (編集不可)', `カメ描画先は『#${canvasId}』。`, `『#${canvasId}』へ描画開始。`]
+    const divId = 'nako3_div_1'
+    const preCodeList = [
+      '# 自動実行されるコード (編集不可)', 
+      `カメ描画先は『#${canvasId}』。`, 
+      `『#${canvasId}』へ描画開始。`,
+      `『#${divId}』へDOM親要素設定。`]
     const preCode = preCodeList.join('\n')
     return (
       <div>
@@ -38,7 +43,7 @@ export default class EditorComponent extends React.Component {
                                  this.setState({err: null, usedFuncs: []})
                                }}
                                onErrorChanged={(e) => this.setState({err: e})} />
-        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} canvasId={canvasId} />
+        <EditorInformationComponent info={this.info.join('\n')} err={this.state.err} canvasId={canvasId} divId={divId} />
         <EditorFunctionInformationComponent usedFuncs={this.state.usedFuncs}/>
         <EditorTestInformationComponent/>
         <CommandListComponent onClick={(e) => {
