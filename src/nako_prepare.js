@@ -93,13 +93,13 @@ class NakoPrepare {
       src = src.split(key1).join(key2) // replace all
       replaceList.push([key1, key2])
     })
-
     
     // 一文字ずつ全角を半角に置換する
     let i = 0
     while (i < src.length) {
       const c = src.charAt(i)
-      // 一般的な文字列のとき
+      const ch2 = src.substr(i, 2)
+      // 文字列のとき
       if (flagStr) {
         if (c === endOfStr) {
           flagStr = false
@@ -112,13 +112,13 @@ class NakoPrepare {
         i++
         continue
       }
-      // 多重波括弧の文字列
+      // 絵文字制御による文字列のとき
       if (flagStr2) {
-        if (src.substr(i, endOfStr.length) === endOfStr) {
+        if (ch2 === endOfStr) {
           flagStr2 = false
           replaceList.forEach((key) => { str = str.split(key[1]).join(key[0]) })
           res += str + endOfStr
-          i += endOfStr.length
+          i += 2
           continue
         }
         str += c
@@ -150,6 +150,15 @@ class NakoPrepare {
         str = ''
         continue
       }
+      // JavaScriptの内部的には文字列はUTF-16で扱われてるので charAt を使う場合 絵文字が2文字扱いになる --- #726
+      if (ch2 === '🌴' || ch2 === '🌿') {
+        res += ch2
+        i+=2
+        flagStr2 = true
+        endOfStr = ch2
+        str = ''
+        continue
+      }
       const c1 = this.convert1ch(c)
       if (c1 === '"' || c1 === '\'') {
         res += c1
@@ -159,32 +168,30 @@ class NakoPrepare {
         str = ''
         continue
       }
-      if (c1 === 'S' || c1 === 'R') {
+      // ラインコメントを飛ばす
+      if (c1 === '#') {
         res += c1
         i++
-        if (src.substr(i, 5) === '{{{{{') {
-          flagStr2 = true
-          endOfStr = '}}}}}'
-          str = ''
-          continue
-        }
-        if (src.substr(i, 4) === '{{{{') {
-          flagStr2 = true
-          endOfStr = '}}}}'
-          str = ''
-          continue
-        }
-        if (src.substr(i, 3) === '{{{') {
-          flagStr2 = true
-          endOfStr = '}}}'
-          str = ''
-          continue
-        }
+        flagStr = true // 本当はコメントだけど便宜上
+        endOfStr = '\n'
+        str = ''
+        continue
+      }
+      // ラインコメントを飛ばす
+      if (ch2 === '//') {
+        res += ch2
+        i += 2
+        flagStr = true
+        endOfStr = '\n'
+        str = ''
         continue
       }
       // 変換したものを追加
       res += c1
       i++
+    }
+    if (flagStr || flagStr2) {
+      res += str + endOfStr
     }
     return res
   }

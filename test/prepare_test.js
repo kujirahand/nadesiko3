@@ -34,6 +34,8 @@ describe('prepare', () => {
     assert.equal(b, '123『１２３』123')
     const c = p.convert('１２３“あいう”')
     assert.equal(c, '123“あいう”')
+    const d = p.convert('１２３“１２３”１２３')
+    assert.equal(d, '123“１２３”123')
   })
   it('str2', () => {
     const a = p.convert('１２３"１２３"１２３')
@@ -41,11 +43,17 @@ describe('prepare', () => {
     const b = p.convert('１２３\'１２３\'１２３')
     assert.equal(b, '123\'１２３\'123')
   })
-  it('str3', () => {
-    const a = p.convert('１２３S{{{１２３}}}１２３')
-    assert.equal(a, '123S{{{１２３}}}123')
-    const b = p.convert('１２３S{{{{{１２３}}}}}１２３')
-    assert.equal(b, '123S{{{{{１２３}}}}}123')
+  it('str3 - 全角を半角自動変換', () => {
+    const d = p.convert('１２３"１２３"１２３')
+    assert.equal(d, '123"１２３"123')
+    const c = p.convert('１２３\'１２３\'１２３')
+    assert.equal(c, '123\'１２３\'123')
+  })
+  it('str4 - 絵文字文字列 - 全角を半角自動変換', () => {
+    const a = p.convert('１２３🌴１２３🌴１２３')
+    assert.equal(a, '123🌴１２３🌴123')
+    const b = p.convert('１２３🌿１２３🌿１２３')
+    assert.equal(b, '123🌿１２３🌿123')
   })
   it('CR+LF1', () => {
     const a = p.convert('123\r\n456\r789')
@@ -58,12 +66,12 @@ describe('prepare', () => {
     assert.equal(a, 'A= 1 + _ \n1 + 2  \nAを表示')
   })
   it('Multibyte Flag to Singlebyte Flag', () => {
-    const a = p.convert('！＃＄１２３４５')
-    assert.equal(a, '!#$12345')
+    const a = p.convert('！＄１２３４５＃')
+    assert.equal(a, '!$12345#\n')
   })
   it('convertTable', () => {
     const a = p.convert('123※456')
-    assert.equal(a, '123#456')
+    assert.equal(a, '123#456\n') // #はコメント扱い
     const b = p.convert('123、456。') // 読点は変換しない方針に (#276)
     assert.equal(b, '123、456;')
   })
