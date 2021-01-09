@@ -160,8 +160,8 @@ module.exports = {
       return dom[s]
     }
   },
-  'DOM和スタイル': {
-    type: 'const', // @DOMわすたいる
+  'DOM和スタイル': { // const // @DOMわすたいる
+    type: 'const',
     value: {
       '幅': 'width',
       '高さ': 'height',
