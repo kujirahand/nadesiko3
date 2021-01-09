@@ -181,6 +181,7 @@ module.exports = {
   'DOMスタイル設定': { // @DOMのスタイルAに値Bを設定 // @DOMすたいるせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
+    uses: ['DOM和スタイル'],
     fn: function (dom, s, v, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       const wa = sys.__v0['DOM和スタイル']
@@ -216,18 +217,21 @@ module.exports = {
   'DOMスタイル取得': { // @DOMのSTYLEの値を取得 // @DOMすたいるしゅとく
     type: 'func',
     josi: [['の'], ['を']],
-    fn: function (dom, style) {
+    uses: ['DOM和スタイル'],
+    fn: function (dom, style, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
-
       if (!dom) {return ''}
+      const wa = sys.__v0['DOM和スタイル']
+      if (wa[style]) {style = wa[style]}
       return dom.style[style]
     }
   },
   'DOMスタイル一括取得': { // @DOMのSTYLE(配列で複数指定)の値を取得 // @DOMすたいるいっかつしゅとく
     type: 'func',
     josi: [['の'], ['を']],
-    fn: function (dom, style) {
+    uses: ['DOM和スタイル'],
+    fn: function (dom, style, sys) {
       const res = {}
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
@@ -235,19 +239,22 @@ module.exports = {
       if (!dom) {return res}
       if (style instanceof String)
         {style = [style]}
-
+        
+      const wa = sys.__v0['DOM和スタイル']
       if (style instanceof Array) {
-        for (let i = 0; i < style.length; i++) {
-          const key = style[i]
+        style.forEach((key) => {
+          if (wa[key]) {key = wa[key]}
+          res[key] = dom.style[key]
+        })
+        return res
+      }
+      if (style instanceof Object) {
+        for (const key in style) {
+          if (wa[key]) {key = wa[key]}
           res[key] = dom.style[key]
         }
         return res
       }
-      if (style instanceof Object)
-        {for (let key in style)
-          {res[key] = dom.style[key]}}
-
-
       return dom.style[style]
     }
   },
