@@ -30,8 +30,10 @@ module.exports = {
     fn: function (obj, sys) {
       if (!obj) throw new Error('オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください')
       obj.pause()
+      sys.__v0['オーディオ再生位置'] = 0 // 暫定
+      // オーディオ停止で再生位置が0に戻らない問題(#715)
       setTimeout(() => {
-        sys.__v0['オーディオ再生位置'] = 0
+        sys.__v0['オーディオ再生位置'] = 0 // イベント後停止
       }, 10)
     },
     return_none: true
