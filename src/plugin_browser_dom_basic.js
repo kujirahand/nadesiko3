@@ -165,6 +165,7 @@ module.exports = {
     value: {
       '幅': 'width',
       '高さ': 'height',
+      '高': 'height',
       '背景色': 'background-color',
       '色': 'color',
       'マージン': 'margin',
