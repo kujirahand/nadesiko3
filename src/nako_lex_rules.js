@@ -6,6 +6,7 @@ const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
 const josi = require('./nako_josi_list')
 const josiRE = josi.josiRE
 const hira = /^[ぁ-ん]/
+const allHiragana = /^[ぁ-ん]+$/
 
 module.exports = {
   rules: [
@@ -204,10 +205,14 @@ function cbString (beginTag, closeTag, src) {
 }
 
 function trimOkurigana (s) {
-  if (!hira.test(s))
-    {s = s.replace(/[ぁ-ん]+/g, '')}
-
-  return s
+  // ひらがなから始まらない場合、送り仮名を削除。(例)置換する
+  if (!hira.test(s)) {
+    return s.replace(/[ぁ-ん]+/g, '')
+  }
+  // 全てひらがな？ (例) どうぞ
+  if (allHiragana.test(s)) {return s}
+  // 末尾のひらがなのみ (例)お願いします →お願
+  return s.replace(/[ぁ-ん]+$/g, '')
 }
 
 function parseNumber (n) {

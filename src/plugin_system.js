@@ -232,6 +232,42 @@ const PluginSystem = {
     }
   },
 
+  // @敬語
+  'ください': { // @敬語対応のため // @ください
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      if (!sys.__reisetu) {sys.__reisetu = 0}
+      sys.__reisetu++
+    },
+    return_none: true
+  },
+  'お願': { // @ソースコードを読む人を気持ちよくする // @おねがいします
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      if (!sys.__reisetu) {sys.__reisetu = 0}
+      sys.__reisetu++
+    },
+    return_none: true
+  },
+  '拝啓': { // @ソースコードを読む人を気持ちよくする // @はいけい
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      sys.__reisetu = 0
+    },
+    return_none: true
+  },
+  '礼節レベル取得': { // @(お遊び)敬語を何度使ったか返す // @おねがいします
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      if (!sys.__reisetu) {sys.__reisetu = 0}
+      return sys.__reisetu
+    }
+  },
+
   // @特殊命令
   'JS実行': { // @JavaScriptのコードSRCを実行する(変数sysでなでしこシステムを参照できる) // @JSじっこう
     type: 'func',
