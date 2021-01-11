@@ -223,9 +223,8 @@ const PluginTurtle = {
           }
         },
         createTurtle: function (imageUrl, sys) {
-          if (!sys._turtle.canvas) {
-            sys._turtle.setupCanvas(sys)
-          }
+          // キャンバス情報は毎回参照する (#734)
+          sys._turtle.setupCanvas(sys)
           const cv = sys._turtle.canvas
           // カメの情報を sys._turtle リストに追加
           const id = sys._turtle.list.length
