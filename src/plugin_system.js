@@ -137,14 +137,10 @@ const PluginSystem = {
   // @四則演算
   '足': { // @AとBを足す // @たす
     type: 'func',
-    josi: [['を'], ['に', 'と']],
-    isVariableJosi: true,
-    fn: function (b, ...a) {
-      // 末尾のシステム変数を除外
-      a.pop()
-
-      a.push(b)
-      return a.reduce((p, c) => p + c)
+    josi: [['に', 'と'], ['を']],
+    isVariableJosi: false,
+    fn: function (a, b) {
+      return a + b
     }
   },
   '引': { // @AからBを引く // @ひく
@@ -222,6 +218,17 @@ const PluginSystem = {
     josi: [['が'], ['から'], ['の']],
     fn: function (v, a, b) {
       return (a <= v) && (v <= b)
+    }
+  },
+  '連続加算': { // @A1+A2+A3...にBを足す // @れんぞくかさん
+    type: 'func',
+    josi: [['を'], ['に', 'と']],
+    isVariableJosi: true,
+    fn: function (b, ...a) {
+      // 末尾のシステム変数を除外
+      a.pop()
+      a.push(b)
+      return a.reduce((p, c) => p + c)
     }
   },
 
