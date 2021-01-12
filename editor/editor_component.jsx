@@ -23,7 +23,7 @@ export default class EditorComponent extends React.Component {
     const divId = 'nako3_div_1'
     const preCodeList = [
       '# 自動実行されるコード (編集不可)', 
-      `カメ描画先は『#${canvasId}』。`, 
+      `カメ描画先は『#${canvasId}』。カメ全消去。`, 
       `『#${canvasId}』へ描画開始。`,
       `『#${divId}』へDOM親要素設定。`]
     const preCode = preCodeList.join('\n')

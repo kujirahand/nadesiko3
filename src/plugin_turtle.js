@@ -86,12 +86,16 @@ const PluginTurtle = {
             {if (!tt.flagDown) {return}}
           
           const ctx = this.ctx
-          ctx.beginPath()
-          ctx.lineWidth = tt.lineWidth
-          ctx.strokeStyle = tt.color
-          ctx.moveTo(x1, y1)
-          ctx.lineTo(x2, y2)
-          ctx.stroke()
+          if (tt.flagBegeinPath) {
+            ctx.lineTo(x2, y2)
+          } else {
+            ctx.beginPath()
+            ctx.lineWidth = tt.lineWidth
+            ctx.strokeStyle = tt.color
+            ctx.moveTo(x1, y1)
+            ctx.lineTo(x2, y2)
+            ctx.stroke()
+          }
         },
         doMacro: function (tt, wait) {
           const me = this
@@ -106,6 +110,48 @@ const PluginTurtle = {
               // 起点を移動する
               tt.x = m[1]
               tt.y = m[2]
+              break
+            case 'begin':
+              // 描画を明示的に開始する
+              this.ctx.beginPath()
+              this.ctx.moveTo(tt.x, tt.y)
+              tt.flagBegeinPath = true
+              break
+            case 'close':
+              // パスを閉じる
+              this.ctx.closePath()
+              tt.flagBegeinPath = false
+              break
+            case 'fill':
+              if (tt.flagBegeinPath) {
+                this.ctx.closePath()
+                tt.flagBegeinPath = false
+              }
+              this.ctx.fill()
+              break
+            case 'stroke':
+              if (tt.flagBegeinPath) {
+                this.ctx.closePath()
+                tt.flagBegeinPath = false
+              }
+              this.ctx.stroke()
+              break
+            case 'text':
+              this.ctx.fillText(m[1], tt.x, tt.y)
+              break
+            case 'textset':
+              this.ctx.font = m[1]
+              break
+            case 'fillStyle':
+              this.ctx.fillStyle = m[1]
+              break
+            case 'fill':
+              if (tt.flagBegeinPath) {
+                this.ctx.closePath()
+                tt.flagBegeinPath = false
+              }
+              this.ctx.fill()
+              console.log('ctx.fill()')
               break
             case 'mv': {
               // 線を引く
@@ -149,8 +195,10 @@ const PluginTurtle = {
             }
             case 'color':
               tt.color = m[1]
+              this.ctx.strokeStyle = tt.color
               break
             case 'size':
+              this.ctx.lineWidth = tt.lineWidth
               tt.lineWidth = m[1]
               break
             case 'penOn':
@@ -241,6 +289,7 @@ const PluginTurtle = {
             color: 'black',
             lineWidth: 4,
             flagDown: true,
+            flagBegeinPath: false,
             f_update: true,
             flagLoaded: false,
             f_visible: true,
@@ -433,11 +482,97 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
+  'カメパス開始': { // @カメで明示的にパスの描画を開始する // @かめぱすかいし
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['begin'])
+      sys._turtle.setTimer()
+    }
+  },
+  'カメパス閉': { // @カメでパスを明示的に閉じる(省略可能) // @かめぱすとじる
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['close'])
+      sys._turtle.setTimer()
+    }
+  },
+  'カメパス線引': { // @カメでパスを閉じて、カメペン色設定で指定した色で枠線を引く // @かめぱすせんひく
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['stroke'])
+      sys._turtle.setTimer()
+    }
+  },
+  'カメパス塗': { // @カメでパスを閉じて、カメ塗り色設定で指定した色で塗りつぶす // @かめぱすぬる
+    type: 'func',
+    josi: [],
+    fn: function (sys) {
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['fill'])
+      sys._turtle.setTimer()
+    }
+  },
+  'カメ文字描画': { // @カメの位置に文字Sを描画 // @かめもじびょうが
+    type: 'func',
+    josi: [['を', 'と', 'の']],
+    fn: function (s, sys) {
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['text', s])
+      sys._turtle.setTimer()
+    }
+  },
+  'カメ文字設定': { // @カメ文字描画で描画するテキストサイズやフォント(48px serif)などを設定 // @かめもじせってい
+    type: 'func',
+    josi: [['に', 'へ', 'で']],
+    fn: function (s, sys) {
+      s = '' + s // 文字列に
+      if (s.match(/^\d+$/)) {
+        s = s + "px serif"
+      } else if (s.match(/^\d+(px|em)$/)) {
+        s = s + " serif"
+      }
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['textset', s])
+      sys._turtle.setTimer()
+    }
+  },
+  'カメ塗色設定': { // @カメパスの塗り色をCに設定する // @かめぬりいろせってい
+    type: 'func',
+    josi: [['に', 'へ']],
+    fn: function (c, sys) {
+      const tt = sys._turtle.getCur()
+      tt.mlist.push(['fillStyle', c])
+      sys._turtle.setTimer()
+    },
+    return_none: true
+  },
   'カメ全消去': { // @表示しているカメと描画内容を全部消去する // @かめぜんしょうきょ
     type: 'func',
     josi: [],
     fn: function (sys) {
       sys._turtle.clearAll()
+    },
+    return_none: true
+  },
+  'カメコマンド実行': { // @カメにコマンドSを実行する。コマンドは改行か「;」で区切り引数はカンマで区切る // @かめこまんどじっこう
+    type: 'func',
+    josi: [['の', 'を']],
+    fn: function (cmd, sys) {
+      const tt = sys._turtle.getCur()
+      const a = cmd.split(/(\n|\;)/)
+      for (let i = 0; i < a.length; i++) {
+        let c = a[i]
+        c = c.replace(/^([a-zA-Z_]+)\s*(\d+)/, '$1,$2')
+        ca = c.split(/\s*,\s*/)
+        tt.mlist.push(ca)
+      }
+      sys._turtle.setTimer()
     },
     return_none: true
   },
