@@ -560,7 +560,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメコマンド実行': { // @カメにコマンドSを実行する。コマンドは改行か「;」で区切り引数はカンマで区切る // @かめこまんどじっこう
+  'カメコマンド実行': { // @カメにコマンドSを実行する。コマンドは改行か「;」で区切る。コマンドと引数は「=」で区切り引数はかカンマで区切る // @かめこまんどじっこう
     type: 'func',
     josi: [['の', 'を']],
     fn: function (cmd, sys) {
@@ -569,6 +569,7 @@ const PluginTurtle = {
       for (let i = 0; i < a.length; i++) {
         let c = a[i]
         c = c.replace(/^([a-zA-Z_]+)\s*(\d+)/, '$1,$2')
+        c = c.replace(/^([a-zA-Z_]+)\s*\=/, '$1,')
         ca = c.split(/\s*,\s*/)
         tt.mlist.push(ca)
       }
