@@ -156,7 +156,7 @@ module.exports = {
       })
     }
   },
-  'POSTフォーム送信': { // @AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTふぉーむそうしん
+  'POSTフォーム送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTふぉーむそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     fn: function (url, params, sys) {
