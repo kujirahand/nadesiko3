@@ -5,7 +5,7 @@ describe('literal_test', () => {
   nako.debug = false
   const cmp = (code, res) => {
     if (nako.debug) console.log('code=' + code)
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   const err = (code) => {
     if (nako.debug) console.log('code=' + code)
@@ -23,7 +23,7 @@ describe('literal_test', () => {
     cmp('非数を表示', 'NaN')
   })
   it('無限大', () => {
-    cmp('3/無限大を表示', 0)
+    cmp('3/無限大を表示', '0')
   })
   describe('十進法のテスト', () => {
     //基本的に（整数部）（小数部）（指数部）です

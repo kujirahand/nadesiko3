@@ -10,7 +10,7 @@ describe('require_nako3_test', () => {
       console.log('code=' + code)
     }
     const ret = nako.runReset(code)
-    assert.equal(ret.log, res)
+    assert.strictEqual(ret.log, res)
   }
   it('「ファイルを取り込む」', () => {
     cmp('!「test/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。', '5\n8')

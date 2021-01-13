@@ -14,7 +14,7 @@ describe('node_test(cnako)', () => {
       console.log('code=' + code)
       console.log('result=' + result)
     }
-    assert.equal(result, exRes)
+    assert.strictEqual(result, exRes)
   }
   // --- バージョンチェック ---
   it('ナデシコバージョン:src/plugin_system.jsを正しく設定しているか？', () => {

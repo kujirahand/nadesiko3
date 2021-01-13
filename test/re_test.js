@@ -8,7 +8,7 @@ describe('re_test', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   // --- test ---
   it('正規表現マッチ - 基本', () => {

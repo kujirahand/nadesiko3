@@ -10,7 +10,7 @@ describe('plugin_browser_test', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   // --- test ---
   it('RGB', () => {

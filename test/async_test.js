@@ -7,7 +7,7 @@ describe('async_test', () => {
   nako3.debug = debug
   const cmp = (code, exRes) => {
     const result = nako3.runReset(code).log
-    assert.equal(result, exRes)
+    assert.strictEqual(result, exRes)
   }
   const exe = (code) => {
     nako3.runReset(code)

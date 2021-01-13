@@ -10,7 +10,7 @@ describe('calc_test.js', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   it('basic', () => {
     cmp('3を表示', '3')
@@ -128,7 +128,7 @@ describe('calc_test.js', () => {
     cmp('A=0xF0>>4;Aを表示', '15')
     cmp('A=0xF<<4;Aを表示', '240')
   })
-  it('連文で計算', () => {
+  it('連文で計算 (#729)', () => {
     cmp('1に2を足して3を足して4を引いて5を掛けて2で割って表示', '5')
     cmp('2に3を掛けて4を足して5で割って表示', '2')
   })

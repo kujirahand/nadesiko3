@@ -15,7 +15,7 @@ describe('plugin_node_test', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
     if (nako.debug) console.log('code=' + code)

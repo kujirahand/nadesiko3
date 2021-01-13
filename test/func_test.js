@@ -7,11 +7,11 @@ describe('func_test', () => {
   nako.debugLexer = false
   const cmp = (code, res) => {
     if (nako.debug) console.log('code=' + code)
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmpWithoutReset = (code, res) => {
     if (nako.debug) console.log('code=' + code)
-    assert.equal(nako.run(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   // --- test ---
 

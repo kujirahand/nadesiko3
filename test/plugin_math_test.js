@@ -14,7 +14,7 @@ describe('plugin_math_test', () => {
       if (nako.debug) {
         console.log('code=' + c)
       }
-      assert.equal(nako.runReset(c).log, res)
+      assert.strictEqual(nako.runReset(c).log, res)
     }
   }
 

@@ -8,7 +8,7 @@ describe('debug', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   // --- test ---
   it('print simple', () => {

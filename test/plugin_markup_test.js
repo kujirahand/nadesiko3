@@ -22,7 +22,7 @@ describe('plugin_markup_test', () => {
         console.log('code=' + c)
       }
 
-      assert.equal(nako.runReset(c).log, res)
+      assert.strictEqual(nako.runReset(c).log, res)
     }
   }
 

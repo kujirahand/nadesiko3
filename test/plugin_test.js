@@ -10,7 +10,7 @@ describe('plugin_test', () => {
       console.log('code=' + code)
     }
     const ret = nako.runReset(code)
-    assert.equal(ret.log, res)
+    assert.strictEqual(ret.log, res)
   }
   it('「取り込む」', () => {
     cmp('!「nadesiko3-hoge」を取り込む。\n3と5をHOGE足して、表示。', '8')

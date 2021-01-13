@@ -10,7 +10,7 @@ describe('flow_test', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   it('もし', () => {
     cmp('もし3>1ならば「あ」と表示。', 'あ')

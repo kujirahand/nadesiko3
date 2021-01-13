@@ -9,7 +9,7 @@ describe('plugin_system_test', () => {
     if (nako.debug)
       console.log('code=' + code)
 
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmpex = (code, exinfo) => {
     if (nako.debug) {
@@ -47,16 +47,16 @@ describe('plugin_system_test', () => {
     cmp('30の変数型確認して表示。', 'number')
   })
   it('SIN/COS/TAN', () => {
-    cmp('SIN(1)を表示。', Math.sin(1))
-    cmp('COS(1)を表示。', Math.cos(1))
-    cmp('TAN(1)を表示。', Math.tan(1))
+    cmp('SIN(1)を表示。', '' + Math.sin(1))
+    cmp('COS(1)を表示。', '' + Math.cos(1))
+    cmp('TAN(1)を表示。', '' + Math.tan(1))
   })
   it('RGB', () => {
     cmp('RGB(255,255,0)を表示。', '#ffff00')
   })
   it('LOGN', () => {
-    cmp('LOGN(10,10)を表示。', Math.LOG10E * Math.log(10))
-    cmp('LOGN(2,10)を表示。', Math.LOG2E * Math.log(10))
+    cmp('LOGN(10,10)を表示。', '' + (Math.LOG10E * Math.log(10)))
+    cmp('LOGN(2,10)を表示。', '' + (Math.LOG2E * Math.log(10)))
   })
   it('文字挿入', () => {
     cmp('「12345」の2に「**」を文字挿入して表示', '1**2345')

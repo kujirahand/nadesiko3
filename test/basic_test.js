@@ -8,7 +8,7 @@ describe('basic', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmpNakoFuncs = (code, res) => {
     if (nako.debug) {
@@ -16,7 +16,7 @@ describe('basic', () => {
     }
 
     nako.runReset(code)
-    assert.deepEqual(nako.usedFuncs, res)
+    assert.deepStrictEqual(nako.usedFuncs, res)
   }
   // --- test ---
   it('print simple', () => {

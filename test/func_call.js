@@ -10,7 +10,7 @@ describe('関数呼び出しテスト', () => {
     if (nako.debug)
       console.log('code=' + code)
 
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
     if (nako.debug) console.log('code=' + code)
@@ -57,7 +57,7 @@ describe('関数呼び出しテスト', () => {
   it('階乗計算 - 再帰', () => {
     cmp('●(VをAのBで)階乗計算とは;' +
       'もし、Bが0以下ならば、Vを戻す。;(V*A)をAの(B-1)で階乗計算して戻す。' +
-      'ここまで。;1を2の3で階乗計算して表示。', 8)
+      'ここまで。;1を2の3で階乗計算して表示。', '8')
   })
   it('連続文後の代入', () => {
     cmp('「2017/09/01T00:00:99」の「T」を「 」に置換して「 」まで切り取り、対象日に代入。対象日を表示。', '2017/09/01')

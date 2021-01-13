@@ -8,7 +8,7 @@ describe('lex_test', () => {
     if (nako.debug)
       console.log('code=' + code)
 
-    assert.equal(nako.runReset(code).log, res)
+    assert.strictEqual(nako.runReset(code).log, res)
   }
   // --- test ---
   it('送り仮名の省略テスト', () => {
