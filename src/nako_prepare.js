@@ -170,7 +170,7 @@ class NakoPrepare {
         str = ''
         continue
       }
-      // ラインコメントを飛ばす
+      // ラインコメントを飛ばす (#725)
       if (c1 === '#') {
         res += c1
         i++
@@ -180,11 +180,20 @@ class NakoPrepare {
         continue
       }
       // ラインコメントを飛ばす
-      if (ch2 === '//') {
-        res += ch2
+      if (ch2 === '//' || ch2 == '／／') {
+        res += '//' // 強制的に'//'とする
         i += 2
         flagStr = true
         endOfStr = '\n'
+        str = ''
+        continue
+      }
+      // 複数行コメント内を飛ばす (#731)
+      if (ch2 === '/*') {
+        res += ch2
+        i += 2
+        flagStr2 = true
+        endOfStr = '*/'
         str = ''
         continue
       }

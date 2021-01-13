@@ -89,4 +89,8 @@ describe('prepare', () => {
     const c = p.convert('定数のN=30')
     assert.strictEqual(c, '定数のN=30')
   })
+  it('複数行コメント内にある文字列記号でエラーになる問題(#731)', () => {
+    const a = p.convert('/* " */')
+    assert.strictEqual(a, '/* " */')
+  })
 })
