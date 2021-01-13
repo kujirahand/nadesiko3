@@ -75,8 +75,10 @@ describe('prepare', () => {
     assert.strictEqual(b, '123、456;')
   })
   it('「，．」を「、。」として扱う(#735)', () => {
-    const a = p.convert('，．')
-    assert.strictEqual(a, '、;')
+    const a = p.convert('３．１４')
+    assert.strictEqual(a, '3.14')
+    const b = p.convert('，')
+    assert.strictEqual(b, '、')
   })
   it('リンゴの値段→__リンゴ_的_値段__', () => {
     // 「AのB=C」のような場合置換する (#631)
