@@ -1,8 +1,8 @@
 const nakoVersion = {
-  'version': '3.1.15',
+  'version': '3.1.16',
   'major': 3,
   'minor': 1,
-  'patch': 15
+  'patch': 16
 }
 
 module.exports = nakoVersion
