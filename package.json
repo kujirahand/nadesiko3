@@ -110,7 +110,7 @@
     "mocha-css": "^1.0.1",
     "multer": "^1.4.2",
     "nadesiko3-hoge": "0.0.3",
-    "npm-check-updates": "^10.2.1",
+    "npm-check-updates": "^11.0.2",
     "prop-types": "^15.7.2",
     "pump": "^3.0.0",
     "react": "^17.0.1",
