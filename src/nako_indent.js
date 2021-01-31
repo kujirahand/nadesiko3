@@ -1,3 +1,5 @@
+const NakoPrepare = require('./nako_prepare')
+
 /**
  * インデント構文指定があればコードを変換する
  * @param {String} code 
@@ -124,23 +126,32 @@ function countIndent(line) {
 
 
 function replaceRetMark(src) {
+    const prepare = new NakoPrepare()  // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
     const len = src.length
     let result = ''
     let eos = ''
     let i = 0
     while (i < len) {
         const c = src.charAt(i)
+        const ch2 = src.substr(i, 2)
+        const cPrepared = prepare.convert1ch(c)
+        const ch2Prepared = [...ch2].map((c) => prepare.convert1ch(c)).join("")
+
         // eosか?
         if (eos != '') {
-            if (c == eos) {
+            // srcのi文字目以降がeosで始まるなら文字列を終了、そうでなければ1文字進める
+            if (eos === (eos.length === 1 ? cPrepared : ch2Prepared)) {
+                result += (eos.length === 1 ? c : ch2)
+                i += eos.length
                 eos = ''
-            }
-            if (c == '\n') {
-                result += SpecialRetMark
             } else {
-                result += c
+                if (c == '\n') {
+                    result += SpecialRetMark
+                } else {
+                    result += c
+                }
+                i++
             }
-            i++
             continue
         }
         // 文字列の改行も無視する
@@ -196,7 +207,30 @@ function replaceRetMark(src) {
                 result += c
                 i++
                 continue
-            }
+        }
+
+        // 行コメント
+        if (cPrepared === '#') {
+            eos = '\n'
+            result += c
+            i++
+            continue
+        }
+        if (ch2Prepared === '//') {
+            eos = '\n'
+            result += ch2
+            i += 2
+            continue
+        }
+
+        // 複数行コメント
+        if (ch2Prepared === '/*') {
+            eos = '*/'
+            result += ch2
+            i += 2
+            continue
+        }
+
         result += c
         i++
     }
