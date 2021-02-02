@@ -154,6 +154,30 @@ class NakoLexer {
     }
   }
 
+  /**
+   * 文字列を{と}の部分で分割する。中括弧が対応していない場合nullを返す。
+   * @param code {string}
+   * @returns {string[] | null}
+   */
+  splitStringEx(code) {
+    /** @type {string[]} */
+    const list = []
+
+    // "A{B}C{D}E" -> ["A", "B}C", "D}E"] -> ["A", "B", "C", "D", "E"]
+    // "A{B}C}D{E}F" -> ["A", "B}C}D", "E}F"] -> ["A", "B", "C}D", "E", "F"]
+    const arr = code.split(/[{｛]/)
+    list.push(arr[0])
+    for (const s of arr.slice(1)) {
+      const end = s.replace("｝", "}").indexOf("}")
+      if (end === -1) {
+        return null
+      }
+      list.push(s.slice(0, end), s.slice(end + 1))
+    }
+
+    return list
+  }
+
   replaceWord (tokens) {
     let comment = []
     let i = 0
@@ -255,8 +279,8 @@ class NakoLexer {
 
           if (rule.name === 'string_ex') {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
-            const list = rp.res.split(/[{}｛｝]/)
-            if (list.length >= 1 && list.length % 2 === 0)
+            const list = this.splitStringEx(rp.res)
+            if (list === null)
               {throw new Error('字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。')}
 
             for (let i = 0; i < list.length; i++) {
