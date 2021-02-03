@@ -140,7 +140,7 @@ function replaceRetMark(src) {
         // eosか?
         if (eos != '') {
             // srcのi文字目以降がeosで始まるなら文字列を終了、そうでなければ1文字進める
-            if (eos === src.substr(i, eos.length)) {
+            if (eos === (eos.length === 1 ? cPrepared : ch2Prepared)) {
                 result += src.substr(i, eos.length)
                 i += eos.length
                 eos = ''
@@ -155,7 +155,7 @@ function replaceRetMark(src) {
             continue
         }
         // 文字列の改行も無視する
-        switch (c) {
+        switch (cPrepared) {
             case '"':
             case '\'':
                 eos = c
@@ -182,18 +182,8 @@ function replaceRetMark(src) {
                 result += c
                 i++
                 continue
-            case '｛':
-                eos = '｝'
-                result += c
-                i++
-                continue
             case '[':
                 eos = ']'
-                result += c
-                i++
-                continue
-            case '【':
-                eos = '】'
                 result += c
                 i++
                 continue
@@ -226,9 +216,9 @@ function replaceRetMark(src) {
             continue
         }
 
-        // 複数行コメント
+        // 範囲コメント
         if (ch2Prepared === '/*') {
-            eos = ch2[1] + ch2[0]
+            eos = '*/'
             result += ch2
             i += 2
             continue
