@@ -265,9 +265,10 @@ class NakoLexer {
                 const rr = {type: 'string', value: list[i], file: filename, josi, line, column}
                 result.push(rr)
               } else {
-                list[i] = trimOkurigana(list[i])
                 result.push({type: '&', value: '&', josi: '', file: filename, line, column})
+                result.push({ type: '(', value: '(', josi: '', file: filename, line, column })
                 result.push({type: 'code', value: list[i], josi: '', file: filename, line, column})
+                result.push({ type: ')', value: ')', josi: '', file: filename, line, column })
                 result.push({type: '&', value: '&', josi: '', file: filename, line, column})
               }
             }
