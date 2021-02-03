@@ -140,8 +140,8 @@ function replaceRetMark(src) {
         // eosか?
         if (eos != '') {
             // srcのi文字目以降がeosで始まるなら文字列を終了、そうでなければ1文字進める
-            if (eos === (eos.length === 1 ? cPrepared : ch2Prepared)) {
-                result += (eos.length === 1 ? c : ch2)
+            if (eos === src.substr(i, eos.length)) {
+                result += src.substr(i, eos.length)
                 i += eos.length
                 eos = ''
             } else {
@@ -192,20 +192,23 @@ function replaceRetMark(src) {
                 result += c
                 i++
                 continue
-            case '🌴':
-                eos = '🌴'
-                result += c
-                i++
-                continue
-            case '🌿':
-                eos = '🌿'
-                result += c
-                i++
-                continue
             case '【':
                 eos = '】'
                 result += c
                 i++
+                continue
+        }
+
+        switch (ch2) {
+            case '🌴':
+                eos = '🌴'
+                result += ch2
+                i += 2
+                continue
+            case '🌿':
+                eos = '🌿'
+                result += ch2
+                i += 2
                 continue
         }
 
@@ -225,7 +228,7 @@ function replaceRetMark(src) {
 
         // 複数行コメント
         if (ch2Prepared === '/*') {
-            eos = '*/'
+            eos = ch2[1] + ch2[0]
             result += ch2
             i += 2
             continue
