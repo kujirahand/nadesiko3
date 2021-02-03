@@ -51,13 +51,13 @@ npm run build:win32
 bash ./win32.bash
 ```
 
-nadesiko3win32のフォルダに移動
+nadesiko3win32のフォルダに移動。
 
 ```
 cd ../nadesiko3win32
 ```
 
-なお、Windowsで実行してモジュールの最新版を取得
+なお、Windowsで実行してモジュールの最新版を取得。
 
 ```
 nodejs\npm install --production
