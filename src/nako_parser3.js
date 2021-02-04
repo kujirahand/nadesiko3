@@ -413,7 +413,7 @@ class NakoParser extends NakoParserBase {
     return stack.pop()
   }
 
-  yGetArgParen (func) { // C言語風呼び出しでカッコの中を取得
+  yGetArgParen (y) { // C言語風呼び出しでカッコの中を取得
     let isClose = false
     const si = this.stack.length
     while (!this.isEOF()) {
@@ -430,8 +430,8 @@ class NakoParser extends NakoParserBase {
       break
     }
     if (!isClose) {
-      throw new NakoSyntaxError(`C風関数『${func.value}』でカッコが閉じていません`,
-        func.line, this.filename)
+      throw new NakoSyntaxError(`C風関数『${y[0].value}』でカッコが閉じていません`,
+        y[0].line, this.filename)
     }
     const a = []
     while (si < this.stack.length) {
