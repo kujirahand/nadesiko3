@@ -583,9 +583,15 @@ class NakoParser extends NakoParserBase {
       throw new NakoSyntaxError('『条件分岐』の直後は改行してください。',
         joukenbunki.line, this.filename)
     }
+    let isDefaultClause = false // 「違えば」内かどうか
+    let skippedKokomade = false
     const cases = []
     while (!this.isEOF()) {
       if (this.check('ここまで')) {
+        if (skippedKokomade) {
+          throw new NakoSyntaxError('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。',
+            joukenbunki.line, this.filename)
+        }
         this.get()
         break
       }
@@ -593,26 +599,40 @@ class NakoParser extends NakoParserBase {
         this.get()
         continue
       }
+      if (isDefaultClause) {
+        throw new NakoSyntaxError('『条件分岐』で『違えば〜ここまで』の後に処理を続けることは出来ません。',
+          joukenbunki.line, this.filename)
+      }
       // 違えば？
       let cond = this.peek()
       if (cond.type == '違えば') {
+        skippedKokomade = false
+        isDefaultClause = true
         this.get() // skip 違えば
       } else {
+        if (skippedKokomade) {
+          throw new NakoSyntaxError('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。',
+            joukenbunki.line, this.filename)
+        }
         // 「＊＊ならば」を得る
         cond = this.yValue()
         const naraba = this.get()
         if (naraba.type != 'ならば') {
-          console.log(naraba)
           throw new NakoSyntaxError('『条件分岐』で条件は＊＊ならばと記述してください。',
             joukenbunki.line, this.filename)
         }
       }
       // 条件にあったときに実行すること
       const condBlock = this.yBlock()
-      const blockEnd = this.get()
-      if (blockEnd.type != 'ここまで') {
-        throw new NakoSyntaxError('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。',
-          joukenbunki.line, this.filename)
+      if (this.peek().type == 'ここまで') {
+        this.get()
+      } else {
+        if (isDefaultClause) {
+          throw new NakoSyntaxError('『条件分岐』は『違えば〜ここまで』と記述してください。',
+            joukenbunki.line, this.filename)
+        }
+        // 次が「違えば」の場合に限り、「もし〜ここまで」の「ここまで」を省略できる
+        skippedKokomade = true
       }
       cases.push([cond, condBlock])
     }
