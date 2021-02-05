@@ -138,7 +138,7 @@ class NakoParserBase {
       }
       if (typeof type === 'function') {
         const f = type.bind(this)
-        const r = f(null)
+        const r = f(y)
         if (r === null) {return rollback()}
         y[i] = r
         continue
