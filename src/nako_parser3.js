@@ -734,10 +734,8 @@ class NakoParser extends NakoParserBase {
     } // end of while
     // 助詞が余ってしまった場合
     if (this.stack.length > 0) {
-      let names = ''
       let line = 0
       this.stack.forEach(n => {
-        names += this.nodeToStr(n)
         line = n.line
       })
       if (this.debug) {
@@ -745,10 +743,15 @@ class NakoParser extends NakoParserBase {
         console.log(JSON.stringify(this.stack, null, 2))
         console.log('peek: ', JSON.stringify(this.peek(), null, 2))
       }
-      let msg = `${names}がありますが使い方が分かりません。`
-      if (names.indexOf('演算子') > 0 || names.match(/^『\d+』$/)) {
-        msg = `${names}がありますが文が解決していません。『代入』や『表示』などと一緒に使ってください。`
+      let msg = `不完全な文です。${this.stack.map((n) => this.nodeToStr(n, 0)).join('、')}が解決していません。`
+
+      // 各ノードについて、更に詳細な情報があるなら表示
+      for (const n of this.stack) {
+        if (this.nodeToStr(n, 0) !== this.nodeToStr(n, 1)) {
+          msg += `${this.nodeToStr(n, 0)}は${this.nodeToStr(n, 1)}として使われています。`
+        }
       }
+
       throw new NakoSyntaxError(msg, line, this.filename)
     }
     return this.popStack([])

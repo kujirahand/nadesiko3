@@ -171,21 +171,52 @@ class NakoParserBase {
     return this.tokens[this.index + i]
   }
 
-  nodeToStr (node) {
-    if (!node) {return `(NULL)`}
-    let name = node.name
-    if (node.type === 'op')
-      {name = '演算子[' + node.operator + ']'}
+  /**
+   * @param {number} depth 表示する深さ
+   */
+  nodeToStr (node, depth = 0) {
+    depth--
 
-    if (!name) {name = node.value}
-    if (typeof name !== 'string') {name = node.type}
-    if (this.debug)
-      {name += '→' + JSON.stringify(node, null, 2)}
-     else {
-      if (name === 'number') {name = node.value + node.josi}
-      if (node.type === 'string') {name = '「' + node.value + '」' + node.josi}
+    const debug = this.debug ? (' debug: ' + JSON.stringify(node, null, 2)) : ''
+    if (!node) {
+      return `(NULL)`
     }
-    return `『${name}』`
+    switch (node.type) {
+      case 'not':
+        if (depth >= 0) {
+          return `『${this.nodeToStr(node.value, depth)}に演算子『not』を適用した式${debug}』`
+        } else {
+          return `演算子『not』`
+        }
+      case 'op': {
+        let operator = node.operator
+        const table = { 'eq': '＝', 'not': '!', 'gt': '>', 'lt': '<', 'and': 'かつ', 'or': 'または' }
+        if (operator in table) {
+          operator = table[operator]
+        }
+        if (depth >= 0) {
+          const left = this.nodeToStr(node.left, depth)
+          const right = this.nodeToStr(node.right, depth)
+          if (node.operator == 'eq') {
+            return `『${left}と${right}が等しいかどうかの比較${debug}』`
+          }
+          return `『${left}と${right}に演算子『${operator}』を適用した式${debug}』`
+        } else {
+          return `演算子『${operator}${debug}』`
+        }
+      } case 'number':
+        return `数値${node.value}`
+      case 'string':
+        return `文字列『${node.value}${debug}』`
+      case 'word':
+        return `単語『${node.value}${debug}』`
+      default: {
+        let name = node.name
+        if (!name) {name = node.value}
+        if (typeof name !== 'string') {name = node.type}
+        return `『${name}${debug}』`
+      }
+    }
   }
 }
 
