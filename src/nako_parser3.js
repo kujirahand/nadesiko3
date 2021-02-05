@@ -698,6 +698,22 @@ class NakoParser extends NakoParserBase {
             return {type: 'let', name: word, value: value, line: dainyu.line, josi: ''}
         }
       }
+      if (this.check('定める')) {
+        const dainyu = this.get()
+        const word = this.popStack(['を'])
+        const value = this.popStack(['に'])
+        if (!word || word.type !== 'word') {
+          throw new NakoSyntaxError('代入文で代入先の変数が見当たりません。',
+            dainyu.line, this.filename)
+        }
+        return {
+          type: 'def_local_var',
+          name: word,
+          vartype: '定数',
+          value: value,
+          line: dainyu.line
+        }
+      }
       // 制御構文
       if (this.check('ここから')) {this.get()}
       if (this.check('回')) {return this.yRepeatTime()}
