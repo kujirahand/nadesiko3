@@ -43,6 +43,7 @@ class CNako3 extends NakoCompiler {
       .option('-l, --repl', '対話シェル(REPL)の実行')
       .option('-b, --browsers', '対応機器/Webブラウザを表示する')
       .option('-m, --man [command]', 'マニュアルを表示する')
+      .option('-p, --speed', 'スピード優先モードの指定')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
       .parse(process.argv)
@@ -72,7 +73,8 @@ class CNako3 extends NakoCompiler {
       'debugAll': app.debugAll,
       'repl': app.repl || false,
       'test': app.test || false,
-      'browsers': app.browsers || false
+      'browsers': app.browsers || false,
+      'speed': app.speed || false
     }
     args.mainfile = app.args[0]
     args.output = app.output
@@ -104,16 +106,16 @@ class CNako3 extends NakoCompiler {
       this.cnakoMan(opt.man)
       return
     }
-    if (opt.browsers) {
+    if (opt.browsers) { // 対応ブラウザを表示する
       this.cnakoBrowsers()
       return
     }
     if (opt.mainfile) {this.filename = opt.mainfile}
-    if (opt.repl) {
+    if (opt.repl) { // REPLを実行する
       this.cnakoRepl(opt)
       return
     }
-    if (opt.one_liner) {
+    if (opt.one_liner) { // ワンライナーで実行する
       this.cnakoOneLiner(opt)
       return
     }
@@ -163,13 +165,26 @@ class CNako3 extends NakoCompiler {
 
   // ワンライナーの場合
   cnakoOneLiner (opt) {
+    const org = opt.source
     try {
+      if (opt.source.indexOf('表示') < 0) {
+        opt.source = '' + opt.source + 'を表示。'
+      }
       this.runReset(opt.source)
     } catch (e) {
-      if (this.debug) {
-        throw e
-      } else {
-        console.error(e.message)
+      // エラーになったら元のワンライナーで再挑戦
+      try {
+        if (opt.source != org) {
+          this.runReset(org)
+        }　else {
+          throw e
+        }
+      } catch (e) {
+        if (this.debug) {
+          throw e
+        } else {
+          console.error(e.message)
+        }
       }
     }
   }

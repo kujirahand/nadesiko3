@@ -90,6 +90,12 @@ class NakoGen {
      * @type {{}}
      */
     this.__module = com.__module
+
+    /**
+     * コンパイルモード
+     * @type {boolean}
+     */
+    this.__speed = com.speed
   }
 
   static getHeader () {
