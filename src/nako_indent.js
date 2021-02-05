@@ -27,6 +27,120 @@ function convert(code) {
 // ありえない改行マークを定義
 const SpecialRetMark = '🌟🌟改行🌟🌟s4j#WjcSb😀/FcX3🌟🌟'
 
+
+/**
+ * ソースコードのある1行の中のコメントを全て取り除く。
+ * 事前にreplaceRetMarkによって文字列や範囲コメント内の改行文字が置換されている必要がある。
+ * @param code {string}
+ * @return {string}
+ */
+function removeCommentsFromLine(src) {
+    const prepare = new NakoPrepare()  // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
+    const len = src.length
+    let result = ''
+    let eos = ''
+    let i = 0
+    let isComment = false
+    while (i < len) {
+        const c = src.charAt(i)
+        const ch2 = src.substr(i, 2)
+        const cPrepared = prepare.convert1ch(c)
+        const ch2Prepared = [...ch2].map((c) => prepare.convert1ch(c)).join("")
+
+        // eosか?
+        if (eos != '') {
+            // srcのi文字目以降がeosで始まるなら文字列を終了、そうでなければ1文字進める
+            if (eos === (eos.length === 1 ? cPrepared : ch2Prepared)) {
+                if (!isComment) {
+                    result += src.substr(i, eos.length)
+                }
+                i += eos.length
+                isComment = false
+                eos = ''
+            } else {
+                if (!isComment) {
+                    result += c
+                }
+                i++
+            }
+            continue
+        }
+        // 文字列の改行も無視する
+        switch (cPrepared) {
+            case '"':
+            case '\'':
+                eos = c
+                result += c
+                i++
+                continue
+            case '「':
+                eos = '」'
+                result += c
+                i++
+                continue
+            case '『':
+                eos = '』'
+                result += c
+                i++
+                continue
+            case '“':
+                eos = '”'
+                result += c
+                i++
+                continue
+            case '{':
+                eos = '}'
+                result += c
+                i++
+                continue
+            case '[':
+                eos = ']'
+                result += c
+                i++
+                continue
+        }
+
+        switch (ch2) {
+            case '🌴':
+                eos = '🌴'
+                result += ch2
+                i += 2
+                continue
+            case '🌿':
+                eos = '🌿'
+                result += ch2
+                i += 2
+                continue
+        }
+
+        // 行コメント
+        if (cPrepared === '#') {
+            eos = '\n'
+            isComment = true
+            i++
+            continue
+        }
+        if (ch2Prepared === '//') {
+            eos = '\n'
+            isComment = true
+            i += 2
+            continue
+        }
+
+        // 範囲コメント
+        if (ch2Prepared === '/*') {
+            eos = '*/'
+            isComment = true
+            i += 2
+            continue
+        }
+
+        result += c
+        i++
+    }
+    return result
+}
+
 function convertGo(code) {
     const END = 'ここまで‰'
     const code2 = replaceRetMark(code) // 文字列の中などの改行を置換
@@ -36,8 +150,12 @@ function convertGo(code) {
     let lastIndent = 0
     lines.forEach((line) => {
         // trim line
-        const lineTrimed = line.replace(/^\s+/, '').replace(/\s+$/, '')
-        if (lineTrimed === '') { return }
+        if (/^\s*$/.test(line)) { return }  // この処理は無くても良い
+        const lineTrimed = removeCommentsFromLine(line).replace(/^\s+/, '').replace(/\s+$/, '')
+        if (lineTrimed === '') {
+            lines2.push(line)
+            return
+        }
 
         // check indent
         const indent = countIndent(line)
