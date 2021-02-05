@@ -15,6 +15,7 @@ class NakoGenError extends Error {
 }
 
 let speedMode = false
+let lastLineNo = -1
 
 /**
  * 構文木からJSのコードを生成するクラス
@@ -113,9 +114,14 @@ class NakoGen {
       'var __module = {};\n'
   }
 
-  static convLineno (node) {
+  static convLineno (node, forceUpdate) {
     if (node.line === undefined) {return ''}
-    if (speedMode) return `/* line:${node.line} */`
+    if (speedMode) return `/* line=${node.line} */`
+    // 強制的に行番号をアップデートするか
+    if (!forceUpdate) {
+      if (node.line == lastLineNo) return ''
+      lastLineNo = node.line
+    }
     return `__v0.line=${node.line};`
   }
 
@@ -135,7 +141,7 @@ class NakoGen {
 
   static convRequire (node) {
     const moduleName = node.value
-    return NakoGen.convLineno(node.line) +
+    return NakoGen.convLineno(node, false) +
       `__module['${moduleName}'] = require('${moduleName}');\n`
   }
 
@@ -501,7 +507,12 @@ class NakoGen {
   convComment (node) {
     let commentSrc = String(node.value)
     commentSrc = commentSrc.replace(/\n/g, '¶')
-    return '; ' + NakoGen.convLineno(node) + '// ' + commentSrc + '\n'
+    const lineNo = NakoGen.convLineno(node, false)
+    if (commentSrc === '' && lineNo === '') { return ';' }
+    if (commentSrc === '') {
+      return ';' + lineNo + '\n'
+    }
+    return ';' + lineNo + '//' + commentSrc + '\n'
   }
 
   convReturn (node) {
@@ -509,7 +520,7 @@ class NakoGen {
     if (typeof (this.__vars['!関数']) === 'undefined')
       {throw new NakoGenError('『戻る』がありますが、関数定義内のみで使用可能です。', node.line)}
 
-    const lno = NakoGen.convLineno(node)
+    const lno = NakoGen.convLineno(node, false)
     let value
     if (node.value) {
       value = this._convGen(node.value)
@@ -658,7 +669,7 @@ class NakoGen {
     }
     const value = this._convGen(node.value)
     code += ' = ' + value + ';\n'
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convGenLoop (node) {
@@ -704,7 +715,7 @@ class NakoGen {
       `    ${block}\n` +
       `  };\n` +
       `};\n//[/FOR id=${idLoop}]\n`
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convForeach (node) {
@@ -731,7 +742,7 @@ class NakoGen {
       `    ${block}\n` +
       '  }\n' +
       '};\n'
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convRepeatTimes (node) {
@@ -743,7 +754,7 @@ class NakoGen {
       `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + '{\n' +
       `  ${this.sore} = ${kaisu} = $nako_i${id};` + '\n' +
       '  ' + block + '\n}\n'
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convWhile (node) {
@@ -753,7 +764,7 @@ class NakoGen {
       `while (${cond})` + '{\n' +
       `  ${block}` + '\n' +
       '}\n'
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convSwitch (node) {
@@ -776,7 +787,7 @@ class NakoGen {
       `switch (${value})` + '{\n' +
       `${body}` + '\n' +
       '}\n'
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convIf (node) {
@@ -785,7 +796,7 @@ class NakoGen {
     const falseBlock = (node.false_block === null)
       ? ''
       : 'else {' + this._convGen(node.false_block) + '};\n'
-    return NakoGen.convLineno(node) +
+    return NakoGen.convLineno(node, false) +
       `if (${expr}) {\n  ${block}\n}` + falseBlock + ';\n'
   }
 
@@ -807,7 +818,7 @@ class NakoGen {
     code += `};/* __pid${pid} */\n`
     code += `__pid${pid}();\n`
     code += '__self.resolve = undefined;\n'
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convFuncGetArgsCalcType (funcName, func, node) {
@@ -967,7 +978,7 @@ class NakoGen {
      else
       {code = `__varslist[${res.i}]["${name}"]=${value};`}
 
-    return ';' + NakoGen.convLineno(node) + code + '\n'
+    return ';' + NakoGen.convLineno(node, false) + code + '\n'
   }
 
   convDefLocalVar(node) {
@@ -990,7 +1001,7 @@ class NakoGen {
       this.__vars.meta[name].readonly = true
     }
     const code = `__vars["${name}"]=${value};\n`
-    return NakoGen.convLineno(node) + code
+    return NakoGen.convLineno(node, false) + code
   }
 
   convString (node) {
@@ -1013,7 +1024,7 @@ class NakoGen {
   convTryExcept(node) {
     const block = this._convGen(node.block)
     const errBlock = this._convGen(node.errBlock)
-    return NakoGen.convLineno(node.line) +
+    return NakoGen.convLineno(node, false) +
       `try {\n${block}\n} catch (e) {\n` +
       '__varslist[0]["エラーメッセージ"] = e.message;\n' +
       ';\n' +
