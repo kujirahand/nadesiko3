@@ -14,6 +14,8 @@ class NakoGenError extends Error {
   }
 }
 
+let speedMode = false
+
 /**
  * 構文木からJSのコードを生成するクラス
  */
@@ -92,10 +94,15 @@ class NakoGen {
     this.__module = com.__module
 
     /**
-     * コンパイルモード
-     * @type {boolean}
+     * コマンドオプションがあれば記録
+     * @type {{}}
      */
-    this.__speed = com.speed
+    this.__options = com.options
+  }
+
+  setOptions (options) {
+    this.__options = options
+    if (this.__options.speed) { speedMode = true }
   }
 
   static getHeader () {
@@ -108,6 +115,7 @@ class NakoGen {
 
   static convLineno (node) {
     if (node.line === undefined) {return ''}
+    if (speedMode) return `/* line:${node.line} */`
     return `__v0.line=${node.line};`
   }
 
@@ -151,6 +159,7 @@ class NakoGen {
    */
   getVarsCode () {
     let code = ''
+
     // プログラム中で使った関数を列挙して書き出す
     for (const key in this.used_func) {
       const f = this.__varslist[0][key]

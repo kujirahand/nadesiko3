@@ -24,6 +24,7 @@ class NakoCompiler {
     this.debugJSCode = true || this.debugAll
     this.debugLexer = false || this.debugAll
     this.filename = 'inline'
+    this.options = {}
     // 環境のリセット
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
     this.__self = this
