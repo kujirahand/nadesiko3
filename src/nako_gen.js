@@ -710,9 +710,11 @@ class NakoGen {
     const code =
       `let $nako_foreach_v${id}=${target};\n` +
       `for (let $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
-      `${nameS} = ${this.sore} = $nako_foreach_v${id}[$nako_i${id}];` + '\n' +
-      `${key} = $nako_i${id};\n` +
-      '' + block + '\n' +
+      `  if ($nako_foreach_v${id}.hasOwnProperty($nako_i${id})) {\n` +
+      `    ${nameS} = ${this.sore} = $nako_foreach_v${id}[$nako_i${id}];` + '\n' +
+      `    ${key} = $nako_i${id};\n` +
+      `    ${block}\n` +
+      '  }\n' +
       '};\n'
     return NakoGen.convLineno(node) + code
   }
