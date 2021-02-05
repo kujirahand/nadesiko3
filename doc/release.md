@@ -69,7 +69,7 @@ nodejs\npm audit fix
 ```
 bin\7z  -mx=9 a node_modules.7z node_modules
 ```
-最後にGitにアップする。
+最後にGitへアップする。
 
 ```
 git commit -a
