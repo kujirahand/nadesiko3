@@ -16,7 +16,6 @@ describe('error_message', () => {
     assert.throws(
       () => nako.runReset(code),
       err => {
-        console.log(err)
         assert(err instanceof NakoSyntaxError)
         for (const res of resArr) {
           if (err.message.indexOf(res) === -1) {
@@ -59,6 +58,11 @@ describe('error_message', () => {
       '不完全な文です。',
       '単語『あ』、演算子『＝』が解決していません。',
       '演算子『＝』は『文字列『こんにちは』と単語『は表示』が等しいかどうかの比較』として使われています。',
+    ])
+  })
+  it('関数の宣言でエラー', () => {
+    cmp('●30とは', [
+      '関数30の宣言でエラー。',
     ])
   })
 })

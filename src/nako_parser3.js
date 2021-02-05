@@ -22,7 +22,7 @@ class NakoParser extends NakoParserBase {
     const b = this.ySentenceList()
     const c = this.get()
     if (c && c.type !== 'eof') {
-      const name = this.nodeToStr(c)
+      const name = this.nodeToStr(c, { depth: 1 })
       throw new NakoSyntaxError(
         `構文解析でエラー。${name}の使い方が間違っています。`, c.line, this.filename)
     }
@@ -39,7 +39,7 @@ class NakoParser extends NakoParserBase {
       if (line < 0) {line = n.line}
     }
     if (blocks.length === 0) {
-      throw new NakoSyntaxError('構文解析に失敗:' + this.nodeToStr(this.peek()),
+      throw new NakoSyntaxError('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }),
         line, this.filename)
     }
 
@@ -132,14 +132,14 @@ class NakoParser extends NakoParserBase {
     const funcName = this.get()
     if (funcName.type !== 'func')
       {throw new NakoSyntaxError(
-        '関数' + this.nodeToStr(funcName) +
+        this.nodeToStr(funcName, { depth: 0, typeName: '関数' }) +
         'の宣言でエラー。', funcName.line, this.filename)}
 
     if (this.check('(')) {
       // 関数引数の二重定義
       if (defArgs.length > 0)
         {throw new NakoSyntaxError(
-          '関数' + this.nodeToStr(funcName) +
+          this.nodeToStr(funcName, { depth: 0, typeName: '関数' }) +
           'の宣言で、引数定義は名前の前か後に一度だけ可能です。', funcName.line, this.filename)}
       defArgs = this.yDefFuncReadArgs()
     }
@@ -164,7 +164,7 @@ class NakoParser extends NakoParserBase {
         this.loadStack()
       }
     } catch (err) {
-      throw new NakoSyntaxError('関数' + this.nodeToStr(funcName) +
+      throw new NakoSyntaxError(this.nodeToStr(funcName, { depth: 0, typeName: '関数' }) +
         'の定義で以下のエラーがありました。\n' + err.message, def.line, this.filename)
     }
 
@@ -207,9 +207,9 @@ class NakoParser extends NakoParserBase {
     // (ならば|でなければ)を確認
     if (!this.check('ならば')) {
       throw new NakoSyntaxError(
-        'もし文で『ならば』がないか、条件が複雑過ぎます。『' +
-        this.nodeToStr(this.peek()) +
-        '』の直前に『ならば』を書いてください。', a.line, this.filename)
+        'もし文で『ならば』がないか、条件が複雑過ぎます。' +
+        this.nodeToStr(this.peek(), { depth: 1 }) +
+        'の直前に『ならば』を書いてください。', a.line, this.filename)
       }
 
     const naraba = this.get()
@@ -743,12 +743,14 @@ class NakoParser extends NakoParserBase {
         console.log(JSON.stringify(this.stack, null, 2))
         console.log('peek: ', JSON.stringify(this.peek(), null, 2))
       }
-      let msg = `不完全な文です。${this.stack.map((n) => this.nodeToStr(n, 0)).join('、')}が解決していません。`
+      let msg = `不完全な文です。${this.stack.map((n) => this.nodeToStr(n, { depth: 0 })).join('、')}が解決していません。`
 
       // 各ノードについて、更に詳細な情報があるなら表示
       for (const n of this.stack) {
-        if (this.nodeToStr(n, 0) !== this.nodeToStr(n, 1)) {
-          msg += `${this.nodeToStr(n, 0)}は${this.nodeToStr(n, 1)}として使われています。`
+        const d0 = this.nodeToStr(n, { depth: 0 })
+        const d1 = this.nodeToStr(n, { depth: 1 })
+        if (d0 !== d1) {
+          msg += `${d0}は${d1}として使われています。`
         }
       }
 
@@ -828,7 +830,7 @@ class NakoParser extends NakoParserBase {
     // 関数への代入的呼び出しの場合
     if (this.check2(['func', 'eq'])) {
       const word = this.peek()
-      const name = this.nodeToStr(word)
+      const name = this.nodeToStr(word,  { depth: 0 })
       try {
         if (this.accept(['func', 'eq', this.yCalc])) {
           switch (this.y[0].meta.josi.length) {
@@ -847,17 +849,17 @@ class NakoParser extends NakoParserBase {
           }
         } else
           {throw new NakoSyntaxError(
-            `関数${name}の代入的呼び出しで計算式が読み取れません。`, word.line, this.filename)}
+            `${name}の代入的呼び出しで計算式が読み取れません。`, word.line, this.filename)}
 
       } catch (err) {
         throw new NakoSyntaxError(
-          `関数${name}の代入的呼び出しにエラーがあります。\n${err.message}`, word.line, this.filename)
+          `${name}の代入的呼び出しにエラーがあります。\n${err.message}`, word.line, this.filename)
       }
     }
     // 通常の変数
     if (this.check2(['word', 'eq'])) {
       const word = this.peek()
-      const name = this.nodeToStr(word)
+      const name = this.nodeToStr(word, { depth: 1 })
       let threw = false
       try {
         if (this.accept(['word', 'eq', this.yCalc]) || this.accept(['word', 'eq', this.ySentence])) {
@@ -1028,10 +1030,10 @@ class NakoParser extends NakoParserBase {
     const v = this.yCalc() || this.ySentence()
     if (v === null) {
       const v2 = this.get()
-      throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v2) + 'の近く', t.line, this.filename)
+      throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v2, { depth: 1 }) + 'の近く', t.line, this.filename)
     }
     if (!this.check(')'))
-      {throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v) + 'の近く', t.line, this.filename)}
+      {throw new NakoSyntaxError('(...)の解析エラー。' + this.nodeToStr(v, { depth: 1 }) + 'の近く', t.line, this.filename)}
 
     const closeParent = this.get() // skip ')'
     this.loadStack()
