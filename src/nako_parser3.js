@@ -835,6 +835,7 @@ class NakoParser extends NakoParserBase {
     if (this.check2(['word', 'eq'])) {
       const word = this.peek()
       const name = this.nodeToStr(word)
+      let threw = false
       try {
         if (this.accept(['word', 'eq', this.yCalc]) || this.accept(['word', 'eq', this.ySentence])) {
           if (this.y[2].type == 'eol') {
@@ -848,10 +849,14 @@ class NakoParser extends NakoParserBase {
           }
         }
         else {
+          threw = true
           throw new NakoSyntaxError(
             `${name}への代入文で計算式に書き間違いがあります。`, word.line, this.filename)
         }
       } catch (err) {
+        if (threw) {
+          throw err
+        }
         throw new NakoSyntaxError(
           `${name}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`,
           word.line, this.filename)
