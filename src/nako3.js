@@ -55,22 +55,6 @@ const prepare = new Prepare()
 const parser = new Parser()
 const lexer = new NakoLexer()
 
-/**
- * @typedef {Record<string,
- *     {
- *         declaration: (
- *             | { type: "plugin", name: string }
- *             | { type: "inFile", token: TokenWithSourceMap }
- *         )[]
- *     }
- *     & (
- *         | { type: 'func', josi: string[][], fn: null | ((...args: unknown[]) => any), varnames?: string[], funcPointers?: any[] | null }
- *         | { type: 'var' }
- *         | { type: 'const' }
- *     )
- * >} FuncList
- */
-
 class NakoSyntaxErrorWithSourceMap extends NakoSyntaxError {
   /**
    *@param {TokenWithSourceMap} token
