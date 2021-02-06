@@ -257,6 +257,45 @@ class NakoCompiler {
   }
 
   /**
+   * typeがcodeのトークンを単語に分割するための処理
+   * @param {string} code
+   * @param {number} line
+   * @param {string} filename
+   * @param {number | null} startOffset
+   * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
+   * @private
+   */
+  lexCodeToken(code, line, filename, startOffset) {
+    // 単語に分割
+    let tokens = this.rawtokenize(code, line, filename)
+
+    // 文字列内位置からファイル内位置へ変換
+    if (startOffset === null) {
+        for (const token of tokens) {
+            token.startOffset = null
+            token.endOffset = null
+        }
+    } else {
+        for (const token of tokens) {
+            if (token.startOffset !== null) {
+                token.startOffset += startOffset
+            }
+            if (token.endOffset !== null) {
+                token.endOffset += startOffset
+            }
+        }
+    }
+
+    // convertTokenで消されるコメントのトークンを残す
+    const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
+      .map((v) => ({ ...v }))  // clone
+
+    tokens = this.converttoken(tokens, false)
+
+    return { tokens, commentTokens }
+  }
+
+  /**
    * @param {string} code
    * @param {string} filename
    * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
@@ -280,31 +319,9 @@ class NakoCompiler {
 
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i]['type'] === 'code') {
-        const children = this.rawtokenize(/** @type {string} */(tokens[i].value), tokens[i].line, '')
-
-        // 文字列内位置からファイル内位置へ変換
-        const start = tokens[i].startOffset
-        if (start === null) {
-            for (const token of children) {
-                token.startOffset = null
-                token.endOffset = null
-            }
-        } else {
-            for (const token of children) {
-                if (token.startOffset !== null) {
-                    token.startOffset += start
-                }
-                if (token.endOffset !== null) {
-                    token.endOffset += start
-                }
-            }
-        }
-
-        commentTokens.push(...children.filter((t) => t.type === "line_comment" || t.type === "range_comment"))
-
-        this.converttoken(children, false)
-    
-        tokens.splice(i, 1, ...children)
+        const children = this.lexCodeToken(tokens[i].value, tokens[i].line, filename, tokens[i].startOffset)
+        commentTokens.push(...children.commentTokens)
+        tokens.splice(i, 1, ...children.tokens)
         i--
       }
     }
@@ -330,7 +347,6 @@ class NakoCompiler {
       tokens = await rslt
     }
     // convertTokenで消されるコメントのトークンを残す
-    /** @type {TokenWithSourceMap[]} */
     const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
         .map((v) => ({ ...v }))  // clone
 
@@ -338,31 +354,9 @@ class NakoCompiler {
 
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i]['type'] === 'code') {
-        const children = this.rawtokenize(/** @type {string} */(tokens[i].value), tokens[i].line, '')
-
-        // 文字列内位置からファイル内位置へ変換
-        const start = tokens[i].startOffset
-        if (start === null) {
-            for (const token of children) {
-                token.startOffset = null
-                token.endOffset = null
-            }
-        } else {
-            for (const token of children) {
-                if (token.startOffset !== null) {
-                    token.startOffset += start
-                }
-                if (token.endOffset !== null) {
-                    token.endOffset += start
-                }
-            }
-        }
-
-        commentTokens.push(...children.filter((t) => t.type === "line_comment" || t.type === "range_comment"))
-
-        this.converttoken(children, false)
-    
-        tokens.splice(i, 1, ...children)
+        const children = this.lexCodeToken(/** @type {string} */(tokens[i].value), tokens[i].line, filename, tokens[i].startOffset)
+        commentTokens.push(...children.commentTokens)
+        tokens.splice(i, 1, ...children.tokens)
         i--
       }
     }
@@ -373,6 +367,59 @@ class NakoCompiler {
     }
 
     return { commentTokens, tokens }
+  }
+
+  /**
+   * シンタックスエラーに現在のカーソル下のトークンの位置情報を付けて返す。
+   * トークンがソースマップ上の位置と結びついていない場合、近くの別のトークンの位置を使う。
+   * @param {NakoSyntaxError} err
+   * @param {TokenWithSourceMap[]} tokens
+   * @param {number} codeLength
+   * @returns {NakoSyntaxErrorWithSourceMap}
+   * @private
+   */
+  addSourceMapToSyntaxError (err, tokens, codeLength) {
+    // エラーの発生したトークン
+    const token = tokens[parser.index]
+    let startOffset = token.startOffset
+    let endOffset = token.endOffset
+
+    // ソースコード上の位置が見つかるまで、左右のトークンを見ていく
+    let left = parser.index
+    while (startOffset === null) {
+        left--
+        if (left <= -1) {
+            startOffset = 0
+        } else if (tokens[left].endOffset !== null) {
+            startOffset = tokens[left].endOffset
+        } else if (tokens[left].startOffset !== null) {
+            startOffset = tokens[left].startOffset
+        }
+    }
+
+    let right = parser.index
+    while (endOffset === null) {
+        right++
+        if (right >= tokens.length) {
+            endOffset = codeLength
+        } else if (tokens[right].startOffset !== null) {
+            endOffset = tokens[right].startOffset
+        } else if (tokens[right].endOffset !== null) {
+            endOffset = tokens[right].endOffset
+        }
+    }
+
+    // start < end であるべきなため、もし等しければどちらかを1つ動かす
+    if (startOffset === endOffset) {
+        if (startOffset <= 0) {
+            endOffset++  // endOffset = 1
+        } else {
+            startOffset--
+        }
+    }
+
+    // エラーを投げる
+    return new NakoSyntaxErrorWithSourceMap(token, startOffset, endOffset, err)
   }
 
   /**
@@ -397,47 +444,7 @@ class NakoCompiler {
     try {
       ast = parser.parse(lexerOutput.tokens)
     } catch (err) {
-      // エラーの発生したトークン
-      const token = lexerOutput.tokens[parser.index]
-      let startOffset = token.startOffset
-      let endOffset = token.endOffset
-
-      // ソースコード上の位置が見つかるまで、左右のトークンを見ていく
-      let left = parser.index
-      while (startOffset === null) {
-          left--
-          if (left <= -1) {
-              startOffset = 0
-          } else if (lexerOutput.tokens[left].endOffset !== null) {
-              startOffset = lexerOutput.tokens[left].endOffset
-          } else if (lexerOutput.tokens[left].startOffset !== null) {
-              startOffset = lexerOutput.tokens[left].startOffset
-          }
-      }
-
-      let right = parser.index
-      while (endOffset === null) {
-          right++
-          if (right >= lexerOutput.tokens.length) {
-              endOffset = code.length
-          } else if (lexerOutput.tokens[right].startOffset !== null) {
-              endOffset = lexerOutput.tokens[right].startOffset
-          } else if (lexerOutput.tokens[right].endOffset !== null) {
-              endOffset = lexerOutput.tokens[right].endOffset
-          }
-      }
-
-      // start < end であるべきなため、もし等しければどちらかを1つ動かす
-      if (startOffset === endOffset) {
-          if (startOffset <= 0) {
-              endOffset++  // endOffset = 1
-          } else {
-              startOffset--
-          }
-      }
-
-      // エラーを投げる
-      throw new NakoSyntaxErrorWithSourceMap(token, startOffset, endOffset, err)
+      throw this.addSourceMapToSyntaxError(err, lexerOutput.tokens, code.length)
     }
     this.usedFuncs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
@@ -463,47 +470,7 @@ class NakoCompiler {
     try {
       ast = parser.parse(lexerOutput.tokens)
     } catch (err) {
-      // エラーの発生したトークン
-      const token = lexerOutput.tokens[parser.index]
-      let startOffset = token.startOffset
-      let endOffset = token.endOffset
-
-      // ソースコード上の位置が見つかるまで、左右のトークンを見ていく
-      let left = parser.index
-      while (startOffset === null) {
-          left--
-          if (left <= -1) {
-              startOffset = 0
-          } else if (lexerOutput.tokens[left].endOffset !== null) {
-              startOffset = lexerOutput.tokens[left].endOffset
-          } else if (lexerOutput.tokens[left].startOffset !== null) {
-              startOffset = lexerOutput.tokens[left].startOffset
-          }
-      }
-
-      let right = parser.index
-      while (endOffset === null) {
-          right++
-          if (right >= lexerOutput.tokens.length) {
-              endOffset = code.length
-          } else if (lexerOutput.tokens[right].startOffset !== null) {
-              endOffset = lexerOutput.tokens[right].startOffset
-          } else if (lexerOutput.tokens[right].endOffset !== null) {
-              endOffset = lexerOutput.tokens[right].endOffset
-          }
-      }
-
-      // start < end であるべきなため、もし等しければどちらかを1つ動かす
-      if (startOffset === endOffset) {
-          if (startOffset <= 0) {
-              endOffset++  // endOffset = 1
-          } else {
-              startOffset--
-          }
-      }
-
-      // エラーを投げる
-      throw new NakoSyntaxErrorWithSourceMap(token, startOffset, endOffset, err)
+      throw this.addSourceMapToSyntaxError(err, lexerOutput.tokens, code.length)
     }
     this.usedFuncs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
