@@ -1,4 +1,4 @@
-  // なでしこの字句解析を行う
+// なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
 const {opPriority} = require('./nako_parser_const')
 
@@ -13,7 +13,34 @@ const josiRE = josi.josiRE
 // 字句解析ルールの一覧
 const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
-const trimOkurigana = lexRules.trimOkurigana
+
+/**
+ * @typedef {{
+ *   type: string;
+ *   value: unknown;
+ *   line: number;
+ *   column: number;
+ *   file: string;
+ *   josi: string;
+ *   preprocessedCodeOffset: number;
+ *   preprocessedCodeLength: number;
+ *   meta?: any;
+ * }} Token
+ */
+
+class LexError extends Error {
+  /**
+   * @param {string} reason
+   * @param {number} preprocessedCodeStartOffset
+   * @param {number} preprocessedCodeEndOffset
+   */
+  constructor(reason, preprocessedCodeStartOffset, preprocessedCodeEndOffset) {
+      super(`LexError: ${reason}`)
+      this.reason = reason
+      this.preprocessedCodeStartOffset = preprocessedCodeStartOffset
+      this.preprocessedCodeEndOffset = preprocessedCodeEndOffset
+  }
+}
 
 class NakoLexer {
   constructor () {
@@ -250,7 +277,16 @@ class NakoLexer {
     }
   }
 
+  /**
+   * @param {string} src
+   * @param {number} line
+   * @param {string} filename
+   * @returns {Token[]}
+   * @throws {LexError}
+   */
   tokenize (src, line, filename) {
+    const srcLength = src.length
+    /** @type {Token[]} */
     const result = []
     let columnCurrent
     let lineCurrent
@@ -258,17 +294,22 @@ class NakoLexer {
     let isDefTest = false
     while (src !== '') {
       let ok = false
+      // 各ルールについて
       for (const rule of rules) {
+        // 正規表現でマッチ
         const m = rule.pattern.exec(src)
         if (!m) {continue}
         ok = true
+        // 空白ならスキップ
         if (rule.name === 'space') {
           column += m[0].length
           src = src.substr(m[0].length)
           continue
         }
-        // 特別なパーサを通すか？
+        // マッチしたルールがコールバックを持つなら
         if (rule.cbParser) {
+          // コールバックを呼ぶ
+          /** @type {{ src: string, res: string, josi: string, numEOL: number }} */
           let rp
 
           if (isDefTest && rule.name === 'word') {
@@ -280,20 +321,29 @@ class NakoLexer {
           if (rule.name === 'string_ex') {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
             const list = this.splitStringEx(rp.res)
-            if (list === null)
-              {throw new Error('字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。')}
+            if (list === null) {
+              throw new LexError(
+                '字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。',
+                srcLength - src.length,
+                srcLength - rp.src.length,
+              )
+            }
 
+            let offset = 0
             for (let i = 0; i < list.length; i++) {
               const josi = (i === list.length - 1) ? rp.josi : ''
               if (i % 2 === 0) {
-                const rr = {type: 'string', value: list[i], file: filename, josi, line, column}
-                result.push(rr)
+                result.push({type: 'string', value: list[i], file: filename, josi, line, column,
+                             preprocessedCodeOffset: srcLength - src.length + offset, preprocessedCodeLength: list[i].length + 2 + josi.length})
+                // 先頭なら'"...{'、それ以外なら'}...{'、最後は何でも良い
+                offset += list[i].length + 2
               } else {
-                result.push({type: '&', value: '&', josi: '', file: filename, line, column})
-                result.push({ type: '(', value: '(', josi: '', file: filename, line, column })
-                result.push({type: 'code', value: list[i], josi: '', file: filename, line, column})
-                result.push({ type: ')', value: ')', josi: '', file: filename, line, column })
-                result.push({type: '&', value: '&', josi: '', file: filename, line, column})
+                result.push({ type: '&', value: '&', josi: '', file: filename, line, column, preprocessedCodeOffset: srcLength - src.length + offset, preprocessedCodeLength: 0 })
+                result.push({ type: '(', value: '(', josi: '', file: filename, line, column, preprocessedCodeOffset: srcLength - src.length + offset, preprocessedCodeLength: 0 })
+                result.push({ type: 'code', value: list[i], josi: '', file: filename, line, column, preprocessedCodeOffset: srcLength - src.length + offset, preprocessedCodeLength: list[i].length })
+                result.push({ type: ')', value: ')', josi: '', file: filename, line, column, preprocessedCodeOffset: srcLength - src.length + offset + list[i].length, preprocessedCodeLength: 0 })
+                result.push({ type: '&', value: '&', josi: '', file: filename, line, column, preprocessedCodeOffset: srcLength - src.length + offset + list[i].length, preprocessedCodeLength: 0 })
+                offset += list[i].length
               }
             }
             line += rp.numEOL
@@ -306,16 +356,20 @@ class NakoLexer {
           }
           columnCurrent = column
           column += src.length - rp.src.length
+          result.push({ type: rule.name, value: rp.res, josi: rp.josi, line: line, column: columnCurrent, file: filename, preprocessedCodeOffset: srcLength - src.length, preprocessedCodeLength: src.length - rp.src.length })
           src = rp.src
-          const rr = {type: rule.name, value: rp.res, josi: rp.josi, line: line, column: columnCurrent, file: filename}
-          result.push(rr)
           line += rp.numEOL
           if (rp.numEOL > 0) {
             column = 1
           }
           break
         }
+
+        // ソースを進める前に位置を計算
+        const srcOffset = srcLength - src.length
+
         // 値を変換する必要があるか？
+        /** @type {unknown} */
         let value = m[0]
         if (rule.cb) {value = rule.cb(value)}
         // ソースを進める
@@ -363,14 +417,24 @@ class NakoLexer {
           line: lineCurrent,
           column: columnCurrent,
           file: filename,
-          josi: josi
+          josi: josi,
+          preprocessedCodeOffset: srcOffset,
+          preprocessedCodeLength: (srcLength - src.length) - srcOffset,
         })
         break
       }
-      if (!ok) {throw new Error('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...')}
+      if (!ok) {
+        throw new LexError('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...',
+          srcLength - src.length,
+          srcLength - srcLength + 3,
+        )
+      }
     }
     return result
   }
 }
 
-module.exports = NakoLexer
+module.exports = {
+  LexError,
+  NakoLexer,
+}

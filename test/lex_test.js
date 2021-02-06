@@ -67,4 +67,74 @@ describe('lex_test', () => {
     cmp('《今日から明日》＝30；《今日から明日》を表示', '30')
     cmp('《AからBまで》＝30；《AからBまで》を表示', '30')
   })
+  it('ソースマップ - 単純な例', () => {
+    const tokens = nako.lex('「こんにちは」と表示').tokens
+
+    // 0-7文字目: 「こんにちは」と
+    assert.strictEqual(tokens[0].startOffset, 0)
+    assert.strictEqual(tokens[0].endOffset, 8)
+
+    // 8-9文字目: 表示
+    assert.strictEqual(tokens[1].startOffset, 8)
+    assert.strictEqual(tokens[1].endOffset, 10)
+  })
+  it('ソースマップ - スペース扱いの文字', () => {
+    // '、'はスペース扱いであり、トークン化されない。
+    const tokens = nako.lex('ならば、A').tokens
+
+    // 0-2文字目: ならば
+    assert.strictEqual(tokens[0].startOffset, 0)
+    assert.strictEqual(tokens[0].endOffset, 3)
+
+    // 4文字目: A
+    assert.strictEqual(tokens[1].startOffset, 4)
+    assert.strictEqual(tokens[1].endOffset, 5)
+  })
+  it('ソースマップ - 複数行の場合', () => {
+    const tokens = nako.lex('「こんにちは」を表示する。\n「こんにちは」を表示する。').tokens
+    assert.strictEqual(tokens[0].startOffset, 0)  // 0-7: 「こんにちは」を
+    assert.strictEqual(tokens[1].startOffset, 8)  // 8-11: 表示する
+    assert.strictEqual(tokens[2].startOffset, 12) // 12: 。
+    assert.strictEqual(tokens[3].startOffset, 13) // 13: eol
+    assert.strictEqual(tokens[4].startOffset, 14)  // 14-21: 「こんにちは」を
+    assert.strictEqual(tokens[5].startOffset, 22)  // 22-25: 表示する
+    assert.strictEqual(tokens[6].startOffset, 26)  // 26: 。
+  })
+  it('ソースマップ - 行コメント', () => {
+    const tokens = nako.lex(`# コメント`).commentTokens
+    assert.strictEqual(tokens[0].startOffset, 0)
+    assert.strictEqual(tokens[0].endOffset, 6)
+  })
+  it('ソースマップ - 範囲コメント', () => {
+    const tokens = nako.lex(`/*\nここは全部コメント\nここは全部コメント\n*/`).commentTokens
+    assert.strictEqual(tokens[0].startOffset, 0)
+    assert.strictEqual(tokens[0].endOffset, 25)
+  })
+  it('ソースマップ - 範囲コメントの直後に文字がある場合', () => {
+    const result = nako.lex(`/*\nここは全部コメント\nここは全部コメント\n*/a`)
+
+    // コメント
+    assert.strictEqual(result.commentTokens[0].startOffset, 0)
+    assert.strictEqual(result.commentTokens[0].endOffset, 25)
+
+    // a
+    assert.strictEqual(result.tokens[0].startOffset, 25)
+    assert.strictEqual(result.tokens[0].endOffset, 26)
+  })
+  it('ソースマップ - "_"による改行', () => {
+    const tokens = nako.lex(`[_\n]\nりんごの値段は30`).tokens
+    const nedan = tokens.find((t) => t.value === '値段')
+    assert.strictEqual(nedan.startOffset, 9)
+    assert.strictEqual(nedan.endOffset, 12)
+  })
+  it('ソースマップ - インデント構文', () => {
+    const tokens = nako.lex(`！インデント構文\n1回\n    「2」を表示\n\n「3」を表示`).tokens
+    assert.strictEqual(tokens.find((t) => t.value === '2').startOffset, 16) // 「1」を
+    assert.strictEqual(tokens.find((t) => t.value === '3').startOffset, 24) // 「2」を
+  })
+  it('ソースマップ - string_ex', () => {
+    const tokens = nako.lex(`"{あ}"`).tokens
+    assert.strictEqual(tokens.find((t) => t.value === 'あ').startOffset, 2)
+    assert.strictEqual(tokens.find((t) => t.value === 'あ').endOffset, 3)
+  })
 })

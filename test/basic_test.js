@@ -130,4 +130,13 @@ describe('basic', () => {
       '2'
     )
   })
+  it('エラー位置の取得', () => {
+    try {
+      nako.runReset(`「こんにちは」」と表示する`)
+    } catch (e) {
+      // 2つめの '」' の位置
+      assert.strictEqual(e.startOffset, 7)
+      assert.strictEqual(e.endOffset, 8)
+    }
+  })
 })
