@@ -2,7 +2,7 @@
  * nadesiko v3
  */
 const Parser = require('./nako_parser3')
-const { LexError, NakoLexer } = require('./nako_lexer')
+const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
@@ -12,29 +12,9 @@ const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax } = require("./nako_source_mapping")
 const { NakoSyntaxError } = require('./nako_parser_base')
+const { LexErrorWithSourceMap } = require('./nako_lex_error')
+const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
 
-class LexErrorWithSourceMap extends LexError {
-  /**
-   * @param {string} reason
-   * @param {number} preprocessedCodeStartOffset
-   * @param {number} preprocessedCodeEndOffset
-   * @param {number | null} startOffset
-   * @param {number | null} endOffset
-   */
-  constructor(
-      reason,
-      preprocessedCodeStartOffset,
-      preprocessedCodeEndOffset,
-      startOffset,
-      endOffset,
-  ) {
-      super(reason, preprocessedCodeStartOffset, preprocessedCodeEndOffset)
-      /** @readonly */
-      this.startOffset = startOffset
-      /** @readonly */
-      this.endOffset = endOffset
-  }
-}
 /**
  * @typedef {{
  *   type: string;
@@ -54,26 +34,6 @@ class LexErrorWithSourceMap extends LexError {
 const prepare = new Prepare()
 const parser = new Parser()
 const lexer = new NakoLexer()
-
-class NakoSyntaxErrorWithSourceMap extends NakoSyntaxError {
-  /**
-   *@param {TokenWithSourceMap} token
-   *@param {number} startOffset
-   *@param {number} endOffset
-   *@param {NakoSyntaxError} error
-   */
-  constructor(token, startOffset, endOffset, error) {
-      super(error.msg, error.line, error.fname)
-      /** @readonly */
-      this.token = token
-      /** @readonly */
-      this.startOffset = startOffset
-      /** @readonly */
-      this.endOffset = endOffset
-      /** @readonly */
-      this.error = error
-  }
-}
 
 /**
  * 一部のプロパティのみ。

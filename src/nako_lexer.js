@@ -14,6 +14,8 @@ const josiRE = josi.josiRE
 const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
 
+const {LexError} = require('./nako_lex_error')
+
 /**
  * @typedef {import('./nako3').TokenWithSourceMap} TokenWithSourceMap
  * @typedef {{
@@ -28,21 +30,7 @@ const rules = lexRules.rules
  *   meta?: any;
  * }} Token
  */
-
-class LexError extends Error {
-  /**
-   * @param {string} reason
-   * @param {number} preprocessedCodeStartOffset
-   * @param {number} preprocessedCodeEndOffset
-   */
-  constructor(reason, preprocessedCodeStartOffset, preprocessedCodeEndOffset) {
-      super(`LexError: ${reason}`)
-      this.reason = reason
-      this.preprocessedCodeStartOffset = preprocessedCodeStartOffset
-      this.preprocessedCodeEndOffset = preprocessedCodeEndOffset
-  }
-}
-
+ 
 class NakoLexer {
   constructor () {
     this.funclist = {}
@@ -456,7 +444,4 @@ class NakoLexer {
   }
 }
 
-module.exports = {
-  LexError,
-  NakoLexer,
-}
+module.exports = NakoLexer
