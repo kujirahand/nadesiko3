@@ -15,6 +15,7 @@ const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
 
 /**
+ * @typedef {import('./nako3').TokenWithSourceMap} TokenWithSourceMap
  * @typedef {{
  *   type: string;
  *   value: unknown;
@@ -45,6 +46,7 @@ class LexError extends Error {
 class NakoLexer {
   constructor () {
     this.funclist = {}
+    /** @type {TokenWithSourceMap[]} */
     this.result = []
   }
 
@@ -57,6 +59,9 @@ class NakoLexer {
     return this.tokenize(code, line, filename)
   }
 
+  /**
+   * @param {TokenWithSourceMap[]} tokens
+   */
   setInput2 (tokens, isFirst) {
     this.result = tokens
     // 関数の定義があれば funclist を更新
@@ -64,14 +69,25 @@ class NakoLexer {
     this.replaceWord(this.result)
 
     if (isFirst) {
-      const eofLine = (this.result.length > 0) ? this.result[this.result.length - 1].line : 0
-      const filename = (this.result.length > 0) ? this.result[this.result.length - 1].file : ''
-      this.result.push({type: 'eol', line: eofLine, column: 0, file: filename, josi: '', value: '---'}) // 改行
-      this.result.push({type: 'eof', line: eofLine, column: 0, file: filename, josi: '', value: ''}) // ファイル末尾
+      if (this.result.length > 0) {
+        const eof = this.result[this.result.length - 1]
+        this.result.push({type: 'eol', line: eof.line, column: 0, file: eof.file, josi: '', value: '---',
+          startOffset: eof.startOffset, endOffset: eof.endOffset, rawJosi: '' }) // 改行
+        this.result.push({type: 'eof', line: eof.line, column: 0, file: eof.file, josi: '', value: '',
+          startOffset: eof.startOffset, endOffset: eof.endOffset, rawJosi: '' }) // ファイル末尾
+      } else {
+        this.result.push({type: 'eol', line: 0, column: 0, file: '', josi: '', value: '---',
+          startOffset: 0, endOffset: 0, rawJosi: '' }) // 改行
+        this.result.push({type: 'eof', line: 0, column: 0, file: '', josi: '', value: '',
+          startOffset: 0, endOffset: 0, rawJosi: ''}) // ファイル末尾
+      }
     }
     return this.result
   }
 
+  /**
+   * @param {TokenWithSourceMap[]} tokens
+   */
   preDefineFunc (tokens) {
     // 関数を先読みして定義
     let i = 0
@@ -126,7 +142,7 @@ class NakoLexer {
       // 無名関数の定義：「xxには**」があった場合 ... 暗黙的な関数定義とする
       if ((t.type === 'word' && t.josi === 'には') || (t.type === 'word' && t.josi === 'は~')) {
         t.josi = 'には'
-        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, column: t.column, file: t.file, josi: ''})
+        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: ''})
         i++
         continue
       }
@@ -134,7 +150,7 @@ class NakoLexer {
       if (t.type === 'word' && t.josi === '' && t.value.length >= 2) {
         if (t.value.match(/回$/)) {
           t.value = t.value.substr(0, t.value.length - 1)
-          tokens.splice(i + 1, 0, {type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: ''})
+          tokens.splice(i + 1, 0, {type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: ''})
           i++
         }
       }
@@ -205,6 +221,9 @@ class NakoLexer {
     return list
   }
 
+  /**
+   * @param {TokenWithSourceMap[]} tokens
+   */
   replaceWord (tokens) {
     let comment = []
     let i = 0
@@ -237,14 +256,16 @@ class NakoLexer {
       // 助詞の「は」を = に展開
       if (t.josi === undefined) {t.josi = ''}
       if (t.josi === 'は') {
-        tokens.splice(i + 1, 0, {type: 'eq', line: t.line, column: t.column, file: t.file})
+        tokens.splice(i + 1, 0, {type: 'eq', line: t.line, column: t.column, file: t.file,
+          startOffset: t.endOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
         i += 2
         t.josi = ''
         continue
       }
       // 「とは」を一つの単語にする
       if (t.josi === 'とは') {
-        tokens.splice(i + 1, 0, {type: t.josi, line: t.line, column: t.column, file: t.file})
+        tokens.splice(i + 1, 0, {type: t.josi, line: t.line, column: t.column, file: t.file,
+          startOffset: t.endOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
         t.josi = ''
         i += 2
         continue
@@ -253,7 +274,8 @@ class NakoLexer {
       if (josi.tarareba[t.josi]) {
         const josi = (t.josi !== 'でなければ') ? 'ならば' : 'でなければ'
         t.josi = ''
-        tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line, column: t.column, file: t.file})
+        tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line, column: t.column, file: t.file,
+          startOffset: t.endOffset, endOffset: t.endOffset, josi: '', rawJosi: ''})
         i += 2
         continue
       }

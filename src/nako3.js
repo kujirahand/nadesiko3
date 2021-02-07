@@ -209,7 +209,7 @@ class NakoCompiler {
 
   /**
    * 単語の属性を構文解析に先立ち補正する
-   * @param tokens トークンのリスト
+   * @param {TokenWithSourceMap[]} tokens トークンのリスト
    * @param isFirst 最初の呼び出しかどうか
    * @returns コード (なでしこ)
    */
