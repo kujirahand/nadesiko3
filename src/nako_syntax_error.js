@@ -12,6 +12,9 @@ class NakoSyntaxError extends Error {
     const title = `[文法エラー]${fname2}(${line2}行目): ${msg}\n` +
                   `[バージョン] ${nakoVersion.version}`
     super(title)
+    this.msg = msg
+    this.line = line
+    this.fname = fname
   }
 }
 

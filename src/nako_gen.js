@@ -75,7 +75,7 @@ class NakoGen {
      * __varslist[0] プラグイン領域
      * __varslist[1] なでしこグローバル領域
      * __varslist[2] 最初のローカル変数 ( == __vars }
-     * @type {[*]}
+     * @type {any[]}
      * @private
      */
     this.__varslist = com.__varslist
