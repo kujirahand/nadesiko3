@@ -67,6 +67,7 @@ class NakoCompiler {
     this.filename = 'inline'
     this.options = {}
     // 環境のリセット
+    /** @type {Record<string, any>[]} */
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
     this.__self = this
     this.__vars = this.__varslist[2]
@@ -520,8 +521,9 @@ class NakoCompiler {
         throw e
       } else {
         throw new NakoRuntimeError(
-          e.name + ':' +
-          e.message, this)
+          e,
+          this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+        )
       }
     }
     return this
@@ -550,8 +552,9 @@ class NakoCompiler {
         throw e
       } else {
         throw new NakoRuntimeError(
-          e.name + ':' +
-          e.message, this)
+          e,
+          this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+        )
       }
     }
     return this
@@ -628,7 +631,11 @@ class NakoCompiler {
           try {
             return v.fn(...args)
           } catch (e) {
-            throw new NakoRuntimeError('関数『' + key + '』:' + e.name + ':' + e.message, this)
+            throw new NakoRuntimeError(
+              e,
+              this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+              `関数『${key}』`,
+            )
           }
         }
       } else if (v.type === 'const' || v.type === 'var') {

@@ -16,7 +16,6 @@ describe('error_message', () => {
     assert.throws(
       () => nako.runReset(code),
       err => {
-        assert(err instanceof NakoSyntaxError)
         for (const res of resArr) {
           if (err.message.indexOf(res) === -1) {
             throw new Error(`${JSON.stringify(err.message)} が ${JSON.stringify(res)} を含みません。`)
@@ -63,6 +62,18 @@ describe('error_message', () => {
   it('関数の宣言でエラー', () => {
     cmp('●30とは', [
       '関数30の宣言でエラー。',
+    ])
+  })
+  it('実行時エラー - 「エラー発生」の場合', () => {
+    cmp(
+      '「エラーメッセージ」のエラー発生', [
+      '関数『エラー発生』でエラー『エラーメッセージ』が発生しました。',
+    ])
+  })
+  it('実行時エラー - 「JS実行」の場合', () => {
+    cmp(
+      '「x.y」をJS実行', [
+      '関数『JS実行』でエラー『ReferenceError: x is not defined』が発生しました'
     ])
   })
 })
