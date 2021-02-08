@@ -333,9 +333,10 @@ class NakoLexer {
             const list = this.splitStringEx(rp.res)
             if (list === null) {
               throw new LexError(
-                '字句解析エラー(' + (line + 1) + '): 展開あり文字列で値の埋め込み{...}が対応していません。',
+                '展開あり文字列で値の埋め込み{...}が対応していません。',
                 srcLength - src.length,
                 srcLength - rp.src.length,
+                line,
               )
             }
 
@@ -434,9 +435,10 @@ class NakoLexer {
         break
       }
       if (!ok) {
-        throw new LexError('字句解析で未知の語句(' + (line + 1) + '): ' + src.substr(0, 3) + '...',
+        throw new LexError('未知の語句: ' + src.substr(0, 3) + '...',
           srcLength - src.length,
           srcLength - srcLength + 3,
+          line,
         )
       }
     }

@@ -12,7 +12,7 @@ const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax } = require("./nako_source_mapping")
 const { NakoSyntaxError } = require('./nako_parser_base')
-const { LexErrorWithSourceMap } = require('./nako_lex_error')
+const { LexError, LexErrorWithSourceMap } = require('./nako_lex_error')
 const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
 
 /**
@@ -163,6 +163,8 @@ class NakoCompiler {
           err.preprocessedCodeEndOffset,
           dest.startOffset,
           dest.endOffset,
+          err.line,
+          filename,
       )
     }
   }
