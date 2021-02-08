@@ -142,4 +142,23 @@ describe('basic', () => {
       assert.strictEqual(e.endOffset, 8)
     }
   })
+  it('エラー位置の取得 - "_"がある場合', () => {
+    try {
+      nako.runReset(
+        `a = [ _\n` +
+        `    1, 2, 3\n` +
+        `]\n` +
+        `「こんにちは」」と表示する`
+      )
+    } catch (e) {
+      assert(e.message.indexOf('(4行目)') !== -1)
+    }
+  })
+  it('エラー位置の取得 - 字句解析エラーの場合', () => {
+    try {
+      nako.runReset(`\n「こんに{ちは」と表示する`)
+    } catch (e) {
+      assert(e.message.indexOf('[字句解析エラー](2行目): ') !== -1)
+    }
+  })
 })
