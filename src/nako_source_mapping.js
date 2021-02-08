@@ -164,7 +164,60 @@ class SourceMappingOfIndentSyntax {
     }
 }
 
+/** offsetから (line, column) へ変換する。 */
+class OffsetToLineColumn {
+    /**
+     * @param {string} code
+     */
+    constructor(code) {
+        /** @private @type {number[]} */
+        this.lineOffsets = []
+
+        // 各行の先頭位置を先に計算しておく
+        let offset = 0
+        for (const line of code.split("\n")) {
+            this.lineOffsets.push(offset)
+            offset += line.length + 1
+        }
+
+        /** @private */
+        this.lastLineNumber = 0
+        /** @private */
+        this.lastOffset = 0
+    }
+
+    /**
+     * @param {number} offset
+     * @param {boolean} oneBasedLineNumber trueのときlineを1から始める
+     * @returns {{ line: number, column: number }}
+     */
+    map(offset, oneBasedLineNumber) {
+        // 連続アクセスに対する高速化
+        if (offset < this.lastOffset) {
+            this.lastLineNumber = 0
+        }
+        this.lastOffset = offset
+
+        for (let i = this.lastLineNumber; i < this.lineOffsets.length - 1; i++) {
+            if (offset < this.lineOffsets[i + 1]) {
+                this.lastLineNumber = i
+                return {
+                    line: i + (oneBasedLineNumber ? 1 : 0),
+                    column: offset - this.lineOffsets[i],
+                }
+            }
+        }
+
+        this.lastLineNumber = this.lineOffsets.length - 1
+        return {
+            line: this.lineOffsets.length - 1 + (oneBasedLineNumber ? 1 : 0),
+            column: offset - this.lineOffsets[this.lineOffsets.length - 1],
+        }
+    }
+}
+
 module.exports = {
     SourceMappingOfTokenization,
     SourceMappingOfIndentSyntax,
+    OffsetToLineColumn,
 }

@@ -2,7 +2,7 @@
  * nadesiko v3
  */
 const Parser = require('./nako_parser3')
-const { LexError, NakoLexer } = require('./nako_lexer')
+const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
@@ -10,31 +10,11 @@ const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
-const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax } = require("./nako_source_mapping")
+const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn } = require("./nako_source_mapping")
 const { NakoSyntaxError } = require('./nako_parser_base')
+const { LexError, LexErrorWithSourceMap } = require('./nako_lex_error')
+const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
 
-class LexErrorWithSourceMap extends LexError {
-  /**
-   * @param {string} reason
-   * @param {number} preprocessedCodeStartOffset
-   * @param {number} preprocessedCodeEndOffset
-   * @param {number | null} startOffset
-   * @param {number | null} endOffset
-   */
-  constructor(
-      reason,
-      preprocessedCodeStartOffset,
-      preprocessedCodeEndOffset,
-      startOffset,
-      endOffset,
-  ) {
-      super(reason, preprocessedCodeStartOffset, preprocessedCodeEndOffset)
-      /** @readonly */
-      this.startOffset = startOffset
-      /** @readonly */
-      this.endOffset = endOffset
-  }
-}
 /**
  * @typedef {{
  *   type: string;
@@ -54,26 +34,6 @@ class LexErrorWithSourceMap extends LexError {
 const prepare = new Prepare()
 const parser = new Parser()
 const lexer = new NakoLexer()
-
-class NakoSyntaxErrorWithSourceMap extends NakoSyntaxError {
-  /**
-   *@param {TokenWithSourceMap} token
-   *@param {number} startOffset
-   *@param {number} endOffset
-   *@param {NakoSyntaxError} error
-   */
-  constructor(token, startOffset, endOffset, error) {
-      super(error.msg, error.line, error.fname)
-      /** @readonly */
-      this.token = token
-      /** @readonly */
-      this.startOffset = startOffset
-      /** @readonly */
-      this.endOffset = endOffset
-      /** @readonly */
-      this.error = error
-  }
-}
 
 /**
  * 一部のプロパティのみ。
@@ -163,53 +123,50 @@ class NakoCompiler {
     // 全角半角の統一処理
     const preprocessed = this.prepare.convert(code2)
 
-    // トークン分割
     const tokenizationSourceMapping = new SourceMappingOfTokenization(code2.length, preprocessed)
     const indentationSyntaxSourceMapping = new SourceMappingOfIndentSyntax(code2, insertedLines, deletedLines)
+    const offsetToLineColumn = new OffsetToLineColumn(code)
+
+    // トークン分割
+    /** @type {import('./nako_lexer').Token[]} */
+    let tokens
     try {
-      const tokens = this.lexer.setInput(preprocessed.map((v) => v.text).join(""), line, filename)
-  
-      // インデント構文の処理後のソースコード上の位置を求める
-      const tokensWithSourceMap = tokens.map((token, i) => {
-        const startOffset = tokenizationSourceMapping.map(token.preprocessedCodeOffset)
-        const endOffset = tokenizationSourceMapping.map(token.preprocessedCodeOffset + token.preprocessedCodeLength)
-
-        return /** @type {TokenWithSourceMap} */ ({
-          ...token,
-          startOffset,
-          endOffset,
-          rawJosi: token.josi,
-        })
-      })
-
-      // インデント構文の処理前のソースコード上の位置へ変換する
-      for (const token of tokensWithSourceMap) {
-        const dest = indentationSyntaxSourceMapping.map(token.startOffset, token.endOffset)
-        token.startOffset = dest.startOffset
-        token.endOffset = dest.endOffset
-      }
-
-      return tokensWithSourceMap
+      tokens = this.lexer.setInput(preprocessed.map((v) => v.text).join(""), line, filename)
     } catch (err) {
       if (!(err instanceof LexError)) {
         throw err
       }
+
       // エラー位置をソースコード上の位置に変換して返す
       const dest = indentationSyntaxSourceMapping.map(tokenizationSourceMapping.map(err.preprocessedCodeStartOffset), tokenizationSourceMapping.map(err.preprocessedCodeEndOffset))
-
-      throw new LexErrorWithSourceMap(
-          err.reason,
-          err.preprocessedCodeStartOffset,
-          err.preprocessedCodeEndOffset,
-          dest.startOffset,
-          dest.endOffset,
-      )
+      /** @type {number | undefined} */
+      const line = dest.startOffset === null ? err.line : offsetToLineColumn.map(dest.startOffset, false).line
+      throw new LexErrorWithSourceMap(err.reason, err.preprocessedCodeStartOffset, err.preprocessedCodeEndOffset, dest.startOffset, dest.endOffset, line, filename)
     }
+
+    // ソースコード上の位置に変換
+    return tokens.map((token, i) => {
+      const dest = indentationSyntaxSourceMapping.map(
+        tokenizationSourceMapping.map(token.preprocessedCodeOffset),
+        tokenizationSourceMapping.map(token.preprocessedCodeOffset + token.preprocessedCodeLength),
+      )
+      const { line, column } = dest.startOffset === null
+        ? { line: token.line, column: 0 }
+        : offsetToLineColumn.map(dest.startOffset, false)
+      return {
+        ...token,
+        line: line,
+        column: column,
+        startOffset: dest.startOffset,
+        endOffset: dest.endOffset,
+        rawJosi: token.josi,
+      }
+    })
   }
 
   /**
    * 単語の属性を構文解析に先立ち補正する
-   * @param tokens トークンのリスト
+   * @param {TokenWithSourceMap[]} tokens トークンのリスト
    * @param isFirst 最初の呼び出しかどうか
    * @returns コード (なでしこ)
    */
