@@ -157,7 +157,7 @@
     "fs-extra": "^9.0.0",
     "html": "^1.0.0",
     "iconv-lite": "^0.6.0",
-    "marked": "^1.2.5",
+    "marked": "^2.0.0",
     "nadesiko3-sqlite3sync": "0.0.1",
     "node-fetch": "^2.6.1",
     "opener": "^1.5.1",
