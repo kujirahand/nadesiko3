@@ -1590,7 +1590,7 @@ const PluginSystem = {
         return n.substr(n.length-2, 2)
       }
       const t = new Date()
-      return z2(t.getFullYear()) + '/' + z2(t.getMonth()+1) + '/' + z2(t.getDate())
+      return t.getFullYear() + '/' + z2(t.getMonth()+1) + '/' + z2(t.getDate())
     }
   },
   '曜日番号取得': { // @Sに指定した日付の曜日番号をで返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土) // @ようびばんごうしゅとく
