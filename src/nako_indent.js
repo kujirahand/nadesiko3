@@ -1,11 +1,13 @@
+const NakoIndentError = require('./nako_indent_error')
 const NakoPrepare = require('./nako_prepare')
 
 /**
  * インデント構文指定があればコードを変換する
  * @param {string} code 
+ * @param {string} filename
  * @returns {{ code: string, insertedLines: number[], deletedLines: { lineNumber: number, len: number }[] }}
  */
-function convert(code) {
+function convert(code, filename) {
     // プログラム冒頭に「!インデント構文」があれば変換
     const keywords = ['!インデント構文', '!ここまでだるい']
     // 最初の30行をチェック
@@ -19,7 +21,7 @@ function convert(code) {
         }
     })
     if (bConv) {
-        return convertGo(code)
+        return convertGo(code, filename)
     }
     return { code, insertedLines: [], deletedLines: [] }
 }
@@ -31,7 +33,7 @@ const SpecialRetMark = '🌟🌟改行🌟🌟s4j#WjcSb😀/FcX3🌟🌟'
 /**
  * ソースコードのある1行の中のコメントを全て取り除く。
  * 事前にreplaceRetMarkによって文字列や範囲コメント内の改行文字が置換されている必要がある。
- * @param code {string}
+ * @param {string} src
  * @return {string}
  */
 function removeCommentsFromLine(src) {
@@ -45,7 +47,7 @@ function removeCommentsFromLine(src) {
         const c = src.charAt(i)
         const ch2 = src.substr(i, 2)
         const cPrepared = prepare.convert1ch(c)
-        const ch2Prepared = [...ch2].map((c) => prepare.convert1ch(c)).join("")
+        const ch2Prepared = ch2.split('').map((c) => prepare.convert1ch(c)).join("")
 
         // eosか?
         if (eos != '') {
@@ -143,9 +145,10 @@ function removeCommentsFromLine(src) {
 
 /**
  * @param {string} code
+ * @param {string} filename
  * @returns {{ code: string, insertedLines: number[], deletedLines: { lineNumber: number, len: number }[] }}
  */
-function convertGo(code) {
+function convertGo(code, filename) {
     /** @type {number[]} */
     const insertedLines = []
     /** @type {{ lineNumber: number, len: number }[]} */
@@ -159,7 +162,7 @@ function convertGo(code) {
     /** @type {number[]} */
     const indentStack = []
     let lastIndent = 0
-    lines.forEach((line) => {
+    lines.forEach((line, i) => {
         // trim line
         if (/^\s*$/.test(line)) {
             deletedLines.push({ lineNumber: lines2.length, len: line.length })
@@ -169,6 +172,9 @@ function convertGo(code) {
         if (lineTrimed === '') {
             lines2.push(line)
             return
+        }
+        if (lineTrimed === 'ここまで') {
+            throw new NakoIndentError(`インデント構文が有効化されているときに『ここまで』を使うことはできません。`, i, filename)
         }
 
         // check indent
@@ -294,7 +300,7 @@ function replaceRetMark(src) {
         const c = src.charAt(i)
         const ch2 = src.substr(i, 2)
         const cPrepared = prepare.convert1ch(c)
-        const ch2Prepared = [...ch2].map((c) => prepare.convert1ch(c)).join("")
+        const ch2Prepared = ch2.split('').map((c) => prepare.convert1ch(c)).join("")
 
         // eosか?
         if (eos != '') {

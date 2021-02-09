@@ -1,6 +1,5 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
-const { NakoSyntaxError } = require('../src/nako_syntax_error')
 
 describe('error_message', () => {
   const nako = new NakoCompiler()
@@ -74,6 +73,14 @@ describe('error_message', () => {
     cmp(
       '「x.y」をJS実行', [
       '関数『JS実行』でエラー『ReferenceError: x is not defined』が発生しました'
+    ])
+  })
+  it('インデント構文中に『ここまで』を使用', () => {
+    cmp(
+      '！インデント構文\n' +
+      'もしはいならば\n' +
+      'ここまで\n', [
+      'インデント構文が有効化されているときに『ここまで』を使うことはできません。'
     ])
   })
 })
