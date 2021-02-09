@@ -74,6 +74,9 @@ describe('basic', () => {
     cmp('「aabbcc」の「aa」を「」に置換してFに代入。Fを表示', 'bbcc')
     cmp('「aabbcc」の「aa」を「」に置換して「bb」を「」に置換してFに代入。Fを表示', 'cc')
   })
+  it('〜を〜に定める', () => {
+    cmp('Aを0.8に定めてAを表示', '0.8')
+  })
   it('文字列 - &と改行', () => {
     cmp('「aaa」& _\n「bbb」を表示。', 'aaabbb')
     cmp('A= 1 + 1 + 1 + 1 + 1 + _\n1 + 1\nAを表示', '7')
@@ -129,5 +132,33 @@ describe('basic', () => {
       '        3を表示\n',
       '2'
     )
+  })
+  it('エラー位置の取得', () => {
+    try {
+      nako.runReset(`「こんにちは」」と表示する`)
+    } catch (e) {
+      // 2つめの '」' の位置
+      assert.strictEqual(e.startOffset, 7)
+      assert.strictEqual(e.endOffset, 8)
+    }
+  })
+  it('エラー位置の取得 - "_"がある場合', () => {
+    try {
+      nako.runReset(
+        `a = [ _\n` +
+        `    1, 2, 3\n` +
+        `]\n` +
+        `「こんにちは」」と表示する`
+      )
+    } catch (e) {
+      assert(e.message.indexOf('(4行目)') !== -1)
+    }
+  })
+  it('エラー位置の取得 - 字句解析エラーの場合', () => {
+    try {
+      nako.runReset(`\n「こんに{ちは」と表示する`)
+    } catch (e) {
+      assert(e.message.indexOf('[字句解析エラー](2行目): ') !== -1)
+    }
   })
 })

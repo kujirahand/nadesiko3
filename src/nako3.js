@@ -2,7 +2,7 @@
  * nadesiko v3
  */
 const Parser = require('./nako_parser3')
-const Lexer = require('./nako_lexer')
+const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
 const NakoRuntimeError = require('./nako_runtime_error')
@@ -10,10 +10,51 @@ const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
+const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn } = require("./nako_source_mapping")
+const { NakoSyntaxError } = require('./nako_parser_base')
+const { LexError, LexErrorWithSourceMap } = require('./nako_lex_error')
+const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
+
+/**
+ * @typedef {{
+ *   type: string;
+ *   value: unknown;
+ *   line: number;
+ *   column: number;
+ *   file: string;
+ *   josi: string;
+ *   meta?: any;
+ *   rawJosi: string
+ *   startOffset: number | null
+ *   endOffset: number | null
+ *   isDefinition?: boolean
+ * }} TokenWithSourceMap
+ */
 
 const prepare = new Prepare()
 const parser = new Parser()
-const lexer = new Lexer()
+const lexer = new NakoLexer()
+
+/**
+ * 一部のプロパティのみ。
+ * @typedef {{
+ *   type: string
+ *   cond?: TokenWithSourceMap | Ast
+ *   block?: (TokenWithSourceMap | Ast)[] | TokenWithSourceMap | Ast
+ *   false_block?: TokenWithSourceMap | Ast
+ *   name?: TokenWithSourceMap | Ast
+ *   josi?: string
+ *   value?: unknown
+ *   line?: number
+ *   column?: unknown
+ *   file?: unknown
+ *   preprocessedCodeOffset?: unknown
+ *   preprocessedCodeLength?: unknown
+ *   startOffset?: unknown
+ *   endOffset?: unknown
+ *   rawJosi?: unknown
+ * }} Ast
+ */
 
 class NakoCompiler {
   constructor () {
@@ -26,6 +67,7 @@ class NakoCompiler {
     this.filename = 'inline'
     this.options = {}
     // 環境のリセット
+    /** @type {Record<string, any>[]} */
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
     this.__self = this
     this.__vars = this.__varslist[2]
@@ -59,18 +101,6 @@ class NakoCompiler {
     return NakoGen.getHeader()
   }
 
-  /**
-   * コードを単語に分割し属性の補正を行う
-   * @param code なでしこのプログラム
-   * @param isFirst 最初の呼び出しかどうか
-   * @param line なでしこのプログラムの行番号
-   * @returns コード (なでしこ)
-   */
-  tokenize (code, isFirst, line = 0) {
-    const tokens = this.rawtokenize(code, line, '')
-    return this.converttoken(tokens, isFirst)
-  }
-
   async tokenizeAsync (code, isFirst, filename, line = 0) {
     let rawtokens = this.rawtokenize(code, line, filename)
     if (this.beforeParseCallback) {
@@ -82,23 +112,63 @@ class NakoCompiler {
 
   /**
    * コードを単語に分割する
-   * @param code なでしこのプログラム
-   * @param line なでしこのプログラムの行番号
-   * @returns トークンのリスト
+   * @param {string} code なでしこのプログラム
+   * @param {number} line なでしこのプログラムの行番号
+   * @param {string} filename
+   * @returns {TokenWithSourceMap[]} トークンのリスト
+   * @throws {LexErrorWithSourceMap}
    */
   rawtokenize (code, line, filename) {
-    // 『##インデント構文』のチェック(#596)
-    code = NakoIndent.convert(code)
+    // インデント構文 (#596)
+    const { code: code2, insertedLines, deletedLines } = NakoIndent.convert(code, filename)
+
     // 全角半角の統一処理
-    const code2 = this.prepare.convert(code)
+    const preprocessed = this.prepare.convert(code2)
+
+    const tokenizationSourceMapping = new SourceMappingOfTokenization(code2.length, preprocessed)
+    const indentationSyntaxSourceMapping = new SourceMappingOfIndentSyntax(code2, insertedLines, deletedLines)
+    const offsetToLineColumn = new OffsetToLineColumn(code)
+
     // トークン分割
-    const tokens = this.lexer.setInput(code2, line, filename)
-    return tokens
+    /** @type {import('./nako_lexer').Token[]} */
+    let tokens
+    try {
+      tokens = this.lexer.setInput(preprocessed.map((v) => v.text).join(""), line, filename)
+    } catch (err) {
+      if (!(err instanceof LexError)) {
+        throw err
+      }
+
+      // エラー位置をソースコード上の位置に変換して返す
+      const dest = indentationSyntaxSourceMapping.map(tokenizationSourceMapping.map(err.preprocessedCodeStartOffset), tokenizationSourceMapping.map(err.preprocessedCodeEndOffset))
+      /** @type {number | undefined} */
+      const line = dest.startOffset === null ? err.line : offsetToLineColumn.map(dest.startOffset, false).line
+      throw new LexErrorWithSourceMap(err.reason, err.preprocessedCodeStartOffset, err.preprocessedCodeEndOffset, dest.startOffset, dest.endOffset, line, filename)
+    }
+
+    // ソースコード上の位置に変換
+    return tokens.map((token, i) => {
+      const dest = indentationSyntaxSourceMapping.map(
+        tokenizationSourceMapping.map(token.preprocessedCodeOffset),
+        tokenizationSourceMapping.map(token.preprocessedCodeOffset + token.preprocessedCodeLength),
+      )
+      const { line, column } = dest.startOffset === null
+        ? { line: token.line, column: 0 }
+        : offsetToLineColumn.map(dest.startOffset, false)
+      return {
+        ...token,
+        line: line,
+        column: column,
+        startOffset: dest.startOffset,
+        endOffset: dest.endOffset,
+        rawJosi: token.josi,
+      }
+    })
   }
 
   /**
    * 単語の属性を構文解析に先立ち補正する
-   * @param tokes トークンのリスト
+   * @param {TokenWithSourceMap[]} tokens トークンのリスト
    * @param isFirst 最初の呼び出しかどうか
    * @returns コード (なでしこ)
    */
@@ -146,30 +216,71 @@ class NakoCompiler {
   }
 
   /**
-   * コードをパースしてASTにする
-   * @param code なでしこのプログラム
-   * @return AST
+   * typeがcodeのトークンを単語に分割するための処理
+   * @param {string} code
+   * @param {number} line
+   * @param {string} filename
+   * @param {number | null} startOffset
+   * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
+   * @private
    */
-  parse (code, filename) {
-    // 関数を字句解析と構文解析に登録
-    lexer.setFuncList(this.funclist)
-    parser.setFuncList(this.funclist)
-    parser.debug = this.debug
-    this.parser.filename = filename
+  lexCodeToken(code, line, filename, startOffset) {
     // 単語に分割
-    let rawtokens = this.rawtokenize(code, 0, filename)
+    let tokens = this.rawtokenize(code, line, filename)
+
+    // 文字列内位置からファイル内位置へ変換
+    if (startOffset === null) {
+        for (const token of tokens) {
+            token.startOffset = null
+            token.endOffset = null
+        }
+    } else {
+        for (const token of tokens) {
+            if (token.startOffset !== null) {
+                token.startOffset += startOffset
+            }
+            if (token.endOffset !== null) {
+                token.endOffset += startOffset
+            }
+        }
+    }
+
+    // convertTokenで消されるコメントのトークンを残す
+    const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
+      .map((v) => ({ ...v }))  // clone
+
+    tokens = this.converttoken(tokens, false)
+
+    return { tokens, commentTokens }
+  }
+
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
+   */
+  lex (code, filename) {
+    // 単語に分割
+    let tokens = this.rawtokenize(code, 0, filename)
     if (this.beforeParseCallback) {
-      const rslt = this.beforeParseCallback({ nako3: this, tokens: rawtokens, filepath:filename })
+      const rslt = this.beforeParseCallback({ nako3: this, tokens, filepath: filename })
       if (rslt instanceof Promise) {
         throw new Error('利用している機能の中に、非同期処理が必要なものが含まれています')
       }
-      rawtokens = rslt
+      tokens = rslt
     }
-    const tokens = this.converttoken(rawtokens, true)
+    // convertTokenで消されるコメントのトークンを残す
+    /** @type {TokenWithSourceMap[]} */
+    const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
+        .map((v) => ({ ...v }))  // clone
+
+    tokens = this.converttoken(tokens, true)
 
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i]['type'] === 'code') {
-        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
+        const children = this.lexCodeToken(tokens[i].value, tokens[i].line, filename, tokens[i].startOffset)
+        commentTokens.push(...children.commentTokens)
+        tokens.splice(i, 1, ...children.tokens)
         i--
       }
     }
@@ -178,8 +289,122 @@ class NakoCompiler {
       console.log('--- lex ---')
       console.log(JSON.stringify(tokens, null, 2))
     }
+
+    return { commentTokens, tokens }
+  }
+
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @returns {Promise<{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }>}
+   */
+  async lexAsync (code, filename) {
+    // 単語に分割
+    let tokens = this.rawtokenize(code, 0, filename)
+    if (this.beforeParseCallback) {
+      const rslt = this.beforeParseCallback({ nako3: this, tokens, filepath:filename })
+      tokens = await rslt
+    }
+    // convertTokenで消されるコメントのトークンを残す
+    const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
+        .map((v) => ({ ...v }))  // clone
+
+    tokens = this.converttoken(tokens, true)
+
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i]['type'] === 'code') {
+        const children = this.lexCodeToken(/** @type {string} */(tokens[i].value), tokens[i].line, filename, tokens[i].startOffset)
+        commentTokens.push(...children.commentTokens)
+        tokens.splice(i, 1, ...children.tokens)
+        i--
+      }
+    }
+
+    if (this.debug && this.debugLexer) {
+      console.log('--- lex ---')
+      console.log(JSON.stringify(tokens, null, 2))
+    }
+
+    return { commentTokens, tokens }
+  }
+
+  /**
+   * シンタックスエラーに現在のカーソル下のトークンの位置情報を付けて返す。
+   * トークンがソースマップ上の位置と結びついていない場合、近くの別のトークンの位置を使う。
+   * @param {NakoSyntaxError} err
+   * @param {TokenWithSourceMap[]} tokens
+   * @param {number} codeLength
+   * @returns {NakoSyntaxErrorWithSourceMap}
+   * @private
+   */
+  addSourceMapToSyntaxError (err, tokens, codeLength) {
+    // エラーの発生したトークン
+    const token = tokens[parser.index]
+    let startOffset = token.startOffset
+    let endOffset = token.endOffset
+
+    // ソースコード上の位置が見つかるまで、左右のトークンを見ていく
+    let left = parser.index
+    while (startOffset === null) {
+        left--
+        if (left <= -1) {
+            startOffset = 0
+        } else if (tokens[left].endOffset !== null) {
+            startOffset = tokens[left].endOffset
+        } else if (tokens[left].startOffset !== null) {
+            startOffset = tokens[left].startOffset
+        }
+    }
+
+    let right = parser.index
+    while (endOffset === null) {
+        right++
+        if (right >= tokens.length) {
+            endOffset = codeLength
+        } else if (tokens[right].startOffset !== null) {
+            endOffset = tokens[right].startOffset
+        } else if (tokens[right].endOffset !== null) {
+            endOffset = tokens[right].endOffset
+        }
+    }
+
+    // start < end であるべきなため、もし等しければどちらかを1つ動かす
+    if (startOffset === endOffset) {
+        if (startOffset <= 0) {
+            endOffset++  // endOffset = 1
+        } else {
+            startOffset--
+        }
+    }
+
+    // エラーを投げる
+    return new NakoSyntaxErrorWithSourceMap(token, startOffset, endOffset, err)
+  }
+
+  /**
+   * コードをパースしてASTにする
+   * @param {string} code なでしこのプログラム
+   * @param {string} filename
+   * @return {Ast}
+   * @throws {LexErrorWithSourceMap | NakoSyntaxErrorWithSourceMap}
+   */
+  parse (code, filename) {
+    // 関数を字句解析と構文解析に登録
+    lexer.setFuncList(this.funclist)
+    parser.setFuncList(this.funclist)
+    parser.debug = this.debug
+    this.parser.filename = filename
+
+    const lexerOutput = this.lex(code, filename)
+
     // 構文木を作成
-    const ast = parser.parse(tokens)
+    /** @type {Ast} */
+    let ast
+    try {
+      ast = parser.parse(lexerOutput.tokens)
+    } catch (err) {
+      throw this.addSourceMapToSyntaxError(err, lexerOutput.tokens, code.length)
+    }
     this.usedFuncs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
@@ -194,27 +419,18 @@ class NakoCompiler {
     parser.setFuncList(this.funclist)
     parser.debug = this.debug
     this.parser.filename = filename
+
     // 単語に分割
-    let rawtokens = this.rawtokenize(code, 0, filename)
-    if (this.beforeParseCallback) {
-      const rslt = this.beforeParseCallback({ nako3: this, tokens: rawtokens, filepath:filename })
-      rawtokens = await rslt
-    }
-    const tokens = this.converttoken(rawtokens, true)
+    const lexerOutput = await this.lexAsync(code, filename)
 
-    for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i]['type'] === 'code') {
-        tokens.splice(i, 1, ...this.tokenize(tokens[i]['value'], false, tokens[i]['line']))
-        i--
-      }
-    }
-
-    if (this.debug && this.debugLexer) {
-      console.log('--- lex ---')
-      console.log(JSON.stringify(tokens, null, 2))
-    }
     // 構文木を作成
-    const ast = parser.parse(tokens)
+    /** @type {Ast} */
+    let ast
+    try {
+      ast = parser.parse(lexerOutput.tokens)
+    } catch (err) {
+      throw this.addSourceMapToSyntaxError(err, lexerOutput.tokens, code.length)
+    }
     this.usedFuncs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
       console.log('--- ast ---')
@@ -306,8 +522,9 @@ class NakoCompiler {
         throw e
       } else {
         throw new NakoRuntimeError(
-          e.name + ':' +
-          e.message, this)
+          e,
+          this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+        )
       }
     }
     return this
@@ -336,8 +553,9 @@ class NakoCompiler {
         throw e
       } else {
         throw new NakoRuntimeError(
-          e.name + ':' +
-          e.message, this)
+          e,
+          this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+        )
       }
     }
     return this
@@ -414,7 +632,11 @@ class NakoCompiler {
           try {
             return v.fn(...args)
           } catch (e) {
-            throw new NakoRuntimeError('関数『' + key + '』:' + e.name + ':' + e.message, this)
+            throw new NakoRuntimeError(
+              e,
+              this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+              `関数『${key}』`,
+            )
           }
         }
       } else if (v.type === 'const' || v.type === 'var') {
@@ -423,7 +645,7 @@ class NakoCompiler {
           readonly: (v.type === 'const')
         }
       } else {
-        throw new Error('プラグインの追加でエラー。', null)
+        throw new Error('プラグインの追加でエラー。')
       }
       if (key !== '初期化') {
         this.commandlist.add(key)

@@ -1,11 +1,13 @@
+const NakoIndentError = require('./nako_indent_error')
 const NakoPrepare = require('./nako_prepare')
 
 /**
  * インデント構文指定があればコードを変換する
- * @param {String} code 
- * @return String of convert
+ * @param {string} code 
+ * @param {string} filename
+ * @returns {{ code: string, insertedLines: number[], deletedLines: { lineNumber: number, len: number }[] }}
  */
-function convert(code) {
+function convert(code, filename) {
     // プログラム冒頭に「!インデント構文」があれば変換
     const keywords = ['!インデント構文', '!ここまでだるい']
     // 最初の30行をチェック
@@ -19,9 +21,9 @@ function convert(code) {
         }
     })
     if (bConv) {
-        return convertGo(code)
+        return convertGo(code, filename)
     }
-    return code
+    return { code, insertedLines: [], deletedLines: [] }
 }
 
 // ありえない改行マークを定義
@@ -31,7 +33,7 @@ const SpecialRetMark = '🌟🌟改行🌟🌟s4j#WjcSb😀/FcX3🌟🌟'
 /**
  * ソースコードのある1行の中のコメントを全て取り除く。
  * 事前にreplaceRetMarkによって文字列や範囲コメント内の改行文字が置換されている必要がある。
- * @param code {string}
+ * @param {string} src
  * @return {string}
  */
 function removeCommentsFromLine(src) {
@@ -45,7 +47,7 @@ function removeCommentsFromLine(src) {
         const c = src.charAt(i)
         const ch2 = src.substr(i, 2)
         const cPrepared = prepare.convert1ch(c)
-        const ch2Prepared = [...ch2].map((c) => prepare.convert1ch(c)).join("")
+        const ch2Prepared = ch2.split('').map((c) => prepare.convert1ch(c)).join("")
 
         // eosか?
         if (eos != '') {
@@ -141,20 +143,38 @@ function removeCommentsFromLine(src) {
     return result
 }
 
-function convertGo(code) {
+/**
+ * @param {string} code
+ * @param {string} filename
+ * @returns {{ code: string, insertedLines: number[], deletedLines: { lineNumber: number, len: number }[] }}
+ */
+function convertGo(code, filename) {
+    /** @type {number[]} */
+    const insertedLines = []
+    /** @type {{ lineNumber: number, len: number }[]} */
+    const deletedLines = []
+
     const END = 'ここまで‰'
     const code2 = replaceRetMark(code) // 文字列の中などの改行を置換
     const lines = code2.split('\n')
+    /** @type {string[]} */
     const lines2 = []
+    /** @type {number[]} */
     const indentStack = []
     let lastIndent = 0
-    lines.forEach((line) => {
+    lines.forEach((line, i) => {
         // trim line
-        if (/^\s*$/.test(line)) { return }  // この処理は無くても良い
+        if (/^\s*$/.test(line)) {
+            deletedLines.push({ lineNumber: lines2.length, len: line.length })
+            return
+        }
         const lineTrimed = removeCommentsFromLine(line).replace(/^\s+/, '').replace(/\s+$/, '')
         if (lineTrimed === '') {
             lines2.push(line)
             return
+        }
+        if (lineTrimed === 'ここまで') {
+            throw new NakoIndentError(`インデント構文が有効化されているときに『ここまで』を使うことはできません。`, i, filename)
         }
 
         // check indent
@@ -183,12 +203,14 @@ function convertGo(code) {
                 const n = indentStack.pop()
                 if (n == indent) {
                     if (lineTrimed != '違えば') {
+                        insertedLines.push(lines2.length)
                         lines2.push(makeIndent(n) + END)
                     }
                     lines2.push(line)
                     return
                 }
                 if (indent < n) {
+                    insertedLines.push(lines2.length)
                     lines2.push(makeIndent(n) + END)
                     continue
                 }
@@ -198,11 +220,36 @@ function convertGo(code) {
     // 残りのインデントを処理
     while (indentStack.length > 0) {
         const n = indentStack.pop()
+        insertedLines.push(lines2.length)
         lines2.push(makeIndent(n) + END)
     }
     // 特別マーカーを改行に置換
-    const code3 = lines2.join('\n')
-    return code3.split(SpecialRetMark).join('\n')
+    /** @type {string[]} */
+    const lines3 = []
+    for (let i = 0; i < lines2.length; i++) {
+        if (lines2[i].includes(SpecialRetMark)) {
+            const lines4 = lines2[i].split(SpecialRetMark)
+
+            // 置換されたマーカーの数だけ、それ以降の行数をずらす。
+            // unindentによって挿入された行がSpecialRetMarkを含むことはない。
+            for (let j = 0; j < insertedLines.length; j++) {
+                if (lines3.length < insertedLines[j]) {
+                    insertedLines[j] += lines4.length - 1
+                }
+            }
+            for (let j = 0; j < deletedLines.length; j++) {
+                if (lines3.length < deletedLines[j].lineNumber) {
+                    deletedLines[j].lineNumber += lines4.length - 1
+                }
+            }
+
+            lines3.push(...lines4)
+        } else {
+            lines3.push(lines2[i])
+        }
+    }
+
+    return { code: lines3.join("\n"), insertedLines, deletedLines }
 }
 
 function makeIndent(count) {
@@ -215,7 +262,7 @@ function makeIndent(count) {
 
 /**
  * インデントの個数を数える
- * @param {String}} line 
+ * @param {string} line 
  */
 function countIndent(line) {
     let cnt = 0
@@ -253,7 +300,7 @@ function replaceRetMark(src) {
         const c = src.charAt(i)
         const ch2 = src.substr(i, 2)
         const cPrepared = prepare.convert1ch(c)
-        const ch2Prepared = [...ch2].map((c) => prepare.convert1ch(c)).join("")
+        const ch2Prepared = ch2.split('').map((c) => prepare.convert1ch(c)).join("")
 
         // eosか?
         if (eos != '') {
