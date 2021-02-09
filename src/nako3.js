@@ -114,12 +114,13 @@ class NakoCompiler {
    * コードを単語に分割する
    * @param {string} code なでしこのプログラム
    * @param {number} line なでしこのプログラムの行番号
+   * @param {string} filename
    * @returns {TokenWithSourceMap[]} トークンのリスト
    * @throws {LexErrorWithSourceMap}
    */
   rawtokenize (code, line, filename) {
     // インデント構文 (#596)
-    const { code: code2, insertedLines, deletedLines } = NakoIndent.convert(code)
+    const { code: code2, insertedLines, deletedLines } = NakoIndent.convert(code, filename)
 
     // 全角半角の統一処理
     const preprocessed = this.prepare.convert(code2)
