@@ -260,7 +260,7 @@ class NakoLexer {
       }
       // 助詞のならばをトークンとする
       if (josi.tarareba[t.josi]) {
-        const josi = (t.josi === 'でなければ' || t.josi === 'しなければ') ? 'でなければ' : 'ならば'
+        const josi = (t.josi === 'でなければ' || t.josi === 'なければ') ? 'でなければ' : 'ならば'
         t.josi = ''
         tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line, column: t.column, file: t.file,
           startOffset: t.endOffset, endOffset: t.endOffset, josi: '', rawJosi: ''})
