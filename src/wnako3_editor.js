@@ -97,101 +97,113 @@ function getScope(token) {
 const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row) }]
 
 /**
+ * 一時的にbeforeParseCallbackを無効化する。
+ * @type {<T>(f: () => T) => T}
+ */
+function withoutBeforeParseCallback (nako3, f) {
+    const tmp = nako3.beforeParseCallback
+    nako3.beforeParseCallback = (opts) => opts.tokens
+    try {
+        return f()
+    } finally {
+        nako3.beforeParseCallback = tmp
+    }
+}
+
+/**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param {string[]} lines
  * @param {WebNakoCompiler} nako3
  */
-const tokenize = (lines, nako3) => {
+function tokenize (lines, nako3) {
     const code = lines.join('\n')
 
     // 重要: beforeParseCallbackを無効化しないと、ページを見ただけでシンタックスハイライトのために
     // 取り込み文が実行されてfetchが飛んでしまい、セキュリティ的に危険。
-    nako3.beforeParseCallback = (opts) => {
-        return opts.tokens
-    }
+    return withoutBeforeParseCallback(nako3, () => {
+        // lexerにかける
+        nako3.reset()
+        nako3.lexer.setFuncList(nako3.funclist)
+        const lexerOutput = nako3.lex(code, 'main.nako3')
 
-    // lexerにかける
-    nako3.reset()
-    nako3.lexer.setFuncList(nako3.funclist)
-    const lexerOutput = nako3.lex(code, 'main.nako3')
+        // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
+        /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
+        //@ts-ignore
+        const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens].filter((t) =>
+            t.type !== 'eol' && t.type !== 'eof' &&
+            typeof t.startOffset === "number" && typeof t.endOffset === "number" &&
+            t.startOffset < t.endOffset)
 
-    // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
-    /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
-    //@ts-ignore
-    const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens].filter((t) =>
-        t.type !== 'eol' && t.type !== 'eof' &&
-        typeof t.startOffset === "number" && typeof t.endOffset === "number" &&
-        t.startOffset < t.endOffset)
+        // startOffsetでソートする
+        tokens.sort((a, b) => (a.startOffset || 0) - (b.startOffset || 0))
 
-    // startOffsetでソートする
-    tokens.sort((a, b) => (a.startOffset || 0) - (b.startOffset || 0))
+        // 各行について、余る文字の無いようにエディタのトークンに変換する。
+        // 複数のトークンが重なることはないと仮定する。
+        let lineStartOffset = 0
+        let tokenIndex = 0
+        /** @type {{ type: string, value: string }[][]} */
+        const editorTokens = [] // 各行のエディタのトークン
+        for (let i = 0; i < lines.length; i++) {
+            editorTokens.push([])
+            const lineEndOffset = lineStartOffset + lines[i].length
+            let offset = lineStartOffset
 
-    // 各行について、余る文字の無いようにエディタのトークンに変換する。
-    // 複数のトークンが重なることはないと仮定する。
-    let lineStartOffset = 0
-    let tokenIndex = 0
-    /** @type {{ type: string, value: string }[][]} */
-    const editorTokens = [] // 各行のエディタのトークン
-    for (let i = 0; i < lines.length; i++) {
-        editorTokens.push([])
-        const lineEndOffset = lineStartOffset + lines[i].length
-        let offset = lineStartOffset
-
-        // 現在の行にかかっているトークンまで飛ばす
-        while (tokenIndex < tokens.length &&
-               tokens[tokenIndex].endOffset <= lineStartOffset) {
-            tokenIndex++
-        }
-
-        // 行全体を完全にまたがっているトークンが存在する場合
-        if (tokenIndex < tokens.length &&
-            tokens[tokenIndex].startOffset <= lineStartOffset &&
-            tokens[tokenIndex].endOffset >= lineEndOffset) {
-            editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: lines[i] })
-        } else {
-            // 行頭をまたがっているトークンが存在する場合
-            if (tokenIndex < tokens.length &&
-                tokens[tokenIndex].startOffset <= lineStartOffset) {
-                editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(offset, tokens[tokenIndex].endOffset) })
-                offset = tokens[tokenIndex].endOffset
-                tokenIndex++
-            }
-
-            // 行頭も行末もまたがっていないトークンを処理する
+            // 現在の行にかかっているトークンまで飛ばす
             while (tokenIndex < tokens.length &&
-                tokens[tokenIndex].endOffset < lineEndOffset) {
-                // このトークンと直前のトークンの間に隙間があるなら、埋める
-                if (offset < tokens[tokenIndex].startOffset) {
-                    editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, tokens[tokenIndex].startOffset) })
-                    offset = tokens[tokenIndex].startOffset
-                }
-
-                // 現在のトークンを使う
-                editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(offset, tokens[tokenIndex].endOffset) })
-                offset = tokens[tokenIndex].endOffset
+                tokens[tokenIndex].endOffset <= lineStartOffset) {
                 tokenIndex++
             }
 
-            // 行末をまたがっているトークンが存在する場合
+            // 行全体を完全にまたがっているトークンが存在する場合
             if (tokenIndex < tokens.length &&
-                tokens[tokenIndex].startOffset < lineEndOffset) {
-                // トークンの前の隙間
-                if (offset < tokens[tokenIndex].startOffset) {
-                    editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, tokens[tokenIndex].startOffset) })
-                    offset = tokens[tokenIndex].startOffset
+                tokens[tokenIndex].startOffset <= lineStartOffset &&
+                tokens[tokenIndex].endOffset >= lineEndOffset) {
+                editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: lines[i] })
+            } else {
+                // 行頭をまたがっているトークンが存在する場合
+                if (tokenIndex < tokens.length &&
+                    tokens[tokenIndex].startOffset <= lineStartOffset) {
+                    editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(offset, tokens[tokenIndex].endOffset) })
+                    offset = tokens[tokenIndex].endOffset
+                    tokenIndex++
                 }
 
-                // トークンを使う
-                editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset) })
-            } else {
-                editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, lineEndOffset) })
+                // 行頭も行末もまたがっていないトークンを処理する
+                while (tokenIndex < tokens.length &&
+                    tokens[tokenIndex].endOffset < lineEndOffset) {
+                    // このトークンと直前のトークンの間に隙間があるなら、埋める
+                    if (offset < tokens[tokenIndex].startOffset) {
+                        editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, tokens[tokenIndex].startOffset) })
+                        offset = tokens[tokenIndex].startOffset
+                    }
+
+                    // 現在のトークンを使う
+                    editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(offset, tokens[tokenIndex].endOffset) })
+                    offset = tokens[tokenIndex].endOffset
+                    tokenIndex++
+                }
+
+                // 行末をまたがっているトークンが存在する場合
+                if (tokenIndex < tokens.length &&
+                    tokens[tokenIndex].startOffset < lineEndOffset) {
+                    // トークンの前の隙間
+                    if (offset < tokens[tokenIndex].startOffset) {
+                        editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, tokens[tokenIndex].startOffset) })
+                        offset = tokens[tokenIndex].startOffset
+                    }
+
+                    // トークンを使う
+                    editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset) })
+                } else {
+                    editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, lineEndOffset) })
+                }
             }
+
+            lineStartOffset += lines[i].length + 1
         }
 
-        lineStartOffset += lines[i].length + 1
-    }
-
-    return editorTokens
+        return editorTokens
+    })
 }
 
 /**
