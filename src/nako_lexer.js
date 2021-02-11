@@ -244,26 +244,32 @@ class NakoLexer {
       // 助詞の「は」を = に展開
       if (t.josi === undefined) {t.josi = ''}
       if (t.josi === 'は') {
+        const startOffset = t.endOffset === null ? null : t.endOffset - t.rawJosi.length
         tokens.splice(i + 1, 0, {type: 'eq', line: t.line, column: t.column, file: t.file,
-          startOffset: t.endOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
+          startOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
         i += 2
-        t.josi = ''
+        t.josi = t.rawJosi = ''
+        t.endOffset = startOffset
         continue
       }
       // 「とは」を一つの単語にする
       if (t.josi === 'とは') {
+        const startOffset = t.endOffset === null ? null : t.endOffset - t.rawJosi.length
         tokens.splice(i + 1, 0, {type: t.josi, line: t.line, column: t.column, file: t.file,
-          startOffset: t.endOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
-        t.josi = ''
+          startOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
+        t.josi = t.rawJosi = ''
+        t.endOffset = startOffset
         i += 2
         continue
       }
       // 助詞のならばをトークンとする
       if (josi.tarareba[t.josi]) {
         const josi = (t.josi === 'でなければ' || t.josi === 'なければ') ? 'でなければ' : 'ならば'
-        t.josi = ''
+        const startOffset = t.endOffset === null ? null : t.endOffset - t.rawJosi.length
         tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line, column: t.column, file: t.file,
-          startOffset: t.endOffset, endOffset: t.endOffset, josi: '', rawJosi: ''})
+          startOffset, endOffset: t.endOffset, josi: '', rawJosi: ''})
+        t.josi = t.rawJosi = ''
+        t.endOffset = startOffset
         i += 2
         continue
       }

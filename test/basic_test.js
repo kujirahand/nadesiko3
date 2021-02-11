@@ -161,4 +161,17 @@ describe('basic', () => {
       assert(e.message.indexOf('[字句解析エラー](2行目): ') !== -1)
     }
   })
+  it('独立した助詞『ならば』の位置の取得', () => {
+    const out = nako.lex('もし存在するならば\nここまで')
+    const sonzai = out.tokens.find((t) => t.value === '存在')
+    const naraba = out.tokens.find((t) => t.type === 'ならば')
+
+    // 「存在する」
+    assert.strictEqual(sonzai.startOffset, 2)
+    assert.strictEqual(sonzai.endOffset, 6)
+
+    // ならば
+    assert.strictEqual(naraba.startOffset, 6)
+    assert.strictEqual(naraba.endOffset, 9)
+  })
 })

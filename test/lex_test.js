@@ -125,7 +125,7 @@ describe('lex_test', () => {
     const tokens = nako.lex(`[_\n]\nりんごの値段は30`).tokens
     const nedan = tokens.find((t) => t.value === '値段')
     assert.strictEqual(nedan.startOffset, 9)
-    assert.strictEqual(nedan.endOffset, 12)
+    assert.strictEqual(nedan.endOffset, 11)
   })
   it('ソースマップ - インデント構文', () => {
     const tokens = nako.lex(`！インデント構文\n1回\n    「2」を表示\n\n「3」を表示`).tokens
