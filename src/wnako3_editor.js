@@ -98,7 +98,7 @@ const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLi
 
 /**
  * 一時的にbeforeParseCallbackを無効化する。
- * @type {<T>(f: () => T) => T}
+ * @type {<T>(nako3: WebNakoCompiler, f: () => T) => T}
  */
 function withoutBeforeParseCallback (nako3, f) {
     const tmp = nako3.beforeParseCallback
