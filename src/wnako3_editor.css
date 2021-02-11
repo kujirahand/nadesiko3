@@ -32,3 +32,6 @@
     background-repeat: repeat-x;
     background-position: left bottom;
 }
+.nako3_editor.readonly {
+    background-color: #f0f0f0;
+}
