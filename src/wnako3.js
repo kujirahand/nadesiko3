@@ -4,6 +4,7 @@ const NakoCompiler = require('./nako3')
 const NakoRequire = require('./nako_require_helper')
 const PluginBrowser = require('./plugin_browser')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
+const { setupEditor } = require('./wnako3_editor')
 
 class WebNakoCompiler extends NakoCompiler {
   constructor () {
@@ -167,6 +168,16 @@ class WebNakoCompiler extends NakoCompiler {
     } else {
       return this.requirePlugin(rslt, nako3)
     }
+  }
+
+  /**
+   * 指定したidのHTML要素をなでしこ言語のエディタにする。
+   * @param {string} id div要素のid
+   * 
+   * @see {setupEditor}
+   */
+  setupEditor(id) {
+    return setupEditor(id, this, /** @type {any} */(window).ace)
   }
 }
 
