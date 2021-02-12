@@ -29,6 +29,12 @@ const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
  *   endOffset: number | null
  *   isDefinition?: boolean
  * }} TokenWithSourceMap
+ * 
+ * @typedef {{
+ *     resetEnv: boolean
+ *     resetLog: boolean
+ *     testOnly: boolean
+ * }} CompilerOptions
  */
 
 const prepare = new Prepare()
@@ -101,6 +107,12 @@ class NakoCompiler {
     return NakoGen.getHeader()
   }
 
+  /**
+   * @param {string} code
+   * @param {boolean} isFirst
+   * @param {string} filename
+   * @param {number} [line]
+   */
   async tokenizeAsync (code, isFirst, filename, line = 0) {
     let rawtokens = this.rawtokenize(code, line, filename)
     if (this.beforeParseCallback) {
@@ -179,7 +191,7 @@ class NakoCompiler {
   /**
    * 単語の属性を構文解析に先立ち補正する
    * @param {TokenWithSourceMap[]} tokens トークンのリスト
-   * @param isFirst 最初の呼び出しかどうか
+   * @param {boolean} isFirst 最初の呼び出しかどうか
    * @returns コード (なでしこ)
    */
   converttoken (tokens, isFirst) {
@@ -208,8 +220,8 @@ class NakoCompiler {
 
   /**
    * コードを生成
-   * @param ast AST
-   * @param isTest テストかどうか
+   * @param {Ast} ast AST
+   * @param {boolean} isTest テストかどうか
    */
   generate(ast, isTest) {
     // 先になでしこ自身で定義したユーザー関数をシステムに登録
@@ -423,6 +435,10 @@ class NakoCompiler {
     return ast
   }
 
+  /**
+   * @param {string} code
+   * @param {string} filename
+   */
   async parseAsync (code, filename) {
     // 関数を字句解析と構文解析に登録
     lexer.setFuncList(this.funclist)
@@ -495,8 +511,9 @@ class NakoCompiler {
 
   /**
    * プログラムをコンパイルしてJavaScriptのコードを返す
-   * @param code コード (なでしこ)
-   * @param isTest テストかどうか
+   * @param {string} code コード (なでしこ)
+   * @param {string} filename
+   * @param {boolean} isTest テストかどうか
    * @returns コード (JavaScript)
    */
   compile(code, filename, isTest) {
@@ -504,11 +521,22 @@ class NakoCompiler {
     return this.generate(ast, isTest)
   }
 
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {boolean} isTest
+   */
   async compileAsync (code, filename, isTest) {
     const ast = await this.parseAsync(code, filename)
     return this.generate(ast, isTest)
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {boolean} isReset
+   * @param {boolean} isTest
+   */
   _run(code, fname, isReset, isTest) {
     const opts = {
       resetLog: isReset,
@@ -517,11 +545,16 @@ class NakoCompiler {
     return this._runEx(code, fname, opts)
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   */
   _runEx(code, fname, opts) {
-    opts = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (opts.resetEnv) {this.reset()}
-    if (opts.resetLog) {this.clearLog()}
-    let js = this.compile(code, fname, opts.testOnly)
+    const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+    if (optsAll.resetEnv) {this.reset()}
+    if (optsAll.resetLog) {this.clearLog()}
+    let js = this.compile(code, fname, optsAll.testOnly)
     try {
       this.__varslist[0].line = -1 // コンパイルエラーを調べるため
       const func = new Function(js) // eslint-disable-line
@@ -540,6 +573,12 @@ class NakoCompiler {
     return this
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {boolean} isReset
+   * @param {boolean} isTest
+   */
   async _runAsync(code, fname, isReset, isTest) {
     const opts = {
       resetLog: isReset,
@@ -548,11 +587,16 @@ class NakoCompiler {
     return this._runExAsync(code, fname, opts)
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   */
   async _runExAsync(code, fname, opts) {
-    opts = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (opts.resetEnv) {this.reset()}
-    if (opts.resetLog) {this.clearLog()}
-    let js = await this.compileAsync(code, fname, opts.testOnly)
+    const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+    if (optsAll.resetEnv) {this.reset()}
+    if (optsAll.resetLog) {this.clearLog()}
+    let js = await this.compileAsync(code, fname, optsAll.testOnly)
     try {
       this.__varslist[0].line = -1 // コンパイルエラーを調べるため
       const func = new Function(js) // eslint-disable-line
@@ -571,34 +615,68 @@ class NakoCompiler {
     return this
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   */
   runEx(code, fname, opts) {
     return this._runEx(code, fname, opts)
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   */
   async runExAsync(code, fname, opts) {
     return this._runExAsync(code, fname, opts)
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   */
   test(code, fname) {
     return this._runEx(code, fname, { testOnly: true })
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   */
   run(code, fname) {
     return this._runEx(code, fname, { resetLog: false })
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   */
   runReset (code, fname) {
     return this._runEx(code, fname, { resetLog: true })
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   */
   async testAsync(code, fname) {
     return await this._runExAsync(code, fname, { testOnly: true })
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   */
   async runAsync(code, fname) {
     return await this._runExAsync(code, fname, { resetLog: false })
   }
 
+  /**
+   * @param {string} code
+   * @param {string} fname
+   */
   async runResetAsync (code, fname) {
     return await this._runExAsync(code, fname,  { resetLog: true })
   }
