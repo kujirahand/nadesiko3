@@ -152,9 +152,19 @@ class NakoCompiler {
         tokenizationSourceMapping.map(token.preprocessedCodeOffset),
         tokenizationSourceMapping.map(token.preprocessedCodeOffset + token.preprocessedCodeLength),
       )
-      const { line, column } = dest.startOffset === null
-        ? { line: token.line, column: 0 }
-        : offsetToLineColumn.map(dest.startOffset, false)
+      let line = token.line
+      let column = 0
+      if (token.type === 'eol' && dest.endOffset !== null) {
+        // eolはparserで `line = ${eolToken.line};` に変換されるため、
+        // 行末のeolのlineは次の行の行数を表す必要がある。
+        const out = offsetToLineColumn.map(dest.endOffset, false)
+        line = out.line
+        column = out.column
+      } else if (dest.startOffset !== null) {
+        const out = offsetToLineColumn.map(dest.startOffset, false)
+        line = out.line
+        column = out.column
+      }
       return {
         ...token,
         line: line,

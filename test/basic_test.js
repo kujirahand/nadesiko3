@@ -1,5 +1,6 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
+const NakoRuntimeError = require('../src/nako_runtime_error')
 
 describe('basic', () => {
   const nako = new NakoCompiler()
@@ -173,5 +174,35 @@ describe('basic', () => {
     // ならば
     assert.strictEqual(naraba.startOffset, 6)
     assert.strictEqual(naraba.endOffset, 9)
+  })
+  it('実行時エラーの位置の取得', () => {
+    assert.throws(
+      () => nako.runReset('1を表示\n1のエラー発生'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 1)  // 2行目
+        return true
+      }
+    )
+  })
+  it('実行時エラーの位置の取得 - 前後に文がある場合', () => {
+    assert.throws(
+      () => nako.runReset('1を表示\n1を表示。1のエラー発生。1を表示。'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 1)  // 2行目
+        return true
+      }
+    )
+  })
+  it('実行時エラーの位置の取得 - 1行目の場合', () => {
+    assert.throws(
+      () => nako.runReset('1のエラー発生'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 0)  // 1行目
+        return true
+      }
+    )
   })
 })
