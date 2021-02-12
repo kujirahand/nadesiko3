@@ -51,9 +51,11 @@ function getScope(token) {
         case "取込":
         case "エラー監視":
         case "エラー":
+        case "変数":
             return 'keyword.control'
-        case "変数": return 'variable.other'
-        case "定数": return 'support.constant'
+        case "定める":
+        case "定数":
+            return 'support.constant'
         // 演算子
         case "shift_r0":
         case "shift_r":
