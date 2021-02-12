@@ -213,7 +213,7 @@ class NakoParserBase {
       case 'word':
         return `${typeName('単語')}『${node.value}${debug}』`
       case 'func':
-        return `${typeName('関数')}『${node.value}${debug}}』`
+        return `${typeName('関数')}『${node.name || node.value}${debug}』`
       case 'eol':
         return `行の末尾`
       case 'eol':
