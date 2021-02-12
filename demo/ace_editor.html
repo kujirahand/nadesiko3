@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nadesiko3 Editor</title>
+    <link rel="stylesheet" href="../src/wnako3_editor.css">
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
+    <script src="../release/wnako3.js"></script>
+    <script src="../release/version.js"></script>
+    <script src="../release/plugin_markup.js"></script>
+    <script src="../release/plugin_csv.js"></script>
+    <script src="../release/plugin_kansuji.js"></script>
+    <script src="../release/plugin_datetime.js"></script>
+    <script src="../release/plugin_turtle.js"></script>
+    <script src="../release/plugin_caniuse.js"></script>
+    <script src="../release/plugin_webworker.js"></script>
+</head>
+<body>
+単純な例
+<div id="editor1" class="nako3_editor">もしはいならば
+    「こんにちは」を表示
+ここまで
+</div>
+<br>
+インデント構文
+<div id="editor2" class="nako3_editor">！インデント構文
+Nを1から3まで繰り返す
+    Nを表示
+
+    「1行目
+2行目」を表示
+
+/*
+範囲コメント
+*/
+</div>
+<br>
+コンパイルエラーの表示
+<div id="editor3" class="nako3_editor">
+　　「{」を表示
+</div>
+<br>
+readonly
+<div id="editor4" data-nako3-readonly="true">1+2を表示
+</div>
+<br>
+コンパイルエラーの表示の無効化
+<div id="editor5" data-nako3-disable-marker="true">
+「{」を表示
+</div>
+<br>
+長いプログラム
+<div id="editor6"></div>
+    <script>
+navigator.nako3.setupEditor("editor1")
+navigator.nako3.setupEditor("editor2")
+navigator.nako3.setupEditor("editor3")
+navigator.nako3.setupEditor("editor4")
+navigator.nako3.setupEditor("editor5")
+navigator.nako3.setupEditor("editor6").editor.setValue("A=1\nB=2\nA+Bを表示\n".repeat(200), -1)
+    </script>
+</body>
+</html>

@@ -10,6 +10,9 @@ class NakoIndentError extends Error {
         const fname2 = fname === undefined ? '' : fname
         super(`[インデントエラー]${fname2}(${line + 1}行目): ${msg}\n` +
               `[バージョン] ${nakoVersion.version}`)
+        this.msg = msg
+        this.line = line
+        this.fname = fname
     }
 }
 
