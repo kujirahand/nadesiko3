@@ -205,4 +205,21 @@ describe('basic', () => {
       }
     )
   })
+  it('preCodeを考慮したソースマップ', () => {
+    const preCode = '1を表示\n2を表示\n3を'
+    const tokens = nako.lex(preCode + '表示', 'main.nako3', preCode).tokens
+
+    // '3' は-2から0文字目
+    const three = tokens.findIndex((t) => t.value === 3)
+    assert.strictEqual(tokens[three].startOffset, -2)
+    assert.strictEqual(tokens[three].endOffset, 0)
+    assert.strictEqual(tokens[three].line, 0)
+    assert.strictEqual(tokens[three].column, -2)
+
+    // '表示' は0~1文字目
+    assert.strictEqual(tokens[three + 1].startOffset, 0)
+    assert.strictEqual(tokens[three + 1].endOffset, 2)
+    assert.strictEqual(tokens[three + 1].line, 0)
+    assert.strictEqual(tokens[three + 1].column, 0)
+  })
 })

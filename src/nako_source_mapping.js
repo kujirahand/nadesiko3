@@ -216,8 +216,36 @@ class OffsetToLineColumn {
     }
 }
 
+/**
+ * preCodeの分、ソースマップのoffset、行数、列数を減らす。
+ * @type {<T extends {line?: number, column?: number, startOffset: number | null, endOffset: number | null }>(sourceMap: T, preCode: string) => T}
+ */
+function subtractSourceMapByPreCodeLength(sourceMap, preCode) {
+    // offsetは単純に引くだけでよい
+    if (typeof sourceMap.startOffset === 'number') {
+      sourceMap.startOffset -= preCode.length
+    }
+    if (typeof sourceMap.endOffset === 'number') {
+      sourceMap.endOffset -= preCode.length
+    }
+
+    // たとえば preCode = 'abc\ndef\nghi' のとき、line -= 2 して、先頭行なら column -= 3 もする。
+    if (preCode !== '') {
+      const lines = preCode.split('\n')
+      if (typeof sourceMap.line === 'number') {
+        sourceMap.line -= lines.length - 1
+      }
+      if (sourceMap.line === 0 && typeof sourceMap.column === 'number') {
+        sourceMap.column -= lines[lines.length - 1].length
+      }
+    }
+
+    return sourceMap
+}
+
 module.exports = {
     SourceMappingOfTokenization,
     SourceMappingOfIndentSyntax,
     OffsetToLineColumn,
+    subtractSourceMapByPreCodeLength,
 }
