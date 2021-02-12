@@ -205,6 +205,16 @@ describe('basic', () => {
       }
     )
   })
+  it('実行時エラーの位置の取得 - repeatTimes', () => {
+    assert.throws(
+      () => nako.runReset('3回\n1のエラー発生'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 1)  // 2行目
+        return true
+      }
+    )
+  })
   it('preCodeを考慮したソースマップ', () => {
     const preCode = '1を表示\n2を表示\n3を'
     const tokens = nako.lex(preCode + '表示', 'main.nako3', preCode).tokens
