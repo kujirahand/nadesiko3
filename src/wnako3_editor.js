@@ -258,6 +258,19 @@ class EditorMarkers {
     }
 
     /**
+     * @param {string} code
+     * @param {number} startOffset
+     * @param {number} endOffset
+     * @param {string} message
+     */
+    addByOffset(code, startOffset, endOffset, message) {
+        const offsetToLineColumn = new OffsetToLineColumn(code)
+        const start = offsetToLineColumn.map(startOffset, false)
+        const end = offsetToLineColumn.map(endOffset, false)
+        this.add(start.line, start.column, end.line, end.column, message)
+    }
+
+    /**
      * 全てのエラーメッセージを削除する。
      */
     clear() {
@@ -313,10 +326,7 @@ class BackgroundTokenizer {
                 } catch (e) {
                     if (typeof e.startOffset === 'number' && typeof e.endOffset === 'number') {
                         // 完全な位置を取得できる場合
-                        const offsetToLineColumn = new OffsetToLineColumn(code)
-                        const start = offsetToLineColumn.map(e.startOffset, false)
-                        const end = offsetToLineColumn.map(e.endOffset, false)
-                        editorMarkers.add(start.line, start.column, end.line, end.column, e.message)
+                        editorMarkers.addByOffset(code, e.startOffset, e.endOffset, e.message)
                     } else if (typeof e.line === 'number') {
                         // 行全体の場合
                         editorMarkers.add(e.line, null, null, null, e.message)
