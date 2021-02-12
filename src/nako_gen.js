@@ -153,7 +153,7 @@ class NakoGen {
       {if (key.match(/^!.+:初期化$/)) {uf[key] = this.used_func[key]}}
 
     this.used_func = uf
-    //
+    lastLineNo = -1
     this.loop_id = 1
     this.__varslist[1] = {} // user global
     this.__vars = this.__varslist[2] = {} // user local

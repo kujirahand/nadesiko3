@@ -10,7 +10,7 @@ const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
-const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn } = require("./nako_source_mapping")
+const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoSyntaxError } = require('./nako_parser_base')
 const { LexError, LexErrorWithSourceMap } = require('./nako_lex_error')
 const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
@@ -29,6 +29,12 @@ const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
  *   endOffset: number | null
  *   isDefinition?: boolean
  * }} TokenWithSourceMap
+ * 
+ * @typedef {{
+ *     resetEnv: boolean
+ *     resetLog: boolean
+ *     testOnly: boolean
+ * }} CompilerOptions
  */
 
 const prepare = new Prepare()
@@ -101,8 +107,15 @@ class NakoCompiler {
     return NakoGen.getHeader()
   }
 
-  async tokenizeAsync (code, isFirst, filename, line = 0) {
-    let rawtokens = this.rawtokenize(code, line, filename)
+  /**
+   * @param {string} code
+   * @param {boolean} isFirst
+   * @param {string} filename
+   * @param {number} [line]
+   * @param {string} [preCode]
+   */
+  async tokenizeAsync (code, isFirst, filename, line = 0, preCode = '') {
+    let rawtokens = this.rawtokenize(code, line, filename, preCode)
     if (this.beforeParseCallback) {
       const rslt = this.beforeParseCallback({ nako3: this, tokens: rawtokens, filepath:filename })
       rawtokens = await rslt
@@ -115,10 +128,14 @@ class NakoCompiler {
    * @param {string} code なでしこのプログラム
    * @param {number} line なでしこのプログラムの行番号
    * @param {string} filename
+   * @param {string} [preCode]
    * @returns {TokenWithSourceMap[]} トークンのリスト
    * @throws {LexErrorWithSourceMap}
    */
-  rawtokenize (code, line, filename) {
+  rawtokenize (code, line, filename, preCode = '') {
+    if (!code.startsWith(preCode)) {
+      throw new Error('codeの先頭にはpreCodeを含める必要があります。')
+    }
     // インデント構文 (#596)
     const { code: code2, insertedLines, deletedLines } = NakoIndent.convert(code, filename)
 
@@ -143,7 +160,8 @@ class NakoCompiler {
       const dest = indentationSyntaxSourceMapping.map(tokenizationSourceMapping.map(err.preprocessedCodeStartOffset), tokenizationSourceMapping.map(err.preprocessedCodeEndOffset))
       /** @type {number | undefined} */
       const line = dest.startOffset === null ? err.line : offsetToLineColumn.map(dest.startOffset, false).line
-      throw new LexErrorWithSourceMap(err.reason, err.preprocessedCodeStartOffset, err.preprocessedCodeEndOffset, dest.startOffset, dest.endOffset, line, filename)
+      const map = subtractSourceMapByPreCodeLength({ ...dest, line }, preCode)
+      throw new LexErrorWithSourceMap(err.reason, err.preprocessedCodeStartOffset, err.preprocessedCodeEndOffset, map.startOffset, map.endOffset, map.line, filename)
     }
 
     // ソースコード上の位置に変換
@@ -152,15 +170,22 @@ class NakoCompiler {
         tokenizationSourceMapping.map(token.preprocessedCodeOffset),
         tokenizationSourceMapping.map(token.preprocessedCodeOffset + token.preprocessedCodeLength),
       )
-      const { line, column } = dest.startOffset === null
-        ? { line: token.line, column: 0 }
-        : offsetToLineColumn.map(dest.startOffset, false)
+      let line = token.line
+      let column = 0
+      if (token.type === 'eol' && dest.endOffset !== null) {
+        // eolはparserで `line = ${eolToken.line};` に変換されるため、
+        // 行末のeolのlineは次の行の行数を表す必要がある。
+        const out = offsetToLineColumn.map(dest.endOffset, false)
+        line = out.line
+        column = out.column
+      } else if (dest.startOffset !== null) {
+        const out = offsetToLineColumn.map(dest.startOffset, false)
+        line = out.line
+        column = out.column
+      }
       return {
         ...token,
-        line: line,
-        column: column,
-        startOffset: dest.startOffset,
-        endOffset: dest.endOffset,
+        ...subtractSourceMapByPreCodeLength({ line, column, startOffset: dest.startOffset, endOffset: dest.endOffset }, preCode),
         rawJosi: token.josi,
       }
     })
@@ -169,7 +194,7 @@ class NakoCompiler {
   /**
    * 単語の属性を構文解析に先立ち補正する
    * @param {TokenWithSourceMap[]} tokens トークンのリスト
-   * @param isFirst 最初の呼び出しかどうか
+   * @param {boolean} isFirst 最初の呼び出しかどうか
    * @returns コード (なでしこ)
    */
   converttoken (tokens, isFirst) {
@@ -198,8 +223,8 @@ class NakoCompiler {
 
   /**
    * コードを生成
-   * @param ast AST
-   * @param isTest テストかどうか
+   * @param {Ast} ast AST
+   * @param {boolean} isTest テストかどうか
    */
   generate(ast, isTest) {
     // 先になでしこ自身で定義したユーザー関数をシステムに登録
@@ -226,7 +251,7 @@ class NakoCompiler {
    */
   lexCodeToken(code, line, filename, startOffset) {
     // 単語に分割
-    let tokens = this.rawtokenize(code, line, filename)
+    let tokens = this.rawtokenize(code, line, filename, '')
 
     // 文字列内位置からファイル内位置へ変換
     if (startOffset === null) {
@@ -257,11 +282,12 @@ class NakoCompiler {
   /**
    * @param {string} code
    * @param {string} filename
+   * @param {string} [preCode]
    * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
    */
-  lex (code, filename) {
+  lex (code, filename, preCode = '') {
     // 単語に分割
-    let tokens = this.rawtokenize(code, 0, filename)
+    let tokens = this.rawtokenize(code, 0, filename, preCode)
     if (this.beforeParseCallback) {
       const rslt = this.beforeParseCallback({ nako3: this, tokens, filepath: filename })
       if (rslt instanceof Promise) {
@@ -296,11 +322,12 @@ class NakoCompiler {
   /**
    * @param {string} code
    * @param {string} filename
+   * @param {string} [preCode]
    * @returns {Promise<{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }>}
    */
-  async lexAsync (code, filename) {
+  async lexAsync (code, filename, preCode = '') {
     // 単語に分割
-    let tokens = this.rawtokenize(code, 0, filename)
+    let tokens = this.rawtokenize(code, 0, filename, preCode)
     if (this.beforeParseCallback) {
       const rslt = this.beforeParseCallback({ nako3: this, tokens, filepath:filename })
       tokens = await rslt
@@ -385,17 +412,18 @@ class NakoCompiler {
    * コードをパースしてASTにする
    * @param {string} code なでしこのプログラム
    * @param {string} filename
+   * @param {string} [preCode]
    * @return {Ast}
    * @throws {LexErrorWithSourceMap | NakoSyntaxErrorWithSourceMap}
    */
-  parse (code, filename) {
+  parse (code, filename, preCode = '') {
     // 関数を字句解析と構文解析に登録
     lexer.setFuncList(this.funclist)
     parser.setFuncList(this.funclist)
     parser.debug = this.debug
     this.parser.filename = filename
 
-    const lexerOutput = this.lex(code, filename)
+    const lexerOutput = this.lex(code, filename, preCode)
 
     // 構文木を作成
     /** @type {Ast} */
@@ -413,7 +441,12 @@ class NakoCompiler {
     return ast
   }
 
-  async parseAsync (code, filename) {
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {string} [preCode]
+   */
+  async parseAsync (code, filename, preCode = '') {
     // 関数を字句解析と構文解析に登録
     lexer.setFuncList(this.funclist)
     parser.setFuncList(this.funclist)
@@ -421,7 +454,7 @@ class NakoCompiler {
     this.parser.filename = filename
 
     // 単語に分割
-    const lexerOutput = await this.lexAsync(code, filename)
+    const lexerOutput = await this.lexAsync(code, filename, preCode)
 
     // 構文木を作成
     /** @type {Ast} */
@@ -485,33 +518,54 @@ class NakoCompiler {
 
   /**
    * プログラムをコンパイルしてJavaScriptのコードを返す
-   * @param code コード (なでしこ)
-   * @param isTest テストかどうか
+   * @param {string} code コード (なでしこ)
+   * @param {string} filename
+   * @param {boolean} isTest テストかどうか
+   * @param {string} [preCode]
    * @returns コード (JavaScript)
    */
-  compile(code, filename, isTest) {
-    const ast = this.parse(code, filename)
+  compile(code, filename, isTest, preCode = '') {
+    const ast = this.parse(code, filename, preCode)
     return this.generate(ast, isTest)
   }
 
-  async compileAsync (code, filename, isTest) {
-    const ast = await this.parseAsync(code, filename)
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {boolean} isTest
+   * @param {string} [preCode]
+   */
+  async compileAsync (code, filename, isTest, preCode = '') {
+    const ast = await this.parseAsync(code, filename, preCode)
     return this.generate(ast, isTest)
   }
 
-  _run(code, fname, isReset, isTest) {
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {boolean} isReset
+   * @param {boolean} isTest
+   * @param {string} [preCode]
+   */
+  _run(code, fname, isReset, isTest, preCode = '') {
     const opts = {
       resetLog: isReset,
       testOnly: isTest
     }
-    return this._runEx(code, fname, opts)
+    return this._runEx(code, fname, opts, preCode)
   }
 
-  _runEx(code, fname, opts) {
-    opts = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (opts.resetEnv) {this.reset()}
-    if (opts.resetLog) {this.clearLog()}
-    let js = this.compile(code, fname, opts.testOnly)
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   * @param {string} [preCode]
+   */
+  _runEx(code, fname, opts, preCode = '') {
+    const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+    if (optsAll.resetEnv) {this.reset()}
+    if (optsAll.resetLog) {this.clearLog()}
+    let js = this.compile(code, fname, optsAll.testOnly, preCode)
     try {
       this.__varslist[0].line = -1 // コンパイルエラーを調べるため
       const func = new Function(js) // eslint-disable-line
@@ -530,19 +584,32 @@ class NakoCompiler {
     return this
   }
 
-  async _runAsync(code, fname, isReset, isTest) {
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {boolean} isReset
+   * @param {boolean} isTest
+   * @param {string} [preCode]
+   */
+  async _runAsync(code, fname, isReset, isTest, preCode = '') {
     const opts = {
       resetLog: isReset,
       testOnly: isTest
     }
-    return this._runExAsync(code, fname, opts)
+    return this._runExAsync(code, fname, opts, preCode)
   }
 
-  async _runExAsync(code, fname, opts) {
-    opts = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (opts.resetEnv) {this.reset()}
-    if (opts.resetLog) {this.clearLog()}
-    let js = await this.compileAsync(code, fname, opts.testOnly)
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   * @param {string} [preCode]
+   */
+  async _runExAsync(code, fname, opts, preCode = '') {
+    const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+    if (optsAll.resetEnv) {this.reset()}
+    if (optsAll.resetLog) {this.clearLog()}
+    let js = await this.compileAsync(code, fname, optsAll.testOnly, preCode)
     try {
       this.__varslist[0].line = -1 // コンパイルエラーを調べるため
       const func = new Function(js) // eslint-disable-line
@@ -561,36 +628,78 @@ class NakoCompiler {
     return this
   }
 
-  runEx(code, fname, opts) {
-    return this._runEx(code, fname, opts)
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   * @param {string} [preCode]
+   */
+  runEx(code, fname, opts, preCode = '') {
+    return this._runEx(code, fname, opts, preCode)
   }
 
-  async runExAsync(code, fname, opts) {
-    return this._runExAsync(code, fname, opts)
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {Partial<CompilerOptions>} opts
+   * @param {string} [preCode]
+   */
+  async runExAsync(code, fname, opts, preCode = '') {
+    return this._runExAsync(code, fname, opts, preCode)
   }
 
-  test(code, fname) {
-    return this._runEx(code, fname, { testOnly: true })
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  test(code, fname, preCode = '') {
+    return this._runEx(code, fname, { testOnly: true }, preCode)
   }
 
-  run(code, fname) {
-    return this._runEx(code, fname, { resetLog: false })
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  run(code, fname, preCode = '') {
+    return this._runEx(code, fname, { resetLog: false }, preCode)
   }
 
-  runReset (code, fname) {
-    return this._runEx(code, fname, { resetLog: true })
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  runReset (code, fname, preCode = '') {
+    return this._runEx(code, fname, { resetLog: true }, preCode)
   }
 
-  async testAsync(code, fname) {
-    return await this._runExAsync(code, fname, { testOnly: true })
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  async testAsync(code, fname, preCode ='') {
+    return await this._runExAsync(code, fname, { testOnly: true }, preCode)
   }
 
-  async runAsync(code, fname) {
-    return await this._runExAsync(code, fname, { resetLog: false })
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  async runAsync(code, fname, preCode = '') {
+    return await this._runExAsync(code, fname, { resetLog: false }, preCode)
   }
 
-  async runResetAsync (code, fname) {
-    return await this._runExAsync(code, fname,  { resetLog: true })
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  async runResetAsync (code, fname, preCode = '') {
+    return await this._runExAsync(code, fname,  { resetLog: true }, preCode)
   }
 
   clearLog () {

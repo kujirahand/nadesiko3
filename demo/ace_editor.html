@@ -54,6 +54,11 @@ readonly
 <br>
 長いプログラム
 <div id="editor6"></div>
+<br>
+実行時エラーの表示<br>
+<div id="editor7">Aを表示
+1のエラー発生
+</div>
     <script>
 navigator.nako3.setupEditor("editor1")
 navigator.nako3.setupEditor("editor2")
@@ -61,6 +66,15 @@ navigator.nako3.setupEditor("editor3")
 navigator.nako3.setupEditor("editor4")
 navigator.nako3.setupEditor("editor5")
 navigator.nako3.setupEditor("editor6").editor.setValue("A=1\nB=2\nA+Bを表示\n".repeat(200), -1)
+const editor7 = navigator.nako3.setupEditor("editor7")
+const preCode = 'A=1\n'
+const code = editor7.editor.getValue()
+try {
+    navigator.nako3.runReset(preCode + code, 'main.nako3', preCode)
+} catch (e) {
+    editor7.editorMarkers.addByError(code, e)
+}
+
     </script>
 </body>
 </html>

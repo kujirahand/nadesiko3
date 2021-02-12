@@ -51,9 +51,11 @@ function getScope(token) {
         case "取込":
         case "エラー監視":
         case "エラー":
+        case "変数":
             return 'keyword.control'
-        case "変数": return 'variable.other'
-        case "定数": return 'support.constant'
+        case "定める":
+        case "定数":
+            return 'support.constant'
         // 演算子
         case "shift_r0":
         case "shift_r":
@@ -271,6 +273,28 @@ class EditorMarkers {
     }
 
     /**
+     * @param {string} code
+     * @param {{
+     *     line?: number
+     *     startOffset?: number | null
+     *     endOffset?: number | null
+     *     message: string
+     * }} error
+     */
+    addByError(code, error) {
+        if (typeof error.startOffset === 'number' && typeof error.endOffset === 'number') {
+            // 完全な位置を取得できる場合
+            this.addByOffset(code, error.startOffset, error.endOffset, error.message)
+        } else if (typeof error.line === 'number') {
+            // 行全体の場合
+            this.add(error.line, null, null, null, error.message)
+        } else {
+            // 位置が不明な場合
+            this.add(0, null, null, null, error.message)
+        }
+    }
+
+    /**
      * 全てのエラーメッセージを削除する。
      */
     clear() {
@@ -324,16 +348,7 @@ class BackgroundTokenizer {
                     // ファイル全体の更新を通知する。
                     _signal('update', { data: { first: 0, last: this.doc.getLength() - 1 } })
                 } catch (e) {
-                    if (typeof e.startOffset === 'number' && typeof e.endOffset === 'number') {
-                        // 完全な位置を取得できる場合
-                        editorMarkers.addByOffset(code, e.startOffset, e.endOffset, e.message)
-                    } else if (typeof e.line === 'number') {
-                        // 行全体の場合
-                        editorMarkers.add(e.line, null, null, null, e.message)
-                    } else {
-                        // 位置が不明な場合
-                        editorMarkers.add(0, null, null, null, e.message)
-                    }
+                    editorMarkers.addByError(code, e)
                 }
                 // tokenizeに時間がかかる場合、文字を入力できるように次回の実行を遅くする。最大で5秒まで遅らせる。
                 setTimeout(update, Math.max(100, Math.min(5000, (Date.now() - startTime) * 5)))

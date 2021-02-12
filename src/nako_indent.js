@@ -162,7 +162,10 @@ function convertGo(code, filename) {
     /** @type {number[]} */
     const indentStack = []
     let lastIndent = 0
-    lines.forEach((line, i) => {
+
+    let lineCount = -1
+    lines.forEach((line) => {
+        lineCount += line.split(SpecialRetMark).length
         // trim line
         if (/^\s*$/.test(line)) {
             deletedLines.push({ lineNumber: lines2.length, len: line.length })
@@ -174,7 +177,7 @@ function convertGo(code, filename) {
             return
         }
         if (lineTrimed === 'ここまで') {
-            throw new NakoIndentError(`インデント構文が有効化されているときに『ここまで』を使うことはできません。`, i, filename)
+            throw new NakoIndentError(`インデント構文が有効化されているときに『ここまで』を使うことはできません。`, lineCount, filename)
         }
 
         // check indent

@@ -452,7 +452,6 @@ class NakoParser extends NakoParserBase {
       this.get()
       multiline = true
     } else if (this.check('eol')) {
-      this.get()
       multiline = true
     }
     if (multiline) { // multiline

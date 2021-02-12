@@ -1,5 +1,6 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
+const NakoRuntimeError = require('../src/nako_runtime_error')
 
 describe('basic', () => {
   const nako = new NakoCompiler()
@@ -173,5 +174,62 @@ describe('basic', () => {
     // ならば
     assert.strictEqual(naraba.startOffset, 6)
     assert.strictEqual(naraba.endOffset, 9)
+  })
+  it('実行時エラーの位置の取得', () => {
+    assert.throws(
+      () => nako.runReset('1を表示\n1のエラー発生'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 1)  // 2行目
+        return true
+      }
+    )
+  })
+  it('実行時エラーの位置の取得 - 前後に文がある場合', () => {
+    assert.throws(
+      () => nako.runReset('1を表示\n1を表示。1のエラー発生。1を表示。'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 1)  // 2行目
+        return true
+      }
+    )
+  })
+  it('実行時エラーの位置の取得 - 1行目の場合', () => {
+    assert.throws(
+      () => nako.runReset('1のエラー発生'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 0)  // 1行目
+        return true
+      }
+    )
+  })
+  it('実行時エラーの位置の取得 - repeatTimes', () => {
+    assert.throws(
+      () => nako.runReset('3回\n1のエラー発生'),
+      err => {
+        assert(err instanceof NakoRuntimeError)
+        assert.strictEqual(err.line, 1)  // 2行目
+        return true
+      }
+    )
+  })
+  it('preCodeを考慮したソースマップ', () => {
+    const preCode = '1を表示\n2を表示\n3を'
+    const tokens = nako.lex(preCode + '表示', 'main.nako3', preCode).tokens
+
+    // '3' は-2から0文字目
+    const three = tokens.findIndex((t) => t.value === 3)
+    assert.strictEqual(tokens[three].startOffset, -2)
+    assert.strictEqual(tokens[three].endOffset, 0)
+    assert.strictEqual(tokens[three].line, 0)
+    assert.strictEqual(tokens[three].column, -2)
+
+    // '表示' は0~1文字目
+    assert.strictEqual(tokens[three + 1].startOffset, 0)
+    assert.strictEqual(tokens[three + 1].endOffset, 2)
+    assert.strictEqual(tokens[three + 1].line, 0)
+    assert.strictEqual(tokens[three + 1].column, 0)
   })
 })
