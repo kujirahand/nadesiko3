@@ -264,6 +264,16 @@ function makeIndent(count) {
 }
 
 /**
+ * インデント部分を取り出す
+ * @param {string} line
+ * @returns {string}
+ */
+function getIndent(line) {
+    //@ts-ignore
+    return /^([ 　・\t]*)/.exec(removeCommentsFromLine(line))[1]
+}
+
+/**
  * インデントの個数を数える
  * @param {string} line 
  */
@@ -398,8 +408,65 @@ function replaceRetMark(src) {
     return result
 }
 
+/**
+ * コードのインデントの構造を取得する。
+ * 空白行や複数行にまたがる構文を考慮する。
+ * インデント構文が有効化されていない場合にも使われる。
+ * @param {string} code
+ */
+function getBlockStructure(code) {
+    /** @type {{ lines: number[], pairs: [number, number][], parents: (number | null)[], spaces: string[] }} */
+    const result = {
+        lines: [],  // 各行のインデント量
+        pairs: [],
+        parents: [],  // 各行の親の行
+        spaces: [],  // 各行のインデントの文字列
+    }
+
+    const lines = replaceRetMark(code).split('\n')
+
+    /** @type {number[]} */
+    const stack = []
+    let lineCount = 0
+    let prev = countIndent(lines[0])
+    for (const line of lines) {
+        const numLines = line.split(SpecialRetMark).length
+        const line2 = removeCommentsFromLine(line)
+        const current = (line2.replace(/^\s+/, '').replace(/\s+$/, '') === '')
+            ? prev
+            : countIndent(line2)
+        result.lines.push(...Array(numLines).fill(current))
+        //@ts-ignore
+        result.spaces.push(...Array(numLines).fill(getIndent(line2)))
+
+        if (prev < current) {
+            stack.push(lineCount - 1)
+        } else if (prev > current) {
+            const last = stack.pop()
+            if (last !== undefined) {
+                result.pairs.push([last, lineCount])
+            }
+        }
+
+        const parent = stack[stack.length - 1] !== undefined ? stack[stack.length - 1] : null
+        result.parents.push(...Array(numLines).fill(parent))
+
+        prev = current
+        lineCount += numLines
+    }
+
+    // スタックが余ったらコードの末尾とペアにする。
+    for (const item of stack) {
+        result.pairs.push([item, lineCount])
+    }
+
+    return result
+}
 
 module.exports = {
-    'convert': convert
+    convert,
+    getBlockStructure,
+    getIndent,
+    countIndent,
 }
 

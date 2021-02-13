@@ -4,13 +4,26 @@ const WebNakoCompiler = require("./wnako3")
 const { OffsetToLineColumn } = require("./nako_source_mapping")
 const { LexError } = require("./nako_lex_error")
 const NakoIndentError = require("./nako_indent_error")
+const { getBlockStructure, getIndent, countIndent } = require('./nako_indent')
+const NakoPrepare = require('./nako_prepare')
 
 /**
  * @typedef {import("./nako_lexer").TokenWithSourceMap} TokenWithSourceMap
  * 
- * @typedef {{ getLine(row: number): string, getAllLines(): string[], getLength(): number }} Document
+ * @typedef {{
+ *     getLine(row: number): string
+ *     getAllLines(): string[]
+ *     getLength(): number
+ *     insertInLine(position: { row: number, column: number }, text: string): void
+ *     removeInLine(row: number, columnStart: number, columnEnd: number): void
+ *     replace(range: AceRange, text: string): void
+ * }} Document
  * 
- * @typedef {new (startLine: number, startColumn: number, endLine: number, endColumn: number) => any} TypeofAceRange
+ * @typedef {{ doc: Document }} Session
+ * 
+ * @typedef {{}} AceRange
+ * 
+ * @typedef {new (startLine: number, startColumn: number, endLine: number, endColumn: number) => AceRange} TypeofAceRange
  */
 
 /**
@@ -466,6 +479,191 @@ class BackgroundTokenizer {
 }
 
 /**
+ * シンタックスハイライト以外のエディタの挙動の定義。
+ */
+class LanguageFeatures {
+    /**
+     * @param {TypeofAceRange} AceRange
+     * @param {WebNakoCompiler} nako3
+     */
+    constructor(AceRange, nako3) {
+        this.AceRange = AceRange
+        this.nako3 = nako3
+    }
+
+    /**
+     * Ctrl + / の動作の定義。
+     * @param {string} state
+     * @param {Session} session
+     * @param {number} startRow
+     * @param {number} endRow
+     */
+    static toggleCommentLines(state, {doc}, startRow, endRow) {
+        const prepare = new NakoPrepare()
+        /**
+         * @param {string} line
+         * @returns {{ type: 'blank' | 'code' } | { type: 'comment', start: number, len: number }}
+         */
+        const parseLine = (line) => {
+            // 先頭の空白を消す
+            const indent = getIndent(line)
+            if (indent === line) {
+                return { type: 'blank' }
+            }
+            line = line.substr(indent.length)
+
+            // 先頭がコメントの開始文字かどうか確認する
+            const ch2 = line.substr(0, 2).split('').map((c) => prepare.convert1ch(c)).join('')
+            if (ch2.substr(0, 1) === '#') {
+                return { type: 'comment', start: indent.length, len: 1 + (line.charAt(1) === ' ' ? 1 : 0) }
+            }
+            if (ch2 === '//') {
+                return { type: 'comment', start: indent.length, len: 2 + (line.charAt(2) === ' ' ? 1 : 0) }
+            }
+
+            return { type: 'code' }
+        }
+
+        /** @type {number[]} */
+        const rows = []
+        for (let i = startRow; i <= endRow; i++) {
+            rows.push(i)
+        }
+
+        // 全ての行が空白行ならコメントアウト、全ての行が行コメントで始まるか空白行ならアンコメント、そうでなければコメントアウト。
+        if (!rows.every((row) => parseLine(doc.getLine(row)).type === 'blank') &&
+            rows.every((row) => parseLine(doc.getLine(row)).type !== 'code')) {
+            // アンコメント
+            for (const row of rows) {
+                // 行コメントで始まる行ならアンコメントする。
+                // 行コメントの直後にスペースがあるなら、それも1文字だけ削除する。
+                const line = parseLine(doc.getLine(row))
+                if (line.type === 'comment') {
+                    doc.removeInLine(row, line.start, line.start + line.len)
+                }
+            }
+        } else {
+            // 最もインデントの低い行のインデント数を数える
+            const minIndent = Math.min(...rows.map((row) => countIndent(doc.getLine(row))))
+
+            // コメントアウトする
+            for (const row of rows) {
+                const line = doc.getLine(row)
+                let column = line.length
+                for (let i = 0; i < line.length; i++) {
+                    if (countIndent(line.slice(0, i)) >= minIndent) {
+                        column = i
+                        break
+                    }
+                }
+                doc.insertInLine({ row, column }, '// ')
+            }
+        }
+    }
+
+    /**
+     * 文字を入力するたびに呼ばれる。trueを返すとautoOutdentが呼ばれる。
+     * @param {string} state
+     * @param {string} line
+     * @param {string} input
+     * @returns {boolean}
+     */
+    static checkOutdent(state, line, input) {
+        // 特定のキーワードの入力が終わったタイミングでインデントを自動修正する。
+        // '違えば'のautoOutdentは「もし」と「条件分岐」のどちらのものか見分けが付かないため諦める。
+        return /^\s*ここまで$/.test(line + input)
+    }
+
+    /**
+     * checkOutdentがtrueを返したときに呼ばれる。
+     * @param {string} state
+     * @param {{ doc: Document }} session
+     * @param {number} row
+     * @returns {void}
+     */
+    autoOutdent(state, {doc}, row) {
+        // 1行目なら何もしない
+        if (row === 0) {
+            return
+        }
+        const prevLine = doc.getLine(row - 1)
+        let indent
+        if (LanguageFeatures.isBlockStart(prevLine)) {
+            // 1つ前の行が「〜ならば」などのブロック開始行なら、その行に合わせる。
+            indent = getIndent(prevLine)
+        } else {
+            // そうでなければ、1つ前の行のインデントから1段階outdentした位置に合わせる。
+            const s = this.getBlockStructure(doc.getAllLines().join('\n'))
+            const parent = s.parents[row]
+            indent = parent !== null ? s.spaces[parent] : ''
+        }
+
+        // 置換する
+        const oldIndent = getIndent(doc.getLine(row))
+        doc.replace(new this.AceRange(row, 0, row, oldIndent.length), indent)
+    }
+
+    /**
+     * エンターキーを押して行が追加されたときに挿入する文字列を指定する。
+     * @param {string} state
+     * @param {string} line 改行前にカーソルがあった行の文字列
+     * @param {string} tab タブ文字（デフォルトでは "    "）
+     */
+    static getNextLineIndent(state, line, tab) {
+        // ●で始まるか、特定のキーワードで終わる場合にマッチする。
+        if (this.isBlockStart(line)) {
+            return getIndent(line) + tab
+        }
+        return getIndent(line)
+    }
+
+    /** @param {string} line */
+    static isBlockStart(line) {
+        return /^[ 　・\t]*●|(ならば|なければ|ここから|条件分岐|違えば|回|繰り返(す|し)|の間|反復|とは|には|エラー監視|エラーならば)、?\s*$/.test(line)
+    }
+    
+    /**
+     * 各行についてこの関数が呼ばれる。'start'を返した行はfold可能な範囲の先頭の行になる。
+     * @param {Session} session
+     * @param {string} foldStyle
+     * @param {number} row
+     * @returns {'start' | ''}
+     */
+    getFoldWidget({doc}, foldStyle, row) {
+        return this.getBlockStructure(doc.getAllLines().join('\n')).pairs.some((v) => v[0] === row) ? 'start' : ''
+    }
+
+    /**
+     * getFoldWidgetが'start'を返した行に設置されるfold用のボタンが押されたときに呼ばれる。
+     * @param {Session} session
+     * @param {string} foldStyle
+     * @param {number} row
+     * @returns {AceRange | null} foldする範囲
+     */
+    getFoldWidgetRange({doc}, foldStyle, row) {
+        const pair = this.getBlockStructure(doc.getAllLines().join('\n')).pairs.find((v) => v[0] === row)
+        if (pair !== undefined) {
+            return new this.AceRange(pair[0], doc.getLine(pair[0]).length, pair[1] - 1, doc.getLine(pair[1] - 1).length)
+        }
+        return null
+    }
+
+    /**
+     * @param {string} code
+     * @returns {ReturnType<getBlockStructure>}
+     * @private
+     */
+    getBlockStructure(code) {
+        // キャッシュ
+        if (!this.blockStructure || this.blockStructure.code !== code) {
+            // @ts-ignore
+            this.blockStructure = { code, data: getBlockStructure(code) }
+        }
+        return this.blockStructure.data
+    }
+}
+
+/**
  * 指定したidのHTML要素をなでしこ言語のエディタにする。
  * 
  * - ace editor がグローバルに読み込まれている必要がある。
@@ -483,10 +681,12 @@ function setupEditor (id, nako3, ace) {
     if (element === null) {
         throw new Error(`idが ${id} のHTML要素は存在しません。`)
     }
+
+    const AceRange = ace.require('ace/range').Range
     const editorMarkers = new EditorMarkers(
         editor.session,
         editor.session.bgTokenizer.doc,
-        ace.require('ace/range').Range,
+        AceRange,
         !!element.dataset.nako3DisableMarker,
     )
 
@@ -497,18 +697,32 @@ function setupEditor (id, nako3, ace) {
     }
     editor.setFontSize(16)
 
-    // 今走っている background tokenizer を止める
-    editor.session.bgTokenizer.stop()
+    // エディタの挙動の設定
+    const languageFeatures = new LanguageFeatures(AceRange, nako3)
+    const oop = ace.require('ace/lib/oop')
+    const TextMode = ace.require('ace/mode/text').Mode
+    const Mode = function() {
+        this.HighlightRules = new TextMode().HighlightRules
+        this.foldingRules = {
+            getFoldWidget: languageFeatures.getFoldWidget.bind(languageFeatures),
+            getFoldWidgetRange: languageFeatures.getFoldWidgetRange.bind(languageFeatures),
+        }
+    }
+    oop.inherits(Mode, TextMode)
+    Mode.prototype.toggleCommentLines = LanguageFeatures.toggleCommentLines.bind(LanguageFeatures)
+    Mode.prototype.getNextLineIndent = LanguageFeatures.getNextLineIndent.bind(LanguageFeatures)
+    Mode.prototype.checkOutdent = LanguageFeatures.checkOutdent.bind(LanguageFeatures)
+    Mode.prototype.autoOutdent = languageFeatures.autoOutdent.bind(languageFeatures)
+    editor.session.setMode(new Mode())
 
-    // background tokenizer を上書きする
+    // tokenizer （シンタックスハイライト）の上書き
+    editor.session.bgTokenizer.stop()
     editor.session.bgTokenizer = new BackgroundTokenizer(
         editor.session.bgTokenizer.doc,
         editor.session.bgTokenizer._signal.bind(editor.session.bgTokenizer),
         nako3,
         editorMarkers,
     )
-
-    // セッションをリセットする
     editor.session.resetCaches()
 
     editor.setTheme("ace/theme/xcode")
@@ -519,4 +733,5 @@ function setupEditor (id, nako3, ace) {
 module.exports = {
     tokenize,
     setupEditor,
+    LanguageFeatures,
 }
