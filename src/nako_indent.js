@@ -167,11 +167,11 @@ function convertGo(code, filename) {
     lines.forEach((line) => {
         lineCount += line.split(SpecialRetMark).length
         // trim line
-        if (/^\s*$/.test(line)) {
+        if (/^[ 　・\t]*$/.test(line)) {
             deletedLines.push({ lineNumber: lines2.length, len: line.length })
             return
         }
-        const lineTrimed = removeCommentsFromLine(line).replace(/^\s+/, '').replace(/\s+$/, '')
+        const lineTrimed = removeCommentsFromLine(line).replace(/^[ 　・\t]+/, '').replace(/\s+$/, '')
         if (lineTrimed === '') {
             lines2.push(line)
             return
