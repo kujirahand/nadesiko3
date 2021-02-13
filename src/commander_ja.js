@@ -3,6 +3,7 @@
 const app = {
     'args': [],
     '_alias': {},
+    '_hasarg':{},
     '_help': [],
     '_usage': '',
     '_version': '1.0.0',
@@ -48,6 +49,7 @@ app.option = (cmd, desc) => {
     name2.forEach((t) => {
         app._alias[t] = name1
     })
+    app._hasarg[name1] = (desc.indexOf('[') >= 0)
     return app
 }
 app.parse = (argv) => {
@@ -57,6 +59,9 @@ app.parse = (argv) => {
         if (arg.substr(0, 2) == '--') {
             lastname = arg.substr(2)
             app[lastname] = true
+            if(!app._hasarg[lastname]) {
+                lastname = ''
+            }
             continue
         }
         if (arg.charAt(0) == '-') {
@@ -64,6 +69,9 @@ app.parse = (argv) => {
             if (app._alias[short]) {
                 lastname = app._alias[short]
                 app[lastname] = true
+                if(!app._hasarg[lastname]) {
+                    lastname = ''
+                }
                 continue
             }
             continue
