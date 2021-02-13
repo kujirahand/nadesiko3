@@ -5,6 +5,7 @@ const { OffsetToLineColumn } = require("./nako_source_mapping")
 const { LexError } = require("./nako_lex_error")
 const NakoIndentError = require("./nako_indent_error")
 const { getBlockStructure, getIndent, countIndent } = require('./nako_indent')
+const NakoPrepare = require('./nako_prepare')
 
 /**
  * @typedef {import("./nako_lexer").TokenWithSourceMap} TokenWithSourceMap
@@ -496,26 +497,56 @@ class LanguageFeatures {
      * @param {number} startRow
      * @param {number} endRow
      */
-    toggleCommentLines(state, {doc}, startRow, endRow) {
+    static toggleCommentLines(state, {doc}, startRow, endRow) {
+        const prepare = new NakoPrepare()
+        /**
+         * @param {string} line
+         * @returns {{ type: 'blank' | 'code' } | { type: 'comment', start: number, len: number }}
+         */
+        const parseLine = (line) => {
+            // 先頭の空白を消す
+            const indent = getIndent(line)
+            if (indent === line) {
+                return { type: 'blank' }
+            }
+            line = line.substr(indent.length)
+
+            // 先頭がコメントの開始文字かどうか確認する
+            const ch2 = line.substr(0, 2).split('').map((c) => prepare.convert1ch(c)).join('')
+            if (ch2.substr(0, 1) === '#') {
+                return { type: 'comment', start: indent.length, len: 1 + (line.charAt(1) === ' ' ? 1 : 0) }
+            }
+            if (ch2 === '//') {
+                return { type: 'comment', start: indent.length, len: 2 + (line.charAt(2) === ' ' ? 1 : 0) }
+            }
+
+            return { type: 'code' }
+        }
+
+        /** @type {number[]} */
+        const rows = []
+        for (let i = startRow; i <= endRow; i++) {
+            rows.push(i)
+        }
+
         // 全ての行が空白行ならコメントアウト、全ての行が行コメントで始まるか空白行ならアンコメント、そうでなければコメントアウト。
-        if (!this.range(startRow, endRow).every((row) => /^\s*$/.test(doc.getLine(row))) &&
-            this.range(startRow, endRow).every((row) => /^\s*(?:(?:[#※]|[\/／]{2}).*)?$/.test(doc.getLine(row)))) {
+        if (!rows.every((row) => parseLine(doc.getLine(row)).type === 'blank') &&
+            rows.every((row) => parseLine(doc.getLine(row)).type !== 'code')) {
             // アンコメント
-            for (const row of this.range(startRow, endRow)) {
+            for (const row of rows) {
                 // 行コメントで始まる行ならアンコメントする。
-                // 行コメントの直後にスペースがあるなら、それも1文字だけ削除する
-                const matches = /^(\s*)([#※]|[\/／]{2}\s?).*$/.exec(doc.getLine(row))
-                if (matches !== null) {
-                    const column = matches[1].length
-                    doc.removeInLine(row, column, column + matches[2].length)
+                // 行コメントの直後にスペースがあるなら、それも1文字だけ削除する。
+                const line = parseLine(doc.getLine(row))
+                if (line.type === 'comment') {
+                    doc.removeInLine(row, line.start, line.start + line.len)
                 }
             }
         } else {
             // 最もインデントの低い行のインデント数を数える
-            const minIndent = Math.min(...this.range(startRow, endRow).map((row) => countIndent(doc.getLine(row))))
+            const minIndent = Math.min(...rows.map((row) => countIndent(doc.getLine(row))))
 
             // コメントアウトする
-            for (const row of this.range(startRow, endRow)) {
+            for (const row of rows) {
                 const line = doc.getLine(row)
                 let column = line.length
                 for (let i = 0; i < line.length; i++) {
@@ -535,8 +566,9 @@ class LanguageFeatures {
      * @param {string} line 改行前にカーソルがあった行の文字列
      * @param {string} tab タブ文字（デフォルトでは "    "）
      */
-    getNextLineIndent(state, line, tab) {
-        if (/^\s*●|(ならば|なければ|ここから|条件分岐|違えば|回|繰り返(す|し)|の間|反復|とは|には|エラー監視|エラーならば)、?\s*$/.test(line)) {
+    static getNextLineIndent(state, line, tab) {
+        // ●で始まるか、特定のキーワードで終わる場合にマッチする。
+        if (/^[ 　・\t]*●|(ならば|なければ|ここから|条件分岐|違えば|回|繰り返(す|し)|の間|反復|とは|には|エラー監視|エラーならば)、?\s*$/.test(line)) {
             return getIndent(line) + tab
         }
         return getIndent(line)
@@ -580,21 +612,6 @@ class LanguageFeatures {
             this.blockStructure = { code, data: getBlockStructure(code) }
         }
         return this.blockStructure.data
-    }
-
-    /**
-     * @param {number} startRow
-     * @param {number} endRow
-     * @returns {number[]}
-     * @private
-     */
-    range(startRow, endRow) {
-        /** @type {number[]} */
-        const result = []
-        for (let i = startRow; i <= endRow; i++) {
-            result.push(i)
-        }
-        return result
     }
 }
 
@@ -644,8 +661,8 @@ function setupEditor (id, nako3, ace) {
         }
     }
     oop.inherits(Mode, TextMode)
-    Mode.prototype.toggleCommentLines = languageFeatures.toggleCommentLines.bind(languageFeatures)
-    Mode.prototype.getNextLineIndent = languageFeatures.getNextLineIndent.bind(languageFeatures)
+    Mode.prototype.toggleCommentLines = LanguageFeatures.toggleCommentLines.bind(LanguageFeatures)
+    Mode.prototype.getNextLineIndent = LanguageFeatures.getNextLineIndent.bind(LanguageFeatures)
     editor.session.setMode(new Mode())
 
     // tokenizer （シンタックスハイライト）の書き換え
@@ -666,4 +683,5 @@ function setupEditor (id, nako3, ace) {
 module.exports = {
     tokenize,
     setupEditor,
+    LanguageFeatures,
 }

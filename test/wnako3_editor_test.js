@@ -1,6 +1,6 @@
 const assert = require('assert')
 const WebNakoCompiler = require('../src/wnako3')
-const { tokenize } = require('../src/wnako3_editor')
+const { tokenize, LanguageFeatures } = require('../src/wnako3_editor')
 
 describe('wnako3_editor_test', () => {
     it('コードを分割する', () => {
@@ -30,5 +30,38 @@ describe('wnako3_editor_test', () => {
         assert(tokens[1][1].type.includes('operator'))
         assert(tokens[1][2].type.includes('numeric'))
         assert(tokens[1][3].type.includes('function'))
+    })
+    const log = []
+    const doc = {
+        lines: [],
+        getLine: (row) => doc.lines[row],
+        insertInLine(position, text) { log.push(['insertInLine', position, text]) },
+        removeInLine(row, columnStart, columnEnd) { log.push(['removeInLine', row, columnStart, columnEnd]) },
+    }
+    it('行コメントのトグル - コメントアウト', () => {
+        log.length = 0
+        doc.lines = ['abc', '']
+        LanguageFeatures.toggleCommentLines('', { doc }, 0, 1)
+        assert.deepStrictEqual(log, [
+            [ 'insertInLine', { row: 0, column: 0 }, '// ' ],
+            [ 'insertInLine', { row: 1, column: 0 }, '// ' ],
+        ])
+    })
+    it('行コメントのトグル - アンコメント', () => {
+        log.length = 0
+        doc.lines = ['// abc', '', '※def']
+        LanguageFeatures.toggleCommentLines('', { doc }, 0, 2)
+        assert.deepStrictEqual(log, [
+            [ 'removeInLine', 0, 0, 3 ], // '// ' を削除
+            [ 'removeInLine', 2, 0, 1 ], // '※' を削除
+        ])
+    })
+    it('行コメントのトグル - 中黒のある場合', () => {
+        log.length = 0
+        doc.lines = ['・・abc']
+        LanguageFeatures.toggleCommentLines('', { doc }, 0, 0)
+        assert.deepStrictEqual(log, [
+            [ 'insertInLine', { row: 0, column: 2 }, '// ' ], // 'abc' の直前に挿入
+        ])
     })
 })
