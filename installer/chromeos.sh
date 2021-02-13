@@ -13,4 +13,6 @@ sudo ln -sf /usr/local/bin/npm /usr/bin/npm
 # なでしこ3をインストール
 sudo npm install -g nadesiko3
 
+# 追加
+sudo apt install -y p7zip-full xdotool
 
