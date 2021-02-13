@@ -16,6 +16,7 @@ const NakoPrepare = require('./nako_prepare')
  *     getLength(): number
  *     insertInLine(position: { row: number, column: number }, text: string): void
  *     removeInLine(row: number, columnStart: number, columnEnd: number): void
+ *     replace(range: AceRange, text: string): void
  * }} Document
  * 
  * @typedef {{ doc: Document }} Session
@@ -561,6 +562,48 @@ class LanguageFeatures {
     }
 
     /**
+     * 文字を入力するたびに呼ばれる。trueを返すとautoOutdentが呼ばれる。
+     * @param {string} state
+     * @param {string} line
+     * @param {string} input
+     * @returns {boolean}
+     */
+    static checkOutdent(state, line, input) {
+        // 特定のキーワードの入力が終わったタイミングでインデントを自動修正する。
+        // '違えば'のautoOutdentは「もし」と「条件分岐」のどちらのものか見分けが付かないため諦める。
+        return /^\s*ここまで$/.test(line + input)
+    }
+
+    /**
+     * checkOutdentがtrueを返したときに呼ばれる。
+     * @param {string} state
+     * @param {{ doc: Document }} session
+     * @param {number} row
+     * @returns {void}
+     */
+    autoOutdent(state, {doc}, row) {
+        // 1行目なら何もしない
+        if (row === 0) {
+            return
+        }
+        const prevLine = doc.getLine(row - 1)
+        let indent
+        if (LanguageFeatures.isBlockStart(prevLine)) {
+            // 1つ前の行が「〜ならば」などのブロック開始行なら、その行に合わせる。
+            indent = getIndent(prevLine)
+        } else {
+            // そうでなければ、1つ前の行のインデントから1段階outdentした位置に合わせる。
+            const s = this.getBlockStructure(doc.getAllLines().join('\n'))
+            const parent = s.parents[row]
+            indent = parent !== null ? s.spaces[parent] : ''
+        }
+
+        // 置換する
+        const oldIndent = getIndent(doc.getLine(row))
+        doc.replace(new this.AceRange(row, 0, row, oldIndent.length), indent)
+    }
+
+    /**
      * エンターキーを押して行が追加されたときに挿入する文字列を指定する。
      * @param {string} state
      * @param {string} line 改行前にカーソルがあった行の文字列
@@ -568,12 +611,17 @@ class LanguageFeatures {
      */
     static getNextLineIndent(state, line, tab) {
         // ●で始まるか、特定のキーワードで終わる場合にマッチする。
-        if (/^[ 　・\t]*●|(ならば|なければ|ここから|条件分岐|違えば|回|繰り返(す|し)|の間|反復|とは|には|エラー監視|エラーならば)、?\s*$/.test(line)) {
+        if (this.isBlockStart(line)) {
             return getIndent(line) + tab
         }
         return getIndent(line)
     }
 
+    /** @param {string} line */
+    static isBlockStart(line) {
+        return /^[ 　・\t]*●|(ならば|なければ|ここから|条件分岐|違えば|回|繰り返(す|し)|の間|反復|とは|には|エラー監視|エラーならば)、?\s*$/.test(line)
+    }
+    
     /**
      * 各行についてこの関数が呼ばれる。'start'を返した行はfold可能な範囲の先頭の行になる。
      * @param {Session} session
@@ -649,7 +697,7 @@ function setupEditor (id, nako3, ace) {
     }
     editor.setFontSize(16)
 
-    // エディタの挙動の書き換え
+    // エディタの挙動の設定
     const languageFeatures = new LanguageFeatures(AceRange, nako3)
     const oop = ace.require('ace/lib/oop')
     const TextMode = ace.require('ace/mode/text').Mode
@@ -663,9 +711,11 @@ function setupEditor (id, nako3, ace) {
     oop.inherits(Mode, TextMode)
     Mode.prototype.toggleCommentLines = LanguageFeatures.toggleCommentLines.bind(LanguageFeatures)
     Mode.prototype.getNextLineIndent = LanguageFeatures.getNextLineIndent.bind(LanguageFeatures)
+    Mode.prototype.checkOutdent = LanguageFeatures.checkOutdent.bind(LanguageFeatures)
+    Mode.prototype.autoOutdent = languageFeatures.autoOutdent.bind(languageFeatures)
     editor.session.setMode(new Mode())
 
-    // tokenizer （シンタックスハイライト）の書き換え
+    // tokenizer （シンタックスハイライト）の上書き
     editor.session.bgTokenizer.stop()
     editor.session.bgTokenizer = new BackgroundTokenizer(
         editor.session.bgTokenizer.doc,

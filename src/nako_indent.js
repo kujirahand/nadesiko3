@@ -415,7 +415,7 @@ function replaceRetMark(src) {
  * @param {string} code
  */
 function getBlockStructure(code) {
-    /** @type {{ lines: number[], pairs: [number, number][], parents: number[], spaces: string[] }} */
+    /** @type {{ lines: number[], pairs: [number, number][], parents: (number | null)[], spaces: string[] }} */
     const result = {
         lines: [],  // 各行のインデント量
         pairs: [],
