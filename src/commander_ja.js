@@ -49,7 +49,7 @@ app.option = (cmd, desc) => {
     name2.forEach((t) => {
         app._alias[t] = name1
     })
-    app._hasarg[name1] = (desc.indexOf('[') >= 0)
+    app._hasarg[name1] = (cmd.indexOf('[') >= 0)
     return app
 }
 app.parse = (argv) => {
@@ -91,6 +91,7 @@ app.parse = (argv) => {
         app.showHelp()
         process.exit(0)
     }
+    // console.log(app)
     return app
 }
 app.option('-h, --help', 'コマンドの使い方を表示')
