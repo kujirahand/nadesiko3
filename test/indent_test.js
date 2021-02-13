@@ -276,4 +276,52 @@ describe('indent', () => {
             { lineNumber: 13, len: 0 }
         ])
     })
+    it('ブロック構造の取得', () => {
+        assert.deepStrictEqual(
+            NakoIndent.getBlockStructure(
+                'もしはいならば\n' +
+                '    「こん\n' +
+                'にちは」を表示\n' +
+                'ここまで',
+            ),
+            {
+                lines: [0, 4, 4, 0], // 各行の高さは 0, 4, 4, 0
+                pairs: [[0, 3]],     // 0行目と3行目のペアがブロックを構成している。
+                parents: [null, 0, 0, null],
+                spaces: ['', '    ', '    ', '']
+            }
+        )
+    })
+    it('ブロック構造の取得 - 複数行にまたがる構文', () => {
+        // 複数行にまたがる文の2行目以降のインデントは、先頭行のインデントと等しいものとする。
+        // コメントのみの行のインデントは、直近の通常の行のインデントと等しいものとする。
+        assert.deepStrictEqual(
+            NakoIndent.getBlockStructure(
+                '！インデント構文\n' +
+                'Nを1から3まで繰り返す\n' +
+                '    「1行目\n' +
+                '2行目」を表示\n' +
+                '/*範囲コメント\n' +
+                '*/'
+            ),
+            {
+                lines: [0, 0, 4, 4, 4, 4],
+                pairs: [[1, 6]],
+                parents: [null, null, 1, 1, 1, 1],
+                spaces: ['', '', '    ', '    ', '', ''],
+            }
+        )
+    })
+    it('ブロック構造の取得 - 違えば', () => {
+        assert.deepStrictEqual(
+            NakoIndent.getBlockStructure(
+                'もしはいならば\n' +
+                '    a\n' +
+                '違えば\n' +
+                '    b\n' +
+                'ここまで',
+            ).pairs,
+            [[0, 2], [2, 4]],
+        )
+    })
 })
