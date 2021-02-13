@@ -27,11 +27,12 @@ class CNako3 extends NakoCompiler {
       {process.argv.push('-h')}
 
     // commanderを使って引数を解析する
-    const app = require('commander')
-    const packages = require('../package.json')
+    const app = require('./commander_ja.js')
+    const nako_version = require('./nako_version.js')
     app
-      .version(packages.version, '-v, --version')
-      .usage('[Options] nakofile')
+      .title('日本語プログラミング言語「なでしこ」v' + nako_version.version)
+      .version(nako_version.version, '-v, --version')
+      .usage('[オプション] 入力ファイル.nako3')
       .option('-d, --debug', 'デバッグモードの指定')
       .option('-D, --debugAll', '詳細デバッグモードの指定')
       .option('-c, --compile', 'コンパイルモードの指定')
