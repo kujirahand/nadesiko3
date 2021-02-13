@@ -52,7 +52,7 @@ app.option = (cmd, desc) => {
 }
 app.parse = (argv) => {
     let lastname = ''
-    for (let i = 1; i < argv.length; i++) {
+    for (let i = 2; i < argv.length; i++) {
         arg = argv[i]
         if (arg.substr(0, 2) == '--') {
             lastname = arg.substr(2)
