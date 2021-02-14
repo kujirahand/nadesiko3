@@ -192,7 +192,7 @@ class NakoGen {
     code += 'const __module = this.__module;\n'
     code += 'const __v0 = this.__v0 = this.__varslist[0];\n'
     code += 'const __v1 = this.__v1 = this.__varslist[1];\n'
-    code += 'let __vars = this.__vars = this.__varslist[this.__varslist.length - 1];\n'
+    code += 'let __vars = this.__vars = this.__varslist[2];\n'
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
     for (const key in this.nako_func) {
@@ -456,18 +456,21 @@ class NakoGen {
     return code
   }
 
+  /**
+   * @param {string} name
+   * @returns {{i: number, name: string, isTop: boolean} | null}
+   */
   findVar (name) {
     // __vars ? (ローカル変数)
     if (this.__vars[name] !== undefined)
-      {return {i: this.__varslist.length - 1, 'name': name, isTop: true}}
+      {return {i: this.__varslist.length - 1, name, isTop: true}}
 
     // __varslist ?
-    for (let i = this.__varslist.length - 2; i >= 0; i--) {
+    for (let i = 2; i >= 0; i--) {
       const vlist = this.__varslist[i]
       if (!vlist) {continue}
       if (vlist[name] !== undefined)
-        {return {'i': i, 'name': name, isTop: false}}
-
+        {return {i, name, isTop: false}}
     }
     return null
   }
@@ -542,10 +545,11 @@ class NakoGen {
 
   convDefFuncCommon (node, name) {
     let code = '(function(){\n'
-    code += '' +
-      'try {\n' +
-      '  __vars = {\'それ\':\'\'};\n' +
-      '  __varslist.push(__vars);\n'
+    code +=
+      'var __vars_tmp = this.__vars\n' +
+      'this.__vars = {\'それ\':\'\'};\n' +
+      'var __vars = this.__vars\n' +
+      'try {\n';
     this.__vars = {'それ': true, '!関数': name}
     // ローカル変数をPUSHする
     this.__varslist.push(this.__vars)
@@ -575,13 +579,10 @@ class NakoGen {
     // 関数の最後に、変数「それ」をreturnするようにする
     code += `  return (${this.sore});\n`
     // 関数の末尾に、ローカル変数をPOP
-    const popcode =
-      '__varslist.pop(); ' +
-      '__vars = __varslist[__varslist.length-1];'
-    code += '' +
-      `  } finally {\n` +
-      `    ${popcode}\n` +
-      `  }\n` +
+    code +=
+      '} finally {\n' +
+      `  this.__vars = __vars_tmp\n` +
+      `}\n` +
       `})`
     if (name)
       {this.nako_func[name]['fn'] = code}
@@ -865,8 +866,11 @@ class NakoGen {
       func = this.nako_func[funcName]
       // 無名関数の可能性
       if (func === undefined) {func = {return_none: false}}
-
-      funcNameS = `__varslist[${res.i}]["${funcName}"]`
+      if (res.isTop) {
+        funcNameS = `__vars["${funcName}"]`
+      } else {
+        funcNameS = `__varslist[${res.i}]["${funcName}"]`
+      }
     }
     // 関数の参照渡しか？
     if (node.type === 'func_pointer') {
