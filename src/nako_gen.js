@@ -900,7 +900,11 @@ class NakoGen {
     if (func.return_none) {
       code = `${funcBegin}${code};${funcEnd}\n`
     } else {
-      code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
+      if (funcBegin === '' && funcEnd === '') {
+        code = `(${this.sore}=${code})`
+      } else {
+        code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
+      }
       // ...して
       if (node.josi === 'して'){code += ';\n'}
     }
@@ -928,15 +932,16 @@ class NakoGen {
       'shift_r': '>>',
       'shift_r0': '>>>'
     }
-    const NUM_OP_TBL = { // 数値限定演算子
-      '+': true, '-': true, '*': true, '/': true, '%': true, '^': true
-    }
     let op = node.operator // 演算子
     let right = this._convGen(node.right)
     let left = this._convGen(node.left)
-    if (NUM_OP_TBL[op]) {
-      left = `parseFloat(${left})`
-      right = `parseFloat(${right})`
+    if (op === '+') {
+      if (node.left.type !== 'number') {
+        left = `parseFloat(${left})`
+      }
+      if (node.right.type !== 'number') {
+        right = `parseFloat(${right})`
+      }
     }
     // 階乗
     if (op === '^')
