@@ -64,40 +64,47 @@ app.option = (cmd, desc) => {
  */
 app.parseStr = (argv) => {
     app['args'] = []
-    let lastname = ''
+    let lastOpt = ''
     for (let i = 2; i < argv.length; i++) {
         arg = argv[i]
-        if (arg.substr(0, 2) == '--') {
-            lastname = arg.substr(2)
-            if (lastname === 'version') {lastname='version_'}
-            app[lastname] = true
-            if(!app._hasarg[lastname]) {
-                lastname = ''
-            }
-            continue
-        }
-        if (arg.charAt(0) == '-') {
-            const short = arg.substr(1)
-            if (app._alias[short]) {
-                lastname = app._alias[short]
-                app[lastname] = true
-                if(!app._hasarg[lastname]) {
-                    lastname = ''
-                }
+        // Not Options
+        if (arg.charAt(0) != '-') {
+            if (lastOpt != '') {
+                app[lastOpt] = arg
+                lastOpt = ''
                 continue
             }
+            app.args.push(arg)
             continue
         }
-        if (lastname != '') {
-            app[lastname] = arg
-            lastname = ''
-            continue
+        // Options
+        if (arg.substr(0, 2) == '--') {
+            lastOpt = arg.substr(2)
+            if (lastOpt === 'version') {lastOpt='version_'}
+        } else {
+            // Short Option
+            const short = arg.substr(1)
+            if (app._alias[short]) {
+                lastOpt = app._alias[short]
+            } else {
+                // Not exists
+                continue
+            }
         }
-        app.args.push(arg)
+        // set option true
+        app[lastOpt] = true
+        if (!app._hasarg[lastOpt]) { // has argument?
+            lastOpt = ''
+        } else {
+            // init parameter
+            app[lastOpt] = ''
+        }
     }
+    // show version?
     if (app.version_) {
         return app._version
     }
+    // show help?
     if (app.help) {
         return app.getHelp()
     }
