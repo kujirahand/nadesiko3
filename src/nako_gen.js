@@ -135,11 +135,11 @@ class NakoGen {
   }
 
   /**
+   * ローカル変数のJavaScriptコードを生成する。
    * @param {string} name
    */
   static varname (name) {
-    // JavaScriptの変数名として使えない名前なら、__varsを使う。
-    // グローバル変数の場合も、ローカル変数と衝突しうるため__varsを使う。
+    // JavaScriptの変数名として使えない名前なら__varsを使う。
     if (NakoGen.isValidIdentifier(name)) {
       return name
     } else {
@@ -482,20 +482,30 @@ class NakoGen {
 
   /**
    * @param {string} name
-   * @returns {{i: number, name: string, isTop: boolean} | null}
+   * @returns {{i: number, name: string, isTop: boolean, js: string} | null}
    */
   findVar (name) {
     // __vars ? (ローカル変数)
-    if (this.__vars[name] !== undefined)
-      {return {i: this.__varslist.length - 1, name, isTop: true}}
-
+    if (this.__vars[name] !== undefined) {
+      return { i: this.__varslist.length - 1, name, isTop: true, js: NakoGen.varname(name) }
+    }
     // __varslist ?
     for (let i = 2; i >= 0; i--) {
       const vlist = this.__varslist[i]
       if (!vlist) {continue}
-      if (vlist[name] !== undefined)
-        {return {i, name, isTop: false}}
+      if (vlist[name] !== undefined) {
+        let js
+        // ユーザーの定義したグローバル変数 (__varslist[2]) は、変数展開されている（そのままの名前で定義されている）可能性がある。
+        // それ以外の変数は、必ず__varslistに入っている。
+        if (i === 2 && NakoGen.isValidIdentifier(name)) {
+          js = name
+        } else {
+          js = `__varslist[${i}][${JSON.stringify(name)}]`
+        }
+        return { i, name, isTop: false, js }
+      }
     }
+    
     return null
   }
 
@@ -513,23 +523,17 @@ class NakoGen {
     // システム関数・変数の場合
     if (i === 0) {
       const pv = this.funclist[name]
-      if (!pv) {return `${NakoGen.varname(name)}/*err:${lno}*/`}
-      if (pv.type === 'const' || pv.type === 'var') {return `__varslist[0]["${name}"]`}
+      if (!pv) {return `${res.js}/*err:${lno}*/`}
+      if (pv.type === 'const' || pv.type === 'var') {return res.js}
       if (pv.type === 'func') {
         if (pv.josi.length === 0)
-          {return `(__varslist[${i}]["${name}"]())`}
+          {return `(${res.js}())`}
 
         throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, line)
       }
       throw new NakoGenError(`『${name}』は関数であり参照できません。`, line)
     }
-    if (res.isTop) {
-      return NakoGen.varname(name)
-    } else if (res.i === 2 && NakoGen.isValidIdentifier(name)) {
-      return name
-    } else {
-      return `__varslist[${i}][${JSON.stringify(name)}]`
-    }
+    return res.js
   }
 
   convGetVar (node) {
@@ -899,7 +903,6 @@ class NakoGen {
    */
   convFunc (node) {
     const funcName = NakoGen.getFuncName(node.name)
-    let funcNameS
     const res = this.findVar(funcName)
     if (res === null) {
       throw new NakoGenError(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node.line)
@@ -907,7 +910,6 @@ class NakoGen {
     let func
     if (res.i === 0) { // plugin function
       func = this.funclist[funcName]
-      funcNameS = `__v0["${funcName}"]`
       if (func.type !== 'func') {
         throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.line)
       }
@@ -915,15 +917,10 @@ class NakoGen {
       func = this.nako_func[funcName]
       // 無名関数の可能性
       if (func === undefined) {func = {return_none: false}}
-      if (res.isTop) {
-        funcNameS = NakoGen.varname(funcName)
-      } else {
-        funcNameS = `__varslist[${res.i}]["${funcName}"]`
-      }
     }
     // 関数の参照渡しか？
     if (node.type === 'func_pointer') {
-      return funcNameS
+      return res.js
     }
     // 関数の参照渡しでない場合
     // 関数定義より助詞を一つずつ調べる
@@ -949,7 +946,7 @@ class NakoGen {
 
     // 関数呼び出しコードの構築
     let argsCode = args.join(',')
-    let code = `${funcNameS}(${argsCode})`
+    let code = `${res.js}(${argsCode})`
     if (func.return_none) {
       code = `${funcBegin}${code};${funcEnd}\n`
     } else {
@@ -1013,13 +1010,11 @@ class NakoGen {
     // 変数名
     const name = node.name.value
     const res = this.findVar(name)
-    let isTop
     let code = ''
     if (res === null) {
       this.__vars[name] = true
-      isTop = true
+      code = `${NakoGen.varname(name)}=${value};`
     } else {
-      isTop = res.isTop
       // 定数ならエラーを出す
       if (this.__varslist[res.i].meta)
         {if (this.__varslist[res.i].meta[name]) {
@@ -1029,12 +1024,8 @@ class NakoGen {
               node.line)}
 
         }}
-
+        code = `${res.js}=${value};`
     }
-    if (isTop)
-      {code = `${NakoGen.varname(name)}=${value};`}
-     else
-      {code = `__varslist[${res.i}]["${name}"]=${value};`}
 
     return ';' + NakoGen.convLineno(node, false) + code + '\n'
   }
