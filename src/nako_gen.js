@@ -935,8 +935,12 @@ class NakoGen {
     let right = this._convGen(node.right)
     let left = this._convGen(node.left)
     if (NUM_OP_TBL[op]) {
-      left = `parseFloat(${left})`
-      right = `parseFloat(${right})`
+      if (node.left.type !== 'number') {
+        left = `parseFloat(${left})`
+      }
+      if (node.right.type !== 'number') {
+        right = `parseFloat(${right})`
+      }
     }
     // 階乗
     if (op === '^')
