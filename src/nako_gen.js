@@ -932,13 +932,10 @@ class NakoGen {
       'shift_r': '>>',
       'shift_r0': '>>>'
     }
-    const NUM_OP_TBL = { // 数値限定演算子
-      '+': true, '-': true, '*': true, '/': true, '%': true, '^': true
-    }
     let op = node.operator // 演算子
     let right = this._convGen(node.right)
     let left = this._convGen(node.left)
-    if (NUM_OP_TBL[op]) {
+    if (op === '+') {
       if (node.left.type !== 'number') {
         left = `parseFloat(${left})`
       }
