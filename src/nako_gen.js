@@ -243,9 +243,6 @@ class NakoGen {
     if (pluginCode !== '')
       {code += '__v0.line=0;// プラグインの初期化\n' + pluginCode}
 
-    // それを初期化
-    code += 'それ = \'\';\n'
-
     // テストの定義を行う
     if (isTest) {
       let testCode = ''
