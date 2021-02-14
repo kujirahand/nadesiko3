@@ -108,7 +108,7 @@ app.parseStr = (argv) => {
  * @param {*} argv 
  */
 app.parse = (argv) => {
-    const s = this.parseStr(argv)
+    const s = app.parseStr(argv)
     if (s === '') {
         return app
     }
