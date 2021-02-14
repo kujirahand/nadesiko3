@@ -1,5 +1,4 @@
 // commander_ja.js
-//
 const app = {
     'args': [],
     '_alias': {},
@@ -9,6 +8,11 @@ const app = {
     '_version': '1.0.0',
     '_title': ''
 }
+/**
+ * set version info
+ * @param {*} ver version info
+ * @param {*} cmd -v, --version
+ */
 app.version = (ver, cmd) => {
     app.option(cmd, 'バージョン情報を表示')
     app._version = ver
@@ -45,6 +49,7 @@ app.option = (cmd, desc) => {
     if (name1 === '') {
         throw Error('Invalid option(no longname): ' + cmd)
     }
+    if (name1 === 'version') {name1='version_'}
     app[name1] = false
     name2.forEach((t) => {
         app._alias[t] = name1
@@ -52,12 +57,19 @@ app.option = (cmd, desc) => {
     app._hasarg[name1] = (cmd.indexOf('[') >= 0)
     return app
 }
-app.parse = (argv) => {
+/**
+ * parse and return str
+ * @param {*} argv 
+ * @return {string}
+ */
+app.parseStr = (argv) => {
+    app['args'] = []
     let lastname = ''
     for (let i = 2; i < argv.length; i++) {
         arg = argv[i]
         if (arg.substr(0, 2) == '--') {
             lastname = arg.substr(2)
+            if (lastname === 'version') {lastname='version_'}
             app[lastname] = true
             if(!app._hasarg[lastname]) {
                 lastname = ''
@@ -83,30 +95,41 @@ app.parse = (argv) => {
         }
         app.args.push(arg)
     }
-    if (app.version) {
-        console.log(app._version)
-        process.exit(0)
+    if (app.version_) {
+        return app._version
     }
     if (app.help) {
-        app.showHelp()
-        process.exit(0)
+        return app.getHelp()
     }
-    // console.log(app)
-    return app
+    return ''
+}
+/**
+ * parse
+ * @param {*} argv 
+ */
+app.parse = (argv) => {
+    const s = this.parseStr(argv)
+    if (s === '') {
+        return app
+    }
+    console.log(s)
+    process.exit(0)
 }
 app.option('-h, --help', 'コマンドの使い方を表示')
 
-app.showHelp = ()=> {
+app.getHelp = ()=> {
+    let ss = ''
     if (app._title) {
-        console.log(app._title)
+        ss += app._title + '\n'
     }
-    console.log('使い方: ', app._usage)
-    console.log('オプション:')
+    ss += '使い方: ' + app._usage + '\n'
+    ss += 'オプション:\n'
     const spc = '                               '
     app._help.forEach((c) =>{
         const opt = c[0] + spc
-        console.log('  ', opt.substr(0, 20), c[1])
+        ss += '  ' + opt.substr(0, 20) + ' ' + c[1] + '\n'
     })
+    return ss
 }
 
 // register app
