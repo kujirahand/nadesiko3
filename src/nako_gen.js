@@ -900,7 +900,11 @@ class NakoGen {
     if (func.return_none) {
       code = `${funcBegin}${code};${funcEnd}\n`
     } else {
-      code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
+      if (funcBegin === '' && funcEnd === '') {
+        code = `(${this.sore}=${code})`
+      } else {
+        code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
+      }
       // ...して
       if (node.josi === 'して'){code += ';\n'}
     }
