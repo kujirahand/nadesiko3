@@ -61,4 +61,12 @@ describe('commnder_ja', () => {
         app.parseStr(['node.js', 'cnako3.js', '-e', 'hoge'])
         assert.strictEqual(app.eval, 'hoge')
     })
+    it('args has params4', () => {
+        const app = require('../src/commander_ja.js')
+        app.version('1.2.3', '-v,--version')
+            .usage('[opt] test')
+            .option('-e, --eval [source]', 'eval source')
+        app.parseStr(['node.js', 'cnako3.js', '-e'])
+        assert.strictEqual(app.eval, '')
+    })
 })
