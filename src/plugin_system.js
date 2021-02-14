@@ -15,7 +15,8 @@ const PluginSystem = {
       // 全ての関数・変数を見つけて返す
       sys.__findVar = function (nameStr, def) {
         if (typeof nameStr === 'function') {return nameStr}
-        for (let i = sys.__varslist.length - 1; i >= 0; i--) {
+        if (sys.__vars[nameStr]) {return sys.__vars[nameStr]}
+        for (let i = 2; i >= 0; i--) {
           let scope = sys.__varslist[i]
           if (scope[nameStr]) {return scope[nameStr]}
         }
