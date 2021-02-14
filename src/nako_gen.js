@@ -938,8 +938,17 @@ class NakoGen {
     let funcEnd = ''
     // setter?
     if (node['setter']) {
-      funcBegin = ';__self.isSetter = true;'
-      funcEnd = ';__self.isSetter = false;'
+      funcBegin += ';__self.isSetter = true;'
+      funcEnd += ';__self.isSetter = false;'
+    }
+    // ローカル変数にアクセスする必要がない関数には pure: true が付けられている。
+    // そうではない場合、関数呼び出しの直前に全てのローカル変数をthis.__varsに入れる。
+    if (func.pure !== true) { // undefinedはfalseとみなす
+      const items = []
+      for (const name of Object.keys(this.__vars).filter((v) => v !== '!関数')) {
+        items.push(`${JSON.stringify(name)}: ${NakoGen.varname(name)}`)
+      }
+      funcBegin += `this.__vars = { ${items.join(', ')} };`
     }
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts['sore']){funcBegin += '/*[sore]*/'}
