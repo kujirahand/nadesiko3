@@ -269,7 +269,11 @@ class NakoGen {
       }
     }
 
-    return (js) => `${code} try { ${js} } finally { ${endCode} }`
+    if (endCode === '') {
+      return (js) => `${code} ${js}`
+    } else {
+      return (js) => `${code} try { ${js} } finally { ${endCode} }`
+    }
   }
 
   getVarsList () {
@@ -1010,14 +1014,23 @@ class NakoGen {
 
     // 関数呼び出しコードの構築
     let argsCode = args.join(',')
-    let code = `${res.js}(${argsCode})`
+    let funcCall = `${res.js}(${argsCode})`
+    let code = ``
     if (func.return_none) {
-      code = `${funcBegin} try {${code}; } finally { ${funcEnd} }\n`
+      if (funcEnd === '') {
+        code = `${funcBegin} ${funcCall};\n`
+      } else {
+        code = `${funcBegin} try {${funcCall}; } finally { ${funcEnd} }\n`
+      }
     } else {
       if (funcBegin === '' && funcEnd === '') {
-        code = `(${this.sore}=${code})`
+        code = `(${this.sore} = ${funcCall})`
       } else {
-        code = `(function(){ ${funcBegin} try { const tmp=${this.sore}=${code}; return tmp; } finally { ${funcEnd}; } }).call(this)`
+        if (funcEnd === '') {
+          code = `(function(){ ${funcBegin}; return ${this.sore} = ${funcCall} }).call(this)`
+        } else {
+          code = `(function(){ ${funcBegin} try { return ${this.sore} = ${funcCall} } finally { ${funcEnd}; } }).call(this)`
+        }
       }
       // ...して
       if (node.josi === 'して'){code += ';\n'}
