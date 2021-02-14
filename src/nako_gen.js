@@ -200,8 +200,8 @@ class NakoGen {
   /**
    * プログラムの実行に必要な関数定義を書き出す(グローバル領域)
    * convGenの結果を利用するため、convGenの後に呼び出すこと。
-   * @param isTest テストかどうか
-   * @returns {string}
+   * @param {boolean} isTest テストかどうか
+   * @returns {(js: string) => string}
    */
   getDefFuncCode(isTest) {
     let code = ''
@@ -212,11 +212,14 @@ class NakoGen {
     code += 'const __v0 = this.__v0 = this.__varslist[0];\n'
     code += 'const __v1 = this.__v1 = this.__varslist[1];\n'
     code += 'const __vars = this.__vars = this.__varslist[2];\n'
+
+    // グローバル変数を宣言する。「ナデシコする」で呼び出された場合用に__varslist[2]から値をコピーする必要がある。
     for (const name of Object.keys(this.__vars)) {
       if (NakoGen.isValidIdentifier(name)) {
-        code += `var ${name};\n`
+        code += `var ${name} = __varslist[2][${JSON.stringify(name)}];\n`
       }
     }
+
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
     for (const key in this.nako_func) {
@@ -258,7 +261,15 @@ class NakoGen {
       }
     }
 
-    return code
+    // 「ナデシコする」で値を返す場合用に展開された変数を__varslist[2]に戻す。
+    let endCode = ''
+    for (const name of Object.keys(this.__vars)) {
+      if (NakoGen.isValidIdentifier(name)) {
+        endCode += `__varslist[2][${JSON.stringify(name)}] = ${name};\n`
+      }
+    }
+
+    return (js) => `${code} try { ${js} } finally { ${endCode} }`
   }
 
   getVarsList () {
@@ -941,14 +952,58 @@ class NakoGen {
       funcBegin += ';__self.isSetter = true;'
       funcEnd += ';__self.isSetter = false;'
     }
+    // プラグイン関数について、
     // ローカル変数にアクセスする必要がない関数には pure: true が付けられている。
-    // そうではない場合、関数呼び出しの直前に全てのローカル変数をthis.__varsに入れる。
-    if (func.pure !== true) { // undefinedはfalseとみなす
-      const items = []
+    // そうではない場合、関数呼び出しの直前に全てのローカル変数をthis.__varsとthis__varslist[2]に入れる。
+    if (res.i === 0 && func.pure !== true) { // undefinedはfalseとみなす
+      // 展開されたローカル変数の列挙
+      const localVars = []
       for (const name of Object.keys(this.__vars).filter((v) => v !== '!関数')) {
-        items.push(`${JSON.stringify(name)}: ${NakoGen.varname(name)}`)
+        if (NakoGen.isValidIdentifier(name)) {
+          localVars.push({ str: JSON.stringify(name), js: NakoGen.varname(name) })
+        }
       }
-      funcBegin += `this.__vars = { ${items.join(', ')} };`
+
+      // 展開されたグローバル変数の列挙
+      const globalVars = []
+      for (const name of Object.keys(this.__varslist[2])) {
+        if (NakoGen.isValidIdentifier(name)) {
+          globalVars.push({ str: JSON.stringify(name), js: NakoGen.varname(name) })
+        }
+      }
+
+      // --- 実行前 ---
+
+      // 全ての展開されたグローバル変数を __varslist[2] に保存する
+      for (const v of globalVars) {
+        funcBegin += `__self.__varslist[2][${v.str}] = ${v.js}; `
+      }
+
+      // 全ての展開されていないローカル変数を __self.__locals にコピーする
+      funcBegin += `__self.__locals = __vars; `
+
+      // 全ての展開されたローカル変数を __self.__locals に保存する
+      for (const v of localVars) {
+        funcBegin += `__self.__locals[${v.str}] = ${v.js}; `
+      }
+
+      // --- 実行後 ---
+
+      // 全ての展開されたグローバル変数の新しい値を __varslist[2] から受け取る
+      // 「それ」は関数の実行結果を受け取るために使うためスキップ。
+      for (const v of globalVars) {
+        if (v.js !== 'それ') {
+          funcEnd += `${v.js} = __self.__varslist[2][${v.str}]; `
+        }
+      }
+
+      // 全ての展開されたローカル変数を __self.__locals から受け取る
+      // 「それ」は関数の実行結果を受け取るために使うためスキップ。
+      for (const v of localVars) {
+        if (v.js !== 'それ') {
+          funcEnd += `${v.js} = __self.__locals[${v.str}]; `
+        }
+      }
     }
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts['sore']){funcBegin += '/*[sore]*/'}
@@ -957,12 +1012,12 @@ class NakoGen {
     let argsCode = args.join(',')
     let code = `${res.js}(${argsCode})`
     if (func.return_none) {
-      code = `${funcBegin}${code};${funcEnd}\n`
+      code = `${funcBegin} try {${code}; } finally { ${funcEnd} }\n`
     } else {
       if (funcBegin === '' && funcEnd === '') {
         code = `(${this.sore}=${code})`
       } else {
-        code = `(function(){ ${funcBegin}const tmp=${this.sore}=${code}; return tmp;${funcEnd}; }).call(this)`
+        code = `(function(){ ${funcBegin} try { const tmp=${this.sore}=${code}; return tmp; } finally { ${funcEnd}; } }).call(this)`
       }
       // ...して
       if (node.josi === 'して'){code += ';\n'}

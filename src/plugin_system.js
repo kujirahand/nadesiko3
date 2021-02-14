@@ -16,7 +16,7 @@ const PluginSystem = {
       // ローカル変数を参照しうるため、pure: true のとき正しく動作しない。
       sys.__findVar = function (nameStr, def) {
         if (typeof nameStr === 'function') {return nameStr}
-        if (sys.__vars[nameStr]) {return sys.__vars[nameStr]}
+        if (sys.__locals[nameStr]) {return sys.__locals[nameStr]}
         for (let i = 2; i >= 0; i--) {
           let scope = sys.__varslist[i]
           if (scope[nameStr]) {return scope[nameStr]}

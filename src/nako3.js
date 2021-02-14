@@ -75,6 +75,7 @@ class NakoCompiler {
     // 環境のリセット
     /** @type {Record<string, any>[]} */
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
+    this.__locals = {}  // ローカル変数
     this.__self = this
     this.__vars = this.__varslist[2]
     this.__module = {} // requireなどで取り込んだモジュールの一覧
@@ -218,6 +219,7 @@ class NakoCompiler {
     this.__v0 = this.__varslist[0]
     this.__v1 = this.__varslist[1]
     this.__vars = this.__varslist[2]
+    this.__locals = {}
     this.gen.reset()
   }
 
@@ -230,14 +232,14 @@ class NakoCompiler {
     // 先になでしこ自身で定義したユーザー関数をシステムに登録
     this.gen.registerFunction(ast)
     // JSコードを生成する
-    const js = this.gen.convGen(ast, isTest)
+    let js = this.gen.convGen(ast, isTest)
     // JSコードを実行するための事前ヘッダ部分の生成
-    const def = this.gen.getDefFuncCode(isTest)
+    js = this.gen.getDefFuncCode(isTest)(js)
     if (this.debug && this.debugJSCode) {
       console.log('--- generate ---')
-      console.log(def + js)
+      console.log(js)
     }
-    return def + js
+    return js
   }
 
   /**
