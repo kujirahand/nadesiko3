@@ -94,13 +94,17 @@ class NakoGen {
      */
     this.__options = com.options
 
-    // 実行速度優先ブロック内で増加する
-    this.speedMode = 0
+    // 1以上のとき高速化する。
+    // 実行速度優先ブロック内で1増える。
+    this.speedMode = {
+      lineNumbers: 0,          // 行番号を出力しない
+      implicitTypeCasting: 0,  // 数値加算でparseFloatを出力しない
+    }
   }
 
   setOptions (options) {
     this.__options = options
-    if (this.__options.speed) { this.speedMode = 1 }
+    if (this.__options.speed) { this.speedMode.lineNumbers = 1 }
   }
 
   static getHeader () {
@@ -121,7 +125,7 @@ class NakoGen {
   }
 
   convLineno (node, forceUpdate) {
-    if (this.speedMode > 0) { return '' }
+    if (this.speedMode.lineNumbers > 0) { return '' }
     if (node.line === undefined) {return ''}
     // 強制的に行番号をアップデートするか
     if (!forceUpdate) {
@@ -177,7 +181,9 @@ class NakoGen {
     this.loop_id = 1
     this.__varslist[1] = {} // user global
     this.__vars = this.__varslist[2] = { 'それ': true } // user local
-    this.speedMode = 0
+    for (const key of /** @type {(keyof NakoGen['speedMode'])[]} */(Object.keys(this.speedMode))) {
+      this.speedMode[key] = 0
+    }
   }
 
   /**
@@ -811,15 +817,17 @@ class NakoGen {
   }
 
   convSpeedMode (node) {
+    const prev = { ...this.speedMode }
     if (node.options['行番号無し']) {
-      this.speedMode++
+      this.speedMode.lineNumbers++
+    }
+    if (node.options['暗黙の型変換無し']) {
+      this.speedMode.implicitTypeCasting++
     }
     try {
       return this._convGen(node.block)
     } finally {
-      if (node.options['行番号無視']) {
-        this.speedMode--
-      }
+      this.speedMode = prev
     }
   }
 
@@ -1047,7 +1055,7 @@ class NakoGen {
     let op = node.operator // 演算子
     let right = this._convGen(node.right)
     let left = this._convGen(node.left)
-    if (op === '+') {
+    if (op === '+' && this.speedMode.implicitTypeCasting === 0) {
       if (node.left.type !== 'number') {
         left = `parseFloat(${left})`
       }

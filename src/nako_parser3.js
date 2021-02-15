@@ -292,8 +292,7 @@ class NakoParser extends NakoParserBase {
     const optionNode = this.get()
     this.get()
 
-    // オプションを追加する場合: { '行番号無し': false, 'それ無効化': false }
-    const options = { '行番号無し': false }
+    const options = { '行番号無し': false, '暗黙の型変換無し': false }
     for (const name of optionNode.value.split('/')) {
       // 全て有効化
       if (name === '全て') {
@@ -308,7 +307,7 @@ class NakoParser extends NakoParserBase {
         options[name] = true
       } else {
         // 互換性を考えると、警告を出して無視した方が良いかも
-        throw new NakoSyntaxError(`未知のコンパイラオプション: ${option}`)
+        throw new NakoSyntaxError(`未知のコンパイラオプション: ${name}`)
       }
     }
 
