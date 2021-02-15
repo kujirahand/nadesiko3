@@ -2,6 +2,7 @@ const PluginMath = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
     }
   },
@@ -9,6 +10,7 @@ const PluginMath = {
   'SIN': {// @ラジアン単位VのSINを求める // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (v) {
       return Math.sin(v)
     }
@@ -16,6 +18,7 @@ const PluginMath = {
   'COS': {// @ラジアン単位VのCOSを求める // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (v) {
       return Math.cos(v)
     }
@@ -23,6 +26,7 @@ const PluginMath = {
   'TAN': {// @ラジアン単位VのTANを求める // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (v) {
       return Math.tan(v)
     }
@@ -30,6 +34,7 @@ const PluginMath = {
   'ARCSIN': {// @ラジアン単位VのARCSINを求める // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (v) {
       return Math.asin(v)
     }
@@ -37,6 +42,7 @@ const PluginMath = {
   'ARCCOS': {// @ラジアン単位VのARCCOSを求める // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (v) {
       return Math.acos(v)
     }
@@ -44,6 +50,7 @@ const PluginMath = {
   'ARCTAN': {// @ラジアン単位VのARCTANを求める // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (v) {
       return Math.atan(v)
     }
@@ -51,6 +58,7 @@ const PluginMath = {
   'RAD2DEG': {// @ラジアンから度に変換 // @
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return v / Math.PI * 180
     }
@@ -58,6 +66,7 @@ const PluginMath = {
   'DEG2RAD': { // @度からラジアンに変換 // @
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return (v / 180) * Math.PI
     }
@@ -65,6 +74,7 @@ const PluginMath = {
   '度変換': { // @ラジアンから度に変換 // @どへんかん
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return v / Math.PI * 180
     }
@@ -72,6 +82,7 @@ const PluginMath = {
   'ラジアン変換': { // @度からラジアンに変換 // @らじあんへんかん
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return (v / 180) * Math.PI
     }
@@ -81,6 +92,7 @@ const PluginMath = {
   'SIGN': { // @Vが0なら0を、0超なら1を、0未満なら-1を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (v) {
       return (parseFloat(v) === 0) ? 0 : (v > 0) ? 1 : -1
     }
@@ -88,6 +100,7 @@ const PluginMath = {
   '符号': { // @Vが0なら0を、0超なら1を、0未満なら-1を返す // @ふごう
     type: 'func',
     josi: [['の']],
+    pure: false,
     fn: function (v, sys) {
       return sys.__exec('SIGN', [v])
     }
@@ -95,6 +108,7 @@ const PluginMath = {
   'ABS': { // @Vの絶対値を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.abs(a)
     }
@@ -102,6 +116,7 @@ const PluginMath = {
   '絶対値': { // @Vの絶対値を返す // @ぜったいち
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.abs(a)
     }
@@ -109,6 +124,7 @@ const PluginMath = {
   'EXP': { // @e（自然対数の底）の A 乗の値を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.exp(a)
     }
@@ -116,6 +132,7 @@ const PluginMath = {
   'HYPOT': { // @直角三角形の二辺の長さA,Bから斜辺を求めて返す。 // @
     type: 'func',
     josi: [['と'], ['の']],
+    pure: true,
     fn: function (a, b) {
       return Math.hypot(a, b)
     }
@@ -123,6 +140,7 @@ const PluginMath = {
   '斜辺': { // @直角三角形の二辺の長さA,Bから斜辺を求めて返す。 // @しゃへん
     type: 'func',
     josi: [['と'], ['の']],
+    pure: true,
     fn: function (a, b) {
       return Math.hypot(a, b)
     }
@@ -130,6 +148,7 @@ const PluginMath = {
   'LN': { // @実数式 A の自然対数（Ln(A) = 1）を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.log(a)
     }
@@ -137,6 +156,7 @@ const PluginMath = {
   'LOG': { // @Aの自然対数（底はE）を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.log(a)
     }
@@ -144,6 +164,7 @@ const PluginMath = {
   'LOGN': { // @指定された底AでBの対数を計算して返す // @
     type: 'func',
     josi: [['で'], ['の']],
+    pure: true,
     fn: function (a, b) {
       if (a === 2) {return Math.LOG2E * Math.log(b)}
       if (a === 10) {return Math.LOG10E * Math.log(b)}
@@ -153,6 +174,7 @@ const PluginMath = {
   'FRAC': { // @実数Aの小数部分を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return a % 1
     }
@@ -160,6 +182,7 @@ const PluginMath = {
   '小数部分': { // @実数Aの小数部分を返す // @しょうすうぶぶん
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return a % 1
     }
@@ -167,6 +190,7 @@ const PluginMath = {
   '整数部分': { // @実数Aの整数部分を返す // @せいすうぶぶん
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.trunc(a)
     }
@@ -174,6 +198,7 @@ const PluginMath = {
   '乱数': { // @0から(A-1)までの乱数を返す // @らんすう
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.floor(Math.random() * a)
     }
@@ -181,6 +206,7 @@ const PluginMath = {
   'SQRT': { // @Aの平方根を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.sqrt(a)
     }
@@ -188,6 +214,7 @@ const PluginMath = {
   '平方根': { // @Aの平方根を返す // @
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (a) {
       return Math.sqrt(a)
     }
@@ -197,6 +224,7 @@ const PluginMath = {
   'ROUND': { // @実数型の値Vを丸めてもっとも近い整数値を返す // @
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return Math.round(v)
     }
@@ -204,6 +232,7 @@ const PluginMath = {
   '四捨五入': { // @実数型の値Vを丸めてもっとも近い整数値を返す // @ししゃごにゅう
     type: 'func',
     josi: [['を', 'の']],
+    pure: true,
     fn: function (v) {
       return Math.round(v)
     }
@@ -211,6 +240,7 @@ const PluginMath = {
   '小数点切上': { // @整数Aを小数点第B桁で切り上げして返す // @しょうすうてんきりあげ
     type: 'func',
     josi: [['を'],['で']],
+    pure: true,
     fn: function (a,b) {
       const base = Math.pow(10, b)
       return Math.ceil(a * base) / base
@@ -219,6 +249,7 @@ const PluginMath = {
   '小数点切下': { // @整数Aを小数点第B桁で切り下げして返す // @しょうすうてんきりさげ
     type: 'func',
     josi: [['を'],['で']],
+    pure: true,
     fn: function (a,b) {
       const base = Math.pow(10, b)
       return Math.floor(a * base) / base
@@ -227,6 +258,7 @@ const PluginMath = {
   '小数点四捨五入': { // @実数Aを小数点第B桁で四捨五入して返す // @しょうすうてんししゃごにゅう
     type: 'func',
     josi: [['を'], ['で']],
+    pure: true,
     fn: function (a, b) {
       const base = Math.pow(10, b)
       return Math.round(a * base) / base
@@ -235,6 +267,7 @@ const PluginMath = {
   'CEIL': { // @数値を正の無限大方向へ切り上げて返す。 // @
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return Math.ceil(v)
     }
@@ -242,6 +275,7 @@ const PluginMath = {
   '切上': { // @数値を正の無限大方向へ切り上げて返す。 // @きりあげ
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return Math.ceil(v)
     }
@@ -249,6 +283,7 @@ const PluginMath = {
   'FLOOR': { // @数値を負の無限大方向へ切り下げて返す。 // @
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return Math.floor(v)
     }
@@ -256,6 +291,7 @@ const PluginMath = {
   '切捨': { // @数値を負の無限大方向へ切り下げて返す。// @きりすて
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (v) {
       return Math.floor(v)
     }

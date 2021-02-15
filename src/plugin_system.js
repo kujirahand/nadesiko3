@@ -4,6 +4,7 @@ const PluginSystem = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: false,
     fn: function (sys) {
       const NakoVersion = require('./nako_version')
       sys.__v0['ナデシコバージョン'] = NakoVersion.version

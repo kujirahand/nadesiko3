@@ -3,6 +3,7 @@ module.exports = {
   '言': { // @メッセージダイアログにSを表示 // @いう
     type: 'func',
     josi: [['と', 'を']],
+    pure: true,
     fn: function (s) {
       window.alert(s)
     },
@@ -11,6 +12,7 @@ module.exports = {
   '尋': { // @メッセージSと入力ボックスを出して尋ねる // @たずねる
     type: 'func',
     josi: [['と', 'を']],
+    pure: true,
     fn: function (s, sys) {
       const r = window.prompt(s)
       if (!r) {
@@ -30,6 +32,7 @@ module.exports = {
   '文字尋': { // @メッセージSと入力ボックスを出して尋ねる。返り値は常に入力されたままの文字列となる // @もじたずねる
     type: 'func',
     josi: [['と', 'を']],
+    pure: true,
     fn: function (s, sys) {
       const r = window.prompt(s)
       if (!r) {
@@ -41,6 +44,7 @@ module.exports = {
   '二択': { // @メッセージSと[OK]と[キャンセル]のダイアログを出して尋ねる // @にたく
     type: 'func',
     josi: [['で', 'の', 'と', 'を']],
+    pure: true,
     fn: function (s) {
       return window.confirm(s)
     }

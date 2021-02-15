@@ -2,6 +2,7 @@ const PluginWebWorker = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
       sys._webworker = {
         setNakoHandler: function(work) {
@@ -74,6 +75,7 @@ const PluginWebWorker = {
   'ワーカーURL設定': { // @なでしこv3のファイルのあるURLを設定 // @わーかーURLせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
+    pure: true,
     fn: function (url, sys) {
       if (url && url.substring(url.length - 1) !== '/') {
         url += '/'
@@ -86,6 +88,7 @@ const PluginWebWorker = {
   'ワーカー起動': { // @指定したURLでWebWorkerを起動する。ワーカオブジェクトを返す。 // @わーかーきどう
     type: 'func',
     josi: [['で','を','の']],
+    pure: true,
     fn: function (url, sys) {
       return new Worker(url)
     },
@@ -94,6 +97,7 @@ const PluginWebWorker = {
   'ワーカーJS起動': { // @指定したJavascriptのソースでWebWorkerを起動する。ワーカオブジェクトを返す。 // @わーかーJSきどう
     type: 'func',
     josi: [['で','を','の']],
+    pure: true,
     fn: function (src, sys) {
       const blob = new Blob([src], {type: 'application/javascript'})
       const url = URL.createObjectURL(blob)
@@ -105,6 +109,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['で']],
     isVariableJosi: true,
+    pure: true,
     fn: function (plugins, sys) {
       let url
       if (typeof sys === 'undefined') {sys = plugins; plugins = undefined}
@@ -135,6 +140,7 @@ const PluginWebWorker = {
   'NAKOワーカーハンドラ設定': { // @ワーカーにNAKOワーカーのための設定を行う。 // @NAKOわーかーはんどらせってい
     type: 'func',
     josi: [['に','へ','の']],
+    pure: true,
     fn: function (work, sys) {
       sys._webworker.setNakoHandler(work)
     },
@@ -144,6 +150,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['で'], ['から']],
     isVariableJosi: true,
+    pure: false,
     fn: function (func, work, sys) {
       if (typeof sys === 'undefined') {sys = work; work = self}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -158,6 +165,7 @@ const PluginWebWorker = {
   'NAKOワーカー表示時': { // @無名関数Fでなでしこv3エンジンに対してワーカーメッセージにより表示データを受信した時に実行するイベントを設定。『受信データ』に表示しようとしたデータ。『対象イベント』にイベント引数。 // @NAKOわーかーひょうじしたとき
     type: 'func',
     josi: [['で'], ['から']],
+    pure: false,
     fn: function (func, work, sys) {
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       work.onoutput = (data, e) => {
@@ -172,6 +180,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['で'], ['から']],
     isVariableJosi: true,
+    pure: false,
     fn: function (func, work, sys) {
       if (typeof sys === 'undefined') {sys = work; work = self}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -186,6 +195,7 @@ const PluginWebWorker = {
   'NAKOワーカープログラム起動': { // @WORKERに固有の形式でプログラムの転送と実行行う。 // @NAKOわーかーぷろぐらむきどう
     type: 'func',
     josi: [['に','で'],['を']],
+    pure: true,
     fn: function (work, data, sys) {
       const msg = {
         type: 'run',
@@ -198,6 +208,7 @@ const PluginWebWorker = {
   'NAKOワーカーリセット': { // @WORKERに固有の形式でプログラムの転送と実行行う。 // @わーかーりせっと
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (work, sys) {
       const msg = {
         type: 'reset',
@@ -211,6 +222,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['を']],
     isVariableJosi: true,
+    pure: true,
     fn: function (work, sys) {
       if (typeof sys === 'undefined') {sys = work; work = self}
       work.terminate()
@@ -221,6 +233,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['を']],
     isVariableJosi: true,
+    pure: true,
     fn: function (work, sys) {
       if (typeof sys === 'undefined') {
         self.close()
@@ -238,6 +251,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['を'], ['に','へ']],
     isVariableJosi: true,
+    pure: true,
     fn: function (data, work, sys) {
       if (typeof sys === 'undefined') {sys = work; work = self}
       const msg = {
@@ -252,6 +266,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['を'], ['に','へ']],
     isVariableJosi: true,
+    pure: true,
     fn: function (msg, work, sys) {
       if (typeof sys === 'undefined') {sys = work; work = self}
       work.postMessage(msg)
@@ -262,6 +277,7 @@ const PluginWebWorker = {
     type: 'func',
     josi: [['を'], ['に','へ']],
     isVariableJosi: true,
+    pure: false,
     fn: function (datas, work, sys) {
       if (typeof sys === 'undefined') {sys = work; work = self}
       const obj = []

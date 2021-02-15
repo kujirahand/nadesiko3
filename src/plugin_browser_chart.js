@@ -3,6 +3,7 @@ module.exports = {
   'グラフ描画': { // @ Chart.jsを利用して、DATAのグラフを描画 // @ぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
+    pure: true,
     fn: function (data, sys) {
       // Chart.jsが使えるかチェック
       if (!window['Chart']) {
@@ -24,6 +25,7 @@ module.exports = {
   '線グラフ描画': { // @ 線グラフを描画 // @せんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
+    pure: false,
     fn: function (data, sys) {
       data = sys.__exec('二次元グラフデータ変形', ['line', data, sys])
       const d = {
@@ -37,6 +39,7 @@ module.exports = {
   '棒グラフ描画': { // @ 棒グラフを描画 // @ぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
+    pure: false,
     fn: function (data, sys) {
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
@@ -50,6 +53,7 @@ module.exports = {
   '横棒グラフ描画': { // @ 横棒グラフを描画 // @よこぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
+    pure: false,
     fn: function (data, sys) {
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
@@ -63,6 +67,7 @@ module.exports = {
   '円グラフ描画': { // @ 円グラフを描画 // @えんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
+    pure: false,
     fn: function (data, sys) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
@@ -76,6 +81,7 @@ module.exports = {
   '二次元グラフデータ変形': { // @ 二次元配列をXXグラフ描画の形式に整形する。種類TとDATAを指定。 // @にじげんぐらふでーたへんけい
     type: 'func',
     josi: [['の'],['を']],
+    pure: false,
     fn: function (t, data, sys) {
       const bgcolorList = [
         'rgba(255, 99, 132, 0.2)',

@@ -3,6 +3,7 @@ module.exports = {
   'DOMイベント追加': { // @DOMのEVENTになでしこ関数名funcStrのイベントを追加// @DOMいべんとついか
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
+    pure: false,
     fn: function (dom, event, funcStr, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
@@ -14,6 +15,7 @@ module.exports = {
   'DOMイベント削除': { // @DOMのEVENTからなでしこ関数名funcStrのイベントを削除// @DOMいべんとさくじょ
     type: 'func',
     josi: [['の'], ['から'], ['を']],
+    pure: false,
     fn: function (dom, event, funcStr, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
@@ -25,6 +27,7 @@ module.exports = {
   'DOMイベント発火時': { // @DOMのEVENTが発火した時にCALLBACKを実行するように設定 // @DOMいべんとはっかしたとき
     type: 'func',
     josi: [['で'], ['の'], ['が']],
+    pure: true,
     fn: function (callback, dom, event, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
@@ -37,6 +40,7 @@ module.exports = {
   'DOMイベント処理停止': { // @キーイベントやマウスイベントで、元々ブラウザが行う処理を中止する // @DOMいべんとしょりていし
     type: 'func',
     josi: [['を', 'の']],
+    pure: true,
     fn: function (event, sys) {
       event.preventDefault()
     },
@@ -45,6 +49,7 @@ module.exports = {
   'クリック時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
     type: 'func',
     josi: [['で'], ['を']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -59,6 +64,7 @@ module.exports = {
   '読込時': { // @無名関数FでDOMを読み込んだ時に実行するイベントを設定 // @よみこんだとき
     type: 'func',
     josi: [['で'], ['を']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -73,6 +79,7 @@ module.exports = {
   'フォーム送信時': { // @無名関数Fでフォームを送信した時に実行するイベントを設定 // @ふぉーむそうしんしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -88,6 +95,7 @@ module.exports = {
   'キー押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーおしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -103,6 +111,7 @@ module.exports = {
   'キー離時': { // @無名関数FでDOMに対してキーを離した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーはなしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -118,6 +127,7 @@ module.exports = {
   'キータイピング時': { // @無名関数FでDOMに対してキーをプレスした時に実行するイベントを設定。『押されたキー』が設定される。 // @きーたいぴんぐしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -135,6 +145,7 @@ module.exports = {
   'マウス押時': { // @無名関数FでDOMに対してマウスボタンを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすおしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -153,6 +164,7 @@ module.exports = {
   'マウス移動時': { // @無名関数FでDOMに対してマウスカーソルが移動した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすいどうしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -170,6 +182,7 @@ module.exports = {
   'マウス離時': { // @無名関数FでDOMに対してマウスボタンを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすはなしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -190,6 +203,7 @@ module.exports = {
   'タッチイベント計算': { // @タッチイベントで座標計算を行う。『タッチX』『タッチY』『対象』『対象イベント』が設定される。 // @たっちいべんとけいさん
     type: 'func',
     josi: [['の']],
+    pure: true,
     fn: function (e, sys) {
       const box = e.target.getBoundingClientRect()
       const touches = e.changedTouches
@@ -213,6 +227,7 @@ module.exports = {
   'タッチ開始時': { // @無名関数FでDOMに対してタッチを開始した時に実行するイベントを設定。// @たっちかいししたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -226,6 +241,7 @@ module.exports = {
   'タッチ時': { // @無名関数FでDOMに対してタッチして指を動かした時に実行するイベントを設定。// @たっちしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -239,6 +255,7 @@ module.exports = {
   'タッチ終了時': { // @無名関数FでDOMに対してタッチして指を離した時のイベントを設定。// @たっちしゅうりょうしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
@@ -252,6 +269,7 @@ module.exports = {
   'タッチキャンセル時': { // @無名関数FでDOMに対してタッチイベントをキャンセルした時の動作を設定。// @たっちきゃんせるしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
+    pure: false,
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換

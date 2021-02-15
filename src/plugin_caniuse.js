@@ -2,6 +2,7 @@ const PluginCaniuse = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
     }
   },
