@@ -234,7 +234,7 @@ class NakoCompiler {
     // JSコードを生成する
     let js = this.gen.convGen(ast, isTest)
     // JSコードを実行するための事前ヘッダ部分の生成
-    js = this.gen.getDefFuncCode(isTest)(js)
+    js = this.gen.getDefFuncCode(isTest) + js
     if (this.debug && this.debugJSCode) {
       console.log('--- generate ---')
       console.log(js)
