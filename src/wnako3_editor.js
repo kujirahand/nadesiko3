@@ -106,6 +106,41 @@ function getScope(token) {
 }
 
 /**
+ * A, B, C, ... Z, AA, AB, ... を返す。
+ * @param {number} i
+ * @returns {string}
+ */
+function createParameterName(i) {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
+    return i.toString(26).split("").map((v) => alphabet[parseInt(v, 26)]).join("")
+}
+
+/**
+ * "（Aと|Aの、Bを）"の形式の、パラメータの定義を表す文字列を生成する。パラメータが無い場合、空文字列を返す。
+ * @param {string[][]} josi
+ * @retunrs {string}
+ */
+function createParameterDeclaration(josi) {
+    const args = josi.map((union, i) => union.map((v) => `${createParameterName(i)}${v}`).join("|")).join("、")
+    if (args !== "") {
+        return `（${args}）`
+    } else {
+        return ``
+    }
+}
+
+/**
+ * @param {TokenWithSourceMap} token
+ * @returns {string | null}
+ */
+function getDocumentation(token) {
+    if (token.type !== 'func') {
+        return null
+    }
+    return createParameterDeclaration(token.meta.josi) + token.value
+}
+
+/**
  * @param {number} row
  * @param {Document} doc
  */
@@ -156,7 +191,8 @@ function tokenize (lines, nako3) {
         // 複数のトークンが重なることはないと仮定する。
         let lineStartOffset = 0
         let tokenIndex = 0
-        /** @type {{ type: string, value: string }[][]} */
+        // 実際に必要なプロパティはtype, valueだけで、docは独自に追加した。
+        /** @type {{ type: string, value: string, doc: string | null }[][]} */
         const editorTokens = [] // 各行のエディタのトークン
         for (let i = 0; i < lines.length; i++) {
             editorTokens.push([])
@@ -173,12 +209,20 @@ function tokenize (lines, nako3) {
             if (tokenIndex < tokens.length &&
                 tokens[tokenIndex].startOffset <= lineStartOffset &&
                 tokens[tokenIndex].endOffset >= lineEndOffset) {
-                editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: lines[i] })
+                editorTokens[i].push({
+                    type: getScope(tokens[tokenIndex]),
+                    doc: getDocumentation(tokens[tokenIndex]),
+                    value: lines[i],
+                })
             } else {
                 // 行頭をまたがっているトークンが存在する場合
                 if (tokenIndex < tokens.length &&
                     tokens[tokenIndex].startOffset <= lineStartOffset) {
-                    editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(offset, tokens[tokenIndex].endOffset) })
+                    editorTokens[i].push({
+                        type: getScope(tokens[tokenIndex]),
+                        doc: getDocumentation(tokens[tokenIndex]),
+                        value: code.slice(offset, tokens[tokenIndex].endOffset),
+                    })
                     offset = tokens[tokenIndex].endOffset
                     tokenIndex++
                 }
@@ -188,12 +232,20 @@ function tokenize (lines, nako3) {
                     tokens[tokenIndex].endOffset < lineEndOffset) {
                     // このトークンと直前のトークンの間に隙間があるなら、埋める
                     if (offset < tokens[tokenIndex].startOffset) {
-                        editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, tokens[tokenIndex].startOffset) })
+                        editorTokens[i].push({
+                            type: 'markup.other',
+                            doc: null,
+                            value: code.slice(offset, tokens[tokenIndex].startOffset),
+                        })
                         offset = tokens[tokenIndex].startOffset
                     }
 
                     // 現在のトークンを使う
-                    editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(offset, tokens[tokenIndex].endOffset) })
+                    editorTokens[i].push({
+                        type: getScope(tokens[tokenIndex]),
+                        doc: getDocumentation(tokens[tokenIndex]),
+                        value: code.slice(offset, tokens[tokenIndex].endOffset),
+                    })
                     offset = tokens[tokenIndex].endOffset
                     tokenIndex++
                 }
@@ -203,14 +255,26 @@ function tokenize (lines, nako3) {
                     tokens[tokenIndex].startOffset < lineEndOffset) {
                     // トークンの前の隙間
                     if (offset < tokens[tokenIndex].startOffset) {
-                        editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, tokens[tokenIndex].startOffset) })
+                        editorTokens[i].push({
+                            type: 'markup.other',
+                            doc: null,
+                            value: code.slice(offset, tokens[tokenIndex].startOffset),
+                        })
                         offset = tokens[tokenIndex].startOffset
                     }
 
                     // トークンを使う
-                    editorTokens[i].push({ type: getScope(tokens[tokenIndex]), value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset) })
+                    editorTokens[i].push({
+                        type: getScope(tokens[tokenIndex]),
+                        doc: getDocumentation(tokens[tokenIndex]),
+                        value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset),
+                    })
                 } else {
-                    editorTokens[i].push({ type: 'markup.other', value: code.slice(offset, lineEndOffset) })
+                    editorTokens[i].push({
+                        type: 'markup.other',
+                        doc: null,
+                        value: code.slice(offset, lineEndOffset),
+                    })
                 }
             }
 
@@ -696,9 +760,34 @@ function setupEditor (id, nako3, ace) {
         editor.setReadOnly(true)
     }
     editor.setFontSize(16)
-    ace.require("ace/keybindings/vscode")
-    editor.setKeyboardHandler("ace/keyboard/vscode")
+    ace.require('ace/keybindings/vscode')
+    editor.setKeyboardHandler('ace/keyboard/vscode')
 
+    // ドキュメントのホバー
+    const Tooltip = ace.require('ace/tooltip').Tooltip
+    const tooltip = new Tooltip(editor.container)
+    const event = ace.require('ace/lib/event')
+    event.addListener(editor.renderer.content, 'mouseout', () => {
+        tooltip.hide()
+    })
+    editor.on('mousemove', (e) => {
+        const pos = e.getDocumentPosition()
+        // getTokenAtはcolumnが行末より大きいとき行末のトークンを返してしまう。
+        if (pos.column >= e.editor.session.getLine(pos.row).length) {
+            tooltip.hide()
+            return
+        }
+        // getTokenAtは実際よりも1文字右のトークンを取得してしまうため、columnに1を足している。
+        const token = e.editor.session.getTokenAt(pos.row, pos.column + 1)
+        if (token === null || !token.doc) {
+            tooltip.hide()
+            return
+        }
+
+        tooltip.setText(token.doc)
+        tooltip.show(null, e.clientX, e.clientY)
+    })
+    
     // エディタの挙動の設定
     const languageFeatures = new LanguageFeatures(AceRange, nako3)
     const oop = ace.require('ace/lib/oop')
