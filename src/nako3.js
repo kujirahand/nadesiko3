@@ -60,6 +60,11 @@ const lexer = new NakoLexer()
  *   endOffset?: unknown
  *   rawJosi?: unknown
  * }} Ast
+ * 
+ * @typedef {(
+ *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function }
+ *     | { type: 'var' | 'const', value: any}
+ * )} NakoFunction
  */
 
 class NakoCompiler {
@@ -78,7 +83,9 @@ class NakoCompiler {
     this.__locals = {}  // ローカル変数
     this.__self = this
     this.__vars = this.__varslist[2]
+    /** @type {Record<string, Record<string, NakoFunction>>} */
     this.__module = {} // requireなどで取り込んだモジュールの一覧
+    /** @type {Record<string, NakoFunction>} */
     this.funclist = {} // プラグインで定義された関数
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)

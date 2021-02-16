@@ -42,3 +42,7 @@
 .nako3_editor.readonly .ace_cursor {
     opacity: 0;
 }
+.nako3_editor .tooltip-plugin-name {
+    margin-left: 10px;
+    color: gray;
+}
