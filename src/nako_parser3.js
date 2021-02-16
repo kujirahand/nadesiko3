@@ -64,6 +64,7 @@ class NakoParser extends NakoParserBase {
       }}
 
     // 先読みして初めて確定する構文
+    if (this.accept([this.ySpeedMode])) {return this.y[0]}
     if (this.accept([this.yLet])) {return this.y[0]}
     if (this.accept([this.yDefTest])) {return this.y[0]}
     if (this.accept([this.yDefFunc])) {return this.y[0]}
@@ -281,6 +282,57 @@ class NakoParser extends NakoParserBase {
       false_block: falseBlock,
       josi: '',
       line: mosi.line
+    }
+  }
+
+  ySpeedMode () {
+    if (!this.check2(['string', '実行速度優先'])) {
+      return null
+    }
+    const optionNode = this.get()
+    this.get()
+
+    const options = { '行番号無し': false, '暗黙の型変換無し': false }
+    for (const name of optionNode.value.split('/')) {
+      // 全て有効化
+      if (name === '全て') {
+        for (const k of Object.keys(options)) {
+          options[k] = true
+        }
+        break
+      }
+
+      // 個別に有効化
+      if (Object.keys(options).includes(name)) {
+        options[name] = true
+      } else {
+        // 互換性を考えると、警告を出して無視した方が良いかも
+        throw new NakoSyntaxError(`未知のコンパイラオプション: ${name}`)
+      }
+    }
+
+    let multiline = false
+    if (this.check('ここから')) {
+      this.get()
+      multiline = true
+    } else if (this.check('eol')) {
+      multiline = true
+    }
+
+    let block = null
+    if (multiline) {
+      block = this.yBlock()
+      if (this.check('ここまで')) {this.get()}
+    } else {
+      block = this.ySentence()
+    }
+
+    return {
+      type: 'speed_mode',
+      options,
+      block,
+      line: optionNode.line,
+      josi: ''
     }
   }
 

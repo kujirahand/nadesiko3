@@ -65,6 +65,7 @@ function getScope(token) {
         case "エラー監視":
         case "エラー":
         case "変数":
+        case "実行速度優先":
             return 'keyword.control'
         case "定める":
         case "定数":
