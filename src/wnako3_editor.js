@@ -768,9 +768,11 @@ function setupEditor (id, nako3, ace) {
     const tooltip = new Tooltip(editor.container)
     const event = ace.require('ace/lib/event')
     event.addListener(editor.renderer.content, 'mouseout', () => {
+        // マウスカーソルがエディタの外に出たら、tooltipを隠す
         tooltip.hide()
     })
     editor.on('mousemove', (e) => {
+        // マウスカーソルがトークンに重なったときにtooltipを表示する。モバイル端末の場合はトークンにカーソルが当たったときに表示される。
         const pos = e.getDocumentPosition()
         // getTokenAtはcolumnが行末より大きいとき行末のトークンを返してしまう。
         if (pos.column >= e.editor.session.getLine(pos.row).length) {
@@ -780,12 +782,17 @@ function setupEditor (id, nako3, ace) {
         // getTokenAtは実際よりも1文字右のトークンを取得してしまうため、columnに1を足している。
         const token = e.editor.session.getTokenAt(pos.row, pos.column + 1)
         if (token === null || !token.doc) {
+            // ドキュメントが存在しないトークンならtooltipを表示しない
             tooltip.hide()
             return
         }
 
         tooltip.setText(token.doc)
         tooltip.show(null, e.clientX, e.clientY)
+    })
+    editor.session.on('change', () => {
+        // モバイル端末でドキュメントが存在するトークンを編集するときにツールチップが消えない問題を解消するために、文字を打ったらtooltipを隠す。
+        tooltip.hide()
     })
     
     // エディタの挙動の設定
