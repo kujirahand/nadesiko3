@@ -147,6 +147,16 @@ function createParameterDeclaration(josi) {
     }
 }
 
+// https://stackoverflow.com/a/6234804
+function escapeHTML(t) {
+    return t
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
+
 /**
  * @param {TokenWithSourceMap} token
  * @param {WebNakoCompiler} nako3
@@ -156,15 +166,10 @@ function getDocumentationHTML(token, nako3) {
     if (token.type !== 'func') {
         return null
     }
-    let text = (createParameterDeclaration(token.meta.josi) + token.value)
-        .replace(/&/g, '&amp;') // https://stackoverflow.com/a/6234804
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;')
+    let text = escapeHTML(createParameterDeclaration(token.meta.josi) + token.value)
     const plugin = findPluginName(token.value + '', nako3)
     if (plugin !== null) {
-        text += `<span class="tooltip-plugin-name">(${plugin})</span>`
+        text += `<span class="tooltip-plugin-name">${plugin}</span>`
     }
     return text
 }
@@ -780,6 +785,7 @@ class LanguageFeatures {
  */
 const completers = []
 
+let editorIdCounter = 0
 /**
  * 指定したidのHTML要素をなでしこ言語のエディタにする。
  * 
@@ -863,7 +869,7 @@ function setupEditor (id, nako3, ace) {
         enableLiveAutocompletion: true,
     })
 
-    const editorId = Math.floor(Math.random() * 1000000)
+    const editorId = editorIdCounter++
     editor.wnako3_editor_id = editorId
 
     // オートコンプリートのcompleterを設定する
@@ -889,10 +895,9 @@ function setupEditor (id, nako3, ace) {
 
             /**
              * metaは候補の横に薄く表示されるテキスト
-             * @type {{ caption: string, value: string, meta: string, score: number }[]}
+             * @type {{ caption: string, value: string, meta: string, docHTML?: string, score: number }[]}
              */
             const result = []
-
             // プラグイン関数
             for (const name of Object.keys(nako3.__varslist[0])) {
                 if (name.startsWith('!')) { // 「!PluginBrowser:初期化」などを除外
@@ -905,22 +910,29 @@ function setupEditor (id, nako3, ace) {
 
                 let pluginName = findPluginName(name, nako3) || 'プラグイン'
                 if (f.type === 'func') {
-                    result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: `関数 (${pluginName})`, score: getScore(name) })
+                    result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: pluginName, score: getScore(name) })
                 } else {
-                    result.push({ caption: name, value: name, meta: (f.type === 'const' ? '定数' : '変数') + `(${pluginName})`, score: getScore(name) })
+                    result.push({ caption: name, value: name, meta: pluginName, score: getScore(name) })
                 }
             }
 
             // ユーザーが定義した名前
             if (backgroundTokenizer.lastLexerOutput !== null) {
                 for (const token of backgroundTokenizer.lastLexerOutput.tokens) {
-                    if (token.type === 'word' || token.type === 'func') {               
-                        // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
-                        if (token.line === pos.row) {
-                            continue
+                    // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
+                    if (token.line === pos.row) {
+                        continue
+                    }
+                    const name = token.value + ''
+                    if (token.type === 'word') {
+                        result.push({ caption: name, value: name, meta: '変数', score: getScore(name) })
+                    } else if (token.type === 'func') {
+                        let josi = ''
+                        const f = nako3.funclist[name]
+                        if (f && f.type === 'func') {
+                            josi = createParameterDeclaration(f.josi)
                         }
-                        const name = token.value + ''
-                        result.push({ caption: name, value: name, meta: token.type === 'word' ? '変数' : '関数', score: getScore(name) })
+                        result.push({ caption: josi + name, value: name, meta: '関数', score: getScore(name) })
                     }
                 }
             }
@@ -933,8 +945,8 @@ function setupEditor (id, nako3, ace) {
                 return
             }
 
-            callback(null, result)
-        }
+            callback(null, result.map((v) => ({ ...v, wnako3_editor_id: editorId })))
+        },
     })
     ace.require('ace/ext/language_tools').setCompleters(completers)
 

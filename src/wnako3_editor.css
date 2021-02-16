@@ -1,6 +1,8 @@
 .nako3_editor {
     height: 300px;
 }
+
+/* シンタックスハイライトの色の調整 */
 .nako3_editor .ace_name.ace_function {
     color: #996506;
 }
@@ -19,6 +21,8 @@
 .nako3_editor .ace_variable.ace_language {
     color: #2910D7;
 }
+
+/* エラー位置に付ける赤線 */
 .nako3_editor .marker-red {
     position: absolute;
 }
@@ -33,6 +37,7 @@
     background-position: left bottom;
 }
 
+/* readonlyなときのスタイル */
 .nako3_editor.readonly .ace_active-line {
     background: transparent;
 }
@@ -42,7 +47,15 @@
 .nako3_editor.readonly .ace_cursor {
     opacity: 0;
 }
+
+/* tooltipのスタイルの調整 */
 .nako3_editor .tooltip-plugin-name {
     margin-left: 10px;
     color: gray;
+}
+.ace_tooltip {
+    font-size: 13px;
+    padding-bottom: 6px;
+    padding-right: 10px;
+    opacity: 0.8;
 }
