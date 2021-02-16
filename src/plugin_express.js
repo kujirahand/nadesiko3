@@ -14,6 +14,7 @@ const PluginExpress = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
       sys.__v0['WEBサーバ:ONSUCCESS'] = null
       sys.__v0['WEBサーバ:ONERROR'] = null
@@ -30,6 +31,7 @@ const PluginExpress = {
   'WEBサーバ名前設定': { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
     type: 'func',
     josi: [['に', 'へ']],
+    pure: true,
     fn: function (name, sys) {
       WEBSERVER_NAME = name
       debug = false
@@ -39,6 +41,7 @@ const PluginExpress = {
   'WEBサーバ起動': { // @ポートPORTNOでWebサーバを起動して成功したら『WEBサーバ起動成功した時』を実行する // @WEBさーばきどう
     type: 'func',
     josi: [['の', 'で']],
+    pure: true,
     fn: function (portno, sys) {
       let app = express()
       let server = app.listen(portno, () => {
@@ -75,6 +78,7 @@ const PluginExpress = {
   'WEBサーバ起動時': { // @ポートPORTNOでWebサーバを起動して成功したらCALLBACKを実行する // @WEBさーばきどうしたとき
     type: 'func',
     josi: [['を'],['の', 'で']],
+    pure: false,
     fn: function (callback, portno, sys) {
       sys.__v0['WEBサーバ:ONSUCCESS'] = callback
       return sys.__exec('WEBサーバ起動', [portno, sys])
@@ -83,6 +87,7 @@ const PluginExpress = {
   'WEBサーバ起動成功時': { // @WEBサーバ起動が成功した時にcallbackを実行 // @WEBさーばきどうせいこうしたとき
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (callback, sys) {
       sys.__v0['WEBサーバ:ONSUCCESS'] = callback
     },
@@ -91,6 +96,7 @@ const PluginExpress = {
   'WEBサーバ起動失敗時': { // @WEBサーバ起動が失敗した時にcallbackを実行 // @WEBさーばきどうしっぱいしたとき
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (callback, sys) {
       sys.__v0['WEBサーバ:ONERROR'] = callback
     },
@@ -99,6 +105,7 @@ const PluginExpress = {
   'WEBサーバ静的パス指定': { // @サーバのHTMLや画像などを配置する静的パスを指定する // @WEBさーばせいてきぱすしてい
     type: 'func',
     josi: [['を'], ['に', 'へ']],
+    pure: true,
     fn: function (url, path, sys) {
       if (sys.__webapp == null) {throw new Error(ERROR_NO_INIT)}
       if (debug) {console.log('[static]', url, path)}
@@ -109,6 +116,7 @@ const PluginExpress = {
   'WEBサーバGET時': { // @URIにGETメソッドがあった時の処理を指定 // @WEBさーばGETしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
+    pure: true,
     fn: function (callback, uri, sys) {
       if (debug) {
         console.log('[GET] ' + uri)
@@ -122,6 +130,7 @@ const PluginExpress = {
   'WEBサーバPOST時': { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばPOSTしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
+    pure: true,
     fn: function (callback, uri, sys) {
       sys.__webapp.post(uri, (req, res) => { callbackServerFunc(callback, req, res, sys) })
     },
@@ -130,6 +139,7 @@ const PluginExpress = {
   'WEBサーバPUT時': { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばPUTしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
+    pure: true,
     fn: function (callback, uri, sys) {
       sys.__webapp.put(uri, (req, res) => { callbackServerFunc(callback, req, res, sys) })
     },
@@ -138,6 +148,7 @@ const PluginExpress = {
   'WEBサーバDELETE時': { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばDELETEしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
+    pure: true,
     fn: function (callback, uri, sys) {
       sys.__webapp.delete(uri, (req, res) => { callbackServerFunc(callback, req, res, sys) })
     },
@@ -146,6 +157,7 @@ const PluginExpress = {
   'WEBサーバヘッダ出力': { // @クライアントにヘッダOBJを出力 // @WEBさーばへっだしゅつりょく
     type: 'func',
     josi: [['を', 'の']],
+    pure: true,
     fn: function (obj, sys) {
       const res = sys.__v0['WEBサーバ:応答']
       for (let key in obj) {
@@ -157,6 +169,7 @@ const PluginExpress = {
   'WEBサーバステータス出力': { // @クライアントにステータスNOを出力 // @WEBさーばすてーたすしゅつりょく
     type: 'func',
     josi: [['を', 'の']],
+    pure: true,
     fn: function (no, sys) {
       const res = sys.__v0['WEBサーバ:応答']
       res.sendStatus(no)
@@ -166,6 +179,7 @@ const PluginExpress = {
   'WEBサーバ出力': { // @クライアントにSを出力 // @WEBさーばしゅつりょく
     type: 'func',
     josi: [['を', 'と']],
+    pure: true,
     fn: function (s, sys) {
       const res = sys.__v0['WEBサーバ:応答']
       res.send("" + s)
@@ -175,6 +189,7 @@ const PluginExpress = {
   'WEBサーバリダイレクト': { // @URLにリダイレクトする // @WEBさーばりだいれくと
     type: 'func',
     josi: [['へ', 'に']],
+    pure: true,
     fn: function (url, sys) {
       const res = sys.__v0['WEBサーバ:応答']
       res.redirect(302, url)

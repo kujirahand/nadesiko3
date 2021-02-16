@@ -4,6 +4,7 @@ const PluginKeigo = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
     }
   },
@@ -12,6 +13,7 @@ const PluginKeigo = {
   'な': { // @Aになる // @なる
     type: 'func',
     josi: [['に', 'へ']],
+    pure: true,
     fn: function (a, sys) {
       return a
     } 
@@ -19,6 +21,7 @@ const PluginKeigo = {
   'おります': { // @ソースコードを読む人を気持ちよくする // @おります
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
       if (!sys.__reisetu) {sys.__reisetu = 0}
       sys.__reisetu++
@@ -28,6 +31,7 @@ const PluginKeigo = {
   'どうぞ': { // @ソースコードを読む人を気持ちよくする // @どうぞ
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
       if (!sys.__reisetu) {sys.__reisetu = 0}
       sys.__reisetu++
@@ -37,6 +41,7 @@ const PluginKeigo = {
   'よろしくお願': { // @ソースコードを読む人を気持ちよくする // @よろしくおねがいします
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
       if (!sys.__reisetu) {sys.__reisetu = 0}
       sys.__reisetu++

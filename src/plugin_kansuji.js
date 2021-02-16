@@ -3,6 +3,7 @@ const PluginKansuji = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
     }
   },
@@ -11,6 +12,7 @@ const PluginKansuji = {
   '漢数字': { // @引数を数字と解釈して漢数字の文字列を返す // @かんすうじ
     type: 'func',
     josi: [['を','の']],
+    pure: true,
     fn: function (input) {
       function preprocesser (input) {
         function if_number_is_exponent (input) {
@@ -108,6 +110,7 @@ const PluginKansuji = {
   '算用数字': { // @U引数を漢数字と解釈して数値を返す // @さんようすうじ
     type: 'func',
     josi: [['を','の']],
+    pure: true,
     fn: function (input) {
       function converter (src) {
         const multibytes = 単位数字.filter( a => a.length > 1 )

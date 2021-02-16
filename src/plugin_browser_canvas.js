@@ -5,6 +5,7 @@ module.exports = {
   '描画開始': { // @描画先にCanvas(文字列でクエリの指定も可)を指定して描画API(2D)の利用準備する // @びょうがかいし
     type: 'func',
     josi: [['の', 'へ', 'で']],
+    pure: true,
     fn: function (cv, sys) {
       if (typeof cv === 'string')
         {cv = document.querySelector(cv) || document.getElementById(cv)}
@@ -20,6 +21,7 @@ module.exports = {
   '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろしてい
     type: 'func',
     josi: [['に', 'へ']],
+    pure: true,
     fn: function (v, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.strokeStyle = v
@@ -29,6 +31,7 @@ module.exports = {
   '塗色設定': { // @Canvasへの描画色(fillStyle)を指定する   // @ ぬりいろしてい
     type: 'func',
     josi: [['に', 'へ']],
+    pure: true,
     fn: function (v, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.fillStyle = v
@@ -38,6 +41,7 @@ module.exports = {
   '線描画': { // @ [x1, y1]から[x2, y2]まで線を描画する // @ せんびょうが
     type: 'func',
     josi: [['から'], ['へ', 'まで']],
+    pure: true,
     fn: function (a, b, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
@@ -50,6 +54,7 @@ module.exports = {
   '線太設定': { // @ vに線の太さ設定 // @ せんふとさせってい
     type: 'func',
     josi: [['に', 'へ']],
+    pure: true,
     fn: function (v, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.lineWidth = v
@@ -59,6 +64,7 @@ module.exports = {
   '四角描画': { // @ [x, y, w, h]で矩形を描画する // @ しかくびょうが
     type: 'func',
     josi: [['の', 'へ', 'に']],
+    pure: true,
     fn: function (b, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
@@ -71,6 +77,7 @@ module.exports = {
   '描画クリア': { // @ [x, y, w, h]の範囲を描画クリア // @ びょうがくりあ
     type: 'func',
     josi: [['の', 'へ', 'に']],
+    pure: true,
     fn: function (b, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.clearRect(b[0], b[1], b[2], b[3])
@@ -80,6 +87,7 @@ module.exports = {
   '円描画': { // @ [x, y]へrの円を描画する // @ えんびょうが
     type: 'func',
     josi: [['へ', 'に'], ['の']],
+    pure: true,
     fn: function (xy, r, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
@@ -92,6 +100,7 @@ module.exports = {
   '楕円描画': { // @ [x, y, x幅, y幅, 回転, 開始角, 終了角, 左回転か]に楕円を描画する // @ だえんびょうが
     type: 'func',
     josi: [['へ', 'に', 'の']],
+    pure: true,
     fn: function (args, sys) {
       console.log(args)
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
@@ -113,6 +122,7 @@ module.exports = {
   '多角形描画': { // @ 座標配列vを指定して多角形を描画する // @ たかっけいびょうが
     type: 'func',
     josi: [['で', 'の', 'を']],
+    pure: true,
     fn: function (a, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.beginPath()
@@ -131,6 +141,7 @@ module.exports = {
   '画像描画': { // @ ファイル名F(またはImage)の画像を[sx, sy, sw, sh]の[dx, dy, dw, dh]へ描画し、Imageを返す // @ がぞうびょうが
     type: 'func',
     josi: [['の', 'を'], ['の', 'を'], ['へ', 'に']],
+    pure: true,
     fn: function (img, sxy, dxy, sys) {
       if(img && sxy){
         if (!Array.isArray(sxy) && Array.isArray(img)){ //逆になっていれば入れ替える
@@ -186,6 +197,7 @@ module.exports = {
   '描画フォント設定': { // @ 描画フォントを指定する(CSSのフォント設定と同じ 例「36px Aria」) // @ びょうがふぉんとせってい
     type: 'func',
     josi: [['を', 'の', 'で', 'に']],
+    pure: true,
     fn: function (n, sys) {
       sys.__ctx.font = n
     },
@@ -194,6 +206,7 @@ module.exports = {
   '文字描画': { // @ [x, y]へテキストSを描画する(描画フォント設定でサイズなど指定) // @ がぞうびょうが
     type: 'func',
     josi: [['へ', 'に'], ['の', 'を']],
+    pure: true,
     fn: function (xy, s, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       sys.__ctx.fillText(s, xy[0], xy[1])
