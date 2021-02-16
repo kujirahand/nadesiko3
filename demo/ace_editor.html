@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nadesiko3 Editor</title>
     <link rel="stylesheet" href="../src/wnako3_editor.css">
-    <script src="https://unpkg.com/mocha/mocha.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
     <script src="../release/wnako3.js"></script>
     <script src="../release/version.js"></script>
@@ -17,6 +16,9 @@
     <script src="../release/plugin_turtle.js"></script>
     <script src="../release/plugin_caniuse.js"></script>
     <script src="../release/plugin_webworker.js"></script>
+
+    <!-- mochaを一番最後に読み込む必要がある -->
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
 </head>
 <body>
 単純な例

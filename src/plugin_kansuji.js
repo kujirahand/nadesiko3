@@ -53,7 +53,7 @@ const PluginKansuji = {
         input = asciify(input)
         if (Number.isNaN(Number(input))) {throw new Error('『漢数字』命令の中に無効な文字が含まれています。')}
         let output = if_number_is_exponent(input.toString())
-        if (output > 999999999999999999999999999999999999999999999999999999999999999999999999n) {throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。')}
+        if (output > BigInt(999999999999999999999999999999999999999999999999999999999999999999999999)) {throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。')}
         return output
       }
       input = preprocesser (String(input))
@@ -185,8 +185,8 @@ const PluginKansuji = {
         return arr.reduce(( acc, cur, idx ) => {
           return typeof cur === "string" ? acc + cur :acc + cur.reduce((acc, cur, idx) => {
             return cur > 1000 ? acc * cur : acc + BigInt(cur[0] * cur[1])
-          }, 0n)
-        }, 0n)
+          }, BigInt(0))
+        }, BigInt(0))
       }
       const tmp = calculator(separater(converter(input.toString())))
       return tmp > Number.MAX_SAFE_INTEGER ? tmp : Number(tmp)
