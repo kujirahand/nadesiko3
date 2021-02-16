@@ -3,6 +3,7 @@ module.exports = {
   '話': { // @音声合成APIを使って、Sを発話する // @はなす
     type: 'func',
     josi: [['と', 'を', 'の']],
+    pure: false,
     fn: function (s, sys) {
       // 話者の特定
       let voice = sys.__v0['話:話者']
@@ -22,6 +23,7 @@ module.exports = {
   '話終時': { // @音声合成APIを使って、Sを発話し発話した後でcallbackを実行 // @はなしおわったとき
     type: 'func',
     josi: [['で'], ['と', 'を', 'の']],
+    pure: false,
     fn: function (callback, s, sys) {
       // 話者の特定
       let voice = sys.__v0['話:話者']
@@ -46,6 +48,7 @@ module.exports = {
   '話者一覧取得': { // @音声合成APIの話者一覧を得る // @わしゃいちらんしゅとく
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
       // 対応している？
       if (!('SpeechSynthesisUtterance' in window))
@@ -57,6 +60,7 @@ module.exports = {
   '話者設定': { // @音声合成APIの話者を指定する // @わしゃせってい
     type: 'func',
     josi: [['に', 'へ']],
+    pure: true,
     fn: function (v, sys) {
       // 対応している？
       if (!('SpeechSynthesisUtterance' in window))
@@ -91,6 +95,7 @@ module.exports = {
   '話者詳細設定': { // @音声合成APIの話者の設定をオブジェクト形式で設定する。『速度,声高,ピッチ,音量』を指定 // @わしゃしょうさいせってい
     type: 'func',
     josi: [['で', 'に', 'へ']],
+    pure: true,
     fn: function (obj, sys) {
       const changeFunc = (key, v) => {
         if (key === '速度') {sys.__v0['話者速度'] = v}

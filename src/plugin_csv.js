@@ -2,6 +2,7 @@ const PluginCSV = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
     }
   },
@@ -9,6 +10,7 @@ const PluginCSV = {
   'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
+    pure: true,
     fn: function (str) {
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = ','
@@ -18,6 +20,7 @@ const PluginCSV = {
   'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
+    pure: true,
     fn: function (str) {
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = "\t"
@@ -27,6 +30,7 @@ const PluginCSV = {
   '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (a) {
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = ','
@@ -36,6 +40,7 @@ const PluginCSV = {
   '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
     type: 'func',
     josi: [['を']],
+    pure: true,
     fn: function (a) {
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = '\t'

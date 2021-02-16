@@ -41,6 +41,7 @@ const PluginBrowser = {
   '初期化': {
     type: 'func',
     josi: [],
+    pure: true,
     fn: function (sys) {
       /* eslint no-global-assign: 0 */
       if (typeof document === 'undefined') {document = {'body': {}}}

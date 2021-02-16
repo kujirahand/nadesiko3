@@ -3,6 +3,7 @@ module.exports = {
   '終': { // @ブラウザでプログラムの実行を強制終了する // @おわる
     type: 'func',
     josi: [],
+    pure: true,
     fn: function () {
       throw new Error('__終わる__')
     },
