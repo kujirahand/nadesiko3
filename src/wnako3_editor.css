@@ -32,6 +32,13 @@
     background-repeat: repeat-x;
     background-position: left bottom;
 }
-.nako3_editor.readonly {
-    background-color: #f0f0f0;
+
+.nako3_editor.readonly .ace_active-line {
+    background: transparent;
+}
+.nako3_editor.readonly .ace_gutter-active-line {
+    background: transparent;
+}
+.nako3_editor.readonly .ace_cursor {
+    opacity: 0;
 }
