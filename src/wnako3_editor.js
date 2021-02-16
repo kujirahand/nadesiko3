@@ -696,6 +696,8 @@ function setupEditor (id, nako3, ace) {
         editor.setReadOnly(true)
     }
     editor.setFontSize(16)
+    ace.require("ace/keybindings/vscode")
+    editor.setKeyboardHandler("ace/keyboard/vscode")
 
     // エディタの挙動の設定
     const languageFeatures = new LanguageFeatures(AceRange, nako3)
