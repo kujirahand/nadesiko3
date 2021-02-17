@@ -111,6 +111,9 @@
 .settings-button:active {
     color: rgb(24, 24, 192);
 }
+.nako3_editor.readonly .settings-button {
+    display: none; /* readonlyのときは表示しない。 */
+}
 
 /* 設定メニュー */
 #ace_settingsmenu > table {
