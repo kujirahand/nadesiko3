@@ -29,6 +29,8 @@ const NakoPrepare = require('./nako_prepare')
  */
 
 /**
+ * シンタックスハイライトでは一般にテキストの各部分に 'comment.line' のようなラベルを付け、各エディタテーマがそのそれぞれの色を設定する。
+ * ace editor では例えば 'comment.line' が付いた部分はクラス .ace_comment.ace_line が付いたHTMLタグで囲まれ、各テーマはそれに対応するCSSを実装する。
  * @param {TokenWithSourceMap} token
  */
 function getScope(token) {
@@ -124,7 +126,7 @@ function findPluginName(name, nako3) {
 }
 
 /**
- * A, B, C, ... Z, AA, AB, ... を返す。
+ * i = 0, 1, 2, ... に対して 'A', 'B', 'C', ... 'Z', 'AA', 'AB', ... を返す。
  * @param {number} i
  * @returns {string}
  */
@@ -134,7 +136,7 @@ function createParameterName(i) {
 }
 
 /**
- * "（Aと|Aの、Bを）"の形式の、パラメータの定義を表す文字列を生成する。パラメータが無い場合、空文字列を返す。
+ * パラメータの定義を表す文字列を生成する。例えば `[['と', 'の'], ['を']]` に対して `'（Aと|Aの、Bを）'` を返す、パラメータが無い場合、空文字列を返す。
  * @param {string[][]} josi
  * @retunrs {string}
  */
@@ -158,6 +160,7 @@ function escapeHTML(t) {
 }
 
 /**
+ * 関数のドキュメントを返す。
  * @param {TokenWithSourceMap} token
  * @param {WebNakoCompiler} nako3
  * @returns {string | null}
@@ -166,22 +169,27 @@ function getDocumentationHTML(token, nako3) {
     if (token.type !== 'func') {
         return null
     }
+    // 助詞を表示する。
     let text = escapeHTML(createParameterDeclaration(token.meta.josi) + token.value)
     const plugin = findPluginName(token.value + '', nako3)
     if (plugin !== null) {
+        // 定義元のプラグインが分かる場合はそれも表示する。
         text += `<span class="tooltip-plugin-name">${plugin}</span>`
     }
     return text
 }
 
 /**
+ * ace editor ではエディタの文字列の全ての部分に何らかの `type` を付けなければならない。
+ * なでしこのエディタでは 'markup.other' をデフォルト値として使うことにした。
  * @param {number} row
  * @param {AceDocument} doc
  */
 const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row) }]
 
 /**
- * 一時的にbeforeParseCallbackを無効化する。
+ * 一時的にbeforeParseCallbackを無効化する。beforeParseCallbackはHTTPリクエストを飛ばしうるため、
+ * セキュリティの観点から、wユーザーの操作を介さずにNakoCompilerのメソッドを呼ぶときにはこのメソッドで囲むべき。
  * @type {<T>(nako3: WebNakoCompiler, f: () => T) => T}
  */
 function withoutBeforeParseCallback (nako3, f) {
@@ -318,6 +326,7 @@ function tokenize (lines, nako3) {
 
 /**
  * エディタ上にエラーメッセージの波線とgutterの赤いマークとエラーメッセージのポップアップを設定するためのクラス。
+ * プログラムのエラー位置を表示するために外部から呼び出すこともあるため、利便性のためにメソッドが多くなっている。
  */
 class EditorMarkers {
     /**
@@ -419,6 +428,8 @@ class EditorMarkers {
 
 /**
  * ace editor のBackgroundTokenizerを上書きして、シンタックスハイライトを自由に表示するためのクラス。
+ * ace editor ではシンタックスハイライトのために正規表現ベースのBackgroundTokenizerクラスを用意し定期的にトークン化を
+ * 行っているが、正規表現ではなくなでしこのコンパイラの出力を使うためにはそれを上書きする必要がある。
  */
 class BackgroundTokenizer {
     /**
