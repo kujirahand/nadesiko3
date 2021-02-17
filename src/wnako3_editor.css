@@ -87,16 +87,18 @@
 
 /* 設定メニュー */
 #ace_settingsmenu > table {
-    border-spacing: 0 13px; /* 行間を広げる */
+    border-spacing: 0 8px;
+    font-size: 13px;
 }
 #ace_settingsmenu > table td {
-    height: 36px;
+    height: 30px;
 }
 #ace_settingsmenu > table td > div {
     height: 100%;
 }
-#ace_settingsmenu > table button {
+#ace_settingsmenu button, input {
     height: 100%;
+    font-size: 13px;
 }
 #ace_settingsmenu > table tr:last-child {
     display: none; /* なでしこのバージョンと紛らわしいため、aceのバージョン表示を消す */
