@@ -8,19 +8,8 @@ const NakoPrepare = require('./nako_prepare')
  * @returns {{ code: string, insertedLines: number[], deletedLines: { lineNumber: number, len: number }[] }}
  */
 function convert(code, filename) {
-    // プログラム冒頭に「!インデント構文」があれば変換
-    const keywords = ['!インデント構文', '!ここまでだるい']
     // 最初の30行をチェック
-    const lines = code.split('\n', 30)
-    let bConv = false
-    lines.forEach((line) => {
-        const s9 = line.substr(0, 8).replace('！', '!')
-        if (keywords.indexOf(s9) >= 0) {
-            bConv = true
-            return true
-        }
-    })
-    if (bConv) {
+    if (isIndentSyntaxEnabled(code)) {
         return convertGo(code, filename)
     }
     return { code, insertedLines: [], deletedLines: [] }
@@ -29,6 +18,22 @@ function convert(code, filename) {
 // ありえない改行マークを定義
 const SpecialRetMark = '🌟🌟改行🌟🌟s4j#WjcSb😀/FcX3🌟🌟'
 
+/**
+ * @param {string} code
+ * @returns {boolean}
+ */
+function isIndentSyntaxEnabled(code) {
+    // プログラム冒頭に「!インデント構文」があればインデント構文が有効
+    const keywords = ['!インデント構文', '!ここまでだるい']
+    const lines = code.split('\n', 30)
+    for (const line of lines) {
+        const s9 = line.substr(0, 8).replace('！', '!')
+        if (keywords.indexOf(s9) >= 0) {
+            return true
+        }
+    }
+    return false
+}
 
 /**
  * ソースコードのある1行の中のコメントを全て取り除く。
@@ -468,5 +473,6 @@ module.exports = {
     getBlockStructure,
     getIndent,
     countIndent,
+    isIndentSyntaxEnabled,
 }
 

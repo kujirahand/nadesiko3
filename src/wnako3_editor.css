@@ -59,3 +59,10 @@
     padding-right: 10px;
     opacity: 0.8;
 }
+
+/* スニペットのプレースホルダのスタイル */
+.nako3_editor .ace_snippet-marker {
+    border-radius: 0;
+    background: rgba(0, 75, 255, 0.12);
+    border: none;
+}
