@@ -984,6 +984,11 @@ function setupEditor (id, nako3, ace) {
         editor.setReadOnly(true)
     }
     editor.setFontSize(16)
+    editor.setOptions({
+        wrap: 'free',
+        indentedSoftWrap: false,
+        showPrintMargin: false,
+    })
     ace.require('ace/keybindings/vscode')
     editor.setKeyboardHandler('ace/keyboard/vscode')
 
@@ -1066,9 +1071,80 @@ function setupEditor (id, nako3, ace) {
     // tokenizer （シンタックスハイライト）の上書き
     editor.session.bgTokenizer.stop()
     editor.session.bgTokenizer = backgroundTokenizer
-    editor.session.resetCaches()
 
     editor.setTheme("ace/theme/xcode")
+
+    // 設定メニューの上書き
+    // なでしこ用に上書きした設定の削除やテキストの和訳をする。
+    const OptionPanel = ace.require('ace/ext/options').OptionPanel
+    {
+        // renderメソッドを呼ぶとrenderOptionGroupにoptionGroups.Main、optionGroups.More が順に渡されることを利用して、optionGroupsを書き換える。
+        const panel = new OptionPanel(editor)
+        let i = 'Main'
+        panel.renderOptionGroup = (group) => {
+            if (i === 'Main') { // Main
+                for (const key of Object.keys(group)) {
+                    delete group[key]
+                }
+                group['キーバインド'] = {
+                    type: 'buttonBar',
+                    path: 'keyboardHandler',
+                    items: [
+                        { caption: 'VSCode', value: 'ace/keyboard/vscode' },
+                        { caption: 'Emacs', value: 'ace/keyboard/emacs' },
+                        { caption: 'Sublime', value: 'ace/keyboard/sublime' },
+                        { caption: 'Vim', value: 'ace/keyboard/vim' },
+                    ]
+                }
+                group['文字サイズ'] = {
+                    path: "fontSize",
+                    type: "number",
+                    defaultValue: 16,
+                }
+                group["行の折り返し"] = {
+                    type: "buttonBar",
+                    path: "wrap",
+                    items: [
+                        { caption: "オフ", value: "off" },
+                        { caption: "オン", value: "free" },
+                    ]
+                }
+                group["ソフトタブ"] = [{
+                    path: "useSoftTabs"
+                }, {
+                    ariaLabel: "Tab Size",
+                    path: "tabSize",
+                    type: "number",
+                    values: [2, 3, 4, 8, 16]
+                }]
+                group["空白文字を表示する"] = {
+                    path: "showInvisibles"
+                }
+                group["常に自動補完する"] = {
+                    path: "enableLiveAutocompletion"
+                }
+                group["折り返した行をインデントする"] = {
+                    path: "indentedSoftWrap"
+                }
+                i = 'More'
+            } else { // More
+                for (const key of Object.keys(group)) {
+                    delete group[key]
+                }
+            }
+        }
+        panel.render()
+    }
+
+    // 設定メニューのボタン
+    const settingsButton = document.createElement('div')
+    settingsButton.classList.add('settings-button')
+    settingsButton.innerText = '設定を開く'
+    editor.container.appendChild(settingsButton)
+    settingsButton.addEventListener('click', (e) => {
+        editor.execCommand("showSettingsMenu")
+        e.preventDefault()
+    })
 
     return { editor, editorMarkers }
 }

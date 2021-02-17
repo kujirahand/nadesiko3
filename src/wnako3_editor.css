@@ -66,3 +66,38 @@
     background: rgba(0, 75, 255, 0.12);
     border: none;
 }
+
+/* 設定を開くボタンのスタイル */
+.settings-button {
+    position: absolute;
+    bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
+    right: 5px;
+    font-size: 13px;
+    color: gray;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+}
+.settings-button:hover {
+    color: rgb(90, 90, 255);
+}
+.settings-button:active {
+    color: rgb(24, 24, 192);
+}
+
+/* 設定メニュー */
+#ace_settingsmenu > table {
+    border-spacing: 0 13px; /* 行間を広げる */
+}
+#ace_settingsmenu > table td {
+    height: 36px;
+}
+#ace_settingsmenu > table td > div {
+    height: 100%;
+}
+#ace_settingsmenu > table button {
+    height: 100%;
+}
+#ace_settingsmenu > table tr:last-child {
+    display: none; /* なでしこのバージョンと紛らわしいため、aceのバージョン表示を消す */
+}
