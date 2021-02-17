@@ -227,7 +227,14 @@ class NakoCompiler {
     this.__v1 = this.__varslist[1]
     this.__vars = this.__varslist[2]
     this.__locals = {}
+    const old = this.funclist
+    this.funclist = {}
+    for (const name of Object.keys(this.__v0)) {
+      // プラグイン命令以外を削除
+      this.funclist[name] = old[name]
+    }
     this.gen.reset()
+    this.lexer.setFuncList(this.funclist)
   }
 
   /**

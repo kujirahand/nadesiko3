@@ -82,8 +82,7 @@ describe('wnako3_editor_test', () => {
             const token = tokenize('1をF'.split('\n'), nako3)
                 .editorTokens[0]
                 .find((t) => t.value === 'F')
-            assert(!token.docHTML.includes('（Aを）'))
-
+            assert.strictEqual(token.docHTML, null)
         })
     })
     describe('行コメントのトグル', () => {

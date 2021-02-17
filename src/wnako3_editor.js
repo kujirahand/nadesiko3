@@ -206,7 +206,6 @@ function tokenize (lines, nako3) {
     // 重要: beforeParseCallbackを無効化しないと、ページを見ただけでシンタックスハイライトのために
     // 取り込み文が実行されてfetchが飛んでしまい、セキュリティ的に危険。
     nako3.reset()
-    nako3.lexer.setFuncList(nako3.funclist)
     const lexerOutput = withoutBeforeParseCallback(nako3, () => nako3.lex(code, 'main.nako3'))
 
     // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
@@ -864,7 +863,6 @@ class LanguageFeatures {
             // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
             try {
                 nako3.reset()
-                nako3.lexer.setFuncList(nako3.funclist)
                 tokens = withoutBeforeParseCallback(nako3, () => nako3.lex(line, 'completion.nako3').tokens)
                     .filter((t) => t.type !== 'eol' && t.type !== 'eof')
             } catch (e) {
