@@ -17,9 +17,9 @@ const NakoPrepare = require('./nako_prepare')
  *     insertInLine(position: { row: number, column: number }, text: string): void
  *     removeInLine(row: number, columnStart: number, columnEnd: number): void
  *     replace(range: AceRange, text: string): void
- * }} Document
+ * }} AceDocument
  * 
- * @typedef {{ doc: Document }} Session
+ * @typedef {{ doc: AceDocument }} Session
  * 
  * @typedef {{}} AceRange
  * 
@@ -176,7 +176,7 @@ function getDocumentationHTML(token, nako3) {
 
 /**
  * @param {number} row
- * @param {Document} doc
+ * @param {AceDocument} doc
  */
 const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row) }]
 
@@ -202,121 +202,119 @@ function withoutBeforeParseCallback (nako3, f) {
 function tokenize (lines, nako3) {
     const code = lines.join('\n')
 
+    // lexerにかける
     // 重要: beforeParseCallbackを無効化しないと、ページを見ただけでシンタックスハイライトのために
     // 取り込み文が実行されてfetchが飛んでしまい、セキュリティ的に危険。
-    return withoutBeforeParseCallback(nako3, () => {
-        // lexerにかける
-        nako3.reset()
-        nako3.lexer.setFuncList(nako3.funclist)
-        const lexerOutput = nako3.lex(code, 'main.nako3')
+    nako3.reset()
+    nako3.lexer.setFuncList(nako3.funclist)
+    const lexerOutput = withoutBeforeParseCallback(nako3, () => nako3.lex(code, 'main.nako3'))
 
-        // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
-        /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
-        //@ts-ignore
-        const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens].filter((t) =>
-            t.type !== 'eol' && t.type !== 'eof' &&
-            typeof t.startOffset === "number" && typeof t.endOffset === "number" &&
-            t.startOffset < t.endOffset)
+    // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
+    /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
+    //@ts-ignore
+    const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens].filter((t) =>
+        t.type !== 'eol' && t.type !== 'eof' &&
+        typeof t.startOffset === "number" && typeof t.endOffset === "number" &&
+        t.startOffset < t.endOffset)
 
-        // startOffsetでソートする
-        tokens.sort((a, b) => (a.startOffset || 0) - (b.startOffset || 0))
+    // startOffsetでソートする
+    tokens.sort((a, b) => (a.startOffset || 0) - (b.startOffset || 0))
 
-        // 各行について、余る文字の無いようにエディタのトークンに変換する。
-        // 複数のトークンが重なることはないと仮定する。
-        let lineStartOffset = 0
-        let tokenIndex = 0
-        // 実際に必要なプロパティはtype, valueだけで、docは独自に追加した。
-        /** @type {EditorToken[][]} */
-        const editorTokens = [] // 各行のエディタのトークン
-        for (let i = 0; i < lines.length; i++) {
-            editorTokens.push([])
-            const lineEndOffset = lineStartOffset + lines[i].length
-            let offset = lineStartOffset
+    // 各行について、余る文字の無いようにエディタのトークンに変換する。
+    // 複数のトークンが重なることはないと仮定する。
+    let lineStartOffset = 0
+    let tokenIndex = 0
+    // 実際に必要なプロパティはtype, valueだけで、docは独自に追加した。
+    /** @type {EditorToken[][]} */
+    const editorTokens = [] // 各行のエディタのトークン
+    for (let i = 0; i < lines.length; i++) {
+        editorTokens.push([])
+        const lineEndOffset = lineStartOffset + lines[i].length
+        let offset = lineStartOffset
 
-            // 現在の行にかかっているトークンまで飛ばす
-            while (tokenIndex < tokens.length &&
-                tokens[tokenIndex].endOffset <= lineStartOffset) {
-                tokenIndex++
-            }
+        // 現在の行にかかっているトークンまで飛ばす
+        while (tokenIndex < tokens.length &&
+            tokens[tokenIndex].endOffset <= lineStartOffset) {
+            tokenIndex++
+        }
 
-            // 行全体を完全にまたがっているトークンが存在する場合
+        // 行全体を完全にまたがっているトークンが存在する場合
+        if (tokenIndex < tokens.length &&
+            tokens[tokenIndex].startOffset <= lineStartOffset &&
+            tokens[tokenIndex].endOffset >= lineEndOffset) {
+            editorTokens[i].push({
+                type: getScope(tokens[tokenIndex]),
+                docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
+                value: lines[i],
+            })
+        } else {
+            // 行頭をまたがっているトークンが存在する場合
             if (tokenIndex < tokens.length &&
-                tokens[tokenIndex].startOffset <= lineStartOffset &&
-                tokens[tokenIndex].endOffset >= lineEndOffset) {
+                tokens[tokenIndex].startOffset <= lineStartOffset) {
                 editorTokens[i].push({
                     type: getScope(tokens[tokenIndex]),
                     docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                    value: lines[i],
+                    value: code.slice(offset, tokens[tokenIndex].endOffset),
                 })
-            } else {
-                // 行頭をまたがっているトークンが存在する場合
-                if (tokenIndex < tokens.length &&
-                    tokens[tokenIndex].startOffset <= lineStartOffset) {
-                    editorTokens[i].push({
-                        type: getScope(tokens[tokenIndex]),
-                        docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                        value: code.slice(offset, tokens[tokenIndex].endOffset),
-                    })
-                    offset = tokens[tokenIndex].endOffset
-                    tokenIndex++
-                }
+                offset = tokens[tokenIndex].endOffset
+                tokenIndex++
+            }
 
-                // 行頭も行末もまたがっていないトークンを処理する
-                while (tokenIndex < tokens.length &&
-                    tokens[tokenIndex].endOffset < lineEndOffset) {
-                    // このトークンと直前のトークンの間に隙間があるなら、埋める
-                    if (offset < tokens[tokenIndex].startOffset) {
-                        editorTokens[i].push({
-                            type: 'markup.other',
-                            docHTML: null,
-                            value: code.slice(offset, tokens[tokenIndex].startOffset),
-                        })
-                        offset = tokens[tokenIndex].startOffset
-                    }
-
-                    // 現在のトークンを使う
-                    editorTokens[i].push({
-                        type: getScope(tokens[tokenIndex]),
-                        docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                        value: code.slice(offset, tokens[tokenIndex].endOffset),
-                    })
-                    offset = tokens[tokenIndex].endOffset
-                    tokenIndex++
-                }
-
-                // 行末をまたがっているトークンが存在する場合
-                if (tokenIndex < tokens.length &&
-                    tokens[tokenIndex].startOffset < lineEndOffset) {
-                    // トークンの前の隙間
-                    if (offset < tokens[tokenIndex].startOffset) {
-                        editorTokens[i].push({
-                            type: 'markup.other',
-                            docHTML: null,
-                            value: code.slice(offset, tokens[tokenIndex].startOffset),
-                        })
-                        offset = tokens[tokenIndex].startOffset
-                    }
-
-                    // トークンを使う
-                    editorTokens[i].push({
-                        type: getScope(tokens[tokenIndex]),
-                        docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                        value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset),
-                    })
-                } else {
+            // 行頭も行末もまたがっていないトークンを処理する
+            while (tokenIndex < tokens.length &&
+                tokens[tokenIndex].endOffset < lineEndOffset) {
+                // このトークンと直前のトークンの間に隙間があるなら、埋める
+                if (offset < tokens[tokenIndex].startOffset) {
                     editorTokens[i].push({
                         type: 'markup.other',
                         docHTML: null,
-                        value: code.slice(offset, lineEndOffset),
+                        value: code.slice(offset, tokens[tokenIndex].startOffset),
                     })
+                    offset = tokens[tokenIndex].startOffset
                 }
+
+                // 現在のトークンを使う
+                editorTokens[i].push({
+                    type: getScope(tokens[tokenIndex]),
+                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
+                    value: code.slice(offset, tokens[tokenIndex].endOffset),
+                })
+                offset = tokens[tokenIndex].endOffset
+                tokenIndex++
             }
 
-            lineStartOffset += lines[i].length + 1
+            // 行末をまたがっているトークンが存在する場合
+            if (tokenIndex < tokens.length &&
+                tokens[tokenIndex].startOffset < lineEndOffset) {
+                // トークンの前の隙間
+                if (offset < tokens[tokenIndex].startOffset) {
+                    editorTokens[i].push({
+                        type: 'markup.other',
+                        docHTML: null,
+                        value: code.slice(offset, tokens[tokenIndex].startOffset),
+                    })
+                    offset = tokens[tokenIndex].startOffset
+                }
+
+                // トークンを使う
+                editorTokens[i].push({
+                    type: getScope(tokens[tokenIndex]),
+                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
+                    value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset),
+                })
+            } else {
+                editorTokens[i].push({
+                    type: 'markup.other',
+                    docHTML: null,
+                    value: code.slice(offset, lineEndOffset),
+                })
+            }
         }
 
-        return { editorTokens, lexerOutput }
-    })
+        lineStartOffset += lines[i].length + 1
+    }
+
+    return { editorTokens, lexerOutput }
 }
 
 /**
@@ -325,7 +323,7 @@ function tokenize (lines, nako3) {
 class EditorMarkers {
     /**
      * @param {any} session
-     * @param {Document} doc
+     * @param {AceDocument} doc
      * @param {TypeofAceRange} AceRange
      * @param {boolean} disable
      */
@@ -425,7 +423,7 @@ class EditorMarkers {
  */
 class BackgroundTokenizer {
     /**
-     * @param {Document} doc
+     * @param {AceDocument} doc
      * @param {any} _signal
      * @param {WebNakoCompiler} nako3
      * @param {EditorMarkers} editorMarkers
@@ -675,13 +673,14 @@ class LanguageFeatures {
     static checkOutdent(state, line, input) {
         // 特定のキーワードの入力が終わったタイミングでインデントを自動修正する。
         // '違えば'のautoOutdentは「もし」と「条件分岐」のどちらのものか見分けが付かないため諦める。
-        return /^\s*ここまで$/.test(line + input)
+        // 「ここ|ま」（縦線がカーソル）の状態で「で」を打つとtrueになってしまう問題があるが、修正するには引数が足りない。
+        return /^[ 　・\t]*ここまで$/.test(line + input)
     }
 
     /**
      * checkOutdentがtrueを返したときに呼ばれる。
      * @param {string} state
-     * @param {{ doc: Document }} session
+     * @param {{ doc: AceDocument }} session
      * @param {number} row
      * @returns {void}
      */
@@ -734,7 +733,7 @@ class LanguageFeatures {
         return {
             getCompletions(editor, session, pos, prefix, callback) {
                 // 全てのエディタのcompleterが呼ばれてしまうため、ここで他のエディタを除外する
-                if (editor.wnako3_editor_id !== editorId) {
+                if (editor.wnako3EditorId !== editorId) {
                     callback(null, [])
                     return
                 }
@@ -801,7 +800,7 @@ class LanguageFeatures {
                     return
                 }
     
-                callback(null, result.map((v) => ({ ...v, wnako3_editor_id: editorId })))
+                callback(null, result.map((v) => ({ ...v, wnako3EditorId: editorId })))
             },
         }
     }
@@ -814,12 +813,12 @@ class LanguageFeatures {
     static getSnippetCompleter(editorId) {
         return {
             getCompletions(editor, session, pos, prefix, callback) {
-                if (editor.wnako3_editor_id !== editorId) {
+                if (editor.wnako3EditorId !== editorId) {
                     callback(null, [])
                     return
                 }
 
-                /** @type {Document} */
+                /** @type {AceDocument} */
                 const doc = editor.session.doc
 
                 // インデント構文が有効化されているなら「ここまで」を消す
@@ -864,7 +863,9 @@ class LanguageFeatures {
 
             // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
             try {
-                tokens = nako3.lex(line, 'completion.nako3').tokens
+                nako3.reset()
+                nako3.lexer.setFuncList(nako3.funclist)
+                tokens = withoutBeforeParseCallback(nako3, () => nako3.lex(line, 'completion.nako3').tokens)
                     .filter((t) => t.type !== 'eol' && t.type !== 'eof')
             } catch (e) {
                 if (!(e instanceof NakoIndentError || e instanceof LexError)) {
@@ -1036,7 +1037,7 @@ function setupEditor (id, nako3, ace) {
     })
 
     const editorId = editorIdCounter++
-    editor.wnako3_editor_id = editorId
+    editor.wnako3EditorId = editorId
 
     // オートコンプリートのcompleterを設定する
     completers.push(LanguageFeatures.getTokenCompleter(editorId, backgroundTokenizer, nako3))
@@ -1078,4 +1079,6 @@ module.exports = {
     tokenize,
     setupEditor,
     LanguageFeatures,
+    EditorMarkers,
+    BackgroundTokenizer,
 }

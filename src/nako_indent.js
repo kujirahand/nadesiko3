@@ -437,7 +437,7 @@ function getBlockStructure(code) {
     for (const line of lines) {
         const numLines = line.split(SpecialRetMark).length
         const line2 = removeCommentsFromLine(line)
-        const current = (line2.replace(/^\s+/, '').replace(/\s+$/, '') === '')
+        const current = (line2.replace(/^[ 　・\t]+/, '') === '')
             ? prev
             : countIndent(line2)
         result.lines.push(...Array(numLines).fill(current))
