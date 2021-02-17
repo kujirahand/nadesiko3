@@ -77,7 +77,8 @@
         display: block;
         position: absolute;
         bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
-        right: 5px;
+        right: 20px;
+        text-align: right;
         font-size: 13px;
         color: gray;
         white-space: nowrap;

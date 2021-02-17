@@ -449,7 +449,7 @@ class BackgroundTokenizer {
 
         const update = () => {
             // 6000行以上は時間がかかりすぎるためシンタックスハイライトを行わない。
-            if (this.dirty && this.doc.getLength() < 6000) {
+            if (this.dirty && this.doc.getLength() < 6000 && this.enabled) {
                 const startTime = Date.now()
                 this.dirty = false
                 const code = this.doc.getAllLines().join('\n')
@@ -471,6 +471,9 @@ class BackgroundTokenizer {
             }
         }
         update()
+
+        /** @public */
+        this.enabled = true
     }
 
     /**
@@ -537,7 +540,7 @@ class BackgroundTokenizer {
             let ok = false
 
             // 2000行以下のときは、1文字打つたびにシンタックスハイライトを更新する。
-            if (this.doc.getLength() < 2000) {
+            if (this.doc.getLength() < 2000 && this.enabled) {
                 // tokenizeは非常に遅いため、キャッシュを使えるならそれを使う。
                 const code = this.doc.getAllLines().join('\n')
                 if (this.cache !== null && this.cache.code === code) {
@@ -1074,6 +1077,24 @@ function setupEditor (id, nako3, ace) {
 
     editor.setTheme("ace/theme/xcode")
 
+    ace.require('ace/config').defineOptions(editor.constructor.prototype, 'editor', {
+        syntaxHighlighting: {
+            set: function(value) {
+                this.session.bgTokenizer.enabled = value
+
+                // 一旦テキスト全体を消してから、元に戻す
+                /** @type {AceDocument} */
+                const doc = this.session.doc
+                const lines = doc.getAllLines()
+                const range = this.session.selection.getRange()
+                doc.removeFullLines(0, doc.getLength())
+                doc.insert({ row: 0, column: 0 }, lines.join('\n'))
+                this.session.selection.setRange(range, false)
+            },
+            initialValue: true
+        }
+    })
+
     // 設定メニューの上書き
     // なでしこ用に上書きした設定の削除やテキストの和訳をする。
     const OptionPanel = ace.require('ace/ext/options').OptionPanel
@@ -1085,6 +1106,9 @@ function setupEditor (id, nako3, ace) {
             if (i === 'Main') { // Main
                 for (const key of Object.keys(group)) {
                     delete group[key]
+                }
+                group['シンタックスハイライトを有効化する'] = {
+                    path: 'syntaxHighlighting'
                 }
                 group['キーバインド'] = {
                     type: 'buttonBar',
