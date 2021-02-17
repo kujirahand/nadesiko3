@@ -426,8 +426,9 @@ class BackgroundTokenizer {
      * @param {any} _signal
      * @param {WebNakoCompiler} nako3
      * @param {EditorMarkers} editorMarkers
+     * @param {(ms: number) => void} deviceSpeedCallback
      */
-    constructor(doc, _signal, nako3, editorMarkers) {
+    constructor(doc, _signal, nako3, editorMarkers, deviceSpeedCallback) {
         this._signal = _signal
         this.doc = doc
         this.dirty = true
@@ -448,13 +449,14 @@ class BackgroundTokenizer {
         this.cache = null
 
         const update = () => {
-            // 6000行以上は時間がかかりすぎるためシンタックスハイライトを行わない。
-            if (this.dirty && this.doc.getLength() < 6000 && this.enabled) {
+            if (this.dirty && this.enabled) {
                 const startTime = Date.now()
                 this.dirty = false
                 const code = this.doc.getAllLines().join('\n')
                 try {
+                    const startTime = Date.now()
                     const out = tokenize(this.doc.getAllLines(), nako3)
+                    deviceSpeedCallback(Date.now() - startTime)
                     this.lastLexerOutput = out.lexerOutput
                     this.lines = out.editorTokens
                     this.cache = { code, lines: JSON.stringify(this.lines) }
@@ -464,7 +466,7 @@ class BackgroundTokenizer {
                 } catch (e) {
                     editorMarkers.addByError(code, e)
                 }
-                // tokenizeに時間がかかる場合、文字を入力できるように次回の実行を遅くする。最大で5秒まで遅らせる。
+                // tokenizeに時間がかかる場合、文字を入力できるように次回の実行を遅くする。
                 setTimeout(update, Math.max(100, Math.min(5000, (Date.now() - startTime) * 5)))
             } else {
                 setTimeout(update, 100)
@@ -539,8 +541,7 @@ class BackgroundTokenizer {
         if (!this.lines[row]) {
             let ok = false
 
-            // 2000行以下のときは、1文字打つたびにシンタックスハイライトを更新する。
-            if (this.doc.getLength() < 2000 && this.enabled) {
+            if (this.enabled) {
                 // tokenizeは非常に遅いため、キャッシュを使えるならそれを使う。
                 const code = this.doc.getAllLines().join('\n')
                 if (this.cache !== null && this.cache.code === code) {
@@ -889,14 +890,15 @@ class LanguageFeatures {
     }
 
     /**
-     * 各行についてこの関数が呼ばれる。'start'を返した行はfold可能な範囲の先頭の行になる。
+     * 文字を打つたびに各行についてこの関数が呼ばれる。'start'を返した行はfold可能な範囲の先頭の行になる。
      * @param {Session} session
      * @param {string} foldStyle
      * @param {number} row
      * @returns {'start' | ''}
      */
     getFoldWidget({doc}, foldStyle, row) {
-        return this.getBlockStructure(doc.getAllLines().join('\n')).pairs.some((v) => v[0] === row) ? 'start' : ''
+        // 速度が重要なため正規表現でマッチする。
+        return LanguageFeatures.isBlockStart(doc.getLine(row)) ? 'start' : ''
     }
 
     /**
@@ -982,7 +984,8 @@ function setupEditor (id, nako3, ace) {
     )
 
     element.classList.add('nako3_editor')
-    if (!!element.dataset.nako3Readonly) {
+    const readonly = element.dataset.nako3Readonly
+    if (!!readonly) {
         element.classList.add('readonly')
         editor.setReadOnly(true)
     }
@@ -1028,11 +1031,23 @@ function setupEditor (id, nako3, ace) {
         tooltip.hide()
     })
 
+    let isFirstTime = true
     const backgroundTokenizer = new BackgroundTokenizer(
         editor.session.bgTokenizer.doc,
         editor.session.bgTokenizer._signal.bind(editor.session.bgTokenizer),
         nako3,
         editorMarkers,
+        (ms) => {
+            // 処理が遅い場合シンタックスハイライトを無効化する。
+            if (ms > 220 && editor.getOption('syntaxHighlighting') && !readonly && isFirstTime) {
+                isFirstTime = false
+                slowSpeedMessage.classList.add('visible')
+                editor.setOption('syntaxHighlighting', false)
+                setTimeout(() => {
+                    slowSpeedMessage.classList.remove('visible')
+                }, 8000);
+            }
+        }
     )
 
     // オートコンプリートを有効化する
@@ -1160,15 +1175,26 @@ function setupEditor (id, nako3, ace) {
         panel.render()
     }
 
-    // 設定メニューのボタン
-    const settingsButton = document.createElement('div')
+    // 右下のボタン全体を囲むdiv
+    const buttonContainer = document.createElement('div')
+    buttonContainer.classList.add('button-container')
+    editor.container.appendChild(buttonContainer)
+
+    // 遅い端末へのメッセージのボタン
+    const slowSpeedMessage = document.createElement('span')
+    slowSpeedMessage.classList.add('slow-speed-message')
+    slowSpeedMessage.innerHTML = '<span>エディタの|応答速度が|低下したため|シンタックス|ハイライトを|無効化|しました。</span>'.replace(/\|/g, '</span><span>')
+    buttonContainer.appendChild(slowSpeedMessage)
+
+    // 「設定を開く」ボタン
+    const settingsButton = document.createElement('span')
     settingsButton.classList.add('settings-button')
     settingsButton.innerText = '設定を開く'
-    editor.container.appendChild(settingsButton)
     settingsButton.addEventListener('click', (e) => {
         editor.execCommand("showSettingsMenu")
         e.preventDefault()
     })
+    buttonContainer.appendChild(settingsButton)
 
     return { editor, editorMarkers }
 }

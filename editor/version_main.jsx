@@ -3,7 +3,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import VersionComponent from './version_component'
 
-// render
-for (const e of document.getElementsByClassName('version-component')) {
-  ReactDOM.render(<VersionComponent/>, e)
+// tryとArray.fromはIE11のため
+try {
+  for (const e of Array.from(document.getElementsByClassName('version-component'))) {
+    ReactDOM.render(<VersionComponent/>, e)
+  }
+} catch (e) {
+  console.error(e)
 }

@@ -67,30 +67,49 @@
     border: none;
 }
 
+/* 右下のボタン全体を囲むdiv */
+.button-container {
+    position: absolute;
+    bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
+    right: 20px;
+    text-align: right;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 処理時間が長いときのメッセージ */
+.slow-speed-message {
+    color: rgb(12, 10, 153);
+    max-width: 75vw;
+    opacity: 0;
+    transition: opacity 0.2s linear;
+}
+.slow-speed-message.visible {
+    opacity: 1;
+    display: inline-block;
+}
+.slow-speed-message > span {
+    display: inline-block;
+}
+
 /* 「設定を開く」ボタンのスタイル */
 .settings-button {
+    color: gray;
     /* 画面が狭いと設定メニューを閉じられないため、ボタンを表示しない */
     display: none;
+    user-select: none;
+    white-space: nowrap;
 }
 @media (min-width: 600px) {
     .settings-button {
-        display: block;
-        position: absolute;
-        bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
-        right: 20px;
-        text-align: right;
-        font-size: 13px;
-        color: gray;
-        white-space: nowrap;
-        cursor: pointer;
-        user-select: none;
+        display: inline-block;
     }
-    .settings-button:hover {
-        color: rgb(90, 90, 255);
-    }
-    .settings-button:active {
-        color: rgb(24, 24, 192);
-    }
+}
+.settings-button:hover {
+    color: rgb(90, 90, 255);
+}
+.settings-button:active {
+    color: rgb(24, 24, 192);
 }
 
 /* 設定メニュー */
