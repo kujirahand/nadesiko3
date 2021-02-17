@@ -184,6 +184,7 @@ class NakoGen {
     for (const key of /** @type {(keyof NakoGen['speedMode'])[]} */(Object.keys(this.speedMode))) {
       this.speedMode[key] = 0
     }
+    this.funclist = this.__self.funclist
   }
 
   /**
