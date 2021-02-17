@@ -67,22 +67,29 @@
     border: none;
 }
 
-/* 設定を開くボタンのスタイル */
+/* 「設定を開く」ボタンのスタイル */
 .settings-button {
-    position: absolute;
-    bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
-    right: 5px;
-    font-size: 13px;
-    color: gray;
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
+    /* 画面が狭いと設定メニューを閉じられないため、ボタンを表示しない */
+    display: none;
 }
-.settings-button:hover {
-    color: rgb(90, 90, 255);
-}
-.settings-button:active {
-    color: rgb(24, 24, 192);
+@media (min-width: 600px) {
+    .settings-button {
+        display: block;
+        position: absolute;
+        bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
+        right: 5px;
+        font-size: 13px;
+        color: gray;
+        white-space: nowrap;
+        cursor: pointer;
+        user-select: none;
+    }
+    .settings-button:hover {
+        color: rgb(90, 90, 255);
+    }
+    .settings-button:active {
+        color: rgb(24, 24, 192);
+    }
 }
 
 /* 設定メニュー */
