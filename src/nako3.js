@@ -5,16 +5,13 @@ const Parser = require('./nako_parser3')
 const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGen = require('./nako_gen')
-const NakoRuntimeError = require('./nako_runtime_error')
 const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoSyntaxError } = require('./nako_parser_base')
-const { LexError, LexErrorWithSourceMap } = require('./nako_lex_error')
-const { NakoSyntaxErrorWithSourceMap } = require('./nako_syntax_error')
-
+const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoSyntaxErrorWithSourceMap } = require('./nako_errors')
 /**
  * @typedef {{
  *   type: string;

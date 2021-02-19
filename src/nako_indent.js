@@ -1,4 +1,4 @@
-const NakoIndentError = require('./nako_indent_error')
+const { NakoIndentError } = require('./nako_errors')
 const NakoPrepare = require('./nako_prepare')
 
 /**

@@ -2,7 +2,7 @@
  * なでしこの構文解析のためのユーティリティクラス
  */
 
-const { NakoSyntaxError } = require('./nako_syntax_error')
+const { NakoSyntaxError } = require('./nako_errors')
 
 class NakoParserBase {
   constructor () {

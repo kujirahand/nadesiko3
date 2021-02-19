@@ -1,4 +1,4 @@
-const NakoRuntimeError = require('../src/nako_runtime_error')
+const { NakoRuntimeError } = require('../src/nako_errors')
 const PluginDateTime = {
   '初期化': {
     type: 'func',

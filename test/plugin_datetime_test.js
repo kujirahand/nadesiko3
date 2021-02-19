@@ -1,6 +1,6 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
-const NakoRuntimeError = require('../src/nako_runtime_error')
+const {NakoRuntimeError} = require('../src/nako_errors')
 const PluginDateTime = require('../src/plugin_datetime')
 
 describe('plugin_datetime_test', () => {

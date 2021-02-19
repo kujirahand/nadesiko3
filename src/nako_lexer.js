@@ -14,7 +14,7 @@ const josiRE = josi.josiRE
 const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
 
-const {LexError} = require('./nako_lex_error')
+const {LexError} = require('./nako_errors')
 
 /**
  * @typedef {import('./nako3').TokenWithSourceMap} TokenWithSourceMap

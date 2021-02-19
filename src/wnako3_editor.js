@@ -1,9 +1,8 @@
 /** なでしこのtokenのtypeをscope（CSSのクラス名）に変換する。 */
 
-const WebNakoCompiler = require("./wnako3")
-const { OffsetToLineColumn } = require("./nako_source_mapping")
-const { LexError } = require("./nako_lex_error")
-const NakoIndentError = require("./nako_indent_error")
+const WebNakoCompiler = require('./wnako3')
+const { OffsetToLineColumn } = require('./nako_source_mapping')
+const { LexError, NakoIndentError } = require('./nako_errors')
 const { getBlockStructure, getIndent, countIndent, isIndentSyntaxEnabled } = require('./nako_indent')
 const NakoPrepare = require('./nako_prepare')
 
