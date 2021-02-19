@@ -54,6 +54,12 @@ const lexer = new NakoLexer()
  *   startOffset: number | null
  *   endOffset: number | null
  *   rawJosi?: string
+ *   end?: {
+ *     startOffset: number | null
+ *     endOffset: number | null
+ *     line?: number
+ *     column?: number
+ *   }
  * }} Ast
  * 
  * @typedef {(
