@@ -1,6 +1,5 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
-const NakoRuntimeError = require('../src/nako_runtime_error')
 const PluginKansuji = require('../src/plugin_kansuji.js')
 
 describe('plugin_kansuji_test', () => {

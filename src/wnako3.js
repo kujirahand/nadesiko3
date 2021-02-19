@@ -1,7 +1,7 @@
 // nadesiko for web browser
 // wnako3.js
 const NakoCompiler = require('./nako3')
-const NakoRequire = require('./nako_require_helper')
+const { NakoImportError } = require('./nako_errors')
 const PluginBrowser = require('./plugin_browser')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 const { setupEditor } = require('./wnako3_editor')
@@ -10,8 +10,6 @@ class WebNakoCompiler extends NakoCompiler {
   constructor () {
     super()
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
-    this.beforeParseCallback = this.beforeParse
-    this.requireHelper = new NakoRequire(this)
   }
 
   /**
@@ -25,10 +23,64 @@ class WebNakoCompiler extends NakoCompiler {
       let script = scripts[i]
       if (script.type.match(NAKO_SCRIPT_RE)) {
         nakoScriptCount++
-        this.run(script.text)
+        this.run(script.text, `script${i}.nako3`)
       }
     }
     console.log('実行したなでしこの個数=', nakoScriptCount)
+  }
+
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {string} [preCode]
+   * @returns {Promise<unknown>}
+   */
+  async loadDependencies(code, filename, preCode = '') {
+    return super.loadDependencies(code, filename, preCode, {
+      readJs: (filePath, token) => {
+        return {
+          sync: false,
+          value: (async () => {
+            if (!filePath.startsWith('http://') && !filePath.startsWith('https://')) {
+              throw new Error('ブラウザ版のなでしこの取り込み文の引数には https:// か http:// で始まるアドレスを指定してください。')
+            }
+            const res = await fetch(filePath)
+            if (!res.ok) {
+              throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
+            }
+            const text = await res.text()
+            if (text.includes('navigator.nako3.addPluginObject')) {
+              window.eval(text)
+              return {}
+            }
+            throw new Error('ダウンロードしたファイルの中に文字列 "navigator.nako3.addPluginObject" が存在しません。現在、ブラウザ版のなでしこ言語v3は自動登録するプラグインのみをサポートしています。')
+          })()
+        }
+      },
+      readNako3: (filePath, token) => {
+        return {
+          sync: false,
+          value: (async () => {
+            const res = await fetch(filePath)
+            if (!res.ok) {
+              throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
+            }
+            return await res.text()
+          })()
+        }
+      },
+      resolvePath: (name) => {
+        // query string を除外するためにURLを使用
+        const pathname = new URL(name).pathname
+        if (pathname.endsWith('.js') || pathname.endsWith('.js.txt')) {
+          return { filePath: name, type: 'js' }
+        }
+        if (pathname.endsWith('.nako3') || pathname.endsWith('.nako3.txt')) {
+          return { filePath: name, type: 'nako3' }
+        }
+        return { filePath: name, type: 'invalid' }
+      },
+    })
   }
 
   /**
@@ -76,100 +128,6 @@ class WebNakoCompiler extends NakoCompiler {
     return code
   }
 
-  requireNako3 (tokens, filepath, nako3) {
-    const importNako3 = filename => {
-      return new Promise((resolve, reject) => {
-        fetch(filename, { mode: 'no-cors' })
-        .then(res => {
-          if (res.ok) {
-            return res.text()
-          }
-          reject(new Error(`fail load nako3(${filename})`))
-        }).then(txt => {
-          const subtokens = nako3.rawtokenize(txt, 0, filename)
-          resolve(this.requireHelper.affectRequire(subtokens, filename, this.requireHelper.resolveNako3forBrowser.bind(this.requireHelper), importNako3))
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    }
-    return this.requireHelper.affectRequire(tokens, filepath, this.requireHelper.resolveNako3forBrowser.bind(this.requireHelper), importNako3)
-  }
-
-  requirePlugin (tokens, nako3) {
-    if (this.requireHelper.pluginlist.length > 0) {
-      const funclist = nako3.funclist
-      const filelist = this.requireHelper.pluginlist
-      return new Promise((allresolve, allreject) => {
-        const pluginpromise = []
-        filelist.forEach(filename => {
-          pluginpromise.push(new Promise((resolve, reject) => {
-            fetch(filename, { mode: 'no-cors' })
-            .then(res => {
-              if (res.ok) {
-                return res.text()
-              }
-              reject(new Error(`fail load plugin(${filename})`))
-            }).then(txt => {
-              resolve(txt)
-            }).catch(err => {
-              reject(err)
-            })
-          }))
-        })
-
-        Promise.all(pluginpromise).then(modules => {
-          modules.forEach(module => {
-            if (/navigator\.nako3\.addPluginObject/.test(module)) {
-              // for auto registration plugin, exetute only
-              window.eval(module)
-            } else
-            if (/module\.exports\s*=/.test(module)) {
-              // for commonjs structure plugin
-              allreject(new Error('no suppout type plugin(commonjs)'))
-            } else {
-              allreject(new Error('no suppout type plugin(unknown)'))
-            }
-            /*
-            // for module structure plugin, regist each expoted key
-            Object.keys(module).forEach((key) => {
-              console.log('[Plugin]' + key)
-              nako3.addPluginObject(key, module[key])
-            })
-            */
-          })
-          allresolve(tokens)
-        }).catch(err => {
-          allreject(err)
-        })
-        //  throw new Error('no support dynamic import at browser envrionment')
-      })
-    }
-    return tokens
-  }
-
-  // トークンリストからプラグインのインポートを抜き出して処理する
-  beforeParse (opts) {
-    const tokens = opts.tokens
-    const nako3 = opts.nako3
-    const filepath = opts.filepath
-
-    this.requireHelper.reset()
-
-    const rslt = this.requireNako3(tokens, filepath, nako3)
-    if (rslt instanceof Promise) {
-      return new Promise((resolve, reject) => {
-        rslt.then(subtokens => {
-          resolve(this.requirePlugin(subtokens, nako3))
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    } else {
-      return this.requirePlugin(rslt, nako3)
-    }
-  }
-
   /**
    * 指定したidのHTML要素をなでしこ言語のエディタにする。
    * @param {string} id div要素のid
@@ -182,7 +140,7 @@ class WebNakoCompiler extends NakoCompiler {
 }
 
 // ブラウザなら navigator.nako3 になでしこを登録
-if (typeof (navigator) === 'object') {
+if (typeof (navigator) === 'object' && !navigator.exportWNako3) {
   const nako3 = navigator.nako3 = new WebNakoCompiler()
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {

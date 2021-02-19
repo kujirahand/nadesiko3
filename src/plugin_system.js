@@ -1,4 +1,4 @@
-const NakoRuntimeError = require('./nako_runtime_error')
+const {NakoRuntimeError} = require('./nako_errors')
 
 const PluginSystem = {
   '初期化': {

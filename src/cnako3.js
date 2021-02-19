@@ -6,9 +6,8 @@ const fs = require('fs')
 const exec = require('child_process').exec
 
 const path = require('path')
-const NakoCompiler = require(path.join(__dirname, 'nako3'))
-const NakoRequire = require(path.join(__dirname, 'nako_require_helper'))
-const PluginNode = require(path.join(__dirname, 'plugin_node'))
+const NakoCompiler = require('./nako3')
+const PluginNode = require('./plugin_node')
 
 class CNako3 extends NakoCompiler {
   constructor () {
@@ -16,8 +15,6 @@ class CNako3 extends NakoCompiler {
     this.silent = false
     this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
-    this.beforeParseCallback = this.beforeParse
-    this.requireHelper = new NakoRequire(this)
   }
 
   // CNAKO3で使えるコマンドを登録する
@@ -220,63 +217,42 @@ class CNako3 extends NakoCompiler {
     console.log(fs.readFileSync(path.join(__dirname, 'browsers.md'), 'utf-8'))
   }
 
-  requireNako3 (tokens, filepath, nako3) {
-    const importNako3 = filename => {
-      const txt = fs.readFileSync(filename, { encoding: 'utf-8' })
-      const subtokens = nako3.rawtokenize(txt, 0, filename)
-      return this.requireHelper.affectRequire(subtokens, filename, this.requireHelper.resolveNako3forNodejs.bind(this.requireHelper), importNako3)
-    }
-    return this.requireHelper.affectRequire(tokens, filepath, this.requireHelper.resolveNako3forNodejs.bind(this.requireHelper), importNako3)
-  }
-
-  requirePlugin (tokens, nako3) {
-    if (this.requireHelper.pluginlist.length > 0) {
-      const funclist = nako3.funclist
-      const filelist = this.requireHelper.pluginlist
-      for (let i = 0;i < filelist.length; i++) {
-        const pname = filelist[i]
-        let fullpath = pname
-        try {
-          let plugmod = {}
-          // プラグインフォルダを検索
-          fullpath = this.findPluginFile(fullpath)
-          // モジュールを実際に取り込む
-          plugmod = require(fullpath)
-          this.addPluginFile(pname, fullpath, plugmod)
-          // this.funclistを更新する
-          for (const key in plugmod)
-            {funclist[key] = plugmod[key]}
-
-        } catch (e) {
-          // console.log(e)
-          throw new Error(
-            '[取込エラー] プラグイン『' + pname + '』を取り込めません。' +
-            '(path=' + fullpath + ') ' + e.message)
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {string} preCode
+   */
+  loadDependencies(code, filename, preCode) {
+    // 同期的に読み込む
+    const tasks = super.loadDependencies(code, filename, preCode, {
+      resolvePath: (name) => {
+        if (/\.js(\.txt)?$/.test(name) || /^[^\.]*$/.test(name)) {
+          return { filePath: path.resolve(this.findPluginFile(name, path.dirname(this.filename))), type: 'js' }
         }
-      }
+        if (/\.nako3?(\.txt)?$/.test(name)) {
+          return { filePath: path.resolve(name), type: 'nako3' }
+        }
+        return { filePath: name, type: 'invalid' }
+      },
+      readNako3: (name) => ({ sync: true, value: fs.readFileSync(name).toString()}),
+      readJs: (name) => ({ sync: true, value: require(name) }),
+    })
+    if (tasks !== undefined) {
+      throw new Error('assertion error')
     }
-    return tokens
   }
 
-  // トークンリストからプラグインのインポートを抜き出して処理する
-  beforeParse (opts) {
-    const tokens = opts.tokens
-    const nako3 = opts.nako3
-    const filepath = opts.filepath
-    this.requireHelper.reset()
-
-    const rslt = this.requireNako3(tokens, filepath, nako3)
-    if (rslt instanceof Promise) {
-      return new Promise((resolve, reject) => {
-        rslt.then(subtokens => {
-          resolve(this.requirePlugin(subtokens, nako3))
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    } else {
-      return this.requirePlugin(rslt, nako3)
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  runReset(code, fname, preCode = '') {
+    const tasks = this.loadDependencies(code, fname, preCode)
+    if (tasks !== undefined) {
+      throw new Error('assertion error')
     }
+    return super.runReset(code, fname, preCode)
   }
 
   /**

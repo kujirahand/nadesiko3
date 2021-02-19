@@ -1,9 +1,8 @@
 /** なでしこのtokenのtypeをscope（CSSのクラス名）に変換する。 */
 
-const WebNakoCompiler = require("./wnako3")
-const { OffsetToLineColumn } = require("./nako_source_mapping")
-const { LexError } = require("./nako_lex_error")
-const NakoIndentError = require("./nako_indent_error")
+const WebNakoCompiler = require('./wnako3')
+const { OffsetToLineColumn } = require('./nako_source_mapping')
+const { LexError, NakoIndentError } = require('./nako_errors')
 const { getBlockStructure, getIndent, countIndent, isIndentSyntaxEnabled } = require('./nako_indent')
 const NakoPrepare = require('./nako_prepare')
 
@@ -188,21 +187,6 @@ function getDocumentationHTML(token, nako3) {
 const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row) }]
 
 /**
- * 一時的にbeforeParseCallbackを無効化する。beforeParseCallbackはHTTPリクエストを飛ばしうるため、
- * セキュリティの観点から、wユーザーの操作を介さずにNakoCompilerのメソッドを呼ぶときにはこのメソッドで囲むべき。
- * @type {<T>(nako3: WebNakoCompiler, f: () => T) => T}
- */
-function withoutBeforeParseCallback (nako3, f) {
-    const tmp = nako3.beforeParseCallback
-    nako3.beforeParseCallback = (opts) => opts.tokens
-    try {
-        return f()
-    } finally {
-        nako3.beforeParseCallback = tmp
-    }
-}
-
-/**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param {string[]} lines
  * @param {WebNakoCompiler} nako3
@@ -211,10 +195,8 @@ function tokenize (lines, nako3) {
     const code = lines.join('\n')
 
     // lexerにかける
-    // 重要: beforeParseCallbackを無効化しないと、ページを見ただけでシンタックスハイライトのために
-    // 取り込み文が実行されてfetchが飛んでしまい、セキュリティ的に危険。
     nako3.reset()
-    const lexerOutput = withoutBeforeParseCallback(nako3, () => nako3.lex(code, 'main.nako3'))
+    const lexerOutput = nako3.lex(code, 'main.nako3', undefined, true)
 
     // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
     /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
@@ -878,7 +860,7 @@ class LanguageFeatures {
             // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
             try {
                 nako3.reset()
-                tokens = withoutBeforeParseCallback(nako3, () => nako3.lex(line, 'completion.nako3').tokens)
+                tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
                     .filter((t) => t.type !== 'eol' && t.type !== 'eof')
             } catch (e) {
                 if (!(e instanceof NakoIndentError || e instanceof LexError)) {

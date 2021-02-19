@@ -1,6 +1,6 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
-const NakoRuntimeError = require('../src/nako_runtime_error')
+const {NakoRuntimeError} = require('../src/nako_errors')
 
 describe('basic', () => {
   const nako = new NakoCompiler()

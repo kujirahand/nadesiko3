@@ -11,10 +11,13 @@ export default class EditorButtonComponent extends React.Component {
   async onRunButtonClick () {
     try {
       // なでしこの関数をカスタマイズ --- TODO: なでしこの追加命令は edit_main.jsxで書いているので別途関数を作ってそこでまとめるように
-      this.props.nako3.setFunc('表示', [['と', 'を', 'の']], this.props.onInformationChanged)
+      /** @type {import('../src/wnako3')} */
+      const nako3 = this.props.nako3
+      nako3.setFunc('表示', [['と', 'を', 'の']], this.props.onInformationChanged)
       window.localStorage['nako3/editor/code'] = this.props.code
-      await this.props.nako3.runAsync(this.preCode + this.props.code, 'run-in-editor.nako3')
-      this.props.onUsedFuncsChanged(this.props.nako3.usedFuncs)
+      await nako3.loadDependencies(this.preCode + this.props.code, 'run-in-editor.nako3', this.preCode)
+      nako3.run(this.preCode + this.props.code, 'run-in-editor.nako3', this.preCode)
+      this.props.onUsedFuncsChanged(nako3.usedFuncs)
     } catch (e) {
       this.props.onErrorChanged(e)
     }
@@ -22,8 +25,11 @@ export default class EditorButtonComponent extends React.Component {
 
   async onTestButtonClick () {
     try {
+      /** @type {import('../src/wnako3')} */
+      const nako3 = this.props.nako3
       window.localStorage['nako3/editor/code'] = this.props.code
-      await this.props.nako3.testAsync(this.preCode + this.props.code, 'run-in-editor.nako3')
+      await nako3.loadDependencies(this.preCode + this.props.code, 'run-in-editor.nako3', this.preCode)
+      await nako3.test(this.preCode + this.props.code, 'run-in-editor.nako3', this.preCode)
     } catch (e) {
       this.props.onErrorChanged(e)
     }
