@@ -2,6 +2,7 @@ const multer =  require('multer')
 const bodyParserRaw = require('body-parser/lib/types/raw')
 const bodyParserText = require('body-parser/lib/types/text')
 const bodyParserUrlencoded =  require('body-parser/lib/types/urlencoded')
+const express = require('express')
 
 const storage = multer.diskStorage({
   // ファイルの保存先を指定
@@ -16,93 +17,77 @@ const storage = multer.diskStorage({
 
 const parserUpload = multer({ storage: storage })
 const parserMultipart = multer().none()
-const parserUrlencoded = bodyParserUrlencoded({extended: false})
 const parserText = bodyParserText({type: ['application/x-www-form-urlencoded','multipart/form-data']})
 const parserRaw = bodyParserRaw({})
 
 var CustomMiddlewareFactory = function (config) {
-  return function (request, response, /* next */) {
-    if (! /^\/custom\//.test(request.url)) {
-      response.writeHead(404)
-      return response.end('not found other in custom:'+request.url)
-    } else
-    if (/^\/custom\/delayedimage\//.test(request.url)) {
-      const filename = request.url.substring(20)
-      setTimeout(() => {
-        response.setHeader('Location', filename);
-        response.writeHead(307)
-        return response.end()
-      }, 500)
-      return
-    } else
-    if (/^\/custom\/ok(\/json)?$/.test(request.url)) {
-      let data = 'OK'
-      if (/^\/custom\/ok\/json$/.test(request.url)) {
-        data = JSON.stringify(data)
-      }
-      response.writeHead(200)
-      return response.end(data)
-    } else
-    if (/^\/custom\/uploadimage$/.test(request.url)) {
-      const rawtype = request.headers['content-type']
-      const type = rawtype.split(';')[0]
-      if (type==='multipart/form-data') {
-        parserUpload.single('file')(request, response, (err) => {
-          if (err) {
-            console.log('parse error'+(!!err?' and has error':''))
-            console.log(err)
-            return response.end(err)
-          }
-          let data = "OK"
-          response.writeHead(200)
-          return response.end(data)
-        })
-      } else {
-        console.log(type)
-        response.writeHead(501)
-        return response.end('content-type must multipart/form-data')
-      }
-      return;
-    } else
-    if (/^\/custom\/echo(\/json)?$/.test(request.url)) {
-      const rawtype = request.headers['content-type']
-      const type = rawtype.split(';')[0]
-      const echos = (err) => {
+  // /custom/*
+  const custom = express.Router()
+
+  custom.all('/delayedimage/:name', (req, res) => {
+    const filename = '/' + req.params.name
+    setTimeout(() => {
+      res.setHeader('Location', filename);
+      res.status(307).end()
+    }, 500)
+  })
+  custom.all('/ok', (req, res) => {
+    console.log('test')
+    res.send('OK')
+  })
+  custom.all('/ok/json', (req, res) => {
+    res.json('OK')
+  })
+  custom.all('/uploadimage', (req, res) => {
+    const type = req.headers['content-type'].split(';')[0]
+    if (type === 'multipart/form-data') {
+      parserUpload.single('file')(req, res, (err) => {
         if (err) {
           console.log('parse error'+(!!err?' and has error':''))
           console.log(err)
-          return response.end(err)
+          return res.end(err)
         }
-        let data = request.body
-        if (/^\/custom\/echo\/json$/.test(request.url) || typeof data !== 'string') {
-          data = JSON.stringify(data)
-        }
-        response.writeHead(200)
-        return response.end(data)
-      }
-      if (type==='application/x-www-form-urlencoded') {
-        parserText(request, response, echos)
-//        parserUrlencoded(request, response, echos)
-      } else
-      if (type==='text/plain') {
-        parserText(request, response, echos)
-      } else
-      if (type==='application/octet-stream') {
-        parserRaw(request, response, echos)
-      } else
-      if (type==='multipart/form-data') {
-//        parserText(request, response, echos)
-        parserMultipart(request, response, echos)
-      } else {
-        console.log(type)
-        response.writeHead(501)
-        return response.end('unsupport content-type')
-      }
-      return;
+        return res.end('OK')
+      })
+    } else {
+      console.log(type)
+      return res.status(501).end('content-type must multipart/form-data')
     }
-    response.writeHead(404)
-    return response.end('not found content at:'+request.url)
-  }
+  })
+  custom.all(['/echo', '/echo/json'], (req, res) => {
+    const type = req.headers['content-type'].split(';')[0]
+    const echos = (err) => {
+      if (err) {
+        console.log('parse error'+(!!err?' and has error':''))
+        console.log(err)
+        return res.end(err)
+      }
+      let data = req.body
+      if (req.url.endsWith('/json') || typeof data !== 'string') {
+        data = JSON.stringify(data)
+      }
+      res.writeHead(200)
+      return res.end(data)
+    }
+    switch (type) {
+      case 'application/x-www-form-urlencoded':
+      case 'text/plain':
+        parserText(req, res, echos)
+        break
+      case 'application/octet-stream':
+        parserRaw(req, res, echos)
+        break
+      case 'multipart/form-data':
+        parserMultipart(req, res, echos)
+        break
+      default:
+        res.status(501).send('unsupport content-type')
+    }
+  })
+
+  const app = express()
+  app.use('/custom', custom)
+  return app
 }
 
 module.exports = function(config) {
