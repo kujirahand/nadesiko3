@@ -138,9 +138,9 @@ describe('basic', () => {
     try {
       nako.runReset(`「こんにちは」」と表示する`)
     } catch (e) {
-      // 2つめの '」' の位置
-      assert.strictEqual(e.startOffset, 7)
-      assert.strictEqual(e.endOffset, 8)
+      // 文字列の位置
+      assert.strictEqual(e.startOffset, 0)
+      assert.strictEqual(e.endOffset, 7)
     }
   })
   it('エラー位置の取得 - "_"がある場合', () => {
@@ -252,4 +252,5 @@ describe('basic', () => {
 ここまで
 4を表示
 `, '1\n2\n3\n4')
-  })})
+  })
+})

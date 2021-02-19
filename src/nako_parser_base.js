@@ -10,8 +10,14 @@ class NakoParserBase {
     this.debug = false || this.debugAll
     this.debugStack = false || this.debugAll
     this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
-    this.filename = ''
     this.init()
+    /** @type {import('./nako3').TokenWithSourceMap[]} */
+    this.tokens = []
+    /** @type {import('./nako3').Ast[]} */
+    this.stack = []
+    this.index = 0
+    /** @type {import('./nako3').Ast[]} */
+    this.y = []
   }
 
   init () {
@@ -26,10 +32,6 @@ class NakoParserBase {
     this.y = [] // accept()で解析済みのトークンを配列で得るときに使う
   }
 
-  setFilename (fname) {
-    this.filename = fname
-  }
-
   setFuncList (funclist) {
     this.funclist = funclist
   }
@@ -37,6 +39,7 @@ class NakoParserBase {
   /**
    * 特定の助詞を持つ要素をスタックから一つ下ろす、指定がなければ末尾を下ろす
    * @param josiList 下ろしたい助詞の配列
+   * @returns {import('./nako3').Ast | null | undefined}
    */
   popStack (josiList) {
     if (!josiList) {return this.stack.pop()}
@@ -156,6 +159,7 @@ class NakoParserBase {
 
   /**
    * カーソル語句を取得して、カーソルを後ろに移動する
+   * @returns {import('./nako3').TokenWithSourceMap | null}
    */
   get () {
     if (this.isEOF()) {return null}
@@ -166,6 +170,9 @@ class NakoParserBase {
     if (this.index > 0) {this.index--}
   }
 
+  /**
+   * @returns {import('./nako3').TokenWithSourceMap | null}
+   */
   peek (i = 0) {
     if (this.isEOF()) {return null}
     return this.tokens[this.index + i]

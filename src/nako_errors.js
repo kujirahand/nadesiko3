@@ -75,30 +75,35 @@ class LexErrorWithSourceMap extends LexError {
 class NakoSyntaxError extends NakoError {
   /**
    * @param {string} msg
-   * @param {number} line
-   * @param {string} filename
+   * @param {import("./nako3").Ast | null | undefined} first
+   * @param {import("./nako3").Ast | null | undefined} [last]
    */
-  constructor (msg, line, filename) {
+  static fromNode(msg, first, last) {
+    if (!first) {
+      return new NakoSyntaxError(msg, undefined, null, null, undefined)
+    }
+    const startOffset = typeof first.startOffset === 'number' ? first.startOffset : null
+    const endOffset =
+      (last && typeof last.endOffset === 'number') ?
+        last.endOffset :
+        (typeof first.endOffset === 'number' ? first.endOffset : null)
+    return new NakoSyntaxError(msg, first.line, startOffset, endOffset, first.file)
+  }
+
+  /**
+   * @param {string} msg
+   * @param {number | undefined} line
+   * @param {number | null} startOffset
+   * @param {number | null} endOffset
+   * @param {string | undefined} filename
+   */
+  constructor (msg, line, startOffset, endOffset, filename) {
     super('文法エラー', msg, filename, line)
     this.filename = filename
     this.line = line
     this.msg = msg
-  }
-}
-
-class NakoSyntaxErrorWithSourceMap extends NakoSyntaxError {
-  /**
-   *@param {import('./nako3').TokenWithSourceMap} token
-   *@param {number} startOffset
-   *@param {number} endOffset
-   *@param {NakoSyntaxError} error
-   */
-  constructor(token, startOffset, endOffset, error) {
-      super(error.msg, error.line, error.filename)
-      this.token = token
-      this.startOffset = startOffset
-      this.endOffset = endOffset
-      this.error = error
+    this.startOffset = startOffset
+    this.endOffset = endOffset
   }
 }
 
@@ -145,7 +150,6 @@ module.exports = {
   LexError,
   LexErrorWithSourceMap,
   NakoSyntaxError,
-  NakoSyntaxErrorWithSourceMap,
   NakoRuntimeError,
   NakoImportError,
 }
