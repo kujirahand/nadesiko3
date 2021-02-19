@@ -374,10 +374,10 @@ class NakoCompiler {
    * @param {Set<string>} [includeGuard]
    * @returns {void}
    */
-  replaceRequireStatements(tokens, includeGuard = new Set()) {
+  replaceRequireStatements(tokens, ignoreRequireStatements = false, includeGuard = new Set()) {
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
       // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。
-      if (includeGuard.has(r.value)) {
+      if (includeGuard.has(r.value) || ignoreRequireStatements) {
         tokens.splice(r.start, r.end - r.start)
         continue
       }
@@ -387,7 +387,7 @@ class NakoCompiler {
       }
       const children = this.rawtokenize(this.dependencies[filePath].content, 0, filePath)
       includeGuard.add(r.value)
-      this.replaceRequireStatements(children, includeGuard)
+      this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard)
       tokens.splice(r.start, r.end - r.start, ...children)
     }
   }
@@ -398,12 +398,12 @@ class NakoCompiler {
    * @param {string} [preCode]
    * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
    */
-  lex(code, filename, preCode = '') {
+  lex(code, filename, preCode = '', ignoreRequireStatements = false) {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
 
     // require文を再帰的に置換する
-    this.replaceRequireStatements(tokens)
+    this.replaceRequireStatements(tokens, ignoreRequireStatements, undefined)
 
     // convertTokenで消されるコメントのトークンを残す
     /** @type {TokenWithSourceMap[]} */

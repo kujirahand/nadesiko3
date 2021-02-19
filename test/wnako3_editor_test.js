@@ -52,6 +52,9 @@ describe('wnako3_editor_test', () => {
             assert(tokens[1][2].type.includes('numeric'))
             assert(tokens[1][3].type.includes('function'))
         })
+        it('取り込み文を無視する', () => {
+            tokenize('!「http://www.example.com/non_existent_file.nako3」を取り込む。'.split('\n'), new NakoCompiler())
+        })
     })
     describe('ドキュメントのホバー', () => {
         it('プラグイン関数の助詞のドキュメントを表示する', () => {

@@ -196,7 +196,7 @@ function tokenize (lines, nako3) {
 
     // lexerにかける
     nako3.reset()
-    const lexerOutput = nako3.lex(code, 'main.nako3')
+    const lexerOutput = nako3.lex(code, 'main.nako3', undefined, true)
 
     // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
     /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
@@ -860,7 +860,7 @@ class LanguageFeatures {
             // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
             try {
                 nako3.reset()
-                tokens = nako3.lex(line, 'completion.nako3').tokens
+                tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
                     .filter((t) => t.type !== 'eol' && t.type !== 'eof')
             } catch (e) {
                 if (!(e instanceof NakoIndentError || e instanceof LexError)) {
