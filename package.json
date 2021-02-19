@@ -9,7 +9,7 @@
     "nako3edit": "tools/nako3edit/run.js"
   },
   "scripts": {
-    "test": "cross-env TZ=Asia/Tokyo mocha",
+    "test": "cross-env TZ=Asia/Tokyo mocha --exit",
     "test:browser": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test_browser/karma.config.js",
     "test:bundled": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test_bundled/karma.config.js",
     "test:bundled:watch": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --auto-watch --browsers FirefoxCustom test_bundled/karma.config.js",
