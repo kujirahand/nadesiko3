@@ -96,6 +96,14 @@ class NakoCompiler {
     this.addPluginObject('PluginSystem', PluginSystem)
     this.addPluginObject('PluginMath', PluginMath)
     this.addPluginObject('PluginAssert', PluginTest)
+
+    /**
+     * 取り込み文を置換するためのオブジェクト。
+     * 正規化されたファイル名がキーになり、取り込み文の引数に指定された正規化されていないファイル名はaliasに入れられる。
+     * JavaScriptファイルによるプラグインの場合、contentは空文字列。
+     * @type {Record<string, { content: string, alias: Set<string> }>}
+     */
+    this.dependencies = {}
   }
 
   get log () {
@@ -106,6 +114,93 @@ class NakoCompiler {
 
   static getHeader () {
     return NakoGen.getHeader()
+  }
+
+  /**
+   * ファイル内のrequire文の位置を列挙する。出力の配列はstartでソートされている。
+   * @param {TokenWithSourceMap[]} tokens rawtokenizeの出力
+   */
+  static listRequireStatements(tokens) {
+    /** @type {{ start: number, end: number, value: string, firstToken: TokenWithSourceMap, lastToken: TokenWithSourceMap }[]} */
+    const requireStatements = []
+    for (let i = 0; i + 2 < tokens.length; i++) {
+      // not (string|string_ex) '取り込み'
+      if (!(tokens[i].type === 'not' &&
+        (tokens[i + 1].type === 'string' || tokens[i + 1].type === 'string_ex') &&
+        tokens[i + 2].value === '取込')) {
+        continue
+      }
+      requireStatements.push({ start: i, end: i + 3, value: tokens[i + 1].value + '', firstToken: tokens[i], lastToken: tokens[i + 2] })
+      i += 2
+    }
+    return requireStatements
+  }
+
+  /**
+   * プログラムが依存するファイルを再帰的に取得する。
+   * - .jsであれば評価してthis.addPluginFileを呼び出し、.nako3であればファイルをfetchしてdependenciesに保存し再帰する。
+   * - resolvePathはファイルを検索して正規化する必要がある。
+   * - needNako3やneedJsがPromiseを返すなら並列処理し、処理の終了を知らせるためのPromiseを返す。そうでなければ同期的に処理する。
+   *   （`instanceof Promise` はpolyfillで動作しない場合があるため、Promiseかどうかを明示する必要がある。）
+   * @param {string} code
+   * @param {string} filename
+   * @param {string} preCode
+   * @param {{
+   *     resolvePath: (name: string) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
+   *     readNako3: (filePath: string) => { sync: true, value: string } | { sync: false, value: Promise<string> }
+   *     readJs: (filePath: string) => { sync: true, value: string } | { sync: false, value: Promise<object> }
+   * }} tools
+   * @returns {Promise<unknown> | void}
+   */
+  loadDependencies(code, filename, preCode, tools) {
+    // 最初に dependencies を空にする。
+    this.dependencies = {}
+    const compiler = new NakoCompiler()
+
+    /** @param {string} code @param {string} filename @param {string} preCode */
+    const inner = (code, filename, preCode) => {
+      /** @type {Promise<unknown>[]} */
+      const tasks = []
+      for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value) }))) {
+        // 2回目以降の読み込み
+        if (this.dependencies.hasOwnProperty(item.filePath)) {
+          this.dependencies[item.filePath].alias.add(item.value)
+          continue
+        }
+
+        // 初回の読み込み
+        this.dependencies[item.filePath] = { content: '', alias: new Set([item.value]) }
+        if (item.type === 'js') {
+          // jsならプラグインとして読み込む。
+          const obj = tools.readJs(item.filePath)
+          if (obj.sync) {
+            this.addPluginFile(item.value, item.filePath, obj.value)
+          } else {
+            tasks.push(obj.value.then((res) => { this.addPluginFile(item.value, item.filePath, res) }))
+          }
+        } else if (item.type === 'nako3') {
+          // nako3ならファイルを読んでdependenciesに保存する。
+          const content = tools.readNako3(item.filePath)
+          if (content.sync) {
+            this.dependencies[item.filePath].content = content.value
+            console.log(content.value, item.filePath, '')
+          } else {
+            tasks.push(content.value.then((res) => {
+              this.dependencies[item.filePath].content = res
+              return inner(res, item.filePath, '')
+            }))
+          }
+        } else {
+          throw new LexErrorWithSourceMap(`ファイル ${item.value} を読み込めません。未対応の拡張子です。`, 0, 1, item.firstToken.startOffset, item.lastToken.endOffset, item.firstToken.line, item.firstToken.file)
+        }
+      }
+
+      if (tasks.length > 0) {
+        return Promise.all(tasks)
+      }
+    }
+
+    return inner(code, filename, preCode)
   }
 
   /**
@@ -273,14 +368,43 @@ class NakoCompiler {
   }
 
   /**
+   * 再帰的にrequire文を置換する。
+   * .jsであれば削除し、.nako3であればそのファイルのトークン列で置換する。
+   * @param {TokenWithSourceMap[]} tokens
+   * @param {Set<string>} [includeGuard]
+   * @returns {void}
+   */
+  replaceRequireStatements(tokens, includeGuard = new Set()) {
+    for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
+      // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。
+      if (includeGuard.has(r.value)) {
+        tokens.splice(r.start, r.end - r.start)
+        continue
+      }
+      const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
+      if (filePath === undefined) {
+        throw new LexErrorWithSourceMap(`ファイル ${r.value} が読み込まれていません。`, 0, 1, r.firstToken.startOffset, r.firstToken.endOffset, r.firstToken.line, r.firstToken.file)
+      }
+      const children = this.rawtokenize(this.dependencies[filePath].content, 0, filePath)
+      includeGuard.add(r.value)
+      this.replaceRequireStatements(children, includeGuard)
+      tokens.splice(r.start, r.end - r.start, ...children)
+    }
+  }
+
+  /**
    * @param {string} code
    * @param {string} filename
    * @param {string} [preCode]
    * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
    */
-  lex (code, filename, preCode = '') {
+  lex(code, filename, preCode = '') {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
+
+    // require文を再帰的に置換する
+    this.replaceRequireStatements(tokens)
+
     // convertTokenで消されるコメントのトークンを残す
     /** @type {TokenWithSourceMap[]} */
     const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")

@@ -29,6 +29,60 @@ class WebNakoCompiler extends NakoCompiler {
   }
 
   /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {string} [preCode]
+   * @returns {Promise<unknown>}
+   */
+  async loadDependencies(code, filename, preCode = '') {
+    return super.loadDependencies(code, filename, preCode, {
+      readJs: (filePath) => {
+        return {
+          sync: false,
+          value: (async () => {
+            if (!filePath.startsWith('http://') && !filePath.startsWith('https://')) {
+              throw new Error('ブラウザ版のなでしこの取り込み文の引数には https:// か http:// で始まるアドレスを指定してください。')
+            }
+            const res = await fetch(filePath)
+            if (!res.ok) {
+              throw new Error(`ファイル ${filePath} のダウンロードに失敗しました: ${res.statusText}`)
+            }
+            const text = await res.text()
+            if (text.includes('navigator.nako3.addPluginObject')) {
+              window.eval(text)
+              return {}
+            }
+            throw new Error('ダウンロードしたファイルの中に文字列 "navigator.nako3.addPluginObject" が存在しません。現在、ブラウザ版のなでしこ言語v3は自動登録するプラグインのみをサポートしています。')
+          })()
+        }
+      },
+      readNako3: (filePath) => {
+        return {
+          sync: false,
+          value: (async () => {
+            const res = await fetch(filePath)
+            if (!res.ok) {
+              throw new Error(`ファイル ${filePath} のダウンロードに失敗しました: ${res.statusText}`)
+            }
+            return await res.text()
+          })()
+        }
+      },
+      resolvePath: (name) => {
+        // query string を除外するためにURLを使用
+        const pathname = new URL(name).pathname
+        if (pathname.endsWith('.js') || pathname.endsWith('.js.txt')) {
+          return { filePath: name, type: 'js' }
+        }
+        if (pathname.endsWith('.nako3') || pathname.endsWith('.nako3.txt')) {
+          return { filePath: name, type: 'nako3' }
+        }
+        return { filePath: name, type: 'invalid' }
+      },
+    })
+  }
+
+  /**
    * type=なでしこ のスクリプトを自動実行するべきかどうかを返す
    * @returns {boolean} type=なでしこ のスクリプトを自動実行するべきかどうか
    */

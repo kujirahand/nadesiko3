@@ -218,6 +218,44 @@ class CNako3 extends NakoCompiler {
   }
 
   /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {string} preCode
+   */
+  loadDependencies(code, filename, preCode) {
+    // 同期的に読み込む
+    const tasks = super.loadDependencies(code, filename, preCode, {
+      resolvePath: (name) => {
+        if (/\.js(\.txt)?$/.test(name) || /^[^\.]*$/.test(name)) {
+          return { filePath: path.resolve(this.findPluginFile(name, path.dirname(this.filename))), type: 'js' }
+        }
+        if (/\.nako3?(\.txt)?$/.test(name)) {
+          return { filePath: path.resolve(name), type: 'nako3' }
+        }
+        return { filePath: name, type: 'invalid' }
+      },
+      readNako3: (name) => ({ sync: true, value: fs.readFileSync(name).toString()}),
+      readJs: (name) => ({ sync: true, value: require(name) }),
+    })
+    if (tasks !== undefined) {
+      throw new Error('assertion error')
+    }
+  }
+
+  /**
+   * @param {string} code
+   * @param {string} fname
+   * @param {string} [preCode]
+   */
+  runReset(code, fname, preCode = '') {
+    const tasks = this.loadDependencies(code, fname, preCode)
+    if (tasks !== undefined) {
+      throw new Error('assertion error')
+    }
+    return super.runReset(code, fname, preCode)
+  }
+
+  /**
    * プラグインファイルの検索を行う
    * @param pname
    * @return string フルパス
