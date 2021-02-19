@@ -15,8 +15,6 @@ export default class EditorButtonComponent extends React.Component {
       const nako3 = this.props.nako3
       nako3.setFunc('表示', [['と', 'を', 'の']], this.props.onInformationChanged)
       window.localStorage['nako3/editor/code'] = this.props.code
-      console.log(this.preCode + this.props.code)
-      console.log(nako3.funclist['カメ全消去'])
       await nako3.loadDependencies(this.preCode + this.props.code, 'run-in-editor.nako3', this.preCode)
       nako3.run(this.preCode + this.props.code, 'run-in-editor.nako3', this.preCode)
       this.props.onUsedFuncsChanged(nako3.usedFuncs)
