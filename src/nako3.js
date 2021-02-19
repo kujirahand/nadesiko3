@@ -147,7 +147,7 @@ class NakoCompiler {
    * @param {string} filename
    * @param {string} preCode
    * @param {{
-   *     resolvePath: (name: string) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
+   *     resolvePath: (name: string, token: TokenWithSourceMap) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
    *     readNako3: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<string> }
    *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<object> }
    * }} tools
@@ -162,7 +162,7 @@ class NakoCompiler {
     const inner = (code, filename, preCode) => {
       /** @type {Promise<unknown>[]} */
       const tasks = []
-      for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value) }))) {
+      for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken) }))) {
         // 2回目以降の読み込み
         if (this.dependencies.hasOwnProperty(item.filePath)) {
           this.dependencies[item.filePath].alias.add(item.value)
@@ -184,7 +184,6 @@ class NakoCompiler {
           const content = tools.readNako3(item.filePath, item.firstToken)
           if (content.sync) {
             this.dependencies[item.filePath].content = content.value
-            console.log(content.value, item.filePath, '')
           } else {
             tasks.push(content.value.then((res) => {
               this.dependencies[item.filePath].content = res

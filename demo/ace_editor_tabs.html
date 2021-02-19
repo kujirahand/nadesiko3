@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nadesiko3 Editor</title>
+    <link rel="stylesheet" href="../src/wnako3_editor.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js" integrity="sha512-8qx1DL/2Wsrrij2TWX5UzvEaYOFVndR7BogdpOyF4ocMfnfkw28qt8ULkXD9Tef0bLvh3TpnSAljDC7uyniEuQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-options.min.js" integrity="sha512-oHR+WVzBiVZ6njlMVlDDLUIOLRDfUUfRQ55PfkZvgjwuvGqL4ohCTxaahJIxTmtya4jgyk0zmOxDMuLzbfqQDA==" crossorigin="anonymous"></script>
+    <script src="../release/wnako3.js"></script>
+    <script src="../release/version.js"></script>
+    <script src="../release/plugin_markup.js"></script>
+    <script src="../release/plugin_csv.js"></script>
+    <script src="../release/plugin_kansuji.js"></script>
+    <script src="../release/plugin_datetime.js"></script>
+    <script src="../release/plugin_turtle.js"></script>
+    <script src="../release/plugin_caniuse.js"></script>
+    <script src="../release/plugin_webworker.js"></script>
+
+    <!-- mochaを一番最後に読み込む必要がある -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.3.0/mocha.min.js" integrity="sha512-LA/TpBXau/JNubKzHQhdi5vGkRLyQjs1vpuk2W1nc8WNgf/pCqBplD8MzlzeKJQTZPvkEZi0HqBDfRC2EyLMXw==" crossorigin="anonymous"></script>
+
+    <style>
+        /* ボタンの高さを揃える */
+        .toolbar button, .toolbar input {
+            font-size: 12px;
+            height: 28px;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            vertical-align: top;
+        }
+
+        /* 出力の文字サイズと文字色 */
+        #output {
+            font-size: 13px;
+            color: rgb(77, 77, 77);
+        }
+    </style>
+</head>
+<body>
+<div class="toolbar">
+    <button id="add">📁 ファイルを追加</button>
+    <button id="remove">🗑 ファイルを削除</button>
+    <span id="file-list"></span>
+</div>
+<div id="editor" class="nako3_editor"></div>
+<div class="toolbar">
+    <button id="run">表示中のファイルを実行</button>
+</div>
+    <div id="output"></div>
+    <script>
+/** @type {import('../src/wnako3.js')} */
+const nako3 = navigator.nako3
+const { editor, editorMarkers, editorTabs } = nako3.setupEditor('editor')
+
+/** @type {Map<number, HTMLButtonElement>} */
+const tabButtons = new Map()
+/** @type {Map<number, import('../src/wnako3_editor.js').EditorTabState>} */
+const hiddenTabStates = new Map()
+
+let fileCount = 0
+let activeFile = 1
+
+// タブの切り替え
+const switchTab = (fileName) => {
+    hiddenTabStates.set(activeFile, editorTabs.getTab())
+    editorTabs.setTab(hiddenTabStates.get(fileName))
+    activeFile = fileName
+}
+
+// ファイルの追加
+const addFile = () => {
+    const id = ++fileCount
+
+    // <button class="file">{id}.nako3</button> を挿入する。
+    const button = document.createElement('button')
+    button.innerText = id + '.nako3'
+    button.classList.add('file')
+    button.addEventListener('click', () => {
+        tabButtons.get(activeFile).disabled = false
+        button.disabled = true
+        switchTab(id)
+    })
+    document.getElementById('file-list').appendChild(button)
+    tabButtons.set(id, button)
+
+    // エディタの状態を生成
+    hiddenTabStates.set(id, editorTabs.newTab(`// ${id}.nako3\n`))
+}
+document.getElementById('add').addEventListener('click', () => { addFile() })
+
+// ファイルの削除
+const removeFile = () => {
+    if (tabButtons.size <= 1) {
+        alert('全てのファイルを削除することはできません。')
+        return
+    }
+    const input = prompt('削除するファイル名を指定してください。', tabButtons.size + '.nako3')
+    if (input === null) {
+        return
+    }
+    const id = +input.replace(/\.nako3$/, '')
+    if (!Number.isInteger(id)) {
+        alert(`${id}.nako3 は存在しません。`)
+        return
+    }
+    if (id === activeFile) {
+        alert(`表示中のファイルは削除できません。`)
+        return
+    }
+    document.getElementById('file-list').removeChild(tabButtons.get(id))
+    tabButtons.delete(id)
+}
+document.getElementById('remove').addEventListener('click', () => { removeFile() })
+
+// 実行
+nako3.setFunc('表示', [['と', 'を']], (msg) => {
+    document.getElementById('output').innerText += msg + '\n'
+})
+document.getElementById('run').addEventListener('click', () => {
+    document.getElementById('output').innerText = ''
+    const filename = `${activeFile}.nako3`
+    const code = editor.getValue()
+    /** @type {Record<string, string>} */
+    const localFiles = {}
+    for (const [k, v] of hiddenTabStates) {
+        localFiles[`${k}.nako3`] = v.content
+    }
+    nako3.loadDependencies(code, filename, '', localFiles)
+        .then(() => { nako3.runReset(code, filename) })
+        .catch((err) => {
+            document.getElementById('output').innerText += err.message + '\n'
+            if (err.filename === `${activeFile}.nako3`) {
+                editorMarkers.addByError(code, err)
+            }
+        })
+})
+
+// 1.nako3の値を設定する
+addFile()
+tabButtons.get(1).disabled = true
+editor.setValue(`\
+!「2.nako3」を取り込む
+
+「1.nako3」を表示
+Aを表示
+`)
+editor.session.selection.clearSelection()
+
+// 2.nako3の値を設定する
+addFile()
+hiddenTabStates.get(2).content = `\
+「2.nako3」を表示
+A=2
+`
+    </script>
+</body>
+</html>
