@@ -1,4 +1,5 @@
 import assert from 'assert'
+import { NakoImportError } from '../../src/nako_errors'
 
 navigator.exportWNako3 = true
 const WebNakoCompiler = require('../../src/wnako3')
@@ -43,5 +44,18 @@ describe('require_test', () => {
             'requiretestを表示\n'
         await nako.loadDependencies(code, 'main.nako3')
         assert.strictEqual(nako.runReset(code, 'main.nako3').log, '100')
+    })
+    it('存在しないファイルの指定', async () => {
+        const nako = new WebNakoCompiler()
+        const code = `!「${buildURL('nako3', 50, 'A=100')}」を取り込む。\n!「http://localhost:9876/custom/non_existent_file.nako3」を取り込む。`
+        let ok = false
+        try {
+            await nako.loadDependencies(code, 'main.nako3')
+        } catch (e) {
+            assert(e instanceof NakoImportError)
+            assert.strictEqual(e.line, 1)
+            ok = true
+        }
+        assert(ok)
     })
 })
