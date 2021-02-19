@@ -113,22 +113,6 @@ class NakoCompiler {
   }
 
   /**
-   * @param {string} code
-   * @param {boolean} isFirst
-   * @param {string} filename
-   * @param {number} [line]
-   * @param {string} [preCode]
-   */
-  async tokenizeAsync (code, isFirst, filename, line = 0, preCode = '') {
-    let rawtokens = this.rawtokenize(code, line, filename, preCode)
-    if (this.beforeParseCallback) {
-      const rslt = this.beforeParseCallback({ nako3: this, tokens: rawtokens, filepath:filename })
-      rawtokens = await rslt
-    }
-    return this.converttoken(rawtokens, isFirst)
-  }
-
-  /**
    * コードを単語に分割する
    * @param {string} code なでしこのプログラム
    * @param {number} line なでしこのプログラムの行番号
@@ -333,42 +317,6 @@ class NakoCompiler {
   }
 
   /**
-   * @param {string} code
-   * @param {string} filename
-   * @param {string} [preCode]
-   * @returns {Promise<{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }>}
-   */
-  async lexAsync (code, filename, preCode = '') {
-    // 単語に分割
-    let tokens = this.rawtokenize(code, 0, filename, preCode)
-    if (this.beforeParseCallback) {
-      const rslt = this.beforeParseCallback({ nako3: this, tokens, filepath:filename })
-      tokens = await rslt
-    }
-    // convertTokenで消されるコメントのトークンを残す
-    const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
-        .map((v) => ({ ...v }))  // clone
-
-    tokens = this.converttoken(tokens, true)
-
-    for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i]['type'] === 'code') {
-        const children = this.lexCodeToken(/** @type {string} */(tokens[i].value), tokens[i].line, filename, tokens[i].startOffset)
-        commentTokens.push(...children.commentTokens)
-        tokens.splice(i, 1, ...children.tokens)
-        i--
-      }
-    }
-
-    if (this.debug && this.debugLexer) {
-      console.log('--- lex ---')
-      console.log(JSON.stringify(tokens, null, 2))
-    }
-
-    return { commentTokens, tokens }
-  }
-
-  /**
    * シンタックスエラーに現在のカーソル下のトークンの位置情報を付けて返す。
    * トークンがソースマップ上の位置と結びついていない場合、近くの別のトークンの位置を使う。
    * @param {NakoSyntaxError} err
@@ -454,37 +402,6 @@ class NakoCompiler {
     return ast
   }
 
-  /**
-   * @param {string} code
-   * @param {string} filename
-   * @param {string} [preCode]
-   */
-  async parseAsync (code, filename, preCode = '') {
-    // 関数を字句解析と構文解析に登録
-    lexer.setFuncList(this.funclist)
-    parser.setFuncList(this.funclist)
-    parser.debug = this.debug
-    this.parser.filename = filename
-
-    // 単語に分割
-    const lexerOutput = await this.lexAsync(code, filename, preCode)
-
-    // 構文木を作成
-    /** @type {Ast} */
-    let ast
-    try {
-      ast = parser.parse(lexerOutput.tokens)
-    } catch (err) {
-      throw this.addSourceMapToSyntaxError(err, lexerOutput.tokens, code.length)
-    }
-    this.usedFuncs = this.getUsedFuncs(ast)
-    if (this.debug && this.debugParser) {
-      console.log('--- ast ---')
-      console.log(JSON.stringify(ast, null, 2))
-    }
-    return ast
-  }
-
   getUsedFuncs (ast) {
     const queue = [ast]
     this.usedFuncs = new Set()
@@ -544,17 +461,6 @@ class NakoCompiler {
 
   /**
    * @param {string} code
-   * @param {string} filename
-   * @param {boolean} isTest
-   * @param {string} [preCode]
-   */
-  async compileAsync (code, filename, isTest, preCode = '') {
-    const ast = await this.parseAsync(code, filename, preCode)
-    return this.generate(ast, isTest)
-  }
-
-  /**
-   * @param {string} code
    * @param {string} fname
    * @param {boolean} isReset
    * @param {boolean} isTest
@@ -600,65 +506,11 @@ class NakoCompiler {
   /**
    * @param {string} code
    * @param {string} fname
-   * @param {boolean} isReset
-   * @param {boolean} isTest
-   * @param {string} [preCode]
-   */
-  async _runAsync(code, fname, isReset, isTest, preCode = '') {
-    const opts = {
-      resetLog: isReset,
-      testOnly: isTest
-    }
-    return this._runExAsync(code, fname, opts, preCode)
-  }
-
-  /**
-   * @param {string} code
-   * @param {string} fname
-   * @param {Partial<CompilerOptions>} opts
-   * @param {string} [preCode]
-   */
-  async _runExAsync(code, fname, opts, preCode = '') {
-    const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (optsAll.resetEnv) {this.reset()}
-    if (optsAll.resetLog) {this.clearLog()}
-    let js = await this.compileAsync(code, fname, optsAll.testOnly, preCode)
-    try {
-      this.__varslist[0].line = -1 // コンパイルエラーを調べるため
-      const func = new Function(js) // eslint-disable-line
-      func.apply(this)
-    } catch (e) {
-      this.js = js
-      if (e instanceof NakoRuntimeError) {
-        throw e
-      } else {
-        throw new NakoRuntimeError(
-          e,
-          this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
-        )
-      }
-    }
-    return this
-  }
-
-  /**
-   * @param {string} code
-   * @param {string} fname
    * @param {Partial<CompilerOptions>} opts
    * @param {string} [preCode]
    */
   runEx(code, fname, opts, preCode = '') {
     return this._runEx(code, fname, opts, preCode)
-  }
-
-  /**
-   * @param {string} code
-   * @param {string} fname
-   * @param {Partial<CompilerOptions>} opts
-   * @param {string} [preCode]
-   */
-  async runExAsync(code, fname, opts, preCode = '') {
-    return this._runExAsync(code, fname, opts, preCode)
   }
 
   /**
@@ -686,33 +538,6 @@ class NakoCompiler {
    */
   runReset (code, fname, preCode = '') {
     return this._runEx(code, fname, { resetLog: true }, preCode)
-  }
-
-  /**
-   * @param {string} code
-   * @param {string} fname
-   * @param {string} [preCode]
-   */
-  async testAsync(code, fname, preCode ='') {
-    return await this._runExAsync(code, fname, { testOnly: true }, preCode)
-  }
-
-  /**
-   * @param {string} code
-   * @param {string} fname
-   * @param {string} [preCode]
-   */
-  async runAsync(code, fname, preCode = '') {
-    return await this._runExAsync(code, fname, { resetLog: false }, preCode)
-  }
-
-  /**
-   * @param {string} code
-   * @param {string} fname
-   * @param {string} [preCode]
-   */
-  async runResetAsync (code, fname, preCode = '') {
-    return await this._runExAsync(code, fname,  { resetLog: true }, preCode)
   }
 
   clearLog () {
