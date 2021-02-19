@@ -126,6 +126,20 @@ class NakoRuntimeError extends NakoError {
   }
 }
 
+class NakoImportError extends NakoError {
+  /**
+   * @param {string} msg
+   * @param {number} line
+   * @param {string} filename
+   */
+  constructor (msg, line, filename) {
+    super('取り込みエラー', msg, filename, line)
+    this.filename = filename
+    this.line = line
+    this.msg = msg
+  }
+}
+
 module.exports = {
   NakoError,
   NakoIndentError,
@@ -134,4 +148,5 @@ module.exports = {
   NakoSyntaxError,
   NakoSyntaxErrorWithSourceMap,
   NakoRuntimeError,
+  NakoImportError,
 }
