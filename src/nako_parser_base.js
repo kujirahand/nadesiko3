@@ -26,6 +26,7 @@ class NakoParserBase {
   }
 
   reset () {
+    /** @type {import('./nako3').TokenWithSourceMap[]} */
     this.tokens = [] // 字句解析済みのトークンの一覧を保存
     this.index = 0 // tokens[] のどこまで読んだかを管理する
     this.stack = [] // 計算用のスタック ... 直接は操作せず、pushStack() popStack() を介して使う
@@ -176,6 +177,24 @@ class NakoParserBase {
   peek (i = 0) {
     if (this.isEOF()) {return null}
     return this.tokens[this.index + i]
+  }
+
+  /**
+   * 現在のカーソル語句のソースコード上の位置を取得する。
+   * @returns {{
+   *     startOffset: number | null
+   *     endOffset: number | null
+   *     file: string | undefined
+   *     line: number
+   *     column: number
+   * }}
+   */
+  peekSourceMap () {
+    const token = this.peek()
+    if (token === null) {
+      return { startOffset: null, endOffset: null, file: undefined, line: 0, column: 0 }
+    }
+    return { startOffset: token.startOffset, endOffset: token.endOffset, file: token.file, line: token.line, column: token.column }
   }
 
   /**

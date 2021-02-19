@@ -51,10 +51,8 @@ const lexer = new NakoLexer()
  *   line?: number
  *   column?: number
  *   file?: string
- *   preprocessedCodeOffset?: number
- *   preprocessedCodeLength?: number
- *   startOffset?: number | null
- *   endOffset?: number | null
+ *   startOffset: number | null
+ *   endOffset: number | null
  *   rawJosi?: string
  * }} Ast
  * 
