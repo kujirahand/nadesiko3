@@ -373,13 +373,15 @@ class NakoCompiler {
    * .jsであれば削除し、.nako3であればそのファイルのトークン列で置換する。
    * @param {TokenWithSourceMap[]} tokens
    * @param {Set<string>} [includeGuard]
-   * @returns {void}
+   * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
    */
   replaceRequireStatements(tokens, ignoreRequireStatements = false, includeGuard = new Set()) {
+    /** @type {TokenWithSourceMap[]} */
+    const deletedTokens = []
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
       // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。
       if (includeGuard.has(r.value) || ignoreRequireStatements) {
-        tokens.splice(r.start, r.end - r.start)
+        deletedTokens.push(...tokens.splice(r.start, r.end - r.start))
         continue
       }
       const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
@@ -388,23 +390,29 @@ class NakoCompiler {
       }
       const children = this.rawtokenize(this.dependencies[filePath].content, 0, filePath)
       includeGuard.add(r.value)
-      this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard)
-      tokens.splice(r.start, r.end - r.start, ...children)
+      deletedTokens.push(...this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard))
+      deletedTokens.push(...tokens.splice(r.start, r.end - r.start, ...children))
     }
+    return deletedTokens
   }
 
   /**
    * @param {string} code
    * @param {string} filename
    * @param {string} [preCode]
-   * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
+   * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[], requireTokens: TokenWithSourceMap[] }}
    */
   lex(code, filename, preCode = '', ignoreRequireStatements = false) {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
 
     // require文を再帰的に置換する
-    this.replaceRequireStatements(tokens, ignoreRequireStatements, undefined)
+    const requireStatementTokens = this.replaceRequireStatements(tokens, ignoreRequireStatements, undefined)
+    for (const t of requireStatementTokens) {
+      if (t.type === 'word' || t.type === 'not') {
+        t.type = 'require'
+      }
+    }
 
     // convertTokenで消されるコメントのトークンを残す
     /** @type {TokenWithSourceMap[]} */
@@ -427,7 +435,7 @@ class NakoCompiler {
       console.log(JSON.stringify(tokens, null, 2))
     }
 
-    return { commentTokens, tokens }
+    return { commentTokens, tokens, requireTokens: requireStatementTokens }
   }
 
   /**

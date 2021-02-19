@@ -50,6 +50,7 @@ function getScope(token) {
         case "ここまで":
         case "もし":
         case "違えば":
+        case "require":
             return 'keyword.control'
         // 予約語
         case "回":
@@ -201,7 +202,7 @@ function tokenize (lines, nako3) {
     // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
     /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
     //@ts-ignore
-    const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens].filter((t) =>
+    const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens, ...lexerOutput.requireTokens].filter((t) =>
         t.type !== 'eol' && t.type !== 'eof' &&
         typeof t.startOffset === "number" && typeof t.endOffset === "number" &&
         t.startOffset < t.endOffset)
