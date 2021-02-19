@@ -10,7 +10,6 @@ class WebWorkerNakoCompiler extends NakoCompiler {
   constructor () {
     super()
     this.__varslist[0]['ナデシコ種類'] = 'wwnako3'
-    this.beforeParseCallback = this.beforeParse
     this.requireHelper = new NakoRequire(this)
     this.ondata = (data, event) => {
     }
@@ -86,28 +85,6 @@ class WebWorkerNakoCompiler extends NakoCompiler {
       })
     }
     return tokens
-  }
-
-  // トークンリストからプラグインのインポートを抜き出して処理する
-  beforeParse (opts) {
-    const tokens = opts.tokens
-    const nako3 = opts.nako3
-    const filepath = opts.filepath
-
-    this.requireHelper.reset()
-
-    const rslt = this.requireNako3(tokens, filepath, nako3)
-    if (rslt instanceof Promise) {
-      return new Promise((resolve, reject) => {
-        rslt.then(subtokens => {
-          resolve(this.requirePlugin(subtokens, nako3))
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    } else {
-      return this.requirePlugin(rslt, nako3)
-    }
   }
 }
 

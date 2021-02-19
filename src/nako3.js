@@ -91,10 +91,6 @@ class NakoCompiler {
     this.prepare = prepare
     this.lexer = lexer
     this.parser = parser
-    //
-    this.beforeParseCallback = (opts) => {
-      return opts.tokens
-    }
     // set this
     this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
@@ -285,13 +281,6 @@ class NakoCompiler {
   lex (code, filename, preCode = '') {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
-    if (this.beforeParseCallback) {
-      const rslt = this.beforeParseCallback({ nako3: this, tokens, filepath: filename })
-      if (rslt instanceof Promise) {
-        throw new Error('利用している機能の中に、非同期処理が必要なものが含まれています')
-      }
-      tokens = rslt
-    }
     // convertTokenで消されるコメントのトークンを残す
     /** @type {TokenWithSourceMap[]} */
     const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
