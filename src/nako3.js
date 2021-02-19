@@ -242,7 +242,7 @@ class NakoCompiler {
       /** @type {number | undefined} */
       const line = dest.startOffset === null ? err.line : offsetToLineColumn.map(dest.startOffset, false).line
       const map = subtractSourceMapByPreCodeLength({ ...dest, line }, preCode)
-      throw new LexErrorWithSourceMap(err.reason, err.preprocessedCodeStartOffset, err.preprocessedCodeEndOffset, map.startOffset, map.endOffset, map.line, filename)
+      throw new LexErrorWithSourceMap(err.msg, err.preprocessedCodeStartOffset, err.preprocessedCodeEndOffset, map.startOffset, map.endOffset, map.line, filename)
     }
 
     // ソースコード上の位置に変換
