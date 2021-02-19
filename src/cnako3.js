@@ -6,9 +6,8 @@ const fs = require('fs')
 const exec = require('child_process').exec
 
 const path = require('path')
-const NakoCompiler = require(path.join(__dirname, 'nako3'))
-const NakoRequire = require(path.join(__dirname, 'nako_require_helper'))
-const PluginNode = require(path.join(__dirname, 'plugin_node'))
+const NakoCompiler = require('./nako3')
+const PluginNode = require('./plugin_node')
 
 class CNako3 extends NakoCompiler {
   constructor () {
@@ -16,7 +15,6 @@ class CNako3 extends NakoCompiler {
     this.silent = false
     this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
-    this.requireHelper = new NakoRequire(this)
   }
 
   // CNAKO3で使えるコマンドを登録する
@@ -217,44 +215,6 @@ class CNako3 extends NakoCompiler {
   // 対応機器/Webブラウザを表示する
   cnakoBrowsers () {
     console.log(fs.readFileSync(path.join(__dirname, 'browsers.md'), 'utf-8'))
-  }
-
-  requireNako3 (tokens, filepath, nako3) {
-    const importNako3 = filename => {
-      const txt = fs.readFileSync(filename, { encoding: 'utf-8' })
-      const subtokens = nako3.rawtokenize(txt, 0, filename)
-      return this.requireHelper.affectRequire(subtokens, filename, this.requireHelper.resolveNako3forNodejs.bind(this.requireHelper), importNako3)
-    }
-    return this.requireHelper.affectRequire(tokens, filepath, this.requireHelper.resolveNako3forNodejs.bind(this.requireHelper), importNako3)
-  }
-
-  requirePlugin (tokens, nako3) {
-    if (this.requireHelper.pluginlist.length > 0) {
-      const funclist = nako3.funclist
-      const filelist = this.requireHelper.pluginlist
-      for (let i = 0;i < filelist.length; i++) {
-        const pname = filelist[i]
-        let fullpath = pname
-        try {
-          let plugmod = {}
-          // プラグインフォルダを検索
-          fullpath = this.findPluginFile(fullpath)
-          // モジュールを実際に取り込む
-          plugmod = require(fullpath)
-          this.addPluginFile(pname, fullpath, plugmod)
-          // this.funclistを更新する
-          for (const key in plugmod)
-            {funclist[key] = plugmod[key]}
-
-        } catch (e) {
-          // console.log(e)
-          throw new Error(
-            '[取込エラー] プラグイン『' + pname + '』を取り込めません。' +
-            '(path=' + fullpath + ') ' + e.message)
-        }
-      }
-    }
-    return tokens
   }
 
   /**
