@@ -117,8 +117,7 @@ class NakoRuntimeError extends NakoError {
       : ''
     const msg = error instanceof Error ? error.message : error + ''
 
-    super('実行時エラー', `${from === undefined ? '' : `${from}で`}エラー『${className}${msg}』が発生しました。\n` +
-    `[バージョン] ${nakoVersion.version}`, undefined, line)
+    super('実行時エラー', `${from === undefined ? '' : `${from}で`}エラー『${className}${msg}』が発生しました。`, undefined, line)
     this.error = error
     this.msg = msg
     this.line = line
