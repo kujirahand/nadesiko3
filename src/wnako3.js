@@ -1,6 +1,7 @@
 // nadesiko for web browser
 // wnako3.js
 const NakoCompiler = require('./nako3')
+const { NakoImportError } = require('./nako_errors')
 const PluginBrowser = require('./plugin_browser')
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 const { setupEditor } = require('./wnako3_editor')
@@ -36,7 +37,7 @@ class WebNakoCompiler extends NakoCompiler {
    */
   async loadDependencies(code, filename, preCode = '') {
     return super.loadDependencies(code, filename, preCode, {
-      readJs: (filePath) => {
+      readJs: (filePath, token) => {
         return {
           sync: false,
           value: (async () => {
@@ -45,7 +46,7 @@ class WebNakoCompiler extends NakoCompiler {
             }
             const res = await fetch(filePath)
             if (!res.ok) {
-              throw new Error(`ファイル ${filePath} のダウンロードに失敗しました: ${res.statusText}`)
+              throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
             }
             const text = await res.text()
             if (text.includes('navigator.nako3.addPluginObject')) {
@@ -56,13 +57,13 @@ class WebNakoCompiler extends NakoCompiler {
           })()
         }
       },
-      readNako3: (filePath) => {
+      readNako3: (filePath, token) => {
         return {
           sync: false,
           value: (async () => {
             const res = await fetch(filePath)
             if (!res.ok) {
-              throw new Error(`ファイル ${filePath} のダウンロードに失敗しました: ${res.statusText}`)
+              throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
             }
             return await res.text()
           })()

@@ -11,7 +11,8 @@ const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoSyntaxError } = require('./nako_parser_base')
-const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoSyntaxErrorWithSourceMap } = require('./nako_errors')
+const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoSyntaxErrorWithSourceMap, NakoImportError } = require('./nako_errors')
+
 /**
  * @typedef {{
  *   type: string;
@@ -147,8 +148,8 @@ class NakoCompiler {
    * @param {string} preCode
    * @param {{
    *     resolvePath: (name: string) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
-   *     readNako3: (filePath: string) => { sync: true, value: string } | { sync: false, value: Promise<string> }
-   *     readJs: (filePath: string) => { sync: true, value: string } | { sync: false, value: Promise<object> }
+   *     readNako3: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<string> }
+   *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<object> }
    * }} tools
    * @returns {Promise<unknown> | void}
    */
@@ -172,7 +173,7 @@ class NakoCompiler {
         this.dependencies[item.filePath] = { content: '', alias: new Set([item.value]) }
         if (item.type === 'js') {
           // jsならプラグインとして読み込む。
-          const obj = tools.readJs(item.filePath)
+          const obj = tools.readJs(item.filePath, item.firstToken)
           if (obj.sync) {
             this.addPluginFile(item.value, item.filePath, obj.value)
           } else {
@@ -180,7 +181,7 @@ class NakoCompiler {
           }
         } else if (item.type === 'nako3') {
           // nako3ならファイルを読んでdependenciesに保存する。
-          const content = tools.readNako3(item.filePath)
+          const content = tools.readNako3(item.filePath, item.firstToken)
           if (content.sync) {
             this.dependencies[item.filePath].content = content.value
             console.log(content.value, item.filePath, '')
@@ -191,7 +192,7 @@ class NakoCompiler {
             }))
           }
         } else {
-          throw new LexErrorWithSourceMap(`ファイル ${item.value} を読み込めません。未対応の拡張子です。`, 0, 1, item.firstToken.startOffset, item.lastToken.endOffset, item.firstToken.line, item.firstToken.file)
+          throw new NakoImportError(`ファイル ${item.value} を読み込めません。未対応の拡張子です。`, item.firstToken.line, item.firstToken.file)
         }
       }
 
