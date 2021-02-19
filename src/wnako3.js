@@ -22,7 +22,7 @@ class WebNakoCompiler extends NakoCompiler {
       let script = scripts[i]
       if (script.type.match(NAKO_SCRIPT_RE)) {
         nakoScriptCount++
-        this.run(script.text)
+        this.run(script.text, `script${i}.nako3`)
       }
     }
     console.log('実行したなでしこの個数=', nakoScriptCount)
@@ -139,7 +139,7 @@ class WebNakoCompiler extends NakoCompiler {
 }
 
 // ブラウザなら navigator.nako3 になでしこを登録
-if (typeof (navigator) === 'object') {
+if (typeof (navigator) === 'object' && !navigator.exportWNako3) {
   const nako3 = navigator.nako3 = new WebNakoCompiler()
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {

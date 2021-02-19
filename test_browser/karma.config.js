@@ -24,6 +24,19 @@ var CustomMiddlewareFactory = function (config) {
   // /custom/*
   const custom = express.Router()
 
+  custom.get('/echo.nako3', (req, res) => {
+    // 例: http://localhost:9876/custom/echo.nako3?delay_ms=30&content=A%3D20
+    setTimeout(() => { res.send(req.query['content']) }, +req.query['delay_ms'])
+  })
+  custom.get('/cyclic_import_1.nako3', (req, res) => {
+    res.send('!「http://localhost:9876/custom/cyclic_import_2.nako3」を取り込む。\nA=100')
+  })
+  custom.get('/cyclic_import_2.nako3', (req, res) => {
+    res.send('!「http://localhost:9876/custom/cyclic_import_1.nako3」を取り込む。\nB=200')
+  })
+  custom.get('/echo.js', (req, res) => {
+    setTimeout(() => { res.send(req.query['content']) }, +req.query['delay_ms'])
+  })
   custom.all('/delayedimage/:name', (req, res) => {
     const filename = '/' + req.params.name
     setTimeout(() => {
