@@ -64,15 +64,16 @@ app.option = (cmd, desc) => {
  */
 app.parseStr = (argv) => {
     app['args'] = []
+    const paramStack = []
     let lastOpt = ''
     for (let i = 2; i < argv.length; i++) {
         arg = argv[i]
         // Not Options
         if (arg.charAt(0) != '-') {
-            if (lastOpt != '') {
-                app[lastOpt] = arg
-                lastOpt = ''
-                continue
+            if (paramStack.length > 0) {
+              const argParam = paramStack.pop()
+              app[argParam] = arg
+              continue
             }
             app.args.push(arg)
             continue
@@ -83,9 +84,9 @@ app.parseStr = (argv) => {
             if (lastOpt === 'version') {lastOpt='version_'}
         } else {
             // Short Option
-            const short = arg.substr(1)
-            if (app._alias[short]) {
-                lastOpt = app._alias[short]
+            const shortName = arg.substr(1)
+            if (app._alias[shortName]) {
+                lastOpt = app._alias[shortName]
             } else {
                 // Not exists
                 continue
@@ -93,11 +94,10 @@ app.parseStr = (argv) => {
         }
         // set option true
         app[lastOpt] = true
-        if (!app._hasarg[lastOpt]) { // has argument?
-            lastOpt = ''
-        } else {
+        if (app._hasarg[lastOpt]) { // has argument?
             // init parameter
             app[lastOpt] = ''
+            paramStack.push(lastOpt)
         }
     }
     // show version?
