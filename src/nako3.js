@@ -559,7 +559,7 @@ class NakoCompiler {
       } else {
         throw new NakoRuntimeError(
           e,
-          this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+          this.__v0 ? this.__v0.line : undefined,
         )
       }
     }
@@ -644,7 +644,7 @@ class NakoCompiler {
           } catch (e) {
             throw new NakoRuntimeError(
               e,
-              this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+              this.__v0 ? this.__v0.line : undefined,
               `関数『${key}』`,
             )
           }

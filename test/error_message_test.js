@@ -14,7 +14,7 @@ describe('error_message', () => {
       console.log('code=' + code)
     }
     assert.throws(
-      () => nako.runReset(code),
+      () => nako.runReset(code, 'main.nako3'),
       err => {
         assert(err instanceof ErrorClass)
         for (const res of resArr) {
@@ -80,6 +80,13 @@ describe('error_message', () => {
       cmp(
         '「エラーメッセージ」のエラー発生', [
         '関数『エラー発生』でエラー『エラーメッセージ』が発生しました。',
+      ], NakoRuntimeError)
+    })
+    it('依存ファイルでエラーが発生した場合', () => {
+      nako.dependencies = { 'dependent.nako3': { content: '\n1のエラー発生\n', alias: new Set(['dependent.nako3']) } }
+      cmp('!「dependent.nako3」を取り込む\n1を表示', [
+        'dependent.nako3',
+        '2行目',
       ], NakoRuntimeError)
     })
   })
