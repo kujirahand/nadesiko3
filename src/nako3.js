@@ -187,7 +187,6 @@ class NakoCompiler {
           const content = tools.readNako3(item.filePath, item.firstToken)
           if (content.sync) {
             this.dependencies[item.filePath].content = content.value
-            console.log(content.value, item.filePath, '')
           } else {
             tasks.push(content.value.then((res) => {
               this.dependencies[item.filePath].content = res
