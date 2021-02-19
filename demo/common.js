@@ -13,5 +13,5 @@ navigator.nako3.addFunc('色変更', [['に', 'へ']], function (s) {
 
 function toHtml (s) {
   s = '' + s
-  return s.replace(/&/g, '&amp;').replace(/</, '&lt;').replace(/>/, '&gt;')
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
