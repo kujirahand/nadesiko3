@@ -777,83 +777,75 @@ class LanguageFeatures {
     }
 
     /**
-     * lexerの出力を参照したオートコンプリート
-     * @param {number} editorId @param {BackgroundTokenizer} backgroundTokenizer @param {NakoCompiler} nako3 @returns {Completer}
+     * オートコンプリート
+     * @param {number} row
+     * @param {string} prefix getCompletionPrefixの出力
+     * @param {NakoCompiler} nako3
+     * @param {BackgroundTokenizer} backgroundTokenizer
      */
-    static getTokenCompleter(editorId, backgroundTokenizer, nako3) {
-        return {
-            getCompletions(editor, session, pos, prefix, callback) {
-                // 全てのエディタのcompleterが呼ばれてしまうため、ここで他のエディタを除外する
-                if (editor.wnako3EditorId !== editorId) {
-                    callback(null, [])
-                    return
+    static getCompletionItems(row, prefix, nako3, backgroundTokenizer) {
+        /** @param {string} target */
+        const getScore = (target) => {
+            // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
+            let n = 0
+            for (let i = 0; i < prefix.length; i++) {
+                if (target.includes(prefix[i])) {
+                    n++
                 }
-    
-                /** @param {string} target */
-                const getScore = (target) => {
-                    // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
-                    let n = 0
-                    for (let i = 0; i < prefix.length; i++) {
-                        if (target.includes(prefix[i])) {
-                            n++
-                        }
-                    }
-                    return n
-                }
-    
-                /**
-                 * metaは候補の横に薄く表示されるテキスト
-                 * @type {{ caption: string, value: string, meta: string, docHTML?: string, score: number }[]}
-                 */
-                const result = []
-                // プラグイン関数
-                for (const name of Object.keys(nako3.__varslist[0])) {
-                    if (name.startsWith('!')) { // 「!PluginBrowser:初期化」などを除外
-                        continue
-                    }
-                    const f = nako3.funclist[name]
-                    if (typeof f !== 'object' || f === null) {
-                        continue
-                    }
-    
-                    let pluginName = findPluginName(name, nako3) || 'プラグイン'
-                    if (f.type === 'func') {
-                        result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: pluginName, score: getScore(name) })
-                    } else {
-                        result.push({ caption: name, value: name, meta: pluginName, score: getScore(name) })
-                    }
-                }
-    
-                // ユーザーが定義した名前
-                if (backgroundTokenizer.lastLexerOutput !== null) {
-                    for (const token of backgroundTokenizer.lastLexerOutput.tokens) {
-                        // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
-                        if (token.line === pos.row) {
-                            continue
-                        }
-                        const name = token.value + ''
-                        if (token.type === 'word') {
-                            result.push({ caption: name, value: name, meta: '変数', score: getScore(name) })
-                        } else if (token.type === 'func') {
-                            let josi = ''
-                            const f = nako3.funclist[name]
-                            if (f && f.type === 'func') {
-                                josi = createParameterDeclaration(f.josi)
-                            }
-                            result.push({ caption: josi + name, value: name, meta: '関数', score: getScore(name) })
-                        }
-                    }
-                }
-    
-                // 完全に一致する候補があればオートコンプリートしない
-                if (result.some((v) => v.value === prefix)) {
-                    callback(null, [])
-                    return
-                }
-    
-                callback(null, result.map((v) => ({ ...v, wnako3EditorId: editorId })))
-            },
+            }
+            return n
         }
+
+        /**
+         * metaは候補の横に薄く表示されるテキスト
+         * @type {{ caption: string, value: string, meta: string, docHTML?: string, score: number }[]}
+         */
+        const result = []
+        // プラグイン関数
+        for (const name of Object.keys(nako3.__varslist[0])) {
+            if (name.startsWith('!')) { // 「!PluginBrowser:初期化」などを除外
+                continue
+            }
+            const f = nako3.funclist[name]
+            if (typeof f !== 'object' || f === null) {
+                continue
+            }
+
+            let pluginName = findPluginName(name, nako3) || 'プラグイン'
+            if (f.type === 'func') {
+                result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: pluginName, score: getScore(name) })
+            } else {
+                result.push({ caption: name, value: name, meta: pluginName, score: getScore(name) })
+            }
+        }
+
+        // ユーザーが定義した名前
+        if (backgroundTokenizer.lastLexerOutput !== null) {
+            for (const token of backgroundTokenizer.lastLexerOutput.tokens) {
+                // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
+                if (token.line === row) {
+                    continue
+                }
+                const name = token.value + ''
+                if (token.type === 'word') {
+                    result.push({ caption: name, value: name, meta: '変数', score: getScore(name) })
+                } else if (token.type === 'func') {
+                    let josi = ''
+                    const f = nako3.funclist[name]
+                    if (f && f.type === 'func') {
+                        josi = createParameterDeclaration(f.josi)
+                    }
+                    result.push({ caption: josi + name, value: name, meta: '関数', score: getScore(name) })
+                }
+            }
+        }
+
+        // 完全に一致する候補があればオートコンプリートしない
+        if (result.some((v) => v.value === prefix)) {
+            return []
+        }
+
+        return result
     }
 
     /**
@@ -882,46 +874,40 @@ class LanguageFeatures {
     }
 
     /**
-     * 文字を入力するたびに呼ばれ、''以外を返すとその文字列をもとにしてautocompletionが始まる。
+     * @param {string} line
      * @param {NakoCompiler} nako3
      */
-    static getCompletionPrefix(nako3) {
-        return (/** @type {AceEditor} */ editor) => {
-            /** @type {{ row: number, column: number }} */
-            const pos = editor.getCursorPosition()
-            /** @type {string} */
-            const line = editor.session.doc.getLine(pos.row).slice(0, pos.column)
-            /** @type {ReturnType<NakoCompiler['lex']>["tokens"] | null} */
-            let tokens = null
+    static getCompletionPrefix(line, nako3) {
+        /** @type {ReturnType<NakoCompiler['lex']>["tokens"] | null} */
+        let tokens = null
 
-            // ひらがなとアルファベットとカタカナと漢字のみオートコンプリートする。
-            if (line.length === 0 || !/[ぁ-んa-zA-Zァ-ヶー\u3005\u4E00-\u9FCF]/.test(line[line.length - 1])) {
-                return ''
-            }
-
-            // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
-            try {
-                nako3.reset()
-                tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
-                    .filter((t) => t.type !== 'eol' && t.type !== 'eof')
-            } catch (e) {
-                if (!(e instanceof NakoIndentError || e instanceof LexError)) {
-                    console.error(e)
-                }
-            }
-            if (tokens === null || tokens.length === 0 || !tokens[tokens.length - 1].value) {
-                return ''
-            }
-            const prefix = tokens[tokens.length - 1].value + ''
-
-            // 単語の先頭がひらがなではなく末尾がひらがなのとき、助詞を打っている可能性が高いためオートコンプリートしない。 
-            if (/[ぁ-ん]/.test(prefix[prefix.length - 1]) && !/[ぁ-ん]/.test(prefix[0])) {
-                return ''
-            }
-
-            // 最後のトークンの値を、オートコンプリートで既に入力した部分とする。
-            return prefix
+        // ひらがなとアルファベットとカタカナと漢字のみオートコンプリートする。
+        if (line.length === 0 || !/[ぁ-んa-zA-Zァ-ヶー\u3005\u4E00-\u9FCF]/.test(line[line.length - 1])) {
+            return ''
         }
+
+        // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
+        try {
+            nako3.reset()
+            tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
+                .filter((t) => t.type !== 'eol' && t.type !== 'eof')
+        } catch (e) {
+            if (!(e instanceof NakoIndentError || e instanceof LexError)) {
+                console.error(e)
+            }
+        }
+        if (tokens === null || tokens.length === 0 || !tokens[tokens.length - 1].value) {
+            return ''
+        }
+        const prefix = tokens[tokens.length - 1].value + ''
+
+        // 単語の先頭がひらがなではなく末尾がひらがなのとき、助詞を打っている可能性が高いためオートコンプリートしない。 
+        if (/[ぁ-ん]/.test(prefix[prefix.length - 1]) && !/[ぁ-ん]/.test(prefix[0])) {
+            return ''
+        }
+
+        // 最後のトークンの値を、オートコンプリートで既に入力した部分とする。
+        return prefix
     }
 
     /**
@@ -1147,16 +1133,18 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     editor.wnako3EditorId = editorId
 
     // オートコンプリートのcompleterを設定する
-    completers.push(LanguageFeatures.getTokenCompleter(editorId, backgroundTokenizer, nako3))
-    completers.push({
-        getCompletions(editor, session, pos, prefix, callback) {
-            callback(null, (editor.wnako3EditorId !== editorId) ? [] : LanguageFeatures.getSnippets(editor.session.doc.getAllLines().join('\n')))
-        }
-    })
+    completers.push(
+        { getCompletions(editor, session, pos, prefix, callback) { callback(null, (editor.wnako3EditorId !== editorId) ? [] : LanguageFeatures.getCompletionItems(pos.row, prefix, nako3, backgroundTokenizer)) } },
+        { getCompletions(editor, session, pos, prefix, callback) { callback(null, (editor.wnako3EditorId !== editorId) ? [] : LanguageFeatures.getSnippets(editor.session.doc.getAllLines().join('\n'))) } },
+    )
     ace.require('ace/ext/language_tools').setCompleters(completers)
 
     // オートコンプリートの単語の区切りが日本語に対応していないため、メソッドを上書きして対応させる。
-    ace.require('ace/autocomplete/util').getCompletionPrefix = LanguageFeatures.getCompletionPrefix(nako3)
+    // 文字を入力するたびに呼ばれ、''以外を返すとその文字列をもとにしてautocompletionが始まる。
+    ace.require('ace/autocomplete/util').getCompletionPrefix = (/** @type {AceEditor} */ editor) => {
+        const pos = editor.getCursorPosition()
+        return LanguageFeatures.getCompletionPrefix(editor.session.doc.getLine(pos.row).slice(0, pos.column), nako3)
+    }
 
     // エディタの挙動の設定
     const languageFeatures = new LanguageFeatures(AceRange, nako3)
