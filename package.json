@@ -149,7 +149,7 @@
     "body-parser": "^1.19.0",
     "browserslist": "^4.8.7",
     "caniuse-db": "^1.0.30001027",
-    "copy-paste-win32fix": "^1.4.0",
+    "clipboardy": "^2.3.0",
     "csv-lite-js": "^0.0.7",
     "dayjs": "^1.8.23",
     "express": "^4.16.4",
