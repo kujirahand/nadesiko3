@@ -208,7 +208,7 @@ function getDocumentationHTML(token, nako3) {
     const plugin = findPluginName(token.value + '', nako3)
     if (plugin !== null) {
         // 定義元のプラグインが分かる場合はそれも表示する。
-        text += `<span class="tooltip-plugin-name">${plugin}</span>`
+        text += `<span class="tooltip-plugin-name">${escapeHTML(plugin)}</span>`
     }
     return text
 }
