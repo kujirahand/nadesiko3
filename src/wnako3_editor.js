@@ -858,40 +858,27 @@ class LanguageFeatures {
 
     /**
      * スニペット
-     * @param {number} editorId
-     * @returns {Completer}
      */
-    static getSnippetCompleter(editorId) {
-        return {
-            getCompletions(editor, session, pos, prefix, callback) {
-                if (editor.wnako3EditorId !== editorId) {
-                    callback(null, [])
-                    return
-                }
+    /** @param {string} text */
+    static getSnippets(text) {
+        // インデント構文が有効化されているなら「ここまで」を消す
+        const indentSyntax = isIndentSyntaxEnabled(text)
 
-                /** @type {AceDocument} */
-                const doc = editor.session.doc
+        /** @param {string} en @param {string} jp @param {string} snippet */
+        const item = (en, jp, snippet) => indentSyntax ?
+            { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t*ここまで(\n|$)/g, '').replace(/\t/g, '    ') } :
+            { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t/g, '    ') }
 
-                // インデント構文が有効化されているなら「ここまで」を消す
-                const indentSyntax = isIndentSyntaxEnabled(doc.getAllLines().join('\n'))
-    
-                /** @param {string} en @param {string} jp @param {string} snippet */
-                const item = (en, jp, snippet) => indentSyntax ?
-                    { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t*ここまで(\n|$)/g, '').replace(/\t/g, '    ') } :
-                    { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t/g, '    ') }
-
-                callback(null, [
-                    item('if', 'もし〜ならば', 'もし${1:1=1}ならば\n\t${2:1を表示}\n違えば\n\t${3:2を表示}\nここまで\n'),
-                    item('times', '〜回', '${1:3}回\n\t${2:1を表示}\nここまで\n'),
-                    item('for', '繰り返す', '${1:N}で${2:1}から${3:3}まで繰り返す\n\t${4:Nを表示}\nここまで\n'),
-                    item('while', '〜の間', '${1:N<2の間}\n\tN=N+1\nここまで\n'),
-                    item('foreach', '〜を反復', '${1:[1,2,3]}を反復\n\t${2:対象を表示}\nここまで\n'),
-                    item('switch', '〜で条件分岐', '${1:N}で条件分岐\n\t${2:1}ならば\n\t\t${3:1を表示}\n\tここまで\n\t${4:2}ならば\n\t\t${5:2を表示}\n\tここまで\n\t違えば\n\t\t${6:3を表示}\n\tここまで\nここまで\n'),
-                    item('function', '●〜とは', '●（${1:AとBを}）${2:足す}とは\n\t${3:A+Bを戻す}\nここまで\n'),
-                    item('try', 'エラー監視', 'エラー監視\n\t${1:1のエラー発生}\nエラーならば\n\t${2:2を表示}\nここまで\n'),
-                ])
-            }
-        }
+        return [
+            item('if', 'もし〜ならば', 'もし${1:1=1}ならば\n\t${2:1を表示}\n違えば\n\t${3:2を表示}\nここまで\n'),
+            item('times', '〜回', '${1:3}回\n\t${2:1を表示}\nここまで\n'),
+            item('for', '繰り返す', '${1:N}で${2:1}から${3:3}まで繰り返す\n\t${4:Nを表示}\nここまで\n'),
+            item('while', '〜の間', '${1:N<2の間}\n\tN=N+1\nここまで\n'),
+            item('foreach', '〜を反復', '${1:[1,2,3]}を反復\n\t${2:対象を表示}\nここまで\n'),
+            item('switch', '〜で条件分岐', '${1:N}で条件分岐\n\t${2:1}ならば\n\t\t${3:1を表示}\n\tここまで\n\t${4:2}ならば\n\t\t${5:2を表示}\n\tここまで\n\t違えば\n\t\t${6:3を表示}\n\tここまで\nここまで\n'),
+            item('function', '●〜とは', '●（${1:AとBを}）${2:足す}とは\n\t${3:A+Bを戻す}\nここまで\n'),
+            item('try', 'エラー監視', 'エラー監視\n\t${1:1のエラー発生}\nエラーならば\n\t${2:2を表示}\nここまで\n'),
+        ]
     }
 
     /**
@@ -1161,7 +1148,11 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
 
     // オートコンプリートのcompleterを設定する
     completers.push(LanguageFeatures.getTokenCompleter(editorId, backgroundTokenizer, nako3))
-    completers.push(LanguageFeatures.getSnippetCompleter(editorId))
+    completers.push({
+        getCompletions(editor, session, pos, prefix, callback) {
+            callback(null, (editor.wnako3EditorId !== editorId) ? [] : LanguageFeatures.getSnippets(editor.session.doc.getAllLines().join('\n')))
+        }
+    })
     ace.require('ace/ext/language_tools').setCompleters(completers)
 
     // オートコンプリートの単語の区切りが日本語に対応していないため、メソッドを上書きして対応させる。
