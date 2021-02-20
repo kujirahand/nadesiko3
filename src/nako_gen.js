@@ -138,7 +138,6 @@ class NakoGen {
     /** @type {string} */
     let lineNo
     if (typeof node.line !== 'number') {
-      console.warn('lineNo = ""')
       lineNo = 'unknown'
     } else if (typeof node.file !== 'string') {
       lineNo = `l${node.line}`
