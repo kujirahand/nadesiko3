@@ -225,7 +225,7 @@ const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLi
  * @param {string[]} lines
  * @param {NakoCompiler} nako3
  */
-function tokenize (lines, nako3) {
+function tokenize(lines, nako3) {
     const code = lines.join('\n')
 
     // lexerにかける
@@ -840,11 +840,6 @@ class LanguageFeatures {
             }
         }
 
-        // 完全に一致する候補があればオートコンプリートしない
-        if (result.some((v) => v.value === prefix)) {
-            return []
-        }
-
         return result
     }
 
@@ -1134,7 +1129,21 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
 
     // オートコンプリートのcompleterを設定する
     completers.push(
-        { getCompletions(editor, session, pos, prefix, callback) { callback(null, (editor.wnako3EditorId !== editorId) ? [] : LanguageFeatures.getCompletionItems(pos.row, prefix, nako3, backgroundTokenizer)) } },
+        {
+            getCompletions(editor, session, pos, prefix, callback) {
+                if (editor.wnako3EditorId !== editorId) {
+                    callback(null, [])
+                } else {
+                    const items = LanguageFeatures.getCompletionItems(pos.row, prefix, nako3, backgroundTokenizer)
+                    // 完全に一致する候補があればオートコンプリートしない。（Aceエディタでの挙動が微妙なため。）
+                    if (items.some((v) => v.value === prefix)) {
+                        callback(null, [])
+                        return
+                    }
+                    callback(null, items)
+                }
+            },
+        },
         { getCompletions(editor, session, pos, prefix, callback) { callback(null, (editor.wnako3EditorId !== editorId) ? [] : LanguageFeatures.getSnippets(editor.session.doc.getAllLines().join('\n'))) } },
     )
     ace.require('ace/ext/language_tools').setCompleters(completers)
