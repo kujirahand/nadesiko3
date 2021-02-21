@@ -171,14 +171,18 @@ class NakoLexer {
         {[josi, varnames, funcPointers] = readArgs()}
 
       // 関数定義か？
-      if (funcName !== '')
-        {this.funclist[funcName] = {
+      if (funcName !== '') {
+        if (funcName in this.funclist) {
+          throw new LexError(`関数 ${funcName} は既に定義されています。`)
+        }
+        this.funclist[funcName] = {
           type: 'func',
           josi,
           fn: null,
           varnames,
           funcPointers
-        }}
+        }
+      }
 
       // 無名関数のために
       defToken.meta = {josi, varnames, funcPointers}
