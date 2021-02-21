@@ -10,10 +10,13 @@ const NakoCompiler = require('./nako3')
 const PluginNode = require('./plugin_node')
 
 class CNako3 extends NakoCompiler {
-  constructor () {
+  /** @param {{ nostd?: boolean }} [opts] */
+  constructor (opts = {}) {
     super()
     this.silent = false
-    this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
+    if (!opts.nostd) {
+      this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
+    }
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
   }
 
@@ -227,7 +230,7 @@ class CNako3 extends NakoCompiler {
     const tasks = super.loadDependencies(code, filename, preCode, {
       resolvePath: (name) => {
         if (/\.js(\.txt)?$/.test(name) || /^[^\.]*$/.test(name)) {
-          return { filePath: path.resolve(this.findPluginFile(name, path.dirname(this.filename))), type: 'js' }
+          return { filePath: path.resolve(this.findPluginFile(name)), type: 'js' }
         }
         if (/\.nako3?(\.txt)?$/.test(name)) {
           return { filePath: path.resolve(name), type: 'nako3' }
