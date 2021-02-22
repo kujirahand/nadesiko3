@@ -22,6 +22,7 @@ const NakoPrepare = require('./nako_prepare')
  *     setTheme(name: string): void
  *     container: HTMLElement
  *     wnako3EditorId?: number
+ *     getCursorPosition(): { row: number, column: number }
  * }} AceEditor
  * 
  * @typedef {import("./nako_lexer").TokenWithSourceMap} TokenWithSourceMap
@@ -45,19 +46,24 @@ const NakoPrepare = require('./nako_prepare')
  *     getUndoManager(): any
  *     setUndoManager(x: any): void
  *     selection: { getRange(): AceRange, isBackwards(): boolean, setRange(range: AceRange, reversed: boolean): void, clearSelection(): void }
+ *     setMode(mode: string | object): void
  * }} Session
  * 
  * @typedef {{}} AceRange
  * 
  * @typedef {new (startLine: number, startColumn: number, endLine: number, endColumn: number) => AceRange} TypeofAceRange
  * 
- * @typedef {{ type: string, value: string, docHTML: string | null }} EditorToken
+ * @typedef {'comment.line' | 'comment.block' | 'keyword.control' | 'entity.name.function' |
+ *           'constant.numeric' | 'support.constant' | 'keyword.operator' |
+ *           'string.other' | 'variable.language' | 'variable.other' | 'markup.other'} TokenType
+ * @typedef {{ type: TokenType, value: string, docHTML: string | null }} EditorToken
  */
 
 /**
  * シンタックスハイライトでは一般にテキストの各部分に 'comment.line' のようなラベルを付け、各エディタテーマがそのそれぞれの色を設定する。
  * ace editor では例えば 'comment.line' が付いた部分はクラス .ace_comment.ace_line が付いたHTMLタグで囲まれ、各テーマはそれに対応するCSSを実装する。
  * @param {TokenWithSourceMap} token
+ * @returns {TokenType}
  */
 function getScope(token) {
     switch (token.type) {
@@ -879,11 +885,11 @@ class LanguageFeatures {
      * @param {NakoCompiler} nako3
      */
     static getCompletionPrefix(nako3) {
-        return (editor) => {
+        return (/** @type {AceEditor} */ editor) => {
             /** @type {{ row: number, column: number }} */
             const pos = editor.getCursorPosition()
             /** @type {string} */
-            const line = editor.session.getLine(pos.row).slice(0, pos.column)
+            const line = editor.session.doc.getLine(pos.row).slice(0, pos.column)
             /** @type {ReturnType<NakoCompiler['lex']>["tokens"] | null} */
             let tokens = null
 
@@ -1194,7 +1200,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         // renderメソッドを呼ぶとrenderOptionGroupにoptionGroups.Main、optionGroups.More が順に渡されることを利用して、optionGroupsを書き換える。
         const panel = new OptionPanel(editor)
         let i = 'Main'
-        panel.renderOptionGroup = (group) => {
+        panel.renderOptionGroup = (/** @type {Record<string, object>} */ group) => {
             if (i === 'Main') { // Main
                 for (const key of Object.keys(group)) {
                     delete group[key]
