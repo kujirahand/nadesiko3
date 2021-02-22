@@ -26,14 +26,14 @@ describe('require_test', () => {
         assert.strictEqual(nako.runReset(code, 'main.nako3').log, '100\n200')
     })
     it('並列ダウンロード', async () => {
-        // 遅延が50msのファイルを2つ取り込んで、取り込みにかかる時間が100ms未満であることを確認する。
+        // 遅延が100msのファイルを2つ取り込んで、取り込みにかかる時間が200ms未満であることを確認する。
         const nako = new WebNakoCompiler()
-        const fileA = buildURL('nako3', 50, 'A=100')
-        const fileB = buildURL('nako3', 50, 'B=200')
+        const fileA = buildURL('nako3', 100, 'A=100')
+        const fileB = buildURL('nako3', 100, 'B=200')
         const startTime = Date.now()
         const code = `!「${fileA}」を取り込む。!「${fileB}」を取り込む。\nAを表示\nBを表示`
         await nako.loadDependencies(code, 'main.nako3')
-        assert(Date.now() - startTime < 100)
+        assert(Date.now() - startTime < 200)
         assert.strictEqual(nako.runReset(code, 'main.nako3').log, '100\n200')
     })
     it('プラグインの取り込み', async () => {

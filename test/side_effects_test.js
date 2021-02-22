@@ -43,12 +43,10 @@ describe('side_effects_test', () => {
 
         // 取り込み命令ありで実行
         const code1 = '!「plugin_csv」を取り込む。\n「1,2」のCSV取得して表示'
-        nako.loadDependencies(code1, 'main.nako3', '')
         assert.strictEqual(nako.runReset(code1, 'main.nako3').log, `1,2`)
 
         // 取り込み命令なしで実行
         const code2 = '!「1,2」のCSV取得して表示'
-        nako.loadDependencies(code2, 'main.nako3', '')
         assert.throws(() => nako.runReset(code2, 'main.nako3'), NakoSyntaxError)
     })
     it('ファイルの取り込み', () => {
@@ -57,12 +55,10 @@ describe('side_effects_test', () => {
 
         // 取り込み命令ありで実行
         const code1 = '!「test/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。'
-        nako.loadDependencies(code1, 'main.nako3', '')
         assert.strictEqual(nako.runReset(code1, 'main.nako3').log, `5\n8`)
 
         // 取り込み命令なしで実行
         const code2 = '痕跡を表示。3と5を痕跡演算して、表示。'
-        nako.loadDependencies(code2, 'main.nako3', '')
         assert.throws(() => nako.runReset(code2, 'main.nako3'), NakoSyntaxError)
     })
 })
