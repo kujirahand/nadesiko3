@@ -9,7 +9,7 @@ describe('require_nako3_test', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    const ret = nako.runReset(code)
+    const ret = nako.runReset(code, 'main.nako3')
     assert.strictEqual(ret.log, res)
   }
   it('「ファイルを取り込む」', () => {
