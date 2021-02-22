@@ -1,6 +1,6 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
-const { tokenize, LanguageFeatures, BackgroundTokenizer } = require('../src/wnako3_editor')
+const { tokenize, LanguageFeatures } = require('../src/wnako3_editor')
 
 describe('wnako3_editor_test', () => {
     class AceRange {
