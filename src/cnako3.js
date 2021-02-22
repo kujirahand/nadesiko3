@@ -237,8 +237,19 @@ class CNako3 extends NakoCompiler {
         }
         return { filePath: name, type: 'invalid' }
       },
-      readNako3: (name) => ({ sync: true, value: fs.readFileSync(name).toString()}),
-      readJs: (name) => ({ sync: true, value: require(name) }),
+      readNako3: (name, token) => {
+        if (!fs.existsSync(name)) {
+          throw new NakoImportError(`ファイル ${name} が存在しません。`, token.line, token.file)
+        }
+        return { sync: true, value: fs.readFileSync(name).toString()}
+      },
+      readJs: (name, token) => {
+        try {
+          return { sync: true, value: () => require(name) }
+        } catch (err) {
+          throw new NakoImportError(`プラグイン ${name} が存在しません。`, token.line, token.file)
+        }
+      },
     })
     if (tasks !== undefined) {
       throw new Error('assertion error')

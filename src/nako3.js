@@ -107,7 +107,7 @@ class NakoCompiler {
      * 取り込み文を置換するためのオブジェクト。
      * 正規化されたファイル名がキーになり、取り込み文の引数に指定された正規化されていないファイル名はaliasに入れられる。
      * JavaScriptファイルによるプラグインの場合、contentは空文字列。
-     * @type {Record<string, { content: string, alias: Set<string> }>}
+     * @type {Record<string, { content: string, alias: Set<string>, addPluginFile: () => void }>}
      */
     this.dependencies = {}
   }
@@ -148,17 +148,18 @@ class NakoCompiler {
    * - resolvePathはファイルを検索して正規化する必要がある。
    * - needNako3やneedJsがPromiseを返すなら並列処理し、処理の終了を知らせるためのPromiseを返す。そうでなければ同期的に処理する。
    *   （`instanceof Promise` はpolyfillで動作しない場合があるため、Promiseかどうかを明示する必要がある。）
+   * - readNako3はソースコードを返す。readJsはrequireあるいはevalする関数を返す。
    * @param {string} code
    * @param {string} filename
    * @param {string} preCode
    * @param {{
    *     resolvePath: (name: string, token: TokenWithSourceMap) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
    *     readNako3: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<string> }
-   *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<object> }
+   *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: () => object } | { sync: false, value: Promise<() => object> }
    * }} tools
    * @returns {Promise<unknown> | void}
    */
-  loadDependencies(code, filename, preCode, tools, useCache = false) {
+  loadDependencies(code, filename, preCode, tools) {
     /** @type {NakoCompiler['dependencies']} */
     const dependencies = {}
     const compiler = new NakoCompiler()
@@ -175,14 +176,16 @@ class NakoCompiler {
         }
 
         // 初回の読み込み
-        dependencies[item.filePath] = { content: '', alias: new Set([item.value]) }
+        dependencies[item.filePath] = { content: '', alias: new Set([item.value]), addPluginFile: () => {} }
         if (item.type === 'js') {
           // jsならプラグインとして読み込む。
           const obj = tools.readJs(item.filePath, item.firstToken)
           if (obj.sync) {
-            this.addPluginFile(item.value, item.filePath, obj.value, false)
+            dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, obj.value(), false) }
           } else {
-            tasks.push(obj.value.then((res) => { this.addPluginFile(item.value, item.filePath, res, false) }))
+            tasks.push(obj.value.then((res) => {
+              dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, res(), false) }
+            }))
           }
         } else if (item.type === 'nako3') {
           // nako3ならファイルを読んでdependenciesに保存する。
@@ -302,35 +305,34 @@ class NakoCompiler {
   /**
    * 環境のリセット
    */
-  reset (leaveDependencies = false) {
+  reset () {
     // スタックのグローバル変数とローカル変数を初期化
     this.__varslist = [this.__varslist[0], {}, {}]
     this.__v0 = this.__varslist[0]
     this.__v1 = this.__varslist[1]
     this.__vars = this.__varslist[2]
     this.__locals = {}
-    this.gen.reset()
-    this.lexer.setFuncList(this.funclist)
 
-    if (!leaveDependencies) {
-      // ユーザー定義の関数の削除と、プラグイン変数の値の初期化を行う。
-      // 実行前に行うとloadDependenciesで読み込んだ依存まで消されてしまうことに注意
-      this.funclist = {}
-      for (const name of Object.keys(this.__v0)) {
-        const original = this.pluginFunclist[name]
-        if (!original) {
-          continue
-        }
+    // ユーザー定義の関数の削除と、プラグイン変数の値の初期化を行う。
+    // 実行前に行うとloadDependenciesで読み込んだ依存まで消されてしまうことに注意
+    this.funclist = {}
+    for (const name of Object.keys(this.__v0)) {
+      const original = this.pluginFunclist[name]
+      if (!original) {
+        continue
+      }
 
-        // プラグイン命令以外を削除
-        this.funclist[name] = JSON.parse(JSON.stringify(original))
+      // プラグイン命令以外を削除
+      this.funclist[name] = JSON.parse(JSON.stringify(original))
 
-        // プラグイン変数の値を初期化
-        if (original.type === 'var') {
-          this.__v0[name] = original.value
-        }
+      // プラグイン変数の値を初期化
+      if (original.type === 'var') {
+        this.__v0[name] = original.value
       }
     }
+
+    this.gen.reset()
+    this.lexer.setFuncList(this.funclist)
   }
 
   /**
@@ -411,6 +413,7 @@ class NakoCompiler {
       if (filePath === undefined) {
         throw new LexErrorWithSourceMap(`ファイル ${r.value} が読み込まれていません。`, 0, 1, r.firstToken.startOffset, r.firstToken.endOffset, r.firstToken.line, r.firstToken.file)
       }
+      this.dependencies[filePath].addPluginFile()
       const children = this.rawtokenize(this.dependencies[filePath].content, 0, filePath)
       includeGuard.add(r.value)
       deletedTokens.push(...this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard))
@@ -577,28 +580,22 @@ class NakoCompiler {
    */
   _runEx(code, fname, opts, preCode = '') {
     const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (optsAll.resetEnv) {this.reset(true)}
+    if (optsAll.resetEnv) {this.reset()}
     if (optsAll.resetLog) {this.clearLog()}
     let js = this.compile(code, fname, optsAll.testOnly, preCode)
     try {
-      try {
-        this.__varslist[0].line = -1 // コンパイルエラーを調べるため
-        const func = new Function(js) // eslint-disable-line
-        func.apply(this)
-      } catch (e) {
-        this.js = js
-        if (e instanceof NakoRuntimeError) {
-          throw e
-        } else {
-          throw new NakoRuntimeError(
-            e,
-            this.__v0 ? this.__v0.line : undefined,
-          )
-        }
-      }
-    } finally {
-      if (optsAll.resetEnv) {
-        this.reset(false)
+      this.__varslist[0].line = -1 // コンパイルエラーを調べるため
+      const func = new Function(js) // eslint-disable-line
+      func.apply(this)
+    } catch (e) {
+      this.js = js
+      if (e instanceof NakoRuntimeError) {
+        throw e
+      } else {
+        throw new NakoRuntimeError(
+          e,
+          this.__v0 ? this.__v0.line : undefined,
+        )
       }
     }
     return this
