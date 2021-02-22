@@ -158,9 +158,9 @@ class NakoCompiler {
    * }} tools
    * @returns {Promise<unknown> | void}
    */
-  loadDependencies(code, filename, preCode, tools) {
-    // 最初に dependencies を空にする。
-    this.dependencies = {}
+  loadDependencies(code, filename, preCode, tools, useCache = false) {
+    /** @type {NakoCompiler['dependencies']} */
+    const dependencies = {}
     const compiler = new NakoCompiler()
 
     /** @param {string} code @param {string} filename @param {string} preCode */
@@ -169,13 +169,13 @@ class NakoCompiler {
       const tasks = []
       for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken) }))) {
         // 2回目以降の読み込み
-        if (this.dependencies.hasOwnProperty(item.filePath)) {
-          this.dependencies[item.filePath].alias.add(item.value)
+        if (dependencies.hasOwnProperty(item.filePath)) {
+          dependencies[item.filePath].alias.add(item.value)
           continue
         }
 
         // 初回の読み込み
-        this.dependencies[item.filePath] = { content: '', alias: new Set([item.value]) }
+        dependencies[item.filePath] = { content: '', alias: new Set([item.value]) }
         if (item.type === 'js') {
           // jsならプラグインとして読み込む。
           const obj = tools.readJs(item.filePath, item.firstToken)
@@ -188,10 +188,10 @@ class NakoCompiler {
           // nako3ならファイルを読んでdependenciesに保存する。
           const content = tools.readNako3(item.filePath, item.firstToken)
           if (content.sync) {
-            this.dependencies[item.filePath].content = content.value
+            dependencies[item.filePath].content = content.value
           } else {
             tasks.push(content.value.then((res) => {
-              this.dependencies[item.filePath].content = res
+              dependencies[item.filePath].content = res
               return inner(res, item.filePath, '')
             }))
           }
@@ -205,7 +205,12 @@ class NakoCompiler {
       }
     }
 
-    return inner(code, filename, preCode)
+    const result = inner(code, filename, preCode)
+
+    // すべてが終わってからthis.dependenciesに代入する。そうしないと、「実行」ボタンを連打した場合など、
+    // loadDependencies() が並列実行されるときに正しく動作しない。
+    this.dependencies = dependencies
+    return result
   }
 
   /**
