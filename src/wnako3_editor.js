@@ -597,7 +597,7 @@ class BackgroundTokenizer {
                 } else {
                     try {
                         const lines = tokenize(this.doc.getAllLines(), this.nako3)
-                        this.cache = { code, lines: JSON.stringify(lines) }
+                        this.cache = { code, lines: JSON.stringify(lines.editorTokens) }
                         ok = true
                     } catch (e) {
                         if (!(e instanceof NakoIndentError || e instanceof LexError)) {
