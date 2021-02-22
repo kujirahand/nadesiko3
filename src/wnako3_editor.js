@@ -55,7 +55,8 @@ const NakoPrepare = require('./nako_prepare')
  * 
  * @typedef {'comment.line' | 'comment.block' | 'keyword.control' | 'entity.name.function' |
  *           'constant.numeric' | 'support.constant' | 'keyword.operator' |
- *           'string.other' | 'variable.language' | 'variable.other' | 'markup.other'} TokenType
+ *           'string.other' | 'variable.language' | 'variable.other' | 'markup.other' |
+ *           'composition_placeholder'} TokenType
  * @typedef {{ type: TokenType, value: string, docHTML: string | null }} EditorToken
  */
 
@@ -217,8 +218,9 @@ function getDocumentationHTML(token, nako3) {
  * なでしこのエディタでは 'markup.other' をデフォルト値として使うことにした。
  * @param {number} row
  * @param {AceDocument} doc
+ * @returns {EditorToken[]}
  */
-const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row) }]
+const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row), docHTML: null }]
 
 /**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
@@ -482,8 +484,8 @@ class BackgroundTokenizer {
 
         // 各行のパース結果。
         // typeはscopeのこと。配列の全要素のvalueを結合した文字列がその行の文字列と等しくなる必要がある。
-        /** @type {{ type: TokenType, value: string }[][]} */
-        this.lines = this.doc.getAllLines().map((line) => [{ type: 'markup.other', value: line }])
+        /** @type {EditorToken[][]} */
+        this.lines = this.doc.getAllLines().map((line) => [{ type: 'markup.other', value: line, docHTML: null }])
 
         // this.lines は外部から勝手に編集されてしまうため、コピーを持つ
         /** @type {{ code: string, lines: string } | null} */
@@ -541,6 +543,7 @@ class BackgroundTokenizer {
                 // updateOnChangeはIME入力中には呼ばれない。composition_placeholder を消さないとIME確定後の表示がずれる。
                 const oldTokens = this.lines[startRow]
                     .filter((v) => v.type !== 'composition_placeholder')
+                /** @type {EditorToken[]} */
                 const newTokens = []
                 let i = 0
                 let offset = 0
@@ -554,12 +557,12 @@ class BackgroundTokenizer {
 
                 // columnStartに重なっているトークンがあれば、2つに分割する
                 if (i < oldTokens.length && offset < columnStart) {
-                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(0, columnStart - offset) })
-                    newTokens.push({ type: 'markup.other', value: delta.lines[0] })
-                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(columnStart - offset)　})
+                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(0, columnStart - offset), docHTML: null })
+                    newTokens.push({ type: 'markup.other', value: delta.lines[0], docHTML: null })
+                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(columnStart - offset), docHTML: null　})
                     i++
                 } else {
-                    newTokens.push({ type: 'markup.other', value: delta.lines[0] })
+                    newTokens.push({ type: 'markup.other', value: delta.lines[0], docHTML: null })
                 }
 
                 // columnStartより右のトークンもそのまま保持する
@@ -798,7 +801,7 @@ class LanguageFeatures {
 
         /**
          * metaは候補の横に薄く表示されるテキスト
-         * @type {{ caption: string, value: string, meta: string, docHTML?: string, score: number }[]}
+         * @type {{ caption: string, value: string, meta: string, score: number }[]}
          */
         const result = []
         // プラグイン関数
