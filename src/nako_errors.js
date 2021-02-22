@@ -75,40 +75,45 @@ class LexErrorWithSourceMap extends LexError {
 class NakoSyntaxError extends NakoError {
   /**
    * @param {string} msg
-   * @param {number} line
-   * @param {string} filename
+   * @param {import("./nako3").Ast | null | undefined} first
+   * @param {import("./nako3").Ast | null | undefined} [last]
    */
-  constructor (msg, line, filename) {
+  static fromNode(msg, first, last) {
+    if (!first) {
+      return new NakoSyntaxError(msg, undefined, null, null, undefined)
+    }
+    const startOffset = typeof first.startOffset === 'number' ? first.startOffset : null
+    const endOffset =
+      (last && typeof last.endOffset === 'number') ?
+        last.endOffset :
+        (typeof first.endOffset === 'number' ? first.endOffset : null)
+    return new NakoSyntaxError(msg, first.line, startOffset, endOffset, first.file)
+  }
+
+  /**
+   * @param {string} msg
+   * @param {number | undefined} line
+   * @param {number | null} startOffset
+   * @param {number | null} endOffset
+   * @param {string | undefined} filename
+   */
+  constructor (msg, line, startOffset, endOffset, filename) {
     super('文法エラー', msg, filename, line)
     this.filename = filename
     this.line = line
     this.msg = msg
-  }
-}
-
-class NakoSyntaxErrorWithSourceMap extends NakoSyntaxError {
-  /**
-   *@param {import('./nako3').TokenWithSourceMap} token
-   *@param {number} startOffset
-   *@param {number} endOffset
-   *@param {NakoSyntaxError} error
-   */
-  constructor(token, startOffset, endOffset, error) {
-      super(error.msg, error.line, error.filename)
-      this.token = token
-      this.startOffset = startOffset
-      this.endOffset = endOffset
-      this.error = error
+    this.startOffset = startOffset
+    this.endOffset = endOffset
   }
 }
 
 class NakoRuntimeError extends NakoError {
   /**
    * @param {Error | string} error エラー
-   * @param {number | undefined} line 発生行
-   * @param {string | undefined} [from] 発生箇所
+   * @param {string | undefined} lineNo 発生行
+   * @param {string | undefined} [from] 発生箇所の説明
    */
-  constructor (error, line, from) {
+  constructor (error, lineNo, from) {
     const className =
       (error instanceof Error &&
        error.constructor !== Error &&
@@ -117,10 +122,33 @@ class NakoRuntimeError extends NakoError {
       : ''
     const msg = error instanceof Error ? error.message : error + ''
 
-    super('実行時エラー', `${from === undefined ? '' : `${from}で`}エラー『${className}${msg}』が発生しました。`, undefined, line)
+    // 行番号を表す文字列をパースする。
+    /** @type {number | undefined} */
+    let line
+    /** @type {string | undefined} */
+    let file
+    /** @type {RegExpExecArray | null} */
+    let matches
+    if (lineNo === undefined) {
+      line = undefined
+      file = undefined
+    } else if (matches = /^l(-?\d+):(.*)$/.exec(lineNo)) {
+      line = +matches[1]
+      file = matches[2]
+    } else if (matches = /^l(-?\d+)$/.exec(lineNo)) {
+      line = +matches[1]
+      file = undefined
+    } else {
+      line = undefined
+      file = lineNo
+    }
+
+    super('実行時エラー', `${from === undefined ? '' : `${from}で`}エラー『${className}${msg}』が発生しました。`, file, line)
     this.error = error
     this.msg = msg
+    this.lineNo = lineNo
     this.line = line
+    this.file = file
     this.from = from
   }
 }
@@ -145,7 +173,6 @@ module.exports = {
   LexError,
   LexErrorWithSourceMap,
   NakoSyntaxError,
-  NakoSyntaxErrorWithSourceMap,
   NakoRuntimeError,
   NakoImportError,
 }

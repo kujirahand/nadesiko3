@@ -1,12 +1,29 @@
 /** なでしこのtokenのtypeをscope（CSSのクラス名）に変換する。 */
 
-const WebNakoCompiler = require('./wnako3')
 const { OffsetToLineColumn } = require('./nako_source_mapping')
 const { LexError, NakoIndentError } = require('./nako_errors')
 const { getBlockStructure, getIndent, countIndent, isIndentSyntaxEnabled } = require('./nako_indent')
 const NakoPrepare = require('./nako_prepare')
 
 /**
+ * @typedef {import('./wnako3')} WebNakoCompiler
+ * 
+ * @typedef {{
+ *     getValue(): string
+ *     setValue(text: string): void
+ *     session: Session
+ *     execCommand(command: string): void
+ *     setReadOnly(value: boolean): void
+ *     setOption(key: string, value: unknown): void
+ *     getOption(key: string): unknown
+ *     setOptions(entries: Record<string, unknown>): void
+ *     setFontSize(px: number): void
+ *     setKeyboardHandler(name: string): void
+ *     setTheme(name: string): void
+ *     container: HTMLElement
+ *     wnako3EditorId?: number
+ * }} AceEditor
+ * 
  * @typedef {import("./nako_lexer").TokenWithSourceMap} TokenWithSourceMap
  * 
  * @typedef {{
@@ -18,7 +35,17 @@ const NakoPrepare = require('./nako_prepare')
  *     replace(range: AceRange, text: string): void
  * }} AceDocument
  * 
- * @typedef {{ doc: AceDocument }} Session
+ * @typedef {{
+ *     doc: AceDocument
+ *     bgTokenizer: BackgroundTokenizer
+ *     getScrollTop(): number
+ *     setScrollTop(x: number): void
+ *     getScrollLeft(): number
+ *     setScrollLeft(x: number): void
+ *     getUndoManager(): any
+ *     setUndoManager(x: any): void
+ *     selection: { getRange(): AceRange, isBackwards(): boolean, setRange(range: AceRange, reversed: boolean): void, clearSelection(): void }
+ * }} Session
  * 
  * @typedef {{}} AceRange
  * 
@@ -50,6 +77,7 @@ function getScope(token) {
         case "ここまで":
         case "もし":
         case "違えば":
+        case "require":
             return 'keyword.control'
         // 予約語
         case "回":
@@ -201,7 +229,7 @@ function tokenize (lines, nako3) {
     // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
     /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
     //@ts-ignore
-    const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens].filter((t) =>
+    const tokens = [...lexerOutput.tokens, ...lexerOutput.commentTokens, ...lexerOutput.requireTokens].filter((t) =>
         t.type !== 'eol' && t.type !== 'eof' &&
         typeof t.startOffset === "number" && typeof t.endOffset === "number" &&
         t.startOffset < t.endOffset)
@@ -925,6 +953,49 @@ class LanguageFeatures {
 }
 
 /**
+ * 複数ファイルを表示するための最低限のAPIを提供する。
+ * @typedef {{ content: string, cursor: { range: AceRange, reversed: boolean }, scroll: { top: number, left: number }, undoManger: any }} EditorTabState
+ */
+class EditorTabs {
+    /**
+     * @param {AceEditor} editor
+     * @param {TypeofAceRange} AceRange
+     * @param {any} UndoManager
+     */
+    constructor(editor, AceRange, UndoManager) {
+        this.editor = editor
+        this.AceRange = AceRange
+        this.UndoManager = UndoManager
+    }
+    /** @param {string} content @returns {EditorTabState} */
+    newTab(content) {
+        return {
+            content,
+            cursor: { range: new this.AceRange(0, 0, 0, 0), reversed: false },
+            scroll: { left: 0, top: 0 },
+            undoManger: new this.UndoManager(),
+        }
+    }
+    /** @returns {EditorTabState} */
+    getTab() {
+        return {
+            content: this.editor.getValue(),
+            cursor: { range: this.editor.session.selection.getRange(), reversed: this.editor.session.selection.isBackwards() },
+            scroll: { left: this.editor.session.getScrollLeft(), top: this.editor.session.getScrollTop() },
+            undoManger: this.editor.session.getUndoManager(),
+        }
+    }
+    /** @param {EditorTabState} state */
+    setTab(state) {
+        this.editor.setValue(state.content)
+        this.editor.session.selection.setRange(state.cursor.range, state.cursor.reversed)
+        this.editor.session.setScrollLeft(state.scroll.left)
+        this.editor.session.setScrollTop(state.scroll.top)
+        this.editor.session.setUndoManager(state.undoManger)
+    }
+}
+
+/**
  * ace/ext/language_tools の設定がグローバル変数で保持されているため、こちら側でもグローバル変数で管理しないと、エディタが複数あるときに正しく動かない。
  * - captionはオートコンプリートの候補として表示されるテキスト
  * - metaはcaptionのテキストの右に薄く表示されるテキスト
@@ -960,14 +1031,17 @@ let editorIdCounter = 0
  * @param {string} id HTML要素のid
  * @param {WebNakoCompiler} nako3
  * @param {any} ace
+ * @param {string} [defaultFileName]
  */
-function setupEditor (id, nako3, ace) {
+function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
+    /** @type {AceEditor} */
     const editor = ace.edit(id)
     const element = document.getElementById(id)
     if (element === null) {
         throw new Error(`idが ${id} のHTML要素は存在しません。`)
     }
 
+    /** @type {TypeofAceRange} */
     const AceRange = ace.require('ace/range').Range
     const editorMarkers = new EditorMarkers(
         editor.session,
@@ -1087,6 +1161,7 @@ function setupEditor (id, nako3, ace) {
 
     ace.require('ace/config').defineOptions(editor.constructor.prototype, 'editor', {
         syntaxHighlighting: {
+            /** @type {(this: AceEditor, value: boolean) => void} */
             set: function(value) {
                 this.session.bgTokenizer.enabled = value
 
@@ -1189,7 +1264,11 @@ function setupEditor (id, nako3, ace) {
     })
     buttonContainer.appendChild(settingsButton)
 
-    return { editor, editorMarkers }
+    // 複数ファイルの切り替え
+    const UndoManager = ace.require('ace/undomanager').UndoManager
+    const editorTabs = new EditorTabs(editor, AceRange, UndoManager)
+
+    return { editor, editorMarkers, editorTabs }
 }
 
 module.exports = {

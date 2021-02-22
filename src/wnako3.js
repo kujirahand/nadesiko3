@@ -33,16 +33,20 @@ class WebNakoCompiler extends NakoCompiler {
    * @param {string} code
    * @param {string} filename
    * @param {string} [preCode]
+   * @param {Record<string, string>} [localFiles]
    * @returns {Promise<unknown>}
    */
-  async loadDependencies(code, filename, preCode = '') {
+  async loadDependencies(code, filename, preCode = '', localFiles = {}) {
     return super.loadDependencies(code, filename, preCode, {
       readJs: (filePath, token) => {
+        if (localFiles.hasOwnProperty(filePath)) {
+          return { sync: true, value: localFiles[filePath] }
+        }
         return {
           sync: false,
           value: (async () => {
             if (!filePath.startsWith('http://') && !filePath.startsWith('https://')) {
-              throw new Error('ブラウザ版のなでしこの取り込み文の引数には https:// か http:// で始まるアドレスを指定してください。')
+              throw new NakoImportError('ブラウザ版のなでしこの取り込み文の引数には https:// か http:// で始まるアドレスを指定してください。', token.line, token.file)
             }
             const res = await fetch(filePath)
             if (!res.ok) {
@@ -58,6 +62,9 @@ class WebNakoCompiler extends NakoCompiler {
         }
       },
       readNako3: (filePath, token) => {
+        if (localFiles.hasOwnProperty(filePath)) {
+          return { sync: true, value: localFiles[filePath] }
+        }
         return {
           sync: false,
           value: (async () => {
@@ -69,9 +76,16 @@ class WebNakoCompiler extends NakoCompiler {
           })()
         }
       },
-      resolvePath: (name) => {
-        // query string を除外するためにURLを使用
-        const pathname = new URL(name).pathname
+      resolvePath: (name, token) => {
+        // ローカルにファイルが存在するならそれを使う。そうでなければURLとして解釈する。
+        let pathname = name
+        if (!localFiles.hasOwnProperty(name)) {
+          try {
+            pathname = new URL(name).pathname
+          } catch (e) {
+            throw new NakoImportError(`ブラウザ版のなでしこの取り込み文の引数には、ローカルに存在するファイルか https:// か http:// で始まるアドレスを指定してください。\n${e}`, token.line, token.file)
+          }
+        }
         if (pathname.endsWith('.js') || pathname.endsWith('.js.txt')) {
           return { filePath: name, type: 'js' }
         }

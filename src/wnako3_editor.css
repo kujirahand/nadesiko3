@@ -81,11 +81,9 @@
 .slow-speed-message {
     color: rgb(12, 10, 153);
     max-width: 75vw;
-    opacity: 0;
-    transition: opacity 0.2s linear;
+    display: none;
 }
 .slow-speed-message.visible {
-    opacity: 1;
     display: inline-block;
 }
 .slow-speed-message > span {

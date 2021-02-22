@@ -1,6 +1,5 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
-const {NakoRuntimeError} = require('../src/nako_errors')
 
 describe('basic', () => {
   const nako = new NakoCompiler()
@@ -134,34 +133,6 @@ describe('basic', () => {
       '2'
     )
   })
-  it('エラー位置の取得', () => {
-    try {
-      nako.runReset(`「こんにちは」」と表示する`)
-    } catch (e) {
-      // 2つめの '」' の位置
-      assert.strictEqual(e.startOffset, 7)
-      assert.strictEqual(e.endOffset, 8)
-    }
-  })
-  it('エラー位置の取得 - "_"がある場合', () => {
-    try {
-      nako.runReset(
-        `a = [ _\n` +
-        `    1, 2, 3\n` +
-        `]\n` +
-        `「こんにちは」」と表示する`
-      )
-    } catch (e) {
-      assert(e.message.indexOf('(4行目)') !== -1)
-    }
-  })
-  it('エラー位置の取得 - 字句解析エラーの場合', () => {
-    try {
-      nako.runReset(`\n「こんに{ちは」と表示する`)
-    } catch (e) {
-      assert(e.message.indexOf('[字句解析エラー](2行目): ') !== -1)
-    }
-  })
   it('独立した助詞『ならば』の位置の取得', () => {
     const out = nako.lex('もし存在するならば\nここまで')
     const sonzai = out.tokens.find((t) => t.value === '存在')
@@ -174,46 +145,6 @@ describe('basic', () => {
     // ならば
     assert.strictEqual(naraba.startOffset, 6)
     assert.strictEqual(naraba.endOffset, 9)
-  })
-  it('実行時エラーの位置の取得', () => {
-    assert.throws(
-      () => nako.runReset('1を表示\n1のエラー発生'),
-      err => {
-        assert(err instanceof NakoRuntimeError)
-        assert.strictEqual(err.line, 1)  // 2行目
-        return true
-      }
-    )
-  })
-  it('実行時エラーの位置の取得 - 前後に文がある場合', () => {
-    assert.throws(
-      () => nako.runReset('1を表示\n1を表示。1のエラー発生。1を表示。'),
-      err => {
-        assert(err instanceof NakoRuntimeError)
-        assert.strictEqual(err.line, 1)  // 2行目
-        return true
-      }
-    )
-  })
-  it('実行時エラーの位置の取得 - 1行目の場合', () => {
-    assert.throws(
-      () => nako.runReset('1のエラー発生'),
-      err => {
-        assert(err instanceof NakoRuntimeError)
-        assert.strictEqual(err.line, 0)  // 1行目
-        return true
-      }
-    )
-  })
-  it('実行時エラーの位置の取得 - repeatTimes', () => {
-    assert.throws(
-      () => nako.runReset('3回\n1のエラー発生'),
-      err => {
-        assert(err instanceof NakoRuntimeError)
-        assert.strictEqual(err.line, 1)  // 2行目
-        return true
-      }
-    )
   })
   it('preCodeを考慮したソースマップ', () => {
     const preCode = '1を表示\n2を表示\n3を'
@@ -252,4 +183,5 @@ describe('basic', () => {
 ここまで
 4を表示
 `, '1\n2\n3\n4')
-  })})
+  })
+})

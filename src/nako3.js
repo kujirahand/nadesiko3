@@ -10,8 +10,7 @@ const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
-const { NakoSyntaxError } = require('./nako_parser_base')
-const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoSyntaxErrorWithSourceMap, NakoImportError } = require('./nako_errors')
+const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoImportError, NakoSyntaxError } = require('./nako_errors')
 
 /**
  * @typedef {{
@@ -50,13 +49,17 @@ const lexer = new NakoLexer()
  *   josi?: string
  *   value?: unknown
  *   line?: number
- *   column?: unknown
- *   file?: unknown
- *   preprocessedCodeOffset?: unknown
- *   preprocessedCodeLength?: unknown
- *   startOffset?: unknown
- *   endOffset?: unknown
- *   rawJosi?: unknown
+ *   column?: number
+ *   file?: string
+ *   startOffset: number | null
+ *   endOffset: number | null
+ *   rawJosi?: string
+ *   end?: {
+ *     startOffset: number | null
+ *     endOffset: number | null
+ *     line?: number
+ *     column?: number
+ *   }
  * }} Ast
  * 
  * @typedef {(
@@ -149,7 +152,7 @@ class NakoCompiler {
    * @param {string} filename
    * @param {string} preCode
    * @param {{
-   *     resolvePath: (name: string) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
+   *     resolvePath: (name: string, token: TokenWithSourceMap) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
    *     readNako3: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<string> }
    *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<object> }
    * }} tools
@@ -164,7 +167,7 @@ class NakoCompiler {
     const inner = (code, filename, preCode) => {
       /** @type {Promise<unknown>[]} */
       const tasks = []
-      for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value) }))) {
+      for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken) }))) {
         // 2回目以降の読み込み
         if (this.dependencies.hasOwnProperty(item.filePath)) {
           this.dependencies[item.filePath].alias.add(item.value)
@@ -186,7 +189,6 @@ class NakoCompiler {
           const content = tools.readNako3(item.filePath, item.firstToken)
           if (content.sync) {
             this.dependencies[item.filePath].content = content.value
-            console.log(content.value, item.filePath, '')
           } else {
             tasks.push(content.value.then((res) => {
               this.dependencies[item.filePath].content = res
@@ -389,13 +391,15 @@ class NakoCompiler {
    * .jsであれば削除し、.nako3であればそのファイルのトークン列で置換する。
    * @param {TokenWithSourceMap[]} tokens
    * @param {Set<string>} [includeGuard]
-   * @returns {void}
+   * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
    */
   replaceRequireStatements(tokens, ignoreRequireStatements = false, includeGuard = new Set()) {
+    /** @type {TokenWithSourceMap[]} */
+    const deletedTokens = []
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
       // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。
       if (includeGuard.has(r.value) || ignoreRequireStatements) {
-        tokens.splice(r.start, r.end - r.start)
+        deletedTokens.push(...tokens.splice(r.start, r.end - r.start))
         continue
       }
       const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
@@ -404,23 +408,29 @@ class NakoCompiler {
       }
       const children = this.rawtokenize(this.dependencies[filePath].content, 0, filePath)
       includeGuard.add(r.value)
-      this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard)
-      tokens.splice(r.start, r.end - r.start, ...children)
+      deletedTokens.push(...this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard))
+      deletedTokens.push(...tokens.splice(r.start, r.end - r.start, ...children))
     }
+    return deletedTokens
   }
 
   /**
    * @param {string} code
    * @param {string} filename
    * @param {string} [preCode]
-   * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
+   * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[], requireTokens: TokenWithSourceMap[] }}
    */
   lex(code, filename, preCode = '', ignoreRequireStatements = false) {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
 
     // require文を再帰的に置換する
-    this.replaceRequireStatements(tokens, ignoreRequireStatements, undefined)
+    const requireStatementTokens = this.replaceRequireStatements(tokens, ignoreRequireStatements, undefined)
+    for (const t of requireStatementTokens) {
+      if (t.type === 'word' || t.type === 'not') {
+        t.type = 'require'
+      }
+    }
 
     // convertTokenで消されるコメントのトークンを残す
     /** @type {TokenWithSourceMap[]} */
@@ -443,60 +453,7 @@ class NakoCompiler {
       console.log(JSON.stringify(tokens, null, 2))
     }
 
-    return { commentTokens, tokens }
-  }
-
-  /**
-   * シンタックスエラーに現在のカーソル下のトークンの位置情報を付けて返す。
-   * トークンがソースマップ上の位置と結びついていない場合、近くの別のトークンの位置を使う。
-   * @param {NakoSyntaxError} err
-   * @param {TokenWithSourceMap[]} tokens
-   * @param {number} codeLength
-   * @returns {NakoSyntaxErrorWithSourceMap}
-   * @private
-   */
-  addSourceMapToSyntaxError (err, tokens, codeLength) {
-    // エラーの発生したトークン
-    const token = tokens[parser.index]
-    let startOffset = token.startOffset
-    let endOffset = token.endOffset
-
-    // ソースコード上の位置が見つかるまで、左右のトークンを見ていく
-    let left = parser.index
-    while (startOffset === null) {
-        left--
-        if (left <= -1) {
-            startOffset = 0
-        } else if (tokens[left].endOffset !== null) {
-            startOffset = tokens[left].endOffset
-        } else if (tokens[left].startOffset !== null) {
-            startOffset = tokens[left].startOffset
-        }
-    }
-
-    let right = parser.index
-    while (endOffset === null) {
-        right++
-        if (right >= tokens.length) {
-            endOffset = codeLength
-        } else if (tokens[right].startOffset !== null) {
-            endOffset = tokens[right].startOffset
-        } else if (tokens[right].endOffset !== null) {
-            endOffset = tokens[right].endOffset
-        }
-    }
-
-    // start < end であるべきなため、もし等しければどちらかを1つ動かす
-    if (startOffset === endOffset) {
-        if (startOffset <= 0) {
-            endOffset++  // endOffset = 1
-        } else {
-            startOffset--
-        }
-    }
-
-    // エラーを投げる
-    return new NakoSyntaxErrorWithSourceMap(token, startOffset, endOffset, err)
+    return { commentTokens, tokens, requireTokens: requireStatementTokens }
   }
 
   /**
@@ -505,7 +462,7 @@ class NakoCompiler {
    * @param {string} filename
    * @param {string} [preCode]
    * @return {Ast}
-   * @throws {LexErrorWithSourceMap | NakoSyntaxErrorWithSourceMap}
+   * @throws {LexErrorWithSourceMap | NakoSyntaxError}
    */
   parse (code, filename, preCode = '') {
     // 関数を字句解析と構文解析に登録
@@ -522,7 +479,10 @@ class NakoCompiler {
     try {
       ast = parser.parse(lexerOutput.tokens)
     } catch (err) {
-      throw this.addSourceMapToSyntaxError(err, lexerOutput.tokens, code.length)
+      if (typeof err.startOffset !== 'number') {
+        throw NakoSyntaxError.fromNode(err.message, lexerOutput.tokens[parser.index])
+      }
+      throw err
     }
     this.usedFuncs = this.getUsedFuncs(ast)
     if (this.debug && this.debugParser) {
@@ -627,7 +587,7 @@ class NakoCompiler {
         } else {
           throw new NakoRuntimeError(
             e,
-            this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+            this.__v0 ? this.__v0.line : undefined,
           )
         }
       }
@@ -721,7 +681,7 @@ class NakoCompiler {
           } catch (e) {
             throw new NakoRuntimeError(
               e,
-              this.__v0 && typeof this.__v0.line === 'number' ? this.__v0.line : undefined,
+              this.__v0 ? this.__v0.line : undefined,
               `関数『${key}』`,
             )
           }

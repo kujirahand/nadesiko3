@@ -343,6 +343,7 @@ class NakoLexer {
                 srcLength - src.length,
                 srcLength - rp.src.length,
                 line,
+                filename,
               )
             }
 
