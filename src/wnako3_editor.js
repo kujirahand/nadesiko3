@@ -74,7 +74,7 @@ function getScope(token) {
         case "func": return 'entity.name.function'
         case "number": return 'constant.numeric'
         // 独立した助詞
-        case "とは": return 'keyword.other'
+        case "とは":
         case "ならば":
         case "でなければ":
             return 'keyword.control'
