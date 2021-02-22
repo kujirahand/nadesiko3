@@ -444,17 +444,16 @@ class EditorMarkers {
 class BackgroundTokenizer {
     /**
      * @param {AceDocument} doc
-     * @param {any} _signal
      * @param {NakoCompiler} nako3
-     * @param {EditorMarkers} editorMarkers
-     * @param {(ms: number) => void} deviceSpeedCallback
+     * @param {(firstRow: number, lastRow: number, ms: number) => void} onTokenUpdate
+     * @param {(code: string, err: Error) => void} onCompileError
      */
-    constructor(doc, _signal, nako3, editorMarkers, deviceSpeedCallback) {
-        this._signal = _signal
+    constructor(doc, nako3, onTokenUpdate, onCompileError) {
+        this.onUpdate = onTokenUpdate
         this.doc = doc
         this.dirty = true
         this.nako3 = nako3
-        this.editorMarkers = editorMarkers
+        this.onCompileError = onCompileError
 
         // オートコンプリートで使うために、直近のtokenizeの結果を保存しておく
         /** @type {ReturnType<NakoCompiler['lex']> | null} */
@@ -462,14 +461,19 @@ class BackgroundTokenizer {
 
         // 各行のパース結果。
         // typeはscopeのこと。配列の全要素のvalueを結合した文字列がその行の文字列と等しくなる必要がある。
-        /** @type {{ type: string, value: string }[][]} */
+        /** @type {{ type: TokenType, value: string }[][]} */
         this.lines = this.doc.getAllLines().map((line) => [{ type: 'markup.other', value: line }])
 
         // this.lines は外部から勝手に編集されてしまうため、コピーを持つ
         /** @type {{ code: string, lines: string } | null} */
         this.cache = null
 
+        this.deleted = false
+
         const update = () => {
+            if (this.deleted) {
+                return
+            }
             if (this.dirty && this.enabled) {
                 const startTime = Date.now()
                 this.dirty = false
@@ -477,15 +481,14 @@ class BackgroundTokenizer {
                 try {
                     const startTime = Date.now()
                     const out = tokenize(this.doc.getAllLines(), nako3)
-                    deviceSpeedCallback(Date.now() - startTime)
                     this.lastLexerOutput = out.lexerOutput
                     this.lines = out.editorTokens
                     this.cache = { code, lines: JSON.stringify(this.lines) }
 
                     // ファイル全体の更新を通知する。
-                    _signal('update', { data: { first: 0, last: this.doc.getLength() - 1 } })
+                    onTokenUpdate(0, this.doc.getLength() - 1, Date.now() - startTime)
                 } catch (e) {
-                    editorMarkers.addByError(code, e)
+                    onCompileError(code, e)
                 }
                 // tokenizeに時間がかかる場合、文字を入力できるように次回の実行を遅くする。
                 setTimeout(update, Math.max(100, Math.min(5000, (Date.now() - startTime) * 5)))
@@ -497,6 +500,10 @@ class BackgroundTokenizer {
 
         /** @public */
         this.enabled = true
+    }
+
+    dispose() {
+        this.deleted = true
     }
 
     /**
@@ -1099,12 +1106,13 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     })
 
     let isFirstTime = true
+    const oldBgTokenizer = editor.session.bgTokenizer
     const backgroundTokenizer = new BackgroundTokenizer(
         editor.session.bgTokenizer.doc,
-        editor.session.bgTokenizer._signal.bind(editor.session.bgTokenizer),
         nako3,
-        editorMarkers,
-        (ms) => {
+        (firstRow, lastRow, ms) => {
+            oldBgTokenizer._signal('update', { data: { first: firstRow, last: lastRow } })
+
             // 処理が遅い場合シンタックスハイライトを無効化する。
             if (ms > 220 && editor.getOption('syntaxHighlighting') && !readonly && isFirstTime) {
                 isFirstTime = false
@@ -1114,7 +1122,8 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                     slowSpeedMessage.classList.remove('visible')
                 }, 8000);
             }
-        }
+        },
+        (code, err) => { editorMarkers.addByError(code, err) },
     )
 
     // オートコンプリートを有効化する
