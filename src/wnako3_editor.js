@@ -342,7 +342,6 @@ function tokenize (lines, nako3) {
 
 /**
  * エディタ上にエラーメッセージの波線とgutterの赤いマークとエラーメッセージのポップアップを設定するためのクラス。
- * プログラムのエラー位置を表示するために外部から呼び出すこともあるため、利便性のためにメソッドが多くなっている。
  */
 class EditorMarkers {
     /**
@@ -366,12 +365,10 @@ class EditorMarkers {
      * @param {number | null} startColumn
      * @param {number | null} endLine
      * @param {number | null} endColumn
-     * @param {string} message
+     * @param {(row: number) => string} getLine
+     * @returns {[number, number, number, number]}
      */
-    add(startLine, startColumn, endLine, endColumn, message) {
-        if (this.disable) {
-            return
-        }
+    static fromNullable(startLine, startColumn, endLine, endColumn, getLine) {
         if (startColumn === null) {
             startColumn = 0
         }
@@ -379,7 +376,7 @@ class EditorMarkers {
             endLine = startLine
         }
         if (endColumn === null) {
-            endColumn = this.doc.getLine(startLine).length
+            endColumn = getLine(endLine).length
         }
 
         // 最低でも1文字分の長さをとる
@@ -387,44 +384,62 @@ class EditorMarkers {
             endColumn++
         }
 
-        this.markers.push(this.session.addMarker(new this.AceRange(startLine, startColumn, endLine, endColumn), "marker-red", "text", false))
+        return [startLine, startColumn, endLine, endColumn]
+    }
+
+    /**
+     * @param {string} code @param {number} startOffset @param {number} endOffset
+     * @returns {[number, number, number, number]}
+     */
+    static fromOffset(code, startOffset, endOffset) {
+        const offsetToLineColumn = new OffsetToLineColumn(code)
+        const start = offsetToLineColumn.map(startOffset, false)
+        const end = offsetToLineColumn.map(endOffset, false)
+        return [start.line, start.column, end.line, end.column]
+    }
+
+    /**
+     * @param {string} code
+     * @param {{ line?: number, startOffset?: number | null, endOffset?: number | null, message: string }} error
+     * @param {(row: number) => string} getLine
+     * @returns {[number, number, number, number]}
+     */
+    static fromError(code, error, getLine) {
+        if (typeof error.startOffset === 'number' && typeof error.endOffset === 'number') {
+            // 完全な位置を取得できる場合
+            return this.fromOffset(code, error.startOffset, error.endOffset)
+        } else if (typeof error.line === 'number') {
+            // 行全体の場合
+            return this.fromNullable(error.line, null, null, null, getLine)
+        } else {
+            // 位置が不明な場合
+            return this.fromNullable(0, null, null, null, getLine)
+        }
+    }
+
+    /**
+     * @param {number} startLine
+     * @param {number | null} startColumn
+     * @param {number | null} endLine
+     * @param {number | null} endColumn
+     * @param {string} message
+     */
+    add(startLine, startColumn, endLine, endColumn, message) {
+        if (this.disable) {
+            return
+        }
+        const range = new this.AceRange(...EditorMarkers.fromNullable(startLine, startColumn, endLine, endColumn, (row) => this.doc.getLine(row)))
+        this.markers.push(this.session.addMarker(range, "marker-red", "text", false))
         this.session.setAnnotations([{ row: startLine, column: startColumn, text: message, type: 'error' }])
         this.hasAnnotations = true
     }
 
     /**
      * @param {string} code
-     * @param {number} startOffset
-     * @param {number} endOffset
-     * @param {string} message
-     */
-    addByOffset(code, startOffset, endOffset, message) {
-        const offsetToLineColumn = new OffsetToLineColumn(code)
-        const start = offsetToLineColumn.map(startOffset, false)
-        const end = offsetToLineColumn.map(endOffset, false)
-        this.add(start.line, start.column, end.line, end.column, message)
-    }
-
-    /**
-     * @param {string} code
-     * @param {{
-     *     line?: number
-     *     startOffset?: number | null
-     *     endOffset?: number | null
-     *     message: string
-     * }} error
+     * @param {{ line?: number, startOffset?: number | null, endOffset?: number | null, message: string }} error
      */
     addByError(code, error) {
-        if (typeof error.startOffset === 'number' && typeof error.endOffset === 'number') {
-            // 完全な位置を取得できる場合
-            this.addByOffset(code, error.startOffset, error.endOffset, error.message)
-        } else if (typeof error.line === 'number') {
-            // 行全体の場合
-            this.add(error.line, null, null, null, error.message)
-        } else {
-            // 位置が不明な場合
-            this.add(0, null, null, null, error.message)
-        }
+        this.add(...EditorMarkers.fromError(code, error, (row) => this.doc.getLine(row)), error.message)
     }
 
     /**
