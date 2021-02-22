@@ -6,7 +6,7 @@ const { getBlockStructure, getIndent, countIndent, isIndentSyntaxEnabled } = req
 const NakoPrepare = require('./nako_prepare')
 
 /**
- * @typedef {import('./wnako3')} WebNakoCompiler
+ * @typedef {import('./nako3')} NakoCompiler
  * 
  * @typedef {{
  *     getValue(): string
@@ -140,7 +140,7 @@ function getScope(token) {
 /**
  * `name` が定義されたプラグインの名前を返す。
  * @param {string} name
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @returns {string | null}
  */
 function findPluginName(name, nako3) {
@@ -189,7 +189,7 @@ function escapeHTML(t) {
 /**
  * 関数のドキュメントを返す。
  * @param {TokenWithSourceMap} token
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @returns {string | null}
  */
 function getDocumentationHTML(token, nako3) {
@@ -217,7 +217,7 @@ const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLi
 /**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param {string[]} lines
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  */
 function tokenize (lines, nako3) {
     const code = lines.join('\n')
@@ -445,7 +445,7 @@ class BackgroundTokenizer {
     /**
      * @param {AceDocument} doc
      * @param {any} _signal
-     * @param {WebNakoCompiler} nako3
+     * @param {NakoCompiler} nako3
      * @param {EditorMarkers} editorMarkers
      * @param {(ms: number) => void} deviceSpeedCallback
      */
@@ -457,7 +457,7 @@ class BackgroundTokenizer {
         this.editorMarkers = editorMarkers
 
         // オートコンプリートで使うために、直近のtokenizeの結果を保存しておく
-        /** @type {ReturnType<WebNakoCompiler['lex']> | null} */
+        /** @type {ReturnType<NakoCompiler['lex']> | null} */
         this.lastLexerOutput = null
 
         // 各行のパース結果。
@@ -610,7 +610,7 @@ class BackgroundTokenizer {
 class LanguageFeatures {
     /**
      * @param {TypeofAceRange} AceRange
-     * @param {WebNakoCompiler} nako3
+     * @param {NakoCompiler} nako3
      */
     constructor(AceRange, nako3) {
         this.AceRange = AceRange
@@ -751,7 +751,7 @@ class LanguageFeatures {
 
     /**
      * lexerの出力を参照したオートコンプリート
-     * @param {number} editorId @param {BackgroundTokenizer} backgroundTokenizer @param {WebNakoCompiler} nako3 @returns {Completer}
+     * @param {number} editorId @param {BackgroundTokenizer} backgroundTokenizer @param {NakoCompiler} nako3 @returns {Completer}
      */
     static getTokenCompleter(editorId, backgroundTokenizer, nako3) {
         return {
@@ -869,7 +869,7 @@ class LanguageFeatures {
 
     /**
      * 文字を入力するたびに呼ばれ、''以外を返すとその文字列をもとにしてautocompletionが始まる。
-     * @param {WebNakoCompiler} nako3
+     * @param {NakoCompiler} nako3
      */
     static getCompletionPrefix(nako3) {
         return (editor) => {
@@ -877,7 +877,7 @@ class LanguageFeatures {
             const pos = editor.getCursorPosition()
             /** @type {string} */
             const line = editor.session.getLine(pos.row).slice(0, pos.column)
-            /** @type {ReturnType<WebNakoCompiler['lex']>["tokens"] | null} */
+            /** @type {ReturnType<NakoCompiler['lex']>["tokens"] | null} */
             let tokens = null
 
             // ひらがなとアルファベットとカタカナと漢字のみオートコンプリートする。
@@ -1029,7 +1029,7 @@ let editorIdCounter = 0
  * - エラー位置の表示を無効化するには data-nako3-disable-marker="true" を設定する。
  * 
  * @param {string} id HTML要素のid
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @param {any} ace
  * @param {string} [defaultFileName]
  */
