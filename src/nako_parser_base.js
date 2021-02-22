@@ -10,8 +10,14 @@ class NakoParserBase {
     this.debug = false || this.debugAll
     this.debugStack = false || this.debugAll
     this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
-    this.filename = ''
     this.init()
+    /** @type {import('./nako3').TokenWithSourceMap[]} */
+    this.tokens = []
+    /** @type {import('./nako3').Ast[]} */
+    this.stack = []
+    this.index = 0
+    /** @type {import('./nako3').Ast[]} */
+    this.y = []
   }
 
   init () {
@@ -20,14 +26,11 @@ class NakoParserBase {
   }
 
   reset () {
+    /** @type {import('./nako3').TokenWithSourceMap[]} */
     this.tokens = [] // 字句解析済みのトークンの一覧を保存
     this.index = 0 // tokens[] のどこまで読んだかを管理する
     this.stack = [] // 計算用のスタック ... 直接は操作せず、pushStack() popStack() を介して使う
     this.y = [] // accept()で解析済みのトークンを配列で得るときに使う
-  }
-
-  setFilename (fname) {
-    this.filename = fname
   }
 
   setFuncList (funclist) {
@@ -37,6 +40,7 @@ class NakoParserBase {
   /**
    * 特定の助詞を持つ要素をスタックから一つ下ろす、指定がなければ末尾を下ろす
    * @param josiList 下ろしたい助詞の配列
+   * @returns {import('./nako3').Ast | null | undefined}
    */
   popStack (josiList) {
     if (!josiList) {return this.stack.pop()}
@@ -156,6 +160,7 @@ class NakoParserBase {
 
   /**
    * カーソル語句を取得して、カーソルを後ろに移動する
+   * @returns {import('./nako3').TokenWithSourceMap | null}
    */
   get () {
     if (this.isEOF()) {return null}
@@ -166,9 +171,30 @@ class NakoParserBase {
     if (this.index > 0) {this.index--}
   }
 
+  /**
+   * @returns {import('./nako3').TokenWithSourceMap | null}
+   */
   peek (i = 0) {
     if (this.isEOF()) {return null}
     return this.tokens[this.index + i]
+  }
+
+  /**
+   * 現在のカーソル語句のソースコード上の位置を取得する。
+   * @returns {{
+   *     startOffset: number | null
+   *     endOffset: number | null
+   *     file: string | undefined
+   *     line: number
+   *     column: number
+   * }}
+   */
+  peekSourceMap () {
+    const token = this.peek()
+    if (token === null) {
+      return { startOffset: null, endOffset: null, file: undefined, line: 0, column: 0 }
+    }
+    return { startOffset: token.startOffset, endOffset: token.endOffset, file: token.file, line: token.line, column: token.column }
   }
 
   /**

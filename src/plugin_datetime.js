@@ -184,7 +184,7 @@ const PluginDateTime = {
 
       throw new NakoRuntimeError(
         '『和暦変換』は明治以前の日付には対応していません。',
-        sys.__v0 && typeof sys.__v0.line === 'number' ? sys.__v0.line : undefined,
+        sys.__v0 ? sys.__v0.line : undefined,
       )
     }
   },
