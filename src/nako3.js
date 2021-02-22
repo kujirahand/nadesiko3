@@ -87,7 +87,9 @@ class NakoCompiler {
     /** @type {Record<string, Record<string, NakoFunction>>} */
     this.__module = {} // requireなどで取り込んだモジュールの一覧
     /** @type {Record<string, NakoFunction>} */
-    this.funclist = {} // プラグインで定義された関数
+    this.pluginFunclist = {} // プラグインで定義された関数
+    /** @type {Record<string, NakoFunction>} */
+    this.funclist = {} // プラグインで定義された関数 + ユーザーが定義した関数
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
     this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
@@ -178,9 +180,9 @@ class NakoCompiler {
           // jsならプラグインとして読み込む。
           const obj = tools.readJs(item.filePath, item.firstToken)
           if (obj.sync) {
-            this.addPluginFile(item.value, item.filePath, obj.value)
+            this.addPluginFile(item.value, item.filePath, obj.value, false)
           } else {
-            tasks.push(obj.value.then((res) => { this.addPluginFile(item.value, item.filePath, res) }))
+            tasks.push(obj.value.then((res) => { this.addPluginFile(item.value, item.filePath, res, false) }))
           }
         } else if (item.type === 'nako3') {
           // nako3ならファイルを読んでdependenciesに保存する。
@@ -295,21 +297,35 @@ class NakoCompiler {
   /**
    * 環境のリセット
    */
-  reset () {
+  reset (leaveDependencies = false) {
     // スタックのグローバル変数とローカル変数を初期化
     this.__varslist = [this.__varslist[0], {}, {}]
     this.__v0 = this.__varslist[0]
     this.__v1 = this.__varslist[1]
     this.__vars = this.__varslist[2]
     this.__locals = {}
-    const old = this.funclist
-    this.funclist = {}
-    for (const name of Object.keys(this.__v0)) {
-      // プラグイン命令以外を削除
-      this.funclist[name] = old[name]
-    }
     this.gen.reset()
     this.lexer.setFuncList(this.funclist)
+
+    if (!leaveDependencies) {
+      // ユーザー定義の関数の削除と、プラグイン変数の値の初期化を行う。
+      // 実行前に行うとloadDependenciesで読み込んだ依存まで消されてしまうことに注意
+      this.funclist = {}
+      for (const name of Object.keys(this.__v0)) {
+        const original = this.pluginFunclist[name]
+        if (!original) {
+          continue
+        }
+
+        // プラグイン命令以外を削除
+        this.funclist[name] = JSON.parse(JSON.stringify(original))
+
+        // プラグイン変数の値を初期化
+        if (original.type === 'var') {
+          this.__v0[name] = original.value
+        }
+      }
+    }
   }
 
   /**
@@ -556,22 +572,28 @@ class NakoCompiler {
    */
   _runEx(code, fname, opts, preCode = '') {
     const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (optsAll.resetEnv) {this.reset()}
+    if (optsAll.resetEnv) {this.reset(true)}
     if (optsAll.resetLog) {this.clearLog()}
     let js = this.compile(code, fname, optsAll.testOnly, preCode)
     try {
-      this.__varslist[0].line = -1 // コンパイルエラーを調べるため
-      const func = new Function(js) // eslint-disable-line
-      func.apply(this)
-    } catch (e) {
-      this.js = js
-      if (e instanceof NakoRuntimeError) {
-        throw e
-      } else {
-        throw new NakoRuntimeError(
-          e,
-          this.__v0 ? this.__v0.line : undefined,
-        )
+      try {
+        this.__varslist[0].line = -1 // コンパイルエラーを調べるため
+        const func = new Function(js) // eslint-disable-line
+        func.apply(this)
+      } catch (e) {
+        this.js = js
+        if (e instanceof NakoRuntimeError) {
+          throw e
+        } else {
+          throw new NakoRuntimeError(
+            e,
+            this.__v0 ? this.__v0.line : undefined,
+          )
+        }
+      }
+    } finally {
+      if (optsAll.resetEnv) {
+        this.reset(false)
       }
     }
     return this
@@ -638,8 +660,9 @@ class NakoCompiler {
   /**
    * プラグイン・オブジェクトを追加
    * @param po プラグイン・オブジェクト
+   * @param {boolean} [persistent] falseのとき、次以降の実行では使えない
    */
-  addPlugin (po) {
+  addPlugin (po, persistent = true) {
     // 変数のメタ情報を確認
     const __v0 = this.__varslist[0]
     if (__v0.meta === undefined){ __v0.meta = {} }
@@ -648,6 +671,9 @@ class NakoCompiler {
     for (const key in po) {
       const v = po[key]
       this.funclist[key] = v
+      if (persistent) {
+        this.pluginFunclist[key] = JSON.parse(JSON.stringify(v))
+      }
       if (v.type === 'func') {
         __v0[key] = (...args) => {
           try {
@@ -678,8 +704,9 @@ class NakoCompiler {
    * プラグイン・オブジェクトを追加(ブラウザ向け)
    * @param objName オブジェクト名
    * @param po 関数リスト
+   * @param {boolean} [persistent] falseのとき、次以降の実行では使えない
    */
-  addPluginObject (objName, po) {
+  addPluginObject (objName, po, persistent = true) {
     this.__module[objName] = po
     this.pluginfiles[objName] = '*'
     if (typeof (po['初期化']) === 'object') {
@@ -689,17 +716,18 @@ class NakoCompiler {
       po[initkey] = def
       this.gen.used_func[initkey] = true
     }
-    this.addPlugin(po)
+    this.addPlugin(po, persistent)
   }
 
   /**
    * プラグイン・ファイルを追加(Node.js向け)
-   * @param objName オブジェクト名
-   * @param fpath ファイルパス
+   * @param {string} objName オブジェクト名
+   * @param {string} fpath ファイルパス
    * @param po 登録するオブジェクト
+   * @param {boolean} [persistent] falseのとき、次以降の実行では使えない
    */
-  addPluginFile (objName, fpath, po) {
-    this.addPluginObject(objName, po)
+  addPluginFile (objName, fpath, po, persistent = true) {
+    this.addPluginObject(objName, po, persistent)
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = fpath
     }
@@ -713,6 +741,7 @@ class NakoCompiler {
    */
   addFunc (key, josi, fn) {
     this.funclist[key] = {'josi': josi, 'fn': fn, 'type': 'func'}
+    this.pluginFunclist[key] = JSON.parse(JSON.stringify(this.funclist[key]))
     this.__varslist[0][key] = fn
   }
 
