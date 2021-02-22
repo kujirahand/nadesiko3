@@ -517,7 +517,6 @@ class BackgroundTokenizer {
      * @param {{ action: string, start: { row: number, column: number }, end: { row: number, column: number }, lines: string[] }} delta
      */
     $updateOnChange(delta) {
-        this.editorMarkers.clear()
         this.dirty = true
         const startRow = delta.start.row
         const endRow = delta.end.row
@@ -1109,6 +1108,9 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     editor.session.on('change', () => {
         // モバイル端末でドキュメントが存在するトークンを編集するときにツールチップが消えない問題を解消するために、文字を打ったらtooltipを隠す。
         tooltip.hide()
+
+        // 文字入力したらマーカーを消す
+        editorMarkers.clear()
     })
 
     let isFirstTime = true
