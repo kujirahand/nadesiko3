@@ -8,6 +8,7 @@ const exec = require('child_process').exec
 const path = require('path')
 const NakoCompiler = require('./nako3')
 const PluginNode = require('./plugin_node')
+const { NakoImportError } = require('./nako_errors')
 
 class CNako3 extends NakoCompiler {
   /** @param {{ nostd?: boolean }} [opts] */
@@ -226,11 +227,13 @@ class CNako3 extends NakoCompiler {
    * @param {string} preCode
    */
   loadDependencies(code, filename, preCode) {
+    /** @type {string[]} */
+    const log = []
     // 同期的に読み込む
     const tasks = super.loadDependencies(code, filename, preCode, {
       resolvePath: (name) => {
         if (/\.js(\.txt)?$/.test(name) || /^[^\.]*$/.test(name)) {
-          return { filePath: path.resolve(this.findPluginFile(name)), type: 'js' }
+          return { filePath: path.resolve(CNako3.findPluginFile(name, this.filename, __dirname, log)), type: 'js' }
         }
         if (/\.nako3?(\.txt)?$/.test(name)) {
           return { filePath: path.resolve(name), type: 'nako3' }
@@ -247,7 +250,7 @@ class CNako3 extends NakoCompiler {
         try {
           return { sync: true, value: () => require(name) }
         } catch (err) {
-          throw new NakoImportError(`プラグイン ${name} が存在しません。`, token.line, token.file)
+          throw new NakoImportError(`プラグイン ${name} が存在しません。次の場所を検索しました: ${log.join(', ')}`, token.line, token.file)
         }
       },
     })
@@ -271,10 +274,15 @@ class CNako3 extends NakoCompiler {
 
   /**
    * プラグインファイルの検索を行う
-   * @param pname
-   * @return string フルパス
+   * @param {string} pname
+   * @param {string} filename
+   * @param {string} srcDir このファイルが存在するディレクトリ
+   * @param {string[]} [log]
+   * @return {string} フルパス
    */
-  findPluginFile (pname) {
+  static findPluginFile (pname, filename, srcDir, log = []) {
+    log.length = 0
+    /** @type {string[]} */
     // フルパス指定か?
     const p1 = pname.substr(0, 1)
     if (p1 === '/') {
@@ -284,6 +292,7 @@ class CNako3 extends NakoCompiler {
     // 各パスを調べる
     const exists = (f, desc) => {
       const result = fs.existsSync(f)
+      log.push(f)
       // console.log(result, 'exists[', desc, '] =', f)
       return result
     }
@@ -314,17 +323,17 @@ class CNako3 extends NakoCompiler {
     // 相対パスか?
     if (p1 === '.') {
       // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
-      const pathRelative = path.resolve(path.dirname(this.filename))
+      const pathRelative = path.resolve(path.dirname(filename))
       const fileRelative = f_check(pathRelative)
       if (fileRelative) { return fileRelative }
     }
     // nako3スクリプトパスか?
-    const pathScript = path.resolve(path.dirname(this.filename))
+    const pathScript = path.resolve(path.dirname(filename))
     const fileScript = f_check(pathScript)
     if (fileScript) { return fileScript }
         
     // ランタイムパス/src
-    const pathRuntimeSrc = path.resolve(__dirname)
+    const pathRuntimeSrc = path.resolve(srcDir)
     const fileRuntimeSrc = f_check(pathRuntimeSrc)
     if (fileRuntimeSrc) { return fileRuntimeSrc }
     // ランタイムパス
