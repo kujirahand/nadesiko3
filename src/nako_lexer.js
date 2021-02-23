@@ -138,7 +138,17 @@ class NakoLexer {
       if (t.type === 'word' && t.josi === '' && t.value.length >= 2) {
         if (t.value.match(/回$/)) {
           t.value = t.value.substr(0, t.value.length - 1)
-          tokens.splice(i + 1, 0, {type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: ''})
+          tokens.splice(i + 1, 0, {type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: ''})
+          t.endOffset--
+          i++
+        }
+      }
+      // 「等しい間」を「等しい|間」に置換
+      if (t.type === 'word' && t.josi === '' && t.value.length >= 2) {
+        if (t.value.endsWith('間')) {
+          t.value = t.value.substr(0, t.value.length - 1)
+          tokens.splice(i + 1, 0, {type: '間', value: '間', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: ''})
+          t.endOffset--
           i++
         }
       }
