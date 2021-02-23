@@ -138,6 +138,29 @@ function getScope(token) {
 }
 
 /**
+ * @param {TokenWithSourceMap} compilerToken
+ * @param {WebNakoCompiler} nako3
+ * @param {string} value
+ * @param {boolean} includesLastCharacter
+ */
+function getEditorTokens(compilerToken, nako3, value, includesLastCharacter) {
+    const type = getScope(compilerToken)
+    const docHTML = getDocumentationHTML(compilerToken, nako3)
+
+    // 助詞があれば助詞の部分を分割する。
+    // 最後の文字が現在の行に含まれないときは助詞を表示しない。そうしないと例えば `「文字列\n」を表示` の「列」の部分に下線が引かれてしまう。
+    if (compilerToken.rawJosi && value.length >= compilerToken.rawJosi.length && includesLastCharacter) {
+        return [
+            { type, docHTML, value: value.slice(0, -compilerToken.rawJosi.length) },
+            { type: type + '.markup.underline', docHTML, value: value.slice(-compilerToken.josi.length) },
+        ]
+    }
+    return [
+        { type, docHTML, value }
+    ]
+}
+
+/**
  * `name` が定義されたプラグインの名前を返す。
  * @param {string} name
  * @param {WebNakoCompiler} nako3
@@ -259,20 +282,12 @@ function tokenize (lines, nako3) {
         if (tokenIndex < tokens.length &&
             tokens[tokenIndex].startOffset <= lineStartOffset &&
             tokens[tokenIndex].endOffset >= lineEndOffset) {
-            editorTokens[i].push({
-                type: getScope(tokens[tokenIndex]),
-                docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                value: lines[i],
-            })
+            editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, lines[i], tokens[tokenIndex].endOffset <= lineEndOffset))
         } else {
             // 行頭をまたがっているトークンが存在する場合
             if (tokenIndex < tokens.length &&
                 tokens[tokenIndex].startOffset <= lineStartOffset) {
-                editorTokens[i].push({
-                    type: getScope(tokens[tokenIndex]),
-                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                    value: code.slice(offset, tokens[tokenIndex].endOffset),
-                })
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true))
                 offset = tokens[tokenIndex].endOffset
                 tokenIndex++
             }
@@ -291,11 +306,7 @@ function tokenize (lines, nako3) {
                 }
 
                 // 現在のトークンを使う
-                editorTokens[i].push({
-                    type: getScope(tokens[tokenIndex]),
-                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                    value: code.slice(offset, tokens[tokenIndex].endOffset),
-                })
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true))
                 offset = tokens[tokenIndex].endOffset
                 tokenIndex++
             }
@@ -314,11 +325,7 @@ function tokenize (lines, nako3) {
                 }
 
                 // トークンを使う
-                editorTokens[i].push({
-                    type: getScope(tokens[tokenIndex]),
-                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                    value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset),
-                })
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(tokens[tokenIndex].startOffset, lineEndOffset), tokens[tokenIndex].endOffset <= lineEndOffset))
             } else {
                 editorTokens[i].push({
                     type: 'markup.other',
@@ -1061,13 +1068,11 @@ class Options {
 
         // renderメソッドを呼ぶとrenderOptionGroupにoptionGroups.Main、optionGroups.More が順に渡されることを利用して、optionGroupsを書き換える。
         let isMain = true
-        let Main = {}
         panel.renderOptionGroup = (group) => {
             if (isMain) { // Main
                 for (const key of Object.keys(group)) {
                     delete group[key]
                 }
-                Main = group
 
                 // スマートフォンでも見れるように、文字数は最小限にする
                 group['シンタックスハイライト'] = {

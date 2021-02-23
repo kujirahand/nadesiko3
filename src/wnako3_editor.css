@@ -27,6 +27,11 @@
     font-weight: bold;
 }
 
+.nako3_editor .ace_markup.ace_underline .ace_cjk {
+    /* cjk文字に下線が引かれない問題の修正 */
+    text-decoration: underline;
+}
+
 /* エラー位置に付ける赤線 */
 .nako3_editor .marker-red {
     position: absolute;
