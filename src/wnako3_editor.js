@@ -1190,12 +1190,14 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                 for (const key of Object.keys(group)) {
                     delete group[key]
                 }
-                group['シンタックスハイライトを有効化する'] = {
+
+                // スマートフォンでも見れるように、文字数は最小限にする
+                group['シンタックスハイライト'] = {
                     path: 'syntaxHighlighting'
                 }
                 group['キーバインド'] = {
-                    type: 'buttonBar',
                     path: 'keyboardHandler',
+                    type: 'select',
                     items: [
                         { caption: 'VSCode', value: 'ace/keyboard/vscode' },
                         { caption: 'Emacs', value: 'ace/keyboard/emacs' },
@@ -1203,17 +1205,25 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                         { caption: 'Vim', value: 'ace/keyboard/vim' },
                     ]
                 }
+                group["カラーテーマ"] = {
+                    path: "theme",
+                    type: "select",
+                    items: [
+                        { caption: "ライト", value: "ace/theme/xcode" },
+                        { caption: "ダーク", value: "ace/theme/monokai" },
+                    ],
+                }
                 group['文字サイズ'] = {
                     path: "fontSize",
                     type: "number",
                     defaultValue: 16,
                 }
                 group["行の折り返し"] = {
-                    type: "buttonBar",
+                    type: "select",
                     path: "wrap",
                     items: [
-                        { caption: "オフ", value: "off" },
-                        { caption: "オン", value: "free" },
+                        { caption: "なし", value: "off" },
+                        { caption: "あり", value: "free" },
                     ]
                 }
                 group["ソフトタブ"] = [{
@@ -1224,13 +1234,13 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                     type: "number",
                     values: [2, 3, 4, 8, 16]
                 }]
-                group["空白文字を表示する"] = {
+                group["空白文字を表示"] = {
                     path: "showInvisibles"
                 }
-                group["常に自動補完する"] = {
+                group["常に自動補完"] = {
                     path: "enableLiveAutocompletion"
                 }
-                group["折り返した行をインデントする"] = {
+                group["折り返した行をインデント"] = {
                     path: "indentedSoftWrap"
                 }
                 i = 'More'
