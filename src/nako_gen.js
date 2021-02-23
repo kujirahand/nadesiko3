@@ -830,7 +830,8 @@ class NakoGen {
     const block = this.convGenLoop(node.block)
     const kaisu = '__v0["回数"]'
     const code =
-      `for(var $nako_i${id} = 1; $nako_i${id} <= ${value}; $nako_i${id}++)` + '{\n' +
+      `let $nako_times_v${id} = ${value};\n` +
+      `for(var $nako_i${id} = 1; $nako_i${id} <= $nako_times_v${id}; $nako_i${id}++)` + '{\n' +
       `  ${this.varname('それ')} = ${kaisu} = $nako_i${id};` + '\n' +
       '  ' + block + '\n}\n'
     return this.convLineno(node, false) + code
