@@ -995,6 +995,158 @@ class EditorTabs {
     }
 }
 
+class Options {
+    /** @param {AceEditor} editor */
+    static save(editor) {
+        try {
+            /** @type {any} */
+            const obj = {}
+            for (const key of ['syntaxHighlighting', 'keyboardHandler', 'theme', 'fontSize', 'wrap', 'useSoftTabs', 'tabSize', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap']) {
+                obj[key] = editor.getOption(key)
+            }
+            localStorage.setItem('nako3EditorOptions', JSON.stringify(obj))
+        } catch (e) {
+            // JSON.stringify のエラー、localStorageのエラーなど
+            console.error(e)
+            return null
+        }
+    }
+    /** @param {AceEditor} editor */
+    static load(editor) {
+        try {
+            if (!window.localStorage) {
+                return null
+            }
+            const text = window.localStorage.getItem('nako3EditorOptions')
+            if (text === null) {
+                return null
+            }
+            const json = JSON.parse(text)
+            if (['ace/keyboard/vscode', 'ace/keyboard/emacs', 'ace/keyboard/sublime', 'ace/keyboard/vim'].includes(json.keyboardHandler)) {
+                editor.setOption('keyboardHandler', json.keyboardHandler)
+            }
+            if (['ace/theme/xcode', 'ace/theme/monokai'].includes(json.theme)) {
+                editor.setOption('theme', json.theme)
+            }
+            if (typeof json.fontSize === 'number') {
+                editor.setOption('fontSize', Math.min(48, Math.max(6, json.fontSize)))
+            }
+            for (const key of ['syntaxHighlighting', 'wrap', 'useSoftTabs', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap']) {
+                if (typeof json[key] === 'boolean') {
+                    editor.setOption(key, json[key])
+                }
+            }
+            if (typeof json.tabSize === 'number') {
+                editor.setOption('tabSize', Math.min(16, Math.max(0, json.tabSize)))
+            }
+        } catch (e) {
+            // JSONのパースエラー、localStorageのエラーなど
+            console.error(e)
+            return null
+        }
+    }
+    /**
+     * OptionPanelクラスをなでしこ用に書き換える。
+     * @param {any} OptionPanel
+     * @param {AceEditor} editor
+     */
+    static initPanel(OptionPanel, editor) {
+        const panel = new OptionPanel(editor) // editorはエラーが飛ばなければ何でも良い
+
+        // ページ内で一度だけ呼ぶ
+        if (this.done) {
+            return
+        }
+        this.done = true
+
+        // renderメソッドを呼ぶとrenderOptionGroupにoptionGroups.Main、optionGroups.More が順に渡されることを利用して、optionGroupsを書き換える。
+        let isMain = true
+        let Main = {}
+        panel.renderOptionGroup = (group) => {
+            if (isMain) { // Main
+                for (const key of Object.keys(group)) {
+                    delete group[key]
+                }
+                Main = group
+
+                // スマートフォンでも見れるように、文字数は最小限にする
+                group['シンタックスハイライト'] = {
+                    path: 'syntaxHighlighting',
+                }
+                group['キーバインド'] = {
+                    path: 'keyboardHandler',
+                    type: 'select',
+                    items: [
+                        { caption: 'VSCode', value: 'ace/keyboard/vscode' },
+                        { caption: 'Emacs', value: 'ace/keyboard/emacs' },
+                        { caption: 'Sublime', value: 'ace/keyboard/sublime' },
+                        { caption: 'Vim', value: 'ace/keyboard/vim' },
+                    ],
+                }
+                group["カラーテーマ"] = {
+                    path: "theme",
+                    type: "select",
+                    items: [
+                        { caption: "ライト", value: "ace/theme/xcode" },
+                        { caption: "ダーク", value: "ace/theme/monokai" },
+                    ],
+                }
+                group['文字サイズ'] = {
+                    path: "fontSize",
+                    type: "number",
+                    defaultValue: 16,
+                }
+                group["行の折り返し"] = {
+                    path: "wrap",
+                    type: "select",
+                    items: [
+                        { caption: "なし", value: "off" },
+                        { caption: "あり", value: "free" },
+                    ],
+                }
+                group["ソフトタブ"] = [{
+                    path: "useSoftTabs",
+                }, {
+                    ariaLabel: "Tab Size",
+                    path: "tabSize",
+                    type: "number",
+                    values: [2, 3, 4, 8, 16],
+                }]
+                group["空白文字を表示"] = {
+                    path: "showInvisibles",
+                }
+                group["常に自動補完"] = {
+                    path: "enableLiveAutocompletion",
+                }
+                group["折り返した行をインデント"] = {
+                    path: "indentedSoftWrap",
+                }
+                isMain = false
+            } else { // More
+                for (const key of Object.keys(group)) {
+                    delete group[key]
+                }
+            }
+        }
+        panel.render()
+
+        // 設定メニューは ace/ext/settings_menu.js の showSettingsMenu 関数によって開かれる。
+        // showSettingsMenu 関数は new OptionPanel(editor).render() で新しい設定パネルのインスタンスを生成するため、
+        // renderメソッドに設定の保存処理を挟むことで、生成されたインスタンスにアクセスできる。
+        const render = OptionPanel.prototype.render
+        const self = this
+        OptionPanel.prototype.render = function (...args) {
+            render.apply(this, ...args) // 元の処理
+
+            // OptionPanel.setOption() で発火される setOption イベントをキャッチする
+            this.on('setOption', () => {
+                console.log('設定を保存しました。')
+                self.save(this.editor)
+            })
+        }
+    }
+}
+
 /**
  * ace/ext/language_tools の設定がグローバル変数で保持されているため、こちら側でもグローバル変数で管理しないと、エディタが複数あるときに正しく動かない。
  * - captionはオートコンプリートの候補として表示されるテキスト
@@ -1180,78 +1332,9 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
 
     // 設定メニューの上書き
     // なでしこ用に上書きした設定の削除やテキストの和訳をする。
+    Options.load(editor)
     const OptionPanel = ace.require('ace/ext/options').OptionPanel
-    {
-        // renderメソッドを呼ぶとrenderOptionGroupにoptionGroups.Main、optionGroups.More が順に渡されることを利用して、optionGroupsを書き換える。
-        const panel = new OptionPanel(editor)
-        let i = 'Main'
-        panel.renderOptionGroup = (group) => {
-            if (i === 'Main') { // Main
-                for (const key of Object.keys(group)) {
-                    delete group[key]
-                }
-
-                // スマートフォンでも見れるように、文字数は最小限にする
-                group['シンタックスハイライト'] = {
-                    path: 'syntaxHighlighting'
-                }
-                group['キーバインド'] = {
-                    path: 'keyboardHandler',
-                    type: 'select',
-                    items: [
-                        { caption: 'VSCode', value: 'ace/keyboard/vscode' },
-                        { caption: 'Emacs', value: 'ace/keyboard/emacs' },
-                        { caption: 'Sublime', value: 'ace/keyboard/sublime' },
-                        { caption: 'Vim', value: 'ace/keyboard/vim' },
-                    ]
-                }
-                group["カラーテーマ"] = {
-                    path: "theme",
-                    type: "select",
-                    items: [
-                        { caption: "ライト", value: "ace/theme/xcode" },
-                        { caption: "ダーク", value: "ace/theme/monokai" },
-                    ],
-                }
-                group['文字サイズ'] = {
-                    path: "fontSize",
-                    type: "number",
-                    defaultValue: 16,
-                }
-                group["行の折り返し"] = {
-                    type: "select",
-                    path: "wrap",
-                    items: [
-                        { caption: "なし", value: "off" },
-                        { caption: "あり", value: "free" },
-                    ]
-                }
-                group["ソフトタブ"] = [{
-                    path: "useSoftTabs"
-                }, {
-                    ariaLabel: "Tab Size",
-                    path: "tabSize",
-                    type: "number",
-                    values: [2, 3, 4, 8, 16]
-                }]
-                group["空白文字を表示"] = {
-                    path: "showInvisibles"
-                }
-                group["常に自動補完"] = {
-                    path: "enableLiveAutocompletion"
-                }
-                group["折り返した行をインデント"] = {
-                    path: "indentedSoftWrap"
-                }
-                i = 'More'
-            } else { // More
-                for (const key of Object.keys(group)) {
-                    delete group[key]
-                }
-            }
-        }
-        panel.render()
-    }
+    Options.initPanel(OptionPanel, editor)
 
     // 右下のボタン全体を囲むdiv
     const buttonContainer = document.createElement('div')
