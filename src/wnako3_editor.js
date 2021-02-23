@@ -142,14 +142,15 @@ function getScope(token) {
  * @param {WebNakoCompiler} nako3
  * @param {string} value
  * @param {boolean} includesLastCharacter
+ * @param {boolean} underlineJosi
  */
-function getEditorTokens(compilerToken, nako3, value, includesLastCharacter) {
+function getEditorTokens(compilerToken, nako3, value, includesLastCharacter, underlineJosi) {
     const type = getScope(compilerToken)
     const docHTML = getDocumentationHTML(compilerToken, nako3)
 
     // 助詞があれば助詞の部分を分割する。
     // 最後の文字が現在の行に含まれないときは助詞を表示しない。そうしないと例えば `「文字列\n」を表示` の「列」の部分に下線が引かれてしまう。
-    if (compilerToken.rawJosi && value.length >= compilerToken.rawJosi.length && includesLastCharacter) {
+    if (compilerToken.rawJosi && value.length >= compilerToken.rawJosi.length && includesLastCharacter && underlineJosi) {
         return [
             { type, docHTML, value: value.slice(0, -compilerToken.rawJosi.length) },
             { type: type + '.markup.underline', docHTML, value: value.slice(-compilerToken.josi.length) },
@@ -241,8 +242,9 @@ const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLi
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param {string[]} lines
  * @param {WebNakoCompiler} nako3
+ * @param {boolean} underlineJosi
  */
-function tokenize (lines, nako3) {
+function tokenize(lines, nako3, underlineJosi) {
     const code = lines.join('\n')
 
     // lexerにかける
@@ -282,12 +284,12 @@ function tokenize (lines, nako3) {
         if (tokenIndex < tokens.length &&
             tokens[tokenIndex].startOffset <= lineStartOffset &&
             tokens[tokenIndex].endOffset >= lineEndOffset) {
-            editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, lines[i], tokens[tokenIndex].endOffset <= lineEndOffset))
+            editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, lines[i], tokens[tokenIndex].endOffset <= lineEndOffset, underlineJosi))
         } else {
             // 行頭をまたがっているトークンが存在する場合
             if (tokenIndex < tokens.length &&
                 tokens[tokenIndex].startOffset <= lineStartOffset) {
-                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true))
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true, underlineJosi))
                 offset = tokens[tokenIndex].endOffset
                 tokenIndex++
             }
@@ -306,7 +308,7 @@ function tokenize (lines, nako3) {
                 }
 
                 // 現在のトークンを使う
-                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true))
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true, underlineJosi))
                 offset = tokens[tokenIndex].endOffset
                 tokenIndex++
             }
@@ -325,7 +327,7 @@ function tokenize (lines, nako3) {
                 }
 
                 // トークンを使う
-                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(tokens[tokenIndex].startOffset, lineEndOffset), tokens[tokenIndex].endOffset <= lineEndOffset))
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(tokens[tokenIndex].startOffset, lineEndOffset), tokens[tokenIndex].endOffset <= lineEndOffset, underlineJosi))
             } else {
                 editorTokens[i].push({
                     type: 'markup.other',
@@ -455,13 +457,15 @@ class BackgroundTokenizer {
      * @param {WebNakoCompiler} nako3
      * @param {EditorMarkers} editorMarkers
      * @param {(ms: number) => void} deviceSpeedCallback
+     * @param {boolean} underlineJosi
      */
-    constructor(doc, _signal, nako3, editorMarkers, deviceSpeedCallback) {
+    constructor(doc, _signal, nako3, editorMarkers, deviceSpeedCallback, underlineJosi) {
         this._signal = _signal
         this.doc = doc
         this.dirty = true
         this.nako3 = nako3
         this.editorMarkers = editorMarkers
+        this.underlineJosi = underlineJosi
 
         // オートコンプリートで使うために、直近のtokenizeの結果を保存しておく
         /** @type {ReturnType<WebNakoCompiler['lex']> | null} */
@@ -483,7 +487,7 @@ class BackgroundTokenizer {
                 const code = this.doc.getAllLines().join('\n')
                 try {
                     const startTime = Date.now()
-                    const out = tokenize(this.doc.getAllLines(), nako3)
+                    const out = tokenize(this.doc.getAllLines(), nako3, this.underlineJosi)
                     deviceSpeedCallback(Date.now() - startTime)
                     this.lastLexerOutput = out.lexerOutput
                     this.lines = out.editorTokens
@@ -576,7 +580,7 @@ class BackgroundTokenizer {
                     ok = true
                 } else {
                     try {
-                        const lines = tokenize(this.doc.getAllLines(), this.nako3)
+                        const lines = tokenize(this.doc.getAllLines(), this.nako3, this.underlineJosi)
                         this.cache = { code, lines: JSON.stringify(lines) }
                         ok = true
                     } catch (e) {
@@ -1008,7 +1012,7 @@ class Options {
         try {
             /** @type {any} */
             const obj = {}
-            for (const key of ['syntaxHighlighting', 'keyboardHandler', 'theme', 'fontSize', 'wrap', 'useSoftTabs', 'tabSize', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap']) {
+            for (const key of ['syntaxHighlighting', 'keyboardHandler', 'theme', 'fontSize', 'wrap', 'useSoftTabs', 'tabSize', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap', 'underlineJosi']) {
                 obj[key] = editor.getOption(key)
             }
             localStorage.setItem('nako3EditorOptions', JSON.stringify(obj))
@@ -1038,7 +1042,7 @@ class Options {
             if (typeof json.fontSize === 'number') {
                 editor.setOption('fontSize', Math.min(48, Math.max(6, json.fontSize)))
             }
-            for (const key of ['syntaxHighlighting', 'wrap', 'useSoftTabs', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap']) {
+            for (const key of ['syntaxHighlighting', 'wrap', 'useSoftTabs', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap', 'underlineJosi']) {
                 if (typeof json[key] === 'boolean') {
                     editor.setOption(key, json[key])
                 }
@@ -1125,6 +1129,9 @@ class Options {
                 }
                 group["折り返した行をインデント"] = {
                     path: "indentedSoftWrap",
+                }
+                group["助詞に下線を引く"] = {
+                    path: "underlineJosi"
                 }
                 isMain = false
             } else { // More
@@ -1214,6 +1221,37 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         editor.setReadOnly(true)
     }
     editor.setFontSize(16)
+
+    /** @param {Session} session */
+    const resetEditorTokens = (session) => {
+        // 一旦テキスト全体を消してから、元に戻す
+        /** @type {AceDocument} */
+        const doc = session.doc
+        const lines = doc.getAllLines()
+        const range = session.selection.getRange()
+        doc.removeFullLines(0, doc.getLength())
+        doc.insert({ row: 0, column: 0 }, lines.join('\n'))
+        session.selection.setRange(range, false)
+    }
+
+    ace.require('ace/config').defineOptions(editor.constructor.prototype, 'editor', {
+        syntaxHighlighting: {
+            /** @type {(this: AceEditor, value: boolean) => void} */
+            set: function(value) {
+                this.session.bgTokenizer.enabled = value
+                resetEditorTokens(this.session)
+            },
+            initialValue: true
+        },
+        underlineJosi: {
+            set: function(value) {
+                this.session.bgTokenizer.underlineJosi = value
+                resetEditorTokens(this.session)
+            },
+            initialValue: true
+        }
+    })
+
     editor.setOptions({
         wrap: 'free',
         indentedSoftWrap: false,
@@ -1271,7 +1309,8 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                     slowSpeedMessage.classList.remove('visible')
                 }, 13000);
             }
-        }
+        },
+        /** @type {boolean} */(editor.getOption('underlineJosi')),
     )
 
     // オートコンプリートを有効化する
@@ -1315,25 +1354,6 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     editor.session.bgTokenizer = backgroundTokenizer
 
     editor.setTheme("ace/theme/xcode")
-
-    ace.require('ace/config').defineOptions(editor.constructor.prototype, 'editor', {
-        syntaxHighlighting: {
-            /** @type {(this: AceEditor, value: boolean) => void} */
-            set: function(value) {
-                this.session.bgTokenizer.enabled = value
-
-                // 一旦テキスト全体を消してから、元に戻す
-                /** @type {AceDocument} */
-                const doc = this.session.doc
-                const lines = doc.getAllLines()
-                const range = this.session.selection.getRange()
-                doc.removeFullLines(0, doc.getLength())
-                doc.insert({ row: 0, column: 0 }, lines.join('\n'))
-                this.session.selection.setRange(range, false)
-            },
-            initialValue: true
-        }
-    })
 
     // 設定メニューの上書き
     // なでしこ用に上書きした設定の削除やテキストの和訳をする。
