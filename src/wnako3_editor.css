@@ -79,9 +79,10 @@
 
 /* 処理時間が長いときのメッセージ */
 .slow-speed-message {
-    color: rgb(12, 10, 153);
+    color: rgb(85, 82, 255);
     max-width: 75vw;
     display: none;
+    font-weight: bold;
 }
 .slow-speed-message.visible {
     display: inline-block;

@@ -1112,7 +1112,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                 editor.setOption('syntaxHighlighting', false)
                 setTimeout(() => {
                     slowSpeedMessage.classList.remove('visible')
-                }, 8000);
+                }, 13000);
             }
         }
     )
