@@ -1,6 +1,12 @@
 .nako3_editor {
     height: 300px;
 }
+.nako3_editor.resizable {
+    resize: vertical;
+    overflow: auto;
+    min-height: 42px;
+    max-height: 1080px;
+}
 
 /* シンタックスハイライトの色の調整 */
 .nako3_editor.ace-xcode .ace_name.ace_function {
