@@ -205,10 +205,11 @@ function getDocumentationHTML(token, nako3) {
     const meta = (text) => `<span class="tooltip-plugin-name">${escapeHTML(text)}</span>`
     if (token.type === 'func') {
         const pluginName = findPluginName(token.value + '', nako3)
+        const josi = (token.meta && token.meta.josi) ? createParameterDeclaration(token.meta.josi) : '' // {関数} のとき token.meta.josi が存在しない
         if (pluginName !== null) {
-            return escapeHTML(createParameterDeclaration(token.meta.josi) + token.value) + meta(pluginName)
+            return escapeHTML(josi + token.value) + meta(pluginName)
         }
-        return escapeHTML(createParameterDeclaration(token.meta.josi) + token.value)
+        return escapeHTML(josi + token.value)
     } else if (token.type === 'word') {
         const pluginName = findPluginName(token.value + '', nako3)
         if (pluginName !== null) {
