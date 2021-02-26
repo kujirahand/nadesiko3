@@ -2,13 +2,13 @@ const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
 describe('literal_test', () => {
   const nako = new NakoCompiler()
-  nako.debug = false
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   const err = (code) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     try {
       nako.runReset(code)
     } catch (error) {

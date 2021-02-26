@@ -5,17 +5,15 @@ const PluginDateTime = require('../src/plugin_datetime')
 
 describe('plugin_datetime_test', () => {
   const nako = new NakoCompiler()
+  // nako.logger.addSimpleLogger('trace')
   nako.addPluginObject('PluginDateTime', PluginDateTime)
   
-  // nako.debug = true;
   const cmp = (code, res) => {
-    if (nako.debug)
-      console.log('code=' + code)
-
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     nako.runReset(code)
   }
 

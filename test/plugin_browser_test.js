@@ -4,12 +4,10 @@ const PluginBrowser = require('../src/plugin_browser')
 
 describe('plugin_browser_test', () => {
   const nako = new NakoCompiler()
+  // nako.logger.addSimpleLogger('trace')
   nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
-  nako.debug = false
   const cmp = (code, res) => {
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   // --- test ---

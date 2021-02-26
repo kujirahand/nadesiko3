@@ -3,13 +3,9 @@ const NakoCompiler = require('../src/nako3')
 
 describe('flow_test', () => {
   const nako = new NakoCompiler()
-  // nako.debug = true
-  // nako.debugParser = true
-  // nako.debugLexer = true
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   it('もし', () => {

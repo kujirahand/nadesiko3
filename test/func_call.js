@@ -4,16 +4,13 @@ const NakoSyntaxError = require('../src/nako_parser_base').NakoSyntaxError
 
 describe('関数呼び出しテスト', () => {
   const nako = new NakoCompiler()
-  nako.debugParser = false
-  nako.debug = false
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
-    if (nako.debug)
-      console.log('code=' + code)
-
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     nako.runReset(code)
   }
   // --- test ---

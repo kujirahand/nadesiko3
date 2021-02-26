@@ -40,7 +40,6 @@ class CallReport {
 describe('plugin_browser_test', () => {
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
-  nako.debug = false
   window.cr = new CallReport(nako)
 
   browserTestColor(nako)
