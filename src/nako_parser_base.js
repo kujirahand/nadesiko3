@@ -10,9 +10,6 @@ class NakoParserBase {
    */
   constructor (logger) {
     this.logger = logger
-    this.debugAll = false
-    this.debug = false || this.debugAll
-    this.debugStack = false || this.debugAll
     this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
     this.init()
     /** @type {import('./nako3').TokenWithSourceMap[]} */
@@ -54,7 +51,7 @@ class NakoParserBase {
       const t = this.stack[i]
       if (josiList.length === 0 || josiList.indexOf(t.josi) >= 0) {
         this.stack.splice(i, 1) // remove stack
-        if (this.debugStack) {console.log('POP :', t)}
+        this.logger.trace('POP :' + JSON.stringify(t))
         return t
       }
     }
@@ -79,7 +76,7 @@ class NakoParserBase {
    * 計算用に要素をスタックに積む
    */
   pushStack (item) {
-    if (this.debugStack) {console.log('PUSH:', item)}
+    this.logger.debug('PUSH:' + JSON.stringify(item))
     this.stack.push(item)
   }
 

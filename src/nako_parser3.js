@@ -477,10 +477,7 @@ class NakoParser extends NakoParserBase {
       const b = stack.pop()
       const a = stack.pop()
       if (a === undefined || b === undefined) {
-        if (this.debug) {
-          console.log('--- 計算式(逆ポーランド) ---')
-          console.log(polish)
-        }
+        this.logger.debug('--- 計算式(逆ポーランド) ---\n' + JSON.stringify(polish))
         throw NakoSyntaxError.fromNode('計算式でエラー', node)
       }
       /** @type {Ast} */
@@ -851,11 +848,7 @@ class NakoParser extends NakoParserBase {
     } // end of while
     // 助詞が余ってしまった場合
     if (this.stack.length > 0) {
-      if (this.debug) {
-        console.log('--- stack dump ---')
-        console.log(JSON.stringify(this.stack, null, 2))
-        console.log('peek: ', JSON.stringify(this.peek(), null, 2))
-      }
+      this.logger.debug('--- stack dump ---\n' + JSON.stringify(this.stack, null, 2) + '\npeek: ' + JSON.stringify(this.peek(), null, 2))
       let msgDebug = `不完全な文です。${this.stack.map((n) => this.nodeToStr(n, { depth: 0 }, true)).join('、')}が解決していません。`
       let msg = `不完全な文です。${this.stack.map((n) => this.nodeToStr(n, { depth: 0 }, false)).join('、')}が解決していません。`
 
