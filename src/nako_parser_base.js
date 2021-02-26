@@ -205,18 +205,19 @@ class NakoParserBase {
    * depth: 表示する深さ
    * typeName: 先頭のtypeの表示を上書きする場合に設定する
    * @param {{ depth: number, typeName?: string }} opts
+   * @param {boolean} debugMode
    */
-  nodeToStr (node, opts) {
+  nodeToStr (node, opts, debugMode) {
     const depth = opts.depth - 1
     const typeName = (name) => opts.typeName !== undefined ? opts.typeName : name
-    const debug = this.debug ? (' debug: ' + JSON.stringify(node, null, 2)) : ''
+    const debug = debugMode ? (' debug: ' + JSON.stringify(node, null, 2)) : ''
     if (!node) {
       return `(NULL)`
     }
     switch (node.type) {
       case 'not':
         if (depth >= 0) {
-          return `${typeName('')}『${this.nodeToStr(node.value, { depth })}に演算子『not』を適用した式${debug}』`
+          return `${typeName('')}『${this.nodeToStr(node.value, { depth }, debugMode)}に演算子『not』を適用した式${debug}』`
         } else {
           return `${typeName('演算子')}『not』`
         }
@@ -227,8 +228,8 @@ class NakoParserBase {
           operator = table[operator]
         }
         if (depth >= 0) {
-          const left = this.nodeToStr(node.left, { depth })
-          const right = this.nodeToStr(node.right, { depth })
+          const left = this.nodeToStr(node.left, { depth }, debugMode)
+          const right = this.nodeToStr(node.right, { depth }, debugMode)
           if (node.operator == 'eq') {
             return `${typeName('')}『${left}と${right}が等しいかどうかの比較${debug}』`
           }
