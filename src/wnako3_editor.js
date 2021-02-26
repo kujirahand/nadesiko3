@@ -6,7 +6,7 @@ const { getBlockStructure, getIndent, countIndent, isIndentSyntaxEnabled } = req
 const NakoPrepare = require('./nako_prepare')
 
 /**
- * @typedef {import('./wnako3')} WebNakoCompiler
+ * @typedef {import('./nako3')} NakoCompiler
  * 
  * @typedef {{
  *     getValue(): string
@@ -22,6 +22,7 @@ const NakoPrepare = require('./nako_prepare')
  *     setTheme(name: string): void
  *     container: HTMLElement
  *     wnako3EditorId?: number
+ *     getCursorPosition(): { row: number, column: number }
  * }} AceEditor
  * 
  * @typedef {import("./nako_lexer").TokenWithSourceMap} TokenWithSourceMap
@@ -45,19 +46,22 @@ const NakoPrepare = require('./nako_prepare')
  *     getUndoManager(): any
  *     setUndoManager(x: any): void
  *     selection: { getRange(): AceRange, isBackwards(): boolean, setRange(range: AceRange, reversed: boolean): void, clearSelection(): void }
+ *     setMode(mode: string | object): void
  * }} Session
  * 
  * @typedef {{}} AceRange
  * 
  * @typedef {new (startLine: number, startColumn: number, endLine: number, endColumn: number) => AceRange} TypeofAceRange
  * 
- * @typedef {{ type: string, value: string, docHTML: string | null }} EditorToken
+ * @typedef {string} TokenType
+ * @typedef {{ type: TokenType, value: string, docHTML: string | null }} EditorToken
  */
 
 /**
  * シンタックスハイライトでは一般にテキストの各部分に 'comment.line' のようなラベルを付け、各エディタテーマがそのそれぞれの色を設定する。
  * ace editor では例えば 'comment.line' が付いた部分はクラス .ace_comment.ace_line が付いたHTMLタグで囲まれ、各テーマはそれに対応するCSSを実装する。
  * @param {TokenWithSourceMap} token
+ * @returns {TokenType}
  */
 function getScope(token) {
     switch (token.type) {
@@ -68,7 +72,7 @@ function getScope(token) {
         case "func": return 'entity.name.function'
         case "number": return 'constant.numeric'
         // 独立した助詞
-        case "とは": return 'keyword.other'
+        case "とは":
         case "ならば":
         case "でなければ":
             return 'keyword.control'
@@ -139,7 +143,7 @@ function getScope(token) {
 
 /**
  * @param {TokenWithSourceMap} compilerToken
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @param {string} value
  * @param {boolean} includesLastCharacter
  * @param {boolean} underlineJosi
@@ -164,7 +168,7 @@ function getEditorTokens(compilerToken, nako3, value, includesLastCharacter, und
 /**
  * `name` が定義されたプラグインの名前を返す。
  * @param {string} name
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @returns {string | null}
  */
 function findPluginName(name, nako3) {
@@ -201,6 +205,7 @@ function createParameterDeclaration(josi) {
 }
 
 // https://stackoverflow.com/a/6234804
+/** @param {string} t */
 function escapeHTML(t) {
     return t
         .replace(/&/g, '&amp;')
@@ -213,21 +218,26 @@ function escapeHTML(t) {
 /**
  * 関数のドキュメントを返す。
  * @param {TokenWithSourceMap} token
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @returns {string | null}
  */
 function getDocumentationHTML(token, nako3) {
-    if (token.type !== 'func') {
-        return null
+    /** @param {string} text */
+    const meta = (text) => `<span class="tooltip-plugin-name">${escapeHTML(text)}</span>`
+    if (token.type === 'func') {
+        const pluginName = findPluginName(token.value + '', nako3)
+        const josi = (token.meta && token.meta.josi) ? createParameterDeclaration(token.meta.josi) : '' // {関数} のとき token.meta.josi が存在しない
+        if (pluginName !== null) {
+            return escapeHTML(josi + token.value) + meta(pluginName)
+        }
+        return escapeHTML(josi + token.value)
+    } else if (token.type === 'word') {
+        const pluginName = findPluginName(token.value + '', nako3)
+        if (pluginName !== null) {
+            return escapeHTML(token.value + '') + meta(pluginName)
+        }
     }
-    // 助詞を表示する。
-    let text = escapeHTML(createParameterDeclaration(token.meta.josi) + token.value)
-    const plugin = findPluginName(token.value + '', nako3)
-    if (plugin !== null) {
-        // 定義元のプラグインが分かる場合はそれも表示する。
-        text += `<span class="tooltip-plugin-name">${plugin}</span>`
-    }
-    return text
+    return null
 }
 
 /**
@@ -235,13 +245,14 @@ function getDocumentationHTML(token, nako3) {
  * なでしこのエディタでは 'markup.other' をデフォルト値として使うことにした。
  * @param {number} row
  * @param {AceDocument} doc
+ * @returns {EditorToken[]}
  */
-const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row) }]
+const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row), docHTML: null }]
 
 /**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param {string[]} lines
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @param {boolean} underlineJosi
  */
 function tokenize(lines, nako3, underlineJosi) {
@@ -345,7 +356,6 @@ function tokenize(lines, nako3, underlineJosi) {
 
 /**
  * エディタ上にエラーメッセージの波線とgutterの赤いマークとエラーメッセージのポップアップを設定するためのクラス。
- * プログラムのエラー位置を表示するために外部から呼び出すこともあるため、利便性のためにメソッドが多くなっている。
  */
 class EditorMarkers {
     /**
@@ -369,12 +379,10 @@ class EditorMarkers {
      * @param {number | null} startColumn
      * @param {number | null} endLine
      * @param {number | null} endColumn
-     * @param {string} message
+     * @param {(row: number) => string} getLine
+     * @returns {[number, number, number, number]}
      */
-    add(startLine, startColumn, endLine, endColumn, message) {
-        if (this.disable) {
-            return
-        }
+    static fromNullable(startLine, startColumn, endLine, endColumn, getLine) {
         if (startColumn === null) {
             startColumn = 0
         }
@@ -382,7 +390,7 @@ class EditorMarkers {
             endLine = startLine
         }
         if (endColumn === null) {
-            endColumn = this.doc.getLine(startLine).length
+            endColumn = getLine(endLine).length
         }
 
         // 最低でも1文字分の長さをとる
@@ -390,44 +398,62 @@ class EditorMarkers {
             endColumn++
         }
 
-        this.markers.push(this.session.addMarker(new this.AceRange(startLine, startColumn, endLine, endColumn), "marker-red", "text", false))
+        return [startLine, startColumn, endLine, endColumn]
+    }
+
+    /**
+     * @param {string} code @param {number} startOffset @param {number} endOffset
+     * @returns {[number, number, number, number]}
+     */
+    static fromOffset(code, startOffset, endOffset) {
+        const offsetToLineColumn = new OffsetToLineColumn(code)
+        const start = offsetToLineColumn.map(startOffset, false)
+        const end = offsetToLineColumn.map(endOffset, false)
+        return [start.line, start.column, end.line, end.column]
+    }
+
+    /**
+     * @param {string} code
+     * @param {{ line?: number, startOffset?: number | null, endOffset?: number | null, message: string }} error
+     * @param {(row: number) => string} getLine
+     * @returns {[number, number, number, number]}
+     */
+    static fromError(code, error, getLine) {
+        if (typeof error.startOffset === 'number' && typeof error.endOffset === 'number') {
+            // 完全な位置を取得できる場合
+            return this.fromOffset(code, error.startOffset, error.endOffset)
+        } else if (typeof error.line === 'number') {
+            // 行全体の場合
+            return this.fromNullable(error.line, null, null, null, getLine)
+        } else {
+            // 位置が不明な場合
+            return this.fromNullable(0, null, null, null, getLine)
+        }
+    }
+
+    /**
+     * @param {number} startLine
+     * @param {number | null} startColumn
+     * @param {number | null} endLine
+     * @param {number | null} endColumn
+     * @param {string} message
+     */
+    add(startLine, startColumn, endLine, endColumn, message) {
+        if (this.disable) {
+            return
+        }
+        const range = new this.AceRange(...EditorMarkers.fromNullable(startLine, startColumn, endLine, endColumn, (row) => this.doc.getLine(row)))
+        this.markers.push(this.session.addMarker(range, "marker-red", "text", false))
         this.session.setAnnotations([{ row: startLine, column: startColumn, text: message, type: 'error' }])
         this.hasAnnotations = true
     }
 
     /**
      * @param {string} code
-     * @param {number} startOffset
-     * @param {number} endOffset
-     * @param {string} message
-     */
-    addByOffset(code, startOffset, endOffset, message) {
-        const offsetToLineColumn = new OffsetToLineColumn(code)
-        const start = offsetToLineColumn.map(startOffset, false)
-        const end = offsetToLineColumn.map(endOffset, false)
-        this.add(start.line, start.column, end.line, end.column, message)
-    }
-
-    /**
-     * @param {string} code
-     * @param {{
-     *     line?: number
-     *     startOffset?: number | null
-     *     endOffset?: number | null
-     *     message: string
-     * }} error
+     * @param {{ line?: number, startOffset?: number | null, endOffset?: number | null, message: string }} error
      */
     addByError(code, error) {
-        if (typeof error.startOffset === 'number' && typeof error.endOffset === 'number') {
-            // 完全な位置を取得できる場合
-            this.addByOffset(code, error.startOffset, error.endOffset, error.message)
-        } else if (typeof error.line === 'number') {
-            // 行全体の場合
-            this.add(error.line, null, null, null, error.message)
-        } else {
-            // 位置が不明な場合
-            this.add(0, null, null, null, error.message)
-        }
+        this.add(...EditorMarkers.fromError(code, error, (row) => this.doc.getLine(row)), error.message)
     }
 
     /**
@@ -453,34 +479,38 @@ class EditorMarkers {
 class BackgroundTokenizer {
     /**
      * @param {AceDocument} doc
-     * @param {any} _signal
-     * @param {WebNakoCompiler} nako3
-     * @param {EditorMarkers} editorMarkers
-     * @param {(ms: number) => void} deviceSpeedCallback
+     * @param {NakoCompiler} nako3
+     * @param {(firstRow: number, lastRow: number, ms: number) => void} onTokenUpdate
+     * @param {(code: string, err: Error) => void} onCompileError
      * @param {boolean} underlineJosi
      */
-    constructor(doc, _signal, nako3, editorMarkers, deviceSpeedCallback, underlineJosi) {
-        this._signal = _signal
+    constructor(doc, nako3, onTokenUpdate, onCompileError, underlineJosi) {
+        this.onUpdate = onTokenUpdate
         this.doc = doc
         this.dirty = true
         this.nako3 = nako3
-        this.editorMarkers = editorMarkers
+        this.onCompileError = onCompileError
         this.underlineJosi = underlineJosi
 
         // オートコンプリートで使うために、直近のtokenizeの結果を保存しておく
-        /** @type {ReturnType<WebNakoCompiler['lex']> | null} */
+        /** @type {ReturnType<NakoCompiler['lex']> | null} */
         this.lastLexerOutput = null
 
         // 各行のパース結果。
         // typeはscopeのこと。配列の全要素のvalueを結合した文字列がその行の文字列と等しくなる必要がある。
-        /** @type {{ type: string, value: string }[][]} */
-        this.lines = this.doc.getAllLines().map((line) => [{ type: 'markup.other', value: line }])
+        /** @type {EditorToken[][]} */
+        this.lines = this.doc.getAllLines().map((line) => [{ type: 'markup.other', value: line, docHTML: null }])
 
         // this.lines は外部から勝手に編集されてしまうため、コピーを持つ
         /** @type {{ code: string, lines: string } | null} */
         this.cache = null
 
+        this.deleted = false
+
         const update = () => {
+            if (this.deleted) {
+                return
+            }
             if (this.dirty && this.enabled) {
                 const startTime = Date.now()
                 this.dirty = false
@@ -488,15 +518,14 @@ class BackgroundTokenizer {
                 try {
                     const startTime = Date.now()
                     const out = tokenize(this.doc.getAllLines(), nako3, this.underlineJosi)
-                    deviceSpeedCallback(Date.now() - startTime)
                     this.lastLexerOutput = out.lexerOutput
                     this.lines = out.editorTokens
                     this.cache = { code, lines: JSON.stringify(this.lines) }
 
                     // ファイル全体の更新を通知する。
-                    _signal('update', { data: { first: 0, last: this.doc.getLength() - 1 } })
+                    onTokenUpdate(0, this.doc.getLength() - 1, Date.now() - startTime)
                 } catch (e) {
-                    editorMarkers.addByError(code, e)
+                    onCompileError(code, e)
                 }
                 // tokenizeに時間がかかる場合、文字を入力できるように次回の実行を遅くする。
                 setTimeout(update, Math.max(100, Math.min(5000, (Date.now() - startTime) * 5)))
@@ -510,12 +539,15 @@ class BackgroundTokenizer {
         this.enabled = true
     }
 
+    dispose() {
+        this.deleted = true
+    }
+
     /**
      * テキストに変更があったときに呼ばれる。IME入力中には呼ばれない。
      * @param {{ action: string, start: { row: number, column: number }, end: { row: number, column: number }, lines: string[] }} delta
      */
     $updateOnChange(delta) {
-        this.editorMarkers.clear()
         this.dirty = true
         const startRow = delta.start.row
         const endRow = delta.end.row
@@ -525,6 +557,7 @@ class BackgroundTokenizer {
                 // updateOnChangeはIME入力中には呼ばれない。composition_placeholder を消さないとIME確定後の表示がずれる。
                 const oldTokens = this.lines[startRow]
                     .filter((v) => v.type !== 'composition_placeholder')
+                /** @type {EditorToken[]} */
                 const newTokens = []
                 let i = 0
                 let offset = 0
@@ -538,12 +571,12 @@ class BackgroundTokenizer {
 
                 // columnStartに重なっているトークンがあれば、2つに分割する
                 if (i < oldTokens.length && offset < columnStart) {
-                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(0, columnStart - offset) })
-                    newTokens.push({ type: 'markup.other', value: delta.lines[0] })
-                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(columnStart - offset)　})
+                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(0, columnStart - offset), docHTML: null })
+                    newTokens.push({ type: 'markup.other', value: delta.lines[0], docHTML: null })
+                    newTokens.push({ type: oldTokens[i].type, value: oldTokens[i].value.slice(columnStart - offset), docHTML: null　})
                     i++
                 } else {
-                    newTokens.push({ type: 'markup.other', value: delta.lines[0] })
+                    newTokens.push({ type: 'markup.other', value: delta.lines[0], docHTML: null })
                 }
 
                 // columnStartより右のトークンもそのまま保持する
@@ -581,7 +614,7 @@ class BackgroundTokenizer {
                 } else {
                     try {
                         const lines = tokenize(this.doc.getAllLines(), this.nako3, this.underlineJosi)
-                        this.cache = { code, lines: JSON.stringify(lines) }
+                        this.cache = { code, lines: JSON.stringify(lines.editorTokens) }
                         ok = true
                     } catch (e) {
                         if (!(e instanceof NakoIndentError || e instanceof LexError)) {
@@ -621,7 +654,7 @@ class BackgroundTokenizer {
 class LanguageFeatures {
     /**
      * @param {TypeofAceRange} AceRange
-     * @param {WebNakoCompiler} nako3
+     * @param {NakoCompiler} nako3
      */
     constructor(AceRange, nako3) {
         this.AceRange = AceRange
@@ -761,164 +794,132 @@ class LanguageFeatures {
     }
 
     /**
-     * lexerの出力を参照したオートコンプリート
-     * @param {number} editorId @param {BackgroundTokenizer} backgroundTokenizer @param {WebNakoCompiler} nako3 @returns {Completer}
+     * オートコンプリート
+     * @param {number} row
+     * @param {string} prefix getCompletionPrefixの出力
+     * @param {NakoCompiler} nako3
+     * @param {BackgroundTokenizer} backgroundTokenizer
      */
-    static getTokenCompleter(editorId, backgroundTokenizer, nako3) {
-        return {
-            getCompletions(editor, session, pos, prefix, callback) {
-                // 全てのエディタのcompleterが呼ばれてしまうため、ここで他のエディタを除外する
-                if (editor.wnako3EditorId !== editorId) {
-                    callback(null, [])
-                    return
+    static getCompletionItems(row, prefix, nako3, backgroundTokenizer) {
+        /** @param {string} target */
+        const getScore = (target) => {
+            // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
+            let n = 0
+            for (let i = 0; i < prefix.length; i++) {
+                if (target.includes(prefix[i])) {
+                    n++
                 }
-    
-                /** @param {string} target */
-                const getScore = (target) => {
-                    // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
-                    let n = 0
-                    for (let i = 0; i < prefix.length; i++) {
-                        if (target.includes(prefix[i])) {
-                            n++
-                        }
-                    }
-                    return n
-                }
-    
-                /**
-                 * metaは候補の横に薄く表示されるテキスト
-                 * @type {{ caption: string, value: string, meta: string, docHTML?: string, score: number }[]}
-                 */
-                const result = []
-                // プラグイン関数
-                for (const name of Object.keys(nako3.__varslist[0])) {
-                    if (name.startsWith('!')) { // 「!PluginBrowser:初期化」などを除外
-                        continue
-                    }
-                    const f = nako3.funclist[name]
-                    if (typeof f !== 'object' || f === null) {
-                        continue
-                    }
-    
-                    let pluginName = findPluginName(name, nako3) || 'プラグイン'
-                    if (f.type === 'func') {
-                        result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: pluginName, score: getScore(name) })
-                    } else {
-                        result.push({ caption: name, value: name, meta: pluginName, score: getScore(name) })
-                    }
-                }
-    
-                // ユーザーが定義した名前
-                if (backgroundTokenizer.lastLexerOutput !== null) {
-                    for (const token of backgroundTokenizer.lastLexerOutput.tokens) {
-                        // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
-                        if (token.line === pos.row) {
-                            continue
-                        }
-                        const name = token.value + ''
-                        if (token.type === 'word') {
-                            result.push({ caption: name, value: name, meta: '変数', score: getScore(name) })
-                        } else if (token.type === 'func') {
-                            let josi = ''
-                            const f = nako3.funclist[name]
-                            if (f && f.type === 'func') {
-                                josi = createParameterDeclaration(f.josi)
-                            }
-                            result.push({ caption: josi + name, value: name, meta: '関数', score: getScore(name) })
-                        }
-                    }
-                }
-    
-                // 完全に一致する候補があればオートコンプリートしない
-                if (result.some((v) => v.value === prefix)) {
-                    callback(null, [])
-                    return
-                }
-    
-                callback(null, result.map((v) => ({ ...v, wnako3EditorId: editorId })))
-            },
+            }
+            return n
         }
+
+        /**
+         * metaは候補の横に薄く表示されるテキスト
+         * @type {{ caption: string, value: string, meta: string, score: number }[]}
+         */
+        const result = []
+        // プラグイン関数
+        for (const name of Object.keys(nako3.__varslist[0])) {
+            if (name.startsWith('!')) { // 「!PluginBrowser:初期化」などを除外
+                continue
+            }
+            const f = nako3.funclist[name]
+            if (typeof f !== 'object' || f === null) {
+                continue
+            }
+
+            let pluginName = findPluginName(name, nako3) || 'プラグイン'
+            if (f.type === 'func') {
+                result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: pluginName, score: getScore(name) })
+            } else {
+                result.push({ caption: name, value: name, meta: pluginName, score: getScore(name) })
+            }
+        }
+
+        // ユーザーが定義した名前
+        if (backgroundTokenizer.lastLexerOutput !== null) {
+            for (const token of backgroundTokenizer.lastLexerOutput.tokens) {
+                // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
+                if (token.line === row) {
+                    continue
+                }
+                const name = token.value + ''
+                if (token.type === 'word') {
+                    result.push({ caption: name, value: name, meta: '変数', score: getScore(name) })
+                } else if (token.type === 'func') {
+                    let josi = ''
+                    const f = nako3.funclist[name]
+                    if (f && f.type === 'func') {
+                        josi = createParameterDeclaration(f.josi)
+                    }
+                    result.push({ caption: josi + name, value: name, meta: '関数', score: getScore(name) })
+                }
+            }
+        }
+
+        return result
     }
 
     /**
      * スニペット
-     * @param {number} editorId
-     * @returns {Completer}
      */
-    static getSnippetCompleter(editorId) {
-        return {
-            getCompletions(editor, session, pos, prefix, callback) {
-                if (editor.wnako3EditorId !== editorId) {
-                    callback(null, [])
-                    return
-                }
+    /** @param {string} text */
+    static getSnippets(text) {
+        // インデント構文が有効化されているなら「ここまで」を消す
+        const indentSyntax = isIndentSyntaxEnabled(text)
 
-                /** @type {AceDocument} */
-                const doc = editor.session.doc
+        /** @param {string} en @param {string} jp @param {string} snippet */
+        const item = (en, jp, snippet) => indentSyntax ?
+            { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t*ここまで(\n|$)/g, '').replace(/\t/g, '    ') } :
+            { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t/g, '    ') }
 
-                // インデント構文が有効化されているなら「ここまで」を消す
-                const indentSyntax = isIndentSyntaxEnabled(doc.getAllLines().join('\n'))
-    
-                /** @param {string} en @param {string} jp @param {string} snippet */
-                const item = (en, jp, snippet) => indentSyntax ?
-                    { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t*ここまで(\n|$)/g, '').replace(/\t/g, '    ') } :
-                    { caption: en, meta: `\u21E5 ${jp}`, score: 1, snippet: snippet.replace(/\t/g, '    ') }
-
-                callback(null, [
-                    item('if', 'もし〜ならば', 'もし${1:1=1}ならば\n\t${2:1を表示}\n違えば\n\t${3:2を表示}\nここまで\n'),
-                    item('times', '〜回', '${1:3}回\n\t${2:1を表示}\nここまで\n'),
-                    item('for', '繰り返す', '${1:N}で${2:1}から${3:3}まで繰り返す\n\t${4:Nを表示}\nここまで\n'),
-                    item('while', '〜の間', '${1:N<2の間}\n\tN=N+1\nここまで\n'),
-                    item('foreach', '〜を反復', '${1:[1,2,3]}を反復\n\t${2:対象を表示}\nここまで\n'),
-                    item('switch', '〜で条件分岐', '${1:N}で条件分岐\n\t${2:1}ならば\n\t\t${3:1を表示}\n\tここまで\n\t${4:2}ならば\n\t\t${5:2を表示}\n\tここまで\n\t違えば\n\t\t${6:3を表示}\n\tここまで\nここまで\n'),
-                    item('function', '●〜とは', '●（${1:AとBを}）${2:足す}とは\n\t${3:A+Bを戻す}\nここまで\n'),
-                    item('try', 'エラー監視', 'エラー監視\n\t${1:1のエラー発生}\nエラーならば\n\t${2:2を表示}\nここまで\n'),
-                ])
-            }
-        }
+        return [
+            item('if', 'もし〜ならば', 'もし${1:1=1}ならば\n\t${2:1を表示}\n違えば\n\t${3:2を表示}\nここまで\n'),
+            item('times', '〜回', '${1:3}回\n\t${2:1を表示}\nここまで\n'),
+            item('for', '繰り返す', '${1:N}で${2:1}から${3:3}まで繰り返す\n\t${4:Nを表示}\nここまで\n'),
+            item('while', '〜の間', '${1:N<2の間}\n\tN=N+1\nここまで\n'),
+            item('foreach', '〜を反復', '${1:[1,2,3]}を反復\n\t${2:対象を表示}\nここまで\n'),
+            item('switch', '〜で条件分岐', '${1:N}で条件分岐\n\t${2:1}ならば\n\t\t${3:1を表示}\n\tここまで\n\t${4:2}ならば\n\t\t${5:2を表示}\n\tここまで\n\t違えば\n\t\t${6:3を表示}\n\tここまで\nここまで\n'),
+            item('function', '●〜とは', '●（${1:AとBを}）${2:足す}とは\n\t${3:A+Bを戻す}\nここまで\n'),
+            item('try', 'エラー監視', 'エラー監視\n\t${1:1のエラー発生}\nエラーならば\n\t${2:2を表示}\nここまで\n'),
+        ]
     }
 
     /**
-     * 文字を入力するたびに呼ばれ、''以外を返すとその文字列をもとにしてautocompletionが始まる。
-     * @param {WebNakoCompiler} nako3
+     * @param {string} line
+     * @param {NakoCompiler} nako3
      */
-    static getCompletionPrefix(nako3) {
-        return (editor) => {
-            /** @type {{ row: number, column: number }} */
-            const pos = editor.getCursorPosition()
-            /** @type {string} */
-            const line = editor.session.getLine(pos.row).slice(0, pos.column)
-            /** @type {ReturnType<WebNakoCompiler['lex']>["tokens"] | null} */
-            let tokens = null
+    static getCompletionPrefix(line, nako3) {
+        /** @type {ReturnType<NakoCompiler['lex']>["tokens"] | null} */
+        let tokens = null
 
-            // ひらがなとアルファベットとカタカナと漢字のみオートコンプリートする。
-            if (line.length === 0 || !/[ぁ-んa-zA-Zァ-ヶー\u3005\u4E00-\u9FCF]/.test(line[line.length - 1])) {
-                return ''
-            }
-
-            // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
-            try {
-                nako3.reset()
-                tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
-                    .filter((t) => t.type !== 'eol' && t.type !== 'eof')
-            } catch (e) {
-                if (!(e instanceof NakoIndentError || e instanceof LexError)) {
-                    console.error(e)
-                }
-            }
-            if (tokens === null || tokens.length === 0 || !tokens[tokens.length - 1].value) {
-                return ''
-            }
-            const prefix = tokens[tokens.length - 1].value + ''
-
-            // 単語の先頭がひらがなではなく末尾がひらがなのとき、助詞を打っている可能性が高いためオートコンプリートしない。 
-            if (/[ぁ-ん]/.test(prefix[prefix.length - 1]) && !/[ぁ-ん]/.test(prefix[0])) {
-                return ''
-            }
-
-            // 最後のトークンの値を、オートコンプリートで既に入力した部分とする。
-            return prefix
+        // ひらがなとアルファベットとカタカナと漢字のみオートコンプリートする。
+        if (line.length === 0 || !/[ぁ-んa-zA-Zァ-ヶー\u3005\u4E00-\u9FCF]/.test(line[line.length - 1])) {
+            return ''
         }
+
+        // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
+        try {
+            nako3.reset()
+            tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
+                .filter((t) => t.type !== 'eol' && t.type !== 'eof')
+        } catch (e) {
+            if (!(e instanceof NakoIndentError || e instanceof LexError)) {
+                console.error(e)
+            }
+        }
+        if (tokens === null || tokens.length === 0 || !tokens[tokens.length - 1].value) {
+            return ''
+        }
+        const prefix = tokens[tokens.length - 1].value + ''
+
+        // 単語の先頭がひらがなではなく末尾がひらがなのとき、助詞を打っている可能性が高いためオートコンプリートしない。 
+        if (/[ぁ-ん]/.test(prefix[prefix.length - 1]) && !/[ぁ-ん]/.test(prefix[0])) {
+            return ''
+        }
+
+        // 最後のトークンの値を、オートコンプリートで既に入力した部分とする。
+        return prefix
     }
 
     /**
@@ -1193,7 +1194,7 @@ let editorIdCounter = 0
  * - エラー位置の表示を無効化するには data-nako3-disable-marker="true" を設定する。
  * 
  * @param {string} id HTML要素のid
- * @param {WebNakoCompiler} nako3
+ * @param {NakoCompiler} nako3
  * @param {any} ace
  * @param {string} [defaultFileName]
  */
@@ -1291,15 +1292,19 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     editor.session.on('change', () => {
         // モバイル端末でドキュメントが存在するトークンを編集するときにツールチップが消えない問題を解消するために、文字を打ったらtooltipを隠す。
         tooltip.hide()
+
+        // 文字入力したらマーカーを消す
+        editorMarkers.clear()
     })
 
     let isFirstTime = true
+    const oldBgTokenizer = editor.session.bgTokenizer
     const backgroundTokenizer = new BackgroundTokenizer(
         editor.session.bgTokenizer.doc,
-        editor.session.bgTokenizer._signal.bind(editor.session.bgTokenizer),
         nako3,
-        editorMarkers,
-        (ms) => {
+        (firstRow, lastRow, ms) => {
+            oldBgTokenizer._signal('update', { data: { first: firstRow, last: lastRow } })
+
             // 処理が遅い場合シンタックスハイライトを無効化する。
             if (ms > 220 && editor.getOption('syntaxHighlighting') && !readonly && isFirstTime) {
                 isFirstTime = false
@@ -1310,6 +1315,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                 }, 13000);
             }
         },
+        (code, err) => { editorMarkers.addByError(code, err) },
         /** @type {boolean} */(editor.getOption('underlineJosi')),
     )
 
@@ -1324,12 +1330,32 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     editor.wnako3EditorId = editorId
 
     // オートコンプリートのcompleterを設定する
-    completers.push(LanguageFeatures.getTokenCompleter(editorId, backgroundTokenizer, nako3))
-    completers.push(LanguageFeatures.getSnippetCompleter(editorId))
+    completers.push(
+        {
+            getCompletions(editor, session, pos, prefix, callback) {
+                if (editor.wnako3EditorId !== editorId) {
+                    callback(null, [])
+                } else {
+                    const items = LanguageFeatures.getCompletionItems(pos.row, prefix, nako3, backgroundTokenizer)
+                    // 完全に一致する候補があればオートコンプリートしない。（Aceエディタでの挙動が微妙なため。）
+                    if (items.some((v) => v.value === prefix)) {
+                        callback(null, [])
+                        return
+                    }
+                    callback(null, items)
+                }
+            },
+        },
+        { getCompletions(editor, session, pos, prefix, callback) { callback(null, (editor.wnako3EditorId !== editorId) ? [] : LanguageFeatures.getSnippets(editor.session.doc.getAllLines().join('\n'))) } },
+    )
     ace.require('ace/ext/language_tools').setCompleters(completers)
 
     // オートコンプリートの単語の区切りが日本語に対応していないため、メソッドを上書きして対応させる。
-    ace.require('ace/autocomplete/util').getCompletionPrefix = LanguageFeatures.getCompletionPrefix(nako3)
+    // 文字を入力するたびに呼ばれ、''以外を返すとその文字列をもとにしてautocompletionが始まる。
+    ace.require('ace/autocomplete/util').getCompletionPrefix = (/** @type {AceEditor} */ editor) => {
+        const pos = editor.getCursorPosition()
+        return LanguageFeatures.getCompletionPrefix(editor.session.doc.getLine(pos.row).slice(0, pos.column), nako3)
+    }
 
     // エディタの挙動の設定
     const languageFeatures = new LanguageFeatures(AceRange, nako3)

@@ -83,7 +83,7 @@ describe('error_message', () => {
       ], NakoSyntaxError)
     })
     it('依存ファイルにエラーがある場合', () => {
-      nako.dependencies = { 'dependent.nako3': { content: '\na', alias: new Set(['dependent.nako3']) } }
+      nako.dependencies = { 'dependent.nako3': { content: '\na', alias: new Set(['dependent.nako3']), addPluginFile: () => {} } }
       cmp('!「dependent.nako3」を取り込む\n1を表示', [
         'dependent.nako3',
         '2行目',
@@ -109,7 +109,7 @@ describe('error_message', () => {
       ], NakoRuntimeError)
     })
     it('依存ファイルでエラーが発生した場合', () => {
-      nako.dependencies = { 'dependent.nako3': { content: '\n1のエラー発生\n', alias: new Set(['dependent.nako3']) } }
+      nako.dependencies = { 'dependent.nako3': { content: '\n1のエラー発生\n', alias: new Set(['dependent.nako3']), addPluginFile: () => {} } }
       cmp('!「dependent.nako3」を取り込む\n1を表示', [
         'dependent.nako3',
         '2行目',

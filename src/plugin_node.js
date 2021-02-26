@@ -549,11 +549,11 @@ const PluginNode = {
     josi: [['を']],
     pure: true,
     fn: function (v, sys) {
-      const ncp = require('copy-paste-win32fix')
+      const clipboardy = require('clipboardy')
       // copy
-      if (sys && sys['isSetter']) {return ncp.copy(v)}
+      if (sys && sys['isSetter']) {return clipboardy.writeSync(v)}
       // paste
-      return ncp.paste()
+      return clipboardy.readSync()
     }
   },
   // @コマンドラインと標準入出力
