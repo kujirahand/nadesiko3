@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nadesiko3 Editor</title>
+    <link rel="stylesheet" href="/src/wnako3_editor.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js" integrity="sha512-8qx1DL/2Wsrrij2TWX5UzvEaYOFVndR7BogdpOyF4ocMfnfkw28qt8ULkXD9Tef0bLvh3TpnSAljDC7uyniEuQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-options.min.js" integrity="sha512-oHR+WVzBiVZ6njlMVlDDLUIOLRDfUUfRQ55PfkZvgjwuvGqL4ohCTxaahJIxTmtya4jgyk0zmOxDMuLzbfqQDA==" crossorigin="anonymous"></script>
+    <script src="/release/wnako3.js"></script>
+    <script src="/release/version.js"></script>
+    <script src="/release/plugin_markup.js"></script>
+    <script src="/release/plugin_csv.js"></script>
+    <script src="/release/plugin_kansuji.js"></script>
+    <script src="/release/plugin_datetime.js"></script>
+    <script src="/release/plugin_turtle.js"></script>
+    <script src="/release/plugin_caniuse.js"></script>
+    <script src="/release/plugin_webworker.js"></script>
+
+    <!-- mochaを一番最後に読み込む必要がある -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.3.0/mocha.min.js" integrity="sha512-LA/TpBXau/JNubKzHQhdi5vGkRLyQjs1vpuk2W1nc8WNgf/pCqBplD8MzlzeKJQTZPvkEZi0HqBDfRC2EyLMXw==" crossorigin="anonymous"></script>
+</head>
+<body>
+単純な例
+<div id="editor1" class="nako3_editor">もしはいならば
+    「こんにちは」を表示
+ここまで
+</div>
+<br>
+インデント構文
+<div id="editor2" class="nako3_editor">！インデント構文
+Nを1から3まで繰り返す
+    Nを表示
+
+    「1行目
+2行目」を表示
+
+/*
+範囲コメント
+*/
+</div>
+<br>
+平らなプログラム
+<div id="editor3" class="nako3_editor">
+A=1
+Aを表示
+</div>
+<br>
+コンパイルエラーの表示
+<div id="editor4" class="nako3_editor">
+　　「{」を表示
+</div>
+<br>
+readonly
+<div id="editor5" data-nako3-readonly="true">1+2を表示
+</div>
+<br>
+コンパイルエラーの表示の無効化
+<div id="editor6" data-nako3-disable-marker="true">
+「{」を表示
+</div>
+<br>
+実行時エラーの表示<br>
+<div id="editor7">Aを表示
+1のエラー発生
+</div>
+<br>
+文字入力のテスト用
+<div id="editor-input-test"></div>
+    <script>
+navigator.nako3.setupEditor("editor1")
+navigator.nako3.setupEditor("editor2")
+navigator.nako3.setupEditor("editor3")
+navigator.nako3.setupEditor("editor4")
+navigator.nako3.setupEditor("editor5")
+navigator.nako3.setupEditor("editor6")
+const editor7 = navigator.nako3.setupEditor("editor7")
+// editor-input-test はテスト内で初期化する
+
+const preCode = 'A=1\n'
+const code = editor7.editor.getValue()
+try {
+    navigator.nako3.runReset(preCode + code, 'main.nako3', preCode)
+} catch (e) {
+    editor7.editorMarkers.addByError(code, e)
+}
+    </script>
+    <script src="context.js"></script>
+    <script type="text/javascript">
+    %CLIENT_CONFIG%
+    window.__karma__.setupContext(window);
+    %MAPPINGS%
+    </script>
+    %SCRIPTS%
+    <script type="module">
+    window.__karma__.loaded();
+    </script>
+    <script nomodule>
+    window.__karma__.loaded();
+    </script>
+</body>
+</html>
