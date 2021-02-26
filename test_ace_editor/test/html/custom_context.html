@@ -66,6 +66,9 @@ readonly
 <div id="editor7">Aを表示
 1のエラー発生
 </div>
+<div id="editor8">！「http://localhost:9876/test/requiretest.nako3」を取り込む
+1と2を痕跡演算する
+</div>
 <br>
 文字入力のテスト用
 <div id="editor-input-test"></div>
@@ -77,17 +80,29 @@ navigator.nako3.setupEditor("editor4")
 navigator.nako3.setupEditor("editor5")
 navigator.nako3.setupEditor("editor6")
 const editor7 = navigator.nako3.setupEditor("editor7")
+const editor8 = navigator.nako3.setupEditor("editor8")
 // editor-input-test はテスト内で初期化する
 
-const preCode = 'A=1\n'
-const code = editor7.editor.getValue()
-try {
-    navigator.nako3.runReset(preCode + code, 'main.nako3', preCode)
-} catch (e) {
-    if (e.file === 'main.nako3') {
-        editor7.editorMarkers.addByError(code, e)
+// editor7を実行（取り込み無し）
+{
+    const preCode = 'A=1\n'
+    const code = editor7.editor.getValue()
+    try {
+        navigator.nako3.runReset(preCode + code, 'main.nako3', preCode)
+    } catch (e) {
+        if (e.file === 'main.nako3') {
+            editor7.editorMarkers.addByError(code, e)
+        }
     }
 }
+
+// editor8を実行（取り込みあり）
+{
+    const code = editor8.editor.getValue()
+    navigator.nako3.loadDependencies(code, 'main.nako3')
+        .then(() => { editor8.retokenize() })
+}
+
     </script>
     <script src="context.js"></script>
     <script type="text/javascript">

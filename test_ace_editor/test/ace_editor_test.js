@@ -86,6 +86,18 @@ describe('ace editor test', () => {
       )
       editor.session.selection.clearSelection()
     })
+    it('外部ファイルで定義された関数', () => {
+      // 「痕跡演算」が関数として認識されることを確認
+      assert.notStrictEqual(
+        findDOMElement(
+          document.querySelector('#editor8'),
+          (node) =>
+            node.classList.contains('ace_function') &&
+            node.innerText.trim().startsWith('痕'),
+        ),
+        null,
+      )
+    })
   })
   describe('行の折りたたみ', () => {
     it('存在する場合', () => {

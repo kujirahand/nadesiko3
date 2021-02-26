@@ -225,15 +225,17 @@ function getDocumentationHTML(token, nako3) {
     /** @param {string} text */
     const meta = (text) => `<span class="tooltip-plugin-name">${escapeHTML(text)}</span>`
     if (token.type === 'func') {
-        const pluginName = findPluginName(token.value + '', nako3)
+        /** @type {string | null} */
+        const pluginName = findPluginName(token.value + '', nako3) || (token.meta && token.meta.file ? token.meta.file : null)
         const josi = (token.meta && token.meta.josi) ? createParameterDeclaration(token.meta.josi) : '' // {関数} のとき token.meta.josi が存在しない
-        if (pluginName !== null) {
+        if (pluginName) {
             return escapeHTML(josi + token.value) + meta(pluginName)
         }
         return escapeHTML(josi + token.value)
     } else if (token.type === 'word') {
-        const pluginName = findPluginName(token.value + '', nako3)
-        if (pluginName !== null) {
+        /** @type {string | null} */
+        const pluginName = findPluginName(token.value + '', nako3) || (token.meta && token.meta.file ? token.meta.file : null)
+        if (pluginName) {
             return escapeHTML(token.value + '') + meta(pluginName)
         }
     }
@@ -258,9 +260,28 @@ const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLi
 function tokenize(lines, nako3, underlineJosi) {
     const code = lines.join('\n')
 
-    // lexerにかける
+    // 取り込み文を含めてしまうと依存ファイルが大きい時に時間がかかってしまうため、
+    // 取り込み文を無視してトークン化してから、依存ファイルで定義された関数名と一致するトークンを関数のトークンへ変換する。
     nako3.reset()
     const lexerOutput = nako3.lex(code, 'main.nako3', undefined, true)
+    lexerOutput.commentTokens = lexerOutput.commentTokens.filter((t) => t.file === 'main.nako3')
+    lexerOutput.requireTokens = lexerOutput.requireTokens.filter((t) => t.file === 'main.nako3')
+    lexerOutput.tokens = lexerOutput.tokens.filter((t) => t.file === 'main.nako3')
+
+    // 外部ファイルで定義された関数名に一致するトークンのtypeをfuncに変更する。
+    // 取り込んでいないファイルも参照される問題や、関数名の重複がある場合に正しくない情報を表示する問題がある。可能なら修正する。
+    {
+        /** @type {Record<string, object>} */
+        for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {
+            for (const token of lexerOutput.tokens) {
+                if (token.type === 'word' && token.value !== 'それ' && funclist[token.value]) {
+                    token.type = 'func'
+                    // meta.file に定義元のファイル名を持たせる。
+                    token.meta = { ...funclist[token.value + ''], file: file }
+                }
+            }
+        }
+    }
 
     // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
     /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
@@ -801,23 +822,27 @@ class LanguageFeatures {
      * @param {BackgroundTokenizer} backgroundTokenizer
      */
     static getCompletionItems(row, prefix, nako3, backgroundTokenizer) {
-        /** @param {string} target */
-        const getScore = (target) => {
-            // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
-            let n = 0
-            for (let i = 0; i < prefix.length; i++) {
-                if (target.includes(prefix[i])) {
-                    n++
-                }
-            }
-            return n
-        }
+        /**
+         * keyはcaption。metaは候補の横に薄く表示されるテキスト。
+         * @type {Map<string, { value: string, meta: string, score: number }>}
+         */
+        const result = new Map()
 
         /**
-         * metaは候補の横に薄く表示されるテキスト
-         * @type {{ caption: string, value: string, meta: string, score: number }[]}
+         * オートコンプリートの項目を追加する。すでに存在するならマージする。
+         * @param {string} caption @param {string} value @param {string} meta
          */
-        const result = []
+        const addItem = (caption, value, meta) => {
+            const item = result.get(caption)
+            if (item) {
+                item.meta += ', ' + meta
+            } else {
+                // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
+                const score = prefix.split('').filter((c) => value.includes(c)).length
+                result.set(caption, { value, meta, score })
+            }
+        }
+
         // プラグイン関数
         for (const name of Object.keys(nako3.__varslist[0])) {
             if (name.startsWith('!')) { // 「!PluginBrowser:初期化」などを除外
@@ -830,34 +855,40 @@ class LanguageFeatures {
 
             let pluginName = findPluginName(name, nako3) || 'プラグイン'
             if (f.type === 'func') {
-                result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: pluginName, score: getScore(name) })
+                addItem(createParameterDeclaration(f.josi) + name, name, pluginName)
             } else {
-                result.push({ caption: name, value: name, meta: pluginName, score: getScore(name) })
+                addItem(name, name, pluginName)
             }
         }
 
-        // ユーザーが定義した名前
+        // 依存ファイルが定義した関数名
+        for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {
+            for (const [name, f] of Object.entries(funclist)) {
+                const josi = (f && f.type === 'func') ? createParameterDeclaration(f.josi) : ''
+                addItem(josi + name, name, file)
+            }
+        }
+
+        // 現在のファイル内に存在する名前
         if (backgroundTokenizer.lastLexerOutput !== null) {
             for (const token of backgroundTokenizer.lastLexerOutput.tokens) {
-                // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
-                if (token.line === row) {
+                const name = token.value + ''
+                // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外する。
+                // すでに定義されている場合も、定義ではなく参照の可能性が高いため除外する。
+                if (token.line === row || result.has(name)) {
                     continue
                 }
-                const name = token.value + ''
                 if (token.type === 'word') {
-                    result.push({ caption: name, value: name, meta: '変数', score: getScore(name) })
+                    addItem(name, name, '変数')
                 } else if (token.type === 'func') {
-                    let josi = ''
                     const f = nako3.funclist[name]
-                    if (f && f.type === 'func') {
-                        josi = createParameterDeclaration(f.josi)
-                    }
-                    result.push({ caption: josi + name, value: name, meta: '関数', score: getScore(name) })
+                    const josi = (f && f.type === 'func') ? createParameterDeclaration(f.josi) : ''
+                    addItem(josi + name, name, '関数')
                 }
             }
         }
 
-        return result
+        return Array.from(result.entries()).map(([caption, data]) => ({ caption, ...data }))
     }
 
     /**
@@ -1441,7 +1472,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         editor.container.classList.add('resizable')
     }
 
-    return { editor, editorMarkers, editorTabs }
+    return { editor, editorMarkers, editorTabs, retokenize: () => { backgroundTokenizer.dirty = true } }
 }
 
 module.exports = {

@@ -78,9 +78,13 @@ class NakoLexer {
   }
 
   /**
+   * ファイル内で定義されている関数名を列挙する。結果はfunclistに書き込む。
+   * シンタックスハイライトの高速化のために事前にファイルが定義する関数名を列挙する必要があるため、staticメソッドにしている。
    * @param {TokenWithSourceMap[]} tokens
+   * @param {import('./nako_logger')} logger
+   * @param {Record<string, object>} funclist
    */
-  preDefineFunc (tokens) {
+  static listFunctionDefinitions(tokens, logger, funclist) {
     // 関数を先読みして定義
     let i = 0
     let isFuncPointer = false
@@ -186,10 +190,10 @@ class NakoLexer {
 
       // 関数定義か？
       if (funcName !== '') {
-        if (funcName in this.funclist) {
-          this.logger.warn(`関数『${funcName}』は既に定義されています。`, defToken)
+        if (funcName in funclist) {
+          logger.warn(`関数『${funcName}』は既に定義されています。`, defToken)
         }
-        this.funclist[funcName] = {
+        funclist[funcName] = {
           type: 'func',
           josi,
           fn: null,
@@ -201,6 +205,13 @@ class NakoLexer {
       // 無名関数のために
       defToken.meta = {josi, varnames, funcPointers}
     }
+  }
+
+  /**
+   * @param {TokenWithSourceMap[]} tokens
+   */
+  preDefineFunc (tokens) {
+    NakoLexer.listFunctionDefinitions(tokens, this.logger, this.funclist)
   }
 
   /**

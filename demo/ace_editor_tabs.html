@@ -54,7 +54,7 @@
     <script>
 /** @type {import('../src/wnako3.js')} */
 const nako3 = navigator.nako3
-const { editor, editorMarkers, editorTabs } = nako3.setupEditor('editor')
+const { editor, editorMarkers, editorTabs, retokenize } = nako3.setupEditor('editor')
 
 /** @type {Map<number, HTMLButtonElement>} */
 const tabButtons = new Map()
@@ -137,6 +137,7 @@ document.getElementById('run').addEventListener('click', () => {
                 editorMarkers.addByError(code, err)
             }
         })
+        .then(() => { retokenize() }) // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
 })
 
 // 1.nako3の値を設定する
