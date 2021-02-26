@@ -33,8 +33,9 @@ class CNako3 extends NakoCompiler {
       .title('日本語プログラミング言語「なでしこ」v' + nako_version.version)
       .version(nako_version.version, '-v, --version')
       .usage('[オプション] 入力ファイル.nako3')
+      .option('-w, --warn', '警告を表示する')
       .option('-d, --debug', 'デバッグモードの指定')
-      .option('-D, --debugAll', '詳細デバッグモードの指定')
+      .option('-D, --trace', '詳細デバッグモードの指定')
       .option('-c, --compile', 'コンパイルモードの指定')
       .option('-t, --test', 'コンパイルモードの指定 (テスト用コードを出力)')
       .option('-r, --run', 'コンパイルモードでも実行する')
@@ -53,17 +54,22 @@ class CNako3 extends NakoCompiler {
 
   /**
    * コマンドライン引数を解析
-   * @returns {{debug: boolean, compile: any | boolean, test: any | boolean, one_liner: any | boolean, debugAll: any, run: any | boolean, repl: any | boolean, source: any | string}}
+   * @returns {{warn: boolean, debug: boolean, compile: any | boolean, test: any | boolean, one_liner: any | boolean, trace: any, run: any | boolean, repl: any | boolean, source: any | string}}
    */
   checkArguments () {
     const app = this.registerCommands()
-    // デバッグモードの指定
-    this.debug = app.debugAll || app.debug || false
-    if (app.debugAll) {
-      this.debugLexer = true
-      this.debugParser = true
-      this.debugJSCode = true
+
+    /** @type {import('./nako_logger').LogLevel} */
+    let logLevel = 'error'
+    if (app.trace) {
+      logLevel = 'trace'
+    } else if (app.debug) {
+      logLevel = 'debug'
+    } else if (app.warn) {
+      logLevel = 'warn'
     }
+    this.logger.addSimpleLogger(logLevel)
+
     let args = {
       'compile': app.compile || false,
       'run': app.run || false,
@@ -71,7 +77,8 @@ class CNako3 extends NakoCompiler {
       'man': app.man || '',
       'one_liner': app.eval || false,
       'debug': this.debug,
-      'debugAll': app.debugAll,
+      'trace': app.trace,
+      'warn': app.warn,
       'repl': app.repl || false,
       'test': app.test || false,
       'browsers': app.browsers || false,
@@ -135,8 +142,8 @@ class CNako3 extends NakoCompiler {
     try {
       this.runReset(src, opt.mainfile)
     } catch (e) {
-      if (this.debug) {
-          throw e
+      if (opt.debug || opt.trace) {
+        throw e
       } else {
         console.error(e.message)
       }

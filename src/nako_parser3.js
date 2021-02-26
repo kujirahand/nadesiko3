@@ -330,8 +330,8 @@ class NakoParser extends NakoParserBase {
       if (Object.keys(options).includes(name)) {
         options[name] = true
       } else {
-        // 互換性を考えると、警告を出して無視した方が良いかも
-        throw NakoSyntaxError.fromNode(`未知のコンパイラオプション: ${name}`, optionNode)
+        // 互換性を考えて、警告に留める。
+        this.logger.warn(`実行速度優先文のオプション『${name}』は存在しません。`, optionNode)
       }
     }
 

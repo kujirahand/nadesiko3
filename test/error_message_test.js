@@ -182,4 +182,42 @@ describe('error_message', () => {
         ], NakoIndentError)
     })
   })
+  describe('警告の表示', () => {
+    it('未定義の変数を参照したとき', () => {
+      const compiler = new NakoCompiler()
+      let log = ''
+      compiler.logger.addListener('warn', (level, message, position) => {
+        log += `${level}: ${message}`
+      })
+      compiler.runReset(`xを表示`, 'main.nako3')
+      assert.strictEqual(log, `warn: 変数 x は定義されていません。`)
+    })
+    it('存在しない高速化オプションを指定したとき', () => {
+      const compiler = new NakoCompiler()
+      let log = ''
+      compiler.logger.addListener('warn', (level, message, position) => {
+        log += `${level}: ${message}`
+      })
+      compiler.runReset(`「あ」で実行速度優先\nここまで`, 'main.nako3')
+      assert.strictEqual(log, `warn: 実行速度優先文のオプション『あ』は存在しません。`)
+    })
+    it('ユーザー定義関数を上書きしたとき', () => {
+      const compiler = new NakoCompiler()
+      let log = ''
+      compiler.logger.addListener('warn', (level, message, position) => {
+        log += `${level}: ${message}`
+      })
+      compiler.runReset(`●Aとは\nここまで\n●Aとは\nここまで`, 'main.nako3')
+      assert.strictEqual(log, `warn: 関数『A』は既に定義されています。`)
+    })
+    it('プラグイン関数を上書きしたとき', () => {
+      const compiler = new NakoCompiler()
+      let log = ''
+      compiler.logger.addListener('warn', (level, message, position) => {
+        log += `${level}: ${message}`
+      })
+      compiler.runReset(`●（Aを）足すとは\nここまで`, 'main.nako3')
+      assert.strictEqual(log, 'warn: 関数『足』は既に定義されています。')
+    })
+  })
 })

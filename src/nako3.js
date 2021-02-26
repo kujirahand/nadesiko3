@@ -11,6 +11,7 @@ const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoImportError, NakoSyntaxError } = require('./nako_errors')
+const NakoLogger = require('./nako_logger')
 
 /**
  * @typedef {{
@@ -33,10 +34,6 @@ const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoImportError, Nako
  *     testOnly: boolean
  * }} CompilerOptions
  */
-
-const prepare = new Prepare()
-const parser = new Parser()
-const lexer = new NakoLexer()
 
 /**
  * 一部のプロパティのみ。
@@ -93,10 +90,14 @@ class NakoCompiler {
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
     this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
+
+    this.logger = new NakoLogger()
+
     // 必要なオブジェクトを覚えておく
-    this.prepare = prepare
-    this.lexer = lexer
-    this.parser = parser
+    this.prepare = new Prepare(this.logger)
+    this.parser = new Parser(this.logger)
+    this.lexer = new NakoLexer(this.logger)
+    
     // set this
     this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
@@ -466,9 +467,9 @@ class NakoCompiler {
    */
   parse (code, filename, preCode = '') {
     // 関数を字句解析と構文解析に登録
-    lexer.setFuncList(this.funclist)
-    parser.setFuncList(this.funclist)
-    parser.debug = this.debug
+    this.lexer.setFuncList(this.funclist)
+    this.parser.setFuncList(this.funclist)
+    this.parser.debug = this.debug
     this.parser.filename = filename
 
     const lexerOutput = this.lex(code, filename, preCode)
@@ -477,10 +478,10 @@ class NakoCompiler {
     /** @type {Ast} */
     let ast
     try {
-      ast = parser.parse(lexerOutput.tokens)
+      ast = this.parser.parse(lexerOutput.tokens)
     } catch (err) {
       if (typeof err.startOffset !== 'number') {
-        throw NakoSyntaxError.fromNode(err.message, lexerOutput.tokens[parser.index])
+        throw NakoSyntaxError.fromNode(err.message, lexerOutput.tokens[this.parser.index])
       }
       throw err
     }

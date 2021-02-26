@@ -5,7 +5,11 @@
 const { NakoSyntaxError } = require('./nako_errors')
 
 class NakoParserBase {
-  constructor () {
+  /**
+   * @param {import("./nako_logger")} logger
+   */
+  constructor (logger) {
+    this.logger = logger
     this.debugAll = false
     this.debug = false || this.debugAll
     this.debugStack = false || this.debugAll

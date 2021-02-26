@@ -63,7 +63,12 @@ class Replace {
 // ただし、文字列部分だけは、そのまま全角で出力するようにする
 // for https://github.com/kujirahand/nadesiko3/issues/94
 class NakoPrepare {
-  constructor () {
+  /**
+   * @param {import("./nako_logger")} logger
+   */
+  constructor (logger) {
+    this.logger = logger
+
     // 参考) https://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.html
     this.HYPHENS = { // ハイフン問題
       0x2d: true, // ASCIIのハイフン
