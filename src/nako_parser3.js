@@ -1220,7 +1220,7 @@ class NakoParser extends NakoParserBase {
     const o = this.yJSONObject()
     if (o) {return o}
     // 一語関数
-    const splitType = operatorList.concat(['eol', ')', ']'])
+    const splitType = operatorList.concat(['eol', ')', ']', 'ならば', '回', '間', '反復', '条件分岐'])
     if (this.check2(['func', splitType])) {
       const f = this.get()
       return {
