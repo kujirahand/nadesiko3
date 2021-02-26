@@ -8,17 +8,15 @@ const testFileMe = path.join(__dirname, 'plugin_node_test.js')
 
 describe('plugin_node_test', () => {
   const nako = new NakoCompiler()
+  // nako.logger.addSimpleLogger('trace')
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-  nako.debug = false
   const cmp = (code, res) => {
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     nako.runReset(code)
   }
   // --- test ---

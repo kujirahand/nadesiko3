@@ -4,16 +4,15 @@ const PluginKansuji = require('../src/plugin_kansuji.js')
 
 describe('plugin_kansuji_test', () => {
   const nako = new NakoCompiler()
+  // nako.logger.addSimpleLogger('trace')
   nako.addPluginFile('PluginKansuji', 'plugin_kansuji.js', PluginKansuji)
-  // nako.debug = true;
   const cmp = (code, res) => {
-    if (nako.debug)
-      console.log('code=' + code)
+    nako.logger.debug('code=' + code)
 
     assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmd = (code) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     nako.runReset(code)
   }
 

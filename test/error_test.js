@@ -3,11 +3,9 @@ const NakoCompiler = require('../src/nako3')
 
 describe('error_test', () => {
   const nako = new NakoCompiler()
-  nako.debug = false
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   // --- test ---

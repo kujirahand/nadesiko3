@@ -29,9 +29,7 @@ AJAXオプションをJSONエンコードして表示する。
     it('AJAX送信時', async () => {
       const windowalert = td.replace(window, 'alert')
       const code = '「/custom/ok」へAJAX送信時には;対象をJSONエンコードして言う;ここまで'
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       nako.runReset(code)
 
       await waitTimer(1.0)
@@ -50,9 +48,7 @@ AJAXオプションをJSONエンコードして表示する。
 対象を言う
 ここまで
 `
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       nako.runReset(code)
 
       await waitTimer(1.0)
@@ -71,9 +67,7 @@ AJAXオプションをJSONエンコードして表示する。
 対象を言う
 ここまで
 `
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       nako.runReset(code)
 
       await waitTimer(1.0)
@@ -90,9 +84,7 @@ AJAXオプションをJSONエンコードして表示する。
 次に、対象を言う。
 ここまで
 `
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       nako.runReset(code)
 
       await waitTimer(1.0)
@@ -112,9 +104,7 @@ AJAXオプションをJSONエンコードして表示する。
 次に、対象を言う。
 ここまで
 `
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       nako.runReset(code)
 
       await waitTimer(1.0)
@@ -134,9 +124,7 @@ AJAXオプションをJSONエンコードして表示する。
 次に、対象を言う。
 ここまで
 `
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       nako.runReset(code)
 
       await waitTimer(1.0)

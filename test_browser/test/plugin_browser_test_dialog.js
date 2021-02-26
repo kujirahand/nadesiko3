@@ -6,9 +6,7 @@ export default (nako) => {
     const cmpalert = (code, msg) => {
       const windowalert = td.replace(window, 'alert')
       td.when(windowalert(msg)).thenReturn(undefined)
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       nako.runReset(code)
       td.verify(windowalert(td.matchers.anything()), { times: 1 })
       td.reset()
@@ -21,9 +19,7 @@ export default (nako) => {
     const cmpprompt = (code, msg, rslt, res) => {
       const windowprompt = td.replace(window, 'prompt')
       td.when(windowprompt(msg)).thenReturn(rslt)
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       assert.equal(nako.runReset(code).log, res)
       td.verify(windowprompt(td.matchers.anything()), { times: 1 })
       td.reset()
@@ -63,10 +59,7 @@ export default (nako) => {
     const cmpconfirm = (code, msg, rslt, res) => {
       const windowconfirm = td.replace(window, 'confirm')
       td.when(windowconfirm(msg)).thenReturn(rslt)
-
-      if (nako.debug) {
-        console.log('code=' + code)
-      }
+      nako.logger.debug('code=' + code)
       assert.equal(nako.runReset(code).log, res)
       td.verify(windowconfirm(td.matchers.anything()), { times: 1 })
       td.reset()

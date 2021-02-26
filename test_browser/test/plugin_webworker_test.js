@@ -23,7 +23,6 @@ describe('plugin_webworker_test', () => {
     // nako.addPluginFile('PluginWebWorker', 'plugin_webworker.js', pluginClone)
     nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
     nako.addPluginFile('PluginWebWorker', 'plugin_webworker.js', PluginWebWorker)
-    nako.debug = false
   })
 
   // --- test ---

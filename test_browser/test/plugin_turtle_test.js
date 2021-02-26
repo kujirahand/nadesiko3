@@ -244,7 +244,6 @@ describe('plugin_turtle_test', () => {
     // const pluginClone = Object.assign({}, PluginTurtle)
     // nako.addPluginFile('PluginTurtle', 'plugin_turtle.js', pluginClone)
     nako.addPluginFile('PluginTurtle', 'plugin_turtle.js', PluginTurtle)
-    nako.debug = false
     nako.addFunc('getElementyID', [['の']], (id, sys) => {
       return document.getElementById(id)
     })

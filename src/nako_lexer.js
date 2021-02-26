@@ -32,7 +32,11 @@ const {LexError} = require('./nako_errors')
  */
  
 class NakoLexer {
-  constructor () {
+  /**
+   * @param {import("./nako_logger")} logger
+   */
+  constructor (logger) {
+    this.logger = logger
     this.funclist = {}
     /** @type {TokenWithSourceMap[]} */
     this.result = []
@@ -181,14 +185,18 @@ class NakoLexer {
         {[josi, varnames, funcPointers] = readArgs()}
 
       // 関数定義か？
-      if (funcName !== '')
-        {this.funclist[funcName] = {
+      if (funcName !== '') {
+        if (funcName in this.funclist) {
+          this.logger.warn(`関数『${funcName}』は既に定義されています。`, defToken)
+        }
+        this.funclist[funcName] = {
           type: 'func',
           josi,
           fn: null,
           varnames,
           funcPointers
-        }}
+        }
+      }
 
       // 無名関数のために
       defToken.meta = {josi, varnames, funcPointers}

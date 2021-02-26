@@ -3,12 +3,10 @@ const CNako3 = require('../src/cnako3')
 
 describe('require_nako3_test', () => {
   const nako = new CNako3()
-  nako.debug = false
+  // nako.logger.addSimpleLogger('trace')
   nako.silent = true
   const cmp = (code, res) => {
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
+    nako.logger.debug('code=' + code)
     const ret = nako.runReset(code, 'main.nako3')
     assert.strictEqual(ret.log, res)
   }

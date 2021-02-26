@@ -3,14 +3,13 @@ const NakoCompiler = require('../src/nako3')
 
 describe('func_test', () => {
   const nako = new NakoCompiler()
-  nako.debug = false
-  nako.debugLexer = false
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmpWithoutReset = (code, res) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)
   }
   // --- test ---

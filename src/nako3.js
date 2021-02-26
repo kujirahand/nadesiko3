@@ -11,6 +11,7 @@ const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoImportError, NakoSyntaxError } = require('./nako_errors')
+const NakoLogger = require('./nako_logger')
 
 /**
  * @typedef {{
@@ -33,10 +34,6 @@ const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoImportError, Nako
  *     testOnly: boolean
  * }} CompilerOptions
  */
-
-const prepare = new Prepare()
-const parser = new Parser()
-const lexer = new NakoLexer()
 
 /**
  * 一部のプロパティのみ。
@@ -70,12 +67,7 @@ const lexer = new NakoLexer()
 
 class NakoCompiler {
   constructor () {
-    this.debugAll = false
-    this.debug = false || this.debugAll
     this.silent = true
-    this.debugParser = false || this.debugAll
-    this.debugJSCode = true || this.debugAll
-    this.debugLexer = false || this.debugAll
     this.filename = 'inline'
     this.options = {}
     // 環境のリセット
@@ -93,10 +85,14 @@ class NakoCompiler {
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
     this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
+
+    this.logger = new NakoLogger()
+
     // 必要なオブジェクトを覚えておく
-    this.prepare = prepare
-    this.lexer = lexer
-    this.parser = parser
+    this.prepare = new Prepare(this.logger)
+    this.parser = new Parser(this.logger)
+    this.lexer = new NakoLexer(this.logger)
+    
     // set this
     this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
@@ -296,14 +292,6 @@ class NakoCompiler {
   }
 
   /**
-   * デバッグモードに設定する
-   * @param flag デバッグモード
-   */
-  useDebug (flag = true) {
-    this.debug = flag
-  }
-
-  /**
    * 環境のリセット
    */
   reset () {
@@ -348,10 +336,7 @@ class NakoCompiler {
     let js = this.gen.convGen(ast, isTest)
     // JSコードを実行するための事前ヘッダ部分の生成
     js = this.gen.getDefFuncCode(isTest) + js
-    if (this.debug && this.debugJSCode) {
-      console.log('--- generate ---')
-      console.log(js)
-    }
+    this.logger.trace('--- generate ---\n' + js)
     return js
   }
 
@@ -457,10 +442,7 @@ class NakoCompiler {
       }
     }
 
-    if (this.debug && this.debugLexer) {
-      console.log('--- lex ---')
-      console.log(JSON.stringify(tokens, null, 2))
-    }
+    this.logger.trace('--- lex ---\n' + JSON.stringify(tokens, null, 2))
 
     return { commentTokens, tokens, requireTokens: requireStatementTokens }
   }
@@ -475,9 +457,8 @@ class NakoCompiler {
    */
   parse (code, filename, preCode = '') {
     // 関数を字句解析と構文解析に登録
-    lexer.setFuncList(this.funclist)
-    parser.setFuncList(this.funclist)
-    parser.debug = this.debug
+    this.lexer.setFuncList(this.funclist)
+    this.parser.setFuncList(this.funclist)
     this.parser.filename = filename
 
     const lexerOutput = this.lex(code, filename, preCode)
@@ -486,18 +467,15 @@ class NakoCompiler {
     /** @type {Ast} */
     let ast
     try {
-      ast = parser.parse(lexerOutput.tokens)
+      ast = this.parser.parse(lexerOutput.tokens)
     } catch (err) {
       if (typeof err.startOffset !== 'number') {
-        throw NakoSyntaxError.fromNode(err.message, lexerOutput.tokens[parser.index])
+        throw NakoSyntaxError.fromNode(err.message, lexerOutput.tokens[this.parser.index])
       }
       throw err
     }
     this.usedFuncs = this.getUsedFuncs(ast)
-    if (this.debug && this.debugParser) {
-      console.log('--- ast ---')
-      console.log(JSON.stringify(ast, null, 2))
-    }
+    this.logger.trace('--- ast ---\n' + JSON.stringify(ast, null, 2))
     return ast
   }
 

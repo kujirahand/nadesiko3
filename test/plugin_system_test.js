@@ -3,22 +3,17 @@ const NakoCompiler = require('../src/nako3')
 
 describe('plugin_system_test', () => {
   const nako = new NakoCompiler()
-  // nako.debug = true;
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
-    if (nako.debug)
-      console.log('code=' + code)
-
+    nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)
   }
   const cmpex = (code, exinfo) => {
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
-
+    nako.logger.debug('code=' + code)
     assert.throws(() => { nako.runReset(code) }, exinfo)
   }
   const cmd = (code) => {
-    if (nako.debug) console.log('code=' + code)
+    nako.logger.debug('code=' + code)
     nako.runReset(code)
   }
 
