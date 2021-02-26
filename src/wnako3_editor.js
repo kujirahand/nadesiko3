@@ -1399,11 +1399,31 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     slowSpeedMessage.innerHTML = '<span>エディタの|応答速度が|低下したため|シンタックス|ハイライトを|無効化|しました。</span>'.replace(/\|/g, '</span><span>')
     buttonContainer.appendChild(slowSpeedMessage)
 
+    // 「全画面表示」ボタン
+    const exitFullscreen = () => {
+        editor.container.classList.remove('fullscreen')
+        editor.renderer.setScrollMargin(0, 0, 0, 0) // marginを元に戻す
+    }
+    const fullscreenButton = document.createElement('span')
+    fullscreenButton.classList.add('editor-button')
+    fullscreenButton.innerText = '全画面表示'
+    fullscreenButton.addEventListener('click', (e) => {
+        if (editor.container.classList.contains('fullscreen')) {
+            exitFullscreen()
+        } else {
+            editor.container.classList.add('fullscreen')
+            editor.renderer.setScrollMargin(20, 20, 0, 0) // 上下に少し隙間を開ける
+        }
+        e.preventDefault()
+    })
+    buttonContainer.appendChild(fullscreenButton)
+
     // 「設定を開く」ボタン
     const settingsButton = document.createElement('span')
-    settingsButton.classList.add('settings-button')
+    settingsButton.classList.add('editor-button')
     settingsButton.innerText = '設定を開く'
     settingsButton.addEventListener('click', (e) => {
+        exitFullscreen()
         editor.execCommand("showSettingsMenu")
         e.preventDefault()
     })

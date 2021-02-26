@@ -111,11 +111,12 @@
 }
 
 /* 「設定を開く」ボタンのスタイル */
-.settings-button {
+.editor-button {
     color: gray;
     display: inline-block;
     user-select: none;
     white-space: nowrap;
+    margin-left: 10px;
 }
 .nako3_editor.ace-monokai .settings-button {
     color: rgb(218, 218, 218);
@@ -125,10 +126,10 @@
     max-width: 60%;
 }
 
-.settings-button:hover {
+.editor-button:hover {
     color: rgb(90, 90, 255);
 }
-.settings-button:active {
+.editor-button:active {
     color: rgb(24, 24, 192);
 }
 .nako3_editor.ace-monokai .settings-button:hover {
@@ -137,8 +138,17 @@
 .nako3_editor.ace-monokai .settings-button:active {
     color: rgb(182, 182, 255);
 }
-.nako3_editor.readonly .settings-button {
+.nako3_editor.readonly .editor-button {
     display: none; /* readonlyのときは表示しない。 */
+}
+.nako3_editor.fullscreen {
+    position: fixed;
+    resize: none; /* .resizable で指定する resize: vertical を無効化 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100% !important; /* !important が無いと、resize: vertical によるリサイズで上書きされてしまう。 */
+    z-index: 1000; /* ace editor のポップアップのz-indexは200000 */
 }
 
 /* 設定メニュー */
