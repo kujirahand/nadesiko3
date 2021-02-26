@@ -25,7 +25,7 @@ describe('wnako3_editor_test', () => {
     
     describe('シンタックスハイライト', () => {
         it('コードを分割する', () => {
-            const tokens = tokenize('A=1\nA+1を表示'.split('\n'), new NakoCompiler()).editorTokens
+            const tokens = tokenize('A=1\nA+1を表示'.split('\n'), new NakoCompiler(), false).editorTokens
 
             // 1行目
             assert.strictEqual(tokens[0][0].value, 'A')
@@ -39,7 +39,7 @@ describe('wnako3_editor_test', () => {
             assert.strictEqual(tokens[1][3].value, '表示')
         })
         it('scopeを割り当てる', () => {
-            const tokens = tokenize('A=1\nA+1を表示'.split('\n'), new NakoCompiler()).editorTokens
+            const tokens = tokenize('A=1\nA+1を表示'.split('\n'), new NakoCompiler(), false).editorTokens
     
             // 1行目
             assert(tokens[0][0].type.includes('variable'))
@@ -53,7 +53,18 @@ describe('wnako3_editor_test', () => {
             assert(tokens[1][3].type.includes('function'))
         })
         it('取り込み文を無視する', () => {
-            tokenize('!「http://www.example.com/non_existent_file.nako3」を取り込む。'.split('\n'), new NakoCompiler())
+            tokenize('!「http://www.example.com/non_existent_file.nako3」を取り込む。'.split('\n'), new NakoCompiler(), false)
+        })
+        it('助詞に下線を引く', () => {
+            const tokens = tokenize('「\n」を表示'.split('\n'), new NakoCompiler(), true).editorTokens
+            assert.strictEqual(tokens[1][0].value, '」')
+            assert(tokens[1][0].type.includes('string'))
+
+            assert.strictEqual(tokens[1][1].value, 'を')
+            assert(tokens[1][1].type.includes('underline'))
+
+            assert.strictEqual(tokens[1][2].value, '表示')
+            assert(tokens[1][2].type.includes('function'))
         })
     })
     describe('ドキュメントのホバー', () => {
@@ -67,22 +78,22 @@ describe('wnako3_editor_test', () => {
                 }
             })
 
-            const token = tokenize('XをYにプラグイン関数テスト'.split('\n'), nako3)
+            const token = tokenize('XをYにプラグイン関数テスト'.split('\n'), nako3, false)
                 .editorTokens[0]
                 .find((t) => t.value === 'プラグイン関数テスト')
             assert(token.docHTML.includes('（Aを|Aと、Bに|Bは）'))
             assert(token.docHTML.includes('PluginEditorTest'))
         })
         it('ユーザー定義関数の助詞のドキュメントを表示する', () => {
-            const token = tokenize('●（Aを）Fとは\nここまで\n1をF'.split('\n'), new NakoCompiler())
+            const token = tokenize('●（Aを）Fとは\nここまで\n1をF'.split('\n'), new NakoCompiler(), false)
                 .editorTokens[2]
                 .find((t) => t.value === 'F')
             assert(token.docHTML.includes('（Aを）'))
         })
         it('前回の実行結果の影響を受けない', () => {
             const nako3 = new NakoCompiler()
-            tokenize('●（Aを）Fとは\nここまで\n1をF'.split('\n'), nako3)
-            const token = tokenize('1をF'.split('\n'), nako3)
+            tokenize('●（Aを）Fとは\nここまで\n1をF'.split('\n'), nako3, false)
+            const token = tokenize('1をF'.split('\n'), nako3, false)
                 .editorTokens[0]
                 .find((t) => t.value === 'F')
             assert.strictEqual(token.docHTML, null)

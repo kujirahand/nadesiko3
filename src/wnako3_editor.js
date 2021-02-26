@@ -53,10 +53,7 @@ const NakoPrepare = require('./nako_prepare')
  * 
  * @typedef {new (startLine: number, startColumn: number, endLine: number, endColumn: number) => AceRange} TypeofAceRange
  * 
- * @typedef {'comment.line' | 'comment.block' | 'keyword.control' | 'entity.name.function' |
- *           'constant.numeric' | 'support.constant' | 'keyword.operator' |
- *           'string.other' | 'variable.language' | 'variable.other' | 'markup.other' |
- *           'composition_placeholder'} TokenType
+ * @typedef {string} TokenType
  * @typedef {{ type: TokenType, value: string, docHTML: string | null }} EditorToken
  */
 
@@ -142,6 +139,30 @@ function getScope(token) {
         default:
             return 'markup.other'
     }
+}
+
+/**
+ * @param {TokenWithSourceMap} compilerToken
+ * @param {NakoCompiler} nako3
+ * @param {string} value
+ * @param {boolean} includesLastCharacter
+ * @param {boolean} underlineJosi
+ */
+function getEditorTokens(compilerToken, nako3, value, includesLastCharacter, underlineJosi) {
+    const type = getScope(compilerToken)
+    const docHTML = getDocumentationHTML(compilerToken, nako3)
+
+    // 助詞があれば助詞の部分を分割する。
+    // 最後の文字が現在の行に含まれないときは助詞を表示しない。そうしないと例えば `「文字列\n」を表示` の「列」の部分に下線が引かれてしまう。
+    if (compilerToken.rawJosi && value.length >= compilerToken.rawJosi.length && includesLastCharacter && underlineJosi) {
+        return [
+            { type, docHTML, value: value.slice(0, -compilerToken.rawJosi.length) },
+            { type: type + '.markup.underline', docHTML, value: value.slice(-compilerToken.josi.length) },
+        ]
+    }
+    return [
+        { type, docHTML, value }
+    ]
 }
 
 /**
@@ -232,8 +253,9 @@ const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLi
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param {string[]} lines
  * @param {NakoCompiler} nako3
+ * @param {boolean} underlineJosi
  */
-function tokenize(lines, nako3) {
+function tokenize(lines, nako3, underlineJosi) {
     const code = lines.join('\n')
 
     // lexerにかける
@@ -273,20 +295,12 @@ function tokenize(lines, nako3) {
         if (tokenIndex < tokens.length &&
             tokens[tokenIndex].startOffset <= lineStartOffset &&
             tokens[tokenIndex].endOffset >= lineEndOffset) {
-            editorTokens[i].push({
-                type: getScope(tokens[tokenIndex]),
-                docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                value: lines[i],
-            })
+            editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, lines[i], tokens[tokenIndex].endOffset <= lineEndOffset, underlineJosi))
         } else {
             // 行頭をまたがっているトークンが存在する場合
             if (tokenIndex < tokens.length &&
                 tokens[tokenIndex].startOffset <= lineStartOffset) {
-                editorTokens[i].push({
-                    type: getScope(tokens[tokenIndex]),
-                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                    value: code.slice(offset, tokens[tokenIndex].endOffset),
-                })
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true, underlineJosi))
                 offset = tokens[tokenIndex].endOffset
                 tokenIndex++
             }
@@ -305,11 +319,7 @@ function tokenize(lines, nako3) {
                 }
 
                 // 現在のトークンを使う
-                editorTokens[i].push({
-                    type: getScope(tokens[tokenIndex]),
-                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                    value: code.slice(offset, tokens[tokenIndex].endOffset),
-                })
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(offset, tokens[tokenIndex].endOffset), true, underlineJosi))
                 offset = tokens[tokenIndex].endOffset
                 tokenIndex++
             }
@@ -328,11 +338,7 @@ function tokenize(lines, nako3) {
                 }
 
                 // トークンを使う
-                editorTokens[i].push({
-                    type: getScope(tokens[tokenIndex]),
-                    docHTML: getDocumentationHTML(tokens[tokenIndex], nako3),
-                    value: code.slice(tokens[tokenIndex].startOffset, lineEndOffset),
-                })
+                editorTokens[i].push(...getEditorTokens(tokens[tokenIndex], nako3, code.slice(tokens[tokenIndex].startOffset, lineEndOffset), tokens[tokenIndex].endOffset <= lineEndOffset, underlineJosi))
             } else {
                 editorTokens[i].push({
                     type: 'markup.other',
@@ -476,13 +482,15 @@ class BackgroundTokenizer {
      * @param {NakoCompiler} nako3
      * @param {(firstRow: number, lastRow: number, ms: number) => void} onTokenUpdate
      * @param {(code: string, err: Error) => void} onCompileError
+     * @param {boolean} underlineJosi
      */
-    constructor(doc, nako3, onTokenUpdate, onCompileError) {
+    constructor(doc, nako3, onTokenUpdate, onCompileError, underlineJosi) {
         this.onUpdate = onTokenUpdate
         this.doc = doc
         this.dirty = true
         this.nako3 = nako3
         this.onCompileError = onCompileError
+        this.underlineJosi = underlineJosi
 
         // オートコンプリートで使うために、直近のtokenizeの結果を保存しておく
         /** @type {ReturnType<NakoCompiler['lex']> | null} */
@@ -509,7 +517,7 @@ class BackgroundTokenizer {
                 const code = this.doc.getAllLines().join('\n')
                 try {
                     const startTime = Date.now()
-                    const out = tokenize(this.doc.getAllLines(), nako3)
+                    const out = tokenize(this.doc.getAllLines(), nako3, this.underlineJosi)
                     this.lastLexerOutput = out.lexerOutput
                     this.lines = out.editorTokens
                     this.cache = { code, lines: JSON.stringify(this.lines) }
@@ -605,7 +613,7 @@ class BackgroundTokenizer {
                     ok = true
                 } else {
                     try {
-                        const lines = tokenize(this.doc.getAllLines(), this.nako3)
+                        const lines = tokenize(this.doc.getAllLines(), this.nako3, this.underlineJosi)
                         this.cache = { code, lines: JSON.stringify(lines.editorTokens) }
                         ok = true
                     } catch (e) {
@@ -999,6 +1007,159 @@ class EditorTabs {
     }
 }
 
+class Options {
+    /** @param {AceEditor} editor */
+    static save(editor) {
+        try {
+            /** @type {any} */
+            const obj = {}
+            for (const key of ['syntaxHighlighting', 'keyboardHandler', 'theme', 'fontSize', 'wrap', 'useSoftTabs', 'tabSize', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap', 'underlineJosi']) {
+                obj[key] = editor.getOption(key)
+            }
+            localStorage.setItem('nako3EditorOptions', JSON.stringify(obj))
+        } catch (e) {
+            // JSON.stringify のエラー、localStorageのエラーなど
+            console.error(e)
+            return null
+        }
+    }
+    /** @param {AceEditor} editor */
+    static load(editor) {
+        try {
+            if (!window.localStorage) {
+                return null
+            }
+            const text = window.localStorage.getItem('nako3EditorOptions')
+            if (text === null) {
+                return null
+            }
+            const json = JSON.parse(text)
+            if (['ace/keyboard/vscode', 'ace/keyboard/emacs', 'ace/keyboard/sublime', 'ace/keyboard/vim'].includes(json.keyboardHandler)) {
+                editor.setOption('keyboardHandler', json.keyboardHandler)
+            }
+            if (['ace/theme/xcode', 'ace/theme/monokai'].includes(json.theme)) {
+                editor.setOption('theme', json.theme)
+            }
+            if (typeof json.fontSize === 'number') {
+                editor.setOption('fontSize', Math.min(48, Math.max(6, json.fontSize)))
+            }
+            for (const key of ['syntaxHighlighting', 'wrap', 'useSoftTabs', 'showInvisibles', 'enableLiveAutocompletion', 'indentedSoftWrap', 'underlineJosi']) {
+                if (typeof json[key] === 'boolean') {
+                    editor.setOption(key, json[key])
+                }
+            }
+            if (typeof json.tabSize === 'number') {
+                editor.setOption('tabSize', Math.min(16, Math.max(0, json.tabSize)))
+            }
+        } catch (e) {
+            // JSONのパースエラー、localStorageのエラーなど
+            console.error(e)
+            return null
+        }
+    }
+    /**
+     * OptionPanelクラスをなでしこ用に書き換える。
+     * @param {any} OptionPanel
+     * @param {AceEditor} editor
+     */
+    static initPanel(OptionPanel, editor) {
+        const panel = new OptionPanel(editor) // editorはエラーが飛ばなければ何でも良い
+
+        // ページ内で一度だけ呼ぶ
+        if (this.done) {
+            return
+        }
+        this.done = true
+
+        // renderメソッドを呼ぶとrenderOptionGroupにoptionGroups.Main、optionGroups.More が順に渡されることを利用して、optionGroupsを書き換える。
+        let isMain = true
+        panel.renderOptionGroup = (group) => {
+            if (isMain) { // Main
+                for (const key of Object.keys(group)) {
+                    delete group[key]
+                }
+
+                // スマートフォンでも見れるように、文字数は最小限にする
+                group['シンタックスハイライト'] = {
+                    path: 'syntaxHighlighting',
+                }
+                group['キーバインド'] = {
+                    path: 'keyboardHandler',
+                    type: 'select',
+                    items: [
+                        { caption: 'VSCode', value: 'ace/keyboard/vscode' },
+                        { caption: 'Emacs', value: 'ace/keyboard/emacs' },
+                        { caption: 'Sublime', value: 'ace/keyboard/sublime' },
+                        { caption: 'Vim', value: 'ace/keyboard/vim' },
+                    ],
+                }
+                group["カラーテーマ"] = {
+                    path: "theme",
+                    type: "select",
+                    items: [
+                        { caption: "ライト", value: "ace/theme/xcode" },
+                        { caption: "ダーク", value: "ace/theme/monokai" },
+                    ],
+                }
+                group['文字サイズ'] = {
+                    path: "fontSize",
+                    type: "number",
+                    defaultValue: 16,
+                }
+                group["行の折り返し"] = {
+                    path: "wrap",
+                    type: "select",
+                    items: [
+                        { caption: "なし", value: "off" },
+                        { caption: "あり", value: "free" },
+                    ],
+                }
+                group["ソフトタブ"] = [{
+                    path: "useSoftTabs",
+                }, {
+                    ariaLabel: "Tab Size",
+                    path: "tabSize",
+                    type: "number",
+                    values: [2, 3, 4, 8, 16],
+                }]
+                group["空白文字を表示"] = {
+                    path: "showInvisibles",
+                }
+                group["常に自動補完"] = {
+                    path: "enableLiveAutocompletion",
+                }
+                group["折り返した行をインデント"] = {
+                    path: "indentedSoftWrap",
+                }
+                group["助詞に下線を引く"] = {
+                    path: "underlineJosi"
+                }
+                isMain = false
+            } else { // More
+                for (const key of Object.keys(group)) {
+                    delete group[key]
+                }
+            }
+        }
+        panel.render()
+
+        // 設定メニューは ace/ext/settings_menu.js の showSettingsMenu 関数によって開かれる。
+        // showSettingsMenu 関数は new OptionPanel(editor).render() で新しい設定パネルのインスタンスを生成するため、
+        // renderメソッドに設定の保存処理を挟むことで、生成されたインスタンスにアクセスできる。
+        const render = OptionPanel.prototype.render
+        const self = this
+        OptionPanel.prototype.render = function (...args) {
+            render.apply(this, ...args) // 元の処理
+
+            // OptionPanel.setOption() で発火される setOption イベントをキャッチする
+            this.on('setOption', () => {
+                console.log('設定を保存しました。')
+                self.save(this.editor)
+            })
+        }
+    }
+}
+
 /**
  * ace/ext/language_tools の設定がグローバル変数で保持されているため、こちら側でもグローバル変数で管理しないと、エディタが複数あるときに正しく動かない。
  * - captionはオートコンプリートの候補として表示されるテキスト
@@ -1061,6 +1222,37 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         editor.setReadOnly(true)
     }
     editor.setFontSize(16)
+
+    /** @param {Session} session */
+    const resetEditorTokens = (session) => {
+        // 一旦テキスト全体を消してから、元に戻す
+        /** @type {AceDocument} */
+        const doc = session.doc
+        const lines = doc.getAllLines()
+        const range = session.selection.getRange()
+        doc.removeFullLines(0, doc.getLength())
+        doc.insert({ row: 0, column: 0 }, lines.join('\n'))
+        session.selection.setRange(range, false)
+    }
+
+    ace.require('ace/config').defineOptions(editor.constructor.prototype, 'editor', {
+        syntaxHighlighting: {
+            /** @type {(this: AceEditor, value: boolean) => void} */
+            set: function(value) {
+                this.session.bgTokenizer.enabled = value
+                resetEditorTokens(this.session)
+            },
+            initialValue: true
+        },
+        underlineJosi: {
+            set: function(value) {
+                this.session.bgTokenizer.underlineJosi = value
+                resetEditorTokens(this.session)
+            },
+            initialValue: true
+        }
+    })
+
     editor.setOptions({
         wrap: 'free',
         indentedSoftWrap: false,
@@ -1120,10 +1312,11 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                 editor.setOption('syntaxHighlighting', false)
                 setTimeout(() => {
                     slowSpeedMessage.classList.remove('visible')
-                }, 8000);
+                }, 13000);
             }
         },
         (code, err) => { editorMarkers.addByError(code, err) },
+        /** @type {boolean} */(editor.getOption('underlineJosi')),
     )
 
     // オートコンプリートを有効化する
@@ -1188,89 +1381,11 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
 
     editor.setTheme("ace/theme/xcode")
 
-    ace.require('ace/config').defineOptions(editor.constructor.prototype, 'editor', {
-        syntaxHighlighting: {
-            /** @type {(this: AceEditor, value: boolean) => void} */
-            set: function(value) {
-                this.session.bgTokenizer.enabled = value
-
-                // 一旦テキスト全体を消してから、元に戻す
-                /** @type {AceDocument} */
-                const doc = this.session.doc
-                const lines = doc.getAllLines()
-                const range = this.session.selection.getRange()
-                doc.removeFullLines(0, doc.getLength())
-                doc.insert({ row: 0, column: 0 }, lines.join('\n'))
-                this.session.selection.setRange(range, false)
-            },
-            initialValue: true
-        }
-    })
-
     // 設定メニューの上書き
     // なでしこ用に上書きした設定の削除やテキストの和訳をする。
+    Options.load(editor)
     const OptionPanel = ace.require('ace/ext/options').OptionPanel
-    {
-        // renderメソッドを呼ぶとrenderOptionGroupにoptionGroups.Main、optionGroups.More が順に渡されることを利用して、optionGroupsを書き換える。
-        const panel = new OptionPanel(editor)
-        let i = 'Main'
-        panel.renderOptionGroup = (/** @type {Record<string, object>} */ group) => {
-            if (i === 'Main') { // Main
-                for (const key of Object.keys(group)) {
-                    delete group[key]
-                }
-                group['シンタックスハイライトを有効化する'] = {
-                    path: 'syntaxHighlighting'
-                }
-                group['キーバインド'] = {
-                    type: 'buttonBar',
-                    path: 'keyboardHandler',
-                    items: [
-                        { caption: 'VSCode', value: 'ace/keyboard/vscode' },
-                        { caption: 'Emacs', value: 'ace/keyboard/emacs' },
-                        { caption: 'Sublime', value: 'ace/keyboard/sublime' },
-                        { caption: 'Vim', value: 'ace/keyboard/vim' },
-                    ]
-                }
-                group['文字サイズ'] = {
-                    path: "fontSize",
-                    type: "number",
-                    defaultValue: 16,
-                }
-                group["行の折り返し"] = {
-                    type: "buttonBar",
-                    path: "wrap",
-                    items: [
-                        { caption: "オフ", value: "off" },
-                        { caption: "オン", value: "free" },
-                    ]
-                }
-                group["ソフトタブ"] = [{
-                    path: "useSoftTabs"
-                }, {
-                    ariaLabel: "Tab Size",
-                    path: "tabSize",
-                    type: "number",
-                    values: [2, 3, 4, 8, 16]
-                }]
-                group["空白文字を表示する"] = {
-                    path: "showInvisibles"
-                }
-                group["常に自動補完する"] = {
-                    path: "enableLiveAutocompletion"
-                }
-                group["折り返した行をインデントする"] = {
-                    path: "indentedSoftWrap"
-                }
-                i = 'More'
-            } else { // More
-                for (const key of Object.keys(group)) {
-                    delete group[key]
-                }
-            }
-        }
-        panel.render()
-    }
+    Options.initPanel(OptionPanel, editor)
 
     // 右下のボタン全体を囲むdiv
     const buttonContainer = document.createElement('div')

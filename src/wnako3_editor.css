@@ -3,23 +3,33 @@
 }
 
 /* シンタックスハイライトの色の調整 */
-.nako3_editor .ace_name.ace_function {
+.nako3_editor.ace-xcode .ace_name.ace_function {
     color: #996506;
 }
-.nako3_editor .ace_string.ace_other {
+.nako3_editor.ace-xcode .ace_string.ace_other {
     color: #C00;
 }
-.nako3_editor .ace_keyword.ace_operator {
+.nako3_editor.ace-xcode .ace_keyword.ace_operator {
     color: black;
 }
-.nako3_editor .ace_constant.ace_numeric {
+.nako3_editor.ace-xcode .ace_constant.ace_numeric {
     color: rgb(27, 143, 23);
 }
-.nako3_editor .ace_support.ace_constant {
+.nako3_editor.ace-xcode .ace_support.ace_constant {
     color: #037d99;
 }
-.nako3_editor .ace_variable.ace_language {
+.nako3_editor.ace-xcode .ace_variable.ace_language {
     color: #2910D7;
+}
+
+.nako3_editor.ace-monokai .ace_entity.ace_function {
+    /* 変数と関数の色が同じで見分けが付かないため、関数を太字で表示 */
+    font-weight: bold;
+}
+
+.nako3_editor .ace_markup.ace_underline .ace_cjk {
+    /* cjk文字に下線が引かれない問題の修正 */
+    text-decoration: underline;
 }
 
 /* エラー位置に付ける赤線 */
@@ -79,9 +89,13 @@
 
 /* 処理時間が長いときのメッセージ */
 .slow-speed-message {
-    color: rgb(12, 10, 153);
+    color: rgb(85, 82, 255);
     max-width: 75vw;
     display: none;
+    font-weight: bold;
+}
+.nako3_editor.ace-monokai .slow-speed-message {
+    color: rgb(255, 255, 255);
 }
 .slow-speed-message.visible {
     display: inline-block;
@@ -93,21 +107,29 @@
 /* 「設定を開く」ボタンのスタイル */
 .settings-button {
     color: gray;
-    /* 画面が狭いと設定メニューを閉じられないため、ボタンを表示しない */
-    display: none;
+    display: inline-block;
     user-select: none;
     white-space: nowrap;
 }
-@media (min-width: 600px) {
-    .settings-button {
-        display: inline-block;
-    }
+.nako3_editor.ace-monokai .settings-button {
+    color: rgb(218, 218, 218);
 }
+
+#ace_settingsmenu {
+    max-width: 60%;
+}
+
 .settings-button:hover {
     color: rgb(90, 90, 255);
 }
 .settings-button:active {
     color: rgb(24, 24, 192);
+}
+.nako3_editor.ace-monokai .settings-button:hover {
+    color: rgb(215, 215, 255);
+}
+.nako3_editor.ace-monokai .settings-button:active {
+    color: rgb(182, 182, 255);
 }
 .nako3_editor.readonly .settings-button {
     display: none; /* readonlyのときは表示しない。 */
