@@ -1192,6 +1192,7 @@ let editorIdCounter = 0
  * - wnako3_editor.css を読み込む必要がある。
  * - readonly にするには data-nako3-readonly="true" を設定する。
  * - エラー位置の表示を無効化するには data-nako3-disable-marker="true" を設定する。
+ * - 縦方向にリサイズ可能にするには nako3-resizable="true" を設定する。
  * 
  * @param {string} id HTML要素のid
  * @param {NakoCompiler} nako3
@@ -1398,11 +1399,31 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     slowSpeedMessage.innerHTML = '<span>エディタの|応答速度が|低下したため|シンタックス|ハイライトを|無効化|しました。</span>'.replace(/\|/g, '</span><span>')
     buttonContainer.appendChild(slowSpeedMessage)
 
+    // 「全画面表示」ボタン
+    const exitFullscreen = () => {
+        editor.container.classList.remove('fullscreen')
+        editor.renderer.setScrollMargin(0, 0, 0, 0) // marginを元に戻す
+    }
+    const fullscreenButton = document.createElement('span')
+    fullscreenButton.classList.add('editor-button')
+    fullscreenButton.innerText = '全画面表示'
+    fullscreenButton.addEventListener('click', (e) => {
+        if (editor.container.classList.contains('fullscreen')) {
+            exitFullscreen()
+        } else {
+            editor.container.classList.add('fullscreen')
+            editor.renderer.setScrollMargin(20, 20, 0, 0) // 上下に少し隙間を開ける
+        }
+        e.preventDefault()
+    })
+    buttonContainer.appendChild(fullscreenButton)
+
     // 「設定を開く」ボタン
     const settingsButton = document.createElement('span')
-    settingsButton.classList.add('settings-button')
+    settingsButton.classList.add('editor-button')
     settingsButton.innerText = '設定を開く'
     settingsButton.addEventListener('click', (e) => {
+        exitFullscreen()
         editor.execCommand("showSettingsMenu")
         e.preventDefault()
     })
@@ -1411,6 +1432,14 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     // 複数ファイルの切り替え
     const UndoManager = ace.require('ace/undomanager').UndoManager
     const editorTabs = new EditorTabs(editor, AceRange, UndoManager)
+
+    // リサイズ可能にする
+    const resizable = element.dataset.nako3Resizable
+    if (resizable) {
+        new MutationObserver(() => { editor.resize() }).observe(editor.container, { attributes: true })
+        editor.renderer.setScrollMargin(4, 0, 4, 0)
+        editor.container.classList.add('resizable')
+    }
 
     return { editor, editorMarkers, editorTabs }
 }

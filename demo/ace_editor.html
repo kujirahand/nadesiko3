@@ -55,6 +55,8 @@ readonly
 <div id="editor5" data-nako3-disable-marker="true">
 「{」を表示
 </div>
+エディタのリサイズ
+<div id="editor8" data-nako3-resizable="true"></div>
 <br>
 長いプログラム
 <div id="editor6"></div>
@@ -86,7 +88,7 @@ try {
 } catch (e) {
     editor7.editorMarkers.addByError(code, e)
 }
-
+navigator.nako3.setupEditor("editor8").editor.setValue(repeat("A=1\nB=2\nA+Bを表示\n", 30), -1)
     </script>
 </body>
 </html>
