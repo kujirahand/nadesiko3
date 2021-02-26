@@ -834,6 +834,11 @@ class NakoParser extends NakoParserBase {
       if (this.check('func')) {
         const r = this.yCallFunc()
         if (r === null) {continue}
+        // 「〜する間」の形ならスタックに積む。
+        if (this.check('間')) {
+          this.pushStack(r)
+          continue
+        }
         return r
       }
       // 値のとき → スタックに載せる
