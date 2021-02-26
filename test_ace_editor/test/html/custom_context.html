@@ -84,7 +84,9 @@ const code = editor7.editor.getValue()
 try {
     navigator.nako3.runReset(preCode + code, 'main.nako3', preCode)
 } catch (e) {
-    editor7.editorMarkers.addByError(code, e)
+    if (e.file === 'main.nako3') {
+        editor7.editorMarkers.addByError(code, e)
+    }
 }
     </script>
     <script src="context.js"></script>

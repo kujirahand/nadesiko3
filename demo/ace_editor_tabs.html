@@ -133,7 +133,7 @@ document.getElementById('run').addEventListener('click', () => {
         .then(() => { nako3.runReset(code, filename) })
         .catch((err) => {
             document.getElementById('output').innerText += err.message + '\n'
-            if (err.filename === `${activeFile}.nako3`) {
+            if (err.file === `${activeFile}.nako3`) {
                 editorMarkers.addByError(code, err)
             }
         })
