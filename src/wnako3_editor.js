@@ -1227,9 +1227,10 @@ let editorIdCounter = 0
  * - readonly にするには data-nako3-readonly="true" を設定する。
  * - エラー位置の表示を無効化するには data-nako3-disable-marker="true" を設定する。
  * - 縦方向にリサイズ可能にするには nako3-resizable="true" を設定する。
+ * - デバイスが遅いときにシンタックスハイライトを無効化する機能を切るには nako3-force-syntax-highlighting="true" を設定する。
  * 
  * @param {string} id HTML要素のid
- * @param {NakoCompiler} nako3
+ * @param {import('./wnako3')} nako3
  * @param {any} ace
  * @param {string} [defaultFileName]
  */
@@ -1250,12 +1251,20 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         !!element.dataset.nako3DisableMarker,
     )
 
-    element.classList.add('nako3_editor')
+    if (element.classList.contains('nako3_ace_mounted')) {
+        // 同じエディタを誤って複数回初期化すると、ace editor の挙動を書き換えているせいで
+        // 意図しない動作をしたため、すでにエディタとして使われていないことを確認する。
+        throw new Error(`idが ${id} のHTML要素をなでしこ言語エディタとして2回初期化しました。`)
+    }
+    // 以前のバージョンではnako3_editorをhtmlに直接付けていたため、互換性のためnako3_editorとは別のクラス名を使用する。
+    element.classList.add('nako3_ace_mounted')
+    element.classList.add('nako3_editor') // CSSのため
     const readonly = element.dataset.nako3Readonly
     if (!!readonly) {
         element.classList.add('readonly')
         editor.setReadOnly(true)
     }
+
     editor.setFontSize(16)
 
     /** @param {Session} session */
@@ -1332,6 +1341,8 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         editorMarkers.clear()
     })
 
+    const forceSyntaxHighlighting = !!element.dataset.nako3ForceSyntaxHighlighting
+
     let isFirstTime = true
     const oldBgTokenizer = editor.session.bgTokenizer
     const backgroundTokenizer = new BackgroundTokenizer(
@@ -1341,7 +1352,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
             oldBgTokenizer._signal('update', { data: { first: firstRow, last: lastRow } })
 
             // 処理が遅い場合シンタックスハイライトを無効化する。
-            if (ms > 220 && editor.getOption('syntaxHighlighting') && !readonly && isFirstTime) {
+            if (ms > 220 && editor.getOption('syntaxHighlighting') && !readonly && !forceSyntaxHighlighting && isFirstTime) {
                 isFirstTime = false
                 slowSpeedMessage.classList.add('visible')
                 editor.setOption('syntaxHighlighting', false)
@@ -1475,7 +1486,49 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         editor.container.classList.add('resizable')
     }
 
-    return { editor, editorMarkers, editorTabs, retokenize: () => { backgroundTokenizer.dirty = true } }
+    const retokenize = () => { backgroundTokenizer.dirty = true }
+
+    /**
+     * プログラムを実行して、エラーがあればエディタ上に波線を表示する。出力はoutputContainerに表示する。
+     * @param {{
+     *     outputContainer?: HTMLElement
+     *     file?: string
+     *     preCode?: string
+     *     localFiles?: Record<string, string>
+     * }} opts
+     */
+    const run = (opts) => {
+        const code = editor.getValue()
+        const preCode = opts.preCode || ''  // プログラムの前に自動的に挿入されるコード
+
+        // loggerを新しいインスタンスに置き換える。そうしないとどのエディタで起きたエラー（や警告や出力）なのかが分からない。
+        const logger = nako3.replaceLogger()
+        if (opts.outputContainer) {
+            logger.addHTMLLogger('warn', opts.outputContainer)
+        }
+        const file = opts.file || 'main.nako3'
+        logger.addListener('warn', ({ position, combined, level }) => {
+            if (position.file === file && (level === 'warn' || level === 'error')) {
+                editorMarkers.addByError(code, { ...position, message: combined }, level)
+            }
+        })
+        const promise = nako3.loadDependencies(preCode + code, file, preCode, opts.localFiles || {})
+            .then(() => { nako3.runReset(preCode + code, file, preCode) })
+            .catch((err) => { console.error(err) })
+            .then(async () => {
+                // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
+                retokenize()
+
+                // シンタックスハイライトが終わるのを待つ
+                while (backgroundTokenizer.dirty) {
+                    await new Promise((resolve) => setTimeout(resolve, 0))
+                }
+            }).catch((err) => { console.error(err) })
+
+        return { promise, logger, code }
+    }
+
+    return { editor, editorMarkers, editorTabs, retokenize, run }
 }
 
 module.exports = {

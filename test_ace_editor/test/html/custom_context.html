@@ -24,13 +24,13 @@
 </head>
 <body>
 単純な例
-<div id="editor1" class="nako3_editor">もしはいならば
+<div id="editor1" data-nako3-force-syntax-highlighting="true">もしはいならば
     「こんにちは」を表示
 ここまで
 </div>
 <br>
 インデント構文
-<div id="editor2" class="nako3_editor">！インデント構文
+<div id="editor2" data-nako3-force-syntax-highlighting="true">！インデント構文
 Nを1から3まで繰り返す
     Nを表示
 
@@ -43,32 +43,35 @@ Nを1から3まで繰り返す
 </div>
 <br>
 平らなプログラム
-<div id="editor3" class="nako3_editor">
+<div id="editor3" data-nako3-force-syntax-highlighting="true">
 A=1
 Aを表示
 </div>
 <br>
 コンパイルエラーの表示
-<div id="editor4" class="nako3_editor">
+<div id="editor4" data-nako3-force-syntax-highlighting="true">
 　　「{」を表示
 </div>
 <br>
 readonly
-<div id="editor5" data-nako3-readonly="true">1+2を表示
+<div id="editor5" data-nako3-readonly="true" data-nako3-force-syntax-highlighting="true">1+2を表示
 </div>
 <br>
 コンパイルエラーの表示の無効化
-<div id="editor6" data-nako3-disable-marker="true">
+<div id="editor6" data-nako3-disable-marker="true" data-nako3-force-syntax-highlighting="true">
 「{」を表示
 </div>
 <br>
 実行時エラーの表示<br>
-<div id="editor7">Aを表示
+<div id="editor7" data-nako3-force-syntax-highlighting="true">「」を表示
 1のエラー発生
 </div>
-<div id="editor8">！「http://localhost:9876/test/requiretest.nako3」を取り込む
+<div id="editor8" data-nako3-force-syntax-highlighting="true">！「http://localhost:9876/test/requiretest.nako3」を取り込む
 1と2を痕跡演算する
 </div>
+<br>
+警告の表示<br>
+<div id="editor9" data-nako3-force-syntax-highlighting="true">aを表示</div>
 <br>
 文字入力のテスト用
 <div id="editor-input-test"></div>
@@ -81,27 +84,18 @@ navigator.nako3.setupEditor("editor5")
 navigator.nako3.setupEditor("editor6")
 const editor7 = navigator.nako3.setupEditor("editor7")
 const editor8 = navigator.nako3.setupEditor("editor8")
+const editor9 = navigator.nako3.setupEditor("editor9")
+
 // editor-input-test はテスト内で初期化する
 
-// editor7を実行（取り込み無し）
-{
-    const preCode = 'A=1\n'
-    const code = editor7.editor.getValue()
-    try {
-        navigator.nako3.runReset(preCode + code, 'main.nako3', preCode)
-    } catch (e) {
-        if (e.file === 'main.nako3') {
-            editor7.editorMarkers.addByError(code, e)
-        }
-    }
+// プログラムを実行する。順番に実行しないとloadDependenciesの間にloggerが別のエディタによって置き換えられてしまい、エラーを正しく表示できない。
+const main = async () => {
+    await editor7.run({ preCode: 'A=1\n' }).promise
+    await editor8.run({}).promise
+    await editor9.run({}).promise
+    window.ok = true
 }
-
-// editor8を実行（取り込みあり）
-{
-    const code = editor8.editor.getValue()
-    navigator.nako3.loadDependencies(code, 'main.nako3')
-        .then(() => { editor8.retokenize() })
-}
+main().catch((err) => { console.error(err) })
 
     </script>
     <script src="context.js"></script>
