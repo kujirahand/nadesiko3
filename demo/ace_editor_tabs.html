@@ -128,9 +128,9 @@ document.getElementById('run').addEventListener('click', () => {
     const logger = nako3.replaceLogger()
     document.getElementById('output').innerText = ''
     logger.addHTMLLogger('warn', document.getElementById('output'))
-    logger.addListener('warn', ({ position, combined }) => {
-        if (position.file === `${activeFile}.nako3`) {
-            editorMarkers.addByError(code, { ...position, message: combined })
+    logger.addListener('warn', ({ position, combined, level }) => {
+        if (position.file === `${activeFile}.nako3` && (level === 'warn' || level === 'error')) {
+            editorMarkers.addByError(code, { ...position, message: combined }, level)
         }
     })
     nako3.loadDependencies(code, filename, '', localFiles)

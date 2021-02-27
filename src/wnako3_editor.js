@@ -458,23 +458,26 @@ class EditorMarkers {
      * @param {number | null} endLine
      * @param {number | null} endColumn
      * @param {string} message
+     * @param {'warn' | 'error'} type
      */
-    add(startLine, startColumn, endLine, endColumn, message) {
+    add(startLine, startColumn, endLine, endColumn, message, type) {
         if (this.disable) {
             return
         }
         const range = new this.AceRange(...EditorMarkers.fromNullable(startLine, startColumn, endLine, endColumn, (row) => this.doc.getLine(row)))
-        this.markers.push(this.session.addMarker(range, "marker-red", "text", false))
-        this.session.setAnnotations([{ row: startLine, column: startColumn, text: message, type: 'error' }])
+        this.markers.push(this.session.addMarker(range, "marker-" + (type === 'warn' ? 'yellow' : 'red'), "text", false))
+        // typeは 'error' | 'warning' | 'info'
+        this.session.setAnnotations([{ row: startLine, column: startColumn, text: message, type: type === 'warn' ? 'warning' : 'error' }])
         this.hasAnnotations = true
     }
 
     /**
      * @param {string} code
      * @param {{ line?: number, startOffset?: number | null, endOffset?: number | null, message: string }} error
+     * @param {'warn' | 'error'} type
      */
-    addByError(code, error) {
-        this.add(...EditorMarkers.fromError(code, error, (row) => this.doc.getLine(row)), error.message)
+    addByError(code, error, type) {
+        this.add(...EditorMarkers.fromError(code, error, (row) => this.doc.getLine(row)), error.message, type)
     }
 
     /**
