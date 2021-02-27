@@ -41,7 +41,10 @@ class WebNakoCompiler extends NakoCompiler {
     return super.loadDependencies(code, filename, preCode, {
       readJs: (filePath, token) => {
         if (localFiles.hasOwnProperty(filePath)) {
-          return { sync: true, value: () => { window.eval(localFiles[filePath]); return {} } }
+          return { sync: true, value: () => {
+            Function(localFiles[filePath])()
+            return {}
+          } }
         }
         return {
           sync: false,
@@ -56,7 +59,17 @@ class WebNakoCompiler extends NakoCompiler {
             const text = await res.text()
             if (text.includes('navigator.nako3.addPluginObject')) {
               // textの例: `navigator.nako3.addPluginObject('PluginRequireTest', { requiretest: { type: 'var', value: 100 } })`
-              return () => { window.eval(text); return {} }
+              return () => {
+                // プラグインの自動登録は navigator.nako3 を参照するため、 navigator.nako3 を一時的に現在のインスタンスにする。
+                const globalNako3 = navigator.nako3
+                navigator.nako3 = this
+                try {
+                  Function(text)()
+                } finally {
+                  navigator.nako3 = globalNako3
+                }
+                return {}
+              }
             }
             throw new Error('ダウンロードしたファイルの中に文字列 "navigator.nako3.addPluginObject" が存在しません。現在、ブラウザ版のなでしこ言語v3は自動登録するプラグインのみをサポートしています。')
           })()
