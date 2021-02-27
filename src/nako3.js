@@ -118,6 +118,13 @@ class NakoCompiler {
     return s
   }
 
+  /**
+   * loggerを新しいインスタンスで置き換える。
+   */
+  replaceLogger() {
+    return this.prepare.logger = this.lexer.logger = this.parser.logger = this.gen.logger = this.logger = new NakoLogger()
+  }
+
   static getHeader () {
     return NakoGen.getHeader()
   }
@@ -572,24 +579,25 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   _runEx(code, fname, opts, preCode = '') {
-    const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (optsAll.resetEnv) {this.reset()}
-    if (optsAll.resetLog) {this.clearLog()}
-    let js = this.compile(code, fname, optsAll.testOnly, preCode)
     try {
-      this.__varslist[0].line = -1 // コンパイルエラーを調べるため
-      const func = new Function(js) // eslint-disable-line
-      func.apply(this)
-    } catch (e) {
-      this.js = js
-      if (e instanceof NakoRuntimeError) {
+      const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+      if (optsAll.resetEnv) {this.reset()}
+      if (optsAll.resetLog) {this.clearLog()}
+      const js = this.compile(code, fname, optsAll.testOnly, preCode)
+      try {
+        this.__varslist[0].line = -1 // コンパイルエラーを調べるため
+        const func = new Function(js) // eslint-disable-line
+        func.apply(this)
+      } catch (e) {
+        this.js = js
+        if (!(e instanceof NakoRuntimeError)) {
+          throw new NakoRuntimeError(e, this.__v0 ? this.__v0.line : undefined)
+        }
         throw e
-      } else {
-        throw new NakoRuntimeError(
-          e,
-          this.__v0 ? this.__v0.line : undefined,
-        )
       }
+    } catch (e) {
+      this.logger.error(e)
+      throw e
     }
     return this
   }

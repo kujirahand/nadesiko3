@@ -9,6 +9,7 @@ const path = require('path')
 const NakoCompiler = require('./nako3')
 const PluginNode = require('./plugin_node')
 const { NakoImportError } = require('./nako_errors')
+const NakoLogger = require('./nako_logger')
 
 class CNako3 extends NakoCompiler {
   /** @param {{ nostd?: boolean }} [opts] */
@@ -69,7 +70,12 @@ class CNako3 extends NakoCompiler {
     } else if (app.warn) {
       logLevel = 'warn'
     }
-    this.logger.addSimpleLogger(logLevel)
+    this.logger.addListener(logLevel, (data) => {
+      if (this.silent && data.level === 'stdout') {
+        return
+      }
+      NakoLogger.getSimpleLogger()(data)
+    })
 
     let args = {
       'compile': app.compile || false,

@@ -117,11 +117,7 @@ const removeFile = () => {
 document.getElementById('remove').addEventListener('click', () => { removeFile() })
 
 // 実行
-nako3.setFunc('表示', [['と', 'を']], (msg) => {
-    document.getElementById('output').innerText += msg + '\n'
-})
 document.getElementById('run').addEventListener('click', () => {
-    document.getElementById('output').innerText = ''
     const filename = `${activeFile}.nako3`
     const code = editor.getValue()
     /** @type {Record<string, string>} */
@@ -129,14 +125,17 @@ document.getElementById('run').addEventListener('click', () => {
     for (const [k, v] of hiddenTabStates) {
         localFiles[`${k}.nako3`] = v.content
     }
+    const logger = nako3.replaceLogger()
+    document.getElementById('output').innerText = ''
+    logger.addHTMLLogger('warn', document.getElementById('output'))
+    logger.addListener('warn', ({ position, combined }) => {
+        if (position.file === `${activeFile}.nako3`) {
+            editorMarkers.addByError(code, { ...position, message: combined })
+        }
+    })
     nako3.loadDependencies(code, filename, '', localFiles)
         .then(() => { nako3.runReset(code, filename) })
-        .catch((err) => {
-            document.getElementById('output').innerText += err.message + '\n'
-            if (err.file === `${activeFile}.nako3`) {
-                editorMarkers.addByError(code, err)
-            }
-        })
+        .catch((err) => { console.error(err) })
         .then(() => { retokenize() }) // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
 })
 
