@@ -33,7 +33,7 @@
     <script type="application/json">
       {
         "title": "変数を使った計算",
-        "code": "価格=500円\n個数＝3個\n税率=0.08\n合計額=価格×個数\n税額＝合計額×税率\n支払い＝合計額＋税額\n「お支払いは、{支払い}円です！」と表示。"
+        "code": "価格=500\n個数＝3\n税率=0.08\n合計額=価格×個数\n税額＝合計額×税率\n支払い＝合計額＋税額\n「お支払いは、{支払い}円です！」と表示。"
       }
     </script>
   </div>
@@ -60,7 +60,9 @@
 
 <!-- editor -->
 <!--React.jsのスクリプトはHTMLの末尾で読み込む-->
+<script src="../release/wnako3.js"></script>
 <script src="../release/editor.js"></script>
+<script src="../release/plugin_turtle.js"></script>
 <script src="../release/plugin_markup.js"></script>
 </body>
 </html>
