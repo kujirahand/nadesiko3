@@ -3,16 +3,7 @@
 //
 'use strict'
 
-class NakoGenError extends Error {
-  constructor (msg, line) {
-    if (line)
-      {msg = '[文法エラー](' + line + ') ' + msg}
-     else
-      {msg = '[文法エラー] ' + msg}
-
-    super(msg)
-  }
-}
+const { NakoSyntaxError } = require('./nako_errors')
 
 /**
  * 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。
@@ -351,7 +342,7 @@ class NakoGen {
    */
   registerFunction (ast) {
     if (ast.type !== 'block')
-      {throw new NakoGenError('構文解析に失敗しています。構文は必ずblockが先頭になります')}
+      {throw NakoSyntaxError.fromNode('構文解析に失敗しています。構文は必ずblockが先頭になります', ast)}
 
     for (let i = 0; i < ast.block.length; i++) {
       const t = ast.block[i]
@@ -538,15 +529,17 @@ class NakoGen {
 
   /**
    * 定義済みの変数の参照
+   * @param {string} name
+   * @param {Ast} position
    */
-  genVar (name, line) {
+  genVar (name, position) {
     const res = this.findVar(name)
-    const lno = line
+    const lno = position.line
     if (res === null) {
       // 定義されていない名前の参照は変数の定義とみなす。
       // 多くの場合はundefined値を持つ変数であり分かりづらいバグを引き起こすが、
       // 「ナデシコする」などの命令の中で定義された変数の参照の場合があるため警告に留める。
-      this.logger.warn(`変数 ${name} は定義されていません。`, { line })
+      this.logger.warn(`変数 ${name} は定義されていません。`, position)
       this.__vars[name] = true
       return this.varname(name)
     }
@@ -561,16 +554,16 @@ class NakoGen {
         if (pv.josi.length === 0)
           {return `(${res.js}())`}
 
-        throw new NakoGenError(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, line)
+        throw NakoSyntaxError.fromNode(`『${name}』が複文で使われました。単文で記述してください。(v1非互換)`, position)
       }
-      throw new NakoGenError(`『${name}』は関数であり参照できません。`, line)
+      throw NakoSyntaxError.fromNode(`『${name}』は関数であり参照できません。`, position)
     }
     return res.js
   }
 
   convGetVar (node) {
     const name = node.value
-    return this.genVar(name, node.line)
+    return this.genVar(name, node)
   }
 
   convComment (node) {
@@ -587,7 +580,7 @@ class NakoGen {
   convReturn (node) {
     // 関数の中であれば利用可能
     if (typeof (this.__vars['!関数']) === 'undefined')
-      {throw new NakoGenError('『戻る』がありますが、関数定義内のみで使用可能です。', node.line)}
+      {throw NakoSyntaxError.fromNode('『戻る』がありますが、関数定義内のみで使用可能です。', node)}
 
     const lno = this.convLineno(node, false)
     let value
@@ -603,7 +596,7 @@ class NakoGen {
     // ループの中であれば利用可能
     if (!this.flagLoop) {
       const cmdj = (cmd === 'continue') ? '続ける' : '抜ける'
-      throw new NakoGenError(`『${cmdj}』文がありますが、それは繰り返しの中で利用してください。`, node.line)
+      throw NakoSyntaxError.fromNode(`『${cmdj}』文がありますが、それは繰り返しの中で利用してください。`, node)
     }
     return this.convLineno(node.line) + cmd + ';'
   }
@@ -962,13 +955,13 @@ class NakoGen {
     const funcName = NakoGen.getFuncName(node.name)
     const res = this.findVar(funcName)
     if (res === null) {
-      throw new NakoGenError(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node.line)
+      throw NakoSyntaxError.fromNode(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node)
     }
     let func
     if (res.i === 0) { // plugin function
       func = this.funclist[funcName]
       if (func.type !== 'func') {
-        throw new NakoGenError(`『${funcName}』は関数ではありません。`, node.line)
+        throw NakoSyntaxError.fromNode(`『${funcName}』は関数ではありません。`, node)
       }
     } else {
       func = this.nako_func[funcName]
@@ -1126,9 +1119,8 @@ class NakoGen {
       if (this.__varslist[res.i].meta)
         {if (this.__varslist[res.i].meta[name]) {
           if (this.__varslist[res.i].meta[name].readonly)
-            {throw new NakoGenError(
-              `定数『${name}』は既に定義済みなので、値を代入することはできません。`,
-              node.line)}
+            {throw NakoSyntaxError.fromNode(
+              `定数『${name}』は既に定義済みなので、値を代入することはできません。`, node)}
 
         }}
         code = `${res.js}=${value};`
@@ -1143,9 +1135,7 @@ class NakoGen {
     const vtype = node.vartype // 変数 or 定数
     // 二重定義？
     if (this.__vars[name] !== undefined)
-      {throw new NakoGenError(
-        `${vtype}『${name}』の二重定義はできません。`,
-        node.line)}
+      {throw NakoSyntaxError.fromNode(`${vtype}『${name}』の二重定義はできません。`, node)}
 
     //
     this.__vars[name] = true
@@ -1169,7 +1159,7 @@ class NakoGen {
     value = value.replace(/\n/g, '\\n')
     if (mode === 'ex') {
       let rf = (a, name) => {
-        return '"+' + this.genVar(name) + '+"'
+        return '"+' + this.genVar(name, node) + '+"'
       }
       value = value.replace(/\{(.+?)\}/g, rf)
       value = value.replace(/｛(.+?)｝/g, rf)
