@@ -1642,7 +1642,11 @@ const PluginSystem = {
         // 使用中リストに追加したIDを削除
         const i = sys.__timeout.indexOf(timerId)
         if (i >= 0) {sys.__timeout.splice(i, 1)}
-        f(timerId, sys)
+        try {
+          f(timerId, sys)
+        } catch (e) {
+          sys.logger.error(e)
+        }
       }, parseFloat(n) * 1000)
       sys.__timeout.unshift(timerId)
       return timerId

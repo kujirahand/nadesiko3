@@ -73,6 +73,12 @@ readonly
 警告の表示<br>
 <div id="editor9" data-nako3-force-syntax-highlighting="true">aを表示</div>
 <br>
+setTimeoutで起きたエラーの表示<br>
+<div id="editor10" data-nako3-force-syntax-highlighting="true">0.01秒後には
+    1のエラー発生
+ここまで
+</div>
+<br>
 文字入力のテスト用
 <div id="editor-input-test"></div>
     <script>
@@ -85,6 +91,7 @@ navigator.nako3.setupEditor("editor6")
 const editor7 = navigator.nako3.setupEditor("editor7")
 const editor8 = navigator.nako3.setupEditor("editor8")
 const editor9 = navigator.nako3.setupEditor("editor9")
+const editor10 = navigator.nako3.setupEditor("editor10")
 
 // editor-input-test はテスト内で初期化する
 
@@ -93,6 +100,7 @@ const main = async () => {
     await editor7.run({ preCode: 'A=1\n' }).promise
     await editor8.run({}).promise
     await editor9.run({}).promise
+    await editor10.run({}).promise
     window.ok = true
 }
 main().catch((err) => { console.error(err) })

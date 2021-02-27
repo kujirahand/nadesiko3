@@ -121,6 +121,10 @@ describe('ace editor test', () => {
       assert.strictEqual(document.querySelector('#editor2 .marker-red'), null)
       assert.strictEqual(document.querySelector('#editor3 .marker-red'), null)
     })
+    it('setTimeout内から飛ぶエラーの表示', async function () {
+      await sleep(100)
+      assert.notStrictEqual(document.querySelector('#editor10 .marker-red'), null)
+    })
   })
   describe('コンパイラの警告の表示', () => {
     it('存在する場合', () => {
