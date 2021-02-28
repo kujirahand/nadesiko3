@@ -65,6 +65,7 @@ class NakoLogger {
     }
 
     /**
+     * スペースの連続が消えないように white-space: pre-wrap; を指定すること。
      * @param {HTMLElement} container
      * @returns {LogListener}
      */

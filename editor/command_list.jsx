@@ -1,60 +1,44 @@
 import React from 'react'
-import { ajaxGet } from './common'
-import PropTypes from 'prop-types'
-import CommandGroup from './command_group'
 
-export default class CommandList extends React.Component {
-  constructor (props) {
-    super(props)
-    this.files = [
-      'plugin_browser.js',
-      'plugin_turtle.js',
-      'plugin_system.js'
-    ]
-    this.listItems = []
-  }
+/**
+ * コマンドのリストを表示する。コマンドをクリックするとその値を引数に与えてonClickを呼ぶ。
+ * @type {React.FC<{ onClick?: (value: string) => void }>}
+ */
+const CommandList = (props) => {
+  const files = ['plugin_browser.js', 'plugin_turtle.js', 'plugin_system.js']
+  const [list, setList] = React.useState(/** @type {{ name: string, group: string[][] }[]} */([]))
 
-  render () {
-    let items
-    if (this.props.flagShow) 
-      items = (
-        <ul>
-          {this.listItems}
-        </ul>
-      )
-     else 
-      items = null
-    
-
-    return (
-      <div>
-        {items}
-      </div>
-    )
-  }
-
-  componentDidMount () {
-    ajaxGet('../release/command.json', {}, (text, xhr) => {
-      this.listItems = []
-      const cmd = JSON.parse(text)
-      for (let fname of this.files) {
-        fname = fname.replace(/\.js$/, '')
-        const glist = cmd[fname]
-        if (!glist) {
-          console.log('command.jsonの[' + fname + ']が読み込めません。')
-          continue // 読み込みに失敗した場合
+  React.useEffect(() => {
+    fetch('../release/command.json')
+      .then((res) => res.json())
+      .then((/** @type {Record<string, Record<string, string[][]>>} */json) => {
+        const result = /** @type {{ name: String, group: string[][] }[]} */([])
+        for (const fname of files.map((v) => v.replace(/\.js$/, ''))) {
+          const groups = json[fname]
+          if (!groups) {
+            console.log('command.jsonの[' + fname + ']が読み込めません。')
+            continue // 読み込みに失敗した場合
+          }
+          for (const name in groups) {
+            result.push({ name, group: groups[name] })
+          }
         }
-        for (const groupName in glist) {
-          const gid = 'key_' + groupName
-          this.listItems.push(<CommandGroup key={gid} gid={gid} groupName={groupName}
-                                            group={glist[groupName]} onClick={this.props.onClick} />)
-        }
-      }
-    })
-  }
+        setList(result)
+      })
+      .catch((err) => { console.error(err) })
+  }, [])
+
+  return <ul>{
+    list.map(({ group, name }) => <li key={name}>
+      <div style={{ color: '#55c' }}>{name}</div>
+      <div style={{ marginLeft: '12px' }}>{
+        group.map(([type, name, args], i) => {
+          const value = (type === '関数') ? ((args + '/').split('/')[0] + name + '。') : name
+          return <span key={i} style={{ marginRight: '12px', cursor: 'pointer' }} onClick={() => props.onClick?.(value)}>[{name}]</span>
+        })
+      }</div>
+    </li>)
+  }</ul>
 }
 
-CommandList.propTypes = {
-  flagShow: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired
-}
+export default CommandList
