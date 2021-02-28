@@ -1,4 +1,6 @@
 const assert = require('assert')
+const path = require('path')
+const CNako3 = require('../src/cnako3')
 const NakoCompiler = require('../src/nako3')
 const { NakoSyntaxError, NakoRuntimeError, NakoIndentError, LexErrorWithSourceMap } = require('../src/nako_errors')
 
@@ -8,10 +10,10 @@ describe('error_message', () => {
   /**
    * エラーメッセージがresArrの全ての要素を含むことを確認する。
    */
-  const cmp = (code, resArr, ErrorClass) => {
-    nako.logger.debug('code=' + code)
+  const cmp = (code, resArr, ErrorClass, _nako = nako) => {
+    _nako.logger.debug('code=' + code)
     assert.throws(
-      () => nako.runReset(code, 'main.nako3'),
+      () => _nako.runReset(code, path.join(__dirname, 'main.nako3')),
       err => {
         assert(err instanceof ErrorClass)
         for (const res of resArr) {
@@ -80,11 +82,10 @@ describe('error_message', () => {
       ], NakoSyntaxError)
     })
     it('依存ファイルにエラーがある場合', () => {
-      nako.dependencies = { 'dependent.nako3': { content: '\na', alias: new Set(['dependent.nako3']), addPluginFile: () => {} } }
-      cmp('!「dependent.nako3」を取り込む\n1を表示', [
-        'dependent.nako3',
+      cmp('!「./syntax_error.nako3」を取り込む\n1を表示', [
+        'syntax_error.nako3',
         '2行目',
-      ], NakoSyntaxError)
+      ], NakoSyntaxError, new CNako3())
     })
     it('"_"がある場合', () => {
       cmp(
@@ -106,11 +107,10 @@ describe('error_message', () => {
       ], NakoRuntimeError)
     })
     it('依存ファイルでエラーが発生した場合', () => {
-      nako.dependencies = { 'dependent.nako3': { content: '\n1のエラー発生\n', alias: new Set(['dependent.nako3']), addPluginFile: () => {} } }
-      cmp('!「dependent.nako3」を取り込む\n1を表示', [
-        'dependent.nako3',
+      cmp('!「./runtime_error.nako3」を取り込む\n1を表示', [
+        'runtime_error.nako3',
         '2行目',
-      ], NakoRuntimeError)
+      ], NakoRuntimeError, new CNako3())
     })
     it('エラー位置をプロパティから取得 - 単純な例', () => {
       assert.throws(
@@ -183,28 +183,28 @@ describe('error_message', () => {
     it('未定義の変数を参照したとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
-      compiler.logger.addListener('warn', ({ levelJa, positionJa, message }) => { log += `[${levelJa}]${positionJa}${message}` })
+      compiler.logger.addListener('warn', ({ combined, level }) => { log += combined }, true)
       compiler.runReset(`xを表示`, 'main.nako3')
-      assert.strictEqual(log, `[警告](1行目): 変数 x は定義されていません。`)
+      assert.strictEqual(log, `[警告]main.nako3(1行目): 変数 x は定義されていません。`)
     })
     it('存在しない高速化オプションを指定したとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
-      compiler.logger.addListener('warn', ({ levelJa, positionJa, message }) => { log += `[${levelJa}]${positionJa}${message}` })
+      compiler.logger.addListener('warn', ({ combined }) => { log += combined }, true)
       compiler.runReset(`「あ」で実行速度優先\nここまで`, 'main.nako3')
       assert.strictEqual(log, `[警告]main.nako3(1行目): 実行速度優先文のオプション『あ』は存在しません。`)
     })
     it('ユーザー定義関数を上書きしたとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
-      compiler.logger.addListener('warn', ({ levelJa, positionJa, message }) => { log += `[${levelJa}]${positionJa}${message}` })
+      compiler.logger.addListener('warn', ({ combined }) => { log += combined }, true)
       compiler.runReset(`●Aとは\nここまで\n●Aとは\nここまで`, 'main.nako3')
       assert.strictEqual(log, `[警告]main.nako3(3行目): 関数『A』は既に定義されています。`)
     })
     it('プラグイン関数を上書きしたとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
-      compiler.logger.addListener('warn', ({ levelJa, positionJa, message }) => { log += `[${levelJa}]${positionJa}${message}` })
+      compiler.logger.addListener('warn', ({ combined }) => { log += combined }, true)
       compiler.runReset(`●（Aを）足すとは\nここまで`, 'main.nako3')
       assert.strictEqual(log, '[警告]main.nako3(1行目): 関数『足』は既に定義されています。')
     })

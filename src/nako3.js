@@ -13,6 +13,9 @@ const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineCo
 const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoImportError, NakoSyntaxError } = require('./nako_errors')
 const NakoLogger = require('./nako_logger')
 
+/** @type {<T>(x: T) => T} */
+const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
+
 /**
  * @typedef {{
  *   type: string;
@@ -103,7 +106,8 @@ class NakoCompiler {
      * 取り込み文を置換するためのオブジェクト。
      * 正規化されたファイル名がキーになり、取り込み文の引数に指定された正規化されていないファイル名はaliasに入れられる。
      * JavaScriptファイルによるプラグインの場合、contentは空文字列。
-     * @type {Record<string, { content: string, alias: Set<string>, addPluginFile: () => void }>}
+     * funclistはシンタックスハイライトの高速化のために事前に取り出した、ファイルが定義する関数名のリスト。
+     * @type {Record<string, { tokens: TokenWithSourceMap[], alias: Set<string>, addPluginFile: () => void, funclist: Record<string, object> }>}
      */
     this.dependencies = {}
   }
@@ -112,6 +116,13 @@ class NakoCompiler {
     let s = this.__varslist[0]['表示ログ']
     s = s.replace(/\s+$/, '')
     return s
+  }
+
+  /**
+   * loggerを新しいインスタンスで置き換える。
+   */
+  replaceLogger() {
+    return this.prepare.logger = this.lexer.logger = this.parser.logger = this.gen.logger = this.logger = new NakoLogger()
   }
 
   static getHeader () {
@@ -160,7 +171,7 @@ class NakoCompiler {
     const dependencies = {}
     const compiler = new NakoCompiler()
 
-    /** @param {string} code @param {string} filename @param {string} preCode */
+    /** @param {string} code @param {string} filename @param {string} preCode @returns {Promise<unknown> | void} */
     const inner = (code, filename, preCode) => {
       /** @type {Promise<unknown>[]} */
       const tasks = []
@@ -172,7 +183,7 @@ class NakoCompiler {
         }
 
         // 初回の読み込み
-        dependencies[item.filePath] = { content: '', alias: new Set([item.value]), addPluginFile: () => {} }
+        dependencies[item.filePath] = { tokens: [], alias: new Set([item.value]), addPluginFile: () => {}, funclist: {} }
         if (item.type === 'js') {
           // jsならプラグインとして読み込む。
           const obj = tools.readJs(item.filePath, item.firstToken)
@@ -186,14 +197,23 @@ class NakoCompiler {
         } else if (item.type === 'nako3') {
           // nako3ならファイルを読んでdependenciesに保存する。
           const content = tools.readNako3(item.filePath, item.firstToken)
+          /** @param {string} code */
+          const registerFile = (code) => {
+            // シンタックスハイライトの高速化のために、事前にファイルが定義する関数名のリストを取り出しておく。
+            const tokens = this.rawtokenize(code, 0, item.filePath)
+            dependencies[item.filePath].tokens = tokens
+            /** @type {Record<string, object>} */
+            const funclist = {}
+            NakoLexer.listFunctionDefinitions(tokens, this.logger, funclist)
+            dependencies[item.filePath].funclist = funclist
+
+            // 再帰
+            return inner(code, item.filePath, '')
+          }
           if (content.sync) {
-            dependencies[item.filePath].content = content.value
-            return inner(content.value, item.filePath, '')
+            return registerFile(content.value)
           } else {
-            tasks.push(content.value.then((res) => {
-              dependencies[item.filePath].content = res
-              return inner(res, item.filePath, '')
-            }))
+            tasks.push(content.value.then((res) => registerFile(res)))
           }
         } else {
           throw new NakoImportError(`ファイル ${item.value} を読み込めません。未対応の拡張子です。`, item.firstToken.line, item.firstToken.file)
@@ -383,6 +403,7 @@ class NakoCompiler {
    * 再帰的にrequire文を置換する。
    * .jsであれば削除し、.nako3であればそのファイルのトークン列で置換する。
    * @param {TokenWithSourceMap[]} tokens
+   * @param {boolean} [ignoreRequireStatements] trueなら、ファイルが存在しないときエラーを投げずに取り込み文を削除する。シンタックスハイライト用。
    * @param {Set<string>} [includeGuard]
    * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
    */
@@ -400,7 +421,7 @@ class NakoCompiler {
         throw new LexErrorWithSourceMap(`ファイル ${r.value} が読み込まれていません。`, 0, 1, r.firstToken.startOffset, r.firstToken.endOffset, r.firstToken.line, r.firstToken.file)
       }
       this.dependencies[filePath].addPluginFile()
-      const children = this.rawtokenize(this.dependencies[filePath].content, 0, filePath)
+      const children = cloneAsJSON(this.dependencies[filePath].tokens)
       includeGuard.add(r.value)
       deletedTokens.push(...this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard))
       deletedTokens.push(...tokens.splice(r.start, r.end - r.start, ...children))
@@ -558,24 +579,25 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   _runEx(code, fname, opts, preCode = '') {
-    const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
-    if (optsAll.resetEnv) {this.reset()}
-    if (optsAll.resetLog) {this.clearLog()}
-    let js = this.compile(code, fname, optsAll.testOnly, preCode)
     try {
-      this.__varslist[0].line = -1 // コンパイルエラーを調べるため
-      const func = new Function(js) // eslint-disable-line
-      func.apply(this)
-    } catch (e) {
-      this.js = js
-      if (e instanceof NakoRuntimeError) {
+      const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+      if (optsAll.resetEnv) {this.reset()}
+      if (optsAll.resetLog) {this.clearLog()}
+      const js = this.compile(code, fname, optsAll.testOnly, preCode)
+      try {
+        this.__varslist[0].line = -1 // コンパイルエラーを調べるため
+        const func = new Function(js) // eslint-disable-line
+        func.apply(this)
+      } catch (e) {
+        this.js = js
+        if (!(e instanceof NakoRuntimeError)) {
+          throw new NakoRuntimeError(e, this.__v0 ? this.__v0.line : undefined)
+        }
         throw e
-      } else {
-        throw new NakoRuntimeError(
-          e,
-          this.__v0 ? this.__v0.line : undefined,
-        )
       }
+    } catch (e) {
+      this.logger.error(e)
+      throw e
     }
     return this
   }

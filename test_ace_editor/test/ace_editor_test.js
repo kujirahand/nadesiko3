@@ -12,10 +12,20 @@ const findDOMElement = (node, f) => {
   return null
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 describe('ace editor test', () => {
-  before((done) => {
+  before(function (done) {
+    this.timeout(100000)
     // シンタックスハイライトが終わるまで少し時間がかかる。
-    setTimeout(() => { done() }, 200);
+    const wait = () => {
+      if (window.ok) {
+        done()
+        return
+      }
+      setTimeout(() => { wait() }, 100);
+    }
+    wait()
   })
   describe('シンタックスハイライト', () => {
     it('制御構文', () => {
@@ -56,35 +66,36 @@ describe('ace editor test', () => {
         null,
       )
     })
-    it('エディタの値を変更したときにシンタックスハイライトが更新されることを確認', async () => {
-      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-      const { editor } = navigator.nako3.setupEditor("editor-input-test"); await sleep(350)
+    it('エディタの値を変更したときにシンタックスハイライトが更新されることを確認', async function () {
+      this.timeout(5 * 1000) // このテストはタイムアウトのときのみエラーになる。
+
+      const { editor } = navigator.nako3.setupEditor("editor-input-test")
 
       // "「」を表示" を打って、"「" が文字列として認識されることを確認
-      editor.setValue('「」を表示'); await sleep(350)
-      assert.notStrictEqual(
-        findDOMElement(
-          document.querySelector('#editor-input-test'),
-          (node) =>
-            node.classList.contains('ace_string') &&
-            node.innerText.trim().startsWith('「'),
-        ),
-        null,
-      )
+      editor.setValue('「」を表示')
       editor.session.selection.clearSelection()
+      while (findDOMElement(document.querySelector('#editor-input-test'), (node) => node.classList.contains('ace_string') && node.innerText.trim().startsWith('「')) === null) {
+        await sleep(100)
+      }
 
       // "1を表示" を打って、1が数値として認識されることを確認
       editor.setValue('1を表示'); await sleep(350)
+      editor.session.selection.clearSelection()
+      while (findDOMElement(document.querySelector('#editor-input-test'), (node) => node.classList.contains('ace_numeric') && node.innerText.trim().startsWith('1')) === null) {
+        await sleep(100)
+      }
+    })
+    it('外部ファイルで定義された関数', () => {
+      // 「痕跡演算」が関数として認識されることを確認
       assert.notStrictEqual(
         findDOMElement(
-          document.querySelector('#editor-input-test'),
+          document.querySelector('#editor8'),
           (node) =>
-            node.classList.contains('ace_numeric') &&
-            node.innerText.trim().startsWith('1'),
+            node.classList.contains('ace_function') &&
+            node.innerText.trim().startsWith('痕'),
         ),
         null,
       )
-      editor.session.selection.clearSelection()
     })
   })
   describe('行の折りたたみ', () => {
@@ -109,6 +120,15 @@ describe('ace editor test', () => {
       assert.strictEqual(document.querySelector('#editor1 .marker-red'), null)
       assert.strictEqual(document.querySelector('#editor2 .marker-red'), null)
       assert.strictEqual(document.querySelector('#editor3 .marker-red'), null)
+    })
+    it('setTimeout内から飛ぶエラーの表示', async function () {
+      await sleep(100)
+      assert.notStrictEqual(document.querySelector('#editor10 .marker-red'), null)
+    })
+  })
+  describe('コンパイラの警告の表示', () => {
+    it('存在する場合', () => {
+      assert.notStrictEqual(document.querySelector('#editor9 .marker-yellow'), null)
     })
   })
 })

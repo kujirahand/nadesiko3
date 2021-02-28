@@ -112,8 +112,8 @@ const PluginSystem = {
     josi: [['を', 'と']],
     pure: true,
     fn: function (s, sys) {
-      if (!sys.silent){ console.log(s) }
       sys.__varslist[0]['表示ログ'] += (s + '\n')
+      sys.logger.stdout(s + '')
     },
     return_none: true
   },
@@ -132,7 +132,7 @@ const PluginSystem = {
     josi: [['を', 'と']],
     pure: true,
     fn: function (s) {
-      console.log(s)
+      sys.logger.stdout(s + '')
     },
     return_none: true
   },
@@ -338,7 +338,9 @@ const PluginSystem = {
     fn: function (code, sys) {
       sys.__varslist[0]['表示ログ'] = ''
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: true })
-      return sys.__varslist[0]['表示ログ']
+      const out = sys.__varslist[0]['表示ログ'] + ''
+      sys.logger.stdout(out)
+      return out
     }
   },
   'ナデシコ続': { // @なでしこのコードCODEを実行する // @なでしこつづける
@@ -346,7 +348,9 @@ const PluginSystem = {
     josi: [['を', 'で']],
     fn: function (code, sys) {
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
-      return sys.__varslist[0]['表示ログ']
+      const out = sys.__varslist[0]['表示ログ'] + ''
+      sys.logger.stdout(out)
+      return out
     }
   },
   '実行': { // @ 無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する) // @じっこう
@@ -1638,7 +1642,11 @@ const PluginSystem = {
         // 使用中リストに追加したIDを削除
         const i = sys.__timeout.indexOf(timerId)
         if (i >= 0) {sys.__timeout.splice(i, 1)}
-        f(timerId, sys)
+        try {
+          f(timerId, sys)
+        } catch (e) {
+          sys.logger.error(e)
+        }
       }, parseFloat(n) * 1000)
       sys.__timeout.unshift(timerId)
       return timerId

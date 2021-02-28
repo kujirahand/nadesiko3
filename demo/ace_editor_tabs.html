@@ -46,7 +46,7 @@
     <button id="remove">🗑 ファイルを削除</button>
     <span id="file-list"></span>
 </div>
-<div id="editor" class="nako3_editor" data-nako3-resizable="true"></div>
+<div id="editor" data-nako3-resizable="true"></div>
 <div class="toolbar">
     <button id="run">表示中のファイルを実行</button>
 </div>
@@ -54,7 +54,7 @@
     <script>
 /** @type {import('../src/wnako3.js')} */
 const nako3 = navigator.nako3
-const { editor, editorMarkers, editorTabs } = nako3.setupEditor('editor')
+const { editor, editorMarkers, editorTabs, retokenize, run } = nako3.setupEditor('editor')
 
 /** @type {Map<number, HTMLButtonElement>} */
 const tabButtons = new Map()
@@ -117,26 +117,13 @@ const removeFile = () => {
 document.getElementById('remove').addEventListener('click', () => { removeFile() })
 
 // 実行
-nako3.setFunc('表示', [['と', 'を']], (msg) => {
-    document.getElementById('output').innerText += msg + '\n'
-})
 document.getElementById('run').addEventListener('click', () => {
-    document.getElementById('output').innerText = ''
-    const filename = `${activeFile}.nako3`
-    const code = editor.getValue()
     /** @type {Record<string, string>} */
     const localFiles = {}
     for (const [k, v] of hiddenTabStates) {
         localFiles[`${k}.nako3`] = v.content
     }
-    nako3.loadDependencies(code, filename, '', localFiles)
-        .then(() => { nako3.runReset(code, filename) })
-        .catch((err) => {
-            document.getElementById('output').innerText += err.message + '\n'
-            if (err.filename === `${activeFile}.nako3`) {
-                editorMarkers.addByError(code, err)
-            }
-        })
+    run({ outputContainer: document.getElementById('output'), file: `${activeFile}.nako3`, localFiles })
 })
 
 // 1.nako3の値を設定する

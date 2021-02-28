@@ -225,15 +225,17 @@ function getDocumentationHTML(token, nako3) {
     /** @param {string} text */
     const meta = (text) => `<span class="tooltip-plugin-name">${escapeHTML(text)}</span>`
     if (token.type === 'func') {
-        const pluginName = findPluginName(token.value + '', nako3)
+        /** @type {string | null} */
+        const pluginName = findPluginName(token.value + '', nako3) || (token.meta && token.meta.file ? token.meta.file : null)
         const josi = (token.meta && token.meta.josi) ? createParameterDeclaration(token.meta.josi) : '' // {関数} のとき token.meta.josi が存在しない
-        if (pluginName !== null) {
+        if (pluginName) {
             return escapeHTML(josi + token.value) + meta(pluginName)
         }
         return escapeHTML(josi + token.value)
     } else if (token.type === 'word') {
-        const pluginName = findPluginName(token.value + '', nako3)
-        if (pluginName !== null) {
+        /** @type {string | null} */
+        const pluginName = findPluginName(token.value + '', nako3) || (token.meta && token.meta.file ? token.meta.file : null)
+        if (pluginName) {
             return escapeHTML(token.value + '') + meta(pluginName)
         }
     }
@@ -258,9 +260,28 @@ const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLi
 function tokenize(lines, nako3, underlineJosi) {
     const code = lines.join('\n')
 
-    // lexerにかける
+    // 取り込み文を含めてしまうと依存ファイルが大きい時に時間がかかってしまうため、
+    // 取り込み文を無視してトークン化してから、依存ファイルで定義された関数名と一致するトークンを関数のトークンへ変換する。
     nako3.reset()
     const lexerOutput = nako3.lex(code, 'main.nako3', undefined, true)
+    lexerOutput.commentTokens = lexerOutput.commentTokens.filter((t) => t.file === 'main.nako3')
+    lexerOutput.requireTokens = lexerOutput.requireTokens.filter((t) => t.file === 'main.nako3')
+    lexerOutput.tokens = lexerOutput.tokens.filter((t) => t.file === 'main.nako3')
+
+    // 外部ファイルで定義された関数名に一致するトークンのtypeをfuncに変更する。
+    // 取り込んでいないファイルも参照される問題や、関数名の重複がある場合に正しくない情報を表示する問題がある。可能なら修正する。
+    {
+        /** @type {Record<string, object>} */
+        for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {
+            for (const token of lexerOutput.tokens) {
+                if (token.type === 'word' && token.value !== 'それ' && funclist[token.value]) {
+                    token.type = 'func'
+                    // meta.file に定義元のファイル名を持たせる。
+                    token.meta = { ...funclist[token.value + ''], file: file }
+                }
+            }
+        }
+    }
 
     // eol、eof、長さが1未満のトークン、位置を特定できないトークンを消す
     /** @type {(TokenWithSourceMap & { startOffset: number, endOffset: number })[]} */
@@ -437,23 +458,26 @@ class EditorMarkers {
      * @param {number | null} endLine
      * @param {number | null} endColumn
      * @param {string} message
+     * @param {'warn' | 'error'} type
      */
-    add(startLine, startColumn, endLine, endColumn, message) {
+    add(startLine, startColumn, endLine, endColumn, message, type) {
         if (this.disable) {
             return
         }
         const range = new this.AceRange(...EditorMarkers.fromNullable(startLine, startColumn, endLine, endColumn, (row) => this.doc.getLine(row)))
-        this.markers.push(this.session.addMarker(range, "marker-red", "text", false))
-        this.session.setAnnotations([{ row: startLine, column: startColumn, text: message, type: 'error' }])
+        this.markers.push(this.session.addMarker(range, "marker-" + (type === 'warn' ? 'yellow' : 'red'), "text", false))
+        // typeは 'error' | 'warning' | 'info'
+        this.session.setAnnotations([{ row: startLine, column: startColumn, text: message, type: type === 'warn' ? 'warning' : 'error' }])
         this.hasAnnotations = true
     }
 
     /**
      * @param {string} code
      * @param {{ line?: number, startOffset?: number | null, endOffset?: number | null, message: string }} error
+     * @param {'warn' | 'error'} type
      */
-    addByError(code, error) {
-        this.add(...EditorMarkers.fromError(code, error, (row) => this.doc.getLine(row)), error.message)
+    addByError(code, error, type) {
+        this.add(...EditorMarkers.fromError(code, error, (row) => this.doc.getLine(row)), error.message, type)
     }
 
     /**
@@ -801,23 +825,27 @@ class LanguageFeatures {
      * @param {BackgroundTokenizer} backgroundTokenizer
      */
     static getCompletionItems(row, prefix, nako3, backgroundTokenizer) {
-        /** @param {string} target */
-        const getScore = (target) => {
-            // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
-            let n = 0
-            for (let i = 0; i < prefix.length; i++) {
-                if (target.includes(prefix[i])) {
-                    n++
-                }
-            }
-            return n
-        }
+        /**
+         * keyはcaption。metaは候補の横に薄く表示されるテキスト。
+         * @type {Map<string, { value: string, meta: string, score: number }>}
+         */
+        const result = new Map()
 
         /**
-         * metaは候補の横に薄く表示されるテキスト
-         * @type {{ caption: string, value: string, meta: string, score: number }[]}
+         * オートコンプリートの項目を追加する。すでに存在するならマージする。
+         * @param {string} caption @param {string} value @param {string} meta
          */
-        const result = []
+        const addItem = (caption, value, meta) => {
+            const item = result.get(caption)
+            if (item) {
+                item.meta += ', ' + meta
+            } else {
+                // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
+                const score = prefix.split('').filter((c) => value.includes(c)).length
+                result.set(caption, { value, meta, score })
+            }
+        }
+
         // プラグイン関数
         for (const name of Object.keys(nako3.__varslist[0])) {
             if (name.startsWith('!')) { // 「!PluginBrowser:初期化」などを除外
@@ -830,34 +858,40 @@ class LanguageFeatures {
 
             let pluginName = findPluginName(name, nako3) || 'プラグイン'
             if (f.type === 'func') {
-                result.push({ caption: createParameterDeclaration(f.josi) + name, value: name, meta: pluginName, score: getScore(name) })
+                addItem(createParameterDeclaration(f.josi) + name, name, pluginName)
             } else {
-                result.push({ caption: name, value: name, meta: pluginName, score: getScore(name) })
+                addItem(name, name, pluginName)
             }
         }
 
-        // ユーザーが定義した名前
+        // 依存ファイルが定義した関数名
+        for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {
+            for (const [name, f] of Object.entries(funclist)) {
+                const josi = (f && f.type === 'func') ? createParameterDeclaration(f.josi) : ''
+                addItem(josi + name, name, file)
+            }
+        }
+
+        // 現在のファイル内に存在する名前
         if (backgroundTokenizer.lastLexerOutput !== null) {
             for (const token of backgroundTokenizer.lastLexerOutput.tokens) {
-                // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外
-                if (token.line === row) {
+                const name = token.value + ''
+                // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外する。
+                // すでに定義されている場合も、定義ではなく参照の可能性が高いため除外する。
+                if (token.line === row || result.has(name)) {
                     continue
                 }
-                const name = token.value + ''
                 if (token.type === 'word') {
-                    result.push({ caption: name, value: name, meta: '変数', score: getScore(name) })
+                    addItem(name, name, '変数')
                 } else if (token.type === 'func') {
-                    let josi = ''
                     const f = nako3.funclist[name]
-                    if (f && f.type === 'func') {
-                        josi = createParameterDeclaration(f.josi)
-                    }
-                    result.push({ caption: josi + name, value: name, meta: '関数', score: getScore(name) })
+                    const josi = (f && f.type === 'func') ? createParameterDeclaration(f.josi) : ''
+                    addItem(josi + name, name, '関数')
                 }
             }
         }
 
-        return result
+        return Array.from(result.entries()).map(([caption, data]) => ({ caption, ...data }))
     }
 
     /**
@@ -1193,9 +1227,10 @@ let editorIdCounter = 0
  * - readonly にするには data-nako3-readonly="true" を設定する。
  * - エラー位置の表示を無効化するには data-nako3-disable-marker="true" を設定する。
  * - 縦方向にリサイズ可能にするには nako3-resizable="true" を設定する。
+ * - デバイスが遅いときにシンタックスハイライトを無効化する機能を切るには nako3-force-syntax-highlighting="true" を設定する。
  * 
  * @param {string} id HTML要素のid
- * @param {NakoCompiler} nako3
+ * @param {import('./wnako3')} nako3
  * @param {any} ace
  * @param {string} [defaultFileName]
  */
@@ -1216,12 +1251,20 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         !!element.dataset.nako3DisableMarker,
     )
 
-    element.classList.add('nako3_editor')
+    if (element.classList.contains('nako3_ace_mounted')) {
+        // 同じエディタを誤って複数回初期化すると、ace editor の挙動を書き換えているせいで
+        // 意図しない動作をしたため、すでにエディタとして使われていないことを確認する。
+        throw new Error(`idが ${id} のHTML要素をなでしこ言語エディタとして2回初期化しました。`)
+    }
+    // 以前のバージョンではnako3_editorをhtmlに直接付けていたため、互換性のためnako3_editorとは別のクラス名を使用する。
+    element.classList.add('nako3_ace_mounted')
+    element.classList.add('nako3_editor') // CSSのため
     const readonly = element.dataset.nako3Readonly
     if (!!readonly) {
         element.classList.add('readonly')
         editor.setReadOnly(true)
     }
+
     editor.setFontSize(16)
 
     /** @param {Session} session */
@@ -1298,6 +1341,8 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         editorMarkers.clear()
     })
 
+    const forceSyntaxHighlighting = !!element.dataset.nako3ForceSyntaxHighlighting
+
     let isFirstTime = true
     const oldBgTokenizer = editor.session.bgTokenizer
     const backgroundTokenizer = new BackgroundTokenizer(
@@ -1307,7 +1352,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
             oldBgTokenizer._signal('update', { data: { first: firstRow, last: lastRow } })
 
             // 処理が遅い場合シンタックスハイライトを無効化する。
-            if (ms > 220 && editor.getOption('syntaxHighlighting') && !readonly && isFirstTime) {
+            if (ms > 220 && editor.getOption('syntaxHighlighting') && !readonly && !forceSyntaxHighlighting && isFirstTime) {
                 isFirstTime = false
                 slowSpeedMessage.classList.add('visible')
                 editor.setOption('syntaxHighlighting', false)
@@ -1441,7 +1486,49 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         editor.container.classList.add('resizable')
     }
 
-    return { editor, editorMarkers, editorTabs }
+    const retokenize = () => { backgroundTokenizer.dirty = true }
+
+    /**
+     * プログラムを実行して、エラーがあればエディタ上に波線を表示する。出力はoutputContainerに表示する。
+     * @param {{
+     *     outputContainer?: HTMLElement
+     *     file?: string
+     *     preCode?: string
+     *     localFiles?: Record<string, string>
+     * }} opts
+     */
+    const run = (opts) => {
+        const code = editor.getValue()
+        const preCode = opts.preCode || ''  // プログラムの前に自動的に挿入されるコード
+
+        // loggerを新しいインスタンスに置き換える。そうしないとどのエディタで起きたエラー（や警告や出力）なのかが分からない。
+        const logger = nako3.replaceLogger()
+        if (opts.outputContainer) {
+            logger.addHTMLLogger('warn', opts.outputContainer)
+        }
+        const file = opts.file || 'main.nako3'
+        logger.addListener('warn', ({ position, combined, level }) => {
+            if (position.file === file && (level === 'warn' || level === 'error')) {
+                editorMarkers.addByError(code, { ...position, message: combined }, level)
+            }
+        })
+        const promise = nako3.loadDependencies(preCode + code, file, preCode, opts.localFiles || {})
+            .then(() => { nako3.runReset(preCode + code, file, preCode) })
+            .catch((err) => { console.error(err) })
+            .then(async () => {
+                // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
+                retokenize()
+
+                // シンタックスハイライトが終わるのを待つ
+                while (backgroundTokenizer.dirty) {
+                    await new Promise((resolve) => setTimeout(resolve, 0))
+                }
+            }).catch((err) => { console.error(err) })
+
+        return { promise, logger, code }
+    }
+
+    return { editor, editorMarkers, editorTabs, retokenize, run }
 }
 
 module.exports = {

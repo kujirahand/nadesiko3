@@ -20,6 +20,13 @@ module.exports = function (config) {
         nocache: true
       },
       {
+        pattern: '../test/*.nako3',
+        included: false,
+        served: true,
+        watched: false,
+        nocache: true
+      },
+      {
         pattern: '../release/command.json',
         included: false,
         served: true,
@@ -31,6 +38,7 @@ module.exports = function (config) {
     proxies: {
       '/src/': '/absolute' + path.resolve('./src/'),
       '/release/': '/absolute' + path.resolve('./release/'),
+      '/test/': '/absolute' + path.resolve('./test/'),
     },
     plugins: [
       'karma-firefox-launcher',

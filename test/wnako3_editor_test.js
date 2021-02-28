@@ -1,6 +1,9 @@
 const assert = require('assert')
 const NakoCompiler = require('../src/nako3')
 const { tokenize, LanguageFeatures } = require('../src/wnako3_editor')
+const CNako3 = require('../src/cnako3')
+const path = require('path')
+const fs = require('fs')
 
 describe('wnako3_editor_test', () => {
     class AceRange {
@@ -65,6 +68,51 @@ describe('wnako3_editor_test', () => {
 
             assert.strictEqual(tokens[1][2].value, '表示')
             assert(tokens[1][2].type.includes('function'))
+        })
+        it('依存ファイルのキャッシュを利用する', () => {
+            const nako3 = new CNako3()
+            const code = '!「./requiretest_indirect.nako3」を取り込む\n1と2の痕跡演算'
+            const file = path.join(__dirname, 'main.nako3')
+            nako3.loadDependencies(code, file)
+            const tokens = tokenize(code.split('\n'), nako3, true)
+
+            // 「痕跡演算」が関数として認識されていることを確認する。
+            const token = tokens.editorTokens[1].find((token) => token.value === '痕跡演算')
+            assert.notStrictEqual(token, undefined)
+            assert(token.type.includes('function'))
+        })
+        it('シンタックスハイライトにかかる時間が依存ファイルの行数に依存しないことを確認', () => {
+            // 一時的に大きいファイルを作成
+            const largeFile = path.join(__dirname, 'large_file.nako3')
+            assert(!fs.existsSync(largeFile))
+            fs.writeFileSync(largeFile, '●（Aを）large_fileとは\nここまで\nA=1+2+3+4+5\n'.repeat(1000))
+            try {
+                // 大きいファイルを取り込むコードを実行
+                const code = '!「./large_file.nako3」を取り込む\n1をlarge_file'
+                const file = path.join(__dirname, 'main.nako3')
+
+                const nako3 = new CNako3()
+                console.time('loadDependencies')
+                nako3.loadDependencies(code, file)  // この行は遅いが、取り込み文に変更が合った時しか呼ばれない
+                console.timeEnd('loadDependencies')
+
+                const startTime = process.hrtime.bigint()
+                console.time('tokenize')
+                const tokens = tokenize(code.split('\n'), nako3, true)  // この行は速い必要がある
+                const delta = process.hrtime.bigint() - startTime
+                console.timeEnd('tokenize')
+
+                // 200ms以下で終わることを確認
+                // GitHub Actions で10〜40msくらいかかる。
+                assert(delta <= BigInt(200000000))
+
+                // 取り込みが行われたことを確認する
+                const token = tokens.editorTokens[1].find((token) => token.value === 'large_file')
+                assert.notStrictEqual(token, undefined)
+                assert(token.type.includes('function'))
+            } finally {
+                fs.unlinkSync(largeFile)
+            }
         })
     })
     describe('ドキュメントのホバー', () => {

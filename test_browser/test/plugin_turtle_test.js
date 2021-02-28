@@ -560,7 +560,7 @@ describe('plugin_turtle_test', () => {
     }
 
     cmpImageData(actData, data)
-  })
+  }).timeout(5000)
 
   it('change turtle image delayed', async () => {
     document.body.innerHTML = __html__['test/html/canvas_basic.html']

@@ -7,11 +7,15 @@ class NakoError extends Error {
   /**
    * @param {string} tag
    * @param {string} msg
-   * @param {string | undefined} filename
+   * @param {string | undefined} file
    * @param {number | undefined} line
    */
-  constructor(tag, msg, filename, line) {
-    super(`[${tag}]${filename || ''}${line === undefined ? '' : `(${line + 1}行目): `}${msg}\n[バージョン] ${nakoVersion.version}`)
+  constructor(tag, msg, file, line) {
+    const positionJa = `${file || ''}${line === undefined ? '' : `(${line + 1}行目): `}`
+    super(`[${tag}]${positionJa}${msg}\n[バージョン] ${nakoVersion.version}`)
+    this.tag = "[" + tag + "]"
+    this.positionJa = positionJa
+    this.msg = msg
   }
 }
 
@@ -19,13 +23,12 @@ class NakoIndentError extends NakoError {
   /**
    * @param {string} msg
    * @param {number} line
-   * @param {string} filename
+   * @param {string} file
    */
-  constructor(msg, line, filename) {
-    super('インデントエラー', msg, filename, line)
-    this.msg = msg
+  constructor(msg, line, file) {
+    super('インデントエラー', msg, file, line)
     this.line = line
-    this.filename = filename
+    this.file = file
   }
 }
 
@@ -35,15 +38,14 @@ class LexError extends NakoError {
    * @param {number} preprocessedCodeStartOffset
    * @param {number} preprocessedCodeEndOffset
    * @param {number | undefined} [line]
-   * @param {string | undefined} [filename]
+   * @param {string | undefined} [file]
    */
-  constructor(msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, filename) {
-    super('字句解析エラー', msg, filename, line)
-    this.msg = msg
+  constructor(msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, file) {
+    super('字句解析エラー', msg, file, line)
     this.preprocessedCodeStartOffset = preprocessedCodeStartOffset
     this.preprocessedCodeEndOffset = preprocessedCodeEndOffset
     this.line = line
-    this.filename = filename
+    this.file = file
   }
 }
 
@@ -55,7 +57,7 @@ class LexErrorWithSourceMap extends LexError {
    * @param {number | null} startOffset
    * @param {number | null} endOffset,
    * @param {number | undefined} line
-   * @param {string | undefined} filename
+   * @param {string | undefined} file
    */
   constructor(
     msg,
@@ -64,9 +66,9 @@ class LexErrorWithSourceMap extends LexError {
     startOffset,
     endOffset,
     line,
-    filename,
+    file,
   ) {
-    super(msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, filename)
+    super(msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, file)
     this.startOffset = startOffset
     this.endOffset = endOffset
   }
@@ -95,13 +97,12 @@ class NakoSyntaxError extends NakoError {
    * @param {number | undefined} line
    * @param {number | null} startOffset
    * @param {number | null} endOffset
-   * @param {string | undefined} filename
+   * @param {string | undefined} file
    */
-  constructor (msg, line, startOffset, endOffset, filename) {
-    super('文法エラー', msg, filename, line)
-    this.filename = filename
+  constructor (msg, line, startOffset, endOffset, file) {
+    super('文法エラー', msg, file, line)
+    this.file = file
     this.line = line
-    this.msg = msg
     this.startOffset = startOffset
     this.endOffset = endOffset
   }
@@ -145,7 +146,6 @@ class NakoRuntimeError extends NakoError {
 
     super('実行時エラー', `${from === undefined ? '' : `${from}で`}エラー『${className}${msg}』が発生しました。`, file, line)
     this.error = error
-    this.msg = msg
     this.lineNo = lineNo
     this.line = line
     this.file = file
@@ -157,13 +157,12 @@ class NakoImportError extends NakoError {
   /**
    * @param {string} msg
    * @param {number} line
-   * @param {string} filename
+   * @param {string} file
    */
-  constructor (msg, line, filename) {
-    super('取り込みエラー', msg, filename, line)
-    this.filename = filename
+  constructor (msg, line, file) {
+    super('取り込みエラー', msg, file, line)
+    this.file = file
     this.line = line
-    this.msg = msg
   }
 }
 
