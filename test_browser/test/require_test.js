@@ -38,7 +38,6 @@ describe('require_test', () => {
     })
     it('プラグインの取り込み', async () => {
         const nako = new WebNakoCompiler()
-        navigator.nako3 = nako
         const code =
             `!「${buildURL('js', 0, `navigator.nako3.addPluginObject('PluginRequireTest', { requiretest: { type: 'var', value: 100 } })`)}」を取り込む。\n` +
             'requiretestを表示\n'
