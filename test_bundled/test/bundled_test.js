@@ -19,9 +19,9 @@ describe('bundled test', () => {
       const els = document.getElementsByClassName('editor-component')
       if (els.length > 0) {
         el = els[0]
-        ta = el.querySelector('textarea.src:not(.src_read)')
+        ta = el.querySelector('#nako3_editor_code_0')
         if (ta) {
-          assert.ok(/「こんにちは！」と表示。/.test(ta.innerHTML), 'no cntain "「こんにちは！」と表示。" in src')
+          assert.ok(/「こんにちは！」と表示。/.test(ta.innerText), 'HTML要素が文字列"「こんにちは！」と表示。"を含みません。')
         } else {
           assert.fail('no element has src class and not has src_read')
         }

@@ -13,17 +13,18 @@ module.exports = function (config) {
         nocache: true
       },
       {
-        pattern: '../release/command.json',
+        pattern: '../src/*.css',
         included: false,
         served: true,
         watched: false,
         nocache: true
-      }
+      },
     ],
     customContextFile: 'test/html/custom_context.html',
     customDebugFile: 'test/html/custom_debug.html',
     proxies: {
-       '/release/': '/absolute' + path.resolve('./release/')
+       '/release/': '/absolute' + path.resolve('./release/'),
+       '/src/': '/absolute' + path.resolve('./src/')
     },
     plugins: [
       'karma-firefox-launcher',

@@ -25,13 +25,6 @@ module.exports = function (config) {
         served: true,
         watched: false,
         nocache: true
-      },
-      {
-        pattern: '../release/command.json',
-        included: false,
-        served: true,
-        watched: false,
-        nocache: true
       }
     ],
     customContextFile: 'test/html/custom_context.html',
