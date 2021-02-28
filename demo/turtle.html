@@ -12,7 +12,6 @@
   <script src="../release/wnako3.js"></script>
   <script src="../release/plugin_markup.js"></script>
   <script src="../release/plugin_turtle.js"></script>
-  <script src="https://unpkg.com/mocha/mocha.js"></script>
   <script src="common.js"></script>
   <script src="turtle_test.js"></script>
   <link rel="stylesheet" type="text/css" href="common.css">
@@ -55,5 +54,7 @@ N=250
     <li><a href="browsers.html">対応機器/Webブラウザ</a></li>
   </ul>
 </div>
+<!-- mochaを一番最後に読み込む必要がある -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.3.0/mocha.min.js" integrity="sha512-LA/TpBXau/JNubKzHQhdi5vGkRLyQjs1vpuk2W1nc8WNgf/pCqBplD8MzlzeKJQTZPvkEZi0HqBDfRC2EyLMXw==" crossorigin="anonymous"></script>
 </body>
 </html>

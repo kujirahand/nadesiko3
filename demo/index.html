@@ -15,7 +15,6 @@
   <link rel="stylesheet" type="text/css" href="index.css">
   <!-- editor -->
   <link rel="stylesheet" type="text/css" href="editor.css">
-  <script src="https://unpkg.com/mocha/mocha.js"></script>
 </head>
 <body>
 
@@ -106,8 +105,6 @@
 
   <!-- editor script -->
   <!--React.jsのスクリプトはHTMLの末尾で読み込む-->
-  <!-- mocha -->
-  <script src="https://unpkg.com/mocha/mocha.js"></script>
   <!-- なでしこ-->
   <script src="../release/wnako3.js"></script>
   <script src="../release/editor.js"></script>
@@ -121,6 +118,7 @@
   <script src="../release/plugin_webworker.js"></script>
   <!-- Chart.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-
+  <!-- mochaを一番最後に読み込む必要がある -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.3.0/mocha.min.js" integrity="sha512-LA/TpBXau/JNubKzHQhdi5vGkRLyQjs1vpuk2W1nc8WNgf/pCqBplD8MzlzeKJQTZPvkEZi0HqBDfRC2EyLMXw==" crossorigin="anonymous"></script>
 </body>
 </html>
