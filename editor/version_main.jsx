@@ -1,13 +1,12 @@
 // version_main.js
 import React from 'react'
 import ReactDOM from 'react-dom'
-import VersionComponent from './version_component'
+import nakoVersion from '../src/nako_version.js'
 
-// tryとArray.fromはIE11のため
 try {
   for (const e of Array.from(document.getElementsByClassName('version-component'))) {
-    ReactDOM.render(<VersionComponent/>, e)
+    ReactDOM.render(<div>日本語プログラミング言語「なでしこ3」<br/>Ver. {nakoVersion.version}</div>, e)
   }
 } catch (e) {
-  console.error(e)
+  console.error(e) // IE11
 }

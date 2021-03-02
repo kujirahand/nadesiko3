@@ -110,6 +110,9 @@ class NakoCompiler {
      * @type {Record<string, { tokens: TokenWithSourceMap[], alias: Set<string>, addPluginFile: () => void, funclist: Record<string, object> }>}
      */
     this.dependencies = {}
+
+    /** @type {Set<string>} */
+    this.usedFuncs = new Set()
   }
 
   get log () {

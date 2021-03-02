@@ -1495,6 +1495,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
      *     file?: string
      *     preCode?: string
      *     localFiles?: Record<string, string>
+     *     method?: 'runReset' | 'test' | 'compile'
      * }} opts
      */
     const run = (opts) => {
@@ -1505,6 +1506,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         const logger = nako3.replaceLogger()
         if (opts.outputContainer) {
             logger.addHTMLLogger('warn', opts.outputContainer)
+            opts.outputContainer.classList.add('nako3-output-container')
         }
         const file = opts.file || 'main.nako3'
         logger.addListener('warn', ({ position, combined, level }) => {
@@ -1513,9 +1515,17 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
             }
         })
         const promise = nako3.loadDependencies(preCode + code, file, preCode, opts.localFiles || {})
-            .then(() => { nako3.runReset(preCode + code, file, preCode) })
+            .then(() => {
+                if (opts.method === 'test') {
+                    return nako3.test(preCode + code, file, preCode)
+                } else if (opts.method === 'compile') {
+                    return nako3.compile(preCode + code, file, false, preCode)
+                } else {
+                    return nako3.runReset(preCode + code, file, preCode)
+                }
+            })
             .catch((err) => { console.error(err) })
-            .then(async () => {
+            .then(async (res) => {
                 // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
                 retokenize()
 
@@ -1523,6 +1533,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                 while (backgroundTokenizer.dirty) {
                     await new Promise((resolve) => setTimeout(resolve, 0))
                 }
+                return res
             }).catch((err) => { console.error(err) })
 
         return { promise, logger, code }

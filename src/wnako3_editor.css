@@ -177,3 +177,9 @@
 #ace_settingsmenu > table tr:last-child {
     display: none; /* なでしこのバージョンと紛らわしいため、aceのバージョン表示を消す */
 }
+
+/* 出力の表示で、スペースの連続を残す。 */
+.nako3-output-container {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
