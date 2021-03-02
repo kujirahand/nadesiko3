@@ -228,12 +228,22 @@ class NakoCompiler {
       }
     }
 
-    const result = inner(code, filename, preCode)
+    try {
+      const result = inner(code, filename, preCode)
 
-    // すべてが終わってからthis.dependenciesに代入する。そうしないと、「実行」ボタンを連打した場合など、
-    // loadDependencies() が並列実行されるときに正しく動作しない。
-    this.dependencies = dependencies
-    return result
+      // 非同期な場合のエラーハンドリング
+      if (result !== undefined) {
+        result.catch((err) => { this.logger.error(err); throw err })
+      }
+
+      // すべてが終わってからthis.dependenciesに代入する。そうしないと、「実行」ボタンを連打した場合など、
+      // loadDependencies() が並列実行されるときに正しく動作しない。
+      this.dependencies = dependencies
+      return result
+    } catch (err) { // 同期的な場合のエラーハンドリング
+      this.logger.error(err)
+      throw err
+    }
   }
 
   /**
