@@ -1538,7 +1538,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                     return nako3.runReset(preCode + code, file, preCode)
                 }
             })
-            .catch((err) => { console.error(err) })
+            .catch((err) => { }) // エラーはloggerに送られるためここでは何もしなくて良い
             .then(async (res) => {
                 // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
                 retokenize()

@@ -122,13 +122,26 @@ describe('ace editor test', () => {
       assert.strictEqual(document.querySelector('#editor3 .marker-red'), null)
     })
     it('setTimeout内から飛ぶエラーの表示', async function () {
-      await sleep(100)
-      assert.notStrictEqual(document.querySelector('#editor10 .marker-red'), null)
+      this.timeout(5 * 1000)
+      while (document.querySelector('#editor10 .marker-red') === null) {
+        await sleep(100)
+      }
     })
   })
   describe('コンパイラの警告の表示', () => {
     it('存在する場合', () => {
       assert.notStrictEqual(document.querySelector('#editor9 .marker-yellow'), null)
+    })
+  })
+  describe('出力のボックス', () => {
+    it('コンパイルエラーを表示する', () => {
+      assert.strictEqual(document.querySelector('#editor7-output').innerText.trim(), '[実行時エラー]main.nako3(2行目): 関数『エラー発生』でエラー『1』が発生しました。')
+      assert.strictEqual(document.querySelector('#editor8-output').innerText.trim(), '')
+      assert.strictEqual(document.querySelector('#editor9-output').innerText.trim(), '[警告]main.nako3(1行目): 変数 a は定義されていません。\nundefined')
+      assert.strictEqual(document.querySelector('#editor11-output').innerText.trim(), '[字句解析エラー]main.nako3(1行目): 展開あり文字列で値の埋め込み{...}が対応していません。')
+    })
+    it('プログラムの出力を表示する', () => {
+      assert.strictEqual(document.querySelector('#editor1-output').innerText.trim(), 'こんにちは')
     })
   })
 })
