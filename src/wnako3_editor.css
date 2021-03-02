@@ -82,6 +82,11 @@
     padding-bottom: 6px;
     padding-right: 10px;
     opacity: 0.8;
+
+    /* メッセージが長いとき文字が画面外に出て読めない問題の修正 */
+    max-width: 80%;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
 }
 
 /* スニペットのプレースホルダのスタイル */
