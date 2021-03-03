@@ -203,11 +203,12 @@ class NakoCompiler {
           /** @param {string} code */
           const registerFile = (code) => {
             // シンタックスハイライトの高速化のために、事前にファイルが定義する関数名のリストを取り出しておく。
+            // preDefineFuncはトークン列に変更を加えるため、事前にクローンしておく。
             const tokens = this.rawtokenize(code, 0, item.filePath)
             dependencies[item.filePath].tokens = tokens
-            /** @type {Record<string, object>} */
+            /** @type {import('./nako_lexer').FuncList} */
             const funclist = {}
-            NakoLexer.listFunctionDefinitions(tokens, this.logger, funclist)
+            NakoLexer.preDefineFunc(cloneAsJSON(tokens), this.logger, funclist)
             dependencies[item.filePath].funclist = funclist
 
             // 再帰
