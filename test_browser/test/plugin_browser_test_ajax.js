@@ -1,5 +1,5 @@
 import * as td from 'testdouble'
-import { CompareUtil, waitTimer } from './compare_util'
+import { CompareUtil, waitTimer, retry } from './compare_util'
 
 export default (nako) => {
   const cu = new CompareUtil(nako)
@@ -32,9 +32,7 @@ AJAXオプションをJSONエンコードして表示する。
       nako.logger.debug('code=' + code)
       nako.runReset(code)
 
-      await waitTimer(1.0)
-
-      td.verify(windowalert('"OK"'), { times: 1 })
+      await retry(() => td.verify(windowalert('"OK"'), { times: 1 }))
       td.reset()
     })
 
@@ -51,9 +49,7 @@ AJAXオプションをJSONエンコードして表示する。
       nako.logger.debug('code=' + code)
       nako.runReset(code)
 
-      await waitTimer(1.0)
-
-      td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 })
+      await retry(() => td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 }))
       td.reset()
     })
 
@@ -70,9 +66,7 @@ AJAXオプションをJSONエンコードして表示する。
       nako.logger.debug('code=' + code)
       nako.runReset(code)
 
-      await waitTimer(1.0)
-
-      td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 })
+      await retry(() => td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 }))
       td.reset()
     })
 
@@ -87,9 +81,7 @@ AJAXオプションをJSONエンコードして表示する。
       nako.logger.debug('code=' + code)
       nako.runReset(code)
 
-      await waitTimer(1.0)
-
-      td.verify(windowalert('"OK"'), { times: 1 })
+      await retry(() => td.verify(windowalert('"OK"'), { times: 1 }))
       td.reset()
     })
 
@@ -106,10 +98,7 @@ AJAXオプションをJSONエンコードして表示する。
 `
       nako.logger.debug('code=' + code)
       nako.runReset(code)
-
-      await waitTimer(1.0)
-
-      td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 })
+      await retry(() => td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 }))
       td.reset()
     })
 
@@ -127,9 +116,7 @@ AJAXオプションをJSONエンコードして表示する。
       nako.logger.debug('code=' + code)
       nako.runReset(code)
 
-      await waitTimer(1.0)
-
-      td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 })
+      await retry(() => td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 }))
       td.reset()
     })
   })
