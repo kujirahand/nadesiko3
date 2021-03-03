@@ -14,7 +14,7 @@ const josiRE = josi.josiRE
 const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
 
-const {LexError} = require('./nako_errors')
+const {NakoLexerError, InternalLexerError} = require('./nako_errors')
 
 /**
  * @typedef {import('./nako3').TokenWithSourceMap} TokenWithSourceMap
@@ -327,7 +327,6 @@ class NakoLexer {
    * @param {number} line
    * @param {string} filename
    * @returns {Token[]}
-   * @throws {LexError}
    */
   tokenize (src, line, filename) {
     const srcLength = src.length
@@ -367,7 +366,7 @@ class NakoLexer {
             // 展開あり文字列 → aaa{x}bbb{x}cccc
             const list = this.splitStringEx(rp.res)
             if (list === null) {
-              throw new LexError(
+              throw new InternalLexerError(
                 '展開あり文字列で値の埋め込み{...}が対応していません。',
                 srcLength - src.length,
                 srcLength - rp.src.length,
@@ -471,7 +470,7 @@ class NakoLexer {
         break
       }
       if (!ok) {
-        throw new LexError('未知の語句: ' + src.substr(0, 3) + '...',
+        throw new InternalLexerError('未知の語句: ' + src.substr(0, 3) + '...',
           srcLength - src.length,
           srcLength - srcLength + 3,
           line,

@@ -1,7 +1,7 @@
 /** なでしこのtokenのtypeをscope（CSSのクラス名）に変換する。 */
 
 const { OffsetToLineColumn } = require('./nako_source_mapping')
-const { LexError, NakoIndentError } = require('./nako_errors')
+const { NakoError } = require('./nako_errors')
 const { getBlockStructure, getIndent, countIndent, isIndentSyntaxEnabled } = require('./nako_indent')
 const NakoPrepare = require('./nako_prepare')
 
@@ -641,7 +641,7 @@ class BackgroundTokenizer {
                         this.cache = { code, lines: JSON.stringify(lines.editorTokens) }
                         ok = true
                     } catch (e) {
-                        if (!(e instanceof NakoIndentError || e instanceof LexError)) {
+                        if (!(e instanceof NakoError)) {
                             console.error(e)
                         }
                     }
@@ -938,7 +938,7 @@ class LanguageFeatures {
             tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
                 .filter((t) => t.type !== 'eol' && t.type !== 'eof')
         } catch (e) {
-            if (!(e instanceof NakoIndentError || e instanceof LexError)) {
+            if (!(e instanceof NakoError)) {
                 console.error(e)
             }
         }

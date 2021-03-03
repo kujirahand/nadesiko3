@@ -32,7 +32,8 @@ class NakoIndentError extends NakoError {
   }
 }
 
-class LexError extends NakoError {
+// コンパイラの内部でのみ使うエラー。投げられたらtryでキャッチしてLexerErrorへ変更する。
+class InternalLexerError extends NakoError {
   /**
    * @param {string} msg
    * @param {number} preprocessedCodeStartOffset
@@ -41,7 +42,7 @@ class LexError extends NakoError {
    * @param {string | undefined} [file]
    */
   constructor(msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, file) {
-    super('字句解析エラー', msg, file, line)
+    super(`字句解析エラー（内部エラー）`, msg, file, line)
     this.preprocessedCodeStartOffset = preprocessedCodeStartOffset
     this.preprocessedCodeEndOffset = preprocessedCodeEndOffset
     this.line = line
@@ -49,11 +50,9 @@ class LexError extends NakoError {
   }
 }
 
-class LexErrorWithSourceMap extends LexError {
+class NakoLexerError extends NakoError {
   /**
    * @param {string} msg
-   * @param {number} preprocessedCodeStartOffset
-   * @param {number} preprocessedCodeEndOffset
    * @param {number | null} startOffset
    * @param {number | null} endOffset,
    * @param {number | undefined} line
@@ -61,16 +60,16 @@ class LexErrorWithSourceMap extends LexError {
    */
   constructor(
     msg,
-    preprocessedCodeStartOffset,
-    preprocessedCodeEndOffset,
     startOffset,
     endOffset,
     line,
     file,
   ) {
-    super(msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, file)
+    super('字句解析エラー', msg, file, line)
     this.startOffset = startOffset
     this.endOffset = endOffset
+    this.line = line
+    this.file = file
   }
 }
 
@@ -169,8 +168,8 @@ class NakoImportError extends NakoError {
 module.exports = {
   NakoError,
   NakoIndentError,
-  LexError,
-  LexErrorWithSourceMap,
+  NakoLexerError,
+  InternalLexerError,
   NakoSyntaxError,
   NakoRuntimeError,
   NakoImportError,

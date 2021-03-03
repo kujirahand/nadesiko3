@@ -10,7 +10,7 @@ const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
-const { NakoRuntimeError, LexError, LexErrorWithSourceMap, NakoImportError, NakoSyntaxError } = require('./nako_errors')
+const { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } = require('./nako_errors')
 const NakoLogger = require('./nako_logger')
 
 /** @type {<T>(x: T) => T} */
@@ -243,7 +243,6 @@ class NakoCompiler {
    * @param {string} filename
    * @param {string} [preCode]
    * @returns {TokenWithSourceMap[]} トークンのリスト
-   * @throws {LexErrorWithSourceMap}
    */
   rawtokenize (code, line, filename, preCode = '') {
     if (!code.startsWith(preCode)) {
@@ -265,7 +264,7 @@ class NakoCompiler {
     try {
       tokens = this.lexer.setInput(preprocessed.map((v) => v.text).join(""), line, filename)
     } catch (err) {
-      if (!(err instanceof LexError)) {
+      if (!(err instanceof InternalLexerError)) {
         throw err
       }
 
@@ -274,7 +273,7 @@ class NakoCompiler {
       /** @type {number | undefined} */
       const line = dest.startOffset === null ? err.line : offsetToLineColumn.map(dest.startOffset, false).line
       const map = subtractSourceMapByPreCodeLength({ ...dest, line }, preCode)
-      throw new LexErrorWithSourceMap(err.msg, err.preprocessedCodeStartOffset, err.preprocessedCodeEndOffset, map.startOffset, map.endOffset, map.line, filename)
+      throw new NakoLexerError(err.msg, map.startOffset, map.endOffset, map.line, filename)
     }
 
     // ソースコード上の位置に変換
@@ -421,7 +420,7 @@ class NakoCompiler {
       }
       const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
       if (filePath === undefined) {
-        throw new LexErrorWithSourceMap(`ファイル ${r.value} が読み込まれていません。`, 0, 1, r.firstToken.startOffset, r.firstToken.endOffset, r.firstToken.line, r.firstToken.file)
+        throw new NakoLexerError(`ファイル ${r.value} が読み込まれていません。`, r.firstToken.startOffset, r.firstToken.endOffset, r.firstToken.line, r.firstToken.file)
       }
       this.dependencies[filePath].addPluginFile()
       const children = cloneAsJSON(this.dependencies[filePath].tokens)
@@ -477,7 +476,6 @@ class NakoCompiler {
    * @param {string} filename
    * @param {string} [preCode]
    * @return {Ast}
-   * @throws {LexErrorWithSourceMap | NakoSyntaxError}
    */
   parse (code, filename, preCode = '') {
     // 関数を字句解析と構文解析に登録
