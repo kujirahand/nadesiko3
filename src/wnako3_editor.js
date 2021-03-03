@@ -252,6 +252,20 @@ function getDocumentationHTML(token, nako3) {
 const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row), docHTML: null }]
 
 /**
+ * 一時的にloggerを無効化する。そうしないとシンタックスハイライトの更新のたびにloggerへコンパイルエラーや警告が送られて、結果のボックスに行が追加されてしまう。
+ * @type {<T>(nako3: NakoCompiler, f: () => T) => T}
+ */
+const withoutLogger = (nako3, f) => {
+    const logger = nako3.logger
+    try {
+        nako3.replaceLogger()
+        return f()
+    } finally {
+        nako3.logger = logger
+    }
+}
+
+/**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param {string[]} lines
  * @param {NakoCompiler} nako3
@@ -263,7 +277,7 @@ function tokenize(lines, nako3, underlineJosi) {
     // 取り込み文を含めてしまうと依存ファイルが大きい時に時間がかかってしまうため、
     // 取り込み文を無視してトークン化してから、依存ファイルで定義された関数名と一致するトークンを関数のトークンへ変換する。
     nako3.reset()
-    const lexerOutput = nako3.lex(code, 'main.nako3', undefined, true)
+    const lexerOutput = withoutLogger(nako3, () => nako3.lex(code, 'main.nako3', undefined, true))
     lexerOutput.commentTokens = lexerOutput.commentTokens.filter((t) => t.file === 'main.nako3')
     lexerOutput.requireTokens = lexerOutput.requireTokens.filter((t) => t.file === 'main.nako3')
     lexerOutput.tokens = lexerOutput.tokens.filter((t) => t.file === 'main.nako3')
@@ -935,7 +949,7 @@ class LanguageFeatures {
         // 現在の行のカーソルより前の部分をlexerにかける。速度を優先して1行だけ処理する。
         try {
             nako3.reset()
-            tokens = nako3.lex(line, 'completion.nako3', undefined, true).tokens
+            tokens = withoutLogger(nako3, () => nako3.lex(line, 'completion.nako3', undefined, true)).tokens
                 .filter((t) => t.type !== 'eol' && t.type !== 'eof')
         } catch (e) {
             if (!(e instanceof NakoIndentError || e instanceof LexError)) {
@@ -1524,7 +1538,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
                     return nako3.runReset(preCode + code, file, preCode)
                 }
             })
-            .catch((err) => { console.error(err) })
+            .catch((err) => { }) // エラーはloggerに送られるためここでは何もしなくて良い
             .then(async (res) => {
                 // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
                 retokenize()
