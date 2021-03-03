@@ -63,7 +63,7 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  * }} Ast
  * 
  * @typedef {(
- *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function }
+ *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function, return_none: boolean }
  *     | { type: 'var' | 'const', value: any}
  * )} NakoFunction
  */
@@ -750,30 +750,22 @@ class NakoCompiler {
 
   /**
    * 関数を追加する
-   * @param key 関数名
-   * @param josi 助詞
-   * @param fn 関数
+   * @param {string} key 関数名
+   * @param {string[][]} josi 助詞
+   * @param {Function} fn 関数
+   * @param {boolean} returnNone 値を返す関数の場合はfalseを設定する。
    */
-  addFunc (key, josi, fn) {
-    this.funclist[key] = {'josi': josi, 'fn': fn, 'type': 'func'}
-    this.pluginFunclist[key] = JSON.parse(JSON.stringify(this.funclist[key]))
+  addFunc (key, josi, fn, returnNone = true) {
+    this.funclist[key] = {josi, fn, type: 'func', return_none: returnNone}
+    this.pluginFunclist[key] = cloneAsJSON(this.funclist[key])
     this.__varslist[0][key] = fn
   }
-
-  /**
-   * 関数をセットする
-   * @param key 関数名
-   * @param josi 助詞
-   * @param fn 関数
-   */
-  setFunc (key, josi, fn) {
-    this.addFunc(key, josi, fn)
-  }
+  setFunc = this.addFunc  // エイリアス
 
   /**
    * プラグイン関数を参照する
-   * @param key プラグイン関数の関数名
-   * @returns プラグイン・オブジェクト
+   * @param {string} key プラグイン関数の関数名
+   * @returns {NakoFunction} プラグイン・オブジェクト
    */
   getFunc (key) {
     return this.funclist[key]
