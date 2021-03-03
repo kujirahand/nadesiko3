@@ -29,6 +29,19 @@ const {LexError} = require('./nako_errors')
  *   preprocessedCodeLength: number;
  *   meta?: any;
  * }} Token
+ * @typedef {Record<string, (
+ *     {
+ *         type: 'func'
+ *         josi: string[][]
+ *         fn: null | ((...args: any[]) => any)
+ *         varnames: string
+ *         funcPointers: boolean[]
+ *     } |
+ *     {
+  *         type: 'var' | 'const'
+  *         value: unknown
+  *    }
+  * )>} FuncList
  */
  
 class NakoLexer {
@@ -37,6 +50,7 @@ class NakoLexer {
    */
   constructor (logger) {
     this.logger = logger
+    /** @type {FuncList} */
     this.funclist = {}
     /** @type {TokenWithSourceMap[]} */
     this.result = []
@@ -57,7 +71,7 @@ class NakoLexer {
   setInput2 (tokens, isFirst) {
     this.result = tokens
     // 関数の定義があれば funclist を更新
-    this.preDefineFunc(this.result)
+    NakoLexer.preDefineFunc(tokens, this.logger, this.funclist)
     this.replaceWord(this.result)
 
     if (isFirst) {
@@ -78,13 +92,13 @@ class NakoLexer {
   }
 
   /**
-   * ファイル内で定義されている関数名を列挙する。結果はfunclistに書き込む。
-   * シンタックスハイライトの高速化のために事前にファイルが定義する関数名を列挙する必要があるため、staticメソッドにしている。
+   * ファイル内で定義されている関数名を列挙する。結果はfunclistに書き込む。その他のトークンの置換処理も行う。
+   * シンタックスハイライトの処理から呼び出すためにstaticメソッドにしている。
    * @param {TokenWithSourceMap[]} tokens
    * @param {import('./nako_logger')} logger
-   * @param {Record<string, object>} funclist
+   * @param {FuncList} funclist
    */
-  static listFunctionDefinitions(tokens, logger, funclist) {
+  static preDefineFunc(tokens, logger, funclist) {
     // 関数を先読みして定義
     let i = 0
     let isFuncPointer = false
@@ -205,13 +219,6 @@ class NakoLexer {
       // 無名関数のために
       defToken.meta = {josi, varnames, funcPointers}
     }
-  }
-
-  /**
-   * @param {TokenWithSourceMap[]} tokens
-   */
-  preDefineFunc (tokens) {
-    NakoLexer.listFunctionDefinitions(tokens, this.logger, this.funclist)
   }
 
   /**

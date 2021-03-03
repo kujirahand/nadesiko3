@@ -16,4 +16,7 @@ describe('require_nako3_test', () => {
   it('CNakoの相対インポート', () => {
     cmp('!「test/relative_import_test_2.nako3」を取り込む。', '1\n2')
   })
+  it('「回」が1回だけ分割されることを確認する', () => {
+    cmp('！「test/kai_test.nako3」を取り込む', '')
+  })
 })
