@@ -113,6 +113,8 @@ class NakoCompiler {
 
     /** @type {Set<string>} */
     this.usedFuncs = new Set()
+
+    this.setFunc = this.addFunc  // エイリアス
   }
 
   get log () {
@@ -760,7 +762,6 @@ class NakoCompiler {
     this.pluginFunclist[key] = cloneAsJSON(this.funclist[key])
     this.__varslist[0][key] = fn
   }
-  setFunc = this.addFunc  // エイリアス
 
   /**
    * プラグイン関数を参照する
