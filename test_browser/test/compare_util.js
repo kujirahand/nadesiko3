@@ -28,4 +28,23 @@ const waitTimer = (second) => {
   })
 }
 
-export { CompareUtil, waitTimer, assert }
+/**
+ * 5秒たつかfがエラーを投げなくなるまで繰り返す。呼び出すときは必ずawaitすること。
+ * @type {<T>(f: () => Promise<T>) => Promise<T>}
+ */
+const retry = async (f) => {
+  const startTime = Date.now()
+  while (true) {
+    try {
+      return await f()
+    } catch (err) {
+      if (Date.now() - startTime < 5000) {
+        await waitTimer(0.1)
+        continue
+      }
+      throw err
+    }
+  }
+}
+
+export { CompareUtil, waitTimer, assert, retry }

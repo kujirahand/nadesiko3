@@ -2,7 +2,7 @@ const assert = require('assert')
 const path = require('path')
 const CNako3 = require('../src/cnako3')
 const NakoCompiler = require('../src/nako3')
-const { NakoSyntaxError, NakoRuntimeError, NakoIndentError, LexErrorWithSourceMap } = require('../src/nako_errors')
+const { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } = require('../src/nako_errors')
 
 describe('error_message', () => {
   const nako = new NakoCompiler()
@@ -31,7 +31,7 @@ describe('error_message', () => {
       cmp(`\n「こんに{ちは」と表示する`, [
         '2行目',
         'main.nako3',
-      ], LexErrorWithSourceMap)
+      ], NakoLexerError)
     })
   })
 
