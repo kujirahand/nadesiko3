@@ -37,6 +37,12 @@ describe('side_effects_test', () => {
         nako.runReset(`●足すとは\nここまで`, 'main.nako3')
         assert.strictEqual(nako.runReset(`1と2を足して表示`, 'main.nako3').log, `3`)
     })
+    it('addFuncで設定した関数の上書き', () => {
+        const nako = new NakoCompiler()
+        nako.addFunc('hoge', [], () => 1, false)
+        assert.strictEqual(nako.runReset(`●hogeとは\n2を戻す\nここまで\nhogeを表示`, 'main.nako3').log, '2')
+        assert.strictEqual(nako.runReset(`hogeを表示`, 'main.nako3').log, '1')
+    })
     it('プラグインの取り込み', () => {
         const nako = new CNako3({ nostd: true })
         nako.silent = true
