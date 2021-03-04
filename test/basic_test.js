@@ -182,7 +182,11 @@ describe('basic', () => {
   it('空白で区切って文をつなげた場合', () => {
     cmp('1と2を足す 1と2を足す', '')
   })
-
+  it('return_none: true のaddFuncで定義した関数が「それ」に値を代入しないことを確認する', () => {
+    const nako = new NakoCompiler()
+    nako.addFunc('hoge', [], () => {}, true)
+    assert.strictEqual(nako.runReset('1と2を足す\nhoge\nそれを表示').log, '3')
+  })
   it('制御構文で一語関数を使う', () => {
     cmp('●一とは\n1を戻す\nここまで\nもし一ならば\n1を表示\nここまで', '1') // if
     cmp('●一とは\n1を戻す\nここまで\n一回\n1を表示\nここまで', '1') // times
