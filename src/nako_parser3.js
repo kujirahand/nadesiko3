@@ -216,7 +216,7 @@ class NakoParser extends NakoParserBase {
       const tmpI = this.index
       const b = this.yGetArg()
       const naraba = this.get()
-      if (b && naraba && naraba.type === 'ならば')
+      if (b && b.type !== 'func' && naraba && naraba.type === 'ならば')
         {return {
           type: 'op',
           operator: (naraba.value === 'でなければ') ? 'noteq' : 'eq',
