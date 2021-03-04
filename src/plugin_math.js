@@ -203,7 +203,7 @@ const PluginMath = {
       return Math.floor(Math.random() * a)
     }
   },
-  'SQRT': { // @Aの平方根を返す // @
+  'SQRT': { // @Aの平方根を返す // @SQRT
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -211,7 +211,7 @@ const PluginMath = {
       return Math.sqrt(a)
     }
   },
-  '平方根': { // @Aの平方根を返す // @
+  '平方根': { // @Aの平方根を返す // @へいほうこん
     type: 'func',
     josi: [['の']],
     pure: true,

@@ -372,7 +372,7 @@ const PluginSystem = {
       return typeof (v)
     }
   },
-  'TYPEOF': {// @変数Vの型を返す // @
+  'TYPEOF': {// @変数Vの型を返す // @TYPEOF
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -404,7 +404,7 @@ const PluginSystem = {
       return parseInt(v)
     }
   },
-  'TOINT': {// @値Vを整数に変換 // @
+  'TOINT': {// @値Vを整数に変換 // @TOINT
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -420,7 +420,7 @@ const PluginSystem = {
       return parseFloat(v)
     }
   },
-  'TOFLOAT': {// @値Vを実数に変換 // @
+  'TOFLOAT': {// @値Vを実数に変換 // @TOFLOAT
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -428,7 +428,7 @@ const PluginSystem = {
       return parseFloat(v)
     }
   },
-  'INT': {// @値Vを整数に変換 // @
+  'INT': {// @値Vを整数に変換 // @INT
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -436,7 +436,7 @@ const PluginSystem = {
       return parseInt(v)
     }
   },
-  'FLOAT': {// @値Vを実数に変換 // @
+  'FLOAT': {// @値Vを実数に変換 // @FLOAT
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -460,7 +460,7 @@ const PluginSystem = {
       return parseInt(a).toString(16)
     }
   },
-  'RGB': { // @HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255 // @
+  'RGB': { // @HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255 // @RGB
     type: 'func',
     josi: [['と'], ['の'], ['で']],
     pure: true,
@@ -474,7 +474,7 @@ const PluginSystem = {
   },
 
   // @論理演算
-  '論理OR': { // @(ビット演算で)AとBの論理和を返す(v1非互換)。 // @
+  '論理OR': { // @(ビット演算で)AとBの論理和を返す(v1非互換)。 // @ろんりOR
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
@@ -482,7 +482,7 @@ const PluginSystem = {
       return (a || b)
     }
   },
-  '論理AND': { // @(ビット演算で)AとBの論理積を返す(v1非互換)。日本語の「AかつB」に相当する // @
+  '論理AND': { // @(ビット演算で)AとBの論理積を返す(v1非互換)。日本語の「AかつB」に相当する // @ろんりAND
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
@@ -490,7 +490,7 @@ const PluginSystem = {
       return (a && b)
     }
   },
-  '論理NOT': { // @値Vが0ならば1、それ以外ならば0を返す(v1非互換) // @
+  '論理NOT': { // @値Vが0ならば1、それ以外ならば0を返す(v1非互換) // @ろんりNOT
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -500,7 +500,7 @@ const PluginSystem = {
   },
 
   // @ビット演算
-  'OR': { // @(ビット演算で)AとBの論理和を返す。 // @
+  'OR': { // @(ビット演算で)AとBの論理和を返す。 // @OR
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
@@ -508,7 +508,7 @@ const PluginSystem = {
       return (a | b)
     }
   },
-  'AND': { // @(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する // @
+  'AND': { // @(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する // @AND
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
@@ -516,7 +516,7 @@ const PluginSystem = {
       return (a & b)
     }
   },
-  'XOR': {// @(ビット演算で)AとBの排他的論理和を返す。// @
+  'XOR': {// @(ビット演算で)AとBの排他的論理和を返す。// @XOR
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
@@ -524,7 +524,7 @@ const PluginSystem = {
       return (a ^ b)
     }
   },
-  'NOT': {// @(ビット演算で)vの各ビットを反転して返す。// @
+  'NOT': {// @(ビット演算で)vの各ビットを反転して返す。// @NOT
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -532,7 +532,7 @@ const PluginSystem = {
       return (~v)
     }
   },
-  'SHIFT_L': { // @VをAビット左へシフトして返す // @
+  'SHIFT_L': { // @VをAビット左へシフトして返す // @SHIFT_L
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
@@ -540,7 +540,7 @@ const PluginSystem = {
       return (a << b)
     }
   },
-  'SHIFT_R': { // @VをAビット右へシフトして返す(符号を維持する) // @
+  'SHIFT_R': { // @VをAビット右へシフトして返す(符号を維持する) // @SHIFT_R
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
@@ -548,7 +548,7 @@ const PluginSystem = {
       return (a >> b)
     }
   },
-  'SHIFT_UR': { // @VをAビット右へシフトして返す(符号を維持しない、0で埋める) // @
+  'SHIFT_UR': { // @VをAビット右へシフトして返す(符号を維持しない、0で埋める) // @SHIFT_UR
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
@@ -584,7 +584,7 @@ const PluginSystem = {
       return String.fromCodePoint(v)
     }
   },
-  'ASC': { // @文字列Vの最初の文字の文字コードを返す // @
+  'ASC': { // @文字列Vの最初の文字の文字コードを返す // @ASC
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -665,7 +665,7 @@ const PluginSystem = {
       return cnt
     }
   },
-  'MID': {// @文字列SのA文字目からCNT文字を抽出する // @
+  'MID': {// @文字列SのA文字目からCNT文字を抽出する // @MID
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を']],
     pure: true,
@@ -683,7 +683,7 @@ const PluginSystem = {
       return (String(s).substr(a - 1, cnt))
     }
   },
-  'LEFT': {// @文字列Sの左端からCNT文字を抽出する // @
+  'LEFT': {// @文字列Sの左端からCNT文字を抽出する // @LEFT
     type: 'func',
     josi: [['の', 'で'], ['だけ']],
     pure: true,
@@ -699,7 +699,7 @@ const PluginSystem = {
       return (String(s).substr(0, cnt))
     }
   },
-  'RIGHT': {// @文字列Sの右端からCNT文字を抽出する // @
+  'RIGHT': {// @文字列Sの右端からCNT文字を抽出する // @RIGHT
     type: 'func',
     josi: [['の', 'で'], ['だけ']],
     pure: true,
