@@ -121,6 +121,9 @@ function cbRangeComment (src) {
   return {src: src, res: res, josi: josi, numEOL: numEOL}
 }
 
+/**
+ * @param {string} src
+ */
 function cbWordParser(src, isTrimOkurigana = true) {
   /*
     kanji    = [\u3005\u4E00-\u9FCF]
@@ -158,6 +161,11 @@ function cbWordParser(src, isTrimOkurigana = true) {
       continue
     }
     break // other chars
+  }
+  // 「等しい間」や「一致する間」なら「間」をsrcに戻す。ただし「システム時間」はそのままにする。
+  if (/[ぁ-ん]間$/.test(res)) {
+    src = res.charAt(res.length - 1) + src
+    res = res.slice(0, -1)
   }
   // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
   if (isTrimOkurigana) {
