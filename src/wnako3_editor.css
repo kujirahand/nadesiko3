@@ -188,3 +188,26 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
+
+
+/*
+ * ※があるとカーソルがずれる問題の修正
+ * 
+ * フォントの作成方法:
+ * 1. Font Forge を開いて "New" で新しいフォントを作成
+ * 2. Encoding > Reencode > Custom
+ * 3. 左上のマスを右クリックして Glyph Info を Glyph Name: referencemark、Unicode Value: U+203B に変更
+ * 4. 同じマスをダブルクリックして、グリフを作る。https://fontforge.org/docs/tutorial/editexample.html を参照。フォント幅は半角なら500付近にする。
+ * 5. Element > Font Info でフォント名を設定する
+ * 6. woffでエクスポートする
+ */
+@font-face {
+    font-family: 'nako3editorfix';
+    font-style: normal;
+    font-weight: 400;
+    src: url("./nako3editorfix.woff");
+    unicode-range: U+203B; /* 「※」のフォントだけを自作フォントで置換 */
+}
+.ace_editor.nako3_editor {
+    font-family: 'nako3editorfix', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
