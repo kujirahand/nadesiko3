@@ -396,7 +396,7 @@ const PluginSystem = {
       return String(v)
     }
   },
-  'TOSTR': { // @値Vを文字列に変換 // @とぅーすとりんぐ
+  'TOSTR': { // @値Vを文字列に変換 // @TOSTR
     type: 'func',
     josi: [['を']],
     pure: true,
