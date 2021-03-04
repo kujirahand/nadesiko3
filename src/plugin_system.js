@@ -452,7 +452,7 @@ const PluginSystem = {
       return isNaN(v)
     }
   },
-  'HEX': {// @値Vを16進数に変換 // @
+  'HEX': {// @値Vを16進数に変換 // @HEX
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -575,7 +575,7 @@ const PluginSystem = {
       return String(s).indexOf(a) + 1
     }
   },
-  'CHR': { // @文字コードから文字を返す // @
+  'CHR': { // @文字コードから文字を返す // @CHR
     type: 'func',
     josi: [['の']],
     pure: true,

@@ -7,7 +7,7 @@ const PluginMath = {
     }
   },
   // @三角関数
-  'SIN': {// @ラジアン単位VのSINを求める // @
+  'SIN': {// @ラジアン単位VのSINを求める // @SIN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -15,7 +15,7 @@ const PluginMath = {
       return Math.sin(v)
     }
   },
-  'COS': {// @ラジアン単位VのCOSを求める // @
+  'COS': {// @ラジアン単位VのCOSを求める // @COS
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -23,7 +23,7 @@ const PluginMath = {
       return Math.cos(v)
     }
   },
-  'TAN': {// @ラジアン単位VのTANを求める // @
+  'TAN': {// @ラジアン単位VのTANを求める // @TAN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -31,7 +31,7 @@ const PluginMath = {
       return Math.tan(v)
     }
   },
-  'ARCSIN': {// @ラジアン単位VのARCSINを求める // @
+  'ARCSIN': {// @ラジアン単位VのARCSINを求める // @ARCSIN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -39,7 +39,7 @@ const PluginMath = {
       return Math.asin(v)
     }
   },
-  'ARCCOS': {// @ラジアン単位VのARCCOSを求める // @
+  'ARCCOS': {// @ラジアン単位VのARCCOSを求める // @ARCCOS
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -47,7 +47,7 @@ const PluginMath = {
       return Math.acos(v)
     }
   },
-  'ARCTAN': {// @ラジアン単位VのARCTANを求める // @
+  'ARCTAN': {// @ラジアン単位VのARCTANを求める // @ARCTAN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -55,7 +55,7 @@ const PluginMath = {
       return Math.atan(v)
     }
   },
-  'RAD2DEG': {// @ラジアンから度に変換 // @
+  'RAD2DEG': {// @ラジアンから度に変換 // @RAD2DEG
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -63,7 +63,7 @@ const PluginMath = {
       return v / Math.PI * 180
     }
   },
-  'DEG2RAD': { // @度からラジアンに変換 // @
+  'DEG2RAD': { // @度からラジアンに変換 // @DEG2RAD
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -89,7 +89,7 @@ const PluginMath = {
   },
 
   // @算術関数
-  'SIGN': { // @Vが0なら0を、0超なら1を、0未満なら-1を返す // @
+  'SIGN': { // @Vが0なら0を、0超なら1を、0未満なら-1を返す // @SIGN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -105,7 +105,7 @@ const PluginMath = {
       return sys.__exec('SIGN', [v])
     }
   },
-  'ABS': { // @Vの絶対値を返す // @
+  'ABS': { // @Vの絶対値を返す // @ABS
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -121,7 +121,7 @@ const PluginMath = {
       return Math.abs(a)
     }
   },
-  'EXP': { // @e（自然対数の底）の A 乗の値を返す // @
+  'EXP': { // @e（自然対数の底）の A 乗の値を返す // @EXP
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -129,7 +129,7 @@ const PluginMath = {
       return Math.exp(a)
     }
   },
-  'HYPOT': { // @直角三角形の二辺の長さA,Bから斜辺を求めて返す。 // @
+  'HYPOT': { // @直角三角形の二辺の長さA,Bから斜辺を求めて返す。 // @HYPOT
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
@@ -145,7 +145,7 @@ const PluginMath = {
       return Math.hypot(a, b)
     }
   },
-  'LN': { // @実数式 A の自然対数（Ln(A) = 1）を返す // @
+  'LN': { // @実数式 A の自然対数（Ln(A) = 1）を返す // @LN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -153,7 +153,7 @@ const PluginMath = {
       return Math.log(a)
     }
   },
-  'LOG': { // @Aの自然対数（底はE）を返す // @
+  'LOG': { // @Aの自然対数（底はE）を返す // @LOG
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -161,7 +161,7 @@ const PluginMath = {
       return Math.log(a)
     }
   },
-  'LOGN': { // @指定された底AでBの対数を計算して返す // @
+  'LOGN': { // @指定された底AでBの対数を計算して返す // @LOGN
     type: 'func',
     josi: [['で'], ['の']],
     pure: true,
@@ -171,7 +171,7 @@ const PluginMath = {
       return Math.log(b) / Math.log(a)
     }
   },
-  'FRAC': { // @実数Aの小数部分を返す // @
+  'FRAC': { // @実数Aの小数部分を返す // @FRAC
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -221,7 +221,7 @@ const PluginMath = {
   },
 
   // @数値切上切捨丸め
-  'ROUND': { // @実数型の値Vを丸めてもっとも近い整数値を返す // @
+  'ROUND': { // @実数型の値Vを丸めてもっとも近い整数値を返す // @ROUND
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -264,7 +264,7 @@ const PluginMath = {
       return Math.round(a * base) / base
     }
   },
-  'CEIL': { // @数値を正の無限大方向へ切り上げて返す。 // @
+  'CEIL': { // @数値を正の無限大方向へ切り上げて返す。 // @CEIL
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -280,7 +280,7 @@ const PluginMath = {
       return Math.ceil(v)
     }
   },
-  'FLOOR': { // @数値を負の無限大方向へ切り下げて返す。 // @
+  'FLOOR': { // @数値を負の無限大方向へ切り下げて返す。 // @FLOOR
     type: 'func',
     josi: [['を']],
     pure: true,
