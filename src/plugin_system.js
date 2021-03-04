@@ -53,6 +53,14 @@ const PluginSystem = {
       sys.__interval = []
     }
   },
+  '!クリア': {
+    type: 'func',
+    josi: [],
+    pure: false,
+    fn: function (sys) {
+      sys.__exec('全タイマー停止', [sys])
+    }
+  },
 
   // @システム定数
   'ナデシコバージョン': {type: 'const', value: '?'}, // @なでしこばーじょん

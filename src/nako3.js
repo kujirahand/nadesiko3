@@ -711,9 +711,11 @@ class NakoCompiler {
       } else {
         throw new Error('プラグインの追加でエラー。')
       }
-      if (key !== '初期化') {
-        this.commandlist.add(key)
+      // コマンドを登録するか?
+      if (key === '初期化' || key.substr(0, 1) === '!' ) { // 登録しない関数名
+        continue
       }
+      this.commandlist.add(key)
     }
   }
 
@@ -747,6 +749,19 @@ class NakoCompiler {
     this.addPluginObject(objName, po, persistent)
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = fpath
+    }
+  }
+
+  /**
+   * 毎プラグインの「!クリア」関数を実行
+   */
+  clearEachPlugins () {
+    const clearName = '!クリア'
+    for (const pname in this.pluginfiles) {
+      const po = this.__module[pname]
+      if (po[clearName] && po[clearName].fn) {
+        po[clearName].fn(this)
+      }
     }
   }
 

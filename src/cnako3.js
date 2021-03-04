@@ -148,6 +148,7 @@ class CNako3 extends NakoCompiler {
     }
     try {
       this.runReset(src, opt.mainfile)
+      this.clearEachPlugins()
     } catch (e) {
       if (opt.debug || opt.trace) {
         throw e
