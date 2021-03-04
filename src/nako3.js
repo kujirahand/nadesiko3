@@ -330,6 +330,11 @@ class NakoCompiler {
    * 環境のリセット
    */
   reset () {
+    // プラグイン関数の環境リセット
+    if (this.__module.plugin_system){
+      this.clearEachPlugins()
+    }
+
     // スタックのグローバル変数とローカル変数を初期化
     this.__varslist = [this.__varslist[0], {}, {}]
     this.__v0 = this.__varslist[0]
