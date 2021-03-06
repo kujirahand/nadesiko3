@@ -55,7 +55,7 @@
     <script>
 /** @type {import('../src/wnako3.js')} */
 const nako3 = navigator.nako3
-const { editor, editorMarkers, editorTabs, retokenize, run } = nako3.setupEditor('editor')
+const { editor, editorMarkers, editorTabs, retokenize, run, codeLensListeners } = nako3.setupEditor('editor')
 
 /** @type {Map<number, HTMLButtonElement>} */
 const tabButtons = new Map()
@@ -125,6 +125,19 @@ document.getElementById('run').addEventListener('click', () => {
         localFiles[`${k}.nako3`] = v.content
     }
     run({ outputContainer: document.getElementById('output'), file: `${activeFile}.nako3`, localFiles })
+})
+
+// テスト実行
+codeLensListeners.push({
+    name: 'test',
+    callback: (/** @type {string | undefined} */testName) => {
+        /** @type {Record<string, string>} */
+        const localFiles = {}
+        for (const [k, v] of hiddenTabStates) {
+            localFiles[`${k}.nako3`] = v.content
+        }
+        run({ outputContainer: document.getElementById('output'), file: `${activeFile}.nako3`, localFiles, method: 'test', testName })
+    },
 })
 
 // 1.nako3の値を設定する

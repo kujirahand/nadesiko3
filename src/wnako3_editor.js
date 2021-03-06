@@ -23,6 +23,7 @@ const NakoPrepare = require('./nako_prepare')
  *     container: HTMLElement
  *     wnako3EditorId?: number
  *     getCursorPosition(): { row: number, column: number }
+ *     commands: { addCommand(data: { name: string, exec: (editor: AceEditor, args: any[]) => void }): void }
  * }} AceEditor
  * 
  * @typedef {import("./nako_lexer").TokenWithSourceMap} TokenWithSourceMap
@@ -55,6 +56,8 @@ const NakoPrepare = require('./nako_prepare')
  * 
  * @typedef {string} TokenType
  * @typedef {{ type: TokenType, value: string, docHTML: string | null }} EditorToken
+ *
+ * @typedef {{ start: { row: number }, command: { id: string, title: string, arguments: string[] } }} CodeLens
  */
 
 /**
@@ -999,6 +1002,24 @@ class LanguageFeatures {
     }
 
     /**
+     * @param {AceDocument} doc
+     * @returns {CodeLens[]}
+     */
+    static getCodeLens(doc) {
+        const results = []
+        for (const [row, line] of Array.from(doc.getAllLines().entries())) {
+            const matches = /^[ 　・\t]*●テスト:(.+?)(?:とは|$)/.exec(line)
+            if (matches !== null) {
+                results.push({
+                    start: { row },
+                    command: { title: 'テストを実行', id: 'runTest', arguments: [matches[1]] }
+                })
+            }
+        }
+        return results
+    }
+
+    /**
      * @param {string} code
      * @returns {ReturnType<getBlockStructure>}
      * @private
@@ -1247,9 +1268,8 @@ let editorIdCounter = 0
  * @param {string} id HTML要素のid
  * @param {import('./wnako3')} nako3
  * @param {any} ace
- * @param {string} [defaultFileName]
  */
-function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
+function setupEditor (id, nako3, ace) {
     /** @type {AceEditor} */
     const editor = ace.edit(id)
     const element = document.getElementById(id)
@@ -1459,6 +1479,29 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
     slowSpeedMessage.innerHTML = '<span>エディタの|応答速度が|低下したため|シンタックス|ハイライトを|無効化|しました。</span>'.replace(/\|/g, '</span><span>')
     buttonContainer.appendChild(slowSpeedMessage)
 
+    // テストの定義の上に「テストを実行」ボタンを表示する
+    /** @type {{ name: 'test', callback: (testName: string | undefined) => void }[]} */
+    const codeLensListeners = []
+    try {
+        const CodeLens = ace.require('ace/ext/code_lens')
+        editor.setOption("enableCodeLens", true)
+        editor.commands.addCommand({
+            name: 'runTest',
+            exec: (/** @type {AceEditor} */editor, /** @type {any[]} */args) => {
+                codeLensListeners
+                    .filter((v) => v.name === 'test')
+                    .forEach((f) => f.callback(args[0]))
+            }
+        });
+        CodeLens.registerCodeLensProvider(editor, {
+            provideCodeLenses: (/** @type {Session} */session, /** @type {(_: null, arr: CodeLens[]) => void} */callback) => {
+                callback(null, codeLensListeners.some((v) => v.name === 'test') ? LanguageFeatures.getCodeLens(session.doc) : [])
+            }
+        })
+    } catch (e) {
+        console.error(e) // ext/code_lens のscriptタグが読み込まれていない場合など。
+    }
+
     // 「全画面表示」ボタン
     const exitFullscreen = () => {
         editor.container.classList.remove('fullscreen')
@@ -1505,12 +1548,14 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
 
     /**
      * プログラムを実行して、エラーがあればエディタ上に波線を表示する。出力はoutputContainerに表示する。
+     * methodが'test'のとき、testNameを指定すると1つのテストだけ実行できる。
      * @param {{
      *     outputContainer?: HTMLElement
      *     file?: string
      *     preCode?: string
      *     localFiles?: Record<string, string>
      *     method?: 'runReset' | 'test' | 'compile'
+     *     testName?: string
      * }} opts
      */
     const run = (opts) => {
@@ -1524,15 +1569,20 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
             opts.outputContainer.classList.add('nako3-output-container')
         }
         const file = opts.file || 'main.nako3'
+
+        // 警告とエラーをエディタ上に表示する。
         logger.addListener('warn', ({ position, combined, level }) => {
             if (position.file === file && (level === 'warn' || level === 'error')) {
                 editorMarkers.addByError(code, { ...position, message: combined }, level)
             }
         })
+
+        // 依存ファイルを読み込む。
         const promise = nako3.loadDependencies(preCode + code, file, preCode, opts.localFiles || {})
             .then(() => {
+                // プログラムを実行する。
                 if (opts.method === 'test') {
-                    return nako3.test(preCode + code, file, preCode)
+                    return nako3.test(preCode + code, file, preCode, opts.testName)
                 } else if (opts.method === 'compile') {
                     return nako3.compile(preCode + code, file, false, preCode)
                 } else {
@@ -1554,7 +1604,7 @@ function setupEditor (id, nako3, ace, defaultFileName = 'main.nako3') {
         return { promise, logger, code }
     }
 
-    return { editor, editorMarkers, editorTabs, retokenize, run }
+    return { editor, editorMarkers, editorTabs, retokenize, run, codeLensListeners }
 }
 
 module.exports = {
