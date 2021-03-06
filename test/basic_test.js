@@ -212,4 +212,13 @@ describe('basic', () => {
         // ---
         '1')
   })
+  it('無名関数が警告を出す問題の修正 #841', () => {
+    let log = ''
+    nako.logger.addListener('warn', ({ noColor }) => { log += noColor })
+    nako.parse(
+      'f = 関数(x) それは、x。ここまで。\n' +
+      'g = 関数(x) それは、x。ここまで。\n'
+      , 'main.nako3')
+    assert.strictEqual(log, '')
+  })
 })
