@@ -4,7 +4,7 @@ const NakoSyntaxError = require('../src/nako_parser_base').NakoSyntaxError
 
 describe('関数呼び出しテスト', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)

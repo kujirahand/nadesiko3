@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3')
 
 describe('calc_test.js', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
+  // nako.logger.addSimpleLogger('trace')
   const cmp = (code, res) => {
     if (nako.debug) {
       console.log('code=' + code)

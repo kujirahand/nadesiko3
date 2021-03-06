@@ -48,13 +48,13 @@ describe('bundled test', () => {
               if (rsltHead) {
                 rslt = rsltHead.parentNode.querySelector('.info')
                 if (rslt) {
-                  assert.ok(/こんにちは！.+9/m.test(rslt.innerHTML), '文字列「こんにちは！」と「9」が出力エリアに表示されていません。')
+                  assert.ok(/こんにちは！\s*<br>\s*9/.test(rslt.innerHTML), 'no cntain "こんにちは！" and "9" in result area')
                   resolve()
                 } else {
-                  assert.fail('.infoが存在しません。')
+                  assert.fail('no element result area')
                 }
               } else {
-                assert.fail('.edit_headを見つけられませんでした。')
+                assert.fail('no element result header')
               }
             } catch (err) {
               reject(err)

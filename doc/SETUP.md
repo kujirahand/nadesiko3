@@ -111,7 +111,12 @@ export PATH=$PATH:$NAKO_HOME/src
 $ cnako3 $NAKO_HOME/batch/pickup_command.nako
 ```
 
-テストを実行する場合には、 `-t` (`--test`) オプションを付けてcnako3を実行します。
+テストを実行する場合には、 `-t` (`--test`) オプションを付与した状態でcnako3を実行し、出力されたテスト用コードをmochaで実行します。
+
+```
+$ cnako3 -t hoge.nako3
+$ mocha hoge.spec.js
+```
 
 ### デモプログラムを動かす方法
 

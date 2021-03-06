@@ -9,7 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js" integrity="sha512-8qx1DL/2Wsrrij2TWX5UzvEaYOFVndR7BogdpOyF4ocMfnfkw28qt8ULkXD9Tef0bLvh3TpnSAljDC7uyniEuQ==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-options.min.js" integrity="sha512-oHR+WVzBiVZ6njlMVlDDLUIOLRDfUUfRQ55PfkZvgjwuvGqL4ohCTxaahJIxTmtya4jgyk0zmOxDMuLzbfqQDA==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-code_lens.min.js" integrity="sha512-gsDyyKTnOmSWRDzUbpYcPjzVsEyFGSWeWefzVKvbMULPR2ElIlKKsOtU3ycfybN9kncZXKLFSsUiG3cgJUbc/g==" crossorigin="anonymous"></script>
     <script src="../release/wnako3.js"></script>
     <script src="../release/version.js"></script>
     <script src="../release/plugin_markup.js"></script>
@@ -55,7 +54,7 @@
     <script>
 /** @type {import('../src/wnako3.js')} */
 const nako3 = navigator.nako3
-const { editor, editorMarkers, editorTabs, retokenize, run, codeLensListeners } = nako3.setupEditor('editor')
+const { editor, editorMarkers, editorTabs, retokenize, run } = nako3.setupEditor('editor')
 
 /** @type {Map<number, HTMLButtonElement>} */
 const tabButtons = new Map()
@@ -125,19 +124,6 @@ document.getElementById('run').addEventListener('click', () => {
         localFiles[`${k}.nako3`] = v.content
     }
     run({ outputContainer: document.getElementById('output'), file: `${activeFile}.nako3`, localFiles })
-})
-
-// テスト実行
-codeLensListeners.push({
-    name: 'test',
-    callback: (/** @type {string | undefined} */testName) => {
-        /** @type {Record<string, string>} */
-        const localFiles = {}
-        for (const [k, v] of hiddenTabStates) {
-            localFiles[`${k}.nako3`] = v.content
-        }
-        run({ outputContainer: document.getElementById('output'), file: `${activeFile}.nako3`, localFiles, method: 'test', testName })
-    },
 })
 
 // 1.nako3の値を設定する

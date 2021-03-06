@@ -4,7 +4,7 @@ const PluginCSV = require('../src/plugin_csv')
 
 describe('plugin_csv_test', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
+  // nako.logger.addSimpleLogger('trace')
   nako.addPluginObject('PluginCSV', PluginCSV)
   
   const cmp = (code, res) => {
