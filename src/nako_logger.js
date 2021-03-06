@@ -73,7 +73,10 @@ class NakoLogger {
      */
     send(level, nodeConsole, position, html, browserConsole) {
         const converted = NakoColors.convertColorTextFormat(nodeConsole)
-
+        let style = ''
+        if (nodeConsole.includes('\n')) {
+            style += 'border-top: 1px solid #8080806b; border-bottom: 1px solid #8080806b;'
+        }
         // 送信
         this.listeners
             .filter((l) => l.includeHigherLevels ? (levels.indexOf(l.level) <= levels.indexOf(level)) : l.level === level)
@@ -81,7 +84,7 @@ class NakoLogger {
                 noColor: converted.noColor,
                 nodeConsole: converted.nodeConsole,
                 browserConsole: browserConsole || converted.browserConsole,
-                html: '<div>' + (html || converted.html) + '</div>',
+                html: `<div style="${style}">` + (html || converted.html) + '</div>',
                 level,
                 position: position || {},
             }) })
