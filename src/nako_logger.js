@@ -37,19 +37,19 @@ class NakoLogger {
 
     /** 本体開発時のデバッグ情報（debugより更に詳細な情報）
      * @param {string} message @param {Position | null} [position] */
-    trace(message, position = null) { this.send('trace', `${NakoColors.color.red}[デバッグ情報（詳細）]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
+    trace(message, position = null) { this.send('trace', `${NakoColors.color.bold}[デバッグ情報（詳細）]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
 
     /** 本体開発時のデバッグ情報
      * @param {string} message @param {Position | null} [position] */
-    debug(message, position = null) { this.send('debug', `${NakoColors.color.red}[デバッグ情報]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
+    debug(message, position = null) { this.send('debug', `${NakoColors.color.bold}[デバッグ情報]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
 
     /** ユーザープログラムのデバッグ情報（あまり重要ではないもの）
      * @param {string} message @param {Position | null} [position] */
-    info(message, position = null) { this.send('info', `${NakoColors.color.red}[情報]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
+    info(message, position = null) { this.send('info', `${NakoColors.color.bold}${NakoColors.color.blue}[情報]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
 
     /** ユーザープログラムのデバッグ情報（重要なもの）
      * @param {string} message @param {Position | null} [position] */
-    warn(message, position = null) { this.send('warn', `${NakoColors.color.red}[警告]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
+    warn(message, position = null) { this.send('warn', `${NakoColors.color.bold}${NakoColors.color.green}[警告]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position) }
 
     /** エラーメッセージ
      * @param {string | Error} message @param {Position | null} [position] */
@@ -60,7 +60,7 @@ class NakoLogger {
         } else if (message instanceof Error) {
             message = message.message
         }
-        this.send('error', `${NakoColors.color.red}[エラー]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position || /** @type {Position} */(message))
+        this.send('error', `${NakoColors.color.bold}${NakoColors.color.red}[エラー]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position || /** @type {Position} */(message))
     }
 
     /**
