@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js" integrity="sha512-8qx1DL/2Wsrrij2TWX5UzvEaYOFVndR7BogdpOyF4ocMfnfkw28qt8ULkXD9Tef0bLvh3TpnSAljDC7uyniEuQ==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-options.min.js" integrity="sha512-oHR+WVzBiVZ6njlMVlDDLUIOLRDfUUfRQ55PfkZvgjwuvGqL4ohCTxaahJIxTmtya4jgyk0zmOxDMuLzbfqQDA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-code_lens.min.js" integrity="sha512-gsDyyKTnOmSWRDzUbpYcPjzVsEyFGSWeWefzVKvbMULPR2ElIlKKsOtU3ycfybN9kncZXKLFSsUiG3cgJUbc/g==" crossorigin="anonymous"></script>
     <script src="../release/wnako3.js"></script>
     <script src="../release/version.js"></script>
     <script src="../release/plugin_markup.js"></script>
@@ -28,7 +29,6 @@
     「こんにちは」を表示
 ここまで
 </div>
-<br>
 インデント構文
 <div id="editor2">！インデント構文
 Nを1から3まで繰り返す
@@ -41,29 +41,31 @@ Nを1から3まで繰り返す
 範囲コメント
 */
 </div>
-<br>
 コンパイルエラーの表示
 <div id="editor3">
 　　「{」を表示
 </div>
-<br>
 readonly
 <div id="editor4" data-nako3-readonly="true">1+2を表示
 </div>
-<br>
 コンパイルエラーの表示の無効化
 <div id="editor5" data-nako3-disable-marker="true">
 「{」を表示
 </div>
 エディタのリサイズ
 <div id="editor8" data-nako3-resizable="true"></div>
-<br>
 長いプログラム
 <div id="editor6"></div>
-<br>
-実行時エラーの表示<br>
+実行時エラーの表示
 <div id="editor7">Aを表示
 1のエラー発生
+</div>
+テストの定義にcode lensを表示する
+<div id="editor9">●テスト:足すとは
+ここまで
+
+●テスト:引くとは
+ここまで
 </div>
     <script>
 // text.repeat(n)
@@ -82,6 +84,7 @@ navigator.nako3.setupEditor("editor5")
 navigator.nako3.setupEditor("editor6").editor.setValue(repeat("A=1\nB=2\nA+Bを表示\n", 200), -1)
 navigator.nako3.setupEditor("editor7").run({ preCode: 'A=1\n' }).promise  // 他のエディタも連続して実行するならこれをawaitすること。
 navigator.nako3.setupEditor("editor8").editor.setValue(repeat("A=1\nB=2\nA+Bを表示\n", 30), -1)
+navigator.nako3.setupEditor("editor9").codeLensListeners.push({ name: 'test', callback: function () {} })
     </script>
 </body>
 </html>

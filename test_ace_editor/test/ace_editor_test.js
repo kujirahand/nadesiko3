@@ -144,4 +144,33 @@ describe('ace editor test', () => {
       assert.strictEqual(document.querySelector('#editor1-output').innerText.trim(), 'こんにちは')
     })
   })
+  describe('code lens', () => {
+    it('テストの定義の上に実行ボタンが表示される', () => {
+      assert.strictEqual(document.querySelectorAll('#editor12 .ace_codeLens').length, 2)
+    })
+    it('テストボタンをクリックするとcallbackが呼ばれる', () => {
+      assert.strictEqual(window.codeLensClicked, undefined)
+      // 1つ目のテスト定義のボタンを押して、「テスト:足す」のボタンが押されたことがcallbackで伝えられることを確認
+      document.querySelector('#editor12 .ace_codeLens a').dispatchEvent(new window.CustomEvent('click', { bubbles: true }))
+      assert.strictEqual(window.codeLensClicked, '足す')
+    })
+  })
+  describe('テストの実行', () => {
+    it('落ちる場合', async () => {
+      // 「足す」のテストが落ちることを確認する
+      const { promise, logger } = window.editor12.run({ method: 'test', testName: '足す' })
+      let log = ''
+      logger.addListener('stdout', ({ noColor }) => { log += noColor })
+      await promise
+      assert(log.includes('失敗 1件'))
+    })
+    it('通る場合', async () => {
+      // 「引く」のテストが通ることを確認する
+      const { promise, logger } = window.editor12.run({ method: 'test', testName: '引く' })
+      let log = ''
+      logger.addListener('stdout', ({ noColor }) => { log += noColor })
+      await promise
+      assert(log.includes('成功 1件'))
+    })
+  })
 })

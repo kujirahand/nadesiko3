@@ -121,7 +121,7 @@ const PluginSystem = {
     pure: true,
     fn: function (s, sys) {
       sys.__varslist[0]['表示ログ'] += (s + '\n')
-      sys.logger.stdout(s + '')
+      sys.logger.send('stdout', s + '')
     },
     return_none: true
   },
@@ -140,7 +140,7 @@ const PluginSystem = {
     josi: [['を', 'と']],
     pure: true,
     fn: function (s) {
-      sys.logger.stdout(s + '')
+      sys.logger.send('stdout', s + '')
     },
     return_none: true
   },

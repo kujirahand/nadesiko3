@@ -7,7 +7,7 @@ describe('plugin_math_test', () => {
 
   const cnako = new CNako3()
   cnako.silent = true
-  // cnako.logger.addSimpleLogger('trace', 'node')
+  // wnako.logger.addListener('trace', ({ nodeConsole }) => { console.log(nodeConsole) })
 
   const cmp = (code, res) => {
     for (let nako of [cnako, wnako]) {
