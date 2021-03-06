@@ -34,7 +34,7 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  * @typedef {{
  *     resetEnv: boolean
  *     resetLog: boolean
- *     testOnly: boolean
+ *     testOnly: boolean | string
  * }} CompilerOptions
  */
 
@@ -367,13 +367,13 @@ class NakoCompiler {
   /**
    * コードを生成
    * @param {Ast} ast AST
-   * @param {boolean} isTest テストかどうか
+   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    */
   generate(ast, isTest) {
     // 先になでしこ自身で定義したユーザー関数をシステムに登録
     this.gen.registerFunction(ast)
     // JSコードを生成する
-    let js = this.gen.convGen(ast, isTest)
+    let js = this.gen.convGen(ast, !!isTest)
     // JSコードを実行するための事前ヘッダ部分の生成
     js = this.gen.getDefFuncCode(isTest) + js
     this.logger.trace('--- generate ---\n' + js)
@@ -567,7 +567,7 @@ class NakoCompiler {
    * プログラムをコンパイルしてJavaScriptのコードを返す
    * @param {string} code コード (なでしこ)
    * @param {string} filename
-   * @param {boolean} isTest テストかどうか
+   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @param {string} [preCode]
    * @returns コード (JavaScript)
    */
@@ -580,7 +580,7 @@ class NakoCompiler {
    * @param {string} code
    * @param {string} fname
    * @param {boolean} isReset
-   * @param {boolean} isTest
+   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @param {string} [preCode]
    */
   _run(code, fname, isReset, isTest, preCode = '') {
@@ -635,9 +635,10 @@ class NakoCompiler {
    * @param {string} code
    * @param {string} fname
    * @param {string} [preCode]
+   * @param {string | undefined} [testName]
    */
-  test(code, fname, preCode = '') {
-    return this._runEx(code, fname, { testOnly: true }, preCode)
+  test(code, fname, preCode = '', testName = undefined) {
+    return this._runEx(code, fname, { testOnly: testName || true }, preCode)
   }
 
   /**

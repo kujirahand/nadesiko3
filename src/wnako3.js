@@ -130,8 +130,8 @@ class WebNakoCompiler extends NakoCompiler {
 
   /**
    * コードを生成 (override)
-   * @param ast AST
-   * @param isTest テストかどうか
+   * @param {import('./nako3').Ast} ast AST
+   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @returns {string} コード
    */
   generate(ast, isTest) {
@@ -159,7 +159,6 @@ class WebNakoCompiler extends NakoCompiler {
   /**
    * 指定したidのHTML要素をなでしこ言語のエディタにする。
    * @param {string} id div要素のid
-   * 
    * @see {setupEditor}
    */
   setupEditor(id) {
