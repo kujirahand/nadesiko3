@@ -194,7 +194,8 @@ class NakoLexer {
         {[josi, varnames, funcPointers] = readArgs()}
 
       // 関数定義か？
-      if (funcName !== '') {
+      // 無名関数は `関数()それは...ここまで` へ置換されるため、関数名が「それ」の場合は飛ばす。
+      if (funcName !== '' && funcName !== 'それ') {
         if (funcName in funclist) {
           logger.warn(`関数『${funcName}』は既に定義されています。`, defToken)
         }
