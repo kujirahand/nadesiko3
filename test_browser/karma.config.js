@@ -175,6 +175,7 @@ module.exports = function(config) {
     // reporter options
     mochaReporter: {
       showDiff: true,
+      timeout: 10000  // 10秒間
     },
     coverageReporter: {
       dir: '../coverage/ct',

@@ -5,7 +5,7 @@ const CNako3 = require('../src/cnako3')
 
 describe('plugin_markup_test', () => {
   const wnako = new NakoCompiler()
-  // wnako.logger.addListener('trace', ({ nodeConsole }) => { console.log(nodeConsole) })
+  // wnako.logger.addSimpleLogger('trace', 'node')
   wnako.addPluginFile('PluginMarkup', 'plugin_markup.js', PluginMarkup)
 
   const cnako = new CNako3()

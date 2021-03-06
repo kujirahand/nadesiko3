@@ -4,7 +4,7 @@ const PluginKansuji = require('../src/plugin_kansuji.js')
 
 describe('plugin_kansuji_test', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
+  // nako.logger.addSimpleLogger('trace')
   nako.addPluginFile('PluginKansuji', 'plugin_kansuji.js', PluginKansuji)
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)

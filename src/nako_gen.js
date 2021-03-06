@@ -224,7 +224,7 @@ class NakoGen {
   /**
    * プログラムの実行に必要な関数定義を書き出す(グローバル領域)
    * convGenの結果を利用するため、convGenの後に呼び出すこと。
-   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
+   * @param {boolean} isTest テストかどうか
    * @returns {string}
    */
   getDefFuncCode(isTest) {
@@ -262,13 +262,11 @@ class NakoGen {
 
     // テストの定義を行う
     if (isTest) {
-      let testCode = 'const __tests = [];\n'
+      let testCode = ''
 
       for (const key in this.nako_test) {
-        if (isTest === true || (typeof isTest === 'string' && isTest === key)) {
-          const f = this.nako_test[key].fn
-          testCode += `${f};\n;`
-        }
+        const f = this.nako_test[key].fn
+        testCode += `${f};\n;`
       }
 
       if (testCode !== '') {
@@ -361,10 +359,6 @@ class NakoGen {
     }
   }
 
-  /**
-   * @param {Ast} node
-   * @param {boolean} isTest
-   */
   convGen(node, isTest) {
     const result = this.convLineno(node, false) + this._convGen(node, true)
     if (isTest) {
@@ -681,13 +675,15 @@ class NakoGen {
 
   convDefTest(node) {
     const name = node.name.value
-    let code = `__tests.push({ name: '${name}', f: () => {\n`
+    let code = `describe('test', () => {\n` +
+      ` it('${name}', () => {\n`
 
     // ブロックを解析
     const block = this._convGen(node.block, false)
 
     code += `   ${block}\n` +
-      `}});`
+      ` })\n` +
+      `})`
 
     this.nako_test[name] = {
       'josi': node.name.meta.josi,
