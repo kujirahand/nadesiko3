@@ -3,14 +3,7 @@ import NakoCompiler from '../../src/nako3.js'
 import PluginBrowser from '../../src/plugin_browser'
 import { importStatus } from './import_plugin_checker.js'
 import PluginWebWorker from '../../src/plugin_webworker'
-
-const waitTimer = (second) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve()
-    }, second * 1000)
-  })
-}
+import { retry } from './compare_util'
 
 describe('plugin_webworker_test', () => {
   let nako = null
@@ -54,10 +47,8 @@ Wに「あいうえお」をNAKOワーカーデータ送信
 `
     nako.runReset(code)
 
-    await waitTimer(1)
-
-    assert.equal(JSON.stringify(msgs), '["かかかかか","&lt;&gt;?","おわり"]')
-  })
+    await retry(() => assert.equal(JSON.stringify(msgs), '["かかかかか","&lt;&gt;?","おわり"]'))
+  }).timeout(10000)
 
   it('web worker transport', async () => {
     const msgs = []
@@ -91,8 +82,6 @@ Wに「あいうえお」をNAKOワーカーデータ送信
 `
     nako.runReset(code)
 
-    await waitTimer(1)
-
-    assert.equal(JSON.stringify(msgs), '["あいうえお","&lt;&gt;?","おわり"]')
-  })
+    await retry(() => assert.equal(JSON.stringify(msgs), '["あいうえお","&lt;&gt;?","おわり"]'))
+  }).timeout(10000)
 })

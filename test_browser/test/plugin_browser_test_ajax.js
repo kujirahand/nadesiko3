@@ -34,7 +34,7 @@ AJAXオプションをJSONエンコードして表示する。
 
       await retry(() => td.verify(windowalert('"OK"'), { times: 1 }))
       td.reset()
-    })
+    }).timeout(10000)
 
     it('POST送信時', async () => {
       const windowalert = td.replace(window, 'alert')
@@ -51,7 +51,7 @@ AJAXオプションをJSONエンコードして表示する。
 
       await retry(() => td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 }))
       td.reset()
-    })
+    }).timeout(10000)
 
     it('POSTフォーム送信時', async () => {
       const windowalert = td.replace(window, 'alert')
@@ -68,7 +68,7 @@ AJAXオプションをJSONエンコードして表示する。
 
       await retry(() => td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 }))
       td.reset()
-    })
+    }).timeout(10000)
 
     it('AJAX送信', async () => {
       const windowalert = td.replace(window, 'alert')
@@ -83,7 +83,7 @@ AJAXオプションをJSONエンコードして表示する。
 
       await retry(() => td.verify(windowalert('"OK"'), { times: 1 }))
       td.reset()
-    })
+    }).timeout(10000)
 
     it('POST送信', async () => {
       const windowalert = td.replace(window, 'alert')
@@ -100,7 +100,7 @@ AJAXオプションをJSONエンコードして表示する。
       nako.runReset(code)
       await retry(() => td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 }))
       td.reset()
-    })
+    }).timeout(10000)
 
     it('POSTフォーム送信', async () => {
       const windowalert = td.replace(window, 'alert')
@@ -118,6 +118,6 @@ AJAXオプションをJSONエンコードして表示する。
 
       await retry(() => td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 }))
       td.reset()
-    })
+    }).timeout(10000)
   })
 }
