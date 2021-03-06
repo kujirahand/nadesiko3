@@ -121,7 +121,7 @@ const PluginSystem = {
     pure: true,
     fn: function (s, sys) {
       sys.__varslist[0]['表示ログ'] += (s + '\n')
-      sys.logger.stdout(s + '')
+      sys.logger.send('stdout', s + '')
     },
     return_none: true
   },
@@ -140,7 +140,7 @@ const PluginSystem = {
     josi: [['を', 'と']],
     pure: true,
     fn: function (s) {
-      sys.logger.stdout(s + '')
+      sys.logger.send('stdout', s + '')
     },
     return_none: true
   },
@@ -361,7 +361,7 @@ const PluginSystem = {
       sys.__varslist[0]['表示ログ'] = ''
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: true })
       const out = sys.__varslist[0]['表示ログ'] + ''
-      sys.logger.stdout(out)
+      sys.logger.send('stdout', out)
       return out
     }
   },
@@ -371,7 +371,7 @@ const PluginSystem = {
     fn: function (code, sys) {
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
       const out = sys.__varslist[0]['表示ログ'] + ''
-      sys.logger.stdout(out)
+      sys.logger.send('stdout', out)
       return out
     }
   },

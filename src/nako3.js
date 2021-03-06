@@ -12,7 +12,7 @@ const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } = require('./nako_errors')
 const NakoLogger = require('./nako_logger')
-const NakoTest = require('./nako_test')
+const NakoColors = require('./nako_colors')
 
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
@@ -123,21 +123,25 @@ class NakoCompiler {
    * @param {{ name: string, f: () => void }[]} tests
    */
   _runTests(tests) {
-    let text = `テストの実行結果:\n`
+    let text = `${NakoColors.color.bold}テストの実行結果${NakoColors.color.reset}\n`
     let pass = 0
     let fail = 0
     for (const t of tests) {
         try {
             t.f()
-            text += `✔ ${t.name}\n`
+            text += `${NakoColors.color.green}✔${NakoColors.color.reset} ${t.name}\n`
             pass++
         } catch (err) {
-            text += `☓ ${t.name}: ${err.message}\n`
+            text += `${NakoColors.color.red}☓${NakoColors.color.reset} ${t.name}: ${err.message}\n`
             fail++
         }
     }
-    text += `成功 ${pass}件 失敗 ${fail}件`
-    this.logger.info(text)
+    if (fail > 0) {
+      text += `${NakoColors.color.green}成功 ${pass}件 ${NakoColors.color.red}失敗 ${fail}件`
+    } else {
+      text += `${NakoColors.color.green}成功 ${pass}件`
+    }
+    this.logger.send('stdout', text)
   }
 
   get log () {

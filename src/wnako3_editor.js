@@ -1565,15 +1565,16 @@ function setupEditor (id, nako3, ace) {
         // loggerを新しいインスタンスに置き換える。そうしないとどのエディタで起きたエラー（や警告や出力）なのかが分からない。
         const logger = nako3.replaceLogger()
         if (opts.outputContainer) {
-            logger.addHTMLLogger('info', opts.outputContainer)
+            const c = opts.outputContainer
+            logger.addListener('info', ({ html }) => { c.innerHTML += html })
             opts.outputContainer.classList.add('nako3-output-container')
         }
         const file = opts.file || 'main.nako3'
 
         // 警告とエラーをエディタ上に表示する。
-        logger.addListener('info', ({ position, combined, level }) => {
+        logger.addListener('info', ({ position, noColor, level }) => {
             if (position.file === file && (level === 'warn' || level === 'error')) {
-                editorMarkers.addByError(code, { ...position, message: combined }, level)
+                editorMarkers.addByError(code, { ...position, message: noColor }, level)
             }
         })
 
