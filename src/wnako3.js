@@ -129,22 +129,6 @@ class WebNakoCompiler extends NakoCompiler {
   }
 
   /**
-   * コードを生成 (override)
-   * @param {import('./nako3').Ast} ast AST
-   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
-   * @returns {string} コード
-   */
-  generate(ast, isTest) {
-    let code = super.generate(ast, isTest)
-
-    if (isTest && code !== '') {
-      code += '\n__self._runTests(__tests);\n'
-    }
-
-    return code
-  }
-
-  /**
    * 指定したidのHTML要素をなでしこ言語のエディタにする。
    * @param {string} id div要素のid
    * @see {setupEditor}

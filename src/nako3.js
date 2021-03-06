@@ -116,6 +116,8 @@ class NakoCompiler {
     this.usedFuncs = new Set()
 
     this.setFunc = this.addFunc  // エイリアス
+
+    this.numFailures = 0
   }
 
   /**
@@ -125,7 +127,7 @@ class NakoCompiler {
   _runTests(tests) {
     let text = `${NakoColors.color.bold}テストの実行結果${NakoColors.color.reset}\n`
     let pass = 0
-    let fail = 0
+    let numFailures = 0
     for (const t of tests) {
         try {
             t.f()
@@ -133,14 +135,15 @@ class NakoCompiler {
             pass++
         } catch (err) {
             text += `${NakoColors.color.red}☓${NakoColors.color.reset} ${t.name}: ${err.message}\n`
-            fail++
+            numFailures++
         }
     }
-    if (fail > 0) {
-      text += `${NakoColors.color.green}成功 ${pass}件 ${NakoColors.color.red}失敗 ${fail}件`
+    if (numFailures > 0) {
+      text += `${NakoColors.color.green}成功 ${pass}件 ${NakoColors.color.red}失敗 ${numFailures}件`
     } else {
       text += `${NakoColors.color.green}成功 ${pass}件`
     }
+    this.numFailures = numFailures
     this.logger.send('stdout', text)
   }
 
@@ -404,6 +407,10 @@ class NakoCompiler {
     // JSコードを実行するための事前ヘッダ部分の生成
     js = this.gen.getDefFuncCode(isTest) + js
     this.logger.trace('--- generate ---\n' + js)
+    // テストの実行
+    if (js && isTest) {
+      js += '\n__self._runTests(__tests);\n'
+    }
     return js
   }
 

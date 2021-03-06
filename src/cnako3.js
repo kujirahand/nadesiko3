@@ -141,13 +141,17 @@ class CNako3 extends NakoCompiler {
       this.nakoCompile(opt, src, false)
       return
     }
-    if (opt.test) {
-      this.nakoCompile(opt, src, true)
-      return
-    }
     try {
-      this.runReset(src, opt.mainfile)
+      if (opt.test) {
+        this.loadDependencies(src, opt.mainfile, '')
+        this.test(src, opt.mainfile)
+      } else {
+        this.runReset(src, opt.mainfile)
+      }
       this.clearEachPlugins()
+      if (opt.test && this.numFailures > 0) {
+        process.exit(1)
+      }
     } catch (e) {
       if (opt.debug || opt.trace) {
         throw e
@@ -290,7 +294,7 @@ class CNako3 extends NakoCompiler {
     if (tasks !== undefined) {
       throw new Error('assertion error')
     }
-    return super.runReset(code, fname, preCode)
+    return this._runEx(code, fname, { resetLog: true }, preCode)
   }
 
   /**
