@@ -262,7 +262,7 @@ class NakoGen {
 
     // テストの定義を行う
     if (isTest) {
-      let testCode = ''
+      let testCode = 'const __tests = [];\n'
 
       for (const key in this.nako_test) {
         if (isTest === true || (typeof isTest === 'string' && isTest === key)) {
@@ -681,15 +681,13 @@ class NakoGen {
 
   convDefTest(node) {
     const name = node.name.value
-    let code = `describe('test', () => {\n` +
-      ` it('${name}', () => {\n`
+    let code = `__tests.push({ name: '${name}', f: () => {\n`
 
     // ブロックを解析
     const block = this._convGen(node.block, false)
 
     code += `   ${block}\n` +
-      ` })\n` +
-      `})`
+      `}});`
 
     this.nako_test[name] = {
       'josi': node.name.meta.josi,

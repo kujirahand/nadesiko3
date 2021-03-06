@@ -12,6 +12,7 @@ const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } = require('./nako_errors')
 const NakoLogger = require('./nako_logger')
+const NakoTest = require('./nako_test')
 
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
@@ -115,6 +116,28 @@ class NakoCompiler {
     this.usedFuncs = new Set()
 
     this.setFunc = this.addFunc  // エイリアス
+  }
+
+  /**
+   * なでしこのプログラムがテスト実行のとき呼ぶ関数
+   * @param {{ name: string, f: () => void }[]} tests
+   */
+  _runTests(tests) {
+    let text = `テストの実行結果:\n`
+    let pass = 0
+    let fail = 0
+    for (const t of tests) {
+        try {
+            t.f()
+            text += `✔ ${t.name}\n`
+            pass++
+        } catch (err) {
+            text += `☓ ${t.name}: ${err.message}\n`
+            fail++
+        }
+    }
+    text += `成功 ${pass}件 失敗 ${fail}件`
+    this.logger.info(text)
   }
 
   get log () {
