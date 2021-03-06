@@ -395,4 +395,10 @@ describe('plugin_system_test', () => {
     cmp('[1,2,3]と[2,3]が一致。もしそうなら"NG"を表示。違えば"OK"を表示。', 'OK')
     cmp('["a",2,3]と["a",2,3]が一致。もしそうなら"OK"を表示。違えば"NG"を表示。', 'OK')
   })
+  it('「ナデシコ」が空白行を出力してしまう問題の修正', () => {
+    let lineCount = 0
+    nako.logger.addListener('stdout', (data) => { lineCount++ })
+    nako.runReset('「a=1+2」をナデシコ')
+    assert.strictEqual(lineCount, 0)
+  })
 })

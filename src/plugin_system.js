@@ -361,7 +361,9 @@ const PluginSystem = {
       sys.__varslist[0]['表示ログ'] = ''
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: true })
       const out = sys.__varslist[0]['表示ログ'] + ''
-      sys.logger.send('stdout', out)
+      if (out) {
+        sys.logger.stdout(out)
+      }
       return out
     }
   },
@@ -371,7 +373,9 @@ const PluginSystem = {
     fn: function (code, sys) {
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
       const out = sys.__varslist[0]['表示ログ'] + ''
-      sys.logger.send('stdout', out)
+      if (out) {
+        sys.logger.stdout(out)
+      }
       return out
     }
   },
