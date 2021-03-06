@@ -86,6 +86,7 @@ setTimeoutで起きたエラーの表示
 </div>
 テストの定義にcode lensを表示する
 <div id="editor12">●テスト:足すとは
+    1のエラー発生
 ここまで
 
 ●テスト:引くとは
@@ -104,6 +105,7 @@ const editor9 = navigator.nako3.setupEditor("editor9")
 const editor10 = navigator.nako3.setupEditor("editor10")
 const editor11 = navigator.nako3.setupEditor("editor11")
 const editor12 = navigator.nako3.setupEditor("editor12")
+window.editor12 = editor12
 editor12.codeLensListeners.push({ name: 'test', callback: (testName) => { window.codeLensClicked = testName } })
 // editor-input-test はテスト内で初期化する
 
