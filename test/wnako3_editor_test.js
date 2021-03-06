@@ -220,4 +220,18 @@ describe('wnako3_editor_test', () => {
             )
         })
     })
+    it('テスト定義に実行ボタンを表示する', () => {
+        const out = LanguageFeatures.getCodeLens(new AceDocument(
+            '●テスト:足すとは\n' +
+            'ここまで\n' +
+            '●（AとBを）足すとは\n' +
+            'ここまで\n' +
+            '●テスト:引くとは\n' +
+            'ここまで\n'
+        ))
+        assert.deepStrictEqual(out, [
+            { start: { row: 0 }, command: { title: 'テストを実行', id: 'runTest', arguments: ['足す'] } },
+            { start: { row: 4 }, command: { title: 'テストを実行', id: 'runTest', arguments: ['引く'] } },
+        ])
+    })
 })

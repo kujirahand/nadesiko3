@@ -144,4 +144,15 @@ describe('ace editor test', () => {
       assert.strictEqual(document.querySelector('#editor1-output').innerText.trim(), 'こんにちは')
     })
   })
+  describe('テストの実行', () => {
+    it('テストの定義の上に実行ボタンが表示される', () => {
+      assert.strictEqual(document.querySelectorAll('#editor12 .ace_codeLens').length, 2)
+    })
+    it('テストボタンをクリックするとcallbackが呼ばれる', () => {
+      assert.strictEqual(window.codeLensClicked, undefined)
+      // 1つ目のテスト定義のボタンを押して、「テスト:足す」のボタンが押されたことがcallbackで伝えられることを確認
+      document.querySelector('#editor12 .ace_codeLens a').dispatchEvent(new window.CustomEvent('click', { bubbles: true }))
+      assert.strictEqual(window.codeLensClicked, '足す')
+    })
+  })
 })

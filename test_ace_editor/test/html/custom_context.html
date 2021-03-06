@@ -53,43 +53,43 @@ Aを表示
 </div>
 readonly
 <div id="editor5" data-nako3-readonly="true" data-nako3-force-syntax-highlighting="true">1+2を表示</div>
-<br>
 コンパイルエラーの表示の無効化
 <div id="editor6" data-nako3-disable-marker="true" data-nako3-force-syntax-highlighting="true">
 「{」を表示
 </div>
-<br>
-実行時エラーの表示<br>
+実行時エラーの表示
 <div id="editor7" data-nako3-force-syntax-highlighting="true">「」を表示
 1のエラー発生
 </div>
 <div id="editor7-output"></div>
-<br>
 ソースコードの取り込み
 <div id="editor8" data-nako3-force-syntax-highlighting="true">！「http://localhost:9876/test/requiretest.nako3」を取り込む
 1と2を痕跡演算する
 </div>
 <div id="editor8-output"></div>
-<br>
-警告の表示<br>
+警告の表示
 <div id="editor9" data-nako3-force-syntax-highlighting="true">aを表示</div>
 <div id="editor9-output"></div>
-<br>
-setTimeoutで起きたエラーの表示<br>
+setTimeoutで起きたエラーの表示
 <div id="editor10" data-nako3-force-syntax-highlighting="true">0.01秒後には
     1のエラー発生
 ここまで
 </div>
-<br>
-字句解析エラーの表示<br>
+字句解析エラーの表示
 <div id="editor11" data-nako3-force-syntax-highlighting="true">「{」
 </div>
 <div id="editor11-output"></div>
-<br>
 文字入力のテスト用
 <div id="editor-input-test"></div>
 <div>
     プログラムの実行
+</div>
+テストの定義にcode lensを表示する
+<div id="editor12">●テスト:足すとは
+ここまで
+
+●テスト:引くとは
+ここまで
 </div>
     <script>
 const editor1 = navigator.nako3.setupEditor("editor1")
@@ -103,7 +103,8 @@ const editor8 = navigator.nako3.setupEditor("editor8")
 const editor9 = navigator.nako3.setupEditor("editor9")
 const editor10 = navigator.nako3.setupEditor("editor10")
 const editor11 = navigator.nako3.setupEditor("editor11")
-
+const editor12 = navigator.nako3.setupEditor("editor12")
+editor12.codeLensListeners.push({ name: 'test', callback: (testName) => { window.codeLensClicked = testName } })
 // editor-input-test はテスト内で初期化する
 
 // プログラムを実行する。順番に実行しないとloadDependenciesの間にloggerが別のエディタによって置き換えられてしまい、エラーを正しく表示できない。
