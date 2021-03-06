@@ -8,7 +8,7 @@ const testFileMe = path.join(__dirname, 'plugin_node_test.js')
 
 describe('plugin_node_test', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addSimpleLogger('trace')
+  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
   const cmp = (code, res) => {

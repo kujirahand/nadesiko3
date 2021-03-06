@@ -3,7 +3,7 @@ const NakoCompiler = require('../src/nako3')
 
 describe('error_test', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addSimpleLogger('trace')
+  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.runReset(code).log, res)

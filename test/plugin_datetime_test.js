@@ -5,7 +5,7 @@ const PluginDateTime = require('../src/plugin_datetime')
 
 describe('plugin_datetime_test', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addSimpleLogger('trace')
+  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginObject('PluginDateTime', PluginDateTime)
   
   const cmp = (code, res) => {

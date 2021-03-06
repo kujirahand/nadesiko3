@@ -6,7 +6,7 @@ const { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } = r
 
 describe('error_message', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addSimpleLogger('trace')
+  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   /**
    * エラーメッセージがresArrの全ての要素を含むことを確認する。
    */

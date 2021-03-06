@@ -3,7 +3,7 @@ const CNako3 = require('../src/cnako3')
 
 describe('require_nako3_test', () => {
   const nako = new CNako3()
-  // nako.logger.addSimpleLogger('trace')
+  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.silent = true
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)

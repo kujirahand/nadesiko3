@@ -4,7 +4,7 @@ const PluginBrowser = require('../src/plugin_browser')
 
 describe('plugin_browser_test', () => {
   const nako = new NakoCompiler()
-  // nako.logger.addSimpleLogger('trace')
+  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
