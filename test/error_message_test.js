@@ -156,6 +156,15 @@ describe('error_message', () => {
         }
       )
     })
+    it('「秒後」の中でエラーが発生した場合', (done) => {
+      const nako = new NakoCompiler()
+      const logger = nako.run('0.0001秒後には\n1のエラー発生\nここまで', 'main.nako3').logger
+      logger.addListener('error', ({ level, noColor }) => {
+        assert.strictEqual(level, 'error')
+        assert.strictEqual(noColor, '[実行時エラー]main.nako3(2行目): エラー『1』が発生しました。')
+        done()
+      })
+    })
   })
   describe('インデント構文のエラー', () => {
     it('『ここまで』を使用', () => {

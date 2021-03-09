@@ -1,3 +1,4 @@
+const { NakoRuntimeError } = require('./nako_errors')
 const NakoVersion = require('./nako_version')
 
 const PluginSystem = {
@@ -1670,6 +1671,9 @@ const PluginSystem = {
         try {
           f(timerId, sys)
         } catch (e) {
+          if (!(e instanceof NakoRuntimeError)) {
+            e = new NakoRuntimeError(e, sys.__varslist[0].line)
+          }
           sys.logger.error(e)
         }
       }, parseFloat(n) * 1000)

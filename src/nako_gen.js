@@ -3,7 +3,7 @@
 //
 'use strict'
 
-const { NakoSyntaxError } = require('./nako_errors')
+const { NakoSyntaxError, NakoError, NakoRuntimeError } = require('./nako_errors')
 
 /**
  * @typedef {import("./nako3").Ast} Ast
@@ -37,6 +37,8 @@ class NakoGen {
     return {
       runtimeEnv: js,  // なでしこの実行環境ありの場合
       standalone:      // JavaScript単体で動かす場合
+        NakoError.toString() + '\n' +
+        NakoRuntimeError.toString() + '\n' +
         'this.logger = { send(level, message) { console.log(message) } };\n' +
         'this.__varslist = [{}, {}, {}];\n' +
         'this.__varslist[2];\n' +
