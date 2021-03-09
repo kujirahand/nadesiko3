@@ -42,6 +42,7 @@ class NakoGen {
         'this.__varslist = [{}, {}, {}];\n' +
         'this.__varslist[2];\n' +
         'this.__module = {};\n' +
+        'this.__locals = {};\n' +
         gen.getVarsCode() +
         js
     }

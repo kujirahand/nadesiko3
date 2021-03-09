@@ -12,7 +12,7 @@ const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } = require('./nako_errors')
 const NakoLogger = require('./nako_logger')
-const NakoColors = require('./nako_colors')
+const NakoGlobal = require('./nako_global')
 
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
@@ -34,7 +34,6 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  * 
  * @typedef {{
  *     resetEnv: boolean
- *     resetLog: boolean
  *     testOnly: boolean | string
  * }} CompilerOptions
  */
@@ -117,39 +116,6 @@ class NakoCompiler {
     this.setFunc = this.addFunc  // エイリアス
 
     this.numFailures = 0
-  }
-
-  /**
-   * なでしこのプログラムがテスト実行のとき呼ぶ関数
-   * @param {{ name: string, f: () => void }[]} tests
-   */
-  _runTests(tests) {
-    let text = `${NakoColors.color.bold}テストの実行結果${NakoColors.color.reset}\n`
-    let pass = 0
-    let numFailures = 0
-    for (const t of tests) {
-        try {
-            t.f()
-            text += `${NakoColors.color.green}✔${NakoColors.color.reset} ${t.name}\n`
-            pass++
-        } catch (err) {
-            text += `${NakoColors.color.red}☓${NakoColors.color.reset} ${t.name}: ${err.message}\n`
-            numFailures++
-        }
-    }
-    if (numFailures > 0) {
-      text += `${NakoColors.color.green}成功 ${pass}件 ${NakoColors.color.red}失敗 ${numFailures}件`
-    } else {
-      text += `${NakoColors.color.green}成功 ${pass}件`
-    }
-    this.numFailures = numFailures
-    this.logger.send('stdout', text)
-  }
-
-  get log () {
-    let s = this.__varslist[0]['表示ログ']
-    s = s.replace(/\s+$/, '')
-    return s
   }
 
   /**
@@ -608,29 +574,32 @@ class NakoCompiler {
    * @param {string} fname
    * @param {Partial<CompilerOptions>} opts
    * @param {string} [preCode]
+   * @param {NakoGlobal} [nakoGlobal] ナデシコ命令でスコープを共有するため
    */
-  _runEx(code, fname, opts, preCode = '') {
+  _runEx(code, fname, opts, preCode = '', nakoGlobal) {
+    // コンパイル
+    let js
     try {
-      const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+      const optsAll = Object.assign({ resetEnv: true, testOnly: false }, opts)
       if (optsAll.resetEnv) {this.reset()}
-      if (optsAll.resetLog) {this.clearLog()}
-      const js = this.compile(code, fname, optsAll.testOnly, preCode)
-      try {
-        this.__varslist[0].line = -1 // コンパイルエラーを調べるため
-        const func = new Function(js) // eslint-disable-line
-        func.apply(this)
-      } catch (e) {
-        this.js = js
-        if (!(e instanceof NakoRuntimeError)) {
-          throw new NakoRuntimeError(e, this.__v0 ? this.__v0.line : undefined)
-        }
-        throw e
-      }
+      js = this.compile(code, fname, optsAll.testOnly, preCode)
     } catch (e) {
       this.logger.error(e)
       throw e
     }
-    return this
+
+    // 実行
+    nakoGlobal = nakoGlobal || new NakoGlobal(this)
+    try {
+      new Function(js).apply(nakoGlobal)
+      return nakoGlobal
+    } catch (e) {
+      if (!(e instanceof NakoRuntimeError)) {
+        e = new NakoRuntimeError(e, nakoGlobal.__varslist[0].line)
+      }
+      this.logger.error(e)
+      throw e
+    }
   }
 
   /**
@@ -659,20 +628,17 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   run(code, fname, preCode = '') {
-    return this._runEx(code, fname, { resetLog: false }, preCode)
+    return this._runEx(code, fname, {}, preCode)
   }
 
   /**
    * @param {string} code
    * @param {string} fname
    * @param {string} [preCode]
+   * @deprecated
    */
-  runReset (code, fname, preCode = '') {
-    return this._runEx(code, fname, { resetLog: true }, preCode)
-  }
-
-  clearLog () {
-    this.__varslist[0]['表示ログ'] = ''
+  runReset(code, fname, preCode = '') {
+    return this.run(code, fname, preCode)
   }
 
   /**

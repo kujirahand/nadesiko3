@@ -145,7 +145,7 @@ class CNako3 extends NakoCompiler {
         this.loadDependencies(src, opt.mainfile, '')
         this.test(src, opt.mainfile)
       } else {
-        this.runReset(src, opt.mainfile)
+        this.run(src, opt.mainfile)
       }
       this.clearEachPlugins()
       if (opt.test && this.numFailures > 0) {
@@ -186,12 +186,12 @@ class CNako3 extends NakoCompiler {
       if (opt.source.indexOf('表示') < 0) {
         opt.source = '' + opt.source + 'を表示。'
       }
-      this.runReset(opt.source)
+      this.run(opt.source)
     } catch (e) {
       // エラーになったら元のワンライナーで再挑戦
       try {
         if (opt.source != org) {
-          this.runReset(org)
+          this.run(org)
         }　else {
           throw e
         }
@@ -285,12 +285,12 @@ class CNako3 extends NakoCompiler {
    * @param {string} fname
    * @param {string} [preCode]
    */
-  runReset(code, fname, preCode = '') {
+  run(code, fname, preCode = '') {
     const tasks = this.loadDependencies(code, fname, preCode)
     if (tasks !== undefined) {
       throw new Error('assertion error')
     }
-    return this._runEx(code, fname, { resetLog: true }, preCode)
+    return this._runEx(code, fname, {}, preCode)
   }
 
   /**

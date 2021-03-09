@@ -12,10 +12,6 @@ describe('plugin_system_test', () => {
     nako.logger.debug('code=' + code)
     assert.throws(() => { nako.runReset(code) }, exinfo)
   }
-  const cmd = (code) => {
-    nako.logger.debug('code=' + code)
-    nako.runReset(code)
-  }
 
   // --- test ---
   it('ナデシコエンジンを表示', () => {
@@ -382,7 +378,7 @@ describe('plugin_system_test', () => {
     cmp('Bは2;Bを表示する。;「BはB+3。Bを表示する。」をナデシコする。Bを表示する。', '5\n5')
     cmp('Bは2;Bを表示する。;「BはB+3。Bを表示する。」をナデシコ続ける。Bを表示する。', '2\n5\n5')
     cmp(`1と2を足す\n「それを表示」をナデシコする`, '3')
-})
+  })
   it('敬語 #728', () => {
     cmp('32を表示してください', '32')
     cmp('1に2を足して3を掛けて表示してください。', '9')
