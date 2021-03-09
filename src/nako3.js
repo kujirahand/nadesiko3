@@ -98,7 +98,6 @@ class NakoCompiler {
     this.lexer = new NakoLexer(this.logger)
     
     // set this
-    this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
     this.addPluginObject('PluginMath', PluginMath)
     this.addPluginObject('PluginAssert', PluginTest)
@@ -157,7 +156,7 @@ class NakoCompiler {
    * loggerを新しいインスタンスで置き換える。
    */
   replaceLogger() {
-    return this.prepare.logger = this.lexer.logger = this.parser.logger = this.gen.logger = this.logger = new NakoLogger()
+    return this.prepare.logger = this.lexer.logger = this.parser.logger = this.logger = new NakoLogger()
   }
 
   static getHeader () {
@@ -400,27 +399,6 @@ class NakoCompiler {
   }
 
   /**
-   * コードを生成
-   * @param {Ast} ast AST
-   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
-   */
-  generate(ast, isTest) {
-    // 先になでしこ自身で定義したユーザー関数をシステムに登録
-    this.gen.registerFunction(ast)
-    // JSコードを生成する
-    this.gen.reset()
-    let js = this.gen.convGen(ast, !!isTest)
-    // JSコードを実行するための事前ヘッダ部分の生成
-    js = this.gen.getDefFuncCode(isTest) + js
-    this.logger.trace('--- generate ---\n' + js)
-    // テストの実行
-    if (js && isTest) {
-      js += '\n__self._runTests(__tests);\n'
-    }
-    return js
-  }
-
-  /**
    * typeがcodeのトークンを単語に分割するための処理
    * @param {string} code
    * @param {number} line
@@ -612,8 +590,7 @@ class NakoCompiler {
    * @returns コード (JavaScript)
    */
   compile(code, filename, isTest, preCode = '') {
-    const ast = this.parse(code, filename, preCode)
-    return this.generate(ast, isTest)
+    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).runtime
   }
 
   /**
@@ -704,20 +681,11 @@ class NakoCompiler {
   }
 
   /**
-   * eval()実行前に直接JSのオブジェクトを取得する場合
-   * @returns {[*,*,*]}
-   */
-  getVarsList () {
-    const v = this.gen.getVarsList()
-    return [v[0], v[1], []]
-  }
-
-  /**
-   * 完全にJSのコードを取得する場合
+   * JavaScriptのみで動くコードを取得する場合
    * @returns {string}
    */
   getVarsCode () {
-    return this.gen.getVarsCode()
+    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).standalone
   }
 
   /**
@@ -779,7 +747,6 @@ class NakoCompiler {
       delete po['初期化']
       const initkey = `!${objName}:初期化`
       po[initkey] = def
-      this.gen.used_func.add(initkey)
     }
     this.addPlugin(po, persistent)
   }

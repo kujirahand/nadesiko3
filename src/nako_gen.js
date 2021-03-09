@@ -19,6 +19,32 @@ let lastLineNo = null
  */
 class NakoGen {
   /**
+   * @param {import('./nako3')} com
+   * @param {Ast} ast
+   * @param {boolean | string} isTest 文字列なら1つのテストだけを実行する
+   */
+  static generate(com, ast, isTest) {
+    lastLineNo = null
+    const gen = new NakoGen(com)
+
+    // ユーザー定義関数をシステムに登録する
+    gen.registerFunction(ast)
+
+    // JSコードを生成する
+    let js = gen.convGen(ast, !!isTest)
+
+    // JSコードを実行するための事前ヘッダ部分の生成
+    js = gen.getDefFuncCode(isTest) + js
+    com.logger.trace('--- generate ---\n' + js)
+
+    // テストの実行
+    if (js && isTest) {
+      js += '\n__self._runTests(__tests);\n'
+    }
+    return { runtime: js, standalone: gen.getVarsCode() }
+  }
+  
+  /**
    * @param {import('./nako3')} com コンパイラのインスタンス
    */
   constructor (com) {
@@ -140,36 +166,23 @@ class NakoGen {
     }
   }
 
+  /** @param {string} name */
   static getFuncName (name) {
     let name2 = name.replace(/[ぁ-ん]+$/, '')
     if (name2 === '') {name2 = name}
     return name2
   }
 
+  /** @param {Ast} node */
   static convPrint (node) {
     return `__print(${node});`
   }
 
+  /** @param {Ast} node */
   static convRequire (node) {
     const moduleName = node.value
     return this.convLineno(node, false) +
       `__module['${moduleName}'] = require('${moduleName}');\n`
-  }
-
-  reset () {
-    // 初期化メソッド以外の関数を削除
-    this.used_func = new Set(Array.from(this.used_func.values()).filter((v) => /^!.+:初期化$/.test(v)))
-    lastLineNo = null
-    this.loop_id = 1
-    this.varslistSet[1] = { isFunction: false, names: new Set(), readonly: new Set() } // user global
-
-    this.varsSet = { isFunction: false, names: new Set(['それ']), readonly: new Set() }
-    this.varslistSet = this.__self.__varslist.map((v) => ({ isFunction: false, names: new Set(Object.keys(v)), readonly: new Set() }))
-    this.varslistSet[2] = this.varsSet
-
-    for (const key of /** @type {(keyof NakoGen['speedMode'])[]} */(Object.keys(this.speedMode))) {
-      this.speedMode[key] = 0
-    }
   }
 
   /**
@@ -251,10 +264,6 @@ class NakoGen {
     return code
   }
 
-  getVarsList () {
-    return this.__self.__varslist
-  }
-
   /**
    * プラグイン・オブジェクトを追加
    * @param po プラグイン・オブジェクト
@@ -330,6 +339,11 @@ class NakoGen {
         }
       }
     }
+
+    // __self.__varslistの変更を反映
+    this.varsSet = { isFunction: false, names: new Set(['それ']), readonly: new Set() }
+    this.varslistSet = this.__self.__varslist.map((v) => ({ isFunction: false, names: new Set(Object.keys(v)), readonly: new Set() }))
+    this.varslistSet[2] = this.varsSet
   }
 
   /**
