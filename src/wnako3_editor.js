@@ -1215,7 +1215,7 @@ class Options {
 
         // 設定メニューは ace/ext/settings_menu.js の showSettingsMenu 関数によって開かれる。
         // showSettingsMenu 関数は new OptionPanel(editor).render() で新しい設定パネルのインスタンスを生成するため、
-        // renderメソッドに設定の保存処理を挟むことで、生成されたインスタンスにアクセスできる。
+        // renderメソッドを上書きすることで、生成されたインスタンスにアクセスできる。
         const render = OptionPanel.prototype.render
         const self = this
         OptionPanel.prototype.render = function (...args) {
