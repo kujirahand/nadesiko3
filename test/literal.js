@@ -5,12 +5,12 @@ describe('literal_test', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   const err = (code) => {
     nako.logger.debug('code=' + code)
     try {
-      nako.runReset(code)
+      nako.run(code)
     } catch (error) {
       assert.ok(error)
       return

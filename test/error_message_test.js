@@ -13,7 +13,7 @@ describe('error_message', () => {
   const cmp = (code, resArr, ErrorClass, _nako = nako) => {
     _nako.logger.debug('code=' + code)
     assert.throws(
-      () => _nako.runReset(code, path.join(__dirname, 'main.nako3')),
+      () => _nako.run(code, path.join(__dirname, 'main.nako3')),
       err => {
         assert(err instanceof ErrorClass)
         for (const res of resArr) {
@@ -114,7 +114,7 @@ describe('error_message', () => {
     })
     it('エラー位置をプロパティから取得 - 単純な例', () => {
       assert.throws(
-        () => nako.runReset('1を表示\n1のエラー発生', 'main.nako3'),
+        () => nako.run('1を表示\n1のエラー発生', 'main.nako3'),
         err => {
           assert(err instanceof NakoRuntimeError)
           assert.strictEqual(err.line, 1)  // 2行目
@@ -125,7 +125,7 @@ describe('error_message', () => {
     })
     it('エラー位置をプロパティから取得 - 前後に文がある場合', () => {
       assert.throws(
-        () => nako.runReset('1を表示\n1を表示。1のエラー発生。1を表示。', 'main.nako3'),
+        () => nako.run('1を表示\n1を表示。1のエラー発生。1を表示。', 'main.nako3'),
         err => {
           assert(err instanceof NakoRuntimeError)
           assert.strictEqual(err.line, 1)  // 2行目
@@ -136,7 +136,7 @@ describe('error_message', () => {
     })
     it('エラー位置をプロパティから取得 - 1行目の場合', () => {
       assert.throws(
-        () => nako.runReset('1のエラー発生', 'main.nako3'),
+        () => nako.run('1のエラー発生', 'main.nako3'),
         err => {
           assert(err instanceof NakoRuntimeError)
           assert.strictEqual(err.line, 0)  // 1行目
@@ -147,7 +147,7 @@ describe('error_message', () => {
     })
     it('エラー位置をプロパティから取得 - repeatTimes', () => {
       assert.throws(
-        () => nako.runReset('3回\n1のエラー発生', 'main.nako3'),
+        () => nako.run('3回\n1のエラー発生', 'main.nako3'),
         err => {
           assert(err instanceof NakoRuntimeError)
           assert.strictEqual(err.line, 1)  // 2行目
@@ -184,28 +184,28 @@ describe('error_message', () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
-      compiler.runReset(`xを表示`, 'main.nako3')
+      compiler.run(`xを表示`, 'main.nako3')
       assert.strictEqual(log, `[警告]main.nako3(1行目): 変数 x は定義されていません。`)
     })
     it('存在しない高速化オプションを指定したとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
-      compiler.runReset(`「あ」で実行速度優先\nここまで`, 'main.nako3')
+      compiler.run(`「あ」で実行速度優先\nここまで`, 'main.nako3')
       assert.strictEqual(log, `[警告]main.nako3(1行目): 実行速度優先文のオプション『あ』は存在しません。`)
     })
     it('ユーザー定義関数を上書きしたとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
-      compiler.runReset(`●Aとは\nここまで\n●Aとは\nここまで`, 'main.nako3')
+      compiler.run(`●Aとは\nここまで\n●Aとは\nここまで`, 'main.nako3')
       assert.strictEqual(log, `[警告]main.nako3(3行目): 関数『A』は既に定義されています。`)
     })
     it('プラグイン関数を上書きしたとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
-      compiler.runReset(`●（Aを）足すとは\nここまで`, 'main.nako3')
+      compiler.run(`●（Aを）足すとは\nここまで`, 'main.nako3')
       assert.strictEqual(log, '[警告]main.nako3(1行目): 関数『足』は既に定義されています。')
     })
   })

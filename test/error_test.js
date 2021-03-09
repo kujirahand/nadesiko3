@@ -6,7 +6,7 @@ describe('error_test', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   // --- test ---
   it('エラー処理 - 基本', () => {

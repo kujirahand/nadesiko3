@@ -4,7 +4,7 @@ const assert = require('assert')
 describe('variable_scope_test', () => {
     const nako = new NakoCompiler()
     const cmp = (code, res) => {
-        assert.strictEqual(nako.runReset(code).log, res)
+        assert.strictEqual(nako.run(code).log, res)
     }
 
     it('関数内からグローバル変数へ代入', () => {

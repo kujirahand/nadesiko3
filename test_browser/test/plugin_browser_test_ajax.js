@@ -30,7 +30,7 @@ AJAXオプションをJSONエンコードして表示する。
       const windowalert = td.replace(window, 'alert')
       const code = '「/custom/ok」へAJAX送信時には;対象をJSONエンコードして言う;ここまで'
       nako.logger.debug('code=' + code)
-      nako.runReset(code)
+      nako.run(code)
 
       await retry(() => td.verify(windowalert('"OK"'), { times: 1 }))
       td.reset()
@@ -47,7 +47,7 @@ AJAXオプションをJSONエンコードして表示する。
 ここまで
 `
       nako.logger.debug('code=' + code)
-      nako.runReset(code)
+      nako.run(code)
 
       await retry(() => td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 }))
       td.reset()
@@ -64,7 +64,7 @@ AJAXオプションをJSONエンコードして表示する。
 ここまで
 `
       nako.logger.debug('code=' + code)
-      nako.runReset(code)
+      nako.run(code)
 
       await retry(() => td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 }))
       td.reset()
@@ -79,7 +79,7 @@ AJAXオプションをJSONエンコードして表示する。
 ここまで
 `
       nako.logger.debug('code=' + code)
-      nako.runReset(code)
+      nako.run(code)
 
       await retry(() => td.verify(windowalert('"OK"'), { times: 1 }))
       td.reset()
@@ -97,7 +97,7 @@ AJAXオプションをJSONエンコードして表示する。
 ここまで
 `
       nako.logger.debug('code=' + code)
-      nako.runReset(code)
+      nako.run(code)
       await retry(() => td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 }))
       td.reset()
     }).timeout(10000)
@@ -114,7 +114,7 @@ AJAXオプションをJSONエンコードして表示する。
 ここまで
 `
       nako.logger.debug('code=' + code)
-      nako.runReset(code)
+      nako.run(code)
 
       await retry(() => td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 }))
       td.reset()

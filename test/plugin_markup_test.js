@@ -21,7 +21,7 @@ describe('plugin_markup_test', () => {
 
       nako.logger.debug('code=' + code)
 
-      assert.strictEqual(nako.runReset(c).log, res)
+      assert.strictEqual(nako.run(c).log, res)
     }
   }
 

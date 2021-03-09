@@ -6,11 +6,11 @@ describe('plugin_system_test', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   const cmpex = (code, exinfo) => {
     nako.logger.debug('code=' + code)
-    assert.throws(() => { nako.runReset(code) }, exinfo)
+    assert.throws(() => { nako.run(code) }, exinfo)
   }
 
   // --- test ---
@@ -394,7 +394,7 @@ describe('plugin_system_test', () => {
   it('「ナデシコ」が空白行を出力してしまう問題の修正', () => {
     let lineCount = 0
     nako.logger.addListener('stdout', (data) => { lineCount++ })
-    nako.runReset('「a=1+2」をナデシコ')
+    nako.run('「a=1+2」をナデシコ')
     assert.strictEqual(lineCount, 0)
   })
 })

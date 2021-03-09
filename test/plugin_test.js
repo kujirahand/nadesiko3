@@ -7,7 +7,7 @@ describe('plugin_test', () => {
   nako.silent = true
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    const ret = nako.runReset(code)
+    const ret = nako.run(code)
     assert.strictEqual(ret.log, res)
   }
   it('「取り込む」', () => {

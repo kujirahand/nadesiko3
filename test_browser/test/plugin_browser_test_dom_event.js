@@ -54,7 +54,7 @@ export default (nako) => {
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('button')
         if (e) {
@@ -77,7 +77,7 @@ export default (nako) => {
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('button')
         if (e) {
@@ -101,7 +101,7 @@ export default (nako) => {
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('button')
         if (e) {
@@ -126,7 +126,7 @@ export default (nako) => {
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('button')
         if (e) {
@@ -186,7 +186,7 @@ IMG["src"]は「/turtle.png」
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         await waitTimer(1.0)
 
@@ -210,7 +210,7 @@ IMG["src"]は「/turtle.png」
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         await waitTimer(1.0)
 
@@ -249,7 +249,7 @@ WINDOW["event"]をDOMイベント処理停止する。
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('form')
         if (e) {
@@ -318,7 +318,7 @@ WINDOW["event"]をDOMイベント処理停止する。
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('tgt')
         if (e) {
@@ -408,7 +408,7 @@ WINDOW["event"]をDOMイベント処理停止する。
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('tgt')
         if (e) {
@@ -539,7 +539,7 @@ WINDOW["event"]をDOMイベント処理停止する。
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         const e = document.getElementById('tgt')
         if (e) {

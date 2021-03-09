@@ -8,7 +8,7 @@ describe('plugin_browser_test', () => {
   nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   // --- test ---
   it('RGB', () => {

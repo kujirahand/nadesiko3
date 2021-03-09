@@ -6,11 +6,11 @@ describe('basic', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   const cmpNakoFuncs = (code, res) => {
     nako.logger.debug('code=' + code)
-    nako.runReset(code)
+    nako.run(code)
     assert.deepStrictEqual(nako.usedFuncs, res)
   }
   // --- test ---
@@ -185,7 +185,7 @@ describe('basic', () => {
   it('return_none: true のaddFuncで定義した関数が「それ」に値を代入しないことを確認する', () => {
     const nako = new NakoCompiler()
     nako.addFunc('hoge', [], () => {}, true)
-    assert.strictEqual(nako.runReset('1と2を足す\nhoge\nそれを表示').log, '3')
+    assert.strictEqual(nako.run('1と2を足す\nhoge\nそれを表示').log, '3')
   })
   it('制御構文で一語関数を使う', () => {
     cmp('●一とは\n1を戻す\nここまで\nもし一ならば\n1を表示\nここまで', '1') // if

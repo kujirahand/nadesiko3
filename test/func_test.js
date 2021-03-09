@@ -6,7 +6,7 @@ describe('func_test', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code, 'main.nako3').log, res)
+    assert.strictEqual(nako.run(code, 'main.nako3').log, res)
   }
   // --- test ---
 
