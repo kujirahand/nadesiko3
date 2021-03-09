@@ -26,13 +26,13 @@ class NakoGen {
 
     /**
      * なでしこで定義した関数の一覧
-     * @type {{}}
+     * @type {Record<string, { josi: string[][], fn: string, type: 'func' }>}
      */
     this.nako_func = {}
 
     /**
      * なでしこで定義したテストの一覧
-     * @type {{}}
+     * @type {Record<string, { josi: string[][], fn: string, type: 'test_func' }>}
      */
     this.nako_test = {}
 
@@ -157,7 +157,6 @@ class NakoGen {
   }
 
   reset () {
-    // this.nako_func = {}
     // 初期化メソッド以外の関数を削除
     this.used_func = new Set(Array.from(this.used_func.values()).filter((v) => /^!.+:初期化$/.test(v)))
     lastLineNo = null
@@ -325,9 +324,9 @@ class NakoGen {
         this.used_func.add(name)
         this.__self.__varslist[1][name] = function () { } // 事前に適当な値を設定
         this.nako_func[name] = {
-          'josi': t.name.meta.josi,
-          'fn': '',
-          'type': 'func'
+          josi: t.name.meta.josi,
+          fn: '',
+          type: 'func'
         }
       }
     }
@@ -599,9 +598,9 @@ class NakoGen {
       this.used_func.add(name)
       this.varslistSet[1].names.add(name)
       this.nako_func[name] = {
-        'josi': node.name.meta.josi,
-        'fn': '',
-        'type': 'func'
+        josi: node.name.meta.josi,
+        fn: '',
+        type: 'func'
       }
     }
     // ブロックを解析
@@ -638,7 +637,7 @@ class NakoGen {
     code = variableDeclarations + code
 
     if (name)
-      {this.nako_func[name]['fn'] = code}
+      {this.nako_func[name].fn = code}
 
     this.varslistSet.pop()
     this.varsSet = this.varslistSet[this.varslistSet.length - 1]
