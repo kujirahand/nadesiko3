@@ -110,7 +110,6 @@ class CNako3 extends NakoCompiler {
       }
       args.mainfile += '.nako3'
     }
-    this.gen.setOptions(args) // 実行時オプションを覚えておく
     return args
   }
 

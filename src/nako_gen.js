@@ -80,23 +80,12 @@ class NakoGen {
      */
     this.__module = com.__module
 
-    /**
-     * コマンドオプションがあれば記録
-     * @type {{}}
-     */
-    this.__options = com.options
-
     // 1以上のとき高速化する。
     // 実行速度優先ブロック内で1増える。
     this.speedMode = {
       lineNumbers: 0,          // 行番号を出力しない
       implicitTypeCasting: 0,  // 数値加算でparseFloatを出力しない
     }
-  }
-
-  setOptions (options) {
-    this.__options = options
-    if (this.__options.speed) { this.speedMode.lineNumbers = 1 }
   }
 
   static getHeader () {
