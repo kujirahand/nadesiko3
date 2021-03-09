@@ -6,12 +6,6 @@
 const { NakoSyntaxError } = require('./nako_errors')
 
 /**
- * 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。
- * @type {string | null}
- */
-let lastLineNo = null
-
-/**
  * @typedef {import("./nako3").Ast} Ast
  */
 /**
@@ -24,7 +18,6 @@ class NakoGen {
    * @param {boolean | string} isTest 文字列なら1つのテストだけを実行する
    */
   static generate(com, ast, isTest) {
-    lastLineNo = null
     const gen = new NakoGen(com)
 
     // ユーザー定義関数をシステムに登録する
@@ -85,6 +78,12 @@ class NakoGen {
     this.__self = com
 
     /**
+     * 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。
+     * @type {string | null}
+     */
+    this.lastLineNo = null
+
+    /**
      * スタック
      * @type {{ isFunction: boolean, names: Set<string>, readonly: Set<string> }[]}
      */
@@ -141,8 +140,8 @@ class NakoGen {
 
     // 強制的に行番号をアップデートするか
     if (!forceUpdate) {
-      if (lineNo == lastLineNo) return ''
-      lastLineNo = lineNo
+      if (lineNo == this.lastLineNo) return ''
+      this.lastLineNo = lineNo
     }
     // 例: __v0.line='l1:main.nako3'
     return `__v0.line=${JSON.stringify(lineNo)};`
