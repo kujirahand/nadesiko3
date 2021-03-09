@@ -365,7 +365,13 @@ class NakoCompiler {
       this.clearEachPlugins()
     }
 
-    // スタックのグローバル変数とローカル変数を初期化
+    /**
+     * なでしこのローカル変数をスタックで管理
+     * __varslist[0] プラグイン領域
+     * __varslist[1] なでしこグローバル領域
+     * __varslist[2] 最初のローカル変数 ( == __vars }
+     * @type {Record<string, any>[]}
+     */
     this.__varslist = [this.__varslist[0], {}, {}]
     this.__v0 = this.__varslist[0]
     this.__v1 = this.__varslist[1]
@@ -390,7 +396,6 @@ class NakoCompiler {
       }
     }
 
-    this.gen.reset()
     this.lexer.setFuncList(this.funclist)
   }
 
@@ -403,6 +408,7 @@ class NakoCompiler {
     // 先になでしこ自身で定義したユーザー関数をシステムに登録
     this.gen.registerFunction(ast)
     // JSコードを生成する
+    this.gen.reset()
     let js = this.gen.convGen(ast, !!isTest)
     // JSコードを実行するための事前ヘッダ部分の生成
     js = this.gen.getDefFuncCode(isTest) + js
