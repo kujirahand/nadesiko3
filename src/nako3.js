@@ -323,11 +323,6 @@ class NakoCompiler {
    * 環境のリセット
    */
   reset () {
-    // プラグイン関数の環境リセット
-    if (this.__module.plugin_system){
-      this.clearEachPlugins()
-    }
-
     /**
      * なでしこのローカル変数をスタックで管理
      * __varslist[0] プラグイン領域
@@ -716,19 +711,6 @@ class NakoCompiler {
     this.addPluginObject(objName, po, persistent)
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = fpath
-    }
-  }
-
-  /**
-   * 毎プラグインの「!クリア」関数を実行
-   */
-  clearEachPlugins () {
-    const clearName = '!クリア'
-    for (const pname in this.pluginfiles) {
-      const po = this.__module[pname]
-      if (po[clearName] && po[clearName].fn) {
-        po[clearName].fn(this)
-      }
     }
   }
 

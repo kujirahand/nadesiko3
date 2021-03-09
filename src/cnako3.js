@@ -147,7 +147,6 @@ class CNako3 extends NakoCompiler {
       } else {
         this.run(src, opt.mainfile)
       }
-      this.clearEachPlugins()
       if (opt.test && this.numFailures > 0) {
         process.exit(1)
       }

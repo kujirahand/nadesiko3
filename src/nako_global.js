@@ -17,7 +17,7 @@ class NakoGlobal {
       { ...compiler.__varslist[2] },
     ]
 
-    // PluginSystemから参照するため
+    // PluginSystemとdestroy()から参照するため
     this.__module = { ...compiler.__module } // shallow copy
     this.pluginfiles = { ...compiler.pluginfiles }
 
@@ -76,6 +76,19 @@ class NakoGlobal {
     }
     this.numFailures = numFailures
     this.logger.send('stdout', text)
+  }
+
+  /**
+   * 毎プラグインの「!クリア」関数を実行
+   */
+  destroy () {
+    const clearName = '!クリア'
+    for (const pname in this.pluginfiles) {
+      const po = this.__module[pname]
+      if (po[clearName] && po[clearName].fn) {
+        po[clearName].fn(this)
+      }
+    }
   }
 }
 

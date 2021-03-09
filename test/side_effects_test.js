@@ -67,4 +67,37 @@ describe('side_effects_test', () => {
         const code2 = '痕跡を表示。3と5を痕跡演算して、表示。'
         assert.throws(() => nako.run(code2, 'main.nako3'), NakoSyntaxError)
     })
+    it('「初期化」と「!クリア」を呼ぶ', () => {
+        let log = []
+        const nako = new NakoCompiler()
+
+        let count = 0
+        nako.addPluginObject('ClearTest', {
+            '初期化': {
+                type: 'func',
+                josi: [],
+                pure: true,
+                fn: (sys) => {
+                    sys.x = count++
+                    log.push(['初期化', sys.x])
+                }
+            },
+            '!クリア': {
+                type: 'func',
+                josi: [],
+                pure: true,
+                fn: (sys) => {
+                    log.push(['!クリア', sys.x])
+                }
+            },
+        })
+
+        const process1 = nako.run('a=1')
+        const process2 = nako.run('a=1')
+
+        process1.destroy()
+        process2.destroy()
+
+        assert.deepStrictEqual(log, [['初期化', 0], ['初期化', 1], ['!クリア', 0], ['!クリア', 1]])
+    })
 })
