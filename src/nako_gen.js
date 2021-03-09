@@ -22,7 +22,6 @@ class NakoGen {
    * @param {import('./nako3')} com コンパイラのインスタンス
    */
   constructor (com) {
-    this.logger = com.logger
     this.header = NakoGen.getHeader()
 
     /**
@@ -538,7 +537,7 @@ class NakoGen {
       // 定義されていない名前の参照は変数の定義とみなす。
       // 多くの場合はundefined値を持つ変数であり分かりづらいバグを引き起こすが、
       // 「ナデシコする」などの命令の中で定義された変数の参照の場合があるため警告に留める。
-      this.logger.warn(`変数 ${name} は定義されていません。`, position)
+      this.__self.logger.warn(`変数 ${name} は定義されていません。`, position)
       this.__vars[name] = true
       return this.varname(name)
     }
