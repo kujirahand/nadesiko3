@@ -336,22 +336,14 @@ class NakoCompiler {
     this.__vars = this.__varslist[2]
     this.__locals = {}
 
-    // ユーザー定義の関数の削除と、プラグイン変数の値の初期化を行う。
-    // 実行前に行うとloadDependenciesで読み込んだ依存まで消されてしまうことに注意
+    // プラグイン命令以外を削除する。
     this.funclist = {}
     for (const name of Object.keys(this.__v0)) {
       const original = this.pluginFunclist[name]
       if (!original) {
         continue
       }
-
-      // プラグイン命令以外を削除
       this.funclist[name] = JSON.parse(JSON.stringify(original))
-
-      // プラグイン変数の値を初期化
-      if (original.type === 'var') {
-        this.__v0[name] = original.value
-      }
     }
 
     this.lexer.setFuncList(this.funclist)
