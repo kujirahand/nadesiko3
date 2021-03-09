@@ -779,7 +779,7 @@ class NakoCompiler {
       delete po['初期化']
       const initkey = `!${objName}:初期化`
       po[initkey] = def
-      this.gen.used_func[initkey] = true
+      this.gen.used_func.add(initkey)
     }
     this.addPlugin(po, persistent)
   }

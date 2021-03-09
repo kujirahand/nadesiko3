@@ -40,9 +40,9 @@ class NakoGen {
      * JS関数でなでしこ内で利用された関数
      * 利用した関数を個別にJSで定義する
      * (全関数をインクルードしなくても良いように)
-     * @type {{}}
+     * @type {Set<string>}
      */
-    this.used_func = {}
+    this.used_func = new Set()
 
     /**
      * ループ時の一時変数が被らないようにIDで管理
@@ -159,11 +159,7 @@ class NakoGen {
   reset () {
     // this.nako_func = {}
     // 初期化メソッド以外の関数を削除
-    const uf = {}
-    for (const key in this.used_func)
-      {if (key.match(/^!.+:初期化$/)) {uf[key] = this.used_func[key]}}
-
-    this.used_func = uf
+    this.used_func = new Set(Array.from(this.used_func.values()).filter((v) => /^!.+:初期化$/.test(v)))
     lastLineNo = null
     this.loop_id = 1
     this.varslistSet[1] = { isFunction: false, names: new Set(), readonly: new Set() } // user global
@@ -185,7 +181,7 @@ class NakoGen {
     let code = ''
 
     // プログラム中で使った関数を列挙して書き出す
-    for (const key in this.used_func) {
+    for (const key of Array.from(this.used_func.values())) {
       const f = this.__self.__varslist[0][key]
       const name = `this.__varslist[0]["${key}"]`
       if (typeof (f) === 'function')
@@ -326,7 +322,7 @@ class NakoGen {
       const t = ast.block[i]
       if (t.type === 'def_func') {
         const name = t.name.value
-        this.used_func[name] = true
+        this.used_func.add(name)
         this.__self.__varslist[1][name] = function () { } // 事前に適当な値を設定
         this.nako_func[name] = {
           'josi': t.name.meta.josi,
@@ -600,7 +596,7 @@ class NakoGen {
     }
     // 関数定義は、グローバル領域で。
     if (name) {
-      this.used_func[name] = true
+      this.used_func.add(name)
       this.varslistSet[1].names.add(name)
       this.nako_func[name] = {
         'josi': node.name.meta.josi,
@@ -955,9 +951,7 @@ class NakoGen {
     const args = argsInfo[0]
     const argsOpts = argsInfo[1]
     // function
-    if (typeof (this.used_func[funcName]) === 'undefined') {
-      this.used_func[funcName] = true
-    }
+    this.used_func.add(funcName)
 
     // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
     args.push('__self')
