@@ -182,10 +182,7 @@ const PluginDateTime = {
         }
       }
 
-      throw new NakoRuntimeError(
-        '『和暦変換』は明治以前の日付には対応していません。',
-        sys.__v0 ? sys.__v0.line : undefined,
-      )
+      throw new Error('『和暦変換』は明治以前の日付には対応していません。')
     }
   },
   '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ

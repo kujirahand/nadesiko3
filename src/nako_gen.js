@@ -3,7 +3,8 @@
 //
 'use strict'
 
-const { NakoSyntaxError } = require('./nako_errors')
+const NakoCompiler = require('./nako3')
+const { NakoSyntaxError, NakoRuntimeError, NakoError } = require('./nako_errors')
 
 /**
  * @typedef {import("./nako3").Ast} Ast
@@ -34,15 +35,22 @@ class NakoGen {
     if (js && isTest) {
       js += '\n__self._runTests(__tests);\n'
     }
-    return { runtime: js, standalone: gen.getVarsCode() }
+    return {
+      runtimeEnv: js,  // なでしこの実行環境ありの場合
+      standalone:      // JavaScript単体で動かす場合
+        'this.logger = { send(level, message) { console.log(message) } };\n' +
+        'this.__varslist = [{}, {}, {}];\n' +
+        'this.__varslist[2];\n' +
+        'this.__module = {};\n' +
+        gen.getVarsCode() +
+        js
+    }
   }
   
   /**
    * @param {import('./nako3')} com コンパイラのインスタンス
    */
   constructor (com) {
-    this.header = NakoGen.getHeader()
-
     /**
      * なでしこで定義した関数の一覧
      * @type {Record<string, { josi: string[][], fn: string, type: 'func' }>}
@@ -102,14 +110,6 @@ class NakoGen {
       lineNumbers: 0,          // 行番号を出力しない
       implicitTypeCasting: 0,  // 数値加算でparseFloatを出力しない
     }
-  }
-
-  static getHeader () {
-    return '' +
-      'var __varslist = this.__varslist = [{}, {}, {}];\n' +
-      'var __vars = this.__varslist[2];\n' +
-      'var __self = this;\n' +
-      'var __module = {};\n'
   }
 
   /**
@@ -236,9 +236,10 @@ class NakoGen {
     let pluginCode = ''
     for (const name in this.__self.__module) {
       const initkey = `!${name}:初期化`
-      if (this.varslistSet[0].names.has(initkey))
-        {pluginCode += `__v0["!${name}:初期化"](__self);\n`} // セミコロンがないとエラーになったので注意
-
+      if (this.varslistSet[0].names.has(initkey)) {
+        this.used_func.add(`!${name}:初期化`)
+        pluginCode += `__v0["!${name}:初期化"](__self);\n`
+      }
     }
     if (pluginCode !== '')
       {code += '__v0.line=\'プラグインの初期化\';\n' + pluginCode}

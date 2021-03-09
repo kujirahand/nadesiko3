@@ -4,7 +4,7 @@ const CNako3 = require('../src/cnako3')
 const { NakoSyntaxError } = require('../src/nako_errors')
 
 describe('side_effects_test', () => {
-    it('変数の定義', () => {
+    it('変数の定義 - 1', () => {
         const nako = new NakoCompiler()
         nako.runReset(`A=10`, 'main.nako3')
         assert.strictEqual(nako.runReset(`Aを表示`, 'main.nako3').log, `undefined`)

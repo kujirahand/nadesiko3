@@ -163,16 +163,13 @@ class CNako3 extends NakoCompiler {
   /**
    * コンパイルモードの場合
    * @param opt
-   * @param src
-   * @param isTest
+   * @param {string} src
+   * @param {boolean} isTest
    */
   nakoCompile(opt, src, isTest) {
     // system
-    const js = this.compile(src, this.filename, isTest)
-    const jscode =
-      NakoCompiler.getHeader() +
-      this.getVarsCode() +
-      js
+    const jscode = this.compileStandalone(src, this.filename, isTest)
+    console.log(opt.output)
     fs.writeFileSync(opt.output, jscode, 'utf-8')
     if (opt.run)
       {exec(`node ${opt.output}`, function (err, stdout, stderr) {

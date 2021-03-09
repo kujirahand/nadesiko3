@@ -221,4 +221,13 @@ describe('basic', () => {
       , 'main.nako3')
     assert.strictEqual(log, '')
   })
+  it('単独で実行できるプログラムの出力', (done) => {
+    const code = nako.compileStandalone('1+2を表示', 'main.nako3', false)    
+    Function('const console = { log: this.callback };\n' + code).apply({
+      callback: (text) => {
+        assert.strictEqual(text, '3')
+        done()
+      },
+    })
+  })
 })

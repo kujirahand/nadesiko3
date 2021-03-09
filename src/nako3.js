@@ -19,13 +19,13 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
 
 /**
  * @typedef {{
- *   type: string;
- *   value: unknown;
- *   line: number;
- *   column: number;
- *   file: string;
- *   josi: string;
- *   meta?: any;
+ *   type: string
+ *   value: any
+ *   line: number
+ *   column: number
+ *   file: string
+ *   josi: string
+ *   meta?: any
  *   rawJosi: string
  *   startOffset: number | null
  *   endOffset: number | null
@@ -157,10 +157,6 @@ class NakoCompiler {
    */
   replaceLogger() {
     return this.prepare.logger = this.lexer.logger = this.parser.logger = this.logger = new NakoLogger()
-  }
-
-  static getHeader () {
-    return NakoGen.getHeader()
   }
 
   /**
@@ -517,7 +513,6 @@ class NakoCompiler {
     // 関数を字句解析と構文解析に登録
     this.lexer.setFuncList(this.funclist)
     this.parser.setFuncList(this.funclist)
-    this.parser.filename = filename
 
     const lexerOutput = this.lex(code, filename, preCode)
 
@@ -590,7 +585,7 @@ class NakoCompiler {
    * @returns コード (JavaScript)
    */
   compile(code, filename, isTest, preCode = '') {
-    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).runtime
+    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).runtimeEnv
   }
 
   /**
@@ -682,9 +677,12 @@ class NakoCompiler {
 
   /**
    * JavaScriptのみで動くコードを取得する場合
-   * @returns {string}
+   * @param {string} code
+   * @param {string} filename
+   * @param {boolean | string} isTest
+   * @param {string} [preCode]
    */
-  getVarsCode () {
+  compileStandalone(code, filename, isTest, preCode = '') {
     return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).standalone
   }
 
@@ -706,17 +704,7 @@ class NakoCompiler {
         this.pluginFunclist[key] = JSON.parse(JSON.stringify(v))
       }
       if (v.type === 'func') {
-        __v0[key] = (...args) => {
-          try {
-            return v.fn(...args)
-          } catch (e) {
-            throw new NakoRuntimeError(
-              e,
-              this.__v0 ? this.__v0.line : undefined,
-              `関数『${key}』`,
-            )
-          }
-        }
+        __v0[key] = v.fn
       } else if (v.type === 'const' || v.type === 'var') {
         __v0[key] = v.value
         __v0.meta[key] = {

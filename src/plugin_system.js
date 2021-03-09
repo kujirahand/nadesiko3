@@ -1,4 +1,4 @@
-const {NakoRuntimeError} = require('./nako_errors')
+const NakoVersion = require('./nako_version')
 
 const PluginSystem = {
   '初期化': {
@@ -6,8 +6,7 @@ const PluginSystem = {
     josi: [],
     pure: false,
     fn: function (sys) {
-      const NakoVersion = require('./nako_version')
-      sys.__v0['ナデシコバージョン'] = NakoVersion.version
+      sys.__v0['ナデシコバージョン'] = typeof NakoVersion === 'undefined' ? '?' : NakoVersion.version
       // システム関数を探す
       sys.__getSysValue = function (name, def) {
         if (sys.__v0[name] === undefined) {return def}
