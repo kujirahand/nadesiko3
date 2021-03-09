@@ -230,4 +230,18 @@ describe('basic', () => {
       },
     })
   })
+  it('resetされた後に関数名を取得できない問題の修正 #849', (done) => {
+    const nako = new NakoCompiler()
+    nako.logger.addListener('stdout', ({ noColor }) => {
+      assert(noColor.includes('function')) // JavaScriptのコード function() { var ... } が表示されるはず
+      done()
+    })
+    nako.run(`
+●Aとは
+ここまで
+0.0001秒後には
+    「A」のJSオブジェクト取得して表示
+`)
+    nako.reset()
+  })
 })
