@@ -74,12 +74,6 @@ class NakoGen {
      */
     this.__vars = this.__varslist[2]
 
-    /**
-     * 利用可能なプラグイン(ファイル 単位)
-     * @type {{}}
-     */
-    this.__module = com.__module
-
     // 1以上のとき高速化する。
     // 実行速度優先ブロック内で1増える。
     this.speedMode = {
@@ -232,7 +226,7 @@ class NakoGen {
 
     // プラグインの初期化関数を実行する
     let pluginCode = ''
-    for (const name in this.__module) {
+    for (const name in this.__self.__module) {
       const initkey = `!${name}:初期化`
       if (this.__varslist[0][initkey])
         {pluginCode += `__v0["!${name}:初期化"](__self);\n`} // セミコロンがないとエラーになったので注意
@@ -926,7 +920,7 @@ class NakoGen {
 
   getPluginList () {
     const r = []
-    for (const name in this.__module) {r.push(name)}
+    for (const name in this.__self.__module) {r.push(name)}
     return r
   }
 
