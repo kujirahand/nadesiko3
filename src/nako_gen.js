@@ -3,8 +3,7 @@
 //
 'use strict'
 
-const NakoCompiler = require('./nako3')
-const { NakoSyntaxError, NakoRuntimeError, NakoError } = require('./nako_errors')
+const { NakoSyntaxError } = require('./nako_errors')
 
 /**
  * @typedef {import("./nako3").Ast} Ast
@@ -44,19 +43,20 @@ class NakoGen {
         'this.__module = {};\n' +
         'this.__locals = {};\n' +
         gen.getVarsCode() +
-        js
+        js,
+      gen,  // コード生成に使ったNakoGenのインスタンス
     }
   }
-  
+
   /**
    * @param {import('./nako3')} com コンパイラのインスタンス
    */
   constructor (com) {
     /**
-     * なでしこで定義した関数の一覧
-     * @type {Record<string, { josi: string[][], fn: string, type: 'func' }>}
+     * 出力するJavaScriptコードのヘッダー部分で定義する必要のある関数。fnはjsのコード。
+     * プラグイン関数は含まれない。
      */
-    this.nako_func = {}
+    this.nako_func = { ...com.nako_func }
 
     /**
      * なでしこで定義したテストの一覧
@@ -65,9 +65,8 @@ class NakoGen {
     this.nako_test = {}
 
     /**
-     * JS関数でなでしこ内で利用された関数
-     * 利用した関数を個別にJSで定義する
-     * (全関数をインクルードしなくても良いように)
+     * プログラム内で参照された関数のリスト。プラグインの命令を含む。
+     * JavaScript単体で実行するとき、このリストにある関数の定義をJavaScriptコードの先頭に付け足す。
      * @type {Set<string>}
      */
     this.used_func = new Set()

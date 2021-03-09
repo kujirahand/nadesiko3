@@ -88,6 +88,8 @@ class NakoCompiler {
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
     this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
+    /** @type {Record<string, { josi: string[][], fn: string, type: 'func' }>} */
+    this.nako_func = {}  // __v1に配置するJavaScriptのコードで定義された関数
 
     this.logger = new NakoLogger()
 
@@ -548,7 +550,6 @@ class NakoCompiler {
    * @param {string} filename
    * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @param {string} [preCode]
-   * @returns コード (JavaScript)
    */
   compile(code, filename, isTest, preCode = '') {
     return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).runtimeEnv
@@ -578,20 +579,19 @@ class NakoCompiler {
    */
   _runEx(code, fname, opts, preCode = '', nakoGlobal) {
     // コンパイル
-    let js
+    let out
     try {
       const optsAll = Object.assign({ resetEnv: true, testOnly: false }, opts)
       if (optsAll.resetEnv) {this.reset()}
-      js = this.compile(code, fname, optsAll.testOnly, preCode)
+      out = NakoGen.generate(this, this.parse(code, fname, preCode), optsAll.testOnly)
     } catch (e) {
       this.logger.error(e)
       throw e
     }
-
     // 実行
-    nakoGlobal = nakoGlobal || new NakoGlobal(this)
+    nakoGlobal = nakoGlobal || new NakoGlobal(this, out.gen)
     try {
-      new Function(js).apply(nakoGlobal)
+      new Function(out.runtimeEnv).apply(nakoGlobal)
       return nakoGlobal
     } catch (e) {
       if (!(e instanceof NakoRuntimeError)) {

@@ -296,7 +296,7 @@ const PluginWebWorker = {
             name: data,
             content: {
               meta: sys.gen.nako_func[data],
-              func: Object.assign({}, sys.funclist[data], { fn: null })
+              func: Object.assign({}, sys.compiler.funclist[data], { fn: null })
             }
           })
         }

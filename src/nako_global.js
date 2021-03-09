@@ -6,15 +6,23 @@ const NakoColors = require('./nako_colors')
 class NakoGlobal {
   /**
    * @param {import('./nako3')} compiler
+   * @param {import('./nako_gen')} gen
    */
-  constructor(compiler) {
+  constructor(compiler, gen) {
     // ユーザーのプログラムから編集される変数
     this.__locals = {}
-    this.__varslist = [{ ...compiler.__varslist[0] }, { ...compiler.__varslist[1] }, {}]
+    this.__varslist = [
+      { ...compiler.__varslist[0] },
+      { ...compiler.__varslist[1] },
+      { ...compiler.__varslist[2] },
+    ]
 
     // PluginSystemから参照するため
     this.__module = { ...compiler.__module } // shallow copy
     this.pluginfiles = { ...compiler.pluginfiles }
+
+    // PluginWorkerでユーザー定義関数のJavaScriptコードをworkerのコンパイラのインスタンスへコピーするため
+    this.gen = gen
 
     // 以下のメソッドで使うため
     this.logger = compiler.logger
