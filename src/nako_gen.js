@@ -26,12 +26,6 @@ class NakoGen {
     this.header = NakoGen.getHeader()
 
     /**
-     * プラグインで定義された関数の一覧
-     * @type {{}}
-     */
-    this.funclist = com.funclist
-
-    /**
      * なでしこで定義した関数の一覧
      * @type {{}}
      */
@@ -198,7 +192,6 @@ class NakoGen {
     for (const key of /** @type {(keyof NakoGen['speedMode'])[]} */(Object.keys(this.speedMode))) {
       this.speedMode[key] = 0
     }
-    this.funclist = this.__self.funclist
   }
 
   /**
@@ -553,7 +546,7 @@ class NakoGen {
     const i = res.i
     // システム関数・変数の場合
     if (i === 0) {
-      const pv = this.funclist[name]
+      const pv = this.__self.funclist[name]
       if (!pv) {return `${res.js}/*err:${lno}*/`}
       if (pv.type === 'const' || pv.type === 'var') {return res.js}
       if (pv.type === 'func') {
@@ -963,7 +956,7 @@ class NakoGen {
     }
     let func
     if (res.i === 0) { // plugin function
-      func = this.funclist[funcName]
+      func = this.__self.funclist[funcName]
       if (func.type !== 'func') {
         throw NakoSyntaxError.fromNode(`『${funcName}』は関数ではありません。`, node)
       }
