@@ -165,6 +165,27 @@ describe('error_message', () => {
         done()
       })
     })
+    it('JavaScriptのみで動くコードの場合 - エラー発生', () => {
+      const nako = new NakoCompiler()
+      const code = nako.compileStandalone('10のエラー発生')
+      const silent = 'const console = { error() {} };\n'
+      assert.throws(
+        () => new Function(silent + code)(),
+        (err) => {
+          assert.strictEqual(err.message.split('\n')[0], '[実行時エラー](1行目): エラー『10』が発生しました。')
+          return true
+        },
+      )
+    })
+    it('JavaScriptのみで動くコードの場合 - 「秒後」内の場合', (done) => {
+      const nako = new NakoCompiler()
+      new Function('const console = { error: this.callback };\n' + nako.compileStandalone('0.0001秒後には\n20のエラー発生\nここまで')).apply({
+        callback: (err) => {
+          assert.strictEqual(err.message.split('\n')[0], '[実行時エラー](2行目): エラー『20』が発生しました。')
+          done()
+        }
+      })
+    })
   })
   describe('インデント構文のエラー', () => {
     it('『ここまで』を使用', () => {

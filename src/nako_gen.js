@@ -4,6 +4,7 @@
 'use strict'
 
 const { NakoSyntaxError, NakoError, NakoRuntimeError } = require('./nako_errors')
+const nakoVersion = require('./nako_version')
 
 /**
  * @typedef {import("./nako3").Ast} Ast
@@ -37,15 +38,28 @@ class NakoGen {
     return {
       runtimeEnv: js,  // なでしこの実行環境ありの場合
       standalone:      // JavaScript単体で動かす場合
-        NakoError.toString() + '\n' +
-        NakoRuntimeError.toString() + '\n' +
-        'this.logger = { send(level, message) { console.log(message) } };\n' +
-        'this.__varslist = [{}, {}, {}];\n' +
-        'this.__varslist[2];\n' +
-        'this.__module = {};\n' +
-        'this.__locals = {};\n' +
-        gen.getVarsCode() +
-        js,
+        `\
+const nakoVersion = ${JSON.stringify(nakoVersion)};
+${NakoError.toString()}
+${NakoRuntimeError.toString()}
+this.logger = {
+  error(message) { console.error(message) },
+  send(level, message) { console.log(message) },
+};
+this.__varslist = [{}, {}, {}];
+this.__varslist[2];
+this.__module = {};
+this.__locals = {};
+try {
+  ${gen.getVarsCode()}
+  ${js}
+} catch (err) {
+  if (!(err instanceof NakoRuntimeError)) {
+    err = new NakoRuntimeError(err, __varslist[0].line);
+  }
+  this.logger.error(err);
+  throw err;
+}`,
       gen,  // コード生成に使ったNakoGenのインスタンス
     }
   }
