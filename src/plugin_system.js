@@ -139,7 +139,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
-    fn: function (s) {
+    fn: function (s, sys) {
       sys.logger.send('stdout', s + '')
     },
     return_none: true
