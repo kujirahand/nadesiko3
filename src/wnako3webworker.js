@@ -8,49 +8,51 @@ class WebWorkerNakoCompiler extends NakoCompiler {
   constructor () {
     super()
     this.__varslist[0]['ナデシコ種類'] = 'wwnako3'
-    this.ondata = (data, event) => {
+    this.__varslist[0]['PluginWorker:ondata'] = (data, event) => {
+      throw new Error('『NAKOワーカーデータ受信時』が呼ばれていません。')
     }
   }
 }
 
 // ブラウザワーカーなら navigator.nako3 になでしこを登録
 if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope) {
-  const nako3 = navigator.nako3 = new WebWorkerNakoCompiler()
-  nako3.addPluginObject('PluginBrowserInWorker', PluginBrowserInWorker)
-  nako3.addPluginObject('PluginWorker', PluginWorker)
+  /** @type {WebWorkerNakoCompiler} */
+  let nako3Compiler = navigator.nako3 = new WebWorkerNakoCompiler()
+  /** @type {WebWorkerNakoCompiler | import('./nako_global')} */
+  let nako3Global = nako3Compiler
+
+  nako3Compiler.addPluginObject('PluginBrowserInWorker', PluginBrowserInWorker)
+  nako3Compiler.addPluginObject('PluginWorker', PluginWorker)
 
   self.onmessage = (event) => {
-    const nako3 = navigator.nako3
     const data = event.data || { type: '', data: '' }
     const type = data.type || ''
     const value = data.data || ''
     switch (type) {
       case 'reset':
-        nako3.reset()
+        nako3Compiler.reset()
         break
       case 'close':
         self.close()
         break
       case 'run':
-        nako3.runEx(value, undefined, {resetEnv: false, resetLog: false})
+        nako3Global = nako3Global.runEx(value, '_webworker.nako3', {resetEnv: false, resetLog: false})
         break
       case 'trans':{
-          const codes = []
           value.forEach(o => {
             if (o.type === 'func') {
-              nako3.gen.nako_func[o.name] = o.content.meta
-              nako3.funclist[o.name] = o.content.func
-              nako3.__varslist[1][o.name] = () => {}
-            } else
-            if (o.type === 'val') {
-              nako3.__varslist[2][o.name] = o.content
+              nako3Compiler.nako_func[o.name] = o.content.meta
+              nako3Compiler.funclist[o.name] = o.content.func
+              nako3Compiler.__varslist[1][o.name] = () => {}
+            } else if (o.type === 'val') {
+              nako3Compiler.__varslist[2][o.name] = o.content
             }
           })
         }
         break
       case 'data':
-        if (nako3.ondata) {
-          nako3.ondata.apply(nako3, [value, event])
+        if (nako3Global.__varslist[0]['PluginWorker:ondata']) {
+          nako3Global.__varslist[0]['PluginWorker:ondata'].apply(nako3Global, [value, event])
         }
         break;
     }

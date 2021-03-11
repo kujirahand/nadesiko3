@@ -20,7 +20,7 @@ const PluginWorker = {
     pure: false,
     fn: function (func, sys) {
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      sys.ondata = (data, e) => {
+      sys.__varslist[0]['PluginWorker:ondata'] = (data, e) => {
         sys.__v0['受信データ'] = data
         sys.__v0['対象イベント'] = e
         return func(e, sys)

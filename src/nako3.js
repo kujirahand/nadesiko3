@@ -12,20 +12,20 @@ const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } = require('./nako_errors')
 const NakoLogger = require('./nako_logger')
-const NakoColors = require('./nako_colors')
+const NakoGlobal = require('./nako_global')
 
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
 
 /**
  * @typedef {{
- *   type: string;
- *   value: unknown;
- *   line: number;
- *   column: number;
- *   file: string;
- *   josi: string;
- *   meta?: any;
+ *   type: string
+ *   value: any
+ *   line: number
+ *   column: number
+ *   file: string
+ *   josi: string
+ *   meta?: any
  *   rawJosi: string
  *   startOffset: number | null
  *   endOffset: number | null
@@ -34,7 +34,6 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  * 
  * @typedef {{
  *     resetEnv: boolean
- *     resetLog: boolean
  *     testOnly: boolean | string
  * }} CompilerOptions
  */
@@ -89,6 +88,8 @@ class NakoCompiler {
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
     this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
+    /** @type {Record<string, { josi: string[][], fn: string, type: 'func' }>} */
+    this.nako_func = {}  // __v1に配置するJavaScriptのコードで定義された関数
 
     this.logger = new NakoLogger()
 
@@ -98,7 +99,6 @@ class NakoCompiler {
     this.lexer = new NakoLexer(this.logger)
     
     // set this
-    this.gen = new NakoGen(this)
     this.addPluginObject('PluginSystem', PluginSystem)
     this.addPluginObject('PluginMath', PluginMath)
     this.addPluginObject('PluginAssert', PluginTest)
@@ -121,47 +121,10 @@ class NakoCompiler {
   }
 
   /**
-   * なでしこのプログラムがテスト実行のとき呼ぶ関数
-   * @param {{ name: string, f: () => void }[]} tests
-   */
-  _runTests(tests) {
-    let text = `${NakoColors.color.bold}テストの実行結果${NakoColors.color.reset}\n`
-    let pass = 0
-    let numFailures = 0
-    for (const t of tests) {
-        try {
-            t.f()
-            text += `${NakoColors.color.green}✔${NakoColors.color.reset} ${t.name}\n`
-            pass++
-        } catch (err) {
-            text += `${NakoColors.color.red}☓${NakoColors.color.reset} ${t.name}: ${err.message}\n`
-            numFailures++
-        }
-    }
-    if (numFailures > 0) {
-      text += `${NakoColors.color.green}成功 ${pass}件 ${NakoColors.color.red}失敗 ${numFailures}件`
-    } else {
-      text += `${NakoColors.color.green}成功 ${pass}件`
-    }
-    this.numFailures = numFailures
-    this.logger.send('stdout', text)
-  }
-
-  get log () {
-    let s = this.__varslist[0]['表示ログ']
-    s = s.replace(/\s+$/, '')
-    return s
-  }
-
-  /**
    * loggerを新しいインスタンスで置き換える。
    */
   replaceLogger() {
-    return this.prepare.logger = this.lexer.logger = this.parser.logger = this.gen.logger = this.logger = new NakoLogger()
-  }
-
-  static getHeader () {
-    return NakoGen.getHeader()
+    return this.prepare.logger = this.lexer.logger = this.parser.logger = this.logger = new NakoLogger()
   }
 
   /**
@@ -360,58 +323,30 @@ class NakoCompiler {
    * 環境のリセット
    */
   reset () {
-    // プラグイン関数の環境リセット
-    if (this.__module.plugin_system){
-      this.clearEachPlugins()
-    }
-
-    // スタックのグローバル変数とローカル変数を初期化
+    /**
+     * なでしこのローカル変数をスタックで管理
+     * __varslist[0] プラグイン領域
+     * __varslist[1] なでしこグローバル領域
+     * __varslist[2] 最初のローカル変数 ( == __vars }
+     * @type {Record<string, any>[]}
+     */
     this.__varslist = [this.__varslist[0], {}, {}]
     this.__v0 = this.__varslist[0]
     this.__v1 = this.__varslist[1]
     this.__vars = this.__varslist[2]
     this.__locals = {}
 
-    // ユーザー定義の関数の削除と、プラグイン変数の値の初期化を行う。
-    // 実行前に行うとloadDependenciesで読み込んだ依存まで消されてしまうことに注意
+    // プラグイン命令以外を削除する。
     this.funclist = {}
     for (const name of Object.keys(this.__v0)) {
       const original = this.pluginFunclist[name]
       if (!original) {
         continue
       }
-
-      // プラグイン命令以外を削除
       this.funclist[name] = JSON.parse(JSON.stringify(original))
-
-      // プラグイン変数の値を初期化
-      if (original.type === 'var') {
-        this.__v0[name] = original.value
-      }
     }
 
-    this.gen.reset()
     this.lexer.setFuncList(this.funclist)
-  }
-
-  /**
-   * コードを生成
-   * @param {Ast} ast AST
-   * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
-   */
-  generate(ast, isTest) {
-    // 先になでしこ自身で定義したユーザー関数をシステムに登録
-    this.gen.registerFunction(ast)
-    // JSコードを生成する
-    let js = this.gen.convGen(ast, !!isTest)
-    // JSコードを実行するための事前ヘッダ部分の生成
-    js = this.gen.getDefFuncCode(isTest) + js
-    this.logger.trace('--- generate ---\n' + js)
-    // テストの実行
-    if (js && isTest) {
-      js += '\n__self._runTests(__tests);\n'
-    }
-    return js
   }
 
   /**
@@ -533,7 +468,6 @@ class NakoCompiler {
     // 関数を字句解析と構文解析に登録
     this.lexer.setFuncList(this.funclist)
     this.parser.setFuncList(this.funclist)
-    this.parser.filename = filename
 
     const lexerOutput = this.lex(code, filename, preCode)
 
@@ -603,11 +537,9 @@ class NakoCompiler {
    * @param {string} filename
    * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @param {string} [preCode]
-   * @returns コード (JavaScript)
    */
   compile(code, filename, isTest, preCode = '') {
-    const ast = this.parse(code, filename, preCode)
-    return this.generate(ast, isTest)
+    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).runtimeEnv
   }
 
   /**
@@ -630,29 +562,31 @@ class NakoCompiler {
    * @param {string} fname
    * @param {Partial<CompilerOptions>} opts
    * @param {string} [preCode]
+   * @param {NakoGlobal} [nakoGlobal] ナデシコ命令でスコープを共有するため
    */
-  _runEx(code, fname, opts, preCode = '') {
+  _runEx(code, fname, opts, preCode = '', nakoGlobal) {
+    // コンパイル
+    let out
     try {
-      const optsAll = Object.assign({ resetEnv: true, resetLog: true, testOnly: false }, opts)
+      const optsAll = Object.assign({ resetEnv: true, testOnly: false }, opts)
       if (optsAll.resetEnv) {this.reset()}
-      if (optsAll.resetLog) {this.clearLog()}
-      const js = this.compile(code, fname, optsAll.testOnly, preCode)
-      try {
-        this.__varslist[0].line = -1 // コンパイルエラーを調べるため
-        const func = new Function(js) // eslint-disable-line
-        func.apply(this)
-      } catch (e) {
-        this.js = js
-        if (!(e instanceof NakoRuntimeError)) {
-          throw new NakoRuntimeError(e, this.__v0 ? this.__v0.line : undefined)
-        }
-        throw e
-      }
+      out = NakoGen.generate(this, this.parse(code, fname, preCode), optsAll.testOnly)
     } catch (e) {
       this.logger.error(e)
       throw e
     }
-    return this
+    // 実行
+    nakoGlobal = nakoGlobal || new NakoGlobal(this, out.gen)
+    try {
+      new Function(out.runtimeEnv).apply(nakoGlobal)
+      return nakoGlobal
+    } catch (e) {
+      if (!(e instanceof NakoRuntimeError)) {
+        e = new NakoRuntimeError(e, nakoGlobal.__varslist[0].line)
+      }
+      this.logger.error(e)
+      throw e
+    }
   }
 
   /**
@@ -681,37 +615,28 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   run(code, fname, preCode = '') {
-    return this._runEx(code, fname, { resetLog: false }, preCode)
+    return this._runEx(code, fname, {}, preCode)
   }
 
   /**
    * @param {string} code
    * @param {string} fname
    * @param {string} [preCode]
+   * @deprecated
    */
-  runReset (code, fname, preCode = '') {
-    return this._runEx(code, fname, { resetLog: true }, preCode)
-  }
-
-  clearLog () {
-    this.__varslist[0]['表示ログ'] = ''
+  runReset(code, fname, preCode = '') {
+    return this.run(code, fname, preCode)
   }
 
   /**
-   * eval()実行前に直接JSのオブジェクトを取得する場合
-   * @returns {[*,*,*]}
+   * JavaScriptのみで動くコードを取得する場合
+   * @param {string} code
+   * @param {string} filename
+   * @param {boolean | string} isTest
+   * @param {string} [preCode]
    */
-  getVarsList () {
-    const v = this.gen.getVarsList()
-    return [v[0], v[1], []]
-  }
-
-  /**
-   * 完全にJSのコードを取得する場合
-   * @returns {string}
-   */
-  getVarsCode () {
-    return this.gen.getVarsCode()
+  compileStandalone(code, filename, isTest, preCode = '') {
+    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).standalone
   }
 
   /**
@@ -732,17 +657,7 @@ class NakoCompiler {
         this.pluginFunclist[key] = JSON.parse(JSON.stringify(v))
       }
       if (v.type === 'func') {
-        __v0[key] = (...args) => {
-          try {
-            return v.fn(...args)
-          } catch (e) {
-            throw new NakoRuntimeError(
-              e,
-              this.__v0 ? this.__v0.line : undefined,
-              `関数『${key}』`,
-            )
-          }
-        }
+        __v0[key] = v.fn
       } else if (v.type === 'const' || v.type === 'var') {
         __v0[key] = v.value
         __v0.meta[key] = {
@@ -773,7 +688,6 @@ class NakoCompiler {
       delete po['初期化']
       const initkey = `!${objName}:初期化`
       po[initkey] = def
-      this.gen.used_func[initkey] = true
     }
     this.addPlugin(po, persistent)
   }
@@ -789,19 +703,6 @@ class NakoCompiler {
     this.addPluginObject(objName, po, persistent)
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = fpath
-    }
-  }
-
-  /**
-   * 毎プラグインの「!クリア」関数を実行
-   */
-  clearEachPlugins () {
-    const clearName = '!クリア'
-    for (const pname in this.pluginfiles) {
-      const po = this.__module[pname]
-      if (po[clearName] && po[clearName].fn) {
-        po[clearName].fn(this)
-      }
     }
   }
 

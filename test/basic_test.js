@@ -6,11 +6,11 @@ describe('basic', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   const cmpNakoFuncs = (code, res) => {
     nako.logger.debug('code=' + code)
-    nako.runReset(code)
+    nako.run(code)
     assert.deepStrictEqual(nako.usedFuncs, res)
   }
   // --- test ---
@@ -185,7 +185,7 @@ describe('basic', () => {
   it('return_none: true のaddFuncで定義した関数が「それ」に値を代入しないことを確認する', () => {
     const nako = new NakoCompiler()
     nako.addFunc('hoge', [], () => {}, true)
-    assert.strictEqual(nako.runReset('1と2を足す\nhoge\nそれを表示').log, '3')
+    assert.strictEqual(nako.run('1と2を足す\nhoge\nそれを表示').log, '3')
   })
   it('制御構文で一語関数を使う', () => {
     cmp('●一とは\n1を戻す\nここまで\nもし一ならば\n1を表示\nここまで', '1') // if
@@ -220,5 +220,28 @@ describe('basic', () => {
       'g = 関数(x) それは、x。ここまで。\n'
       , 'main.nako3')
     assert.strictEqual(log, '')
+  })
+  it('単独で実行できるプログラムの出力', (done) => {
+    const code = nako.compileStandalone('1+2を表示', 'main.nako3', false)    
+    Function('const console = { log: this.callback };\n' + code).apply({
+      callback: (text) => {
+        assert.strictEqual(text, '3')
+        done()
+      },
+    })
+  })
+  it('resetされた後に関数名を取得できない問題の修正 #849', (done) => {
+    const nako = new NakoCompiler()
+    nako.logger.addListener('stdout', ({ noColor }) => {
+      assert(noColor.includes('function')) // JavaScriptのコード function() { var ... } が表示されるはず
+      done()
+    })
+    nako.run(`
+●Aとは
+ここまで
+0.0001秒後には
+    「A」のJSオブジェクト取得して表示
+`)
+    nako.reset()
   })
 })

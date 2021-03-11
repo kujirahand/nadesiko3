@@ -7,7 +7,7 @@ describe('require_nako3_test', () => {
   nako.silent = true
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    const ret = nako.runReset(code, 'main.nako3')
+    const ret = nako.run(code, 'main.nako3')
     assert.strictEqual(ret.log, res)
   }
   it('「ファイルを取り込む」', () => {

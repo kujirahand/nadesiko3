@@ -10,11 +10,11 @@ describe('plugin_datetime_test', () => {
   
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   const cmd = (code) => {
     nako.logger.debug('code=' + code)
-    nako.runReset(code)
+    nako.run(code)
   }
 
   // --- test ---

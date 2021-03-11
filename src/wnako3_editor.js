@@ -1215,7 +1215,7 @@ class Options {
 
         // 設定メニューは ace/ext/settings_menu.js の showSettingsMenu 関数によって開かれる。
         // showSettingsMenu 関数は new OptionPanel(editor).render() で新しい設定パネルのインスタンスを生成するため、
-        // renderメソッドに設定の保存処理を挟むことで、生成されたインスタンスにアクセスできる。
+        // renderメソッドを上書きすることで、生成されたインスタンスにアクセスできる。
         const render = OptionPanel.prototype.render
         const self = this
         OptionPanel.prototype.render = function (...args) {
@@ -1554,7 +1554,7 @@ function setupEditor (id, nako3, ace) {
      *     file?: string
      *     preCode?: string
      *     localFiles?: Record<string, string>
-     *     method?: 'runReset' | 'test' | 'compile'
+     *     method?: 'run' | 'test' | 'compile'
      *     testName?: string
      * }} opts
      */
@@ -1587,7 +1587,7 @@ function setupEditor (id, nako3, ace) {
                 } else if (opts.method === 'compile') {
                     return nako3.compile(preCode + code, file, false, preCode)
                 } else {
-                    return nako3.runReset(preCode + code, file, preCode)
+                    return nako3.run(preCode + code, file, preCode)
                 }
             })
             .catch((err) => { }) // エラーはloggerに送られるためここでは何もしなくて良い

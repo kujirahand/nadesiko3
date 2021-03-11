@@ -288,7 +288,7 @@ describe('plugin_turtle_test', () => {
 [30,30]にカメ起点移動。
 180にカメ角度設定。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1)
 
@@ -322,7 +322,7 @@ describe('plugin_turtle_test', () => {
 ０にカメ速度設定。
 カメ作成。
 `
-    assert.throws(() => { nako.runReset(code) }, Error)
+    assert.throws(() => { nako.run(code) }, Error)
   })
 
   it('incorrect command', () => {
@@ -331,7 +331,7 @@ describe('plugin_turtle_test', () => {
 ０にカメ速度設定。
 [25,25]にカメ起点移動。
 `
-    assert.throws(() => { nako.runReset(code) }, Error)
+    assert.throws(() => { nako.run(code) }, Error)
   })
 
   it('set origin and direcion turtles', async () => {
@@ -352,7 +352,7 @@ describe('plugin_turtle_test', () => {
 [50,75]にカメ起点移動。
 0にカメ角度設定。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1.8)
 
@@ -398,7 +398,7 @@ describe('plugin_turtle_test', () => {
 [25,75]にカメ起点移動。
 [75,25]にカメ移動。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(2.0)
 
@@ -454,7 +454,7 @@ describe('plugin_turtle_test', () => {
 カメ非表示。
 カメ表示。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(2.0)
 
@@ -498,7 +498,7 @@ describe('plugin_turtle_test', () => {
 カメ表示。
 カメ全消去。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1.0)
 
@@ -534,7 +534,7 @@ describe('plugin_turtle_test', () => {
 ０にカメ速度設定。
 カメ全消去。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1.0)
 
@@ -572,7 +572,7 @@ describe('plugin_turtle_test', () => {
 「/custom/delayedimage/turtle-elephant.png」にカメ画像変更
 [50,50]にカメ起点移動。270にカメ角度設定。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(2.0)
 
@@ -610,7 +610,7 @@ describe('plugin_turtle_test', () => {
 [50,50]にカメ起点移動。270にカメ角度設定。
 「turtle-elephant.png」にカメ画像変更
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(2.0)
 
@@ -647,7 +647,7 @@ describe('plugin_turtle_test', () => {
 カメ作成。
 [50,50]にカメ起点移動。270にカメ角度設定。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(2.0)
 
@@ -691,7 +691,7 @@ describe('plugin_turtle_test', () => {
       funcCalled = true
       target = ttcanvas
     })
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1.0)
     const e = document.getElementById('0')
@@ -712,7 +712,7 @@ describe('plugin_turtle_test', () => {
 カメ作成。
 [50,50]にカメ起点移動。90にカメ角度設定。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1.0)
 
@@ -748,7 +748,7 @@ describe('plugin_turtle_test', () => {
 ゾウ作成。
 [50,50]にカメ起点移動。270にカメ角度設定。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1.0)
 
@@ -784,7 +784,7 @@ describe('plugin_turtle_test', () => {
 パンダ作成。
 [50,50]にカメ起点移動。180にカメ角度設定。
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await waitTimer(1.0)
 

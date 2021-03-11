@@ -14,7 +14,7 @@ export default (nako) => {
 `
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
         const msg = cr.messages[0]
@@ -38,7 +38,7 @@ export default (nako) => {
 
         const cr = window.cr
         cr.reset()
-        nako.runReset(code)
+        nako.run(code)
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
         assert.equal(cr.getMessageAsJson(), rslt)

@@ -111,9 +111,8 @@ class NakoRuntimeError extends NakoError {
   /**
    * @param {Error | string} error エラー
    * @param {string | undefined} lineNo 発生行
-   * @param {string | undefined} [from] 発生箇所の説明
    */
-  constructor (error, lineNo, from) {
+  constructor (error, lineNo) {
     const className =
       (error instanceof Error &&
        error.constructor !== Error &&
@@ -143,12 +142,11 @@ class NakoRuntimeError extends NakoError {
       file = lineNo
     }
 
-    super('実行時エラー', `${from === undefined ? '' : `${from}で`}エラー『${className}${msg}』が発生しました。`, file, line)
+    super('実行時エラー', `エラー『${className}${msg}』が発生しました。`, file, line)
     this.error = error
     this.lineNo = lineNo
     this.line = line
     this.file = file
-    this.from = from
   }
 }
 

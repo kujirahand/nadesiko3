@@ -45,7 +45,7 @@ WからNAKOワーカー表示した時には、
 Wで「"かかかかか"を表示する;"<>?"をHTML変換して表示する;"おわり"をNAKOワーカーデータ送信」をNAKOワーカープログラム起動
 Wに「あいうえお」をNAKOワーカーデータ送信
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await retry(() => assert.equal(JSON.stringify(msgs), '["かかかかか","&lt;&gt;?","おわり"]'))
   }).timeout(10000)
@@ -80,7 +80,7 @@ Wに["ワーカ内処理","ワーカー側値"]をNAKOワーカー転送
 Wで「ワーカ内処理する」をNAKOワーカープログラム起動
 Wに「あいうえお」をNAKOワーカーデータ送信
 `
-    nako.runReset(code)
+    nako.run(code)
 
     await retry(() => assert.equal(JSON.stringify(msgs), '["あいうえお","&lt;&gt;?","おわり"]'))
   }).timeout(10000)

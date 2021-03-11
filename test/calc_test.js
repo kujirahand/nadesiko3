@@ -8,7 +8,7 @@ describe('calc_test.js', () => {
     if (nako.debug) {
       console.log('code=' + code)
     }
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   it('basic', () => {
     cmp('3を表示', '3')

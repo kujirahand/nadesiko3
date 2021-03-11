@@ -7,11 +7,11 @@ describe('関数呼び出しテスト', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
+    assert.strictEqual(nako.run(code).log, res)
   }
   const cmd = (code) => {
     nako.logger.debug('code=' + code)
-    nako.runReset(code)
+    nako.run(code)
   }
   // --- test ---
   it('関数式の呼び出し - 足す(2,3)を表示。', () => {

@@ -6,11 +6,7 @@ describe('func_test', () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.runReset(code).log, res)
-  }
-  const cmpWithoutReset = (code, res) => {
-    nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.run(code).log, res)
+    assert.strictEqual(nako.run(code, 'main.nako3').log, res)
   }
   // --- test ---
 
@@ -72,14 +68,12 @@ describe('func_test', () => {
       'Nを表示。', '30')
   })
   it('ローカル定数2', () => {
-    const _res = '30'
-    let res = _res
-
-    nako.clearLog()
+    let nako = new NakoCompiler()
+    let expected = '30'
     for (let i = 0; i < 2; i++) {
-      cmpWithoutReset('定数のN=30\n' +
-        'Nを表示。', res)
-      res += '\n' + _res
+      nako = nako.runEx('定数のN=30\nNを表示。', 'main.nako3', { resetLog: false })
+      assert.strictEqual(nako.log, expected)
+      expected += '\n30'
     }
   })
   it('助詞の複数定義', () => {

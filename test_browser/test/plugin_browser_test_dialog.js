@@ -7,7 +7,7 @@ export default (nako) => {
       const windowalert = td.replace(window, 'alert')
       td.when(windowalert(msg)).thenReturn(undefined)
       nako.logger.debug('code=' + code)
-      nako.runReset(code)
+      nako.run(code)
       td.verify(windowalert(td.matchers.anything()), { times: 1 })
       td.reset()
     }
@@ -20,7 +20,7 @@ export default (nako) => {
       const windowprompt = td.replace(window, 'prompt')
       td.when(windowprompt(msg)).thenReturn(rslt)
       nako.logger.debug('code=' + code)
-      assert.equal(nako.runReset(code).log, res)
+      assert.equal(nako.run(code).log, res)
       td.verify(windowprompt(td.matchers.anything()), { times: 1 })
       td.reset()
     }
@@ -60,7 +60,7 @@ export default (nako) => {
       const windowconfirm = td.replace(window, 'confirm')
       td.when(windowconfirm(msg)).thenReturn(rslt)
       nako.logger.debug('code=' + code)
-      assert.equal(nako.runReset(code).log, res)
+      assert.equal(nako.run(code).log, res)
       td.verify(windowconfirm(td.matchers.anything()), { times: 1 })
       td.reset()
     }

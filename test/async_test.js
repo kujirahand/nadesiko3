@@ -6,11 +6,11 @@ describe('async_test', () => {
   const nako3 = new Nako3Assert()
   nako3.debug = debug
   const cmp = (code, exRes) => {
-    const result = nako3.runReset(code).log
+    const result = nako3.run(code).log
     assert.strictEqual(result, exRes)
   }
   const exe = (code) => {
-    nako3.runReset(code)
+    nako3.run(code)
   }
 
   // assert test

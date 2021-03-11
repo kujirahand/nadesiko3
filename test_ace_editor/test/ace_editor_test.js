@@ -135,7 +135,7 @@ describe('ace editor test', () => {
   })
   describe('出力のボックス', () => {
     it('コンパイルエラーを表示する', () => {
-      assert.strictEqual(document.querySelector('#editor7-output').innerText.trim(), '[実行時エラー]main.nako3(2行目): 関数『エラー発生』でエラー『1』が発生しました。')
+      assert.strictEqual(document.querySelector('#editor7-output').innerText.trim(), '[実行時エラー]main.nako3(2行目): エラー『1』が発生しました。')
       assert.strictEqual(document.querySelector('#editor8-output').innerText.trim(), '')
       assert.strictEqual(document.querySelector('#editor9-output').innerText.trim(), '[警告]main.nako3(1行目): 変数 a は定義されていません。\nundefined')
       assert.strictEqual(document.querySelector('#editor11-output').innerText.trim(), '[字句解析エラー]main.nako3(1行目): 展開あり文字列で値の埋め込み{...}が対応していません。')

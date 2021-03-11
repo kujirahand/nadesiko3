@@ -13,7 +13,7 @@ describe('plugin_math_test', () => {
     for (let nako of [cnako, wnako]) {
       let c = code
       nako.logger.debug('code=' + code)
-      assert.strictEqual(nako.runReset(c).log, res)
+      assert.strictEqual(nako.run(c).log, res)
     }
   }
 

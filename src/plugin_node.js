@@ -4,11 +4,11 @@
  */
 const fs = require('fs')
 const fse = require('fs-extra')
-const path = require('path')
 const fetch = require('node-fetch')
 const childProcess = require('child_process')
 const execSync = childProcess.execSync
 const exec = childProcess.exec
+const path = require('path')
 
 const PluginNode = {
   '初期化': {
@@ -16,6 +16,30 @@ const PluginNode = {
     josi: [],
     pure: true,
     fn: function (sys) {
+      // ランタイム環境無しで実行する場合
+      if (typeof path === 'undefined') {
+        /** @param {string} name @param {string} id */
+        const tryRequire = (name, id) => {
+          try {
+            // @ts-ignore
+            global[name] = require(id)
+          } catch (e) {
+            console.warn(e.message)
+          }
+        }
+        tryRequire('fs', 'fs')
+        tryRequire('fse', 'fs-extra')
+        tryRequire('fetch', 'node-fetch')
+        tryRequire('childProcess', 'child_process')
+        tryRequire('path', 'path')
+        if (typeof childProcess !== 'undefined') {
+          // @ts-ignore
+          global.execSync = childProcess.execSync
+          // @ts-ignore
+          global.exec = childProcess.exec
+        }
+      }
+
       sys.__getBinPath = (tool) => {
         let fpath = tool
         if (process.platform === 'win32')

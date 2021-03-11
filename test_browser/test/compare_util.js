@@ -7,12 +7,12 @@ class CompareUtil {
 
   cmp (code, res) {
     this.nako.logger.debug('code=' + code)
-    assert.equal(this.nako.runReset(code).log, res)
+    assert.equal(this.nako.run(code).log, res)
   }
 
   cmpex (code, err, res) {
     this.nako.logger.debug('code=' + code)
-    assert.throws(() => { this.nako.runReset(code) }, err, res)
+    assert.throws(() => { this.nako.run(code) }, err, res)
   }
 
   get nako () {

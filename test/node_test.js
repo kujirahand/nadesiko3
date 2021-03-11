@@ -1,6 +1,7 @@
 const assert = require('assert')
-const execSync = require('child_process').execSync
+const child_process = require('child_process')
 const path = require('path')
+const fs = require ('fs')
 
 const cnako3 = path.dirname(__dirname) + '/src/cnako3.js'
 const packagejson = require('../package.json')
@@ -8,8 +9,7 @@ const debug = false
 
 describe('node_test(cnako)', () => {
   const cmp = (code, exRes) => {
-    const res = execSync(`node ${cnako3} -e "${code}"`)
-    const result = res.toString().replace(/\s+$/, '')
+    const result = child_process.execSync(`node ${cnako3} -e "${code}"`).toString().replace(/\s+$/, '')
     if (debug) {
       console.log('code=' + code)
       console.log('result=' + result)
@@ -26,5 +26,14 @@ describe('node_test(cnako)', () => {
     cmp('3を表示', '3')
     cmp('1+2*3を表示', '7')
     cmp('A=30;「--{A}--」を表示', '--30--')
+  })
+
+  it('単独で実行できるプログラムの出力 - Node.js', () => {
+    const stderr = child_process.spawnSync('node', [cnako3, '-c', path.join(__dirname, 'add_test.nako3')]).stderr
+    if (stderr) { console.error(stderr.toString()) }
+    const p = child_process.spawnSync('node', [path.join(__dirname, 'add_test.js')])
+    if (p.stderr) { console.error(p.stderr.toString()) }
+    assert.strictEqual(p.stdout.toString(), '3\n')
+    fs.unlinkSync(path.join(__dirname, 'add_test.js'))
   })
 })
