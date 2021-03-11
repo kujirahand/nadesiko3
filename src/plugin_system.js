@@ -139,7 +139,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
-    fn: function (s) {
+    fn: function (s, sys) {
       sys.logger.send('stdout', s + '')
     },
     return_none: true
@@ -1366,7 +1366,7 @@ const PluginSystem = {
     josi: [['の'], ['を']],
     pure: true,
     fn: function (a, no) {
-      if (!a instanceof Array) {
+      if (!(a instanceof Array)) {
         throw new Error('『表ソート』には配列を指定する必要があります。')
       }
       a.sort((n, m) => {
@@ -1390,7 +1390,7 @@ const PluginSystem = {
     josi: [['の'], ['を']],
     pure: true,
     fn: function (a, no) {
-      if (!a instanceof Array) {
+      if (!(a instanceof Array)) {
         throw new Error('『表数値ソート』には配列を指定する必要があります。')
       }
       a.sort((n, m) => {
@@ -1406,7 +1406,7 @@ const PluginSystem = {
     josi: [['の'],['から'],['を','で']],
     pure: true,
     fn: function (a, no, s) {
-      if (!a instanceof Array) { throw new Error('『表ピックアップ』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表ピックアップ』には配列を指定する必要があります。') }
       return a.filter((row) => String(row[no]).indexOf(s) >= 0)
     }
   },
@@ -1415,7 +1415,7 @@ const PluginSystem = {
     josi: [['の'],['から'],['を','で']],
     pure: true,
     fn: function (a, no, s) {
-      if (!a instanceof Array) { throw new Error('『表完全ピックアップ』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表完全ピックアップ』には配列を指定する必要があります。') }
       return a.filter((row) => row[no] == s)
     }
   },
@@ -1424,7 +1424,7 @@ const PluginSystem = {
     josi: [['の'],['で','に'],['から'],['を']],
     pure: true,
     fn: function (a, col, row, s) {
-      if (!a instanceof Array) { throw new Error('『表検索』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表検索』には配列を指定する必要があります。') }
       for (let i = row; i < a.length; i++) {
         if (a[i][col] === s) return i
       }
@@ -1436,7 +1436,7 @@ const PluginSystem = {
     josi: [['の']],
     pure: true,
     fn: function (a) {
-      if (!a instanceof Array) { throw new Error('『表列数』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表列数』には配列を指定する必要があります。') }
       let cols = 1
       for (let i = 0; i < a.length; i++) {
         if (a[i].length > cols) {cols = a[i].length}
@@ -1449,7 +1449,7 @@ const PluginSystem = {
     josi: [['の']],
     pure: true,
     fn: function (a) {
-      if (!a instanceof Array) { throw new Error('『表行数』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表行数』には配列を指定する必要があります。') }
       return a.length
     }
   },
@@ -1458,7 +1458,7 @@ const PluginSystem = {
     josi: [['の', 'を']],
     pure: false,
     fn: function (a, sys) {
-      if (!a instanceof Array) { throw new Error('『表行列交換』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表行列交換』には配列を指定する必要があります。') }
       const cols = sys.__exec('表列数', [a])
       const rows = a.length
       const res = []
@@ -1477,7 +1477,7 @@ const PluginSystem = {
     josi: [['の', 'を']],
     pure: false,
     fn: function (a, sys) {
-      if (!a instanceof Array) { throw new Error('『表右回転』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表右回転』には配列を指定する必要があります。') }
       const cols = sys.__exec('表列数', [a])
       const rows = a.length
       const res = []
@@ -1496,7 +1496,7 @@ const PluginSystem = {
     josi: [['の'],['を','で']],
     pure: true,
     fn: function (a, i, sys) {
-      if (!a instanceof Array) { throw new Error('『表重複削除』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表重複削除』には配列を指定する必要があります。') }
       const res = []
       const keys = {}
       for (let n = 0; n < a.length; n++) {
@@ -1514,7 +1514,7 @@ const PluginSystem = {
     josi: [['の'],['を']],
     pure: true,
     fn: function (a, i, sys) {
-      if (!a instanceof Array) { throw new Error('『表列取得』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表列取得』には配列を指定する必要があります。') }
       const res = a.map(row => row[i])
       return res
     }
@@ -1524,7 +1524,7 @@ const PluginSystem = {
     josi: [['の'],['に','へ'],['を']],
     pure: true,
     fn: function (a, i, s) {
-      if (!a instanceof Array) { throw new Error('『表列挿入』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表列挿入』には配列を指定する必要があります。') }
       const res = []
       a.forEach((row, idx) => {
         let nr = []
@@ -1541,7 +1541,7 @@ const PluginSystem = {
     josi: [['の'],['を']],
     pure: true,
     fn: function (a, i) {
-      if (!a instanceof Array) { throw new Error('『表列削除』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表列削除』には配列を指定する必要があります。') }
       const res = []
       a.forEach((row, idx) => {
         let nr = row.slice(0)
@@ -1556,7 +1556,7 @@ const PluginSystem = {
     josi: [['の'],['を','で']],
     pure: true,
     fn: function (a, i) {
-      if (!a instanceof Array) { throw new Error('『表列合計』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表列合計』には配列を指定する必要があります。') }
       let sum = 0
       a.forEach((row) => sum += row[i])
       return sum
@@ -1567,7 +1567,7 @@ const PluginSystem = {
     josi: [['の'],['から'],['で'],['を']],
     pure: true,
     fn: function (a, row, col, s) {
-      if (!a instanceof Array) { throw new Error('『表曖昧検索』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表曖昧検索』には配列を指定する必要があります。') }
       const re = new RegExp(s)
       for (let i = 0; i < a.length; i++) {
         const row = a[i]
@@ -1581,7 +1581,7 @@ const PluginSystem = {
     josi: [['の','で'],['から'],['を']],
     pure: true,
     fn: function (a, col, s) {
-      if (!a instanceof Array) { throw new Error('『表正規表現ピックアップ』には配列を指定する必要があります。') }
+      if (!(a instanceof Array)) { throw new Error('『表正規表現ピックアップ』には配列を指定する必要があります。') }
       const re = new RegExp(s)
       const res = []
       for (let i = 0; i < a.length; i++) {
