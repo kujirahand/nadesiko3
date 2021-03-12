@@ -16,90 +16,113 @@ const PluginWeykTurtle3D = {
         containerid: "",
         camera: -1,
         target: -1,
-        backalpha: 1.0,
-        backcolor: new THREE.Color(0x000000),
-        _scene : null,
-        _lines: new THREE.Object3D(),
-        _camera: null,
         _renderer: null,
+        _scene : null,
+        _lines: new THREE.Group(),
+        _camera: null,
         _controls: null,
         _camerahelper: null,
         _axishelper: null,
         list : [],
         clearAll: function() {
-          const me = this
           console.log('[TURTLE] clearAll')
+          this.disposeAllTurtle()
+          this.disposeAllLine()
+          const scene = this._scene
+          if (scene !== null) {
+            scene.remove(this._lines)
+            scene.add(this._lines)
+            if (this._camerahelper !== null) {
+              this._camerahelper.visible = false
+              scene.remove(this._camerahelper)
+              scene.add(this._camerahelper)
+            }
+            if (this._axishelper !== null) {
+              this._axishelper.visible = false
+              scene.remove(this._axishelper)
+              scene.add(this._axishelper)
+            }
+            this.initTurtle()
+          }
+        },
+        disposeAllTurtle: function() {
           // カメをクリア
-          for (let i = 0; i < me.list.length; i++) {
-            const tt = me.list[i]
+          for (let i = 0; i < this.list.length; i++) {
+            const tt = this.list[i]
             tt.mlist = [] // ジョブをクリア
             // かめのモデルをカメから削除
-            while(tt.obj.children.length > 0){ 
-                tt.obj.remove(tt.obj.children[0]); 
-            }
+            this.disposeChildObject(tt.obj)
           }
-          me.list = []
+          this.list = []
+          this.target = -1
+          this.camera = -1
+          this.flagSetTimer = false
+        },
+        disposeAllLine: function() {
           // 引いた線を線用のバッファからクリア
-          while(me._lines.children.length > 0){ 
-            me._lines.remove(me._lines.children[0]); 
+          if (this._lines !== null) {
+            this.disposeChildObject(this._lines)
           }
-          // シーンに直接存在する要素をとりあえず全部削除
-          const scene = me._scene
-          if (scene !== null) {
-            while(scene.children.length > 0){ 
-                scene.remove(scene.children[0]); 
-            }
-          }
-          me.target = -1
-          me.camera = -1
-          me.flagSetTimer = false
-          scene.add(me._lines)
-          if (me._camerahelper !== null) {
-            me._camerahelper.visible = false
-            scene.add(me._camerahelper)
-          }
-          if (me._axishelper !== null) {
-            me._axishelper.visible = false
-            scene.add(me._axishelper)
-          }
-          me.backcolor = new THREE.Color(0x000000)
-          me.initTurtle()
         },
         createDefaultTurtle: function() {
-          const obj = new THREE.Object3D()
-          const matMiddle = new THREE.LineBasicMaterial({color: 0x00ff00})
-          const matTop = new THREE.LineBasicMaterial({color: 0xff0000})
-          const matBottom = new THREE.LineBasicMaterial({color: 0x0000ff})
-          const geoMiddle = new THREE.Geometry()
-          const geoTop = new THREE.Geometry()
-          const geoBottom = new THREE.Geometry()
-          geoMiddle.vertices.push(
-            new THREE.Vector3(0,30,0),
-            new THREE.Vector3(-20,-30,0),
-            new THREE.Vector3(0,-15,0),
-            new THREE.Vector3(20,-30,0)
-          )
-          let center = new THREE.Vector3(0,0,15)
-          geoTop.vertices.push(
-            center, new THREE.Vector3(0,30,0),
-            center, new THREE.Vector3(-20,-30,0),
-            center, new THREE.Vector3(0,-15,0),
-            center, new THREE.Vector3(20,-30,0)
-          )
-          center = new THREE.Vector3(0,0,-15)
-          geoBottom.vertices.push(
-            center, new THREE.Vector3(0,30,0),
-            center, new THREE.Vector3(-20,-30,0),
-            center, new THREE.Vector3(0,-15,0),
-            center, new THREE.Vector3(20,-30,0)
-          )
-          const meshMiddle = new THREE.LineLoop(geoMiddle, matMiddle)
-          const meshTop = new THREE.Line(geoTop, matTop)
-          const meshBottom = new THREE.Line(geoBottom, matBottom)
+          const obj = new THREE.Group()
 
-          obj.add(meshMiddle)
-          obj.add(meshTop)
-          obj.add(meshBottom)
+          const material = new THREE.LineBasicMaterial( { vertexColors: true } )
+
+          const vertices = new Float32Array( [
+              0.0,  1.0,  0.0,
+             -0.6, -1.0,  0.0,
+              0.0, -0.5,  0.0,
+              0.6, -1.0,  0.0,
+
+              0.0,  0.0,  0.5,
+              0.0,  1.0,  0.0,
+             -0.6, -1.0,  0.0,
+              0.0, -0.5,  0.0,
+              0.6, -1.0,  0.0,
+
+              0.0,  0.0, -0.5,
+              0.0,  1.0,  0.0,
+             -0.6, -1.0,  0.0,
+              0.0, -0.5,  0.0,
+              0.6, -1.0,  0.0
+          ] )
+
+          const colors = new Float32Array( [
+              0.0,  1.0,  0.0,
+              0.0,  1.0,  0.0,
+              0.0,  1.0,  0.0,
+              0.0,  1.0,  0.0,
+
+              1.0,  0.0,  0.0,
+              1.0,  0.0,  0.0,
+              1.0,  0.0,  0.0,
+              1.0,  0.0,  0.0,
+              1.0,  0.0,  0.0,
+
+              0.0,  0.0,  1.0,
+              0.0,  0.0,  1.0,
+              0.0,  0.0,  1.0,
+              0.0,  0.0,  1.0,
+              0.0,  0.0,  1.0
+          ] )
+
+          const indices = [
+              0, 1, 1, 2, 2, 3, 3, 0,
+              4, 5, 4, 6, 4, 7, 4, 8,
+              9,10, 9,11, 9,12, 9,13
+          ]
+
+          const geometry = new THREE.BufferGeometry()
+          geometry.setIndex( indices )
+          geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) )
+          geometry.setAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) )
+          geometry.computeBoundingSphere()
+
+          const lineSegments = new THREE.LineSegments( geometry, material )
+          lineSegments.scale.set(30.0, 30.0, 30.0)
+
+          obj.add(lineSegments)
           return obj
         },
         createTurtle: function(modelUrl) {
@@ -107,7 +130,7 @@ const PluginWeykTurtle3D = {
           const id = this.list.length
           const tt = {
             id: id,
-            obj: new THREE.Object3D(),
+            obj: new THREE.Group(),
             home: {
               position: new THREE.Vector3(0,0,0),
               quaternion: new THREE.Quaternion()
@@ -124,17 +147,25 @@ const PluginWeykTurtle3D = {
           tt.home.position.copy(tt.obj.position)
           tt.home.quaternion.copy(tt.obj.quaternion)
           this.loadTurtle(tt, modelUrl)
-          this._scene.add(tt.obj)
+          const scene = this.getScene()
+          scene.add(tt.obj)
           return id
         },
         loadTurtle: function(tt, url) {
           const loader = new THREE.ObjectLoader()
           const me = this
+          if (url instanceof THREE.Object3D) {
+            console.log('turtle.object')
+            me.disposeChildObject(tt.obj)
+            const obj = url
+            tt.obj.add(obj)
+            tt.flagLoaded = true
+            me.doDraw()
+            return
+          }
           if (url.length == 0) {
             console.log('turtle.default')
-            if (tt.obj.children.length > 0) {
-              tt.obj.remove(tt.obj.children[0])
-            }
+            me.disposeChildObject(tt.obj)
             const obj = me.createDefaultTurtle()
             tt.obj.add(obj)
             tt.flagLoaded = true
@@ -143,9 +174,7 @@ const PluginWeykTurtle3D = {
           }
           loader.load(url, function(obj) {
             console.log('turtle.onload')
-            if (tt.obj.children.length > 0) {
-              tt.obj.remove(tt.obj.children[0])
-            }
+            me.disposeChildObject(tt.obj)
             tt.obj.add(obj)
             tt.flagLoaded = true
             me.doDraw()
@@ -156,25 +185,25 @@ const PluginWeykTurtle3D = {
             tt.flagLoaded = true
             tt.f_visible = false
             tt.obj.visible = false
-            if (tt.obj.children.length > 0) {
-              tt.obj.remove(tt.obj.children[0])
-            }
+            me.disposeChildObject(tt.obj)
             me.doDraw()
           })
         },
         initTurtle: function() {
-          const index = this.createTurtle("")
-          const tt = this.list[index]
-          tt.obj.position.set(0,0,1000)
-          var axis = new THREE.Vector3(0,0,-1).normalize()
-          var angle = 0
-          tt.obj.quaternion.setFromAxisAngle(axis,angle)
-          tt.home.position.copy(tt.obj.position)
-          tt.home.quaternion.copy(tt.obj.quaternion)
-          tt.f_visible = false
-          tt.obj.visible = false
-          this.camera = index
-          this.target = -1
+          if (this.list.length == 0) {
+            const index = this.createTurtle("")
+            const tt = this.list[index]
+            tt.obj.position.set(0,0,1000)
+            var axis = new THREE.Vector3(0,0,-1).normalize()
+            var angle = 0
+            tt.obj.quaternion.setFromAxisAngle(axis,angle)
+            tt.home.position.copy(tt.obj.position)
+            tt.home.quaternion.copy(tt.obj.quaternion)
+            tt.f_visible = false
+            tt.obj.visible = false
+            this.camera = index
+            this.target = -1
+          }
         },
         getCur: function() {
           if (this.list.length === 0) {
@@ -187,9 +216,7 @@ const PluginWeykTurtle3D = {
         },
         doDraw: function() {
           if (this.camera === -1) return
-          if (this._renderer === null) {
-            this.setRenderTarget()
-          }
+          this.getRenderer()
           const camera = this.list[this.camera]
           if (this._controls !== null) {
           } else {
@@ -236,60 +263,117 @@ const PluginWeykTurtle3D = {
             }
             this._axishelper.visible = true
           } else {
-            if (this._axishelper === null) {
+            if (this._axishelper !== null) {
               this._axishelper.visible = false
             }
           }
         },
-        setBackgroundAlpha: function(a) {
-          this.backalpha = a
-          if (this._renderer) {
-            this._renderer.setClearAlpha(this.backalpha)
+        getScene: function () {
+          if (this._scene === null) {
+            const scene = new THREE.Scene()
+            if (scene === null) {
+              throw new Error('シーンを作成できません')
+            }
+            this._scene = scene
+          }
+          return this._scene
+        },
+        getCamera: function () {
+          if (this._camera === null) {
+            const camera = new THREE.PerspectiveCamera(60, 1.0, 1, 65000)
+            if (camera === null) {
+              throw new Error('カメラを作成できません')
+            }
+            this.resetCamera(camera)
+            this._camera = camera
+          }
+          return this._camera
+        },
+        resetCamera: function(camera) {
+          camera.position.set(0,0,1000)
+          if (this._renderer !== null) {
+            const rect = new THREE.Vector2()
+            this._renderer.getSize(rect)
+            camera.aspect = rect.width / rect.height
+          }
+          camera.up = new THREE.Vector3(0,1,0)
+          camera.lookAt(new THREE.Vector3(0,0,0))
+        },
+        initTrutle3dEnv: function (renderer) {
+          renderer.setClearColor(0x000000, 1.0)
+          renderer.autoClear = false
+
+          const scene = this.getScene()
+          const camera = this.getCamera()
+
+          scene.add(sys._weykturtle3d._lines)
+          if (this.list.length == 0) {
+            this.initTurtle()
           }
         },
-        setBackgroundColor: function(c) {
-          this.backcolor = new THREE.Color(c)
-          if (this._renderer) {
-            this._renderer.setClearColor(this.backcolor,this.backalpha)
-          }
-        },
-        setRenderTarget: function() {
+        initRenderer: function() {
           // 描画先をセットする
-          const divId = sys.__getSysValue('T3Dカメ描画先', 'turtle3d_div')
-          const div = document.getElementById(divId)
-          if (!div) {
+          let to = sys.__getSysValue('T3Dカメ描画先', 'turtle3d_div')
+          if (typeof to === 'string')
+            {to = document.querySelector(to) || document.getElementById(to)}
+          if (!to) {
             throw new Error('[ERROR] T3Dカメ描画先が見当たりません。' + divId)
             return
           }
-          const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true })
-          if (renderer === null) {
-            throw new Error('レンダラを作成できません')
+          this.setRenderer(to)
+        },
+        setRenderer: function (to) {
+          if (to instanceof THREE.WebGLRenderer) {
+            this._renderer = to
+          } else {
+            const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true })
+            if (renderer === null) {
+              throw new Error('レンダラを作成できません')
+            }
+            renderer.setPixelRatio( window.devicePixelRatio )
+            renderer.setSize( to.clientWidth, to.clientHeight )
+            to.appendChild(renderer.domElement)
+            this._renderer = renderer
           }
-          renderer.setClearColor(this.backcolor,this.backalpha)
-          renderer.setPixelRatio( window.devicePixelRatio )
-          renderer.setSize( div.clientWidth, div.clientHeight )
-          this._camera.aspect = div.clientWidth / div.clientHeight
-          renderer.autoClear = false
-          div.appendChild(renderer.domElement)
+          return this._renderer
+        },
+        setupRenderer: function () {
+          this.initTrutle3dEnv(this._renderer)
+        },
+        getRenderer: function() {
+          if (this._renderer === null) {
+            this.initRenderer()
+            this.setupRenderer()
+          }
+          return this._renderer
+        },
+        setupControl: function(controlConstrucor) {
+          if (typeof controlConstrucor === "undefined") {
+            throw new Error('指定されたコンコントロールが見当たりません。')
+          }
           if (this._controls !== null) {
-            this._controls.enabled = false
-            div.addEventListener('mouseover', function() {
-                sys._weykturtle3d._controls.enabled = true
-            })
-            div.addEventListener('mouseout', function() {
-                sys._weykturtle3d._controls.enabled = false
-            })
+            if (this._controls instanceof controlConstrucor) {
+              return this._controls
+            } else {
+              throw new Error('既にコントロールを適用しています。コントロールの変更はできません。')
+            }
           }
-          this._renderer = renderer
+          const renderer = this.getRenderer()
+          const camera = this.getCamera(renderer)
+          const controls = new controlConstrucor(camera, renderer.domElement)
+          controls.enabled = true
+          this._controls = controls
+          return this._controls
         },
         line: function (tt, v1, v2) {
           if (tt) {
             if (!tt.flagDown) return
           }
-          const geometry = new THREE.Geometry()
+          const geometry = new THREE.BufferGeometry()
+          const vertices = new THREE.Float32BufferAttribute(6, 3)
+          vertices.copyVector3sArray( [ v1, v2] )
           const material = new THREE.LineBasicMaterial({color: tt.color,linewidth: tt.lineWidth})
-          geometry.vertices.push(v1)
-          geometry.vertices.push(v2)
+          geometry.setAttribute( 'position', vertices )
           const line = new THREE.Line(geometry, material)
           this._lines.add(line)
         },
@@ -388,7 +472,7 @@ const PluginWeykTurtle3D = {
             }
             case 'angle': {
               const euler = new THREE.Euler()
-              euler.setArray(m[1])
+              euler.fromArray(m[1])
               const dir = new THREE.Quaternion()
               tt.obj.quaternion.setFromEuler(euler)
               break
@@ -498,6 +582,23 @@ const PluginWeykTurtle3D = {
         getWait: function() {
           return sys.__getSysValue('T3Dカメ速度', 100)
         },
+        disposeChildObject: function(obj) {
+          while(obj.children.length > 0){ 
+            this.disposeChildObject(obj.children[0])
+            obj.remove(obj.children[0]);
+          }
+          if(obj.geometry) obj.geometry.dispose()
+
+          if(obj.material){ 
+            Object.keys(obj.material).forEach(prop => {
+              if(!obj.material[prop])
+                return         
+              if(typeof obj.material[prop].dispose === 'function')                                  
+                obj.material[prop].dispose()                                                        
+            })
+            obj.material.dispose()
+          }
+        },
         animation: function() {
           const me = sys._weykturtle3d
           const now = Date.now()
@@ -533,27 +634,6 @@ const PluginWeykTurtle3D = {
                    window.oRequestAnimationFrame      ||
                    window.msRequestAnimationFrame     || */
       })()
-      const scene = new THREE.Scene()
-      if (scene === null) {
-        throw new Error('シーンを作成できません')
-      }
-      sys._weykturtle3d._scene = scene
-      const camera = new THREE.PerspectiveCamera(60, 1.0, 1, 65000)
-      if (camera === null) {
-        throw new Error('カメラを作成できません')
-      }
-      camera.position.set(0,0,1000)
-      if (typeof THREE.OrbitControls !== "undefined") {
-        const controls = new THREE.OrbitControls(camera)
-        controls.enabled = false
-        sys._weykturtle3d._controls = controls
-      } else {
-        camera.up = new THREE.Vector3(0,1,0)
-        camera.lookAt(new THREE.Vector3(0,0,0))
-      }
-      sys._weykturtle3d._camera = camera
-      sys._weykturtle3d._scene.add(sys._weykturtle3d._lines)
-      sys._weykturtle3d.initTurtle()
     }
   },
   // @3Dタートルグラフィックス/カメ操作
@@ -563,6 +643,7 @@ const PluginWeykTurtle3D = {
     pure: true,
     fn: function (sys) {
       if (!sys._weykturtle3d) return null
+      sys._weykturtle3d.initTurtle()
       const modelUrl = sys.__getSysValue('T3DカメモデルURL', '')
       const id = sys._weykturtle3d.createTurtle(modelUrl)
       return id
@@ -969,12 +1050,33 @@ const PluginWeykTurtle3D = {
       if (w < 0 || w >= sys._weykturtle3d.list.length) {
         throw Error('指定された番号のカメはいません。')
       }
+      const tt = sys._weykturtle3d.getCur()
       tt.mlist.push(['changeCamera', w])
       sys._weykturtle3d.animationStart()
     },
     return_none: true
   },
   // @3Dタートルグラフィックス/基本機能
+  'T3D描画準備': { // @指定したDOMのIDに対する描画を準備し、描画オブジェクトを返す // @T3Dびょうがじゅんび
+    type: 'func',
+    josi: [['に', 'へ']],
+    pure: true,
+    fn: function (to, sys) {
+      if (!sys._weykturtle3d) return null
+      if (typeof THREE === 'undefined') {
+        throw new Error('three.jsが読み込まれていません')
+      }
+
+      if (typeof to === 'string')
+        {to = document.querySelector(to) || document.getElementById(to)}
+      if (!to) throw new Error('TJS描画準備に指定した描画先に誤りがあります')
+
+      sys._weykturtle3d.setRenderer(to)
+      sys._weykturtle3d.setupRenderer()
+      return sys._weykturtle3d._renderer
+    },
+    return_none: false
+  },
   'T3D描画': { // @現在の状態を描画する // @T3Dびょうが
     type: 'func',
     josi: [],
@@ -991,14 +1093,25 @@ const PluginWeykTurtle3D = {
     pure: true,
     fn: function (c, sys) {
       if (!sys._weykturtle3d) return null
-      if (c==="透明"){
-        sys._weykturtle3d.setBackgroundAlpha(0.0)
-      }else
-      if (c==="不透明"){
-        sys._weykturtle3d.setBackgroundAlpha(1.0)
-      }else{
-        sys._weykturtle3d.setBackgroundColor(c)
+      if (sys._weykturtle3d._renderer === null) {
+        sys._weykturtle3d.setRenderTarget()
       }
+      sys._weykturtle3d._renderer.setClearColor(c)
+      sys._weykturtle3d.animationStart()
+    },
+    return_none: true
+  },
+  'T3D背景透過設定': { // @canvasをクリアする際の背景のアルファ値を設定する // @T3Dはいけいとうかせってい
+    type: 'func',
+    josi: [['に', 'へ']],
+    pure: true,
+    fn: function (c, sys) {
+      if (!sys._weykturtle3d) return null
+      if (sys._weykturtle3d._renderer === null) {
+        sys._weykturtle3d.setRenderTarget()
+      }
+      sys._weykturtle3d._renderer.setClearAlpha(c)
+      sys._weykturtle3d.animationStart()
     },
     return_none: true
   },
@@ -1013,6 +1126,43 @@ const PluginWeykTurtle3D = {
     return_none: false
   },
   // @3Dタートルグラフィックス/ヘルパ機能
+  'T3Dオービットコントロール設定': { // オービットコントロールを組み込む // @T3Dおーびっとこんとろーるせってい
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (!sys._weykturtle3d) return null
+      if (typeof THREE.OrbitControls !== "undefined") {
+        return sys._weykturtle3d.setupControl(THREE.OrbitControls)
+      }
+      return null
+    },
+    return_none: false
+  },
+  'T3Dコントロール有効': { // @組み込んだコントロールを有効にする // @T3Dこんとろーるゆうこう
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (!sys._weykturtle3d) return null
+      if (sys._weykturtle3d._controls) {
+        sys._weykturtle3d._controls.enabled = true
+      }
+    },
+    return_none: true
+  },
+  'T3Dコントロール無効': { // @組み込んだコントロールを無効にする // @T3Dこんとろーるむこう
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (!sys._weykturtle3d) return null
+      if (sys._weykturtle3d._controls) {
+        sys._weykturtle3d._controls.enabled = false
+      }
+    },
+    return_none: true
+  },
   'T3Dカメラヘルパ表示': { // @カメラヘルパーを表示する // @T3Dかめらへるぱひょうじ
     type: 'func',
     josi: [],
