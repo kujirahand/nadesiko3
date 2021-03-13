@@ -14,10 +14,12 @@ module.exports = {
       sys.__canvas = cv
       sys.__ctx = cv.getContext('2d')
       sys.__v0['描画中キャンバス'] = cv
+      sys.__v0['描画中コンテキスト'] = sys.__ctx
     },
     return_none: true
   },
   '描画中キャンバス': {type: 'const', value: null}, // @ びょうがちゅうきゃんばす
+  '描画中コンテキスト': {type: 'const', value: null}, // @ びょうがちゅうこんてきすと
   '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろしてい
     type: 'func',
     josi: [['に', 'へ']],
