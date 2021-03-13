@@ -353,6 +353,28 @@ const PluginSystem = {
       return name.apply(null, args)
     }
   },
+  'JSメソッド実行': { // @JavaScriptのオブジェクトOBJのメソッドMを引数ARGS(配列)で実行する // @JSめそっどじっこう
+    type: 'func',
+    josi: [['の'], ['を'], ['で']],
+    fn: function (obj, m, args, sys) {
+      // objが文字列ならevalして関数を得る
+      if (typeof obj === 'string') {obj = eval(obj)}
+      if (typeof obj !== 'object')
+        {throw new Error('JSオブジェクトを取得できませんでした。')}
+
+      // method を求める
+      if (typeof m !== 'function') {
+        m = obj[m]
+      }
+
+      // argsがArrayでなければArrayに変換する
+      if (!(args instanceof Array))
+        {args = [args]}
+
+      // 実行
+      return m.apply(obj, args)
+    }
+  },
 
   'ナデシコ': { // @なでしこのコードCODEを実行する // @なでしこする
     type: 'func',
