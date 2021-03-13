@@ -397,4 +397,12 @@ describe('plugin_system_test', () => {
     nako.run('「a=1+2」をナデシコ')
     assert.strictEqual(lineCount, 0)
   })
+  it('JSメソッド実行 #854', () => {
+    global.jstest = () => { return 777 }
+    cmp('「global」の「jstest」を[]でJSメソッド実行して表示。', '777')
+    global.jstest_x2 = (a) => { return a * 2 }
+    cmp('「global」の「jstest_x2」を30でJSメソッド実行して表示。', '60')
+    global.jstest_mul = (a, b) => { return a * b }
+    cmp('「global」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
+  })
 })
