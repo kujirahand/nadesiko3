@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=320,initial-scale=1">
+  <title>なでしこ3/タートルグラフィックス</title>
+  <!-- なでしこを使う準備 -->
+  <link rel="stylesheet" href="../src/wnako3_editor.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js" integrity="sha512-8qx1DL/2Wsrrij2TWX5UzvEaYOFVndR7BogdpOyF4ocMfnfkw28qt8ULkXD9Tef0bLvh3TpnSAljDC7uyniEuQ==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-options.min.js" integrity="sha512-oHR+WVzBiVZ6njlMVlDDLUIOLRDfUUfRQ55PfkZvgjwuvGqL4ohCTxaahJIxTmtya4jgyk0zmOxDMuLzbfqQDA==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-code_lens.min.js" integrity="sha512-gsDyyKTnOmSWRDzUbpYcPjzVsEyFGSWeWefzVKvbMULPR2ElIlKKsOtU3ycfybN9kncZXKLFSsUiG3cgJUbc/g==" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.126.1/build/three.min.js" integrity="sha256-RhW9lLg3YYVh/c3z+9Q8cUD5GFShsH1f7mR0lvCROpk=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.126.1/examples/js/controls/OrbitControls.js" integrity="sha256-+ncCNttOcMopCUa47Sn26Tg06ZC2SnWoi/XikKAhnSY=" crossorigin="anonymous"></script>
+  <script src="../release/wnako3.js"></script>
+  <script src="../release/plugin_markup.js"></script>
+  <script src="../src/plugin_weykturtle3d.js"></script>
+  <!-- なでしこを呼び出して使う -->
+  <script src="common.js"></script>
+  <script src="turtle3d_test.js"></script>
+  <link rel="stylesheet" type="text/css" href="common.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+<h1><a name="top">なでしこ3/タートルグラフィックス3D その2</a></h1>
+
+<div class="sbox">
+  <h4><a name="turtle_txt_head">カメ</a></h4>
+  <textarea id="turtle_txt" class="src" rows="5" title="カメ">
+T3Dカメ作成。
+200にT3Dカメ速度設定。
+# 左右
+6回、
+　　15だけT3Dカメ右回転
+ここまで。
+12回、
+　　15だけT3Dカメ左回転
+ここまで。
+6回、
+　　15だけT3Dカメ右回転
+ここまで。
+# 上下
+6回、
+　　10だけT3Dカメ上回転
+ここまで。
+12回、
+　　10だけT3Dカメ下回転
+ここまで。
+6回、
+　　10だけT3Dカメ上回転
+ここまで。
+# ティルト
+100にT3Dカメ速度設定。
+8回、
+　　10だけT3Dカメ右ロール
+ここまで。
+16回、
+　　10だけT3Dカメ左ロール
+ここまで。</textarea>
+  <div><p id="turtle_txt_info" class="info"></p></div>
+  <button onclick="runBox('turtle_txt')" class="default_button">実行</button>
+</div>
+
+<div class="sbox">
+  <h4><a name="sikaku_txt_head">立方体</a></h4>
+  <textarea id="sikaku_txt" class="src" rows="5" title="立方体">
+200にT3Dカメ速度設定。
+T3Dカメ作成。
+Nは200
+４回
+　　３回、
+　　　　NだけT3Dカメ進む。
+　　　　90だけT3Dカメ右回転。
+　　ここまで。
+　　オフにT3Dカメペン設定
+　　NだけT3Dカメ進む。
+　　90だけT3Dカメ右回転。
+　　NだけT3Dカメ進む。
+　　90だけT3Dカメ上回転
+　　オンにT3Dカメペン設定
+ここまで。
+100にT3Dカメ速度設定。</textarea>
+  <div><p id="sikaku_txt_info" class="info"></p></div>
+  <button onclick="runBox('sikaku_txt')" class="default_button">実行</button>
+</div>
+
+<!-- 実行結果を表示するパーツ -->
+<div id="editor" class="edit_div">
+  <div class="turtle_box">
+    <p class="edit_head"><a name="run">実行結果:</a></p>
+    <p>
+      <div id="turtle3d_div" class="turtle_canvas" style="width:480px; height:400px;margin-left: auto;margin-right: auto;"></div>
+      ※ThreeJsのOrbitControlが有効になってます。マウスでぐりぐり動かせます。<br>
+    </p>
+    <p>(<a href="#turtle_txt" id="backlink">↑戻る</a>)</p>
+  </div>
+  <div id='err' class="err"></div>
+</div>
+
+<div class="sbox">
+  <h3>その他</h3>
+  <ul>
+    <li><a href="#top">タートルグラフィックス3Dのサンプルその2</a></li>
+    <li><a href="turtle3d.html">タートルグラフィックス3Dのエディタへ</a></li>
+    <li><a href="index.html">デモのトップページへ</a></li>
+    <li><a href="browsers.html">対応機器/Webブラウザ</a></li>
+  </ul>
+</div>
+<!-- mochaを一番最後に読み込む必要がある -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.3.0/mocha.min.js" integrity="sha512-LA/TpBXau/JNubKzHQhdi5vGkRLyQjs1vpuk2W1nc8WNgf/pCqBplD8MzlzeKJQTZPvkEZi0HqBDfRC2EyLMXw==" crossorigin="anonymous"></script>
+</body>
+</html>
