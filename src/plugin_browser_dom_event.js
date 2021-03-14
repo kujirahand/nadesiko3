@@ -279,5 +279,23 @@ module.exports = {
       }
     },
     return_none: true
+  },
+  '画面更新時実行': { // @画面描画タイミングで関数F(文字列指定も可)を実行する。識別IDを返す。// @がめんこうしんじじっこう
+    type: 'func',
+    josi: [['を']],
+    pure: false,
+    fn: function (func, sys) {
+      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      return window.requestAnimationFrame(func)
+    }
+  },
+  '画面更新処理取消': { // @識別IDを指定して『画面更新時実行』を取り消す// @がめんこうしんしょりとりけし
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: false,
+    fn: function (id, sys) {
+      window.cancelAnimationFrame(id)
+    },
+    return_none: true
   }
 }

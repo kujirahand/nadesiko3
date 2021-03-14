@@ -20,6 +20,26 @@ module.exports = {
   },
   '描画中キャンバス': {type: 'const', value: null}, // @ びょうがちゅうきゃんばす
   '描画中コンテキスト': {type: 'const', value: null}, // @ びょうがちゅうこんてきすと
+  'キャンバス状態保存': { // @Canvasの状態を保存(save)   // @ きゃんばすじょうたいほぞん
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.save()
+    },
+    return_none: true
+  },
+  'キャンバス状態復元': { // @Canvasの状態を復元(restore)   // @ きゃんばすじょうたいふくげん
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.restore()
+    },
+    return_none: true
+  },
   '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろしてい
     type: 'func',
     josi: [['に', 'へ']],
