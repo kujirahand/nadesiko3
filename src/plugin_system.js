@@ -410,6 +410,18 @@ const PluginSystem = {
       if (typeof f === 'function') {return f(sys)}
     }
   },
+  '実行時間計測': { // @ 関数Fを実行して要した時間をミリ秒で返す // @じっこうじかんけいそく
+    type: 'func',
+    josi: [['の']],
+    pure: false,
+    fn: function (f, sys) {
+      if (typeof f === 'string') {f = sys.__findFunc(f, '実行時間計測')}
+      const t1 = Date.now()
+      f(sys)
+      const t2 = Date.now()
+      return (t2 - t1)
+    }
+  },
 
   // @型変換
   '変数型確認': { // @変数Vの型を返す // @へんすうかたかくにん

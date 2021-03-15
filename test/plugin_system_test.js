@@ -405,4 +405,7 @@ describe('plugin_system_test', () => {
     global.jstest_mul = (a, b) => { return a * b }
     cmp('「global」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
   })
+  it('実行時間計測 #863', () => {
+    cmp('●AAAとは;A=1;20000回\nA=A*1.2;ここまで；ここまで;N=「AAA」の実行時間計測;もしN>1ならば「OK」と表示。', 'OK')
+  })
 })
