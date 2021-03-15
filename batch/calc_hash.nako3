@@ -1,0 +1,29 @@
+# release/*.js のハッシュを求める
+ROOT_DIR=母艦パスを「../」で相対パス展開
+VER=ナデシコバージョン
+
+JSDEF=""
+JSHASH=""
+
+「{ROOT_DIR}/release/*.js」を全ファイル列挙
+反復
+　　# 対象を表示。
+　　Ｆ＝対象のファイル名抽出。
+　　Ｓ＝対象を読む。
+　　ＨＡＳＨ＝Ｓを「sha512」の「base64」でハッシュ値計算。
+　　# ＨＡＳＨを表示。
+　　HASH_MD5=Ｓを「md5」の「hex」でハッシュ値計算。
+　　HASH_SHA256=Ｓを「sha256」の「base64」でハッシュ値計算。
+　　HASH_SHA256HEX=Ｓを「sha256」の「hex」でハッシュ値計算。
+　　HASH_SHA512=Ｓを「sha512」の「base64」でハッシュ値計算。
+　　JSDEF=JSDEF&「<script defer src="https://nadesi.com/v3/cdn.php?v={VER}&f=release/{F}" integrity="sha512-{HASH}" crossorigin="anonymous"></script>」&改行
+　　JSHASH=JSHASH&「{F}:
+  md5(hex): {HASH_MD5}
+  sha256(hex): {HASH_SHA256HEX}
+  sha256(base64): {HASH_SHA256}
+  sha512(base64): {HASH_SHA512}」&改行
+ここまで
+
+JSDEFを「{ROOT_DIR}/release/_script-tags.txt」に保存。
+JSHASHを「{ROOT_DIR}/release/_hash.txt」に保存。
+

@@ -824,6 +824,27 @@ const PluginNode = {
       keys.activate(s)
     },
     return_none: true
+  },
+  // @ハッシュ関数
+  'ハッシュ関数一覧取得': { // @利用可能なハッシュ関数の一覧を返す // @ はっしゅかんすういちらんしゅとく
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      const crypto = require('crypto')
+      return crypto.getHashes()
+    }
+  },
+  'ハッシュ値計算': { // @データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す // @ はっしゅちけいさん
+    type: 'func',
+    josi: [['を'],['の'],['で']],
+    pure: true,
+    fn: function (s, alg, enc, sys) {
+      const crypto = require('crypto')
+      const hashsum = crypto.createHash(alg)
+      hashsum.update(s)
+      return hashsum.digest(enc)
+    }
   }
 }
 
