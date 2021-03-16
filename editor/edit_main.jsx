@@ -60,7 +60,7 @@ const Editor = ({ code, editorId, autoSave }) => {
   return <div>
     <Section title="エディタ">
       <div ref={preCodeEditorRef} data-nako3-readonly style={{ height: '100px', borderBottom: 'gray 1px solid' }}>{preCode}</div>
-      <div ref={editorRef}>{code}</div>
+      <div className="nako3_editor_code" ref={editorRef}>{code}</div>
       <div className="buttons">
         <Button text="実行" onClick={async () => {
           await editor.current.run({ ...editorOptions() }).promise

@@ -19,7 +19,7 @@ describe('bundled test', () => {
       const els = document.getElementsByClassName('editor-component')
       if (els.length > 0) {
         el = els[0]
-        ta = el.querySelector('#nako3_editor_code_0')
+        ta = el.querySelector('.nako3_editor_code')
         if (ta) {
           assert.ok(/「こんにちは！」と表示。/.test(ta.innerText), 'HTML要素が文字列"「こんにちは！」と表示。"を含みません。')
         } else {
