@@ -130,11 +130,11 @@ class WebNakoCompiler extends NakoCompiler {
 
   /**
    * 指定したidのHTML要素をなでしこ言語のエディタにする。
-   * @param {string} id div要素のid
+ * @param {string | Element} idOrElement HTML要素
    * @see {setupEditor}
    */
-  setupEditor(id) {
-    return setupEditor(id, this, /** @type {any} */(window).ace)
+  setupEditor(idOrElement) {
+    return setupEditor(idOrElement, this, /** @type {any} */(window).ace)
   }
 }
 

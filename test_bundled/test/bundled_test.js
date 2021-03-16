@@ -44,7 +44,7 @@ describe('bundled test', () => {
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             try {
-              const rsltHead = Array.from(el.querySelectorAll('.edit_head')).find(e => e.textContent === '実行結果:')
+              const rsltHead = Array.from(el.querySelectorAll('.edit_head')).find(e => e.textContent === '実行結果')
               if (rsltHead) {
                 rslt = rsltHead.parentNode.querySelector('.info')
                 if (rslt) {
