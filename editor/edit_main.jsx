@@ -29,8 +29,8 @@ const Button = (props) => <button className="default_button" onClick={props.onCl
 /** @type {React.FC<{ title: string }>} */
 const Section = (props) => <section><h5 className="edit_head">{props.title}</h5>{props.children}</section>
 
-/** @type {React.FC<{ code: string, editorId: number }>} */
-const Editor = ({ code, editorId }) => {
+/** @type {React.FC<{ code: string, editorId: number, autoSave?: string }>} */
+const Editor = ({ code, editorId, autoSave }) => {
   const preCode = `\
 # 自動実行されるコード (編集不可)
 カメ描画先は『#nako3_canvas_${editorId}』。カメ全消去。
@@ -47,7 +47,14 @@ const Editor = ({ code, editorId }) => {
   const editorRef = /** @type {React.MutableRefObject<HTMLDivElement>} */(React.useRef())
   const editor = /** @type {React.MutableRefObject<ReturnType<import('../src/wnako3')['setupEditor']>>} */(React.useRef())
   React.useEffect(() => { getNako3().setupEditor(preCodeEditorRef.current) }, [])
-  React.useEffect(() => { editor.current = getNako3().setupEditor(editorRef.current) }, [])
+  React.useEffect(() => {
+    editor.current = getNako3().setupEditor(editorRef.current)
+    if (autoSave) {
+      editor.current.editor.on('change', () => {
+        window.localStorage[autoSave] = editor.current.editor.getValue()
+      })
+    }
+  }, [])
   const editorOptions = () => ({ preCode, outputContainer: /** @type {HTMLDivElement} */(document.getElementById(`nako3_editor_info_${editorId}`)) })
 
   return <div>
@@ -105,7 +112,7 @@ try {
     if (data['autoLoad'] && window.localStorage['nako3/editor/code']) {
       code = window.localStorage['nako3/editor/code']
     }
-    ReactDOM.render(<Editor code={code} editorId={i} />, e)
+    ReactDOM.render(<Editor code={code} editorId={i} autoSave={data['autoLoad'] ? 'nako3/editor/code' : undefined} />, e)
   }
 } catch (err) {
   console.error(err) // IE11
