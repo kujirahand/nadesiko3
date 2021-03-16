@@ -1265,16 +1265,16 @@ let editorIdCounter = 0
  * - 縦方向にリサイズ可能にするには nako3-resizable="true" を設定する。
  * - デバイスが遅いときにシンタックスハイライトを無効化する機能を切るには nako3-force-syntax-highlighting="true" を設定する。
  * 
- * @param {string} id HTML要素のid
+ * @param {string | Element} idOrElement HTML要素
  * @param {import('./wnako3')} nako3
  * @param {any} ace
  */
-function setupEditor (id, nako3, ace) {
+function setupEditor (idOrElement, nako3, ace) {
     /** @type {AceEditor} */
-    const editor = ace.edit(id)
-    const element = document.getElementById(id)
+    const editor = ace.edit(idOrElement)
+    const element = typeof idOrElement === 'string' ? document.getElementById(idOrElement) : idOrElement
     if (element === null) {
-        throw new Error(`idが ${id} のHTML要素は存在しません。`)
+        throw new Error(`idが ${idOrElement} のHTML要素は存在しません。`)
     }
 
     /** @type {TypeofAceRange} */
@@ -1289,7 +1289,7 @@ function setupEditor (id, nako3, ace) {
     if (element.classList.contains('nako3_ace_mounted')) {
         // 同じエディタを誤って複数回初期化すると、ace editor の挙動を書き換えているせいで
         // 意図しない動作をしたため、すでにエディタとして使われていないことを確認する。
-        throw new Error(`idが ${id} のHTML要素をなでしこ言語エディタとして2回初期化しました。`)
+        throw new Error(`なでしこ言語のエディタの初期化処理を同一のHTML要素に対して複数回適用しました。`)
     }
     // 以前のバージョンではnako3_editorをhtmlに直接付けていたため、互換性のためnako3_editorとは別のクラス名を使用する。
     element.classList.add('nako3_ace_mounted')
@@ -1324,6 +1324,7 @@ function setupEditor (id, nako3, ace) {
             initialValue: true
         },
         underlineJosi: {
+            /** @type {(this: AceEditor, value: boolean) => void} */
             set: function(value) {
                 this.session.bgTokenizer.underlineJosi = value
                 resetEditorTokens(this.session)

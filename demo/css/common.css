@@ -126,6 +126,7 @@ button {
 
 .info {
   background-color: #f0fff0;
+  margin-top: 0;
 }
 
 .err {
