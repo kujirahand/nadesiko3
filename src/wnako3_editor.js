@@ -1588,7 +1588,7 @@ function setupEditor (idOrElement, nako3, ace) {
                 } else if (opts.method === 'compile') {
                     return nako3.compile(preCode + code, file, false, preCode)
                 } else {
-                    return nako3.run(preCode + code, file, preCode)
+                    return nako3.runReset(preCode + code, file, preCode)
                 }
             })
             .catch((err) => { }) // エラーはloggerに送られるためここでは何もしなくて良い

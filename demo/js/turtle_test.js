@@ -18,11 +18,12 @@ function runBox (id) {
     window.alert('idが設定されていません。')
     return
   }
+  console.log('runBox:', id)
   let src = defCode + document.getElementById(id).value
   displayId = id + '_info'
   document.getElementById(displayId).innerHTML = ''
   try {
-    navigator.nako3.run(src)
+    navigator.nako3.runReset(src)
     document.getElementById('backlink').href = '#' + id + '_head'
     window.location.href = '#run'
     document.getElementById('err').style.display = 'none'

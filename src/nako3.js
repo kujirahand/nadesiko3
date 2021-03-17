@@ -623,6 +623,7 @@ class NakoCompiler {
   }
 
   /**
+   * なでしこのプログラムを実行（他に実行しているインスタンスはそのまま）
    * @param {string} code
    * @param {string} fname
    * @param {string} [preCode]
@@ -632,13 +633,13 @@ class NakoCompiler {
   }
 
   /**
+   * なでしこのプログラムを実行（他に実行しているインスタンスもリセットする)
    * @param {string} code
    * @param {string} fname
    * @param {string} [preCode]
-   * @deprecated
    */
   runReset(code, fname, preCode = '') {
-    return this.run(code, fname, preCode)
+    return this._runEx(code, fname, {resetAll: true}, preCode)
   }
 
   /**
