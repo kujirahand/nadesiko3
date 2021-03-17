@@ -34,6 +34,10 @@ const PluginSystem = {
       // システム関数を実行する(エイリアスを実装するのに使う)
       // ローカル変数を参照しうるため、pure: true のとき正しく動作しない。
       sys.__exec = function (func, params) {
+        // システム命令を優先
+        const f0 = sys.__v0[func]
+        if (f0) {return f0.apply(this, params)}
+        // その他のエイリアス
         const f = sys.__findVar(func)
         if (!f) {throw new Error('システム関数でエイリアスの指定ミス:' + func)}
         return f.apply(this, params)

@@ -628,7 +628,7 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   run(code, fname, preCode = '') {
-    return this._runEx(code, fname, {}, preCode)
+    return this._runEx(code, fname, {resetAll: false}, preCode)
   }
 
   /**
