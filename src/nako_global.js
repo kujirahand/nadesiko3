@@ -81,7 +81,7 @@ class NakoGlobal {
   /**
    * 毎プラグインの「!クリア」関数を実行
    */
-  destroy () {
+   clearPlugins () {
     const clearName = '!クリア'
     for (const pname in this.pluginfiles) {
       const po = this.__module[pname]
@@ -89,6 +89,17 @@ class NakoGlobal {
         po[clearName].fn(this)
       }
     }
+  }
+
+  /**
+   * 各種リセット処理
+   */
+  reset () {
+    this.clearPlugins()
+  }
+
+  destroy () {
+    this.reset()
   }
 }
 

@@ -35,6 +35,7 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  * @typedef {{
  *     resetEnv: boolean
  *     testOnly: boolean | string
+ *     resetAll: boolean
  * }} CompilerOptions
  */
 
@@ -79,6 +80,7 @@ class NakoCompiler {
     this.__locals = {}  // ローカル変数
     this.__self = this
     this.__vars = this.__varslist[2]
+    this.__globals = [] // 生成した NakoGlobalのインスタンスを保持
     /** @type {Record<string, Record<string, NakoFunction>>} */
     this.__module = {} // requireなどで取り込んだモジュールの一覧
     /** @type {Record<string, NakoFunction>} */
@@ -557,6 +559,13 @@ class NakoCompiler {
     return this._runEx(code, fname, opts, preCode)
   }
 
+  clearPlugins () {
+    // 他に実行している「なでしこ」があればクリアする
+    this.__globals.forEach((sys) => {
+      sys.reset()
+    })
+  }
+
   /**
    * @param {string} code
    * @param {string} fname
@@ -568,8 +577,9 @@ class NakoCompiler {
     // コンパイル
     let out
     try {
-      const optsAll = Object.assign({ resetEnv: true, testOnly: false }, opts)
+      const optsAll = Object.assign({ resetEnv: true, testOnly: false, resetAll: true }, opts)
       if (optsAll.resetEnv) {this.reset()}
+      if (optsAll.resetAll) {this.clearPlugins()}
       out = NakoGen.generate(this, this.parse(code, fname, preCode), optsAll.testOnly)
     } catch (e) {
       this.logger.error(e)
@@ -577,6 +587,9 @@ class NakoCompiler {
     }
     // 実行
     nakoGlobal = nakoGlobal || new NakoGlobal(this, out.gen)
+    if (this.__globals.indexOf(nakoGlobal) < 0) {
+      this.__globals.push(nakoGlobal)
+    }
     try {
       new Function(out.runtimeEnv).apply(nakoGlobal)
       return nakoGlobal
