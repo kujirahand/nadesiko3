@@ -2,6 +2,7 @@ const NakoCompiler = require('../src/nako3')
 const assert = require('assert')
 const CNako3 = require('../src/cnako3')
 const { NakoSyntaxError } = require('../src/nako_errors')
+const path = require('path')
 
 describe('side_effects_test', () => {
     it('変数の定義 - 1', () => {
@@ -60,7 +61,8 @@ describe('side_effects_test', () => {
         nako.silent = true
 
         // 取り込み命令ありで実行
-        const code1 = '!「test/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。'
+        const fname = path.join(__dirname, 'requiretest.nako3') 
+        const code1 = `!「${fname}」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。`
         assert.strictEqual(nako.run(code1, 'main.nako3').log, `5\n8`)
 
         // 取り込み命令なしで実行
