@@ -33,7 +33,7 @@ const Section = (props) => <section><h5 className="edit_head">{props.title}</h5>
 const Editor = ({ code, editorId, autoSave }) => {
   const preCode = `\
 # 自動実行されるコード (編集不可)
-カメ描画先は『#nako3_canvas_${editorId}』。カメ全消去。
+カメ描画先は『#nako3_canvas_${editorId}』。
 『#nako3_canvas_${editorId}』へ描画開始。
 『#nako3_div_${editorId}』へDOM親要素設定。
 `

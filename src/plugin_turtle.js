@@ -337,7 +337,6 @@ const PluginTurtle = {
     josi: [],
     pure: true,
     fn: function (sys) {
-      console.log('plugin_turtle.!クリア')
       sys._turtle.clearAll()
     }
   },
