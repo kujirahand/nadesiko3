@@ -67,7 +67,10 @@ const Editor = ({ code, editorId, autoSave }) => {
           setUsedFuncs(getNako3().usedFuncs)
         }} />
         <Button text="テスト" onClick={() => editor.current.run({ ...editorOptions(), method: 'test' })} />
-        <Button text="クリア" onClick={() => editorOptions().outputContainer.innerHTML = ''} />
+        <Button text="クリア" onClick={() => {
+          editorOptions().outputContainer.innerHTML = ''
+          navigator.nako3.clearPlugins()
+        }} />
         <Button text="↓" onClick={async () => {
           const js = await editor.current.run({ ...editorOptions(), method: 'compile' }).promise
           if (typeof js === 'string') {
