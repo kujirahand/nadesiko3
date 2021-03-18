@@ -28,7 +28,7 @@ npm run build:win32
 Node.jsのアーカイブ一式をプロジェクトの`/nodejs`フォルダに配置します。そのため、Node.jsの最新版をnodejsフォルダ以下にコピーします。さらに、以下のコマンドを実行して、7zのアーカイブを作成してgitリポジトリにコミットします。
 
 ```
-bin\7z.exe a nodejs.7z nodejs
+.\bin\7z.exe a nodejs.7z nodejs
 ```
 
 なお、現在、32ビット版のNode.jsを利用していますので、ビット数に注意します。
@@ -38,13 +38,22 @@ bin\7z.exe a nodejs.7z nodejs
 上記でコピーした32ビット版のNode.jsでモジュールをインストール（ビルド）します。バイナリのモジュールを使う場合、PowerShellを管理者権限で起動し、下記のコマンドを発行してビルドツールを整える必要があります。
 
 ```
-nodejs\npm install --global --production windows-build-tools
+.\nodejs\npm install --global --production windows-build-tools
 ```
 
-そして、なでしこに必要なモジュールをインストールします。
+そして、なでしこに必要なモジュールをインストールします。なお、win32版は標準モジュールに加えて、以下のモジュールを追加でインストールします。
 
 ```
-nodejs\npm install
-bin\7z.exe a node_modules.7z node_module
+# 基本
+.\nodejs\npm install
+# 追加モジュールをインストール
+.\nodejs\npm install nadesiko3-sqlite3sync
+.\nodejs\npm install nadesiko3-htmlparser
+.\nodejs\npm install nadesiko3-websocket
+# 圧縮
+.\bin\7z.exe a node_modules.7z node_module
 ```
+
+
+
 
