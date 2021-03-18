@@ -37,6 +37,8 @@ Node.jsのアーカイブ一式をプロジェクトの`/nodejs`フォルダに�
 
 上記でコピーした32ビット版のNode.jsでモジュールをインストール（ビルド）します。バイナリのモジュールを使う場合、PowerShellを管理者権限で起動し、下記のコマンドを発行してビルドツールを整える必要があります。
 
+この時、ネットワークフォルダ上では正しくnpmが動作しないため、ユーザーフォルダに一式を配置して実行する必要があります。
+
 ```
 .\nodejs\npm install --global --production windows-build-tools
 ```
@@ -45,13 +47,13 @@ Node.jsのアーカイブ一式をプロジェクトの`/nodejs`フォルダに�
 
 ```
 # 基本
-.\nodejs\npm install
+.\nodejs\npm install --production
 # 追加モジュールをインストール
 .\nodejs\npm install nadesiko3-sqlite3sync
 .\nodejs\npm install nadesiko3-htmlparser
 .\nodejs\npm install nadesiko3-websocket
 # 圧縮
-.\bin\7z.exe a node_modules.7z node_module
+.\bin\7z.exe a node_modules.7z node_modules
 ```
 
 
