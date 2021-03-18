@@ -1,6 +1,6 @@
 const path = require('path')
 const StatsPlugin = require('stats-webpack-plugin') // バンドルサイズ解析のため
-const TerserPlugin = require('terser-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin') // サイズ縮小プラグイン
 const {NormalModuleReplacementPlugin} = require('webpack')
 const {AggressiveMergingPlugin} = require('webpack').optimize
 
@@ -97,6 +97,7 @@ module.exports = {
     minimize: true,
     minimizer: [new TerserPlugin()]
   },
+  
   // 大幅なコンパイル速度向上のために
   cache: {
     type: 'filesystem',
