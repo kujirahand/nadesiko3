@@ -55,6 +55,22 @@ const PluginMath = {
       return Math.atan(v)
     }
   },
+  'ATAN2': {// @ARCTAN(Y/X)をラジアン単位で返す // @ATAN2
+    type: 'func',
+    josi: [['と'],['の']],
+    pure: true,
+    fn: function (y, x) {
+      return Math.atan2(y, x)
+    }
+  },
+  '座標角度計算': {// @点[0,0]から[x,y]の直線とX軸の角度(度)を返す // @ざひょうかくどけいさん
+    type: 'func',
+    josi: [['の']],
+    pure: true,
+    fn: function (XY) {
+      return Math.atan2(XY[1], XY[0]) * 180 / Math.PI
+    }
+  },
   'RAD2DEG': {// @ラジアンから度に変換 // @RAD2DEG
     type: 'func',
     josi: [['を']],
