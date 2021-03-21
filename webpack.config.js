@@ -35,7 +35,7 @@ class CanIUseDBDataReplacementPlugin extends NormalModuleReplacementPlugin {
 
 module.exports = {
   mode: mode_,
-  target: ["web", "es5"],
+  // target: ["web", "es5"],
   entry: {
     wnako3: [path.join(srcPath, 'wnako3.js')], // plugin_system+plugin_browser含む
     wnako3webworker: [path.join(srcPath, 'wnako3webworker.js')], // plugin_system+plugin_browser_in_worker含む
