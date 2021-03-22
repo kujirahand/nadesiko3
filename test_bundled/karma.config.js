@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports = function (config) {
   config.set({
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'webpack'],
     files: [
       'test/*_test.js',
       {
@@ -56,6 +56,7 @@ module.exports = function (config) {
     // webpackの設定
     webpack: {
       mode: 'development',
+      target: ["web", "es5"],
       resolve: {
         mainFields: ['browser', 'main', 'module']
       },

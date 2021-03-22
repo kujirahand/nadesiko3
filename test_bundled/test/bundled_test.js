@@ -1,4 +1,4 @@
-const assert = require('assert').strict
+const assert = require('chai').assert
 
 describe('bundled test', () => {
   it('version', () => {

@@ -1,4 +1,4 @@
-import { strict as assert } from 'assert'
+import { assert } from 'chai'
 import NakoCompiler from '../../src/nako3.js'
 import PluginBrowser from '../../src/plugin_browser'
 import { importStatus } from './import_plugin_checker.js'
@@ -24,7 +24,7 @@ describe('plugin_webworker_test', () => {
     const imported = importStatus.hasImport(pluginName)
     assert.ok(imported, 'was import')
     const autoImport = importStatus.getAutoImport(pluginName)
-    assert.equal(typeof (autoImport.obj), 'object')
+    assert.strictEqual(typeof (autoImport.obj), 'object')
   })
 
   it('web worker basic', async () => {
@@ -47,7 +47,7 @@ Wに「あいうえお」をNAKOワーカーデータ送信
 `
     nako.run(code)
 
-    await retry(() => assert.equal(JSON.stringify(msgs), '["かかかかか","&lt;&gt;?","おわり"]'))
+    await retry(() => assert.strictEqual(JSON.stringify(msgs), '["かかかかか","&lt;&gt;?","おわり"]'))
   }).timeout(10000)
 
   it('web worker transport', async () => {
@@ -82,6 +82,6 @@ Wに「あいうえお」をNAKOワーカーデータ送信
 `
     nako.run(code)
 
-    await retry(() => assert.equal(JSON.stringify(msgs), '["あいうえお","&lt;&gt;?","おわり"]'))
+    await retry(() => assert.strictEqual(JSON.stringify(msgs), '["あいうえお","&lt;&gt;?","おわり"]'))
   }).timeout(10000)
 })

@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import { NakoImportError } from '../../src/nako_errors'
 
 navigator.exportWNako3 = true

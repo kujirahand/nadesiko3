@@ -1,4 +1,4 @@
-const assert = require('assert').strict
+const assert = require('chai').assert
 
 /** @type {(node: HTMLElement, f: (node: HTMLElement) => boolean) => HTMLElement | null} */
 const findDOMElement = (node, f) => {

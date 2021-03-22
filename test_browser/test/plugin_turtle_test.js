@@ -1,5 +1,5 @@
 /* global __html__ */
-import { strict as assert } from 'assert'
+import { assert } from 'chai'
 import NakoCompiler from '../../src/nako3.js'
 import { importStatus } from './import_plugin_checker.js'
 import PluginTurtle from '../../src/plugin_turtle'
@@ -146,8 +146,8 @@ describe('plugin_turtle_test', () => {
   const matchmode = 'lazzy3'
   const cmpImageData = (imgData1, imgData2, invert) => {
     if (typeof invert === 'undefined') { invert = false }
-    assert.equal(imgData1.width, imgData2.width, 'images width unmatch')
-    assert.equal(imgData1.height, imgData2.height, 'images height unmatch')
+    assert.strictEqual(imgData1.width, imgData2.width, 'images width unmatch')
+    assert.strictEqual(imgData1.height, imgData2.height, 'images height unmatch')
 
     console.log(`brute match(${matchmode})`)
     let allmatch = true
@@ -267,7 +267,7 @@ describe('plugin_turtle_test', () => {
   it('check env(canvas_basic.html)', () => {
     document.body.innerHTML = __html__['test/html/canvas_basic.html']
     const canvasElement = document.getElementById('turtle_cv')
-    assert.equal(typeof (canvasElement), 'object')
+    assert.strictEqual(typeof (canvasElement), 'object')
   })
 
   it('auto import for browser', () => {
@@ -275,7 +275,7 @@ describe('plugin_turtle_test', () => {
     const imported = importStatus.hasImport(pluginName)
     assert.ok(imported, 'was import')
     const autoImport = importStatus.getAutoImport(pluginName)
-    assert.equal(typeof (autoImport.obj), 'object')
+    assert.strictEqual(typeof (autoImport.obj), 'object')
   })
 
   it('set origin and direcion', async () => {
@@ -701,7 +701,7 @@ describe('plugin_turtle_test', () => {
     await waitTimer(1.0)
 
     assert.ok(funcCalled, 'イベント呼び出し')
-    assert.equal(target.id, '0', 'イベント対象のカメID')
+    assert.strictEqual(target.id, '0', 'イベント対象のカメID')
   }).timeout(5000)
 
   it('turtle image basic(turtle)', async () => {

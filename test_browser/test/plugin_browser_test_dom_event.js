@@ -63,7 +63,7 @@ export default (nako) => {
         }
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["C:設定"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["C:設定"]')
       }
 
       const check_event_fire = (selectmethod) => {
@@ -86,7 +86,7 @@ export default (nako) => {
         }
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["C:設定"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["C:設定"]')
       }
 
       const check_event_add = (selectmethod) => {
@@ -110,7 +110,7 @@ export default (nako) => {
         }
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["C:追加"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["C:追加"]')
       }
 
       const check_event_remove = (selectmethod) => {
@@ -137,7 +137,7 @@ export default (nako) => {
         }
 
         assert.ok(!cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '[]')
+        assert.strictEqual(cr.getMessageAsJson(), '[]')
       }
 
       it('イベント設定', () => {
@@ -191,7 +191,7 @@ IMG["src"]は「/turtle.png」
         await waitTimer(1.0)
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["L:64,64"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["L:64,64"]')
       }
 
       it('読み込み時', async () => {
@@ -215,7 +215,7 @@ IMG["src"]は「/turtle.png」
         await waitTimer(1.0)
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["I:64,64"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["I:64,64"]')
       })
     })
 
@@ -263,7 +263,7 @@ WINDOW["event"]をDOMイベント処理停止する。
         }
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["SUBMITED"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["SUBMITED"]')
       }
 
       it('フォーム送信', () => {
@@ -339,7 +339,7 @@ WINDOW["event"]をDOMイベント処理停止する。
         }
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["D:A","U:C","P:Q"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["D:A","U:C","P:Q"]')
       }
 
       it('キーボード押・話・押下', () => {
@@ -433,7 +433,7 @@ WINDOW["event"]をDOMイベント処理停止する。
         }
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["C:","D:30,35","M:30,40","U:20,35"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["C:","D:30,35","M:30,40","U:20,35"]')
       }
 
       it('マウス押・離・クリック', () => {
@@ -582,7 +582,7 @@ WINDOW["event"]をDOMイベント処理停止する。
         }
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), '["S:20,30","20,30","30,35","M:25,35","25,35","C:20,35","20,35","E:30,35","30,35"]')
+        assert.strictEqual(cr.getMessageAsJson(), '["S:20,30","20,30","30,35","M:25,35","25,35","C:20,35","20,35","E:30,35","30,35"]')
       }
 
       it('タッチ開始・終了・移動・キャンセル', () => {
