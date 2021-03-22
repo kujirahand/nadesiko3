@@ -3,6 +3,7 @@ const bodyParserRaw = require('body-parser/lib/types/raw')
 const bodyParserText = require('body-parser/lib/types/text')
 const bodyParserUrlencoded =  require('body-parser/lib/types/urlencoded')
 const express = require('express')
+const path = require('path')
 
 const storage = multer.diskStorage({
   // ファイルの保存先を指定
@@ -105,15 +106,15 @@ var CustomMiddlewareFactory = function (config) {
 
 module.exports = function(config) {
   config.set({
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'webpack'],
     files: [
-      {pattern: 'test/wnako3webworker.js', included: false},
+      {pattern: '../release/wnako3webworker.js', included: false, served: true, watched: false},
       'test/*_test.js',
       'test/html/*.html',
       {pattern: 'test/image/*.png', included: false, served: true, watched: false, nocache: false}
     ],
     proxies: {
-       '/wnako3webworker.js': '/base/test/wnako3webworker.js',
+       '/wnako3webworker.js': '/absolute' + path.resolve('release/wnako3webworker.js'),
        '/turtle.png': '/base/test/image/turtle_kana.png',
        '/turtle-elephant.png': '/base/test/image/elephant_kana.png',
        '/turtle-panda.png': '/base/test/image/panda_kana.png',
@@ -147,13 +148,13 @@ module.exports = function(config) {
         }
     },
     preprocessors: {
-      'test/wnako3webworker.js': ['webpack'],
       'test/*_test.js': ['webpack'],
       'test/html/*.html': ['html2js']
     },
     // webpackの設定
     webpack: {
       mode: "development",
+      target: ["web", "es5"],
       resolve: {
         mainFields: ["browser", "main", "module"]
       },
@@ -177,7 +178,7 @@ module.exports = function(config) {
       showDiff: true,
     },
     coverageReporter: {
-      dir: '../coverage/ct',
+      dir: '../coverage/browser',
       reporters: [
         { type: 'text' },
         { type: 'text-summary' },

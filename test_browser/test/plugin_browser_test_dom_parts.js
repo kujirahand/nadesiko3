@@ -18,8 +18,8 @@ export default (nako) => {
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
         const msg = cr.messages[0]
-        assert.equal((typeof msg).toLowerCase(), 'object')
-        assert.equal(msg.tagName.toUpperCase(), 'DIV')
+        assert.strictEqual((typeof msg).toLowerCase(), 'object')
+        assert.strictEqual(msg.tagName.toUpperCase(), 'DIV')
       }
       it('親要素設定 - ID', () => {
         check_parent_set('「main」')
@@ -41,7 +41,7 @@ export default (nako) => {
         nako.run(code)
 
         assert.ok(cr.isCalled, 'イベント呼び出し')
-        assert.equal(cr.getMessageAsJson(), rslt)
+        assert.strictEqual(cr.getMessageAsJson(), rslt)
       }
 
       it('ボタン作成', () => {

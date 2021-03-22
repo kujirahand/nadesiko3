@@ -1,4 +1,4 @@
-const assert = require('assert').strict
+const assert = require('chai').assert
 
 class CompareUtil {
   constructor (nako) {
@@ -7,7 +7,7 @@ class CompareUtil {
 
   cmp (code, res) {
     this.nako.logger.debug('code=' + code)
-    assert.equal(this.nako.run(code).log, res)
+    assert.strictEqual(this.nako.run(code).log, res)
   }
 
   cmpex (code, err, res) {

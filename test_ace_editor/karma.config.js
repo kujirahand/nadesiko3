@@ -63,6 +63,7 @@ module.exports = function (config) {
     // webpackの設定
     webpack: {
       mode: 'development',
+      target: ["web", "es5"],
       resolve: {
         mainFields: ['browser', 'main', 'module']
       },

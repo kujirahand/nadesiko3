@@ -30,10 +30,13 @@ describe('node_test(cnako)', () => {
 
   it('単独で実行できるプログラムの出力 - Node.js', () => {
     const stderr = child_process.spawnSync('node', [cnako3, '-c', path.join(__dirname, 'add_test.nako3')]).stderr
-    if (stderr) { console.error(stderr.toString()) }
-    const p = child_process.spawnSync('node', [path.join(__dirname, 'add_test.js')])
-    if (p.stderr) { console.error(p.stderr.toString()) }
-    assert.strictEqual(p.stdout.toString(), '3\n')
-    fs.unlinkSync(path.join(__dirname, 'add_test.js'))
+    try {
+      if (stderr) { console.error(stderr.toString()) }
+      const p = child_process.spawnSync('node', [path.join(__dirname, 'add_test.js')])
+      if (p.stderr) { console.error(p.stderr.toString()) }
+      assert.strictEqual(p.stdout.toString(), '3\n')
+    } finally {
+      fs.unlinkSync(path.join(__dirname, 'add_test.js'))
+    }
   })
 })
