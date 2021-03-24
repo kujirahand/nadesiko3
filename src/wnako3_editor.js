@@ -1291,6 +1291,8 @@ function setupEditor (idOrElement, nako3, ace) {
         // 意図しない動作をしたため、すでにエディタとして使われていないことを確認する。
         throw new Error(`なでしこ言語のエディタの初期化処理を同一のHTML要素に対して複数回適用しました。`)
     }
+    // lang="ja" があると表示がずれる問題の修正 #839
+    element.setAttribute("lang", "en")
     // 以前のバージョンではnako3_editorをhtmlに直接付けていたため、互換性のためnako3_editorとは別のクラス名を使用する。
     element.classList.add('nako3_ace_mounted')
     element.classList.add('nako3_editor') // CSSのため
