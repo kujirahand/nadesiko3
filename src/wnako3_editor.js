@@ -134,7 +134,7 @@ function getScope(token) {
         case "string_ex":
             return 'string.other'
         case "word":
-            if (token.value === 'そう' || token.value === 'それ') {
+            if (['そう', 'それ', '回数', '対象キー', '対象'].includes(token.value)) {
                 return 'variable.language'
             } else {
                 return 'variable.other'
