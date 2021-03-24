@@ -84,11 +84,6 @@ apm install linter-js-standard
 また、EditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](https://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応しています。
 これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
 
-### ATOMエディタ用のなでしこシンタックスハイライト
-
-``misc/atom-packages/language-nako3`` にATOMエディタ用のハイライトパッケージがある。
-使い方は、[README.md](../misc/atom-packages/language-nako3/README.md)を参照のこと。
-
 ## コマンドラインからなでしこを使う方法
 
 なでしこ3ではコマンドラインからなでしこを実行できるcnako3(Windowsは、cnako3.bat)というスクリプトを用意。今後、なでしこの各種バッチファイルはなでしこ自身で記述される。
