@@ -208,5 +208,5 @@ const 基本漢数字 = "〇一二三四五六七八九".split("")
 module.exports = PluginKansuji
 
 // scriptタグで取り込んだ時、自動で登録する
-if (typeof (navigator) === 'object')
+if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object')
   {navigator.nako3.addPluginObject('PluginKansuji', PluginKansuji)}
