@@ -145,24 +145,11 @@ class NakoPrepare {
   convert (code) {
     if (!code) {return []}
     const src = new Replace(code)
-
-    /** @type {[string, string][]} */
-    const replaceList = []
-
+    
     // 改行コードを統一
     src.replaceAll('\r\n', '\n')
     src.replaceAll('\r', '\n')
-
-    // 「リンゴの値段」→「__リンゴ_的_値段__」(#631)
-    src.getText().replace(/([\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+?)の([\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+?)(は|\s*\=)/g, (str, p1, p2) => {
-      // 定数宣言は除く
-      if (p1 == '定数' || p1 == '変数') return
-      const key1 = p1 + 'の' + p2
-      const key2 = '__' + p1 + '_的_' + p2 + '__'
-      src.replaceAll(key1, key2)
-      replaceList.push([key1, key2])
-    })
-
+    
     let flagStr = false  // 文字列リテラル内かどうか
     let flagStr2 = false  // 絵文字による文字列リテラル内かどうか
     let endOfStr = ""  // 文字列リテラルを終了させる記号
@@ -180,7 +167,6 @@ class NakoPrepare {
       if (flagStr) {
         if (c === endOfStr) {
           flagStr = false
-          replaceList.forEach((key) => { str = str.split(key[1]).join(key[0]) })
           res.push({ text: str + endOfStr, sourcePosition: src.getSourcePosition(left) })
           i++
           left = i
@@ -194,7 +180,6 @@ class NakoPrepare {
       if (flagStr2) {
         if (ch2 === endOfStr) {
           flagStr2 = false
-          replaceList.forEach((key) => { str = str.split(key[1]).join(key[0]) })
           res.push({ text: str + endOfStr, sourcePosition: src.getSourcePosition(left) })
           i += 2
           left = i
