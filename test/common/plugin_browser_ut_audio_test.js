@@ -1,7 +1,7 @@
 const td = require('testdouble')
 const assert = require('assert').strict
-const PluginBrowser = require('nako3/plugin_browser')
-const { PluginUtHelper } = require('utils/plugin_ut_helper')
+const PluginBrowser = require('../../src/plugin_browser')
+const { PluginUtHelper } = require('../../utils/plugin_ut_helper')
 
 class StubAudio {
   contructor () {

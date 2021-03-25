@@ -1,4 +1,4 @@
-const NakoCompiler = require('nako3/nako3')
+const NakoCompiler = require('../../src/nako3')
 const assert = require('assert')
 
 describe('variable_scope_test', () => {

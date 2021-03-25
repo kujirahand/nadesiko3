@@ -1,5 +1,5 @@
 const assert = require('assert')
-const NakoPrepare = require('nako3/nako_prepare')
+const NakoPrepare = require('../../src/nako_prepare')
 
 describe('prepare', () => {
   const p = new NakoPrepare()

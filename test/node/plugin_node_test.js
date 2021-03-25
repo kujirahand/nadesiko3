@@ -1,8 +1,8 @@
 const assert = require('assert')
 const path = require('path')
-const NakoCompiler = require('nako3/nako3')
-const PluginNode = require('nako3/plugin_node')
-const PluginCSV = require('nako3/plugin_csv')
+const NakoCompiler = require('../../src/nako3')
+const PluginNode = require('../../src/plugin_node')
+const PluginCSV = require('../../src/plugin_csv')
 
 const testFileMe = path.join(__dirname, 'plugin_node_test.js')
 

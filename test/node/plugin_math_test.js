@@ -1,6 +1,6 @@
 const assert = require('assert')
-const NakoCompiler = require('nako3/nako3')
-const CNako3 = require('nako3/cnako3')
+const NakoCompiler = require('../../src/nako3')
+const CNako3 = require('../../src/cnako3')
 
 describe('plugin_math_test', () => {
   const wnako = new NakoCompiler()

@@ -1,5 +1,5 @@
 const assert = require('assert')
-const NakoIndent = require('nako3/nako_indent')
+const NakoIndent = require('../../src/nako_indent')
 
 describe('indent', () => {
     const cmp = (src, expected) => {

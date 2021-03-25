@@ -1,8 +1,8 @@
 const assert = require('assert')
 const path = require('path')
-const CNako3 = require('nako3/cnako3')
-const NakoCompiler = require('nako3/nako3')
-const { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } = require('nako3/nako_errors')
+const CNako3 = require('../../src/cnako3')
+const NakoCompiler = require('../../src/nako3')
+const { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } = require('../../src/nako_errors')
 
 describe('error_message', () => {
   const nako = new NakoCompiler()

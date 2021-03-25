@@ -1,6 +1,6 @@
 const td = require('testdouble')
 const assert = require('assert').strict
-const PluginBrowser = require('nako3/plugin_browser')
+const PluginBrowser = require('../../src/plugin_browser')
 
 describe('plugin_browser_location', () => {
   describe('location-url', () => {

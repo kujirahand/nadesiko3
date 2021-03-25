@@ -1,6 +1,6 @@
 const assert = require('assert').strict
-const PluginBrowser = require('nako3/plugin_browser')
-const { PluginUtHelper } = require('utils/plugin_ut_helper')
+const PluginBrowser = require('../../src/plugin_browser')
+const { PluginUtHelper } = require('../../utils/plugin_ut_helper')
 const fetchMock = require('fetch-mock')
 const FormDataBase = require('form-data')
 class FormData extends FormDataBase {

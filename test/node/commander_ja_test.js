@@ -2,7 +2,7 @@ const assert = require('assert')
 
 describe('commnder_ja', () => {
     it('version', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         const c1 = app
             .version('1.1.1', '-v,--version')
             .option('-a,--aaa')
@@ -15,7 +15,7 @@ describe('commnder_ja', () => {
         assert.strictEqual(c2, '1.2.3')
     })
     it('help', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         app.version('1.2.3', '-v,--version')
             .usage('[opt] test')
             .option('-a,--aaa')
@@ -24,7 +24,7 @@ describe('commnder_ja', () => {
         assert.strictEqual(c1, help)
     })
     it('args no params', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         app.version('1.2.3', '-v,--version')
             .title('hoge')
             .usage('[opt] test')
@@ -34,7 +34,7 @@ describe('commnder_ja', () => {
         assert.strictEqual(app.args[1], 'bbb')
     })
     it('args has params1', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         app.version('1.2.3', '-v,--version')
             .title('hoge')
             .usage('[opt] test')
@@ -43,7 +43,7 @@ describe('commnder_ja', () => {
         assert.strictEqual(app.aaa, true)
     })
     it('args has params2', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         app.version('1.2.3', '-v,--version')
             .title('hoge')
             .usage('[opt] test')
@@ -53,7 +53,7 @@ describe('commnder_ja', () => {
         assert.strictEqual(app.args[0], 'bbb')
     })
     it('args has params3', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         app.version('1.2.3', '-v,--version')
             .title('hoge')
             .usage('[opt] test')
@@ -62,7 +62,7 @@ describe('commnder_ja', () => {
         assert.strictEqual(app.eval, 'hoge')
     })
     it('args has params4', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         app.version('1.2.3', '-v,--version')
             .usage('[opt] test')
             .option('-e, --eval [source]', 'eval source')
@@ -70,7 +70,7 @@ describe('commnder_ja', () => {
         assert.strictEqual(app.eval, '')
     })
     it('args has params5', () => {
-        const app = require('nako3/commander_ja.js')
+        const app = require('../../src/commander_ja.js')
         app.version('1.2.3', '-v,--version')
             .usage('[opt] test')
             .option('-e, --eval [source]', 'eval source')

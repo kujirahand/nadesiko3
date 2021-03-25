@@ -1,7 +1,7 @@
-const NakoCompiler = require('nako3/nako3')
+const NakoCompiler = require('../../src/nako3')
 const assert = require('assert')
-const CNako3 = require('nako3/cnako3')
-const { NakoSyntaxError } = require('nako3/nako_errors')
+const CNako3 = require('../../src/cnako3')
+const { NakoSyntaxError } = require('../../src/nako_errors')
 const path = require('path')
 
 describe('side_effects_test', () => {

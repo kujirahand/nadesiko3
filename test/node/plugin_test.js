@@ -1,5 +1,5 @@
 const assert = require('assert')
-const CNako3 = require('nako3/cnako3')
+const CNako3 = require('../../src/cnako3')
 
 describe('plugin_test', () => {
   const nako = new CNako3()

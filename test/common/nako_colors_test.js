@@ -1,4 +1,4 @@
-const NakoColors = require('nako3/nako_colors')
+const NakoColors = require('../../src/nako_colors')
 const assert = require('assert')
 
 describe('nako_colors_test', () => {

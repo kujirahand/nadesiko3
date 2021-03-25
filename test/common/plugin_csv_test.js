@@ -1,6 +1,6 @@
 const assert = require('assert')
-const NakoCompiler = require('nako3/nako3')
-const PluginCSV = require('nako3/plugin_csv')
+const NakoCompiler = require('../../src/nako3')
+const PluginCSV = require('../../src/plugin_csv')
 
 describe('plugin_csv_test', () => {
   const nako = new NakoCompiler()

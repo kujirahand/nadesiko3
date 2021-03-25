@@ -1,6 +1,6 @@
 const assert = require('assert')
-const NakoCompiler = require('nako3/nako3')
-const PluginBrowser = require('nako3/plugin_browser')
+const NakoCompiler = require('../../src/nako3')
+const PluginBrowser = require('../../src/plugin_browser')
 
 describe('plugin_browser_test', () => {
   const nako = new NakoCompiler()

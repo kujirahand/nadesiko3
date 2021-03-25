@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require ('fs')
 
 const cnako3 = path.join(__dirname, '../../src/cnako3.js')
-const packagejson = require('root/package.json')
+const packagejson = require('../../package.json')
 const debug = false
 
 describe('node_test(cnako)', () => {

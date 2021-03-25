@@ -1,7 +1,7 @@
 const assert = require('assert')
-const NakoCompiler = require('nako3/nako3')
-const PluginMarkup = require('nako3/plugin_markup')
-const CNako3 = require('nako3/cnako3')
+const NakoCompiler = require('../../src/nako3')
+const PluginMarkup = require('../../src/plugin_markup')
+const CNako3 = require('../../src/cnako3')
 
 describe('plugin_markup_test', () => {
   const wnako = new NakoCompiler()

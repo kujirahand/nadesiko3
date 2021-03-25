@@ -1,5 +1,5 @@
 const assert = require('assert')
-const Nako3Assert = require('nako3/nako3_assert.js')
+const Nako3Assert = require('../../src/nako3_assert.js')
 
 describe('async_test', () => {
   const debug = false

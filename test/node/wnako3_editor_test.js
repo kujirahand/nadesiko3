@@ -1,7 +1,7 @@
 const assert = require('assert')
-const NakoCompiler = require('nako3/nako3')
-const { tokenize, LanguageFeatures } = require('nako3/wnako3_editor')
-const CNako3 = require('nako3/cnako3')
+const NakoCompiler = require('../../src/nako3')
+const { tokenize, LanguageFeatures } = require('../../src/wnako3_editor')
+const CNako3 = require('../../src/cnako3')
 const path = require('path')
 const fs = require('fs')
 

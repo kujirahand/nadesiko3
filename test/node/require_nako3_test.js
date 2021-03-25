@@ -1,5 +1,5 @@
 const assert = require('assert')
-const CNako3 = require('nako3/cnako3')
+const CNako3 = require('../../src/cnako3')
 
 describe('require_nako3_test', () => {
   const nako = new CNako3()
@@ -11,12 +11,12 @@ describe('require_nako3_test', () => {
     assert.strictEqual(ret.log, res)
   }
   it('「ファイルを取り込む」', () => {
-    cmp('!「test/node/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。', '5\n8')
+    cmp('!「' + __dirname + '/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。', '5\n8')
   })
   it('CNakoの相対インポート', () => {
-    cmp('!「test/node/relative_import_test_2.nako3」を取り込む。', '1\n2')
+    cmp('!「' + __dirname + '/relative_import_test_2.nako3」を取り込む。', '1\n2')
   })
   it('「回」が1回だけ分割されることを確認する', () => {
-    cmp('！「test/node/kai_test.nako3」を取り込む', '')
+    cmp('！「' + __dirname + '/kai_test.nako3」を取り込む', '')
   })
 })

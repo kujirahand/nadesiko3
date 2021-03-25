@@ -1,5 +1,5 @@
 const assert = require('assert')
-const NakoCompiler = require('nako3/nako3')
+const NakoCompiler = require('../../src/nako3')
 
 describe('flow_test', () => {
   const nako = new NakoCompiler()

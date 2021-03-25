@@ -1,5 +1,5 @@
-const PluginBrowser = require('nako3/plugin_browser')
-const { PluginUtHelper } = require('utils/plugin_ut_helper')
+const PluginBrowser = require('../../src/plugin_browser')
+const { PluginUtHelper } = require('../../utils/plugin_ut_helper')
 
 describe('plugin_browser_html', () => {
   const cu = new PluginUtHelper(PluginBrowser)
