@@ -94,6 +94,7 @@
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
     "@textlint-ja/textlint-rule-no-insert-dropping-sa": "^1.0.2",
+    "@types/mocha": "^8.2.2",
     "babel-loader": "^8.2.2",
     "chai": "^4.3.4",
     "core-js": "^3.9.1",

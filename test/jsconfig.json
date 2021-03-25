@@ -1,0 +1,19 @@
+{
+  "extends": "../jsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "assert/*": [
+        "../utils/assert.js/*"
+      ],
+      "root/*": [
+        "../*"
+      ],
+      "nako3/*": [
+        "../src/*"
+      ],
+      "utils/*" : [
+        "../utils/*"
+      ]
+    }
+  }
+}
