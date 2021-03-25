@@ -410,6 +410,6 @@ const PluginDateTime = {
 module.exports = PluginDateTime
 // scriptタグで取り込んだ時、自動で登録する
 /* istanbul ignore else */
-if (typeof (navigator) === 'object' && typeof (navigator.nako3)) 
+if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') 
   {navigator.nako3.addPluginObject('PluginDateTime', PluginDateTime)}
 
