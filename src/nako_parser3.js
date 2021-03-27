@@ -260,6 +260,7 @@ class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     if (!this.check('もし')) {return null}
     const mosi = this.get() // skip もし
+    while (this.check('comma')) {this.get()} // skip comma
     let cond = null
     try {
       cond = this.yIFCond()
@@ -287,6 +288,7 @@ class NakoParser extends NakoParserBase {
     // Flase Block
     if (this.check('違えば')) {
       this.get() // skip 違えば
+      while(this.check('comma')) {this.get()}
       if (this.check('eol')){
         falseBlock = this.yBlock()
       } else {
@@ -535,6 +537,7 @@ class NakoParser extends NakoParserBase {
     let multiline = false
     let block = null
     if (num === null) {num = {type: 'word', value: 'それ', josi: '', ...map, end: this.peekSourceMap()}}
+    if (this.check('comma')) {this.get()}
     if (this.check('ここから')) {
       this.get()
       multiline = true
@@ -561,11 +564,13 @@ class NakoParser extends NakoParserBase {
   yWhile () {
     const map = this.peekSourceMap()
     if (!this.check('間')) {return null}
-    const aida = this.get()
+    const aida = this.get() // skip '間'
+    while (this.check('comma')) {this.get()} // skip ','
     const cond = this.popStack([])
     if (cond === null) {
       throw NakoSyntaxError.fromNode('『間』で条件がありません。', cond)
     }
+    if (this.check('comma')) {this.get()}
     if (!this.checkTypes(['ここから', 'eol'])) {
       throw NakoSyntaxError.fromNode('『間』の直後は改行が必要です', cond)
     }
@@ -640,7 +645,8 @@ class NakoParser extends NakoParserBase {
   yForEach () {
     const map = this.peekSourceMap()
     if (!this.check('反復')) {return null}
-    const hanpuku = this.get()
+    const hanpuku = this.get() // skip '反復'
+    while (this.check('comma')) {this.get()} // skip ','
     const target = this.popStack(['を'])
     const name = this.popStack(['で'])
     let block = null
@@ -1181,6 +1187,9 @@ class NakoParser extends NakoParserBase {
   /** @returns {Ast | null} */
   yValue () {
     const map = this.peekSourceMap()
+
+    // カンマなら飛ばす #877
+    if (this.check('comma')) { this.get() }
 
     // プリミティブな値
     if (this.checkTypes(['number', 'string']))

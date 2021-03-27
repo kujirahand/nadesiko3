@@ -77,14 +77,14 @@ describe('prepare', () => {
   it('convertTable', () => {
     const a = convert('123※456')
     assert.strictEqual(a, '123#456\n') // #はコメント扱い
-    const b = convert('123、456。') // 読点は変換しない方針に (#276)
-    assert.strictEqual(b, '123、456;')
+    const b = convert('123、456。') // 読点はカンマに変換 (#276)あらため(#877)
+    assert.strictEqual(b, '123,456;')
   })
   it('「，．」を「、。」として扱う(#735)', () => {
     const a = convert('３．１４')
     assert.strictEqual(a, '3.14')
     const b = convert('，')
-    assert.strictEqual(b, '、')
+    assert.strictEqual(b, ',')
   })
   it('複数行コメント内にある文字列記号でエラーになる問題(#731)', () => {
     const a = convert('/* " */')

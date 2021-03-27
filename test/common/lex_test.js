@@ -77,8 +77,8 @@ describe('lex_test', () => {
     assert.strictEqual(tokens[1].endOffset, 10)
   })
   it('ソースマップ - スペース扱いの文字', () => {
-    // '、'はスペース扱いであり、トークン化されない。
-    const tokens = nako.lex('ならば、A').tokens
+    // '・'はスペース扱いであり、トークン化されない。
+    const tokens = nako.lex('ならば・A').tokens
 
     // 0-2文字目: ならば
     assert.strictEqual(tokens[0].startOffset, 0)

@@ -434,6 +434,10 @@ class NakoLexer {
             josi = j[0]
             column += j[0].length
             src = src.substr(j[0].length)
+            // 助詞の直後にあるカンマを無視 #877
+            if (src.charAt(0) == ',') {
+              src = src.substr(1)
+            }
           }
         }
 

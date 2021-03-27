@@ -13,7 +13,7 @@ module.exports = {
     // 上から順にマッチさせていく
     {name: 'eol', pattern: /^\n/},
     {name: 'eol', pattern: /^;/},
-    {name: 'space', pattern: /^(\s+|、|・)/},
+    {name: 'space', pattern: /^(\s+|・)/}, // #877
     {name: 'comma', pattern: /^,/},
     {name: 'line_comment', pattern: /^#[^\n]*/},
     {name: 'line_comment', pattern: /^\/\/[^\n]*/},
@@ -29,7 +29,7 @@ module.exports = {
     {name: 'number', pattern: /^\d+(_\d+)*\.(\d+(_\d+)*)?([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
     {name: 'number', pattern: /^\.\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
     {name: 'number', pattern: /^\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber},
-    {name: 'ここから', pattern: /^(ここから)/},
+    {name: 'ここから', pattern: /^(ここから),?/},
     {name: 'ここまで', pattern: /^(ここまで|💧)/},
     {name: 'もし', pattern: /^もしも?/},
     // ならば ← 助詞として定義
@@ -71,7 +71,7 @@ module.exports = {
     {name: 'string', pattern: /^'/, cbParser: src => cbString('\'', '\'', src)},
     {name: '」', pattern: /^」/}, // error
     {name: '』', pattern: /^』/}, // error
-    {name: 'func', pattern: /^\{関数\}/},
+    {name: 'func', pattern: /^\{関数\},?/},
     {name: '{', pattern: /^\{/},
     {name: '}', pattern: /^\}/, readJosi: true},
     {name: ':', pattern: /^:/},
@@ -150,6 +150,8 @@ function cbWordParser(src, isTrimOkurigana = true) {
       if (j) {
         josi = j[0]
         src = src.substr(j[0].length)
+        // 助詞の直後にある「,」を飛ばす #877
+        if (src.charAt(0) == ',') {src = src.substr(1)}
         break
       }
     }
@@ -204,6 +206,8 @@ function cbString (beginTag, closeTag, src) {
   if (j) {
     josi = j[0]
     src = src.substr(j[0].length)
+    // 助詞の後のカンマ #877
+    if (src.charAt(0) == ',') {src = src.substr(1)}
   }
   // 改行を数える
   for (let i = 0; i < res.length; i++)
