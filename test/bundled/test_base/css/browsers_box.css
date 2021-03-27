@@ -1,0 +1,114 @@
+/* reset style */
+h1, h3, .sbox h4, .edit_head, .buttons, #info {
+  margin: 0;
+}
+
+h1, h3, #info {
+  padding: 0.5em;
+}
+
+/* title */
+h1#title, h1 {
+  background-color: #fff0f0;
+  margin: 0;
+  padding: 4px;
+  color: black;
+  font-size: 1.3em;
+}
+
+/* menubar */
+div.menubar {
+  background-color: #f0e0e0;
+  font-size: 0.8em;
+  color: black;
+  margin: 0; padding: 4px;
+  overflow: hidden;
+}
+h3, .info, .err, #src_box, .src {
+  font-size: 1em;
+}
+
+h3 {
+  background-color: #e0e0e0;
+  border-bottom: 1px solid gray;
+}
+
+
+.sbox h4 {
+  font-size: 0.9em;
+  padding: 4px;
+}
+
+.default_button {
+  min-width: 10em;
+}
+.mini_button {
+  width: 1em;
+}
+
+button {
+  padding: 0.4em;
+  cursor: pointer;
+}
+
+.turtle_canvas {
+  border: 1px solid silver;
+}
+
+.turtle_box, .buttons {
+  text-align: center;
+}
+
+.edit_head, .buttons {
+  padding: 0.3em;
+}
+
+.edit_head {
+  font-size: 0.8em;
+  color: gray;
+}
+
+.edit_div {
+  margin: 0.5em;
+  padding: 0;
+}
+
+.info, .err, #src_box, .src {
+  line-height: 1.5em;
+}
+
+.info, .err {
+  border: 1px solid gray;
+  padding: 8px;
+}
+
+.info {
+  background-color: #f0fff0;
+  margin-top: 0;
+}
+
+.err {
+  background-color: #fff0f0;
+}
+
+#src_box, .src, #info {
+  width: 99%;
+}
+
+#src_box {
+  background-color: #fffff0;
+}
+
+.src {
+  background-color: #fafafa;
+}
+
+.src_read {
+  background-color: #f0f0f0;
+}
+
+.sbox {
+  border-bottom: 1px solid silver;
+  margin: 8px;
+  padding: 12px;
+}
