@@ -13,6 +13,8 @@ module.exports = {
       if (!cv) {throw new Error('『描画開始』でCanvasを取得できませんでした。')}
       sys.__canvas = cv
       sys.__ctx = cv.getContext('2d')
+      sys.__fillStyle = 'black'
+      sys.__strokeStyle = 'black'
       sys.__v0['描画中キャンバス'] = cv
       sys.__v0['描画中コンテキスト'] = sys.__ctx
     },
@@ -46,7 +48,10 @@ module.exports = {
     pure: true,
     fn: function (v, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      sys.__ctx.strokeStyle = v
+      sys.__strokeStyle = v
+      if (v != '') {
+        sys.__ctx.strokeStyle = v
+      }
     },
     return_none: true
   },
@@ -56,7 +61,10 @@ module.exports = {
     pure: true,
     fn: function (v, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      sys.__ctx.fillStyle = v
+      sys.__fillStyle = v
+      if (v != '') {
+        sys.__ctx.fillStyle = v
+      }
     },
     return_none: true
   },
@@ -89,10 +97,11 @@ module.exports = {
     pure: true,
     fn: function (b, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
       sys.__ctx.beginPath()
       sys.__ctx.rect(b[0], b[1], b[2], b[3])
-      sys.__ctx.fill()
-      sys.__ctx.stroke()
+      if (sys.__fillStyle != '') {sys.__ctx.fill()}
+      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
     },
     return_none: true
   },
@@ -112,10 +121,11 @@ module.exports = {
     pure: true,
     fn: function (xy, r, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
       sys.__ctx.beginPath()
       sys.__ctx.arc(xy[0], xy[1], r, 0, 2 * Math.PI, false)
-      sys.__ctx.fill()
-      sys.__ctx.stroke()
+      if (sys.__fillStyle != '') {sys.__ctx.fill()}
+      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
     },
     return_none: true
   },
@@ -134,10 +144,11 @@ module.exports = {
         if (!args[6]) {args[6] = Math.PI * 2}
         if (!args[7]) {args[7] = true}
       }
+      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
       sys.__ctx.beginPath()
       sys.__ctx.ellipse.apply(sys.__ctx, args)
-      sys.__ctx.fill()
-      sys.__ctx.stroke()
+      if (sys.__fillStyle != '') {sys.__ctx.fill()}
+      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
     },
     return_none: true
   },
@@ -147,6 +158,7 @@ module.exports = {
     pure: true,
     fn: function (a, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
       sys.__ctx.beginPath()
       const p = a.shift()
       sys.__ctx.moveTo(p[0], p[1])
@@ -155,8 +167,8 @@ module.exports = {
         sys.__ctx.lineTo(t[0], t[1])
       }
       sys.__ctx.lineTo(p[0], p[1])
-      sys.__ctx.fill()
-      sys.__ctx.stroke()
+      if (sys.__fillStyle != '') {sys.__ctx.fill()}
+      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
     },
     return_none: true
   },
