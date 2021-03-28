@@ -65,7 +65,11 @@ const TestEnv = (function() {
   }
   p.getReport = function () {
     const s = this.getReportAsJson()
-    return JSON.parse(s)
+    if (s==="") return ""
+    if (window.JSON) {
+      return JSON.parse(s)
+    }
+    return eval(s)
   }
   p.getReportAsJson = function () {
     return this.ui.json.innerText

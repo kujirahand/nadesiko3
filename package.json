@@ -16,6 +16,7 @@
     "test:bundled:watch": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --auto-watch --browsers FirefoxCustom test/bundled/karma.config.js",
     "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.js",
     "test:all": "npm test && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
+    "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
     "start": "node src/nako3server.js",
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
@@ -93,6 +94,7 @@
     "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
+    "@chiragrupani/karma-chromium-edge-launcher": "^2.1.0",
     "@textlint-ja/textlint-rule-no-insert-dropping-sa": "^1.0.2",
     "@types/mocha": "^8.2.2",
     "babel-loader": "^8.2.2",
@@ -110,6 +112,7 @@
     "fetch-mock": "^9.11.0",
     "hotkeys-js": "^3.8.3",
     "karma": "^6.2.0",
+    "karma-chrome-launcher": "^3.1.0",
     "karma-firefox-launcher": "^2.1.0",
     "karma-html2js-preprocessor": "^1.1.0",
     "karma-mocha": "^2.0.1",
@@ -167,11 +170,14 @@
     "fs-extra": "^9.1.0",
     "html": "^1.0.0",
     "iconv-lite": "^0.6.2",
+    "karma-chai": "^0.1.0",
+    "karma-ie-launcher": "^1.0.0",
     "marked": "^2.0.1",
     "nadesiko3-sqlite3sync": "0.0.1",
     "node-fetch": "^2.6.1",
     "opener": "^1.5.2",
     "readline-sync": "^1.4.10",
-    "sendkeys-js": "0.0.4"
+    "sendkeys-js": "0.0.4",
+    "whatwg-fetch": "^3.6.2"
   }
 }

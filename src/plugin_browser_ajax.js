@@ -1,3 +1,13 @@
+require('whatwg-fetch')
+
+const privateDummy = async () => {
+  const promise = new Promise((resolve, reject) => {
+    resolve()
+    reject()
+  })
+  const rslt = await promise
+}
+
 module.exports = {
   // @AJAXとHTTP
   'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
