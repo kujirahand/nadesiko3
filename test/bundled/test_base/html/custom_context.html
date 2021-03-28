@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--
+This is the execution context.
+Loaded within the iframe.
+Reloaded before every execution run.
+-->
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link rel="stylesheet" href="/css/browsers_box.css">
+</head>
+<body>
+  <h1>なでしこブラウザテスト</h1>
+  <!-- editor -->
+  <div id="editor" class="edit_div">
+    <h2 class="edit_head">簡易エディタ:</h2>
+    <textarea id="src_box" rows="4"></textarea>
+    <div class="buttons">
+      <button id="run_button" class="default_button">実行</button>
+      <button id="reset_button" class="default_button">クリア</button>
+    </div>
+    <div class="result_box">
+      <h3 class="edit_head">結果:</h3>
+      <textarea id="info" class="info" style="textAlign: left"></textarea>
+      <div id="json" class="info" style="textAlign: left"></div>
+      <div id="err" class="err"><span id="errName"></span><br><span id="errMessage"></span></div>
+      <!-- <canvas id="turtle_cv" class="turtle_canvas" width="280" height="380"></canvas>
+      <div id="turtle3d_div" class="turtle_div" width="280" height="380" style="width:280;height:380"></div> -->
+    </div>
+  </div>
+  <!-- なでしこ-->
+  <script src="/release/wnako3.js"></script>
+  <script src="/js/browsers_box.js"></script>
+  <script src="/release/plugin_kansuji.js"></script>
+  <script src="/release/plugin_markup.js"></script>
+  <script src="/release/plugin_datetime.js"></script>
+  <script src="/release/plugin_csv.js"></script>
+  <script src="/release/plugin_caniuse.js"></script>
+  <script src="/release/plugin_webworker.js"></script>
+  <!-- <script src="/release/plugin_turtle.js"></script> -->
+  <!-- <script src="/release/plugin_weykturtle3d.js"></script> -->
+  <!-- The scripts need to be in the body DOM element, as some test running frameworks need the body
+       to have already been created so they can insert their magic into it. For example, if loaded
+       before body, Angular Scenario test framework fails to find the body and crashes and burns in
+       an epic manner. -->
+  <script src="context.js"></script>
+  <script type="text/javascript">
+    // Configure our Karma and set up bindings
+    %CLIENT_CONFIG%
+    window.__karma__.setupContext(window);
+
+    // All served files with the latest timestamps
+    %MAPPINGS%
+  </script>
+  <!-- Dynamically replaced with <script> tags -->
+  %SCRIPTS%
+  <!-- Since %SCRIPTS% might include modules, the `loaded()` call needs to be in a module too.
+   This ensures all the tests will have been declared before karma tries to run them. -->
+  <script type="module">
+    window.__karma__.loaded();
+  </script>
+  <script nomodule>
+    window.__karma__.loaded();
+  </script>
+</body>
+</html>
