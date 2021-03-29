@@ -1,4 +1,18 @@
-require('whatwg-fetch')
+const getGlobal = function () {
+  if (typeof globalThis !== 'undefined') { return globalThis }
+  if (typeof self !== 'undefined') { return self }
+  if (typeof window !== 'undefined') { return window }
+  if (typeof global !== 'undefined') { return global }
+  throw new Error('unable to locate global object');
+}
+
+if (typeof getGlobal().fetch === 'undefined') {
+  if (typeof global !== 'undefined' && typeof global.global === global) {
+    require('node-fetch')
+  } else {
+    require('whatwg-fetch')
+  }
+}
 
 const privateDummy = async () => {
   const promise = new Promise((resolve, reject) => {

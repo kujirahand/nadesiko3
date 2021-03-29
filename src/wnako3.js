@@ -1,5 +1,21 @@
 // nadesiko for web browser
 // wnako3.js
+const getGlobal = function () {
+  if (typeof globalThis !== 'undefined') { return globalThis }
+  if (typeof self !== 'undefined') { return self }
+  if (typeof window !== 'undefined') { return window }
+  if (typeof global !== 'undefined') { return global }
+  throw new Error('unable to locate global object');
+}
+
+if (typeof getGlobal().fetch === 'undefined') {
+  if (typeof global !== 'undefined' && typeof global.global === global) {
+    require('node-fetch')
+  } else {
+    require('whatwg-fetch')
+  }
+}
+
 const NakoCompiler = require('./nako3')
 const { NakoImportError } = require('./nako_errors')
 const PluginBrowser = require('./plugin_browser')
