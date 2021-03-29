@@ -45,7 +45,7 @@ const PluginBrowser = {
     fn: function (sys) {
       /* eslint no-global-assign: 0 */
       if (typeof document === 'undefined') {document = {'body': {}}}
-      if (typeof window === 'undefined') {window = {}}
+      if (typeof window === 'undefined') {window = {'location':{'href':''}}}
       if (typeof navigator === 'undefined') {navigator = {}}
 
       // 定数を初期化

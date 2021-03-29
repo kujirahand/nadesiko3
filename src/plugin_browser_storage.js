@@ -117,5 +117,5 @@ module.exports = {
       sys.__v0['保存オプション'] = v
     },
     return_none: true
-  },
+  }
 }
