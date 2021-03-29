@@ -7,7 +7,7 @@ const getGlobal = function () {
 }
 
 if (typeof getGlobal().fetch === 'undefined') {
-  if (typeof global !== 'undefined' && typeof global.global === global) {
+  if (typeof global !== 'undefined' && global.global === global) {
     require('node-fetch')
   } else {
     require('whatwg-fetch')
