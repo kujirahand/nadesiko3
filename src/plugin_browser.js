@@ -55,6 +55,7 @@ const PluginBrowser = {
       sys.__v0['WINDOW'] = window
       sys.__v0['NAVIGATOR'] = navigator
       sys.__v0['DOM親要素'] = document.body
+      sys.__v0['ブラウザURL'] = window.location.href
     }
   }
 }
@@ -62,6 +63,7 @@ const PluginBrowser = {
 BrowserParts.forEach((a) => {
   const b = {}
   Object.assign(b, a)
+  // 各モジュールでの初期化処理は認めない
   if (typeof b['初期化'] !== 'undefined') {
     delete b['初期化']
   }

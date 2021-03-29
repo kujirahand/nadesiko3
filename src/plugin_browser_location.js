@@ -4,7 +4,7 @@ module.exports = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (url) {
+    fn: function (url, sys) {
       window.location.href = url
     }
   },
@@ -15,5 +15,6 @@ module.exports = {
     fn: function () {
       window.history.back(-1)
     }
-  }
+  },
+  'ブラウザURL': {type: 'const', value: ''}, // @NぶらうざURL
 }

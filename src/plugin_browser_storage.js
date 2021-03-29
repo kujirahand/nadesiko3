@@ -3,24 +3,27 @@ module.exports = {
   '保存': { // @ブラウザのlocalStorageのキーKに文字列Vを保存 // @ほぞん
     type: 'func',
     josi: [['を'], ['に', 'へ']],
-    pure: true,
-    fn: function (v, key) {
-      window.localStorage[key] = JSON.stringify(v)
+    pure: false,
+    fn: function (v, key, sys) {
+      sys.__exec('ローカルストレージ保存', [v, key, sys])
     },
     return_none: true
   },
   '開': { // @ブラウザのlocalStorageからVを読む // @ひらく
     type: 'func',
     josi: [['を', 'から', 'の']],
-    pure: true,
-    fn: function (key) {
-      const v = window.localStorage[key]
-      try {
-        return JSON.parse(v)
-      } catch (e) {
-        console.log('ローカルストレージ『' + key + '』の読み込みに失敗')
-      }
-      return v
+    pure: false,
+    fn: function (key, sys) {
+      return sys.__exec('ローカルストレージ読', [key, sys])
+    },
+    return_none: false
+  },
+  '読': { // @ブラウザのlocalStorageからVを読む // @よむ
+    type: 'func',
+    josi: [['を', 'から', 'の']],
+    pure: false,
+    fn: function (key, sys) {
+      return sys.__exec('ローカルストレージ読', [key, sys])
     },
     return_none: false
   },
@@ -38,8 +41,12 @@ module.exports = {
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     pure: true,
-    fn: function (key, v) {
-      window.localStorage[key] = JSON.stringify(v)
+    fn: function (key, v, sys) {
+      let body = v
+      if (sys.__v0['保存オプション'] && (sys.__v0['保存オプション'].indexOf('json') >= 0)) {
+        body = JSON.stringify(body)
+      }
+      window.localStorage[key] = body
     },
     return_none: true
   },
@@ -47,12 +54,14 @@ module.exports = {
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
-    fn: function (key) {
-      const v = window.localStorage[key]
-      try {
-        return JSON.parse(v)
-      } catch (e) {
-        console.log('ローカルストレージ『' + key + '』の読み込みに失敗')
+    fn: function (key, sys) {
+      let v = window.localStorage[key]
+      if (sys.__v0['保存オプション'] && (sys.__v0['保存オプション'].indexOf('json') >= 0)) {
+        try {
+          return JSON.parse(v)
+        } catch (e) {
+          console.log('ローカルストレージ『' + key + '』の読み込みに失敗')
+        }
       }
       return v
     },
@@ -88,5 +97,25 @@ module.exports = {
       window.localStorage.clear()
     },
     return_none: true
-  }
+  },
+  'ローカルストレージ有効確認': { // @ブラウザのlocalStorageが使えるか確認 // @ろーかるすとれーじりようかくにん
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function () {
+      return (typeof window.localStorage !== 'undefined')
+    },
+    return_none: false
+  },
+  '保存オプション': {type: 'const', value: 'json'}, // @ ほぞんおぷしょん
+  '保存オプション設定': { // @ブラウザのlocalStorageへの保存オプション「json」を設定する // @ほぞんおぷしょんせってい
+    type: 'func',
+    josi: [['に', 'へ']],
+    pure: true,
+    fn: function (v, sys) {
+      v = v.toUpperCase(v)
+      sys.__v0['保存オプション'] = v
+    },
+    return_none: true
+  },
 }
