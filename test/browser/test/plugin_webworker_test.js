@@ -1,3 +1,4 @@
+import 'whatwg-fetch'
 import { assert } from 'chai'
 import NakoCompiler from 'nako3/nako3.js'
 import PluginBrowser from 'nako3/plugin_browser'
@@ -43,7 +44,6 @@ WからNAKOワーカー表示した時には、
 ここまで
 
 Wで「"かかかかか"を表示する;"<>?"をHTML変換して表示する;"おわり"をNAKOワーカーデータ送信」をNAKOワーカープログラム起動
-Wに「あいうえお」をNAKOワーカーデータ送信
 `
     nako.run(code)
 

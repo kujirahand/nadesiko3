@@ -49,7 +49,7 @@
     document.getElementById('errMessage').innerHTML = ''
     document.getElementById('json').innerHTML = ''
     window.reporter.reset()
-    nako3._runEx('', 'editor_reset.nako3', {resetEnv: true, resetAll: true}, '', undefined)
+    nako3._runEx('', 'editor_reset.nako3', {resetEnv: true, resetAll: true}, '', nako3vm)
     nako3vm = null
     const cv = document.getElementById('turtle_cv')
     if (cv) {

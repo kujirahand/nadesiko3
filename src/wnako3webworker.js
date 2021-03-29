@@ -1,5 +1,7 @@
 // nadesiko for web browser worker
 // wwnako3.js
+require('whatwg-fetch')
+
 const NakoCompiler = require('./nako3')
 const PluginBrowserInWorker = require('./plugin_browser_in_worker')
 const PluginWorker = require('./plugin_worker')
