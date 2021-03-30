@@ -39,9 +39,9 @@ module.exports = {
   },
   'ローカルストレージ保存': { // @ブラウザのlocalStorageのKにVを保存 // @ろーかるすとれーじほぞん
     type: 'func',
-    josi: [['に', 'へ'], ['を']],
+    josi: [['を'], ['に', 'へ']],
     pure: true,
-    fn: function (key, v, sys) {
+    fn: function (v, key, sys) {
       let body = v
       if (sys.__v0['保存オプション'] && (sys.__v0['保存オプション'].indexOf('json') >= 0)) {
         body = JSON.stringify(body)
