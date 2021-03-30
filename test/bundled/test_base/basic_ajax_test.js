@@ -44,7 +44,6 @@ AJAXオプションを報告する。
     env.waitCmpReport(done ,code, ["OK"])
   }).timeout(10000)
 
-
   it('AJAX送信', (done) => {
     const code = `
 逐次実行
@@ -54,5 +53,4 @@ AJAXオプションを報告する。
 `
     env.waitCmpReport(done ,code, ["OK"])
   })
-
 })

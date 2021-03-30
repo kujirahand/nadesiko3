@@ -1,5 +1,7 @@
 // nadesiko for web browser
 // wnako3.js
+require('whatwg-fetch')
+
 const NakoCompiler = require('./nako3')
 const { NakoImportError } = require('./nako_errors')
 const PluginBrowser = require('./plugin_browser')
