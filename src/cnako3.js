@@ -2,7 +2,13 @@
 /**
  * コマンドライン版のなでしこ3
  */
-require('node-fetch')
+const fetch = require('node-fetch')
+if (globalThis && !globalThis.fetch) {
+  globalThis.fetch = fetch;
+} else
+if (global && !global.fetch) {
+  global.fetch = fetch;
+}
 
 const fs = require('fs')
 const exec = require('child_process').exec
