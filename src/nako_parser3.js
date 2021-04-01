@@ -329,7 +329,7 @@ class NakoParser extends NakoParserBase {
     const optionNode = this.get()
     this.get()
 
-    const options = { '行番号無し': false, '暗黙の型変換無し': false }
+    const options = { '行番号無し': false, '暗黙の型変換無し': false, '強制ピュア': false, 'それ無効': false }
     for (const name of optionNode.value.split('/')) {
       // 全て有効化
       if (name === '全て') {
