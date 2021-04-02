@@ -286,7 +286,7 @@ function tokenize(lines, nako3, underlineJosi) {
     lexerOutput.tokens = lexerOutput.tokens.filter((t) => t.file === 'main.nako3')
 
     // 外部ファイルで定義された関数名に一致するトークンのtypeをfuncに変更する。
-    // 取り込んでいないファイルも参照される問題や、関数名の重複がある場合に正しくない情報を表示する問題がある。可能なら修正する。
+    // 取り込んでいないファイルも参照される問題や、関数名の重複がある場合に正しくない情報を表示する問題がある。
     {
         /** @type {Record<string, object>} */
         for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {

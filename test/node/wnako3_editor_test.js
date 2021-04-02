@@ -133,6 +133,15 @@ describe('wnako3_editor_test', () => {
                 fs.unlinkSync(largeFile)
             }
         })
+        it('明示的に取り込んだプラグインの関数', async () => {
+            const compiler = new CNako3()
+            const code = `!「plugin_csv」を取り込む\n「1」のCSV取得`
+            compiler.loadDependencies(code, '', '')
+            const token = tokenize(code.split('\n'), compiler, false).editorTokens[1][1]
+            expect(token.type).to.include('function')
+            expect(token.docHTML).to.include('CSV取得')
+            expect(token.value).to.equal('CSV取得')
+        })
     })
     describe('ドキュメントのホバー', () => {
         it('プラグイン関数の助詞のドキュメントを表示する', () => {
