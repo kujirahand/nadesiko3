@@ -40,7 +40,7 @@ class WebNakoCompiler extends NakoCompiler {
    * @returns {Promise<unknown>}
    */
   async loadDependencies(code, filename, preCode = '', localFiles = {}) {
-    return super.loadDependencies(code, filename, preCode, {
+    return this._loadDependencies(code, filename, preCode, {
       readJs: (filePath, token) => {
         if (localFiles.hasOwnProperty(filePath)) {
           return { sync: true, value: () => {

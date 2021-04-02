@@ -165,8 +165,9 @@ class NakoCompiler {
    *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: () => object } | { sync: false, value: Promise<() => object> }
    * }} tools
    * @returns {Promise<unknown> | void}
+   * @protected
    */
-  loadDependencies(code, filename, preCode, tools) {
+  _loadDependencies(code, filename, preCode, tools) {
     /** @type {NakoCompiler['dependencies']} */
     const dependencies = {}
     const compiler = new NakoCompiler()
