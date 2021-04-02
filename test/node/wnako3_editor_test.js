@@ -1,10 +1,11 @@
 const assert = require('assert')
 const NakoCompiler = require('../../src/nako3')
-const { tokenize, LanguageFeatures, AceDocument: IAceDocument, Session: ISession } = require('../../src/wnako3_editor')
+const { tokenize, LanguageFeatures, BackgroundTokenizer, AceDocument: IAceDocument, Session: ISession } = require('../../src/wnako3_editor')
 const CNako3 = require('../../src/cnako3')
 const path = require('path')
 const fs = require('fs')
-const {expect} = require('chai')
+const { expect } = require('chai')
+const { NakoLexerError } = require('../../src/nako_errors')
 
 describe('wnako3_editor_test', () => {
     class AceRange {
@@ -33,6 +34,18 @@ describe('wnako3_editor_test', () => {
             // @ts-ignore
             return { doc: this }
         }
+    }
+    /** @returns {Promise<BackgroundTokenizer>} */
+    const createBackgroundTokenizer = (/** @type {string} */text, compiler = new NakoCompiler()) => {
+        return new Promise((resolve, reject) => {
+            const tokenizer = new BackgroundTokenizer(
+                new AceDocument(text),
+                compiler,
+                () => { resolve(tokenizer) }, // ok
+                (_, err) => { reject(err) }, // err
+                true,
+            )
+        })
     }
     describe('シンタックスハイライト', () => {
         it('コードを分割する', () => {
@@ -81,12 +94,12 @@ describe('wnako3_editor_test', () => {
             const nako3 = new CNako3()
             const code = '!「./requiretest_indirect.nako3」を取り込む\n1と2の痕跡演算'
             const file = path.join(__dirname, 'main.nako3')
-            nako3.loadDependencies(code, file, "")
+            nako3.loadDependencies(code, file, '')
             const tokens = tokenize(code.split('\n'), nako3, true)
 
             // 「痕跡演算」が関数として認識されていることを確認する。
             const token = tokens.editorTokens[1].find((token) => token.value === '痕跡演算')
-            expect(token).to.have.property("type").and.to.include("function")
+            expect(token).to.have.property('type').and.to.include('function')
         })
         it('シンタックスハイライトにかかる時間が依存ファイルの行数に依存しないことを確認', () => {
             // 一時的に大きいファイルを作成
@@ -100,7 +113,7 @@ describe('wnako3_editor_test', () => {
 
                 const nako3 = new CNako3()
                 console.time('loadDependencies')
-                nako3.loadDependencies(code, file, "")  // この行は遅いが、取り込み文に変更が合った時しか呼ばれない
+                nako3.loadDependencies(code, file, '')  // この行は遅いが、取り込み文に変更が合った時しか呼ばれない
                 console.timeEnd('loadDependencies')
 
                 const startTime = process.hrtime.bigint()
@@ -150,7 +163,7 @@ describe('wnako3_editor_test', () => {
             const token = tokenize('1をF'.split('\n'), nako3, false)
                 .editorTokens[0]
                 .find((t) => t.value === 'F')
-            expect(token).to.have.property("docHTML").and.is.null
+            expect(token).to.have.property('docHTML').and.is.null
         })
     })
     describe('行コメントのトグル', () => {
@@ -224,6 +237,89 @@ describe('wnako3_editor_test', () => {
                 LanguageFeatures.getNextLineIndent('start', '    もしはい', '    '),
                 '    ',
             )
+        })
+    })
+    describe('バックグラウンドでコードをトークン化する', () => {
+        it('成功時', async () => {
+            const t = await createBackgroundTokenizer('1を表示')
+            // 0行目の0、1、2個目のトークン
+            expect(t.lines[0][0]).to.include({ type: 'constant.numeric', docHTML: null, value: '1' })
+            expect(t.lines[0][1]).to.include({ type: 'constant.numeric.markup.underline', value: 'を' })
+            expect(t.lines[0][2]).to.include({ type: 'entity.name.function', value: '表示' })
+        })
+        it('失敗時', async () => {
+            let ok = false
+            try {
+                await createBackgroundTokenizer('「{」')
+            } catch (err) {
+                expect(err).to.be.instanceOf(NakoLexerError)
+                ok = true
+            }
+            if (!ok) { throw new Error() }
+        })
+    })
+    describe('オートコンプリート', () => {
+        it('同一ファイル内の関数', async () => {
+            const compiler = new NakoCompiler()
+            const tokenizer = await createBackgroundTokenizer('●（Aを）テスト用関数とは\nここまで\n', compiler)
+            expect(LanguageFeatures.getCompletionItems(2, '', compiler, tokenizer)).to.deep.include({
+                caption: "（Aを）テスト用関数",
+                value: "テスト用関数",
+                meta: "関数",
+                score: 0,
+            })
+        })
+        it('同一ファイルの変数', async () => {
+            const compiler = new NakoCompiler()
+            const tokenizer = await createBackgroundTokenizer('テスト用変数=10\nここまで\n', compiler)
+            expect(LanguageFeatures.getCompletionItems(2, '', compiler, tokenizer)).to.deep.include({
+                caption: "テスト用変数",
+                value: "テスト用変数",
+                meta: "変数",
+                score: 0,
+            })
+        })
+        it('組み込みのプラグイン関数', async () => {
+            const compiler = new NakoCompiler()
+            compiler.addPluginObject('PluginEditorTest', {
+                'テスト用プラグイン関数': {
+                    type: 'func',
+                    josi: [['を'], ['に']],
+                    pure: true,
+                    fn: () => {},
+                }
+            })
+            const tokenizer = await createBackgroundTokenizer('', compiler)
+            expect(LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)).to.deep.include({
+                caption: "（Aを、Bに）テスト用プラグイン関数",
+                value: "テスト用プラグイン関数",
+                meta: "PluginEditorTest",
+                score: 0,
+            })
+        })
+        it('組み込みのプラグイン変数', async () => {
+            const compiler = new NakoCompiler()
+            compiler.addPluginObject('PluginEditorTest', {
+                'テスト用プラグイン変数': {
+                    type: 'var',
+                    value: 0,
+                }
+            })
+            const tokenizer = await createBackgroundTokenizer('', compiler)
+            expect(LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)).to.deep.include({
+                caption: "テスト用プラグイン変数",
+                value: "テスト用プラグイン変数",
+                meta: "PluginEditorTest",
+                score: 0,
+            })
+        })
+        it('別ファイルの関数', async () => {
+            const compiler = new CNako3()
+            const code = `!「${__dirname}/requiretest.nako3」を取り込む\n`
+            compiler.loadDependencies(code, '', '')
+            const tokenizer = await createBackgroundTokenizer(code, compiler)
+            const result = LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)
+            assert(result.some((v) => v.caption === '（Aと、Bを）痕跡演算'))
         })
     })
     it('テスト定義に実行ボタンを表示する', () => {

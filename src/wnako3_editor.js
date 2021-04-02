@@ -548,6 +548,9 @@ class BackgroundTokenizer {
 
         this.deleted = false
 
+        /** @public */
+        this.enabled = true
+
         const update = () => {
             if (this.deleted) {
                 return
@@ -574,10 +577,10 @@ class BackgroundTokenizer {
                 setTimeout(update, 100)
             }
         }
-        update()
 
-        /** @public */
-        this.enabled = true
+        // コンストラクタが返る前にコールバックを呼ぶのはバグの元になるため一瞬待つ。
+        // たとえば `const a = new BackgroundTokenizer(..., () => { /* aを使った処理 */ }, ...)` がReferenceErrorになる。
+        setTimeout(() => { update() }, 0)
     }
 
     dispose() {
