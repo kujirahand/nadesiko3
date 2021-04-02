@@ -3,12 +3,13 @@
  * コマンドライン版のなでしこ3
  */
 const fetch = require('node-fetch')
-if (globalThis && !globalThis.fetch) {
-  globalThis.fetch = fetch;
+if (typeof globalThis !== 'undefined' && typeof globalThis.fetch === 'undefined') {
+  globalThis.fetch = fetch
 } else
-if (global && !global.fetch) {
-  global.fetch = fetch;
+if (typeof global !== 'undefined' && typeof global.fetch === 'undefined') {
+  global.fetch = fetch
 }
+
 
 const fs = require('fs')
 const exec = require('child_process').exec
