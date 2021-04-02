@@ -70,7 +70,8 @@ describe('side_effects_test', () => {
         assert.throws(() => nako.run(code2, 'main.nako3'), NakoSyntaxError)
     })
     it('「初期化」と「!クリア」を呼ぶ', () => {
-        let log = []
+        /** @type {any[]} */
+        const log = []
         const nako = new NakoCompiler()
 
         let count = 0
@@ -94,8 +95,8 @@ describe('side_effects_test', () => {
             },
         })
 
-        const process1 = nako.run('a=1')
-        const process2 = nako.run('a=1')
+        const process1 = nako.run('a=1', '')
+        const process2 = nako.run('a=1', '')
 
         process1.destroy()
         process2.destroy()

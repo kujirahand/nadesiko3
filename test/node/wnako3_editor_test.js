@@ -1,31 +1,39 @@
 const assert = require('assert')
 const NakoCompiler = require('../../src/nako3')
-const { tokenize, LanguageFeatures } = require('../../src/wnako3_editor')
+const { tokenize, LanguageFeatures, AceDocument: IAceDocument, Session: ISession } = require('../../src/wnako3_editor')
 const CNako3 = require('../../src/cnako3')
 const path = require('path')
 const fs = require('fs')
+const {expect} = require('chai')
 
 describe('wnako3_editor_test', () => {
     class AceRange {
-        constructor(startLine, startColumn, endLine, endColumn) {
+        constructor(/** @type {number} */startLine, /** @type {number} */startColumn, /** @type {number} */endLine, /** @type {number} */endColumn) {
             this.startLine = startLine
             this.startColumn = startColumn
             this.endLine = endLine
             this.endColumn = endColumn
         }
     }
+    /** @implements {IAceDocument} */
     class AceDocument {
-        constructor(text) {
+        constructor(/** @type {string} */text) {
             this.lines = text.split('\n')
+            /** @type {any[]} */
             this.log = []
         }
-        getLine(row) { return this.lines[row] }
+        getLine(/** @type {number} */row) { return this.lines[row] }
+        getLength() { return this.lines.length }
         getAllLines() { return [...this.lines] }
-        insertInLine(position, text) { this.log.push(['insertInLine', position, text]) }
-        removeInLine(row, columnStart, columnEnd) { this.log.push(['removeInLine', row, columnStart, columnEnd]) }
-        replace(range, text) { this.log.push(['replace', range, text]) }
+        insertInLine(/** @type {{ row: number, column: number }} */position, /** @type {string} */text) { this.log.push(['insertInLine', position, text]) }
+        removeInLine(/** @type {number} */row, /** @type {number} */columnStart, /** @type {number} */columnEnd) { this.log.push(['removeInLine', row, columnStart, columnEnd]) }
+        replace(/** @type {AceRange} */range, /** @type {string} */text) { this.log.push(['replace', range, text]) }
+        /** @returns {ISession} */
+        asSession() { // テスト用
+            // @ts-ignore
+            return { doc: this }
+        }
     }
-    
     describe('シンタックスハイライト', () => {
         it('コードを分割する', () => {
             const tokens = tokenize('A=1\nA+1を表示'.split('\n'), new NakoCompiler(), false).editorTokens
@@ -73,13 +81,12 @@ describe('wnako3_editor_test', () => {
             const nako3 = new CNako3()
             const code = '!「./requiretest_indirect.nako3」を取り込む\n1と2の痕跡演算'
             const file = path.join(__dirname, 'main.nako3')
-            nako3.loadDependencies(code, file)
+            nako3.loadDependencies(code, file, "")
             const tokens = tokenize(code.split('\n'), nako3, true)
 
             // 「痕跡演算」が関数として認識されていることを確認する。
             const token = tokens.editorTokens[1].find((token) => token.value === '痕跡演算')
-            assert.notStrictEqual(token, undefined)
-            assert(token.type.includes('function'))
+            expect(token).to.have.property("type").and.to.include("function")
         })
         it('シンタックスハイライトにかかる時間が依存ファイルの行数に依存しないことを確認', () => {
             // 一時的に大きいファイルを作成
@@ -93,7 +100,7 @@ describe('wnako3_editor_test', () => {
 
                 const nako3 = new CNako3()
                 console.time('loadDependencies')
-                nako3.loadDependencies(code, file)  // この行は遅いが、取り込み文に変更が合った時しか呼ばれない
+                nako3.loadDependencies(code, file, "")  // この行は遅いが、取り込み文に変更が合った時しか呼ばれない
                 console.timeEnd('loadDependencies')
 
                 const startTime = process.hrtime.bigint()
@@ -108,8 +115,7 @@ describe('wnako3_editor_test', () => {
 
                 // 取り込みが行われたことを確認する
                 const token = tokens.editorTokens[1].find((token) => token.value === 'large_file')
-                assert.notStrictEqual(token, undefined)
-                assert(token.type.includes('function'))
+                expect(token).to.have.property('type').and.to.include('function')
             } finally {
                 fs.unlinkSync(largeFile)
             }
@@ -129,14 +135,14 @@ describe('wnako3_editor_test', () => {
             const token = tokenize('XをYにプラグイン関数テスト'.split('\n'), nako3, false)
                 .editorTokens[0]
                 .find((t) => t.value === 'プラグイン関数テスト')
-            assert(token.docHTML.includes('（Aを|Aと、Bに|Bは）'))
-            assert(token.docHTML.includes('PluginEditorTest'))
+            expect(token).to.have.property('docHTML').and.to.include('（Aを|Aと、Bに|Bは）')
+            expect(token).to.have.property('docHTML').and.to.include('PluginEditorTest')
         })
         it('ユーザー定義関数の助詞のドキュメントを表示する', () => {
             const token = tokenize('●（Aを）Fとは\nここまで\n1をF'.split('\n'), new NakoCompiler(), false)
                 .editorTokens[2]
                 .find((t) => t.value === 'F')
-            assert(token.docHTML.includes('（Aを）'))
+            expect(token).to.have.property('docHTML').and.to.include('（Aを）')
         })
         it('前回の実行結果の影響を受けない', () => {
             const nako3 = new NakoCompiler()
@@ -144,13 +150,13 @@ describe('wnako3_editor_test', () => {
             const token = tokenize('1をF'.split('\n'), nako3, false)
                 .editorTokens[0]
                 .find((t) => t.value === 'F')
-            assert.strictEqual(token.docHTML, null)
+            expect(token).to.have.property("docHTML").and.is.null
         })
     })
     describe('行コメントのトグル', () => {
         it('コメントアウト', () => {
             const doc = new AceDocument('abc\n')
-            LanguageFeatures.toggleCommentLines('', { doc }, 0, 1)
+            LanguageFeatures.toggleCommentLines('', doc.asSession(), 0, 1)
             assert.deepStrictEqual(doc.log, [
                 [ 'insertInLine', { row: 0, column: 0 }, '// ' ],
                 [ 'insertInLine', { row: 1, column: 0 }, '// ' ],
@@ -158,7 +164,7 @@ describe('wnako3_editor_test', () => {
         })
         it('アンコメント', () => {
             const doc = new AceDocument('// abc\n\n※def')
-            LanguageFeatures.toggleCommentLines('', { doc }, 0, 2)
+            LanguageFeatures.toggleCommentLines('', doc.asSession(), 0, 2)
             assert.deepStrictEqual(doc.log, [
                 [ 'removeInLine', 0, 0, 3 ], // '// ' を削除
                 [ 'removeInLine', 2, 0, 1 ], // '※' を削除
@@ -166,7 +172,7 @@ describe('wnako3_editor_test', () => {
         })
         it('中黒のある場合', () => {
             const doc = new AceDocument('・・abc')
-            LanguageFeatures.toggleCommentLines('', { doc }, 0, 0)
+            LanguageFeatures.toggleCommentLines('', doc.asSession(), 0, 0)
             assert.deepStrictEqual(doc.log, [
                 [ 'insertInLine', { row: 0, column: 2 }, '// ' ], // 'abc' の直前に挿入
             ])
@@ -185,14 +191,14 @@ describe('wnako3_editor_test', () => {
         it('1つ前の行がブロックの開始行なら、その行に合わせる', () => {
             const doc = new AceDocument('    もしはいならば\n        ここまで')
             // 2行目にauto outdentを実行
-            new LanguageFeatures(AceRange, new NakoCompiler()).autoOutdent('start', { doc }, 1)
+            new LanguageFeatures(AceRange, new NakoCompiler()).autoOutdent('start', doc.asSession(), 1)
             // 2行目の0-8文字目が '    ' で置換される
             assert.deepStrictEqual(doc.log, [[ 'replace', new AceRange(1, 0, 1, 8), '    ']])
         })
         it('1つ前の行がブロックの開始行でなければ、1段階インデントを下げる', () => {
             const doc = new AceDocument('もしはいならば\n    もしはいならば\n        1を表示\n        ここまで')
             // 4行目にauto outdentを実行
-            new LanguageFeatures(AceRange, new NakoCompiler()).autoOutdent('start', { doc }, 3)
+            new LanguageFeatures(AceRange, new NakoCompiler()).autoOutdent('start', doc.asSession(), 3)
             // 2行目の0-8文字目が '    ' で置換される
             assert.deepStrictEqual(doc.log, [[ 'replace', new AceRange(3, 0, 3, 8), '    ']])
         })
@@ -227,7 +233,7 @@ describe('wnako3_editor_test', () => {
             '●（AとBを）足すとは\n' +
             'ここまで\n' +
             '●テスト:引くとは\n' +
-            'ここまで\n'
+            'ここまで\n',
         ))
         assert.deepStrictEqual(out, [
             { start: { row: 0 }, command: { title: 'テストを実行', id: 'runTest', arguments: ['足す'] } },

@@ -789,7 +789,7 @@ class LanguageFeatures {
     /**
      * checkOutdentがtrueを返したときに呼ばれる。
      * @param {string} state
-     * @param {{ doc: AceDocument }} session
+     * @param {Session} session
      * @param {number} row
      * @returns {void}
      */
