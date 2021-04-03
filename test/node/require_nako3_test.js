@@ -19,4 +19,20 @@ describe('require_nako3_test', () => {
   it('「回」が1回だけ分割されることを確認する', () => {
     cmp('！「' + __dirname + '/kai_test.nako3」を取り込む', '')
   })
+  it('.jsと.nako3を同時に読み込む - .jsが先の場合', () => {
+    const nako = new CNako3()
+    const code =
+      `!「plugin_csv」を取り込む。\n` +
+      `!「${__dirname}/requiretest.nako3」を取り込む。\n`
+    nako.loadDependencies(code, 'main.nako3', '')
+    nako.run(code, 'main.nako3') // エラーが飛ばないことを確認
+  })
+  it('.jsと.nako3を同時に読み込む - .nako3が先の場合', () => {
+    const nako = new CNako3()
+    const code =
+      `!「${__dirname}/requiretest.nako3」を取り込む。\n` +
+      `!「plugin_csv」を取り込む。\n`
+    nako.loadDependencies(code, 'main.nako3', '')
+    nako.run(code, 'main.nako3') // エラーが飛ばないことを確認
+  })
 })

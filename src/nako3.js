@@ -212,7 +212,7 @@ class NakoCompiler {
             return inner(code, item.filePath, '')
           }
           if (content.sync) {
-            return registerFile(content.value)
+            registerFile(content.value)
           } else {
             tasks.push(content.value.then((res) => registerFile(res)))
           }
