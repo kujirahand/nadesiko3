@@ -290,14 +290,7 @@ describe('wnako3_editor_test', () => {
         })
         it('組み込みのプラグイン関数', async () => {
             const compiler = new NakoCompiler()
-            compiler.addPluginObject('PluginEditorTest', {
-                'テスト用プラグイン関数': {
-                    type: 'func',
-                    josi: [['を'], ['に']],
-                    pure: true,
-                    fn: () => {},
-                }
-            })
+            compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン関数': { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
             const tokenizer = await createBackgroundTokenizer('', compiler)
             expect(LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)).to.deep.include({
                 caption: "（Aを、Bに）テスト用プラグイン関数",
@@ -308,12 +301,7 @@ describe('wnako3_editor_test', () => {
         })
         it('組み込みのプラグイン変数', async () => {
             const compiler = new NakoCompiler()
-            compiler.addPluginObject('PluginEditorTest', {
-                'テスト用プラグイン変数': {
-                    type: 'var',
-                    value: 0,
-                }
-            })
+            compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン変数': { type: 'var', value: 0 } })
             const tokenizer = await createBackgroundTokenizer('', compiler)
             expect(LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)).to.deep.include({
                 caption: "テスト用プラグイン変数",
@@ -329,6 +317,30 @@ describe('wnako3_editor_test', () => {
             const tokenizer = await createBackgroundTokenizer(code, compiler)
             const result = LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)
             assert(result.some((v) => v.caption === '（Aと、Bを）痕跡演算'))
+        })
+        it('関数の呼び出しはmetaの値に影響を与えない', async () => {
+            const compiler = new NakoCompiler()
+            compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン関数': { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
+            const tokenizer = await createBackgroundTokenizer('テスト用プラグイン関数\n', compiler)
+            const result = LanguageFeatures.getCompletionItems(1, '', compiler, tokenizer)
+            assert.deepStrictEqual(result.filter((v) => v.value === "テスト用プラグイン関数"), [
+                {
+                    caption: '（Aを、Bに）テスト用プラグイン関数',
+                    value: 'テスト用プラグイン関数',
+                    meta: 'PluginEditorTest',  // ここに `関数` が表示されないことを確認する
+                    score: 0
+                }
+            ])
+        })
+        it('同一名の関数の定義が複数あるとき、候補には1つしか表示しない', async () => {
+            const compiler = new NakoCompiler()
+            const tokenizer = await createBackgroundTokenizer('●（Aを）テスト用関数とは\nここまで\n●（Aを）テスト用関数とは\nここまで\n', compiler)
+            expect(LanguageFeatures.getCompletionItems(2, '', compiler, tokenizer)).to.deep.include({
+                caption: "（Aを）テスト用関数",
+                value: "テスト用関数",
+                meta: "関数", // `関数, 関数` にならないことを確認する
+                score: 0,
+            })
         })
     })
     it('テスト定義に実行ボタンを表示する', () => {

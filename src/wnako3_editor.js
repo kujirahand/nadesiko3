@@ -847,9 +847,11 @@ class LanguageFeatures {
     static getCompletionItems(row, prefix, nako3, backgroundTokenizer) {
         /**
          * keyはcaption。metaは候補の横に薄く表示されるテキスト。
-         * @type {Map<string, { value: string, meta: string, score: number }>}
+         * @type {Map<string, { value: string, meta: Set<string>, score: number }>}
          */
         const result = new Map()
+        /** 引数のリストを含まない、関数名だけのリスト @type {Set<string>} */
+        const values = new Set()
 
         /**
          * オートコンプリートの項目を追加する。すでに存在するならマージする。
@@ -858,11 +860,12 @@ class LanguageFeatures {
         const addItem = (caption, value, meta) => {
             const item = result.get(caption)
             if (item) {
-                item.meta += ', ' + meta
+                item.meta.add(meta)
             } else {
                 // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
                 const score = prefix.split('').filter((c) => value.includes(c)).length
-                result.set(caption, { value, meta, score })
+                result.set(caption, { value, meta: new Set([meta]), score })
+                values.add(value)
             }
         }
 
@@ -898,7 +901,7 @@ class LanguageFeatures {
                 const name = token.value + ''
                 // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外する。
                 // すでに定義されている場合も、定義ではなく参照の可能性が高いため除外する。
-                if (token.line === row || result.has(name)) {
+                if (token.line === row || values.has(name)) {
                     continue
                 }
                 if (token.type === 'word') {
@@ -911,7 +914,7 @@ class LanguageFeatures {
             }
         }
 
-        return Array.from(result.entries()).map(([caption, data]) => ({ caption, ...data }))
+        return Array.from(result.entries()).map(([caption, data]) => ({ caption, ...data, meta: Array.from(data.meta).join(', ') }))
     }
 
     /**
