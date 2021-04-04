@@ -1684,15 +1684,29 @@ const PluginSystem = {
   '秒待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうたいき
     type: 'func',
     josi: [['']],
+    pure: false,
+    fn: function (n, sys) {
+      sys.__exec('秒逐次待機', [n, sys])
+    },
+    return_none: true
+  },
+  '秒逐次待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうちくじたいき
+    type: 'func',
+    josi: [['']],
     pure: true,
     fn: function (n, sys) {
-      if (sys.resolve === undefined) {throw new Error('『秒待機』命令は『逐次実行』構文と一緒に使ってください。')}
+      if (sys.resolve === undefined) {throw new Error('『秒逐次待機』命令は『逐次実行』構文と一緒に使ってください。')}
       const resolve = sys.resolve
+      const reject = sys.reject
       sys.resolveCount++
-      setTimeout(function () {
+      const timerId = setTimeout(function () {
+        const idx = sys.__timeout.indexOf(timerId)
+        if (idx >= 0) {sys.__timeout.splice(idx, 1)}
         resolve()
       }, n * 1000)
+      sys.__timeout.unshift(timerId)
     },
+    return_none: true
   },
   '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する // @びょうご
     type: 'func',

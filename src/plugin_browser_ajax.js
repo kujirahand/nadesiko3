@@ -107,14 +107,25 @@ module.exports = {
     },
     return_none: true
   },
-  'AJAX送信': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @AJAXそうしんした
+  'AJAX送信': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @AJAXそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
     fn: function (url, sys) {
       if (!sys.resolve) {throw new Error('『AJAX送信』は『逐次実行』構文内で利用する必要があります。')}
+      sys.__exec('AJAX逐次送信', [url, sys])
+    },
+    return_none: true
+  },
+  'AJAX逐次送信': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @AJAXちくじそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に']],
+    pure: true,
+    fn: function (url, sys) {
+      if (!sys.resolve) {throw new Error('『AJAX逐次送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
+      const reject = sys.reject
       let options = sys.__v0['AJAXオプション']
       if (options === '') {options = {method: 'GET'}}
       fetch(url, options).then(res => {
@@ -123,8 +134,7 @@ module.exports = {
         sys.__v0['対象'] = text
         resolve()
       }).catch(err => {
-        console.error('[fetch.error]', err)
-        sys.__v0['AJAX:ONERROR'](err)
+        reject(err.message)
       })
     },
     return_none: true
@@ -135,11 +145,21 @@ module.exports = {
     pure: false,
     fn: function (url, sys) {
       if (!sys.resolve) {throw new Error('『HTTP取得』は『逐次実行』構文内で利用する必要があります。')}
-      sys.__exec('AJAX送信', [url, sys])
+      sys.__exec('AJAX逐次送信', [url, sys])
     },
     return_none: true
   },
-  'POST送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTそうしん
+  'HTTP逐次取得': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @HTTPちくじしゅとく
+    type: 'func',
+    josi: [['の', 'から', 'を']],
+    pure: false,
+    fn: function (url, sys) {
+      if (!sys.resolve) {throw new Error('『HTTP逐次取得』は『逐次実行』構文内で利用する必要があります。')}
+      sys.__exec('AJAX逐次送信', [url, sys])
+    },
+    return_none: true
+  },
+  'POST逐次送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTちくじそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: false,
@@ -147,6 +167,7 @@ module.exports = {
       if (!sys.resolve) {throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
+      const reject = sys.reject
       let bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
@@ -161,19 +182,30 @@ module.exports = {
         sys.__v0['対象'] = text
         resolve(text)
       }).catch(err => {
-        console.error('[fetch.error]', err)
-        sys.__v0['AJAX:ONERROR'](err)
+        reject(err.message)
       })
-    }
+    },
+    return_none: true
   },
-  'POSTフォーム送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTふぉーむそうしん
+  'POST送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に'], ['を']],
+    pure: false,
+    fn: function (url, params, sys) {
+      if (!sys.resolve) {throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')}
+      sys.__exec('POST逐次送信', [url, params, sys])
+    },
+    return_none: true
+  },
+  'POSTフォーム逐次送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTふぉーむちくじそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function (url, params, sys) {
-      if (!sys.resolve) {throw new Error('『POSTフォーム送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) {throw new Error('『POSTフォーム逐次送信』は『逐次実行』構文内で利用する必要があります。')}
       sys.resolveCount++
       const resolve = sys.resolve
+      const reject = sys.reject
       const fd = new FormData()
       for (let key in params)
         {fd.set(key, params[key])}
@@ -188,9 +220,19 @@ module.exports = {
         sys.__v0['対象'] = text
         resolve(text)
       }).catch(err => {
-        console.error('[fetch.error]', err)
-        sys.__v0['AJAX:ONERROR'](err)
+        reject(err.message)
       })
-    }
+    },
+    return_none: true
+  },
+  'POSTフォーム送信': { // @逐次実行構文にて、AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTふぉーむそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に'], ['を']],
+    pure: false,
+    fn: function (url, params, sys) {
+      if (!sys.resolve) {throw new Error('『POSTフォーム送信』は『逐次実行』構文内で利用する必要があります。')}
+      sys.__exec('POSTフォーム逐次送信', [url, params, sys])
+    },
+    return_none: true
   }
 }

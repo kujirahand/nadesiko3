@@ -454,8 +454,8 @@ try {
       case 'if':
         code += this.convIf(node)
         break
-      case 'promise':
-        code += this.convPromise(node)
+      case 'tikuji':
+        code += this.convTikuji(node)
         break
       case 'for':
         code += this.convFor(node)
@@ -944,24 +944,45 @@ try {
       `if (${expr}) {\n  ${block}\n}` + falseBlock + ';\n'
   }
 
-  convPromise (node) {
+  convTikuji (node) {
     const pid = this.loop_id++
-    let code = `const __pid${pid} = async () => {\n`
+    // gen tikuji blocks
+    const curName = `__tikuji${pid}`
+    let code = `const ${curName} = []\n`
     for (let i = 0; i < node.blocks.length; i++) {
       const block = this._convGen(node.blocks[i], false).replace(/\s+$/, '') + '\n'
+      const blockLineNo = this.convLineno(node.blocks[i], true)
       const blockCode =
-        'await new Promise((resolve) => {\n' +
+        `${curName}.push(function(resolve, reject) {\n` +
         '  __self.resolve = resolve;\n' +
+        '  __self.reject = reject;\n' +
         '  __self.resolveCount = 0;\n' +
-        `  ${block}\n` +
+        `  ${blockLineNo}\n` +
+        `  ${block}` +
         '  if (__self.resolveCount === 0) resolve();\n' +
-        '\n' +
-        '})\n'
-      code += `${blockCode}`
+        '}); // end of tikuji__${pid}[{$i}]\n'
+      code += blockCode
     }
-    code += `};/* __pid${pid} */\n`
-    code += `__pid${pid}();\n`
+    code += `// end of ${curName} \n`
+    // gen error block
+    let errorCode = 
+      `  ${curName}.splice(0);\n` + // clear
+      '  __v0["エラーメッセージ"]=errMsg;\n'
+    if (node.errorBlock != null) {
+      const errBlock = this._convGen(node.errorBlock, false).replace(/\s+$/, '') + '\n'
+      errorCode += errBlock
+    }
+    code += `const ${curName}__reject = function(errMsg){\n${errorCode}};\n`
+    // gen run block
     code += '__self.resolve = undefined;\n'
+    code += `const ${curName}__resolve = function(){\n`
+    code += `  setTimeout(function(){\n`
+    code += `    if (${curName}.length == 0) {return}\n`
+    code += `    const f = ${curName}.shift()\n`
+    code += `    f(${curName}__resolve, ${curName}__reject);\n`
+    code += `  }, 0);\n`
+    code += `};\n`
+    code += `${curName}__resolve()\n`
     return this.convLineno(node, false) + code
   }
 
@@ -1216,7 +1237,7 @@ try {
     const errBlock = this._convGen(node.errBlock, false)
     return this.convLineno(node, false) +
       `try {\n${block}\n} catch (e) {\n` +
-      '__varslist[0]["エラーメッセージ"] = e.message;\n' +
+      '  __v0["エラーメッセージ"] = e.message;\n' +
       ';\n' +
       `${errBlock}}\n`
   }
