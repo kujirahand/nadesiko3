@@ -172,7 +172,6 @@
     "karma-chai": "^0.1.0",
     "karma-ie-launcher": "^1.0.0",
     "marked": "^2.0.1",
-    "nadesiko3-sqlite3sync": "0.0.1",
     "node-fetch": "^2.6.1",
     "opener": "^1.5.2",
     "readline-sync": "^1.4.10",
