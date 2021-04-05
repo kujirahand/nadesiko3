@@ -248,6 +248,14 @@ const PluginSystem = {
       return a === b
     }
   },
+  '等無': { // @AがBと等しくないか // @ひとしくない
+    type: 'func',
+    josi: [['が'], ['と']],
+    pure: true,
+    fn: function (a, b) {
+      return a !== b
+    }
+  },
   '一致': { // @AがBと一致するか(配列や辞書も比較可能) // @いっち
     type: 'func',
     josi: [['が'], ['と']],
@@ -260,6 +268,20 @@ const PluginSystem = {
         return jsonA === jsonB
       }
       return a === b
+    }
+  },
+  '不一致': { // @AがBと不一致か(配列や辞書も比較可能) // @ふいっち
+    type: 'func',
+    josi: [['が'], ['と']],
+    pure: true,
+    fn: function (a, b) {
+      // オブジェクトの場合、JSONに変換して比較
+      if (typeof(a) === 'object') {
+        const jsonA = JSON.stringify(a)
+        const jsonB = JSON.stringify(b)
+        return jsonA !== jsonB
+      }
+      return a !== b
     }
   },
   '範囲内': { // @VがAからBの範囲内か // @はんいない
