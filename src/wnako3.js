@@ -149,7 +149,7 @@ if (typeof (navigator) === 'object' && !navigator.exportWNako3) {
     if (isAutoRun) {nako3.runNakoScript()}
   }, false)
   window.addEventListener('beforeunload', (e) => {
-    if (mocha){mocha.dispose()}
+    if (typeof mocha !== 'undefined'){mocha.dispose()}
   })
 } else
   {module.exports = WebNakoCompiler}
