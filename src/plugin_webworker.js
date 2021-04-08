@@ -21,10 +21,18 @@ const PluginWebWorker = {
                   work.ondata.apply(sys, [value, event])
                 }
                 break;
+              case 'error':
+                sys.logger.error(value.noColor)
+                break;
             }
           }
           work.onerror = (event) => {
-            throw new Error(event.message)
+            const e = new Error(typeof event.message !== 'undefined' ? event.message : 'no message')
+            sys.logger.error(e)
+          }
+          work.onerrormessage = (event) => {
+            const e = new Error(typeof event.message !== 'undefined' ? event.message : 'no message')
+            sys.logger.error(e)
           }
         },
         inWorker: () => {
@@ -299,6 +307,8 @@ const PluginWebWorker = {
               func: Object.assign({}, sys.compiler.funclist[data], { fn: null })
             }
           })
+        } else {
+          throw new Error('指定した名前のユーザ関数もしくはグローバル変数がありません:' + data)
         }
       })
       if (obj.length > 0) {
