@@ -344,19 +344,29 @@ try {
     if (ast.type !== 'block')
       {throw NakoSyntaxError.fromNode('構文解析に失敗しています。構文は必ずblockが先頭になります', ast)}
 
-    for (let i = 0; i < ast.block.length; i++) {
-      const t = ast.block[i]
-      if (t.type === 'def_func') {
-        const name = t.name.value
-        this.used_func.add(name)
-        this.__self.__varslist[1][name] = function () { } // 事前に適当な値を設定
-        this.nako_func[name] = {
-          josi: t.name.meta.josi,
-          fn: '',
-          type: 'func'
+    const registFunc = (node) => {
+      for (let i = 0; i < node.block.length; i++) {
+        const t = node.block[i]
+        if (t.type === 'def_func') {
+          const name = t.name.value
+          this.used_func.add(name)
+          this.__self.__varslist[1][name] = function () { } // 事前に適当な値を設定
+          this.nako_func[name] = {
+            josi: t.name.meta.josi,
+            fn: '',
+            type: 'func'
+          }
+        } else
+        if (t.type === 'speed_mode') {
+          if (t.block.type === 'block') {
+            registFunc(t.block)
+          } else {
+            registFunc(t)
+          }
         }
       }
     }
+    registFunc(ast)
 
     // __self.__varslistの変更を反映
     const initialNames = new Set()
