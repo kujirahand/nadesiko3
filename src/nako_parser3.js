@@ -556,6 +556,8 @@ class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     if (!this.check('回')) {return null}
     const kai = this.get()
+    if (this.check('comma')) {this.get()} // skip comma
+    if (this.check('繰り返す')) {this.get()} // skip 'N回、繰り返す' (#924)
     let num = this.popStack([])
     let multiline = false
     let block = null
