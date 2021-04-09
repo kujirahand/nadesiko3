@@ -591,6 +591,7 @@ class NakoParser extends NakoParserBase {
     if (!this.check('間')) {return null}
     const aida = this.get() // skip '間'
     while (this.check('comma')) {this.get()} // skip ','
+    if (this.check('繰り返す')) {this.get()} // skip '繰り返す' #927
     const cond = this.popStack([])
     if (cond === null) {
       throw NakoSyntaxError.fromNode('『間』で条件がありません。', cond)
