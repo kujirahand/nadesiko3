@@ -12,6 +12,7 @@ const wordHasIjoIka = /^.+(以上|以下|超|未満)$/
 module.exports = {
   rules: [
     // 上から順にマッチさせていく
+    {name: 'ここまで', pattern: /^;;;/}, // #925
     {name: 'eol', pattern: /^\n/},
     {name: 'eol', pattern: /^;/},
     {name: 'space', pattern: /^(\s+|・)/}, // #877
