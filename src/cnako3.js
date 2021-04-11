@@ -49,6 +49,7 @@ class CNako3 extends NakoCompiler {
       .option('-b, --browsers', '対応機器/Webブラウザを表示する')
       .option('-m, --man [command]', 'マニュアルを表示する')
       .option('-p, --speed', 'スピード優先モードの指定')
+      .option('-A, --ast', 'パースした結果をASTで出力する')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
       .parse(process.argv)
@@ -90,7 +91,8 @@ class CNako3 extends NakoCompiler {
       'repl': app.repl || false,
       'test': app.test || false,
       'browsers': app.browsers || false,
-      'speed': app.speed || false
+      'speed': app.speed || false,
+      'ast': app.ast || false
     }
     args.mainfile = app.args[0]
     args.output = app.output
@@ -140,6 +142,10 @@ class CNako3 extends NakoCompiler {
     let src = fs.readFileSync(opt.mainfile, 'utf-8')
     if (opt.compile) {
       this.nakoCompile(opt, src, false)
+      return
+    }
+    if (opt.ast) {
+      this.outputAST(opt, src)
       return
     }
     try {
@@ -204,6 +210,56 @@ class CNako3 extends NakoCompiler {
         }
       }
     }
+  }
+
+  /**
+   * ASTを出力
+   * @param opt
+   * @param {string} src
+   * @param {boolean} isTest
+   */
+   outputAST(opt, src) {
+    const ast = this.parse(src, opt.mainfile)
+    const makeIndent = (level) => {
+      let s = ''
+      for (let i = 0; i < level; i++) {s += '  '}
+      return s
+    }
+    const trim = (s) => { return s.replace(/(^\s+|\s+$)/g, '')}
+    /**
+     * AST文字列に変換して返す
+     * @param {*} ast 
+     * @param {number} level 
+     * @return {string}
+     */
+    const outAST = (ast, level) => {
+      if (typeof(ast) === 'string') {
+        return makeIndent(level) + '"' + ast + '"';
+      }
+      if (typeof(ast) === 'number') {
+        return makeIndent(level) + ast;
+      }
+      if (ast instanceof Array) {
+        let s = makeIndent(level) + '[\n'
+        const sa = []
+        ast.forEach((a) => {
+          sa.push(outAST(a, level+1))
+        })
+        return s + sa.join(',\n') + '\n' + makeIndent(level) + ']'
+      }
+      if (ast instanceof Object) {
+        let s = makeIndent(level) + '{\n'
+        const sa = []
+        for (let key in ast) {
+          const sv = trim(outAST(ast[key], level+1))
+          const so = makeIndent(level+1) + '"' + key + '": ' + sv
+          sa.push(so)
+        }
+        return s + sa.join(',\n') + '\n' + makeIndent(level) + '}'
+      }
+      return makeIndent(level) + ast
+    }
+    console.log(outAST(ast, 0))
   }
 
   // REPL(対話実行環境)の場合
