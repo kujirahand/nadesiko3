@@ -24,7 +24,7 @@ REPOSパス=基本パスを「../」で相対パス展開。
     'src/plugin_weykturtle3d.js'
  ]
 拡張プラグイン一覧は[
-    'nadesiko3-sqlite3/src/plugin_sqlite3.js',
+    'nadesiko3-sqlite3/src/nadesiko3-sqlite3.js',
     'nadesiko3-sqlite3sync/src/plugin_sqlite3sync.js',
     'nadesiko3-odbc/src/plugin_odbc.js',
     'nadesiko3-mssql/src/plugin_mssql.js',

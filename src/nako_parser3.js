@@ -63,7 +63,7 @@ class NakoParser extends NakoParserBase {
     if (this.check('embed_code')) {return this.get()}
     if (this.check('もし')) {return this.yIF()}
     if (this.check('エラー監視')) {return this.yTryExcept()}
-    if (this.check('逐次実行')) {return this.yPromise()}
+    if (this.check('逐次実行')) {return this.yTikuji()}
     if (this.accept(['抜ける'])) {return {type: 'break', josi: '', ...map, end: this.peekSourceMap()}}
     if (this.accept(['続ける'])) {return {type: 'continue', josi: '', ...map, end: this.peekSourceMap()}}
     if (this.accept(['require', 'string', '取込']))
@@ -375,33 +375,49 @@ class NakoParser extends NakoParserBase {
   }
 
   /** @returns {Ast | null} */
-  yPromise () {
+  yTikuji () {
     const map = this.peekSourceMap()
     if (!this.check('逐次実行')) {return null}
     const tikuji = this.get() // skip 逐次実行
     const blocks = []
+    let errorBlock = null
     if (!this.check('eol')) {
       throw NakoSyntaxError.fromNode('『逐次実行』の直後は改行が必要です', tikuji)
     }
-    while (this.check('eol'))
-      {this.get()} // skip EOL
     // ブロックを読む
     for (;;) {
-      if (!this.check('先に') && !this.check('次に')) {break}
-      const tugini = this.get() // skip 次に
+      if (this.check('ここまで')) {break}
+      if (this.check('eol')){
+        this.get() // skip EOL
+        continue
+      }
+      if (this.check2(['エラー', 'ならば'])) {
+        this.get() // skip エラー
+        this.get() // skip ならば
+        errorBlock = this.yBlock()
+        break
+      }
       let block = null
-      if (this.check('eol')) { // block
-        block = this.yBlock()
-        if (!this.check('ここまで')) {
-          throw NakoSyntaxError.fromNode(`『${tugini.type}』...『ここまで』を対応させてください。`, tugini)
+      // 「先に」「次に」句はブロック宣言 #717 (ただしブロック以外も可能)
+      if (this.check('先に') || this.check('次に')) {
+        const tugini = this.get() // skip 先に | 次に
+        if (this.check('comma')){this.get()}
+        if (this.check('eol')) { // block
+          block = this.yBlock()
+          if (!this.check('ここまで')) {
+            let tuginiType = '次に'
+            if (tugini != null) {tuginiType = tugini.type}
+            throw NakoSyntaxError.fromNode(`『${tuginiType}』...『ここまで』を対応させてください。`, tugini)
+          }
+          this.get() // skip 'ここまで'
+        } else { // line
+          block = this.ySentence()
         }
-        this.get() // skip 'ここまで'
-      } else { // line
+      } else {
         block = this.ySentence()
       }
-      blocks.push(block)
-      while (this.check('eol'))
-        {this.get()} // skip EOL
+      // add block
+      if (block != null) {blocks.push(block)}
     }
     if (!this.check('ここまで')) {
       console.log(blocks, this.peek())
@@ -409,8 +425,9 @@ class NakoParser extends NakoParserBase {
     }
     this.get() // skip 'ここまで'
     return {
-      type: 'promise',
+      type: 'tikuji',
       blocks: blocks,
+      errorBlock: errorBlock,
       josi: '',
       ...map,
       end: this.peekSourceMap()
@@ -539,6 +556,8 @@ class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     if (!this.check('回')) {return null}
     const kai = this.get()
+    if (this.check('comma')) {this.get()} // skip comma
+    if (this.check('繰り返す')) {this.get()} // skip 'N回、繰り返す' (#924)
     let num = this.popStack([])
     let multiline = false
     let block = null
@@ -572,6 +591,7 @@ class NakoParser extends NakoParserBase {
     if (!this.check('間')) {return null}
     const aida = this.get() // skip '間'
     while (this.check('comma')) {this.get()} // skip ','
+    if (this.check('繰り返す')) {this.get()} // skip '繰り返す' #927
     const cond = this.popStack([])
     if (cond === null) {
       throw NakoSyntaxError.fromNode('『間』で条件がありません。', cond)

@@ -286,7 +286,7 @@ function tokenize(lines, nako3, underlineJosi) {
     lexerOutput.tokens = lexerOutput.tokens.filter((t) => t.file === 'main.nako3')
 
     // 外部ファイルで定義された関数名に一致するトークンのtypeをfuncに変更する。
-    // 取り込んでいないファイルも参照される問題や、関数名の重複がある場合に正しくない情報を表示する問題がある。可能なら修正する。
+    // 取り込んでいないファイルも参照される問題や、関数名の重複がある場合に正しくない情報を表示する問題がある。
     {
         /** @type {Record<string, object>} */
         for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {
@@ -548,6 +548,9 @@ class BackgroundTokenizer {
 
         this.deleted = false
 
+        /** @public */
+        this.enabled = true
+
         const update = () => {
             if (this.deleted) {
                 return
@@ -574,10 +577,10 @@ class BackgroundTokenizer {
                 setTimeout(update, 100)
             }
         }
-        update()
 
-        /** @public */
-        this.enabled = true
+        // コンストラクタが返る前にコールバックを呼ぶのはバグの元になるため一瞬待つ。
+        // たとえば `const a = new BackgroundTokenizer(..., () => { /* aを使った処理 */ }, ...)` がReferenceErrorになる。
+        setTimeout(() => { update() }, 0)
     }
 
     dispose() {
@@ -789,7 +792,7 @@ class LanguageFeatures {
     /**
      * checkOutdentがtrueを返したときに呼ばれる。
      * @param {string} state
-     * @param {{ doc: AceDocument }} session
+     * @param {Session} session
      * @param {number} row
      * @returns {void}
      */
@@ -844,9 +847,11 @@ class LanguageFeatures {
     static getCompletionItems(row, prefix, nako3, backgroundTokenizer) {
         /**
          * keyはcaption。metaは候補の横に薄く表示されるテキスト。
-         * @type {Map<string, { value: string, meta: string, score: number }>}
+         * @type {Map<string, { value: string, meta: Set<string>, score: number }>}
          */
         const result = new Map()
+        /** 引数のリストを含まない、関数名だけのリスト @type {Set<string>} */
+        const values = new Set()
 
         /**
          * オートコンプリートの項目を追加する。すでに存在するならマージする。
@@ -855,11 +860,12 @@ class LanguageFeatures {
         const addItem = (caption, value, meta) => {
             const item = result.get(caption)
             if (item) {
-                item.meta += ', ' + meta
+                item.meta.add(meta)
             } else {
                 // 日本語の文字数は英語よりずっと多いため、ただ一致する文字数を数えるだけで十分。
                 const score = prefix.split('').filter((c) => value.includes(c)).length
-                result.set(caption, { value, meta, score })
+                result.set(caption, { value, meta: new Set([meta]), score })
+                values.add(value)
             }
         }
 
@@ -895,7 +901,7 @@ class LanguageFeatures {
                 const name = token.value + ''
                 // 同じ行のトークンの場合、自分自身にマッチしている可能性が高いため除外する。
                 // すでに定義されている場合も、定義ではなく参照の可能性が高いため除外する。
-                if (token.line === row || result.has(name)) {
+                if (token.line === row || values.has(name)) {
                     continue
                 }
                 if (token.type === 'word') {
@@ -908,7 +914,7 @@ class LanguageFeatures {
             }
         }
 
-        return Array.from(result.entries()).map(([caption, data]) => ({ caption, ...data }))
+        return Array.from(result.entries()).map(([caption, data]) => ({ caption, ...data, meta: Array.from(data.meta).join(', ') }))
     }
 
     /**

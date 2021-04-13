@@ -248,6 +248,14 @@ const PluginSystem = {
       return a === b
     }
   },
+  '等無': { // @AがBと等しくないか // @ひとしくない
+    type: 'func',
+    josi: [['が'], ['と']],
+    pure: true,
+    fn: function (a, b) {
+      return a !== b
+    }
+  },
   '一致': { // @AがBと一致するか(配列や辞書も比較可能) // @いっち
     type: 'func',
     josi: [['が'], ['と']],
@@ -260,6 +268,20 @@ const PluginSystem = {
         return jsonA === jsonB
       }
       return a === b
+    }
+  },
+  '不一致': { // @AがBと不一致か(配列や辞書も比較可能) // @ふいっち
+    type: 'func',
+    josi: [['が'], ['と']],
+    pure: true,
+    fn: function (a, b) {
+      // オブジェクトの場合、JSONに変換して比較
+      if (typeof(a) === 'object') {
+        const jsonA = JSON.stringify(a)
+        const jsonB = JSON.stringify(b)
+        return jsonA !== jsonB
+      }
+      return a !== b
     }
   },
   '範囲内': { // @VがAからBの範囲内か // @はんいない
@@ -1684,15 +1706,29 @@ const PluginSystem = {
   '秒待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうたいき
     type: 'func',
     josi: [['']],
+    pure: false,
+    fn: function (n, sys) {
+      sys.__exec('秒逐次待機', [n, sys])
+    },
+    return_none: true
+  },
+  '秒逐次待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうちくじたいき
+    type: 'func',
+    josi: [['']],
     pure: true,
     fn: function (n, sys) {
-      if (sys.resolve === undefined) {throw new Error('『秒待機』命令は『逐次実行』構文と一緒に使ってください。')}
+      if (sys.resolve === undefined) {throw new Error('『秒逐次待機』命令は『逐次実行』構文と一緒に使ってください。')}
       const resolve = sys.resolve
+      const reject = sys.reject
       sys.resolveCount++
-      setTimeout(function () {
+      const timerId = setTimeout(function () {
+        const idx = sys.__timeout.indexOf(timerId)
+        if (idx >= 0) {sys.__timeout.splice(idx, 1)}
         resolve()
       }, n * 1000)
+      sys.__timeout.unshift(timerId)
     },
+    return_none: true
   },
   '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する // @びょうご
     type: 'func',

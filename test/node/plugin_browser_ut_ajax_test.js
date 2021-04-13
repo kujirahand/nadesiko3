@@ -186,19 +186,13 @@ describe('plugin_browser_ajax', () => {
 
   it('AJAX送信', async () => {
     fetchMock.get(/^\/dummyutl$/, 'ajax result')
-
     const sys = setupSys()
     const promise = new Promise((resolve, reject) => {
-      sys.__v0['AJAX:ONERROR'] = (e) => {
-        reject(e)
-      }
       sys.resolve = resolve
-
+      sys.reject = reject
       PluginBrowser['AJAX送信'].fn.apply(this, ['/dummyutl', sys])
     })
-
     await promise
-
     assert.equal(sys.__v0['対象'], 'ajax result')
   })
 
@@ -206,12 +200,12 @@ describe('plugin_browser_ajax', () => {
     fetchMock.get(/^\/ajaxreject$/, { throws: new Error('unknown error') })
 
     const sys = setupSys()
-    const promise = new Promise(resolve => {
-      sys.__v0['AJAX:ONERROR'] = (e) => {
-        assert.equal(e.message, 'unknown error')
+    const promise = new Promise((resolve, reject) => {
+      sys.resolve = resolve
+      sys.reject = (err) => {
+        assert.equal(err, 'unknown error')
         resolve()
       }
-      sys.resolve = resolve
       PluginBrowser['AJAX送信'].fn.apply(this, ['/ajaxreject', sys])
     })
 
@@ -222,12 +216,12 @@ describe('plugin_browser_ajax', () => {
     fetchMock.get(/^\/ajaxreject$/, { throws: new Error('unknown error') })
 
     const sys = setupSys()
-    const promise = new Promise(resolve => {
-      sys.__v0['AJAX:ONERROR'] = (e) => {
-        assert.equal(e.message, 'unknown error')
+    const promise = new Promise((resolve, reject) => {
+      sys.resolve = resolve
+      sys.reject = (err) => {
+        assert.equal(err, 'unknown error')
         resolve()
       }
-      sys.resolve = resolve
       PluginBrowser['HTTP取得'].fn.apply(this, ['/ajaxreject', sys])
     })
 
@@ -238,7 +232,6 @@ describe('plugin_browser_ajax', () => {
     fetchMock.get(/^\/ajaxreject$/, 'ajax result')
 
     const sys = setupSys()
-
     cu.cmpfnex('AJAX送信', ['/ajaxreject', sys], 'Error', '『AJAX送信』は『逐次実行』構文内で利用する必要があります。')
   })
 
@@ -255,10 +248,8 @@ describe('plugin_browser_ajax', () => {
 
     const sys = setupSys()
     const promise = new Promise((resolve, reject) => {
-      sys.__v0['AJAX:ONERROR'] = (e) => {
-        reject(e)
-      }
       sys.resolve = resolve
+      sys.reject = reject
 
       const param = {
         param1: 'data1^',
@@ -277,12 +268,12 @@ describe('plugin_browser_ajax', () => {
     fetchMock.post(/^\/ajaxreject$/, { throws: new Error('unknown error') })
 
     const sys = setupSys()
-    const promise = new Promise(resolve => {
-      sys.__v0['AJAX:ONERROR'] = (e) => {
-        assert.equal(e.message, 'unknown error')
+    const promise = new Promise((resolve, reject) => {
+      sys.resolve = resolve
+      sys.reject = (err) => {
+        assert.equal(err, 'unknown error')
         resolve()
       }
-      sys.resolve = resolve
       const param = {
         param1: 'data1^',
         param2: 'data2^^'
@@ -316,10 +307,11 @@ describe('plugin_browser_ajax', () => {
 
     const sys = setupSys()
     const promise = new Promise((resolve, reject) => {
-      sys.__v0['AJAX:ONERROR'] = (e) => {
-        reject(e)
-      }
       sys.resolve = resolve
+      sys.reject = (err) => {
+        assert.equal(err, 'unknown error')
+        resolve()
+      }
 
       const param = {
         param1: 'data1^',
@@ -338,12 +330,12 @@ describe('plugin_browser_ajax', () => {
     fetchMock.post(/^\/ajaxreject$/, { throws: new Error('unknown error') })
 
     const sys = setupSys()
-    const promise = new Promise(resolve => {
-      sys.__v0['AJAX:ONERROR'] = (e) => {
-        assert.equal(e.message, 'unknown error')
+    const promise = new Promise((resolve, reject) => {
+      sys.resolve = resolve
+      sys.reject = (err) => {
+        assert.equal(err, 'unknown error')
         resolve()
       }
-      sys.resolve = resolve
       const param = {
         param1: 'data1^',
         param2: 'data2^^'

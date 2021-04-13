@@ -165,8 +165,9 @@ class NakoCompiler {
    *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: () => object } | { sync: false, value: Promise<() => object> }
    * }} tools
    * @returns {Promise<unknown> | void}
+   * @protected
    */
-  loadDependencies(code, filename, preCode, tools) {
+  _loadDependencies(code, filename, preCode, tools) {
     /** @type {NakoCompiler['dependencies']} */
     const dependencies = {}
     const compiler = new NakoCompiler()
@@ -188,10 +189,10 @@ class NakoCompiler {
           // jsならプラグインとして読み込む。
           const obj = tools.readJs(item.filePath, item.firstToken)
           if (obj.sync) {
-            dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, obj.value(), false) }
+            dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, dependencies[item.filePath].funclist = obj.value(), false) }
           } else {
             tasks.push(obj.value.then((res) => {
-              dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, res(), false) }
+              dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, dependencies[item.filePath].funclist = res(), false) }
             }))
           }
         } else if (item.type === 'nako3') {
@@ -212,7 +213,7 @@ class NakoCompiler {
             return inner(code, item.filePath, '')
           }
           if (content.sync) {
-            return registerFile(content.value)
+            registerFile(content.value)
           } else {
             tasks.push(content.value.then((res) => registerFile(res)))
           }
@@ -394,16 +395,15 @@ class NakoCompiler {
    * 再帰的にrequire文を置換する。
    * .jsであれば削除し、.nako3であればそのファイルのトークン列で置換する。
    * @param {TokenWithSourceMap[]} tokens
-   * @param {boolean} [ignoreRequireStatements] trueなら、ファイルが存在しないときエラーを投げずに取り込み文を削除する。シンタックスハイライト用。
    * @param {Set<string>} [includeGuard]
    * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
    */
-  replaceRequireStatements(tokens, ignoreRequireStatements = false, includeGuard = new Set()) {
+  replaceRequireStatements(tokens, includeGuard = new Set()) {
     /** @type {TokenWithSourceMap[]} */
     const deletedTokens = []
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
       // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。
-      if (includeGuard.has(r.value) || ignoreRequireStatements) {
+      if (includeGuard.has(r.value)) {
         deletedTokens.push(...tokens.splice(r.start, r.end - r.start))
         continue
       }
@@ -414,8 +414,29 @@ class NakoCompiler {
       this.dependencies[filePath].addPluginFile()
       const children = cloneAsJSON(this.dependencies[filePath].tokens)
       includeGuard.add(r.value)
-      deletedTokens.push(...this.replaceRequireStatements(children, ignoreRequireStatements, includeGuard))
+      deletedTokens.push(...this.replaceRequireStatements(children, includeGuard))
       deletedTokens.push(...tokens.splice(r.start, r.end - r.start, ...children))
+    }
+    return deletedTokens
+  }
+
+  /**
+   * replaceRequireStatementsのシンタックスハイライト用の実装。
+   * @param {TokenWithSourceMap[]} tokens
+   * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
+   */
+  removeRequireStatements(tokens) {
+    /** @type {TokenWithSourceMap[]} */
+    const deletedTokens = []
+    for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
+      // プラグイン命令のシンタックスハイライトのために、addPluginFileを呼んで関数のリストをthis.dependencies[filePath].funclistに保存させる。
+      const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
+      if (filePath !== undefined) {
+        this.dependencies[filePath].addPluginFile()
+      }
+
+      // 全ての取り込み文を削除する。そうしないとトークン化に時間がかかりすぎる。
+      deletedTokens.push(...tokens.splice(r.start, r.end - r.start))
     }
     return deletedTokens
   }
@@ -426,12 +447,12 @@ class NakoCompiler {
    * @param {string} [preCode]
    * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[], requireTokens: TokenWithSourceMap[] }}
    */
-  lex(code, filename, preCode = '', ignoreRequireStatements = false) {
+  lex(code, filename, preCode = '', syntaxHighlighting = false) {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
 
     // require文を再帰的に置換する
-    const requireStatementTokens = this.replaceRequireStatements(tokens, ignoreRequireStatements, undefined)
+    const requireStatementTokens = syntaxHighlighting ? this.removeRequireStatements(tokens) : this.replaceRequireStatements(tokens, undefined)
     for (const t of requireStatementTokens) {
       if (t.type === 'word' || t.type === 'not') {
         t.type = 'require'

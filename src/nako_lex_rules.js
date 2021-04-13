@@ -7,10 +7,12 @@ const josi = require('./nako_josi_list')
 const josiRE = josi.josiRE
 const hira = /^[ぁ-ん]/
 const allHiragana = /^[ぁ-ん]+$/
+const wordHasIjoIka = /^.+(以上|以下|超|未満)$/
 
 module.exports = {
   rules: [
     // 上から順にマッチさせていく
+    {name: 'ここまで', pattern: /^;;;/}, // #925
     {name: 'eol', pattern: /^\n/},
     {name: 'eol', pattern: /^;/},
     {name: 'space', pattern: /^(\s+|・)/}, // #877
@@ -138,15 +140,8 @@ function cbWordParser(src, isTrimOkurigana = true) {
   let res = ''
   let josi = ''
   while (src !== '') {
-    // カタカナ漢字英数字か？
-    const m = kanakanji.exec(src)
-    if (m) {
-      res += m[0]
-      src = src.substr(m[0].length)
-      continue
-    }
-    // 助詞？
     if (res.length > 0) {
+      // 助詞の判定
       const j = josiRE.exec(src)
       if (j) {
         josi = j[0]
@@ -155,6 +150,13 @@ function cbWordParser(src, isTrimOkurigana = true) {
         if (src.charAt(0) == ',') {src = src.substr(1)}
         break
       }
+    }
+    // カタカナ漢字英数字か？
+    const m = kanakanji.exec(src)
+    if (m) {
+      res += m[0]
+      src = src.substr(m[0].length)
+      continue
     }
     // ひらがな？
     const h = hira.test(src)
@@ -165,10 +167,18 @@ function cbWordParser(src, isTrimOkurigana = true) {
     }
     break // other chars
   }
-  // 「等しい間」や「一致する間」なら「間」をsrcに戻す。ただし「システム時間」はそのままにする。
+  // 「間」の特殊ルール (#831)
+  // 「等しい間」や「一致する間」なら「間」をsrcに戻す。ただし「システム時間」はそのままにする。 
   if (/[ぁ-ん]間$/.test(res)) {
     src = res.charAt(res.length - 1) + src
     res = res.slice(0, -1)
+  }
+  // 「以上」「以下」「超」「未満」 #918
+  const ii = wordHasIjoIka.exec(res)
+  if (ii) {
+    src = ii[1] + josi + src
+    josi = ''
+    res = res.substr(0, res.length - ii[1].length)
   }
   // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
   if (isTrimOkurigana) {

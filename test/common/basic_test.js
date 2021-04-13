@@ -1,16 +1,17 @@
 const assert = require('assert')
 const NakoCompiler = require('../../src/nako3')
+const { expect } = require('chai')
 
 describe('basic', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  const cmp = (code, res) => {
+  const cmp = (/** @type {string} */code, /** @type {string} */res) => {
     nako.logger.debug('code=' + code)
-    assert.strictEqual(nako.run(code).log, res)
+    assert.strictEqual(nako.run(code, '').log, res)
   }
-  const cmpNakoFuncs = (code, res) => {
+  const cmpNakoFuncs = (/** @type {string} */code, /** @type {Set<string>} */res) => {
     nako.logger.debug('code=' + code)
-    nako.run(code)
+    nako.run(code, '')
     assert.deepStrictEqual(nako.usedFuncs, res)
   }
   // --- test ---
@@ -129,17 +130,17 @@ describe('basic', () => {
     )
   })
   it('独立した助詞『ならば』の位置の取得', () => {
-    const out = nako.lex('もし存在するならば\nここまで')
+    const out = nako.lex('もし存在するならば\nここまで', '')
     const sonzai = out.tokens.find((t) => t.value === '存在')
     const naraba = out.tokens.find((t) => t.type === 'ならば')
 
     // 「存在する」
-    assert.strictEqual(sonzai.startOffset, 2)
-    assert.strictEqual(sonzai.endOffset, 6)
+    expect(sonzai).to.have.property("startOffset").and.to.equal(2)
+    expect(sonzai).to.have.property("endOffset").and.to.equal(6)
 
     // ならば
-    assert.strictEqual(naraba.startOffset, 6)
-    assert.strictEqual(naraba.endOffset, 9)
+    expect(naraba).to.have.property("startOffset").and.to.equal(6)
+    expect(naraba).to.have.property("endOffset").and.to.equal(9)
   })
   it('preCodeを考慮したソースマップ', () => {
     const preCode = '1を表示\n2を表示\n3を'
@@ -179,13 +180,33 @@ describe('basic', () => {
 4を表示
 `, '1\n2\n3\n4')
   })
+  it('実行速度優先 - 関数宣言の上方下方参照', () => {
+    // エラーが起きなければ、「実行速度優先」が無い場合と同じ動作をする。
+    cmp(`\
+「全て」で実行速度優先
+    ●Gとは
+        2を表示
+        3を表示
+    ここまで
+    ●Fとは
+        Eする
+    ここまで
+    ●Eとは
+        Gする
+    ここまで
+    1を表示
+    F
+ここまで
+4を表示
+`, '1\n2\n3\n4')
+  })
   it('空白で区切って文をつなげた場合', () => {
     cmp('1と2を足す 1と2を足す', '')
   })
   it('return_none: true のaddFuncで定義した関数が「それ」に値を代入しないことを確認する', () => {
     const nako = new NakoCompiler()
     nako.addFunc('hoge', [], () => {}, true)
-    assert.strictEqual(nako.run('1と2を足す\nhoge\nそれを表示').log, '3')
+    assert.strictEqual(nako.run('1と2を足す\nhoge\nそれを表示', '').log, '3')
   })
   it('制御構文で一語関数を使う', () => {
     cmp('●一とは\n1を戻す\nここまで\nもし一ならば\n1を表示\nここまで', '1') // if
@@ -225,7 +246,7 @@ describe('basic', () => {
     if (typeof process === 'undefined' || process.env.NODE_ENV === 'test') {return this.skip()}
     const code = nako.compileStandalone('1+2を表示', 'main.nako3', false)    
     Function('const console = { log: this.callback };\n' + code).apply({
-      callback: (text) => {
+      callback: (/** @type {any} */text) => {
         assert.strictEqual(text, '3')
         done()
       },
@@ -243,7 +264,18 @@ describe('basic', () => {
 0.0001秒後には
     「A」のJSオブジェクト取得して表示
 ここまで。
-`)
+`, '')
     nako.reset()
+    console.log(nako.compile(`\
+●テスト:足すとは
+    1と2を足す
+    それと3がASSERT等しい
+ここまで
+
+●テスト:引くとは
+    1と2を足す
+    それと3がASSERT等しい
+ここまで
+`, 'main.nako3', true))
   })
 })
