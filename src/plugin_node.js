@@ -754,6 +754,100 @@ const PluginNode = {
     },
     return_none: true
   },
+  'AJAX保障送信': { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @AJAXほしょうそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に']],
+    pure: true,
+    fn: function (url, sys) {
+      let options = sys.__v0['AJAXオプション']
+      if (options === '') {options = {method: 'GET'}}
+      return fetch(url, options)
+    },
+    return_none: false
+  },
+  'HTTP保障取得': { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @HTTPほしょうしゅとく
+    type: 'func',
+    josi: [['の', 'から', 'を']],
+    pure: true,
+    fn: function (url, sys) {
+      return sys.__exec('AJAX保障送信', [url, sys])
+    },
+    return_none: false
+  },
+  'GET保障送信': { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @GETほしょうそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に']],
+    pure: true,
+    fn: function (url, sys) {
+      return sys.__exec('AJAX保障送信', [url, sys])
+    },
+    return_none: false
+  },
+  'POST保障送信': { // @非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @POSTほしょうそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に'], ['を']],
+    pure: true,
+    fn: function (url, params, sys) {
+      let flist = []
+      for (let key in params) {
+        const v = params[key]
+        const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
+        flist.push(kv)
+      }
+      const bodyData = flist.join('&')
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: bodyData
+      }
+      return fetch(url, options)
+    },
+    return_none: false
+  },
+  'POSTフォーム保障送信': { // @非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。  // @POSTふぉーむほしょうそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に'], ['を']],
+    pure: true,
+    fn: function (url, params, sys) {
+      const fd = new FormData()
+      for (let key in params)
+        {fd.set(key, params[key])}
+
+      let options = {
+        method: 'POST',
+        body: fd
+      }
+      return fetch(url, options)
+    },
+    return_none: false
+  },
+  'AJAX内容取得': { // @非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。  // @AJAXないようしゅとく
+    type: 'func',
+    josi: [['から'], ['で']],
+    pure: true,
+    fn: function (res, type, sys) {
+      type = type.toString().toUpperCase()
+      if (type === 'TEXT' || type === 'テキスト') {
+        return res.text()
+      } else
+      if (type === 'JSON') {
+        return res.json()
+      } else
+      if (type === 'BLOB') {
+        return res.blob()
+      } else
+      if (type === 'ARRAY' || type === '配列') {
+        return res.arrayBuffer()
+      } else
+      if (type === 'BODY' || type === '本体') {
+        return res.body
+      }
+      return res.body()
+    },
+    return_none: false
+  },
   // @文字コード
   '文字コード変換サポート判定': { // @文字コードCODEをサポートしているか確認 // @もじこーどさぽーとはんてい
     type: 'func',

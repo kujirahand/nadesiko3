@@ -8,6 +8,7 @@ const NakoGen = require('./nako_gen')
 const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
+const PluginPromise = require('./plugin_promise')
 const PluginTest = require('./plugin_test')
 const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
 const { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } = require('./nako_errors')
@@ -103,6 +104,7 @@ class NakoCompiler {
     // set this
     this.addPluginObject('PluginSystem', PluginSystem)
     this.addPluginObject('PluginMath', PluginMath)
+    this.addPluginObject('PluginPromise', PluginPromise)
     this.addPluginObject('PluginAssert', PluginTest)
 
     /**

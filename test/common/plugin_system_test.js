@@ -295,7 +295,7 @@ describe('plugin_system_test', () => {
     cmp('JSONエンコード(文字列分解("𩸽のひらき"))を表示。', '["𩸽","の","ひ","ら","き"]')
   })
   it('プラグイン一覧取得', () => {
-    cmp('プラグイン一覧取得して「:」で配列結合して表示', 'PluginSystem:PluginMath:PluginAssert')
+    cmp('プラグイン一覧取得して「:」で配列結合して表示', 'PluginSystem:PluginMath:PluginPromise:PluginAssert')
   })
   it('配列切り取り', () => {
     cmp('A=[0,1,2,3,4,5];Aの0を配列切り取り;表示', '0')
