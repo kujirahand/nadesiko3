@@ -436,8 +436,18 @@ const PluginSystem = {
     josi: [['を', 'に', 'で']],
     pure: false,
     fn: function (f, sys) {
-      if (typeof f === 'string') {f = sys.__findFunc(f, '実行')}
+      // #938 の規則に従って処理
+      // 引数が関数なら実行
       if (typeof f === 'function') {return f(sys)}
+      // 文字列なら関数に変換できるか判定して実行
+      if (typeof f === 'string') {
+        const tf = sys.__findFunc(f, '実行')
+        if (typeof tf == 'function') {
+          return tf(sys)
+        }
+      }
+      // それ以外ならそのまま値を返す
+      return f
     }
   },
   '実行時間計測': { // @ 関数Fを実行して要した時間をミリ秒で返す // @じっこうじかんけいそく
