@@ -72,6 +72,9 @@ const PluginSystem = {
   'ナデシコ種類': {type: 'const', value: 'wnako3/cnako3'}, // @なでしこしゅるい
   'はい': {type: 'const', value: 1}, // @はい
   'いいえ': {type: 'const', value: 0}, // @いいえ
+  '真': {type: 'const', value: true}, // @しん
+  '偽': {type: 'const', value: false}, // @ぎ
+  '永遠': {type: 'const', value: true}, // @えいえん
   'オン': {type: 'const', value: 1}, // @おん
   'オフ': {type: 'const', value: 0}, // @おふ
   '改行': {type: 'const', value: '\n'}, // @かいぎょう
@@ -80,8 +83,9 @@ const PluginSystem = {
   'カッコ閉': {type: 'const', value: '」'}, // @かっことじ
   '波カッコ': {type: 'const', value: '{'}, // @なみかっこ
   '波カッコ閉': {type: 'const', value: '}'}, // @なみかっことじ
-  'OK': {type: 'const', value: 1}, // @OK
-  'NG': {type: 'const', value: 0}, // @NG
+  'OK': {type: 'const', value: true}, // @OK
+  'NG': {type: 'const', value: false}, // @NG
+  'キャンセル': {type: 'const', value: false}, // @きゃんせる
   'PI': {type: 'const', value: Math.PI}, // @PI
   '空': {type: 'const', value: ''}, // @から
   'NULL': {type: 'const', value: null}, // @NULL
