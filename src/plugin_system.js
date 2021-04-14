@@ -330,6 +330,16 @@ const PluginSystem = {
     },
     return_none: true
   },
+  'です': { // @ソースコードを読む人を気持ちよくする // @です
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (!sys.__reisetu) {sys.__reisetu = 0}
+      sys.__reisetu++
+    },
+    return_none: true
+  },
   '拝啓': { // @ソースコードを読む人を気持ちよくする // @はいけい
     type: 'func',
     josi: [],

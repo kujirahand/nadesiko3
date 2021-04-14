@@ -180,6 +180,8 @@ function cbWordParser(src, isTrimOkurigana = true) {
     josi = ''
     res = res.substr(0, res.length - ii[1].length)
   }
+  // 助詞「こと」は「＊＊すること」のように使うので削除 #936
+  if (josi === 'こと') {josi = ''}
   // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
   if (isTrimOkurigana) {
     res = trimOkurigana(res)
