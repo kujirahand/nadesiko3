@@ -1575,7 +1575,11 @@ function setupEditor (idOrElement, nako3, ace) {
         const logger = nako3.replaceLogger()
         if (opts.outputContainer) {
             const c = opts.outputContainer
-            logger.addListener('info', ({ html }) => { c.innerHTML += html })
+            logger.addListener('info', ({ html }) => {
+                if (!c) {console.log(html)} 
+                c.style.display = 'block'
+                c.innerHTML += html
+            })
             opts.outputContainer.classList.add('nako3-output-container')
         }
         const file = opts.file || 'main.nako3'

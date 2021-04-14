@@ -68,7 +68,9 @@ const Editor = ({ code, editorId, autoSave }) => {
         }} />
         <Button text="テスト" onClick={() => editor.current.run({ ...editorOptions(), method: 'test' })} />
         <Button text="クリア" onClick={() => {
-          editorOptions().outputContainer.innerHTML = ''
+          const c = editorOptions().outputContainer
+          c.innerHTML = ''
+          c.style.display = 'none'
           navigator.nako3.clearPlugins()
         }} />
         <Button text="↓" onClick={async () => {
