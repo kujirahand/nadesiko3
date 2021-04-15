@@ -704,8 +704,8 @@ class NakoParser extends NakoParserBase {
   ySwitch () {
     const map = this.peekSourceMap()
     if (!this.check('条件分岐')) {return null}
-    const joukenbunki = this.get()
-    const eol = this.get()
+    const joukenbunki = this.get() // skip '条件分岐'
+    const eol = this.get() // skip 'eol'
     const value = this.popStack(['で'])
     if (!value) {
       throw NakoSyntaxError.fromNode('『(値)で条件分岐』のように記述してください。', joukenbunki)
@@ -721,7 +721,7 @@ class NakoParser extends NakoParserBase {
         if (skippedKokomade) {
           throw NakoSyntaxError.fromNode('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。', joukenbunki)
         }
-        this.get()
+        this.get() // skip ここまで
         break
       }
       if (this.check('eol')) {
@@ -737,21 +737,23 @@ class NakoParser extends NakoParserBase {
         skippedKokomade = false
         isDefaultClause = true
         this.get() // skip 違えば
+        if (this.check('comma')) {this.get()} // skip ','
       } else {
         if (skippedKokomade) {
           throw NakoSyntaxError.fromNode('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。', joukenbunki)
         }
         // 「＊＊ならば」を得る
         cond = this.yValue()
-        const naraba = this.get()
+        const naraba = this.get() // skip ならば
         if (naraba.type != 'ならば') {
           throw NakoSyntaxError.fromNode('『条件分岐』で条件は＊＊ならばと記述してください。', joukenbunki)
         }
+        if (this.check('comma')) {this.get()} // skip ','
       }
       // 条件にあったときに実行すること
       const condBlock = this.yBlock()
       if (this.peek().type == 'ここまで') {
-        this.get()
+        this.get() // skip ここまで
       } else {
         if (isDefaultClause) {
           throw NakoSyntaxError.fromNode('『条件分岐』は『違えば〜ここまで』と記述してください。', joukenbunki)
