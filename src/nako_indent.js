@@ -210,7 +210,7 @@ function convertGo(code, filename) {
             while (indentStack.length > 0) {
                 const n = indentStack.pop()
                 if (n == indent) {
-                    if (lineTrimed != '違えば') {
+                    if (lineTrimed.substr(0, 3) != '違えば') {
                         insertedLines.push(lines2.length)
                         lines2.push(makeIndent(n) + END)
                     }
