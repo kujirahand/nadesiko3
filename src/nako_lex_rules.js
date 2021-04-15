@@ -182,6 +182,9 @@ function cbWordParser(src, isTrimOkurigana = true) {
   }
   // 助詞「こと」は「＊＊すること」のように使うので削除 #936
   if (josi === 'こと') {josi = ''}
+  // 「＊＊である」も削除 #939
+  if (josi === 'である') {josi = ''}
+
   // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
   if (isTrimOkurigana) {
     res = trimOkurigana(res)
@@ -222,6 +225,9 @@ function cbString (beginTag, closeTag, src) {
     // 助詞の後のカンマ #877
     if (src.charAt(0) == ',') {src = src.substr(1)}
   }
+  // 「＊＊である」なら削除 #939
+  if (josi === 'である') {josi = ''}
+
   // 改行を数える
   for (let i = 0; i < res.length; i++)
     {if (res.charAt(i) === '\n') {numEOL++}}

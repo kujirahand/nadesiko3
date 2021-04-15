@@ -438,6 +438,8 @@ class NakoLexer {
             if (src.charAt(0) == ',') {
               src = src.substr(1)
             }
+            // 「＊＊である」なら削除 #939
+            if (josi === 'である') {josi = ''}
           }
         }
 
