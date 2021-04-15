@@ -1,3 +1,5 @@
+const { func } = require("testdouble")
+
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
 module.exports = {
@@ -172,11 +174,75 @@ module.exports = {
     },
     return_none: true
   },
-  '画像描画': { // @ ファイル名F(またはImage)の画像を[sx, sy, sw, sh]の[dx, dy, dw, dh]へ描画し、Imageを返す // @ がぞうびょうが
+  '画像読': { // @ 画像のURLを読み込んでImageオブジェクトを返す。(URLにdataスキームも指定可能) // @ がぞうよむ
     type: 'func',
-    josi: [['の', 'を'], ['の', 'を'], ['へ', 'に']],
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (url, sys) {
+      const img = new window.Image()
+      img.src = url
+      return img
+    }
+  },
+  '画像読時': { // @ 画像のURLを読み込んでコールバック関数Fを読み込み、変数『対象』にImageオブジェクトを代入する // @ がぞうよんだとき
+    type: 'func',
+    josi: [['で'], ['の', 'を']],
+    pure: true,
+    fn: function (f, url, sys) {
+      // 関数オブジェクトを得る
+      const func = sys.__findVar(f, null) // 文字列指定なら関数に変換
+      // 画像を読む
+      const img = new window.Image()
+      img.src = url
+      img.onload = () => {
+        sys.__v0['対象'] = img
+        func(sys)
+      }
+    },
+    return_none: true
+  },
+  '画像描画': { // @ 画像IMG(またはURL)を描画先座標[x,y]へ描画し、Imageオブジェクトを返す。座標には2,4,8個の引数を指定可能。 // @ がぞうびょうが
+    type: 'func',
+    josi: [['の', 'を'], ['へ', 'に']],
+    pure: true,
+    fn: function (img, xy, sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      const drawFunc = (im, ctx) => {
+        if (xy.length === 2){
+          ctx.drawImage(im, xy[0], xy[1])
+        }
+        else if (xy.length === 4) {
+          ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])
+        }
+        else if (xy.length === 8) {
+          ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5], xy[6], xy[7])
+        }
+        else {
+          throw new Error('『画像描画』の第二引数の配列要素は2,4,8個のいずれかです。')
+        }
+      }
+      if (typeof img === 'string') {
+        const image = new window.Image()
+        image.src = img
+        image.onload = () => {
+          drawFunc(image, sys.__ctx)
+        }
+        return image
+      } else {
+        drawFunc(img, sys.__ctx)
+        return img
+      }
+    },
+    return_none: false
+  },
+  '画像部分描画': { // @ 画像IMG(またはURL)の座標[sx, sy, sw, sh]を描画先座標[dx, dy, dw, dh]へ描画し、Imageオブジェクトを返す // @ がぞうかくだいびょうが
+    type: 'func',
+    josi: [['の'], ['を', 'から'], ['へ', 'に']],
     pure: true,
     fn: function (img, sxy, dxy, sys) {
+      const errArgLen = 
+        '『画像部分描画』に使える引数は画像と、描画する座標へ2つか、' +
+        '描画する座標とその位置の4つか、使用する座標と使用する位置と描画する座標と大きさの8つだけです。'
       if(img && sxy){
         if (!Array.isArray(sxy) && Array.isArray(img)){ //逆になっていれば入れ替える
           if (typeof sxy === 'string' || String(sxy.__proto__) === '[object HTMLImageElement]'){
@@ -207,12 +273,9 @@ module.exports = {
           else if (sxy.length === 4){
             ctx.drawImage(im, sxy[0], sxy[1], sxy[2], sxy[3], dxy[0], dxy[1], dxy[2], dxy[3])
           }
-          else {throw new Error('画像描画に使える引数は画像と、描画する座標へ2つか、' +
-          '描画する座標とその位置の4つか、使用する座標と使用する位置と描画する座標と大きさの8つだけです。')}
-
+          else {throw new Error(errArgLen)}
         }
-        else {throw new Error('画像描画に使える引数は画像と、描画する座標へ2つか、' +
-        '描画する座標とその位置の4つか、使用する座標と使用する位置と描画する座標と大きさの8つだけです。')}
+        else {throw new Error(errArgLen)}
       }
       if (typeof img === 'string') {
         const image = new window.Image()
