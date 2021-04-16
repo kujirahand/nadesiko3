@@ -184,6 +184,26 @@ module.exports = {
       return img
     }
   },
+  '画像逐次読': { // @ 画像のURLを読み込んでImageオブジェクトを返す。また完了時『対象』にも代入する。『逐次実行』構文で使う。 // @ がぞうちくじよむ
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (url, sys) {
+      if (sys.resolve === undefined) {throw new Error('『画像逐次読』は『逐次実行』構文で使ってください。')}
+      sys.resolveCount++
+      const img = new window.Image()
+      img.src = url
+      img.onload = () => {
+        sys.__v0['対象'] = img
+        sys.resolve()
+      }
+      img.onerror = () => {
+        sys.__v0['対象'] = ''
+        sys.reject()
+      }
+      return img
+    }
+  },
   '画像読時': { // @ 画像のURLを読み込んでコールバック関数Fを読み込み、変数『対象』にImageオブジェクトを代入する // @ がぞうよんだとき
     type: 'func',
     josi: [['で'], ['の', 'を']],
@@ -196,6 +216,10 @@ module.exports = {
       img.src = url
       img.onload = () => {
         sys.__v0['対象'] = img
+        func(sys)
+      }
+      img.onerror = () => {
+        sys.__v0['対象'] = ''
         func(sys)
       }
     },
