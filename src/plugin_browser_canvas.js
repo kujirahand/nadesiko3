@@ -333,5 +333,55 @@ module.exports = {
       sys.__ctx.fillText(s, xy[0], xy[1])
     },
     return_none: true
+  },
+  '描画起点設定': { // @ 描画位置の起点を[x,y]へ設定する(translate) // @ びょうがきてんせってい
+    type: 'func',
+    josi: [['へ', 'に']],
+    pure: true,
+    fn: function (xy, sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.translate(xy[0],xy[1])
+    },
+    return_none: true
+  },
+  '描画回転': { // @ 描画内容をA度だけ回転する(rotate) // @ びょうがかいてん
+    type: 'func',
+    josi: [['だけ', 'に', 'へ']],
+    pure: true,
+    fn: function (a, sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.rotate(a * Math.PI / 180)
+    },
+    return_none: true
+  },
+  '描画拡大': { // @ 描画内容を[x方向,y方向]だけ拡大する(scale) // @ びょうがかくだい
+    type: 'func',
+    josi: [['だけ', 'に', 'へ']],
+    pure: true,
+    fn: function (xy, sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.scale(xy[0], xy[1])
+    },
+    return_none: true
+  },
+  '描画変換マトリクス設定': { // @ 描画内容を[a,b,c,d,e,f]の変換マトリクスに設定。既存内容を破棄して設定(setTransform) // @ びょうがへんかんまとりくすせってい
+    type: 'func',
+    josi: [['だけ', 'に', 'へ']],
+    pure: true,
+    fn: function (a, sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.setTransform(a[0],a[1],a[2],a[3],a[4],a[5],a[6])
+    },
+    return_none: true
+  },
+  '描画変換マトリクス追加': { // @ 描画内容を[a,b,c,d,e,f]のマトリクスで変換。既存のマトリクスに掛け合わせる(transform) // @ びょうがへんかんまとりくすついか
+    type: 'func',
+    josi: [['だけ', 'に', 'へ']],
+    pure: true,
+    fn: function (a, sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.transform(a[0],a[1],a[2],a[3],a[4],a[5],a[6])
+    },
+    return_none: true
   }
 }
