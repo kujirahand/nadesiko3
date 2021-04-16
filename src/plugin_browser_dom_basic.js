@@ -35,6 +35,30 @@ module.exports = {
       return document.getElementsByTagName(tag)
     }
   },
+  'DOM子要素取得': { // @DOMの要素PAの子要素をクエリqを指定して結果を一つ取得して返す // @DOMこようそしゅとく
+    type: 'func',
+    josi: [['の'], ['を']],
+    pure: true,
+    fn: function (pa, q) {
+      if (typeof pa === 'string') {pa = document.querySelector(pa)}
+      if (!pa['querySelector']) {
+        throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
+      }
+      return pa.querySelector(q)
+    }
+  },
+  'DOM子要素全取得': { // @DOMの要素PAの子要素をクエリqを指定して結果を複数取得して返す // @DOMこようそぜんしゅとく
+    type: 'func',
+    josi: [['の'], ['を']],
+    pure: true,
+    fn: function (pa, q) {
+      if (typeof pa === 'string') {pa = document.querySelector(pa)}
+      if (!pa['querySelectorAll']) {
+        throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
+      }
+      return pa.querySelectorAll(q)
+    }
+  },
   'DOMイベント設定': { // @DOMのEVENTになでしこ関数名funcStrのイベントを設定 // @DOMいべんとせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
