@@ -75,7 +75,7 @@ const PluginWebWorker = {
       sys.__v0['ワーカーURL'] = sys._webworker.getBaseUrlFromTag()
     }
   },
-  // @イベント用定数
+  // @イベント定数
   '対象イベント': {type:'const', value: ''}, // @たいしょういべんと
   '受信データ': {type:'const', value: ''}, // @たいしょういべんと
 
@@ -93,6 +93,7 @@ const PluginWebWorker = {
     return_none: true
   },
 
+  // @NAKOワーカー
   'ワーカー起動': { // @指定したURLでWebWorkerを起動する。ワーカオブジェクトを返す。 // @わーかーきどう
     type: 'func',
     josi: [['で','を','の']],
