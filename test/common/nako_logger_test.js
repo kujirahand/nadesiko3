@@ -1,8 +1,9 @@
 const NakoColors = require('../../src/nako_colors')
 const assert = require('assert')
+const NakoLogger = require('root/src/nako_logger')
 
-describe('nako_colors_test', () => {
-    it('test', () => {
+describe('nako_logger_test', () => {
+    it('色付けのテスト', () => {
         const out = NakoColors.convertColorTextFormat(`デフォルト${NakoColors.color.bold}太字${NakoColors.color.red}太字赤${NakoColors.color.reset}デフォルト<script>`)
         assert.strictEqual(out.noColor, 'デフォルト太字太字赤デフォルト<script>')
         assert.strictEqual(out.nodeConsole, 'デフォルト\u001b[1m太字\u001b[31m太字赤\u001b[0mデフォルト<script>\u001b[0m')
@@ -13,5 +14,13 @@ describe('nako_colors_test', () => {
             'color: red; font-weight: bold;',
             'color: inherit; font-weight: inherit;'
         ])
+    })
+    it('ログの取得のテスト', (done) => {
+        const logger = new NakoLogger()
+        logger.addListener('info', (data) => {
+            assert.strictEqual(data.noColor, '[情報](2行目): foo')
+            done()
+        })
+        logger.info('foo', { line: 1 })
     })
 })
