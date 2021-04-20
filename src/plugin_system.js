@@ -1675,22 +1675,51 @@ const PluginSystem = {
       return res
     }
   },
-  // @ハッシュ
-  'ハッシュキー列挙': { // @ハッシュAのキー一覧を配列で返す。 // @はっしゅきーれっきょ
+  // @辞書型変数の操作
+  '辞書キー列挙': { // @辞書型変数Aのキーの一覧を配列で返す。 // @じしょきーれっきょ
     type: 'func',
     josi: [['の']],
     pure: true,
     fn: function (a) {
       const keys = []
-      if (a instanceof Array) { // 配列なら数字を返す
-        for (let i = 0; i < a.length; i++) {keys.push(i)}
-        return keys
-      }
       if (a instanceof Object) { // オブジェクトのキーを返す
         for (const key in a) {keys.push(key)}
         return keys
       }
-      throw new Error('『ハッシュキー列挙』でハッシュ以外が与えられました。')
+      if (a instanceof Array) { // 配列なら数字を返す
+        for (let i = 0; i < a.length; i++) {keys.push(i)}
+        return keys
+      }
+      throw new Error('『辞書キー列挙』でハッシュ以外が与えられました。')
+    }
+  },
+  '辞書キー削除': { // @辞書型変数AからキーKEYを削除して返す（A自体を変更する）。 // @じしょきーさくじょ
+    type: 'func',
+    josi: [['から', 'の'], ['を']],
+    pure: true,
+    fn: function (a, key) {
+      if (a instanceof Object) { // オブジェクトのキーを返す
+        if (a[key]) {delete a[key]}
+        return a
+      }
+      throw new Error('『辞書キー削除』でハッシュ以外が与えられました。')
+    }
+  },
+  '辞書キー存在': { // @辞書型変数AのキーKEYが存在するか確認 // @じしょきーそんざい
+    type: 'func',
+    josi: [['の','に'],['が']],
+    pure: true,
+    fn: function (a, key) {
+        return key in a
+    }
+  },
+  // @ハッシュ
+  'ハッシュキー列挙': { // @ハッシュAのキー一覧を配列で返す。 // @はっしゅきーれっきょ
+    type: 'func',
+    josi: [['の']],
+    pure: false,
+    fn: function (a, sys) {
+      return sys.__exec('辞書キー列挙', [a, sys])
     }
   },
   'ハッシュ内容列挙': { // @ハッシュAの内容一覧を配列で返す。 // @はっしゅないようれっきょ
@@ -1709,13 +1738,9 @@ const PluginSystem = {
   'ハッシュキー削除': { // @ハッシュAからキーKEYを削除して返す。 // @はっしゅきーさくじょ
     type: 'func',
     josi: [['から', 'の'], ['を']],
-    pure: true,
-    fn: function (a, key) {
-      if (a instanceof Object) { // オブジェクトのキーを返す
-        if (a[key]) {delete a[key]}
-        return a
-      }
-      throw new Error('『ハッシュキー削除』でハッシュ以外が与えられました。')
+    pure: false,
+    fn: function (a, key, sys) {
+      return sys.__exec('辞書キー削除', [a, key, sys])
     }
   },
   'ハッシュキー存在': { // @ハッシュAのキーKEYが存在するか確認 // @はっしゅきーそんざい

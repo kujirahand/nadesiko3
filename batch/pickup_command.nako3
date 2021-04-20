@@ -32,13 +32,14 @@ REPOSパス=基本パスを「../」で相対パス展開。
     'nadesiko3-mssql/src/plugin_mssql.js',
     'nadesiko3-mysql/src/plugin_mysql.js',
     'nadesiko3-postgresql/src/plugin_postgresql.js',
-    'nadesiko3-firebase/plugin_firebase.js',
-    'nadesiko3-googlehome/plugin_googlehome.js',
     'nadesiko3-websocket/plugin_websocket.js',
     'nadesiko3-htmlparser/src/plugin_htmlparser.js',
     'nadesiko3-ml/src/plugin_ml.js',
     'nadesiko3-drone/nadesiko3-drone.js'
 ]
+# サポートしない
+# 'nadesiko3-firebase/plugin_firebase.js',
+# 'nadesiko3-googlehome/plugin_googlehome.js',
 
 関数定義とは変数=「」
 関数説明とは変数＝「」
