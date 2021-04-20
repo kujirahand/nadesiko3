@@ -1779,7 +1779,7 @@ const PluginSystem = {
     },
     return_none: true
   },
-  '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する // @びょうご
+  '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する。変数『対象』にタイマーIDを代入する。 // @びょうご
     type: 'func',
     josi: [['を'], ['']],
     pure: false,
@@ -1801,10 +1801,11 @@ const PluginSystem = {
         }
       }, parseFloat(n) * 1000)
       sys.__timeout.unshift(timerId)
+      sys.__v0['対象'] = timerId
       return timerId
     }
   },
-  '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『タイマー停止』で停止できる) // @びょうごと
+  '秒毎': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『タイマー停止』で停止できる)。変数『対象』にタイマーIDを代入する。 // @びょうごと
     type: 'func',
     josi: [['を'], ['']],
     pure: false,
@@ -1817,6 +1818,7 @@ const PluginSystem = {
       }, parseFloat(n) * 1000)
       // タイマーIDを追加
       sys.__interval.unshift(timerId)
+      sys.__v0['対象'] = timerId
       return timerId
     }
   },
