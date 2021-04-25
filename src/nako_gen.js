@@ -560,10 +560,13 @@ try {
       // 定義されていない名前の参照は変数の定義とみなす。
       // 多くの場合はundefined値を持つ変数であり分かりづらいバグを引き起こすが、
       // 「ナデシコする」などの命令の中で定義された変数の参照の場合があるため警告に留める。
-      this.__self.logger.warn(`変数 ${name} は定義されていません。`, position)
+      // ただし、自動的に定義される変数『引数』は例外 #952
+      if (name !== '引数') {
+        this.__self.logger.warn(`変数『${name}』は定義されていません。`, position)
+      }
       this.varsSet.names.add(name)
       return this.varname(name)
-    }
+  }
 
     const i = res.i
     // システム関数・変数の場合
