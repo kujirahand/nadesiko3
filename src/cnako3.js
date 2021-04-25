@@ -168,9 +168,8 @@ class CNako3 extends NakoCompiler {
     } catch (e) {
       if (opt.debug || opt.trace) {
         throw e
-      } else {
-        console.error(e.message)
       }
+      // エラーメッセージはloggerへ送られるため無視してよい
     }
   }
 
