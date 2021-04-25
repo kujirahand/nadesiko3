@@ -432,7 +432,7 @@ class NakoLexer {
         lineCurrent = line
         column += m[0].length
         src = src.substr(m[0].length)
-        if (rule.name === 'eol' && value === '\n') {
+        if (rule.name === 'eol' && value === '\n' || rule.name === '_eol') {
           value = line++
           column = 1
         }
