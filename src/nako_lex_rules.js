@@ -9,6 +9,10 @@ const hira = /^[ぁ-ん]/
 const allHiragana = /^[ぁ-ん]+$/
 const wordHasIjoIka = /^.+(以上|以下|超|未満)$/
 
+const errorRead = (ch) =>{ 
+  return (function() { throw new Error('突然の『' + ch + '』があります。')})
+}
+
 module.exports = {
   rules: [
     // 上から順にマッチさせていく
@@ -72,8 +76,8 @@ module.exports = {
     {name: 'string_ex', pattern: /^“/, cbParser: src => cbString('“', '”', src)},
     {name: 'string_ex', pattern: /^"/, cbParser: src => cbString('"', '"', src)},
     {name: 'string', pattern: /^'/, cbParser: src => cbString('\'', '\'', src)},
-    {name: '」', pattern: /^」/}, // error
-    {name: '』', pattern: /^』/}, // error
+    {name: '」', pattern: /^」/, cbParser: errorRead('」')}, // error
+    {name: '』', pattern: /^』/, cbParser: errorRead('』')}, // error
     {name: 'func', pattern: /^\{関数\},?/},
     {name: '{', pattern: /^\{/},
     {name: '}', pattern: /^\}/, readJosi: true},
@@ -202,13 +206,6 @@ function cbString (beginTag, closeTag, src) {
   let josi = ''
   let numEOL = 0
   src = src.substr(beginTag.length) // skip beginTag
-  if (closeTag === '}}}') { // 可変閉じタグ
-    const sm = src.match(/^\{{3,}/)
-    const cnt = sm[0].length
-    closeTag = ''
-    for (let i = 0; i < cnt; i++) {closeTag += '}'}
-    src = src.substr(cnt)
-  }
   const i = src.indexOf(closeTag)
   if (i < 0) { // not found
     res = src
@@ -216,6 +213,14 @@ function cbString (beginTag, closeTag, src) {
   } else {
     res = src.substr(0, i)
     src = src.substr(i + closeTag.length)
+    // res の中に beginTag があればエラーにする #953
+    if (res.indexOf(beginTag) >= 0) {
+      if (beginTag == '『') {
+        throw new Error('「『」で始めた文字列に「『」を含めることはできません。')
+      } else {
+        throw new Error(`『${beginTag}』で始めた文字列に『${beginTag}』を含めることはできません。`)
+      }
+    }
   }
   // 文字列直後の助詞を取得
   const j = josiRE.exec(src)

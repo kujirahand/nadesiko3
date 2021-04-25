@@ -358,7 +358,17 @@ class NakoLexer {
           if (isDefTest && rule.name === 'word') {
             rp = rule.cbParser(src, false)
           } else {
-            rp = rule.cbParser(src)
+            try {
+              rp = rule.cbParser(src)
+            } catch (e) {
+              throw new NakoLexerError(
+                e.message,
+                srcLength - src.length,
+                srcLength - src.length + 1,
+                line,
+                filename,
+              )
+            }
           }
 
           if (rule.name === 'string_ex') {
