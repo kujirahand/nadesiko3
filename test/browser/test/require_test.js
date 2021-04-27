@@ -47,14 +47,25 @@ describe('require_test', () => {
     it('存在しないファイルの指定', async () => {
         const nako = new WebNakoCompiler()
         const code = `!「${buildURL('nako3', 50, 'A=100')}」を取り込む。\n!「http://localhost:9876/custom/non_existent_file.nako3」を取り込む。`
-        let ok = false
         try {
             await nako.loadDependencies(code, 'main.nako3')
+            assert.fail()
         } catch (e) {
             assert(e instanceof NakoImportError)
             assert.strictEqual(e.line, 1)
-            ok = true
         }
-        assert(ok)
+    })
+    it('.jsファイルの投げたエラーを表示', async () => {
+        const nako = new WebNakoCompiler()
+        const code = `!「${buildURL('js', 0, `throw new Error("テスト"); navigator.nako3.addPluginObject('PluginRequireTest', {})`)}」を取り込む。`
+        await nako.loadDependencies(code, 'main.nako3')
+        try {
+            nako.run(code, 'main.nako3')
+            assert.fail()
+        } catch (err) {
+            assert(err instanceof NakoImportError)
+            assert.include(err.message, "テスト")
+            assert.strictEqual(err.line, 0)
+        }
     })
 })
