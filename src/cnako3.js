@@ -336,9 +336,9 @@ class CNako3 extends NakoCompiler {
           value: () => {
             try {
               return require(name)
-            } catch (err) {
+            } catch (/** @type {unknown} */err) {
               let msg = `プラグイン ${name} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`
-              if (err.message.startsWith('Cannot find module')) {
+              if (err instanceof Error && err.message.startsWith('Cannot find module')) {
                 msg += `\n次の場所を検索しました: ${log.join(', ')}`
               }
               throw new NakoImportError(msg, token.line, token.file)
