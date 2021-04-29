@@ -1366,15 +1366,33 @@ const PluginSystem = {
       throw new Error('『配列シャッフル』で配列以外が指定されました。')
     }
   },
-  '配列切取': { // @配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。 // @はいれつきりとる
+  '配列削除': { // @配列AのI番目(0起点)の要素を削除して返す。Aの内容を書き換える。辞書型変数ならキーIを削除する。 // @はいれつさくじょ
     type: 'func',
-    josi: [['の'], ['を']],
+    josi: [['の', 'から'], ['を']],
+    pure: false,
+    fn: function (a, i, sys) {
+      return sys.__exec('配列切取', [a, i, sys])
+    }
+  },
+  '配列切取': { // @配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。辞書型変数ならキーIを削除する。 // @はいれつきりとる
+    type: 'func',
+    josi: [['の', 'から'], ['を']],
     pure: true,
     fn: function (a, i) {
-      if (a instanceof Array) { // 配列ならOK
+      // 配列変数のとき
+      if (a instanceof Array) {
         const b = a.splice(i, 1)
-        if (b instanceof Array) {return b[0]}
+        if (b instanceof Array) {return b[0]} // 切り取った戻り値は必ずArrayになるので。
         return null
+      }
+      // 辞書型変数のとき
+      if (a instanceof Object && typeof(i) === 'string') { //辞書型変数も許容
+        if (a[i]) {
+          const old = a[i]
+          delete a[i]
+          return old
+        }
+        return undefined
       }
       throw new Error('『配列切取』で配列以外を指定。')
     }
