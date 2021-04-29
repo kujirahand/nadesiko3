@@ -7,7 +7,7 @@ module.exports = {
     fn: function (dom, event, funcStr, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
-
+      if (!dom) throw new Error('『DOMイベント追加』でDOM要素が見当たりません。')
       dom.addEventListener(event, sys.__findVar(funcStr, null))
     },
     return_none: true
@@ -19,6 +19,7 @@ module.exports = {
     fn: function (dom, event, funcStr, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
+      if (!dom) {throw new Error('『DOMイベント削除』でDOM要素が見当たりません。')}
 
       dom.removeEventListener(event, sys.__findVar(funcStr, null))
     },
@@ -31,6 +32,7 @@ module.exports = {
     fn: function (callback, dom, event, sys) {
       if (typeof (dom) === 'string')
         {dom = document.querySelector(dom)}
+      if (!dom) {throw new Error('『DOMイベント発火時』でDOM要素が見当たりません。')}
 
       dom.addEventListener(event, callback)
     },
@@ -53,7 +55,10 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      dom.onclick = (e) => {
+      console.log(dom)
+      if (!dom) {throw new Error('『クリック時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『クリック時』で関数の取得に失敗しました。')}
+       dom.onclick = (e) => {
         sys.__v0['対象'] = e.target
         sys.__v0['対象イベント'] = e
         return func(e, sys)
@@ -68,6 +73,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『読込時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『読込時』で関数の取得に失敗しました。')}
       dom.onload = (e) => {
         sys.__v0['対象'] = e.target
         sys.__v0['対象イベント'] = e
@@ -83,6 +90,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『フォーム送信時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『フォーム送信時』で関数の取得に失敗しました。')}
       dom.onsubmit = (e) => {
         sys.__v0['対象'] = e.target
         sys.__v0['対象イベント'] = e
@@ -99,6 +108,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『キー押時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『キー押時』で関数の取得に失敗しました。')}
       dom['onkeydown'] = (e) => {
         sys.__v0['対象'] = e.target
         sys.__v0['押キー'] = e.key
@@ -115,6 +126,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『キー離時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『キー離時』で関数の取得に失敗しました。')}
       dom['onkeyup'] = (e) => {
         sys.__v0['対象'] = e.target
         sys.__v0['押キー'] = e.key
@@ -131,6 +144,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『キータイピング時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『キータイピング時』で関数の取得に失敗しました。')}
       dom['onkeypress'] = (e) => {
         sys.__v0['対象'] = e.target
         sys.__v0['押キー'] = e.key
@@ -149,6 +164,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『マウス押時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『マウス押時』で関数の取得に失敗しました。')}
       // 左上座標を求める
       dom['onmousedown'] = (e) => {
         const box = e.target.getBoundingClientRect()
@@ -168,6 +185,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『マウス移動時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『マウス移動時』で関数の取得に失敗しました。')}
       dom['onmousemove'] = (e) => {
         const box = e.target.getBoundingClientRect()
         sys.__v0['マウスX'] = e.clientX - box.left
@@ -186,6 +205,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『マウス離時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『マウス離時』で関数の取得に失敗しました。')}
       dom['onmouseup'] = (e) => {
         const box = e.target.getBoundingClientRect()
         sys.__v0['マウスX'] = e.clientX - box.left
@@ -231,6 +252,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『タッチ開始時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『タッチ開始時』で関数の取得に失敗しました。')}
       dom['ontouchstart'] = (e) => {
         sys.__exec('タッチイベント計算', [e, sys])
         return func(e, sys)
@@ -245,6 +268,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『タッチ時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『タッチ時』で関数の取得に失敗しました。')}
       dom['ontouchmove'] = (e) => {
         sys.__exec('タッチイベント計算', [e, sys])
         return func(e, sys)
@@ -259,6 +284,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『タッチ終了時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『タッチ終了時』で関数の取得に失敗しました。')}
       dom['ontouchend'] = (e) => {
         sys.__exec('タッチイベント計算', [e, sys])
         return func(e, sys)
@@ -273,6 +300,8 @@ module.exports = {
     fn: function (func, dom, sys) {
       if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!dom) {throw new Error('『タッチキャンセル時』でDOM要素が見当たりません。')}
+      if (!func) {throw new Error('『タッチキャンセル時』で関数の取得に失敗しました。')}
       dom['ontouchcancel'] = (e) => {
         sys.__exec('タッチイベント計算', [e, sys])
         return func(e, sys)
@@ -286,6 +315,7 @@ module.exports = {
     pure: false,
     fn: function (func, sys) {
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      if (!func) {throw new Error('『画面更新時実行』で関数の取得に失敗しました。')}
       return window.requestAnimationFrame(func)
     }
   },
