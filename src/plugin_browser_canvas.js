@@ -383,5 +383,28 @@ module.exports = {
       sys.__ctx.transform(a[0],a[1],a[2],a[3],a[4],a[5],a[6])
     },
     return_none: true
+  },
+  '描画データURL変換': { // @ 描画内容をPNG形式のデータURLに変換して得る。 // @ びょうがでーたURLへんかん
+    type: 'func',
+    josi: [],
+    pure: false,
+    fn: function (sys) {
+      const cv = sys.__v0['描画中キャンバス']
+      const url = cv.toDataURL('image/png')
+      return url
+    }
+  },
+  '描画ダウンロードリンク作成': { // @ 描画内容をPNG形式のデータURLに変換してDOMに設定する。 // @ びょうがだうんろーどりんくさくせい
+    type: 'func',
+    josi: [['へ', 'に']],
+    pure: false,
+    fn: function (dom, sys) {
+      if (typeof dom === 'string') { dom = document.querySelector(dom)}
+      if (!dom){ throw new Error('『描画ダウンロードリンク作成』でDOMが見当たりません。')}
+      const cv = sys.__v0['描画中キャンバス']
+      dom.href = cv.toDataURL('image/png')
+      dom.download = 'canvas.png'
+    },
+    return_none: true
   }
 }
