@@ -216,9 +216,9 @@ function cbString (beginTag, closeTag, src) {
     // res の中に beginTag があればエラーにする #953
     if (res.indexOf(beginTag) >= 0) {
       if (beginTag == '『') {
-        throw new Error('「『」で始めた文字列に「『」を含めることはできません。')
+        throw new Error('「『」で始めた文字列の中に「『」を含めることはできません。')
       } else {
-        throw new Error(`『${beginTag}』で始めた文字列に『${beginTag}』を含めることはできません。`)
+        throw new Error(`『${beginTag}』で始めた文字列の中に『${beginTag}』を含めることはできません。`)
       }
     }
   }
