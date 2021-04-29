@@ -1188,7 +1188,52 @@ class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       }
     }
-
+    
+    // 複数定数への代入 #563
+    if (this.accept(['定数', this.yJSONArray, 'eq', this.yCalc])) {
+      const names = this.y[1]
+      // check array
+      if (names && names.value instanceof Array) {
+        for (let i in names.value) {
+          if (names.value[i].type != 'word') {
+            throw NakoSyntaxError.fromNode(`複数定数の代入文${i+1}番目でエラー。『定数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
+          }
+        }
+      } else {
+        throw NakoSyntaxError.fromNode(`複数定数の代入文でエラー。『定数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
+      }
+      return {
+        type: 'def_local_varlist',
+        names: names.value,
+        vartype: '定数',
+        value: this.y[3],
+        ...map,
+        end: this.peekSourceMap()
+      }
+    }
+    // 複数変数への代入 #563
+    if (this.accept(['変数', this.yJSONArray, 'eq', this.yCalc])) {
+      const names = this.y[1]
+      // check array
+      if (names && names.value instanceof Array) {
+        for (let i in names.value) {
+          if (names.value[i].type != 'word') {
+            throw NakoSyntaxError.fromNode(`複数変数の代入文${i+1}番目でエラー。『変数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
+          }
+        }
+      } else {
+        throw NakoSyntaxError.fromNode(`複数変数の代入文でエラー。『変数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
+      }
+      return {
+        type: 'def_local_varlist',
+        names: names.value,
+        vartype: '変数',
+        value: this.y[3],
+        ...map,
+        end: this.peekSourceMap()
+      }
+    }
+    
     // 複数変数への代入 #563
     if (this.check2(['word', 'comma', 'word'])) {
       // 2 word
@@ -1224,10 +1269,21 @@ class NakoParser extends NakoParserBase {
           end: this.peekSourceMap()
         }
       }
+      // 5 word
+      if (this.accept(['word','comma','word','comma','word','comma','word','comma','word','eq', this.yCalc])) {
+        return {
+          type: 'def_local_varlist',
+          names: [this.y[0], this.y[2], this.y[4], this.y[6], this.y[8]],
+          vartype: '変数',
+          value: this.y[10],
+          ...map,
+          end: this.peekSourceMap()
+        }
+      }
     }
     return null
   }
-
+  
   /** @returns {Ast | null} */
   yCalc () {
     const map = this.peekSourceMap()
