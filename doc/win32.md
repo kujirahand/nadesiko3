@@ -1,4 +1,4 @@
-# nadesko3win32 について
+# nadesko3win32について
 
 [nadesiko3win32](https://github.com/kujirahand/nadesiko3win32)はなでしこv3のWindows版です。
 
@@ -21,11 +21,11 @@ npm run build
 npm run build:win32
 ```
 
-上記コマンドを実行すると、bashスクリプトが生成されるので、指示に従ってbashスクリプトを実行します。(LinuxかmacOSで実行します。)
+上記コマンドを実行すると、bashスクリプトが生成されるので、指示に従ってbashスクリプトを実行します。(LinuxかmacOSで実行します)
 
 ### Node.jsの更新方法
 
-Node.jsのアーカイブ一式をプロジェクトの`/nodejs`フォルダに配置します。そのため、Node.jsの最新版をnodejsフォルダ以下にコピーします。さらに、以下のコマンドを実行して、7zのアーカイブを作成してgitリポジトリにコミットします。
+Node.jsのアーカイブ一式をプロジェクトの`/nodejs`フォルダに配置します。そのため、Node.jsの最新版をnodejsフォルダ以下にコピーします。さらに、以下のコマンドを実行して、7zのアーカイブを作成してGitリポジトリにコミットします。
 
 ```
 .\bin\7z.exe a nodejs.7z nodejs
