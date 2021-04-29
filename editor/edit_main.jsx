@@ -90,7 +90,12 @@ const Editor = ({ code, editorId, autoSave }) => {
       <div id={`nako3_div_${editorId}`}></div>
       <canvas id={`nako3_canvas_${editorId}`} width="310" height="150"/>
     </Section>
-    <Section title="使用した命令"><p className="info">{Array.from(usedFuncs.values()).sort().join(', ')}</p></Section>
+    <Section title="使用した命令"><p className="info">{
+      usedFuncs && <span>{Array.from(usedFuncs.values()).sort().map((name)=>{
+        const linkUrl = 'https://nadesi.com/v3/doc/index.php?FrontPage&plugin&name=nako3doc&q=' + encodeURIComponent(name)
+        return <span>[<a href={linkUrl}>{name}</a>] </span>
+      })}</span>
+    }</p></Section>
     <Section title="命令の一覧">
       <div style={{paddingTop: '8px'}}>
         <Button text={showCommandList ? '命令の一覧を隠す' : '命令の一覧を表示する'} onClick={toggleCommandList} />
@@ -122,3 +127,6 @@ try {
 } catch (err) {
   console.error(err) // IE11
 }
+
+
+
