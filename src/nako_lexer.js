@@ -152,7 +152,7 @@ class NakoLexer {
       // 無名関数の定義：「xxには**」があった場合 ... 暗黙的な関数定義とする
       if ((t.type === 'word' && t.josi === 'には') || (t.type === 'word' && t.josi === 'は~')) {
         t.josi = 'には'
-        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: ''})
+        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: '', tag: '無名関数'})
         i++
         continue
       }
@@ -175,8 +175,14 @@ class NakoLexer {
         i++
         continue
       }
+      // 無名関数か普通関数定義かを判定する (1つ前が改行かどうかで判定)
+      let isMumei = true
+      let prevToken = {type: 'eol'}
+      if (i >= 1) {prevToken = tokens[i - 1]}
+      if (prevToken.type === 'eol') {isMumei = false}
+      // 関数名や引数を得る
       const defToken = t
-      i++ // skip "●"
+      i++ // skip "●" or "関数"
       let josi = []
       let varnames = []
       let funcPointers = []
@@ -185,18 +191,19 @@ class NakoLexer {
       if (tokens[i] && tokens[i].type === '(')
         {[josi, varnames, funcPointers] = readArgs()}
 
-      // 関数名
-      if (tokens[i] && tokens[i].type === 'word')
-        {funcName = tokens[i++].value}
+      // 関数名を得る
+      if (!isMumei && tokens[i] && tokens[i].type === 'word') {
+        funcName = tokens[i++].value
+      }
 
       // 関数名の後で引数定義
       if (josi.length === 0 && tokens[i] && tokens[i].type === '(')
         {[josi, varnames, funcPointers] = readArgs()}
 
-      // 関数定義か？
-      // 無名関数は `関数()それは...ここまで` へ置換されるため、関数名が「それ」の場合は飛ばす。
-      if (funcName !== '' && funcName !== 'それ') {
-        if (funcName in funclist) {
+      // 名前のある関数定義ならば関数テーブルに関数名を登録
+      // 無名関数は登録しないように気をつける
+      if (funcName !== '') {
+        if (funcName in funclist) { // 関数の二重定義を警告
           logger.warn(`関数『${funcName}』は既に定義されています。`, defToken)
         }
         funclist[funcName] = {

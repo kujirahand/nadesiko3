@@ -780,15 +780,17 @@ class NakoParser extends NakoParserBase {
     if (!this.check('def_func')) {return null}
     const def = this.get()
     let args = []
+    // 「,」を飛ばす
+    if (this.check('comma')) {this.get()}
     // 関数の引数定義は省略できる
-    if (this.check('('))
-      {args = this.yDefFuncReadArgs()}
-
+    if (this.check('(')) {args = this.yDefFuncReadArgs()}
+    // 「,」を飛ばす
+    if (this.check('comma')) {this.get()}
+    // ブロックを読む
     this.saveStack()
     const block = this.yBlock()
     if (this.check('ここまで')) {this.get()}
     this.loadStack()
-
     return {
       type: 'func_obj',
       args,
