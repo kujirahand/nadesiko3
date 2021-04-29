@@ -168,9 +168,8 @@ class CNako3 extends NakoCompiler {
     } catch (e) {
       if (opt.debug || opt.trace) {
         throw e
-      } else {
-        console.error(e.message)
       }
+      // エラーメッセージはloggerへ送られるため無視してよい
     }
   }
 
@@ -332,10 +331,19 @@ class CNako3 extends NakoCompiler {
         return { sync: true, value: fs.readFileSync(name).toString()}
       },
       readJs: (name, token) => {
-        try {
-          return { sync: true, value: () => require(name) }
-        } catch (err) {
-          throw new NakoImportError(`プラグイン ${name} が存在しません。次の場所を検索しました: ${log.join(', ')}`, token.line, token.file)
+        return {
+          sync: true,
+          value: () => {
+            try {
+              return require(name)
+            } catch (/** @type {unknown} */err) {
+              let msg = `プラグイン ${name} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`
+              if (err instanceof Error && err.message.startsWith('Cannot find module')) {
+                msg += `\n次の場所を検索しました: ${log.join(', ')}`
+              }
+              throw new NakoImportError(msg, token.line, token.file)
+            }
+          },
         }
       },
     })

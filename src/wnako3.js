@@ -59,21 +59,23 @@ class WebNakoCompiler extends NakoCompiler {
               throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
             }
             const text = await res.text()
-            if (text.includes('navigator.nako3.addPluginObject')) {
-              // textの例: `navigator.nako3.addPluginObject('PluginRequireTest', { requiretest: { type: 'var', value: 100 } })`
-              return () => {
-                // プラグインの自動登録は navigator.nako3 を参照するため、 navigator.nako3 を一時的に現在のインスタンスにする。
-                const globalNako3 = navigator.nako3
-                navigator.nako3 = this
-                try {
-                  Function(text)()
-                } finally {
-                  navigator.nako3 = globalNako3
-                }
-                return {}
-              }
+            if (!text.includes('navigator.nako3.addPluginObject')) {
+              throw new NakoImportError(`ファイル ${filePath} の中に文字列 "navigator.nako3.addPluginObject" が存在しません。現在、ブラウザ版のなでしこ言語v3は自動登録するプラグインのみをサポートしています。`, token.line, token.file)
             }
-            throw new Error('ダウンロードしたファイルの中に文字列 "navigator.nako3.addPluginObject" が存在しません。現在、ブラウザ版のなでしこ言語v3は自動登録するプラグインのみをサポートしています。')
+            // textの例: `navigator.nako3.addPluginObject('PluginRequireTest', { requiretest: { type: 'var', value: 100 } })`
+            return () => {
+              // プラグインの自動登録は navigator.nako3 を参照するため、 navigator.nako3 を一時的に現在のインスタンスにする。
+              const globalNako3 = navigator.nako3
+              navigator.nako3 = this
+              try {
+                Function(text)()
+              } catch (err) {
+                throw new NakoImportError(`プラグイン ${filePath} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`, token.line, token.file)
+              } finally {
+                navigator.nako3 = globalNako3
+              }
+              return {}
+            }
           })()
         }
       },
