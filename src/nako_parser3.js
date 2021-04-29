@@ -1189,6 +1189,42 @@ class NakoParser extends NakoParserBase {
       }
     }
 
+    // 複数変数への代入 #563
+    if (this.check2(['word', 'comma', 'word'])) {
+      // 2 word
+      if (this.accept(['word','comma','word','eq', this.yCalc])) {
+        return {
+          type: 'def_local_varlist',
+          names: [this.y[0], this.y[2]],
+          vartype: '変数',
+          value: this.y[4],
+          ...map,
+          end: this.peekSourceMap()
+        }
+      }
+      // 3 word
+      if (this.accept(['word','comma','word','comma','word','eq', this.yCalc])) {
+        return {
+          type: 'def_local_varlist',
+          names: [this.y[0], this.y[2], this.y[4]],
+          vartype: '変数',
+          value: this.y[6],
+          ...map,
+          end: this.peekSourceMap()
+        }
+      }
+      // 4 word
+      if (this.accept(['word','comma','word','comma','word','comma','word','eq', this.yCalc])) {
+        return {
+          type: 'def_local_varlist',
+          names: [this.y[0], this.y[2], this.y[4], this.y[6]],
+          vartype: '変数',
+          value: this.y[8],
+          ...map,
+          end: this.peekSourceMap()
+        }
+      }
+    }
     return null
   }
 

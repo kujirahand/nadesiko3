@@ -439,6 +439,9 @@ try {
       case 'def_local_var':
         code += this.convDefLocalVar(node)
         break
+      case 'def_local_varlist':
+        code += this.convDefLocalVarlist(node)
+        break
       case 'let':
         code += this.convLet(node)
         break
@@ -1213,7 +1216,7 @@ try {
     return ';' + this.convLineno(node, false) + code + '\n'
   }
 
-  convDefLocalVar(node) {
+  convDefLocalVar (node) {
     const value = (node.value === null) ? 'null' : this._convGen(node.value, true)
     const name = node.name.value
     const vtype = node.vartype // 変数 or 定数
@@ -1227,6 +1230,31 @@ try {
       this.varsSet.readonly.add(name)
     }
     const code = `${this.varname(name)}=${value};\n`
+    return this.convLineno(node, false) + code
+  }
+  
+  // #563 複数変数への代入
+  convDefLocalVarlist (node) {
+    let code = ''
+    const vtype = node.vartype // 変数 or 定数
+    const value = (node.value === null) ? 'null' : this._convGen(node.value, true)
+    this.loop_id++
+    let varI = `$nako_i${this.loop_id}`
+    code += `${varI}=${value}\n`
+    code += `if (!(${varI} instanceof Array)) { ${varI}=[${varI}] }\n`
+    for (let nameObj of node.names) {
+      const name = nameObj.value
+      // 二重定義？
+      if (this.varsSet.names.has(name))
+        {throw NakoSyntaxError.fromNode(`${vtype}『${name}』の二重定義はできません。`, node)}
+      //
+      this.varsSet.names.add(name)
+      if (vtype === '定数') {
+        this.varsSet.readonly.add(name)
+      }
+      let vname = this.varname(name)
+      code += `${vname}=${varI}.shift();\n`
+    }
     return this.convLineno(node, false) + code
   }
 
