@@ -1514,6 +1514,13 @@ class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       }}
 
+    // 辞書初期化に終わりがなかった場合 (エラーチェックのため) #958
+    if (this.accept(['{', this.yJSONObjectValue])) {
+      throw NakoSyntaxError.fromNode(
+        '辞書型変数の初期化が『}』で閉じられていません。', 
+        this.y[1])
+    }
+
     return null
   }
 
@@ -1554,6 +1561,12 @@ class NakoParser extends NakoParserBase {
         ...map,
         end: this.peekSourceMap()
       }}
+      // 配列に終わりがなかった場合 (エラーチェックのため) #958
+      if (this.accept(['[', this.yJSONArrayValue])) {
+        throw NakoSyntaxError.fromNode(
+          '配列変数の初期化が『]』で閉じられていません。', 
+          this.y[1])
+      }
 
     return null
   }
