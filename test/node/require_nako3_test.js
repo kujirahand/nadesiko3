@@ -1,4 +1,5 @@
 const assert = require('assert')
+const { NakoImportError } = require('../../src/nako_errors')
 const CNako3 = require('../../src/cnako3')
 
 describe('require_nako3_test', () => {
@@ -34,5 +35,20 @@ describe('require_nako3_test', () => {
       `!「plugin_csv」を取り込む。\n`
     nako.loadDependencies(code, 'main.nako3', '')
     nako.run(code, 'main.nako3') // エラーが飛ばないことを確認
+  })
+  it('.jsファイルの投げたエラーを表示', () => {
+    const nako = new CNako3()
+    const code = `!「${__dirname}/plugin_broken.js.txt」を取り込む`
+    nako.loadDependencies(code, 'main.nako3', '')
+      assert.throws(
+        () => nako.run(code, 'main.nako3'),
+        (err) => {
+          assert(err instanceof NakoImportError)
+          assert(err.message.includes("テスト"))
+          assert.strictEqual(err.line, 0)  // 1行目
+          assert.strictEqual(err.file, 'main.nako3')
+          return true
+        }
+      )
   })
 })
