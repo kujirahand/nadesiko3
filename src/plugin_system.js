@@ -1989,6 +1989,17 @@ const PluginSystem = {
       return a
     }
   },
+  // @プラグイン管理
+  'プラグイン名': {type: 'const', value: 'メイン'}, // @ぷらぐいんめい
+  'プラグイン名設定': { // @プラグイン名をSに変更する // @プラグインめいせってい
+    type: 'func',
+    josi: [['に','へ']],
+    pure: false,
+    fn: function (s, sys) {
+      sys.__v0['プラグイン名'] = s
+    },
+    return_none: true
+  },
 
   // @URLエンコードとパラメータ
   'URLエンコード': { // @URLエンコードして返す // @URLえんこーど

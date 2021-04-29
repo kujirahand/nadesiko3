@@ -51,4 +51,8 @@ describe('require_nako3_test', () => {
         }
       )
   })
+  it('『プラグイン名』のテスト。(#956)', () => {
+    const fname = __dirname + '/requiretest_name.nako3'
+    cmp('!「' + fname + '」を取り込む。リクエスト名前取得して表示。', fname)
+  })
 })
