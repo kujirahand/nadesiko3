@@ -1,4 +1,19 @@
 const PluginPromise = {
+  '初期化': {
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (sys.__promise == null) {
+        sys.__promise = {
+          setLastPromise: function (promise) {
+            sys.__v0['そ'] = promise
+            return promise
+          }
+        }
+      }
+    }
+  },
   // @非同期処理の保証の定数
   'そ': {type: 'const', value: ''}, // @そ
   // @非同期処理の保証
@@ -25,7 +40,7 @@ const PluginPromise = {
     },
     return_none: false
   },
-  '処理時': { // @非同期処理で終了した時にcallbackが実行される。引数と『対象』は、成功時は真とデータが設定され、失敗時は、偽と理由が設定される。は偽が渡される。 // @しょりしたとき
+  '処理時': { // @非同期処理で終了した時にcallbackが実行される。引数と『対象』は、成功時は真とデータが設定され、失敗時は、偽と理由が設定される。 // @しょりしたとき
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
