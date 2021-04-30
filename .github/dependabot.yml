@@ -1,0 +1,15 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: karma
+    versions:
+    - 6.0.3
+    - 6.0.4
+  - dependency-name: commander
+    versions:
+    - 7.0.0
