@@ -16,6 +16,7 @@ const PartBrowserWebsocket = require('./plugin_browser_websocket.js')
 const PartBrowserAudio = require('./plugin_browser_audio.js')
 const PartBrowserHotkey = require('./plugin_browser_hotkey.js')
 const PartBrowserChart = require('./plugin_browser_chart.js')
+const PartBrowserCrypto = require('./plugin_browser_crypto.js')
 
 const BrowserParts = [
   PartBrowserColor,
@@ -34,7 +35,8 @@ const BrowserParts = [
   PartBrowserWebsocket,
   PartBrowserAudio,
   PartBrowserHotkey,
-  PartBrowserChart
+  PartBrowserChart,
+  PartBrowserCrypto
 ]
 
 const PluginBrowser = {

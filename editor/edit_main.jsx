@@ -91,10 +91,12 @@ const Editor = ({ code, editorId, autoSave }) => {
       <canvas id={`nako3_canvas_${editorId}`} width="310" height="150"/>
     </Section>
     <Section title="使用した命令"><p className="info">{
-      usedFuncs && <span>{Array.from(usedFuncs.values()).sort().map((name)=>{
-        const linkUrl = 'https://nadesi.com/v3/doc/index.php?FrontPage&plugin&name=nako3doc&q=' + encodeURIComponent(name)
-        return <span>[<a href={linkUrl}>{name}</a>] </span>
-      })}</span>
+      usedFuncs && <span>{
+        Array.from(usedFuncs).map((name)=>{
+          const linkUrl = 'https://nadesi.com/v3/doc/index.php?FrontPage&plugin&name=nako3doc&q=' + encodeURIComponent(name)
+          return <span key={name}>[<a href={linkUrl}>{name}</a>]&nbsp;</span>
+        })
+      }</span>
     }</p></Section>
     <Section title="命令の一覧">
       <div style={{paddingTop: '8px'}}>
