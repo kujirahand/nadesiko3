@@ -60,7 +60,6 @@ class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     // 最初の語句が決まっている構文
     if (this.check('eol')) {return this.get()}
-    if (this.check('embed_code')) {return this.get()}
     if (this.check('もし')) {return this.yIF()}
     if (this.check('エラー監視')) {return this.yTryExcept()}
     if (this.check('逐次実行')) {return this.yTikuji()}
@@ -1407,8 +1406,6 @@ class NakoParser extends NakoParserBase {
     }
     // 関数呼び出し演算子
     if (this.check2(['func', '←'])) {return this.yCallOp()}
-    // 埋め込み文字列
-    if (this.check('embed_code')) {return this.get()}
     // 無名関数(関数オブジェクト)
     if (this.check('def_func')) {return this.yMumeiFunc()}
     // 変数
