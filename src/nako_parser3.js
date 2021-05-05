@@ -1072,76 +1072,16 @@ class NakoParser extends NakoParserBase {
       }
     }
 
+    // let_array ?
     if (this.check2(['word', '@'])) {
-      // 一次元配列
-      if (this.accept(['word', '@', this.yValue, 'eq', this.yCalc]))
-        {return {
-          type: 'let_array',
-          name: this.y[0],
-          index: [this.y[2]],
-          value: this.y[4],
-          ...map,
-          end: this.peekSourceMap()
-        }}
-
-      // 二次元配列
-      if (this.accept(['word', '@', this.yValue, '@', this.yValue, 'eq', this.yCalc]))
-        {return {
-          type: 'let_array',
-          name: this.y[0],
-          index: [this.y[2], this.y[4]],
-          value: this.y[6],
-          ...map,
-          end: this.peekSourceMap()
-        }}
-
-      // 三次元配列
-      if (this.accept(['word', '@', this.yValue, '@', this.yValue, '@', this.yValue, 'eq', this.yCalc]))
-        {return {
-          type: 'let_array',
-          name: this.y[0],
-          index: [this.y[2], this.y[4], this.y[6]],
-          value: this.y[8],
-          ...map,
-          end: this.peekSourceMap()
-        }}
-
+      const la = this.yLetArrayAt(map)
+      if (la) return la
     }
     if (this.check2(['word', '['])) {
-      // 一次元配列
-      if (this.accept(['word', '[', this.yCalc, ']', 'eq', this.yCalc]))
-        {return {
-          type: 'let_array',
-          name: this.y[0],
-          index: [this.y[2]],
-          value: this.y[5],
-          ...map,
-          end: this.peekSourceMap()
-        }}
-
-      // 二次元配列
-      if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc]))
-        {return {
-          type: 'let_array',
-          name: this.y[0],
-          index: [this.y[2], this.y[5]],
-          value: this.y[8],
-          ...map,
-          end: this.peekSourceMap()
-        }}
-
-      // 三次元配列
-      if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc]))
-        {return {
-          type: 'let_array',
-          name: this.y[0],
-          index: [this.y[2], this.y[5], this.y[8]],
-          value: this.y[11],
-          ...map,
-          end: this.peekSourceMap()
-        }}
-
+      const lb = this.yLetArrayBracket(map)
+      if (lb) return lb
     }
+    
     // ローカル変数定義
     if (this.accept(['word', 'とは'])) {
       const word = this.y[0]
@@ -1284,6 +1224,102 @@ class NakoParser extends NakoParserBase {
   }
   
   /** @returns {Ast | null} */
+  yLetArrayAt (map) {
+    // 一次元配列
+    if (this.accept(['word', '@', this.yValue, 'eq', this.yCalc]))
+      {return {
+        type: 'let_array',
+        name: this.y[0],
+        index: [this.y[2]],
+        value: this.y[4],
+        ...map,
+        end: this.peekSourceMap()
+      }}
+
+    // 二次元配列
+    if (this.accept(['word', '@', this.yValue, '@', this.yValue, 'eq', this.yCalc]))
+      {return {
+        type: 'let_array',
+        name: this.y[0],
+        index: [this.y[2], this.y[4]],
+        value: this.y[6],
+        ...map,
+        end: this.peekSourceMap()
+      }}
+
+    // 三次元配列
+    if (this.accept(['word', '@', this.yValue, '@', this.yValue, '@', this.yValue, 'eq', this.yCalc]))
+      {return {
+        type: 'let_array',
+        name: this.y[0],
+        index: [this.y[2], this.y[4], this.y[6]],
+        value: this.y[8],
+        ...map,
+        end: this.peekSourceMap()
+      }}
+
+    // 二次元配列(カンマ指定)
+    if (this.accept(['word', '@', this.yValue, 'comma', this.yValue, 'eq', this.yCalc]))
+      {return {
+        type: 'let_array',
+        name: this.y[0],
+        index: [this.y[2], this.y[4]],
+        value: this.y[6],
+        ...map,
+        end: this.peekSourceMap()
+      }}
+
+    // 三次元配列(カンマ指定)
+    if (this.accept(['word', '@', this.yValue, 'comma', this.yValue, 'comma', this.yValue, 'eq', this.yCalc]))
+      {return {
+        type: 'let_array',
+        name: this.y[0],
+        index: [this.y[2], this.y[4], this.y[6]],
+        value: this.y[8],
+        ...map,
+        end: this.peekSourceMap()
+      }}
+    return null
+  }
+  /** @returns {Ast | null} */
+  yLetArrayBracket(map) {
+      // 一次元配列
+      if (this.accept(['word', '[', this.yCalc, ']', 'eq', this.yCalc]))
+        {return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2]],
+          value: this.y[5],
+          ...map,
+          end: this.peekSourceMap()
+        }}
+
+      // 二次元配列
+      if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc]))
+        {return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2], this.y[5]],
+          value: this.y[8],
+          tag: '2',
+          ...map,
+          end: this.peekSourceMap()
+        }}
+
+      // 三次元配列
+      if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc]))
+        {return {
+          type: 'let_array',
+          name: this.y[0],
+          index: [this.y[2], this.y[5], this.y[8]],
+          value: this.y[11],
+          ...map,
+          end: this.peekSourceMap()
+        }}
+    return null
+  }
+  
+  /** @returns {Ast | null} */
   yCalc () {
     const map = this.peekSourceMap()
     if (this.check('eol')) {return null}
@@ -1345,6 +1381,7 @@ class NakoParser extends NakoParserBase {
 
     // 丸括弧
     if (this.check('(')) {return this.yValueKakko()}
+
     // マイナス記号
     if (this.check2(['-', 'number']) || this.check2(['-', 'word']) || this.check2(['-', 'func'])) {
       const m = this.get() // skip '-'
@@ -1430,7 +1467,11 @@ class NakoParser extends NakoParserBase {
             idx = this.y[1]
             josi = idx.josi
           }
-          if (this.accept(['[', this.yCalc, ']'])) {
+          else if (this.accept(['comma', this.yValue])) {
+            idx = this.y[1]
+            josi = idx.josi
+          }
+          else if (this.accept(['[', this.yCalc, ']'])) {
             idx = this.y[1]
             josi = this.y[2].josi
           }
