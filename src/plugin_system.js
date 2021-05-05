@@ -1462,6 +1462,23 @@ const PluginSystem = {
       return a.reduce((x, y) => Math.min(x, y))
     }
   },
+  '配列合計': { // @配列Aの値を全て足して返す。配列の各要素を数値に変換して計算する。数値に変換できない文字列は0になる。 // @はいれつごうけい
+    type: 'func',
+    josi: [['の']],
+    pure: true,
+    fn: function (a) {
+      if (a instanceof Array) {
+        let v = 0
+        a.forEach((n) => {
+          const nn = parseFloat(n)
+          if (isNaN(nn)) {return}
+          v += nn
+        })
+        return v
+      }
+      throw new Error('『配列合計』で配列変数以外の値が指定されました。')
+    }
+  },
   // @二次元配列処理
   '表ソート': { // @二次元配列AでB列目(0起点)(あるいはキー名)をキーに文字列順にソートする。Aの内容を書き換える。 // @ひょうそーと
     type: 'func',
