@@ -7,8 +7,7 @@ const {opPriority} = require('./nako_parser_const')
 const reservedWords = require('./nako_reserved_words')
 
 // 助詞の一覧
-const josi = require('./nako_josi_list')
-const josiRE = josi.josiRE
+const {josiRE, removeJosiMap, tararebaMap} = require('./nako_josi_list')
 
 // 字句解析ルールの一覧
 const lexRules = require('./nako_lex_rules')
@@ -298,7 +297,7 @@ class NakoLexer {
         continue
       }
       // 助詞のならばをトークンとする
-      if (josi.tarareba[t.josi]) {
+      if (tararebaMap[t.josi]) {
         const josi = (t.josi === 'でなければ' || t.josi === 'なければ') ? 'でなければ' : 'ならば'
         const startOffset = t.endOffset === null ? null : t.endOffset - t.rawJosi.length
         tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line, column: t.column, file: t.file,
@@ -455,8 +454,8 @@ class NakoLexer {
             if (src.charAt(0) == ',') {
               src = src.substr(1)
             }
-            // 「＊＊である」なら削除 #939
-            if (josi === 'である') {josi = ''}
+            // 「＊＊である」なら削除 #939 #974
+            if (removeJosiMap[josi]) {josi = ''}
           }
         }
 
