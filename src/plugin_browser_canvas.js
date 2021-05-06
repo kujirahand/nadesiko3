@@ -371,6 +371,16 @@ module.exports = {
     },
     return_none: true
   },
+  '描画起点設定': { // @ 描画位置の起点を[x,y]へ設定する(translate) // @ びょうがきてんせってい
+    type: 'func',
+    josi: [['へ', 'に']],
+    pure: true,
+    fn: function (xy, sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.translate(xy[0],xy[1])
+    },
+    return_none: true
+  },
   '描画回転': { // @ 描画内容をA度だけ回転する(rotate) // @ びょうがかいてん
     type: 'func',
     josi: [['だけ', 'に', 'へ']],
