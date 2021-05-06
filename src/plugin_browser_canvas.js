@@ -107,12 +107,31 @@ module.exports = {
     },
     return_none: true
   },
-  '描画クリア': { // @ [x, y, w, h]の範囲を描画クリア // @ びょうがくりあ
+  '全描画クリア': { // @ 描画中のキャンバスをクリアする。 // @ ぜんびょうがくりあ
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      sys.__ctx.clearRect(0, 0,
+        sys.__canvas.width, sys.__canvas.height)
+    },
+    return_none: true
+  },
+  '描画クリア': { // @ [x, y, w, h]の範囲を描画クリア。空配列を指定すると『全描画クリア』と同じ。2要素の配列だと[0,0]を省略したのと同じ。 // @ びょうがくりあ
     type: 'func',
     josi: [['の', 'へ', 'に']],
     pure: true,
     fn: function (b, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!(b instanceof Array)) { b = [] }
+      if (b.length == 0) {
+        b = [0, 0, sys.__canvas.width, sys.__canvas.height]
+      }
+      else if (b.length <= 2) {
+        b.unshift(0)
+        b.unshift(0)
+      }
       sys.__ctx.clearRect(b[0], b[1], b[2], b[3])
     },
     return_none: true
