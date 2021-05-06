@@ -1,5 +1,3 @@
-const { func } = require("testdouble")
-
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
 module.exports = {
