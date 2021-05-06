@@ -315,11 +315,19 @@ module.exports = {
     },
     return_none: false
   },
-  '描画フォント設定': { // @ 描画フォントを指定する(CSSのフォント設定と同じ 例「36px Aria」) // @ びょうがふぉんとせってい
+  '描画フォント設定': { // @ 描画フォントを指定する(CSSのフォント設定と同じ 例「36px Aria」)。フォントサイズのみの指定も可。 // @ びょうがふぉんとせってい
     type: 'func',
     josi: [['を', 'の', 'で', 'に']],
     pure: true,
     fn: function (n, sys) {
+      // 数値だけならフォントサイズのみの指定
+      if (typeof(n) === 'number') {
+        n = n + 'px sans-serif'
+      }
+      // ピクセル数のみの指定なら適当にフォントを足す
+      else if (/^[0-9]+(px|em)$/.test(n)) {
+        n = n + ' sans-serif'
+      }
       sys.__ctx.font = n
     },
     return_none: true
@@ -334,13 +342,13 @@ module.exports = {
     },
     return_none: true
   },
-  '描画起点設定': { // @ 描画位置の起点を[x,y]へ設定する(translate) // @ びょうがきてんせってい
+  '文字描画幅取得': { // @ テキストSを指定して文字の描画幅を取得する // @ もじびょうがはばしゅとく
     type: 'func',
-    josi: [['へ', 'に']],
+    josi: [['の']],
     pure: true,
-    fn: function (xy, sys) {
+    fn: function (s, sys) {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      sys.__ctx.translate(xy[0],xy[1])
+      return sys.__ctx.measureText(s)
     },
     return_none: true
   },
