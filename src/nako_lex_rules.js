@@ -27,8 +27,6 @@ module.exports = {
     {name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment},
     {name: 'def_test', pattern: /^●テスト:/},
     {name: 'def_func', pattern: /^●/},
-    {name: 'number', pattern: /^非数/, readJosi: true, cb: () => { return NaN } },
-    {name: 'number', pattern: /^無限大/, readJosi: true, cb: () => { return Infinity } },
     {name: 'number', pattern: /^0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*/, readJosi: true, cb: parseNumber},
     {name: 'number', pattern: /^0[oO][0-7]+(_[0-7]+)*/, readJosi: true, cb: parseNumber},
     {name: 'number', pattern: /^0[bB][0-1]+(_[0-1]+)*/, readJosi: true, cb: parseNumber},

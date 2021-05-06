@@ -97,7 +97,9 @@ const PluginSystem = {
   '回数': {type: 'const', value: ''}, // @かいすう
   'CR': {type: 'const', value: '\r'}, // @CR
   'LF': {type: 'const', value: '\n'}, // @LF
-  '空配列': { // @空の配列を返す // @からはいれつ
+  '非数': {type: 'const', value: NaN}, // @ひすう
+  '無限大': {type: 'const', value: Infinity}, // @むげんだい
+  '空配列': { // @空の配列を返す。『[]』と同義。 // @からはいれつ
     type: 'func',
     josi: [],
     pure: true,
@@ -105,7 +107,15 @@ const PluginSystem = {
       return []
     }
   },
-  '空ハッシュ': { // @空のハッシュを返す // @からはっしゅ
+  '空辞書': { // @空の辞書型を返す。『{}』と同義。 // @からじしょ
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      return []
+    }
+  },
+  '空ハッシュ': { // @空のハッシュを返す(v3.2以降非推奨) // @からはっしゅ
     type: 'func',
     josi: [],
     pure: true,
@@ -113,7 +123,7 @@ const PluginSystem = {
       return {}
     }
   },
-  '空オブジェクト': { // @空のオブジェクトを返す // @からおぶじぇくと
+  '空オブジェクト': { // @空のオブジェクトを返す(v3.2以降非推奨) // @からおぶじぇくと
     type: 'func',
     josi: [],
     pure: false,
