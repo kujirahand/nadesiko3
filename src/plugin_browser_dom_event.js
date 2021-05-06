@@ -1,5 +1,5 @@
 module.exports = {
-  // @DOM操作/イベント
+  // @DOM操作とイベント
   'DOMイベント追加': { // @DOMのEVENTになでしこ関数名funcStrのイベントを追加// @DOMいべんとついか
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
