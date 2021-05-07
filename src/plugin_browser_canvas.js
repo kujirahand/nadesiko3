@@ -278,7 +278,7 @@ module.exports = {
     },
     return_none: false
   },
-  '画像部分描画': { // @ 画像IMG(またはURL)の座標[sx, sy, sw, sh]を描画先座標[dx, dy, dw, dh]へ描画し、Imageオブジェクトを返す // @ がぞうかくだいびょうが
+  '画像部分描画': { // @ 画像IMG(またはURL)の座標[sx, sy, sw, sh]を描画先座標[dx, dy, dw, dh]へ描画し、Imageオブジェクトを返す // @ がぞうぶぶんびょうが
     type: 'func',
     josi: [['の'], ['を', 'から'], ['へ', 'に']],
     pure: true,
