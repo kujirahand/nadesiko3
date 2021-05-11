@@ -134,11 +134,9 @@ const PluginBrowser = {
             e.dom.removeEventListener(e.event, e.func)
             sys.__dom_events.splice(i, 1)
             result = true
-            console.log('remove:', e.dom, e.event)
             break
           }
         }
-        if (!result) { console.log('『DOMイベント削除』で見つかりませんでした。', event, dom. func) }
       }
       // DOMイベント全クリア
       sys.__removeAllDomEvent = () => {

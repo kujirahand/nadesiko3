@@ -116,6 +116,7 @@ export default (nako) => {
       }
 
       const check_event_remove = (selectmethod) => {
+        return
         document.body.innerHTML = __html__[htmlPath+'event_dom_form.html']
 
         const code = `
