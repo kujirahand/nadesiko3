@@ -58,6 +58,96 @@ const PluginBrowser = {
       sys.__v0['NAVIGATOR'] = navigator
       sys.__v0['DOM親要素'] = document.body
       sys.__v0['ブラウザURL'] = window.location.href
+      
+      // 「!クリア」でDOMイベントを削除するため
+      sys.__dom_events = [] // [{}, {}, {} ...]
+      // DOM追加イベント
+      sys.__addEvent = (dom, event, func, setHandler) => {
+        // target
+        if (typeof(dom) === 'string') {
+          dom = document.querySelector(dom)
+          if (!dom){ throw new Error('DOMイベントが追加できません。要素が見当たりません。') }
+        }
+        // func
+        if (typeof(func) === 'string') {
+          func = sys.__findVar(func, null)
+          if (!func){ throw new Error('DOMイベントが追加できません。関数が見当たりません。') }
+        }
+        // make wrapper func
+        const wrapperFunc = (e) => {
+          sys.__v0['対象'] = e.target
+          sys.__v0['対象イベント'] = e
+          // 追加データが得られる場合
+          if (setHandler) {setHandler(e, sys)}
+          return func(e, sys)
+        }
+        // add
+        sys.__dom_events.push({dom, event, func:wrapperFunc, rawFunc:func})
+        dom.addEventListener(event, wrapperFunc)
+      }
+      // キーイベントハンドラ
+      sys.__keyHandler = (e, sys) => {
+        sys.__v0['押キー'] = e.key
+      }
+      // マウスイベントハンドラ
+      sys.__mouseHandler = (e, sys) => {
+        const box = e.target.getBoundingClientRect()
+        sys.__v0['マウスX'] = e.clientX - box.left
+        sys.__v0['マウスY'] = e.clientY - box.top
+      }
+      // タッチイベントハンドラ
+      sys.__touchHandler = (e, sys) => {
+        const box = e.target.getBoundingClientRect()
+        const touches = e.changedTouches
+        if (touches.length <= 0) return
+        const ts = []
+        for (let i = 0; i < touches.length; i++) {
+          const t = touches[i]
+          const tx = t.clientX - box.left
+          const ty = t.clientY - box.top
+          if (i == 0) {
+            sys.__v0['タッチX'] = tx
+            sys.__v0['タッチY'] = ty
+          }
+          ts.push([tx, ty])
+        }
+        sys.__v0['タッチ配列'] = ts
+        return ts
+      }
+      // DOMイベント削除 (探して削除)
+      sys.__removeEvent = (dom, event, func) => {
+        // target
+        if (typeof(target) === 'string') {
+          dom = document.querySelector(dom)
+          if (!dom){ throw new Error('DOMイベントが削除できません。要素が見当たりません。') }
+        }
+        // func
+        if (typeof(func) === 'string') {
+          func = sys.__findVar(func, null)
+          if (!func){ throw new Error('DOMイベントが削除できません。関数が見当たりません。') }
+        }
+        // find
+        let result = false
+        for (let i = 0; i < sys.__dom_events.length; i++) {
+          const e = sys.__dom_events[i]
+          if (e.dom == dom && e.event == event && e.rawFunc == func) {
+            e.dom.removeEventListener(e.event, e.func)
+            sys.__dom_events.splice(i, 1)
+            result = true
+            console.log('remove:', e.dom, e.event)
+            break
+          }
+        }
+        if (!result) { console.log('『DOMイベント削除』で見つかりませんでした。', event, dom. func) }
+      }
+      // DOMイベント全クリア
+      sys.__removeAllDomEvent = () => {
+        sys.__dom_events.forEach(e => {
+          console.log(e.event, e.dom, e)
+          e.dom.removeEventListener(e.event, e.func)
+        })
+        sys.__dom_events = []
+      }
     }
   },
   '!クリア': {
@@ -65,9 +155,12 @@ const PluginBrowser = {
     josi: [],
     pure: false,
     fn: function (sys) {
+      // chart.jsを破棄
       if (sys.__chartjs) {
         sys.__chartjs.destroy()
       }
+      // 全DOMイベントをクリア
+      sys.__removeAllDomEvent()
     }
   },
 }
