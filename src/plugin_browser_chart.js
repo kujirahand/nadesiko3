@@ -17,7 +17,11 @@ module.exports = {
       if (data['タイプ']) { data['type'] = data['タイプ'] }
       if (data['データ']) { data['data'] = data['データ'] }
       if (data['オプション']) { data['options'] = data['オプション'] }
+      if (sys.__chartjs) {
+        sys.__chartjs.destroy()
+      }
       const chart = new Chart(sys.__canvas, data)
+      sys.__chartjs = chart
       return chart
     }
   },

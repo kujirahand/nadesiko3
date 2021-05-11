@@ -59,7 +59,17 @@ const PluginBrowser = {
       sys.__v0['DOM親要素'] = document.body
       sys.__v0['ブラウザURL'] = window.location.href
     }
-  }
+  },
+  '!クリア': {
+    type: 'func',
+    josi: [],
+    pure: false,
+    fn: function (sys) {
+      if (sys.__chartjs) {
+        sys.__chartjs.destroy()
+      }
+    }
+  },
 }
 
 BrowserParts.forEach((a) => {
