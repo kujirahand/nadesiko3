@@ -63,7 +63,7 @@ const PluginBrowser = {
       sys.__dom_events = [] // [{}, {}, {} ...]
       // DOM追加イベント
       sys.__addEvent = (dom, event, func, setHandler) => {
-        // target
+        // dom 
         if (typeof(dom) === 'string') {
           dom = document.querySelector(dom)
           if (!dom){ throw new Error('DOMイベントが追加できません。要素が見当たりません。') }
@@ -116,8 +116,8 @@ const PluginBrowser = {
       }
       // DOMイベント削除 (探して削除)
       sys.__removeEvent = (dom, event, func) => {
-        // target
-        if (typeof(target) === 'string') {
+        // dom 
+        if (typeof(dom) === 'string') {
           dom = document.querySelector(dom)
           if (!dom){ throw new Error('DOMイベントが削除できません。要素が見当たりません。') }
         }
