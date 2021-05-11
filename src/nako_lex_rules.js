@@ -54,7 +54,7 @@ module.exports = {
     {name: 'gt', pattern: /^>/},
     {name: 'lt', pattern: /^</},
     {name: 'and', pattern: /^(かつ|&&)/},
-    {name: 'or', pattern: /^(または|\|\|)/},
+    {name: 'or', pattern: /^(または|或いは|あるいは|\|\|)/},
     {name: '@', pattern: /^@/},
     {name: '+', pattern: /^\+/},
     {name: '-', pattern: /^-/},
