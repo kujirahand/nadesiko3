@@ -9,6 +9,7 @@ const removeJosiMap = nakoJosiList.removeJosiMap
 const hira = /^[ぁ-ん]/
 const allHiragana = /^[ぁ-ん]+$/
 const wordHasIjoIka = /^.+(以上|以下|超|未満)$/
+const unitRE = /^(円|ドル|元|歩|㎡|坪|度|℃|°|個|つ|本|冊|才|歳|匹|枚|皿|セット|羽|人|件|行|列|機|品|m|mm|cm|km|g|kg|t|px|dot|pt|em|b|mb|kb|gb)/
 
 const errorRead = (ch) =>{ 
   return (function() { throw new Error('突然の『' + ch + '』があります。')})
@@ -27,6 +28,7 @@ module.exports = {
     {name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment},
     {name: 'def_test', pattern: /^●テスト:/},
     {name: 'def_func', pattern: /^●/},
+    // 数値の判定 --- この後nako_lexerにて単位を読む処理が入る(#994)
     {name: 'number', pattern: /^0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*/, readJosi: true, cb: parseNumber},
     {name: 'number', pattern: /^0[oO][0-7]+(_[0-7]+)*/, readJosi: true, cb: parseNumber},
     {name: 'number', pattern: /^0[bB][0-1]+(_[0-1]+)*/, readJosi: true, cb: parseNumber},
@@ -94,7 +96,8 @@ module.exports = {
       cbParser: cbWordParser
     }
   ],
-  trimOkurigana
+  trimOkurigana,
+  unitRE
 }
 
 function parseInt2(s) {

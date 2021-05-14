@@ -389,7 +389,6 @@ class NakoLexer {
                 filename,
               )
             }
-
             let offset = 0
             for (let i = 0; i < list.length; i++) {
               const josi = (i === list.length - 1) ? rp.josi : ''
@@ -441,6 +440,17 @@ class NakoLexer {
         if (rule.name === 'eol' && value === '\n' || rule.name === '_eol') {
           value = line++
           column = 1
+        }
+
+        // 数値なら単位を持つか？ --- #994
+        if (rule.name == 'number') {
+          // 単位があれば読み飛ばす
+          const um = lexRules.unitRE.exec(src)
+          if (um) {
+            src = src.substr(um[0].length)
+            console.log('>>>', um)
+            column += m[0].length
+          }
         }
 
         let josi = ''
