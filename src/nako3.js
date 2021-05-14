@@ -56,6 +56,8 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  *   startOffset: number | null
  *   endOffset: number | null
  *   rawJosi?: string
+ *   vartype?: string
+ *   index?: Ast[]
  *   end?: {
  *     startOffset: number | null
  *     endOffset: number | null

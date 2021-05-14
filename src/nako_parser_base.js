@@ -40,7 +40,7 @@ class NakoParserBase {
 
   /**
    * 特定の助詞を持つ要素をスタックから一つ下ろす、指定がなければ末尾を下ろす
-   * @param josiList 下ろしたい助詞の配列
+   * @param {string[]} josiList 下ろしたい助詞の配列
    * @returns {import('./nako3').Ast | null | undefined}
    */
   popStack (josiList) {

@@ -448,7 +448,6 @@ class NakoLexer {
           const um = lexRules.unitRE.exec(src)
           if (um) {
             src = src.substr(um[0].length)
-            console.log('>>>', um)
             column += m[0].length
           }
         }
