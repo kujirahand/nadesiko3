@@ -1,6 +1,7 @@
 const assert = require('assert')
 const { NakoImportError } = require('../../src/nako_errors')
 const CNako3 = require('../../src/cnako3')
+const path = require('path')
 
 describe('require_nako3_test', () => {
   const nako = new CNako3()
@@ -52,7 +53,7 @@ describe('require_nako3_test', () => {
       )
   })
   it('『プラグイン名』のテスト。(#956)', () => {
-    const fname = __dirname + '/requiretest_name.nako3'
+    const fname = __dirname + path.sep + 'requiretest_name.nako3'
     cmp('!「' + fname + '」を取り込む。リクエスト名前取得して表示。', fname)
   })
 })

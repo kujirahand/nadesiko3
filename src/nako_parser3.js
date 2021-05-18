@@ -82,6 +82,7 @@ class NakoParser extends NakoParserBase {
 
     // 先読みして初めて確定する構文
     if (this.accept([this.ySpeedMode])) {return this.y[0]}
+    if (this.accept([this.yPerformanceMonitor])) {return this.y[0]}
     if (this.accept([this.yLet])) {return this.y[0]}
     if (this.accept([this.yDefTest])) {return this.y[0]}
     if (this.accept([this.yDefFunc])) {return this.y[0]}
@@ -365,6 +366,59 @@ class NakoParser extends NakoParserBase {
 
     return {
       type: 'speed_mode',
+      options,
+      block,
+      line: optionNode.line,
+      josi: '',
+      ...map,
+    }
+  }
+
+  yPerformanceMonitor () {
+    const map = this.peekSourceMap()
+    if (!this.check2(['string', 'パフォーマンスモニタ適用'])) {
+      return null
+    }
+    const optionNode = this.get()
+    this.get()
+
+    const options = { 'ユーザ関数': false, 'システム関数本体': false, 'システム関数': false }
+    for (const name of optionNode.value.split('/')) {
+      // 全て有効化
+      if (name === '全て') {
+        for (const k of Object.keys(options)) {
+          options[k] = true
+        }
+        break
+      }
+
+      // 個別に有効化
+      if (Object.keys(options).includes(name)) {
+        options[name] = true
+      } else {
+        // 互換性を考えて、警告に留める。
+        this.logger.warn(`パフォーマンスモニタ適用文のオプション『${name}』は存在しません。`, optionNode)
+      }
+    }
+
+    let multiline = false
+    if (this.check('ここから')) {
+      this.get()
+      multiline = true
+    } else if (this.check('eol')) {
+      multiline = true
+    }
+
+    let block = null
+    if (multiline) {
+      block = this.yBlock()
+      if (this.check('ここまで')) {this.get()}
+    } else {
+      block = this.ySentence()
+    }
+
+    return {
+      type: 'performance_monitor',
       options,
       block,
       line: optionNode.line,

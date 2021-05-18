@@ -128,6 +128,14 @@ try {
       invalidSore: 0,          // 「それ」を用いない
       forcePure: 0,            // 全てのシステム命令をpureとして扱う。命令からローカル変数への参照が出来なくなる。
     }
+
+    // 1以上のとき測定をinjectする。
+    // パフォーマンスモニタのブロック内で1増える。
+    this.performanceMonitor = {
+      userFunction: 0,         // 呼び出されたユーザ関数
+      systemFunction: 0,       // システム関数(呼び出しコードを含む)
+      systemFunctionBody: 0,   // システム関数(呼び出しコードを除く)
+    }
   }
 
   /**
@@ -363,6 +371,13 @@ try {
           } else {
             registFunc(t)
           }
+        } else
+        if (t.type === 'performance_monitor') {
+          if (t.block.type === 'block') {
+            registFunc(t.block)
+          } else {
+            registFunc(t)
+          }
         }
       }
     }
@@ -481,6 +496,9 @@ try {
         break
       case 'speed_mode':
         code += this.convSpeedMode(node, isExpression)
+        break
+      case 'performance_monitor':
+        code += this.convPerformanceMonitor(node, isExpression)
         break
       case 'while':
         code += this.convWhile(node)
@@ -634,7 +652,39 @@ try {
   }
 
   convDefFuncCommon (node, name) {
-    let variableDeclarations = '(function(){\n'
+    // パフォーマンスモニタ:ユーザ関数のinjectの定義
+    let performanceMonitorInjectAtStart = ''
+    let performanceMonitorInjectAtEnd = ''
+    if (this.performanceMonitor.userFunction !== 0) {
+      let key = name
+      if (!key) {
+        if (typeof this.performanceMonitor.mumeiId === 'undefined') {
+          this.performanceMonitor.mumeiId = 0
+        }
+        this.performanceMonitor.mumeiId++;
+        key = `anous_${this.performanceMonitor.mumeiId}`
+      }
+      performanceMonitorInjectAtStart = 'const performanceMonitorEnd = (function (key, type) {\n'+
+        'const uf_start = performance.now() * 1000;\n'+
+        'return function () {\n'+
+        'const el_time = performance.now() * 1000 - uf_start;\n'+
+        'if (!__self.__performance_monitor) {\n'+
+        '__self.__performance_monitor={};\n'+
+        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n'+
+        '} else if (!__self.__performance_monitor[key]) {\n'+
+        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n'+
+        '} else {\n'+
+        '__self.__performance_monitor[key].called++;\n'+
+        '__self.__performance_monitor[key].totel_usec+=el_time;\n'+
+        'if(__self.__performance_monitor[key].min_usec>el_time){__self.__performance_monitor[key].min_usec=el_time;}\n'+
+        'if(__self.__performance_monitor[key].max_usec<el_time){__self.__performance_monitor[key].max_usec=el_time;}\n'+
+        `}};})('${key}', 'user');`+
+        'try {\n'
+      performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n'
+    }
+    let topOfFunction = '(function(){\n'
+    let endOfFunction = '})'
+    let variableDeclarations = ''
     const initialNames = new Set()
     if (this.speedMode.invalidSore === 0) {
       initialNames.add('それ')
@@ -671,8 +721,10 @@ try {
     if (this.speedMode.invalidSore === 0) {
       code += `  return (${this.varname('それ')});\n`
     }
+    //パフォーマンスモニタ:ユーザ関数のinject
+    code += performanceMonitorInjectAtEnd
     // 関数の末尾に、ローカル変数をPOP
-    code += `})`
+    code += endOfFunction
 
     // 関数内で定義されたローカル変数の宣言
     let needsVarsObject = false
@@ -699,7 +751,7 @@ try {
         variableDeclarations += `  ${this.varname('それ')} = '';`
       }
     }
-    code = variableDeclarations + code
+    code = topOfFunction + performanceMonitorInjectAtStart + variableDeclarations + code
 
     if (name)
       {this.nako_func[name].fn = code}
@@ -919,6 +971,28 @@ try {
     }
   }
 
+  /**
+   * @param {Ast} node
+   * @param {boolean} isExpression
+   */
+  convPerformanceMonitor (node, isExpression) {
+    const prev = { ...this.performanceMonitor }
+    if (node.options['ユーザ関数']) {
+      this.performanceMonitor.userFunction++
+    }
+    if (node.options['システム関数本体']) {
+      this.performanceMonitor.systemFunctionBody++
+    }
+    if (node.options['システム関数']) {
+      this.performanceMonitor.systemFunction++
+    }
+    try {
+      return this._convGen(node.block, isExpression)
+    } finally {
+      this.performanceMonitor = prev
+    }
+  }
+
   convWhile (node) {
     const cond = this._convGen(node.cond, true)
     const block = this.convGenLoop(node.block)
@@ -1116,6 +1190,35 @@ try {
     // 関数呼び出しコードの構築
     let argsCode = args.join(',')
     let funcCall = `${res.js}(${argsCode})`
+
+    if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
+      let key = funcName
+      if (!key) {
+        if (typeof this.performanceMonitor.mumeiId === 'undefined') {
+          this.performanceMonitor.mumeiId = 0
+        }
+        this.performanceMonitor.mumeiId++;
+        key = `anous_${this.performanceMonitor.mumeiId}`
+      }
+      funcCall = '(function (key, type) {\n'+
+        'const sbf_start = performance.now() * 1000;\n' +
+        'try {\n'+
+        'return '+funcCall+';\n'+
+        '} finally {\n'+
+        'const sbl_time = performance.now() * 1000 - sbf_start;\n'+
+        'if (!__self.__performance_monitor) {\n'+
+        '__self.__performance_monitor={};\n'+
+        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n'+
+        '} else if (!__self.__performance_monitor[key]) {\n'+
+        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n'+
+        '} else {\n'+
+        '__self.__performance_monitor[key].called++;\n'+
+        '__self.__performance_monitor[key].totel_usec+=sbl_time;\n'+
+        'if(__self.__performance_monitor[key].min_usec>sbl_time){__self.__performance_monitor[key].min_usec=sbl_time;}\n'+
+        'if(__self.__performance_monitor[key].max_usec<sbl_time){__self.__performance_monitor[key].max_usec=sbl_time;}\n'+
+        `}}})('${funcName}_body', 'sysbody')\n`
+    }
+
     let code = ``
     if (func.return_none) {
       if (funcEnd === '') {
@@ -1144,6 +1247,27 @@ try {
       // ...して
       if (node.josi === 'して' || (node.josi === '' && !isExpression)){code += ';\n'}
     }
+
+    if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
+      code = '(function (key, type) {\n'+
+        'const sf_start = performance.now() * 1000;\n' +
+        'try {\n'+
+        'return '+code+';\n'+
+        '} finally {\n'+
+        'const sl_time = performance.now() * 1000 - sf_start;\n'+
+        'if (!__self.__performance_monitor) {\n'+
+        '__self.__performance_monitor={};\n'+
+        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n'+
+        '} else if (!__self.__performance_monitor[key]) {\n'+
+        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n'+
+        '} else {\n'+
+        '__self.__performance_monitor[key].called++;\n'+
+        '__self.__performance_monitor[key].totel_usec+=sl_time;\n'+
+        'if(__self.__performance_monitor[key].min_usec>sl_time){__self.__performance_monitor[key].min_usec=sl_time;}\n'+
+        'if(__self.__performance_monitor[key].max_usec<sl_time){__self.__performance_monitor[key].max_usec=sl_time;}\n'+
+        `}}})('${funcName}_sys', 'system')\n`
+    }
+
     return code
   }
 
