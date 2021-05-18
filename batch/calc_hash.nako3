@@ -1,7 +1,7 @@
 # release/*.js のハッシュを求める
 ROOT_DIR=母艦パスを「../」で相対パス展開
 VER=ナデシコバージョン
-
+// aaaaa
 JSDEF=""
 JSHASH=""
 

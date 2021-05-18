@@ -138,6 +138,8 @@ const PluginBrowser = {
           }
         }
       }
+      // requestAnimationFrame のためのid
+      sys.__requestAnimationFrameLastId = 0
       // DOMイベント全クリア
       sys.__removeAllDomEvent = () => {
         sys.__dom_events.forEach(e => {
@@ -145,6 +147,11 @@ const PluginBrowser = {
           e.dom.removeEventListener(e.event, e.func)
         })
         sys.__dom_events = []
+        // requestAnimationFrame
+        if (sys.__requestAnimationFrameLastId > 0) {
+          window.cancelAnimationFrame(sys.__requestAnimationFrameLastId)
+          sys.__requestAnimationFrameLastId = 0
+        }
       }
     }
   },

@@ -175,8 +175,8 @@ module.exports = {
     fn: function (func, sys) {
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       if (!func) {throw new Error('『画面更新時実行』で関数の取得に失敗しました。')}
-      return window.requestAnimationFrame(func)
-      // このイベントをなでしこ側で管理すべきか考えたが、一度発火して終了するだけなので、なでしこ側では関知しないことに決めた #991
+      sys.__requestAnimationFrameLastId =  window.requestAnimationFrame(func)
+      return sys.__requestAnimationFrameLastId
     }
   },
   '画面更新処理取消': { // @識別IDを指定して『画面更新時実行』を取り消す// @がめんこうしんしょりとりけし
@@ -185,6 +185,7 @@ module.exports = {
     pure: false,
     fn: function (id, sys) {
       window.cancelAnimationFrame(id)
+      if (sys.__requestAnimationFrameLastId === id) {sys.__requestAnimationFrameLastId = 0}
     },
     return_none: true
   }
