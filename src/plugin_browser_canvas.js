@@ -437,9 +437,25 @@ module.exports = {
       if (typeof dom === 'string') { dom = document.querySelector(dom)}
       if (!dom){ throw new Error('『描画ダウンロードリンク作成』でDOMが見当たりません。')}
       const cv = sys.__v0['描画中キャンバス']
+      if (!cv){ throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。')}
       dom.href = cv.toDataURL('image/png')
       dom.download = 'canvas.png'
     },
     return_none: true
+  },
+  '描画ダウンロード': { // @ 描画内容をPNG形式のデータURLに変換してダウンロードする。(「クリックした時」などと組み合わせて使う) // @ びょうがだうんろーど
+    type: 'func',
+    josi: [],
+    pure: false,
+    fn: function (sys) {
+      if (typeof dom === 'string') { dom = document.querySelector(dom)}
+      const cv = sys.__v0['描画中キャンバス']
+      if (!cv){ throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。')}
+      const a = document.createElement('a')
+      a.href = cv.toDataURL('image/png')
+      a.download = 'canvas.png'
+      a.click()
+      return true
+    }
   }
 }
