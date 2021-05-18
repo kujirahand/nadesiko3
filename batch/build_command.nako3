@@ -12,13 +12,20 @@
 
 # バッチを実行
 基本パスを表示。
+# 命令一覧をピックアップして必要な形式に変換
 「{基本パス}/batch/pickup_command.nako3」をCNAKO実行。
 「{基本パス}/batch/cmd_txt2json.nako3」をCNAKO実行。
+# JSファイルのハッシュを計算
+「{基本パス}/batch/calc_hash」をCNAKO実行。
+# 助詞一覧、予約語一覧を生成
+助詞一覧取得してJSONエンコード整形してSに代入。
+「{基本パス}/release/josi.json」にSを保存。
+予約語一覧取得してJSONエンコード整形してSに代入。
+「{基本パス}/release/yoyakugo.json」にSを保存。
+
+# Windows版のnakopad用ファイルを生成してファイルをコピー
 「{基本パス}/batch/gen_command_nakopad.nako3」をCNAKO実行。
-
-# 必要に応じてファイルをコピー
 「{基本パス}/batch/command_nakopad.txt」から「{基本パス}/installer/nako3-win32-template/bin/tools/command.txt」へファイルコピー。
-
 
 ●CNAKO実行(Cを)
     CMD=「node {基本パス}/src/cnako3.js {C}」
@@ -31,7 +38,7 @@
     Sで「[警告]」が何文字目か
     もし、それ>0ならば、いいえを成功フラグに代入。
     もし、成功フラグ＝いいえならば
-    　　「[コマンド生成の失敗]: {S}」を表示
+    　　「⚠︎⚠︎⚠︎[コマンド生成の失敗]: {S}」を表示
     　　終わり。
     ここまで。
 ここまで。
