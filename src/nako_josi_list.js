@@ -41,5 +41,6 @@ const josiRE = new RegExp('^(' + josiList.join('|') + ')')
 module.exports = {
   josiRE,
   tararebaMap,
-  removeJosiMap
+  removeJosiMap,
+  josiList
 }

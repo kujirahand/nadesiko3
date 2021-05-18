@@ -2016,6 +2016,28 @@ const PluginSystem = {
       return a
     }
   },
+  '助詞一覧取得': { // @文法として定義されている助詞の一覧を取得する // @じょしいちらんしゅとく
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function () {
+      const josi = require('./nako_josi_list.js')
+      return josi.josiList
+    }
+  },
+  '予約語一覧取得': { // @文法として定義されている予約語の一覧を取得する // @よやくごいちらんしゅとく
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function () {
+      const words = require('./nako_reserved_words.js')
+      const w = []
+      for (let key in words) {
+        w.push(key)
+      }
+      return w
+    }
+  },
   // @プラグイン管理
   'プラグイン名': {type: 'const', value: 'メイン'}, // @ぷらぐいんめい
   'プラグイン名設定': { // @プラグイン名をSに変更する // @プラグインめいせってい
