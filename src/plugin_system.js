@@ -476,10 +476,18 @@ const PluginSystem = {
     pure: false,
     fn: function (f, sys) {
       if (typeof f === 'string') {f = sys.__findFunc(f, '実行時間計測')}
-      const t1 = Date.now()
-      f(sys)
-      const t2 = Date.now()
-      return (t2 - t1)
+      // 
+      if (performance && performance.now) {
+        const t1 = performance.now()
+        f(sys)
+        const t2 = performance.now()
+        return (t2 - t1)
+      } else {
+        const t1 = Date.now()
+        f(sys)
+        const t2 = Date.now()
+        return (t2 - t1)
+      }
     }
   },
 
@@ -1960,6 +1968,21 @@ const PluginSystem = {
       const a = s.split('/')
       const t = new Date(a[0], a[1]-1, a[2])
       return t.getDay()
+    }
+  },
+  '時間ミリ秒取得': { // @ミリ秒単位の時間を数値で返す。結果は実装に依存する。 // @じかんみりびょうしゅとく
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function () {
+      if (performance && performance.now) {
+        return performance.now()
+      } else if (Date.now) {
+        return Date.now()
+      } else {
+        const now = new Date()
+        return now.getTime()
+      }
     }
   },
   // @デバッグ支援
