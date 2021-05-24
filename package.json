@@ -137,7 +137,7 @@
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.1.1",
     "testdouble": "^3.16.1",
-    "textlint": "^11.8.2",
+    "textlint": "^12.0.0",
     "textlint-rule-abbr-within-parentheses": "^1.0.2",
     "textlint-rule-footnote-order": "^1.0.3",
     "textlint-rule-general-novel-style-ja": "^1.3.0",
