@@ -5,6 +5,8 @@ const opPriority = {
   // compare
   'eq': 2,
   'noteq': 2,
+  '===': 2,
+  '!==': 2,
   'gt': 2,
   'gteq': 2,
   'lt': 2,

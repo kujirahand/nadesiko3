@@ -46,6 +46,8 @@ module.exports = {
     {name: 'shift_r0', pattern: /^>>>/},
     {name: 'shift_r', pattern: /^>>/},
     {name: 'shift_l', pattern: /^<</},
+    {name: '===', pattern: /^===/}, // #999
+    {name: '!==', pattern: /^!==/}, // #999
     {name: 'gteq', pattern: /^(≧|>=|=>)/},
     {name: 'lteq', pattern: /^(≦|<=|=<)/},
     {name: 'noteq', pattern: /^(≠|<>|!=)/},
