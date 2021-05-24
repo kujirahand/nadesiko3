@@ -1,6 +1,6 @@
 module.exports = {
   // @AJAXとHTTP
-  'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
+  'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。『AJAXオプション』を指定できる。 // @AJAXそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
@@ -16,6 +16,15 @@ module.exports = {
         console.log('[fetch.error]', err)
         sys.__v0['AJAX:ONERROR'](err)
       })
+    },
+    return_none: true
+  },
+  'AJAX受信時': { // @非同期通信(Ajax)を利用してURLからデータを受信した時callbackが実行される。その際『対象』にデータが代入される。『AJAXオプション』を指定できる。 // @AJAXじゅしんしたとき
+    type: 'func',
+    josi: [['で'], ['から', 'を']],
+    pure: true,
+    fn: function (callback, url, sys) {
+      sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
   },
@@ -48,7 +57,6 @@ module.exports = {
     pure: false,
     fn: function (callback, url, params, sys) {
       let bodyData = sys.__exec('POSTデータ生成', [params, sys])
-      console.log("bodyData=", bodyData)
       const options = {
         method: 'POST',
         headers: {
