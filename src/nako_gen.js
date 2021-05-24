@@ -509,7 +509,7 @@ try {
       case 'let_array':
         code += this.convLetArray(node)
         break
-      case 'ref_array':
+      case '配列参照':
         code += this.convRefArray(node)
         break
       case 'json_array':

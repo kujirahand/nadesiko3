@@ -865,12 +865,12 @@ class NakoParser extends NakoParserBase {
         const dainyu = this.get()
         const value = this.popStack(['を'])
         const word = this.popStack(['へ', 'に'])
-        if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
+        if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== '配列参照')) {
           throw NakoSyntaxError.fromNode('代入文で代入先の変数が見当たりません。', dainyu)
         }
 
         switch (word.type) {
-          case 'ref_array': // 配列への代入
+          case '配列参照': // 配列への代入
             return {type: 'let_array', name: word.name, index: word.index, value: value, josi: '', ...map, end: this.peekSourceMap()}
           default:
             return {type: 'let', name: word, value: value, josi: '', ...map, end: this.peekSourceMap()}
@@ -1506,41 +1506,61 @@ class NakoParser extends NakoParserBase {
     return null
   }
 
+  yValueWordGetIndex (ast) {
+    // word @ a, b, c
+    if (this.check('@')) {
+      if (this.accept(['@', this.yValue, 'comma', this.yValue, 'comma', this.yValue])) {
+        ast.index.push(this.y[1])
+        ast.index.push(this.y[3])
+        ast.index.push(this.y[5])
+        ast.josi = this.y[5].josi
+        return true
+      }
+      if (this.accept(['@', this.yValue, 'comma', this.yValue])) {
+        ast.index.push(this.y[1])
+        ast.index.push(this.y[3])
+        ast.josi = this.y[3].josi
+        return true
+      }
+      if (this.accept(['@', this.yValue])) {
+        ast.index.push(this.y[1])
+        ast.josi = this.y[1].josi
+        return true
+      }
+      throw NakoSyntaxError.fromNode('変数の後ろの『@要素』の指定が不正です。', ast.name)
+    }
+    if (this.check('[')) {
+      if (this.accept(['[', this.yCalc, ']'])) {
+        ast.index.push(this.y[1])
+        ast.josi = this.y[2].josi
+        return true
+      }
+    }
+    return false
+  }
+
   /** @returns {Ast | null} */
   yValueWord () {
     const map = this.peekSourceMap()
     if (this.check('word')) {
       const word = this.get()
       if (this.skipRefArray) {return word}
-      if (word.josi === '' && this.checkTypes(['@', '['])) {
-        const list = []
-        let josi = ''
-        while (!this.isEOF()) {
-          let idx = null
-          if (this.accept(['@', this.yValue])) {
-            idx = this.y[1]
-            josi = idx.josi
-          }
-          else if (this.accept(['comma', this.yValue])) {
-            idx = this.y[1]
-            josi = idx.josi
-          }
-          else if (this.accept(['[', this.yCalc, ']'])) {
-            idx = this.y[1]
-            josi = this.y[2].josi
-          }
-          if (idx === null) {break}
-          list.push(idx)
-        }
-        if (list.length === 0) {throw NakoSyntaxError.fromNode(`配列『${word.value}』アクセスで指定ミス`, word)}
-        return {
-          type: 'ref_array',
+      
+      // word[n] || word@n
+      if (word.josi === '' && this.checkTypes(['[', '@'])) {
+        const ast = {
+          type: '配列参照',
           name: word,
-          index: list,
-          josi: josi,
+          index: [],
+          josi: '',
           ...map,
           end: this.peekSourceMap()
         }
+        while (!this.isEOF()) {
+          if (!this.yValueWordGetIndex(ast)) break
+        }
+        if (ast.index.length === 0) {throw NakoSyntaxError.fromNode(`配列『${word.value}』アクセスで指定ミス`, word)}
+        return ast
       }
       return word
     }
