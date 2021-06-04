@@ -530,13 +530,13 @@ const PluginNode = {
     },
     return_none: true
   },
-  '終了時': { // @Nodeでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010) // @しゅうりょうしたとき
+  '強制終了時': { // @Nodeでctrl+cでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010) // @きょうせいしゅうりょうしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
     fn: function (func, sys) {
       if (typeof(func) == 'string') {
-        func = sys.__findFunc(func, '終了時')
+        func = sys.__findFunc(func, '強制終了時')
       }
       process.on('SIGINT', (signal) => {
         const flag = func(sys)
