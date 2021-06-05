@@ -357,7 +357,7 @@ class CNako3 extends NakoCompiler {
    * @param {string} fname
    * @param {string} [preCode]
    */
-  run(code, fname, preCode = '') {
+  run (code, fname, preCode = '') {
     const tasks = this.loadDependencies(code, fname, preCode)
     if (tasks !== undefined) {
       throw new Error('assertion error')

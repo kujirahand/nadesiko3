@@ -55,11 +55,27 @@ class NakoParser extends NakoParserBase {
     return {type: 'block', block: blocks, ...map, end: this.peekSourceMap()}
   }
 
+  yEOL () {
+    // 行末のチェック #1009
+    const eol = this.get()
+    // スタックの確認
+    if (this.stack.length > 0) {
+      const words = []
+      this.stack.forEach((t) => {
+        words.push(this.nodeToStr(t, {depth:1}, false))
+      })
+      const desc = words.join(',')
+      throw NakoSyntaxError.fromNode(
+        `未解決の単語があります: [${desc}]`, eol)
+    }
+    return eol
+  }
+
   /** @returns {Ast | null} */
   ySentence () {
     const map = this.peekSourceMap()
     // 最初の語句が決まっている構文
-    if (this.check('eol')) {return this.get()}
+    if (this.check('eol')) {return this.yEOL()}
     if (this.check('もし')) {return this.yIF()}
     if (this.check('エラー監視')) {return this.yTryExcept()}
     if (this.check('逐次実行')) {return this.yTikuji()}

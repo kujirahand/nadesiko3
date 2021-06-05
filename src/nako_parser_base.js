@@ -234,7 +234,8 @@ class NakoParserBase {
         } else {
           return `${typeName('演算子')}『${operator}${debug}』`
         }
-      } case 'number':
+      }
+      case 'number':
         return `${typeName('数値')}${node.value}`
       case 'string':
         return `${typeName('文字列')}『${node.value}${debug}』`
@@ -244,7 +245,7 @@ class NakoParserBase {
         return `${typeName('関数')}『${node.name || node.value}${debug}』`
       case 'eol':
         return `行の末尾`
-      case 'eol':
+      case 'eof':
         return `ファイルの末尾`
       default: {
         let name = node.name
