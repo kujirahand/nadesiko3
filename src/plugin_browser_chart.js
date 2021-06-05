@@ -76,6 +76,72 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
+  '積上棒グラフ描画': { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげぼうぐらふびょうが
+    type: 'func',
+    josi: [['を', 'で', 'の']],
+    pure: false,
+    fn: function (data, sys) {
+      // グラフオプションの差分作成
+      const gopt = Object.assign({},
+        sys.__v0['グラフオプション'],
+        {
+          'indexAxis': 'x',
+          'scales': {
+            x: { stacked: true },
+            y: { stacked: true }
+          }
+        })
+      data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
+      const d = {
+        type: 'bar',
+        data: data,
+        options: gopt
+      }
+      return sys.__exec('グラフ描画', [d, sys])
+    }
+  },
+  '積上横棒グラフ描画': { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげよこぼうぐらふびょうが
+    type: 'func',
+    josi: [['を', 'で', 'の']],
+    pure: false,
+    fn: function (data, sys) {
+      // グラフオプションの差分作成
+      const gopt = Object.assign({},
+        sys.__v0['グラフオプション'],
+        {
+          'indexAxis': 'y',
+          'scales': {
+            x: { stacked: true },
+            y: { stacked: true }
+          }
+        })
+      data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
+      const d = {
+        type: 'bar',
+        data: data,
+        options: gopt
+      }
+      return sys.__exec('グラフ描画', [d, sys])
+    }
+  },
+  '散布図描画': { // @ 散布図を描画 // @さんぷず
+    type: 'func',
+    josi: [['を', 'で', 'の']],
+    pure: false,
+    fn: function (data, sys) {
+      // グラフオプションの差分作成
+      const gopt = Object.assign({},
+        sys.__v0['グラフオプション'],
+        {})
+      data = sys.__exec('二次元グラフデータ変形', ['scatter', data, sys])
+      const d = {
+        type: 'scatter',
+        data: data,
+        options: gopt
+      }
+      return sys.__exec('グラフ描画', [d, sys])
+    }
+  },
   '円グラフ描画': { // @ 円グラフを描画 // @えんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
@@ -84,6 +150,48 @@ module.exports = {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
         type: 'pie',
+        data: data,
+        options: sys.__v0['グラフオプション']
+      }
+      return sys.__exec('グラフ描画', [d, sys])
+    }
+  },
+  'ドーナツグラフ描画': { // @ 円グラフ（ドーナツ）を描画 // @ドーナツぐらふびょうが
+    type: 'func',
+    josi: [['を', 'で', 'の']],
+    pure: false,
+    fn: function (data, sys) {
+      data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
+      const d = {
+        type: 'doughnut',
+        data: data,
+        options: sys.__v0['グラフオプション']
+      }
+      return sys.__exec('グラフ描画', [d, sys])
+    }
+  },
+  'ポーラーグラフ描画': { // @ 円グラフ（鶏頭グラフ/ポーラーエリアチャート）を描画 // @ぽーらーぐらふびょうが
+    type: 'func',
+    josi: [['を', 'で', 'の']],
+    pure: false,
+    fn: function (data, sys) {
+      data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
+      const d = {
+        type: 'polarArea', 
+        data: data,
+        options: sys.__v0['グラフオプション']
+      }
+      return sys.__exec('グラフ描画', [d, sys])
+    }
+  },
+  'レーダーグラフ描画': { // @ レーダーチャートを描画 // @れーだーぐらふびょうが
+    type: 'func',
+    josi: [['を', 'で', 'の']],
+    pure: false,
+    fn: function (data, sys) {
+      data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
+      const d = {
+        type: 'radar', 
         data: data,
         options: sys.__v0['グラフオプション']
       }
