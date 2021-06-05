@@ -45,11 +45,15 @@ module.exports = {
     josi: [['を', 'で', 'の']],
     pure: false,
     fn: function (data, sys) {
+      // グラフオプションの差分作成
+      const gopt = Object.assign({},
+        sys.__v0['グラフオプション'],
+        {'indexAxis': 'x'})
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
         type: 'bar',
         data: data,
-        options: sys.__v0['グラフオプション']
+        options: gopt
       }
       return sys.__exec('グラフ描画', [d, sys])
     }
@@ -59,11 +63,15 @@ module.exports = {
     josi: [['を', 'で', 'の']],
     pure: false,
     fn: function (data, sys) {
+      // グラフオプションの差分作成
+      const gopt = Object.assign({},
+        sys.__v0['グラフオプション'],
+        {'indexAxis': 'y'})
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
-        type: 'horizontalBar',
+        type: 'bar', // horizontalBar
         data: data,
-        options: sys.__v0['グラフオプション']
+        options: gopt
       }
       return sys.__exec('グラフ描画', [d, sys])
     }
