@@ -139,4 +139,8 @@ describe('lex_test', () => {
     assert.strictEqual(tokens.find((t) => t.value === 'あ').startOffset, 2)
     assert.strictEqual(tokens.find((t) => t.value === 'あ').endOffset, 3)
   })
+  it('「ならば」＋「(全角|半角)空白」直後の改行が消える問題 #1015', () => {
+    cmp('もし、3=3ならば \n『OK』と表示;違えば;「NG」と表示;ここまで。', 'OK')
+    cmp('もし、3=3ならば　\n『OK』と表示;違えば;「NG」と表示;ここまで。', 'OK')
+  })
 })

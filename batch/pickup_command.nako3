@@ -27,15 +27,15 @@ REPOSパス=基本パスを「../」で相対パス展開。
  ]
 拡張プラグイン一覧は[
     'nadesiko3-sqlite3/src/nadesiko3-sqlite3.js',
-    'nadesiko3-sqlite3sync/src/plugin_sqlite3sync.js',
+    'nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js',
+    'nadesiko3-drone/nadesiko3-drone.js'
+    'nadesiko3-htmlparser/nadesiko3-htmlparser.js',
+    'nadesiko3-websocket/nadesiko3-websocket.js',
+    'nadesiko3-ml/nadesiko3-ml.js',
     'nadesiko3-odbc/src/plugin_odbc.js',
     'nadesiko3-mssql/src/plugin_mssql.js',
     'nadesiko3-mysql/src/plugin_mysql.js',
     'nadesiko3-postgresql/src/plugin_postgresql.js',
-    'nadesiko3-websocket/plugin_websocket.js',
-    'nadesiko3-htmlparser/nadesiko3-htmlparser.js',
-    'nadesiko3-ml/src/plugin_ml.js',
-    'nadesiko3-drone/nadesiko3-drone.js'
 ]
 # サポートしない
 # 'nadesiko3-firebase/plugin_firebase.js',

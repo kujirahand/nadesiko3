@@ -21,7 +21,7 @@ module.exports = {
     {name: 'ここまで', pattern: /^;;;/}, // #925
     {name: 'eol', pattern: /^\n/},
     {name: 'eol', pattern: /^;/},
-    {name: 'space', pattern: /^(\s+|・)/}, // #877
+    {name: 'space', pattern: /^(\x20|\x09|・)+/}, // #877,#1015
     {name: 'comma', pattern: /^,/},
     {name: 'line_comment', pattern: /^#[^\n]*/},
     {name: 'line_comment', pattern: /^\/\/[^\n]*/},
