@@ -7,21 +7,28 @@ module.exports = {
     fn: function (url, sys) {
       const a = new Audio()
       a.src = url
-      a.addEventListener('timeupdate', (e) => {
-        sys.__v0['オーディオ再生位置'] = a.currentTime
-      })
       return a
     },
     return_none: false
   },
-  'オーディオ再生位置': {type: 'const', value: 0}, // @おーでぃおさいせいいち
-  'オーディオ再生': { // @AudioオブジェクトOBJを指定してオーディをを再生 // @おーでぃおさいせい
+  'オーディオ再生': { // @AudioオブジェクトOBJを指定してオーディを再生 // @おーでぃおさいせい
     type: 'func',
     josi: [['を']],
     pure: true,
     fn: function (obj, sys) {
       if (!obj) throw new Error('オーディオ再生する前に、オーディオ開くで音声ファイルを読み込んでください')
-      obj.currentTime = sys.__v0['オーディオ再生位置']
+      obj.loop = false
+      obj.play()
+    },
+    return_none: true
+  },
+  'オーディオループ再生': { // @AudioオブジェクトOBJを指定してオーディをループ再生する // @おーでぃおるーぷさいせい
+    type: 'func',
+    josi: [['を']],
+    pure: true,
+    fn: function (obj, sys) {
+      if (!obj) throw new Error('オーディオ再生する前に、オーディオ開くで音声ファイルを読み込んでください')
+      obj.loop = true
       obj.play()
     },
     return_none: true
@@ -33,22 +40,68 @@ module.exports = {
     fn: function (obj, sys) {
       if (!obj) throw new Error('オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください')
       obj.pause()
-      sys.__v0['オーディオ再生位置'] = 0 // 暫定
+      obj.currentTime = 0 // 暫定
       // オーディオ停止で再生位置が0に戻らない問題(#715)
       setTimeout(() => {
-        sys.__v0['オーディオ再生位置'] = 0 // イベント後停止
+        obj.currentTime = 0 // しっかりと設定
       }, 10)
     },
     return_none: true
   },
-  'オーディオ一時停止': { // @AudioオブジェクトOBJを指定してオーディを一時停止 // @おーでぃおていし
+  'オーディオ一時停止': { // @AudioオブジェクトOBJを指定してオーディを一時停止 // @おーでぃおいちじていし
     type: 'func',
     josi: [['を']],
     pure: true,
     fn: function (obj, sys) {
-      if (!obj) throw new Error('オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください')
-      sys.__v0['オーディオ再生位置'] = obj.currentTime
+      if (!obj) throw new Error('オーディオ一時停止する前に、オーディオ開くで音声ファイルを読み込んでください')
       obj.pause()
+    },
+    return_none: true
+  },
+  'オーディオ音量取得': { // @AudioオブジェクトOBJの音量を取得して返す // @おーでぃおおんりょうしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (obj, sys) {
+      if (!obj) throw new Error('オーディオ長取得する前に、オーディオ開くで音声ファイルを読み込んでください')
+      return obj.volume
+    }
+  },
+  'オーディオ音量設定': { // @AudioオブジェクトOBJの音量をV(0-1)に設定する // @おーでぃおおんりょうせってい
+    type: 'func',
+    josi: [['を'],['に','へ']],
+    pure: true,
+    fn: function (obj, v, sys) {
+      if (!obj) throw new Error('オーディオ長取得する前に、オーディオ開くで音声ファイルを読み込んでください')
+      obj.volume = v
+    },
+    return_none: true
+  },
+  'オーディオ長取得': { // @AudioオブジェクトOBJを指定してオーディの長さを取得して返す // @おーでぃおながさしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (obj, sys) {
+      if (!obj) throw new Error('オーディオ長取得する前に、オーディオ開くで音声ファイルを読み込んでください')
+      return obj.duration
+    }
+  },
+  'オーディオ再生位置取得': { // @AudioオブジェクトOBJを指定してオーディの再生位置を取得して返す // @おーでぃおさいせいいちしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (obj, sys) {
+      if (!obj) throw new Error('オーディオ再生位置取得する前に、オーディオ開くで音声ファイルを読み込んでください')
+      return obj.currentTime
+    }
+  },
+  'オーディオ再生位置設定': { // @AudioオブジェクトOBJを指定してオーディの位置を数値Vで設定する // @おーでぃおさいせい
+    type: 'func',
+    josi: [['を'],['に','へ']],
+    pure: true,
+    fn: function (obj, v, sys) {
+      if (!obj) throw new Error('オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください')
+      obj.currentTime = v
     },
     return_none: true
   }
