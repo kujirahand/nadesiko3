@@ -4,7 +4,8 @@
 const Parser = require('./nako_parser3')
 const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
-const NakoGen = require('./nako_gen')
+const NakoGenSync = require('./nako_gen')
+const NakoGenASync = require('./nako_gen_async')
 const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
@@ -17,6 +18,17 @@ const NakoGlobal = require('./nako_global')
 
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
+
+// Select Generate Mode #637
+var NakoGenMode = 'sync'
+
+function NakoGen() {
+  if (NakoGenMode == 'sync') {
+    return NakoGenSync
+  } else {
+    return NakoGenASync
+  }
+}
 
 /**
  * @typedef {{
@@ -569,7 +581,7 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   compile(code, filename, isTest, preCode = '') {
-    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).runtimeEnv
+    return NakoGen().generate(this, this.parse(code, filename, preCode), isTest).runtimeEnv
   }
 
   /**
@@ -608,7 +620,7 @@ class NakoCompiler {
       const optsAll = Object.assign({ resetEnv: true, testOnly: false, resetAll: true }, opts)
       if (optsAll.resetEnv) {this.reset()}
       if (optsAll.resetAll) {this.clearPlugins()}
-      out = NakoGen.generate(this, this.parse(code, fname, preCode), optsAll.testOnly)
+      out = NakoGen().generate(this, this.parse(code, fname, preCode), optsAll.testOnly)
     } catch (e) {
       this.logger.error(e)
       throw e
@@ -678,7 +690,7 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   compileStandalone(code, filename, isTest, preCode = '') {
-    return NakoGen.generate(this, this.parse(code, filename, preCode), isTest).standalone
+    return NakoGen().generate(this, this.parse(code, filename, preCode), isTest).standalone
   }
 
   /**

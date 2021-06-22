@@ -24,17 +24,12 @@ describe('plugin_browser_audio', () => {
     const chkopen = (args, url, res) => {
       const sys = {}
       sys.__v0 = {}
-      sys.__v0['オーディオ再生位置'] = 0
       global.window = {}
       global.window.Audio = StubAudio
       global.Audio = StubAudio
       args.push(sys)
       const obj = PluginBrowser['オーディオ開'].fn.apply(this, args)
       assert.equal(obj.src, url)
-      assert.equal(obj.eventid, 'timeupdate')
-      obj.currentTime = 12345
-      obj.callback(obj, [null])
-      assert.equal(sys.__v0['オーディオ再生位置'], 12345)
     }
     it('オーディオ開', () => {
       chkopen(['http://url'], 'http://url')
@@ -44,14 +39,13 @@ describe('plugin_browser_audio', () => {
     const chkplay = () => {
       const sys = {}
       sys.__v0 = {}
-      sys.__v0['オーディオ再生位置'] = -1
       global.window = {}
       global.window.Audio = StubAudio
       global.Audio = StubAudio
       const obj = PluginBrowser['オーディオ開'].fn.apply(this, ['http://url', sys])
       const fakePlay = td.func('play')
       obj.play = fakePlay
-      sys.__v0['オーディオ再生位置'] = 234
+      obj.currentTime = 234
       PluginBrowser['オーディオ再生'].fn.apply(this, [obj, sys])
       assert.equal(obj.currentTime, 234)
       td.verify(fakePlay(), { times: 1 })
@@ -67,7 +61,6 @@ describe('plugin_browser_audio', () => {
     const chkpause = (fnname, cur, pos, res) => {
       const sys = {}
       sys.__v0 = {}
-      sys.__v0['オーディオ再生位置'] = -1
       global.window = {}
       global.window.Audio = StubAudio
       global.Audio = StubAudio
@@ -75,9 +68,8 @@ describe('plugin_browser_audio', () => {
       const fakePause = td.func('pause')
       obj.pause = fakePause
       obj.currentTime = cur
-      sys.__v0['オーディオ再生位置'] = pos
       PluginBrowser[fnname].fn.apply(this, [obj, sys])
-      assert.equal(sys.__v0['オーディオ再生位置'], res)
+      assert.equal(obj.currentTime, res)
       td.verify(fakePause(), { times: 1 })
     }
     it('オーディオ停止', () => {
@@ -90,7 +82,7 @@ describe('plugin_browser_audio', () => {
       cu.cmpfnex('オーディオ停止', [null, {}], 'Error', 'オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください')
     })
     it('オーディオ一時停止 - noobj', () => {
-      cu.cmpfnex('オーディオ一時停止', [null, {}], 'Error', 'オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください')
+      cu.cmpfnex('オーディオ一時停止', [null, {}], 'Error', 'オーディオ一時停止する前に、オーディオ開くで音声ファイルを読み込んでください')
     })
   })
 })
