@@ -19,7 +19,7 @@ const NakoGlobal = require('./nako_global')
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
 
-// Select Generate Mode #637
+// Select Code Generator #637
 var NakoGenMode = 'sync'
 
 function NakoGen() {

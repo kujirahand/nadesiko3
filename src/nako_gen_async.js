@@ -1,25 +1,65 @@
-//
-// nako_gen.js
-//
-'use strict'
+/**
+ * file: nako_gen_async.js
+ * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
+ * なお、扱いやすさ優先で、なでしこの一文を一つの関数として生成し、非同期実行する。
+ */
 
+ 'use strict'
+ 
 const { NakoSyntaxError, NakoError, NakoRuntimeError } = require('./nako_errors')
 const nakoVersion = require('./nako_version')
+const NakoGen = require('./nako_gen')
 
 /**
  * @typedef {import("./nako3").Ast} Ast
  */
+
+
+/**
+ * なでしこのインタプリタコード
+ */
+const
+  NakoCodeNop = 'NOP',
+  NakoCodeLabel = 'LABLEL',
+  NakoCodeJump = 'JUMP',
+  NakoCodeJumpIfTrue = 'JUMP_IF_TRUE',
+  NakoCodeJumpIfFalse = 'JUMP_IF_FALSE',
+  NakoCodeCode = 'CODE'
+/**
+ * なでしこのインタプリタが用いる簡易コードを表現するクラス
+ */
+class NakoCode {
+  /**
+   * @param {string} type 
+   * @param {string} value
+   */
+  constructor (type, value) {
+    /** Codeのタイプ
+     * @type {string}
+     */
+    this.type = type
+     /** Codeの値 / ラベルならラベル名
+     * @type {string}
+     */
+    this.value = value
+    /** ラベルならジャンプ先
+     * @type {number}
+     */
+    this.no = -1
+  }
+}
+
 /**
  * 構文木からJSのコードを生成するクラス
  */
-class NakoGen {
+class NakoGenAsync {
   /**
    * @param {import('./nako3')} com
    * @param {Ast} ast
    * @param {boolean | string} isTest 文字列なら1つのテストだけを実行する
    */
   static generate(com, ast, isTest) {
-    const gen = new NakoGen(com)
+    const gen = new NakoGenAsync(com)
 
     // ユーザー定義関数をシステムに登録する
     gen.registerFunction(ast)
@@ -50,6 +90,11 @@ this.__varslist = [{}, {}, {}];
 this.__varslist[2];
 this.__module = {};
 this.__locals = {};
+this.__labels = {};
+this.__code = [];
+this.__index = 0;
+this.__jumpStack = [];
+this.__stack = [];
 try {
   ${gen.getVarsCode()}
   ${js}
@@ -91,7 +136,7 @@ try {
      * ループ時の一時変数が被らないようにIDで管理
      * @type {number}
      */
-    this.loop_id = 1
+    this.loopId = 1
 
     /**
      * 変換中の処理が、ループの中かどうかを判定する
@@ -99,6 +144,30 @@ try {
      */
     this.flagLoop = false
 
+    /**
+     * 変換後のコード管理番号
+     * @type {number}
+     */
+    this.codeId = 0
+
+    /**
+     * 変換後のコードを保持する配列
+     * @type {Array<NakoCode>}
+     */
+    this.codeArray = []
+
+    /** @type {NakoCode | null} */
+    this.labelContinue = null
+    /** @type {NakoCode | null} */
+    this.labelBreak = null
+
+    /**
+     * ジャンプ先を表現するラベル
+     * @type {Object<string, number>}
+     */
+    this.labels = {}
+
+    // コンパイラのインスタンス
     this.__self = com
 
     /**
@@ -136,15 +205,6 @@ try {
       systemFunction: 0,       // システム関数(呼び出しコードを含む)
       systemFunctionBody: 0,   // システム関数(呼び出しコードを除く)
     }
-  }
-
-  /**
-   * @param {string} name
-   */
-  static isValidIdentifier(name) {
-    // TODO: いらなそうな部分は削る
-    // https://stackoverflow.com/a/9337047
-    return /^(?!(?:do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)$)[$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc][$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc0-9\u0300-\u036f\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u064b-\u0669\u0670\u06d6-\u06dc\u06df-\u06e4\u06e7\u06e8\u06ea-\u06ed\u06f0-\u06f9\u0711\u0730-\u074a\u07a6-\u07b0\u07c0-\u07c9\u07eb-\u07f3\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0859-\u085b\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09cb-\u09cd\u09d7\u09e2\u09e3\u09e6-\u09ef\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b62\u0b63\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c3e-\u0c44\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d3e-\u0d44\u0d46-\u0d48\u0d4a-\u0d4d\u0d57\u0d62\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e31\u0e34-\u0e3a\u0e47-\u0e4e\u0e50-\u0e59\u0eb1\u0eb4-\u0eb9\u0ebb\u0ebc\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f3e\u0f3f\u0f71-\u0f84\u0f86\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u102b-\u103e\u1040-\u1049\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u1712-\u1714\u1732-\u1734\u1752\u1753\u1772\u1773\u17b4-\u17d3\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u18a9\u1920-\u192b\u1930-\u193b\u1946-\u194f\u19b0-\u19c0\u19c8\u19c9\u19d0-\u19d9\u1a17-\u1a1b\u1a55-\u1a5e\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b00-\u1b04\u1b34-\u1b44\u1b50-\u1b59\u1b6b-\u1b73\u1b80-\u1b82\u1ba1-\u1bad\u1bb0-\u1bb9\u1be6-\u1bf3\u1c24-\u1c37\u1c40-\u1c49\u1c50-\u1c59\u1cd0-\u1cd2\u1cd4-\u1ce8\u1ced\u1cf2-\u1cf4\u1dc0-\u1de6\u1dfc-\u1dff\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2cef-\u2cf1\u2d7f\u2de0-\u2dff\u302a-\u302f\u3099\u309a\ua620-\ua629\ua66f\ua674-\ua67d\ua69f\ua6f0\ua6f1\ua802\ua806\ua80b\ua823-\ua827\ua880\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8e0-\ua8f1\ua900-\ua909\ua926-\ua92d\ua947-\ua953\ua980-\ua983\ua9b3-\ua9c0\ua9d0-\ua9d9\uaa29-\uaa36\uaa43\uaa4c\uaa4d\uaa50-\uaa59\uaa7b\uaab0\uaab2-\uaab4\uaab7\uaab8\uaabe\uaabf\uaac1\uaaeb-\uaaef\uaaf5\uaaf6\uabe3-\uabea\uabec\uabed\uabf0-\uabf9\ufb1e\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f]*$/.test(name)
   }
 
   /**
@@ -191,25 +251,6 @@ try {
     }
   }
 
-  /** @param {string} name */
-  static getFuncName (name) {
-    let name2 = name.replace(/[ぁ-ん]+$/, '')
-    if (name2 === '') {name2 = name}
-    return name2
-  }
-
-  /** @param {Ast} node */
-  static convPrint (node) {
-    return `__print(${node});`
-  }
-
-  /** @param {Ast} node */
-  static convRequire (node) {
-    const moduleName = node.value
-    return this.convLineno(node, false) +
-      `__module['${moduleName}'] = require('${moduleName}');\n`
-  }
-
   /**
    * プログラムの実行に必要な関数を書き出す(システム領域)
    * @returns {string}
@@ -245,6 +286,7 @@ try {
     code += 'const __v0 = this.__v0 = this.__varslist[0];\n'
     code += 'const __v1 = this.__v1 = this.__varslist[1];\n'
     code += 'const __vars = this.__vars = this.__varslist[2];\n'
+    code += 'const __code = this.__code;\n'
 
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
@@ -397,8 +439,70 @@ try {
    * @param {Ast} node
    * @param {boolean} isTest
    */
-  convGen(node, isTest) {
-    const result = this.convLineno(node, false) + this._convGen(node, true)
+  convGen (node, isTest) {
+    // convert
+    let result = this.convLineno(node, false) + this._convGen(node, true) + '\n'
+    // search label
+    this.codeArray.forEach((code, index, list) => {
+      if (code.type == NakoCodeLabel) {
+        this.labels[code.value] = index
+      }
+    })
+    // fix label address
+    this.codeArray.forEach((code, index, list) => {
+      if (code.type == NakoCodeJump || code.type == NakoCodeJumpIfTrue || code.type == NakoCodeJumpIfFalse) {
+        if (code.no < 0) {
+          code.no = this.labels[code.value]
+        }
+      }
+    })
+    // append code
+    this.codeArray.forEach((code, index, list) => {
+      switch (code.type) {
+        case NakoCodeNop:
+        case NakoCodeLabel:
+          result += `__code[${index}] = sys => {} // [NOP] ${code.value}\n`
+          break
+        case NakoCodeJump:
+          result += `__code[${index}] = sys => { sys.nextIndex = ${code.no} }\n`
+          break
+        case NakoCodeJumpIfTrue:
+          result += `__code[${index}] = sys => { if (sys.__stack.pop()) { sys.nextIndex = ${code.no}} }\n`
+          break
+        case NakoCodeJumpIfFalse:
+          result += `__code[${index}] = sys => { if (!sys.__stack.pop()) { sys.nextIndex = ${code.no}} }\n`
+          break
+        case NakoCodeCode:
+          // trim last
+          let s = code.value.replace(/\s+$/, '')
+          result += `__code[${index}] = sys => {\n${s}\n}//eoc\n`
+          break
+        default:
+          throw new Error('invalid code type')
+      }
+    })
+    result += '\n'
+    result += '// === go nako3 === \n'
+    result += 'this.goNako3 = sys => {\n'
+    result += '  if (sys.index >= sys.__code.length) {return}\n'
+    result += '  for (;;) {\n'
+    result += '    // exec code\n'
+    result += '    sys.__code[sys.index](sys)\n'
+    result += '    // check next\n'
+    result += '    if (sys.nextIndex >= 0) {\n'
+    result += '      sys.index = sys.nextIndex\n'
+    result += '      sys.nextIndex = -1\n'
+    result += '    } else {\n'
+    result += '      sys.index++\n'
+    result += '    }\n'
+    result += '    if (sys.index >= sys.__code.length) {return}\n'
+    result += '    if (sys.async) { sys.async = false; break}\n'
+    result += '  }\n'
+    result += '  setTimeout(function(){ sys.goNako3(sys) }, 0)\n'
+    result += '}\n'
+    result += 'this.index = 0; this.async = false;\n'
+    result += 'this.goNako3(this)\n'
+    
     if (isTest) {
       return ''
     } else {
@@ -424,41 +528,21 @@ try {
     if (typeof (node) !== 'object') {return '' + node}
     // switch
     switch (node.type) {
+      // === NOP ===
       case 'nop':
-        break
-      case 'block':
-        for (let i = 0; i < node.block.length; i++) {
-          const b = node.block[i]
-          code += this._convGen(b, false)
-        }
         break
       case 'comment':
       case 'eol':
-        code += this.convComment(node)
+        const nc = new NakoCode(NakoCodeNop, String(node.value))
+        code += this.addCode(nc)
         break
-      case 'break':
-        code += this.convCheckLoop(node, 'break')
-        break
-      case 'continue':
-        code += this.convCheckLoop(node, 'continue')
-        break
-      case 'end':
-        code += '__varslist[0][\'終\']();'
-        break
+      
+      // === 単純なコード変換 ===
       case 'number':
         code += node.value
         break
       case 'string':
         code += this.convString(node)
-        break
-      case 'def_local_var':
-        code += this.convDefLocalVar(node)
-        break
-      case 'def_local_varlist':
-        code += this.convDefLocalVarlist(node)
-        break
-      case 'let':
-        code += this.convLet(node)
         break
       case 'word':
       case 'variable':
@@ -474,41 +558,6 @@ try {
       case 'not':
         code += '((' + this._convGen(node.value, true) + ')?0:1)'
         break
-      case 'func':
-      case 'func_pointer':
-      case 'calc_func':
-        code += this.convFunc(node, isExpression)
-        break
-      case 'if':
-        code += this.convIf(node)
-        break
-      case 'tikuji':
-        code += this.convTikuji(node)
-        break
-      case 'for':
-        code += this.convFor(node)
-        break
-      case 'foreach':
-        code += this.convForeach(node)
-        break
-      case 'repeat_times':
-        code += this.convRepeatTimes(node)
-        break
-      case 'speed_mode':
-        code += this.convSpeedMode(node, isExpression)
-        break
-      case 'performance_monitor':
-        code += this.convPerformanceMonitor(node, isExpression)
-        break
-      case 'while':
-        code += this.convWhile(node)
-        break
-      case 'switch':
-        code += this.convSwitch(node)
-        break
-      case 'let_array':
-        code += this.convLetArray(node)
-        break
       case '配列参照':
         code += this.convRefArray(node)
         break
@@ -518,24 +567,86 @@ try {
       case 'json_obj':
         code += this.convJsonObj(node)
         break
-      case 'func_obj':
-        code += this.convFuncObj(node)
-        break
       case 'bool':
         code += (node.value) ? 'true' : 'false'
         break
       case 'null':
         code += 'null'
         break
+      
+      // === 文の変換 ===
+      case 'let':
+        code += this.addCodeStr(this.convLet(node))
+        break
+      case 'let_array':
+        this.addCodeStr(this.convLetArray(node))
+        break
+      case 'block':
+        for (let i = 0; i < node.block.length; i++) {
+          const b = node.block[i]
+          code += this.addCodeStr(this._convGen(b, false))
+        }
+        break
+      case 'if':
+        this.convIf(node)
+        break
+      case 'repeat_times':
+        this.convRepeatTimes(node)
+        break 
+      case 'break':
+        code += this.addCodeStr(this.convCheckLoop(node, 'break'))
+        break
+      case 'continue':
+        code += this.addCodeStr(this.convCheckLoop(node, 'continue'))
+        break
+      case 'for':
+        this.convFor(node)
+        break
+      case 'foreach':
+        this.convForeach(node)
+        break
+      case 'while':
+        this.convWhile(node)
+        break          
+      case 'switch':
+        this.convSwitch(node)
+        break
+      case 'end':
+        code += this.addCodeStr('__varslist[0][\'終\']();')
+        break
+      case 'def_local_var':
+        code += this.addCodeStr(this.convDefLocalVar(node))
+        break
+      case 'def_local_varlist':
+        code += this.addCodeStr(this.convDefLocalVarlist(node))
+        break
+      case 'func':
+      case 'func_pointer':
+      case 'calc_func':
+        code += this.addCodeStr(this.convFunc(node, isExpression))
+        break
+      case 'tikuji':
+        code += this.addCodeStr(this.convTikuji(node))
+        break
+      case 'speed_mode':
+        code += this.addCodeStr(this.convSpeedMode(node, isExpression))
+        break
+      case 'performance_monitor':
+        code += this.addCodeStr(this.convPerformanceMonitor(node, isExpression))
+        break
+      case 'func_obj':
+        code += this.addCodeStr(this.convFuncObj(node))
+        break
       case 'def_test':
-        code += this.convDefTest(node)
+        code += this.addCodeStr(this.convDefTest(node))
         break
       case 'def_func':
-        code += this.convDefFunc(node)
+        code += this.addCodeStr(this.convDefFunc(node))
         break
       case 'return':
-        code += this.convReturn(node)
+        code += this.addCodeStr(this.convReturn(node))
         break
+      // TODO
       case 'try_except':
         code += this.convTryExcept(node)
         break
@@ -547,6 +658,121 @@ try {
     }
     return code
   }
+
+  /**
+   * add code to array
+   * @param {string} codeStr
+   * @returns {string}
+   */
+  addCodeStr (codeStr) {
+    if (codeStr == '') {return ''}
+    const a = codeStr.split('\n')
+    const a2 = a.map(row => '  ' + row.replace(/\s+$/, ''))
+    const c = new NakoCode(NakoCodeCode, a2.join('\n'))
+    return this.addCode(c)
+  }
+
+  /**
+   * add code to array
+   * @param {NakoCode} code
+   * @returns {string}
+   */
+   addCode (code) {
+    this.codeArray[this.codeId] = code
+    this.codeId++
+    return ''
+  }
+
+  /**
+   * make label for jump
+   * @param {string} name 
+   * @returns {NakoCode}
+   */
+  makeLabel (name) {
+    const uniqLabel = name + '_' + this.loopId
+    this.loopId++
+    const c = new NakoCode(NakoCodeLabel, uniqLabel)
+    this.labels[name] = -1
+    return c
+  }
+  /**
+   * make Jump 
+   * @param {NakoCode} label
+   * @returns {NakoCode}
+   */
+  makeJump (label) {
+    return new NakoCode(NakoCodeJump, label.value)
+  }
+  /**
+   * make Jump if true
+   * @param {NakoCode} label
+   * @returns {NakoCode}
+   */
+   makeJumpIfTrue (label) {
+    return new NakoCode(NakoCodeJumpIfTrue, label.value)
+  }
+  /**
+   * make Jump if false
+   * @param {NakoCode} label
+   * @returns {NakoCode}
+   */
+   makeJumpIfFalse (label) {
+    return new NakoCode(NakoCodeJumpIfFalse, label.value)
+  }
+
+  /**
+   * @param {Ast} node
+   */
+  convIf (node) {
+    const labelEnd = this.makeLabel('IfEnd')
+    const labelIfFalse = this.makeLabel('IfFalse')
+    const expr = this._convGen(node.expr, true)
+    this.addCodeStr(`sys.__stack.push(${expr})`)
+    this.addCode(this.makeJumpIfFalse(labelIfFalse))
+    this._convGen(node.block, false)
+    this.addCode(this.makeJump(labelEnd))
+    this.addCode(labelIfFalse)
+    if (node.false_block) {
+      this._convGen(node.false_block, false)
+    }
+    this.addCode(labelEnd)
+    return ''
+  }
+
+  convRepeatTimes (node) {
+    this.flagLoop = true
+    // ループ管理変数を作成
+    const loopVar = `sys.__tmp_i${this.loopId}`
+    this.loopId++
+    // ループ回数を取得
+    const loopCount = `sys.__tmp_count${this.loopId}`
+    this.loopId++
+    const value = this._convGen(node.value, true)
+    const initCode = '//回:開始\n' +
+      `${loopVar} = 0;\n` +
+      `${loopCount} = ${value};\n`
+    this.addCodeStr(initCode)
+    
+    const labelCheck = this.makeLabel('回:条件チェック')
+    this.addCode(labelCheck)
+    const labelEnd = this.makeLabel('回:ここまで')
+    this.labelBreak = labelEnd
+    this.labelContinue = labelCheck
+
+    // 繰り返し判定
+    const kaisu = '__v0["回数"]'
+    const cond = 
+      `${kaisu} = ++${loopVar}\n` +
+      `sys.__stack.push(${loopVar} > ${loopCount})\n`
+    this.addCodeStr(cond)
+    this.addCode(this.makeJumpIfTrue(labelEnd))
+    const block = this.convGenLoop(node.block)
+    this.addCode(this.makeJump(labelCheck))
+    this.addCode(labelEnd)
+    this.flagLoop = false
+    return ''
+  }
+
 
   /**
    * @param {string} name
@@ -648,40 +874,20 @@ try {
       const cmdj = (cmd === 'continue') ? '続ける' : '抜ける'
       throw NakoSyntaxError.fromNode(`『${cmdj}』文がありますが、それは繰り返しの中で利用してください。`, node)
     }
-    return this.convLineno(node.line) + cmd + ';'
+    if (cmd == 'continue') {
+      if (this.labelContinue) {this.addCode(this.makeJump(this.labelContinue))}
+    } else {
+      if (this.labelBreak) {this.addCode(this.makeJump(this.labelBreak))}
+    }
+    return ''
   }
 
   convDefFuncCommon (node, name) {
-    // パフォーマンスモニタ:ユーザ関数のinjectの定義
-    let performanceMonitorInjectAtStart = ''
-    let performanceMonitorInjectAtEnd = ''
-    if (this.performanceMonitor.userFunction !== 0) {
-      let key = name
-      if (!key) {
-        if (typeof this.performanceMonitor.mumeiId === 'undefined') {
-          this.performanceMonitor.mumeiId = 0
-        }
-        this.performanceMonitor.mumeiId++;
-        key = `anous_${this.performanceMonitor.mumeiId}`
-      }
-      performanceMonitorInjectAtStart = 'const performanceMonitorEnd = (function (key, type) {\n'+
-        'const uf_start = performance.now() * 1000;\n'+
-        'return function () {\n'+
-        'const el_time = performance.now() * 1000 - uf_start;\n'+
-        'if (!__self.__performance_monitor) {\n'+
-        '__self.__performance_monitor={};\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n'+
-        '} else if (!__self.__performance_monitor[key]) {\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n'+
-        '} else {\n'+
-        '__self.__performance_monitor[key].called++;\n'+
-        '__self.__performance_monitor[key].totel_usec+=el_time;\n'+
-        'if(__self.__performance_monitor[key].min_usec>el_time){__self.__performance_monitor[key].min_usec=el_time;}\n'+
-        'if(__self.__performance_monitor[key].max_usec<el_time){__self.__performance_monitor[key].max_usec=el_time;}\n'+
-        `}};})('${key}', 'user');`+
-        'try {\n'
-      performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n'
-    }
+    const labelEnd = this.makeLabel(`関数「${name}」:ここまで`)
+    this.addCode(this.makeJump(labelEnd))
+    const labelBegin = this.makeLabel(`関数「${name}」:ここから`)
+    this.addCode(labelBegin)
+
     let topOfFunction = '(function(){\n'
     let endOfFunction = '})'
     let variableDeclarations = ''
@@ -721,8 +927,6 @@ try {
     if (this.speedMode.invalidSore === 0) {
       code += `  return (${this.varname('それ')});\n`
     }
-    //パフォーマンスモニタ:ユーザ関数のinject
-    code += performanceMonitorInjectAtEnd
     // 関数の末尾に、ローカル変数をPOP
     code += endOfFunction
 
@@ -751,7 +955,7 @@ try {
         variableDeclarations += `  ${this.varname('それ')} = '';`
       }
     }
-    code = topOfFunction + performanceMonitorInjectAtStart + variableDeclarations + code
+    code = topOfFunction + variableDeclarations + code
 
     if (name)
       {this.nako_func[name].fn = code}
@@ -761,6 +965,7 @@ try {
     if (name)
       {this.__self.__varslist[1][name] = code}
 
+    this.addCode(labelEnd)
     return code
   }
 
@@ -850,6 +1055,7 @@ try {
   }
 
   convFor (node) {
+    this.flagLoop = true
     // ループ変数について
     let word
     if (node.word !== null) { // ループ変数を使う時
@@ -860,39 +1066,46 @@ try {
       this.varsSet.names.add('dummy')
       word = this.varname('dummy')
     }
-    const idLoop = this.loop_id++
-    const varI = `$nako_i${idLoop}`
+    const sore = this.varname('それ')
+    const idLoop = this.loopId++
+    const varI = `sys.__tmp__i${idLoop}`
+    // ループ条件を変数に入れる用
+    const varTo = `sys.__tmp__to${idLoop}`
     // ループ条件を確認
-    const kara = this._convGen(node.from, true)
     const made = this._convGen(node.to, true)
+    const kara = this._convGen(node.from, true)
+    this.addCodeStr(`${varTo} = ${made}`)
+    // ループ変数を初期化
+    this.addCodeStr(`${sore} = ${word} = ${kara}`)
+    // 繰り返し判定
+    const labelCheck = this.makeLabel('繰返:条件確認')
+    const labelInc = this.makeLabel('繰返:加算')
+    this.addCode(labelCheck)
+    const labelEnd = this.makeLabel('繰返:ここまで')
+    this.addCodeStr(`sys.__stack.push(${word} <= ${varTo})`)
+    this.addCode(this.makeJumpIfFalse(labelEnd))
+    this.labelContinue = labelInc
+    this.labelBreak = labelEnd
     // ループ内のブロック内容を得る
     const block = this.convGenLoop(node.block)
-    // ループ条件を変数に入れる用
-    const varFrom = `$nako_from${idLoop}`
-    const varTo = `$nako_to${idLoop}`
-    let sorePrefex = ''
-    if (this.speedMode.invalidSore === 0) {
-      sorePrefex = `${this.varname('それ')} = `
-    }
-    const code =
-      `\n//[FOR id=${idLoop}]\n` +
-      `const ${varFrom} = ${kara};\n` +
-      `const ${varTo} = ${made};\n` +
-      `if (${varFrom} <= ${varTo}) { // up\n` +
-      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}++) {\n` +
-      `    ${sorePrefex}${word} = ${varI};\n` +
-      `    ${block}\n` +
-      `  };\n` +
-      `} else { // down\n` +
-      `  for (let ${varI} = ${varFrom}; ${varI} >= ${varTo}; ${varI}--) {\n` +
-      `    ${sorePrefex}${word} = ${varI};` + '\n' +
-      `    ${block}\n` +
-      `  };\n` +
-      `};\n//[/FOR id=${idLoop}]\n`
-    return this.convLineno(node, false) + code
+    this.addCode(labelInc)
+    this.addCodeStr(`${sore} = ++${word};`)
+    this.addCode(this.makeJump(labelCheck))
+    this.addCode(labelEnd)
+    this.flagLoop = false
+    return ''
   }
 
   convForeach (node) {
+    this.flagLoop = true
+    // 対象を用意する
+    let taisyo = '__v0["対象"]'
+    const taisyoKey = `__v0["対象キー"]`
+    if (node.name) {
+      taisyo = this.varname(node.name.value)
+      this.varsSet.names.add(node.name.value)
+    }
+    // 反復対象を調べる
     let target
     if (node.target === null) {
       if (this.speedMode.invalidSore === 0) {
@@ -902,48 +1115,64 @@ try {
       }
     } else
       {target = this._convGen(node.target, true)}
-
-    // blockより早く変数を定義する必要がある
-    let nameS = '__v0["対象"]'
-    if (node.name) {
-      nameS = this.varname(node.name.value)
-      this.varsSet.names.add(node.name.value)
-    }
-  
+    const sore = this.varname('それ')
+    const targetArray = `sys.__tmp__target${this.loopId++}`
+    const targetKeys = `sys.__tmp__keys${this.loopId++}`
+    const loopVar = `sys.__tmp__i${this.loopId++}`
+    const loopCount = `sys.__tmp__count${this.loopId++}`
+    const initCode =
+      `// 反復: 初期化\n` +
+      `${targetArray} = ${target};\n` + 
+      `${loopVar} = 0;\n` +
+      // 文字列や数値なら反復できるように配列に入れる
+      `if (typeof(${targetArray}) == 'string' || typeof(${targetArray}) == 'number') { ${targetArray} = [${targetArray}]; }\n` + 
+      // Objectならキー一覧を得る
+      `if (${targetArray} instanceof Array) { ${loopCount} = ${targetArray}.length; }\n` +
+      `else { ${targetKeys} = Object.keys(${targetArray}); ${loopCount} = ${targetKeys}.length; }\n`
+    this.addCodeStr(initCode)
+    const labelCheck = this.makeLabel('反復:条件確認')
+    const labelInc = this.makeLabel('反復:加算')
+    const labelEnd = this.makeLabel('反復:ここまで')
+    this.labelBreak = labelEnd
+    this.labelContinue = labelInc
+    this.addCode(labelCheck)
+    const setTarget = 
+      `if (${targetArray} instanceof Array) {\n` +
+      `  ${taisyo} = ${sore} = ${targetArray}[${loopVar}];　${taisyoKey} = ${loopVar};\n` +
+      `} else {\n` +
+      `  while (${loopVar} < ${loopCount}) {\n` +
+      `    ${taisyoKey} = ${targetKeys}[${loopVar}]; ${taisyo} = ${sore} = ${targetArray}[${taisyoKey}];\n` +
+      `    if (!${targetArray}.hasOwnProperty(${taisyoKey})) { ${loopVar}++; continue; }\n` +
+      `    break;` +
+      `  }\n` +
+      `}`
+    this.addCodeStr(`${setTarget}\nsys.__stack.push(${loopVar} < ${loopCount});`)
+    this.addCode(this.makeJumpIfFalse(labelEnd))
+    // 反復ブロックを定義
     const block = this.convGenLoop(node.block)
-    const id = this.loop_id++
-    const key = '__v0["対象キー"]'
-    let sorePrefex = ''
-    if (this.speedMode.invalidSore === 0) {
-      sorePrefex = `${this.varname('それ')} = `
-    }
-    const code =
-      `let $nako_foreach_v${id}=${target};\n` +
-      `for (let $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
-      `  if ($nako_foreach_v${id}.hasOwnProperty($nako_i${id})) {\n` +
-      `    ${nameS} = ${sorePrefex}$nako_foreach_v${id}[$nako_i${id}];` + '\n' +
-      `    ${key} = $nako_i${id};\n` +
-      `    ${block}\n` +
-      '  }\n' +
-      '};\n'
-    return this.convLineno(node, false) + code
+    // 加算
+    this.addCode(labelInc)
+    this.addCodeStr(`${loopVar}++`)
+    this.addCode(this.makeJump(labelCheck))
+    this.addCode(labelEnd)
+    this.flagLoop = false
+    return ''
   }
 
-  convRepeatTimes (node) {
-    const id = this.loop_id++
-    const value = this._convGen(node.value, true)
+
+  convWhile (node) {
+    this.flagLoop = true
+    const labelBegin = this.makeLabel('間:ここから')
+    const labelEnd = this.makeLabel('間:ここまで')
+    this.labelContinue = labelBegin
+    this.labelBreak = labelEnd
+    const cond = this._convGen(node.cond, true)
+    this.addCodeStr(`sys.__stack.push(${cond})`)
+    this.addCode(this.makeJumpIfFalse(labelEnd))
     const block = this.convGenLoop(node.block)
-    const kaisu = '__v0["回数"]'
-    let sorePrefex = ''
-    if (this.speedMode.invalidSore === 0) {
-      sorePrefex = `${this.varname('それ')} = `
-    }
-    const code =
-      `let $nako_times_v${id} = ${value};\n` +
-      `for(var $nako_i${id} = 1; $nako_i${id} <= $nako_times_v${id}; $nako_i${id}++)` + '{\n' +
-      `  ${sorePrefex}${kaisu} = $nako_i${id};` + '\n' +
-      '  ' + block + '\n}\n'
-    return this.convLineno(node, false) + code
+    this.addCode(labelEnd) 
+    this.flagLoop = false
+    return ''
   }
 
   /**
@@ -951,24 +1180,7 @@ try {
    * @param {boolean} isExpression
    */
   convSpeedMode (node, isExpression) {
-    const prev = { ...this.speedMode }
-    if (node.options['行番号無し']) {
-      this.speedMode.lineNumbers++
-    }
-    if (node.options['暗黙の型変換無し']) {
-      this.speedMode.implicitTypeCasting++
-    }
-    if (node.options['強制ピュア']) {
-      this.speedMode.forcePure++
-    }
-    if (node.options['それ無効']) {
-      this.speedMode.invalidSore++
-    }
-    try {
-      return this._convGen(node.block, isExpression)
-    } finally {
-      this.speedMode = prev
-    }
+    return ''
   }
 
   /**
@@ -993,51 +1205,33 @@ try {
     }
   }
 
-  convWhile (node) {
-    const cond = this._convGen(node.cond, true)
-    const block = this.convGenLoop(node.block)
-    const code =
-      `while (${cond})` + '{\n' +
-      `  ${block}` + '\n' +
-      '}\n'
-    return this.convLineno(node, false) + code
-  }
-
   convSwitch (node) {
     const value = this._convGen(node.value, true)
+    const varValue = `sys.__tmp__i${this.loopId++}`
+    this.addCodeStr(`${varValue} = ${value}`)
+    const labelEnd = this.makeLabel('条件分岐:ここまで')
     const cases = node.cases
     let body = ''
     for (let i = 0; i < cases.length; i++) {
       const cvalue = cases[i][0]
-      const cblock = this.convGenLoop(cases[i][1])
       if (cvalue.type == '違えば') {
-        body += `  default:\n`
+        this.convGenLoop(cases[i][1])
       } else {
-        const cvalue_code = this._convGen(cvalue, true)
-        body += `  case ${cvalue_code}:\n`
+        const nextLabel = this.makeLabel('条件分岐:次')
+        const cvalueCode = this._convGen(cvalue, true)
+        this.addCodeStr(`sys.__stack.push((${cvalueCode}) == ${varValue})`)
+        this.addCode(this.makeJumpIfFalse(nextLabel))
+        this.convGenLoop(cases[i][1])
+        this.addCode(this.makeJump(labelEnd))
+        this.addCode(nextLabel)
       }
-      body += `    ${cblock}\n` +
-              `    break\n`
     }
-    const code =
-      `switch (${value})` + '{\n' +
-      `${body}` + '\n' +
-      '}\n'
-    return this.convLineno(node, false) + code
+    this.addCode(labelEnd)
+    return ''
   }
-
-  convIf (node) {
-    const expr = this._convGen(node.expr, true)
-    const block = this._convGen(node.block, false)
-    const falseBlock = (node.false_block === null)
-      ? ''
-      : 'else {' + this._convGen(node.false_block, false) + '};\n'
-    return this.convLineno(node, false) +
-      `if (${expr}) {\n  ${block}\n}` + falseBlock + ';\n'
-  }
-
+  
   convTikuji (node) {
-    const pid = this.loop_id++
+    const pid = this.loopId++
     // gen tikuji blocks
     const curName = `__tikuji${pid}`
     let code = `const ${curName} = []\n`
@@ -1364,8 +1558,8 @@ try {
     let code = ''
     const vtype = node.vartype // 変数 or 定数
     const value = (node.value === null) ? 'null' : this._convGen(node.value, true)
-    this.loop_id++
-    let varI = `$nako_i${this.loop_id}`
+    this.loopId++
+    let varI = `$nako_i${this.loopId}`
     code += `${varI}=${value}\n`
     code += `if (!(${varI} instanceof Array)) { ${varI}=[${varI}] }\n`
     for (let nameObj of node.names) {
@@ -1412,4 +1606,4 @@ try {
   }
 }
 
-module.exports = NakoGen
+module.exports = NakoGenAsync

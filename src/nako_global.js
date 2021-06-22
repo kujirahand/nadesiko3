@@ -16,6 +16,12 @@ class NakoGlobal {
       { ...compiler.__varslist[1] },
       { ...compiler.__varslist[2] },
     ]
+    this.index = 0
+    this.nextIndex = -1
+    this.__code = []
+    this.__jumpStack = []
+    this.__stack = []
+    this.__labels = []
 
     // PluginSystemとdestroy()から参照するため
     this.__module = { ...compiler.__module } // shallow copy

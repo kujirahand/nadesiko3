@@ -1,6 +1,9 @@
-//
-// nako_gen.js
-//
+/**
+ * file: nako_gen.js
+ * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
+ * なお速度優先で忠実にJavaScriptのコードを生成する。
+ */
+
 'use strict'
 
 const { NakoSyntaxError, NakoError, NakoRuntimeError } = require('./nako_errors')
@@ -236,7 +239,7 @@ try {
    * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @returns {string}
    */
-  getDefFuncCode(isTest) {
+  getDefFuncCode (isTest) {
     let code = ''
     // よく使う変数のショートカット
     code += 'const __self = this.__self = this;\n'
@@ -397,7 +400,7 @@ try {
    * @param {Ast} node
    * @param {boolean} isTest
    */
-  convGen(node, isTest) {
+   convGen (node, isTest) {
     const result = this.convLineno(node, false) + this._convGen(node, true)
     if (isTest) {
       return ''
@@ -410,7 +413,7 @@ try {
    * @param {Ast} node
    * @param {boolean} isExpression
    */
-  _convGen(node, isExpression) {
+  _convGen (node, isExpression) {
     let code = ''
     if (node instanceof Array) {
       for (let i = 0; i < node.length; i++) {
