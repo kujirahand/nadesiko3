@@ -24,6 +24,7 @@ const
   NakoCodeJump = 'JUMP',
   NakoCodeJumpIfTrue = 'JUMP_IF_TRUE',
   NakoCodeJumpIfFalse = 'JUMP_IF_FALSE',
+  NakoCodeReturn = 'RET',
   NakoCodeCode = 'CODE'
 /**
  * なでしこのインタプリタが用いる簡易コードを表現するクラス
@@ -101,7 +102,7 @@ try {
   ${js}
 } catch (err) {
   if (!(err instanceof NakoRuntimeError)) {
-    err = new NakoRuntimeError(err, __varslist[0].line);
+    err = new NakoRuntimeError(err, this.__varslist[0].line);
   }
   this.logger.error(err);
   throw err;
@@ -244,17 +245,14 @@ try {
    * @param {string} name
    */
   varname (name) {
-    if (this.varslistSet.length === 3) {
-      // グローバル
-      return `__varslist[${2}][${JSON.stringify(name)}]`
-    } else {
-      // 関数内
-      if (NakoGen.isValidIdentifier(name)) {
-        return name
-      } else {
-        return `__vars[${JSON.stringify(name)}]`
-      }
-    }
+    // varlistSet[0]  | __v0   ... system
+    // varliseSet[1]  | __v1   ... global
+    // varlistSrt[2]  | __vars ... user scope
+    // varslisStr[3+] |        ... function scope
+    const top = this.varslistSet.length - 1
+    const  key = JSON.stringify(name)
+    if (top == 2) {return `__vars[${key}]`}
+    return `__varslist[${top}][${key}]`
   }
 
   /**
@@ -466,8 +464,10 @@ try {
     this.codeArray.forEach((code, index, list) => {
       switch (code.type) {
         case NakoCodeNop:
-        case NakoCodeLabel:
           result += `__code[${index}] = sys => {} // [NOP] ${code.value}\n`
+          break
+        case NakoCodeLabel:
+          result += `__code[${index}] = sys => {} // [LABEL] ${code.value}\n`
           break
         case NakoCodeJump:
           result += `__code[${index}] = sys => { sys.nextIndex = ${code.no} }\n`
@@ -478,10 +478,13 @@ try {
         case NakoCodeJumpIfFalse:
           result += `__code[${index}] = sys => { if (!sys.__stack.pop()) { sys.nextIndex = ${code.no}} }\n`
           break
+        case NakoCodeReturn:
+          result += `__code[${index}] = sys => { sys.__return(sys) }\n`
+          break
         case NakoCodeCode:
           // trim last
           let s = code.value.replace(/\s+$/, '')
-          result += `__code[${index}] = sys => {\n${s}\n}//eoc\n`
+          result += `__code[${index}] = sys => {\n${s}\n};\n`
           break
         default:
           throw new Error('invalid code type')
@@ -506,7 +509,15 @@ try {
     result += '  }\n'
     // result += '  setTimeout(function(){ sys.goNako3(sys) }, 0)\n'
     result += '}\n'
-    result += 'this.index = 0; this.async = false;\n'
+    result += `this.__return = sys => {\n`
+    result += `  const loc = sys.__varslist.pop();\n`
+    result += `  const top = sys.__varslist.length - 1;\n`
+    result += `  sys.__varslist[top]['それ'] = loc['それ']\n`
+    result += `  const st = sys.__jumpStack.pop();\n`
+    result += `  sys.nextIndex = st.no;\n`
+    result += `}\n`
+    result += 'this.index = 0;\n'
+    result += 'this.async = false;\n'
     result += 'this.nextAsync(this)\n'
     
     if (isTest) {
@@ -539,8 +550,9 @@ try {
         break
       case 'comment':
       case 'eol':
-        const nc = new NakoCode(NakoCodeNop, String(node.value))
-        code += this.addCode(nc)
+        if (!node.value) {node.value = ''}
+        const line = this.convLineno(node, true) + '// [EOL] ' + node.value
+        this.addCodeStr(line)
         break
       
       // === 単純なコード変換 ===
@@ -578,6 +590,11 @@ try {
         break
       case 'null':
         code += 'null'
+        break
+      case 'func':
+      case 'func_pointer':
+      case 'calc_func':
+        code += this.convFunc(node, isExpression)
         break
       
       // === 文の変換 ===
@@ -625,11 +642,6 @@ try {
         break
       case 'def_local_varlist':
         code += this.addCodeStr(this.convDefLocalVarlist(node))
-        break
-      case 'func':
-      case 'func_pointer':
-      case 'calc_func':
-        code += this.addCodeStr(this.convFunc(node, isExpression))
         break
       case 'tikuji':
         code += this.addCodeStr(this.convTikuji(node))
@@ -865,13 +877,11 @@ try {
     let value
     if (node.value) {
       value = this._convGen(node.value, true)
-      return lno + `return ${value};`
-    } else
-    if (this.speedMode.invalidSore === 0) {
-      return lno + `return ${this.varname('それ')};`
-    } else {
-      return lno + 'return;'
+      const cv = lno + `${this.varname('それ')} = ${value};`
+      this.addCodeStr(cv)
     }
+    this.addCode(new NakoCode(NakoCodeReturn, ''))
+    return ''
   }
 
   convCheckLoop (node, cmd) {
@@ -905,7 +915,14 @@ try {
     // ローカル変数をPUSHする
     this.varslistSet.push(this.varsSet)
     // JSの引数と引数をバインド
-    variableDeclarations += `  var 引数 = arguments;\n`
+    variableDeclarations += `  const top = arguments.length - 1;\n`
+    variableDeclarations += `  const sys = arguments[top];\n`
+    variableDeclarations += `  const localvars = {}\n`
+    variableDeclarations += `  sys.__varslist.push(localvars)\n`
+    variableDeclarations += `  localvars['引数'] = arguments;\n`
+    variableDeclarations += `  localvars['それ'] = '';\n`
+    variableDeclarations += `  sys.__jumpStack.push({no: sys.index+1});\n`
+
     // 宣言済みの名前を保存
     const varsDeclared = Array.from(this.varsSet.names.values())
     let code = ''
@@ -927,50 +944,25 @@ try {
       }
     }
     // ブロックを解析
+    const blockId = this.codeId
     const block = this._convGen(node.block, false)
     code += block.split('\n').map((line) => '  ' + line).join('\n') + '\n'
-    // 関数の最後に、変数「それ」をreturnするようにする
-    if (this.speedMode.invalidSore === 0) {
-      code += `  return (${this.varname('それ')});\n`
-    }
-    // 関数の末尾に、ローカル変数をPOP
-    code += endOfFunction
+    this.addCode(new NakoCode(NakoCodeReturn, ''))
+    // 関数定義でブロックを呼び出すようにする
+    code += `  sys.index = ${blockId};\n`
+    code += `  sys.nextAsync(sys);\n`
+    // 関数コード
+    code = topOfFunction + variableDeclarations + code + endOfFunction
 
-    // 関数内で定義されたローカル変数の宣言
-    let needsVarsObject = false
-    for (const name of Array.from(this.varsSet.names.values())) {
-      if (!varsDeclared.includes(name)) {
-        if (NakoGen.isValidIdentifier(name)) {
-          variableDeclarations += `  var ${name};\n`
-        } else {
-          needsVarsObject = true
-        }
-      }
-    }
-    if (!NakoGen.isValidIdentifier('それ') && this.speedMode.invalidSore === 0) {
-      needsVarsObject = true
-    }
-    // 一度でも__varsを使ったら、それも宣言する。
-    if (needsVarsObject) {
-      variableDeclarations += `  var __vars = {};\n`
-    }
-    if (this.speedMode.invalidSore === 0) {
-      if (NakoGen.isValidIdentifier('それ')) {
-        variableDeclarations += `  var それ = '';\n`
-      } else {
-        variableDeclarations += `  ${this.varname('それ')} = '';`
-      }
-    }
-    code = topOfFunction + variableDeclarations + code
-
-    if (name)
-      {this.nako_func[name].fn = code}
+    if (name) {this.nako_func[name].fn = code}
 
     this.varslistSet.pop()
     this.varsSet = this.varslistSet[this.varslistSet.length - 1]
     if (name)
       {this.__self.__varslist[1][name] = code}
 
+    this.addCode(this.makeJump(labelEnd))
+    this.addCode(new NakoCode(NakoCodeReturn, ''))
     this.addCode(labelEnd)
     return code
   }
@@ -1334,6 +1326,8 @@ try {
     // function
     this.used_func.add(funcName)
 
+    // console.log('@@@', funcName, argsInfo, argsOpts)
+
     // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
     args.push('__self')
     let funcBegin = ''
@@ -1390,82 +1384,30 @@ try {
     // 関数呼び出しコードの構築
     let argsCode = args.join(',')
     let funcCall = `${res.js}(${argsCode})`
-
-    if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
-      let key = funcName
-      if (!key) {
-        if (typeof this.performanceMonitor.mumeiId === 'undefined') {
-          this.performanceMonitor.mumeiId = 0
-        }
-        this.performanceMonitor.mumeiId++;
-        key = `anous_${this.performanceMonitor.mumeiId}`
-      }
-      funcCall = '(function (key, type) {\n'+
-        'const sbf_start = performance.now() * 1000;\n' +
-        'try {\n'+
-        'return '+funcCall+';\n'+
-        '} finally {\n'+
-        'const sbl_time = performance.now() * 1000 - sbf_start;\n'+
-        'if (!__self.__performance_monitor) {\n'+
-        '__self.__performance_monitor={};\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n'+
-        '} else if (!__self.__performance_monitor[key]) {\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n'+
-        '} else {\n'+
-        '__self.__performance_monitor[key].called++;\n'+
-        '__self.__performance_monitor[key].totel_usec+=sbl_time;\n'+
-        'if(__self.__performance_monitor[key].min_usec>sbl_time){__self.__performance_monitor[key].min_usec=sbl_time;}\n'+
-        'if(__self.__performance_monitor[key].max_usec<sbl_time){__self.__performance_monitor[key].max_usec=sbl_time;}\n'+
-        `}}})('${funcName}_body', 'sysbody')\n`
-    }
-
     let code = ``
     if (func.return_none) {
       if (funcEnd === '') {
         if (funcBegin === '') {
-          code = `${funcCall};\n`
+          code += `${funcCall};\n`
         } else {
-          code = `${funcBegin} ${funcCall};\n`
+          code += `${funcBegin} ${funcCall};\n`
         }
       } else {
-        code = `${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
+        code += `${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
       }
     } else {
-      let sorePrefex = ''
-      if (this.speedMode.invalidSore === 0) {
-        sorePrefex = `${this.varname('それ')} = `
-      }
+      let sorePrefex = `${this.varname('それ')} = `
       if (funcBegin === '' && funcEnd === '') {
-        code = `(${sorePrefex}${funcCall})`
+        code += `(${sorePrefex}${funcCall})`
       } else {
         if (funcEnd === '') {
-          code = `(function(){\n${indent(`${funcBegin};\nreturn ${sorePrefex} ${funcCall}`, 1)}}).call(this)`
+          code += `(function(){\n${indent(`${funcBegin};\nreturn ${sorePrefex} ${funcCall}`, 1)}}).call(this)`
         } else {
-          code = `(function(){\n${indent(`${funcBegin}try {\n${indent(`return ${sorePrefex}${funcCall};`, 1)}\n} finally {\n${indent(funcEnd, 1)}}`, 1)}}).call(this)`
+          code += `(function(){\n${indent(`${funcBegin}try {\n${indent(`return ${sorePrefex}${funcCall};`, 1)}\n} finally {\n${indent(funcEnd, 1)}}`, 1)}}).call(this)`
         }
       }
       // ...して
       if (node.josi === 'して' || (node.josi === '' && !isExpression)){code += ';\n'}
-    }
-
-    if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
-      code = '(function (key, type) {\n'+
-        'const sf_start = performance.now() * 1000;\n' +
-        'try {\n'+
-        'return '+code+';\n'+
-        '} finally {\n'+
-        'const sl_time = performance.now() * 1000 - sf_start;\n'+
-        'if (!__self.__performance_monitor) {\n'+
-        '__self.__performance_monitor={};\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n'+
-        '} else if (!__self.__performance_monitor[key]) {\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n'+
-        '} else {\n'+
-        '__self.__performance_monitor[key].called++;\n'+
-        '__self.__performance_monitor[key].totel_usec+=sl_time;\n'+
-        'if(__self.__performance_monitor[key].min_usec>sl_time){__self.__performance_monitor[key].min_usec=sl_time;}\n'+
-        'if(__self.__performance_monitor[key].max_usec<sl_time){__self.__performance_monitor[key].max_usec=sl_time;}\n'+
-        `}}})('${funcName}_sys', 'system')\n`
     }
 
     return code
