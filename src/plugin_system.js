@@ -1805,12 +1805,19 @@ const PluginSystem = {
     }
   },
   // @タイマー
-  '秒待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうたいき
+  '秒待機': { // @ 「!非同期モード」または「逐次実行構文」にて、N秒の間待機する // @びょうたいき
     type: 'func',
     josi: [['']],
     pure: false,
     fn: function (n, sys) {
-      sys.__exec('秒逐次待機', [n, sys])
+      if (sys.__genMode == 'async') {
+        sys.async = true
+        setTimeout(() => {
+          sys.nextAsync(sys)
+        }, n * 1000)
+      } else {
+        sys.__exec('秒逐次待機', [n, sys])
+      }
     },
     return_none: true
   },

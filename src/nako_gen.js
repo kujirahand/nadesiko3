@@ -53,6 +53,7 @@ this.__varslist = [{}, {}, {}];
 this.__varslist[2];
 this.__module = {};
 this.__locals = {};
+this.__genMode = 'sync';
 try {
   ${gen.getVarsCode()}
   ${js}
@@ -103,6 +104,12 @@ try {
     this.flagLoop = false
 
     this.__self = com
+
+    /**
+     * コードジェネレータの種類
+     * @type {string}
+     */
+     this.genMode = 'sync'
 
     /**
      * 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。

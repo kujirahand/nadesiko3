@@ -19,6 +19,28 @@ module.exports = {
     },
     return_none: true
   },
+  'AJAX受信': { // @「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る// @AJAXじゅしん
+    type: 'func',
+    josi: [['から', 'を']],
+    pure: true,
+    fn: function (url, sys) {
+      sys.async = true
+      let options = sys.__v0['AJAXオプション']
+      if (options === '') {options = {method: 'GET'}}
+      fetch(url, options).then(res => {
+        return res.text()
+      }).then(text => {
+        sys.__v0['対象'] = text
+        sys.nextAsync(sys)
+      }).catch(err => {
+        console.log('[AJAX受信のエラー]', err)
+        sys.__v0['対象'] = ''
+        sys.__v0['エラーメッセージ'] = text
+        sys.nextAsync(sys)
+      })
+    },
+    return_none: true
+  },
   'AJAX受信時': { // @非同期通信(Ajax)を利用してURLからデータを受信した時callbackが実行される。その際『対象』にデータが代入される。『AJAXオプション』を指定できる。 // @AJAXじゅしんしたとき
     type: 'func',
     josi: [['で'], ['から', 'を']],

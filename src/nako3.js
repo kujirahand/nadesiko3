@@ -20,13 +20,14 @@ const NakoGlobal = require('./nako_global')
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
 
 // Select Code Generator #637
-var NakoGenMode = 'sync'
-
-function NakoGen() {
-  if (NakoGenMode == 'sync') {
-    return NakoGenSync
-  } else {
-    return NakoGenASync
+/** 
+ * @param {string} mode
+*/
+function NakoGen(mode) {
+  switch (mode) {
+    case 'sync': return NakoGenSync
+    case 'async': return NakoGenASync
+    default: return NakoGenSync
   }
 }
 
@@ -581,7 +582,8 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   compile(code, filename, isTest, preCode = '') {
-    return NakoGen().generate(this, this.parse(code, filename, preCode), isTest).runtimeEnv
+    const ast = this.parse(code, filename, preCode)
+    return NakoGen(ast.genMode).generate(this, ast, isTest).runtimeEnv
   }
 
   /**
@@ -620,7 +622,8 @@ class NakoCompiler {
       const optsAll = Object.assign({ resetEnv: true, testOnly: false, resetAll: true }, opts)
       if (optsAll.resetEnv) {this.reset()}
       if (optsAll.resetAll) {this.clearPlugins()}
-      out = NakoGen().generate(this, this.parse(code, fname, preCode), optsAll.testOnly)
+      const ast = this.parse(code, fname, preCode)
+      out = NakoGen(ast.genMode).generate(this, ast, optsAll.testOnly)
     } catch (e) {
       this.logger.error(e)
       throw e
@@ -690,7 +693,8 @@ class NakoCompiler {
    * @param {string} [preCode]
    */
   compileStandalone(code, filename, isTest, preCode = '') {
-    return NakoGen().generate(this, this.parse(code, filename, preCode), isTest).standalone
+    const ast = this.parse(code, filename, preCode)
+    return NakoGen(ast.genMode).generate(this, ast, isTest).standalone
   }
 
   /**

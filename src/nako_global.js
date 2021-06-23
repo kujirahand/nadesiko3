@@ -22,6 +22,7 @@ class NakoGlobal {
     this.__jumpStack = []
     this.__stack = []
     this.__labels = []
+    this.__genMode = gen.genMode
 
     // PluginSystemとdestroy()から参照するため
     this.__module = { ...compiler.__module } // shallow copy

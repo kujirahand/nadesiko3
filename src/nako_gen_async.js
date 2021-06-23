@@ -95,6 +95,7 @@ this.__code = [];
 this.__index = 0;
 this.__jumpStack = [];
 this.__stack = [];
+this.__genMode = 'async';
 try {
   ${gen.getVarsCode()}
   ${js}
@@ -169,6 +170,11 @@ try {
 
     // コンパイラのインスタンス
     this.__self = com
+    /**
+     * コードジェネレータの種類
+     * @type {string}
+     */
+    this.genMode = 'async'
 
     /**
      * 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。
@@ -483,7 +489,7 @@ try {
     })
     result += '\n'
     result += '// === go nako3 === \n'
-    result += 'this.goNako3 = sys => {\n'
+    result += 'this.nextAsync = sys => {\n'
     result += '  if (sys.index >= sys.__code.length) {return}\n'
     result += '  for (;;) {\n'
     result += '    // exec code\n'
@@ -498,10 +504,10 @@ try {
     result += '    if (sys.index >= sys.__code.length) {return}\n'
     result += '    if (sys.async) { sys.async = false; break}\n'
     result += '  }\n'
-    result += '  setTimeout(function(){ sys.goNako3(sys) }, 0)\n'
+    // result += '  setTimeout(function(){ sys.goNako3(sys) }, 0)\n'
     result += '}\n'
     result += 'this.index = 0; this.async = false;\n'
-    result += 'this.goNako3(this)\n'
+    result += 'this.nextAsync(this)\n'
     
     if (isTest) {
       return ''

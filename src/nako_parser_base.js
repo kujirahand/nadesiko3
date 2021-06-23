@@ -19,7 +19,7 @@ class NakoParserBase {
     this.index = 0
     /** @type {import('./nako3').Ast[]} */
     this.y = []
-    this.asyncMode = false // 「!非同期モード」を使うか
+    this.genMode = 'sync' // #637
   }
 
   init () {

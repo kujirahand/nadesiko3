@@ -52,7 +52,7 @@ class NakoParser extends NakoParserBase {
       throw NakoSyntaxError.fromNode('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, false), token)
     }
 
-    return {type: 'block', block: blocks, ...map, end: this.peekSourceMap()}
+    return {type: 'block', block: blocks, ...map, end: this.peekSourceMap(), genMode: this.genMode}
   }
 
   yEOL () {
@@ -89,7 +89,7 @@ class NakoParser extends NakoParserBase {
         ...map,
         end: this.peekSourceMap()
       }}
-    if (this.accept(['require', '非同期モード'])){return this.yASyncMode()}
+    if (this.accept(['not', '非同期モード'])){return this.yASyncMode()}
     // 関数呼び出し演算子
     if (this.check2(['func', '←'])) {return this.yCallOp()}
     if (this.check2(['func', 'eq'])) {
@@ -125,7 +125,7 @@ class NakoParser extends NakoParserBase {
   /** @returns {Ast} */
   yASyncMode () {
     const map = this.peekSourceMap()
-    this.asyncMode　= true
+    this.genMode = 'async'
     return {type: 'eol', ...map, end: this.peekSourceMap()}
   }
 
@@ -1464,12 +1464,13 @@ class NakoParser extends NakoParserBase {
     if (this.check2(['-', 'number']) || this.check2(['-', 'word']) || this.check2(['-', 'func'])) {
       const m = this.get() // skip '-'
       const v = this.yValue()
+      let josi = (v && v.josi) ? v.josi : ''
       return {
         type: 'op',
         operator: '*',
         left: {type: 'number', value: -1, line: m.line},
         right: v,
-        josi: v.josi,
+        josi: josi,
         ...map,
         end: this.peekSourceMap()
       }
@@ -1478,10 +1479,11 @@ class NakoParser extends NakoParserBase {
     if (this.check('not')) {
       const m = this.get() // skip '!'
       const v = this.yValue()
+      let josi = (v && v.josi) ? v.josi : ''
       return {
         type: 'not',
         value: v,
-        josi: v.josi,
+        josi: josi,
         ...map,
         end: this.peekSourceMap()
       }
