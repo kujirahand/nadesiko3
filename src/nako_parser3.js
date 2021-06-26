@@ -90,6 +90,7 @@ class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       }}
     if (this.accept(['not', '非同期モード'])){return this.yASyncMode()}
+    if (this.accept(['not', 'string', 'モード設定'])){return this.ySetGenMode(this.y[1].value)}
     // 関数呼び出し演算子
     if (this.check2(['func', '←'])) {return this.yCallOp()}
     if (this.check2(['func', 'eq'])) {
@@ -125,7 +126,14 @@ class NakoParser extends NakoParserBase {
   /** @returns {Ast} */
   yASyncMode () {
     const map = this.peekSourceMap()
-    this.genMode = 'async'
+    this.genMode = '非同期モード'
+    return {type: 'eol', ...map, end: this.peekSourceMap()}
+  }
+
+  /** @returns {Ast} */
+  ySetGenMode (mode) {
+    const map = this.peekSourceMap()
+    this.genMode = mode
     return {type: 'eol', ...map, end: this.peekSourceMap()}
   }
 

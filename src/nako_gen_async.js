@@ -70,7 +70,7 @@ class NakoGenAsync {
 
     // JSコードを実行するための事前ヘッダ部分の生成
     js = gen.getDefFuncCode(isTest) + js
-    com.logger.trace('--- generate ---\n' + js)
+    com.logger.trace('--- generate(非同期モード) ---\n' + js)
 
     // テストの実行
     if (js && isTest) {
