@@ -5,7 +5,6 @@ const Parser = require('./nako_parser3')
 const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGenSync = require('./nako_gen')
-// const NakoGenASync = require('./nako_gen_async')
 const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
@@ -19,17 +18,21 @@ const NakoGlobal = require('./nako_global')
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
 
+
 // Select Code Generator #637
+/**
+ * @type {Object}
+ */
+const codeGenerators = {
+  'sync': NakoGenSync
+}
+
 /** 
  * @param {string} mode
 */
 function NakoGen(mode) {
-  switch (mode) {
-    case 'sync': return NakoGenSync
-    // case 'async': throw new Error('まだサポートされていません。')
-    case 'async': throw new Error('まだサポートされていません。')
-    default: return NakoGenSync
-  }
+  if (codeGenerators[mode]) {return codeGenerators[mode]}
+  throw new Error(`コードジェネレータの「${mode}」はサポートされていません。`)
 }
 
 /**
@@ -785,6 +788,15 @@ class NakoCompiler {
    */
   getFunc (key) {
     return this.funclist[key]
+  }
+
+  /**
+   * コードジェネレータを追加する
+   * @param {string} mode 
+   * @param {any} obj
+   */
+  addCodeGenerator(mode, obj) {
+    codeGenerators[mode] = obj
   }
 }
 

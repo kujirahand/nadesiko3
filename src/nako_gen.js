@@ -32,12 +32,15 @@ class NakoGen {
 
     // JSコードを実行するための事前ヘッダ部分の生成
     js = gen.getDefFuncCode(isTest) + js
-    com.logger.trace('--- generate ---\n' + js)
 
     // テストの実行
     if (js && isTest) {
       js += '\n__self._runTests(__tests);\n'
     }
+
+    // デバッグメッセージ
+    com.logger.trace('--- generate ---\n' + js)
+
     return {
       runtimeEnv: js,  // なでしこの実行環境ありの場合
       standalone:      // JavaScript単体で動かす場合
@@ -1136,6 +1139,10 @@ try {
     if (node.type === 'func_pointer') {
       return res.js
     }
+    // なでしこで定義した関数？
+    const isUserFunc = (typeof(func.fn) === 'string')
+    //console.log('@@@', funcName, typeof(func.fn))
+
     // 関数の参照渡しでない場合
     // 関数定義より助詞を一つずつ調べる
     const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
@@ -1146,6 +1153,7 @@ try {
 
     // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
     args.push('__self')
+    let funcDef = 'function'
     let funcBegin = ''
     let funcEnd = ''
     // setter?
@@ -1210,7 +1218,7 @@ try {
         this.performanceMonitor.mumeiId++;
         key = `anous_${this.performanceMonitor.mumeiId}`
       }
-      funcCall = '(function (key, type) {\n'+
+      funcCall = `(${funcDef} (key, type) {\n`+
         'const sbf_start = performance.now() * 1000;\n' +
         'try {\n'+
         'return '+funcCall+';\n'+
@@ -1249,9 +1257,9 @@ try {
         code = `(${sorePrefex}${funcCall})`
       } else {
         if (funcEnd === '') {
-          code = `(function(){\n${indent(`${funcBegin};\nreturn ${sorePrefex} ${funcCall}`, 1)}}).call(this)`
+          code = `(${funcDef}(){\n${indent(`${funcBegin};\nreturn ${sorePrefex} ${funcCall}`, 1)}}).call(this)`
         } else {
-          code = `(function(){\n${indent(`${funcBegin}try {\n${indent(`return ${sorePrefex}${funcCall};`, 1)}\n} finally {\n${indent(funcEnd, 1)}}`, 1)}}).call(this)`
+          code = `(${funcDef}(){\n${indent(`${funcBegin}try {\n${indent(`return ${sorePrefex}${funcCall};`, 1)}\n} finally {\n${indent(funcEnd, 1)}}`, 1)}}).call(this)`
         }
       }
       // ...して
