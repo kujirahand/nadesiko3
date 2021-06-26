@@ -5,7 +5,7 @@ const Parser = require('./nako_parser3')
 const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGenSync = require('./nako_gen')
-const NakoGenASync = require('./nako_gen_async')
+// const NakoGenASync = require('./nako_gen_async')
 const NakoIndent = require('./nako_indent')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
@@ -26,7 +26,8 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
 function NakoGen(mode) {
   switch (mode) {
     case 'sync': return NakoGenSync
-    case 'async': return NakoGenASync
+    // case 'async': throw new Error('まだサポートされていません。')
+    case 'async': throw new Error('まだサポートされていません。')
     default: return NakoGenSync
   }
 }
