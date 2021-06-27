@@ -1498,4 +1498,11 @@ try {
   }
 }
 
-module.exports = NakoGenAsync
+if (window && navigator && navigator.nako3) {
+  // Webブラウザの場合
+  navigator.nako3.addCodeGenerator('非同期モード', NakoGenAsync)
+} else {
+  // モジュールモード
+  module.exports = NakoGenAsync
+}
+

@@ -24,6 +24,9 @@ module.exports = {
     josi: [['から', 'を']],
     pure: true,
     fn: function (url, sys) {
+      if (sys.__genMode !== '非同期モード') {
+        throw new Error('『AJAX受信』を使うには、プログラムの冒頭で「!非同期モード」と宣言してください。')
+      }
       sys.async = true
       let options = sys.__v0['AJAXオプション']
       if (options === '') {options = {method: 'GET'}}

@@ -1810,7 +1810,7 @@ const PluginSystem = {
     josi: [['']],
     pure: false,
     fn: function (n, sys) {
-      if (sys.__genMode == 'async') {
+      if (sys.__genMode == '非同期モード') {
         sys.async = true
         setTimeout(() => {
           sys.nextAsync(sys)
