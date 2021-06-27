@@ -58,9 +58,9 @@ module.exports = {
 
   // devtool: 'cheap-module-eval-source-map',
   plugins: [
+    // new StatsPlugin('stats.json', {chunkModules: true}, null) // バンドルサイズ解析
     new AggressiveMergingPlugin(),
-    new CanIUseDBDataReplacementPlugin(),
-    new StatsPlugin('stats.json', {chunkModules: true}, null) // バンドルサイズ解析
+    new CanIUseDBDataReplacementPlugin()
   ],
 
   module: {

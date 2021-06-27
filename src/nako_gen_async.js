@@ -90,15 +90,14 @@ this.logger = {
   send(level, message) { console.log(message) },
 };
 this.__varslist = [{}, {}, {}];
-this.__varslist[2];
+this.__vars = this.__varslist[2];
 this.__module = {};
 this.__locals = {};
 this.__labels = {};
 this.__code = [];
-this.__index = 0;
 this.__callstack = [];
 this.__stack = [];
-this.__genMode = 'async';
+this.__genMode = '非同期モード';
 try {
   ${gen.getVarsCode()}
   ${js}
@@ -500,7 +499,7 @@ try {
     result += 'this.nextAsync = sys => {\n'
     result += '  if (sys.index >= sys.__code.length) {return}\n'
     result += '  for (;;) {\n'
-    result += '    // console.log("run:", sys.index /*,sys.__code[sys.index].toString()*/ )\n'
+    result += '    // console.log("run:", sys.index, sys.__vars, sys.__stack ,sys.__code[sys.index].toString() )\n'
     result += '    try {\n'
     result += '      sys.__code[sys.index](sys)\n'
     result += '    } catch (e) {\n'
@@ -524,20 +523,19 @@ try {
     result += '  }\n'
     result += '}\n'
     result += `this.__call = (no, sys) => {\n`
-    result += `  const info = {lastVars:sys.__vars, backNo: this.index + 1}\n`
+    result += `  const info = {lastVars:sys.__vars, backNo: sys.index + 1}\n`
     result += `  sys.__callstack.push(info);\n`
-    result += `  sys.__vars = {"それ":""}\n`
+    result += `  sys.__vars = {'それ': ''}\n`
     result += `  sys.__varslist.push(sys.__vars)\n`
     result += `  sys.nextIndex = no;\n`
     result += `}\n`
     result += `this.__return = sys => {\n`
-    result += `  const loc = sys.__varslist.pop();\n`
-    result += `  const top = sys.__varslist.length - 1;\n`
-    result += `  sys.__varslist[top]['それ'] = loc['それ']\n`
+    result += `  const sore = sys.__vars['それ'];\n`
+    result += `  sys.__varslist.pop();\n`
     result += `  const info = sys.__callstack.pop();\n`
     result += `  sys.nextIndex = info.backNo;\n`
     result += `  sys.__vars = info.lastVars;\n`
-    result += `  sys.__stack.push(loc['それ']);\n`
+    result += `  sys.__stack.push(sore);\n`
     result += `}\n`
     result += 'this.index = 0;\n'
     result += 'this.async = false; this.nextIndex = -1; this.tryIndex = -1\n'
@@ -575,7 +573,8 @@ try {
       case 'eol':
         if (!node.value) {node.value = ''}
         const line = this.convLineno(node, true) + '// [EOL] ' + node.value.replace(/(\r|\n)/g, '_')
-        this.addCodeStr(`sys.__stack.splice(0);`+line)
+        // this.addCodeStr(`sys.__stack.splice(0);`+line)
+        this.addCodeStr(line)
         break
       
       // === 単純なコード変換 ===
@@ -777,10 +776,12 @@ try {
    * @param {Ast} node
    */
   convIf (node) {
-    const labelEnd = this.makeLabel('IfEnd')
-    const labelIfFalse = this.makeLabel('IfFalse')
-    const expr = this._convGen(node.expr, true)
-    this.addCodeStr(`sys.__stack.push(${expr})`)
+    const labelBegin = this.makeLabel('もし:ここから')
+    const labelEnd = this.makeLabel('もし:ここまで')
+    const labelIfFalse = this.makeLabel('もし:違えば')
+    //
+    this.addCode(labelBegin)
+    this._convGen(node.expr, true)
     this.addCode(this.makeJumpIfFalse(labelIfFalse))
     this._convGen(node.block, false)
     this.addCode(this.makeJump(labelEnd))
@@ -886,8 +887,10 @@ try {
 
   convGetVar (node) {
     const name = node.value
+    let varName = `sys.__vars[${JSON.stringify(name)}]`
     const o = this.findVar(name)
-    this.addCodeStr(`sys.__stack.push(${o.js});`)
+    if (o != null) {varName = o.js}
+    this.addCodeStr(`sys.__stack.push(${varName});`)
   }
 
   convComment (node) {
@@ -906,8 +909,6 @@ try {
     if (this.varsSet.names.has('!関数'))
       {throw NakoSyntaxError.fromNode('『戻る』がありますが、関数定義内のみで使用可能です。', node)}
 
-    const lno = this.convLineno(node, false)
-    let value
     if (node.value) {
       this._convGen(node.value, true)
       this.addCodeStr(`sys.__vars["それ"] = sys.__stack.pop()`)
@@ -947,14 +948,16 @@ try {
     code += `//関数『${name}』の初期化処理\n`
     // 宣言済みの名前を保存
     const varsDeclared = Array.from(this.varsSet.names.values())
-    // 引数をローカル変数に設定
+    // 引数をローカル変数に設定 (スタックの末尾から取得する必要があるので、逆順に値を得る)
     code += '// 引数をローカル変数として登録\n'
     let meta = (!name) ? node.meta : node.name.meta
-    for (let i = 0; i < meta.varnames.length; i++) {
+    for (let i = meta.varnames.length-1; i >= 0; i--) {
       const word = meta.varnames[i]
-      code += `  ${this.varname(word)} = sys.__stack.shift();\n`
+      code += `  ${this.varname(word)} = sys.__stack.pop();\n`
       this.varsSet.names.add(word)
     }
+    this.addCodeStr(code)
+    
     // 関数定義は、グローバル領域で。
     if (name) {
       this.used_func.add(name)
@@ -964,22 +967,20 @@ try {
         fn: '',
         type: 'func'
       }
+      this.nako_func[name].fn = `(function(){ throw new Error("ユーザー関数『${name}』の呼出はできません") })`
     }
-    this.addCodeStr(code)
-    // ブロックを解析
-    const block = this._convGen(node.block, false)
-    code += block.split('\n').map((line) => '  ' + line).join('\n') + '\n'
-    this.addCode(new NakoCode(NakoCodeReturn, ''))
-    
-    if (name) {this.nako_func[name].fn = `(function(){ throw new Error("ユーザー関数『${name}』の呼出はできません") })`}
 
+    // ブロックを解析
+    this._convGen(node.block, false)
+    
+    
     this.varslistSet.pop()
     this.varsSet = this.varslistSet[this.varslistSet.length - 1]
     if (name) {this.__self.__varslist[1][name] = '(function(){})'}
 
     this.addCode(new NakoCode(NakoCodeReturn, ''))
     this.addCode(labelEnd)
-    return code
+    return ''
   }
 
   convDefTest(node) {
@@ -1254,18 +1255,18 @@ try {
   }
   
   convFuncGetArgsCalcType (funcName, func, node) {
-    const args = []
     const opts = {}
     for (let i = 0; i < node.args.length; i++) {
       const arg = node.args[i]
-      if (i === 0 && arg === null && this.speedMode.invalidSore === 0) {
-        args.push(this.varname('それ'))
+      if (i === 0 && arg === null) {
+        this.addCodeStr(`sys.__stack.push(sys.__vars['それ'])`)
         opts['sore'] = true
-      } else
-        {args.push(this._convGen(arg, true))}
-
+      } else {
+        // 関数の引数を評価
+        this._convGen(arg, true)
+      }
     }
-    return [args, opts]
+    return opts
   }
 
   getPluginList () {
@@ -1305,9 +1306,7 @@ try {
     }
     // 関数の参照渡しでない場合
     // 関数定義より助詞を一つずつ調べる
-    const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
-    const args = argsInfo[0]
-    const argsOpts = argsInfo[1]
+    const argsOpts = this.convFuncGetArgsCalcType(funcName, func, node)
     // function
     this.used_func.add(funcName)
     let funcBegin = ''
@@ -1320,22 +1319,8 @@ try {
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts['sore']){funcBegin += '/*[sore]*/'}
 
-    const indent = (text, n) => {
-      let result = ''
-      for (const line of text.split('\n')) {
-        if (line !== '') {
-          result += '  '.repeat(n) + line + '\n'
-        }
-      }
-      return result
-    }
-
     // 引数をスタックに積む
-    const arcCount = args.length
-    for (let i = 0; i < arcCount; i++) {
-      const a = args[i]
-      this._convGen(a, true)
-    }
+    const arcCount = node.args.length
     // 必要な引数分だけスタックから下ろして呼び出す
     let code = ''
     if (isJSFunc) {
@@ -1346,13 +1331,18 @@ try {
       code += `const ret = ${res.js}.apply(sys, args);\n`
       if (!func.return_none) {
         code += `sys.__vars['それ'] = ret;\n`
-        code += `sys.__stack.push(ret);\n`
+        if (isExpression) {
+          code += `sys.__stack.push(ret);\n`
+        }
       }
       code += funcEnd
       this.addCodeStr(code)
     } else {
       this.addCode(new NakoCode(NakoCodeCall, funcName))
-    }
+      if (!isExpression) {
+        this.addCodeStr(`sys.__stack.pop();// 戻り値を利用しない関数呼出`)
+      }
+  }
   }
 
   convRenbun(node) {
@@ -1379,29 +1369,35 @@ try {
     }
     let op = node.operator // 演算子
     // 値はスタックに載せられる
-    // right
-    this._convGen(node.right, true)
     // left
     this._convGen(node.left, true)
+    // right
+    this._convGen(node.right, true)
     // calc
     let code = 
-      `const lv = sys.__stack.pop();\n` +
-      `const rv = sys.__stack.pop();\n`
-
+      `const rv = sys.__stack.pop();\n` +
+      `const lv = sys.__stack.pop();\n`
     if (op === '^') {
       code += 'const v = (Math.pow(lv, rv))\n'
     } else {
-      const jsop = OP_TBL[op] || op
-      code += `const v = lv${jsop}rv;\n`
+      const op2 = OP_TBL[op] || op
+      code += `const v = ((lv) ${op2} (rv));\n`
     }
-    code += `sys.__stack.push(v);\n//op:${op}`
+    // code += `if (isNaN(v) && '${op}' != '&') { console.log('ERROR:${op}', lv, rv) }\n`
+    code += `sys.__stack.push(v); //op:${op}\n`
     this.addCodeStr(code)
   }
 
   convLet (node) {
     let code = ''
     // 値をスタックに載せる
-    this._convGen(node.value, true)
+    if (node.value === null) {
+      // 値が省略されたら「それ」を載せる
+      this.addCodeStr(`sys.__stack.push(sys.__vars['それ'])`)
+    } else {
+      // 値がある場合
+      this._convGen(node.value, true)
+    }
     // 変数名
     const name = node.name.value
     const res = this.findVar(name)
