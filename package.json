@@ -10,6 +10,7 @@
   },
   "scripts": {
     "test": "cross-env TZ=Asia/Tokyo mocha",
+    "test:async": "mocha test/async -g aysnc_basic_test",
     "test:common": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/karma.config.js",
     "test:browser": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/browser/karma.config.js",
     "test:bundled": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/bundled/karma.config.js",

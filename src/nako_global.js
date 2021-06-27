@@ -19,7 +19,7 @@ class NakoGlobal {
     this.index = 0
     this.nextIndex = -1
     this.__code = []
-    this.__jumpStack = []
+    this.__callstack = []
     this.__stack = []
     this.__labels = []
     this.__genMode = gen.genMode
