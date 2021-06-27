@@ -1498,7 +1498,7 @@ try {
   }
 }
 
-if (window && navigator && navigator.nako3) {
+if (typeof(navigator) === 'object' && typeof(navigator.nako3) === 'object') {
   // Webブラウザの場合
   navigator.nako3.addCodeGenerator('非同期モード', NakoGenAsync)
 } else {
