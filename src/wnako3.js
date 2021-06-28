@@ -10,7 +10,7 @@ const PluginBrowser = require('./plugin_browser')
 
 class WebNakoCompiler extends NakoCompiler {
   constructor () {
-    super()
+    super({useBasicPlugin: true})
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
   }
 

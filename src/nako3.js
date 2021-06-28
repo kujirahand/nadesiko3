@@ -90,10 +90,16 @@ function NakoGen(mode) {
  */
 
 class NakoCompiler {
-  constructor () {
+  /**
+   * @param {undefined | {'useBasicPlugin':true|false}} options 
+   */
+  constructor (options) {
+    if (options == undefined) {
+      options = {'useBasicPlugin': true}
+    }
     this.silent = true
     this.filename = 'inline'
-    this.options = {}
+    this.options = options
     // 環境のリセット
     /** @type {Record<string, any>[]} */
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
@@ -120,12 +126,6 @@ class NakoCompiler {
     this.parser = new Parser(this.logger)
     this.lexer = new NakoLexer(this.logger)
     
-    // set this
-    this.addPluginObject('PluginSystem', PluginSystem)
-    this.addPluginObject('PluginMath', PluginMath)
-    this.addPluginObject('PluginPromise', PluginPromise)
-    this.addPluginObject('PluginAssert', PluginTest)
-
     /**
      * 取り込み文を置換するためのオブジェクト。
      * 正規化されたファイル名がキーになり、取り込み文の引数に指定された正規化されていないファイル名はaliasに入れられる。
@@ -141,12 +141,24 @@ class NakoCompiler {
     this.setFunc = this.addFunc  // エイリアス
 
     this.numFailures = 0
+
+    if (options.useBasicPlugin) {this.addBasicPlugins()}
+  }
+
+  /**
+   * 基本的なプラグインを追加する
+   */
+  addBasicPlugins () {
+    this.addPluginObject('PluginSystem', PluginSystem)
+    this.addPluginObject('PluginMath', PluginMath)
+    this.addPluginObject('PluginPromise', PluginPromise)
+    this.addPluginObject('PluginAssert', PluginTest)
   }
 
   /**
    * loggerを新しいインスタンスで置き換える。
    */
-  replaceLogger() {
+  replaceLogger () {
     return this.prepare.logger = this.lexer.logger = this.parser.logger = this.logger = new NakoLogger()
   }
 

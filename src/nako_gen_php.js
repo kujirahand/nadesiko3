@@ -1,13 +1,13 @@
 /**
  * file: nako_gen.js
- * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
- * なお速度優先で忠実にJavaScriptのコードを生成する。
+ * パーサーが生成した中間オブジェクトを実際のPHPのコードに変換する。
  */
 
 'use strict'
 
-const { NakoSyntaxError, NakoError, NakoRuntimeError } = require('./nako_errors')
-const nakoVersion = require('./nako_version')
+const { NakoSyntaxError, NakoError, NakoRuntimeError } = require('./nako_errors.js')
+const nakoVersion = require('./nako_version.js')
+const NakoGen = require('./nako_gen.js')
 
 /**
  * @typedef {import("./nako3").Ast} Ast
@@ -15,58 +15,66 @@ const nakoVersion = require('./nako_version')
 /**
  * 構文木からJSのコードを生成するクラス
  */
-class NakoGen {
+class NakoGenPHP {
   /**
    * @param {import('./nako3')} com
    * @param {Ast} ast
    * @param {boolean | string} isTest 文字列なら1つのテストだけを実行する
    */
   static generate(com, ast, isTest) {
-    const gen = new NakoGen(com)
+    const gen = new NakoGenPHP(com)
 
     // ユーザー定義関数をシステムに登録する
     gen.registerFunction(ast)
 
-    // JSコードを生成する
-    let js = gen.convGen(ast, !!isTest)
+    // PHPコードを生成する
+    let php = gen.convGen(ast, !!isTest)
 
     // JSコードを実行するための事前ヘッダ部分の生成
-    js = gen.getDefFuncCode(isTest) + js
+    let head = gen.getDefFuncCode(isTest)
 
     // テストの実行
-    if (js && isTest) {
-      js += '\n__self._runTests(__tests);\n'
+    if (php && isTest) {
+      // TODO: テストコード
+      // php += '\n__self._runTests(__tests);\n'
     }
-
+    const code = `<?php
+    //-----------------------------------------------
+    // 【なでしこv3 for PHP】で自動生成されたコード
+    //-----------------------------------------------
+    global $nako3, $__v0, $__v1, $__v2, $__locals;
+    if (empty($nako3)) {
+      // init basic object
+      $nako3 = [
+        'version' => '${nakoVersion.version}',
+        '__varslist'=> [[], [], []], // 変数リスト
+        '__module' => [], // モジュールデータ
+        '__genMode' => 'PHP',
+      ];
+      // alias
+      $__v0 = &$nako3['__varslist'][0]; // system
+      $__v1 = &$nako3['__varslist'][1]; // user global
+      $__v2 = &$nako3['__varslist'][2]; // user vars
+      $__locals = &$__v2; // stack top
+    }
+    //-----------------------------------------------
+    // 各種宣言
+    ${gen.getVarsCode()}
+    //-----------------------------------------------
+    // ヘッダ
+    ${head}
+    //-----------------------------------------------
+    // 変換コード
+    ${php}
+    //-----------------------------------------------
+    `
     // デバッグメッセージ
-    com.logger.trace('--- generate ---\n' + js)
+    const codeLines = code.split('\n').map((line, no) => `${no+1}: ${line}`).join('\n')
+    com.logger.trace('--- generate::PHP ---\n' + codeLines)
 
     return {
-      runtimeEnv: js,  // なでしこの実行環境ありの場合
-      standalone:      // JavaScript単体で動かす場合
-        `\
-const nakoVersion = ${JSON.stringify(nakoVersion)};
-${NakoError.toString()}
-${NakoRuntimeError.toString()}
-this.logger = {
-  error(message) { console.error(message) },
-  send(level, message) { console.log(message) },
-};
-this.__varslist = [{}, {}, {}];
-this.__vars = this.__varslist[2];
-this.__module = {};
-this.__locals = {};
-this.__genMode = 'sync';
-try {
-  ${gen.getVarsCode()}
-  ${js}
-} catch (err) {
-  if (!(err instanceof NakoRuntimeError)) {
-    err = new NakoRuntimeError(err, __varslist[0].line);
-  }
-  this.logger.error(err);
-  throw err;
-}`,
+      runtimeEnv: php,  // なでしこの実行環境ありの場合
+      standalone: code, // JavaScript単体で動かす場合
       gen,  // コード生成に使ったNakoGenのインスタンス
     }
   }
@@ -112,7 +120,7 @@ try {
      * コードジェネレータの種類
      * @type {string}
      */
-     this.genMode = 'sync'
+     this.genMode = 'PHP'
 
     /**
      * 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。
@@ -183,7 +191,7 @@ try {
       this.lastLineNo = lineNo
     }
     // 例: __v0.line='l1:main.nako3'
-    return `__v0.line=${JSON.stringify(lineNo)};`
+    return `$__v0['line']=${JSON.stringify(lineNo)};`
   }
 
   /**
@@ -191,16 +199,13 @@ try {
    * @param {string} name
    */
   varname (name) {
+    // 関数の中かどうか
     if (this.varslistSet.length === 3) {
       // グローバル
-      return `__varslist[${2}][${JSON.stringify(name)}]`
+      return `$__v2[${JSON.stringify(name)}]`
     } else {
       // 関数内
-      if (NakoGen.isValidIdentifier(name)) {
-        return name
-      } else {
-        return `__vars[${JSON.stringify(name)}]`
-      }
+      return `$__locals[${JSON.stringify(name)}]`
     }
   }
 
@@ -220,7 +225,7 @@ try {
   static convRequire (node) {
     const moduleName = node.value
     return this.convLineno(node, false) +
-      `__module['${moduleName}'] = require('${moduleName}');\n`
+      `$nako3['__module']['${moduleName}'] = TRUE;\nimport_once('${moduleName}');\n`
   }
 
   /**
@@ -229,17 +234,6 @@ try {
    */
   getVarsCode () {
     let code = ''
-
-    // プログラム中で使った関数を列挙して書き出す
-    for (const key of Array.from(this.used_func.values())) {
-      const f = this.__self.__varslist[0][key]
-      const name = `this.__varslist[0]["${key}"]`
-      if (typeof (f) === 'function')
-        {code += name + '=' + f.toString() + ';\n'}
-       else
-        {code += name + '=' + JSON.stringify(f) + ';\n'}
-
-    }
     return code
   }
 
@@ -251,55 +245,22 @@ try {
    */
   getDefFuncCode (isTest) {
     let code = ''
-    // よく使う変数のショートカット
-    code += 'const __self = this.__self = this;\n'
-    code += 'const __varslist = this.__varslist;\n'
-    code += 'const __module = this.__module;\n'
-    code += 'const __v0 = this.__v0 = this.__varslist[0];\n'
-    code += 'const __v1 = this.__v1 = this.__varslist[1];\n'
-    code += 'const __vars = this.__vars = this.__varslist[2];\n'
-
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
     for (const key in this.nako_func) {
       const f = this.nako_func[key].fn
       nakoFuncCode += '' +
         `//[DEF_FUNC name='${key}']\n` +
-        `__v1["${key}"]=${f};\n;` +
+        `$__v1["${key}"]=${f};\n;` +
         `//[/DEF_FUNC name='${key}']\n`
     }
     if (nakoFuncCode !== '')
-      {code += '__v0.line=\'関数の定義\';\n' + nakoFuncCode}
+      {code += `$nako3['__varslist'][0]['line']=\'関数の定義\';\n` + nakoFuncCode}
 
     // プラグインの初期化関数を実行する
-    let pluginCode = ''
     for (const name in this.__self.__module) {
-      const initkey = `!${name}:初期化`
-      if (this.varslistSet[0].names.has(initkey)) {
-        this.used_func.add(`!${name}:初期化`)
-        pluginCode += `__v0["!${name}:初期化"](__self);\n`
-      }
+      code += this.convRequire(name)
     }
-    if (pluginCode !== '')
-      {code += '__v0.line=\'プラグインの初期化\';\n' + pluginCode}
-
-    // テストの定義を行う
-    if (isTest) {
-      let testCode = 'const __tests = [];\n'
-
-      for (const key in this.nako_test) {
-        if (isTest === true || (typeof isTest === 'string' && isTest === key)) {
-          const f = this.nako_test[key].fn
-          testCode += `${f};\n;`
-        }
-      }
-
-      if (testCode !== '') {
-        code += '__v0.line=\'テストの定義\';\n'
-        code += testCode + '\n'
-      }
-    }
-
     return code
   }
 
@@ -433,7 +394,7 @@ try {
       return code
     }
     if (node === null) {return 'null'}
-    if (node === undefined) {return 'undefined'}
+    if (node === undefined) {return 'null'}
     if (typeof (node) !== 'object') {return '' + node}
     // switch
     switch (node.type) {
@@ -456,7 +417,7 @@ try {
         code += this.convCheckLoop(node, 'continue')
         break
       case 'end':
-        code += '__varslist[0][\'終\']();'
+        code += '$__v0[\'終\']($nako3);'
         break
       case 'number':
         code += node.value
@@ -553,12 +514,30 @@ try {
         code += this.convTryExcept(node)
         break
       case 'require':
-        code += NakoGen.convRequire(node)
+        // 既に取り込んでいる
         break
       default:
         throw new Error('System Error: unknown_type=' + node.type)
     }
     return code
+  }
+
+  /**
+   * require を変換する
+   * @param {string} mod 
+   * @returns 
+   */
+  convRequire (mod) {
+    return `
+    // <require src=${mod}>
+    include __DIR__.'/src/${mod}.php';
+    $nako3['__module']['${mod}'] = $exports;
+    foreach ($exports as $name => $v) { // import to v0
+      if ($v['type'] == 'func') { $__v0[$name] = $v['fn']; }
+      else { $__v0[$name] = $v['value']; }
+    }
+    // </require>
+    `
   }
 
   /**
@@ -575,7 +554,16 @@ try {
       if (this.varslistSet[i].names.has(name)) {
         // ユーザーの定義したグローバル変数 (__varslist[2]) は、変数展開されている（そのままの名前で定義されている）可能性がある。
         // それ以外の変数は、必ず__varslistに入っている。
-        return { i, name, isTop: false, js: `__varslist[${i}][${JSON.stringify(name)}]` }
+        if (i == 0) {
+          return { i, name, isTop: false, js: `$__v0[${JSON.stringify(name)}]` }
+        }
+        if (i == 1) {
+          return { i, name, isTop: false, js: `$__v1[${JSON.stringify(name)}]` }
+        }
+        if (i == 2) {
+          return { i, name, isTop: false, js: `$__v2[${JSON.stringify(name)}]` }
+        }
+        return { i, name, isTop: false, js: `$nako3['__varslist'][${i}][${JSON.stringify(name)}]` }
       }
     }
     
@@ -677,25 +665,10 @@ try {
         this.performanceMonitor.mumeiId++;
         key = `anous_${this.performanceMonitor.mumeiId}`
       }
-      performanceMonitorInjectAtStart = 'const performanceMonitorEnd = (function (key, type) {\n'+
-        'const uf_start = performance.now() * 1000;\n'+
-        'return function () {\n'+
-        'const el_time = performance.now() * 1000 - uf_start;\n'+
-        'if (!__self.__performance_monitor) {\n'+
-        '__self.__performance_monitor={};\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n'+
-        '} else if (!__self.__performance_monitor[key]) {\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n'+
-        '} else {\n'+
-        '__self.__performance_monitor[key].called++;\n'+
-        '__self.__performance_monitor[key].totel_usec+=el_time;\n'+
-        'if(__self.__performance_monitor[key].min_usec>el_time){__self.__performance_monitor[key].min_usec=el_time;}\n'+
-        'if(__self.__performance_monitor[key].max_usec<el_time){__self.__performance_monitor[key].max_usec=el_time;}\n'+
-        `}};})('${key}', 'user');`+
-        'try {\n'
-      performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n'
+      performanceMonitorInjectAtStart = ''
+      performanceMonitorInjectAtEnd = ''
     }
-    let topOfFunction = '(function(){\n'
+    let topOfFunction = '(function(){\nglobal $nako3, $__v0, $__v1, $__v2;\n'
     let endOfFunction = '})'
     let variableDeclarations = ''
     const initialNames = new Set()
@@ -706,7 +679,7 @@ try {
     // ローカル変数をPUSHする
     this.varslistSet.push(this.varsSet)
     // JSの引数と引数をバインド
-    variableDeclarations += `  var 引数 = arguments;\n`
+    // variableDeclarations += `  $__vars['引数'] = arguments;\n`
     // 宣言済みの名前を保存
     const varsDeclared = Array.from(this.varsSet.names.values())
     let code = ''
@@ -714,7 +687,7 @@ try {
     let meta = (!name) ? node.meta : node.name.meta
     for (let i = 0; i < meta.varnames.length; i++) {
       const word = meta.varnames[i]
-      code += `  ${this.varname(word)} = arguments[${i}];\n`
+      code += `  ${this.varname(word)} = func_get_arg(${i});\n`
       this.varsSet.names.add(word)
     }
     // 関数定義は、グローバル領域で。
@@ -739,31 +712,7 @@ try {
     // 関数の末尾に、ローカル変数をPOP
     code += endOfFunction
 
-    // 関数内で定義されたローカル変数の宣言
-    let needsVarsObject = false
-    for (const name of Array.from(this.varsSet.names.values())) {
-      if (!varsDeclared.includes(name)) {
-        if (NakoGen.isValidIdentifier(name)) {
-          variableDeclarations += `  var ${name};\n`
-        } else {
-          needsVarsObject = true
-        }
-      }
-    }
-    if (!NakoGen.isValidIdentifier('それ') && this.speedMode.invalidSore === 0) {
-      needsVarsObject = true
-    }
-    // 一度でも__varsを使ったら、それも宣言する。
-    if (needsVarsObject) {
-      variableDeclarations += `  var __vars = {};\n`
-    }
-    if (this.speedMode.invalidSore === 0) {
-      if (NakoGen.isValidIdentifier('それ')) {
-        variableDeclarations += `  var それ = '';\n`
-      } else {
-        variableDeclarations += `  ${this.varname('それ')} = '';`
-      }
-    }
+    variableDeclarations += `  $__locals = ['それ'=>''];\n`
     code = topOfFunction + performanceMonitorInjectAtStart + variableDeclarations + code
 
     if (name)
@@ -779,13 +728,13 @@ try {
 
   convDefTest(node) {
     const name = node.name.value
-    let code = `__tests.push({ name: '${name}', f: () => {\n`
+    let code = `__tests.push([ 'name' => '${name}', 'f' => function() {\n`
 
     // ブロックを解析
     const block = this._convGen(node.block, false)
 
     code += `   ${block}\n` +
-      `}});`
+      `}]);`
 
     this.nako_test[name] = {
       'josi': node.name.meta.josi,
@@ -815,9 +764,9 @@ try {
     const codelist = list.map((e) => {
       const key = this._convGen(e.key, true)
       const val = this._convGen(e.value, true)
-      return `${key}:${val}`
+      return `'${key}' => ${val}`
     })
-    return '{' + codelist.join(',') + '}'
+    return '[' + codelist.join(',') + ']'
   }
 
   convJsonArray (node) {
@@ -889,15 +838,15 @@ try {
     }
     const code =
       `\n//[FOR id=${idLoop}]\n` +
-      `const ${varFrom} = ${kara};\n` +
-      `const ${varTo} = ${made};\n` +
+      `${varFrom} = ${kara};\n` +
+      `${varTo} = ${made};\n` +
       `if (${varFrom} <= ${varTo}) { // up\n` +
-      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}++) {\n` +
+      `  for (${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}++) {\n` +
       `    ${sorePrefex}${word} = ${varI};\n` +
       `    ${block}\n` +
       `  };\n` +
       `} else { // down\n` +
-      `  for (let ${varI} = ${varFrom}; ${varI} >= ${varTo}; ${varI}--) {\n` +
+      `  for (${varI} = ${varFrom}; ${varI} >= ${varTo}; ${varI}--) {\n` +
       `    ${sorePrefex}${word} = ${varI};` + '\n' +
       `    ${block}\n` +
       `  };\n` +
@@ -908,16 +857,11 @@ try {
   convForeach (node) {
     let target
     if (node.target === null) {
-      if (this.speedMode.invalidSore === 0) {
-        target = this.varname('それ')
-      } else {
-        throw NakoSyntaxError.fromNode(`『反復』の対象がありません。`, node)
-      }
-    } else
-      {target = this._convGen(node.target, true)}
+      target = this.varname('それ')
+    } else{target = this._convGen(node.target, true)}
 
     // blockより早く変数を定義する必要がある
-    let nameS = '__v0["対象"]'
+    let nameS = '$__v0["対象"]'
     if (node.name) {
       nameS = this.varname(node.name.value)
       this.varsSet.names.add(node.name.value)
@@ -925,19 +869,17 @@ try {
   
     const block = this.convGenLoop(node.block)
     const id = this.loop_id++
-    const key = '__v0["対象キー"]'
+    const key = '$__v0["対象キー"]'
     let sorePrefex = ''
     if (this.speedMode.invalidSore === 0) {
       sorePrefex = `${this.varname('それ')} = `
     }
     const code =
-      `let $nako_foreach_v${id}=${target};\n` +
-      `for (let $nako_i${id} in $nako_foreach_v${id})` + '{\n' +
-      `  if ($nako_foreach_v${id}.hasOwnProperty($nako_i${id})) {\n` +
-      `    ${nameS} = ${sorePrefex}$nako_foreach_v${id}[$nako_i${id}];` + '\n' +
-      `    ${key} = $nako_i${id};\n` +
-      `    ${block}\n` +
-      '  }\n' +
+      `$nako_foreach_v${id}=${target};\n` +
+      `foreach ($nako_foreach_v${id} as $nako_i${id})` + '{\n' +
+      `  ${nameS} = ${sorePrefex}$nako_foreach_v${id}[$nako_i${id}];` + '\n' +
+      `  ${key} = $nako_i${id};\n` +
+      `  ${block}\n` +
       '};\n'
     return this.convLineno(node, false) + code
   }
@@ -946,14 +888,14 @@ try {
     const id = this.loop_id++
     const value = this._convGen(node.value, true)
     const block = this.convGenLoop(node.block)
-    const kaisu = '__v0["回数"]'
+    const kaisu = '$__v0["回数"]'
     let sorePrefex = ''
     if (this.speedMode.invalidSore === 0) {
       sorePrefex = `${this.varname('それ')} = `
     }
     const code =
-      `let $nako_times_v${id} = ${value};\n` +
-      `for(var $nako_i${id} = 1; $nako_i${id} <= $nako_times_v${id}; $nako_i${id}++)` + '{\n' +
+      `$nako_times_v${id} = ${value};\n` +
+      `for($nako_i${id} = 1; $nako_i${id} <= $nako_times_v${id}; $nako_i${id}++)` + '{\n' +
       `  ${sorePrefex}${kaisu} = $nako_i${id};` + '\n' +
       '  ' + block + '\n}\n'
     return this.convLineno(node, false) + code
@@ -1050,44 +992,14 @@ try {
   }
 
   convTikuji (node) {
-    const pid = this.loop_id++
     // gen tikuji blocks
-    const curName = `__tikuji${pid}`
-    let code = `const ${curName} = []\n`
+    let code = `// PHPモードで逐次実行は普通の文に変換されました。\n`
     for (let i = 0; i < node.blocks.length; i++) {
       const block = this._convGen(node.blocks[i], false).replace(/\s+$/, '') + '\n'
       const blockLineNo = this.convLineno(node.blocks[i], true)
-      const blockCode =
-        `${curName}.push(function(resolve, reject) {\n` +
-        '  __self.resolve = resolve;\n' +
-        '  __self.reject = reject;\n' +
-        '  __self.resolveCount = 0;\n' +
-        `  ${blockLineNo}\n` +
-        `  ${block}` +
-        '  if (__self.resolveCount === 0) resolve();\n' +
-        '}); // end of tikuji__${pid}[{$i}]\n'
-      code += blockCode
+      code += blockLineNo + block + '\n'
     }
-    code += `// end of ${curName} \n`
-    // gen error block
-    let errorCode = 
-      `  ${curName}.splice(0);\n` + // clear
-      '  __v0["エラーメッセージ"]=errMsg;\n'
-    if (node.errorBlock != null) {
-      const errBlock = this._convGen(node.errorBlock, false).replace(/\s+$/, '') + '\n'
-      errorCode += errBlock
-    }
-    code += `const ${curName}__reject = function(errMsg){\n${errorCode}};\n`
-    // gen run block
-    code += '__self.resolve = undefined;\n'
-    code += `const ${curName}__resolve = function(){\n`
-    code += `  setTimeout(function(){\n`
-    code += `    if (${curName}.length == 0) {return}\n`
-    code += `    const f = ${curName}.shift()\n`
-    code += `    f(${curName}__resolve, ${curName}__reject);\n`
-    code += `  }, 0);\n`
-    code += `};\n`
-    code += `${curName}__resolve()\n`
+    code += `// ここまで「逐次実行」 \n`
     return this.convLineno(node, false) + code
   }
 
@@ -1147,95 +1059,23 @@ try {
     // 関数定義より助詞を一つずつ調べる
     const argsInfo = this.convFuncGetArgsCalcType(funcName, func, node)
     const args = argsInfo[0]
+    args.push('$nako3')
     const argsOpts = argsInfo[1]
     // function
     this.used_func.add(funcName)
-
-    // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
-    args.push('__self')
-    let funcDef = 'function'
     let funcBegin = ''
     let funcEnd = ''
     // setter?
     if (node['setter']) {
-      funcBegin += ';__self.isSetter = true;\n'
-      funcEnd += ';__self.isSetter = false;\n'
-    }
-    // 関数内 (__varslist.length > 3) からプラグイン関数 (res.i === 0) を呼び出すとき、 そのプラグイン関数がpureでなければ
-    // 呼び出しの直前に全てのローカル変数をthis.__localsに入れる。
-    if (res.i === 0 && this.varslistSet.length > 3 && func.pure !== true && this.speedMode.forcePure === 0) { // undefinedはfalseとみなす
-      // 展開されたローカル変数の列挙
-      const localVars = []
-      for (const name of Array.from(this.varsSet.names.values())) {
-        if (NakoGen.isValidIdentifier(name)) {
-          localVars.push({ str: JSON.stringify(name), js: this.varname(name) })
-        }
-      }
-
-      // --- 実行前 ---
-
-      // 全ての展開されていないローカル変数を __self.__locals にコピーする
-      funcBegin += `__self.__locals = __vars;\n`
-
-      // 全ての展開されたローカル変数を __self.__locals に保存する
-      for (const v of localVars) {
-        funcBegin += `__self.__locals[${v.str}] = ${v.js};\n`
-      }
-
-      // --- 実行後 ---
-
-      // 全ての展開されたローカル変数を __self.__locals から受け取る
-      // 「それ」は関数の実行結果を受け取るために使うためスキップ。
-      for (const v of localVars) {
-        if (v.js !== 'それ') {
-          funcEnd += `${v.js} = __self.__locals[${v.str}];\n`
-        }
-      }
+      funcBegin += `;$nako3['isSetter'] = true;\n`
+      funcEnd += `;$nako3['isSetter'] = false;\n`
     }
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts['sore']){funcBegin += '/*[sore]*/'}
 
-    const indent = (text, n) => {
-      let result = ''
-      for (const line of text.split('\n')) {
-        if (line !== '') {
-          result += '  '.repeat(n) + line + '\n'
-        }
-      }
-      return result
-    }
-
     // 関数呼び出しコードの構築
     let argsCode = args.join(',')
     let funcCall = `${res.js}(${argsCode})`
-
-    if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
-      let key = funcName
-      if (!key) {
-        if (typeof this.performanceMonitor.mumeiId === 'undefined') {
-          this.performanceMonitor.mumeiId = 0
-        }
-        this.performanceMonitor.mumeiId++;
-        key = `anous_${this.performanceMonitor.mumeiId}`
-      }
-      funcCall = `(${funcDef} (key, type) {\n`+
-        'const sbf_start = performance.now() * 1000;\n' +
-        'try {\n'+
-        'return '+funcCall+';\n'+
-        '} finally {\n'+
-        'const sbl_time = performance.now() * 1000 - sbf_start;\n'+
-        'if (!__self.__performance_monitor) {\n'+
-        '__self.__performance_monitor={};\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n'+
-        '} else if (!__self.__performance_monitor[key]) {\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n'+
-        '} else {\n'+
-        '__self.__performance_monitor[key].called++;\n'+
-        '__self.__performance_monitor[key].totel_usec+=sbl_time;\n'+
-        'if(__self.__performance_monitor[key].min_usec>sbl_time){__self.__performance_monitor[key].min_usec=sbl_time;}\n'+
-        'if(__self.__performance_monitor[key].max_usec<sbl_time){__self.__performance_monitor[key].max_usec=sbl_time;}\n'+
-        `}}})('${funcName}_body', 'sysbody')\n`
-    }
 
     let code = ``
     if (func.return_none) {
@@ -1246,58 +1086,34 @@ try {
           code = `${funcBegin} ${funcCall};\n`
         }
       } else {
-        code = `${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
+        code = `${funcBegin}try {\n${funcCall};\n} finally {\n${funcEnd}}\n`
       }
     } else {
-      let sorePrefex = ''
-      if (this.speedMode.invalidSore === 0) {
-        sorePrefex = `${this.varname('それ')} = `
-      }
+      let sorePrefex = `${this.varname('それ')} = `
       if (funcBegin === '' && funcEnd === '') {
-        code = `(${sorePrefex}${funcCall})`
+        code = `${sorePrefex}${funcCall}`
       } else {
         if (funcEnd === '') {
-          code = `(${funcDef}(){\n${indent(`${funcBegin};\nreturn ${sorePrefex} ${funcCall}`, 1)}}).call(this)`
+          code = `(function($nako3){\n${indent(`${funcBegin};\nreturn ${sorePrefex} ${funcCall}`, 1)}})($nako3)`
         } else {
-          code = `(${funcDef}(){\n${indent(`${funcBegin}try {\n${indent(`return ${sorePrefex}${funcCall};`, 1)}\n} finally {\n${indent(funcEnd, 1)}}`, 1)}}).call(this)`
+          code = `(function($nako3){\n${indent(`${funcBegin}try {\n${indent(`return ${sorePrefex}${funcCall};`, 1)}\n} finally {\n${indent(funcEnd, 1)}}`, 1)}})($nako3)`
         }
       }
       // ...して
       if (node.josi === 'して' || (node.josi === '' && !isExpression)){code += ';\n'}
     }
-
-    if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
-      code = '(function (key, type) {\n'+
-        'const sf_start = performance.now() * 1000;\n' +
-        'try {\n'+
-        'return '+code+';\n'+
-        '} finally {\n'+
-        'const sl_time = performance.now() * 1000 - sf_start;\n'+
-        'if (!__self.__performance_monitor) {\n'+
-        '__self.__performance_monitor={};\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n'+
-        '} else if (!__self.__performance_monitor[key]) {\n'+
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n'+
-        '} else {\n'+
-        '__self.__performance_monitor[key].called++;\n'+
-        '__self.__performance_monitor[key].totel_usec+=sl_time;\n'+
-        'if(__self.__performance_monitor[key].min_usec>sl_time){__self.__performance_monitor[key].min_usec=sl_time;}\n'+
-        'if(__self.__performance_monitor[key].max_usec<sl_time){__self.__performance_monitor[key].max_usec=sl_time;}\n'+
-        `}}})('${funcName}_sys', 'system')\n`
-    }
-
     return code
   }
 
   convRenbun(node) {
     let right = this._convGen(node.right, true)
     let left = this._convGen(node.left, false)
-    return `(function(){${left}; return ${right}}).call(this)`
+    return `(function($nako3){${left}; return ${right}})($nako3)`
   }
 
   convOp (node) {
     const OP_TBL = { // トークン名からJS演算子
-      '&': '+""+',
+      '&': '.',
       'eq': '==',
       'noteq': '!=',
       '===': '===',
@@ -1317,10 +1133,10 @@ try {
     let left = this._convGen(node.left, true)
     if (op === '+' && this.speedMode.implicitTypeCasting === 0) {
       if (node.left.type !== 'number') {
-        left = `parseFloat(${left})`
+        left = `floatval(${left})`
       }
       if (node.right.type !== 'number') {
-        right = `parseFloat(${right})`
+        right = `floatval(${right})`
       }
     }
     // 階乗
@@ -1385,7 +1201,7 @@ try {
     this.loop_id++
     let varI = `$nako_i${this.loop_id}`
     code += `${varI}=${value}\n`
-    code += `if (!(${varI} instanceof Array)) { ${varI}=[${varI}] }\n`
+    code += `if (!is_array(${varI})) { ${varI}=[${varI}] }\n`
     for (let nameObj of node.names) {
       const name = nameObj.value
       // 二重定義？
@@ -1397,7 +1213,7 @@ try {
         this.varsSet.readonly.add(name)
       }
       let vname = this.varname(name)
-      code += `${vname}=${varI}.shift();\n`
+      code += `${vname}=array_shift(${varI});\n`
     }
     return this.convLineno(node, false) + code
   }
@@ -1410,11 +1226,7 @@ try {
     value = value.replace(/\r/g, '\\r')
     value = value.replace(/\n/g, '\\n')
     if (mode === 'ex') {
-      let rf = (a, name) => {
-        return '"+' + this.genVar(name, node) + '+"'
-      }
-      value = value.replace(/\{(.+?)\}/g, rf)
-      value = value.replace(/｛(.+?)｝/g, rf)
+      throw new Error('文字列の展開は未サポートです。')
     }
     return '"' + value + '"'
   }
@@ -1423,11 +1235,11 @@ try {
     const block = this._convGen(node.block, false)
     const errBlock = this._convGen(node.errBlock, false)
     return this.convLineno(node, false) +
-      `try {\n${block}\n} catch (e) {\n` +
-      '  __v0["エラーメッセージ"] = e.message;\n' +
+      `try {\n${block}\n} catch ($e) {\n` +
+      '  $__v0["エラーメッセージ"] = $e.getMessage();\n' +
       ';\n' +
       `${errBlock}}\n`
   }
 }
 
-module.exports = NakoGen
+module.exports = NakoGenPHP

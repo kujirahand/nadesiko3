@@ -16,23 +16,21 @@ const exec = require('child_process').exec
 
 const path = require('path')
 const NakoCompiler = require('./nako3')
-const PluginNode = require('./plugin_node')
 const { NakoImportError } = require('./nako_errors')
-const NakoGenASync = require('./nako_gen_async')
+const NakoGenPHP = require('./nako_gen_php')
 
-class CNako3 extends NakoCompiler {
+class PHPNako extends NakoCompiler {
   /** @param {{ nostd?: boolean }} [opts] */
   constructor (opts = {}) {
-    super({useBasicPlugin: true})
+    super({useBasicPlugin: false})
+    const PluginSystem = require('./plugin_system.php.json')
+    this.addPluginObject('plugin_system', PluginSystem)
     this.silent = false
-    this.addCodeGenerator('非同期モード', NakoGenASync) // 「!非同期モード」をサポート
-    if (!opts.nostd) {
-      this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
-    }
-    this.__varslist[0]['ナデシコ種類'] = 'cnako3'
+    this.addCodeGenerator('PHP', NakoGenPHP) // 「!PHP」をサポート
+    this.__varslist[0]['ナデシコ種類'] = 'phpnako'
   }
 
-  // CNAKO3で使えるコマンドを登録する
+  // phpnakoで使えるコマンドを登録する
   registerCommands () {
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
     if (process.argv.length <= 2)
@@ -108,17 +106,17 @@ class CNako3 extends NakoCompiler {
     if (/\.(nako|nako3|txt|bak)$/.test(args.mainfile)) {
       if (!args.output) {
         if (args.test) {
-          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.spec.js')
+          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.spec.php')
         } else {
-          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.js')
+          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.php')
         }
       }
     } else {
       if (!args.output) {
         if (args.test) {
-          args.output = args.mainfile + '.spec.js'
+          args.output = args.mainfile + '.spec.php'
         } else {
-          args.output = args.mainfile + '.js'
+          args.output = args.mainfile + '.php'
         }
       }
       args.mainfile += '.nako3'
@@ -157,22 +155,9 @@ class CNako3 extends NakoCompiler {
       this.outputAST(opt, src)
       return
     }
-    try {
-      if (opt.test) {
-        this.loadDependencies(src, opt.mainfile, '')
-        this.test(src, opt.mainfile)
-      } else {
-        this.run(src, opt.mainfile)
-      }
-      if (opt.test && this.numFailures > 0) {
-        process.exit(1)
-      }
-    } catch (e) {
-      if (opt.debug || opt.trace) {
-        throw e
-      }
-      // エラーメッセージはloggerへ送られるため無視してよい
-    }
+    // 実行
+    opt.run = true
+    this.nakoCompile(opt, src, false)
   }
 
   /**
@@ -183,11 +168,15 @@ class CNako3 extends NakoCompiler {
    */
   nakoCompile(opt, src, isTest) {
     // system
+    src = '!"PHP"をモード設定\n' + src
     const jscode = this.compileStandalone(src, this.filename, isTest)
+    if (opt.debug) {
+
+    }
     console.log(opt.output)
     fs.writeFileSync(opt.output, jscode, 'utf-8')
     if (opt.run)
-      {exec(`node ${opt.output}`, function (err, stdout, stderr) {
+      {exec(`php ${opt.output}`, function (err, stdout, stderr) {
         if (err) {console.log('[ERROR]', stderr)}
         console.log(stdout)
       })}
@@ -311,7 +300,7 @@ class CNako3 extends NakoCompiler {
     const tasks = super._loadDependencies(code, filename, preCode, {
       resolvePath: (name, token) => {
         if (/\.js(\.txt)?$/.test(name) || /^[^\.]*$/.test(name)) {
-          return { filePath: path.resolve(CNako3.findPluginFile(name, this.filename, __dirname, log)), type: 'js' }
+          return { filePath: path.resolve(PHPNako.findPluginFile(name, this.filename, __dirname, log)), type: 'js' }
         }
         if (/\.nako3?(\.txt)?$/.test(name)) {
           if (path.isAbsolute(name)) {
@@ -360,10 +349,16 @@ class CNako3 extends NakoCompiler {
    * @param {string} [preCode]
    */
   run (code, fname, preCode = '') {
+    if (preCode == '') {
+      preCode = '!"PHP"にモード設定\n'
+      code = preCode + code
+    } 
     const tasks = this.loadDependencies(code, fname, preCode)
     if (tasks !== undefined) {
       throw new Error('assertion error')
     }
+    // compile
+    this.compileStandalone(code, filename, false, preCode)
     return this._runEx(code, fname, {}, preCode)
   }
 
@@ -459,8 +454,8 @@ class CNako3 extends NakoCompiler {
 
 // メイン
 if (require.main === module) { // 直接実行する
-  const cnako3 = new CNako3()
+  const cnako3 = new PHPNako()
   cnako3.execCommand()
 } else { // モジュールとして使う場合
-  module.exports = CNako3
+  module.exports = PHPNako
 }
