@@ -20,10 +20,11 @@ const NakoGen = require('./nako_gen')
  */
 const
   NakoCodeNop = 'NOP',
-  NakoCodeLabel = 'LABLEL',
-  NakoCodeJump = 'JUMP', // JUMP addr
-  NakoCodeJumpIfTrue = 'JUMP_IF_TRUE', // pop and jump addr
-  NakoCodeJumpIfFalse = 'JUMP_IF_FALSE', // pop and jump addr
+  NakoCodeLabel = 'LBL',
+  NakoCodeEOL = 'EOL',
+  NakoCodeJump = 'JMP', // JUMP addr
+  NakoCodeJumpIfTrue = 'JMP_T', // pop and jump addr
+  NakoCodeJumpIfFalse = 'JMP_F', // pop and jump addr
   NakoCodeCall = 'CALL', // call addr
   NakoCodeReturn = 'RET',
   NakoCodeTry = 'TRY',
@@ -442,16 +443,52 @@ try {
   convGen (node, isTest) {
     // convert
     this._convGen(node, true)
-    // search label
-    this.codeArray.forEach((code, index, list) => {
+    
+    // ラベルアドレスの解決が必要なコード一覧
+    const needToFixAddr = new Set([
+      NakoCodeJump, NakoCodeJumpIfTrue, NakoCodeJumpIfFalse, NakoCodeCall, NakoCodeTry
+    ])
+
+    // コードの最適化をするか?
+    const optimization = true
+    let codes = this.codeArray
+    //
+    if (optimization) {
+      // NOPを削除
+      codes = codes.filter(code => {
+        return code.type !== NakoCodeNop
+      })
+      // 未参照のラベルを探す
+      const usedLabels = new Set()
+      codes.forEach((code, index, list) => {
+        if (needToFixAddr.has(code.type)) {
+          usedLabels.add(code.value)
+        }
+      })
+      // 未参照のラベルを削除
+      codes = codes.filter((code, index) => {
+        if (code.type !== NakoCodeLabel) {return true}
+        return usedLabels.has(code.value)
+      })
+      // EOLが連続していたら削除する
+      let i = 0
+      while (i < codes.length - 1) {
+        if (codes[i].type === NakoCodeEOL && codes[i+1].type === NakoCodeEOL) {
+          codes.splice(i+1, 1)
+          continue
+        }
+        i++
+      }
+      this.codeArray = codes
+    }
+    // ラベルアドレスの解決
+    codes.forEach((code, index) => { // ラベルのアドレスを調べる
       if (code.type == NakoCodeLabel) {
         this.labels[code.value] = index
       }
     })
-    // fix label address
-    this.codeArray.forEach((code, index, list) => {
-      if (code.type == NakoCodeJump || code.type == NakoCodeJumpIfTrue || code.type == NakoCodeJumpIfFalse || 
-          code.type == NakoCodeCall || code.type == NakoCodeTry) {
+    codes.forEach((code) => { // ラベルのアドレスを設定
+      if (needToFixAddr.has(code.type)) {
         if (code.no < 0) {
           code.no = this.labels[code.value]
         }
@@ -459,7 +496,7 @@ try {
     })
     let result = ''
     // コードの生成
-    this.codeArray.forEach((code, index, list) => {
+    codes.forEach((code, index) => {
       switch (code.type) {
         case NakoCodeNop:
           result += `case ${index}: break; // [NOP] ${code.value}\n`
@@ -467,20 +504,23 @@ try {
         case NakoCodeLabel:
           result += `case ${index}: break; // [LABEL] ${code.value}\n`
           break
+        case NakoCodeEOL:
+          result += `case ${index}: ${code.value}; break; // [EOL]\n`
+          break
         case NakoCodeJump:
-          result += `case ${index}: sys.nextIndex = ${code.no}; break;\n`
+          result += `case ${index}: sys.nextIndex = ${code.no}; break; // ${code.value}\n`
           break
         case NakoCodeJumpIfTrue:
-          result += `case ${index}: if (sys.__stack.pop()) { sys.nextIndex = ${code.no};} break;\n`
+          result += `case ${index}: if (sys.__stack.pop()) { sys.nextIndex = ${code.no};} break; // ${code.value}\n`
           break
         case NakoCodeJumpIfFalse:
-          result += `case ${index}: if (!sys.__stack.pop()) { sys.nextIndex = ${code.no}} break;\n`
+          result += `case ${index}: if (!sys.__stack.pop()) { sys.nextIndex = ${code.no}} break; // ${code.value}\n`
           break
         case NakoCodeReturn:
           result += `case ${index}: sys.__return(sys); break;\n`
           break
         case NakoCodeCall:
-          result += `case ${index}: sys.__call(${code.no}, sys); break;\n`
+          result += `case ${index}: sys.__call(${code.no}, sys); break; // ${code.value}\n`
           break
         case NakoCodeTry:
           result += `case ${index}: sys.tryIndex = ${code.no}; break; // TRY \n`
@@ -488,7 +528,14 @@ try {
         case NakoCodeCode:
           // trim last
           let s = code.value.replace(/\s+$/, '')
-          result += `case ${index}: {\n${s}\n};break;\n`
+          const a = code.value.split('\n')
+          if (a.length >= 2) {
+            result += `case ${index}: {\n${s}\n};break;\n`
+          } else {
+            // 末尾にコメントがあれば範囲コメントに変更
+            s = s.replace(/\/\/(.+$)/, '/* $1 */')
+            result += `case ${index}: ${s};break;\n`
+          }
           break
         default:
           throw new Error('invalid code type')
@@ -496,36 +543,37 @@ try {
     })
     result = `
     //-------------------------
+    // main_code
     this.nextAsync = (sys) => {
       if (sys.index >= sys.codeSize) {return}
       const __v0 = sys.__v0
-      for (;;) {
-        try {
+      try {
+        while (sys.index < sys.codeSize) {
           // console.log('@@[run]', sys.index)
           switch (sys.index) {
             ${result}
             default:
-              throw new Error('Invalid sys.index')
+              console.log(sys.index, sys.__stack)
+              throw new Error('Invalid sys.index:' + sys.index)
               break
           }
-        } catch (e) {
-          sys.__v0["エラーメッセージ"] = e.message;
-          if (sys.tryIndex >= 0) {
-            sys.index = sys.tryIndex;
-            continue
+          // check next
+          if (sys.nextIndex >= 0) {
+            sys.index = sys.nextIndex
+            sys.nextIndex = -1
           } else {
-            throw e
+            sys.index++
           }
-        }
-        // check next
-        if (sys.nextIndex >= 0) {
-          sys.index = sys.nextIndex
-          sys.nextIndex = -1
+          if (sys.async) { sys.async = false; break}
+        } // end of while
+      } catch (e) {
+        sys.__v0["エラーメッセージ"] = e.message;
+        if (sys.tryIndex >= 0) {
+          sys.index = sys.tryIndex;
+          setTimeou(() => {sys.nextAsync(sys)}, 1)
         } else {
-          sys.index++
+          throw e
         }
-        if (sys.index >= sys.codeSize) {return}
-        if (sys.async) { sys.async = false; break}
       }
     }
     this.__call = (no, sys) => {
@@ -544,7 +592,7 @@ try {
       sys.__stack.push(sore);
     }
     this.index = 0;
-    this.codeSize = ${this.codeArray.length};
+    this.codeSize = ${codes.length};
     this.async = false; this.nextIndex = -1; this.tryIndex = -1
     this.nextAsync(this)
     //-------------------------
@@ -578,11 +626,11 @@ try {
       case 'nop':
         break
       case 'comment':
-      case 'eol':
         if (!node.value) {node.value = ''}
-        const line = this.convLineno(node, true) + '// [EOL] ' + node.value.replace(/(\r|\n)/g, '_')
-        // this.addCodeStr(`sys.__stack.splice(0);`+line)
-        this.addCodeStr(line)
+        this.addCode(new NakoCode(NakoCodeNop, node.value))
+        break
+      case 'eol':
+        this.addCode(new NakoCode(NakoCodeEOL, this.convLineno(node, true)))
         break
       
       // === 単純なコード変換 ===
@@ -1502,9 +1550,11 @@ try {
   }
 }
 
+// ブラウザに登録する
 if (typeof(navigator) === 'object' && typeof(navigator.nako3) === 'object') {
   // Webブラウザの場合
-  navigator.nako3.addCodeGenerator('非同期モード', NakoGenAsync)
+  const nako3 = navigator.nako3
+  if (nako3.addCodeGenerator) {nako3.addCodeGenerator('非同期モード', NakoGenAsync)}
 } else {
   // モジュールモード
   module.exports = NakoGenAsync
