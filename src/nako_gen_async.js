@@ -441,7 +441,7 @@ try {
    */
   convGen (node, isTest) {
     // convert
-    let result = this.convLineno(node, false) + this._convGen(node, true) + '\n'
+    this._convGen(node, true)
     // search label
     this.codeArray.forEach((code, index, list) => {
       if (code.type == NakoCodeLabel) {
@@ -457,90 +457,98 @@ try {
         }
       }
     })
-    // append code
+    let result = ''
+    // コードの生成
     this.codeArray.forEach((code, index, list) => {
       switch (code.type) {
         case NakoCodeNop:
-          result += `__code[${index}] = sys => {} // [NOP] ${code.value}\n`
+          result += `case ${index}: break; // [NOP] ${code.value}\n`
           break
         case NakoCodeLabel:
-          result += `__code[${index}] = sys => {} // [LABEL] ${code.value}\n`
+          result += `case ${index}: break; // [LABEL] ${code.value}\n`
           break
         case NakoCodeJump:
-          result += `__code[${index}] = sys => { sys.nextIndex = ${code.no} }\n`
+          result += `case ${index}: sys.nextIndex = ${code.no}; break;\n`
           break
         case NakoCodeJumpIfTrue:
-          result += `__code[${index}] = sys => { if (sys.__stack.pop()) { sys.nextIndex = ${code.no}} }\n`
+          result += `case ${index}: if (sys.__stack.pop()) { sys.nextIndex = ${code.no};} break;\n`
           break
         case NakoCodeJumpIfFalse:
-          result += `__code[${index}] = sys => { if (!sys.__stack.pop()) { sys.nextIndex = ${code.no}} }\n`
+          result += `case ${index}: if (!sys.__stack.pop()) { sys.nextIndex = ${code.no}} break;\n`
           break
         case NakoCodeReturn:
-          result += `__code[${index}] = sys => { sys.__return(sys) }\n`
+          result += `case ${index}: sys.__return(sys); break;\n`
           break
         case NakoCodeCall:
-          result += `__code[${index}] = sys => { sys.__call(${code.no}, sys) }\n`
+          result += `case ${index}: sys.__call(${code.no}, sys); break;\n`
           break
         case NakoCodeTry:
-          result += `__code[${index}] = sys => { sys.tryIndex = ${code.no} } // TRY \n`
+          result += `case ${index}: sys.tryIndex = ${code.no}; break; // TRY \n`
           break
         case NakoCodeCode:
           // trim last
           let s = code.value.replace(/\s+$/, '')
-          result += `__code[${index}] = sys => {\n${s}\n};\n`
+          result += `case ${index}: {\n${s}\n};break;\n`
           break
         default:
           throw new Error('invalid code type')
       }
     })
-    // todo: main_code
-    result += '\n'
-    result += '// === main_code === \n'
-    result += 'this.nextAsync = sys => {\n'
-    result += '  if (sys.index >= sys.__code.length) {return}\n'
-    result += '  for (;;) {\n'
-    result += '    // console.log("run:", sys.index, sys.__vars, sys.__stack ,sys.__code[sys.index].toString() )\n'
-    result += '    try {\n'
-    result += '      sys.__code[sys.index](sys)\n'
-    result += '    } catch (e) {\n'
-    result += '      sys.__v0["エラーメッセージ"] = e.message;\n'
-    result += '      if (sys.tryIndex >= 0) {\n'
-    result += '        sys.index = sys.tryIndex;\n'
-    result += '        continue\n'
-    result += '      } else {\n'
-    result += '        throw e\n'
-    result += '      }\n'
-    result += '    }\n'
-    result += '    // check next\n'
-    result += '    if (sys.nextIndex >= 0) {\n'
-    result += '      sys.index = sys.nextIndex\n'
-    result += '      sys.nextIndex = -1\n'
-    result += '    } else {\n'
-    result += '      sys.index++\n'
-    result += '    }\n'
-    result += '    if (sys.index >= sys.__code.length) {return}\n'
-    result += '    if (sys.async) { sys.async = false; break}\n'
-    result += '  }\n'
-    result += '}\n'
-    result += `this.__call = (no, sys) => {\n`
-    result += `  const info = {lastVars:sys.__vars, backNo: sys.index + 1}\n`
-    result += `  sys.__callstack.push(info);\n`
-    result += `  sys.__vars = {'それ': ''}\n`
-    result += `  sys.__varslist.push(sys.__vars)\n`
-    result += `  sys.nextIndex = no;\n`
-    result += `}\n`
-    result += `this.__return = sys => {\n`
-    result += `  const sore = sys.__vars['それ'];\n`
-    result += `  sys.__varslist.pop();\n`
-    result += `  const info = sys.__callstack.pop();\n`
-    result += `  sys.nextIndex = info.backNo;\n`
-    result += `  sys.__vars = info.lastVars;\n`
-    result += `  sys.__stack.push(sore);\n`
-    result += `}\n`
-    result += 'this.index = 0;\n'
-    result += 'this.async = false; this.nextIndex = -1; this.tryIndex = -1\n'
-    result += 'this.nextAsync(this)\n'
-    
+    result = `
+    //-------------------------
+    this.nextAsync = (sys) => {
+      if (sys.index >= sys.codeSize) {return}
+      const __v0 = sys.__v0
+      for (;;) {
+        try {
+          // console.log('@@[run]', sys.index)
+          switch (sys.index) {
+            ${result}
+            default:
+              throw new Error('Invalid sys.index')
+              break
+          }
+        } catch (e) {
+          sys.__v0["エラーメッセージ"] = e.message;
+          if (sys.tryIndex >= 0) {
+            sys.index = sys.tryIndex;
+            continue
+          } else {
+            throw e
+          }
+        }
+        // check next
+        if (sys.nextIndex >= 0) {
+          sys.index = sys.nextIndex
+          sys.nextIndex = -1
+        } else {
+          sys.index++
+        }
+        if (sys.index >= sys.codeSize) {return}
+        if (sys.async) { sys.async = false; break}
+      }
+    }
+    this.__call = (no, sys) => {
+      const info = {lastVars:sys.__vars, backNo: this.index + 1}
+      sys.__callstack.push(info);
+      sys.__vars = {"それ":""}
+      sys.__varslist.push(sys.__vars)
+      sys.nextIndex = no;
+    }
+    this.__return = sys => {
+      const sore = sys.__vars['それ'];
+      sys.__varslist.pop();
+      const info = sys.__callstack.pop();
+      sys.nextIndex = info.backNo;
+      sys.__vars = info.lastVars;
+      sys.__stack.push(sore);
+    }
+    this.index = 0;
+    this.codeSize = ${this.codeArray.length};
+    this.async = false; this.nextIndex = -1; this.tryIndex = -1
+    this.nextAsync(this)
+    //-------------------------
+    `
     if (isTest) {
       return ''
     } else {
