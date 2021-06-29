@@ -66,7 +66,15 @@ $exports = [
     },
   ],
   // @ 標準出力
-  '表示'=> [ // @Sを表示 // @ひょうじ
+  '表示'=> [ // @Sを表示(末尾に改行を入れる) // @ひょうじ
+    'type' => 'func',
+    'josi' => [['を', 'と']],
+    'fn' => function($s, $sys) {
+      echo $s."\n";
+    },
+    'return_none' => true,
+  ],
+  '継続表示'=> [ // @Sを改行せずに表示 // @ひょうじ
     'type' => 'func',
     'josi' => [['を', 'と']],
     'fn' => function($s, $sys) {
@@ -293,14 +301,18 @@ $exports = [
     'type' => 'func',
     'josi' => [['の'], ['を'], ['で']],
     'fn' => function($obj, $m, $args, $sys) {
-      throw new Exception('未実装のメソッドです');
+      if (method_exists($obj, $m)) {
+        return $obj[$m]($args);
+      }
+      throw new Exception('メソッドを実行できません。');
     },
   ],
   'ナデシコ'=> [ // @なでしこのコードCODEを実行する // @なでしこする
     'type' => 'func',
     'josi' => [['を', 'で']],
     'fn' => function($code, $sys) {
-      throw new Exception('未実装のメソッドです');
+      //todo: phpnako コマンドを実行する？
+      throw new Exception('phpnakoの実行環境が必要です。');
     },
   ],
   'ナデシコ続'=> [ // @なでしこのコードCODEを実行する // @なでしこつづける
@@ -314,14 +326,22 @@ $exports = [
     'type' => 'func',
     'josi' => [['を', 'に', 'で']],
     'fn' => function($f, $sys) {
-      throw new Exception('未実装のメソッドです');
+      if (is_callable($f)) {
+        return $f($sys);
+      }
+      return null;
     },
   ],
   '実行時間計測'=> [ // @ 関数Fを実行して要した時間をミリ秒で返す // @じっこうじかんけいそく
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($f, $sys) {
-      throw new Exception('未実装のメソッドです');
+      $t = microtime(true);
+      if (is_callable($f)) {
+        $f($sys);
+      }
+      $iv = microtime(true) - $t;
+      return $iv;
     },
   ],
   // @ 型変換
@@ -329,91 +349,91 @@ $exports = [
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return gettype($v);
     },
   ],
   'TYPEOF'=> [ // @変数Vの型を返す // @TYPEOF
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return gettype($v);
     },
   ],
   '文字列変換'=> [ // @値Vを文字列に変換 // @もじれつへんかん
     'type' => 'func',
     'josi' => [['を']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return ''.$v;
     },
   ],
   'TOSTR'=> [ // @値Vを文字列に変換 // @TOSTR
     'type' => 'func',
     'josi' => [['を']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return ''.$v;
     },
   ],
   '整数変換'=> [ // @値Vを整数に変換 // @せいすうへんかん
     'type' => 'func',
     'josi' => [['を']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return intval($v);
     },
   ],
   'TOINT'=> [ // @値Vを整数に変換 // @TOINT
     'type' => 'func',
     'josi' => [['を']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return intval($v);
     },
   ],
   '実数変換'=> [ // @値Vを実数に変換 // @じっすうへんかん
     'type' => 'func',
     'josi' => [['を']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return floatval($v);
     },
   ],
   'TOFLOAT'=> [ // @値Vを実数に変換 // @TOFLOAT
     'type' => 'func',
     'josi' => [['を']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return floatval($v);
     },
   ],
   'INT'=> [ // @値Vを整数に変換 // @INT
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return intval($v);
     },
   ],
   'FLOAT'=> [ // @値Vを実数に変換 // @FLOAT
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return floatval($v);
     },
   ],
   'NAN判定'=> [ // @値VがNaNかどうかを判定 // @NANはんてい
     'type' => 'func',
     'josi' => [['を']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return is_nan($v);
     },
   ],
   'HEX'=> [ // @値Vを16進数に変換 // @HEX
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($a) {
-      throw new Exception('未実装のメソッドです');
+      return sprintf('%x', $a);
     },
   ],
   'RGB'=> [ // @HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255 // @RGB
     'type' => 'func',
     'josi' => [['と'], ['の'], ['で']],
     'fn' => function($r, $g, $b) {
-      throw new Exception('未実装のメソッドです');
+      return sprintf('#%02X%02X%02X', $r & 0xFF, $g & 0xFF, $b & 0xFF);
     },
   ],
   // @ 論理演算
@@ -421,21 +441,21 @@ $exports = [
     'type' => 'func',
     'josi' => [['と'], ['の']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a || $b;
     },
   ],
   '論理AND'=> [ // @(ビット演算で)AとBの論理積を返す(v1非互換)。日本語の「AかつB」に相当する // @ろんりAND
     'type' => 'func',
     'josi' => [['と'], ['の']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a && $b;
     },
   ],
   '論理NOT'=> [ // @値Vが0ならば1、それ以外ならば0を返す(v1非互換) // @ろんりNOT
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return ($v) ? 0 : 1;
     },
   ],
   // @ ビット演算
@@ -443,49 +463,49 @@ $exports = [
     'type' => 'func',
     'josi' => [['と'], ['の']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a | $b;
     },
   ],
   'AND'=> [ // @(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する // @AND
     'type' => 'func',
     'josi' => [['と'], ['の']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a & $b;
     },
   ],
   'XOR'=> [ // @(ビット演算で)AとBの排他的論理和を返す。// @XOR
     'type' => 'func',
     'josi' => [['と'], ['の']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a ^ $b;
     },
   ],
   'NOT'=> [ // @(ビット演算で)vの各ビットを反転して返す。// @NOT
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return ~$v;
     },
   ],
   'SHIFT_L'=> [ // @VをAビット左へシフトして返す // @SHIFT_L
     'type' => 'func',
     'josi' => [['を'], ['で']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a << $b;
     },
   ],
   'SHIFT_R'=> [ // @VをAビット右へシフトして返す(符号を維持する) // @SHIFT_R
     'type' => 'func',
     'josi' => [['を'], ['で']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a >> $b;
     },
   ],
   'SHIFT_UR'=> [ // @VをAビット右へシフトして返す(符号を維持しない、0で埋める) // @SHIFT_UR
     'type' => 'func',
     'josi' => [['を'], ['で']],
     'fn' => function($a, $b) {
-      throw new Exception('未実装のメソッドです');
+      return $a >> $b;
     },
   ],
   // @ 文字列処理
@@ -493,63 +513,68 @@ $exports = [
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return mb_strlen($v);
     },
   ],
   '何文字目'=> [ // @文字列SでAが何文字目にあるか調べて返す // @なんもじめ
     'type' => 'func',
     'josi' => [['で', 'の'], ['が']],
     'fn' => function($s, $a) {
-      throw new Exception('未実装のメソッドです');
+      $r = mb_strpos($s, $a);
+      if ($r === FALSE) { return 0; }
+      return ($r + 1);
     },
   ],
   'CHR'=> [ // @文字コードから文字を返す // @CHR
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return mb_chr($v);
     },
   ],
   'ASC'=> [ // @文字列Vの最初の文字の文字コードを返す // @ASC
     'type' => 'func',
     'josi' => [['の']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return mb_ord($v);
     },
   ],
   '文字挿入'=> [ // @文字列SのI文字目に文字列Aを挿入する // @もじそうにゅう
     'type' => 'func',
     'josi' => [['で', 'の'], ['に', 'へ'], ['を']],
     'fn' => function($s, $i, $a) {
-      throw new Exception('未実装のメソッドです');
+      return mb_substr($s, 0, $i-1).$a.mb_substr($s, $i);
     },
   ],
   '文字検索'=> [ // @文字列Sで文字列A文字目からBを検索。見つからなければ0を返す。(類似命令に『何文字目』がある)(v1非互換) // @もじけんさく
     'type' => 'func',
     'josi' => [['で', 'の'], ['から'], ['を']],
     'fn' => function($s, $a, $b) {
-      throw new Exception('未実装のメソッドです');
+      $sub = mb_substr($s, $a-1);
+      $r = mb_strpos($s, $b, $a-1);
+      if ($r === FALSE) { return 0; }
+      return $r + 1;
     },
   ],
   '追加'=> [ // @文字列SにAを追加して返す(v1非互換) // @ついか
     'type' => 'func',
     'josi' => [['で', 'に', 'へ'], ['を']],
     'fn' => function($s, $a) {
-      throw new Exception('未実装のメソッドです');
+      return $s . $a;
     },
   ],
   '一行追加'=> [ // @文字列SにAと改行を追加して返す(v1非互換) // @いちぎょうついか
     'type' => 'func',
     'josi' => [['で', 'に', 'へ'], ['を']],
     'fn' => function($s, $a) {
-      throw new Exception('未実装のメソッドです');
+      return $s . $a . "\n";
     },
   ],
   '文字列分解'=> [ // @文字列Vを一文字ずつに分解して返す // @もじれつぶんかい
     'type' => 'func',
     'josi' => [['を', 'の', 'で']],
     'fn' => function($v) {
-      throw new Exception('未実装のメソッドです');
+      return preg_split("//u", $v);
     },
   ],
   'リフレイン'=> [ // @文字列VをCNT回繰り返す(v1非互換) // @りふれいん

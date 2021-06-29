@@ -874,11 +874,14 @@ class NakoGenPHP {
     if (this.speedMode.invalidSore === 0) {
       sorePrefex = `${this.varname('それ')} = `
     }
+    const varArray = `$__foreach_array${id}`
+    const varV = `$__foreach_v${id}`
+    const varKey = `$__foreach_key${id}`
     const code =
-      `$nako_foreach_v${id}=${target};\n` +
-      `foreach ($nako_foreach_v${id} as $nako_i${id})` + '{\n' +
-      `  ${nameS} = ${sorePrefex}$nako_foreach_v${id}[$nako_i${id}];` + '\n' +
-      `  ${key} = $nako_i${id};\n` +
+      `${varArray}=${target};\n` +
+      `foreach (${varArray} as ${varKey} => ${varV})` + '{\n' +
+      `  ${nameS} = ${sorePrefex}${varV};` + '\n' +
+      `  ${key} = ${varKey};\n` +
       `  ${block}\n` +
       '};\n'
     return this.convLineno(node, false) + code
