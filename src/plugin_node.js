@@ -362,6 +362,14 @@ const PluginNode = {
       return path.dirname(s)
     }
   },
+  '絶対パス変換': { // @相対パスから絶対パスに変換して返す // @ぜったいぱすへんかん
+    type: 'func',
+    josi: [['を'], ['で']],
+    pure: true,
+    fn: function (a) {
+      return path.resolve(a)
+    }
+  },
   '相対パス展開': { // @ファイル名AからパスBを展開して返す // @そうたいぱすてんかい
     type: 'func',
     josi: [['を'], ['で']],

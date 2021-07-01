@@ -1,11 +1,10 @@
 {
   "name": "nadesiko3",
-  "version": "3.2.21",
+  "version": "3.2.22",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
     "cnako3": "src/cnako3.js",
-    "phpnako": "src/phpnako.js",
     "nako3server": "src/nako3server.js",
     "nako3edit": "tools/nako3edit/run.js"
   },
