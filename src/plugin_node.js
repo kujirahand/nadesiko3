@@ -364,7 +364,7 @@ const PluginNode = {
   },
   '絶対パス変換': { // @相対パスから絶対パスに変換して返す // @ぜったいぱすへんかん
     type: 'func',
-    josi: [['を'], ['で']],
+    josi: [['を','の']],
     pure: true,
     fn: function (a) {
       return path.resolve(a)
