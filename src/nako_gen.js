@@ -1386,18 +1386,20 @@ try {
     let varI = `$nako_i${this.loop_id}`
     code += `${varI}=${value}\n`
     code += `if (!(${varI} instanceof Array)) { ${varI}=[${varI}] }\n`
-    for (let nameObj of node.names) {
+    for (const i in node.names) {
+      const nameObj = node.names[i]
       const name = nameObj.value
       // 二重定義？
-      if (this.varsSet.names.has(name))
-        {throw NakoSyntaxError.fromNode(`${vtype}『${name}』の二重定義はできません。`, node)}
-      //
+      if (this.varsSet.names.has(name)) {
+        // 複数変数文では、二重定義も許容する #1027
+        // throw NakoSyntaxError.fromNode(`${vtype}『${name}』の二重定義はできません。`, node)
+      }
       this.varsSet.names.add(name)
       if (vtype === '定数') {
         this.varsSet.readonly.add(name)
       }
       let vname = this.varname(name)
-      code += `${vname}=${varI}.shift();\n`
+      code += `${vname}=${varI}[${i}];\n`
     }
     return this.convLineno(node, false) + code
   }
