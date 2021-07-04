@@ -545,10 +545,10 @@ try {
     //-------------------------
     // main_code
     this.nextAsync = (sys) => {
-      if (sys.index >= sys.codeSize) {return}
+      if (sys.index >= sys.codeSize || sys.index < 0) {return}
       const __v0 = sys.__v0
       try {
-        while (sys.index < sys.codeSize) {
+        while (sys.index < sys.codeSize || sys.index < 0) {
           // console.log('@@[run]', sys.index)
           switch (sys.index) {
             ${result}
@@ -568,6 +568,10 @@ try {
         } // end of while
       } catch (e) {
         sys.__v0["エラーメッセージ"] = e.message;
+        if (e.message == '__終わる__') {
+          sys.__stopAsync(sys)
+          return
+        }
         if (sys.tryIndex >= 0) {
           sys.index = sys.tryIndex;
           setTimeou(() => {sys.nextAsync(sys)}, 1)
@@ -591,9 +595,18 @@ try {
       sys.__vars = info.lastVars;
       sys.__stack.push(sore);
     }
-    this.index = 0;
-    this.codeSize = ${codes.length};
-    this.async = false; this.nextIndex = -1; this.tryIndex = -1
+    this.__resetAsync = sys => {
+      sys.index = 0
+      sys.codeSize = ${codes.length};
+      sys.async = false
+      sys.nextIndex = -1
+      sys.tryIndex = -1
+    }
+    this.__stopAsync = sys => {
+      sys.__resetAsync(sys)
+      sys.index = -1 // force stop!!
+    }
+    this.__resetAsync(this)
     this.nextAsync(this)
     //-------------------------
     `
