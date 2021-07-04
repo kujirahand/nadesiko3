@@ -8,8 +8,7 @@ const PluginSystem = {
     pure: false,
     fn: function (sys) {
       sys.__v0['ナデシコバージョン'] = typeof NakoVersion === 'undefined' ? '?' : NakoVersion.version
-      // 全ての関数・変数を見つけて返す
-      // ローカル変数を参照しうるため、pure: true のとき正しく動作しない。
+      // なでしこの関数や変数を探して返す
       sys.__findVar = function (nameStr, def) {
         if (typeof nameStr === 'function') {return nameStr}
         if (sys.__locals[nameStr]) {return sys.__locals[nameStr]}
@@ -19,28 +18,24 @@ const PluginSystem = {
         }
         return def
       }
-      // 文字列から関数を探す、見当たらなければエラーを出す
-      // ローカル変数を参照しうるため、pure: true のとき正しく動作しない。
+      // 文字列から関数を探す
       sys.__findFunc = function (nameStr, parentFunc) {
         const f = sys.__findVar(nameStr)
         if (typeof f === 'function') { return f }
         throw new Error(`『${parentFunc}』に実行できない関数が指定されました。`)
       }
-      // システム関数を実行する(エイリアスを実装するのに使う)
-      // ローカル変数を参照しうるため、pure: true のとき正しく動作しない。
+      // システム関数を実行
       sys.__exec = function (func, params) {
         // システム命令を優先
         const f0 = sys.__v0[func]
         if (f0) {return f0.apply(this, params)}
-        // その他のエイリアス
+        // グローバル・ローカルを探す
         const f = sys.__findVar(func)
         if (!f) {throw new Error('システム関数でエイリアスの指定ミス:' + func)}
         return f.apply(this, params)
       }
-      // 前回設定したタイマーが実行中ならクリア
-      if (sys.__timeout) {sys.__timeout.forEach(t => clearTimeout(t))}
+      // タイマーに関する処理(タイマーは「!クリア」で全部停止する)
       sys.__timeout = []
-      if (sys.__interval) {sys.__interval.forEach(t => clearInterval(t))}
       sys.__interval = []
     }
   },
@@ -50,9 +45,7 @@ const PluginSystem = {
     pure: false,
     fn: function (sys) {
       sys.__exec('全タイマー停止', [sys])
-      if (sys.__genMode == '非同期モード') {
-        sys.__stopAsync(sys)
-      }
+      if (sys.__genMode == '非同期モード') {sys.__stopAsync(sys)}
     }
   },
 
