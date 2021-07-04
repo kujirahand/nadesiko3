@@ -8,11 +8,6 @@ const PluginSystem = {
     pure: false,
     fn: function (sys) {
       sys.__v0['ナデシコバージョン'] = typeof NakoVersion === 'undefined' ? '?' : NakoVersion.version
-      // システム関数を探す
-      sys.__getSysValue = function (name, def) {
-        if (sys.__v0[name] === undefined) {return def}
-        return sys.__v0[name]
-      }
       // 全ての関数・変数を見つけて返す
       // ローカル変数を参照しうるため、pure: true のとき正しく動作しない。
       sys.__findVar = function (nameStr, def) {
@@ -42,18 +37,10 @@ const PluginSystem = {
         if (!f) {throw new Error('システム関数でエイリアスの指定ミス:' + func)}
         return f.apply(this, params)
       }
-      // システム変数の値を変更する
-      sys.__setVar = function (name, value) {
-        sys.__v0[name] = value
-      }
       // 前回設定したタイマーが実行中ならクリア
-      if (sys.__timeout) {
-        for (const t of sys.__timeout) { clearTimeout(t) }
-      }
+      if (sys.__timeout) {sys.__timeout.forEach(t => clearTimeout(t))}
       sys.__timeout = []
-      if (sys.__interval) {
-        for (const t of sys.__interval) { clearInterval(t) }
-      }
+      if (sys.__interval) {sys.__interval.forEach(t => clearInterval(t))}
       sys.__interval = []
     }
   },

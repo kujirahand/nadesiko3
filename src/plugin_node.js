@@ -474,7 +474,7 @@ const PluginNode = {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (v, sys) {
-      sys.__setVar('圧縮解凍ツールパス', v)
+      sys.__v0['圧縮解凍ツールパス'] = v
     },
     return_none: true
   },

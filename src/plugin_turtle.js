@@ -227,7 +227,7 @@ const PluginTurtle = {
         },
         play: function () {
           const me = this
-          const wait = sys.__getSysValue('カメ速度', 100)
+          const wait = sys.__v0['カメ速度']
           let hasNext = this.doMacroAll(wait)
           if (wait <= 0) 
             {while (hasNext) 
@@ -242,7 +242,7 @@ const PluginTurtle = {
         },
         setupCanvas: function (sys) {
           // 描画先をセットする
-          let canvasId = sys.__getSysValue('カメ描画先', 'turtle_cv')
+          let canvasId = sys.__v0['カメ描画先']
           if (typeof canvasId === 'string') {
             canvasId = document.getElementById(canvasId) || document.querySelector(canvasId)
             sys.__v0['カメ描画先'] = canvasId
@@ -347,7 +347,7 @@ const PluginTurtle = {
     josi: [],
     pure: true,
     fn: function (sys) {
-      const imageUrl = sys.__getSysValue('カメ画像URL', turtleImage)
+      const imageUrl = sys.__v0['カメ画像URL']
       return sys._turtle.createTurtle(imageUrl, sys)
     }
   },

@@ -313,7 +313,7 @@ const PluginWeykTurtle3D = {
         },
         initRenderer: function() {
           // 描画先をセットする
-          let to = sys.__getSysValue('T3Dカメ描画先', 'turtle3d_div')
+          let to = sys.__v0['T3Dカメ描画先']
           if (typeof to === 'string')
             {to = document.querySelector(to) || document.getElementById(to)}
           if (!to) {
@@ -580,7 +580,7 @@ const PluginWeykTurtle3D = {
           this.animationFrame(this.animation)
         },
         getWait: function() {
-          return sys.__getSysValue('T3Dカメ速度', 100)
+          return sys.__v0['T3Dカメ速度']
         },
         disposeChildObject: function(obj) {
           while(obj.children.length > 0){ 
@@ -644,7 +644,7 @@ const PluginWeykTurtle3D = {
     fn: function (sys) {
       if (!sys._weykturtle3d) return null
       sys._weykturtle3d.initTurtle()
-      const modelUrl = sys.__getSysValue('T3DカメモデルURL', '')
+      const modelUrl = sys.__v0['T3DカメモデルURL']
       const id = sys._weykturtle3d.createTurtle(modelUrl)
       return id
     },
