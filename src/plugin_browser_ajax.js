@@ -30,16 +30,19 @@ module.exports = {
       sys.async = true
       let options = sys.__v0['AJAXオプション']
       if (options === '') {options = {method: 'GET'}}
+      // fetch 実行
       fetch(url, options).then(res => {
-        return res.text()
+        if (res.ok) { // 成功したとき
+          return res.text()
+        } else { // 失敗したとき
+          throw new Error('status=' + res.status)
+        }
       }).then(text => {
         sys.__v0['対象'] = text
         sys.nextAsync(sys)
       }).catch(err => {
-        console.log('[AJAX受信のエラー]', err)
-        sys.__v0['対象'] = ''
-        sys.__v0['エラーメッセージ'] = err.message 
-        sys.nextAsync(sys)
+        console.error('[AJAX受信のエラー]', err)
+        sys.__errorAsync(err, sys)
       })
     },
     return_none: true

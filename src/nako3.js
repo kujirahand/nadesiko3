@@ -236,8 +236,7 @@ class NakoCompiler {
             // シンタックスハイライトの高速化のために、事前にファイルが定義する関数名のリストを取り出しておく。
             // preDefineFuncはトークン列に変更を加えるため、事前にクローンしておく。
             // 「プラグイン名設定」を行う (#956)
-            code = `「${item.filePath}」にプラグイン名設定;` + 
-              code + ';『メイン』にプラグイン名設定;'
+            code = `「${item.filePath}」にプラグイン名設定;` + code + ';『メイン』にプラグイン名設定;'
             const tokens = this.rawtokenize(code, 0, item.filePath)
             dependencies[item.filePath].tokens = tokens
             /** @type {import('./nako_lexer').FuncList} */

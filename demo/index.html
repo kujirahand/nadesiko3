@@ -120,5 +120,15 @@
   <script src="../release/nako_gen_async.js"></script>
   <!-- Chart.js -->
   <script defer src="js/chart.js@3.2.1/chart.min.js"></script>
+  <script>
+    // 部品スキル実装 #1033
+    (function(){
+      const registerSkin = function (itype, obj, sys) {
+        if (itype == 'ボタン作成') {obj.classList.add('pure-button')}
+      }
+      const v0 = navigator.nako3.__varslist[0]
+      if (typeof(v0['DOMスキン辞書']) == 'object') { v0['DOMスキン辞書']['pure.css'] = registerSkin }
+    })();
+  </script>
 </body>
 </html>

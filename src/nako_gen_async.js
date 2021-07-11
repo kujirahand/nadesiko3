@@ -561,17 +561,20 @@ try {
           if (sys.async) { sys.async = false; break}
         } // end of while
       } catch (e) {
-        sys.__v0["エラーメッセージ"] = e.message;
-        if (e.message == '__終わる__') {
-          sys.__stopAsync(sys)
-          return
-        }
-        if (sys.tryIndex >= 0) {
-          sys.index = sys.tryIndex;
-          setTimeou(() => {sys.nextAsync(sys)}, 1)
-        } else {
-          throw e
-        }
+        sys.__errorAsync(e, sys)
+      }
+    }
+    this.__errorAsync = (e, sys) => { // エラーが起きた時呼び出す
+      sys.__v0["エラーメッセージ"] = e.message;
+      if (e.message == '__終わる__') {
+        sys.__stopAsync(sys)
+        return
+      }
+      if (sys.tryIndex >= 0) {
+        sys.index = sys.tryIndex;
+        setTimeout(() => {sys.nextAsync(sys)}, 1)
+      } else {
+        throw e
       }
     }
     this.__call = (no, sys) => {
@@ -1547,13 +1550,11 @@ try {
     // エラーをひっかけるように設定
     this.addCode(new NakoCode(NakoCodeTry, labelExcept.value))
 
-    const block = this._convGen(node.block, false)
-    const errBlock = this._convGen(node.errBlock, false)
-    return this.convLineno(node, false) +
-      `try {\n${block}\n} catch (e) {\n` +
-      '  __v0["エラーメッセージ"] = e.message;\n' +
-      ';\n' +
-      `${errBlock}}\n`
+    this._convGen(node.block, false)
+    this.addCode(this.makeJump(labelEnd))
+    this.addCode(labelExcept) 
+    this._convGen(node.errBlock, false)
+    this.addCode(labelEnd)
   }
 }
 
