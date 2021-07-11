@@ -529,13 +529,7 @@ try {
           // trim last
           let s = code.value.replace(/\s+$/, '')
           const a = code.value.split('\n')
-          if (a.length >= 2) {
-            result += `case ${index}: {\n${s}\n};break;\n`
-          } else {
-            // 末尾にコメントがあれば範囲コメントに変更
-            s = s.replace(/\/\/(.+$)/, '/* $1 */')
-            result += `case ${index}: ${s};break;\n`
-          }
+          result += `case ${index}: {\n${s}\n};break;\n`
           break
         default:
           throw new Error('invalid code type')

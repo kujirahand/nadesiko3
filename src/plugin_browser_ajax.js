@@ -38,7 +38,7 @@ module.exports = {
       }).catch(err => {
         console.log('[AJAX受信のエラー]', err)
         sys.__v0['対象'] = ''
-        sys.__v0['エラーメッセージ'] = text
+        sys.__v0['エラーメッセージ'] = err.message 
         sys.nextAsync(sys)
       })
     },
