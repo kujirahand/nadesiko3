@@ -28,7 +28,8 @@
     "build:win32": "node src/cnako3.js installer/make-win32.nako3",
     "build:browsers": "node src/cnako3.js batch/build_browsers.nako3",
     "watch": "webpack --watch --mode development",
-    "analyze": "webpack-bundle-analyzer release/stats.json"
+    "analyze": "webpack-bundle-analyzer release/stats.json",
+    "release": "npm run build && npm run test:all && npm publish"
   },
   "repository": {
     "type": "git",
