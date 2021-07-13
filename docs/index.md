@@ -1,37 +1,37 @@
-## Welcome to GitHub Pages
+## 日本語プログラミング言語「なでしこ」
 
-You can use the [editor on GitHub](https://github.com/kujirahand/nadesiko3/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+日本語プログラミング言語「なでしこ」は、日本語をベースとしたプログラミング言語です。そして、「なでしこ3」は主にWebブラウザで動かすことを目的に開発されています。ブログやWebサイトに組み込んで使えます。また、OSや環境を問わず、PC・スマホ・タブレットとさまざまな環境で動きます。作業の自動化をはじめ、趣味、教育、仕事などに利用できます。
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![なでしこ](https://nadesi.com/top/attach/31.jpg)
 
-### Markdown
+## 日本語プログラミング言語「なでしこ」のWebサイト
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+なでしこのWebサイト一覧。参考にしてください。
 
-```markdown
-Syntax highlighted code block
+ - [「なでしこ」のWebサイト](https://nadesi.com/top/)
+ - [「なでしこ3貯蔵庫」 ... プログラム一覧](https://n3s.nadesi.com/)
+ - [なでしこ3の改善掲示板](https://nadesi.com/cgi/kaizen3/)
 
-# Header 1
-## Header 2
-### Header 3
+## どうやって使う？
 
-- Bulleted
-- List
+Webサイトですぐに試すことができます。
 
-1. Numbered
-2. List
+ - [なでしこ3簡易エディタ](https://nadesi.com/doc3/go.php?10)
 
-**Bold** and _Italic_ and `Code` text
+## npm でインストール
 
-[Link](url) and ![Image](src)
+Node.js の npm でインストール:
+
+```
+$ npm install nadesiko3
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## GitHubからインストール
 
-### Jekyll Themes
+Gitを利用してインストール:
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/kujirahand/nadesiko3/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+```
+$ git clone https://github.com/kujirahand/nadesiko3.git
+$ cd nadesiko3
+$ npm install
+```
