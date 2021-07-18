@@ -103,7 +103,7 @@
     "chai": "^4.3.4",
     "core-js": "^3.10.1",
     "cross-env": "^7.0.3",
-    "css-loader": "^5.2.0",
+    "css-loader": "^6.0.0",
     "es6-promise": "^4.2.8",
     "eslint": "^7.23.0",
     "eslint-config-standard": "^16.0.3",
