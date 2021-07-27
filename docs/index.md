@@ -12,7 +12,7 @@
  - [「なでしこ3貯蔵庫」 ... プログラム一覧](https://n3s.nadesi.com/)
  - [なでしこ3の改善掲示板](https://nadesi.com/cgi/kaizen3/)
 
-## どうやって使う？
+## どうやって使う
 
 Webサイトですぐに試すことができます。
 
@@ -20,7 +20,7 @@ Webサイトですぐに試すことができます。
 
 ## npm でインストール
 
-Node.jsのnpmでインストール：
+Node.jsのnpmでインストールする場合、以下のコマンドを実行します。
 
 ```
 $ npm install nadesiko3
@@ -28,7 +28,7 @@ $ npm install nadesiko3
 
 ## GitHubからインストール
 
-Gitを利用してインストール：
+Gitを利用してインストールする場合、以下のコマンドを実行します。
 
 ```
 $ git clone https://github.com/kujirahand/nadesiko3.git
