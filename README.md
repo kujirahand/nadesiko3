@@ -9,7 +9,7 @@
 日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
 
 - [なでしこ3のGitHub Pagesサイト](https://kujirahand.github.io/nadesiko3/)
-  - [なでしこのWebサイト](https://nadesi.com/)
+  - [なでしこのWebサイト](https://nadesi.com/top/)
   - [なでしこ3のWebサイト](https://nadesi.com/doc3/)
 
 ## 対応機器/ブラウザ
@@ -20,15 +20,15 @@
 
 以下、Webエディタ上で、なでしこを実行できます。
 
-- [なでしこ3簡易エディタ](https://nadesi.com/v3/start)
+- [なでしこ3簡易エディタ](https://nadesi.com/doc3/index.php?%E3%81%AA%E3%81%A7%E3%81%97%E3%81%933%E7%B0%A1%E6%98%93%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF)
   - [なでしこ3貯蔵庫(プログラム一覧)](https://n3s.nadesi.com/)
   - [なでしこエディタの一覧](https://nadesi.com/doc3/index.php?%E3%81%AA%E3%81%A7%E3%81%97%E3%81%933%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%81%AE%E4%B8%80%E8%A6%A7)
 
-## 各OS毎に利用する方法
+## 各OSごとに利用する方法
 
 なでしこ3をPC向けにローカル環境で動作させることも可能です。
 
- - [OS別のインストール方法](https://nadesi.com/doc3/go.php?16414)
+ - [OS別のインストール方法](https://nadesi.com/doc3/index.php?OS%E5%88%A5)
 
 ### Windowsで利用する
 
