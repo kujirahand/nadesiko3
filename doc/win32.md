@@ -16,7 +16,7 @@
 
 nadesiko3のリポジトリで、モジュールをビルドします。そして、build:win32を実行して、win32用のファイルを整えます。
 
-```
+```shell
 npm run build
 npm run build:win32
 ```
@@ -27,7 +27,7 @@ npm run build:win32
 
 Node.jsのアーカイブ一式をプロジェクトの`/nodejs`フォルダに配置します。そのため、Node.jsの最新版をnodejsフォルダ以下にコピーします。さらに、以下のコマンドを実行して、7zのアーカイブを作成してGitリポジトリにコミットします。
 
-```
+```shell
 .\bin\7z.exe a nodejs.7z nodejs
 ```
 
@@ -39,13 +39,13 @@ Node.jsのアーカイブ一式をプロジェクトの`/nodejs`フォルダに�
 
 この時、ネットワークフォルダ上では正しくnpmが動作しないため、ユーザーフォルダに一式を配置して実行する必要があります。
 
-```
+```shell
 .\nodejs\npm install --global --production windows-build-tools
 ```
 
 そして、なでしこに必要なモジュールをインストールします。なお、win32版は標準モジュールに加えて、以下のモジュールを追加でインストールします。
 
-```
+```shell
 # 基本
 .\nodejs\npm install --production
 # 追加モジュールをインストール
