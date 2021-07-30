@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable no-template-curly-in-string */
 /** なでしこのtokenのtypeをscope（CSSのクラス名）に変換する。 */
 

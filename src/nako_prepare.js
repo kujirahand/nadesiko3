@@ -132,7 +132,7 @@ class NakoPrepare {
    */
   convert1ch (ch) {
     if (!ch) { return '' }
-    let c = ch.codePointAt(0)
+    const c = ch.codePointAt(0)
     // テーブルによる変換
     if (this.convertTable[c]) { return this.convertTable[c] }
     // ASCIIエリア
