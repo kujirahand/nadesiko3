@@ -1,18 +1,18 @@
 const path = require('path')
-const StatsPlugin = require('stats-webpack-plugin') // バンドルサイズ解析のため
+// const StatsPlugin = require('stats-webpack-plugin') // バンドルサイズ解析のため
 const TerserPlugin = require('terser-webpack-plugin') // サイズ縮小プラグイン
-const {NormalModuleReplacementPlugin} = require('webpack')
-const {AggressiveMergingPlugin} = require('webpack').optimize
+const { NormalModuleReplacementPlugin } = require('webpack')
+const { AggressiveMergingPlugin } = require('webpack').optimize
 
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
 
+// @ts-ignore
 process.noDeprecation = true
 
-
 // [args] --mode=(production|development)
-const mode_ = (process.env.NODE_ENV) ? process.env.NODE_ENV : 'development' 
+const mode_ = (process.env.NODE_ENV) ? process.env.NODE_ENV : 'development'
 
 /**
  * caniuse-db/data.json のうち、なでしこ3の関数内で実際に使用しているのは agents だけなので、
@@ -27,15 +27,15 @@ class CanIUseDBDataReplacementPlugin extends NormalModuleReplacementPlugin {
     const fs = require('fs')
     const data = require('caniuse-db/data.json')
 
-    fs.mkdirSync(path.dirname(this.newResource), {recursive: true})
-    fs.writeFileSync(this.newResource, JSON.stringify({agents: data.agents}))
+    fs.mkdirSync(path.dirname(this.newResource), { recursive: true })
+    fs.writeFileSync(this.newResource, JSON.stringify({ agents: data.agents }))
     return super.apply(compiler)
   }
 }
 
 module.exports = {
   mode: mode_,
-  target: ["web", "es5"],
+  target: ['web', 'es5'],
   entry: {
     wnako3: [path.join(srcPath, 'wnako3.js')], // plugin_system+plugin_browser含む
     wnako3webworker: [path.join(srcPath, 'wnako3webworker.js')], // plugin_system+plugin_browser_in_worker含む
@@ -98,7 +98,7 @@ module.exports = {
     minimize: true,
     minimizer: [new TerserPlugin()]
   },
-  
+
   // 大幅なコンパイル速度向上のために
   cache: {
     type: 'filesystem',

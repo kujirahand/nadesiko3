@@ -1,3 +1,4 @@
+// @ts-nocheck
 // nadesiko for web browser
 // wnako3.js
 require('whatwg-fetch') // IE11サポートが不要になったら外す
@@ -10,7 +11,7 @@ const PluginBrowser = require('./plugin_browser')
 
 class WebNakoCompiler extends NakoCompiler {
   constructor () {
-    super({useBasicPlugin: true})
+    super({ useBasicPlugin: true })
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
   }
 
@@ -20,9 +21,9 @@ class WebNakoCompiler extends NakoCompiler {
   runNakoScript () {
     // スクリプトタグの中身を得る
     let nakoScriptCount = 0
-    let scripts = document.querySelectorAll('script')
+    const scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
-      let script = scripts[i]
+      const script = scripts[i]
       if (script.type.match(NAKO_SCRIPT_RE)) {
         nakoScriptCount++
         this.run(script.text, `script${i}.nako3`)
@@ -39,14 +40,19 @@ class WebNakoCompiler extends NakoCompiler {
    * @param {Record<string, string>} [localFiles]
    * @returns {Promise<unknown>}
    */
-  async loadDependencies(code, filename, preCode = '', localFiles = {}) {
+  async loadDependencies (code, filename, preCode = '', localFiles = {}) {
     return this._loadDependencies(code, filename, preCode, {
       readJs: (filePath, token) => {
+        // eslint-disable-next-line no-prototype-builtins
         if (localFiles.hasOwnProperty(filePath)) {
-          return { sync: true, value: () => {
-            Function(localFiles[filePath])()
-            return {}
-          } }
+          return {
+            sync: true,
+            value: () => {
+              // eslint-disable-next-line no-new-func
+              Function(localFiles[filePath])()
+              return {}
+            }
+          }
         }
         return {
           sync: false,
@@ -68,6 +74,7 @@ class WebNakoCompiler extends NakoCompiler {
               const globalNako3 = navigator.nako3
               navigator.nako3 = this
               try {
+                // eslint-disable-next-line no-new-func
                 Function(text)()
               } catch (err) {
                 throw new NakoImportError(`プラグイン ${filePath} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`, token.line, token.file)
@@ -80,6 +87,7 @@ class WebNakoCompiler extends NakoCompiler {
         }
       },
       readNako3: (filePath, token) => {
+        // eslint-disable-next-line no-prototype-builtins
         if (localFiles.hasOwnProperty(filePath)) {
           return { sync: true, value: localFiles[filePath] }
         }
@@ -97,6 +105,7 @@ class WebNakoCompiler extends NakoCompiler {
       resolvePath: (name, token) => {
         // ローカルにファイルが存在するならそれを使う。そうでなければURLとして解釈する。
         let pathname = name
+        // eslint-disable-next-line no-prototype-builtins
         if (!localFiles.hasOwnProperty(name)) {
           try {
             pathname = new URL(name).pathname
@@ -111,7 +120,7 @@ class WebNakoCompiler extends NakoCompiler {
           return { filePath: name, type: 'nako3' }
         }
         return { filePath: name, type: 'invalid' }
-      },
+      }
     })
   }
 
@@ -120,11 +129,11 @@ class WebNakoCompiler extends NakoCompiler {
    * @returns {boolean} type=なでしこ のスクリプトを自動実行するべきかどうか
    */
   checkScriptTagParam () {
-    let scripts = document.querySelectorAll('script')
+    const scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
-      let script = scripts[i]
-      let src = script.src || ''
-      if (src.indexOf('wnako3.js?run') >= 0 || 
+      const script = scripts[i]
+      const src = script.src || ''
+      if (src.indexOf('wnako3.js?run') >= 0 ||
           src.indexOf('wnako3.js&run') >= 0) {
         return true
       }
@@ -137,7 +146,7 @@ class WebNakoCompiler extends NakoCompiler {
  * @param {string | Element} idOrElement HTML要素
    * @see {setupEditor}
    */
-  setupEditor(idOrElement) {
+  setupEditor (idOrElement) {
     return setupEditor(idOrElement, this, /** @type {any} */(window).ace)
   }
 }
@@ -148,11 +157,6 @@ if (typeof (navigator) === 'object' && !navigator.exportWNako3) {
   nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {
     const isAutoRun = nako3.checkScriptTagParam()
-    if (isAutoRun) {nako3.runNakoScript()}
+    if (isAutoRun) { nako3.runNakoScript() }
   }, false)
-  window.addEventListener('beforeunload', (e) => {
-    if (typeof mocha !== 'undefined'){mocha.dispose()}
-  })
-} else
-  {module.exports = WebNakoCompiler}
-
+} else { module.exports = WebNakoCompiler }

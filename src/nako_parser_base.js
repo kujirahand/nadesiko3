@@ -45,7 +45,7 @@ class NakoParserBase {
    * @returns {import('./nako3').Ast | null | undefined}
    */
   popStack (josiList) {
-    if (!josiList) {return this.stack.pop()}
+    if (!josiList) { return this.stack.pop() }
 
     // josiList にマッチする助詞を探す
     for (let i = 0; i < this.stack.length; i++) {
@@ -102,14 +102,14 @@ class NakoParserBase {
   check2 (a) {
     for (let i = 0; i < a.length; i++) {
       const idx = i + this.index
-      if (this.tokens.length <= idx) {return false}
-      if (a[i] === '*') {continue} // ワイルドカード(どんなタイプも許容)
+      if (this.tokens.length <= idx) { return false }
+      if (a[i] === '*') { continue } // ワイルドカード(どんなタイプも許容)
       const t = this.tokens[idx]
       if (a[i] instanceof Array) {
-        if (a[i].indexOf(t.type) < 0) {return false}
+        if (a[i].indexOf(t.type) < 0) { return false }
         continue
       }
-      if (t.type !== a[i]) {return false}
+      if (t.type !== a[i]) { return false }
     }
     return true
   }
@@ -134,23 +134,23 @@ class NakoParserBase {
       return false
     }
     for (let i = 0; i < types.length; i++) {
-      if (this.isEOF()) {return rollback()}
+      if (this.isEOF()) { return rollback() }
       const type = types[i]
       if (typeof type === 'string') {
         const token = this.get()
-        if (token.type !== type) {return rollback()}
+        if (token.type !== type) { return rollback() }
         y[i] = token
         continue
       }
       if (typeof type === 'function') {
         const f = type.bind(this)
         const r = f(y)
-        if (r === null) {return rollback()}
+        if (r === null) { return rollback() }
         y[i] = r
         continue
       }
       if (type instanceof Array) {
-        if (!this.checkTypes(type)) {return rollback()}
+        if (!this.checkTypes(type)) { return rollback() }
         y[i] = this.get()
         continue
       }
@@ -165,19 +165,19 @@ class NakoParserBase {
    * @returns {import('./nako3').TokenWithSourceMap | null}
    */
   get () {
-    if (this.isEOF()) {return null}
+    if (this.isEOF()) { return null }
     return this.tokens[this.index++]
   }
 
   unget () {
-    if (this.index > 0) {this.index--}
+    if (this.index > 0) { this.index-- }
   }
 
   /**
    * @returns {import('./nako3').TokenWithSourceMap | null}
    */
   peek (i = 0) {
-    if (this.isEOF()) {return null}
+    if (this.isEOF()) { return null }
     return this.tokens[this.index + i]
   }
 
@@ -210,7 +210,7 @@ class NakoParserBase {
     const typeName = (name) => opts.typeName !== undefined ? opts.typeName : name
     const debug = debugMode ? (' debug: ' + JSON.stringify(node, null, 2)) : ''
     if (!node) {
-      return `(NULL)`
+      return '(NULL)'
     }
     switch (node.type) {
       case 'not':
@@ -221,14 +221,14 @@ class NakoParserBase {
         }
       case 'op': {
         let operator = node.operator
-        const table = { 'eq': '＝', 'not': '!', 'gt': '>', 'lt': '<', 'and': 'かつ', 'or': 'または' }
+        const table = { eq: '＝', not: '!', gt: '>', lt: '<', and: 'かつ', or: 'または' }
         if (operator in table) {
           operator = table[operator]
         }
         if (depth >= 0) {
           const left = this.nodeToStr(node.left, { depth }, debugMode)
           const right = this.nodeToStr(node.right, { depth }, debugMode)
-          if (node.operator == 'eq') {
+          if (node.operator === 'eq') {
             return `${typeName('')}『${left}と${right}が等しいかどうかの比較${debug}』`
           }
           return `${typeName('')}『${left}と${right}に演算子『${operator}』を適用した式${debug}』`
@@ -245,13 +245,13 @@ class NakoParserBase {
       case 'func':
         return `${typeName('関数')}『${node.name || node.value}${debug}』`
       case 'eol':
-        return `行の末尾`
+        return '行の末尾'
       case 'eof':
-        return `ファイルの末尾`
+        return 'ファイルの末尾'
       default: {
         let name = node.name
-        if (!name) {name = node.value}
-        if (typeof name !== 'string') {name = node.type}
+        if (!name) { name = node.value }
+        if (typeof name !== 'string') { name = node.type }
         return `${typeName('')}『${name}${debug}』`
       }
     }

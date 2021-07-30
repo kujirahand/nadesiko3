@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 /**
  * Assert対応のなでしこ
  */
@@ -13,7 +14,7 @@ const PluginAssert = {
     }
   },
   // @Assert
-  'NAKO3ASSERTバージョン': {type: 'const', value: 0.01},
+  'NAKO3ASSERTバージョン': { type: 'const', value: 0.01 },
   'テスト': { // AとBが等しいかテスト // @てすと
     type: 'func',
     josi: [['と'], ['で']],

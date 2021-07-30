@@ -80,7 +80,8 @@
       "curly": [
         "error",
         "all"
-      ]
+      ],
+      "quote-props": "off"
     },
     "plugins": [
       "react"

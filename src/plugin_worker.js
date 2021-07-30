@@ -1,18 +1,19 @@
+// @ts-nocheck
 const PluginWorker = {
   '初期化': {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function(sys) {
-      sys.__v0['SELF'] = self || {}
+    fn: function (sys) {
+      sys.__v0.SELF = self || {}
       sys.__v0['依頼主'] = self || {}
     }
   },
 
-  '対象イベント': {type:'const', value: ''}, // @たいしょういべんと
-  '受信データ': {type:'const', value: ''}, // @たいしょういべんと
-  'SELF': {type:'const', value: ''}, // @SELF
-  '依頼主': {type:'const', value: ''}, // @SELF
+  '対象イベント': { type: 'const', value: '' }, // @たいしょういべんと
+  '受信データ': { type: 'const', value: '' }, // @たいしょういべんと
+  'SELF': { type: 'const', value: '' }, // @SELF
+  '依頼主': { type: 'const', value: '' }, // @SELF
 
   'NAKOワーカーデータ受信時': { // @無名関数Fでなでしこv3エンジンに対してワーカーメッセージによりデータを受信した時に実行するイベントを設定。『受信データ』に受信したデータM。『対象イベント』にイベント引数。 // @NAKOわーかーでーたじゅしんしたとき
     type: 'func',

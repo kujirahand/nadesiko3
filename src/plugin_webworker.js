@@ -1,3 +1,4 @@
+// @ts-nocheck
 const PluginWebWorker = {
   '初期化': {
     type: 'func',
@@ -5,7 +6,7 @@ const PluginWebWorker = {
     pure: true,
     fn: function (sys) {
       sys._webworker = {
-        setNakoHandler: function(work) {
+        setNakoHandler: function (work) {
           work.onmessage = (event) => {
             const data = event.data || { type: '', data: '' }
             const type = data.type || ''
@@ -15,15 +16,15 @@ const PluginWebWorker = {
                 if (work.onoutput) {
                   work.onoutput.apply(sys, [value, event])
                 }
-                break;
+                break
               case 'data':
                 if (work.ondata) {
                   work.ondata.apply(sys, [value, event])
                 }
-                break;
+                break
               case 'error':
                 sys.logger.error(value.noColor)
-                break;
+                break
             }
           }
           work.onerror = (event) => {
@@ -36,26 +37,27 @@ const PluginWebWorker = {
           }
         },
         inWorker: () => {
-          return typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope
+          // eslint-disable-next-line no-undef
+          return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope
         },
         getBaseUrlFromTag: () => {
-          if (!self.document) {return ''}
+          if (!self.document) { return '' }
           const pluginName = 'plugin_webworker.js'
           let path = location.pathname
-          if (path.substr(path.length - 1, 1) !== '/') { 
+          if (path.substr(path.length - 1, 1) !== '/') {
             const paths = path.split('/')
             path = paths.slice(paths.length - 1, 1).join('/') & '/'
           }
-          let scripts = document.querySelectorAll('script')
+          const scripts = document.querySelectorAll('script')
           for (let i = 0; i < scripts.length; i++) {
-            let script = scripts[i]
+            const script = scripts[i]
             let src = script.src || ''
-            let index = src.indexOf(pluginName)
+            const index = src.indexOf(pluginName)
             if (index >= 0) {
               if (src.length - index === pluginName.length ||
-                  "?&#".indexOf(src.substr(index + pluginName.length, 1)) >= 0) {
+                  '?&#'.indexOf(src.substr(index + pluginName.length, 1)) >= 0) {
                 src = src.substring(0, index)
-                if (src.substring(0, 1) == '/') {
+                if (src.substring(0, 1) === '/') {
                   // スクリプトソースはorigin無しの絶対パス
                   return location.origin + src
                 }
@@ -76,10 +78,10 @@ const PluginWebWorker = {
     }
   },
   // @イベント定数
-  '対象イベント': {type:'const', value: ''}, // @たいしょういべんと
-  '受信データ': {type:'const', value: ''}, // @たいしょういべんと
+  '対象イベント': { type: 'const', value: '' }, // @たいしょういべんと
+  '受信データ': { type: 'const', value: '' }, // @たいしょういべんと
 
-  'ワーカーURL': {type:'const', value: ''}, // @わーかーURL
+  'ワーカーURL': { type: 'const', value: '' }, // @わーかーURL
   'ワーカーURL設定': { // @なでしこv3のファイルのあるURLを設定 // @わーかーURLせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
@@ -96,7 +98,7 @@ const PluginWebWorker = {
   // @NAKOワーカー
   'ワーカー起動': { // @指定したURLでWebWorkerを起動する。ワーカオブジェクトを返す。 // @わーかーきどう
     type: 'func',
-    josi: [['で','を','の']],
+    josi: [['で', 'を', 'の']],
     pure: true,
     fn: function (url, sys) {
       return new Worker(url)
@@ -105,10 +107,10 @@ const PluginWebWorker = {
   },
   'ワーカーJS起動': { // @指定したJavascriptのソースでWebWorkerを起動する。ワーカオブジェクトを返す。 // @わーかーJSきどう
     type: 'func',
-    josi: [['で','を','の']],
+    josi: [['で', 'を', 'の']],
     pure: true,
     fn: function (src, sys) {
-      const blob = new Blob([src], {type: 'application/javascript'})
+      const blob = new Blob([src], { type: 'application/javascript' })
       const url = URL.createObjectURL(blob)
       return new Worker(url)
     },
@@ -121,19 +123,19 @@ const PluginWebWorker = {
     pure: true,
     fn: function (plugins, sys) {
       let url
-      if (typeof sys === 'undefined') {sys = plugins; plugins = undefined}
+      if (typeof sys === 'undefined') { sys = plugins; plugins = undefined }
       if (plugins !== undefined) {
-        if (!plugins instanceof Array) {
+        if (!(plugins instanceof Array)) {
           throw new Error('プラグインはファイル名を配列で指定してください')
         }
-        const baseurl = sys.__v0["ワーカーURL"]
+        const baseurl = sys.__v0['ワーカーURL']
         let code = `importScripts('${baseurl}wnako3webworker.js')\n`
         const l = plugins.length
         let i
-        for (i = 0;i < l;i++) {
+        for (i = 0; i < l; i++) {
           code += `importScripts('${baseurl}${plugins[i]}')\n`
         }
-        const blob = new Blob([code], {type: 'application/javascript'})
+        const blob = new Blob([code], { type: 'application/javascript' })
         url = URL.createObjectURL(blob)
       } else {
         url = sys.__v0['ワーカーURL'] + 'wnako3webworker.js'
@@ -148,7 +150,7 @@ const PluginWebWorker = {
   },
   'NAKOワーカーハンドラ設定': { // @ワーカーにNAKOワーカーのための設定を行う。 // @NAKOわーかーはんどらせってい
     type: 'func',
-    josi: [['に','へ','の']],
+    josi: [['に', 'へ', 'の']],
     pure: true,
     fn: function (work, sys) {
       sys._webworker.setNakoHandler(work)
@@ -161,7 +163,7 @@ const PluginWebWorker = {
     isVariableJosi: true,
     pure: false,
     fn: function (func, work, sys) {
-      if (typeof sys === 'undefined') {sys = work; work = self}
+      if (typeof sys === 'undefined') { sys = work; work = self }
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       work.ondata = (data, e) => {
         sys.__v0['受信データ'] = data
@@ -191,7 +193,7 @@ const PluginWebWorker = {
     isVariableJosi: true,
     pure: false,
     fn: function (func, work, sys) {
-      if (typeof sys === 'undefined') {sys = work; work = self}
+      if (typeof sys === 'undefined') { sys = work; work = self }
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       work.onmessage = (e) => {
         sys.__v0['受信データ'] = e.data
@@ -203,7 +205,7 @@ const PluginWebWorker = {
   },
   'NAKOワーカープログラム起動': { // @WORKERに固有の形式でプログラムの転送と実行行う。 // @NAKOわーかーぷろぐらむきどう
     type: 'func',
-    josi: [['に','で'],['を']],
+    josi: [['に', 'で'], ['を']],
     pure: true,
     fn: function (work, data, sys) {
       const msg = {
@@ -233,7 +235,7 @@ const PluginWebWorker = {
     isVariableJosi: true,
     pure: true,
     fn: function (work, sys) {
-      if (typeof sys === 'undefined') {sys = work; work = self}
+      if (typeof sys === 'undefined') { sys = work; work = self }
       work.terminate()
     },
     return_none: true
@@ -258,11 +260,11 @@ const PluginWebWorker = {
   },
   'NAKOワーカーデータ送信': { // @WORKERに固有の形式でデータを送信する。 // @NAKOわーかーでーたそうしん
     type: 'func',
-    josi: [['を'], ['に','へ']],
+    josi: [['を'], ['に', 'へ']],
     isVariableJosi: true,
     pure: true,
     fn: function (data, work, sys) {
-      if (typeof sys === 'undefined') {sys = work; work = self}
+      if (typeof sys === 'undefined') { sys = work; work = self }
       const msg = {
         type: 'data',
         data: data
@@ -273,24 +275,24 @@ const PluginWebWorker = {
   },
   'ワーカーメッセージ送信': { // @WORKERにメッセージを送信する。 // @わーかーめっせーじそうしん
     type: 'func',
-    josi: [['を'], ['に','へ']],
+    josi: [['を'], ['に', 'へ']],
     isVariableJosi: true,
     pure: true,
     fn: function (msg, work, sys) {
-      if (typeof sys === 'undefined') {sys = work; work = self}
+      if (typeof sys === 'undefined') { sys = work; work = self }
       work.postMessage(msg)
     },
     return_none: true
   },
   'NAKOワーカー転送': { // @WORKERにユーザー定義関数またはユーザ定義のグローバル変数を転送する。 // @NAKOわーかーてんそう
     type: 'func',
-    josi: [['を'], ['に','へ']],
+    josi: [['を'], ['に', 'へ']],
     isVariableJosi: true,
     pure: false,
     fn: function (datas, work, sys) {
-      if (typeof sys === 'undefined') {sys = work; work = self}
+      if (typeof sys === 'undefined') { sys = work; work = self }
       const obj = []
-      if (typeof datas === 'string') {datas = [datas]}
+      if (typeof datas === 'string') { datas = [datas] }
       datas.forEach(data => {
         if (typeof sys.__varslist[2][data] !== 'undefined') {
           obj.push({

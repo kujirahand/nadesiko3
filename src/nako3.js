@@ -10,7 +10,7 @@ const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginPromise = require('./plugin_promise')
 const PluginTest = require('./plugin_test')
-const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require("./nako_source_mapping")
+const { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } = require('./nako_source_mapping')
 const { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } = require('./nako_errors')
 const NakoLogger = require('./nako_logger')
 const NakoGlobal = require('./nako_global')
@@ -18,20 +18,19 @@ const NakoGlobal = require('./nako_global')
 /** @type {<T>(x: T) => T} */
 const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
 
-
 // Select Code Generator #637
 /**
  * @type {Object}
  */
 const codeGenerators = {
-  'sync': NakoGenSync
+  sync: NakoGenSync
 }
 
-/** 
- * @param {string} mode
+/**
+ * @param {string | undefined} mode
 */
-function NakoGen(mode) {
-  if (codeGenerators[mode]) {return codeGenerators[mode]}
+function NakoGen (mode) {
+  if (codeGenerators[mode]) { return codeGenerators[mode] }
   throw new Error(`コードジェネレータの「${mode}」はサポートされていません。`)
 }
 
@@ -49,7 +48,7 @@ function NakoGen(mode) {
  *   endOffset: number | null
  *   isDefinition?: boolean
  * }} TokenWithSourceMap
- * 
+ *
  * @typedef {{
  *     resetEnv: boolean
  *     testOnly: boolean | string
@@ -81,8 +80,9 @@ function NakoGen(mode) {
  *     line?: number
  *     column?: number
  *   }
+ *   genMode?: string
  * }} Ast
- * 
+ *
  * @typedef {(
  *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function, return_none: boolean }
  *     | { type: 'var' | 'const', value: any}
@@ -91,11 +91,11 @@ function NakoGen(mode) {
 
 class NakoCompiler {
   /**
-   * @param {undefined | {'useBasicPlugin':true|false}} options 
+   * @param {undefined | {'useBasicPlugin':true|false}} options
    */
   constructor (options) {
-    if (options == undefined) {
-      options = {'useBasicPlugin': true}
+    if (options === undefined) {
+      options = { useBasicPlugin: true }
     }
     this.silent = true
     this.filename = 'inline'
@@ -103,9 +103,12 @@ class NakoCompiler {
     // 環境のリセット
     /** @type {Record<string, any>[]} */
     this.__varslist = [{}, {}, {}] // このオブジェクトは変更しないこと (this.gen.__varslist と共有する)
-    this.__locals = {}  // ローカル変数
+    this.__locals = {} // ローカル変数
     this.__self = this
     this.__vars = this.__varslist[2]
+    /**
+     * @type {NakoGlobal[]}
+     */
     this.__globals = [] // 生成した NakoGlobalのインスタンスを保持
     /** @type {Record<string, Record<string, NakoFunction>>} */
     this.__module = {} // requireなどで取り込んだモジュールの一覧
@@ -117,7 +120,7 @@ class NakoCompiler {
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
     this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
     /** @type {Record<string, { josi: string[][], fn: string, type: 'func' }>} */
-    this.nako_func = {}  // __v1に配置するJavaScriptのコードで定義された関数
+    this.nako_func = {} // __v1に配置するJavaScriptのコードで定義された関数
 
     this.logger = new NakoLogger()
 
@@ -125,7 +128,7 @@ class NakoCompiler {
     this.prepare = new Prepare(this.logger)
     this.parser = new Parser(this.logger)
     this.lexer = new NakoLexer(this.logger)
-    
+
     /**
      * 取り込み文を置換するためのオブジェクト。
      * 正規化されたファイル名がキーになり、取り込み文の引数に指定された正規化されていないファイル名はaliasに入れられる。
@@ -138,11 +141,11 @@ class NakoCompiler {
     /** @type {Set<string>} */
     this.usedFuncs = new Set()
 
-    this.setFunc = this.addFunc  // エイリアス
+    this.setFunc = this.addFunc // エイリアス
 
     this.numFailures = 0
 
-    if (options.useBasicPlugin) {this.addBasicPlugins()}
+    if (options.useBasicPlugin) { this.addBasicPlugins() }
   }
 
   /**
@@ -159,14 +162,15 @@ class NakoCompiler {
    * loggerを新しいインスタンスで置き換える。
    */
   replaceLogger () {
-    return this.prepare.logger = this.lexer.logger = this.parser.logger = this.logger = new NakoLogger()
+    const logger = this.prepare.logger = this.lexer.logger = this.parser.logger = this.logger = new NakoLogger()
+    return logger
   }
 
   /**
    * ファイル内のrequire文の位置を列挙する。出力の配列はstartでソートされている。
    * @param {TokenWithSourceMap[]} tokens rawtokenizeの出力
    */
-  static listRequireStatements(tokens) {
+  static listRequireStatements (tokens) {
     /** @type {{ start: number, end: number, value: string, firstToken: TokenWithSourceMap, lastToken: TokenWithSourceMap }[]} */
     const requireStatements = []
     for (let i = 0; i + 2 < tokens.length; i++) {
@@ -200,10 +204,10 @@ class NakoCompiler {
    * @returns {Promise<unknown> | void}
    * @protected
    */
-  _loadDependencies(code, filename, preCode, tools) {
+  _loadDependencies (code, filename, preCode, tools) {
     /** @type {NakoCompiler['dependencies']} */
     const dependencies = {}
-    const compiler = new NakoCompiler()
+    const compiler = new NakoCompiler({ useBasicPlugin: true })
 
     /** @param {string} code @param {string} filename @param {string} preCode @returns {Promise<unknown> | void} */
     const inner = (code, filename, preCode) => {
@@ -211,6 +215,7 @@ class NakoCompiler {
       const tasks = []
       for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken) }))) {
         // 2回目以降の読み込み
+        // eslint-disable-next-line no-prototype-builtins
         if (dependencies.hasOwnProperty(item.filePath)) {
           dependencies[item.filePath].alias.add(item.value)
           continue
@@ -306,7 +311,7 @@ class NakoCompiler {
     /** @type {import('./nako_lexer').Token[]} */
     let tokens
     try {
-      tokens = this.lexer.setInput(preprocessed.map((v) => v.text).join(""), line, filename)
+      tokens = this.lexer.setInput(preprocessed.map((v) => v.text).join(''), line, filename)
     } catch (err) {
       if (!(err instanceof InternalLexerError)) {
         throw err
@@ -324,7 +329,7 @@ class NakoCompiler {
     return tokens.map((token, i) => {
       const dest = indentationSyntaxSourceMapping.map(
         tokenizationSourceMapping.map(token.preprocessedCodeOffset),
-        tokenizationSourceMapping.map(token.preprocessedCodeOffset + token.preprocessedCodeLength),
+        tokenizationSourceMapping.map(token.preprocessedCodeOffset + token.preprocessedCodeLength)
       )
       let line = token.line
       let column = 0
@@ -342,7 +347,7 @@ class NakoCompiler {
       return {
         ...token,
         ...subtractSourceMapByPreCodeLength({ line, column, startOffset: dest.startOffset, endOffset: dest.endOffset }, preCode),
-        rawJosi: token.josi,
+        rawJosi: token.josi
       }
     })
   }
@@ -396,30 +401,30 @@ class NakoCompiler {
    * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[] }}
    * @private
    */
-  lexCodeToken(code, line, filename, startOffset) {
+  lexCodeToken (code, line, filename, startOffset) {
     // 単語に分割
     let tokens = this.rawtokenize(code, line, filename, '')
 
     // 文字列内位置からファイル内位置へ変換
     if (startOffset === null) {
-        for (const token of tokens) {
-            token.startOffset = null
-            token.endOffset = null
-        }
+      for (const token of tokens) {
+        token.startOffset = null
+        token.endOffset = null
+      }
     } else {
-        for (const token of tokens) {
-            if (token.startOffset !== null) {
-                token.startOffset += startOffset
-            }
-            if (token.endOffset !== null) {
-                token.endOffset += startOffset
-            }
+      for (const token of tokens) {
+        if (token.startOffset !== null) {
+          token.startOffset += startOffset
         }
+        if (token.endOffset !== null) {
+          token.endOffset += startOffset
+        }
+      }
     }
 
     // convertTokenで消されるコメントのトークンを残す
-    const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
-      .map((v) => ({ ...v }))  // clone
+    const commentTokens = tokens.filter((t) => t.type === 'line_comment' || t.type === 'range_comment')
+      .map((v) => ({ ...v })) // clone
 
     tokens = this.converttoken(tokens, false)
 
@@ -433,7 +438,7 @@ class NakoCompiler {
    * @param {Set<string>} [includeGuard]
    * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
    */
-  replaceRequireStatements(tokens, includeGuard = new Set()) {
+  replaceRequireStatements (tokens, includeGuard = new Set()) {
     /** @type {TokenWithSourceMap[]} */
     const deletedTokens = []
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
@@ -460,7 +465,7 @@ class NakoCompiler {
    * @param {TokenWithSourceMap[]} tokens
    * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
    */
-  removeRequireStatements(tokens) {
+  removeRequireStatements (tokens) {
     /** @type {TokenWithSourceMap[]} */
     const deletedTokens = []
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
@@ -482,7 +487,7 @@ class NakoCompiler {
    * @param {string} [preCode]
    * @returns {{ commentTokens: TokenWithSourceMap[], tokens: TokenWithSourceMap[], requireTokens: TokenWithSourceMap[] }}
    */
-  lex(code, filename, preCode = '', syntaxHighlighting = false) {
+  lex (code, filename, preCode = '', syntaxHighlighting = false) {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
 
@@ -496,13 +501,13 @@ class NakoCompiler {
 
     // convertTokenで消されるコメントのトークンを残す
     /** @type {TokenWithSourceMap[]} */
-    const commentTokens = tokens.filter((t) => t.type === "line_comment" || t.type === "range_comment")
-        .map((v) => ({ ...v }))  // clone
+    const commentTokens = tokens.filter((t) => t.type === 'line_comment' || t.type === 'range_comment')
+      .map((v) => ({ ...v })) // clone
 
     tokens = this.converttoken(tokens, true)
 
     for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i]['type'] === 'code') {
+      if (tokens[i].type === 'code') {
         const children = this.lexCodeToken(tokens[i].value, tokens[i].line, filename, tokens[i].startOffset)
         commentTokens.push(...children.commentTokens)
         tokens.splice(i, 1, ...children.tokens)
@@ -545,6 +550,9 @@ class NakoCompiler {
     return ast
   }
 
+  /**
+   * @param {Ast} ast
+   */
   getUsedFuncs (ast) {
     const queue = [ast]
     this.usedFuncs = new Set()
@@ -575,6 +583,7 @@ class NakoCompiler {
       this.usedFuncs.add(block.name)
     }
 
+    // eslint-disable-next-line no-useless-call
     astQueue.push.apply(astQueue, [block, block.block])
     blockQueue.push.apply(blockQueue, [block.value].concat(block.args))
   }
@@ -596,7 +605,7 @@ class NakoCompiler {
    * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @param {string} [preCode]
    */
-  compile(code, filename, isTest, preCode = '') {
+  compile (code, filename, isTest, preCode = '') {
     const ast = this.parse(code, filename, preCode)
     return NakoGen(ast.genMode).generate(this, ast, isTest).runtimeEnv
   }
@@ -608,7 +617,7 @@ class NakoCompiler {
    * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @param {string} [preCode]
    */
-  _run(code, fname, isReset, isTest, preCode = '') {
+  _run (code, fname, isReset, isTest, preCode = '') {
     const opts = {
       resetLog: isReset,
       testOnly: isTest
@@ -630,13 +639,13 @@ class NakoCompiler {
    * @param {string} [preCode]
    * @param {NakoGlobal} [nakoGlobal] ナデシコ命令でスコープを共有するため
    */
-  _runEx(code, fname, opts, preCode = '', nakoGlobal) {
+  _runEx (code, fname, opts, preCode = '', nakoGlobal) {
     // コンパイル
     let out
     try {
       const optsAll = Object.assign({ resetEnv: true, testOnly: false, resetAll: true }, opts)
-      if (optsAll.resetEnv) {this.reset()}
-      if (optsAll.resetAll) {this.clearPlugins()}
+      if (optsAll.resetEnv) { this.reset() }
+      if (optsAll.resetAll) { this.clearPlugins() }
       const ast = this.parse(code, fname, preCode)
       out = NakoGen(ast.genMode).generate(this, ast, optsAll.testOnly)
     } catch (e) {
@@ -649,14 +658,16 @@ class NakoCompiler {
       this.__globals.push(nakoGlobal)
     }
     try {
+      // eslint-disable-next-line no-new-func
       new Function(out.runtimeEnv).apply(nakoGlobal)
       return nakoGlobal
     } catch (e) {
+      let err = e
       if (!(e instanceof NakoRuntimeError)) {
-        e = new NakoRuntimeError(e, nakoGlobal.__varslist[0].line)
+        err = new NakoRuntimeError(e, nakoGlobal.__varslist[0].line)
       }
-      this.logger.error(e)
-      throw e
+      this.logger.error(err)
+      throw err
     }
   }
 
@@ -666,7 +677,7 @@ class NakoCompiler {
    * @param {Partial<CompilerOptions>} opts
    * @param {string} [preCode]
    */
-  runEx(code, fname, opts, preCode = '') {
+  runEx (code, fname, opts, preCode = '') {
     return this._runEx(code, fname, opts, preCode)
   }
 
@@ -676,7 +687,7 @@ class NakoCompiler {
    * @param {string} [preCode]
    * @param {string | undefined} [testName]
    */
-  test(code, fname, preCode = '', testName = undefined) {
+  test (code, fname, preCode = '', testName = undefined) {
     return this._runEx(code, fname, { testOnly: testName || true }, preCode)
   }
 
@@ -686,8 +697,8 @@ class NakoCompiler {
    * @param {string} fname
    * @param {string} [preCode]
    */
-  run(code, fname, preCode = '') {
-    return this._runEx(code, fname, {resetAll: false}, preCode)
+  run (code, fname, preCode = '') {
+    return this._runEx(code, fname, { resetAll: false }, preCode)
   }
 
   /**
@@ -696,8 +707,8 @@ class NakoCompiler {
    * @param {string} fname
    * @param {string} [preCode]
    */
-  runReset(code, fname, preCode = '') {
-    return this._runEx(code, fname, {resetAll: true}, preCode)
+  runReset (code, fname, preCode = '') {
+    return this._runEx(code, fname, { resetAll: true }, preCode)
   }
 
   /**
@@ -707,7 +718,7 @@ class NakoCompiler {
    * @param {boolean | string} isTest
    * @param {string} [preCode]
    */
-  compileStandalone(code, filename, isTest, preCode = '') {
+  compileStandalone (code, filename, isTest, preCode = '') {
     const ast = this.parse(code, filename, preCode)
     return NakoGen(ast.genMode).generate(this, ast, isTest).standalone
   }
@@ -720,7 +731,7 @@ class NakoCompiler {
   addPlugin (po, persistent = true) {
     // 変数のメタ情報を確認
     const __v0 = this.__varslist[0]
-    if (__v0.meta === undefined){ __v0.meta = {} }
+    if (__v0.meta === undefined) { __v0.meta = {} }
 
     // プラグインの値をオブジェクトにコピー
     for (const key in po) {
@@ -740,7 +751,7 @@ class NakoCompiler {
         throw new Error('プラグインの追加でエラー。')
       }
       // コマンドを登録するか?
-      if (key === '初期化' || key.substr(0, 1) === '!' ) { // 登録しない関数名
+      if (key === '初期化' || key.substr(0, 1) === '!') { // 登録しない関数名
         continue
       }
       this.commandlist.add(key)
@@ -787,7 +798,7 @@ class NakoCompiler {
    * @param {boolean} returnNone 値を返す関数の場合はfalseを設定する。
    */
   addFunc (key, josi, fn, returnNone = true) {
-    this.funclist[key] = {josi, fn, type: 'func', return_none: returnNone}
+    this.funclist[key] = { josi, fn, type: 'func', return_none: returnNone }
     this.pluginFunclist[key] = cloneAsJSON(this.funclist[key])
     this.__varslist[0][key] = fn
   }
@@ -803,10 +814,10 @@ class NakoCompiler {
 
   /**
    * コードジェネレータを追加する
-   * @param {string} mode 
+   * @param {string} mode
    * @param {any} obj
    */
-  addCodeGenerator(mode, obj) {
+  addCodeGenerator (mode, obj) {
     codeGenerators[mode] = obj
   }
 }

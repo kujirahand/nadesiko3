@@ -4,7 +4,6 @@
  * ただし、コメントや文字列の中は変換しないように考慮して変換する。
  */
 
-
 /**
  * 置換後の位置から置換前の位置へマッピングできる文字列
  */
@@ -12,9 +11,9 @@ class Replace {
   /**
    * @param {string} code
    */
-  constructor(code) {
+  constructor (code) {
     /** @private @type {{ from: number, to: number, index: number }[]} */
-    this.history = new Array()
+    this.history = []
 
     /** @private */
     this.code = code
@@ -23,46 +22,46 @@ class Replace {
   /**
    * @returns {string}
    */
-  getText() {
-      return this.code
+  getText () {
+    return this.code
   }
 
   /**
    * @param {string} from
    * @param {string} to
    */
-  replaceAll(from, to) {
-      while (true) {
-          const index = this.getText().indexOf(from)
-          if (index === -1) {
-              break
-          }
-          if (from.length !== to.length) {
-              this.history.unshift({ index, from: from.length, to: to.length })
-          }
-          this.code = this.code.replace(from, to)
+  replaceAll (from, to) {
+    while (true) {
+      const index = this.getText().indexOf(from)
+      if (index === -1) {
+        break
       }
+      if (from.length !== to.length) {
+        this.history.unshift({ index, from: from.length, to: to.length })
+      }
+      this.code = this.code.replace(from, to)
+    }
   }
-  
+
   /**
    * @param {number} i
    * @returns {number}
    */
-  getSourcePosition(i) {
-      // 少し遅い。パース時間1.4秒に対して0.15秒かかる。iが単調増加することを利用して高速化できるはず。
-      for (const item of this.history) {
-          if (i >= item.index + item.to) { // 置換範囲より後ろ
-              i += item.from - item.to
-          } else if (item.index <= i && i < item.index + item.to) { // 置換範囲
-              // 置換文字列が2文字以上のとき、最後の文字は最後の文字へマップする。それ以外は最初の文字へマップする。
-              if (item.to >= 2 && i === item.index + item.to - 1) {
-                  i = item.index + item.from - 1
-              } else {
-                  i = item.index
-              }
-          }
+  getSourcePosition (i) {
+    // 少し遅い。パース時間1.4秒に対して0.15秒かかる。iが単調増加することを利用して高速化できるはず。
+    for (const item of this.history) {
+      if (i >= item.index + item.to) { // 置換範囲より後ろ
+        i += item.from - item.to
+      } else if (item.index <= i && i < item.index + item.to) { // 置換範囲
+        // 置換文字列が2文字以上のとき、最後の文字は最後の文字へマップする。それ以外は最初の文字へマップする。
+        if (item.to >= 2 && i === item.index + item.to - 1) {
+          i = item.index + item.from - 1
+        } else {
+          i = item.index
+        }
       }
-      return i
+    }
+    return i
   }
 }
 
@@ -123,26 +122,30 @@ class NakoPrepare {
       0x3011: ']', // '】'
       // 読点は「,」に変換する (#877)
       0x3001: ',', // 読点 --- JSON記法で「,」と「、」を区別したいので読点は変換しないことに。(#276)
-      0xFF0C: ','  // 読点 '，' 論文などで利用、ただし句点はドットと被るので変換しない (#735)
+      0xFF0C: ',' // 読点 '，' 論文などで利用、ただし句点はドットと被るので変換しない (#735)
     }
   }
 
   // 一文字だけ変換
+  /**
+   * @param {string} ch
+   */
   convert1ch (ch) {
-    const c = ch.codePointAt(0)
+    if (!ch) { return '' }
+    let c = ch.codePointAt(0)
     // テーブルによる変換
-    if (this.convertTable[c]) {return this.convertTable[c]}
+    if (this.convertTable[c]) { return this.convertTable[c] }
     // ASCIIエリア
-    if (c < 0x7F) {return ch}
+    if (c < 0x7F) { return ch }
     // 全角半角単純変換可能 --- '！' - '～'
     if (c >= 0xFF01 && c <= 0xFF5E) {
       const c2 = c - 0xFEE0
       return String.fromCodePoint(c2)
     }
     // 問題のエリア
-    if (this.HYPHENS[c]) {return '-'}
-    if (this.TILDES[c]) {return '~'}
-    if (this.SPACES[c]) {return ' '}
+    if (this.HYPHENS[c]) { return '-' }
+    if (this.TILDES[c]) { return '~' }
+    if (this.SPACES[c]) { return ' ' }
     return ch
   }
 
@@ -151,21 +154,21 @@ class NakoPrepare {
    * @returns {{ text: string, sourcePosition: number }[]}
    */
   convert (code) {
-    if (!code) {return []}
+    if (!code) { return [] }
     const src = new Replace(code)
-    
+
     // 改行コードを統一
     src.replaceAll('\r\n', '\n')
     src.replaceAll('\r', '\n')
-    
-    let flagStr = false  // 文字列リテラル内かどうか
-    let flagStr2 = false  // 絵文字による文字列リテラル内かどうか
-    let endOfStr = ""  // 文字列リテラルを終了させる記号
+
+    let flagStr = false // 文字列リテラル内かどうか
+    let flagStr2 = false // 絵文字による文字列リテラル内かどうか
+    let endOfStr = '' // 文字列リテラルを終了させる記号
     /** @type {{ text: string, sourcePosition: number }[]} */
     const res = []
-    let left = 0  // 現在処理中の部分文字列の左端の位置
+    let left = 0 // 現在処理中の部分文字列の左端の位置
     let str = '' // 文字列リテラルの値
-    
+
     // 一文字ずつ全角を半角に置換する
     let i = 0
     while (i < src.getText().length) {
@@ -227,13 +230,13 @@ class NakoPrepare {
       }
       // JavaScriptの内部的には文字列はUTF-16で扱われてるので charAt を使う場合 絵文字が2文字扱いになる --- #726
       if (ch2 === '🌴' || ch2 === '🌿') {
-          res.push({ text: ch2, sourcePosition: src.getSourcePosition(left) })
-          i += 2
-          left = i
-          flagStr2 = true
-          endOfStr = ch2
-          str = ''
-          continue
+        res.push({ text: ch2, sourcePosition: src.getSourcePosition(left) })
+        i += 2
+        left = i
+        flagStr2 = true
+        endOfStr = ch2
+        str = ''
+        continue
       }
       const c1 = this.convert1ch(c)
       if (c1 === '"' || c1 === '\'') {
@@ -256,24 +259,24 @@ class NakoPrepare {
         continue
       }
       // ラインコメントを飛ばす
-      if (ch2 === '//' || ch2 == '／／') {
-          res.push({ text: '//', sourcePosition: src.getSourcePosition(left) })  // 強制的に'//'とする
-          i += 2
-          left = i
-          flagStr = true
-          endOfStr = '\n'
-          str = ''
-          continue
+      if (ch2 === '//' || ch2 === '／／') {
+        res.push({ text: '//', sourcePosition: src.getSourcePosition(left) }) // 強制的に'//'とする
+        i += 2
+        left = i
+        flagStr = true
+        endOfStr = '\n'
+        str = ''
+        continue
       }
       // 複数行コメント内を飛ばす (#731)
       if (ch2 === '/*') {
-          res.push({ text: ch2, sourcePosition: src.getSourcePosition(left) })
-          i += 2
-          left = i
-          flagStr2 = true
-          endOfStr = '*/'
-          str = ''
-          continue
+        res.push({ text: ch2, sourcePosition: src.getSourcePosition(left) })
+        i += 2
+        left = i
+        flagStr2 = true
+        endOfStr = '*/'
+        str = ''
+        continue
       }
       // 変換したものを追加
       res.push({ text: c1, sourcePosition: src.getSourcePosition(left) })

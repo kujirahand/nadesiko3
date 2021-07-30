@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 const opPriority = {
   // and or
   'and': 1,

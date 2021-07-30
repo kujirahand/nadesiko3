@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Turtle Graphics for Web browser (nadesiko3)
  * plugin_turtle.js
@@ -14,13 +15,13 @@ const PluginTurtle = {
     pure: true,
     fn: function (sys) {
       /* istanbul ignore if */
-      if (sys._turtle) {return}
+      if (sys._turtle) { return }
       sys._turtle = {
         list: [],
         target: -1,
         ctx: null,
         canvas: null,
-        canvas_r: {left: 0, top: 0, width: 640, height: 400},
+        canvas_r: { left: 0, top: 0, width: 640, height: 400 },
         clearAll: function () {
           const me = this
           console.log('[TURTLE] clearAll')
@@ -30,29 +31,30 @@ const PluginTurtle = {
             document.body.removeChild(tt.canvas)
           }
           me.list = []
-          if (me.canvas !== null) 
-            {me.ctx.clearRect(0, 0,
+          if (me.canvas !== null) {
+            me.ctx.clearRect(0, 0,
               me.canvas.width,
-              me.canvas.height)}
-          
+              me.canvas.height)
+          }
+
           me.target = -1
           me.flagSetTimer = false
         },
         drawTurtle: function (id) {
           const tt = this.list[id]
-          if (!tt) {return}
+          if (!tt) { return }
           const cr = this.canvas_r
           // カメの位置を移動
           tt.canvas.style.left = (cr.left + tt.x - tt.cx) + 'px'
           tt.canvas.style.top = (cr.top + tt.y - tt.cx) + 'px'
-          if (!tt.f_update) {return}
+          if (!tt.f_update) { return }
           /* istanbul ignore if */
-          if (!tt.flagLoaded) {return}
+          if (!tt.flagLoaded) { return }
           tt.f_update = false
           tt.ctx.clearRect(0, 0,
             tt.canvas.width,
             tt.canvas.height)
-          if (!tt.f_visible) {return}
+          if (!tt.f_visible) { return }
           if (tt.dir !== 270) {
             const rad = (tt.dir + 90) * 0.017453292519943295
             tt.ctx.save()
@@ -61,19 +63,16 @@ const PluginTurtle = {
             tt.ctx.translate(-tt.cx, -tt.cy)
             tt.ctx.drawImage(tt.img, 0, 0)
             tt.ctx.restore()
-          } else 
-            {tt.ctx.drawImage(tt.img, 0, 0)}
-          
+          } else { tt.ctx.drawImage(tt.img, 0, 0) }
         },
         getCur: function () {
-          if (this.list.length === 0) 
-            {throw Error('最初に『カメ作成』命令を呼び出してください。')}
-          
+          if (this.list.length === 0) { throw Error('最初に『カメ作成』命令を呼び出してください。') }
+
           return this.list[this.target]
         },
         flagSetTimer: false,
         setTimer: function () {
-          if (this.flagSetTimer) {return}
+          if (this.flagSetTimer) { return }
           this.flagSetTimer = true
           console.log('[TURTLE] standby ...')
           setTimeout(() => {
@@ -83,9 +82,8 @@ const PluginTurtle = {
         },
         line: function (tt, x1, y1, x2, y2) {
           /* istanbul ignore else */
-          if (tt) 
-            {if (!tt.flagDown) {return}}
-          
+          if (tt) { if (!tt.flagDown) { return } }
+
           const ctx = this.ctx
           if (tt.flagBegeinPath) {
             ctx.lineTo(x2, y2)
@@ -101,7 +99,7 @@ const PluginTurtle = {
         doMacro: function (tt, wait) {
           const me = this
           if (!tt.flagLoaded && wait > 0) {
-            //console.log('[TURTLE] waiting ...')
+            // console.log('[TURTLE] waiting ...')
             return true
           }
           const m = tt.mlist.shift()
@@ -145,14 +143,6 @@ const PluginTurtle = {
               break
             case 'fillStyle':
               this.ctx.fillStyle = m[1]
-              break
-            case 'fill':
-              if (tt.flagBegeinPath) {
-                this.ctx.closePath()
-                tt.flagBegeinPath = false
-              }
-              this.ctx.fill()
-              console.log('ctx.fill()')
               break
             case 'mv': {
               // 線を引く
@@ -214,14 +204,14 @@ const PluginTurtle = {
               tt.img.src = m[1]
               break
           }
-          if (tt.flagLoaded) {sys._turtle.drawTurtle(tt.id)}
+          if (tt.flagLoaded) { sys._turtle.drawTurtle(tt.id) }
           return (tt.mlist.length > 0)
         },
         doMacroAll: function (wait) {
           let hasNext = false
           for (let i = 0; i < sys._turtle.list.length; i++) {
             const tt = sys._turtle.list[i]
-            if (this.doMacro(tt, wait)) {hasNext = true}
+            if (this.doMacro(tt, wait)) { hasNext = true }
           }
           return hasNext
         },
@@ -229,11 +219,9 @@ const PluginTurtle = {
           const me = this
           const wait = sys.__v0['カメ速度']
           let hasNext = this.doMacroAll(wait)
-          if (wait <= 0) 
-            {while (hasNext) 
-              {hasNext = this.doMacroAll(wait)}}
-            
-           else if (hasNext) {
+          if (wait <= 0) {
+            while (hasNext) { hasNext = this.doMacroAll(wait) }
+          } else if (hasNext) {
             setTimeout(() => me.play(), wait)
             return
           }
@@ -274,7 +262,7 @@ const PluginTurtle = {
         createTurtle: function (imageUrl, sys) {
           // キャンバス情報は毎回参照する (#734)
           sys._turtle.setupCanvas(sys)
-          const cv = sys._turtle.canvas
+          // const cv = sys._turtle.canvas
           // カメの情報を sys._turtle リストに追加
           const id = sys._turtle.list.length
           const tt = {
@@ -378,8 +366,8 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ描画先': {type: 'var', value: 'turtle_cv'}, // @かめびょうがさき
-  'カメ画像URL': {type: 'var', value: turtleImage}, // @かめがぞうURL
+  'カメ描画先': { type: 'var', value: 'turtle_cv' }, // @かめびょうがさき
+  'カメ画像URL': { type: 'var', value: turtleImage }, // @かめがぞうURL
   'カメ画像変更': { // @カメの画像をURLに変更する // @かめがぞうへんこう
     type: 'func',
     josi: [['に', 'へ']],
@@ -391,7 +379,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ速度': {type: 'const', value: 100}, // @かめそくど
+  'カメ速度': { type: 'const', value: 100 }, // @かめそくど
   'カメ速度設定': { // @カメの動作速度vに設定(大きいほど遅い) // @かめそくどせってい
     type: 'func',
     josi: [['に', 'へ']],
@@ -565,9 +553,9 @@ const PluginTurtle = {
     fn: function (s, sys) {
       s = '' + s // 文字列に
       if (s.match(/^\d+$/)) {
-        s = s + "px serif"
+        s = s + 'px serif'
       } else if (s.match(/^\d+(px|em)$/)) {
-        s = s + " serif"
+        s = s + ' serif'
       }
       const tt = sys._turtle.getCur()
       tt.mlist.push(['textset', s])
@@ -600,12 +588,12 @@ const PluginTurtle = {
     pure: true,
     fn: function (cmd, sys) {
       const tt = sys._turtle.getCur()
-      const a = cmd.split(/(\n|\;)/)
+      const a = cmd.split(/(\n|;)/)
       for (let i = 0; i < a.length; i++) {
         let c = a[i]
         c = c.replace(/^([a-zA-Z_]+)\s*(\d+)/, '$1,$2')
-        c = c.replace(/^([a-zA-Z_]+)\s*\=/, '$1,')
-        ca = c.split(/\s*,\s*/)
+        c = c.replace(/^([a-zA-Z_]+)\s*=/, '$1,')
+        const ca = c.split(/\s*,\s*/)
         tt.mlist.push(ca)
       }
       sys._turtle.setTimer()
@@ -655,6 +643,4 @@ module.exports = PluginTurtle
 
 // scriptタグで取り込んだ時、自動で登録する
 /* istanbul ignore else */
-if (typeof (navigator) === 'object' && typeof (navigator.nako3)) 
-  {navigator.nako3.addPluginObject('PluginTurtle', PluginTurtle)}
-
+if (typeof (navigator) === 'object' && typeof (navigator.nako3)) { navigator.nako3.addPluginObject('PluginTurtle', PluginTurtle) }

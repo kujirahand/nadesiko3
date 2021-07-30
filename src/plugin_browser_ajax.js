@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 module.exports = {
   // @AJAXとHTTP
   'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。『AJAXオプション』を指定できる。 // @AJAXそうしんしたとき
@@ -6,7 +7,7 @@ module.exports = {
     pure: true,
     fn: function (callback, url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') {options = {method: 'GET'}}
+      if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
@@ -29,7 +30,7 @@ module.exports = {
       }
       sys.async = true
       let options = sys.__v0['AJAXオプション']
-      if (options === '') {options = {method: 'GET'}}
+      if (options === '') { options = { method: 'GET' } }
       // fetch 実行
       fetch(url, options).then(res => {
         if (res.ok) { // 成功したとき
@@ -70,8 +71,8 @@ module.exports = {
     josi: [['の', 'を']],
     pure: true,
     fn: function (params, sys) {
-      let flist = []
-      for (let key in params) {
+      const flist = []
+      for (const key in params) {
         const v = params[key]
         const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
         flist.push(kv)
@@ -84,7 +85,7 @@ module.exports = {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: false,
     fn: function (callback, url, params, sys) {
-      let bodyData = sys.__exec('POSTデータ生成', [params, sys])
+      const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
         headers: {
@@ -108,10 +109,9 @@ module.exports = {
     pure: true,
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
-      for (let key in params)
-        {fd.set(key, params[key])}
+      for (const key in params) { fd.set(key, params[key]) }
 
-      let options = {
+      const options = {
         method: 'POST',
         body: fd
       }
@@ -133,7 +133,7 @@ module.exports = {
       sys.__v0['AJAX:ONERROR'] = callback
     }
   },
-  'AJAXオプション': {type: 'const', value: ''}, // @AJAXおぷしょん
+  'AJAXオプション': { type: 'const', value: '' }, // @AJAXおぷしょん
   'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
@@ -148,7 +148,7 @@ module.exports = {
     josi: [['まで', 'へ', 'に']],
     pure: true,
     fn: function (url, sys) {
-      if (!sys.resolve) {throw new Error('『AJAX送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『AJAX送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('AJAX逐次送信', [url, sys])
     },
     return_none: true
@@ -158,12 +158,12 @@ module.exports = {
     josi: [['まで', 'へ', 'に']],
     pure: true,
     fn: function (url, sys) {
-      if (!sys.resolve) {throw new Error('『AJAX逐次送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『AJAX逐次送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.resolveCount++
       const resolve = sys.resolve
       const reject = sys.reject
       let options = sys.__v0['AJAXオプション']
-      if (options === '') {options = {method: 'GET'}}
+      if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
@@ -181,7 +181,7 @@ module.exports = {
     pure: true,
     fn: function (url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') {options = {method: 'GET'}}
+      if (options === '') { options = { method: 'GET' } }
       return fetch(url, options)
     },
     return_none: false
@@ -191,7 +191,7 @@ module.exports = {
     josi: [['の', 'から', 'を']],
     pure: false,
     fn: function (url, sys) {
-      if (!sys.resolve) {throw new Error('『HTTP取得』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『HTTP取得』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('AJAX逐次送信', [url, sys])
     },
     return_none: true
@@ -201,7 +201,7 @@ module.exports = {
     josi: [['の', 'から', 'を']],
     pure: false,
     fn: function (url, sys) {
-      if (!sys.resolve) {throw new Error('『HTTP逐次取得』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『HTTP逐次取得』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('AJAX逐次送信', [url, sys])
     },
     return_none: true
@@ -220,11 +220,11 @@ module.exports = {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: false,
     fn: function (url, params, sys) {
-      if (!sys.resolve) {throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.resolveCount++
       const resolve = sys.resolve
       const reject = sys.reject
-      let bodyData = sys.__exec('POSTデータ生成', [params, sys])
+      const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
         headers: {
@@ -248,7 +248,7 @@ module.exports = {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: false,
     fn: function (url, params, sys) {
-      if (!sys.resolve) {throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('POST逐次送信', [url, params, sys])
     },
     return_none: true
@@ -258,7 +258,7 @@ module.exports = {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function (url, params, sys) {
-      let bodyData = sys.__exec('POSTデータ生成', [params, sys])
+      const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
         headers: {
@@ -275,15 +275,14 @@ module.exports = {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function (url, params, sys) {
-      if (!sys.resolve) {throw new Error('『POSTフォーム逐次送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『POSTフォーム逐次送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.resolveCount++
       const resolve = sys.resolve
       const reject = sys.reject
       const fd = new FormData()
-      for (let key in params)
-        {fd.set(key, params[key])}
+      for (const key in params) { fd.set(key, params[key]) }
 
-      let options = {
+      const options = {
         method: 'POST',
         body: fd
       }
@@ -303,7 +302,7 @@ module.exports = {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: false,
     fn: function (url, params, sys) {
-      if (!sys.resolve) {throw new Error('『POSTフォーム送信』は『逐次実行』構文内で利用する必要があります。')}
+      if (!sys.resolve) { throw new Error('『POSTフォーム送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('POSTフォーム逐次送信', [url, params, sys])
     },
     return_none: true
@@ -314,10 +313,9 @@ module.exports = {
     pure: true,
     fn: function (url, params, sys) {
       const fd = new FormData()
-      for (let key in params)
-        {fd.set(key, params[key])}
+      for (const key in params) { fd.set(key, params[key]) }
 
-      let options = {
+      const options = {
         method: 'POST',
         body: fd
       }

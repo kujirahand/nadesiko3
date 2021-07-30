@@ -1,4 +1,4 @@
-const nakoVersion = require("./nako_version")
+const nakoVersion = require('./nako_version')
 
 /**
  * なでしこ言語が投げる全てのエラーが継承するクラス
@@ -10,10 +10,10 @@ class NakoError extends Error {
    * @param {string | undefined} file
    * @param {number | undefined} line
    */
-  constructor(tag, msg, file, line) {
+  constructor (tag, msg, file, line) {
     const positionJa = `${file || ''}${line === undefined ? '' : `(${line + 1}行目): `}`
     super(`[${tag}]${positionJa}${msg}\n[バージョン] ${nakoVersion.version}`)
-    this.tag = "[" + tag + "]"
+    this.tag = '[' + tag + ']'
     this.positionJa = positionJa
     this.msg = msg
   }
@@ -25,7 +25,7 @@ class NakoIndentError extends NakoError {
    * @param {number} line
    * @param {string} file
    */
-  constructor(msg, line, file) {
+  constructor (msg, line, file) {
     super('インデントエラー', msg, file, line)
     this.line = line
     this.file = file
@@ -41,8 +41,8 @@ class InternalLexerError extends NakoError {
    * @param {number | undefined} [line]
    * @param {string | undefined} [file]
    */
-  constructor(msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, file) {
-    super(`字句解析エラー（内部エラー）`, msg, file, line)
+  constructor (msg, preprocessedCodeStartOffset, preprocessedCodeEndOffset, line, file) {
+    super('字句解析エラー（内部エラー）', msg, file, line)
     this.preprocessedCodeStartOffset = preprocessedCodeStartOffset
     this.preprocessedCodeEndOffset = preprocessedCodeEndOffset
     this.line = line
@@ -58,12 +58,12 @@ class NakoLexerError extends NakoError {
    * @param {number | undefined} line
    * @param {string | undefined} file
    */
-  constructor(
+  constructor (
     msg,
     startOffset,
     endOffset,
     line,
-    file,
+    file
   ) {
     super('字句解析エラー', msg, file, line)
     this.startOffset = startOffset
@@ -79,15 +79,15 @@ class NakoSyntaxError extends NakoError {
    * @param {import("./nako3").Ast | null | undefined} first
    * @param {import("./nako3").Ast | null | undefined} [last]
    */
-  static fromNode(msg, first, last) {
+  static fromNode (msg, first, last) {
     if (!first) {
       return new NakoSyntaxError(msg, undefined, null, null, undefined)
     }
     const startOffset = typeof first.startOffset === 'number' ? first.startOffset : null
     const endOffset =
-      (last && typeof last.endOffset === 'number') ?
-        last.endOffset :
-        (typeof first.endOffset === 'number' ? first.endOffset : null)
+      (last && typeof last.endOffset === 'number')
+        ? last.endOffset
+        : (typeof first.endOffset === 'number' ? first.endOffset : null)
     return new NakoSyntaxError(msg, first.line, startOffset, endOffset, first.file)
   }
 
@@ -117,8 +117,8 @@ class NakoRuntimeError extends NakoError {
       (error instanceof Error &&
        error.constructor !== Error &&
        error.constructor !== NakoRuntimeError)
-      ? error.constructor.name + ": "
-      : ''
+        ? error.constructor.name + ': '
+        : ''
     const msg = error instanceof Error ? error.message : error + ''
 
     // 行番号を表す文字列をパースする。
@@ -131,9 +131,11 @@ class NakoRuntimeError extends NakoError {
     if (lineNo === undefined) {
       line = undefined
       file = undefined
+    // eslint-disable-next-line no-cond-assign
     } else if (matches = /^l(-?\d+):(.*)$/.exec(lineNo)) {
       line = +matches[1]
       file = matches[2]
+    // eslint-disable-next-line no-cond-assign
     } else if (matches = /^l(-?\d+)$/.exec(lineNo)) {
       line = +matches[1]
       file = undefined
@@ -170,5 +172,5 @@ module.exports = {
   InternalLexerError,
   NakoSyntaxError,
   NakoRuntimeError,
-  NakoImportError,
+  NakoImportError
 }
