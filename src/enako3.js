@@ -7,9 +7,7 @@ const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') 
-    {app.quit()}
-  
+  if (process.platform !== 'darwin') { app.quit() }
 })
 
 app.on('ready', () => {
@@ -51,7 +49,7 @@ app.on('ready', () => {
         {
           label: 'バージョン情報',
           click: () => {
-            let win = new BrowserWindow({width: 325, height: 100})
+            let win = new BrowserWindow({ width: 325, height: 100 })
             win.loadURL('file://' + path.join(__dirname, '..', 'demo', 'version.html'))
             win.on('closed', () => {
               win = null
@@ -63,7 +61,7 @@ app.on('ready', () => {
   ]))
 
   // ブラウザ (Chromium) の起動, 初期画面のロード
-  let win = new BrowserWindow({width: 800, height: 600})
+  let win = new BrowserWindow({ width: 800, height: 600 })
   win.loadURL('file://' + path.join(__dirname, '..', 'demo', 'index.html'))
   win.on('closed', () => {
     win = null

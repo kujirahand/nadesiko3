@@ -8,13 +8,13 @@ class NakoGlobal {
    * @param {import('./nako3')} compiler
    * @param {import('./nako_gen')} gen
    */
-  constructor(compiler, gen) {
+  constructor (compiler, gen) {
     // ユーザーのプログラムから編集される変数
     this.__locals = {}
     this.__varslist = [
       { ...compiler.__varslist[0] }, // system
       { ...compiler.__varslist[1] }, // global
-      { ...compiler.__varslist[2] }, // local [2][3][4][5] ...
+      { ...compiler.__varslist[2] } // local [2][3][4][5] ...
     ]
     this.index = 0
     this.nextIndex = -1
@@ -53,7 +53,7 @@ class NakoGlobal {
    * @param {Partial<import('./nako3').CompilerOptions & { resetLog: boolean }>} opts
    * @param {string} [preCode]
    */
-  runEx(code, fname, opts, preCode = '') {
+  runEx (code, fname, opts, preCode = '') {
     // スコープを共有して実行
     return this.compiler._runEx(code, fname, opts, preCode, this)
   }
@@ -62,7 +62,7 @@ class NakoGlobal {
    * テスト実行のためのメソッド
    * @param {{ name: string, f: () => void }[]} tests
    */
-  _runTests(tests) {
+  _runTests (tests) {
     let text = `${NakoColors.color.bold}テストの実行結果${NakoColors.color.reset}\n`
     let pass = 0
     let numFailures = 0
@@ -88,7 +88,7 @@ class NakoGlobal {
   /**
    * 毎プラグインの「!クリア」関数を実行
    */
-   clearPlugins () {
+  clearPlugins () {
     const clearName = '!クリア'
     for (const pname in this.pluginfiles) {
       const po = this.__module[pname]
