@@ -29,7 +29,8 @@
     "build:browsers": "node src/cnako3.js batch/build_browsers.nako3",
     "watch": "webpack --watch --mode development",
     "analyze": "webpack-bundle-analyzer release/stats.json",
-    "release": "npm run build && npm run test:all && npm publish"
+    "release": "npm run build && npm run test:all && npm publish",
+    "textlint": "textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md"
   },
   "repository": {
     "type": "git",
