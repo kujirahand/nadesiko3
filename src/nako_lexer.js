@@ -1,19 +1,19 @@
 // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
-const {opPriority} = require('./nako_parser_const')
+const { opPriority } = require('./nako_parser_const')
 
 // 予約語句
 // (memo)「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
 const reservedWords = require('./nako_reserved_words')
 
 // 助詞の一覧
-const {josiRE, removeJosiMap, tararebaMap} = require('./nako_josi_list')
+const { josiRE, removeJosiMap, tararebaMap } = require('./nako_josi_list')
 
 // 字句解析ルールの一覧
 const lexRules = require('./nako_lex_rules')
 const rules = lexRules.rules
 
-const {NakoLexerError, InternalLexerError} = require('./nako_errors')
+const { NakoLexerError, InternalLexerError } = require('./nako_errors')
 
 /**
  * @typedef {import('./nako3').TokenWithSourceMap} TokenWithSourceMap
@@ -42,7 +42,7 @@ const {NakoLexerError, InternalLexerError} = require('./nako_errors')
   *    }
   * )>} FuncList
  */
- 
+
 class NakoLexer {
   /**
    * @param {import("./nako_logger")} logger
@@ -76,15 +76,51 @@ class NakoLexer {
     if (isFirst) {
       if (this.result.length > 0) {
         const eof = this.result[this.result.length - 1]
-        this.result.push({type: 'eol', line: eof.line, column: 0, file: eof.file, josi: '', value: '---',
-          startOffset: eof.startOffset, endOffset: eof.endOffset, rawJosi: '' }) // 改行
-        this.result.push({type: 'eof', line: eof.line, column: 0, file: eof.file, josi: '', value: '',
-          startOffset: eof.startOffset, endOffset: eof.endOffset, rawJosi: '' }) // ファイル末尾
+        this.result.push({
+          type: 'eol',
+          line: eof.line,
+          column: 0,
+          file: eof.file,
+          josi: '',
+          value: '---',
+          startOffset: eof.startOffset,
+          endOffset: eof.endOffset,
+          rawJosi: ''
+        }) // 改行
+        this.result.push({
+          type: 'eof',
+          line: eof.line,
+          column: 0,
+          file: eof.file,
+          josi: '',
+          value: '',
+          startOffset: eof.startOffset,
+          endOffset: eof.endOffset,
+          rawJosi: ''
+        }) // ファイル末尾
       } else {
-        this.result.push({type: 'eol', line: 0, column: 0, file: '', josi: '', value: '---',
-          startOffset: 0, endOffset: 0, rawJosi: '' }) // 改行
-        this.result.push({type: 'eof', line: 0, column: 0, file: '', josi: '', value: '',
-          startOffset: 0, endOffset: 0, rawJosi: ''}) // ファイル末尾
+        this.result.push({
+          type: 'eol',
+          line: 0,
+          column: 0,
+          file: '',
+          josi: '',
+          value: '---',
+          startOffset: 0,
+          endOffset: 0,
+          rawJosi: ''
+        }) // 改行
+        this.result.push({
+          type: 'eof',
+          line: 0,
+          column: 0,
+          file: '',
+          josi: '',
+          value: '',
+          startOffset: 0,
+          endOffset: 0,
+          rawJosi: ''
+        }) // ファイル末尾
       }
     }
     return this.result
@@ -97,30 +133,25 @@ class NakoLexer {
    * @param {import('./nako_logger')} logger
    * @param {FuncList} funclist
    */
-  static preDefineFunc(tokens, logger, funclist) {
+  static preDefineFunc (tokens, logger, funclist) {
     // 関数を先読みして定義
     let i = 0
     let isFuncPointer = false
     const readArgs = () => {
       const args = []
       const keys = {}
-      if (tokens[i].type !== '(') {return []}
+      if (tokens[i].type !== '(') { return [] }
       i++
       while (tokens[i]) {
         const t = tokens[i]
         i++
-        if (t.type === ')')
-          {break}
-         else if (t.type === 'func')
-          {isFuncPointer = true}
-         else if (t.type !== '|' && t.type !== 'comma') {
+        if (t.type === ')') { break } else if (t.type === 'func') { isFuncPointer = true } else if (t.type !== '|' && t.type !== 'comma') {
           if (isFuncPointer) {
             t.funcPointer = true
             isFuncPointer = false
           }
           args.push(t)
-          if (!keys[t.value])
-            {keys[t.value] = []}
+          if (!keys[t.value]) { keys[t.value] = [] }
 
           keys[t.value].push(t.josi)
         }
@@ -129,18 +160,16 @@ class NakoLexer {
       const funcPointers = []
       const result = []
       const already = {}
-      for (const arg of args)
-        {if (!already[arg.value]) {
+      for (const arg of args) {
+        if (!already[arg.value]) {
           const josi = keys[arg.value]
           result.push(josi)
           varnames.push(arg.value)
-          if (arg.funcPointer)
-            {funcPointers.push(arg.value)}
-           else
-            {funcPointers.push(null)}
+          if (arg.funcPointer) { funcPointers.push(arg.value) } else { funcPointers.push(null) }
 
           already[arg.value] = true
-        }}
+        }
+      }
 
       return [result, varnames, funcPointers]
     }
@@ -151,7 +180,7 @@ class NakoLexer {
       // 無名関数の定義：「xxには**」があった場合 ... 暗黙的な関数定義とする
       if ((t.type === 'word' && t.josi === 'には') || (t.type === 'word' && t.josi === 'は~')) {
         t.josi = 'には'
-        tokens.splice(i + 1, 0, {type: 'def_func', value: '関数', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: '', tag: '無名関数'})
+        tokens.splice(i + 1, 0, { type: 'def_func', value: '関数', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: '', tag: '無名関数' })
         i++
         continue
       }
@@ -159,7 +188,7 @@ class NakoLexer {
       if (t.type === 'word' && t.josi === '' && t.value.length >= 2) {
         if (t.value.match(/回$/)) {
           t.value = t.value.substr(0, t.value.length - 1)
-          tokens.splice(i + 1, 0, {type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: ''})
+          tokens.splice(i + 1, 0, { type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: '' })
           t.endOffset--
           i++
         }
@@ -167,7 +196,7 @@ class NakoLexer {
       // 予約語の置換
       if (t.type === 'word' && reservedWords[t.value]) {
         t.type = reservedWords[t.value]
-        if (t.value === 'そう') {t.value = 'それ'}
+        if (t.value === 'そう') { t.value = 'それ' }
       }
       // 関数定義の確認
       if (t.type !== 'def_test' && t.type !== 'def_func') {
@@ -176,9 +205,9 @@ class NakoLexer {
       }
       // 無名関数か普通関数定義かを判定する (1つ前が改行かどうかで判定)
       let isMumei = true
-      let prevToken = {type: 'eol'}
-      if (i >= 1) {prevToken = tokens[i - 1]}
-      if (prevToken.type === 'eol') {isMumei = false}
+      let prevToken = { type: 'eol' }
+      if (i >= 1) { prevToken = tokens[i - 1] }
+      if (prevToken.type === 'eol') { isMumei = false }
       // 関数名や引数を得る
       const defToken = t
       i++ // skip "●" or "関数"
@@ -187,8 +216,7 @@ class NakoLexer {
       let funcPointers = []
       let funcName = ''
       // 関数名の前に引数定義
-      if (tokens[i] && tokens[i].type === '(')
-        {[josi, varnames, funcPointers] = readArgs()}
+      if (tokens[i] && tokens[i].type === '(') { [josi, varnames, funcPointers] = readArgs() }
 
       // 関数名を得る
       if (!isMumei && tokens[i] && tokens[i].type === 'word') {
@@ -196,8 +224,7 @@ class NakoLexer {
       }
 
       // 関数名の後で引数定義
-      if (josi.length === 0 && tokens[i] && tokens[i].type === '(')
-        {[josi, varnames, funcPointers] = readArgs()}
+      if (josi.length === 0 && tokens[i] && tokens[i].type === '(') { [josi, varnames, funcPointers] = readArgs() }
 
       // 名前のある関数定義ならば関数テーブルに関数名を登録
       // 無名関数は登録しないように気をつける
@@ -215,7 +242,7 @@ class NakoLexer {
       }
 
       // 無名関数のために
-      defToken.meta = {josi, varnames, funcPointers}
+      defToken.meta = { josi, varnames, funcPointers }
     }
   }
 
@@ -224,7 +251,7 @@ class NakoLexer {
    * @param code {string}
    * @returns {string[] | null}
    */
-  splitStringEx(code) {
+  splitStringEx (code) {
     /** @type {string[]} */
     const list = []
 
@@ -233,7 +260,7 @@ class NakoLexer {
     const arr = code.split(/[{｛]/)
     list.push(arr[0])
     for (const s of arr.slice(1)) {
-      const end = s.replace("｝", "}").indexOf("}")
+      const end = s.replace('｝', '}').indexOf('}')
       if (end === -1) {
         return null
       }
@@ -250,14 +277,14 @@ class NakoLexer {
     let comment = []
     let i = 0
     const getLastType = () => {
-      if (i <= 0) {return 'eol'}
+      if (i <= 0) { return 'eol' }
       return tokens[i - 1].type
     }
     while (i < tokens.length) {
       const t = tokens[i]
       if (t.type === 'word' && t.value !== 'それ') {
         // 関数を変換
-        let fo = this.funclist[t.value]
+        const fo = this.funclist[t.value]
         if (fo && fo.type === 'func') {
           t.type = 'func'
           t.meta = fo
@@ -276,11 +303,20 @@ class NakoLexer {
         }
       }
       // 助詞の「は」を = に展開
-      if (t.josi === undefined) {t.josi = ''}
+      if (t.josi === undefined) { t.josi = '' }
       if (t.josi === 'は') {
         const startOffset = t.endOffset === null ? null : t.endOffset - t.rawJosi.length
-        tokens.splice(i + 1, 0, {type: 'eq', line: t.line, column: t.column, file: t.file,
-          startOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
+        tokens.splice(i + 1, 0, {
+          type: 'eq',
+          line: t.line,
+          column: t.column,
+          file: t.file,
+          startOffset,
+          endOffset: t.endOffset,
+          josi: '',
+          rawJosi: '',
+          value: undefined
+        })
         i += 2
         t.josi = t.rawJosi = ''
         t.endOffset = startOffset
@@ -289,8 +325,17 @@ class NakoLexer {
       // 「とは」を一つの単語にする
       if (t.josi === 'とは') {
         const startOffset = t.endOffset === null ? null : t.endOffset - t.rawJosi.length
-        tokens.splice(i + 1, 0, {type: t.josi, line: t.line, column: t.column, file: t.file,
-          startOffset, endOffset: t.endOffset, josi: '', rawJosi: '', value: undefined})
+        tokens.splice(i + 1, 0, {
+          type: t.josi,
+          line: t.line,
+          column: t.column,
+          file: t.file,
+          startOffset,
+          endOffset: t.endOffset,
+          josi: '',
+          rawJosi: '',
+          value: undefined
+        })
         t.josi = t.rawJosi = ''
         t.endOffset = startOffset
         i += 2
@@ -300,8 +345,17 @@ class NakoLexer {
       if (tararebaMap[t.josi]) {
         const josi = (t.josi === 'でなければ' || t.josi === 'なければ') ? 'でなければ' : 'ならば'
         const startOffset = t.endOffset === null ? null : t.endOffset - t.rawJosi.length
-        tokens.splice(i + 1, 0, {type: 'ならば', value: josi, line: t.line, column: t.column, file: t.file,
-          startOffset, endOffset: t.endOffset, josi: '', rawJosi: ''})
+        tokens.splice(i + 1, 0, {
+          type: 'ならば',
+          value: josi,
+          line: t.line,
+          column: t.column,
+          file: t.file,
+          startOffset,
+          endOffset: t.endOffset,
+          josi: '',
+          rawJosi: ''
+        })
         t.josi = t.rawJosi = ''
         t.endOffset = startOffset
         i += 2
@@ -347,7 +401,7 @@ class NakoLexer {
       for (const rule of rules) {
         // 正規表現でマッチ
         const m = rule.pattern.exec(src)
-        if (!m) {continue}
+        if (!m) { continue }
         ok = true
         // 空白ならスキップ
         if (rule.name === 'space') {
@@ -372,7 +426,7 @@ class NakoLexer {
                 srcLength - src.length,
                 srcLength - src.length + 1,
                 line,
-                filename,
+                filename
               )
             }
           }
@@ -386,15 +440,23 @@ class NakoLexer {
                 srcLength - src.length,
                 srcLength - rp.src.length,
                 line,
-                filename,
+                filename
               )
             }
             let offset = 0
             for (let i = 0; i < list.length; i++) {
               const josi = (i === list.length - 1) ? rp.josi : ''
               if (i % 2 === 0) {
-                result.push({type: 'string', value: list[i], file: filename, josi, line, column,
-                             preprocessedCodeOffset: srcLength - src.length + offset, preprocessedCodeLength: list[i].length + 2 + josi.length})
+                result.push({
+                  type: 'string',
+                  value: list[i],
+                  file: filename,
+                  josi,
+                  line,
+                  column,
+                  preprocessedCodeOffset: srcLength - src.length + offset,
+                  preprocessedCodeLength: list[i].length + 2 + josi.length
+                })
                 // 先頭なら'"...{'、それ以外なら'}...{'、最後は何でも良い
                 offset += list[i].length + 2
               } else {
@@ -431,19 +493,19 @@ class NakoLexer {
         // 値を変換する必要があるか？
         /** @type {unknown} */
         let value = m[0]
-        if (rule.cb) {value = rule.cb(value)}
+        if (rule.cb) { value = rule.cb(value) }
         // ソースを進める
         columnCurrent = column
         lineCurrent = line
         column += m[0].length
         src = src.substr(m[0].length)
-        if (rule.name === 'eol' && value === '\n' || rule.name === '_eol') {
+        if ((rule.name === 'eol' && value === '\n') || rule.name === '_eol') {
           value = line++
           column = 1
         }
 
         // 数値なら単位を持つか？ --- #994
-        if (rule.name == 'number') {
+        if (rule.name === 'number') {
           // 単位があれば読み飛ばす
           const um = lexRules.unitRE.exec(src)
           if (um) {
@@ -460,11 +522,11 @@ class NakoLexer {
             column += j[0].length
             src = src.substr(j[0].length)
             // 助詞の直後にあるカンマを無視 #877
-            if (src.charAt(0) == ',') {
+            if (src.charAt(0) === ',') {
               src = src.substr(1)
             }
             // 「＊＊である」なら削除 #939 #974
-            if (removeJosiMap[josi]) {josi = ''}
+            if (removeJosiMap[josi]) { josi = '' }
           }
         }
 
@@ -482,7 +544,7 @@ class NakoLexer {
           }
         }
         // ここまで‰(#682) を処理
-        if (rule.name == 'dec_lineno') {
+        if (rule.name === 'dec_lineno') {
           line--
           continue
         }
@@ -495,7 +557,7 @@ class NakoLexer {
           file: filename,
           josi: josi,
           preprocessedCodeOffset: srcOffset,
-          preprocessedCodeLength: (srcLength - src.length) - srcOffset,
+          preprocessedCodeLength: (srcLength - src.length) - srcOffset
         })
         break
       }
@@ -503,7 +565,7 @@ class NakoLexer {
         throw new InternalLexerError('未知の語句: ' + src.substr(0, 3) + '...',
           srcLength - src.length,
           srcLength - srcLength + 3,
-          line,
+          line
         )
       }
     }
