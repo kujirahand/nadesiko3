@@ -6,7 +6,7 @@
 
 ただし、リリース前（コミット前）には必ずテストを実行して、テストが成功するか確認する。
 
-```
+```shell
 npm test
 ```
 
@@ -16,13 +16,13 @@ npm test
 
 まず、リリース用にwebpackでパックしたソースを生成する(/releaseに生成物が作られる)。
 
-```
+```shell
 npm run build
 ```
 
 対応ブラウザを更新する。
 
-```
+```shell
 npm run build:browsers
 ```
 
@@ -30,7 +30,7 @@ npm run build:browsers
 
 package.jsonのバージョン番号を更新したことを確認する。npm publishでnpmに公開する。
 
-```
+```shell
 npm publish
 ```
 
@@ -46,32 +46,32 @@ npm publish
 
 Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、 `git clone` でnadesiko3win32のリポジトリを取得しておく必要がある。
 
-```
+```shell
 npm run build:win32
 bash ./win32.bash
 ```
 
 nadesiko3win32のフォルダに移動。
 
-```
+```shell
 cd ../nadesiko3win32
 ```
 
 なお、Windowsで実行してモジュールの最新版を取得。
 
-```
+```shell
 nodejs\npm install --production
 nodejs\npm audit fix
 ```
 
 次に、7zipでモジュールを固める。
 
-```
+```shell
 bin\7z  -mx=9 a node_modules.7z node_modules
 ```
 最後にGitへアップする。
 
-```
+```shell
 git commit -a
 git push
 ```

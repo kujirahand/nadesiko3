@@ -1,7 +1,10 @@
 #!/bin/bash
-ROOT_DIR=$(cd $(dirname $0); cd ..; pwd)
+ROOT_DIR=$(
+  cd $(dirname $0)
+  cd ..
+  pwd
+)
 SRC_DIR=$ROOT_DIR/src
 NAKO_JS=$SRC_DIR/cnako3.js
 
 /usr/bin/env node $NAKO_JS $*
-
