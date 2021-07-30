@@ -147,7 +147,7 @@ describe('error_message', () => {
     })
     it('エラー位置をプロパティから取得 - repeatTimes', () => {
       assert.throws(
-        () => nako.run('3回\n1のエラー発生', 'main.nako3'),
+        () => nako.run('3回\n1のエラー発生\nここまで', 'main.nako3'),
         err => {
           assert(err instanceof NakoRuntimeError)
           assert.strictEqual(err.line, 1)  // 2行目

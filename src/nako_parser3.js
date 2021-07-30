@@ -656,7 +656,7 @@ class NakoParser extends NakoParserBase {
     }
     if (multiline) { // multiline
       block = this.yBlock()
-      if (this.check('ここまで')) {this.get()}
+      if (this.check('ここまで')) {this.get()} else { throw NakoSyntaxError.fromNode('『ここまで』がありません。『回』...『ここまで』を対応させてください。', map) }
     } else  // singleline
       {block = this.ySentence()}
 
@@ -721,7 +721,11 @@ class NakoParser extends NakoParserBase {
     let block = null
     if (multiline) {
       block = this.yBlock()
-      if (this.check('ここまで')) {this.get()}
+      if (this.check('ここまで')) {
+        this.get()
+      } else {
+        throw NakoSyntaxError.fromNode('『ここまで』がありません。『繰り返す』...『ここまで』を対応させてください。', map) 
+      }
     } else
       {block = this.ySentence()}
 
@@ -874,7 +878,11 @@ class NakoParser extends NakoParserBase {
     // ブロックを読む
     this.saveStack()
     const block = this.yBlock()
-    if (this.check('ここまで')) {this.get()}
+    // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
+    if (!this.check('ここまで')) {
+      throw NakoSyntaxError.fromNode(`『ここまで』がありません。『には』構文か無名関数の末尾に『ここまで』が必要です。`, map)
+    }
+    this.get() // skip ここまで
     this.loadStack()
     return {
       type: 'func_obj',
@@ -1732,7 +1740,11 @@ class NakoParser extends NakoParserBase {
     this.get() // skip エラー
     this.get() // skip ならば
     const errBlock = this.yBlock()
-    if (this.check('ここまで')) {this.get()}
+    if (this.check('ここまで')) {
+      this.get()
+    } else {
+      throw NakoSyntaxError.fromNode('『ここまで』がありません。『エラー監視』...『エラーならば』...『ここまで』を対応させてください。', map)
+    }
     return {
       type: 'try_except',
       block,
