@@ -1,3 +1,4 @@
+// @ts-nocheck
 module.exports = {
   // @グラフ描画_CHARTJS
   'グラフ描画': { // @ Chart.jsを利用して、DATAのグラフを描画 // @ぐらふびょうが
@@ -6,7 +7,7 @@ module.exports = {
     pure: true,
     fn: function (data, sys) {
       // Chart.jsが使えるかチェック
-      if (!window['Chart']) {
+      if (!window.Chart) {
         throw new Error('『グラフ描画』のエラー。Chart.jsを取り込んでください。')
       }
       // Canvasが有効？
@@ -14,18 +15,19 @@ module.exports = {
         throw new Error('『グラフ描画』のエラー。『描画開始』命令で描画先のCanvasを指定してください。 ')
       }
       // 日本語のキーワードを変換
-      if (data['タイプ']) { data['type'] = data['タイプ'] }
-      if (data['データ']) { data['data'] = data['データ'] }
-      if (data['オプション']) { data['options'] = data['オプション'] }
+      if (data['タイプ']) { data.type = data['タイプ'] }
+      if (data['データ']) { data.data = data['データ'] }
+      if (data['オプション']) { data.options = data['オプション'] }
       if (sys.__chartjs) {
         sys.__chartjs.destroy()
       }
+      // eslint-disable-next-line no-undef
       const chart = new Chart(sys.__canvas, data)
       sys.__chartjs = chart
       return chart
     }
   },
-  'グラフオプション': {type: 'const', value: {}}, // @ぐらふおぷしょん
+  'グラフオプション': { type: 'const', value: {} }, // @ぐらふおぷしょん
   '線グラフ描画': { // @ 線グラフを描画 // @せんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
@@ -48,7 +50,7 @@ module.exports = {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
-        {'indexAxis': 'x'})
+        { 'indexAxis': 'x' })
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
         type: 'bar',
@@ -66,7 +68,7 @@ module.exports = {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
-        {'indexAxis': 'y'})
+        { 'indexAxis': 'y' })
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
         type: 'bar', // horizontalBar
@@ -177,7 +179,7 @@ module.exports = {
     fn: function (data, sys) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
-        type: 'polarArea', 
+        type: 'polarArea',
         data: data,
         options: sys.__v0['グラフオプション']
       }
@@ -191,7 +193,7 @@ module.exports = {
     fn: function (data, sys) {
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
-        type: 'radar', 
+        type: 'radar',
         data: data,
         options: sys.__v0['グラフオプション']
       }
@@ -200,7 +202,7 @@ module.exports = {
   },
   '二次元グラフデータ変形': { // @ 二次元配列をXXグラフ描画の形式に整形する。種類TとDATAを指定。 // @にじげんぐらふでーたへんけい
     type: 'func',
-    josi: [['の'],['を']],
+    josi: [['の'], ['を']],
     pure: false,
     fn: function (t, data, sys) {
       const bgcolorList = [
@@ -222,43 +224,43 @@ module.exports = {
       const res = {}
       const bgcolors = []
       const fgcolors = []
-      res['labels'] = []
+      res.labels = []
       // 配列かどうか
       if (data instanceof Array) {
         // 二次元データのとき
         if (data[0] instanceof Array) {
           if (t === 'pie') { // 円グラフの時だけ整形方法が異なる
             const o = {}
-            o['data'] = []
-            res['datasets'] = [o]
+            o.data = []
+            res.datasets = [o]
             for (let i = 0; i < data.length; i++) {
-              res['labels'].push(data[i][0]) // label
-              o['data'].push(data[i][1]) // value
+              res.labels.push(data[i][0]) // label
+              o.data.push(data[i][1]) // value
               bgcolors.push(bgcolorList[i % 6])
               fgcolors.push(fgcolorList[i % 6])
             }
-            o['backgroundColor'] = bgcolors
-            o['borderColor'] = fgcolors
+            o.backgroundColor = bgcolors
+            o.borderColor = fgcolors
             return res
           }
           // 左側のラベルの処理
           // [1,0]が文字列ならラベルあり
-          if (typeof(data[1][0]) === 'string') {
+          if (typeof (data[1][0]) === 'string') {
             for (let i = 1; i < data.length; i++) {
-              res['labels'].push(data[i][0]) // 左ラベルを追加
+              res.labels.push(data[i][0]) // 左ラベルを追加
               data[i] = data[i].slice(1) // 左ラベル除去
             }
             data[0] = data[0].slice(1) // ヘッダ行も左ラベルを削除
           } else {
             // 左側ラベルない場合 - ダミーのラベルを追加
             for (let i = 1; i < data.length; i++) {
-              res['labels'].push(i)
+              res.labels.push(i)
             }
           }
-          res['datasets'] = []
+          res.datasets = []
           for (let i = 0; i < data[0].length; i++) {
             const o = {}
-            res['datasets'].push(o)
+            res.datasets.push(o)
             o.label = data[0][i]
             o.backgroundColor = bgcolorList[i % 6]
             o.borderColor = fgcolorList[i % 6]
@@ -273,20 +275,20 @@ module.exports = {
         // 一次元データのとき
         // ラベルを作成
         for (let i = 0; i < data.length; i++) {
-          res['labels'].push(i+1)
+          res.labels.push(i + 1)
           bgcolors.push(bgcolorList[i % 6])
           fgcolors.push(fgcolorList[i % 6])
         }
         const o1 = {}
-        res['datasets'] = [o1]
-        o1['label'] = 'データ'
-        o1['data'] = data
-        o1['backgroundColor'] = bgcolors
-        o1['borderColor'] = fgcolors
+        res.datasets = [o1]
+        o1.label = 'データ'
+        o1.data = data
+        o1.backgroundColor = bgcolors
+        o1.borderColor = fgcolors
         // console.log(res)
         return res
       }
-      if (data instanceof Object) {return data}
+      if (data instanceof Object) { return data }
       // データが1つだけのとき
       return sys.__exec('二次元グラフデータ変形', [[data], sys])
     }
