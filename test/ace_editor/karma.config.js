@@ -1,3 +1,4 @@
+// @ts-nocheck
 const path = require('path')
 
 module.exports = function (config) {
@@ -31,7 +32,7 @@ module.exports = function (config) {
     proxies: {
       '/src/': '/absolute' + path.resolve('./src') + '/',
       '/release/': '/absolute' + path.resolve('./release') + '/',
-      '/test/': '/absolute' + path.resolve('./test/node') + '/',
+      '/test/': '/absolute' + path.resolve('./test/node') + '/'
     },
     plugins: [
       'karma-firefox-launcher',

@@ -1,3 +1,4 @@
+// @ts-nocheck
 const PluginPromise = {
   '初期化': {
     type: 'func',
@@ -15,7 +16,7 @@ const PluginPromise = {
     }
   },
   // @非同期処理の保証の定数
-  'そ': {type: 'const', value: ''}, // @そ
+  'そ': { type: 'const', value: '' }, // @そ
   // @非同期処理の保証
   '動時': { // @非同期処理を作成する。非同期処理オブジェクト(Promise)を返す。 // @うごくとき
     type: 'func',
@@ -47,9 +48,11 @@ const PluginPromise = {
     fn: function (callback, promise, sys) {
       return sys.__promise.setLastPromise(promise.then(result => {
         sys.__v0['対象'] = result
+        // eslint-disable-next-line node/no-callback-literal
         return callback(true, result, sys)
       }, reason => {
         sys.__v0['対象'] = reason
+        // eslint-disable-next-line node/no-callback-literal
         return callback(false, reason, sys)
       }))
     },
@@ -83,7 +86,7 @@ const PluginPromise = {
     josi: [['と', 'を']],
     pure: true,
     fn: function (...args) {
-      sys = args.pop()
+      const sys = args.pop()
       return sys.__promise.setLastPromise(Promise.all(args))
     },
     return_none: false

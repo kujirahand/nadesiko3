@@ -1,3 +1,4 @@
+// @ts-nocheck
 const PluginMath = {
   '初期化': {
     type: 'func',
@@ -7,7 +8,7 @@ const PluginMath = {
     }
   },
   // @三角関数
-  'SIN': {// @ラジアン単位VのSINを求める // @SIN
+  'SIN': { // @ラジアン単位VのSINを求める // @SIN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -15,7 +16,7 @@ const PluginMath = {
       return Math.sin(v)
     }
   },
-  'COS': {// @ラジアン単位VのCOSを求める // @COS
+  'COS': { // @ラジアン単位VのCOSを求める // @COS
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -23,7 +24,7 @@ const PluginMath = {
       return Math.cos(v)
     }
   },
-  'TAN': {// @ラジアン単位VのTANを求める // @TAN
+  'TAN': { // @ラジアン単位VのTANを求める // @TAN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -31,7 +32,7 @@ const PluginMath = {
       return Math.tan(v)
     }
   },
-  'ARCSIN': {// @ラジアン単位VのARCSINを求める // @ARCSIN
+  'ARCSIN': { // @ラジアン単位VのARCSINを求める // @ARCSIN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -39,7 +40,7 @@ const PluginMath = {
       return Math.asin(v)
     }
   },
-  'ARCCOS': {// @ラジアン単位VのARCCOSを求める // @ARCCOS
+  'ARCCOS': { // @ラジアン単位VのARCCOSを求める // @ARCCOS
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -47,7 +48,7 @@ const PluginMath = {
       return Math.acos(v)
     }
   },
-  'ARCTAN': {// @ラジアン単位VのARCTANを求める // @ARCTAN
+  'ARCTAN': { // @ラジアン単位VのARCTANを求める // @ARCTAN
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -55,15 +56,15 @@ const PluginMath = {
       return Math.atan(v)
     }
   },
-  'ATAN2': {// @ARCTAN(Y/X)をラジアン単位で返す // @ATAN2
+  'ATAN2': { // @ARCTAN(Y/X)をラジアン単位で返す // @ATAN2
     type: 'func',
-    josi: [['と'],['の']],
+    josi: [['と'], ['の']],
     pure: true,
     fn: function (y, x) {
       return Math.atan2(y, x)
     }
   },
-  '座標角度計算': {// @点[0,0]から[x,y]の直線とX軸の角度(度)を返す // @ざひょうかくどけいさん
+  '座標角度計算': { // @点[0,0]から[x,y]の直線とX軸の角度(度)を返す // @ざひょうかくどけいさん
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -71,7 +72,7 @@ const PluginMath = {
       return Math.atan2(XY[1], XY[0]) * 180 / Math.PI
     }
   },
-  'RAD2DEG': {// @ラジアンから度に変換 // @RAD2DEG
+  'RAD2DEG': { // @ラジアンから度に変換 // @RAD2DEG
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -182,8 +183,8 @@ const PluginMath = {
     josi: [['で'], ['の']],
     pure: true,
     fn: function (a, b) {
-      if (a === 2) {return Math.LOG2E * Math.log(b)}
-      if (a === 10) {return Math.LOG10E * Math.log(b)}
+      if (a === 2) { return Math.LOG2E * Math.log(b) }
+      if (a === 10) { return Math.LOG10E * Math.log(b) }
       return Math.log(b) / Math.log(a)
     }
   },
@@ -255,18 +256,18 @@ const PluginMath = {
   },
   '小数点切上': { // @整数Aを小数点第B桁で切り上げして返す // @しょうすうてんきりあげ
     type: 'func',
-    josi: [['を'],['で']],
+    josi: [['を'], ['で']],
     pure: true,
-    fn: function (a,b) {
+    fn: function (a, b) {
       const base = Math.pow(10, b)
       return Math.ceil(a * base) / base
     }
   },
   '小数点切下': { // @整数Aを小数点第B桁で切り下げして返す // @しょうすうてんきりさげ
     type: 'func',
-    josi: [['を'],['で']],
+    josi: [['を'], ['で']],
     pure: true,
-    fn: function (a,b) {
+    fn: function (a, b) {
       const base = Math.pow(10, b)
       return Math.floor(a * base) / base
     }

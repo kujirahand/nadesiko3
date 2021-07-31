@@ -1,3 +1,4 @@
+// @ts-nocheck
 const PluginKansuji = {
 
   '初期化': {
@@ -7,62 +8,65 @@ const PluginKansuji = {
     fn: function (sys) {
     }
   },
-  
+
   // @漢数字関連
   '漢数字': { // @引数を数字と解釈して漢数字の文字列を返す // @かんすうじ
     type: 'func',
-    josi: [['を','の']],
+    josi: [['を', 'の']],
     pure: true,
     fn: function (input) {
       function preprocesser (input) {
+        // eslint-disable-next-line camelcase
         function if_number_is_exponent (input) {
           const match = input.match(/[0-9]*\.?[0-9]+[eE][-+]?[0-9]+/)
-          if(match && match[0] === input){
-            const base = input.match(/[0-9]*\.?[0-9]+[eE]/)[0].slice(0,-1)
+          if (match && match[0] === input) {
+            const base = input.match(/[0-9]*\.?[0-9]+[eE]/)[0].slice(0, -1)
             const exponent = input.match(/[eE][-+]?[0-9]+/)[0].slice(1)
+            // eslint-disable-next-line no-inner-declarations
             function movepoint (base, exponent) {
               const sign = exponent[0]
-              const curpointidx = base.includes(".") ? base.indexOf(".") : base.length
-              const idx = sign === "-" ? curpointidx - parseInt(exponent.slice(1)) : curpointidx + parseInt(exponent.match(/[0-9]+$/)[0])
-              function strIns(str, idx, val){
-                return str.slice(0, idx) + val + str.slice(idx);
-              };
+              const curpointidx = base.includes('.') ? base.indexOf('.') : base.length
+              const idx = sign === '-' ? curpointidx - parseInt(exponent.slice(1)) : curpointidx + parseInt(exponent.match(/[0-9]+$/)[0])
+              function strIns (str, idx, val) {
+                return str.slice(0, idx) + val + str.slice(idx)
+              }
               if (idx > 0) {
                 if (base.length - curpointidx > idx) {
-                  return strIns(base.replace(".", ""), idx, ".")
+                  return strIns(base.replace('.', ''), idx, '.')
                 } else {
-                  if (base.includes(".")) {
-                    return base.replace(".", "") + "0".repeat(idx - base.length + curpointidx)
+                  if (base.includes('.')) {
+                    return base.replace('.', '') + '0'.repeat(idx - base.length + curpointidx)
                   } else {
-                    return base + "0".repeat(idx - base.length + curpointidx - 1)
+                    return base + '0'.repeat(idx - base.length + curpointidx - 1)
                   }
                 }
               } else {
-                return "0." + "0".repeat(-idx) + base.replace(".", "")
+                return '0.' + '0'.repeat(-idx) + base.replace('.', '')
               }
             }
-            input = movepoint (base, exponent)
+            input = movepoint(base, exponent)
           }
           return input
         }
         function asciify (input) { // 全角数字を半角数字に
           return input.replace(/[０-９]/g, s => {
-            return String.fromCharCode(s.charCodeAt(0) - 65248);
-          });
+            return String.fromCharCode(s.charCodeAt(0) - 65248)
+          })
         }
         input = asciify(input)
-        if (Number.isNaN(Number(input))) {throw new Error('『漢数字』命令の中に無効な文字が含まれています。')}
-        let output = if_number_is_exponent(input.toString())
-        if (output > BigInt(999999999999999999999999999999999999999999999999999999999999999999999999)) {throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。')}
+        if (Number.isNaN(Number(input))) { throw new Error('『漢数字』命令の中に無効な文字が含まれています。') }
+        const output = if_number_is_exponent(input.toString())
+        // eslint-disable-next-line no-loss-of-precision
+        if (output > BigInt(999999999999999999999999999999999999999999999999999999999999999999999999)) { throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。') }
         return output
       }
-      input = preprocesser (String(input))
+      input = preprocesser(String(input))
       function separater (str) {
-        let isminus = str.includes(".")
-        return str.split("").reverse().reduce(( acc, cur ) => {
-          if (cur === ".") {
+        let isminus = str.includes('.')
+        return str.split('').reverse().reduce((acc, cur) => {
+          if (cur === '.') {
             isminus = false
-            acc.splice(1, 0, ".")
+            acc.splice(1, 0, '.')
             return acc
           } else if (isminus) {
             acc.splice(1, 0, cur)
@@ -80,48 +84,48 @@ const PluginKansuji = {
           return 基本漢数字[基本算用数字.indexOf(str)]
         }
         let adjuster = 0
-        const result = arr.reverse().reduce(( acc, cur, idx ) => {
-          if (typeof cur === "string") {
-            if (cur === ".") {
-              acc =  "・" + acc
+        const result = arr.reverse().reduce((acc, cur, idx) => {
+          if (typeof cur === 'string') {
+            if (cur === '.') {
+              acc = '・' + acc
               adjuster = idx + 1
             } else {
               acc = replacer(cur) + acc
             }
           } else {
-            const unit = cur.reduce(( acc, cur, idx, src ) => {
-              if (cur === "0") {
+            const unit = cur.reduce((acc, cur, idx, src) => {
+              if (cur === '0') {
                 return acc
-              } else if (cur === "1" && 軸数字[ src.length -1 - idx ] !== "") {
-                return acc + 軸数字[ src.length -1 - idx ]
+              } else if (cur === '1' && 軸数字[src.length - 1 - idx] !== '') {
+                return acc + 軸数字[src.length - 1 - idx]
               } else {
-                return acc + replacer(cur) + 軸数字[ src.length -1 - idx ]
+                return acc + replacer(cur) + 軸数字[src.length - 1 - idx]
               }
-            }, "")
-            acc = (unit ? unit + 単位数字[idx - adjuster] : "")  + acc
+            }, '')
+            acc = (unit ? unit + 単位数字[idx - adjuster] : '') + acc
           }
           return acc
-        }, "")
+        }, '')
         return result[0] === '・' ? '零' + result : result
       }
       // フラグを覚えておく #874
       let flag = ''
-      if (input.charAt(0) == '+' || input.charAt(0) == '-') {
+      if (input.charAt(0) === '+' || input.charAt(0) === '-') {
         flag = input.charAt(0)
         input = input.substr(1)
       }
       let res = converter(separater(input))
-      if (res == '') {res = '零'}
+      if (res === '') { res = '零' }
       return flag + res
     }
   },
   '算用数字': { // @U引数を漢数字と解釈して数値を返す // @さんようすうじ
     type: 'func',
-    josi: [['を','の']],
+    josi: [['を', 'の']],
     pure: true,
     fn: function (input) {
       function converter (src) {
-        const multibytes = 単位数字.filter( a => a.length > 1 )
+        const multibytes = 単位数字.filter(a => a.length > 1)
         const result = []
         for (let idx = 0; idx < src.length; idx++) {
           const cur = src.slice(idx, idx + 1)
@@ -132,15 +136,15 @@ const PluginKansuji = {
             if (指数.length > 1) {
               idx += 指数.length - 1
             }
-            result.push(BigInt("1" + "0".repeat(4 * 単位数字.indexOf(指数))))
+            result.push(BigInt('1' + '0'.repeat(4 * 単位数字.indexOf(指数))))
           } else if (位) {
             result.push(10 ** (軸数字.indexOf(位)))
           } else if (底) {
             result.push(基本漢数字.indexOf(底))
-          } else if (cur === "・") {
-            result.push(".")
-          } else if (cur === "零") {
-            result.push("0")
+          } else if (cur === '・') {
+            result.push('.')
+          } else if (cur === '零') {
+            result.push('0')
           } else {
             throw new Error('『算用数字』命令の中に無効な文字が含まれています。')
           }
@@ -151,28 +155,28 @@ const PluginKansuji = {
         let base = []
         let unit = []
         let isminus = false
-        return arr.reduce(( acc, cur, idx ) => {
-          if (cur === ".") {
-            if(base.length === 0) base.push(0,1)
-            if(base.length === 1) base.push(1)
+        return arr.reduce((acc, cur, idx) => {
+          if (cur === '.') {
+            if (base.length === 0) { base.push(0, 1) }
+            if (base.length === 1) { base.push(1) }
             unit.push(base)
             base = []
             acc.push(unit)
-            acc.push(".")
+            acc.push('.')
             unit = []
             isminus = true
           } else if (isminus) {
             acc.push(String(cur))
           } else if (cur > 1000) {
-            if(base.length === 0) base.push(0,1)
-            if(base.length === 1) base.push(1)
+            if (base.length === 0) { base.push(0, 1) }
+            if (base.length === 1) { base.push(1) }
             unit.push(base)
             base = []
             unit.push(cur)
             acc.push(unit)
             unit = []
-          } else if (10 <= cur && cur <= 1000) {
-            if(base.length === 0) base.push(1)
+          } else if (cur >= 10 && cur <= 1000) {
+            if (base.length === 0) { base.push(1) }
             base.push(cur)
             unit.push(base)
             base = []
@@ -180,7 +184,7 @@ const PluginKansuji = {
             base.push(cur)
           }
           if (idx + 1 === arr.length && isminus === false) {
-            if(base.length === 1) {
+            if (base.length === 1) {
               base.push(1)
               unit.push(base)
             }
@@ -190,10 +194,12 @@ const PluginKansuji = {
         }, [])
       }
       function calculator (arr) {
-        return arr.reduce(( acc, cur, idx ) => {
-          return typeof cur === "string" ? acc + cur :acc + cur.reduce((acc, cur, idx) => {
-            return cur > 1000 ? acc * cur : acc + BigInt(cur[0] * cur[1])
-          }, BigInt(0))
+        return arr.reduce((acc, cur, idx) => {
+          return typeof cur === 'string'
+            ? acc + cur
+            : acc + cur.reduce((acc, cur, idx) => {
+              return cur > 1000 ? acc * cur : acc + BigInt(cur[0] * cur[1])
+            }, BigInt(0))
         }, BigInt(0))
       }
       const tmp = calculator(separater(converter(input.toString())))
@@ -203,18 +209,16 @@ const PluginKansuji = {
 }
 
 const 単位数字 = [
-  "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正",
-  "載", "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
+  '', '万', '億', '兆', '京', '垓', '𥝱', '穣', '溝', '澗', '正',
+  '載', '極', '恒河沙', '阿僧祇', '那由他', '不可思議', '無量大数'
 ]
 const 軸数字 = [
-  "", "十", "百", "千"
+  '', '十', '百', '千'
 ]
-const 基本算用数字 = "0123456789".split("")
-const 基本漢数字 = "〇一二三四五六七八九".split("")
-
+const 基本算用数字 = '0123456789'.split('')
+const 基本漢数字 = '〇一二三四五六七八九'.split('')
 
 module.exports = PluginKansuji
 
 // scriptタグで取り込んだ時、自動で登録する
-if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object')
-  {navigator.nako3.addPluginObject('PluginKansuji', PluginKansuji)}
+if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') { navigator.nako3.addPluginObject('PluginKansuji', PluginKansuji) }

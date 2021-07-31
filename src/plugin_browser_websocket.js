@@ -1,3 +1,4 @@
+// @ts-nocheck
 module.exports = {
   // @WebSocket
   'WS接続完了時': { // @WebSocketでサーバに接続完了した時に実行されるイベントを指定 // @WSせつぞくかんりょうしたとき
@@ -35,17 +36,17 @@ module.exports = {
       const ws = new WebSocket(s)
       ws.onopen = () => {
         const cbOpen = sys.__v0['WS:ONOPEN']
-        if (cbOpen) {cbOpen(sys)}
+        if (cbOpen) { cbOpen(sys) }
       }
       ws.onerror = (err) => {
         const cbError = sys.__v0['WS:ONERROR']
-        if (cbError) {cbError(err, sys)}
+        if (cbError) { cbError(err, sys) }
         console.log('WSエラー', err)
       }
       ws.onmessage = (e) => {
         sys.__v0['対象'] = e.data
         const cbMsg = sys.__v0['WS:ONMESSAGE']
-        if (cbMsg) {cbMsg(sys)}
+        if (cbMsg) { cbMsg(sys) }
       }
       sys.__v0['WS:SOCKET'] = ws
       return ws

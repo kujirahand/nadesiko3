@@ -11,32 +11,33 @@
 REPOSパス=基本パスを「../」で相対パス展開。
 
 基本プラグイン一覧は[
-    'src/plugin_system.js',
-    'src/plugin_browser.js',
-    'src/plugin_turtle.js',
-    'src/plugin_node.js',
-    'src/plugin_express.js',
-    'src/plugin_markup.js',
-    'src/plugin_math.js',
-    'src/plugin_csv.js',
-    'src/plugin_datetime.js',
-    'src/plugin_caniuse.js',
-    'src/plugin_kansuji.js',
-    'src/plugin_weykturtle3d.js',
-    'src/plugin_webworker.js',
-    'src/plugin_promise.js'
- ]
+    ['src/plugin_system.js', 'wnako,cnako,phpnako'],
+    ['src/plugin_browser.js','wnako'],
+    ['src/plugin_turtle.js', 'wnako'],
+    ['src/plugin_node.js', 'cnako,phpnako'],
+    ['src/plugin_express.js', 'cnako'],
+    ['src/plugin_markup.js', 'wnako,cnako'],
+    ['src/plugin_math.js', 'wnako,cnako'],
+    ['src/plugin_csv.js', 'wnako,cnako'],
+    ['src/plugin_datetime.js', 'wnako,cnako'],
+    ['src/plugin_caniuse.js', 'wnako,cnako'],
+    ['src/plugin_kansuji.js', 'wnako,cnako'],
+    ['src/plugin_weykturtle3d.js', 'wnako'],
+    ['src/plugin_webworker.js', 'wnako'],
+    ['src/plugin_promise.js', 'wnako']
+]
 拡張プラグイン一覧は[
-    'nadesiko3-sqlite3/src/nadesiko3-sqlite3.js',
-    'nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js',
-    'nadesiko3-drone/nadesiko3-drone.js'
-    'nadesiko3-htmlparser/nadesiko3-htmlparser.js',
-    'nadesiko3-websocket/nadesiko3-websocket.js',
-    'nadesiko3-ml/nadesiko3-ml.js',
-    'nadesiko3-odbc/src/plugin_odbc.js',
-    'nadesiko3-mssql/src/plugin_mssql.js',
-    'nadesiko3-mysql/src/plugin_mysql.js',
-    'nadesiko3-postgresql/src/plugin_postgresql.js',
+    ['nadesiko3-sqlite3/src/nadesiko3-sqlite3.js', 'cnako'],
+    ['nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js', 'cnako'],
+    ['nadesiko3-drone/nadesiko3-drone.js', 'cnako'],
+    ['nadesiko3-htmlparser/nadesiko3-htmlparser.js', 'cnako'],
+    ['nadesiko3-websocket/nadesiko3-websocket.js', 'cnako'],
+    ['nadesiko3-ml/nadesiko3-ml.js', 'cnako'],
+    ['nadesiko3-odbc/src/plugin_odbc.js', 'cnako'],
+    ['nadesiko3-mssql/src/plugin_mssql.js', 'cnako'],
+    ['nadesiko3-mysql/src/plugin_mysql.js', 'cnako'],
+    ['nadesiko3-postgresql/src/plugin_postgresql.js', 'cnako'],
+    ['nadesiko3php/src/plugin_php.json', 'phpnako'],
 ]
 # サポートしない
 # 'nadesiko3-firebase/plugin_firebase.js',
@@ -45,19 +46,21 @@ REPOSパス=基本パスを「../」で相対パス展開。
 #------------------------
 結果データ＝「」
 基本プラグイン一覧を反復
-　　カレントプラグイン＝それ
-　　パスは「{基本パス}/{それ}」
-　　パスを「」でプラグイン要約作成
+　　カレントプラグイン＝それ@0
+　　ナコタイプ＝それ＠1
+　　パスは「{基本パス}/{カレントプラグイン}」
+　　パスを「(基本プラグイン,{ナコタイプ})」でプラグイン要約作成
 　　結果データ＝結果データ＆それ＆改行＆改行。
 ここまで
 #------------------------
 拡張プラグイン一覧を反復
-　　カレントプラグイン＝それ
-　　パスは「{REPOSパス}/{それ}」
+　　カレントプラグイン＝それ@0
+　　ナコタイプ＝それ＠1
+　　パスは「{REPOSパス}/{カレントプラグイン}」
 　　パスが存在
 　　もし、そうならば
 　　　　 # パスを表示。
-　　　　パスを「(拡張プラグイン)」でプラグイン要約作成。
+　　　　パスを「(拡張プラグイン,{ナコタイプ})」でプラグイン要約作成。
 　　　　結果データ＝結果データ＆それ＆改行＆改行。
 　　違えば
 　　　　「REPORT_ERR」の環境変数取得

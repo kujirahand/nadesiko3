@@ -1,3 +1,4 @@
+// @ts-nocheck
 module.exports = {
   // @HTML操作
   'HTML変換': { // @文字列をHTMLに変換して返す // @HTMLへんかん
@@ -31,7 +32,7 @@ module.exports = {
         tmp.right = '200%'
         document.body.appendChild(tmp)
         document.getSelection().selectAllChildren(tmp)
-        document.execCommand("copy")
+        document.execCommand('copy')
         document.body.removeChild(tmp)
       }
     },
@@ -44,7 +45,7 @@ module.exports = {
     fn: function (f, sys) {
       // Clipboard APIをサポートしているか
       if (navigator.clipboard) {
-        if (typeof(f) === 'string') {f = sys.__findFunc(f, 'クリップボード取得時')}
+        if (typeof (f) === 'string') { f = sys.__findFunc(f, 'クリップボード取得時') }
         const pm = navigator.clipboard.readText()
         pm.then(text => {
           sys.__v0['対象'] = text

@@ -1,3 +1,4 @@
+// @ts-nocheck
 module.exports = {
   // @ローカルストレージ
   '保存': { // @ブラウザのlocalStorageのキーKに文字列Vを保存 // @ほぞん
@@ -55,7 +56,7 @@ module.exports = {
     josi: [['を', 'から', 'の']],
     pure: true,
     fn: function (key, sys) {
-      let v = window.localStorage[key]
+      const v = window.localStorage[key]
       if (sys.__v0['保存オプション'] && (sys.__v0['保存オプション'].indexOf('json') >= 0)) {
         try {
           return JSON.parse(v)
@@ -73,8 +74,7 @@ module.exports = {
     pure: true,
     fn: function (key) {
       const keys = []
-      for (const key in window.localStorage)
-        {keys.push(key)}
+      for (const key in window.localStorage) { keys.push(key) }
 
       return keys
     },
@@ -107,7 +107,7 @@ module.exports = {
     },
     return_none: false
   },
-  '保存オプション': {type: 'const', value: 'json'}, // @ ほぞんおぷしょん
+  '保存オプション': { type: 'const', value: 'json' }, // @ ほぞんおぷしょん
   '保存オプション設定': { // @ブラウザのlocalStorageへの保存オプション「json」を設定する // @ほぞんおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ']],

@@ -1,19 +1,20 @@
+// @ts-nocheck
 module.exports = {
   // @DOM部品操作
-  'DOM親要素': {type: 'const', value: ''}, // @DOMおやようそ
-  'DOM生成個数': {type: 'const', value: 0}, // @DOMせいせいこすう
+  'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
+  'DOM生成個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」などのDOM要素を追加する対象を指定(デフォルトはdocument)して親要素のDOMオブジェクトを返す // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: false,
     fn: function (el, sys) {
-      if (typeof el === 'string') {el = document.querySelector(el) || document.getElementById(el)}
+      if (typeof el === 'string') { el = document.querySelector(el) || document.getElementById(el) }
       sys.__v0['DOM親要素'] = el
       return el
     }
   },
-  'DOMスキン': {type: 'const', value: ''}, // @DOMすきん
-  'DOMスキン辞書': {type: 'const', value: {}}, // @DOMすきんじしょ
+  'DOMスキン': { type: 'const', value: '' }, // @DOMすきん
+  'DOMスキン辞書': { type: 'const', value: {} }, // @DOMすきんじしょ
   'ボタン作成': { // @ラベルlabelを持つbutton要素を追加しDOMオブジェクトを返す // @ぼたんさくせい
     type: 'func',
     josi: [['の']],
@@ -25,7 +26,7 @@ module.exports = {
       btn.id = 'nadesi-dom-' + sys.__v0['DOM生成個数']
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
-      if (typeof(func) === 'function') {func('ボタン作成', btn, sys)}
+      if (typeof (func) === 'function') { func('ボタン作成', btn, sys) }
       // DOM追加
       parent.appendChild(btn)
       sys.__v0['DOM生成個数']++
@@ -44,7 +45,7 @@ module.exports = {
       inp.id = 'nadesi-dom-' + sys.__v0['DOM生成個数']
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
-      if (typeof(func) === 'function') {func('エディタ作成', inp, sys)}
+      if (typeof (func) === 'function') { func('エディタ作成', inp, sys) }
       // DOM追加
       parent.appendChild(inp)
       sys.__v0['DOM生成個数']++
@@ -62,7 +63,7 @@ module.exports = {
       te.id = 'nadesi-dom-' + sys.__v0['DOM生成個数']
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
-      if (typeof(func) === 'function') {func('テキストエリア作成', te, sys)}
+      if (typeof (func) === 'function') { func('テキストエリア作成', te, sys) }
       // DOM追加
       parent.appendChild(te)
       sys.__v0['DOM生成個数']++
@@ -80,7 +81,7 @@ module.exports = {
       te.id = 'nadesi-dom-' + sys.__v0['DOM生成個数']
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
-      if (typeof(func) === 'function') {func('ラベル作成', te, sys)}
+      if (typeof (func) === 'function') { func('ラベル作成', te, sys) }
       // DOM追加
       parent.appendChild(te)
       sys.__v0['DOM生成個数']++
@@ -97,7 +98,7 @@ module.exports = {
       te.id = 'nadesi-dom-' + sys.__v0['DOM生成個数']
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
-      if (typeof(func) === 'function') {func('改行作成', te, sys)}
+      if (typeof (func) === 'function') { func('改行作成', te, sys) }
       // DOM追加
       parent.appendChild(te)
       sys.__v0['DOM生成個数']++
@@ -121,7 +122,7 @@ module.exports = {
       span.appendChild(label)
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
-      if (typeof(func) === 'function') {func('チェックボックス作成', span, sys)}
+      if (typeof (func) === 'function') { func('チェックボックス作成', span, sys) }
       // DOM追加
       parent.appendChild(span)
       sys.__v0['DOM生成個数']++
@@ -144,7 +145,7 @@ module.exports = {
       }
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
-      if (typeof(func) === 'function') {func('セレクトボックス作成', dom, sys)}
+      if (typeof (func) === 'function') { func('セレクトボックス作成', dom, sys) }
       // DOM追加
       parent.appendChild(dom)
       return dom

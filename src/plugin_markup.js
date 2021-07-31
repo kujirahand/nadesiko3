@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * file: plugin_markup.js
  * マークアップ言語関連のプラグイン
@@ -20,7 +21,7 @@ const PluginMarkup = {
     pure: true,
     fn: function (s) {
       const html = require('html')
-      return html.prettyPrint(s, {indent_size: 2})
+      return html.prettyPrint(s, { indent_size: 2 })
     }
   }
 }
@@ -28,5 +29,4 @@ const PluginMarkup = {
 module.exports = PluginMarkup
 
 // scriptタグで取り込んだ時、自動で登録する
-if (typeof (navigator) === 'object')
-  {navigator.nako3.addPluginObject('PluginMarkup', PluginMarkup)}
+if (typeof (navigator) === 'object') { navigator.nako3.addPluginObject('PluginMarkup', PluginMarkup) }

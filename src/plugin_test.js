@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * file: plugin_test.js
  * テスト実行用プラグイン
@@ -30,8 +31,8 @@ const PluginTest = {
     fn: function (a, b, sys) {
       sys.__exec('ASSERT等', [a, b, sys])
     }
-  },
-  
+  }
+
 }
 
 module.exports = PluginTest

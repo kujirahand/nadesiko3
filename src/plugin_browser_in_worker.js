@@ -1,3 +1,4 @@
+// @ts-nocheck
 // plugin_browser_in_worker.js
 
 const PartBrowserColor = require('./plugin_browser_color.js')
@@ -19,14 +20,14 @@ const PluginBrowserInWorker = {
     pure: true,
     fn: function (sys) {
       /* eslint no-global-assign: 0 */
-      if (typeof self === 'undefined') {self = {}}
-      if (typeof navigator === 'undefined') {navigator = {}}
+      if (typeof self === 'undefined') { self = {} }
+      if (typeof navigator === 'undefined') { navigator = {} }
 
       // 定数を初期化
       sys.__v0['AJAX:ONERROR'] = (err) => { console.log(err) }
       // オブジェクトを初期化
-      sys.__v0['SELF'] = self
-      sys.__v0['NAVIGATOR'] = navigator
+      sys.__v0.SELF = self
+      sys.__v0.NAVIGATOR = navigator
     }
   }
 }

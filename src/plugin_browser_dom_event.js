@@ -1,6 +1,7 @@
+// @ts-nocheck
 module.exports = {
   // @DOM操作とイベント
-  '対象イベント': {type:'const', value: ''}, // @たいしょういべんと
+  '対象イベント': { type: 'const', value: '' }, // @たいしょういべんと
   'DOMイベント追加': { // @DOMのEVENTになでしこ関数名funcStrのイベントを追加// @DOMいべんとついか
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
@@ -48,7 +49,7 @@ module.exports = {
   },
   '読込時': { // @無名関数FでDOMを読み込んだ時に実行するイベントを設定 // @よみこんだとき
     type: 'func',
-    josi: [['で'], ['を','の']],
+    josi: [['で'], ['を', 'の']],
     pure: false,
     fn: function (func, dom, sys) {
       sys.__addEvent(dom, 'load', func, null)
@@ -64,7 +65,7 @@ module.exports = {
     },
     return_none: true
   },
-  '押キー': {type: 'const', value: ''}, // @おされたきー
+  '押キー': { type: 'const', value: '' }, // @おされたきー
   'キー押時': { // @無名関数FでDOMに対してキーを押した時に実行するイベントを設定。『押されたキー』が設定される。 // @きーおしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
@@ -92,8 +93,8 @@ module.exports = {
     },
     return_none: true
   },
-  'マウスX': {type: 'const', value: 0}, // @まうすX
-  'マウスY': {type: 'const', value: 0}, // @まうすY
+  'マウスX': { type: 'const', value: 0 }, // @まうすX
+  'マウスY': { type: 'const', value: 0 }, // @まうすY
   'マウス押時': { // @無名関数FでDOMに対してマウスボタンを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすおしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
@@ -121,9 +122,9 @@ module.exports = {
     },
     return_none: true
   },
-  'タッチX': {type: 'const', value: 0}, // @たっちX
-  'タッチY': {type: 'const', value: 0}, // @たっちY
-  'タッチ配列': {type: 'const', value: []}, // @たっちはいれつ
+  'タッチX': { type: 'const', value: 0 }, // @たっちX
+  'タッチY': { type: 'const', value: 0 }, // @たっちY
+  'タッチ配列': { type: 'const', value: [] }, // @たっちはいれつ
   'タッチイベント計算': { // @タッチイベントで座標計算を行う。『タッチX』『タッチY』『タッチ配列』『対象』『対象イベント』が設定される。『タッチ配列』の内容が返る // @たっちいべんとけいさん
     type: 'func',
     josi: [['の']],
@@ -174,8 +175,8 @@ module.exports = {
     pure: false,
     fn: function (func, sys) {
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      if (!func) {throw new Error('『画面更新時実行』で関数の取得に失敗しました。')}
-      sys.__requestAnimationFrameLastId =  window.requestAnimationFrame(func)
+      if (!func) { throw new Error('『画面更新時実行』で関数の取得に失敗しました。') }
+      sys.__requestAnimationFrameLastId = window.requestAnimationFrame(func)
       return sys.__requestAnimationFrameLastId
     }
   },
@@ -185,7 +186,7 @@ module.exports = {
     pure: false,
     fn: function (id, sys) {
       window.cancelAnimationFrame(id)
-      if (sys.__requestAnimationFrameLastId === id) {sys.__requestAnimationFrameLastId = 0}
+      if (sys.__requestAnimationFrameLastId === id) { sys.__requestAnimationFrameLastId = 0 }
     },
     return_none: true
   }

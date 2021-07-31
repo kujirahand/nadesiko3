@@ -1,3 +1,4 @@
+// @ts-nocheck
 const PluginCSV = {
   '初期化': {
     type: 'func',
@@ -11,7 +12,9 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
+    // @ts-ignore
     fn: function (str) {
+      // @ts-ignore
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = ','
       return CSV.parse(str)
@@ -21,9 +24,11 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
+    // @ts-ignore
     fn: function (str) {
+      // @ts-ignore
       const CSV = require('csv-lite-js')
-      CSV.options.delimiter = "\t"
+      CSV.options.delimiter = '\t'
       return CSV.parse(str)
     }
   },
@@ -31,7 +36,9 @@ const PluginCSV = {
     type: 'func',
     josi: [['を']],
     pure: true,
+    // @ts-ignore
     fn: function (a) {
+      // @ts-ignore
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = ','
       return CSV.stringify(a)
@@ -41,7 +48,9 @@ const PluginCSV = {
     type: 'func',
     josi: [['を']],
     pure: true,
+    // @ts-ignore
     fn: function (a) {
+      // @ts-ignore
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = '\t'
       return CSV.stringify(a)
@@ -51,7 +60,6 @@ const PluginCSV = {
 
 module.exports = PluginCSV
 // scriptタグで取り込んだ時、自動で登録する
-/* istanbul ignore else */
-if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') 
-  {navigator.nako3.addPluginObject('PluginCSV', PluginCSV)}
-
+if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') {
+  navigator.nako3.addPluginObject('PluginCSV', PluginCSV)
+}

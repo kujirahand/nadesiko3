@@ -1,8 +1,9 @@
+// @ts-nocheck
 module.exports = {
   // @DOM操作
-  'DOCUMENT': {type: 'const', value: ''}, // @DOCUMENT
-  'WINDOW': {type: 'const', value: ''}, // @WINDOW
-  'NAVIGATOR': {type: 'const', value: ''}, // @NAVIGATOR
+  'DOCUMENT': { type: 'const', value: '' }, // @DOCUMENT
+  'WINDOW': { type: 'const', value: '' }, // @WINDOW
+  'NAVIGATOR': { type: 'const', value: '' }, // @NAVIGATOR
   'DOM要素ID取得': { // @DOMの要素をIDを指定して取得 // @DOMようそIDしゅとく
     type: 'func',
     josi: [['の', 'を']],
@@ -40,8 +41,8 @@ module.exports = {
     josi: [['の'], ['を']],
     pure: true,
     fn: function (pa, q) {
-      if (typeof pa === 'string') {pa = document.querySelector(pa)}
-      if (!pa['querySelector']) {
+      if (typeof pa === 'string') { pa = document.querySelector(pa) }
+      if (!pa.querySelector) {
         throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
       }
       return pa.querySelector(q)
@@ -52,8 +53,8 @@ module.exports = {
     josi: [['の'], ['を']],
     pure: true,
     fn: function (pa, q) {
-      if (typeof pa === 'string') {pa = document.querySelector(pa)}
-      if (!pa['querySelectorAll']) {
+      if (typeof pa === 'string') { pa = document.querySelector(pa) }
+      if (!pa.querySelectorAll) {
         throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
       }
       return pa.querySelectorAll(q)
@@ -64,8 +65,7 @@ module.exports = {
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: false,
     fn: function (dom, event, funcStr, sys) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
 
       dom[event] = sys.__findVar(funcStr, null)
     },
@@ -76,23 +76,18 @@ module.exports = {
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
     fn: function (dom, text) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
 
       const tag = dom.tagName.toUpperCase()
-      if (tag === 'INPUT' || tag === 'TEXTAREA')
-        {dom.value = text}
-       else if (tag === 'SELECT')
-        {for (let i = 0; i < dom.options.length; i++) {
+      if (tag === 'INPUT' || tag === 'TEXTAREA') { dom.value = text } else if (tag === 'SELECT') {
+        for (let i = 0; i < dom.options.length; i++) {
           const v = dom.options[i].value
           if (String(v) === text) {
             dom.selectedIndex = i
             break
           }
-        }}
-       else
-        {dom.innerHTML = text}
-
+        }
+      } else { dom.innerHTML = text }
     },
     return_none: true
   },
@@ -101,15 +96,12 @@ module.exports = {
     josi: [['の', 'から']],
     pure: true,
     fn: function (dom) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
 
       const tag = dom.tagName.toUpperCase()
-      if (tag === 'INPUT' || tag === 'TEXTAREA')
-        {return dom.value}
-       else if (tag === 'SELECT') {
+      if (tag === 'INPUT' || tag === 'TEXTAREA') { return dom.value } else if (tag === 'SELECT') {
         const idx = dom.selectedIndex
-        if (idx < 0) {return null}
+        if (idx < 0) { return null }
         return dom.options[idx].value
       }
       return dom.innerHTML
@@ -120,8 +112,7 @@ module.exports = {
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
     fn: function (dom, text) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
 
       dom.innerHTML = text
     },
@@ -132,8 +123,7 @@ module.exports = {
     josi: [['の', 'から']],
     pure: true,
     fn: function (dom) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
 
       return dom.innerHTML
     }
@@ -175,13 +165,12 @@ module.exports = {
   'DOM属性設定': { // @DOMの属性Sに値Vを設定 // @DOMぞくせいせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
-    uses:['DOM和スタイル'],
+    uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom, s, v, sys) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const wa = sys.__v0['DOM和スタイル']
-      if (wa[s]) {s = wa[s]}
+      if (wa[s]) { s = wa[s] }
       dom[s] = v
     },
     return_none: true
@@ -189,13 +178,12 @@ module.exports = {
   'DOM属性取得': { // @DOMの属性Sを取得 // @DOMぞくせいしゅとく
     type: 'func',
     josi: [['の', 'から'], ['を']],
-    uses:['DOM和スタイル'],
+    uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom, s, sys) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const wa = sys.__v0['DOM和スタイル']
-      if (wa[s]) {s = wa[s]}
+      if (wa[s]) { s = wa[s] }
       return dom[s]
     }
   },
@@ -228,10 +216,10 @@ module.exports = {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom, s, v, sys) {
-      if (typeof (dom) === 'string') {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const wa = sys.__v0['DOM和スタイル']
-      if (wa[s] !== undefined) {s = wa[s]}
-      if (wa[v] !== undefined) {v = wa[v]}
+      if (wa[s] !== undefined) { s = wa[s] }
+      if (wa[v] !== undefined) { v = wa[v] }
       dom.style[s] = v
     },
     return_none: true
@@ -242,9 +230,9 @@ module.exports = {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom, values, sys) {
-      if (typeof dom === 'string') {dom = document.querySelectorAll(dom)}
-      if (!dom) {return}
-      if (dom instanceof window.HTMLElement) {dom = [dom]}
+      if (typeof dom === 'string') { dom = document.querySelectorAll(dom) }
+      if (!dom) { return }
+      if (dom instanceof window.HTMLElement) { dom = [dom] }
       const wa = sys.__v0['DOM和スタイル']
       // 列挙したDOM一覧を全てスタイル変更する
       for (let i = 0; i < dom.length; i++) {
@@ -252,8 +240,8 @@ module.exports = {
         for (const key in values) {
           let s = key
           let v = values[key]
-          if (wa[s] !== undefined) {s = wa[s]}
-          if (wa[v] !== undefined) {v = wa[v]}
+          if (wa[s] !== undefined) { s = wa[s] }
+          if (wa[v] !== undefined) { v = wa[v] }
           e.style[s] = v
         }
       }
@@ -266,11 +254,10 @@ module.exports = {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom, style, sys) {
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
-      if (!dom) {return ''}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
+      if (!dom) { return '' }
       const wa = sys.__v0['DOM和スタイル']
-      if (wa[style]) {style = wa[style]}
+      if (wa[style]) { style = wa[style] }
       return dom.style[style]
     }
   },
@@ -281,24 +268,22 @@ module.exports = {
     pure: true,
     fn: function (dom, style, sys) {
       const res = {}
-      if (typeof (dom) === 'string')
-        {dom = document.querySelector(dom)}
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
 
-      if (!dom) {return res}
-      if (style instanceof String)
-        {style = [style]}
-        
+      if (!dom) { return res }
+      if (style instanceof String) { style = [style] }
+
       const wa = sys.__v0['DOM和スタイル']
       if (style instanceof Array) {
         style.forEach((key) => {
-          if (wa[key]) {key = wa[key]}
+          if (wa[key]) { key = wa[key] }
           res[key] = dom.style[key]
         })
         return res
       }
       if (style instanceof Object) {
-        for (const key in style) {
-          if (wa[key]) {key = wa[key]}
+        for (let key in style) {
+          if (wa[key]) { key = wa[key] }
           res[key] = dom.style[key]
         }
         return res
@@ -319,8 +304,8 @@ module.exports = {
     josi: [['に', 'へ'], ['を']],
     pure: true,
     fn: function (pa, el) {
-      if (typeof el === 'string') {el = document.querySelector(el)}
-      if (typeof pa === 'string') {pa = document.querySelector(pa)}
+      if (typeof el === 'string') { el = document.querySelector(el) }
+      if (typeof pa === 'string') { pa = document.querySelector(pa) }
       pa.appendChild(el)
     }
   },
@@ -329,8 +314,8 @@ module.exports = {
     josi: [['から'], ['を']],
     pure: true,
     fn: function (pa, el) {
-      if (typeof el === 'string') {el = document.querySelector(el)}
-      if (typeof pa === 'string') {pa = document.querySelector(pa)}
+      if (typeof el === 'string') { el = document.querySelector(el) }
+      if (typeof pa === 'string') { pa = document.querySelector(pa) }
       pa.removeChild(el)
     }
   }

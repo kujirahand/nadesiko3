@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable quote-props */
 module.exports = {
   // @AJAXとHTTP

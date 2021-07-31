@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * file: plugin_node.js
  * node.js のためのプラグイン

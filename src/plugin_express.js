@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * file: plugin_express.js
  * Webサーバのためのプラグイン (expressをラップしたもの)
@@ -26,8 +27,8 @@ const PluginExpress = {
     }
   },
   // @Webサーバ(Express)
-  'GETデータ': {type: 'const', value: ''}, // @GETでーた
-  'POSTデータ': {type: 'const', value: ''}, // @POSTでーた
+  'GETデータ': { type: 'const', value: '' }, // @GETでーた
+  'POSTデータ': { type: 'const', value: '' }, // @POSTでーた
   'WEBサーバ名前設定': { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
     type: 'func',
     josi: [['に', 'へ']],
@@ -43,8 +44,8 @@ const PluginExpress = {
     josi: [['の', 'で']],
     pure: true,
     fn: function (portno, sys) {
-      let app = express()
-      let server = app.listen(portno, () => {
+      const app = express()
+      const server = app.listen(portno, () => {
         const pno = server.address().port
         if (debug) {
           console.log('* [' + WEBSERVER_NAME + '] (debug)')
@@ -52,11 +53,11 @@ const PluginExpress = {
           console.log('+- [URL] http://localhost:' + pno)
         }
         const callback = sys.__v0['WEBサーバ:ONSUCCESS']
-        if (callback) {callback(pno, sys)}
+        if (callback) { callback(pno, sys) }
       })
       server.on('error', (e) => {
         const callback = sys.__v0['WEBサーバ:ONERROR']
-        if (callback) {callback(e, sys)}
+        if (callback) { callback(e, sys) }
       })
       // POSTを自動的に処理
       app.use(bodyParser.text({
@@ -77,7 +78,7 @@ const PluginExpress = {
   },
   'WEBサーバ起動時': { // @ポートPORTNOでWebサーバを起動して成功したらCALLBACKを実行する // @WEBさーばきどうしたとき
     type: 'func',
-    josi: [['を'],['の', 'で']],
+    josi: [['を'], ['の', 'で']],
     pure: false,
     fn: function (callback, portno, sys) {
       sys.__v0['WEBサーバ:ONSUCCESS'] = callback
@@ -107,8 +108,8 @@ const PluginExpress = {
     josi: [['を'], ['に', 'へ']],
     pure: true,
     fn: function (url, path, sys) {
-      if (sys.__webapp == null) {throw new Error(ERROR_NO_INIT)}
-      if (debug) {console.log('[static]', url, path)}
+      if (sys.__webapp == null) { throw new Error(ERROR_NO_INIT) }
+      if (debug) { console.log('[static]', url, path) }
       sys.__webapp.use(url, express.static(path))
     },
     return_none: true
@@ -121,8 +122,8 @@ const PluginExpress = {
       if (debug) {
         console.log('[GET] ' + uri)
       }
-      sys.__webapp.get(uri, (req, res) => { 
-        callbackServerFunc(callback, req, res, sys) 
+      sys.__webapp.get(uri, (req, res) => {
+        callbackServerFunc(callback, req, res, sys)
       })
     },
     return_none: true
@@ -160,8 +161,8 @@ const PluginExpress = {
     pure: true,
     fn: function (obj, sys) {
       const res = sys.__v0['WEBサーバ:応答']
-      for (let key in obj) {
-          res.set(key, obj[key])
+      for (const key in obj) {
+        res.set(key, obj[key])
       }
     },
     return_none: true
@@ -182,7 +183,7 @@ const PluginExpress = {
     pure: true,
     fn: function (s, sys) {
       const res = sys.__v0['WEBサーバ:応答']
-      res.send("" + s)
+      res.send('' + s)
     },
     return_none: true
   },

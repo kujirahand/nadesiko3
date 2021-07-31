@@ -1,3 +1,4 @@
+// @ts-nocheck
 // 敬語を使いたい人のためのプラグイン (お遊び機能)
 
 const PluginKeigo = {
@@ -9,21 +10,21 @@ const PluginKeigo = {
     }
   },
   // @丁寧語
-  'お世話': { type: 'const', value: 1}, // @おせわ
+  'お世話': { type: 'const', value: 1 }, // @おせわ
   'な': { // @Aになる // @なる
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
     fn: function (a, sys) {
       return a
-    } 
+    }
   },
   'おります': { // @ソースコードを読む人を気持ちよくする // @おります
     type: 'func',
     josi: [],
     pure: true,
     fn: function (sys) {
-      if (!sys.__reisetu) {sys.__reisetu = 0}
+      if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
     return_none: true
@@ -33,7 +34,7 @@ const PluginKeigo = {
     josi: [],
     pure: true,
     fn: function (sys) {
-      if (!sys.__reisetu) {sys.__reisetu = 0}
+      if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
     return_none: true
@@ -43,7 +44,7 @@ const PluginKeigo = {
     josi: [],
     pure: true,
     fn: function (sys) {
-      if (!sys.__reisetu) {sys.__reisetu = 0}
+      if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
     return_none: true

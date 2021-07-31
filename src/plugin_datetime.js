@@ -1,4 +1,5 @@
-const { NakoRuntimeError } = require('../src/nako_errors')
+// @ts-nocheck
+// file: plugin_datetime.js
 const PluginDateTime = {
   '初期化': {
     type: 'func',
@@ -8,7 +9,7 @@ const PluginDateTime = {
     }
   },
   // @日時処理
-  '元号データ': {type: 'const', value: require('./era.json')}, // @げんごうでーた
+  '元号データ': { type: 'const', value: require('./era.json') }, // @げんごうでーた
   '今': { // @現在時刻を「HH:mm:ss」の形式で返す // @いま
     type: 'func',
     josi: [],
@@ -244,14 +245,14 @@ const PluginDateTime = {
       for (let i = 0; i < maxCount; i++) {
         const dts = []
 
-        for (let s of [b, a]) {
+        for (const s of [b, a]) {
           let s_ = s
 
           if (i === maxCount - 1) {
             s_ = '1980/01/01 ' + s_
           }
 
-          let t = dayjs(s_, 'YYYY/MM/DD HH:mm:ss')
+          const t = dayjs(s_, 'YYYY/MM/DD HH:mm:ss')
 
           if (t.isValid()) {
             dts.push(t)
@@ -410,6 +411,4 @@ const PluginDateTime = {
 module.exports = PluginDateTime
 // scriptタグで取り込んだ時、自動で登録する
 /* istanbul ignore else */
-if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') 
-  {navigator.nako3.addPluginObject('PluginDateTime', PluginDateTime)}
-
+if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') { navigator.nako3.addPluginObject('PluginDateTime', PluginDateTime) }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 module.exports = {
   // @位置情報
   '位置情報取得時': { // @位置情報を取得してコールバック関数内で変数「対象」に配列で[緯度,経度]を返す // @いちじょうほうしゅとくしたとき
@@ -6,9 +7,8 @@ module.exports = {
     pure: false,
     fn: function (func, sys) {
       let cb = func
-      if (typeof cb === 'string') {cb = sys.__findVar(cb)}
-      if (!('geolocation' in navigator))
-        {throw new Error('関数『位置情報取得時』は使えません。')}
+      if (typeof cb === 'string') { cb = sys.__findVar(cb) }
+      if (!('geolocation' in navigator)) { throw new Error('関数『位置情報取得時』は使えません。') }
 
       navigator.geolocation.getCurrentPosition((position) => {
         sys.__v0['対象'] = [
@@ -26,9 +26,8 @@ module.exports = {
     pure: false,
     fn: function (func, sys) {
       let cb = func
-      if (typeof cb === 'string') {cb = sys.__findVar(cb)}
-      if (!('geolocation' in navigator))
-        {throw new Error('関数『位置情報監視時』は使えません。')}
+      if (typeof cb === 'string') { cb = sys.__findVar(cb) }
+      if (!('geolocation' in navigator)) { throw new Error('関数『位置情報監視時』は使えません。') }
 
       return navigator.geolocation.watchPosition((position) => {
         sys.__v0['対象'] = [

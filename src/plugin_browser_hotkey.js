@@ -1,3 +1,4 @@
+// @ts-nocheck
 const hotkeys = require('hotkeys-js')
 
 module.exports = {

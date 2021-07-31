@@ -1,3 +1,4 @@
+// @ts-nocheck
 const assert = require('chai').assert
 
 /** @type {(node: HTMLElement, f: (node: HTMLElement) => boolean) => HTMLElement | null} */
@@ -23,7 +24,7 @@ describe('ace editor test', () => {
         done()
         return
       }
-      setTimeout(() => { wait() }, 100);
+      setTimeout(() => { wait() }, 100)
     }
     wait()
   })
@@ -37,9 +38,9 @@ describe('ace editor test', () => {
           (node) =>
             node.classList.contains('ace_keyword') &&
             node.classList.contains('ace_control') &&
-            node.innerText.trim().startsWith('も'),
+            node.innerText.trim().startsWith('も')
         ),
-        null,
+        null
       )
     })
     it('関数', () => {
@@ -49,9 +50,9 @@ describe('ace editor test', () => {
           document.querySelector('#editor1'),
           (node) =>
             node.classList.contains('ace_function') &&
-            node.innerText.trim().startsWith('表'),
+            node.innerText.trim().startsWith('表')
         ),
-        null,
+        null
       )
     })
     it('範囲コメント', () => {
@@ -61,15 +62,15 @@ describe('ace editor test', () => {
           document.querySelector('#editor2'),
           (node) =>
             node.classList.contains('ace_comment') &&
-            node.innerText.trim().startsWith('範'),
+            node.innerText.trim().startsWith('範')
         ),
-        null,
+        null
       )
     })
     it('エディタの値を変更したときにシンタックスハイライトが更新されることを確認', async function () {
       this.timeout(5 * 1000) // このテストはタイムアウトのときのみエラーになる。
 
-      const { editor } = navigator.nako3.setupEditor("editor-input-test")
+      const { editor } = navigator.nako3.setupEditor('editor-input-test')
 
       // "「」を表示" を打って、"「" が文字列として認識されることを確認
       editor.setValue('「」を表示')
@@ -92,9 +93,9 @@ describe('ace editor test', () => {
           document.querySelector('#editor8'),
           (node) =>
             node.classList.contains('ace_function') &&
-            node.innerText.trim().startsWith('痕'),
+            node.innerText.trim().startsWith('痕')
         ),
-        null,
+        null
       )
     })
   })
