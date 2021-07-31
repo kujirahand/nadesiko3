@@ -42,24 +42,22 @@ const PluginNode = {
 
       sys.__getBinPath = (tool) => {
         let fpath = tool
-        if (process.platform === 'win32')
-          {if (!fileExists(tool)) {
+        if (process.platform === 'win32') {
+          if (!fileExists(tool)) {
             const nodeDir = path.dirname(process.argv[0])
             const root = path.resolve(path.join(nodeDir, '..'))
             fpath = path.join(root, 'bin', tool + '.exe')
-            if (fileExists(fpath)) {return `"${fpath}"`}
+            if (fileExists(fpath)) { return `"${fpath}"` }
             return tool
-          }}
+          }
+        }
 
         return fpath
       }
       sys.__getBokanPath = () => {
         let nakofile
         const cmd = path.basename(process.argv[1])
-        if (cmd.indexOf('cnako3') < 0)
-          {nakofile = process.argv[1]}
-         else
-          {nakofile = process.argv[2]}
+        if (cmd.indexOf('cnako3') < 0) { nakofile = process.argv[1] } else { nakofile = process.argv[2] }
 
         return path.dirname(path.resolve(nakofile))
       }
@@ -101,11 +99,7 @@ const PluginNode = {
     pure: true,
     fn: function (s, f) {
       // Buffer?
-      if (s instanceof String)
-        {fs.writeFileSync(f, s, 'utf-8')}
-       else
-        {fs.writeFileSync(f, s)}
-
+      if (s instanceof String) { fs.writeFileSync(f, s, 'utf-8') } else { fs.writeFileSync(f, s) }
     },
     return_none: true
   },
@@ -118,7 +112,7 @@ const PluginNode = {
       iconv.skipDecodeWarning = true
       const buf = fs.readFileSync(s)
       const text = iconv.decode(Buffer.from(buf), 'sjis')
-      return text      
+      return text
     }
   },
   'SJISファイル保存': { // @SをSJIS形式でファイルFへ書き込む // @SJISふぁいるほぞん
@@ -148,11 +142,8 @@ const PluginNode = {
     pure: true,
     fn: function (s) {
       exec(s, (err, stdout, stderr) => {
-        if (err)
-          {console.error(stderr)}
-         else
-          if (stdout) {console.log(stdout)}
-
+        if (err) { console.error(stderr) } else
+        if (stdout) { console.log(stdout) }
       })
     }
   },
@@ -162,11 +153,7 @@ const PluginNode = {
     pure: true,
     fn: function (callback, s, sys) {
       exec(s, (err, stdout, stderr) => {
-        if (err)
-          {throw new Error(stderr)}
-         else
-          {callback(stdout)}
-
+        if (err) { throw new Error(stderr) } else { callback(stdout) }
       })
     }
   },
@@ -190,13 +177,12 @@ const PluginNode = {
           .replace(/\./g, '\\.')
           .replace(/\*/g, '.*')
         const mask2 = (mask1.indexOf(';') < 0)
-          ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
+          ? mask1 + '$'
+          : '(' + mask1.replace(/;/g, '|') + ')$'
         const maskRE = new RegExp(mask2, 'i')
         const list = fs.readdirSync(searchPath)
         return list.filter((n) => maskRE.test(n))
-      } else
-        {return fs.readdirSync(s)}
-
+      } else { return fs.readdirSync(s) }
     }
   },
   '全ファイル列挙': { // @パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。 // @ぜんふぁいるれっきょ
@@ -204,6 +190,9 @@ const PluginNode = {
     josi: [['の', 'を', 'で']],
     pure: true,
     fn: function (s) {
+      /**
+       * @type {string[]}
+       */
       const result = []
       // ワイルドカードの有無を確認
       let mask = '.*'
@@ -214,7 +203,8 @@ const PluginNode = {
           .replace(/\./g, '\\.')
           .replace(/\*/g, '.*')
         mask = (mask1.indexOf(';') < 0)
-          ? mask1 + '$' : '(' + mask1.replace(/;/g, '|') + ')$'
+          ? mask1 + '$'
+          : '(' + mask1.replace(/;/g, '|') + ')$'
       }
       basepath = path.resolve(basepath)
       const maskRE = new RegExp(mask, 'i')
@@ -222,7 +212,7 @@ const PluginNode = {
       const enumR = (base) => {
         const list = fs.readdirSync(base)
         for (const f of list) {
-          if (f === '.' || f === '..') {continue}
+          if (f === '.' || f === '..') { continue }
           const fullpath = path.join(base, f)
           let st = null
           try {
@@ -230,12 +220,12 @@ const PluginNode = {
           } catch (e) {
             st = null
           }
-          if (st == null) {continue}
+          if (st == null) { continue }
           if (st.isDirectory()) {
             enumR(fullpath)
             continue
           }
-          if (maskRE.test(f)) {result.push(fullpath)}
+          if (maskRE.test(f)) { result.push(fullpath) }
         }
       }
       // 検索実行
@@ -281,7 +271,7 @@ const PluginNode = {
     pure: true,
     fn: function (callback, a, b, sys) {
       return fse.copy(a, b, err => {
-        if (err) {throw new Error('ファイルコピー時:' + err)}
+        if (err) { throw new Error('ファイルコピー時:' + err) }
         callback()
       })
     },
@@ -301,7 +291,7 @@ const PluginNode = {
     pure: true,
     fn: function (callback, a, b, sys) {
       fse.move(a, b, err => {
-        if (err) {throw new Error('ファイル移動時:' + err)}
+        if (err) { throw new Error('ファイル移動時:' + err) }
         callback()
       })
     },
@@ -321,7 +311,7 @@ const PluginNode = {
     pure: true,
     fn: function (callback, path, sys) {
       return fse.remove(path, err => {
-        if (err) {throw new Error('ファイル削除時:' + err)}
+        if (err) { throw new Error('ファイル削除時:' + err) }
         callback()
       })
     },
@@ -341,7 +331,7 @@ const PluginNode = {
     pure: true,
     fn: function (path, sys) {
       const st = fs.statSync(path)
-      if (!st) {return -1}
+      if (!st) { return -1 }
       return st.size
     }
   },
@@ -364,7 +354,7 @@ const PluginNode = {
   },
   '絶対パス変換': { // @相対パスから絶対パスに変換して返す // @ぜったいぱすへんかん
     type: 'func',
-    josi: [['を','の']],
+    josi: [['を', 'の']],
     pure: true,
     fn: function (a) {
       return path.resolve(a)
@@ -441,7 +431,7 @@ const PluginNode = {
       return path.join(home, 'Documents')
     }
   },
-  '母艦パス': {type: 'const', value: ''}, // @ぼかんぱす
+  '母艦パス': { type: 'const', value: '' }, // @ぼかんぱす
   '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
     type: 'func',
     josi: [],
@@ -468,7 +458,7 @@ const PluginNode = {
     }
   },
   // @圧縮・解凍
-  '圧縮解凍ツールパス': {type: 'const', value: '7z'},
+  '圧縮解凍ツールパス': { type: 'const', value: '7z' }, // @あっしゅくかいとうつーるぱす
   '圧縮解凍ツールパス変更': { // @圧縮解凍に使うツールを取得変更する // @あっしゅくかいとうつーるぱすへんこう
     type: 'func',
     josi: [['に', 'へ']],
@@ -497,7 +487,7 @@ const PluginNode = {
       const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
       const cmd = `${tpath} x "${a}" -o"${b}" -y`
       exec(cmd, (err, stdout, stderr) => {
-        if (err) {throw new Error('[エラー]『解凍時』' + err)}
+        if (err) { throw new Error('[エラー]『解凍時』' + err) }
         callback(stdout)
       })
     },
@@ -522,7 +512,7 @@ const PluginNode = {
       const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
       const cmd = `${tpath} a -r "${b}" "${a}" -y`
       exec(cmd, (err, stdout, stderr) => {
-        if (err) {throw new Error('[エラー]『圧縮時』' + err)}
+        if (err) { throw new Error('[エラー]『圧縮時』' + err) }
         callback(stdout)
       })
     },
@@ -543,7 +533,7 @@ const PluginNode = {
     josi: [['を']],
     pure: true,
     fn: function (func, sys) {
-      if (typeof(func) == 'string') {
+      if (typeof (func) === 'string') {
         func = sys.__findFunc(func, '強制終了時')
       }
       process.on('SIGINT', (signal) => {
@@ -598,15 +588,15 @@ const PluginNode = {
     fn: function (v, sys) {
       const clipboardy = require('clipboardy')
       // copy
-      if (sys && sys['isSetter']) {return clipboardy.writeSync(v)}
+      if (sys && sys.isSetter) { return clipboardy.writeSync(v) }
       // paste
       return clipboardy.readSync()
     }
   },
   // @コマンドラインと標準入出力
-  'コマンドライン': {type: 'const', value: ''}, // @こまんどらいん
-  'ナデシコランタイム': {type: 'const', value: ''}, // @なでしこらんたいむ
-  'ナデシコランタイムパス': {type: 'const', value: ''}, // @なでしこらんたいむぱす
+  'コマンドライン': { type: 'const', value: '' }, // @こまんどらいん
+  'ナデシコランタイム': { type: 'const', value: '' }, // @なでしこらんたいむ
+  'ナデシコランタイムパス': { type: 'const', value: '' }, // @なでしこらんたいむぱす
   '標準入力取得時': { // @標準入力を一行取得した時に、無名関数（あるいは、文字列で関数名を指定）F(s)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
     type: 'func',
     josi: [['を']],
@@ -628,7 +618,7 @@ const PluginNode = {
     fn: function (msg, sys) {
       const readlineSync = require('readline-sync')
       const res = readlineSync.question(msg)
-      if (res.match(/^[0-9.]+$/)) {return parseFloat(res)}
+      if (res.match(/^[0-9.]+$/)) { return parseFloat(res) }
       return res
     }
   },
@@ -650,11 +640,15 @@ const PluginNode = {
     fn: function (sys) {
       const os = require('os')
       const nif = os.networkInterfaces()
+      /**
+       * @type {string[]}
+       */
       const result = []
-      for (let dev in nif)
-        {nif[dev].forEach((detail) => {
-          if (detail.family === 'IPv4') {result.push(detail.address)}
-        })}
+      for (const dev in nif) {
+        nif[dev].forEach((detail) => {
+          if (detail.family === 'IPv4') { result.push(detail.address) }
+        })
+      }
 
       return result
     }
@@ -667,10 +661,11 @@ const PluginNode = {
       const os = require('os')
       const nif = os.networkInterfaces()
       const result = []
-      for (let dev in nif)
-        {nif[dev].forEach((detail) => {
-          if (detail.family === 'IPv6') {result.push(detail.address)}
-        })}
+      for (const dev in nif) {
+        nif[dev].forEach((detail) => {
+          if (detail.family === 'IPv6') { result.push(detail.address) }
+        })
+      }
 
       return result
     }
@@ -682,7 +677,7 @@ const PluginNode = {
     pure: true,
     fn: function (callback, url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') {options = null}
+      if (options === '') { options = null }
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
@@ -709,8 +704,8 @@ const PluginNode = {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function (callback, url, params, sys) {
-      let flist = []
-      for (let key in params) {
+      const flist = []
+      for (const key in params) {
         const v = params[key]
         const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
         flist.push(kv)
@@ -739,10 +734,9 @@ const PluginNode = {
     pure: true,
     fn: function (callback, url, params, sys) {
       const fd = new FormData()
-      for (let key in params)
-        {fd.set(key, params[key])}
+      for (const key in params) { fd.set(key, params[key]) }
 
-      let options = {
+      const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -767,7 +761,7 @@ const PluginNode = {
       sys.__v0['AJAX:ONERROR'] = callback
     }
   },
-  'AJAXオプション': {type: 'const', value: ''}, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
+  'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
   'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
@@ -783,7 +777,7 @@ const PluginNode = {
     pure: true,
     fn: function (url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') {options = {method: 'GET'}}
+      if (options === '') { options = { method: 'GET' } }
       return fetch(url, options)
     },
     return_none: false
@@ -811,8 +805,8 @@ const PluginNode = {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function (url, params, sys) {
-      let flist = []
-      for (let key in params) {
+      const flist = []
+      for (const key in params) {
         const v = params[key]
         const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
         flist.push(kv)
@@ -835,10 +829,9 @@ const PluginNode = {
     pure: true,
     fn: function (url, params, sys) {
       const fd = new FormData()
-      for (let key in params)
-        {fd.set(key, params[key])}
+      for (const key in params) { fd.set(key, params[key]) }
 
-      let options = {
+      const options = {
         method: 'POST',
         body: fd
       }
@@ -954,7 +947,7 @@ const PluginNode = {
   },
   'ハッシュ値計算': { // @データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す // @ はっしゅちけいさん
     type: 'func',
-    josi: [['を'],['の'],['で']],
+    josi: [['を'], ['の'], ['で']],
     pure: true,
     fn: function (s, alg, enc, sys) {
       const crypto = require('crypto')

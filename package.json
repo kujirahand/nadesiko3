@@ -23,6 +23,7 @@
     "nako3edit:run": "node tools/nako3edit/run.js",
     "electron": "electron .",
     "build": "node src/cnako3.js batch/build_command.nako3 && webpack --mode production && node src/cnako3.js batch/calc_hash.nako3",
+    "check:command": "cnako3 batch/pickup_command.nako3",
     "build:command": "cross-env REPORT_ERR=1 node src/cnako3.js batch/build_command.nako3",
     "build:electron": "electron-packager . --out release/enako3 --asar --all --overwrite",
     "build:win32": "node src/cnako3.js installer/make-win32.nako3",
