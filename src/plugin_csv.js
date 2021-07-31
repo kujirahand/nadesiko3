@@ -12,9 +12,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
-    // @ts-ignore
     fn: function (str) {
-      // @ts-ignore
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = ','
       return CSV.parse(str)
@@ -24,9 +22,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
-    // @ts-ignore
     fn: function (str) {
-      // @ts-ignore
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = '\t'
       return CSV.parse(str)
@@ -36,9 +32,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を']],
     pure: true,
-    // @ts-ignore
     fn: function (a) {
-      // @ts-ignore
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = ','
       return CSV.stringify(a)
@@ -48,9 +42,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を']],
     pure: true,
-    // @ts-ignore
     fn: function (a) {
-      // @ts-ignore
       const CSV = require('csv-lite-js')
       CSV.options.delimiter = '\t'
       return CSV.stringify(a)
