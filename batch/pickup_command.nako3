@@ -37,7 +37,7 @@ REPOSパス=基本パスを「../」で相対パス展開。
     ['nadesiko3-mssql/src/plugin_mssql.js', 'cnako'],
     ['nadesiko3-mysql/src/plugin_mysql.js', 'cnako'],
     ['nadesiko3-postgresql/src/plugin_postgresql.js', 'cnako'],
-    ['nadesiko3php/src/plugin_php.json', 'phpnako'],
+    ['nadesiko3php/src/plugin_php.php', 'phpnako'],
 ]
 # サポートしない
 # 'nadesiko3-firebase/plugin_firebase.js',
