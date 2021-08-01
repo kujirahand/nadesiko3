@@ -8,9 +8,9 @@
 
 日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
 
-- [なでしこ3のGitHub Pagesサイト](https://kujirahand.github.io/nadesiko3/)
-  - [なでしこのWebサイト](https://nadesi.com/top/)
+- [なでしこのWebサイト](https://nadesi.com/top/)
   - [なでしこ3のWebサイト](https://nadesi.com/doc3/)
+  - [なでしこ3(GitHub Pages)](https://kujirahand.github.io/nadesiko3/)
 
 ## 対応機器/ブラウザ
 
