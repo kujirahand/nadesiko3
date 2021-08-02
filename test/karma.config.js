@@ -50,10 +50,10 @@ module.exports = function (config) {
       resolve: {
         mainFields: ['browser', 'main', 'module'],
         alias: {
-          'assert': path.resolve(__dirname, '../utils/assert.js'),
-          'root': path.join(__dirname, '..'),
-          'nako3': path.join(__dirname, '../src'),
-          'utils': path.join(__dirname, '../utils')
+          assert: path.resolve(__dirname, '../utils/assert.js'),
+          root: path.join(__dirname, '..'),
+          nako3: path.join(__dirname, '../src'),
+          utils: path.join(__dirname, '../utils')
         }
       }
     },

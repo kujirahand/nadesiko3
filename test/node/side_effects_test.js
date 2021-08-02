@@ -28,7 +28,7 @@ describe('side_effects_test', () => {
   it('プラグイン変数の上書き', () => {
     const nako = new NakoCompiler()
     nako.addPluginObject('SideEffectTestPlugin', {
-      'プラグイン変数': { type: 'var', value: 100 }
+      プラグイン変数: { type: 'var', value: 100 }
     })
     nako.run('プラグイン変数=20', 'main.nako3')
     assert.strictEqual(nako.run('プラグイン変数を表示', 'main.nako3').log, '100')
@@ -76,7 +76,7 @@ describe('side_effects_test', () => {
 
     let count = 0
     nako.addPluginObject('ClearTest', {
-      '初期化': {
+      初期化: {
         type: 'func',
         josi: [],
         pure: true,

@@ -1,6 +1,6 @@
 // @ts-nocheck
 const PluginCSV = {
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,
@@ -8,7 +8,7 @@ const PluginCSV = {
     }
   },
   // @CSV操作
-  'CSV取得': { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
+  CSV取得: { // @CSV形式のデータstrを強制的に二次元配列に変換して返す // @CSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
@@ -18,7 +18,7 @@ const PluginCSV = {
       return CSV.parse(str)
     }
   },
-  'TSV取得': { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
+  TSV取得: { // @TSV形式のデータstrを強制的に二次元配列に変換して返す // @TSVしゅとく
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
@@ -28,7 +28,7 @@ const PluginCSV = {
       return CSV.parse(str)
     }
   },
-  '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
+  表CSV変換: { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -38,7 +38,7 @@ const PluginCSV = {
       return CSV.stringify(a)
     }
   },
-  '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
+  表TSV変換: { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
     type: 'func',
     josi: [['を']],
     pure: true,

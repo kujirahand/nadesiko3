@@ -1,7 +1,7 @@
 // @ts-nocheck
 const PluginKansuji = {
 
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,
@@ -10,7 +10,7 @@ const PluginKansuji = {
   },
 
   // @漢数字関連
-  '漢数字': { // @引数を数字と解釈して漢数字の文字列を返す // @かんすうじ
+  漢数字: { // @引数を数字と解釈して漢数字の文字列を返す // @かんすうじ
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
@@ -119,7 +119,7 @@ const PluginKansuji = {
       return flag + res
     }
   },
-  '算用数字': { // @U引数を漢数字と解釈して数値を返す // @さんようすうじ
+  算用数字: { // @U引数を漢数字と解釈して数値を返す // @さんようすうじ
     type: 'func',
     josi: [['を', 'の']],
     pure: true,

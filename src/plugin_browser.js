@@ -41,14 +41,14 @@ const BrowserParts = [
 ]
 
 const PluginBrowser = {
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,
     fn: function (sys) {
       /* eslint no-global-assign: 0 */
-      if (typeof document === 'undefined') { document = { 'body': {} } }
-      if (typeof window === 'undefined') { window = { 'location': { 'href': '' } } }
+      if (typeof document === 'undefined') { document = { body: {} } }
+      if (typeof window === 'undefined') { window = { location: { href: '' } } }
       if (typeof navigator === 'undefined') { navigator = {} }
 
       // 定数を初期化

@@ -24,7 +24,7 @@ describe('basic ajax', () => {
 パラメータにAJAXオプション設定する。
 AJAXオプションを報告する。
 `
-    env.cmpReport(code, [{ 'KEY': 'VALUE' }])
+    env.cmpReport(code, [{ KEY: 'VALUE' }])
   })
 
   it('AJAX送信時', (done) => {

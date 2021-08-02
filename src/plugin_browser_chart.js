@@ -1,7 +1,7 @@
 // @ts-nocheck
 module.exports = {
   // @グラフ描画_CHARTJS
-  'グラフ描画': { // @ Chart.jsを利用して、DATAのグラフを描画 // @ぐらふびょうが
+  グラフ描画: { // @ Chart.jsを利用して、DATAのグラフを描画 // @ぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: true,
@@ -27,8 +27,8 @@ module.exports = {
       return chart
     }
   },
-  'グラフオプション': { type: 'const', value: {} }, // @ぐらふおぷしょん
-  '線グラフ描画': { // @ 線グラフを描画 // @せんぐらふびょうが
+  グラフオプション: { type: 'const', value: {} }, // @ぐらふおぷしょん
+  線グラフ描画: { // @ 線グラフを描画 // @せんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -42,7 +42,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  '棒グラフ描画': { // @ 棒グラフを描画 // @ぼうぐらふびょうが
+  棒グラフ描画: { // @ 棒グラフを描画 // @ぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -50,7 +50,7 @@ module.exports = {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
-        { 'indexAxis': 'x' })
+        { indexAxis: 'x' })
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
         type: 'bar',
@@ -60,7 +60,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  '横棒グラフ描画': { // @ 横棒グラフを描画 // @よこぼうぐらふびょうが
+  横棒グラフ描画: { // @ 横棒グラフを描画 // @よこぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -68,7 +68,7 @@ module.exports = {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
-        { 'indexAxis': 'y' })
+        { indexAxis: 'y' })
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
         type: 'bar', // horizontalBar
@@ -78,7 +78,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  '積上棒グラフ描画': { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげぼうぐらふびょうが
+  積上棒グラフ描画: { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -87,8 +87,8 @@ module.exports = {
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
         {
-          'indexAxis': 'x',
-          'scales': {
+          indexAxis: 'x',
+          scales: {
             x: { stacked: true },
             y: { stacked: true }
           }
@@ -102,7 +102,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  '積上横棒グラフ描画': { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげよこぼうぐらふびょうが
+  積上横棒グラフ描画: { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげよこぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -111,8 +111,8 @@ module.exports = {
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
         {
-          'indexAxis': 'y',
-          'scales': {
+          indexAxis: 'y',
+          scales: {
             x: { stacked: true },
             y: { stacked: true }
           }
@@ -126,7 +126,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  '散布図描画': { // @ 散布図を描画 // @さんぷず
+  散布図描画: { // @ 散布図を描画 // @さんぷず
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -144,7 +144,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  '円グラフ描画': { // @ 円グラフを描画 // @えんぐらふびょうが
+  円グラフ描画: { // @ 円グラフを描画 // @えんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -158,7 +158,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  'ドーナツグラフ描画': { // @ 円グラフ（ドーナツ）を描画 // @ドーナツぐらふびょうが
+  ドーナツグラフ描画: { // @ 円グラフ（ドーナツ）を描画 // @ドーナツぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -172,7 +172,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  'ポーラーグラフ描画': { // @ 円グラフ（鶏頭グラフ/ポーラーエリアチャート）を描画 // @ぽーらーぐらふびょうが
+  ポーラーグラフ描画: { // @ 円グラフ（鶏頭グラフ/ポーラーエリアチャート）を描画 // @ぽーらーぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -186,7 +186,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  'レーダーグラフ描画': { // @ レーダーチャートを描画 // @れーだーぐらふびょうが
+  レーダーグラフ描画: { // @ レーダーチャートを描画 // @れーだーぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: false,
@@ -200,7 +200,7 @@ module.exports = {
       return sys.__exec('グラフ描画', [d, sys])
     }
   },
-  '二次元グラフデータ変形': { // @ 二次元配列をXXグラフ描画の形式に整形する。種類TとDATAを指定。 // @にじげんぐらふでーたへんけい
+  二次元グラフデータ変形: { // @ 二次元配列をXXグラフ描画の形式に整形する。種類TとDATAを指定。 // @にじげんぐらふでーたへんけい
     type: 'func',
     josi: [['の'], ['を']],
     pure: false,

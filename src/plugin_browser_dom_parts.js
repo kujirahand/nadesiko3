@@ -1,9 +1,9 @@
 // @ts-nocheck
 module.exports = {
   // @DOM部品操作
-  'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
-  'DOM生成個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
-  'DOM親要素設定': { // @「ボタン作成」「エディタ作成」などのDOM要素を追加する対象を指定(デフォルトはdocument)して親要素のDOMオブジェクトを返す // @DOMおやようそせってい
+  DOM親要素: { type: 'const', value: '' }, // @DOMおやようそ
+  DOM生成個数: { type: 'const', value: 0 }, // @DOMせいせいこすう
+  DOM親要素設定: { // @「ボタン作成」「エディタ作成」などのDOM要素を追加する対象を指定(デフォルトはdocument)して親要素のDOMオブジェクトを返す // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: false,
@@ -13,9 +13,9 @@ module.exports = {
       return el
     }
   },
-  'DOMスキン': { type: 'const', value: '' }, // @DOMすきん
-  'DOMスキン辞書': { type: 'const', value: {} }, // @DOMすきんじしょ
-  'ボタン作成': { // @ラベルlabelを持つbutton要素を追加しDOMオブジェクトを返す // @ぼたんさくせい
+  DOMスキン: { type: 'const', value: '' }, // @DOMすきん
+  DOMスキン辞書: { type: 'const', value: {} }, // @DOMすきんじしょ
+  ボタン作成: { // @ラベルlabelを持つbutton要素を追加しDOMオブジェクトを返す // @ぼたんさくせい
     type: 'func',
     josi: [['の']],
     pure: false,
@@ -33,7 +33,7 @@ module.exports = {
       return btn
     }
   },
-  'エディタ作成': { // @textの値を持つテキストボックス(input[type='text'])の要素を追加しDOMオブジェクトを返す // @えでぃたさくせい
+  エディタ作成: { // @textの値を持つテキストボックス(input[type='text'])の要素を追加しDOMオブジェクトを返す // @えでぃたさくせい
     type: 'func',
     josi: [['の']],
     pure: false,
@@ -52,7 +52,7 @@ module.exports = {
       return inp
     }
   },
-  'テキストエリア作成': { // @textの値を持つtextarea要素を追加しDOMオブジェクトを返す // @てきすとえりあさくせい
+  テキストエリア作成: { // @textの値を持つtextarea要素を追加しDOMオブジェクトを返す // @てきすとえりあさくせい
     type: 'func',
     josi: [['の']],
     pure: false,
@@ -70,7 +70,7 @@ module.exports = {
       return te
     }
   },
-  'ラベル作成': { // @textの値を持つラベル(span要素)を追加しDOMオブジェクトを返す // @らべるさくせい
+  ラベル作成: { // @textの値を持つラベル(span要素)を追加しDOMオブジェクトを返す // @らべるさくせい
     type: 'func',
     josi: [['の']],
     pure: false,
@@ -88,7 +88,7 @@ module.exports = {
       return te
     }
   },
-  '改行作成': { // @改行(br要素)を追加しDOMオブジェクトを返す // @かいぎょうさくせい
+  改行作成: { // @改行(br要素)を追加しDOMオブジェクトを返す // @かいぎょうさくせい
     type: 'func',
     josi: [],
     pure: false,
@@ -105,7 +105,7 @@ module.exports = {
       return te
     }
   },
-  'チェックボックス作成': { // @textのラベルを持つチェックボックス(input[type='checkbox'])要素を追加しDOMオブジェクトを返す // @ちぇっくぼっくすさくせい
+  チェックボックス作成: { // @textのラベルを持つチェックボックス(input[type='checkbox'])要素を追加しDOMオブジェクトを返す // @ちぇっくぼっくすさくせい
     type: 'func',
     josi: [['の']],
     pure: false,
@@ -129,7 +129,7 @@ module.exports = {
       return inp
     }
   },
-  'セレクトボックス作成': { // @配列optionsの選択肢を持つselect要素を追加しDOMオブジェクトを返す // @せれくとぼっくすさくせい
+  セレクトボックス作成: { // @配列optionsの選択肢を持つselect要素を追加しDOMオブジェクトを返す // @せれくとぼっくすさくせい
     type: 'func',
     josi: [['の']],
     pure: false,
@@ -151,7 +151,7 @@ module.exports = {
       return dom
     }
   },
-  'DOMスキン設定': { // @「ボタン作成」「エディタ作成」などで適用するスキンを指定する(#1033) // @DOMすきんせってい
+  DOMスキン設定: { // @「ボタン作成」「エディタ作成」などで適用するスキンを指定する(#1033) // @DOMすきんせってい
     type: 'func',
     josi: [['を', 'に', 'の']],
     pure: false,

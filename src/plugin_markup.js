@@ -5,7 +5,7 @@
  */
 const PluginMarkup = {
   // @マークアップ
-  'マークダウンHTML変換': { // @マークダウン形式で記述された文字列SをHTML形式に変換する // @まーくだうんHTMLへんかん
+  マークダウンHTML変換: { // @マークダウン形式で記述された文字列SをHTML形式に変換する // @まーくだうんHTMLへんかん
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -15,7 +15,7 @@ const PluginMarkup = {
       return html
     }
   },
-  'HTML整形': { // @HTML形式で記述された文字列Sを整形する // @HTMLせいけい
+  HTML整形: { // @HTML形式で記述された文字列Sを整形する // @HTMLせいけい
     type: 'func',
     josi: [['を']],
     pure: true,

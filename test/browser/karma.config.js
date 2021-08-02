@@ -159,9 +159,9 @@ module.exports = function (config) {
       resolve: {
         mainFields: ['browser', 'main', 'module'],
         alias: {
-          'root': path.join(__dirname, '../..'),
-          'nako3': path.join(__dirname, '../../src'),
-          'utils': path.join(__dirname, '../../utils')
+          root: path.join(__dirname, '../..'),
+          nako3: path.join(__dirname, '../../src'),
+          utils: path.join(__dirname, '../../utils')
         }
       },
       module: {

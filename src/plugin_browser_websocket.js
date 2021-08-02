@@ -1,7 +1,7 @@
 // @ts-nocheck
 module.exports = {
   // @WebSocket
-  'WS接続完了時': { // @WebSocketでサーバに接続完了した時に実行されるイベントを指定 // @WSせつぞくかんりょうしたとき
+  WS接続完了時: { // @WebSocketでサーバに接続完了した時に実行されるイベントを指定 // @WSせつぞくかんりょうしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -10,7 +10,7 @@ module.exports = {
     },
     return_none: true
   },
-  'WS受信時': { // @WebSocketでサーバからメッセージを受信した時に実行されるイベントを指定 // @WSじゅしんしたとき
+  WS受信時: { // @WebSocketでサーバからメッセージを受信した時に実行されるイベントを指定 // @WSじゅしんしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -19,7 +19,7 @@ module.exports = {
     },
     return_none: true
   },
-  'WSエラー発生時': { // @WebSocketでエラーが発生した時に実行されるイベントを指定 // @WSえらーはっせいじ
+  WSエラー発生時: { // @WebSocketでエラーが発生した時に実行されるイベントを指定 // @WSえらーはっせいじ
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -28,7 +28,7 @@ module.exports = {
     },
     return_none: true
   },
-  'WS接続': { // @WebSocketサーバsに接続する // @WSせつぞく
+  WS接続: { // @WebSocketサーバsに接続する // @WSせつぞく
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
@@ -52,7 +52,7 @@ module.exports = {
       return ws
     }
   },
-  'WS送信': { // @アクティブなWebSocketへsを送信する // @WSそうしん
+  WS送信: { // @アクティブなWebSocketへsを送信する // @WSそうしん
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
@@ -61,7 +61,7 @@ module.exports = {
       ws.send(s)
     }
   },
-  'WS切断': { // @アクティブなWebSocketを閉じる // @WSせつだん
+  WS切断: { // @アクティブなWebSocketを閉じる // @WSせつだん
     type: 'func',
     josi: [],
     pure: true,

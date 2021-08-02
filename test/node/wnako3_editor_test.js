@@ -148,7 +148,7 @@ describe('wnako3_editor_test', () => {
     it('プラグイン関数の助詞のドキュメントを表示する', () => {
       const nako3 = new NakoCompiler()
       nako3.addPluginObject('PluginEditorTest', {
-        'プラグイン関数テスト': {
+        プラグイン関数テスト: {
           type: 'func',
           josi: [['を', 'と'], ['に', 'は']],
           fn: () => {}
@@ -291,7 +291,7 @@ describe('wnako3_editor_test', () => {
     })
     it('組み込みのプラグイン関数', async () => {
       const compiler = new NakoCompiler()
-      compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン関数': { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
+      compiler.addPluginObject('PluginEditorTest', { テスト用プラグイン関数: { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
       const tokenizer = await createBackgroundTokenizer('', compiler)
       expect(LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)).to.deep.include({
         caption: '（Aを、Bに）テスト用プラグイン関数',
@@ -302,7 +302,7 @@ describe('wnako3_editor_test', () => {
     })
     it('組み込みのプラグイン変数', async () => {
       const compiler = new NakoCompiler()
-      compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン変数': { type: 'var', value: 0 } })
+      compiler.addPluginObject('PluginEditorTest', { テスト用プラグイン変数: { type: 'var', value: 0 } })
       const tokenizer = await createBackgroundTokenizer('', compiler)
       expect(LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)).to.deep.include({
         caption: 'テスト用プラグイン変数',
@@ -321,7 +321,7 @@ describe('wnako3_editor_test', () => {
     })
     it('関数の呼び出しはmetaの値に影響を与えない', async () => {
       const compiler = new NakoCompiler()
-      compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン関数': { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
+      compiler.addPluginObject('PluginEditorTest', { テスト用プラグイン関数: { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
       const tokenizer = await createBackgroundTokenizer('テスト用プラグイン関数\n', compiler)
       const result = LanguageFeatures.getCompletionItems(1, '', compiler, tokenizer)
       assert.deepStrictEqual(result.filter((v) => v.value === 'テスト用プラグイン関数'), [
