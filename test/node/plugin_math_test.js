@@ -10,8 +10,8 @@ describe('plugin_math_test', () => {
   // wnako.logger.addListener('trace', ({ nodeConsole }) => { console.log(nodeConsole) })
 
   const cmp = (code, res) => {
-    for (let nako of [cnako, wnako]) {
-      let c = code
+    for (const nako of [cnako, wnako]) {
+      const c = code
       nako.logger.debug('code=' + code)
       assert.strictEqual(nako.run(c).log, res)
     }

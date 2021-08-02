@@ -12,7 +12,7 @@ describe('plugin_markup_test', () => {
   cnako.silent = true
 
   const cmp = (code, res) => {
-    for (let nako of [cnako, wnako]) {
+    for (const nako of [cnako, wnako]) {
       let c = code
 
       if (nako === cnako) {

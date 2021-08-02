@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('plugin_webworker_test', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 
@@ -19,7 +19,7 @@ WからNAKOワーカー表示した時には、
 
 Wで「"かかかかか"を表示する;"<>?"をHTML変換して表示する;"おわり"をNAKOワーカーデータ送信」をNAKOワーカープログラム起動
 `
-    env.waitCmpReport(done, code, ["かかかかか","&lt;>?","おわり"])
+    env.waitCmpReport(done, code, ['かかかかか', '&lt;>?', 'おわり'])
   })
 
   it('web worker transport', (done) => {
@@ -48,6 +48,6 @@ Wに["ワーカ内処理","ワーカー側値"]をNAKOワーカー転送
 Wで「ワーカ内処理する」をNAKOワーカープログラム起動
 Wに「あいうえお」をNAKOワーカーデータ送信
 `
-    env.waitCmpReport(done, code, ["あいうえお","&lt;>?","おわり"])
+    env.waitCmpReport(done, code, ['あいうえお', '&lt;>?', 'おわり'])
   })
 })

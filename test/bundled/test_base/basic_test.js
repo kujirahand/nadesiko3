@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('basic', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 
@@ -146,8 +146,7 @@ describe('basic', () => {
         'もし、Fがhogeならば\n' +
         '    1を表示\n' +
         'ここまで',
-        // ---
-        '1')
+    // ---
+    '1')
   })
-
 })

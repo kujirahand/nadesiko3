@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('basic ajax', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 
@@ -14,7 +14,7 @@ describe('basic ajax', () => {
 パラメータ["SPACE"]は、「 」。
 パラメータをPOSTデータ生成して報告する。
 `
-    env.cmpReport(code, ["KEY=VALUE&_X=XE%5EZA&SPACE=%20"])
+    env.cmpReport(code, ['KEY=VALUE&_X=XE%5EZA&SPACE=%20'])
   })
 
   it('AJAXオプション設定', () => {
@@ -24,12 +24,12 @@ describe('basic ajax', () => {
 パラメータにAJAXオプション設定する。
 AJAXオプションを報告する。
 `
-    env.cmpReport(code, [{"KEY":"VALUE"}])
+    env.cmpReport(code, [{ 'KEY': 'VALUE' }])
   })
 
   it('AJAX送信時', (done) => {
     const code = '「/resources/ok.txt」へAJAX送信時には;対象を報告する;ここまで'
-    env.waitCmpReport(done ,code, ["OK"])
+    env.waitCmpReport(done, code, ['OK'])
   })
 
   it('POST送信時', (done) => {
@@ -41,7 +41,7 @@ AJAXオプションを報告する。
 対象を報告する。
 ここまで
 `
-    env.waitCmpReport(done ,code, ["OK"])
+    env.waitCmpReport(done, code, ['OK'])
   }).timeout(10000)
 
   it('AJAX送信', (done) => {
@@ -51,6 +51,6 @@ AJAXオプションを報告する。
 次に、対象を報告する。
 ここまで
 `
-    env.waitCmpReport(done ,code, ["OK"])
+    env.waitCmpReport(done, code, ['OK'])
   })
 })

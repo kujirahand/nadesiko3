@@ -2,33 +2,33 @@ const NakoCompiler = require('../../src/nako3')
 const assert = require('assert')
 
 describe('variable_scope_test', () => {
-    const nako = new NakoCompiler()
-    const cmp = (code, res) => {
-        assert.strictEqual(nako.run(code).log, res)
-    }
+  const nako = new NakoCompiler()
+  const cmp = (code, res) => {
+    assert.strictEqual(nako.run(code).log, res)
+  }
 
-    it('関数内からグローバル変数へ代入', () => {
-        cmp(`
+  it('関数内からグローバル変数へ代入', () => {
+    cmp(`
 Aとは変数
 ●Fとは
     A=1
 ここまで
 F
 Aを表示
-`, `1`)
-    })
-    it('関数内からグローバル変数を参照', () => {
-        cmp(`
+`, '1')
+  })
+  it('関数内からグローバル変数を参照', () => {
+    cmp(`
 Aとは変数
 ●Fとは
     Aを表示
 ここまで
 A=1
 F
-`, `1`)
-    })
-    it('変数のshadowing', () => {
-        cmp(`
+`, '1')
+  })
+  it('変数のshadowing', () => {
+    cmp(`
 Aとは変数
 A=2
 ●Fとは
@@ -38,11 +38,11 @@ A=2
 ここまで
 F
 Aを表示
-`, `1\n2`)
-    })
-    it('ネストした関数定義', () => {
-        // 関数内の関数定義は、関数外で定義されている場合と同じ扱いとする。
-        cmp(`
+`, '1\n2')
+  })
+  it('ネストした関数定義', () => {
+    // 関数内の関数定義は、関数外で定義されている場合と同じ扱いとする。
+    cmp(`
 Aとは変数
 A=3
 ●Fとは
@@ -54,33 +54,33 @@ A=3
 G
 Aを表示
 `, '1')
-    })
-    it('JavaScriptで使えない変数名の使用 - グローバル変数の場合', () => {
-        cmp(`
+  })
+  it('JavaScriptで使えない変数名の使用 - グローバル変数の場合', () => {
+    cmp(`
 if=10
 ifを表示
 `, '10')
-    })
-    it('JavaScriptで使えない変数名の使用 - ローカル変数の場合', () => {
-        cmp(`
+  })
+  it('JavaScriptで使えない変数名の使用 - ローカル変数の場合', () => {
+    cmp(`
 ●function
     var=10
     varを表示
 ここまで
 function
 `, '10')
-    })
-    it('JavaScriptで使えない変数名の使用 - 関数からグローバル変数を参照する場合', () => {
-        cmp(`
+  })
+  it('JavaScriptで使えない変数名の使用 - 関数からグローバル変数を参照する場合', () => {
+    cmp(`
 var=10
 ●function
     varを表示
 ここまで
 function
 `, '10')
-    })
-    it('JavaScriptで使えない変数名の使用 - 変数のshadowing', () => {
-        cmp(`
+  })
+  it('JavaScriptで使えない変数名の使用 - 変数のshadowing', () => {
+    cmp(`
 var=10
 ●function
     varsとは変数
@@ -89,9 +89,9 @@ var=10
 function
 varを表示
 `, '10')
-    })
-    it('関数内から「ナデシコする」を呼ぶ', () => {
-        cmp(`\
+  })
+  it('関数内から「ナデシコする」を呼ぶ', () => {
+    cmp(`\
 A=1
 ●Fとは
     B=2
@@ -101,5 +101,5 @@ A=1
 ここまで
 F
 `, '3\n4')
-    })
+  })
 })

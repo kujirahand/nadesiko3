@@ -67,7 +67,8 @@ describe('prepare', () => {
     const b = convert('123_ \r\n456 \n789')
     assert.strictEqual(b, '123_ \n456 \n789')
   })
-  it('CR+LF2', () => {    const a = convert('A= 1 + _ \r\n1 + 2  \nAを表示')
+  it('CR+LF2', () => {
+    const a = convert('A= 1 + _ \r\n1 + 2  \nAを表示')
     assert.strictEqual(a, 'A= 1 + _ \n1 + 2  \nAを表示')
   })
   it('Multibyte Flag to Singlebyte Flag', () => {

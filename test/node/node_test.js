@@ -1,7 +1,7 @@
 const assert = require('assert')
 const child_process = require('child_process')
 const path = require('path')
-const fs = require ('fs')
+const fs = require('fs')
 
 const cnako3 = path.join(__dirname, '../../src/cnako3.js')
 const packagejson = require('../../package.json')
@@ -29,7 +29,7 @@ describe('node_test(cnako)', () => {
   }).timeout(15000)
 
   it('単独で実行できるプログラムの出力 - Node.js', function () {
-    if (process.env.NODE_ENV === 'test') {return this.skip()}
+    if (process.env.NODE_ENV === 'test') { return this.skip() }
     const stderr = child_process.spawnSync('node', [cnako3, '-c', path.join(__dirname, 'add_test.nako3')]).stderr
     try {
       if (stderr) { console.error(stderr.toString()) }

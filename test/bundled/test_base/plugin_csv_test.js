@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('plugin_csv_test', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 
@@ -27,7 +27,7 @@ describe('plugin_csv_test', () => {
     cmp('a=「1\t\t3\n4\t5\t6」のTSV取得。a[0][2]を表示', '3')
   })
   it('表CSV変換', () => {
-    env.cmpReport('[[1,2,3],[4,5,6]]を表CSV変換して報告', ["1,2,3\r\n4,5,6\r\n"])
+    env.cmpReport('[[1,2,3],[4,5,6]]を表CSV変換して報告', ['1,2,3\r\n4,5,6\r\n'])
     env.cmpReport('[[1,2,"3\r\n,"],[4,5,6]]を表CSV変換して報告', ['1,2,"3\r\n,"\r\n4,5,6\r\n'])
   })
   it('表TSV変換', () => {

@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('plugin_kansuji_test', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 
@@ -45,5 +45,4 @@ describe('plugin_kansuji_test', () => {
     cmp('「28000103206018」の漢数字の算用数字を表示。', '28000103206018')
     cmp('「161803398874989484820458683436563811772030917980576286213544862270526046」の漢数字の算用数字を表示。', '161803398874989484820458683436563811772030917980576286213544862270526046')
   })
-
 })

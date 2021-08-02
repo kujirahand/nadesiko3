@@ -2,7 +2,7 @@
 const defCode =
   'カメ全消去。' +
   'カメ描画先は『#turtle_cv』。' +
-  '『#turtle_cv』へ描画開始。';
+  '『#turtle_cv』へ描画開始。'
 
 let displayId = 'info'
 
@@ -19,7 +19,7 @@ function runBox (id) {
     return
   }
   console.log('runBox:', id)
-  let src = defCode + document.getElementById(id).value
+  const src = defCode + document.getElementById(id).value
   displayId = id + '_info'
   document.getElementById(displayId).innerHTML = ''
   try {
@@ -34,8 +34,7 @@ function runBox (id) {
 }
 
 function resetBoxTurtle (id) {
-  if (id === null)
-    id = 'src_box'
+  if (id === null) { id = 'src_box' }
 
   document.getElementById(id + '_info').innerHTML = ''
   const cv = document.getElementById('turtle_cv')

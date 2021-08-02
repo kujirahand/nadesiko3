@@ -40,7 +40,7 @@ describe('plugin_node_test', () => {
     cmd('3と3がASSERT等')
   })
   it('環境変数取得', () => {
-    const path = process.env['PATH']
+    const path = process.env.PATH
     cmp('「PATH」の環境変数取得して表示。', path)
   })
   it('圧縮解凍', () => {
@@ -74,14 +74,14 @@ describe('plugin_node_test', () => {
     }
   })
   it('文字エンコーディング', () => {
-    const sjisfile = path.join(__dirname, "sjis.txt")
+    const sjisfile = path.join(__dirname, 'sjis.txt')
     cmp(`「${sjisfile}」をバイナリ読む。` +
       'SJIS取得。CSV取得してCに代入。C[2][1]を表示',
-      'ホームセンター')
+    'ホームセンター')
     cmp(`「${sjisfile}」をバイナリ読む。` +
       '「Shift_JIS」からエンコーディング取得。' +
       'CSV取得してCに代入。C[2][1]を表示',
-      'ホームセンター')
+    'ホームセンター')
   })
   it('ハッシュ値計算', () => {
     cmp('「hello world」を「sha256」の「base64」でハッシュ値計算して表示。', 'uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek=')
@@ -89,5 +89,3 @@ describe('plugin_node_test', () => {
     cmp('「some data to hash」を「sha256」の「hex」でハッシュ値計算して表示。', '6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50')
   })
 })
-
-

@@ -45,7 +45,7 @@ export default (nako) => {
       }
 
       const check_event_set = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_form.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_form.html']
 
         const code = `
 要素は${selectmethod}
@@ -69,7 +69,7 @@ export default (nako) => {
       }
 
       const check_event_fire = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_form.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_form.html']
 
         const code = `
 要素は${selectmethod}
@@ -92,7 +92,7 @@ export default (nako) => {
       }
 
       const check_event_add = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_form.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_form.html']
 
         const code = `
 要素は${selectmethod}
@@ -116,7 +116,7 @@ export default (nako) => {
       }
 
       const check_event_remove = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_form.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_form.html']
 
         const code = `
 要素は${selectmethod}
@@ -173,7 +173,7 @@ export default (nako) => {
 
     describe('読み込み時', () => {
       const check_img_load = async (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_form.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_form.html']
 
         const code = `
 IMGは「img」のDOM要素作成
@@ -240,7 +240,7 @@ IMG["src"]は「/turtle.png」
       }
 
       const check_form_submit = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_form.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_form.html']
 
         const code = `
 要素は${selectmethod}
@@ -260,7 +260,7 @@ WINDOW["event"]をDOMイベント処理停止する。
           })
 
           const btn = document.getElementById('submit')
-          let evt = createSubmitEvent({ submitter: btn })
+          const evt = createSubmitEvent({ submitter: btn })
           e.dispatchEvent(evt)
         }
 
@@ -302,7 +302,7 @@ WINDOW["event"]をDOMイベント処理停止する。
       }
 
       const check_event_key = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_scrolldiv.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_scrolldiv.html']
         window.scrollX = 50
         window.scrollY = 50
 
@@ -389,7 +389,7 @@ WINDOW["event"]をDOMイベント処理停止する。
       }
 
       const check_event_mouse = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_scrolldiv.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_scrolldiv.html']
         window.scrollX = 50
         window.scrollY = 50
 
@@ -415,7 +415,7 @@ WINDOW["event"]をDOMイベント処理停止する。
         const e = document.getElementById('tgt')
         if (e) {
           const targetOffsets = [
-            { target: e, x:  0, y:  0, btn: 0, btns: 1 },
+            { target: e, x: 0, y: 0, btn: 0, btns: 1 },
             { target: e, x: 30, y: 35, btn: 1, btns: 3 },
             { target: e, x: 30, y: 40, btn: 0, btns: 3 },
             { target: e, x: 20, y: 35, btn: 1, btns: 2 }
@@ -504,7 +504,7 @@ WINDOW["event"]をDOMイベント処理停止する。
         }
       }
       const check_event_touch = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'event_dom_scrolldiv.html']
+        document.body.innerHTML = __html__[htmlPath + 'event_dom_scrolldiv.html']
         window.scrollX = 50
         window.scrollY = 50
 
@@ -555,28 +555,28 @@ WINDOW["event"]をDOMイベント処理停止する。
           const touchesList = createTouches(targetOffsets)
 
           let evt = createTouchEvent('touchstart', {
-            changed: [ touchesList[0], touchesList[1] ],
-            target: [ touchesList[0], touchesList[1] ],
-            all: [ touchesList[0], touchesList[1] ]
+            changed: [touchesList[0], touchesList[1]],
+            target: [touchesList[0], touchesList[1]],
+            all: [touchesList[0], touchesList[1]]
           })
           e.dispatchEvent(evt)
 
           evt = createTouchEvent('touchmove', {
-            changed: [ touchesList[2] ],
-            target: [ touchesList[2], touchesList[1] ],
-            all: [ touchesList[2], touchesList[1] ]
+            changed: [touchesList[2]],
+            target: [touchesList[2], touchesList[1]],
+            all: [touchesList[2], touchesList[1]]
           })
           e.dispatchEvent(evt)
 
           evt = createTouchEvent('touchcancel', {
-            changed: [ touchesList[3] ],
-            target: [ touchesList[1] ],
-            all: [ touchesList[1] ]
+            changed: [touchesList[3]],
+            target: [touchesList[1]],
+            all: [touchesList[1]]
           })
           e.dispatchEvent(evt)
 
           evt = createTouchEvent('touchend', {
-            changed: [ touchesList[4] ],
+            changed: [touchesList[4]],
             target: [],
             all: []
           })
