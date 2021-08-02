@@ -1,14 +1,22 @@
 /* reset style */
-h1, h3, .sbox h4, .edit_head, .buttons, #info {
+h1,
+h3,
+.sbox h4,
+.edit_head,
+.buttons,
+#info {
   margin: 0;
 }
 
-h1, h3, #info {
+h1,
+h3,
+#info {
   padding: 0.5em;
 }
 
 /* title */
-h1#title, h1 {
+h1#title,
+h1 {
   background-color: #fff0f0;
   margin: 0;
   padding: 4px;
@@ -21,10 +29,16 @@ div.menubar {
   background-color: #f0e0e0;
   font-size: 0.8em;
   color: black;
-  margin: 0; padding: 4px;
+  margin: 0;
+  padding: 4px;
   overflow: hidden;
 }
-h3, .info, .err, #src_box, .src {
+
+h3,
+.info,
+.err,
+#src_box,
+.src {
   font-size: 1em;
 }
 
@@ -32,7 +46,6 @@ h3 {
   background-color: #e0e0e0;
   border-bottom: 1px solid gray;
 }
-
 
 .sbox h4 {
   font-size: 0.9em;
@@ -42,6 +55,7 @@ h3 {
 .default_button {
   min-width: 10em;
 }
+
 .mini_button {
   width: 1em;
 }
@@ -55,11 +69,13 @@ button {
   border: 1px solid silver;
 }
 
-.turtle_box, .buttons {
+.turtle_box,
+.buttons {
   text-align: center;
 }
 
-.edit_head, .buttons {
+.edit_head,
+.buttons {
   padding: 0.3em;
 }
 
@@ -73,11 +89,15 @@ button {
   padding: 0;
 }
 
-.info, .err, #src_box, .src {
+.info,
+.err,
+#src_box,
+.src {
   line-height: 1.5em;
 }
 
-.info, .err {
+.info,
+.err {
   border: 1px solid gray;
   padding: 8px;
 }
@@ -91,7 +111,9 @@ button {
   background-color: #fff0f0;
 }
 
-#src_box, .src, #info {
+#src_box,
+.src,
+#info {
   width: 99%;
 }
 

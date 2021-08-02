@@ -1,198 +1,224 @@
 .nako3_editor {
-    height: 300px;
+  height: 300px;
 }
+
 .nako3_editor.resizable {
-    resize: vertical;
-    overflow: auto;
-    min-height: 42px;
-    max-height: 1080px;
+  resize: vertical;
+  overflow: auto;
+  min-height: 42px;
+  max-height: 1080px;
 }
 
 /* シンタックスハイライトの色の調整 */
 .nako3_editor.ace-xcode .ace_name.ace_function {
-    color: #996506;
+  color: #996506;
 }
+
 .nako3_editor.ace-xcode .ace_string.ace_other {
-    color: #C00;
+  color: #c00;
 }
+
 .nako3_editor.ace-xcode .ace_keyword.ace_operator {
-    color: black;
+  color: black;
 }
+
 .nako3_editor.ace-xcode .ace_constant.ace_numeric {
-    color: rgb(27, 143, 23);
+  color: rgb(27, 143, 23);
 }
+
 .nako3_editor.ace-xcode .ace_support.ace_constant {
-    color: #037d99;
+  color: #037d99;
 }
+
 .nako3_editor.ace-xcode .ace_variable.ace_language {
-    color: #2910D7;
+  color: #2910d7;
 }
 
 .nako3_editor.ace-monokai .ace_entity.ace_function {
-    /* 変数と関数の色が同じで見分けが付かないため、関数を太字で表示 */
-    font-weight: bold;
+  /* 変数と関数の色が同じで見分けが付かないため、関数を太字で表示 */
+  font-weight: bold;
 }
 
 .nako3_editor .ace_markup.ace_underline .ace_cjk {
-    /* cjk文字に下線が引かれない問題の修正 */
-    text-decoration: underline;
+  /* cjk文字に下線が引かれない問題の修正 */
+  text-decoration: underline;
 }
 
 /* エラー位置に付ける赤線 */
 .nako3_editor .marker-red,
 .nako3_editor .marker-yellow {
-    position: absolute;
+  position: absolute;
 }
-.nako3_editor .marker-red:after,
-.nako3_editor .marker-yellow:after {
-    content: "";
-    display: block;
-    height: 100%;
-    background-size: 6px;
-    background-repeat: repeat-x;
-    background-position: left bottom;
+
+.nako3_editor .marker-red::after,
+.nako3_editor .marker-yellow::after {
+  content: "";
+  display: block;
+  height: 100%;
+  background-size: 6px;
+  background-repeat: repeat-x;
+  background-position: left bottom;
 }
-.nako3_editor .marker-red:after {
-    /* wnako3_editor_marker_red.xcfをpngで出力してからblobに変換したもの。exifなどの出力を無効化しないとサイズが数倍大きくなってしまう。 */
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAUCAYAAADRA14pAAAB4ElEQVRYw9XYPWzNURjH8c8VJNdLOhBDw9BYSqSDxOYtFokIgyAGsZHGaGJhYJEYWIWIMBAGL0lN2EgQIY2FpE2aDiSNeFfFz9D/QNNK///2tvee5MlZzjnP8z3nPC/n1MxgC4uwBl3oQB19eIKnNX5o9RbawuFwP4yETCBfQ084ENpaEXRZOBc+/wdyIvkeboaNrQA6JxwJnyqAjiePw+ZmhV1RXN00QG5n1O+bBnZ3GGoQ7N9+fiLMn03QrnCvwaBj5VnonGnQleFS+FXS2PfhVjgZjhebVcXfv4RDMwk6UtLAh2FnmDvOmvWwK9wIwyXXvRIWNgJ0aThbwaDBsL2EnvZwuvDXyeronbYrHhaEY+FDhWt3PSyZQsS/VkLXx7BnKqD10B0GKoAOhX3TtOHbQl8J3VfD8jIKVoVT4V0F0J/hQmif7ho8XCxhx3C4HLaOTWG1sBqbjPZbir5Ku4ujNXobGDD34jwWl5j2DS/wGi8VJ1I1H/4Od8K6GUyHnUWQqmLvG+FBxcmPwoZZKnbqFQ+qX+gvOelV2NEk5Wx3yfQ1qAg0kxk8EA6OVzjMMnRHUblNhuGtSQx6HvaHeU3+LF1fvKH/d4BDEwH3hTNhbQt+PLQXPyw9RTHyT3HyBwLEm4Srm0QtAAAAAElFTkSuQmCC");
+
+.nako3_editor .marker-red::after {
+  /* wnako3_editor_marker_red.xcfをpngで出力してからblobに変換したもの。exifなどの出力を無効化しないとサイズが数倍大きくなってしまう。 */
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAUCAYAAADRA14pAAAB4ElEQVRYw9XYPWzNURjH8c8VJNdLOhBDw9BYSqSDxOYtFokIgyAGsZHGaGJhYJEYWIWIMBAGL0lN2EgQIY2FpE2aDiSNeFfFz9D/QNNK///2tvee5MlZzjnP8z3nPC/n1MxgC4uwBl3oQB19eIKnNX5o9RbawuFwP4yETCBfQ084ENpaEXRZOBc+/wdyIvkeboaNrQA6JxwJnyqAjiePw+ZmhV1RXN00QG5n1O+bBnZ3GGoQ7N9+fiLMn03QrnCvwaBj5VnonGnQleFS+FXS2PfhVjgZjhebVcXfv4RDMwk6UtLAh2FnmDvOmvWwK9wIwyXXvRIWNgJ0aThbwaDBsL2EnvZwuvDXyeronbYrHhaEY+FDhWt3PSyZQsS/VkLXx7BnKqD10B0GKoAOhX3TtOHbQl8J3VfD8jIKVoVT4V0F0J/hQmif7ho8XCxhx3C4HLaOTWG1sBqbjPZbir5Ku4ujNXobGDD34jwWl5j2DS/wGi8VJ1I1H/4Od8K6GUyHnUWQqmLvG+FBxcmPwoZZKnbqFQ+qX+gvOelV2NEk5Wx3yfQ1qAg0kxk8EA6OVzjMMnRHUblNhuGtSQx6HvaHeU3+LF1fvKH/d4BDEwH3hTNhbQt+PLQXPyw9RTHyT3HyBwLEm4Srm0QtAAAAAElFTkSuQmCC");
 }
-.nako3_editor .marker-yellow:after {
-    /* wnako3_editor_marker_yellow.xcf */
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAUCAYAAADRA14pAAACOklEQVRYw9XXSchOURwG8N/7keIYSliITBtT387CQWKjRJIpoRChlGFjiJKFhQxRQqIszJIMa8PiRiRjlMRC345Il0yxOYsv+Xjv7X1fr2dzN/c55/90/uf5P6eigcgz3TEarRiCrniJO7gboi/1rqHSAJG9sBCzMAGdO/j1E27gNC6G6P1/JTjP9MMWLEUoSP+Mq9gXoptNLTjPtGAdtqF7DZa8jY0hut50gvPMQBzHpDo0zWWsCdHLphCcZ+bgEHrX0RI+YSd2lDW4Sg2EtqYipjTQ8O9hQYieNUxwnhmGrViElgLUd7iJR/iKsRhX4r5/xPoQHa6r4HZCF/xhxPwON7AXV0P07Zc1u2Iq5mM6uhRY9wRWhCivqeA80ycJXVmwoLZU0JUq9+mPtVidgkk1eILZ1bR4pYoCuqUCNqBnwYY4h1UhelPS8XdhbpWUD1gWorOlBKc2W4zNGFCw3rdYHaJTNTDFqTiAwVVSTmJDiF5XJTjPjEhRcDn6Fqzve5rDW0PUVuMMvh9LqqR8wZl0v6+1H2GVPDMSEzESk9O3DK5gU4ge1zGuzsMR9Cg4ux/gOR5W8szRlHfL4EfKvNtDdKdBL67hOI9RJegvWjC05N63MDFE0xslFpITj8GxEvTOlTzzCoMKkJ6mMH/JP0aeWYXdBcZXW0sBB36NFWhtBrHptA+m1r5U5IR//OWn+9iD0yH6qkmRZ8anZ+kMdOpoXHYk+BUu4ESI7vmPkJLaTExLGb29o3/4CTXDoNqc3UeFAAAAAElFTkSuQmCC");
+
+.nako3_editor .marker-yellow::after {
+  /* wnako3_editor_marker_yellow.xcf */
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAUCAYAAADRA14pAAACOklEQVRYw9XXSchOURwG8N/7keIYSliITBtT387CQWKjRJIpoRChlGFjiJKFhQxRQqIszJIMa8PiRiRjlMRC345Il0yxOYsv+Xjv7X1fr2dzN/c55/90/uf5P6eigcgz3TEarRiCrniJO7gboi/1rqHSAJG9sBCzMAGdO/j1E27gNC6G6P1/JTjP9MMWLEUoSP+Mq9gXoptNLTjPtGAdtqF7DZa8jY0hut50gvPMQBzHpDo0zWWsCdHLphCcZ+bgEHrX0RI+YSd2lDW4Sg2EtqYipjTQ8O9hQYieNUxwnhmGrViElgLUd7iJR/iKsRhX4r5/xPoQHa6r4HZCF/xhxPwON7AXV0P07Zc1u2Iq5mM6uhRY9wRWhCivqeA80ycJXVmwoLZU0JUq9+mPtVidgkk1eILZ1bR4pYoCuqUCNqBnwYY4h1UhelPS8XdhbpWUD1gWorOlBKc2W4zNGFCw3rdYHaJTNTDFqTiAwVVSTmJDiF5XJTjPjEhRcDn6Fqzve5rDW0PUVuMMvh9LqqR8wZl0v6+1H2GVPDMSEzESk9O3DK5gU4ge1zGuzsMR9Cg4ux/gOR5W8szRlHfL4EfKvNtDdKdBL67hOI9RJegvWjC05N63MDFE0xslFpITj8GxEvTOlTzzCoMKkJ6mMH/JP0aeWYXdBcZXW0sBB36NFWhtBrHptA+m1r5U5IR//OWn+9iD0yH6qkmRZ8anZ+kMdOpoXHYk+BUu4ESI7vmPkJLaTExLGb29o3/4CTXDoNqc3UeFAAAAAElFTkSuQmCC");
 }
 
 /* readonlyなときのスタイル */
 .nako3_editor.readonly .ace_active-line {
-    background: transparent;
+  background: transparent;
 }
+
 .nako3_editor.readonly .ace_gutter-active-line {
-    background: transparent;
+  background: transparent;
 }
+
 .nako3_editor.readonly .ace_cursor {
-    opacity: 0;
+  opacity: 0;
 }
 
 /* tooltipのスタイルの調整 */
 .nako3_editor .tooltip-plugin-name {
-    margin-left: 10px;
-    color: gray;
+  margin-left: 10px;
+  color: gray;
 }
-.ace_tooltip {
-    font-size: 13px;
-    padding-bottom: 6px;
-    padding-right: 10px;
-    opacity: 0.8;
 
-    /* メッセージが長いとき文字が画面外に出て読めない問題の修正 */
-    max-width: 80%;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
+.ace_tooltip {
+  font-size: 13px;
+  padding-bottom: 6px;
+  padding-right: 10px;
+  opacity: 0.8;
+
+  /* メッセージが長いとき文字が画面外に出て読めない問題の修正 */
+  max-width: 80%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 /* スニペットのプレースホルダのスタイル */
 .nako3_editor .ace_snippet-marker {
-    border-radius: 0;
-    background: rgba(0, 75, 255, 0.12);
-    border: none;
+  border-radius: 0;
+  background: rgba(0, 75, 255, 0.12);
+  border: none;
 }
 
 /* 右下のボタン全体を囲むdiv */
 .button-container {
-    position: absolute;
-    bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
-    right: 20px;
-    text-align: right;
-    font-size: 13px;
-    cursor: pointer;
+  position: absolute;
+  bottom: 11px; /* あまり低すぎるとスクロールバーで隠れてしまう。 */
+  right: 20px;
+  text-align: right;
+  font-size: 13px;
+  cursor: pointer;
 }
 
 /* 処理時間が長いときのメッセージ */
 .slow-speed-message {
-    color: rgb(85, 82, 255);
-    max-width: 75vw;
-    display: none;
-    font-weight: bold;
+  color: rgb(85, 82, 255);
+  max-width: 75vw;
+  display: none;
+  font-weight: bold;
 }
+
 .nako3_editor.ace-monokai .slow-speed-message {
-    color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
+
 .slow-speed-message.visible {
-    display: inline-block;
+  display: inline-block;
 }
+
 .slow-speed-message > span {
-    display: inline-block;
+  display: inline-block;
 }
 
 /* 「設定を開く」ボタンのスタイル */
 .editor-button {
-    color: gray;
-    display: inline-block;
-    user-select: none;
-    white-space: nowrap;
-    margin-left: 10px;
+  color: gray;
+  display: inline-block;
+  user-select: none;
+  white-space: nowrap;
+  margin-left: 10px;
 }
+
 .nako3_editor.ace-monokai .settings-button {
-    color: rgb(218, 218, 218);
+  color: rgb(218, 218, 218);
 }
 
 #ace_settingsmenu {
-    max-width: 60%;
+  max-width: 60%;
 }
 
 .editor-button:hover {
-    color: rgb(90, 90, 255);
+  color: rgb(90, 90, 255);
 }
+
 .editor-button:active {
-    color: rgb(24, 24, 192);
+  color: rgb(24, 24, 192);
 }
+
 .nako3_editor.ace-monokai .settings-button:hover {
-    color: rgb(215, 215, 255);
+  color: rgb(215, 215, 255);
 }
+
 .nako3_editor.ace-monokai .settings-button:active {
-    color: rgb(182, 182, 255);
+  color: rgb(182, 182, 255);
 }
+
 .nako3_editor.readonly .editor-button {
-    display: none; /* readonlyのときは表示しない。 */
+  display: none; /* readonlyのときは表示しない。 */
 }
+
 .nako3_editor.fullscreen {
-    position: fixed;
-    resize: none; /* .resizable で指定する resize: vertical を無効化 */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100% !important; /* !important が無いと、resize: vertical によるリサイズで上書きされてしまう。 */
-    z-index: 1000; /* ace editor のポップアップのz-indexは200000 */
+  position: fixed;
+  resize: none; /* .resizable で指定する resize: vertical を無効化 */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100% !important; /* !important が無いと、resize: vertical によるリサイズで上書きされてしまう。 */
+  z-index: 1000; /* ace editor のポップアップのz-indexは200000 */
 }
 
 /* 設定メニュー */
 #ace_settingsmenu > table {
-    border-spacing: 0 8px;
-    font-size: 13px;
+  border-spacing: 0 8px;
+  font-size: 13px;
 }
+
 #ace_settingsmenu > table td {
-    height: 30px;
+  height: 30px;
 }
+
 #ace_settingsmenu > table td > div {
-    height: 100%;
+  height: 100%;
 }
-#ace_settingsmenu button, input {
-    height: 100%;
-    font-size: 13px;
+
+#ace_settingsmenu button,
+input {
+  height: 100%;
+  font-size: 13px;
 }
+
 #ace_settingsmenu > table tr:last-child {
-    display: none; /* なでしこのバージョンと紛らわしいため、aceのバージョン表示を消す */
+  display: none; /* なでしこのバージョンと紛らわしいため、aceのバージョン表示を消す */
 }
 
 /* 出力の表示で、スペースの連続を残す。 */
 .nako3-output-container {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 
 /*
  * ※があるとカーソルがずれる問題の修正
- * 
+ *
  * フォントの作成方法:
  * 1. Font Forge を開いて "New" で新しいフォントを作成
  * 2. Encoding > Reencode > Custom
@@ -202,13 +228,15 @@
  * 6. woffでエクスポートする
  */
 @font-face {
-    font-family: 'nako3editorfix';
-    font-style: normal;
-    font-weight: 400;
-    /* nako3editorfix.woff */
-    src: url("data:application/x-font-woff;charset=utf-8;base64,d09GRk9UVE8AAAWQAAsAAAAACLAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABDRkYgAAADSAAAAgsAAAMRSKN2MkZGVE0AAAVsAAAAHAAAAByTUkwtR0RFRgAABVQAAAAYAAAAHAAVABRPUy8yAAABZAAAAEgAAABgdbX/sWNtYXAAAAL8AAAANAAAAUIADSLhaGVhZAAAAQgAAAAzAAAANhntIDBoaGVhAAABPAAAAB4AAAAkBOcB+WhtdHgAAAWIAAAACAAAAAgD7AAmbWF4cAAAAVwAAAAGAAAABgACUABuYW1lAAABrAAAAVAAAAJ2WG3UM3Bvc3QAAAMwAAAAFgAAACD/uAAzeJxjYGRgYADi/Y9OPI/nt/nKwM38AijCcCc1LQlCl1kzqAGV3GNaB+RyMDCBRAFvfguiAHicY2BkYGBax8DAEMX4DUgyMN5jYGRABUwAR9gC5QAAAABQAAACAAB4nGNgYfzGOIGBlYGBqYtpDwMDQw+EZnzAYMjIBBRlYOVkAIMGBlQQkOaawnBAwVrBmlnhvwVDFNM6sDAjXIECEDICAJBVC9J4nJWQP2vCQBjGn/NfqYO0u8NtVdBwSSbtKAQELaWI0FH0jIeSyBnBfIV+gC6du3br0KHfrU/idehSMOHN/d43z3vPeweghQ8InJ87PDoWrL86ruAKn46r6IpbxzW0xLPjOm7Ei+MG619Uito1s4eyq2CBNk6OK9z/3XEVT/h2XENb3DuuQ4qN4wbrb5hijBkkJjBYQiPBgd8mRkixRw7LeowNMmo6VHS5BlAMHz1yzldhgJB5E5iOZ3Jiljo56OYo3efWxJtMdpZdGajA78k8V4PQpzDBAlt6hHRb0SMjW6xJJ/5cbNNQr0yW2rVh/kRRjCN2bLJMdXzcLQgRmxK2RmVzTFUxnMeBJIaM/0zOihD9Mn6PhChNsii1sZaBp+RQ/h2FhbAf9ouzXHiEOUWWd2vKkSXtFO28ci3GxVzbg0kTqZTvKaXkZfv/ANnJaX94nGNgYGBmgGAZBkYGELAB8hjBfBYGBSDNAoRAvoL1//8Q8v4xqEoGRjYGGHPEAgCZ2gcNeJxjYGYAg/9bGYyAFCMDGgAALNMB6wAAeJyFkE9oE0EYxb/ZbNMS142pplZdNXhIW7GYtHjwIAyEKKKCBQ9ePLTpJsaQxG5KNZ72ZmkqgiCVgidPxR4UUURYWHoSPPQgihJUsLbVg3/IpRNI/PymkNLYQC+P92bf/uYxDFQVGGP+3HAmP2iOpsfzVjJ9E5gCDPqFH4TBxEFFHPKIbnVaY0+nRKEaazNgzm8A7DJgPmBAp6FgJ6jyFx1OQAyGLDNpWmYuYWaHrcyFs5dC59MJM1cwfbH89aKVTl0dD/Um+kIDkYHosVCxGDk5GPU1L/hvDwC7DYq84YhyruSIuMMcZ23B8ThdIizmamGvU7sRFPG1hVq8XUfEFxwhdYvktd5wT2Zh3TGE8DfKF1coX5kH6WSH2+tnHoT6D7KpiB1EXE7YiJU+jrh6lGTJS/HzEtUDHYD4e8xF2JuhuG+aOPoqSddukgMPSIwqlX8Jct3vXMTv9+Ew4lDWRXZ8chPbbrDbQbJhg21LNjSzuWRzyYYtbJZ8SbZ+ym3B3rSbN3ZfcyWbzvQVd9vdZz7ayPa/b/kmbvPuVm/CN9h8K7v+BfDv16TcbWWp+SdAF3x4SLL4nGB3n1FTv0NxdIYuUJfp754R4ry5R+XZy1SpvqKzmR766j1NrrdA0j9JcWSCXP0T9R79JFd5S6jyIsXoY96mi6k9pWBJ81V8FU0r7yhrO/8BJdh1iQB4nGNgZIAAHgYRBhYgzQTEjBAMAALLACoAAAABAAAAANqHb48AAAAA3GVmYgAAAADcZXY7AfYAAAH2ACY=");
-    unicode-range: U+203B; /* 「※」のフォントだけを自作フォントで置換 */
+  font-family: 'nako3editorfix';
+  font-style: normal;
+  font-weight: 400;
+
+  /* nako3editorfix.woff */
+  src: url("data:application/x-font-woff;charset=utf-8;base64,d09GRk9UVE8AAAWQAAsAAAAACLAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABDRkYgAAADSAAAAgsAAAMRSKN2MkZGVE0AAAVsAAAAHAAAAByTUkwtR0RFRgAABVQAAAAYAAAAHAAVABRPUy8yAAABZAAAAEgAAABgdbX/sWNtYXAAAAL8AAAANAAAAUIADSLhaGVhZAAAAQgAAAAzAAAANhntIDBoaGVhAAABPAAAAB4AAAAkBOcB+WhtdHgAAAWIAAAACAAAAAgD7AAmbWF4cAAAAVwAAAAGAAAABgACUABuYW1lAAABrAAAAVAAAAJ2WG3UM3Bvc3QAAAMwAAAAFgAAACD/uAAzeJxjYGRgYADi/Y9OPI/nt/nKwM38AijCcCc1LQlCl1kzqAGV3GNaB+RyMDCBRAFvfguiAHicY2BkYGBax8DAEMX4DUgyMN5jYGRABUwAR9gC5QAAAABQAAACAAB4nGNgYfzGOIGBlYGBqYtpDwMDQw+EZnzAYMjIBBRlYOVkAIMGBlQQkOaawnBAwVrBmlnhvwVDFNM6sDAjXIECEDICAJBVC9J4nJWQP2vCQBjGn/NfqYO0u8NtVdBwSSbtKAQELaWI0FH0jIeSyBnBfIV+gC6du3br0KHfrU/idehSMOHN/d43z3vPeweghQ8InJ87PDoWrL86ruAKn46r6IpbxzW0xLPjOm7Ei+MG619Uito1s4eyq2CBNk6OK9z/3XEVT/h2XENb3DuuQ4qN4wbrb5hijBkkJjBYQiPBgd8mRkixRw7LeowNMmo6VHS5BlAMHz1yzldhgJB5E5iOZ3Jiljo56OYo3efWxJtMdpZdGajA78k8V4PQpzDBAlt6hHRb0SMjW6xJJ/5cbNNQr0yW2rVh/kRRjCN2bLJMdXzcLQgRmxK2RmVzTFUxnMeBJIaM/0zOihD9Mn6PhChNsii1sZaBp+RQ/h2FhbAf9ouzXHiEOUWWd2vKkSXtFO28ci3GxVzbg0kTqZTvKaXkZfv/ANnJaX94nGNgYGBmgGAZBkYGELAB8hjBfBYGBSDNAoRAvoL1//8Q8v4xqEoGRjYGGHPEAgCZ2gcNeJxjYGYAg/9bGYyAFCMDGgAALNMB6wAAeJyFkE9oE0EYxb/ZbNMS142pplZdNXhIW7GYtHjwIAyEKKKCBQ9ePLTpJsaQxG5KNZ72ZmkqgiCVgidPxR4UUURYWHoSPPQgihJUsLbVg3/IpRNI/PymkNLYQC+P92bf/uYxDFQVGGP+3HAmP2iOpsfzVjJ9E5gCDPqFH4TBxEFFHPKIbnVaY0+nRKEaazNgzm8A7DJgPmBAp6FgJ6jyFx1OQAyGLDNpWmYuYWaHrcyFs5dC59MJM1cwfbH89aKVTl0dD/Um+kIDkYHosVCxGDk5GPU1L/hvDwC7DYq84YhyruSIuMMcZ23B8ThdIizmamGvU7sRFPG1hVq8XUfEFxwhdYvktd5wT2Zh3TGE8DfKF1coX5kH6WSH2+tnHoT6D7KpiB1EXE7YiJU+jrh6lGTJS/HzEtUDHYD4e8xF2JuhuG+aOPoqSddukgMPSIwqlX8Jct3vXMTv9+Ew4lDWRXZ8chPbbrDbQbJhg21LNjSzuWRzyYYtbJZ8SbZ+ym3B3rSbN3ZfcyWbzvQVd9vdZz7ayPa/b/kmbvPuVm/CN9h8K7v+BfDv16TcbWWp+SdAF3x4SLL4nGB3n1FTv0NxdIYuUJfp754R4ry5R+XZy1SpvqKzmR766j1NrrdA0j9JcWSCXP0T9R79JFd5S6jyIsXoY96mi6k9pWBJ81V8FU0r7yhrO/8BJdh1iQB4nGNgZIAAHgYRBhYgzQTEjBAMAALLACoAAAABAAAAANqHb48AAAAA3GVmYgAAAADcZXY7AfYAAAH2ACY=");
+  unicode-range: U+203B; /* 「※」のフォントだけを自作フォントで置換 */
 }
+
 .ace_editor.nako3_editor {
-    font-family: 'nako3editorfix', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-family: 'nako3editorfix', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
