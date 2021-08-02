@@ -1616,8 +1616,9 @@ function setupEditor (idOrElement, nako3, ace) {
           return nako3.runReset(preCode + code, file, preCode)
         }
       })
-      // eslint-disable-next-line node/handle-callback-err
-      .catch((err) => { }) // エラーはloggerに送られるためここでは何もしなくて良い
+      .catch((_) => {
+        // エラーはloggerに送られるためここでは何もしなくて良い
+      })
       .then(async (res) => {
         // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
         retokenize()
