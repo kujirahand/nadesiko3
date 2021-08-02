@@ -41,19 +41,17 @@ const PluginPromise = {
     },
     return_none: false
   },
-  '処理時': { // @非同期処理で終了した時にcallbackが実行される。引数と『対象』は、成功時は真とデータが設定され、失敗時は、偽と理由が設定される。 // @しょりしたとき
+  '処理時': { // @非同期処理で終了した時にcbFuncが実行される。引数と『対象』は、成功時は真とデータが設定され、失敗時は、偽と理由が設定される。 // @しょりしたとき
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
-    fn: function (callback, promise, sys) {
+    fn: function (cbFunc, promise, sys) {
       return sys.__promise.setLastPromise(promise.then(result => {
         sys.__v0['対象'] = result
-        // eslint-disable-next-line node/no-callback-literal
-        return callback(true, result, sys)
+        return cbFunc(true, result, sys)
       }, reason => {
         sys.__v0['対象'] = reason
-        // eslint-disable-next-line node/no-callback-literal
-        return callback(false, reason, sys)
+        return cbFunc(false, reason, sys)
       }))
     },
     return_none: false
