@@ -81,11 +81,18 @@
       "curly": [
         "error",
         "all"
-      ],
-      "quote-props": "off"
+      ]
     },
     "plugins": [
       "react"
+    ],
+    "ignorePatterns": [
+      "demo/js/*/*.js"
+    ]
+  },
+  "stylelint": {
+    "ignoreFiles": [
+      "demo/css/pure-min.css"
     ]
   },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
