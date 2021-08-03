@@ -1,6 +1,6 @@
 // @ts-nocheck
 const PluginPromise = {
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,
@@ -16,9 +16,9 @@ const PluginPromise = {
     }
   },
   // @非同期処理の保証の定数
-  'そ': { type: 'const', value: '' }, // @そ
+  そ: { type: 'const', value: '' }, // @そ
   // @非同期処理の保証
-  '動時': { // @非同期処理を作成する。非同期処理オブジェクト(Promise)を返す。 // @うごくとき
+  動時: { // @非同期処理を作成する。非同期処理オブジェクト(Promise)を返す。 // @うごくとき
     type: 'func',
     josi: [['を', 'で']],
     pure: true,
@@ -29,7 +29,7 @@ const PluginPromise = {
     },
     return_none: false
   },
-  '成功時': { // @非同期処理で成功したときにcallbackが実行される。その際『対象』にデータが代入される。 // @せいこうしたとき
+  成功時: { // @非同期処理で成功したときにcallbackが実行される。その際『対象』にデータが代入される。 // @せいこうしたとき
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
@@ -41,7 +41,7 @@ const PluginPromise = {
     },
     return_none: false
   },
-  '処理時': { // @非同期処理で終了した時にcbFuncが実行される。引数と『対象』は、成功時は真とデータが設定され、失敗時は、偽と理由が設定される。 // @しょりしたとき
+  処理時: { // @非同期処理で終了した時にcbFuncが実行される。引数と『対象』は、成功時は真とデータが設定され、失敗時は、偽と理由が設定される。 // @しょりしたとき
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
@@ -56,7 +56,7 @@ const PluginPromise = {
     },
     return_none: false
   },
-  '失敗時': { // @非同期処理で失敗したときにcallbackが実行される。その際『対象』にエラーが代入される。 // @しっぱいしたとき
+  失敗時: { // @非同期処理で失敗したときにcallbackが実行される。その際『対象』にエラーが代入される。 // @しっぱいしたとき
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
@@ -68,7 +68,7 @@ const PluginPromise = {
     },
     return_none: false
   },
-  '終了時': { // @非同期処理で終了したときにcallbackが実行される。成功時・失敗時・処理時とは別に実行される。 // @しゅうりょうしたとき
+  終了時: { // @非同期処理で終了したときにcallbackが実行される。成功時・失敗時・処理時とは別に実行される。 // @しゅうりょうしたとき
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
@@ -79,7 +79,7 @@ const PluginPromise = {
     },
     return_none: false
   },
-  '束': { // @非同期処理をまとめる。 // @たばねる
+  束: { // @非同期処理をまとめる。 // @たばねる
     type: 'func',
     josi: [['と', 'を']],
     pure: true,

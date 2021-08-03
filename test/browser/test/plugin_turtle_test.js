@@ -133,7 +133,7 @@ const getBlobFromCanvas = (canvas, type) => {
 }
 
 const uploadCanvasImage = async (canvas, filename) => {
-  var formData = new FormData()
+  const formData = new FormData()
   const blob = getBlobFromCanvas(canvas, 'image/png')
   formData.append('file', blob, filename)
   const response = await fetch('/custom/uploadimage', {
@@ -268,7 +268,7 @@ describe('plugin_turtle_test', () => {
 
   // --- test ---
   it('check env(canvas_basic.html)', () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const canvasElement = document.getElementById('turtle_cv')
     assert.strictEqual(typeof (canvasElement), 'object')
   })
@@ -282,7 +282,7 @@ describe('plugin_turtle_test', () => {
   })
 
   it('set origin and direcion', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test1.png'
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
@@ -320,7 +320,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('incorrect canvasid', () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const code = `カメ描画先=「no_cv」
 ０にカメ速度設定。
 カメ作成。
@@ -329,7 +329,7 @@ describe('plugin_turtle_test', () => {
   })
 
   it('incorrect command', () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
 [25,25]にカメ起点移動。
@@ -338,7 +338,7 @@ describe('plugin_turtle_test', () => {
   })
 
   it('set origin and direcion turtles', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test2.png'
     const code = `カメ描画先=「#turtle_cv」
 ０にカメ速度設定。
@@ -384,7 +384,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('move direct position turtles', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test3.png'
     const code = `カメ描画先=「turtle_cv」のgetElementyID
 ０にカメ速度設定。
@@ -430,7 +430,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('check move,rotate,visible,color,width', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test4.png'
     const code = `カメ描画先=「turtle_cv」
 １０にカメ速度設定。
@@ -486,7 +486,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('check all clear', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test5_wasblank.png'
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
@@ -530,7 +530,7 @@ describe('plugin_turtle_test', () => {
   })
 
   it('check all clear before use', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test6_wasblank.png'
     const code = `カメ描画先=「turtle_cv」
 カメ画像URLは、「turtle.png」
@@ -566,7 +566,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('change turtle image delayed', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test7.png'
     const code = `カメ描画先=「turtle_cv」
 １にカメ速度設定。
@@ -604,7 +604,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('change turtle image', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test8.png'
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
@@ -642,7 +642,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('load fail turtle image', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test9_wasblank.png'
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
@@ -679,7 +679,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('click turtle', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
 カメ作成。
@@ -708,7 +708,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('turtle image basic(turtle)', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test10_wasnotblank.png'
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
@@ -744,7 +744,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('turtle image extend(elephant)', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test11_wasnotblank.png'
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。
@@ -780,7 +780,7 @@ describe('plugin_turtle_test', () => {
   }).timeout(5000)
 
   it('turtle image extend(panda)', async () => {
-    document.body.innerHTML = __html__[htmlPath+'canvas_basic.html']
+    document.body.innerHTML = __html__[htmlPath + 'canvas_basic.html']
     const imgname = 'canvas_test12_wasnotblank.png'
     const code = `カメ描画先=「turtle_cv」
 ０にカメ速度設定。

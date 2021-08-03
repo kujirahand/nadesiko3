@@ -1,7 +1,7 @@
-const multer =  require('multer')
+const multer = require('multer')
 const bodyParserRaw = require('body-parser/lib/types/raw')
 const bodyParserText = require('body-parser/lib/types/text')
-const bodyParserUrlencoded =  require('body-parser/lib/types/urlencoded')
+const bodyParserUrlencoded = require('body-parser/lib/types/urlencoded')
 const express = require('express')
 const path = require('path')
 
@@ -18,16 +18,16 @@ const storage = multer.diskStorage({
 
 const parserUpload = multer({ storage: storage })
 const parserMultipart = multer().none()
-const parserText = bodyParserText({type: ['application/x-www-form-urlencoded','multipart/form-data']})
+const parserText = bodyParserText({ type: ['application/x-www-form-urlencoded', 'multipart/form-data'] })
 const parserRaw = bodyParserRaw({})
 
-var CustomMiddlewareFactory = function (config) {
+const CustomMiddlewareFactory = function (config) {
   // /custom/*
   const custom = express.Router()
 
   custom.get('/echo.nako3', (req, res) => {
     // 例: http://localhost:9876/custom/echo.nako3?delay_ms=30&content=A%3D20
-    setTimeout(() => { res.send(req.query['content']) }, +req.query['delay_ms'])
+    setTimeout(() => { res.send(req.query.content) }, +req.query.delay_ms)
   })
   custom.get('/cyclic_import_1.nako3', (req, res) => {
     res.send('!「http://localhost:9876/custom/cyclic_import_2.nako3」を取り込む。\nA=100')
@@ -36,12 +36,12 @@ var CustomMiddlewareFactory = function (config) {
     res.send('!「http://localhost:9876/custom/cyclic_import_1.nako3」を取り込む。\nB=200')
   })
   custom.get('/echo.js', (req, res) => {
-    setTimeout(() => { res.send(req.query['content']) }, +req.query['delay_ms'])
+    setTimeout(() => { res.send(req.query.content) }, +req.query.delay_ms)
   })
   custom.all('/delayedimage/:name', (req, res) => {
     const filename = '/' + req.params.name
     setTimeout(() => {
-      res.setHeader('Location', filename);
+      res.setHeader('Location', filename)
       res.status(307).end()
     }, 500)
   })
@@ -57,7 +57,7 @@ var CustomMiddlewareFactory = function (config) {
     if (type === 'multipart/form-data') {
       parserUpload.single('file')(req, res, (err) => {
         if (err) {
-          console.log('parse error'+(!!err?' and has error':''))
+          console.log('parse error' + (err ? ' and has error' : ''))
           console.log(err)
           return res.end(err)
         }
@@ -72,7 +72,7 @@ var CustomMiddlewareFactory = function (config) {
     const type = req.headers['content-type'].split(';')[0]
     const echos = (err) => {
       if (err) {
-        console.log('parse error'+(!!err?' and has error':''))
+        console.log('parse error' + (err ? ' and has error' : ''))
         console.log(err)
         return res.end(err)
       }
@@ -104,22 +104,22 @@ var CustomMiddlewareFactory = function (config) {
   return app
 }
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['mocha','webpack'],
+    frameworks: ['mocha', 'webpack'],
     files: [
-      {pattern: '../../release/wnako3webworker.js', served: true, included: false},
+      { pattern: '../../release/wnako3webworker.js', served: true, included: false },
       'test/*_test.js',
       'test/html/*.html',
-      {pattern: 'test/image/*.png', included: false, served: true, watched: false, nocache: false}
+      { pattern: 'test/image/*.png', included: false, served: true, watched: false, nocache: false }
     ],
     proxies: {
-       '/wnako3webworker.js': '/absolute' + path.resolve('./release/wnako3webworker.js'),
-       '/turtle.png': '/base/test/image/turtle_kana.png',
-       '/turtle-elephant.png': '/base/test/image/elephant_kana.png',
-       '/turtle-panda.png': '/base/test/image/panda_kana.png',
-       '/test/image/': '/base/test/image/'
+      '/wnako3webworker.js': '/absolute' + path.resolve('./release/wnako3webworker.js'),
+      '/turtle.png': '/base/test/image/turtle_kana.png',
+      '/turtle-elephant.png': '/base/test/image/elephant_kana.png',
+      '/turtle-panda.png': '/base/test/image/panda_kana.png',
+      '/test/image/': '/base/test/image/'
     },
     middleware: ['custom'],
     plugins: [
@@ -128,25 +128,25 @@ module.exports = function(config) {
       'karma-mocha-reporter',
       'karma-webpack',
       'karma-html2js-preprocessor',
-      {'middleware:custom': ['factory', CustomMiddlewareFactory]}
+      { 'middleware:custom': ['factory', CustomMiddlewareFactory] }
     ],
     customLaunchers: {
-        FirefoxCustom: {
-            base: 'Firefox',
-            prefs: {
-              'dom.w3c_touch_events.enabled': 1,
-              'dom.w3c_touch_events.legacy_apis.enabled': true
-            },
-            flags: [ '-width', 400, '-height', 400 ]
+      FirefoxCustom: {
+        base: 'Firefox',
+        prefs: {
+          'dom.w3c_touch_events.enabled': 1,
+          'dom.w3c_touch_events.legacy_apis.enabled': true
         },
-        FirefoxCustomHeadless: {
-            base: 'FirefoxHeadless',
-            prefs: {
-              'dom.w3c_touch_events.enabled': 1,
-              'dom.w3c_touch_events.legacy_apis.enabled': true
-            },
-            flags: [ '-width', 400, '-height', 400 ]
-        }
+        flags: ['-width', 400, '-height', 400]
+      },
+      FirefoxCustomHeadless: {
+        base: 'FirefoxHeadless',
+        prefs: {
+          'dom.w3c_touch_events.enabled': 1,
+          'dom.w3c_touch_events.legacy_apis.enabled': true
+        },
+        flags: ['-width', 400, '-height', 400]
+      }
     },
     preprocessors: {
       'test/*_test.js': ['webpack'],
@@ -154,14 +154,14 @@ module.exports = function(config) {
     },
     // webpackの設定
     webpack: {
-      mode: "development",
-      target: ["web", "es5"],
+      mode: 'development',
+      target: ['web', 'es5'],
       resolve: {
-        mainFields: ["browser", "main", "module"],
+        mainFields: ['browser', 'main', 'module'],
         alias: {
-          "root": path.join(__dirname, "../.."),
-          "nako3": path.join(__dirname, '../../src'),
-          "utils" : path.join(__dirname, '../../utils')
+          root: path.join(__dirname, '../..'),
+          nako3: path.join(__dirname, '../../src'),
+          utils: path.join(__dirname, '../../utils')
         }
       },
       module: {
@@ -181,12 +181,12 @@ module.exports = function(config) {
     reporters: ['mocha'],
     // reporter options
     mochaReporter: {
-      showDiff: true,
+      showDiff: true
     },
     coverageReporter: {
       dir: '../../coverage/browser',
-      subdir: function(browser) {
-         return browser.toLowerCase().split(/[ /-]/)[0];
+      subdir: function (browser) {
+        return browser.toLowerCase().split(/[ /-]/)[0]
       },
       reporters: [
         { type: 'text' },
@@ -195,16 +195,16 @@ module.exports = function(config) {
         { type: 'text', file: 'text.txt' },
         { type: 'json', file: 'text.json' },
         { type: 'text-summary', file: 'text-summary.txt' },
-        { type: 'lcovonly', file: 'report-lcovonly.txt' },
+        { type: 'lcovonly', file: 'report-lcovonly.txt' }
       ],
       instrumenterOptions: {
         istanbul: { noCompact: true }
       }
     },
-    port: 9876,  // karma web server port
+    port: 9876, // karma web server port
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ['Firefox', 'FirefoxHeadless', 'FirefoxCustom', 'FirefoxCustomHeadless' ],
+    browsers: ['Firefox', 'FirefoxHeadless', 'FirefoxCustom', 'FirefoxCustomHeadless'],
     autoWatch: false,
     // singleRun: false, // Karma captures browsers, runs the tests and exits
     concurrency: Infinity

@@ -24,7 +24,7 @@ describe('require_nako3_test', () => {
   it('.jsと.nako3を同時に読み込む - .jsが先の場合', () => {
     const nako = new CNako3()
     const code =
-      `!「plugin_csv」を取り込む。\n` +
+      '!「plugin_csv」を取り込む。\n' +
       `!「${__dirname}/requiretest.nako3」を取り込む。\n`
     nako.loadDependencies(code, 'main.nako3', '')
     nako.run(code, 'main.nako3') // エラーが飛ばないことを確認
@@ -33,7 +33,7 @@ describe('require_nako3_test', () => {
     const nako = new CNako3()
     const code =
       `!「${__dirname}/requiretest.nako3」を取り込む。\n` +
-      `!「plugin_csv」を取り込む。\n`
+      '!「plugin_csv」を取り込む。\n'
     nako.loadDependencies(code, 'main.nako3', '')
     nako.run(code, 'main.nako3') // エラーが飛ばないことを確認
   })
@@ -41,16 +41,16 @@ describe('require_nako3_test', () => {
     const nako = new CNako3()
     const code = `!「${__dirname}/plugin_broken.js.txt」を取り込む`
     nako.loadDependencies(code, 'main.nako3', '')
-      assert.throws(
-        () => nako.run(code, 'main.nako3'),
-        (err) => {
-          assert(err instanceof NakoImportError)
-          assert(err.message.includes("テスト"))
-          assert.strictEqual(err.line, 0)  // 1行目
-          assert.strictEqual(err.file, 'main.nako3')
-          return true
-        }
-      )
+    assert.throws(
+      () => nako.run(code, 'main.nako3'),
+      (err) => {
+        assert(err instanceof NakoImportError)
+        assert(err.message.includes('テスト'))
+        assert.strictEqual(err.line, 0) // 1行目
+        assert.strictEqual(err.file, 'main.nako3')
+        return true
+      }
+    )
   })
   it('『プラグイン名』のテスト。(#956)', () => {
     const fname = __dirname + path.sep + 'requiretest_name.nako3'

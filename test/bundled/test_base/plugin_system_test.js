@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('plugin_system_test', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 
@@ -376,7 +376,7 @@ describe('plugin_system_test', () => {
     cmp('Eは5;「Eは3;Eを表示する。」をナデシコする。5+Eを表示する。', '3\n8')
     cmpex('「●Fとは\n2を戻す\nここまで\nF()を表示する。」をナデシコする。7+F()を表示する。', { name: 'Error', message: /関数『F』が見当たりません。/ })
     cmp('Bは2;Bを表示する。;「BはB+3。Bを表示する。」をナデシコ続ける。Bを表示する。', '2\n5\n5')
-    cmp(`1と2を足す\n「それを表示」をナデシコする`, '3')
+    cmp('1と2を足す\n「それを表示」をナデシコする', '3')
   })
   it('敬語 #728', () => {
     cmp('32を表示してください', '32')
@@ -401,10 +401,10 @@ describe('plugin_system_test', () => {
       globalName = 'global'
     }
     globalScope.jstest = () => { return 777 }
-    cmp('「'+globalName+'」の「jstest」を[]でJSメソッド実行して表示。', '777')
+    cmp('「' + globalName + '」の「jstest」を[]でJSメソッド実行して表示。', '777')
     globalScope.jstest_x2 = (a) => { return a * 2 }
-    cmp('「'+globalName+'」の「jstest_x2」を30でJSメソッド実行して表示。', '60')
+    cmp('「' + globalName + '」の「jstest_x2」を30でJSメソッド実行して表示。', '60')
     globalScope.jstest_mul = (a, b) => { return a * b }
-    cmp('「'+globalName+'」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
+    cmp('「' + globalName + '」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
   })
 })

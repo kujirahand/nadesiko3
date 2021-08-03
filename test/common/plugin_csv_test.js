@@ -6,7 +6,7 @@ describe('plugin_csv_test', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginObject('PluginCSV', PluginCSV)
-  
+
   const cmp = (code, res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)

@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('plugin_datetime_test', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 
@@ -100,7 +100,7 @@ describe('plugin_datetime_test', () => {
   it('元号データ, 和暦変換', () => {
     cmpex(
       '「1868/10/22」を和暦変換。それを表示',
-      {name: 'Error', message: /『和暦変換』は明治以前の日付には対応していません。/ }
+      { name: 'Error', message: /『和暦変換』は明治以前の日付には対応していません。/ }
     )
     cmp('「1868/10/23」を和暦変換。それを表示', '明治元/10/23')
     cmp('「1912/07/29」を和暦変換。それを表示', '明治45/07/29')

@@ -12,7 +12,7 @@ const ERROR_NO_INIT = '先に『WEBサーバ起動』命令を実行してくだ
 let debug = true
 
 const PluginExpress = {
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,
@@ -27,9 +27,9 @@ const PluginExpress = {
     }
   },
   // @Webサーバ(Express)
-  'GETデータ': { type: 'const', value: '' }, // @GETでーた
-  'POSTデータ': { type: 'const', value: '' }, // @POSTでーた
-  'WEBサーバ名前設定': { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
+  GETデータ: { type: 'const', value: '' }, // @GETでーた
+  POSTデータ: { type: 'const', value: '' }, // @POSTでーた
+  WEBサーバ名前設定: { // @Webサーバの名前を変更する // @WEBさーばなまえへんこう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -39,7 +39,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバ起動': { // @ポートPORTNOでWebサーバを起動して成功したら『WEBサーバ起動成功した時』を実行する // @WEBさーばきどう
+  WEBサーバ起動: { // @ポートPORTNOでWebサーバを起動して成功したら『WEBサーバ起動成功した時』を実行する // @WEBさーばきどう
     type: 'func',
     josi: [['の', 'で']],
     pure: true,
@@ -76,7 +76,7 @@ const PluginExpress = {
       return server
     }
   },
-  'WEBサーバ起動時': { // @ポートPORTNOでWebサーバを起動して成功したらCALLBACKを実行する // @WEBさーばきどうしたとき
+  WEBサーバ起動時: { // @ポートPORTNOでWebサーバを起動して成功したらCALLBACKを実行する // @WEBさーばきどうしたとき
     type: 'func',
     josi: [['を'], ['の', 'で']],
     pure: false,
@@ -85,7 +85,7 @@ const PluginExpress = {
       return sys.__exec('WEBサーバ起動', [portno, sys])
     }
   },
-  'WEBサーバ起動成功時': { // @WEBサーバ起動が成功した時にcallbackを実行 // @WEBさーばきどうせいこうしたとき
+  WEBサーバ起動成功時: { // @WEBサーバ起動が成功した時にcallbackを実行 // @WEBさーばきどうせいこうしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -94,7 +94,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバ起動失敗時': { // @WEBサーバ起動が失敗した時にcallbackを実行 // @WEBさーばきどうしっぱいしたとき
+  WEBサーバ起動失敗時: { // @WEBサーバ起動が失敗した時にcallbackを実行 // @WEBさーばきどうしっぱいしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -103,7 +103,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバ静的パス指定': { // @サーバのHTMLや画像などを配置する静的パスを指定する // @WEBさーばせいてきぱすしてい
+  WEBサーバ静的パス指定: { // @サーバのHTMLや画像などを配置する静的パスを指定する // @WEBさーばせいてきぱすしてい
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
@@ -114,7 +114,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバGET時': { // @URIにGETメソッドがあった時の処理を指定 // @WEBさーばGETしたとき
+  WEBサーバGET時: { // @URIにGETメソッドがあった時の処理を指定 // @WEBさーばGETしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
@@ -128,7 +128,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバPOST時': { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばPOSTしたとき
+  WEBサーバPOST時: { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばPOSTしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
@@ -137,7 +137,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバPUT時': { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばPUTしたとき
+  WEBサーバPUT時: { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばPUTしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
@@ -146,7 +146,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバDELETE時': { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばDELETEしたとき
+  WEBサーバDELETE時: { // @URIにPOSTメソッドがあった時の処理を指定 // @WEBさーばDELETEしたとき
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
@@ -155,7 +155,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバヘッダ出力': { // @クライアントにヘッダOBJを出力 // @WEBさーばへっだしゅつりょく
+  WEBサーバヘッダ出力: { // @クライアントにヘッダOBJを出力 // @WEBさーばへっだしゅつりょく
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
@@ -167,7 +167,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバステータス出力': { // @クライアントにステータスNOを出力 // @WEBさーばすてーたすしゅつりょく
+  WEBサーバステータス出力: { // @クライアントにステータスNOを出力 // @WEBさーばすてーたすしゅつりょく
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
@@ -177,7 +177,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバ出力': { // @クライアントにSを出力 // @WEBさーばしゅつりょく
+  WEBサーバ出力: { // @クライアントにSを出力 // @WEBさーばしゅつりょく
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
@@ -187,7 +187,7 @@ const PluginExpress = {
     },
     return_none: true
   },
-  'WEBサーバリダイレクト': { // @URLにリダイレクトする // @WEBさーばりだいれくと
+  WEBサーバリダイレクト: { // @URLにリダイレクトする // @WEBさーばりだいれくと
     type: 'func',
     josi: [['へ', 'に']],
     pure: true,

@@ -2,7 +2,7 @@ const TestEnv = require('./test_utils').TestEnv
 
 describe('calc_test.js', () => {
   const env = new TestEnv()
-  before( function () {
+  before(function () {
     env.getEnv()
   })
 

@@ -1,10 +1,10 @@
 const chai = require('chai')
 
-function wrappedAssert(chai) {
+function wrappedAssert (chai) {
   const assert = chai.assert
 
   const assertThrows = assert.throws
-  assert.throws = function(fn, error, message) {
+  assert.throws = function (fn, error, message) {
     if (arguments.length == 2 && typeof error === 'object' && error !== null) {
       if (typeof error.name === 'string') {
         return assertThrows(fn, eval(error.name), error.message)
@@ -20,7 +20,6 @@ function wrappedAssert(chai) {
   Object.keys(assert).forEach(function (key) {
     assertStrict[key] = assert[key]
   })
-
 
   assertStrict.equal = assertStrict.strictEqual
   assertStrict.notEqual = assertStrict.notStrictEqual

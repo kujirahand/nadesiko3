@@ -9,7 +9,7 @@ const elephantImage = require('./turtle-elephant.png').default
 const pandaImage = require('./turtle-panda.png').default
 
 const PluginTurtle = {
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,
@@ -253,8 +253,8 @@ const PluginTurtle = {
           const rx = rect.left + window.pageXOffset
           const ry = rect.top + window.pageYOffset
           sys._turtle.canvas_r = {
-            'left': rx,
-            'top': ry,
+            left: rx,
+            top: ry,
             width: rect.width,
             height: rect.height
           }
@@ -330,7 +330,7 @@ const PluginTurtle = {
   },
 
   // @タートルグラフィックス・カメ描画
-  'カメ作成': { // @タートルグラフィックスを開始してカメのIDを返す // @かめさくせい
+  カメ作成: { // @タートルグラフィックスを開始してカメのIDを返す // @かめさくせい
     type: 'func',
     josi: [],
     pure: true,
@@ -339,7 +339,7 @@ const PluginTurtle = {
       return sys._turtle.createTurtle(imageUrl, sys)
     }
   },
-  'ゾウ作成': { // @ゾウの画像でタートルグラフィックスを開始してIDを返す // @ぞうさくせい
+  ゾウ作成: { // @ゾウの画像でタートルグラフィックスを開始してIDを返す // @ぞうさくせい
     type: 'func',
     josi: [],
     pure: true,
@@ -348,7 +348,7 @@ const PluginTurtle = {
       return sys._turtle.createTurtle(imageUrl, sys)
     }
   },
-  'パンダ作成': { // @パンダの画像でタートルグラフィックスを開始してIDを返す // @ぱんださくせい
+  パンダ作成: { // @パンダの画像でタートルグラフィックスを開始してIDを返す // @ぱんださくせい
     type: 'func',
     josi: [],
     pure: true,
@@ -357,7 +357,7 @@ const PluginTurtle = {
       return sys._turtle.createTurtle(imageUrl, sys)
     }
   },
-  'カメ操作対象設定': { // @IDを指定して操作対象となるカメを変更する // @かめそうさたいしょうせってい
+  カメ操作対象設定: { // @IDを指定して操作対象となるカメを変更する // @かめそうさたいしょうせってい
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
@@ -366,9 +366,9 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ描画先': { type: 'var', value: 'turtle_cv' }, // @かめびょうがさき
-  'カメ画像URL': { type: 'var', value: turtleImage }, // @かめがぞうURL
-  'カメ画像変更': { // @カメの画像をURLに変更する // @かめがぞうへんこう
+  カメ描画先: { type: 'var', value: 'turtle_cv' }, // @かめびょうがさき
+  カメ画像URL: { type: 'var', value: turtleImage }, // @かめがぞうURL
+  カメ画像変更: { // @カメの画像をURLに変更する // @かめがぞうへんこう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -379,8 +379,8 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ速度': { type: 'const', value: 100 }, // @かめそくど
-  'カメ速度設定': { // @カメの動作速度vに設定(大きいほど遅い) // @かめそくどせってい
+  カメ速度: { type: 'const', value: 100 }, // @かめそくど
+  カメ速度設定: { // @カメの動作速度vに設定(大きいほど遅い) // @かめそくどせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -388,7 +388,7 @@ const PluginTurtle = {
       sys.__varslist[0]['カメ速度'] = v
     }
   },
-  'カメ移動': { // @カメの位置を[x,y]へ移動する // @かめいどう
+  カメ移動: { // @カメの位置を[x,y]へ移動する // @かめいどう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -399,7 +399,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ起点移動': { // @カメの描画起点位置を[x,y]へ移動する // @かめきてんいどう
+  カメ起点移動: { // @カメの描画起点位置を[x,y]へ移動する // @かめきてんいどう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -410,7 +410,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ進': { // @カメの位置をVだけ進める // @かめすすむ
+  カメ進: { // @カメの位置をVだけ進める // @かめすすむ
     type: 'func',
     josi: [['だけ']],
     pure: true,
@@ -421,7 +421,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ戻': { // @カメの位置をVだけ戻す // @かめもどる
+  カメ戻: { // @カメの位置をVだけ戻す // @かめもどる
     type: 'func',
     josi: [['だけ']],
     pure: true,
@@ -432,7 +432,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ角度設定': { // @カメの向きをDEGに設定する // @かめかくどせってい
+  カメ角度設定: { // @カメの向きをDEGに設定する // @かめかくどせってい
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
@@ -443,7 +443,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ右回転': { // @カメの向きをDEGだけ右に向ける // @かめみぎかいてん
+  カメ右回転: { // @カメの向きをDEGだけ右に向ける // @かめみぎかいてん
     type: 'func',
     josi: [['だけ']],
     pure: true,
@@ -454,7 +454,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ左回転': { // @カメの向きをDEGだけ左に向ける // @かめひだりかいてん
+  カメ左回転: { // @カメの向きをDEGだけ左に向ける // @かめひだりかいてん
     type: 'func',
     josi: [['だけ']],
     pure: true,
@@ -465,7 +465,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメペン色設定': { // @カメのペン描画色をCに設定する // @かめぺんいろせってい
+  カメペン色設定: { // @カメのペン描画色をCに設定する // @かめぺんいろせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -476,7 +476,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメペンサイズ設定': { // @カメペンのサイズをWに設定する // @かめぺんさいずせってい
+  カメペンサイズ設定: { // @カメペンのサイズをWに設定する // @かめぺんさいずせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -486,7 +486,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメペン設定': { // @カメペンを使うかどうかをV(オン/オフ)に設定する // @かめぺんせってい
+  カメペン設定: { // @カメペンを使うかどうかをV(オン/オフ)に設定する // @かめぺんせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -496,7 +496,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメパス開始': { // @カメで明示的にパスの描画を開始する // @かめぱすかいし
+  カメパス開始: { // @カメで明示的にパスの描画を開始する // @かめぱすかいし
     type: 'func',
     josi: [],
     pure: true,
@@ -506,7 +506,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメパス閉': { // @カメでパスを明示的に閉じる(省略可能) // @かめぱすとじる
+  カメパス閉: { // @カメでパスを明示的に閉じる(省略可能) // @かめぱすとじる
     type: 'func',
     josi: [],
     pure: true,
@@ -516,7 +516,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメパス線引': { // @カメでパスを閉じて、カメペン色設定で指定した色で枠線を引く // @かめぱすせんひく
+  カメパス線引: { // @カメでパスを閉じて、カメペン色設定で指定した色で枠線を引く // @かめぱすせんひく
     type: 'func',
     josi: [],
     pure: true,
@@ -526,7 +526,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメパス塗': { // @カメでパスを閉じて、カメ塗り色設定で指定した色で塗りつぶす // @かめぱすぬる
+  カメパス塗: { // @カメでパスを閉じて、カメ塗り色設定で指定した色で塗りつぶす // @かめぱすぬる
     type: 'func',
     josi: [],
     pure: true,
@@ -536,7 +536,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメ文字描画': { // @カメの位置に文字Sを描画 // @かめもじびょうが
+  カメ文字描画: { // @カメの位置に文字Sを描画 // @かめもじびょうが
     type: 'func',
     josi: [['を', 'と', 'の']],
     pure: true,
@@ -546,7 +546,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメ文字設定': { // @カメ文字描画で描画するテキストサイズやフォント(48px serif)などを設定 // @かめもじせってい
+  カメ文字設定: { // @カメ文字描画で描画するテキストサイズやフォント(48px serif)などを設定 // @かめもじせってい
     type: 'func',
     josi: [['に', 'へ', 'で']],
     pure: true,
@@ -562,7 +562,7 @@ const PluginTurtle = {
       sys._turtle.setTimer()
     }
   },
-  'カメ塗色設定': { // @カメパスの塗り色をCに設定する // @かめぬりいろせってい
+  カメ塗色設定: { // @カメパスの塗り色をCに設定する // @かめぬりいろせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -573,7 +573,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ全消去': { // @表示しているカメと描画内容を全部消去する // @かめぜんしょうきょ
+  カメ全消去: { // @表示しているカメと描画内容を全部消去する // @かめぜんしょうきょ
     type: 'func',
     josi: [],
     pure: true,
@@ -582,7 +582,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメコマンド実行': { // @カメにコマンドSを実行する。コマンドは改行か「;」で区切る。コマンドと引数は「=」で区切り引数はかカンマで区切る // @かめこまんどじっこう
+  カメコマンド実行: { // @カメにコマンドSを実行する。コマンドは改行か「;」で区切る。コマンドと引数は「=」で区切り引数はかカンマで区切る // @かめこまんどじっこう
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
@@ -600,7 +600,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ非表示': { // @カメの画像を非表示にする。描画に影響しない。 // @かめひひょうじ
+  カメ非表示: { // @カメの画像を非表示にする。描画に影響しない。 // @かめひひょうじ
     type: 'func',
     josi: [],
     pure: true,
@@ -611,7 +611,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメ表示': { // @非表示にしたカメを表示する。 // @かめひょうじ
+  カメ表示: { // @非表示にしたカメを表示する。 // @かめひょうじ
     type: 'func',
     josi: [],
     pure: true,
@@ -622,7 +622,7 @@ const PluginTurtle = {
     },
     return_none: true
   },
-  'カメクリック時': { // @ 操作対象のカメをクリックした時のイベントを設定する // @かめくりっくしたとき
+  カメクリック時: { // @ 操作対象のカメをクリックした時のイベントを設定する // @かめくりっくしたとき
     type: 'func',
     josi: [['を']],
     pure: false,

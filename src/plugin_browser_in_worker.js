@@ -14,7 +14,7 @@ const BrowserParts = [
 ]
 
 const PluginBrowserInWorker = {
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,

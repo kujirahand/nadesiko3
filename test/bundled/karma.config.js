@@ -18,13 +18,13 @@ module.exports = function (config) {
         served: true,
         watched: false,
         nocache: true
-      },
+      }
     ],
     customContextFile: 'test/html/custom_context.html',
     customDebugFile: 'test/html/custom_debug.html',
     proxies: {
-       '/release/': '/absolute' + path.resolve('./release') + '/',
-       '/src/': '/absolute' + path.resolve('./src') + '/'
+      '/release/': '/absolute' + path.resolve('./release') + '/',
+      '/src/': '/absolute' + path.resolve('./src') + '/'
     },
     plugins: [
       'karma-firefox-launcher',
@@ -56,7 +56,7 @@ module.exports = function (config) {
     // webpackの設定
     webpack: {
       mode: 'development',
-      target: ["web", "es5"],
+      target: ['web', 'es5'],
       resolve: {
         mainFields: ['browser', 'main', 'module']
       },

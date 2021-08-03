@@ -3,7 +3,7 @@ const hotkeys = require('hotkeys-js')
 
 module.exports = {
   // @ホットキー
-  'ホットキー登録': { // @ホットキーKEYにEVENTを登録する // @ほっときーとうろく
+  ホットキー登録: { // @ホットキーKEYにEVENTを登録する // @ほっときーとうろく
     type: 'func',
     josi: [['に', 'で'], ['を']],
     pure: true,
@@ -14,7 +14,7 @@ module.exports = {
       })
     }
   },
-  'ホットキー解除': { // @ホットキーKEYを解除する // @ほっときーかいじょ
+  ホットキー解除: { // @ホットキーKEYを解除する // @ほっときーかいじょ
     type: 'func',
     josi: [['を', 'の']],
     pure: true,

@@ -135,12 +135,12 @@ describe('basic', () => {
     const naraba = out.tokens.find((t) => t.type === 'ならば')
 
     // 「存在する」
-    expect(sonzai).to.have.property("startOffset").and.to.equal(2)
-    expect(sonzai).to.have.property("endOffset").and.to.equal(6)
+    expect(sonzai).to.have.property('startOffset').and.to.equal(2)
+    expect(sonzai).to.have.property('endOffset').and.to.equal(6)
 
     // ならば
-    expect(naraba).to.have.property("startOffset").and.to.equal(6)
-    expect(naraba).to.have.property("endOffset").and.to.equal(9)
+    expect(naraba).to.have.property('startOffset').and.to.equal(6)
+    expect(naraba).to.have.property('endOffset').and.to.equal(9)
   })
   it('preCodeを考慮したソースマップ', () => {
     const preCode = '1を表示\n2を表示\n3を'
@@ -230,8 +230,8 @@ describe('basic', () => {
         'もし、Fがhogeならば\n' +
         '    1を表示\n' +
         'ここまで',
-        // ---
-        '1')
+    // ---
+    '1')
   })
   it('無名関数が警告を出す問題の修正 #841', () => {
     let log = ''
@@ -243,13 +243,13 @@ describe('basic', () => {
     assert.strictEqual(log, '')
   })
   it('単独で実行できるプログラムの出力', function (done) {
-    if (typeof process === 'undefined' || process.env.NODE_ENV === 'test') {return this.skip()}
-    const code = nako.compileStandalone('1+2を表示', 'main.nako3', false)    
+    if (typeof process === 'undefined' || process.env.NODE_ENV === 'test') { return this.skip() }
+    const code = nako.compileStandalone('1+2を表示', 'main.nako3', false)
     Function('const console = { log: this.callback };\n' + code).apply({
       callback: (/** @type {any} */text) => {
         assert.strictEqual(text, '3')
         done()
-      },
+      }
     })
   })
   it('resetされた後に関数名を取得できない問題の修正 #849', (done) => {

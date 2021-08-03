@@ -8,7 +8,7 @@ export default (nako) => {
   describe('DOMパーツ', () => {
     describe('親要素設定', () => {
       const check_parent_set = (selectmethod) => {
-        document.body.innerHTML = __html__[htmlPath+'div_basic.html']
+        document.body.innerHTML = __html__[htmlPath + 'div_basic.html']
 
         const code = `
 要素は${selectmethod}
@@ -36,7 +36,7 @@ export default (nako) => {
 
     describe('パーツ一般', () => {
       const check_createparts = (code, rslt) => {
-        document.body.innerHTML = __html__[htmlPath+'div_basic.html']
+        document.body.innerHTML = __html__[htmlPath + 'div_basic.html']
 
         const cr = window.cr
         cr.reset()
@@ -105,7 +105,7 @@ export default (nako) => {
 `
         check_createparts(code, '["INPUT","checkbox"]')
       })
-/*
+      /*
       it('セレクトボックス作成', () => {
         const code = `
 「#main」にDOM親要素設定する。
@@ -119,7 +119,7 @@ export default (nako) => {
 ここまで。
 `
         check_createparts(code, '["SELECT",3,"１２３","４５６","７８９"]')
-      })*/
+      }) */
     })
   })
 }

@@ -1,7 +1,7 @@
-const TestEnv = (function() {
-  const TestEnv = function() {
-    if(!(this instanceof TestEnv)) {
-        return new TestEnv()
+const TestEnv = (function () {
+  const TestEnv = function () {
+    if (!(this instanceof TestEnv)) {
+      return new TestEnv()
     }
     this.waittime = 1000
     this.ui = {}
@@ -17,8 +17,8 @@ const TestEnv = (function() {
     } catch (ex) {
       return function (eventType, params) {
         params = params || { bubbles: false, cancelable: false }
-        var mouseEvent = document.createEvent('MouseEvent')
-          mouseEvent.initMouseEvent(eventType,
+        const mouseEvent = document.createEvent('MouseEvent')
+        mouseEvent.initMouseEvent(eventType,
           params.bubbles,
           params.cancelable,
           window,
@@ -33,7 +33,7 @@ const TestEnv = (function() {
           params.metaKey || false,
           params.button || 0,
           params.relatedTarget || null
-        );
+        )
         return mouseEvent
       }
     }
@@ -49,13 +49,13 @@ const TestEnv = (function() {
     this.ui.err_message = document.getElementById('errMessage')
   }
   p.checkEnv = function () {
-    assert.exists(this.ui.ta, "エディタ(TextArea)がありません")
-    assert.exists(this.ui.run, "実行ボタンがありません")
-    assert.exists(this.ui.reset, "リセットボタンがありません")
-    assert.exists(this.ui.info, "表示の出力場所がありません")
-    assert.exists(this.ui.json, "報告の出力場所がありません")
-    assert.exists(this.ui.err_name, "エラーの名称の出力場所がありません")
-    assert.exists(this.ui.err_message, "エラーのメッセージの出力場所がありません")
+    assert.exists(this.ui.ta, 'エディタ(TextArea)がありません')
+    assert.exists(this.ui.run, '実行ボタンがありません')
+    assert.exists(this.ui.reset, 'リセットボタンがありません')
+    assert.exists(this.ui.info, '表示の出力場所がありません')
+    assert.exists(this.ui.json, '報告の出力場所がありません')
+    assert.exists(this.ui.err_name, 'エラーの名称の出力場所がありません')
+    assert.exists(this.ui.err_message, 'エラーのメッセージの出力場所がありません')
   }
   p.setCode = function (code) {
     this.ui.ta.value = code
@@ -65,7 +65,7 @@ const TestEnv = (function() {
   }
   p.getReport = function () {
     const s = this.getReportAsJson()
-    if (s==="") return ""
+    if (s === '') { return '' }
     if (window.JSON) {
       return JSON.parse(s)
     }
@@ -107,16 +107,16 @@ const TestEnv = (function() {
     if (rslt != null) {
       if (expected.name) {
         if (expected.name instanceof RegExp) {
-          assert.match(rslt.name, expected.name, "エラーの名前がマッチしませんでした")
+          assert.match(rslt.name, expected.name, 'エラーの名前がマッチしませんでした')
         } else {
-          assert.strictEqual(rslt.name, expected.name, "エラーの名前が一致しませんでした")
+          assert.strictEqual(rslt.name, expected.name, 'エラーの名前が一致しませんでした')
         }
       }
       if (expected.message) {
         if (expected.message instanceof RegExp) {
-          assert.match(rslt.message, expected.message, "エラーのメッセージがマッチしませんでした")
+          assert.match(rslt.message, expected.message, 'エラーのメッセージがマッチしませんでした')
         } else {
-          assert.strictEqual(rslt.message, expected.message, "エラーのメッセージが一致しませんでした")
+          assert.strictEqual(rslt.message, expected.message, 'エラーのメッセージが一致しませんでした')
         }
       }
     } else {
@@ -141,7 +141,7 @@ const TestEnv = (function() {
   }
   p.waitCmp = function (done, check, expected) {
     const self = this
-    setTimeout(function() {
+    setTimeout(function () {
       (function (self) {
         try {
           check.call(self, expected)

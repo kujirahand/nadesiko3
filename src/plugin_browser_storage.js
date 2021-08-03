@@ -1,7 +1,7 @@
 // @ts-nocheck
 module.exports = {
   // @ローカルストレージ
-  '保存': { // @ブラウザのlocalStorageのキーKに文字列Vを保存 // @ほぞん
+  保存: { // @ブラウザのlocalStorageのキーKに文字列Vを保存 // @ほぞん
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: false,
@@ -10,7 +10,7 @@ module.exports = {
     },
     return_none: true
   },
-  '開': { // @ブラウザのlocalStorageからVを読む // @ひらく
+  開: { // @ブラウザのlocalStorageからVを読む // @ひらく
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: false,
@@ -19,7 +19,7 @@ module.exports = {
     },
     return_none: false
   },
-  '読': { // @ブラウザのlocalStorageからVを読む // @よむ
+  読: { // @ブラウザのlocalStorageからVを読む // @よむ
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: false,
@@ -28,7 +28,7 @@ module.exports = {
     },
     return_none: false
   },
-  '存在': { // @ブラウザのlocalStorageにKEYが存在しているか調べる // @そんざい
+  存在: { // @ブラウザのlocalStorageにKEYが存在しているか調べる // @そんざい
     type: 'func',
     josi: [['が']],
     pure: true,
@@ -38,7 +38,7 @@ module.exports = {
     },
     return_none: false
   },
-  'ローカルストレージ保存': { // @ブラウザのlocalStorageのKにVを保存 // @ろーかるすとれーじほぞん
+  ローカルストレージ保存: { // @ブラウザのlocalStorageのKにVを保存 // @ろーかるすとれーじほぞん
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
@@ -51,7 +51,7 @@ module.exports = {
     },
     return_none: true
   },
-  'ローカルストレージ読': { // @ブラウザのlocalStorageからVを読む // @ろーかるすとれーじよむ
+  ローカルストレージ読: { // @ブラウザのlocalStorageからVを読む // @ろーかるすとれーじよむ
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
@@ -68,7 +68,7 @@ module.exports = {
     },
     return_none: false
   },
-  'ローカルストレージキー列挙': { // @ブラウザのlocalStorageのキー一覧を返す // @ろーかるすとれーじきーれっきょ
+  ローカルストレージキー列挙: { // @ブラウザのlocalStorageのキー一覧を返す // @ろーかるすとれーじきーれっきょ
     type: 'func',
     josi: [[]],
     pure: true,
@@ -80,7 +80,7 @@ module.exports = {
     },
     return_none: false
   },
-  'ローカルストレージキー削除': { // @ブラウザのlocalStorageのkeyを削除 // @ろーかるすとれーじきーさくじょ
+  ローカルストレージキー削除: { // @ブラウザのlocalStorageのkeyを削除 // @ろーかるすとれーじきーさくじょ
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
@@ -89,7 +89,7 @@ module.exports = {
     },
     return_none: true
   },
-  'ローカルストレージ全削除': { // @ブラウザのlocalStorageのデータを全部削除する // @ろーかるすとれーじぜんさくじょ
+  ローカルストレージ全削除: { // @ブラウザのlocalStorageのデータを全部削除する // @ろーかるすとれーじぜんさくじょ
     type: 'func',
     josi: [],
     pure: true,
@@ -98,7 +98,7 @@ module.exports = {
     },
     return_none: true
   },
-  'ローカルストレージ有効確認': { // @ブラウザのlocalStorageが使えるか確認 // @ろーかるすとれーじりようかくにん
+  ローカルストレージ有効確認: { // @ブラウザのlocalStorageが使えるか確認 // @ろーかるすとれーじりようかくにん
     type: 'func',
     josi: [],
     pure: true,
@@ -107,8 +107,8 @@ module.exports = {
     },
     return_none: false
   },
-  '保存オプション': { type: 'const', value: 'json' }, // @ ほぞんおぷしょん
-  '保存オプション設定': { // @ブラウザのlocalStorageへの保存オプション「json」を設定する // @ほぞんおぷしょんせってい
+  保存オプション: { type: 'const', value: 'json' }, // @ ほぞんおぷしょん
+  保存オプション設定: { // @ブラウザのlocalStorageへの保存オプション「json」を設定する // @ほぞんおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,

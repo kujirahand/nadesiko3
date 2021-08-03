@@ -5,7 +5,7 @@
  */
 const PluginTest = {
   // @テスト
-  'ASSERT等': { // @ テストで、ASSERTでAとBが正しいことを報告する // @ASSERTひとしい
+  ASSERT等: { // @ テストで、ASSERTでAとBが正しいことを報告する // @ASSERTひとしい
     type: 'func',
     josi: [['と'], ['が']],
     pure: true,
@@ -16,7 +16,7 @@ const PluginTest = {
       return true
     }
   },
-  'テスト実行': { // @ テストで、ASSERTでAとBでテスト実行してAとBが等しいことを報告する // @てすとじっこう
+  テスト実行: { // @ テストで、ASSERTでAとBでテスト実行してAとBが等しいことを報告する // @てすとじっこう
     type: 'func',
     josi: [['と'], ['で']],
     pure: false,
@@ -24,7 +24,7 @@ const PluginTest = {
       sys.__exec('ASSERT等', [a, b, sys])
     }
   },
-  'テスト等': { // @ テストで、ASSERTでAとBが正しいことを報告する // @テストひとしい
+  テスト等: { // @ テストで、ASSERTでAとBが正しいことを報告する // @テストひとしい
     type: 'func',
     josi: [['と'], ['が']],
     pure: false,

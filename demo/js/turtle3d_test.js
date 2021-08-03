@@ -1,7 +1,7 @@
 // 追加のデフォルトコード
 const defCode =
   'T3Dカメ描画先は『turtle3d_div』。' +
-  'T3Dオービットコントロール設定。';
+  'T3Dオービットコントロール設定。'
 
 let displayId = 'info'
 
@@ -11,7 +11,7 @@ navigator.nako3.setFunc('表示', [['と', 'を']], function (s) {
   document.getElementById(displayId).innerHTML += toHtml(s) + '<br>'
 })
 
-let nakoGlobal = undefined
+let nakoGlobal
 
 // 簡易DOMアクセス関数など
 function runBox (id) {
@@ -19,11 +19,11 @@ function runBox (id) {
     window.alert('idが設定されていません。')
     return
   }
-  let src = defCode + document.getElementById(id).value
+  const src = defCode + document.getElementById(id).value
   displayId = id + '_info'
   document.getElementById(displayId).innerHTML = ''
   try {
-    nakoGlobal = navigator.nako3._runEx(src,'',{}, defCode, nakoGlobal)
+    nakoGlobal = navigator.nako3._runEx(src, '', {}, defCode, nakoGlobal)
     document.getElementById('backlink').href = '#' + id + '_head'
     window.location.href = '#run'
     document.getElementById('err').style.display = 'none'
@@ -34,8 +34,7 @@ function runBox (id) {
 }
 
 function resetBoxTurtle3D (id) {
-  if (id === null)
-    id = 'src_box'
+  if (id === null) { id = 'src_box' }
 
   document.getElementById(id + '_info').innerHTML = ''
   navigator.nako3._runEx('T3Dカメ全消去', '', {}, '', nakoGlobal)

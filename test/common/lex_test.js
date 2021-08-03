@@ -28,7 +28,7 @@ describe('lex_test', () => {
     cmp('見出し=30;「--{見出}--」を表示', '--30--')
   })
   it('文字列に式を埋め込む', () => {
-    cmp('「--{3に2を掛ける}--」を表示', "--6--")
+    cmp('「--{3に2を掛ける}--」を表示', '--6--')
   })
   it('文字列の埋め込み変数名全角英数字', () => {
     cmp('N1=30;「--{Ｎ１}--」を表示', '--30--')
@@ -94,26 +94,26 @@ describe('lex_test', () => {
   })
   it('ソースマップ - 複数行の場合', () => {
     const tokens = nako.lex('「こんにちは」を表示する。\n「こんにちは」を表示する。').tokens
-    assert.strictEqual(tokens[0].startOffset, 0)  // 0-7: 「こんにちは」を
-    assert.strictEqual(tokens[1].startOffset, 8)  // 8-11: 表示する
+    assert.strictEqual(tokens[0].startOffset, 0) // 0-7: 「こんにちは」を
+    assert.strictEqual(tokens[1].startOffset, 8) // 8-11: 表示する
     assert.strictEqual(tokens[2].startOffset, 12) // 12: 。
     assert.strictEqual(tokens[3].startOffset, 13) // 13: eol
-    assert.strictEqual(tokens[4].startOffset, 14)  // 14-21: 「こんにちは」を
-    assert.strictEqual(tokens[5].startOffset, 22)  // 22-25: 表示する
-    assert.strictEqual(tokens[6].startOffset, 26)  // 26: 。
+    assert.strictEqual(tokens[4].startOffset, 14) // 14-21: 「こんにちは」を
+    assert.strictEqual(tokens[5].startOffset, 22) // 22-25: 表示する
+    assert.strictEqual(tokens[6].startOffset, 26) // 26: 。
   })
   it('ソースマップ - 行コメント', () => {
-    const tokens = nako.lex(`# コメント`).commentTokens
+    const tokens = nako.lex('# コメント').commentTokens
     assert.strictEqual(tokens[0].startOffset, 0)
     assert.strictEqual(tokens[0].endOffset, 6)
   })
   it('ソースマップ - 範囲コメント', () => {
-    const tokens = nako.lex(`/*\nここは全部コメント\nここは全部コメント\n*/`).commentTokens
+    const tokens = nako.lex('/*\nここは全部コメント\nここは全部コメント\n*/').commentTokens
     assert.strictEqual(tokens[0].startOffset, 0)
     assert.strictEqual(tokens[0].endOffset, 25)
   })
   it('ソースマップ - 範囲コメントの直後に文字がある場合', () => {
-    const result = nako.lex(`/*\nここは全部コメント\nここは全部コメント\n*/a`)
+    const result = nako.lex('/*\nここは全部コメント\nここは全部コメント\n*/a')
 
     // コメント
     assert.strictEqual(result.commentTokens[0].startOffset, 0)
@@ -124,18 +124,18 @@ describe('lex_test', () => {
     assert.strictEqual(result.tokens[0].endOffset, 26)
   })
   it('ソースマップ - "_"による改行', () => {
-    const tokens = nako.lex(`[_\n]\nりんごの値段は30`).tokens
+    const tokens = nako.lex('[_\n]\nりんごの値段は30').tokens
     const nedan = tokens.find((t) => t.value === '値段')
     assert.strictEqual(nedan.startOffset, 9)
     assert.strictEqual(nedan.endOffset, 11)
   })
   it('ソースマップ - インデント構文', () => {
-    const tokens = nako.lex(`！インデント構文\n1回\n    「2」を表示\n\n「3」を表示`).tokens
+    const tokens = nako.lex('！インデント構文\n1回\n    「2」を表示\n\n「3」を表示').tokens
     assert.strictEqual(tokens.find((t) => t.value === '2').startOffset, 16) // 「1」を
     assert.strictEqual(tokens.find((t) => t.value === '3').startOffset, 24) // 「2」を
   })
   it('ソースマップ - string_ex', () => {
-    const tokens = nako.lex(`"{あ}"`).tokens
+    const tokens = nako.lex('"{あ}"').tokens
     assert.strictEqual(tokens.find((t) => t.value === 'あ').startOffset, 2)
     assert.strictEqual(tokens.find((t) => t.value === 'あ').endOffset, 3)
   })

@@ -12,7 +12,7 @@ const exec = childProcess.exec
 const path = require('path')
 
 const PluginNode = {
-  '初期化': {
+  初期化: {
     type: 'func',
     josi: [],
     pure: true,
@@ -70,7 +70,7 @@ const PluginNode = {
     }
   },
   // @ファイル入出力
-  '開': { // @ファイルSを開く // @ひらく
+  開: { // @ファイルSを開く // @ひらく
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
@@ -78,7 +78,7 @@ const PluginNode = {
       return fs.readFileSync(s, 'utf-8')
     }
   },
-  '読': { // @ファイルSを開く // @よむ
+  読: { // @ファイルSを開く // @よむ
     type: 'func',
     josi: [['を', 'から']],
     pure: false,
@@ -86,7 +86,7 @@ const PluginNode = {
       return sys.__exec('開', [s])
     }
   },
-  'バイナリ読': { // @ファイルSをバイナリ(Buffer)として開く // @ばいなりよむ
+  バイナリ読: { // @ファイルSをバイナリ(Buffer)として開く // @ばいなりよむ
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
@@ -94,7 +94,7 @@ const PluginNode = {
       return fs.readFileSync(s)
     }
   },
-  '保存': { // @データSをファイルFヘ書き込む // @ほぞん
+  保存: { // @データSをファイルFヘ書き込む // @ほぞん
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
@@ -104,7 +104,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'SJISファイル読': { // @SJIS形式のファイルSを読み込む // @SJISふぁいるよむ
+  SJISファイル読: { // @SJIS形式のファイルSを読み込む // @SJISふぁいるよむ
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
@@ -116,7 +116,7 @@ const PluginNode = {
       return text
     }
   },
-  'SJISファイル保存': { // @SをSJIS形式でファイルFへ書き込む // @SJISふぁいるほぞん
+  SJISファイル保存: { // @SをSJIS形式でファイルFへ書き込む // @SJISふぁいるほぞん
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
@@ -128,7 +128,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '起動待機': { // @シェルコマンドSを起動し実行終了まで待機する // @きどうたいき
+  起動待機: { // @シェルコマンドSを起動し実行終了まで待機する // @きどうたいき
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -137,7 +137,7 @@ const PluginNode = {
       return r.toString()
     }
   },
-  '起動': { // @シェルコマンドSを起動 // @きどう
+  起動: { // @シェルコマンドSを起動 // @きどう
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -148,7 +148,7 @@ const PluginNode = {
       })
     }
   },
-  '起動時': { // @シェルコマンドSを起動 // @きどうしたとき
+  起動時: { // @シェルコマンドSを起動 // @きどうしたとき
     type: 'func',
     josi: [['で'], ['を']],
     pure: true,
@@ -158,7 +158,7 @@ const PluginNode = {
       })
     }
   },
-  'ブラウザ起動': { // @ブラウザでURLを起動 // @ぶらうざきどう
+  ブラウザ起動: { // @ブラウザでURLを起動 // @ぶらうざきどう
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -167,7 +167,7 @@ const PluginNode = {
       opener(url)
     }
   },
-  'ファイル列挙': { // @パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 // @ふぁいるれっきょ
+  ファイル列挙: { // @パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 // @ふぁいるれっきょ
     type: 'func',
     josi: [['の', 'を', 'で']],
     pure: true,
@@ -186,7 +186,7 @@ const PluginNode = {
       } else { return fs.readdirSync(s) }
     }
   },
-  '全ファイル列挙': { // @パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。 // @ぜんふぁいるれっきょ
+  全ファイル列挙: { // @パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。 // @ぜんふぁいるれっきょ
     type: 'func',
     josi: [['の', 'を', 'で']],
     pure: true,
@@ -234,7 +234,7 @@ const PluginNode = {
       return result
     }
   },
-  '存在': { // @ファイルPATHが存在するか確認して返す // @そんざい
+  存在: { // @ファイルPATHが存在するか確認して返す // @そんざい
     type: 'func',
     josi: [['が', 'の']],
     pure: true,
@@ -242,7 +242,7 @@ const PluginNode = {
       return fileExists(path)
     }
   },
-  'フォルダ存在': { // @ディレクトリPATHが存在するか確認して返す // @ふぉるだそんざい
+  フォルダ存在: { // @ディレクトリPATHが存在するか確認して返す // @ふぉるだそんざい
     type: 'func',
     josi: [['が', 'の']],
     pure: true,
@@ -250,7 +250,7 @@ const PluginNode = {
       return isDir(path)
     }
   },
-  'フォルダ作成': { // @ディレクトリPATHを作成して返す(再帰的に作成) // @ふぉるださくせい
+  フォルダ作成: { // @ディレクトリPATHを作成して返す(再帰的に作成) // @ふぉるださくせい
     type: 'func',
     josi: [['の', 'を', 'に', 'へ']],
     pure: true,
@@ -258,7 +258,7 @@ const PluginNode = {
       return fse.mkdirpSync(path)
     }
   },
-  'ファイルコピー': { // @パスAをパスBへファイルコピーする // @ふぁいるこぴー
+  ファイルコピー: { // @パスAをパスBへファイルコピーする // @ふぁいるこぴー
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
@@ -266,7 +266,7 @@ const PluginNode = {
       return fse.copySync(a, b)
     }
   },
-  'ファイルコピー時': { // @パスAをパスBへファイルコピーしてcallbackを実行 // @ふぁいるこぴーしたとき
+  ファイルコピー時: { // @パスAをパスBへファイルコピーしてcallbackを実行 // @ふぁいるこぴーしたとき
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
@@ -278,7 +278,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'ファイル移動': { // @パスAをパスBへ移動する // @ふぁいるいどう
+  ファイル移動: { // @パスAをパスBへ移動する // @ふぁいるいどう
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
@@ -286,7 +286,7 @@ const PluginNode = {
       return fse.moveSync(a, b)
     }
   },
-  'ファイル移動時': { // @パスAをパスBへ移動してcallbackを実行 // @ふぁいるいどうしたとき
+  ファイル移動時: { // @パスAをパスBへ移動してcallbackを実行 // @ふぁいるいどうしたとき
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
@@ -298,7 +298,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'ファイル削除': { // @パスPATHを削除する // @ふぁいるさくじょ
+  ファイル削除: { // @パスPATHを削除する // @ふぁいるさくじょ
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
@@ -306,7 +306,7 @@ const PluginNode = {
       return fse.removeSync(path)
     }
   },
-  'ファイル削除時': { // @パスPATHを削除してcallbackを実行 // @ふぁいるさくじょしたとき
+  ファイル削除時: { // @パスPATHを削除してcallbackを実行 // @ふぁいるさくじょしたとき
     type: 'func',
     josi: [['で'], ['の', 'を']],
     pure: true,
@@ -318,7 +318,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'ファイル情報取得': { // @パスPATHの情報を調べてオブジェクトで返す // @ふぁいるじょうほうしゅとく
+  ファイル情報取得: { // @パスPATHの情報を調べてオブジェクトで返す // @ふぁいるじょうほうしゅとく
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
@@ -326,7 +326,7 @@ const PluginNode = {
       return fs.statSync(path)
     }
   },
-  'ファイルサイズ取得': { // @パスPATHのファイルサイズを調べて返す // @ふぁいるさいずしゅとく
+  ファイルサイズ取得: { // @パスPATHのファイルサイズを調べて返す // @ふぁいるさいずしゅとく
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
@@ -337,7 +337,7 @@ const PluginNode = {
     }
   },
   // @パス操作
-  'ファイル名抽出': { // @フルパスのファイル名Sからファイル名部分を抽出して返す // @ふぁいるめいちゅうしゅつ
+  ファイル名抽出: { // @フルパスのファイル名Sからファイル名部分を抽出して返す // @ふぁいるめいちゅうしゅつ
     type: 'func',
     josi: [['から', 'の']],
     pure: true,
@@ -345,7 +345,7 @@ const PluginNode = {
       return path.basename(s)
     }
   },
-  'パス抽出': { // @ファイル名Sからパス部分を抽出して返す // @ぱすちゅうしゅつ
+  パス抽出: { // @ファイル名Sからパス部分を抽出して返す // @ぱすちゅうしゅつ
     type: 'func',
     josi: [['から', 'の']],
     pure: true,
@@ -353,7 +353,7 @@ const PluginNode = {
       return path.dirname(s)
     }
   },
-  '絶対パス変換': { // @相対パスから絶対パスに変換して返す // @ぜったいぱすへんかん
+  絶対パス変換: { // @相対パスから絶対パスに変換して返す // @ぜったいぱすへんかん
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
@@ -361,7 +361,7 @@ const PluginNode = {
       return path.resolve(a)
     }
   },
-  '相対パス展開': { // @ファイル名AからパスBを展開して返す // @そうたいぱすてんかい
+  相対パス展開: { // @ファイル名AからパスBを展開して返す // @そうたいぱすてんかい
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
@@ -370,7 +370,7 @@ const PluginNode = {
     }
   },
   // @フォルダ取得
-  'カレントディレクトリ取得': { // @カレントディレクトリを返す // @かれんとでぃれくとりしゅとく
+  カレントディレクトリ取得: { // @カレントディレクトリを返す // @かれんとでぃれくとりしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -379,7 +379,7 @@ const PluginNode = {
       return path.resolve(cwd)
     }
   },
-  'カレントディレクトリ変更': { // @カレントディレクトリをDIRに変更する // @かれんとでぃれくとりへんこう
+  カレントディレクトリ変更: { // @カレントディレクトリをDIRに変更する // @かれんとでぃれくとりへんこう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -388,7 +388,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '作業フォルダ取得': { // @カレントディレクトリを返す // @さぎょうふぉるだしゅとく
+  作業フォルダ取得: { // @カレントディレクトリを返す // @さぎょうふぉるだしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -397,7 +397,7 @@ const PluginNode = {
       return path.resolve(cwd)
     }
   },
-  '作業フォルダ変更': { // @カレントディレクトリをDIRに変更する // @さぎょうふぉるだへんこう
+  作業フォルダ変更: { // @カレントディレクトリをDIRに変更する // @さぎょうふぉるだへんこう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -406,7 +406,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'ホームディレクトリ取得': { // @ホームディレクトリを取得して返す // @ほーむでぃれくとりしゅとく
+  ホームディレクトリ取得: { // @ホームディレクトリを取得して返す // @ほーむでぃれくとりしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -414,7 +414,7 @@ const PluginNode = {
       return process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
     }
   },
-  'デスクトップ': { // @デスクトップパスを取得して返す // @ですくとっぷ
+  デスクトップ: { // @デスクトップパスを取得して返す // @ですくとっぷ
     type: 'func',
     josi: [],
     pure: false,
@@ -423,7 +423,7 @@ const PluginNode = {
       return path.join(home, 'Desktop')
     }
   },
-  'マイドキュメント': { // @マイドキュメントのパスを取得して返す // @まいどきゅめんと
+  マイドキュメント: { // @マイドキュメントのパスを取得して返す // @まいどきゅめんと
     type: 'func',
     josi: [],
     pure: false,
@@ -432,8 +432,8 @@ const PluginNode = {
       return path.join(home, 'Documents')
     }
   },
-  '母艦パス': { type: 'const', value: '' }, // @ぼかんぱす
-  '母艦パス取得': { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
+  母艦パス: { type: 'const', value: '' }, // @ぼかんぱす
+  母艦パス取得: { // @スクリプトのあるディレクトリを返す // @ぼかんぱすしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -442,7 +442,7 @@ const PluginNode = {
     }
   },
   // @環境変数
-  '環境変数取得': { // @環境変数Sを返す // @かんきょうへんすうしゅとく
+  環境変数取得: { // @環境変数Sを返す // @かんきょうへんすうしゅとく
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -450,7 +450,7 @@ const PluginNode = {
       return process.env[s]
     }
   },
-  '環境変数一覧取得': { // @環境変数の一覧を返す // @かんきょうへんすういちらんしゅとく
+  環境変数一覧取得: { // @環境変数の一覧を返す // @かんきょうへんすういちらんしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -459,8 +459,8 @@ const PluginNode = {
     }
   },
   // @圧縮・解凍
-  '圧縮解凍ツールパス': { type: 'const', value: '7z' }, // @あっしゅくかいとうつーるぱす
-  '圧縮解凍ツールパス変更': { // @圧縮解凍に使うツールを取得変更する // @あっしゅくかいとうつーるぱすへんこう
+  圧縮解凍ツールパス: { type: 'const', value: '7z' }, // @あっしゅくかいとうつーるぱす
+  圧縮解凍ツールパス変更: { // @圧縮解凍に使うツールを取得変更する // @あっしゅくかいとうつーるぱすへんこう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -469,7 +469,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '解凍': { // @(v1非互換)ZIPファイルAをBに解凍(実行には7-zipが必要-https://goo.gl/LmKswH) // @かいとう
+  解凍: { // @(v1非互換)ZIPファイルAをBに解凍(実行には7-zipが必要-https://goo.gl/LmKswH) // @かいとう
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
@@ -480,7 +480,7 @@ const PluginNode = {
       return true
     }
   },
-  '解凍時': { // @解凍処理を行い、処理が完了したときにcallback処理を実行 // @かいとうしたとき
+  解凍時: { // @解凍処理を行い、処理が完了したときにcallback処理を実行 // @かいとうしたとき
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
@@ -494,7 +494,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  '圧縮': { // @(v1非互換)ファイルAをBにZIP圧縮(実行には7-zipが必要-https://goo.gl/LmKswH) // @あっしゅく
+  圧縮: { // @(v1非互換)ファイルAをBにZIP圧縮(実行には7-zipが必要-https://goo.gl/LmKswH) // @あっしゅく
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
@@ -505,7 +505,7 @@ const PluginNode = {
       return true
     }
   },
-  '圧縮時': { // @圧縮処理を行い完了したときにcallback処理を指定 // @あっしゅくしたとき
+  圧縮時: { // @圧縮処理を行い完了したときにcallback処理を指定 // @あっしゅくしたとき
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
@@ -520,7 +520,7 @@ const PluginNode = {
     return_none: true
   },
   // @Nodeプロセス
-  '終': { // @Nodeでプログラム実行を強制終了する // @おわる
+  終: { // @Nodeでプログラム実行を強制終了する // @おわる
     type: 'func',
     josi: [],
     pure: true,
@@ -529,7 +529,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '強制終了時': { // @Nodeでctrl+cでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010) // @きょうせいしゅうりょうしたとき
+  強制終了時: { // @Nodeでctrl+cでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010) // @きょうせいしゅうりょうしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -544,7 +544,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '終了': { // @Nodeでプログラム実行を強制終了する // @しゅうりょう
+  終了: { // @Nodeでプログラム実行を強制終了する // @しゅうりょう
     type: 'func',
     josi: [],
     pure: false,
@@ -553,7 +553,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '秒待': { // @NodeでN秒待つ // @びょうまつ
+  秒待: { // @NodeでN秒待つ // @びょうまつ
     type: 'func',
     josi: [['']],
     pure: true,
@@ -565,7 +565,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'OS取得': { // @OSプラットフォームを返す(darwin/win32/linux) // @OSしゅとく
+  OS取得: { // @OSプラットフォームを返す(darwin/win32/linux) // @OSしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -573,7 +573,7 @@ const PluginNode = {
       return process.platform
     }
   },
-  'OSアーキテクチャ取得': { // @OSアーキテクチャを返す // @OSあーきてくちゃしゅとく
+  OSアーキテクチャ取得: { // @OSアーキテクチャを返す // @OSあーきてくちゃしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -582,7 +582,7 @@ const PluginNode = {
     }
   },
   // @クリップボード操作
-  'クリップボード': { // @クリップボードを取得設定（『クリップボード←値』で書換が可能） // @くりっぷぼーど
+  クリップボード: { // @クリップボードを取得設定（『クリップボード←値』で書換が可能） // @くりっぷぼーど
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -595,10 +595,10 @@ const PluginNode = {
     }
   },
   // @コマンドラインと標準入出力
-  'コマンドライン': { type: 'const', value: '' }, // @こまんどらいん
-  'ナデシコランタイム': { type: 'const', value: '' }, // @なでしこらんたいむ
-  'ナデシコランタイムパス': { type: 'const', value: '' }, // @なでしこらんたいむぱす
-  '標準入力取得時': { // @標準入力を一行取得した時に、無名関数（あるいは、文字列で関数名を指定）F(s)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
+  コマンドライン: { type: 'const', value: '' }, // @こまんどらいん
+  ナデシコランタイム: { type: 'const', value: '' }, // @なでしこらんたいむ
+  ナデシコランタイムパス: { type: 'const', value: '' }, // @なでしこらんたいむぱす
+  標準入力取得時: { // @標準入力を一行取得した時に、無名関数（あるいは、文字列で関数名を指定）F(s)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -612,7 +612,7 @@ const PluginNode = {
       })
     }
   },
-  '尋': { // @標準入力を一行取得する // @たずねる
+  尋: { // @標準入力を一行取得する // @たずねる
     type: 'func',
     josi: [['と', 'を']],
     pure: true,
@@ -624,7 +624,7 @@ const PluginNode = {
     }
   },
   // @テスト
-  'ASSERT等': { // @ mochaによるテストで、ASSERTでAとBが正しいことを報告する // @ASSERTひとしい
+  ASSERT等: { // @ mochaによるテストで、ASSERTでAとBが正しいことを報告する // @ASSERTひとしい
     type: 'func',
     josi: [['と'], ['が']],
     pure: true,
@@ -634,7 +634,7 @@ const PluginNode = {
     }
   },
   // @ネットワーク
-  '自分IPアドレス取得': { // @ネットワークアダプターからIPアドレス(IPv4)を取得して配列で返す // @じぶんIPあどれすしゅとく
+  自分IPアドレス取得: { // @ネットワークアダプターからIPアドレス(IPv4)を取得して配列で返す // @じぶんIPあどれすしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -654,7 +654,7 @@ const PluginNode = {
       return result
     }
   },
-  '自分IPV6アドレス取得': { // @ネットワークアダプターからIPアドレス(IPv6)を取得して配列で返す // @じぶんIPV6あどれすしゅとく
+  自分IPV6アドレス取得: { // @ネットワークアダプターからIPアドレス(IPv6)を取得して配列で返す // @じぶんIPV6あどれすしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -672,7 +672,7 @@ const PluginNode = {
     }
   },
   // @Ajax
-  'AJAX送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
+  AJAX送信時: { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
@@ -691,7 +691,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'GET送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @GETそうしんしたとき
+  GET送信時: { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @GETそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: false,
@@ -700,7 +700,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'POST送信時': { // @AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定 // @POSTそうしんしたとき
+  POST送信時: { // @AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定 // @POSTそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
@@ -729,7 +729,7 @@ const PluginNode = {
       })
     }
   },
-  'POSTフォーム送信時': { // @AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定 // @POSTふぉーむそうしんしたとき
+  POSTフォーム送信時: { // @AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定 // @POSTふぉーむそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
@@ -754,7 +754,7 @@ const PluginNode = {
       })
     }
   },
-  'AJAX失敗時': { // @Ajax命令でエラーが起きたとき // @AJAXえらーしっぱいしたとき
+  AJAX失敗時: { // @Ajax命令でエラーが起きたとき // @AJAXえらーしっぱいしたとき
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -762,8 +762,8 @@ const PluginNode = {
       sys.__v0['AJAX:ONERROR'] = callback
     }
   },
-  'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
-  'AJAXオプション設定': { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
+  AJAXオプション: { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
+  AJAXオプション設定: { // @Ajax命令でオプションを設定 // @AJAXおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ', 'と']],
     pure: true,
@@ -772,7 +772,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  'AJAX保障送信': { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @AJAXほしょうそうしん
+  AJAX保障送信: { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @AJAXほしょうそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
@@ -783,7 +783,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'HTTP保障取得': { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @HTTPほしょうしゅとく
+  HTTP保障取得: { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @HTTPほしょうしゅとく
     type: 'func',
     josi: [['の', 'から', 'を']],
     pure: true,
@@ -792,7 +792,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'GET保障送信': { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @GETほしょうそうしん
+  GET保障送信: { // @非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @GETほしょうそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
@@ -801,7 +801,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'POST保障送信': { // @非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @POSTほしょうそうしん
+  POST保障送信: { // @非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。 // @POSTほしょうそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
@@ -824,7 +824,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'POSTフォーム保障送信': { // @非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。  // @POSTふぉーむほしょうそうしん
+  POSTフォーム保障送信: { // @非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。  // @POSTふぉーむほしょうそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
@@ -840,7 +840,7 @@ const PluginNode = {
     },
     return_none: false
   },
-  'AJAX内容取得': { // @非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。  // @AJAXないようしゅとく
+  AJAX内容取得: { // @非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。  // @AJAXないようしゅとく
     type: 'func',
     josi: [['から'], ['で']],
     pure: true,
@@ -866,7 +866,7 @@ const PluginNode = {
     return_none: false
   },
   // @文字コード
-  '文字コード変換サポート判定': { // @文字コードCODEをサポートしているか確認 // @もじこーどさぽーとはんてい
+  文字コード変換サポート判定: { // @文字コードCODEをサポートしているか確認 // @もじこーどさぽーとはんてい
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
@@ -875,7 +875,7 @@ const PluginNode = {
       return iconv.encodingExists(code)
     }
   },
-  'SJIS変換': { // @(v1非互換)文字列をShift_JISのバイナリバッファに変換 // @SJISへんかん
+  SJIS変換: { // @(v1非互換)文字列をShift_JISのバイナリバッファに変換 // @SJISへんかん
     type: 'func',
     josi: [['に', 'へ', 'を']],
     pure: true,
@@ -885,7 +885,7 @@ const PluginNode = {
       return iconv.encode(str, 'Shift_JIS')
     }
   },
-  'SJIS取得': { // @Shift_JISのバイナリバッファを文字列に変換 // @SJISしゅとく
+  SJIS取得: { // @Shift_JISのバイナリバッファを文字列に変換 // @SJISしゅとく
     type: 'func',
     josi: [['から', 'を', 'で']],
     pure: true,
@@ -895,7 +895,7 @@ const PluginNode = {
       return iconv.decode(Buffer.from(buf), 'sjis')
     }
   },
-  'エンコーディング変換': { // @文字列SをCODEへ変換してバイナリバッファを返す // @ えんこーでぃんぐへんかん
+  エンコーディング変換: { // @文字列SをCODEへ変換してバイナリバッファを返す // @ えんこーでぃんぐへんかん
     type: 'func',
     josi: [['を'], ['へ', 'で']],
     pure: true,
@@ -905,7 +905,7 @@ const PluginNode = {
       return iconv.encode(s, code)
     }
   },
-  'エンコーディング取得': { // @バイナリバッファBUFをCODEから変換して返す // @えんこーでぃんぐしゅとく
+  エンコーディング取得: { // @バイナリバッファBUFをCODEから変換して返す // @えんこーでぃんぐしゅとく
     type: 'func',
     josi: [['を'], ['から', 'で']],
     pure: true,
@@ -916,7 +916,7 @@ const PluginNode = {
     }
   },
   // @マウスとキーボード操作
-  'キー送信': { // @Sのキーを送信 // @きーそうしん
+  キー送信: { // @Sのキーを送信 // @きーそうしん
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
@@ -926,7 +926,7 @@ const PluginNode = {
     },
     return_none: true
   },
-  '窓アクティブ': { // @Sの窓をアクティブにする // @まどあくてぃぶ
+  窓アクティブ: { // @Sの窓をアクティブにする // @まどあくてぃぶ
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
@@ -937,7 +937,7 @@ const PluginNode = {
     return_none: true
   },
   // @ハッシュ関数
-  'ハッシュ関数一覧取得': { // @利用可能なハッシュ関数の一覧を返す // @ はっしゅかんすういちらんしゅとく
+  ハッシュ関数一覧取得: { // @利用可能なハッシュ関数の一覧を返す // @ はっしゅかんすういちらんしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -946,7 +946,7 @@ const PluginNode = {
       return crypto.getHashes()
     }
   },
-  'ハッシュ値計算': { // @データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す // @ はっしゅちけいさん
+  ハッシュ値計算: { // @データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す // @ はっしゅちけいさん
     type: 'func',
     josi: [['を'], ['の'], ['で']],
     pure: true,
