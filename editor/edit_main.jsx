@@ -15,7 +15,7 @@ for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
   for (const [groupName, group] of Object.entries(groups)) {
     commandList.push({
       name: groupName,
-      group: group.map(([type, name, args]) => ({ type, name, args, value: (type === '関数') ? ((args + '/').split('/')[0] + name + '。') : name })),
+      group: group.map(([type, name, args]) => ({ type, name, args, value: (type === '関数') ? ((args + '/').split('/')[0] + name + '。') : name }))
     })
   }
 }
@@ -24,10 +24,10 @@ for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
 const getNako3 = () => /** @type {import('../src/wnako3')} */(navigator.nako3)
 
 /** @type {React.FC<{ onClick: () => void, text: string }>} */
-const Button = (props) => <button className="default_button" onClick={props.onClick}>{props.text}</button>
+const Button = (props) => <button className='default_button' onClick={props.onClick}>{props.text}</button>
 
 /** @type {React.FC<{ title: string }>} */
-const Section = (props) => <section><h5 className="edit_head">{props.title}</h5>{props.children}</section>
+const Section = (props) => <section><h5 className='edit_head'>{props.title}</h5>{props.children}</section>
 
 /** @type {React.FC<{ code: string, editorId: number, autoSave?: string }>} */
 const Editor = ({ code, editorId, autoSave }) => {
@@ -57,78 +57,90 @@ const Editor = ({ code, editorId, autoSave }) => {
   }, [])
   const editorOptions = () => ({ preCode, outputContainer: /** @type {HTMLDivElement} */(document.getElementById(`nako3_editor_info_${editorId}`)) })
 
-  return <div>
-    <Section title="エディタ">
-      <div ref={preCodeEditorRef} data-nako3-readonly style={{ height: '100px', borderBottom: 'gray 1px solid' }}>{preCode}</div>
-      <div className="nako3_editor_code" ref={editorRef}>{code}</div>
-      <div className="buttons">
-        <Button text="実行" onClick={async () => {
-          await editor.current.run({ ...editorOptions() }).promise
-          setUsedFuncs(getNako3().usedFuncs)
-        }} />
-        <Button text="テスト" onClick={() => editor.current.run({ ...editorOptions(), method: 'test' })} />
-        <Button text="クリア" onClick={() => {
-          const c = editorOptions().outputContainer
-          c.innerHTML = ''
-          c.style.display = 'none'
-          navigator.nako3.clearPlugins()
-        }} />
-        <Button text="↓" onClick={async () => {
-          const js = await editor.current.run({ ...editorOptions(), method: 'compile' }).promise
-          if (typeof js === 'string') {
-            // ファイルのダウンロード
-            const link = document.createElement('a')
-            link.href = window.URL.createObjectURL(new Blob([js])) // ファイルの中身
-            link.download = 'nako3_' + dayjs().format('YYYYMMDDHHmmss') + '.js' // ファイル名
-            link.click()
-          }
-        }} />
-      </div>
-    </Section>
-    <Section title="実行結果">
-      <div id={`nako3_editor_info_${editorId}`} className="info"></div>
-      <div id={`nako3_div_${editorId}`}></div>
-      <canvas id={`nako3_canvas_${editorId}`} width="310" height="150"/>
-    </Section>
-    <Section title="使用した命令"><p className="info">{
+  return (
+    <div>
+      <Section title='エディタ'>
+        <div ref={preCodeEditorRef} data-nako3-readonly style={{ height: '100px', borderBottom: 'gray 1px solid' }}>{preCode}</div>
+        <div className='nako3_editor_code' ref={editorRef}>{code}</div>
+        <div className='buttons'>
+          <Button
+            text='実行' onClick={async () => {
+              await editor.current.run({ ...editorOptions() }).promise
+              setUsedFuncs(getNako3().usedFuncs)
+            }}
+          />
+          <Button text='テスト' onClick={() => editor.current.run({ ...editorOptions(), method: 'test' })} />
+          <Button
+            text='クリア' onClick={() => {
+              const c = editorOptions().outputContainer
+              c.innerHTML = ''
+              c.style.display = 'none'
+              navigator.nako3.clearPlugins()
+            }}
+          />
+          <Button
+            text='↓' onClick={async () => {
+              const js = await editor.current.run({ ...editorOptions(), method: 'compile' }).promise
+              if (typeof js === 'string') {
+                // ファイルのダウンロード
+                const link = document.createElement('a')
+                link.href = window.URL.createObjectURL(new Blob([js])) // ファイルの中身
+                link.download = 'nako3_' + dayjs().format('YYYYMMDDHHmmss') + '.js' // ファイル名
+                link.click()
+              }
+            }}
+          />
+        </div>
+      </Section>
+      <Section title='実行結果'>
+        <div id={`nako3_editor_info_${editorId}`} className='info' />
+        <div id={`nako3_div_${editorId}`} />
+        <canvas id={`nako3_canvas_${editorId}`} width='310' height='150' />
+      </Section>
+      <Section title='使用した命令'><p className='info'>{
       usedFuncs && <span>{
-        Array.from(usedFuncs).map((name)=>{
+        Array.from(usedFuncs).map((name) => {
           const linkUrl = 'https://nadesi.com/v3/doc/index.php?FrontPage&plugin&name=nako3doc&q=' + encodeURIComponent(name)
           return <span key={name}>[<a href={linkUrl}>{name}</a>]&nbsp;</span>
         })
-      }</span>
-    }</p></Section>
-    <Section title="命令の一覧">
-      <div style={{paddingTop: '8px'}}>
-        <Button text={showCommandList ? '命令の一覧を隠す' : '命令の一覧を表示する'} onClick={toggleCommandList} />
-      </div>
-      {showCommandList && <ul>{
+      }
+                   </span>
+    }
+                              </p>
+      </Section>
+      <Section title='命令の一覧'>
+        <div style={{ paddingTop: '8px' }}>
+          <Button text={showCommandList ? '命令の一覧を隠す' : '命令の一覧を表示する'} onClick={toggleCommandList} />
+        </div>
+        {showCommandList && <ul>{
         commandList.map(({ group, name }) => <li key={name}>
           <div style={{ color: '#55c' }}>{name}</div>
           <div style={{ marginLeft: '12px' }}>{group.map(({ value, name }, i) =>
-            <span key={i} style={{ marginRight: '12px', cursor: 'pointer' }} onClick={() => {
-              // カーソル位置に命令を挿入する。
-              editor.current.editor.session.insert(editor.current.editor.getCursorPosition(), value)
-            }}>[{name}]</span>)
-          }</div>
-        </li>)
-      }</ul>}
-    </Section>
-  </div>
+            <span
+              key={i} style={{ marginRight: '12px', cursor: 'pointer' }} onClick={() => {
+                // カーソル位置に命令を挿入する。
+                editor.current.editor.session.insert(editor.current.editor.getCursorPosition(), value)
+              }}
+            >[{name}]
+            </span>)}
+          </div>
+                                             </li>)
+      }
+        </ul>}
+      </Section>
+    </div>
+  )
 }
 
 try {
   for (const [i, e] of Array.from(Array.from(document.getElementsByClassName('editor-component')).entries())) {
     const data = JSON.parse(e.getElementsByTagName('script')[0].text)
-    let code = data['code']
-    if (data['autoLoad'] && window.localStorage['nako3/editor/code']) {
+    let code = data.code
+    if (data.autoLoad && window.localStorage['nako3/editor/code']) {
       code = window.localStorage['nako3/editor/code']
     }
-    ReactDOM.render(<Editor code={code} editorId={i} autoSave={data['autoLoad'] ? 'nako3/editor/code' : undefined} />, e)
+    ReactDOM.render(<Editor code={code} editorId={i} autoSave={data.autoLoad ? 'nako3/editor/code' : undefined} />, e)
   }
 } catch (err) {
   console.error(err) // IE11
 }
-
-
-
