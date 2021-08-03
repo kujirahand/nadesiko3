@@ -28,7 +28,7 @@
 
 なでしこ3をPC向けにローカル環境で動作させることも可能です。
 
- - [OS別のインストール方法](https://nadesi.com/doc3/index.php?OS%E5%88%A5)
+- [OS別のインストール方法](https://nadesi.com/doc3/index.php?OS%E5%88%A5)
 
 ### Windowsで利用する
 
@@ -45,7 +45,7 @@
 次いで、コマンドラインから以下のコマンドを実行します。
 
 ```
-$ npm install -g nadesiko3
+npm install -g nadesiko3
 ```
 
 すると、cnako3というコマンドで、なでしこを利用できます。
@@ -64,9 +64,9 @@ $ npm run nako3server
 また、以下のコマンドを実行すると、ブラウザ上になでしこの簡易エディタが起動します。
 
 ```
-$ git clone https://github.com/kujirahand/nadesiko3.git
-$ cd nadesiko3
-$ npm install
+git clone https://github.com/kujirahand/nadesiko3.git
+cd nadesiko3
+npm install
 ```
 
 #### 追加インストール(macOS/Linux)

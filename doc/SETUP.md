@@ -14,7 +14,7 @@
 
 コンパイル環境が必要になるので、ビルドツールをインストールする。PowerShellから以下のコマンドを実行すると、自動的に必要なツールが入る。(Windowsのユーザー名に日本語が使われているとうまくコンパイルできないという情報もあるので注意)
 
-また、Gitなどのツールをインストールするために、Chocolatey( https://chocolatey.org/ )をインストールしておく。
+また、Gitなどのツールをインストールするために、Chocolatey( <https://chocolatey.org/> )をインストールしておく。
 
 ```
 # Chocolatey でGitをインストール
@@ -27,17 +27,16 @@ npm install -g windows-build-tools
 
 ## 【macOS】
 
-Homebrew( https://brew.sh/index_ja ) (そしてXcode)をインストールしておく。
+Homebrew( <https://brew.sh/index_ja> ) (そしてXcode)をインストールしておく。
 
 ## 【共通】
 
 コマンドラインから以下を実行して、nadesiko3のリポジトリをcloneし、必要なライブラリをインストール。ただし、Node.jsのバージョンv10以上が必要。もし、Ubuntuで古いのNode.jsをインストールした場合など、nモジュールを利用して最新安定版のNode.jsを利用してください。
 
-
 ```
-$ git clone https://github.com/kujirahand/nadesiko3
-$ cd nadesiko3
-$ npm install --no-optional
+git clone https://github.com/kujirahand/nadesiko3
+cd nadesiko3
+npm install --no-optional
 ```
 
 コマンドラインから以下のコマンドを実行することで、ソースコードをビルドできる。
@@ -58,14 +57,13 @@ $ npm run analyze
 開発時、以下のコマンドを実行すれば、監視ビルドさせることができる。
 
 ```
-$ npm run watch
+npm run watch
 ```
-
 
 また、コマンドラインから以下のコマンドを実行することで、ソースコードをテストできる。
 
 ```
-$ npm run test
+npm run test
 ```
 
 ## 開発時の約束
@@ -103,7 +101,7 @@ export PATH=$PATH:$NAKO_HOME/src
 例えば、なでしこのコマンド一覧ファイルを生成するバッチを実行する方法。
 
 ```
-$ cnako3 $NAKO_HOME/batch/pickup_command.nako
+cnako3 $NAKO_HOME/batch/pickup_command.nako
 ```
 
 テストを実行する場合には、 `-t` (`--test`) オプションを付けてcnako3を実行します。
@@ -117,18 +115,19 @@ demoディレクトリに、なでしこをブラウザから使うデモがあ�
 なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:3000/](http://localhost:3000/)でサーバーが起動。
 
 ```
-$ npm start
+npm start
 ```
 
 ### 対応機器/ブラウザの生成
 
 コマンドラインから以下を実行して、以下のファイルを生成。
+
 * [doc/browsers.md](browsers.md): 対応機器/ブラウザ (マークダウン形式)
 * [src/browsers.md](../src/browsers.md): 対応機器/ブラウザ (マークダウン形式, cnako3用)
 * [demo/browsers.html](../demo/browsers.html): 対応機器/ブラウザ (HTML形式, なでしこ3エディタ用)
 
 ```
-$ npm run build:browsers
+npm run build:browsers
 ```
 
 ### Node.jsのパッケージの更新方法
@@ -136,8 +135,8 @@ $ npm run build:browsers
 コマンドラインから以下を実行して、Node.jsのパッケージを更新。
 
 ```
-$ npm-check-updates -u
-$ npm update --no-optional
+npm-check-updates -u
+npm update --no-optional
 ```
 
 ### Electron
@@ -145,30 +144,28 @@ $ npm update --no-optional
 モジュールをインストールする。
 
 ```
-$ npm install electron
-$ npm install electron-packager
+npm install electron
+npm install electron-packager
 ```
 
 以下のコマンドを実行することで、Electronによるなでしこが起動。
 
 ```
-$ npm run electron
+npm run electron
 ```
 
 ビルドは以下のコマンドで行う。
 
 ```
-$ npm run build:electron
+npm run build:electron
 ```
-
-
 
 ## Gitからリポジトリを取得して利用する場合
 
 最低限のライブラリで良い場合には、``npm install --production``を実行するだけ。
 
 ```
-$ git clone https://github.com/kujirahand/nadesiko3.git
-$ cd nadesiko3
-$ npm install --production
+git clone https://github.com/kujirahand/nadesiko3.git
+cd nadesiko3
+npm install --production
 ```
