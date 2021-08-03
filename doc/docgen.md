@@ -18,4 +18,4 @@ npm build:command
 cnako3 batch/jsplugin2text.nako3 /plugin/path/nadesiko3-xxx
 ```
 
-生成したテキストは、konawiki3 形式となっている。
+生成したテキストは、konawiki3形式となっている。
