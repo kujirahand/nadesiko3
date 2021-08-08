@@ -16,7 +16,7 @@
 
 また、Gitなどのツールをインストールするために、Chocolatey( <https://chocolatey.org/> )をインストールしておく。
 
-```
+```bach
 # Chocolatey でGitをインストール
 cinst git
 
@@ -33,7 +33,7 @@ Homebrew( <https://brew.sh/index_ja> ) (そしてXcode)をインストールし�
 
 コマンドラインから以下を実行して、nadesiko3のリポジトリをcloneし、必要なライブラリをインストール。ただし、Node.jsのバージョンv10以上が必要。もし、Ubuntuで古いのNode.jsをインストールした場合など、nモジュールを利用して最新安定版のNode.jsを利用してください。
 
-```
+```bash
 git clone https://github.com/kujirahand/nadesiko3
 cd nadesiko3
 npm install --no-optional
@@ -42,27 +42,27 @@ npm install --no-optional
 コマンドラインから以下のコマンドを実行することで、ソースコードをビルドできる。
 srcディレクトリの中のコードを編集すると、releaseディレクトリに結果が出力される。
 
-```
+```bash
 # Node.js用のソースコードをWeb用のJSに変換
-$ npm run build
+npm run build
 ```
 
 ビルド後に以下のコマンドを実行することで、 バンドルファイル内の各パッケージがどのぐらいの容量を占めているかを可視化できる。
 
-```
+```bash
 # バンドルファイル内の各パッケージがどのぐらいの容量を占めているかを可視化
 $ npm run analyze
 ```
 
 開発時、以下のコマンドを実行すれば、監視ビルドさせることができる。
 
-```
+```bash
 npm run watch
 ```
 
 また、コマンドラインから以下のコマンドを実行することで、ソースコードをテストできる。
 
-```
+```bash
 npm run test
 ```
 
@@ -74,23 +74,24 @@ npm run test
 
 ATOMエディタを使っている場合は、以下のプラグインを導入すると非常に便利。
 
-```
+```bash
 apm install linter
 apm install linter-js-standard
 ```
 
-また、EditorConfig (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](https://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照) に対応しています。
+また、EditorConfigに対応しています。
+(詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](https://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照)
 これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
 
 ## コマンドラインからなでしこを使う方法
 
 なでしこ3ではコマンドラインからなでしこを実行できるcnako3(Windowsは、cnako3.bat)というスクリプトを用意。今後、なでしこの各種バッチファイルはなでしこ自身で記述される。
 
-ちなみに、``npm install -g nadeisko3`` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、その場合は安定版のなでしこがインストールされることになる。
+ちなみに、`npm install -g nadeisko3` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、その場合は安定版のなでしこがインストールされることになる。
 
 環境変数に本ファイルのパスをNAKO_HOMEとして登録し、パスをNAKO_HOME/srcに通す。以下、macOS/Linuxでの `.bashrc` の記述例。(ユーザー名がkujiraの場合)
 
-```
+```bash
 HOME=/Users/kujira
 export NAKO_HOME=$HOME/nadesiko3
 export PATH=$PATH:$NAKO_HOME/src
@@ -100,7 +101,7 @@ export PATH=$PATH:$NAKO_HOME/src
 
 例えば、なでしこのコマンド一覧ファイルを生成するバッチを実行する方法。
 
-```
+```bash
 cnako3 $NAKO_HOME/batch/pickup_command.nako
 ```
 
@@ -114,7 +115,7 @@ demoディレクトリに、なでしこをブラウザから使うデモがあ�
 
 なでしこでは、簡易サーバーを用意。コマンドラインで以下のように入力すると、[http://localhost:3000/](http://localhost:3000/)でサーバーが起動。
 
-```
+```bash
 npm start
 ```
 
@@ -126,7 +127,7 @@ npm start
 * [src/browsers.md](../src/browsers.md): 対応機器/ブラウザ (マークダウン形式, cnako3用)
 * [demo/browsers.html](../demo/browsers.html): 対応機器/ブラウザ (HTML形式, なでしこ3エディタ用)
 
-```
+```bash
 npm run build:browsers
 ```
 
@@ -134,7 +135,7 @@ npm run build:browsers
 
 コマンドラインから以下を実行して、Node.jsのパッケージを更新。
 
-```
+```bash
 npm-check-updates -u
 npm update --no-optional
 ```
@@ -143,20 +144,20 @@ npm update --no-optional
 
 モジュールをインストールする。
 
-```
+```bash
 npm install electron
 npm install electron-packager
 ```
 
 以下のコマンドを実行することで、Electronによるなでしこが起動。
 
-```
+```bash
 npm run electron
 ```
 
 ビルドは以下のコマンドで行う。
 
-```
+```bash
 npm run build:electron
 ```
 
@@ -164,7 +165,7 @@ npm run build:electron
 
 最低限のライブラリで良い場合には、``npm install --production``を実行するだけ。
 
-```
+```bash
 git clone https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install --production

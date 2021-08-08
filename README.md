@@ -1,6 +1,8 @@
 # 日本語プログラミング言語「なでしこ3」
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![npm version](https://badge.fury.io/js/nadesiko3.svg)](https://www.npmjs.com/package/nadesiko3) ![Node.js CI](https://github.com/kujirahand/nadesiko3/workflows/Node.js%20CI/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![npm version](https://badge.fury.io/js/nadesiko3.svg)](https://www.npmjs.com/package/nadesiko3)
+![Node.js CI](https://github.com/kujirahand/nadesiko3/workflows/Node.js%20CI/badge.svg)
 
 ## 「なでしこ3」とは
 
@@ -44,26 +46,26 @@
 先にNode.jsをインストールします。
 次いで、コマンドラインから以下のコマンドを実行します。
 
-```
+```bash
 npm install -g nadesiko3
 ```
 
 すると、cnako3というコマンドで、なでしこを利用できます。
 
-```
+```bash
 # なでしこのサーバーを起動
-$ npm start
+npm start
 # なでしこエディタ(PC版)を起動
-$ npm run nako3edit
+npm run nako3edit
 # なでしこエディタ(WEB版)を起動
-$ npm run nako3server
+npm run nako3server
 ```
 
 ### Gitからインストール
 
 また、以下のコマンドを実行すると、ブラウザ上になでしこの簡易エディタが起動します。
 
-```
+```bash
 git clone https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install
@@ -75,14 +77,14 @@ npm install
 
 macOS:
 
-```
+```bash
 # 『圧縮』『解凍』命令のために
 brew install p7zip
 ```
 
 Ubuntu/Debian:
 
-```
+```bash
 # 『圧縮』『解凍』命令のために
 sudo apt install p7zip-full
 # 『キー送信』命令のために
@@ -91,7 +93,7 @@ sudo apt install xdotool
 
 全てのコマンドが正しく動くかを確認するには、以下のコマンドを実行します。
 
-```
+```bash
 npm test
 ```
 
