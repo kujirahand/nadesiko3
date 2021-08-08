@@ -8,7 +8,6 @@
 - 構文木(中間表現)
 - JavaScriptソース
 
-
 ## src/nako_prepare.js
 
 なでしこのソースコードの前置処理を行うもの。主に全角半角の変換処理を行う。
@@ -24,7 +23,6 @@
 ## src/plugin_xxx.js
 
 なでしこの命令を定義したプラグイン。
-
 
 ## src/cnako3.js
 
