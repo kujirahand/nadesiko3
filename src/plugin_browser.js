@@ -41,6 +41,15 @@ const BrowserParts = [
 ]
 
 const PluginBrowser = {
+  'meta': {
+    type: 'const',
+    value: {
+      pluginName: 'plugin_browser', // プラグインの名前
+      pluginVersion: '3.2.24', // プラグインのバージョン
+      nakoRuntime: ['wnako'], // 対象ランタイム
+      nakoVersion: '^3.2.24' // 要求なでしこバージョン
+    }
+  },
   '初期化': {
     type: 'func',
     josi: [],

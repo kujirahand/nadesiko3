@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * nadesiko v3
  */
@@ -23,11 +24,12 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  * @type {Object}
  */
 const codeGenerators = {
+  // [key: String]
   sync: NakoGenSync
 }
 
 /**
- * @param {string | undefined} mode
+ * @param {String | undefined} mode
 */
 function NakoGen (mode) {
   if (codeGenerators[mode]) { return codeGenerators[mode] }
@@ -767,11 +769,20 @@ class NakoCompiler {
   addPluginObject (objName, po, persistent = true) {
     this.__module[objName] = po
     this.pluginfiles[objName] = '*'
+    // 初期化をチェック
     if (typeof (po['初期化']) === 'object') {
       const def = po['初期化']
       delete po['初期化']
-      const initkey = `!${objName}:初期化`
-      po[initkey] = def
+      const initKey = `!${objName}:初期化`
+      po[initKey] = def
+    }
+    // メタ情報をチェック (#1034)
+    if (typeof (po.meta) === 'object') {
+      const meta = po.meta
+      delete po.meta
+      const pluginName = meta.value.pluginName || objName
+      const metaKey = `__${pluginName}`.replace('-', '__')
+      po[metaKey] = meta
     }
     this.addPlugin(po, persistent)
   }

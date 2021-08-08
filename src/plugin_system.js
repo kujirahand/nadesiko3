@@ -3,6 +3,15 @@ const { NakoRuntimeError } = require('./nako_errors')
 const NakoVersion = require('./nako_version')
 
 const PluginSystem = {
+  'meta': {
+    type: 'const',
+    value: {
+      pluginName: 'plugin_system', // プラグインの名前
+      pluginVersion: '3.2.24', // プラグインのバージョン
+      nakoRuntime: ['wnako', 'cnako', 'phpnako'], // 対象ランタイム
+      nakoVersion: '^3.2.24' // 要求なでしこバージョン
+    }
+  },
   '初期化': {
     type: 'func',
     josi: [],
