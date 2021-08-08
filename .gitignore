@@ -56,4 +56,7 @@ batch/*.txt
 Thumbs.db
 Desktop.ini
 
+# なでしこで作成されるがコミット不要なファイル
 tmp
+demo/extlib/*
+
