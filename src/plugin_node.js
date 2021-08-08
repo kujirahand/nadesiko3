@@ -686,8 +686,17 @@ const PluginNode = {
         callback(text)
       }).catch(err => {
         console.log('[fetch.error]', err)
-        sys.__v0['AJAX:ONERROR'](err)
+        throw err;
       })
+    },
+    return_none: true
+  },
+  'AJAX受信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @AJAXそうしんしたとき
+    type: 'func',
+    josi: [['で'], ['から', 'を']],
+    pure: true,
+    fn: function (callback, url, sys) {
+      sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
   },
@@ -864,6 +873,34 @@ const PluginNode = {
       return res.body()
     },
     return_none: false
+  },
+  'AJAX受信': { // @「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る// @AJAXじゅしん
+    type: 'func',
+    josi: [['から', 'を']],
+    pure: true,
+    fn: function (url, sys) {
+      if (sys.__genMode !== '非同期モード') {
+        throw new Error('『AJAX受信』を使うには、プログラムの冒頭で「!非同期モード」と宣言してください。')
+      }
+      sys.async = true
+      let options = sys.__v0['AJAXオプション']
+      if (options === '') { options = { method: 'GET' } }
+      // fetch 実行
+      fetch(url, options).then(res => {
+        if (res.ok) { // 成功したとき
+          return res.text()
+        } else { // 失敗したとき
+          throw new Error('status=' + res.status)
+        }
+      }).then(text => {
+        sys.__v0['対象'] = text
+        sys.nextAsync(sys)
+      }).catch(err => {
+        console.error('[AJAX受信のエラー]', err)
+        sys.__errorAsync(err, sys)
+      })
+    },
+    return_none: true
   },
   // @文字コード
   '文字コード変換サポート判定': { // @文字コードCODEをサポートしているか確認 // @もじこーどさぽーとはんてい

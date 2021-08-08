@@ -1,12 +1,17 @@
+!非同期モード
 EXTLIB=母艦パスを「../demo/extlib」で相対パス展開。
 
 ### pure-min.css
-「curl https://unpkg.com/purecss@2.0.6/build/pure-min.css -o "{EXTLIB}/pure-min.css"」を起動待機。
+「pure-min.css」を表示。
+「https://unpkg.com/purecss@2.0.6/build/pure-min.css」からAJAX受信。
+対象を「{EXTLIB}/pure-min.css」へ保存。
 
-### char.min.js
+### chart.min.js
+「chart.min.js」を表示。
 DIR_CHART=EXTLIB&"/chart.js@3.2.1"
 DIR_CHARTにフォルダ作成。
-「curl https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js -o "{DIR_CHART}/chart.min.js"」を起動待機。
+「https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js」をAJAX受信。
+対象を"{DIR_CHART}/chart.min.js"へ保存。
 
 ### ace
 DIR_ACE=EXTLIB&"/ace@1.4.12"
@@ -18,9 +23,12 @@ ext-options.min.js
 ext-settings_menu.js
 keybinding-vscode.js
 theme-monokai.js
-theme-xcode.js」を改行で区切って反復
+theme-xcode.js」を改行で区切る
+それを反復
 　　F=対象
-　　「curl https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/{F} -o "{DIR_ACE}/{F}"」を起動待機。
+　　Fを表示。
+　　「https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/{F}」をAJAX受信。
+　　対象を"{DIR_ACE}/{F}"へ保存。
 ここまで。
 
 
