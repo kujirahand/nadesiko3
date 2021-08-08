@@ -10,6 +10,13 @@ const rootDir = path.resolve(path.join(__dirname, '../'))
 app.use(express.static(rootDir))
 console.log('documentRoot:', rootDir)
 
+// ライブラリがあるかチェック
+const fs = require('fs')
+if (!fs.existsSync(path.resolve(rootDir, 'extlib/pure.min.css'))) {
+  const execSync = require('child_process').execSync;
+  execSync('/usr/bin/env npm run extlib:install')
+}
+
 // root => redirect
 app.get('/', function (req, res) {
   res.redirect(302, 'demo/')
