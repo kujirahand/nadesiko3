@@ -175,7 +175,8 @@
 #ace_settingsmenu > table td > div {
     height: 100%;
 }
-#ace_settingsmenu button, input {
+#ace_settingsmenu button, 
+##ace_settingsmenu input {
     height: 100%;
     font-size: 13px;
 }
