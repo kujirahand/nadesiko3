@@ -22,6 +22,16 @@ for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
   }
 }
 
+const clearNako = (editorId, outputContainer) => {
+  if (outputContainer) {
+    outputContainer.innerHTML = ''
+    outputContainer.style.display = 'none'
+  }
+  const nako3div = document.querySelector(`#nako3_div_${editorId}`)
+  nako3div.innerHTML = ''
+  navigator.nako3.clearPlugins()
+}
+
 const getNako3 = () => /** @type {import('../src/wnako3')} */(navigator.nako3)
 
 /** @type {React.FC<{ onClick: () => void, text: string }>} */
@@ -38,7 +48,6 @@ const Editor = ({ code, editorId, autoSave }) => {
 『#nako3_canvas_${editorId}』へ描画開始。
 『#nako3_div_${editorId}』へDOM親要素設定。
 `
-
   // エディタの状態
   const [usedFuncs, setUsedFuncs] = React.useState(/** @type {Set<string>} */(new Set()))
   const [showCommandList, toggleCommandList] = React.useReducer((x) => !x, false)
@@ -64,17 +73,13 @@ const Editor = ({ code, editorId, autoSave }) => {
       <div className="nako3_editor_code" ref={editorRef}>{code}</div>
       <div className="buttons">
         <Button text="実行" onClick={async () => {
+          clearNako(editorId, editorOptions().outputContainer)
           await editor.current.run({ ...editorOptions() }).promise
           setUsedFuncs(getNako3().usedFuncs)
         }} />
         <Button text="テスト" onClick={() => editor.current.run({ ...editorOptions(), method: 'test' })} />
         <Button text="クリア" onClick={() => {
-          const c = editorOptions().outputContainer
-          c.innerHTML = ''
-          c.style.display = 'none'
-          const nako3div = document.querySelector(`#nako3_div_${editorId}`)
-          nako3div.innerHTML = ''
-          navigator.nako3.clearPlugins()
+          clearNako(editorId, editorOptions().outputContainer)
         }} />
         <Button text="↓" onClick={async () => {
           const js = await editor.current.run({ ...editorOptions(), method: 'compile' }).promise

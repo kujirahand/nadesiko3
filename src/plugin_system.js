@@ -1792,6 +1792,7 @@ const PluginSystem = {
           sys.nextAsync(sys)
         }, n * 1000)
       } else {
+        if (sys.resolve === undefined) { throw new Error('『秒待機』命令は『!非同期モード』で使ってください。') }
         sys.__exec('秒逐次待機', [n, sys])
       }
     },
