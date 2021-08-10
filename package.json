@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.2.24",
+  "version": "3.2.25",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
@@ -22,9 +22,10 @@
     "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.js",
     "electron": "electron .",
-    "build": "node src/cnako3.js batch/build_command.nako3 && webpack --mode production && node src/cnako3.js batch/calc_hash.nako3",
+    "build:nako_version": "node src/cnako3.js batch/build_nako_version.nako3",
+    "build": "npm run build:nako_version && npm run build:command && webpack --mode production && node src/cnako3.js batch/calc_hash.nako3",
     "check:command": "cnako3 batch/pickup_command.nako3",
-    "build:command": "cross-env REPORT_ERR=1 node src/cnako3.js batch/build_command.nako3",
+    "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.js batch/build_command.nako3",
     "build:electron": "electron-packager . --out release/enako3 --asar --all --overwrite",
     "build:win32": "node src/cnako3.js installer/make-win32.nako3",
     "build:browsers": "node src/cnako3.js batch/build_browsers.nako3",

@@ -1,0 +1,17 @@
+母艦パス取得してパス抽出して基本パスに代入。
+「{基本パス}/package.json」を読んでJSONデコードして、Pに代入。
+VER=P@"version"
+定数[MAJOR,MINOR,PATCH]=(VERを「.」で区切る)
+VS=「// なでしこバージョン
+const nakoVersion = {波カッコ}
+  version: '{VER}',
+  major: {MAJOR},
+  minor: {MINOR},
+  patch: {PATCH}
+{波カッコ閉}
+module.exports = nakoVersion
+」
+VSを表示。
+VSを「{基本パス}/src/nako_version.js」へ保存。
+
+
