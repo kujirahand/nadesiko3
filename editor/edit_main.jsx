@@ -1,4 +1,6 @@
-// edit_main.js
+// @ts-nocheck
+/* eslint-disable react/prop-types */
+// edit_main.js --- for demo editor
 import React from 'react'
 import ReactDOM from 'react-dom'
 import dayjs from 'dayjs'
@@ -15,12 +17,11 @@ for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
   for (const [groupName, group] of Object.entries(groups)) {
     commandList.push({
       name: groupName,
-      group: group.map(([type, name, args]) => ({ type, name, args, value: (type === '関数') ? ((args + '/').split('/')[0] + name + '。') : name })),
+      group: group.map(([type, name, args]) => ({ type, name, args, value: (type === '関数') ? ((args + '/').split('/')[0] + name + '。') : name }))
     })
   }
 }
 
-// @ts-ignore
 const getNako3 = () => /** @type {import('../src/wnako3')} */(navigator.nako3)
 
 /** @type {React.FC<{ onClick: () => void, text: string }>} */
@@ -71,6 +72,8 @@ const Editor = ({ code, editorId, autoSave }) => {
           const c = editorOptions().outputContainer
           c.innerHTML = ''
           c.style.display = 'none'
+          const nako3div = document.querySelector(`#nako3_div_${editorId}`)
+          nako3div.innerHTML = ''
           navigator.nako3.clearPlugins()
         }} />
         <Button text="↓" onClick={async () => {
@@ -92,14 +95,14 @@ const Editor = ({ code, editorId, autoSave }) => {
     </Section>
     <Section title="使用した命令"><p className="info">{
       usedFuncs && <span>{
-        Array.from(usedFuncs).map((name)=>{
+        Array.from(usedFuncs).map((name) => {
           const linkUrl = 'https://nadesi.com/v3/doc/index.php?FrontPage&plugin&name=nako3doc&q=' + encodeURIComponent(name)
           return <span key={name}>[<a href={linkUrl}>{name}</a>]&nbsp;</span>
         })
       }</span>
     }</p></Section>
     <Section title="命令の一覧">
-      <div style={{paddingTop: '8px'}}>
+      <div style={{ paddingTop: '8px' }}>
         <Button text={showCommandList ? '命令の一覧を隠す' : '命令の一覧を表示する'} onClick={toggleCommandList} />
       </div>
       {showCommandList && <ul>{
@@ -120,15 +123,12 @@ const Editor = ({ code, editorId, autoSave }) => {
 try {
   for (const [i, e] of Array.from(Array.from(document.getElementsByClassName('editor-component')).entries())) {
     const data = JSON.parse(e.getElementsByTagName('script')[0].text)
-    let code = data['code']
-    if (data['autoLoad'] && window.localStorage['nako3/editor/code']) {
+    let code = data.code
+    if (data.autoLoad && window.localStorage['nako3/editor/code']) {
       code = window.localStorage['nako3/editor/code']
     }
-    ReactDOM.render(<Editor code={code} editorId={i} autoSave={data['autoLoad'] ? 'nako3/editor/code' : undefined} />, e)
+    ReactDOM.render(<Editor code={code} editorId={i} autoSave={data.autoLoad ? 'nako3/editor/code' : undefined} />, e)
   }
 } catch (err) {
   console.error(err) // IE11
 }
-
-
-

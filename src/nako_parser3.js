@@ -3,6 +3,9 @@
  */
 const { opPriority, keizokuJosi } = require('./nako_parser_const')
 const { NakoParserBase, NakoSyntaxError } = require('./nako_parser_base')
+/**
+ * @type {string[]}
+ */
 const operatorList = []
 for (const key in opPriority) { operatorList.push(key) }
 
@@ -11,6 +14,7 @@ for (const key in opPriority) { operatorList.push(key) }
  * @typedef {import('./nako3').Ast} Ast
  */
 
+// @ts-ignore
 class NakoParser extends NakoParserBase {
   /**
    * @param {TokenWithSourceMap[]} tokens 字句解析済みのトークンの配列

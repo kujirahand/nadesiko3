@@ -3,6 +3,7 @@ const NakoCompiler = require('../../src/nako3.js')
 const NakoGenAsync = require('../../src/nako_gen_async.js')
 
 describe('aysnc_basic_test', () => {
+  // @ts-ignore
   const nako = new NakoCompiler()
   nako.addCodeGenerator('非同期モード', NakoGenAsync)
   const cmp = (/** @type {string} */code, /** @type {string} */res) => {
@@ -34,6 +35,10 @@ describe('aysnc_basic_test', () => {
   })
   it('関数定義', () => {
     cmp('●(AとBの)積算処理とは\nA*Bで戻る。。。3と5の積算処理を表示', '15')
+    cmp('●(AにBを)加算処理とは\nAにBを足す。。。3に5を加算処理して表示', '8')
+  })
+  it('無名関数定義', () => {
+    cmp('A=●(AとBの)\nA/Bで戻る。。。A(9,3)を表示', '3')
   })
   it('関数定義(再帰)', () => {
     cmp('総数=0;●(Nの)再帰加算処理とは\nもしN<0ならば総数を戻す;総数=総数+N;(N-1)の再帰加算処理を戻す。。。10の再帰加算処理を表示', '55')

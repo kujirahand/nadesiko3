@@ -777,7 +777,7 @@ class NakoCompiler {
       po[initKey] = def
     }
     // メタ情報をチェック (#1034)
-    if (typeof (po.meta) === 'object') {
+    if (po.meta && po.meta.value && typeof (po.meta) === 'object') {
       const meta = po.meta
       delete po.meta
       const pluginName = meta.value.pluginName || objName

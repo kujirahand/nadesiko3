@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * file: nako_gen_async.js
  * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
@@ -25,9 +26,12 @@ const NakoCodeJump = 'JMP' // JUMP addr
 const NakoCodeJumpIfTrue = 'JMP_T' // pop and jump addr
 const NakoCodeJumpIfFalse = 'JMP_F' // pop and jump addr
 const NakoCodeCall = 'CALL' // call addr
+const NakoCodeCallObj = 'CALL_OBJ' // call addr
 const NakoCodeReturn = 'RET'
 const NakoCodeTry = 'TRY'
 const NakoCodeCode = 'CODE'
+const NakoCodeTagIsFuncpoint = 0x0F
+
 /**
  * なでしこのインタプリタが用いる簡易コードを表現するクラス
  */
@@ -49,6 +53,10 @@ class NakoCode {
      * @type {number}
      */
     this.no = -1
+    /** タグ
+     * @type {number}
+     */
+    this.tag = 0
   }
 }
 
@@ -452,7 +460,7 @@ try {
       codes = codes.filter(code => {
         return code.type !== NakoCodeNop
       })
-      // 未参照のラベルを探す
+      // 未参照のラベルを探す - ただし関数呼び出しは削除しない
       const usedLabels = new Set()
       codes.forEach((code, index, list) => {
         if (needToFixAddr.has(code.type)) {
@@ -462,6 +470,7 @@ try {
       // 未参照のラベルを削除
       codes = codes.filter((code, index) => {
         if (code.type !== NakoCodeLabel) { return true }
+        if (code.tag === NakoCodeTagIsFuncpoint) { return true }
         return usedLabels.has(code.value)
       })
       // EOLが連続していたら削除する
@@ -516,6 +525,9 @@ try {
         case NakoCodeCall:
           result += `case ${index}: sys.__call(${code.no}, sys); break; // ${code.value}\n`
           break
+        case NakoCodeCallObj:
+          result += `case ${index}: sys.__callObj('${code.value}', ${index}, sys); break; // ${code.value}\n`
+          break
         case NakoCodeTry:
           result += `case ${index}: sys.tryIndex = ${code.no}; break; // TRY \n`
           break
@@ -533,6 +545,7 @@ try {
     result = `
     //-------------------------
     // main_code
+    this.__labels = ${JSON.stringify(this.labels)};
     this.nextAsync = (sys) => {
       if (sys.index >= sys.codeSize || sys.index < 0) {return}
       const __v0 = sys.__v0
@@ -540,7 +553,9 @@ try {
         while (sys.index < sys.codeSize || sys.index < 0) {
           // console.log('@@[run]', sys.index)
           switch (sys.index) {
+            // --- CODE.BEGIN ---
             ${result}
+            // --- CODE.END ---
             default:
               console.log(sys.index, sys.__stack)
               throw new Error('Invalid sys.index:' + sys.index)
@@ -585,6 +600,7 @@ try {
       const info = sys.__callstack.pop();
       sys.nextIndex = info.backNo;
       sys.__vars = info.lastVars;
+      sys.__vars['それ'] = sore
       sys.__stack.push(sore);
     }
     this.__resetAsync = sys => {
@@ -597,6 +613,31 @@ try {
     this.__stopAsync = sys => {
       sys.__resetAsync(sys)
       sys.index = -1 // force stop!!
+    }
+    this.__callNakoCode = (no, backNo, sys) => {
+      this.__call(backNo, sys)
+      sys.async = true
+      setTimeout(() => {
+        // console.log('//__callNakoCode, back=', backNo, 'no=', no)
+        sys.async = false
+        sys.nextIndex = -1
+        sys.index = no
+        sys.nextAsync(sys)
+      } ,1)
+    }
+    this.__callObj = (vname, curNo, sys) => {
+      if (sys.__vars[vname]) {
+        const fname = sys.__vars[vname]
+        // console.log(sys.__labels)
+        if (fname && sys.__labels[fname]) {
+          const no = sys.__labels[fname]
+          sys.__call(no, sys)
+          return
+        } else {
+          console.log('vname=', vname, 'label=', fname)
+        }
+      }
+      throw new Error('async error in __callObj::', vname)
     }
     this.__resetAsync(this)
     this.nextAsync(this)
@@ -683,7 +724,7 @@ try {
       case 'func':
       case 'func_pointer':
       case 'calc_func':
-        this.convFunc(node, isExpression)
+        this.convFunc(node, isExpression) // 関数の呼び出し
         break
 
       // === 文の変換 ===
@@ -993,9 +1034,15 @@ try {
   }
 
   convDefFuncCommon (node, name) {
-    const labelEnd = this.makeLabel(`関数「${name}」:ここまで`)
+    // deffunc_code
+    const isMumeiFunc = (name === '')
+    let funcName = name
+    if (isMumeiFunc) { funcName = `無名関数:${this.loopId++}` }
+
+    const labelEnd = this.makeLabel(`関数「${funcName}」:ここまで`)
     this.addCode(this.makeJump(labelEnd))
-    const labelBegin = this.makeLabelDirectly(name)
+    const labelBegin = this.makeLabelDirectly(funcName)
+    labelBegin.tag = NakoCodeTagIsFuncpoint // 削除対象からはずすため
     this.addCode(labelBegin)
 
     //
@@ -1005,30 +1052,33 @@ try {
     // ローカル変数をPUSHする
     this.varslistSet.push(this.varsSet)
     // JSの引数と引数をバインド
+    const meta = isMumeiFunc ? node.meta : node.name.meta
     let code = ''
-    code += `//関数『${name}』の初期化処理\n`
+    let codeCall = ''
+    code += `//関数『${funcName}』の初期化処理\n`
     // 宣言済みの名前を保存
     // const varsDeclared = Array.from(this.varsSet.names.values())
     // 引数をローカル変数に設定 (スタックの末尾から取得する必要があるので、逆順に値を得る)
     code += '// 引数をローカル変数として登録\n'
-    const meta = (!name) ? node.meta : node.name.meta
     for (let i = meta.varnames.length - 1; i >= 0; i--) {
       const word = meta.varnames[i]
       code += `  ${this.varname(word)} = sys.__stack.pop();\n`
       this.varsSet.names.add(word)
+      codeCall += '' //  sys.__stack.push(arguments[${i}]);\n
     }
+    code += '// ここまで:引数をローカル変数として登録\n'
     this.addCodeStr(code)
 
     // 関数定義は、グローバル領域で。
-    if (name) {
-      this.used_func.add(name)
-      this.varslistSet[1].names.add(name)
-      this.nako_func[name] = {
-        josi: node.name.meta.josi,
-        fn: '',
-        type: 'func'
-      }
-      this.nako_func[name].fn = `(function(){ throw new Error("ユーザー関数『${name}』の呼出はできません") })`
+    this.used_func.add(funcName)
+    this.varslistSet[1].names.add(funcName)
+    this.nako_func[funcName] = {
+      josi: meta.josi,
+      fn: '(function(){\n' +
+        '  const sys = (arguments.length > 0) ? arguments[arguments.length-1] : {}; \n' +
+        '  ' + codeCall + '\n' +
+        `  sys.__callNakoCode(sys.__labels['${funcName}'], sys.nextIndex, sys);  })`,
+      type: 'func'
     }
 
     // ブロックを解析
@@ -1036,10 +1086,15 @@ try {
 
     this.varslistSet.pop()
     this.varsSet = this.varslistSet[this.varslistSet.length - 1]
-    if (name) { this.__self.__varslist[1][name] = '(function(){})' }
+    this.__self.__varslist[1][funcName] = function () {}
 
     this.addCode(new NakoCode(NakoCodeReturn, ''))
     this.addCode(labelEnd)
+
+    // 無名関数の定義であれば無名関数をPUSH
+    if (!name) {
+      this.addCodeStr(`sys.__stack.push('${funcName}')`)
+    }
     return ''
   }
 
@@ -1341,6 +1396,7 @@ try {
    */
   convFunc (node, isExpression) {
     let isJSFunc = false
+    let isMumeiFunc = false
     const funcName = NakoGen.getFuncName(node.name)
     const res = this.findVar(funcName)
     if (res === null) {
@@ -1356,7 +1412,10 @@ try {
     } else {
       func = this.nako_func[funcName]
       // 無名関数の可能性
-      if (func === undefined) { func = { return_none: false } }
+      if (func === undefined) {
+        isMumeiFunc = true
+        func = { return_none: false }
+      }
     }
     // 関数の参照渡しか？
     if (node.type === 'func_pointer') {
@@ -1396,7 +1455,11 @@ try {
       code += funcEnd
       this.addCodeStr(code)
     } else {
-      this.addCode(new NakoCode(NakoCodeCall, funcName))
+      if (isMumeiFunc) {
+        this.addCode(new NakoCode(NakoCodeCallObj, funcName))
+      } else {
+        this.addCode(new NakoCode(NakoCodeCall, funcName))
+      }
       if (!isExpression) {
         this.addCodeStr('sys.__stack.pop();// 戻り値を利用しない関数呼出')
       }
