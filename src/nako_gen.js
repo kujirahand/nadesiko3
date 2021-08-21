@@ -152,6 +152,12 @@ try {
       systemFunction: 0, // システム関数(呼び出しコードを含む)
       systemFunctionBody: 0 // システム関数(呼び出しコードを除く)
     }
+
+    // 暫定変数
+    this.warnUndefinedReturnUserFunc = 1
+    this.warnUndefinedCallingUserFuncArgs = 1
+    this.warnUndefinedCallingSystemFuncArgs = 1
+    this.warnUndefinedCalledUserFuncArgs = 1
   }
 
   /**
@@ -641,12 +647,16 @@ try {
     let value
     if (node.value) {
       value = this._convGen(node.value, true)
-      return lno + `return ${value};`
     } else
     if (this.speedMode.invalidSore === 0) {
-      return lno + `return ${this.varname('それ')};`
+      value = this.varname('それ')
     } else {
       return lno + 'return;'
+    }
+    if (this.warnUndefinedReturnUserFunc === 0) {
+      return lno + `return ${value};`
+    } else {
+      return lno + `return (function(a){if(a===undefined){__self.logger.warn('ユーザ関数からundefinedが返されています',{file:'${node.file}',line:${node.line}});};return a;})(${value});`
     }
   }
 
@@ -709,7 +719,14 @@ try {
     const meta = (!name) ? node.meta : node.name.meta
     for (let i = 0; i < meta.varnames.length; i++) {
       const word = meta.varnames[i]
-      code += `  ${this.varname(word)} = arguments[${i}];\n`
+      if (this.warnUndefinedCalledUserFunc === 0) {
+        code += `  ${this.varname(word)} = arguments[${i}];\n`
+      } else
+      if (name) {
+        code += `  ${this.varname(word)} = (function(a){if(a===undefined){__self.logger.warn('ユーザ関数(${name})の引数(${this.varname(word)})にundefinedが渡されました',{file:'${node.file}',line:${node.line}});};return a;})(arguments[${i}]);\n`
+      } else {
+        code += `  ${this.varname(word)} = (function(a){if(a===undefined){__self.logger.warn('匿名関数の引数(${this.varname(word)})にundefinedが渡されました',{file:'${node.file}',line:${node.line}});};return a;})(arguments[${i}]);\n`
+      }
       this.varsSet.names.add(word)
     }
     // 関数定義は、グローバル領域で。
@@ -1197,7 +1214,25 @@ try {
     }
 
     // 関数呼び出しコードの構築
-    const argsCode = args.join(',')
+    let argsCode
+    if ((this.warnUndefinedCallingUserFunc === 0 && res.i !== 0) || (this.warnUndefinedCallingSystemFunc === 0 && res.i === 0)) {
+      argsCode = args.join(',')
+    } else {
+      argsCode = ''
+      args.forEach(arg => {
+        if (arg === '__self') {
+          argsCode += `,${arg}`
+        } else {
+          if (res.i === 0) {
+            argsCode += `,(function(a){if(a===undefined){__self.logger.warn('命令(${funcName})の引数にundefinedを渡しています',{file:'${node.file}',line:${node.line}});};return a;})(${arg})`
+          } else {
+            argsCode += `,(function(a){if(a===undefined){__self.logger.warn('ユーザ関数(${funcName})の引数にundefinedを渡しています',{file:'${node.file}',line:${node.line}});};return a;})(${arg})`
+          }
+        }
+      })
+      argsCode = argsCode.substring(1)
+    }
+
     let funcCall = `${res.js}(${argsCode})`
 
     if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
