@@ -105,7 +105,7 @@ const PluginSystem = {
     josi: [],
     pure: true,
     fn: function (sys) {
-      return []
+      return {} 
     }
   },
   '空ハッシュ': { // @空のハッシュを返す(v3.2以降非推奨) // @からはっしゅ
