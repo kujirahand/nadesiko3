@@ -14,7 +14,7 @@ console.log('documentRoot:', rootDir)
 const fs = require('fs')
 if (!fs.existsSync(path.resolve(rootDir, 'extlib/pure.min.css'))) {
   const execSync = require('child_process').execSync;
-  execSync('/usr/bin/env npm run extlib:install')
+  execSync('npm run extlib:install')
 }
 
 // root => redirect
