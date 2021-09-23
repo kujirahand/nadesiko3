@@ -181,7 +181,7 @@ jobs:
             console.log("call pulls.list:")
             console.log(pulls_list_params)
             const res = await github.pulls.list(pulls_list_params)
-            await Promise.all(res.data.map(data => {
+            await Promise.all(res.data.map(async data => {
               const pulls_update_params = {
                 pull_number: data.number,
                 state: "closed",
