@@ -48,7 +48,7 @@ jobs:
              repo: context.repo.repo
             }
             console.log("call issues.listComments:", issues_listComments_params)
-            const issue_comments = (await github.issues.listComments(issues_listComments_params)).data.filter(
+            const issue_comments = (await github.paginate(github.issues.listComments, issues_listComments_params)).filter(
               issue_comment => issue_comment.user.id==41898282 && issue_comment.body.startsWith('日本語の')
             )
 
@@ -114,10 +114,27 @@ jobs:
           git add -u
           git commit -m "日本語修正"
           git push -f https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:refs/heads/fix-text-${{github.event.pull_request.head.ref}}
+      - name: Get PullRequests
+        uses: actions/github-script@v3
+        if: steps.show_diff.outputs.diff != ''
+        id: get_pull_requests
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const pulls_list_params = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: "kujirahand:fix-text-${{github.event.pull_request.head.ref}}",
+              base: "${{github.event.pull_request.head.ref}}",
+              state: "open"
+            }
+            console.log("call pulls.list:", pulls_list_params)
+            const pulls = await github.paginate(github.pulls.list, pulls_list_params)
+            return pulls.length
       # pushしたブランチでPRを作る
       - name: Create PullRequest
         uses: actions/github-script@v3
-        if: steps.show_diff.outputs.diff != ''
+        if: steps.show_diff.outputs.diff != '' && steps.get_pull_requests.outputs.result == 0
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -125,26 +142,12 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo
             }
-            const pull_params = {
+            const pulls_create_params = {
               head: "kujirahand:fix-text-${{github.event.pull_request.head.ref}}",
               base: "${{github.event.pull_request.head.ref}}",
-              ...common_params
-            }
-            const pulls_list_params = {
-              state: "open",
-              ...pull_params
-            }
-            console.log("call pulls.list:", pulls_list_params)
-            const pulls = (await github.pulls.list(pulls_list_params)).data
-
-            if (0 < pulls.length) {
-              return
-            }
-
-            const pulls_create_params = {
               title: "日本語修正 (修正する場合はPRをマージしてください) #${{github.event.pull_request.number}}",
               body: "日本語を修正しました。本PRをマージすると #${{github.event.pull_request.number}} に修正が適用されます。",
-              ...pull_params
+              ...common_params
             }
             console.log("call pulls.create:", pulls_create_params)
             const create_pull_res = (await github.pulls.create(pulls_create_params)).data
@@ -174,7 +177,7 @@ jobs:
               ...common_params
             }
             console.log("call pulls.list:", pulls_list_params)
-            const pulls = (await github.pulls.list(pulls_list_params)).data
+            const pulls = await github.paginate(github.pulls.list,pulls_list_params)
 
             for (const pull of pulls) {
               const pulls_update_params = {
