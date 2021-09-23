@@ -27,7 +27,7 @@ jobs:
       - name: Lint files
         id: lint
         run: |
-          result=$(yarn textlint $(find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*") 2>&1) || true
+          result="$(yarn run textlint 2>&1)" || true
           echo "$result"
           result="${result//'%'/'%25'}"
           result="${result//$'\n'/'%0A'}"
@@ -37,7 +37,7 @@ jobs:
         continue-on-error: true
       # lint結果をコメントに残す
       - name: Lint Comment
-        if: github.event.pull_request.head.repo.full_name == github.repository && steps.lint.outputs.result != ''
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && steps.lint.outputs.result != '' }}
         uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -49,24 +49,19 @@ jobs:
             }
             console.log("call issues.listComments:")
             console.log(issues_listComments_params)
-            github.issues.listComments(issues_listComments_params).then(response =>
-              response.data.filter(
-                comment=>comment.user.id==41898282 && comment.body.startsWith('日本語の')
-              ).map(
-                comment=>comment.id
-              ).forEach(
-                comment_id => {
-                  const issues_deleteComment_params = {
-                    comment_id: comment_id,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo
-                  }
-                  console.log("call issues.deleteComment:")
-                  console.log(issues_deleteComment_params)
-                  github.issues.deleteComment(issues_deleteComment_params)
-                }
-              )
-            )
+            const response = await github.issues.listComments(issues_listComments_params)
+            await Promise.all(response.data.filter(
+              comment=>comment.user.id==41898282 && comment.body.startsWith('日本語の')
+            ).map(async comment => {
+              const issues_deleteComment_params = {
+                comment_id: comment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              }
+              console.log("call issues.deleteComment:")
+              console.log(issues_deleteComment_params)
+              await github.issues.deleteComment(issues_deleteComment_params)
+            }))
 
             const result = `${{steps.lint.outputs.result}}`
             const issues_createComment_params = {
@@ -77,15 +72,15 @@ jobs:
             }
             console.log("call issues.createComment:")
             console.log(issues_createComment_params)
-            github.issues.createComment(issues_createComment_params)
+            await github.issues.createComment(issues_createComment_params)
       - name: Exit
-        if: github.event.pull_request.head.repo.full_name != github.repository && steps.lint.outcome == 'failure'
+        if: ${{ github.event.pull_request.head.repo.full_name != github.repository && steps.lint.outcome == 'failure' }}
         run: exit 1
 
   # PRが来たらtextlintをかけてみて、差分があればPRを作って、エラーで落ちるjob
   format:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     strategy:
       matrix:
         node-version: [12.x]
@@ -105,7 +100,7 @@ jobs:
       - name: Format files
         id: format
         run: |
-          yarn textlint --fix $(find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*")
+          yarn run textlint:fix
         continue-on-error: true
       # 差分があったときは差分を出力する
       - name: Show diff
@@ -114,7 +109,7 @@ jobs:
           echo "::set-output name=diff::$(git diff)"
       # 差分があったときは、コミットを作りpushする
       - name: Push
-        if: steps.show_diff.outputs.diff != ''
+        if: ${{ steps.show_diff.outputs.diff != '' }}
         run: |
           git config user.name "textlint CI"
           git config user.email "textlint_ci@example.com"
@@ -124,7 +119,7 @@ jobs:
       # pushしたブランチでPRを作る
       - name: Create PullRequest
         uses: actions/github-script@v3
-        if: steps.show_diff.outputs.diff != ''
+        if: ${{ steps.show_diff.outputs.diff != '' }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -143,31 +138,32 @@ jobs:
             }
             console.log("call pulls.list:")
             console.log(pulls_list_params)
-            github.pulls.list(pulls_list_params).then(list_res => {
-              if (list_res.data.length === 0) {
-                const pulls_create_params = {
-                  title: "日本語修正 (修正する場合はPRをマージしてください) #${{github.event.pull_request.number}}",
-                  body: "日本語を修正しました。本PRをマージすると #${{github.event.pull_request.number}} に修正が適用されます。",
-                  ...pull_params
-                }
-                console.log("call pulls.create:")
-                console.log(pulls_create_params)
-                github.pulls.create(pulls_create_params).then(create_res => {
-                  const issues_add_assignees_params = {
-                    issue_number: create_res.data.number,
-                    assignees: ["${{github.event.pull_request.user.login}}"],
-                    ...common_params
-                  }
-                  console.log("call issues.addAssignees:")
-                  console.log(issues_add_assignees_params)
-                  github.issues.addAssignees(issues_add_assignees_params)
-                })
-              }
-            })
+            const list_res = await github.pulls.list(pulls_list_params)
+
+            if (0 < list_res.data.length) {
+              return
+            }
+
+            const pulls_create_params = {
+              title: "日本語修正 (修正する場合はPRをマージしてください) #${{github.event.pull_request.number}}",
+              body: "日本語を修正しました。本PRをマージすると #${{github.event.pull_request.number}} に修正が適用されます。",
+              ...pull_params
+            }
+            console.log("call pulls.create:")
+            console.log(pulls_create_params)
+            const create_res = await github.pulls.create(pulls_create_params)
+            const issues_add_assignees_params = {
+              issue_number: create_res.data.number,
+              assignees: ["${{github.event.pull_request.user.login}}"],
+              ...common_params
+            }
+            console.log("call issues.addAssignees:")
+            console.log(issues_add_assignees_params)
+            await github.issues.addAssignees(issues_add_assignees_params)
       # 既にformat修正のPRがある状態で、手動でformatを修正した場合、format修正のPRを閉じる
       - name: Close PullRequest
         uses: actions/github-script@v3
-        if: steps.show_diff.outputs.diff == ''
+        if: ${{ steps.show_diff.outputs.diff == '' }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -184,26 +180,24 @@ jobs:
             }
             console.log("call pulls.list:")
             console.log(pulls_list_params)
-            github.pulls.list(pulls_list_params).then(res => {
-              for(const data of res.data){
-                const pulls_update_params = {
-                  pull_number: data.number,
-                  state: "closed",
-                  ...common_params
-                }
-                console.log("call pulls.update:")
-                console.log(pulls_update_params)
-                github.pulls.update(pulls_update_params).then(res2 => {
-                  const git_deleteRef_params = {
-                    ref: "heads/" + head_name,
-                    ...common_params
-                  }
-                  console.log("call git.deleteRef:")
-                  console.log(git_deleteRef_params)
-                  github.git.deleteRef(git_deleteRef_params)
-                })
+            const res = await github.pulls.list(pulls_list_params)
+            await Promise.all(res.data.map(async data => {
+              const pulls_update_params = {
+                pull_number: data.number,
+                state: "closed",
+                ...common_params
               }
-            })
+              console.log("call pulls.update:")
+              console.log(pulls_update_params)
+              await github.pulls.update(pulls_update_params)
+              const git_deleteRef_params = {
+                ref: "heads/" + head_name,
+                ...common_params
+              }
+              console.log("call git.deleteRef:")
+              console.log(git_deleteRef_params)
+              await github.git.deleteRef(git_deleteRef_params)
+            }))
       - name: Exit
-        if: steps.show_diff.outputs.diff != ''
+        if: ${{ steps.show_diff.outputs.diff != '' }}
         run: exit 1
