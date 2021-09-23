@@ -27,7 +27,7 @@ jobs:
       - name: Lint files
         id: lint
         run: |
-          result=$(yarn textlint $(find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*") 2>&1) || true
+          result="$(find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*" -print0 | xargs -0 yarn textlint 2>&1)" || true
           echo "$result"
           result="${result//'%'/'%25'}"
           result="${result//$'\n'/'%0A'}"
@@ -37,7 +37,7 @@ jobs:
         continue-on-error: true
       # lint結果をコメントに残す
       - name: Lint Comment
-        if: github.event.pull_request.head.repo.full_name == github.repository && steps.lint.outputs.result != ''
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && steps.lint.outputs.result != '' }}
         uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -74,13 +74,13 @@ jobs:
             console.log(issues_createComment_params)
             await github.issues.createComment(issues_createComment_params)
       - name: Exit
-        if: github.event.pull_request.head.repo.full_name != github.repository && steps.lint.outcome == 'failure'
+        if: ${{ github.event.pull_request.head.repo.full_name != github.repository && steps.lint.outcome == 'failure' }}
         run: exit 1
 
   # PRが来たらtextlintをかけてみて、差分があればPRを作って、エラーで落ちるjob
   format:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     strategy:
       matrix:
         node-version: [12.x]
@@ -100,7 +100,7 @@ jobs:
       - name: Format files
         id: format
         run: |
-          yarn textlint --fix $(find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*")
+          find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*" -print0 | xargs -0 yarn textlint --fix
         continue-on-error: true
       # 差分があったときは差分を出力する
       - name: Show diff
@@ -109,7 +109,7 @@ jobs:
           echo "::set-output name=diff::$(git diff)"
       # 差分があったときは、コミットを作りpushする
       - name: Push
-        if: steps.show_diff.outputs.diff != ''
+        if: ${{ steps.show_diff.outputs.diff != '' }}
         run: |
           git config user.name "textlint CI"
           git config user.email "textlint_ci@example.com"
@@ -119,7 +119,7 @@ jobs:
       # pushしたブランチでPRを作る
       - name: Create PullRequest
         uses: actions/github-script@v3
-        if: steps.show_diff.outputs.diff != ''
+        if: ${{ steps.show_diff.outputs.diff != '' }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -163,7 +163,7 @@ jobs:
       # 既にformat修正のPRがある状態で、手動でformatを修正した場合、format修正のPRを閉じる
       - name: Close PullRequest
         uses: actions/github-script@v3
-        if: steps.show_diff.outputs.diff == ''
+        if: ${{ steps.show_diff.outputs.diff == '' }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -199,5 +199,5 @@ jobs:
               await github.git.deleteRef(git_deleteRef_params)
             }))
       - name: Exit
-        if: steps.show_diff.outputs.diff != ''
+        if: ${{ steps.show_diff.outputs.diff != '' }}
         run: exit 1
