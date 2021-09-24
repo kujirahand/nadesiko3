@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [ 16.x ]
 
     steps:
       - uses: actions/checkout@v2
@@ -81,7 +81,7 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [ 16.x ]
 
     steps:
       - uses: actions/checkout@v2
