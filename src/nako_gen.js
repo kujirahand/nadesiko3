@@ -1224,9 +1224,9 @@ try {
           argsCode += `,${arg}`
         } else {
           if (res.i === 0) {
-            argsCode += `,(function(a){if(a===undefined){__self.logger.warn('命令(${funcName})の引数にundefinedを渡しています',{file:'${node.file}',line:${node.line}});};return a;})(${arg})`
+            argsCode += `,(function(a){if(a===undefined){__self.logger.warn('命令『${funcName}』の引数にundefinedを渡しています。',{file:'${node.file}',line:${node.line}});};return a;})(${arg})`
           } else {
-            argsCode += `,(function(a){if(a===undefined){__self.logger.warn('ユーザ関数(${funcName})の引数にundefinedを渡しています',{file:'${node.file}',line:${node.line}});};return a;})(${arg})`
+            argsCode += `,(function(a){if(a===undefined){__self.logger.warn('ユーザ関数『${funcName}』の引数にundefinedを渡しています。',{file:'${node.file}',line:${node.line}});};return a;})(${arg})`
           }
         }
       })
