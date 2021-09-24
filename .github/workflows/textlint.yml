@@ -27,7 +27,7 @@ jobs:
       - name: Lint files
         id: lint
         run: |
-          result=$(yarn textlint $(find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*") 2>&1) || true
+          result="$(yarn run textlint 2>&1)" || true
           echo "$result"
           result="${result//'%'/'%25'}"
           result="${result//$'\n'/'%0A'}"
@@ -98,7 +98,7 @@ jobs:
       - name: Format files
         id: format
         run: |
-          yarn textlint --fix $(find . -type f -name "*.md" -not -name "LICENSE.md" -not -path "./node_modules/*")
+          yarn run textlint:fix
         continue-on-error: true
       # 差分があったときは差分を出力する
       - name: Show diff

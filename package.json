@@ -33,6 +33,7 @@
     "analyze": "webpack-bundle-analyzer release/stats.json",
     "release": "npm run build && npm run test:all && npm publish",
     "textlint": "textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md",
+    "textlint:fix": "textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md",
     "extlib:clean": "rm -f -r demo/extlib/*",
     "extlib:install": "node src/cnako3.js batch/download-extlib.nako3"
   },
