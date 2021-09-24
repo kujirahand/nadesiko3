@@ -678,7 +678,7 @@ const PluginNode = {
     pure: true,
     fn: function (callback, url, sys) {
       let options = sys.__v0['AJAXオプション']
-      if (options === '') { options = null }
+      if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
