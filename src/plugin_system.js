@@ -579,6 +579,14 @@ const PluginSystem = {
       return parseInt(a).toString(16)
     }
   },
+  '進数変換': { // @値VをN進数に変換 // @しんすうへんかん
+    type: 'func',
+    josi: [['を', 'の'],['']],
+    pure: true,
+    fn: function (v, n) {
+      return parseInt(v).toString(n)
+    }
+  },
   'RGB': { // @HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255 // @RGB
     type: 'func',
     josi: [['と'], ['の'], ['で']],
