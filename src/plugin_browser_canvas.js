@@ -180,10 +180,10 @@ module.exports = {
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
       sys.__ctx.beginPath()
-      const p = a.shift()
+      const p = a[0]
       sys.__ctx.moveTo(p[0], p[1])
-      while (a.length > 0) {
-        const t = a.shift()
+      for (let i = 1; i < a.length; i++) {
+        const t = a[i];
         sys.__ctx.lineTo(t[0], t[1])
       }
       sys.__ctx.lineTo(p[0], p[1])
