@@ -36,7 +36,7 @@ removeJosiList.forEach(josi => {
 josiList.sort((a, b) => b.length - a.length)
 
 // 正規表現で助詞をマッチできるようにする
-const josiRE = new RegExp('^(' + josiList.join('|') + ')')
+const josiRE = new RegExp('^[\\t ]*(' + josiList.join('|') + ')')
 
 module.exports = {
   josiRE,

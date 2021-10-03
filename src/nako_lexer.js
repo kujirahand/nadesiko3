@@ -518,7 +518,7 @@ class NakoLexer {
         if (rule.readJosi) {
           const j = josiRE.exec(src)
           if (j) {
-            josi = j[0]
+            josi = j[0].replace(/^\s+/, '')
             column += j[0].length
             src = src.substr(j[0].length)
             // 助詞の直後にあるカンマを無視 #877
