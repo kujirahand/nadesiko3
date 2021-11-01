@@ -1,6 +1,12 @@
 !非同期モード
 EXTLIB=母艦パスを「../demo/extlib」で相対パス展開。
 
+# フォルダのチェック
+EXTLIBが存在
+もし、それがいいえならば
+　　EXTLIBのフォルダ作成。
+ここまで。
+
 ### pure-min.css
 「pure-min.css」を表示。
 「https://unpkg.com/purecss@2.0.6/build/pure-min.css」からAJAX受信。
