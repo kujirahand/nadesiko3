@@ -88,6 +88,30 @@ module.exports = {
       return te
     }
   },
+  'キャンバス作成': { // @大きさ[幅, 高]のcanvas要素を追加しDOMオブジェクトを返す // @きゃんばすさくせい
+    type: 'func',
+    josi: [['の']],
+    pure: false,
+    fn: function (size, sys) {
+      const parent = sys.__v0['DOM親要素']
+      const cv = document.createElement('canvas')
+      cv.width = size[0]
+      cv.height = size[1]
+      cv.style.width = size[0]
+      cv.style.height = size[1]
+      cv.id = 'nadesi-dom-' + sys.__v0['DOM生成個数']
+      // スキン適用
+      const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
+      if (typeof (func) === 'function') { func('キャンバス作成', cv, sys) }
+      // DOM追加
+      parent.appendChild(cv)
+      sys.__v0['DOM生成個数']++
+      // 描画中キャンバスを移動する
+      sys.__exec('描画開始', [cv, sys])
+      console.log(cv)
+      return cv
+    }
+  },
   '改行作成': { // @改行(br要素)を追加しDOMオブジェクトを返す // @かいぎょうさくせい
     type: 'func',
     josi: [],
