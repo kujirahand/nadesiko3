@@ -9,7 +9,7 @@ module.exports = {
     },
     return_none: true
   },
-  'OS取得': { // @OSプラットフォームを返す(darwin/win32/linux/android/iphone/ipad/unknown) // @OSしゅとく
+  'OS取得': { // @OSプラットフォームを返す(darwin/windows/ubuntu/linux/android/iphone/ipad/unknown) // @OSしゅとく
     type: 'func',
     josi: [],
     pure: true,
@@ -21,6 +21,9 @@ module.exports = {
       if (ua.indexOf('ipad') !== -1) { return "ipad" }
       if (ua.indexOf('mac os x') !== -1) { return "darwin" }
       if (ua.indexOf('macintosh') !== -1) { return "darwin" }
+      if (ua.indexOf('cros') !== -1) { return "chromeos" }
+      if (ua.indexOf('ubuntu') !== -1) { return "ubuntu" }
+      if (ua.indexOf('linux') !== -1) { return "linux" }
       return "unknown"
     }
   }
