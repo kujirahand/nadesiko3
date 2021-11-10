@@ -295,7 +295,8 @@ class CNako3 extends NakoCompiler {
 
   // 対応機器/Webブラウザを表示する
   cnakoBrowsers () {
-    console.log(fs.readFileSync(path.join(__dirname, 'browsers.md'), 'utf-8'))
+    const fileMD = path.resolve(__dirname, '../doc', 'browsers.md')
+    console.log(fs.readFileSync(fileMD, 'utf-8'))
   }
 
   /**
