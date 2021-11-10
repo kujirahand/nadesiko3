@@ -852,14 +852,18 @@ const PluginSystem = {
       return ('' + s).split('' + a)
     }
   },
-  '切取': { // @文字列Sから文字列Aまでの部分を抽出する(v1非互換) // @きりとる
+  '切取': { // @文字列Sから文字列Aまでの部分を抽出する。切り取った残りは特殊変数『対象』に代入される。(v1非互換) // @きりとる
     type: 'func',
     josi: [['から', 'の'], ['まで', 'を']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s, a, sys) {
       s = String(s)
       const i = s.indexOf(a)
-      if (i < 0) { return s }
+      if (i < 0) {
+          sys.__v0['対象'] = '';
+          return s
+      }
+      sys.__v0['対象'] = s.substr(i + a.length);
       return s.substr(0, i)
     }
   },
