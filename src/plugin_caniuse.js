@@ -1,4 +1,5 @@
 // @ts-nocheck
+// (memo) require('caniuse-db/data.json').agents を確認
 const PluginCaniuse = {
   '初期化': {
     type: 'func',
@@ -8,13 +9,12 @@ const PluginCaniuse = {
     }
   },
   // @ブラウザサポート
-  'ブラウザ名変換表': { type: 'const', value: require('caniuse-db/data.json').agents }, // @ぶらうざめいへんかんひょう
+  'ブラウザ名変換表': { type: 'const', value: require('./browsers_agents.json') }, // @ぶらうざめいへんかんひょう
   '対応ブラウザ一覧取得': { // @対応しているブラウザの一覧を取得する // @たいおうぶらうざいちらんしゅとく
     type: 'func',
     josi: [],
     fn: function () {
-      const browserslist = require('browserslist')
-      return browserslist()
+      return require('./browsers.json')
     }
   }
 }
