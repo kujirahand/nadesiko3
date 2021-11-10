@@ -11,7 +11,7 @@ const PluginMarkup = {
     pure: true,
     fn: function (s) {
       const marked = require('marked')
-      const html = marked(s)
+      const html = marked.parse(s)
       return html
     }
   },
