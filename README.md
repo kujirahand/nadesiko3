@@ -16,7 +16,7 @@
 
 ## 対応機器/ブラウザ
 
-主要ブラウザ(Edge/Safari/Chrome/Firefox)とNode.jsに対応しています。詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。
+主要ブラウザ(Chrome/Safari/Edge/Firefox)に対応しています。詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。
 
 ## ブラウザで利用する場合
 
