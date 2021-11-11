@@ -85,7 +85,7 @@ class NakoParser extends NakoParserBase {
         descFunc += f.name + '\n'
       }
       throw NakoSyntaxError.fromNode(
-        `未解決の単語があります: [${desc}]\n次の命令の可能性があります:\n${descFunc}}`, eol)
+        `未解決の単語があります: [${desc}]\n次の命令の可能性があります:\n${descFunc}`, eol)
     }
     this.recentlyCalledFunc = []
     return eol
