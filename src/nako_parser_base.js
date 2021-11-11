@@ -10,6 +10,7 @@ class NakoParserBase {
    */
   constructor (logger) {
     this.logger = logger
+    /** @type any[] */
     this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
     this.init()
     /** @type {import('./nako3').TokenWithSourceMap[]} */
@@ -20,6 +21,8 @@ class NakoParserBase {
     /** @type {import('./nako3').Ast[]} */
     this.y = []
     this.genMode = 'sync' // #637
+    /** @type Object[] */
+    this.recentlyCalledFunc = [] // 最近呼び出した関数(余剰エラーの報告に使う)
   }
 
   init () {

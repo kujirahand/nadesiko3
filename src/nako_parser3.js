@@ -62,16 +62,32 @@ class NakoParser extends NakoParserBase {
   yEOL () {
     // 行末のチェック #1009
     const eol = this.get()
-    // スタックの確認
+    // 余剰スタックの確認
     if (this.stack.length > 0) {
+      // 余剰スタックのレポートを作る
       const words = []
       this.stack.forEach((t) => {
         words.push(this.nodeToStr(t, { depth: 1 }, false))
       })
       const desc = words.join(',')
+      // 最近使った関数の使い方レポートを作る #1093
+      let descFunc = ''
+      let chA = 'A'.charCodeAt(0)
+      for (let f of this.recentlyCalledFunc) {
+        descFunc += ' - '
+        let no = 0
+        for (let arg of f.josi) {
+          const ch = String.fromCharCode(chA + no)
+          descFunc += ch
+          if (arg.length == 1) { descFunc += arg[0] } else { descFunc += `(${arg.join('|')})` }
+          no++
+        }
+        descFunc += f.name + '\n'
+      }
       throw NakoSyntaxError.fromNode(
-        `未解決の単語があります: [${desc}]`, eol)
+        `未解決の単語があります: [${desc}]\n次の命令の可能性があります:\n${descFunc}}`, eol)
     }
+    this.recentlyCalledFunc = []
     return eol
   }
 
@@ -1013,11 +1029,16 @@ class NakoParser extends NakoParserBase {
     }
     if (!f || typeof f.josi === 'undefined') { throw NakoSyntaxError.fromNode('関数の定義でエラー。', t) }
 
+    // 最近使った関数を記録
+    this.recentlyCalledFunc.push({name: t.value, ...f})
+
+    // 関数の引数を取り出す処理
     const args = []
     let nullCount = 0
     let valueCount = 0
     for (let i = 0; i < f.josi.length; i++) {
       while (true) {
+        // スタックから任意の助詞を持つ値を一つ取り出す、助詞がなければ末尾から得る
         let popArg = this.popStack(f.josi[i])
         if (popArg !== null) {
           valueCount++
