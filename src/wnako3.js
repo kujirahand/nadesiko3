@@ -57,9 +57,6 @@ class WebNakoCompiler extends NakoCompiler {
         return {
           sync: false,
           value: (async () => {
-            if (!filePath.startsWith('http://') && !filePath.startsWith('https://')) {
-              throw new NakoImportError('ブラウザ版のなでしこの取り込み文の引数には https:// か http:// で始まるアドレスを指定してください。', token.line, token.file)
-            }
             const res = await fetch(filePath)
             if (!res.ok) {
               throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
@@ -110,7 +107,15 @@ class WebNakoCompiler extends NakoCompiler {
           try {
             pathname = new URL(name).pathname
           } catch (e) {
-            throw new NakoImportError(`ブラウザ版のなでしこの取り込み文の引数には、ローカルに存在するファイルか https:// か http:// で始まるアドレスを指定してください。\n${e}`, token.line, token.file)
+            // 単純にパスに変換できなければ、loccation.hrefを参考にパスを組み立てる
+            try {
+              const href_a = window.location.href.split('/')
+              const href_dir = href_a.splice(0, href_a.length - 1).join('/');
+              const href = href_dir + '/' + name
+              pathname = new URL(href).pathname
+            } catch (e) {
+              throw new NakoImportError(`取り込み文の引数でパスが解決できません。https:// か http:// で始まるアドレスを指定してください。\n${e}`, token.line, token.file)
+            }
           }
         }
         if (pathname.endsWith('.js') || pathname.endsWith('.js.txt')) {
