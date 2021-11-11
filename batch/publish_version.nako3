@@ -1,0 +1,46 @@
+# ---------------------------------------------------------
+# なでしこ3のバージョンをkonawiki2/3/nako3storageに反映
+# ---------------------------------------------------------
+前提条件=「Gitリポジトリを以下のように設定してください。
+# /path/to/nadesiko3
+# /path/to/konawiki2
+# /path/to/konawiki3
+# /path/to/nako3storage
+」。
+# ---------------------------------------------------------
+母艦パス取得してパス抽出して基本パスに代入。
+DIR_REPO = (基本パスからパス抽出)
+VER=ナデシコバージョン。
+VER_PHP=「<?php
+define('NAKO_DEFAULT_VERSION', '{VER}');
+
+」
+# ---------------------------------------------------------
+# リポジトリごとに処理
+ファイル一覧=[
+  "/nako3storage/nako_version.inc.php",
+  "/konawiki2/kona-engine/plugins/nako_version.inc.php",
+  "/konawiki3/kona3engine/plugins/nako3/nako_version.inc.php"
+]
+ファイル一覧を反復
+  パス=DIR_REPO&対象
+  確認パス＝（パスからパス抽出）。
+  もし、確認パスが存在しなければ
+  　　「[ERROR] レポジトリ: {対象}」を表示。
+  　　前提条件を表示。終わり。
+  ここまで。
+  # コピー
+  VER_PHPをパスに保存。
+  「=== === === ===」を表示;
+  「[OK] {パス}」を表示。
+  # コミットする
+  MSG="updated nako3 ver."&ナデシコバージョン;
+  CMD=「cd "{確認パス}" && git commit -a -m "{MSG}" && git push」
+  エラー監視
+　　　CMDを起動待機。
+　エラーならば
+　　　「コミットできません: {確認パス}」を表示。
+　ここまで。
+ここまで。
+
+
