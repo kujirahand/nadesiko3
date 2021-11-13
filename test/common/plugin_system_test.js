@@ -457,4 +457,10 @@ describe('plugin_system_test', () => {
     globalScope.jstest_mul = (a, b) => { return a * b }
     cmp('「'+globalName+'」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
   })
+  it('BASE64 #1102', () => {
+    cmp('「こんにちは」をBASE64エンコードして表示', '44GT44KT44Gr44Gh44Gv')
+    cmp('「44GT44KT44Gr44Gh44Gv」をBASE64デコードして表示', 'こんにちは')
+    cmp('「●ここだけ★のなでしこの話」をBASE64エンコードして表示', '4peP44GT44GT44Gg44GR4piF44Gu44Gq44Gn44GX44GT44Gu6Kmx')
+    cmp('「4peP44GT44GT44Gg44GR4piF44Gu44Gq44Gn44GX44GT44Gu6Kmx」をBASE64デコードして表示', '●ここだけ★のなでしこの話')
+  })
 })

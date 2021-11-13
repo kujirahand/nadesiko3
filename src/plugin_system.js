@@ -2106,6 +2106,26 @@ const PluginSystem = {
       }
       return res
     }
+  },
+  // @BASE64
+  'BASE64エンコード': { // @BASE64エンコードして返す // @BASE64えんこーど
+    type: 'func',
+    josi: [['を', 'から']],
+    pure: true,
+    fn: function (text) {
+        let utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text))
+        return btoa(utf8str)
+    }
+  },
+  'BASE64デコード': { // @BASE64デコードして返す // @BASE64でこーど
+    type: 'func',
+    josi: [['を', 'へ', 'に']],
+    pure: true,
+    fn: function (text) {
+        const decoded_utf8str = atob(text)
+        const decoded_array = new Uint8Array(Array.prototype.map.call(decoded_utf8str, c => c.charCodeAt()))
+        return new TextDecoder('UTF-8').decode(decoded_array);
+    }
   }
 }
 
