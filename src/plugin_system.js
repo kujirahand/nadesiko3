@@ -784,12 +784,9 @@ const PluginSystem = {
     josi: [['で'], ['の']],
     pure: true,
     fn: function (s, a) {
-      let cnt = 0
-      const re = new RegExp(a.replace(/(.)/g, '\\$1'), 'g')
-      String(s).replace(re, m => {
-        cnt++
-      })
-      return cnt
+      s = '' + s
+      a = '' + a
+      return s.split(a).length - 1
     }
   },
   'MID': { // @文字列SのA文字目からCNT文字を抽出する // @MID
