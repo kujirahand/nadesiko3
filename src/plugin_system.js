@@ -893,9 +893,8 @@ const PluginSystem = {
     josi: [['の', 'で'], ['を'], ['に', 'へ']],
     pure: true,
     fn: function (s, a, b) {
-      s = String(s)
-      const re = new RegExp(a.replace(/(.)/g, '\\$1'), '')
-      return s.replace(re, b)
+        // replaceは最初の一度だけ置換する
+        return String(s).replace(a, b)
     }
   },
   'トリム': { // @文字列Sの前後にある空白を削除する // @とりむ
