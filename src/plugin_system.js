@@ -852,6 +852,20 @@ const PluginSystem = {
       return ('' + s).split('' + a)
     }
   },
+  '文字列分割': { // @文字列Sを区切り文字Aで分割して配列で返す // @もじれつぶんかつ
+    type: 'func',
+    josi: [['を'], ['で']],
+    pure: true,
+    fn: function (s, a) {
+      s = '' + s
+      a = '' + a
+      const i = s.indexOf(a)
+      if (i < 0) {
+        return [s]
+      }
+      return [s.substr(0, i), s.substr(i + a.length)]
+    }
+  },
   '切取': { // @文字列Sから文字列Aまでの部分を抽出する。切り取った残りは特殊変数『対象』に代入される。(v1非互換) // @きりとる
     type: 'func',
     josi: [['から', 'の'], ['まで', 'を']],
