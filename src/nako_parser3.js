@@ -67,7 +67,9 @@ class NakoParser extends NakoParserBase {
       // 余剰スタックのレポートを作る
       const words = []
       this.stack.forEach((t) => {
-        words.push(this.nodeToStr(t, { depth: 1 }, false))
+        let w = this.nodeToStr(t, { depth: 1 }, false)
+        if (t.josi) { w += t.josi }
+        words.push(w)
       })
       const desc = words.join(',')
       // 最近使った関数の使い方レポートを作る #1093
