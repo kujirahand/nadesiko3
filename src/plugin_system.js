@@ -2124,8 +2124,13 @@ const PluginSystem = {
     josi: [['を', 'から']],
     pure: true,
     fn: function (text) {
-        let utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text))
-        return btoa(utf8str)
+        // browser?
+        if (window.btoa) {
+          let utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text))
+          return btoa(utf8str)
+        } else {
+          return Buffer.from(text).toString('base64')
+        }
     }
   },
   'BASE64デコード': { // @BASE64デコードして返す // @BASE64でこーど
@@ -2133,9 +2138,13 @@ const PluginSystem = {
     josi: [['を', 'へ', 'に']],
     pure: true,
     fn: function (text) {
+      if (window.atob) {
         const decoded_utf8str = atob(text)
         const decoded_array = new Uint8Array(Array.prototype.map.call(decoded_utf8str, c => c.charCodeAt()))
         return new TextDecoder('UTF-8').decode(decoded_array);
+      } else {
+        return Buffer.from(text, 'base64').toString()
+      }
     }
   }
 }
