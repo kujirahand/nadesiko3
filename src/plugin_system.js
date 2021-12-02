@@ -1809,9 +1809,9 @@ const PluginSystem = {
     pure: false,
     fn: function (n, sys) {
       if (sys.__genMode === '非同期モード') {
-        sys.async = true
+        const sysenv = sys.setAsync(sys)
         setTimeout(() => {
-          sys.nextAsync(sys)
+          sys.compAsync(sys, sysenv)
         }, n * 1000)
       } else {
         if (sys.resolve === undefined) { throw new Error('『秒待機』命令は『!非同期モード』で使ってください。') }
@@ -1850,6 +1850,7 @@ const PluginSystem = {
         // 使用中リストに追加したIDを削除
         const i = sys.__timeout.indexOf(timerId)
         if (i >= 0) { sys.__timeout.splice(i, 1) }
+        if (sys.__genMode === '非同期モード') { sys.newenv = true }
         try {
           f(timerId, sys)
         } catch (e) {
@@ -1874,6 +1875,7 @@ const PluginSystem = {
       if (typeof f === 'string') { f = sys.__findFunc(f, '秒毎') }
       // タイマーをセット
       const timerId = setInterval(() => {
+        if (sys.__genMode === '非同期モード') { sys.newenv = true }
         f(timerId, sys)
       }, parseFloat(n) * 1000)
       // タイマーIDを追加

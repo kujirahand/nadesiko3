@@ -89,6 +89,7 @@ const PluginBrowser = {
           sys.__v0['対象イベント'] = e
           // 追加データが得られる場合
           if (setHandler) { setHandler(e, sys) }
+          if (sys.__genMode === '非同期モード') { sys.newenv = true }
           return func(e, sys)
         }
         // add
