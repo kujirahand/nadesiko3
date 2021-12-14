@@ -1,5 +1,4 @@
 // @ts-nocheck
-const { question } = require('readline-sync')
 const { NakoRuntimeError } = require('./nako_errors')
 const NakoVersion = require('./nako_version')
 
