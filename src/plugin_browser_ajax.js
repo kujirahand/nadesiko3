@@ -13,7 +13,8 @@ module.exports = {
         return res.text()
       }).then(text => {
         sys.__v0['対象'] = text
-        callback(text)
+        if (sys.__genMode === '非同期モード') { sys.newenv = true }
+        callback(text, sys)
       }).catch(err => {
         console.log('[fetch.error]', err)
         sys.__v0['AJAX:ONERROR'](err)
@@ -29,7 +30,7 @@ module.exports = {
       if (sys.__genMode !== '非同期モード') {
         throw new Error('『AJAX受信』を使うには、プログラムの冒頭で「!非同期モード」と宣言してください。')
       }
-      sys.async = true
+      const sysenv = sys.setAsync(sys)
       let options = sys.__v0['AJAXオプション']
       if (options === '') { options = { method: 'GET' } }
       // fetch 実行
@@ -41,7 +42,7 @@ module.exports = {
         }
       }).then(text => {
         sys.__v0['対象'] = text
-        sys.nextAsync(sys)
+        sys.compAsync(sys, sysenv)
       }).catch(err => {
         console.error('[AJAX受信のエラー]', err)
         sys.__errorAsync(err, sys)

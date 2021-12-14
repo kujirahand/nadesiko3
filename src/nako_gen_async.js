@@ -550,13 +550,15 @@ try {
       if (sys.index >= sys.codeSize || sys.index < 0) {return}
       const __v0 = sys.__v0
       try {
-        while (sys.index < sys.codeSize || sys.index < 0) {
+        sys.inLoop = true
+        while (sys.index < sys.codeSize && sys.index >= 0) {
           // console.log('@@[run]', sys.index)
           switch (sys.index) {
             // --- CODE.BEGIN ---
             ${result}
             // --- CODE.END ---
             default:
+              sys.inLoop = false
               console.log(sys.index, sys.__stack)
               throw new Error('Invalid sys.index:' + sys.index)
               break
@@ -568,8 +570,13 @@ try {
           } else {
             sys.index++
           }
-          if (sys.async) { sys.async = false; break}
+          if (sys.async) {
+            sys.__saveSysenv(sys)
+            sys.async = false
+            break
+          }
         } // end of while
+        sys.inLoop = false
       } catch (e) {
         sys.__errorAsync(e, sys)
       }
@@ -595,6 +602,12 @@ try {
       sys.nextIndex = no;
     }
     this.__return = sys => {
+      if (sys.__callstack.length === 0) {
+        sys.__destroySysenv(sys, sys.curSysenv.envid)
+        sys.index = -2
+        sys.nextIndex = -1
+        return
+      }
       const sore = sys.__vars['それ'];
       sys.__varslist.pop();
       const info = sys.__callstack.pop();
@@ -616,14 +629,21 @@ try {
     }
     this.__callNakoCode = (no, backNo, sys) => {
       this.__call(backNo, sys)
-      sys.async = true
+      sys.nextIndex = no
+      const sysenv = sys.setAsync(sys)
       setTimeout(() => {
         // console.log('//__callNakoCode, back=', backNo, 'no=', no)
-        sys.async = false
-        sys.nextIndex = -1
-        sys.index = no
-        sys.nextAsync(sys)
+        sys.compAsync(sys, sysenv)
       } ,1)
+    }
+    this.__callNakoCodeEntry = (no, sys) => {
+      sys.__saveSysenv(sys)
+      sys.curSysenv = sys.__generateSysenv(sys)
+      sys.__restoreSysenv(sys)
+      sys.__vars = {"それ":""}
+      sys.__varslist.push(sys.__vars)
+      sys.index = no;
+      sys.nextAsync(sys)
     }
     this.__callObj = (vname, curNo, sys) => {
       if (sys.__vars[vname]) {
@@ -639,7 +659,69 @@ try {
       }
       throw new Error('async error in __callObj::', vname)
     }
+    this.__generateSysenv = sys => {
+      sys.envid = ( sys.envid == null ? 0 : sys.envid ) + 1
+      const sysenv = {
+        callstack: [],
+        varstack: [],
+        varslist: [sys.__varslist[0], sys.__varslist[1], sys.__varslist[2]],
+        index: -1,
+        nextIndex: -1,
+        tryIndex: -1,
+        envid: sys.envid
+      }
+      sysenv.vars = sysenv.varslist[2]
+      if (sys.sysenvs == null) { sys.sysenvs={} }
+      sys.sysenvs[sys.envid] = sysenv
+      // console.log('generete envid '+sys.envid)
+      return sysenv
+    }
+    this.__destroySysenv = (sys, envid) => {
+      delete sys.sysenvs[envid]
+      // console.log('destroy envid '+envid)
+    }
+    this.__saveSysenv = sys => {
+      const sysenv = sys.curSysenv
+      sysenv.callstack = sys.__callstack
+      sysenv.varstack = sys.__stack
+      sysenv.varslist = sys.__varslist
+      sysenv.vars = sys.__vars
+      sysenv.index = sys.index
+      sysenv.nextIndex = sys.nextIndex
+      sysenv.tryIndex = sys.tryIndex
+    }
+    this.__restoreSysenv = sys => {
+      const sysenv = sys.curSysenv
+      sys.__callstack = sysenv.callstack
+      sys.__stack = sysenv.varstack
+      sys.__varslist = sysenv.varslist
+      sys.__vars = sysenv.vars
+      ___vars = sys.__vars
+      sys.index = sysenv.index
+      sys.nextIndex = sysenv.nextIndex
+      sys.tryIndex = sysenv.tryIndex
+    }
+    this.setAsync = sys => {
+      sys.async = true
+      return sys.curSysenv
+    }
+    this.compAsync = (sys,sysenv) => {
+      if (sys.async && sys.curSysenv != null && sysenv != null && sys.curSysenv.envid === sysenv.envid) {
+        sys.async = false
+      } else {
+        if (sys.curSysenv == null || sysenv == null || sys.curSysenv.envid !== sysenv.envid) {
+          sys.__saveSysenv(sys)
+          const envid = sys.curSysenv.envid
+          sys.curSysenv = sysenv
+          sys.__restoreSysenv(sys)
+          // console.log('switch envid '+envid+' to '+sys.curSysenv.envid)
+        }
+        sys.nextAsync(sys)
+      }
+    }
+
     this.__resetAsync(this)
+    this.curSysenv = this.__generateSysenv(this)
     this.nextAsync(this)
     //-------------------------
     `
@@ -1076,8 +1158,14 @@ try {
       josi: meta.josi,
       fn: '(function(){\n' +
         '  const sys = (arguments.length > 0) ? arguments[arguments.length-1] : {}; \n' +
+        '  if (sys.newenv) { \n' +
+        '    sys.newenv = false\n' +
+        `    sys.__callNakoCodeEntry(sys.__labels['${funcName}'], sys);` + '\n' +
+        '  } else {\n' +
         '  ' + codeCall + '\n' +
-        `  sys.__callNakoCode(sys.__labels['${funcName}'], sys.nextIndex, sys);  })`,
+        `    sys.__callNakoCode(sys.__labels['${funcName}'], sys.nextIndex, sys);` + '\n' +
+        '    if (!sys.inLoop) { sys.nextAsync(sys) }\n' +
+        '  }  })',
       type: 'func'
     }
 
