@@ -1,4 +1,5 @@
 // @ts-nocheck
+const { question } = require('readline-sync')
 const { NakoRuntimeError } = require('./nako_errors')
 const NakoVersion = require('./nako_version')
 
@@ -421,6 +422,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'で']],
     fn: function (code, sys) {
+      if (sys.__genMode === '非同期モード') {
+        throw new Error('非同期モードでは「ナデシコ」は利用できません。')
+      }
       sys.__varslist[0]['表示ログ'] = ''
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: true })
       const out = sys.__varslist[0]['表示ログ'] + ''
@@ -434,6 +438,9 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'で']],
     fn: function (code, sys) {
+      if (sys.__genMode === '非同期モード') {
+        throw new Error('非同期モードでは「ナデシコ続」は利用できません。')
+      }
       sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
       const out = sys.__varslist[0]['表示ログ'] + ''
       if (out) {

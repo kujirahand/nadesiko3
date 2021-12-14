@@ -18,8 +18,7 @@ const NakoGen = require('./nako_gen')
 /**
  * なでしこのインタプリタコード
  */
-const
-  NakoCodeNop = 'NOP'
+const NakoCodeNop = 'NOP'
 const NakoCodeLabel = 'LBL'
 const NakoCodeEOL = 'EOL'
 const NakoCodeJump = 'JMP' // JUMP addr

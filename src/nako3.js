@@ -540,6 +540,7 @@ class NakoCompiler {
     /** @type {Ast} */
     let ast
     try {
+      this.parser.genMode = 'sync' // set default
       ast = this.parser.parse(lexerOutput.tokens)
     } catch (err) {
       if (typeof err.startOffset !== 'number') {

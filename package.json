@@ -129,7 +129,7 @@
     "karma-html2js-preprocessor": "^1.1.0",
     "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^2.0.1",
-    "karma-mocha-reporter": "^2.2.5",
+    "karma-mocha-reporter": "^2.2.3",
     "karma-webpack": "^5.0.0",
     "markdownlint": "^0.24.0",
     "markdownlint-cli": "^0.30.0",
