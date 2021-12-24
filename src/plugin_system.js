@@ -1959,7 +1959,16 @@ const PluginSystem = {
     pure: true,
     fn: function () {
       const now = new Date()
-      return now.getTime() / 1000
+      return Math.floor(now.getTime() / 1000)
+    }
+  },
+  'システム時間ミリ秒': { // @現在のUNIX時間 (UTC(1970/1/1)からの経過秒数) をミリ秒で返す // @しすてむじかんみりびょう
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function () {
+      const now = new Date()
+      return now.getTime()
     }
   },
   '今日': { // @今日の日付を「YYYY/MM/DD」の形式で返す // @きょう
