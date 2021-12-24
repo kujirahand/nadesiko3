@@ -1607,7 +1607,7 @@ const PluginSystem = {
         const row = []
         res.push(row)
         for (let c = 0; c < rows; c++) {
-          row[c] = a[c][r] ? a[c][r] : ''
+          row[c] = (a[c][r] !== undefined) ? a[c][r] : ''
         }
       }
       return res
