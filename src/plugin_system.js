@@ -2311,16 +2311,17 @@ const PluginSystem = {
       return sys.__formatDateTime(d, s)      
     }
   },
-  '日時加算': { // @日時SにAを加えて返す。Aは「(+｜-)1(年|ヶ月|日|時間|分|秒)」のように指定する (v1非互換)。 // @にちじかさん
+  '日時加算': { // @日時SにAを加えて返す。Aは「(+｜-)1(年|ヶ月|日|週|時間|分|秒)」のように指定する (v1非互換)。 // @にちじかさん
     type: 'func',
     josi: [['に'], ['を']],
     pure: false,
     fn: function (s, a, sys) {
-      const r = ('' + a).match(/([+|-]?)(\d+)(年|ヶ月|日|時間|分|秒)$/)
+      const r = ('' + a).match(/([+|-]?)(\d+)(年|ヶ月|日|週間|時間|分|秒)$/)
       if (!r) {throw new Error('『日付加算』は『(+｜-)1(年|ヶ月|日|時間|分|秒)』の書式で指定します。')}
       switch (r[3]) {
         case '年': return sys.__exec('日付加算', [s, `${r[1]}${r[2]}/0/0`, sys])
         case 'ヶ月': return sys.__exec('日付加算', [s, `${r[1]}0/${r[2]}/0`, sys])
+        case '週間': return sys.__exec('日付加算', [s, `${r[1]}0/0/${r[2]*7}`, sys])
         case '日': return sys.__exec('日付加算', [s, `${r[1]}0/0/${r[2]}`, sys])
         case '時間': return sys.__exec('時間加算', [s, `${r[1]}${r[2]}:0:0`, sys])
         case '分': return sys.__exec('時間加算', [s, `${r[1]}0:${r[2]}:0`, sys])
