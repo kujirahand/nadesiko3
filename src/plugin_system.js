@@ -1981,7 +1981,7 @@ const PluginSystem = {
     return_none: true
   },
   // @日時処理(簡易)
-  '元号データ':{type: 'const', value: [{"元号":"令和","改元日":"2019/05/01"},{"元号":"平成","改元日":"1989/01/08"},{"元号":"昭和","改元日":"1926/12/25"},{"元号":"大正","改元日":"1912/07/30"},{"元号":"明治","改元日":"1868/10/23"}]}, // @げんごうでーた
+  '元号データ': { type: 'const', value: [{ '元号': '令和', '改元日': '2019/05/01' }, { '元号': '平成', '改元日': '1989/01/08' }, { '元号': '昭和', '改元日': '1926/12/25' }, { '元号': '大正', '改元日': '1912/07/30' }, { '元号': '明治', '改元日': '1868/10/23' }] }, // @げんごうでーた
   '今': { // @現在時刻を「HH:mm:ss」の形式で返す // @いま
     type: 'func',
     josi: [],
@@ -2106,7 +2106,7 @@ const PluginSystem = {
       return t.getDay()
     }
   },
-  'UNIXTIME変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // UNIXTIMEへんかん
+  'UNIXTIME変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXTIMEへんかん
     type: 'func',
     josi: [['の','を','から']],
     pure: false,
@@ -2115,7 +2115,7 @@ const PluginSystem = {
       return d.getTime() / 1000;
     }
   },
-  'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // UNIXTIMEへんかん
+  'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXじかんへんかん
     type: 'func',
     josi: [['の','を','から']],
     pure: false,
@@ -2124,7 +2124,7 @@ const PluginSystem = {
       return d.getTime() / 1000;
     }
   },
-  '日時変換': { // @UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換 // にちじへんかん
+  '日時変換': { // @UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換 // @にちじへんかん
     type: 'func',
     josi: [['を', 'から']],
     pure: false,
@@ -2439,13 +2439,13 @@ const PluginSystem = {
     josi: [['を', 'から']],
     pure: true,
     fn: function (text) {
-        // browser?
-        if (window.btoa) {
-          let utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text))
-          return btoa(utf8str)
-        } else {
-          return Buffer.from(text).toString('base64')
-        }
+      // browser?
+      if (window.btoa) {
+        const utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text))
+        return btoa(utf8str)
+      } else {
+        return Buffer.from(text).toString('base64')
+      }
     }
   },
   'BASE64デコード': { // @BASE64デコードして返す // @BASE64でこーど
@@ -2454,9 +2454,9 @@ const PluginSystem = {
     pure: true,
     fn: function (text) {
       if (window.atob) {
-        const decoded_utf8str = atob(text)
-        const decoded_array = new Uint8Array(Array.prototype.map.call(decoded_utf8str, c => c.charCodeAt()))
-        return new TextDecoder('UTF-8').decode(decoded_array);
+        const decodedUtf8str = atob(text)
+        const decodedArray = new Uint8Array(Array.prototype.map.call(decodedUtf8str, c => c.charCodeAt()))
+        return new TextDecoder('UTF-8').decode(decodedArray)
       } else {
         return Buffer.from(text, 'base64').toString()
       }
