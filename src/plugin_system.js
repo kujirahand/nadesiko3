@@ -52,6 +52,12 @@ const PluginSystem = {
         s = '00' + s
         return s.substring(s.length - 2)
       }
+      sys.__zero = (s, keta) => {
+        let zeroS = ''
+        for (let i = 0; i < keta; i++) {zeroS += '0'}
+        s = zeroS + s
+        return s.substring(s.length - keta)
+      }
       sys.__formatDate = (t) => {
         return t.getFullYear() + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate())
       }
@@ -2092,8 +2098,8 @@ const PluginSystem = {
     josi: [['の']],
     pure: false,
     fn: function (s, sys) {
-      const no = sys.__exec('曜日番号取得', [s])
-      return '日=月=火=水=木=金=土'.split('=')[no % 7]
+      const d = sys.__str2date(s)
+      return '日月火水木金土'.charAt(d.getDay() %  7)
     }
   },
   '曜日番号取得': { // @Sに指定した日付の曜日番号をで返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土) // @ようびばんごうしゅとく
@@ -2131,6 +2137,36 @@ const PluginSystem = {
     fn: function (tm, sys) {
       const t = tm * 1000
       return sys.__formatDateTime(new Date(t), '2022/01/01 00:00:00')
+    }
+  },
+  '日時書式変換': { // @UNIX時間TMを「YYYY/MM/DD HH:mm:ss.MS」または「YY-M-D H:m:s」その他、W:曜日、WWW:曜日英、MMM:月英の書式に変換 // @にちじしょしきへんかん
+    type: 'func',
+    josi: [['を'], ['で']],
+    pure: false,
+    fn: function (tm, fmt, sys) {
+      const t = new Date(tm * 1000)
+      fmt = fmt.replace(/\w+/g, (m) => {
+        switch (m) {
+          case 'YYYY': return t.getFullYear()
+          case 'YY': return ('' + t.getFullYear()).substring(2)
+          case 'MM': return sys.__zero2(t.getMonth() + 1)
+          case 'DD': return sys.__zero2(t.getDate())
+          case 'MS': return sys.__zero(t.getMilliseconds(), 3)
+          case 'M': return (t.getMonth() + 1)
+          case 'D': return (t.getDate())
+          case 'HH': return sys.__zero2(t.getHours())
+          case 'mm': return sys.__zero2(t.getMinutes())
+          case 'ss': return sys.__zero2(t.getSeconds())
+          case 'H': return (t.getHours())
+          case 'm': return (t.getMinutes())
+          case 's': return (t.getSeconds())
+          case 'W': return '日月火水木金土'.charAt(t.getDay() % 7)
+          case 'WWW': return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getDay() % 7]
+          case 'MMM': return ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][t.getMonth()]
+        }
+        return m
+      })
+     return fmt
     }
   },
   '和暦変換': { // @Sを和暦に変換する。Sは明治以降の日付が有効。 // @われきへんかん
