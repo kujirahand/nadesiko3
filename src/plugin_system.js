@@ -81,6 +81,10 @@ const PluginSystem = {
       sys.__str2date = (s) => {
         // trim
         s = ('' + s).replace(/(^\s+|\s+$)/, '')
+        // is unix time
+        if (s.match(/^(\d+|\d+\.\d+)$/)) {
+          return new Date(parseFloat(s) * 1000);
+        }
         // is time ?
         if (s.match(/^\d+\:\d+(\:\d+)?$/)) {
           const t = new Date()
@@ -2139,24 +2143,24 @@ const PluginSystem = {
       return sys.__formatDateTime(new Date(t), '2022/01/01 00:00:00')
     }
   },
-  '日時書式変換': { // @UNIX時間TMを「YYYY/MM/DD HH:mm:ss.MS」または「YY-M-D H:m:s」その他、W:曜日、WWW:曜日英、MMM:月英の書式に変換 // @にちじしょしきへんかん
+  '日時書式変換': { // @UNIX時間TM(または日付文字列)を「YYYY/MM/DD HH:mm:ss」または「YY-M-D H:m:s」その他、W:曜日、WWW:曜日英、MMM:月英、ccc:ミリ秒の書式に変換 // @にちじしょしきへんかん
     type: 'func',
     josi: [['を'], ['で']],
     pure: false,
     fn: function (tm, fmt, sys) {
-      const t = new Date(tm * 1000)
-      fmt = fmt.replace(/\w+/g, (m) => {
+      const t = sys.__str2date(tm)
+      fmt = fmt.replace(/(YYYY|ccc|WWW|MMM|YY|MM|DD|HH|mm|ss|[MDHmsW])/g, (m) => {
         switch (m) {
           case 'YYYY': return t.getFullYear()
           case 'YY': return ('' + t.getFullYear()).substring(2)
           case 'MM': return sys.__zero2(t.getMonth() + 1)
           case 'DD': return sys.__zero2(t.getDate())
-          case 'MS': return sys.__zero(t.getMilliseconds(), 3)
           case 'M': return (t.getMonth() + 1)
           case 'D': return (t.getDate())
           case 'HH': return sys.__zero2(t.getHours())
           case 'mm': return sys.__zero2(t.getMinutes())
           case 'ss': return sys.__zero2(t.getSeconds())
+          case 'ccc': return sys.__zero(t.getMilliseconds(), 3)
           case 'H': return (t.getHours())
           case 'm': return (t.getMinutes())
           case 's': return (t.getSeconds())
