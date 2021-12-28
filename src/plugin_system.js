@@ -2043,8 +2043,8 @@ const PluginSystem = {
   '昨日': { // @昨日の日付を「YYYY/MM/DD」の形式で返す // @きのう
     type: 'func',
     josi: [],
-    pure: true,
-    fn: function () {
+    pure: false,
+    fn: function (sys) {
       const t = Date.now() - (24 * 60 * 60 * 1000)
       return sys.__formatDate(new Date(t))
     }
