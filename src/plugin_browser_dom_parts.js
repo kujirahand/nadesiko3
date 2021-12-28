@@ -353,17 +353,21 @@ module.exports = {
         aa = rr
       }
       const bgColor = JSON.parse(JSON.stringify(sys.__v0['DOM部品オプション']['テーブル背景色']))
+      for (let i = 0; i < 3; i++) {bgColor.push('')}
       const bgHead = bgColor.shift()
       const table = sys.__exec('DOM部品作成', ['table', sys])
       for (let rowNo in aa) {
         const row = aa[rowNo]
         const tr = document.createElement('tr')
-        tr.style.backgroundColor = (rowNo == 0) ? bgHead : bgColor[rowNo % 2]
-        tr.style.color = (rowNo == 0) ? 'white' : 'black'
         for (let col of row) {
           col = '' + col
           const td = document.createElement((rowNo == 0) ? 'th' : 'td')
           td.innerHTML = sys.__tohtml(col)
+          // 色指定
+          if (bgHead != '') {
+            td.style.backgroundColor = (rowNo == 0) ? bgHead : bgColor[rowNo % 2]
+            td.style.color = (rowNo == 0) ? 'white' : 'black'
+          }
           if (col.match(/^\d+$/)) { // number?
             td.style.textAlign = 'right'
           }
