@@ -219,16 +219,46 @@ module.exports = {
       return inp
     }
   },
-  'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}の送信フォームを作成し、DOM親部品を変更し、DOMオブジェクトを返す // @ふぉーむさくせい
+  'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}で項目一覧S「a=初期値{改行}b=初期値{改行}=?送信」を送信フォームを作成しDOMオブジェクトを返す // @ふぉーむさくせい
     type: 'func',
-    josi: [['の']],
+    josi: [['で','の'],['を']],
     pure: false,
-    fn: function (obj, sys) {
+    fn: function (obj, s, sys) {
       const frm = sys.__exec('DOM部品作成', ['form', sys])
       for (let key in obj) {
         if (frm[key]) { frm[key] = obj[key] }
       }
-      sys.__exec('DOM親要素設定', [frm, sys])
+      const rows = s.split('\n')
+      const table = document.createElement('table')
+      for (let rowIndex in rows) {
+        let row = '' + (rows[rowIndex])
+        if (row === '') {continue}
+        if (row.indexOf('=') < 0) { row += '=' }
+        const cols = row.split('=')
+        const key = cols[0]
+        const val = cols[1]
+        // key
+        const th = document.createElement('th')
+        th.innerHTML = sys.__tohtmlQ(key)
+        // val
+        const td = document.createElement('td')
+        const inp = document.createElement('input')
+        td.appendChild(inp)
+        inp.id = 'nako3form_' + key
+        if (val === '?送信' || val === '?submit') {
+          inp.type = 'submit'
+          inp.value = val.substring(1)
+        } else {
+          inp.type = 'text'
+          inp.value = val
+          inp.name = key
+        }
+        const tr = document.createElement('tr')
+        tr.appendChild(th)
+        tr.appendChild(td)
+        table.appendChild(tr)
+      }
+      frm.appendChild(table)
       return frm
     }
   },
@@ -240,31 +270,27 @@ module.exports = {
       if (typeof(aa) === 'string') {
         const rr = []
         const rows = aa.split('\n')
-        for (let row of rows) {
-          const r = row.split(',')
-          rr.push(r)
-        }
+        for (let row of rows) { rr.push(row.split(',')) }
         aa = rr
       }
       const bgColor = JSON.parse(JSON.stringify(sys.__v0['DOM部品オプション']['テーブル背景色']))
       const bgHead = bgColor.shift()
-      let rowNo = 0
       const table = sys.__exec('DOM部品作成', ['table', sys])
-      for (let row of aa) {
+      for (let rowNo in aa) {
+        const row = aa[rowNo]
         const tr = document.createElement('tr')
-        tr.style.backgroundColor = (rowNo === 0) ? bgHead : bgColor[rowNo % 2]
-        tr.style.color = (rowNo === 0) ? 'white' : 'black'
+        tr.style.backgroundColor = (rowNo == 0) ? bgHead : bgColor[rowNo % 2]
+        tr.style.color = (rowNo == 0) ? 'white' : 'black'
         for (let col of row) {
           col = '' + col
-          const td = document.createElement((rowNo === 0) ? 'th' : 'td')
-          td.innerHTML = col.replace(/\&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          const td = document.createElement((rowNo == 0) ? 'th' : 'td')
+          td.innerHTML = sys.__tohtml(col)
           if (col.match(/^\d+$/)) { // number?
             td.style.textAlign = 'right'
           }
           tr.appendChild(td)
         }
         table.appendChild(tr)
-        rowNo++
       }
       sys.__exec('DOM親要素設定', [table, sys])
       return table
