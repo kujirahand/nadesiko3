@@ -272,6 +272,38 @@ module.exports = {
       return frm
     }
   },
+  'フォーム入力一括取得': { // @DOMのフォームを取得し、そのフォーム以下にある入力項目のnameとvalueを辞書形式で返す // @ふぉーむにゅうりょくいっかつしゅとく
+    type: 'func',
+    josi: [['の','から']],
+    pure: true,
+    fn: function (dom) {
+      if (typeof(dom) === 'string') { dom = document.querySelector(dom) }
+      const res = {}
+      const getChildren = (pa) => {
+        if (!pa || !pa.childNodes) {return}
+        for (let i = 0; i < pa.childNodes.length; i++) {
+          const el = pa.childNodes[i]
+          if (!el.tagName) {return}
+          const tag = el.tagName.toLowerCase()
+          console.log(tag, el)
+          if (tag === 'input') {
+            if (el.type === 'checkbox') {
+              res[el.name] = el.checked ? el.value : ''
+              continue
+            }
+            res[el.name] = el.value
+            continue
+          }
+          else if (tag === 'textarea') {
+            res[el.name] = el.value
+          }
+          getChildren(el)
+        }
+      }
+      getChildren(dom)
+      return res
+    }
+  },
   'テーブル作成': { // @二次元配列AA(あるいは文字列の簡易CSVデータ)からTABLE要素を作成し、DOMオブジェクトを返す // @てーぶるさくせい
     type: 'func',
     josi: [['の', 'から']],
