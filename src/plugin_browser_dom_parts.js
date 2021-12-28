@@ -24,6 +24,15 @@ module.exports = {
   },
   'DOMスキン': { type: 'const', value: '' }, // @DOMすきん
   'DOMスキン辞書': { type: 'const', value: {} }, // @DOMすきんじしょ
+  'DOMスキン設定': { // @「ボタン作成」「エディタ作成」などで適用するスキンを指定する(#1033) // @DOMすきんせってい
+    type: 'func',
+    josi: [['を', 'に', 'の']],
+    pure: false,
+    fn: function (skin, sys) {
+      sys.__v0['DOMスキン'] = skin
+    },
+    return_none: true
+  },
   'DOM部品作成': { // @elmの要素を作成して『DOM親要素設定』で指定した要素に追加して、DOMオブジェクトを返す。(elmがDOM要素なら追加する) // @DOMぶひんさくせい
     type: 'func',
     josi: [['の']],
@@ -179,13 +188,14 @@ module.exports = {
       return inp
     }
   },
-  'パスワード入力エディタ作成': { // @パスワード入力エディタ(input[type='password'])を作成しDOMオブジェクトを返す // @ぱすわーどにゅうりょくさくせい
+  'パスワード入力エディタ作成': { // @パスワード入力エディタ(input[type='password'])を作成し初期値Sを設定し、DOMオブジェクトを返す // @ぱすわーどにゅうりょくさくせい
     type: 'func',
-    josi: [],
+    josi: [['の','で']],
     pure: false,
-    fn: function (sys) {
+    fn: function (s, sys) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
-      inp.type = 'date'
+      inp.type = 'password'
+      inp.value = s
       return inp
     }
   },
@@ -295,14 +305,5 @@ module.exports = {
       sys.__exec('DOM親要素設定', [table, sys])
       return table
     }
-  },
-  'DOMスキン設定': { // @「ボタン作成」「エディタ作成」などで適用するスキンを指定する(#1033) // @DOMすきんせってい
-    type: 'func',
-    josi: [['を', 'に', 'の']],
-    pure: false,
-    fn: function (skin, sys) {
-      sys.__v0['DOMスキン'] = skin
-    },
-    return_none: true
   }
 }
