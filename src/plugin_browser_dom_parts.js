@@ -229,15 +229,19 @@ module.exports = {
       return inp
     }
   },
-  'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}で項目一覧S「a=初期値{改行}b=初期値{改行}=?送信」を送信フォームを作成しDOMオブジェクトを返す // @ふぉーむさくせい
+  'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}で項目一覧S「a=初期値{改行}b=初期値{改行}色=?c#fff0f0{改行}=?送信」を送信フォームを作成しDOMオブジェクトを返す // @ふぉーむさくせい
     type: 'func',
     josi: [['で','の'],['を']],
     pure: false,
     fn: function (obj, s, sys) {
       const frm = sys.__exec('DOM部品作成', ['form', sys])
-      for (let key in obj) {
-        if (frm[key]) { frm[key] = obj[key] }
+      // 可能ならformにobjの値を移し替える
+      if (obj instanceof Object) {
+        for (let key in obj) {
+          if (frm[key]) { frm[key] = obj[key] }
+        }
       }
+      // 入力項目をtableで作る
       const rows = s.split('\n')
       const table = document.createElement('table')
       for (let rowIndex in rows) {
@@ -252,16 +256,42 @@ module.exports = {
         th.innerHTML = sys.__tohtmlQ(key)
         // val
         const td = document.createElement('td')
-        const inp = document.createElement('input')
-        td.appendChild(inp)
-        inp.id = 'nako3form_' + key
-        if (val === '?送信' || val === '?submit') {
-          inp.type = 'submit'
-          inp.value = val.substring(1)
+        if (val.substring(0, 2) === '?(') {
+          // select box
+          const it = val.substring(2) + ')'
+          const ita = it.split(')')
+          const its = ita[0]
+          const def = ita[1]
+          const items = its.split('|')
+          const select = document.createElement('select')
+          select.name = key
+          for (let it of items) {
+            const option = document.createElement('option')
+            option.value = it
+            option.text = it
+            select.appendChild(option)
+          }
+          const idx = items.indexOf(def)
+          if (idx >= 0) { select.selectedIndex = idx }
+          td.appendChild(select)
         } else {
-          inp.type = 'text'
-          inp.value = val
-          inp.name = key
+          // input element
+          const inp = document.createElement('input')
+          td.appendChild(inp)
+          inp.id = 'nako3form_' + key
+          if (val === '?送信' || val === '?submit') {
+            inp.type = 'submit'
+            inp.value = val.substring(1)
+            if (key != '') { inp.name = key }
+          } else if (val.substring(0, 2) === '?c') {
+            inp.type = 'color'
+            inp.value = val.substring(2)
+            inp.name = key
+          } else {
+            inp.type = 'text'
+            inp.value = val
+            inp.name = key
+          }    
         }
         const tr = document.createElement('tr')
         tr.appendChild(th)
@@ -296,6 +326,13 @@ module.exports = {
           }
           else if (tag === 'textarea') {
             res[el.name] = el.value
+          }
+          else if (tag === 'select') {
+            if (el.selectedIndex >= 0) {
+              res[el.name] = el.options[el.selectedIndex].value
+            } else {
+              res[el.name] = ''
+            }
           }
           getChildren(el)
         }
