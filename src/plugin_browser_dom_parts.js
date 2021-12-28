@@ -3,7 +3,7 @@ module.exports = {
   // @DOM部品操作
   'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
   'DOM部品個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
-  'DOM部品オプション': { type: 'const', value: {'自動改行': false} }, // @DOMぶひんおぷしょん
+  'DOM部品オプション': { type: 'const', value: {'自動改行': false, 'テーブル背景色': ['#AA4040', '#ffffff','#fff0f0']} }, // @DOMぶひんおぷしょん
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」など『DOM部品作成』で追加する要素の親要素を指定(デフォルトはdocument)して要素を返す。 // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
@@ -219,7 +219,7 @@ module.exports = {
       return inp
     }
   },
-  'フォーム作成': { // @属性OBJ{method:"GET", action:"..."}の送信フォームを作成し、DOM親部品を変更し、DOMオブジェクトを返す // @ふぉーむさくせい
+  'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}の送信フォームを作成し、DOM親部品を変更し、DOMオブジェクトを返す // @ふぉーむさくせい
     type: 'func',
     josi: [['の']],
     pure: false,
@@ -230,6 +230,44 @@ module.exports = {
       }
       sys.__exec('DOM親要素設定', [frm, sys])
       return frm
+    }
+  },
+  'テーブル作成': { // @二次元配列AA(あるいは文字列の簡易CSVデータ)からTABLE要素を作成し、DOMオブジェクトを返す // @てーぶるさくせい
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: false,
+    fn: function (aa, sys) {
+      if (typeof(aa) === 'string') {
+        const rr = []
+        const rows = aa.split('\n')
+        for (let row of rows) {
+          const r = row.split(',')
+          rr.push(r)
+        }
+        aa = rr
+      }
+      const bgColor = JSON.parse(JSON.stringify(sys.__v0['DOM部品オプション']['テーブル背景色']))
+      const bgHead = bgColor.shift()
+      let rowNo = 0
+      const table = sys.__exec('DOM部品作成', ['table', sys])
+      for (let row of aa) {
+        const tr = document.createElement('tr')
+        tr.style.backgroundColor = (rowNo === 0) ? bgHead : bgColor[rowNo % 2]
+        tr.style.color = (rowNo === 0) ? 'white' : 'black'
+        for (let col of row) {
+          col = '' + col
+          const td = document.createElement((rowNo === 0) ? 'th' : 'td')
+          td.innerHTML = col.replace(/\&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          if (col.match(/^\d+$/)) { // number?
+            td.style.textAlign = 'right'
+          }
+          tr.appendChild(td)
+        }
+        table.appendChild(tr)
+        rowNo++
+      }
+      sys.__exec('DOM親要素設定', [table, sys])
+      return table
     }
   },
   'DOMスキン設定': { // @「ボタン作成」「エディタ作成」などで適用するスキンを指定する(#1033) // @DOMすきんせってい
