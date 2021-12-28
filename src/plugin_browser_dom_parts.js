@@ -14,6 +14,14 @@ module.exports = {
       return el
     }
   },
+  'DOM親部品設定': { // @「ボタン作成」「エディタ作成」などのDOM要素を追加する対象を指定。『DOM親要素設定』と同じ。// @DOMおやぶひんせってい
+    type: 'func',
+    josi: [['に', 'へ']],
+    pure: false,
+    fn: function (el, sys) {
+      return sys.__exec('DOM親要素設定', [el, sys])
+    }
+  },
   'DOMスキン': { type: 'const', value: '' }, // @DOMすきん
   'DOMスキン辞書': { type: 'const', value: {} }, // @DOMすきんじしょ
   'DOM部品作成': { // @elmの要素を作成して『DOM親要素設定』で指定した要素に追加して、DOMオブジェクトを返す。(elmがDOM要素なら追加する) // @DOMぶひんさくせい
@@ -23,13 +31,13 @@ module.exports = {
     fn: function (elm, sys) {
       const parent = sys.__v0['DOM親要素']
       const btn = (typeof(elm) === 'string') ? document.createElement(elm) : elm
-      btn.id = 'nadesi-dom-' + sys.__v0['DOM部品作成個数']
+      btn.id = 'nadesi-dom-' + sys.__v0['DOM部品個数']
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
       if (typeof (func) === 'function') { func(elm, btn, sys) }
       // DOM追加
       parent.appendChild(btn)
-      sys.__v0['DOM部品作成個数']++
+      sys.__v0['DOM部品個数']++
       return btn
     }
   },
@@ -107,8 +115,8 @@ module.exports = {
       const span = document.createElement('span')
       const inp = document.createElement('input')
       inp.type = 'checkbox'
-      inp.id = 'nadesi-dom-' + sys.__v0['DOM部品作成個数']
-      sys.__v0['DOM部品作成個数']++
+      inp.id = 'nadesi-dom-' + sys.__v0['DOM部品個数']
+      sys.__v0['DOM部品個数']++
       const label = document.createElement('label')
       label.innerHTML = text
       label.htmlFor = inp.id
