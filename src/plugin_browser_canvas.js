@@ -154,7 +154,6 @@ module.exports = {
     josi: [['へ', 'に', 'の']],
     pure: true,
     fn: function (args, sys) {
-      console.log(args)
       if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
       if (!args) {throw new Error('楕円描画の引数配列が無効です')}
       if (args.length < 4) {throw new Error('楕円描画の引数配列が不足しています')}

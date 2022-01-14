@@ -269,7 +269,6 @@ module.exports = {
               o.data.push(data[j][i])
             }
           }
-          // console.log(res)
           return res
         }
         // 一次元データのとき
@@ -285,7 +284,6 @@ module.exports = {
         o1.data = data
         o1.backgroundColor = bgcolors
         o1.borderColor = fgcolors
-        // console.log(res)
         return res
       }
       if (data instanceof Object) { return data }

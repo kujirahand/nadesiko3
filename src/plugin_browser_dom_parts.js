@@ -315,7 +315,6 @@ module.exports = {
           const el = pa.childNodes[i]
           if (!el.tagName) {return}
           const tag = el.tagName.toLowerCase()
-          console.log(tag, el)
           if (tag === 'input') {
             if (el.type === 'checkbox') {
               res[el.name] = el.checked ? el.value : ''

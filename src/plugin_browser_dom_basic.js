@@ -141,8 +141,6 @@ module.exports = {
     josi: [['の', 'から']],
     pure: false,
     fn: function (dom, sys) {
-      console.log(dom)
-      console.log(sys)
       return sys.__exec('DOMテキスト取得', [dom, sys])
     }
   },
