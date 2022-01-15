@@ -471,6 +471,7 @@ const PluginSystem = {
   'ナデシコ': { // @なでしこのコードCODEを実行する // @なでしこする
     type: 'func',
     josi: [['を', 'で']],
+    pure: true,
     fn: function (code, sys) {
       if (sys.__genMode === '非同期モード') {
         throw new Error('非同期モードでは「ナデシコ」は利用できません。')

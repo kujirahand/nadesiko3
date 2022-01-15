@@ -703,6 +703,7 @@ try {
     const topOfFunction = '(function(){\n'
     const endOfFunction = '})'
     let variableDeclarations = ''
+    let popStack = ''
     const initialNames = new Set()
     if (this.speedMode.invalidSore === 0) {
       initialNames.add('それ')
@@ -712,6 +713,8 @@ try {
     this.varslistSet.push(this.varsSet)
     // JSの引数と引数をバインド
     variableDeclarations += '  var 引数 = arguments;\n'
+    // ローカル変数を生成
+    variableDeclarations += '  var __vars = {};\n'
     // 宣言済みの名前を保存
     const varsDeclared = Array.from(this.varsSet.names.values())
     let code = ''
@@ -749,7 +752,6 @@ try {
     // パフォーマンスモニタ:ユーザ関数のinject
     code += performanceMonitorInjectAtEnd
     // 関数の末尾に、ローカル変数をPOP
-    code += endOfFunction
 
     // 関数内で定義されたローカル変数の宣言
     let needsVarsObject = false
@@ -765,10 +767,6 @@ try {
     if (!NakoGen.isValidIdentifier('それ') && this.speedMode.invalidSore === 0) {
       needsVarsObject = true
     }
-    // 一度でも__varsを使ったら、それも宣言する。
-    if (needsVarsObject) {
-      variableDeclarations += '  var __vars = {};\n'
-    }
     if (this.speedMode.invalidSore === 0) {
       if (NakoGen.isValidIdentifier('それ')) {
         variableDeclarations += '  var それ = \'\';\n'
@@ -776,7 +774,8 @@ try {
         variableDeclarations += `  ${this.varname('それ')} = '';`
       }
     }
-    code = topOfFunction + performanceMonitorInjectAtStart + variableDeclarations + code
+    code = topOfFunction + performanceMonitorInjectAtStart + variableDeclarations + code + popStack
+    code += endOfFunction
 
     if (name) { this.nako_func[name].fn = code }
 
