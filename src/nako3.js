@@ -7,6 +7,7 @@ const NakoLexer = require('./nako_lexer')
 const Prepare = require('./nako_prepare')
 const NakoGenSync = require('./nako_gen')
 const NakoIndent = require('./nako_indent')
+const NakoDncl = require('./nako_from_dncl')
 const PluginSystem = require('./plugin_system')
 const PluginMath = require('./plugin_math')
 const PluginPromise = require('./plugin_promise')
@@ -301,9 +302,11 @@ class NakoCompiler {
     }
     // インデント構文 (#596)
     const { code: code2, insertedLines, deletedLines } = NakoIndent.convert(code, filename)
+    // DNCL構文 (#1140)
+    const code3 = NakoDncl.convert(code2, filename)
 
     // 全角半角の統一処理
-    const preprocessed = this.prepare.convert(code2)
+    const preprocessed = this.prepare.convert(code3)
 
     const tokenizationSourceMapping = new SourceMappingOfTokenization(code2.length, preprocessed)
     const indentationSyntaxSourceMapping = new SourceMappingOfIndentSyntax(code2, insertedLines, deletedLines)

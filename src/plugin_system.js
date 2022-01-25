@@ -266,6 +266,22 @@ const PluginSystem = {
       return a % b
     }
   },
+  '二乗': { // @Aを二乗する // @にじょう
+    type: 'func',
+    josi: [['を'], ['で']],
+    pure: true,
+    fn: function (a) {
+      return a * a
+    }
+  },
+  'べき乗': { // @AのB乗を求める // @べきじょう
+    type: 'func',
+    josi: [['を'], ['で']],
+    pure: true,
+    fn: function (a, b) {
+      return Math.pow(a, b)
+    }
+  },
   '以上': { // @AがB以上か // @いじょう
     type: 'func',
     josi: [['が'], ['']],
@@ -471,7 +487,7 @@ const PluginSystem = {
   'ナデシコ': { // @なでしこのコードCODEを実行する // @なでしこする
     type: 'func',
     josi: [['を', 'で']],
-    pure: true,
+    pure: false,
     fn: function (code, sys) {
       if (sys.__genMode === '非同期モード') {
         throw new Error('非同期モードでは「ナデシコ」は利用できません。')
