@@ -4,7 +4,7 @@
 const { EXIT_CODE } = require('karma/lib/constants')
 const { question } = require('readline-sync')
 const { NakoIndentError } = require('./nako_errors')
-const DNCL_KEYWORDS = ['!DNCL', '!DNCLモード', '!センター試験モード']
+const DNCL_KEYWORDS = ['!センター試験モード', '!DNCLモード', '!DNCL']
 /**
  * DNCLのソースコードをなでしこに変換する
  * @param {String} src 
@@ -97,8 +97,8 @@ function convert(src, filename) {
             const var_name = rf[1]
             const n1 = rf[2]
             const n2 = rf[3]
-            const n3 = rf[4] // TODO: 対応準備
-            result += `${var_name}を、${n1}から${n2}まで繰り返す\n`
+            const n3 = rf[4]
+            result += `${var_name}を、${n1}から${n2}まで${n3}ずつ増やし繰り返す\n`
             src = src.substring(rf[0].length)
             continue
         }
@@ -109,7 +109,7 @@ function convert(src, filename) {
             const n1 = rf2[2]
             const n2 = rf2[3]
             const n3 = rf2[4] // TODO: 対応準備
-            result += `${var_name}を、${n1}から${n2}まで繰り返す\n`
+            result += `${var_name}を、${n1}から${n2}まで${n3}ずつ減らし繰り返す\n`
             src = src.substring(rf2[0].length)
             continue
         }
