@@ -1,8 +1,6 @@
 /**
  * DNCLに対応する構文
  */
-const { EXIT_CODE } = require('karma/lib/constants')
-const { question } = require('readline-sync')
 const { NakoIndentError } = require('./nako_errors')
 const DNCL_KEYWORDS = ['!センター試験モード', '!DNCLモード', '!DNCL']
 /**
@@ -37,7 +35,7 @@ function convert(src, filename) {
             let flag = false
             for (let k of DNCL_KEYWORDS) {
                 const ss = src.substring(0, k.length).replace('！','!')
-                if (ss == k) {
+                if (ss === k) {
                     src = src.substring(k.length)
                     flag = true
                     break

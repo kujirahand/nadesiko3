@@ -31,7 +31,6 @@ module.exports = {
     editor: [path.join(editorPath, 'edit_main.jsx')],
     version: [path.join(editorPath, 'version_main.jsx')]
   },
-
   output: {
     path: releasePath,
     filename: '[name].js'
@@ -72,7 +71,17 @@ module.exports = {
 
   resolve: {
     extensions: ['*', '.webpack.js', '.web.js', '.js', '.jsx'],
-    mainFields: ['browser', 'main', 'module']
+    mainFields: ['browser', 'main', 'module'],
+    fallback: {
+      "crypto": require.resolve('crypto-browserify'),
+      "buffer": require.resolve("buffer/"),
+      "os": require.resolve("os-browserify/browser"),
+      "path": require.resolve("path-browserify"),
+      "constants": require.resolve("constants-browserify"),
+      "stream": require.resolve("stream-browserify"),
+      "assert": false,
+      "util": require.resolve("util/")
+    }
   },
   optimization: {
     minimize: true,

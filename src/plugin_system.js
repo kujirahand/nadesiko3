@@ -268,7 +268,7 @@ const PluginSystem = {
   },
   '二乗': { // @Aを二乗する // @にじょう
     type: 'func',
-    josi: [['を'], ['で']],
+    josi: [['の', 'を']],
     pure: true,
     fn: function (a) {
       return a * a
@@ -276,7 +276,7 @@ const PluginSystem = {
   },
   'べき乗': { // @AのB乗を求める // @べきじょう
     type: 'func',
-    josi: [['を'], ['で']],
+    josi: [['の'], ['の']],
     pure: true,
     fn: function (a, b) {
       return Math.pow(a, b)
