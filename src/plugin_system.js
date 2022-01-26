@@ -98,6 +98,8 @@ const PluginSystem = {
         const dateStr = `${a[0]}-${a[1]}-${a[2]} ${z2(a[3])}:${z2(a[4])}:${z2(a[5])}`
         return new Date(dateStr)
       }
+      // 『継続表示』のための一時変数(『表示』実行で初期化)
+      sys.__printPool = ''
     }
   },
   '!クリア': {
@@ -182,8 +184,21 @@ const PluginSystem = {
     josi: [['を', 'と']],
     pure: true,
     fn: function (s, sys) {
+      // 継続表示の一時プールを出力
+      s = sys.__printPool + s
+      sys.__printPool = ''
+      // 
       sys.__varslist[0]['表示ログ'] += (s + '\n')
       sys.logger.send('stdout', s + '')
+    },
+    return_none: true
+  },
+  '継続表示': { // @Sを改行なしで表示 // @けいぞくひょうじ
+    type: 'func',
+    josi: [['を', 'と']],
+    pure: true,
+    fn: function (s, sys) {
+      sys.__printPool += s
     },
     return_none: true
   },

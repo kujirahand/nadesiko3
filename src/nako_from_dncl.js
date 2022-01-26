@@ -2,7 +2,9 @@
  * DNCLに対応する構文
  */
 const { NakoIndentError } = require('./nako_errors')
-const DNCL_KEYWORDS = ['!センター試験モード', '!DNCLモード', '!DNCL']
+const NakoPrepare = require('./nako_prepare')
+
+const DNCL_KEYWORDS = ['!DNCLモード']
 /**
  * DNCLのソースコードをなでしこに変換する
  * @param {String} src 
@@ -10,10 +12,41 @@ const DNCL_KEYWORDS = ['!センター試験モード', '!DNCLモード', '!DNCL'
  * @returns {String} converted soruce
  */
 function convert(src, filename) {
-    // 「!DNCLモード」を使うかチェック
-    if (!isIndentSyntaxEnabled(src)) { return src }
     // 改行を合わせる
     src = src.replace(/(\r\n|\r)/g, '\n')
+    // 「!DNCLモード」を使うかチェック
+    if (!isIndentSyntaxEnabled(src)) { return src }
+    let result = dncl2nako(src, filename)
+    console.log("=====\n" + result)
+    //process.exit()
+    return result
+}
+
+function isIndentSyntaxEnabled(src) {
+  // プログラム冒頭に「!DNCLモード」があればDNCL構文が有効
+  const keywords = DNCL_KEYWORDS
+  const lines = src.split('\n', 30)
+  for (const line of lines) {
+    const line2 = line.replace('！', '!')
+    if (keywords.indexOf(line2) >= 0) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * DNCLからなでしこに変換する(判定なし)
+ * @param {string} src
+ * @param {string} filename
+ * @returns {string} converted source
+ */
+function dncl2nako(src, filename) {
+    // 全角半角を統一
+    src = conv2half(src)
+    // ---------------------------------
+    // 置換開始
+    // ---------------------------------
     // 単純置換リスト
     const simple_conv_list = {
         'を実行する': 'ここまで',
@@ -23,29 +56,28 @@ function convert(src, filename) {
         'を実行し,そうでなければ': '違えば',
         'を実行し，そうでなければ': '違えば',
         'を実行し、そうでなければ': '違えば',
-        'を繰り返す': 'ここまで'
+        'を繰り返す': 'ここまで',
+        '改行なしで表示': '継続表示',
+        'のすべての値を0にする': '=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]',
+        'ずつ増やしながら':'ずつ増やし繰り返す',
+        'ずつ減らしながら':'ずつ減らし繰り返す',
+    }
+
+    // 変数名を取り出す
+    let read_var_name = () => {
+        // アルファベット漢字カタカナ
+        const r = src.match(/^[a-zA-Z_\u3040-\u30FF\u3400-\uFAFF][0-9a-zA-Z_\u3040-\u30FF\u3400-\uFAFF]*/)
+        if (!r) return ''
+        // 変数名部分を得る
+        let var_name = r[0]
+        src = src.substring(var_name.length)
+        return var_name
     }
 
     let result = ''
     while (src !='') {
         // 代入記号を変更
         const ch = src.charAt(0)
-        // !DNCLモードを空に置換
-        if (ch === '!') {
-            let flag = false
-            for (let k of DNCL_KEYWORDS) {
-                const ss = src.substring(0, k.length).replace('！','!')
-                if (ss === k) {
-                    src = src.substring(k.length)
-                    flag = true
-                    break
-                }
-            }
-            if (flag) { continue }
-            result += ch
-            src = src.substring(1)
-            continue
-        }
         // 空白を飛ばす
         if (ch === ' ' || ch === '　' || ch == '\t') {
             result += ch
@@ -60,21 +92,6 @@ function convert(src, filename) {
         } else {
             line = src
         }
-        // 代入記号とカンマ「,」があれば「;」に置き換える
-        const rl = line.match(/^\,\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*←/)
-        if (rl) {
-            const var_name = rl[1]
-            const ma = rl[0]
-            result += `; ${var_name}=`
-            src = src.substring(ma.length)
-            continue
-        }
-        // その他の代入記号を変更
-        if (ch === '←') {
-            result += '='
-            src = src.substring(1)
-            continue
-        }
         //「var を n 増やす」を「var = var + 1」と置き換える
         const r = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*を\s*([0-9a-zA-Z_]+)\s*(増やす|減らす)/)
         if (r) {
@@ -87,28 +104,6 @@ function convert(src, filename) {
                 result += `${var_name} = ${var_name} - ${inc_val};`
             }
             src = src.substring(r[0].length)
-            continue
-        }
-        //「varをn1からn2までn3ずつ増やしながら」を「(...)の間」と置き換える
-        const rf = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*を([0-9a-zA-Z_]+?)\s*から\s*([0-9a-zA-Z_]+?)\s*まで\s*([0-9a-zA-Z_]+?)\s*ずつ増やしながら/)
-        if (rf) {
-            const var_name = rf[1]
-            const n1 = rf[2]
-            const n2 = rf[3]
-            const n3 = rf[4]
-            result += `${var_name}を、${n1}から${n2}まで${n3}ずつ増やし繰り返す\n`
-            src = src.substring(rf[0].length)
-            continue
-        }
-        //「varをn1からn2までn3ずつ減らしながら」を「(...)の間」と置き換える
-        const rf2 = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*を([0-9a-zA-Z_]+?)\s*から\s*([0-9a-zA-Z_]+?)\s*まで\s*([0-9a-zA-Z_]+?)\s*ずつ減らしながら/)
-        if (rf2) {
-            const var_name = rf2[1]
-            const n1 = rf2[2]
-            const n2 = rf2[3]
-            const n3 = rf2[4] // TODO: 対応準備
-            result += `${var_name}を、${n1}から${n2}まで${n3}ずつ減らし繰り返す\n`
-            src = src.substring(rf2[0].length)
             continue
         }
         //「S1とS2とS3を表示する」を「(S1)&(S2)&S3)を表示」と置き換える
@@ -153,6 +148,15 @@ function convert(src, filename) {
                 continue
             }
         }
+        // 『もしj>hakosuならばhakosu←jを実行する』のような単文のもし文
+        const rif = line.match(/^もし(.+)を実行する(。|．)*/)
+        if (rif) {
+            const sent = dncl2nako(rif[1], filename)
+            result += `もし、${sent};`
+            src = src.substring(rif[0].length)
+            continue
+        }        
+        // 一覧から単純な変換
         {
             let flag = false
             for (let key in simple_conv_list) {
@@ -171,23 +175,55 @@ function convert(src, filename) {
         src = src.substring(1)
         result += ch
     }
-    // console.log("=====\n" + result)
-    // process.exit()
     return result
 }
 
-function isIndentSyntaxEnabled(src) {
-  // プログラム冒頭に「!DNCLモード」があればDNCL構文が有効
-  const keywords = DNCL_KEYWORDS
-  const lines = src.split('\n', 30)
-  for (const line of lines) {
-    const line2 = line.replace('！', '!')
-    if (keywords.indexOf(line2) >= 0) {
-      return true
+/**
+ * 半角に変換
+ * @param {String} src
+ * @returns {string} converted source
+ */
+function conv2half(src) {
+    const prepare = new NakoPrepare() // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
+    // 全角半角の統一
+    let result = ''
+    let flagStr = false
+    let flagStrClose = ''
+    for (let i = 0; i < src.length; i++) {
+        let c = src.charAt(i)
+        let cHalf = prepare.convert1ch(c)
+        if (flagStr) {
+            if (cHalf === flagStrClose) {
+                flagStr = false
+                flagStrClose = ''
+                result += cHalf
+                continue
+            }
+            result += c
+            continue
+        }
+        if (cHalf === '「') {
+            flagStr = true
+            flagStrClose = '」'
+            result += cHalf
+            continue
+        }
+        if (cHalf === '"') {
+            flagStr = true
+            flagStrClose = '"'
+            result += cHalf
+            continue
+        }
+        // 単純な置き換えはここでやってしまう
+        // 配列記号の { ... } を [ ... ] に置換
+        if (cHalf === '{') { cHalf = '[' }
+        if (cHalf === '}') { cHalf = ']' }
+        if (cHalf === '←') { cHalf = '=' }
+        result += cHalf
     }
-  }
-  return false
+    return result
 }
+
 
 module.exports = {
     convert,

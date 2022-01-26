@@ -21,6 +21,8 @@ class NakoParserBase {
     /** @type {import('./nako3').Ast[]} */
     this.y = []
     this.genMode = 'sync' // #637
+    this.arrayIndexFrom = 0  // #1140
+    this.flagReverseArrayIndex = false // #1140
     /** @type Object[] */
     this.recentlyCalledFunc = [] // 最近呼び出した関数(余剰エラーの報告に使う)
   }
