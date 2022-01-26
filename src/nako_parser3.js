@@ -662,7 +662,7 @@ class NakoParser extends NakoParserBase {
     if (!this.check('回')) { return null }
     this.get() // skip '回'
     if (this.check('comma')) { this.get() } // skip comma
-    if (this.check('繰り返す')) { this.get() } // skip 'N回、繰り返す' (#924)
+    if (this.check('繰返')) { this.get() } // skip 'N回、繰り返す' (#924)
     let num = this.popStack([])
     let multiline = false
     let block = null
@@ -698,7 +698,7 @@ class NakoParser extends NakoParserBase {
     if (!this.check('間')) { return null }
     this.get() // skip '間'
     while (this.check('comma')) { this.get() } // skip ','
-    if (this.check('繰り返す')) { this.get() } // skip '繰り返す' #927
+    if (this.check('繰返')) { this.get() } // skip '繰り返す' #927
     const cond = this.popStack([])
     if (cond === null) {
       throw NakoSyntaxError.fromNode('『間』で条件がありません。', cond)
@@ -723,8 +723,24 @@ class NakoParser extends NakoParserBase {
   /** @returns {Ast | null} */
   yFor () {
     const map = this.peekSourceMap()
-    if (!this.check('繰り返す')) { return null }
-    const kurikaesu = this.get()
+    if (this.check('繰返') || this.check('増繰返') || this.check('減繰返')) { 
+      // pass
+    } else {
+      return null
+    }
+    const kurikaesu = this.get() // skip 繰り返す
+    // スタックに(増や|減ら)してがある？
+    const incdec = this.stack.pop()
+    if (incdec.type == 'word' && (incdec.value === '増' || incdec.value === '減')) {
+      kurikaesu.type = incdec.value + kurikaesu.type
+      // ↑ typeを増繰返 | 減繰返 に変換 
+    } else {
+      this.stack.push(incdec) // 違ったので改めて追加
+    }
+    let vInc = null
+    if (kurikaesu.type === '増繰返' || kurikaesu.type === '減繰返') {
+      vInc = this.popStack(['ずつ'])
+    }
     const vTo = this.popStack(['まで'])
     const vFrom = this.popStack(['から'])
     const word = this.popStack(['を', 'で'])
@@ -754,6 +770,7 @@ class NakoParser extends NakoParserBase {
       type: 'for',
       from: vFrom,
       to: vTo,
+      inc: vInc,
       word,
       block,
       josi: '',
@@ -955,7 +972,7 @@ class NakoParser extends NakoParserBase {
       if (this.check('ここから')) { this.get() }
       if (this.check('回')) { return this.yRepeatTime() }
       if (this.check('間')) { return this.yWhile() }
-      if (this.check('繰り返す')) { return this.yFor() }
+      if (this.check('繰返') || this.check('増繰返') || this.check('減繰返')) { return this.yFor() }
       if (this.check('反復')) { return this.yForEach() }
       if (this.check('条件分岐')) { return this.ySwitch() }
       // 戻す

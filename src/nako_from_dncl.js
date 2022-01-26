@@ -12,9 +12,10 @@ const DNCL_KEYWORDS = ['!DNCL', '!DNCLモード', '!センター試験モード'
  * @returns {String} converted soruce
  */
 function convert(src, filename) {
-    src = src.replace(/(\rn|\r)/g, '\n')
     // 「!DNCLモード」を使うかチェック
     if (!isIndentSyntaxEnabled(src)) { return src }
+    // 改行を合わせる
+    src = src.replace(/(\r\n|\r)/g, '\n')
     // 単純置換リスト
     const simple_conv_list = {
         'を実行する': 'ここまで',

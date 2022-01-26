@@ -887,6 +887,8 @@ try {
     // ループ条件を確認
     const kara = this._convGen(node.from, true)
     const made = this._convGen(node.to, true)
+    let inc = this._convGen(node.inc, true)
+    if (inc == null || inc == undefined || inc == 'null') { inc = 1 }
     // ループ内のブロック内容を得る
     const block = this.convGenLoop(node.block)
     // ループ条件を変数に入れる用
@@ -901,12 +903,12 @@ try {
       `const ${varFrom} = ${kara};\n` +
       `const ${varTo} = ${made};\n` +
       `if (${varFrom} <= ${varTo}) { // up\n` +
-      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}++) {\n` +
+      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}+= ${inc}) {\n` +
       `    ${sorePrefex}${word} = ${varI};\n` +
       `    ${block}\n` +
       '  };\n' +
       '} else { // down\n' +
-      `  for (let ${varI} = ${varFrom}; ${varI} >= ${varTo}; ${varI}--) {\n` +
+      `  for (let ${varI} = ${varFrom}; ${varI} >= ${varTo}; ${varI}-= ${inc}) {\n` +
       `    ${sorePrefex}${word} = ${varI};` + '\n' +
       `    ${block}\n` +
       '  };\n' +
