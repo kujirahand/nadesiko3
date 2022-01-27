@@ -17,8 +17,8 @@ function convert(src, filename) {
     // 「!DNCLモード」を使うかチェック
     if (!isIndentSyntaxEnabled(src)) { return src }
     let result = dncl2nako(src, filename)
-    console.log("=====\n" + result)
-    //process.exit()
+    // console.log("=====\n" + result)
+    // process.exit()
     return result
 }
 
