@@ -36,6 +36,18 @@ function isIndentSyntaxEnabled(src) {
 }
 
 /**
+ * make space string
+ * @param {number} n 
+ */
+function make_spaces(n) {
+    let s = ''
+    for (let i = 0; i < n; i++) {
+        s += ' '
+    }
+    return s
+}
+
+/**
  * DNCLからなでしこに変換する(判定なし)
  * @param {string} src
  * @param {string} filename
@@ -44,6 +56,14 @@ function isIndentSyntaxEnabled(src) {
 function dncl2nako(src, filename) {
     // 全角半角を統一
     src = conv2half(src)
+    // 行頭の「|」はインデントを表す記号
+    const a = src.split('\n')
+    for (let i = 0; i < a.length; i++) {
+        a[i] = a[i].replace(/^(\s*[|\s]+)(.*$)/, (m0, m1, m2) => {
+            return make_spaces(m1.length) + m2
+        })
+    }
+    src = a.join('\n')
     // ---------------------------------
     // 置換開始
     // ---------------------------------
@@ -61,17 +81,6 @@ function dncl2nako(src, filename) {
         'のすべての値を0にする': '=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]',
         'ずつ増やしながら':'ずつ増やし繰り返す',
         'ずつ減らしながら':'ずつ減らし繰り返す',
-    }
-
-    // 変数名を取り出す
-    let read_var_name = () => {
-        // アルファベット漢字カタカナ
-        const r = src.match(/^[a-zA-Z_\u3040-\u30FF\u3400-\uFAFF][0-9a-zA-Z_\u3040-\u30FF\u3400-\uFAFF]*/)
-        if (!r) return ''
-        // 変数名部分を得る
-        let var_name = r[0]
-        src = src.substring(var_name.length)
-        return var_name
     }
 
     let result = ''
