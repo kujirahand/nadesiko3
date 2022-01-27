@@ -17,7 +17,7 @@ function convert(src, filename) {
     // 「!DNCLモード」を使うかチェック
     if (!isIndentSyntaxEnabled(src)) { return src }
     let result = dncl2nako(src, filename)
-    // console.log("=====\n" + result)
+    console.log("=====\n" + result)
     // process.exit()
     return result
 }
@@ -118,18 +118,30 @@ function dncl2nako(src, filename) {
         //「S1とS2とS3を表示する」を「(S1)&(S2)&S3)を表示」と置き換える
         // あまりスマートではないが手抜きで
         if (line.indexOf('表示') >= 0) {
-            const r5 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)と(.+?)を表示/)
+            const r6 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)と(.+?)と(.+?)(を|と)表示/)
+            if (r6) {
+                const s1 = r6[1]
+                const s2 = r6[2]
+                const s3 = r6[3]
+                const s4 = r6[4]
+                const s5 = r6[5]
+                const s6 = r6[6]
+                result += `(${s1})&(${s2})&(${s3})&(${s4})&(${s5})&(${s6})を表示`
+                src = src.substring(r6[0].length)
+                continue
+            }
+            const r5 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)と(.+?)(を|と)表示/)
             if (r5) {
                 const s1 = r5[1]
                 const s2 = r5[2]
                 const s3 = r5[3]
                 const s4 = r5[4]
-                const s5 = r5[4]
+                const s5 = r5[5]
                 result += `(${s1})&(${s2})&(${s3})&(${s4})&(${s5})を表示`
                 src = src.substring(r5[0].length)
                 continue
             }
-            const r4 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)を表示/)
+            const r4 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)(を|と)表示/)
             if (r4) {
                 const s1 = r4[1]
                 const s2 = r4[2]
@@ -139,7 +151,7 @@ function dncl2nako(src, filename) {
                 src = src.substring(r4[0].length)
                 continue
             }
-            const r3 = line.match(/^(.+?)と(.+?)と(.+?)を表示/)
+            const r3 = line.match(/^(.+?)と(.+?)と(.+?)(を|と)表示/)
             if (r3) {
                 const s1 = r3[1]
                 const s2 = r3[2]
