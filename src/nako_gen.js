@@ -851,14 +851,28 @@ try {
   convLetArray (node) {
     const name = this._convGen(node.name, true)
     const list = node.index
+    let codeInit = ''
     let code = name
+    let codeArray = ''
+    // codeInit?
+    if (node.checkInit) {
+      codeInit += `\n/*配列初期化*/if (typeof(${name}) !== 'object') { ${name} = [] }; `
+      for (let i = 0; i < list.length; i++) {
+        const idx = this._convGen(list[i], true)
+        codeArray += `[${idx}]`
+        codeInit += `if (typeof(${name}${codeArray}) !== 'object') { ${name}${codeArray} = [] }; `
+      }
+      codeInit += '\n'
+    }
+    // array
     for (let i = 0; i < list.length; i++) {
       const idx = this._convGen(list[i], true)
       code += '[' + idx + ']'
     }
     const value = this._convGen(node.value, true)
     code += ' = ' + value + ';\n'
-    return this.convLineno(node, false) + code
+    // generate code
+    return this.convLineno(node, false) + codeInit + code
   }
 
   convGenLoop (node) {

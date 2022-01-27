@@ -84,6 +84,7 @@ function NakoGen (mode) {
  *     column?: number
  *   }
  *   genMode?: string
+ *   checkInit?: boolean
  * }} Ast
  *
  * @typedef {(

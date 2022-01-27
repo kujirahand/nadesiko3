@@ -157,8 +157,12 @@ class NakoParser extends NakoParserBase {
   /** @returns {Ast} */
   yDNCLMode () {
     const map = this.peekSourceMap()
+    // 配列インデックスは1から
     this.arrayIndexFrom = 1
+    // 配列アクセスをJSと逆順で指定する
     this.flagReverseArrayIndex = true
+    // 配列代入時自動で初期化チェックする
+    this.flagCheckArrayInit = true
     return { type: 'eol', ...map, end: this.peekSourceMap() }
   }
 
@@ -956,7 +960,7 @@ class NakoParser extends NakoParserBase {
 
         switch (word.type) {
           case '配列参照': // 配列への代入
-            return { type: 'let_array', name: word.name, index: word.index, value: value, josi: '', ...map, end: this.peekSourceMap() }
+            return { type: 'let_array', name: word.name, index: word.index, value: value, josi: '', checkInit: this.flagCheckArrayInit, ...map, end: this.peekSourceMap() }
           default:
             return { type: 'let', name: word, value: value, josi: '', ...map, end: this.peekSourceMap() }
         }
@@ -1218,12 +1222,18 @@ class NakoParser extends NakoParserBase {
     if (this.check2(['word', '@'])) {
       const la = this.yLetArrayAt(map)
       if (this.check('comma')) { this.get() } // skip comma (ex) name1=val1, name2=val2
-      if (la) { return la }
+      if (la) { 
+        la.checkInit = this.flagCheckArrayInit
+        return la
+      }
     }
     if (this.check2(['word', '['])) {
       const lb = this.yLetArrayBracket(map)
       if (this.check('comma')) { this.get() } // skip comma (ex) name1=val1, name2=val2
-      if (lb) { return lb }
+      if (lb) {
+        lb.checkInit = this.flagCheckArrayInit
+        return lb
+      }
     }
 
     // ローカル変数定義
@@ -1393,7 +1403,7 @@ class NakoParser extends NakoParserBase {
   /**
    * 配列のインデックスを逆順にするのを考慮するか
    * @param {Array<Ast> | null} ary 
-   * @returns {Array}
+   * @returns {Array<Ast>}
    */
    checkArrayReverse (ary) {
     if (!this.flagReverseArrayIndex) { return ary }
