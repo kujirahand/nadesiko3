@@ -856,11 +856,13 @@ try {
     let codeArray = ''
     // codeInit?
     if (node.checkInit) {
-      codeInit += `\n/*配列初期化*/if (typeof(${name}) !== 'object') { ${name} = [] }; `
-      for (let i = 0; i < list.length; i++) {
+      const arrayDefCode = '[0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0]'
+      codeInit += `\n/*配列初期化*/if (!(${name} instanceof Array)) { ${name} = ${arrayDefCode}; console.log('初期化:${name}') };`
+      for (let i = 0; i < list.length - 1; i++) {
         const idx = this._convGen(list[i], true)
         codeArray += `[${idx}]`
-        codeInit += `if (typeof(${name}${codeArray}) !== 'object') { ${name}${codeArray} = [] }; `
+        codeInit += `\n/*配列初期化${i}*/if (!(${name}${codeArray} instanceof Array)) { ${name}${codeArray} = ${arrayDefCode}; };`
+        // codeInit += `\n/*配列初期化${i}*/if (!(${name}${codeArray} instanceof Array)) { ${name}${codeArray} = ${arrayDefCode}; console.log('初期化:${i}:${name}${codeArray}',JSON.stringify(${name})) }; `
       }
       codeInit += '\n'
     }
@@ -872,7 +874,8 @@ try {
     const value = this._convGen(node.value, true)
     code += ' = ' + value + ';\n'
     // generate code
-    return this.convLineno(node, false) + codeInit + code
+    const src = this.convLineno(node, false) + codeInit + code
+    return src
   }
 
   convGenLoop (node) {
