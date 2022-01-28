@@ -476,6 +476,9 @@ try {
       case 'let':
         code += this.convLet(node)
         break
+      case 'inc':
+        code += this.convInc(node)
+        break
       case 'word':
       case 'variable':
         code += this.convGetVar(node)
@@ -1374,6 +1377,24 @@ try {
     if (OP_TBL[op]) { op = OP_TBL[op] }
     //
     return `(${left} ${op} ${right})`
+  }
+
+  convInc (node) {
+    // もし値が省略されていたら、変数「それ」に代入する
+    let value = null
+    if (this.speedMode.invalidSore === 0) { value = this.varname('それ') }
+    if (node.value) { value = this._convGen(node.value, true) }
+    if (value == null) {
+      throw NakoSyntaxError.fromNode('加算する先の変数名がありません。', node)
+    }
+    // 変数名
+    const name = node.name.value
+    const res = this.findVar(name)
+    let code = ''
+    if (res === null) { this.varsSet.names.add(name) }
+    code += `if (typeof(${this.varname(name)}) === 'undefined') { ${this.varname(name)} = 0; }`
+    code += `${this.varname(name)} += ${value}`
+    return ';' + this.convLineno(node, false) + code + '\n'
   }
 
   convLet (node) {
