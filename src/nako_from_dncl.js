@@ -77,20 +77,65 @@ function dncl2nako(src, filename) {
         'を実行し，そうでなければ': '違えば',
         'を実行し、そうでなければ': '違えば',
         'を繰り返す': 'ここまで',
-        '改行なしで表示': '継続表示',
+        '改行なしで表示': '連続無改行表示',
         'のすべての値を0にする': '=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]',
         'ずつ増やしながら':'ずつ増やし繰り返す',
         'ずつ減らしながら':'ずつ減らし繰り返す',
     }
-
+    let peekChar = () => src.charAt(0)
+    let nextChar = () => {
+        let ch = src.charAt(0)
+        src = src.substring(1)
+        return ch
+    }
+    // 文字列を判定するフラグ
+    let flagStr = false
+    let poolStr = ''
+    let endStr = ''
+    // 結果
     let result = ''
     while (src !='') {
         // 代入記号を変更
         const ch = src.charAt(0)
+        if (flagStr) {
+            if (ch === endStr) {
+                result += poolStr + endStr
+                poolStr = ''
+                flagStr = false
+                nextChar()
+                continue
+            }
+            poolStr += nextChar()
+            continue
+        }
+        // 文字列？
+        if (ch == '"') {
+            flagStr = true
+            endStr = '"'
+            poolStr = nextChar()
+            continue
+        }
+        if (ch == '「') {
+            flagStr = true
+            endStr = '」'
+            poolStr = nextChar()
+            continue
+        }
+        if (ch == '『') {
+            flagStr = true
+            endStr = '』'
+            poolStr = nextChar()
+            continue
+        }
         // 空白を飛ばす
         if (ch === ' ' || ch === '　' || ch == '\t') {
-            result += ch
-            src = src.substring(1)
+            result += nextChar()
+            continue
+        }
+        // 表示を連続表示に置き換える
+        if (src.substring(0, 3) === 'を表示') {
+            result += 'を連続表示'
+            src = src.substring(3)
             continue
         }
         // 1行先読み
@@ -100,74 +145,6 @@ function dncl2nako(src, filename) {
             line = src.substring(0, i)
         } else {
             line = src
-        }
-        //「var を n 増やす」を「var = var + 1」と置き換える
-        const r = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*を\s*([0-9a-zA-Z_]+)\s*(増やす|減らす)/)
-        if (r) {
-            const var_name = r[1]
-            const inc_val = r[2]
-            const inc_dec = r[3]
-            if (inc_dec == '増やす') {
-                result += `${var_name} = ${var_name} + ${inc_val};`
-            } else {
-                result += `${var_name} = ${var_name} - ${inc_val};`
-            }
-            src = src.substring(r[0].length)
-            continue
-        }
-        //「S1とS2とS3を表示する」を「(S1)&(S2)&S3)を表示」と置き換える
-        // あまりスマートではないが手抜きで
-        if (line.indexOf('表示') >= 0) {
-            const r6 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)と(.+?)と(.+?)(を|と)表示/)
-            if (r6) {
-                const s1 = r6[1]
-                const s2 = r6[2]
-                const s3 = r6[3]
-                const s4 = r6[4]
-                const s5 = r6[5]
-                const s6 = r6[6]
-                result += `(${s1})&(${s2})&(${s3})&(${s4})&(${s5})&(${s6})を表示`
-                src = src.substring(r6[0].length)
-                continue
-            }
-            const r5 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)と(.+?)(を|と)表示/)
-            if (r5) {
-                const s1 = r5[1]
-                const s2 = r5[2]
-                const s3 = r5[3]
-                const s4 = r5[4]
-                const s5 = r5[5]
-                result += `(${s1})&(${s2})&(${s3})&(${s4})&(${s5})を表示`
-                src = src.substring(r5[0].length)
-                continue
-            }
-            const r4 = line.match(/^(.+?)と(.+?)と(.+?)と(.+?)(を|と)表示/)
-            if (r4) {
-                const s1 = r4[1]
-                const s2 = r4[2]
-                const s3 = r4[3]
-                const s4 = r4[4]
-                result += `(${s1})&(${s2})&(${s3})&(${s4})を表示`
-                src = src.substring(r4[0].length)
-                continue
-            }
-            const r3 = line.match(/^(.+?)と(.+?)と(.+?)(を|と)表示/)
-            if (r3) {
-                const s1 = r3[1]
-                const s2 = r3[2]
-                const s3 = r3[3]
-                result += `(${s1})&(${s2})&(${s3})を表示`
-                src = src.substring(r3[0].length)
-                continue
-            }
-            const r2 = line.match(/^(.+?)と(.+?)を表示/)
-            if (r2) {
-                const s1 = r2[1]
-                const s2 = r2[2]
-                result += `(${s1})&(${s2})を表示`
-                src = src.substring(r2[0].length)
-                continue
-            }
         }
         // 『もしj>hakosuならばhakosu←jを実行する』のような単文のもし文
         const rif = line.match(/^もし(.+)を実行する(。|．)*/)
@@ -193,8 +170,7 @@ function dncl2nako(src, filename) {
         }
 
         // 1文字削る
-        src = src.substring(1)
-        result += ch
+        result += nextChar()
     }
     return result
 }

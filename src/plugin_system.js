@@ -202,6 +202,30 @@ const PluginSystem = {
     },
     return_none: true
   },
+  '連続表示': { // @引数に指定した引数を全て表示する // @れんぞく表示
+    type: 'func',
+    josi: [['と', 'を']],
+    isVariableJosi: true,
+    pure: true,
+    fn: function (...a) {
+      const sys = a.pop()
+      const v = a.join('')
+      sys.__exec('表示', [v, sys])
+    },
+    return_none: true
+  },
+  '連続無改行表示': { // @引数に指定した引数を全て表示する（改行しない) // @れんぞくむかいぎょうひょうじ
+    type: 'func',
+    josi: [['と', 'を']],
+    isVariableJosi: true,
+    pure: true,
+    fn: function (...a) {
+      const sys = a.pop()
+      const v = a.join('')
+      sys.__exec('継続表示', [v, sys])
+    },
+    return_none: true
+  },
   '表示ログ': { type: 'const', value: '' }, // @ひょうじろぐ
   '表示ログクリア': { // @表示ログを空にする // @ひょうじろぐくりあ
     type: 'func',
