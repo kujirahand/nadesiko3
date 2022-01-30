@@ -220,6 +220,14 @@ const PluginMath = {
       return Math.floor(Math.random() * a)
     }
   },
+  '乱数範囲': { // @AからBまでの範囲の乱数を返す // @らんすうはんい
+    type: 'func',
+    josi: [['から'],['までの','の']],
+    pure: true,
+    fn: function (a, b) {
+      return (Math.floor(Math.random() * (b - a + 1)) + a)
+    }
+  },
   'SQRT': { // @Aの平方根を返す // @SQRT
     type: 'func',
     josi: [['の']],

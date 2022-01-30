@@ -138,6 +138,17 @@ function dncl2nako(src, filename) {
             src = src.substring(3)
             continue
         }
+        if (src.substring(0, 4) === 'を 表示') {
+            result += 'を連続表示'
+            src = src.substring(4)
+            continue
+        }
+        // 乱数を乱数範囲に置き換える
+        if (src.substring(0, 2) === '乱数' && src.substring(0, 4) !== '乱数範囲') {
+            result += '乱数範囲'
+            src = src.substring(2)
+            continue
+        }
         // 1行先読み
         let line = ''
         const i = src.indexOf('\n')
