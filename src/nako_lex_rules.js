@@ -154,7 +154,7 @@ function cbWordParser (src, isTrimOkurigana = true) {
       // 助詞の判定
       const j = josiRE.exec(src)
       if (j) {
-        josi = j[0]
+        josi = j[0].replace(/^\s+/, '')
         src = src.substr(j[0].length)
         // 助詞の直後にある「,」を飛ばす #877
         if (src.charAt(0) === ',') { src = src.substr(1) }
@@ -229,7 +229,7 @@ function cbString (beginTag, closeTag, src) {
   // 文字列直後の助詞を取得
   const j = josiRE.exec(src)
   if (j) {
-    josi = j[0]
+    josi = j[0].replace(/^\s+/, '')
     src = src.substr(j[0].length)
     // 助詞の後のカンマ #877
     if (src.charAt(0) === ',') { src = src.substr(1) }
