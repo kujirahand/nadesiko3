@@ -305,6 +305,22 @@ const PluginSystem = {
       return a % b
     }
   },
+  '偶数': { // @Aが偶数なら真を返す // @ぐうすう
+    type: 'func',
+    josi: [['が']],
+    pure: true,
+    fn: function (a) {
+      return (a % 2 == 0)
+    }
+  },
+  '奇数': { // @Aが奇数なら真を返す // @きすう
+    type: 'func',
+    josi: [['が']],
+    pure: true,
+    fn: function (a, b) {
+      return (a % 2 == 1)
+    }
+  },
   '二乗': { // @Aを二乗する // @にじょう
     type: 'func',
     josi: [['の', 'を']],
@@ -706,6 +722,15 @@ const PluginSystem = {
     pure: true,
     fn: function (v) {
       return parseInt(v).toString(2)
+    }
+  },
+  '二進表示': { // @値Vを2進数に変換して表示 // @にしんひょうじ
+    type: 'func',
+    josi: [['を', 'の', 'から']],
+    pure: true,
+    fn: function (v, sys) {
+        const s = parseInt(v).toString(2)
+        sys.__exec('表示', [s, sys])
     }
   },
   'RGB': { // @HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255 // @RGB
