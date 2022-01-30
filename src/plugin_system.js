@@ -704,7 +704,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function (v, n) {
+    fn: function (v) {
       return parseInt(v).toString(2)
     }
   },
