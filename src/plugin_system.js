@@ -700,6 +700,14 @@ const PluginSystem = {
       return parseInt(v).toString(n)
     }
   },
+  '二進': { // @値Vを2進数に変換 // @にしん
+    type: 'func',
+    josi: [['を', 'の', 'から']],
+    pure: true,
+    fn: function (v, n) {
+      return parseInt(v).toString(2)
+    }
+  },
   'RGB': { // @HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255 // @RGB
     type: 'func',
     josi: [['と'], ['の'], ['で']],
