@@ -1,8 +1,8 @@
 // なでしこバージョン
 const nakoVersion = {
-  version: '3.2.38',
+  version: '3.2.39',
   major: 3,
   minor: 2,
-  patch: 38
+  patch: 39
 }
 module.exports = nakoVersion

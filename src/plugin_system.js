@@ -317,7 +317,7 @@ const PluginSystem = {
     type: 'func',
     josi: [['が']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a) {
       return (a % 2 == 1)
     }
   },
