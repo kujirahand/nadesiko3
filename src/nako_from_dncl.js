@@ -56,12 +56,22 @@ function make_spaces(n) {
 function dncl2nako(src, filename) {
     // 全角半角を統一
     src = conv2half(src)
-    // 行頭の「|」はインデントを表す記号
+    // 行頭の「|」はインデントを表す記号なので無視する
+    // 後判定の「繰り返し,」を「後判定で繰り返す」に置換する
     const a = src.split('\n')
     for (let i = 0; i < a.length; i++) {
-        a[i] = a[i].replace(/^(\s*[|\s]+)(.*$)/, (m0, m1, m2) => {
+        const line = a[i]
+        a[i] = line.replace(/^(\s*[|\s]+)(.*$)/, (m0, m1, m2) => {
             return make_spaces(m1.length) + m2
         })
+        const line2 = line.replace(/^\s+/, '').replace(/\s+$/, '')
+        if (line2 === '繰り返し,' || line2 === '繰り返し') {
+            a[i] = '後判定で繰り返し'
+        }
+        const r = line.match(/^\s*を,?(.+)になるまで繰り返す/)
+        if (r) {
+            a[i] = `ここまで、(${r[1]})になるまでの間`
+        }
     }
     src = a.join('\n')
     // ---------------------------------
@@ -155,7 +165,10 @@ function dncl2nako(src, filename) {
         }
         // 増やす・減らすの前に「だけ」を追加する #1149
         if (ch3 === '増やす' || ch3 === '減らす') {
-            result += 'だけ' + ch3
+            if (result.substring(result.length - 2) !== 'だけ') {
+                result += 'だけ'
+            }
+            result += ch3
             src = src.substring(3)
         }
         // 1行先読み

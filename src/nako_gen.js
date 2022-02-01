@@ -522,6 +522,9 @@ try {
       case 'while':
         code += this.convWhile(node)
         break
+      case 'atohantei':
+        code += this.convAtohantei(node)
+        break
       case 'switch':
         code += this.convSwitch(node)
         break
@@ -1043,6 +1046,20 @@ try {
       `while (${cond})` + '{\n' +
       `  ${block}` + '\n' +
       '}\n'
+    return this.convLineno(node, false) + code
+  }
+
+  convAtohantei (node) {
+    const id = this.loop_id++
+    const varId = `$nako_i${id}`
+    const cond = this._convGen(node.cond, true)
+    const block = this.convGenLoop(node.block)
+    const code =
+      `for(;;) {\n` +
+      `  ${block}\n` +
+      `  let ${varId} = ${cond};\n` +
+      `  if (${varId}) { continue } else { break }\n` +
+      '}\n\n'
     return this.convLineno(node, false) + code
   }
 

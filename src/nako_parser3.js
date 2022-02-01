@@ -100,6 +100,7 @@ class NakoParser extends NakoParserBase {
     // 最初の語句が決まっている構文
     if (this.check('eol')) { return this.yEOL() }
     if (this.check('もし')) { return this.yIF() }
+    if (this.check('後判定')) { return this.yAtohantei() }
     if (this.check('エラー監視')) { return this.yTryExcept() }
     if (this.check('逐次実行')) { return this.yTikuji() }
     if (this.accept(['抜ける'])) { return { type: 'break', josi: '', ...map, end: this.peekSourceMap() } }
@@ -277,12 +278,13 @@ class NakoParser extends NakoParserBase {
     let a = this.yGetArg()
     if (!a) { return null }
     // console.log('yIFCond=', a, this.peek())
+    
     // チェック : AがBならば
     if (a.josi === 'が') {
       const tmpI = this.index
       const b = this.yGetArg()
       const naraba = this.get()
-      if (b && b.type !== 'func' && naraba && naraba.type === 'ならば') {
+      if ((b && b.type !== 'func') && (naraba && naraba.type === 'ならば')) {
         return {
           type: 'op',
           operator: (naraba.value === 'でなければ') ? 'noteq' : 'eq',
@@ -730,6 +732,42 @@ class NakoParser extends NakoParserBase {
   }
 
   /** @returns {Ast | null} */
+  yAtohantei () {
+    const map = this.peekSourceMap()
+    if (this.check('後判定')) { this.get() } // skip 後判定
+    if (this.check('繰返')) { this.get() } // skip 繰り返す
+    if (this.check('ここから')) { this.get() }
+    const block = this.yBlock()
+    if (this.check('ここまで')) { this.get() }
+    if (this.check('comma')) { this.get() }
+    let cond = this.yGetArg() // 条件
+    let bUntil = false
+    const t = this.peek()
+    if (t && t.value === 'なる' && (t.josi === 'まで' || t.josi === 'までの')) {
+      this.get() // skip なるまで
+      bUntil = true
+    }
+    if (this.check('間')) { this.get() } // skip 間
+    if (bUntil) { // 条件を反転する
+      cond = {
+        type: 'not',
+        value: cond,
+        josi: '',
+        ...map,
+        end: this.peekSourceMap()
+      }
+    }
+    return {
+      type: 'atohantei',
+      cond,
+      block,
+      josi: '',
+      ...map,
+      end: this.peekSourceMap()
+    }
+  }
+  
+  /** @returns {Ast | null} */
   yFor () {
     const map = this.peekSourceMap()
     if (this.check('繰返') || this.check('増繰返') || this.check('減繰返')) { 
@@ -743,7 +781,9 @@ class NakoParser extends NakoParserBase {
     if (incdec.type == 'word' && (incdec.value === '増' || incdec.value === '減')) {
       kurikaesu.type = incdec.value + kurikaesu.type
       // ↑ typeを増繰返 | 減繰返 に変換 
-    } else {
+    }
+    // 普通の繰り返しの場合
+    else {
       this.stack.push(incdec) // 違ったので改めて追加
     }
     let vInc = null
