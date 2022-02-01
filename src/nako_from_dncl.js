@@ -68,9 +68,27 @@ function dncl2nako(src, filename) {
         if (line2 === '繰り返し,' || line2 === '繰り返し') {
             a[i] = '後判定で繰り返し'
         }
-        const r = line.match(/^\s*を,?(.+)になるまで繰り返す/)
+        const r = line.match(/^\s*を,?(.+)になるまで(繰り返す|実行する)/)
         if (r) {
             a[i] = `ここまで、(${r[1]})になるまでの間`
+            continue
+        }
+        // 『もしj>hakosuならばhakosu←jを実行する』のような単文のもし文
+        const rif = line.match(/^もし(.+)を実行する(。|．)*/)
+        if (rif) {
+            const sent = dncl2nako(rif[1], filename)
+            a[i] = `もし、${sent};`
+            continue
+        }
+        //'のすべての値を0にする'
+        //'のすべての要素を0にする'
+        //'のすべての要素に0を代入する'
+        const rall = line.match(/^(.+?)のすべての(要素|値)(を|に)(.+?)(にする|を代入)/)
+        if (rall) {
+            const varname = rall[1]
+            const v = rall[4]
+            a[i] = `${varname} = [${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v},${v}]`
+            continue
         }
     }
     src = a.join('\n')
@@ -88,8 +106,6 @@ function dncl2nako(src, filename) {
         'を実行し、そうでなければ': '違えば',
         'を繰り返す': 'ここまで',
         '改行なしで表示': '連続無改行表示',
-        'のすべての値を0にする': '=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]',
-        'のすべての要素を0にする': '=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]',
         'ずつ増やしながら':'ずつ増やし繰り返す',
         'ずつ減らしながら':'ずつ減らし繰り返す',
         '二進で表示': '二進表示',
@@ -171,22 +187,6 @@ function dncl2nako(src, filename) {
             result += ch3
             src = src.substring(3)
         }
-        // 1行先読み
-        let line = ''
-        const i = src.indexOf('\n')
-        if (i >= 0) {
-            line = src.substring(0, i)
-        } else {
-            line = src
-        }
-        // 『もしj>hakosuならばhakosu←jを実行する』のような単文のもし文
-        const rif = line.match(/^もし(.+)を実行する(。|．)*/)
-        if (rif) {
-            const sent = dncl2nako(rif[1], filename)
-            result += `もし、${sent};`
-            src = src.substring(rif[0].length)
-            continue
-        }        
         // 一覧から単純な変換
         {
             let flag = false
