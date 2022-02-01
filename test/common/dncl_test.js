@@ -72,5 +72,9 @@ describe('dncl (#1140)', () => {
         cmpNako('!DNCLモード\nA← 二進 (255)\nAを表示する。', '11111111')
         cmpNako('!DNCLモード\n二進で表示 (255)', '11111111')
     })
+    it('減らす・増やす #1149', () => {
+        cmpNako('!DNCLモード\nsaihu←1000。syuppi←500。saihuをsyuppi減らす。saihuを表示する。', '500')
+        cmpNako('!DNCLモード\nsaihu←1000。syuppi←500。saihuをsyuppi増やす。saihuを表示する。', '1500')
+    })
 })
 

@@ -135,7 +135,8 @@ function dncl2nako(src, filename) {
             continue
         }
         // 表示を連続表示に置き換える
-        if (src.substring(0, 3) === 'を表示') {
+        const ch3 = src.substring(0, 3)
+        if (ch3 === 'を表示') {
             result += 'を連続表示'
             src = src.substring(3)
             continue
@@ -150,6 +151,11 @@ function dncl2nako(src, filename) {
             result += '乱数範囲'
             src = src.substring(2)
             continue
+        }
+        // 増やす・減らすの前に「だけ」を追加する #1149
+        if (ch3 === '増やす' || ch3 === '減らす') {
+            result += 'だけ' + ch3
+            src = src.substring(3)
         }
         // 1行先読み
         let line = ''
