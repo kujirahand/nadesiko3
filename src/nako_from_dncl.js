@@ -83,6 +83,7 @@ function dncl2nako(src, filename) {
         'ずつ増やしながら':'ずつ増やし繰り返す',
         'ずつ減らしながら':'ずつ減らし繰り返す',
         '二進で表示': '二進表示',
+        'でないならば': 'でなければ',
     }
     let peekChar = () => src.charAt(0)
     let nextChar = () => {

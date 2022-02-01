@@ -76,5 +76,8 @@ describe('dncl (#1140)', () => {
         cmpNako('!DNCLモード\nsaihu←1000。syuppi←500。saihuをsyuppi減らす。saihuを表示する。', '500')
         cmpNako('!DNCLモード\nsaihu←1000。syuppi←500。saihuをsyuppi増やす。saihuを表示する。', '1500')
     })
+    it('DNCLで「もし」文の否定形が動かない #1148', () =>{
+        cmpNako('!DNCLモード\nkosu←1\nもし、kosu>27でないならば\n|「OK」を表示する。\nを実行する。\n', 'OK')
+    })
 })
 
