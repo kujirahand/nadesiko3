@@ -60,10 +60,13 @@ function dncl2nako(src, filename) {
     // 後判定の「繰り返し,」を「後判定で繰り返す」に置換する
     const a = src.split('\n')
     for (let i = 0; i < a.length; i++) {
-        const line = a[i]
+        // インデントを消す
+        let line = a[i]
         a[i] = line.replace(/^(\s*[|\s]+)(.*$)/, (m0, m1, m2) => {
             return make_spaces(m1.length) + m2
         })
+        line = a[i]
+        // 後判定の繰り返しの実装のため
         const line2 = line.replace(/^\s+/, '').replace(/\s+$/, '')
         if (line2 === '繰り返し,' || line2 === '繰り返し') {
             a[i] = '後判定で繰り返し'
