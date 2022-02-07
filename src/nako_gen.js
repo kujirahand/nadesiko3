@@ -1374,7 +1374,8 @@ try {
       or: '||',
       shift_l: '<<',
       shift_r: '>>',
-      shift_r0: '>>>'
+      shift_r0: '>>>',
+      '÷': '/'
     }
     let op = node.operator // 演算子
     let right = this._convGen(node.right, true)
@@ -1388,7 +1389,9 @@ try {
       }
     }
     // 階乗
-    if (op === '^') { return '(Math.pow(' + left + ',' + right + '))' }
+    if (op === '^') { return `(Math.pow(${left}, ${right}))` }
+    // 整数の割り算 #1152
+    if (op === '÷÷') { return `(Math.floor(${left} / ${right}))` }
 
     // 一般的なオペレータに変換
     if (OP_TBL[op]) { op = OP_TBL[op] }

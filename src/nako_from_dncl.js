@@ -252,6 +252,7 @@ function conv2half(src) {
         if (cHalf === '{') { cHalf = '[' }
         if (cHalf === '}') { cHalf = ']' }
         if (cHalf === '←') { cHalf = '=' }
+        if (cHalf === '÷') { cHalf = '÷÷' } // #1152
         result += cHalf
     }
     return result

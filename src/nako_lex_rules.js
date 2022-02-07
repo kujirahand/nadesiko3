@@ -64,7 +64,8 @@ module.exports = {
     { name: '+', pattern: /^\+/ },
     { name: '-', pattern: /^-/ },
     { name: '*', pattern: /^(×|\*)/ },
-    { name: '/', pattern: /^(÷|\/)/ },
+    { name: '÷÷', pattern: /^÷÷/ }, // 整数の割り算
+    { name: '÷', pattern: /^(÷|\/)/ }, // 普通の割り算
     { name: '%', pattern: /^%/ },
     { name: '^', pattern: /^\^/ },
     { name: '&', pattern: /^&/ },

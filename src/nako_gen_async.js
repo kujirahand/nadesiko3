@@ -1573,7 +1573,8 @@ try {
       or: '||',
       shift_l: '<<',
       shift_r: '>>',
-      shift_r0: '>>>'
+      shift_r0: '>>>',
+      '÷': '/'
     }
     const op = node.operator // 演算子
     // 値はスタックに載せられる
