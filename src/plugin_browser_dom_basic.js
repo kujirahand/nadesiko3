@@ -316,5 +316,15 @@ module.exports = {
       if (typeof pa === 'string') { pa = document.querySelector(pa) }
       pa.removeChild(el)
     }
+  },
+  '注目': { // @DOMの要素Aにフォーカスする(カーソルを移動する) // @ちゅうもく
+    type: 'func',
+    josi: [['を', 'へ', 'に']],
+    pure: true,
+    fn: function (el) {
+      if (typeof el === 'string') { el = document.querySelector(el) }
+      if (el.focus) { el.focus() }
+    },
+    return_none: true
   }
 }
