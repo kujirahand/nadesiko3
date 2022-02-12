@@ -32,16 +32,21 @@
 
 - [OS別のインストール方法](https://nadesi.com/doc3/index.php?OS%E5%88%A5)
 
-### Windowsで利用する
+外部リポジトリに個別の配布パッケージを用意しています。（ただし、対応バージョンが古い場合があります。）
 
-以下のリンクを開いて、「Source code(zip)」をクリックしてダウンロードします。
-これは、Node.jsや必要なモジュール一式を梱包したものです。
+- [なでしこ3配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
+- [なでしこ3配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
+- [なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 
-- [なでしこ3のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
+## その他のなでしこ3について
 
-解凍したら「nako3edit.vbs」(PC版)または「start.vbs」(Web版)をクリックします。すると、なでしこエディタが起動します。
+実験的な意味合いもありますが、各プログラミング言語で実装したなでしこ3があります。なでしこ3PHPでは掲示板、チャットなど、それなりに実用的なプログラムも作れます。
 
-### npm でインストール
+- [なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
+- [なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
+- [なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
+
+## npm でなでしこ3コマンドライン版をインストール
 
 先にNode.jsをインストールします。
 次いで、コマンドラインから以下のコマンドを実行します。
@@ -61,7 +66,7 @@ npm run nako3edit
 npm run nako3server
 ```
 
-### Gitからインストール
+## Gitからインストール
 
 また、以下のコマンドを実行すると、ブラウザ上になでしこの簡易エディタが起動します。
 
@@ -71,7 +76,7 @@ cd nadesiko3
 npm install
 ```
 
-#### 追加インストール(macOS/Linux)
+## 追加インストール(macOS/Linux)
 
 必要に応じて以下のコマンドをインストールします。
 
@@ -95,11 +100,8 @@ sudo apt install xdotool
 
 ```bash
 npm test
+npm run test:all
 ```
-
-## GUI(Electron)を使う
-
-Electronを使うと手軽にGUIを構築できます。Electronについては、[doc/SETUP.md](doc/SETUP.md)を参考にしてください。
 
 ## なでしこ3の開発に参加する
 

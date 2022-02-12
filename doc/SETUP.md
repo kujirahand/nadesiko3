@@ -139,27 +139,6 @@ npx npm-check-updates -u
 npm update --no-optional
 ```
 
-### Electron
-
-モジュールをインストールする。
-
-```bash
-npm install electron
-npm install electron-packager
-```
-
-以下のコマンドを実行することで、Electronによるなでしこが起動。
-
-```bash
-npm run electron
-```
-
-ビルドは以下のコマンドで行う。
-
-```bash
-npm run build:electron
-```
-
 ## Gitからリポジトリを取得して利用する場合
 
 最低限のライブラリで良い場合には、``npm install --production``を実行するだけ。
@@ -169,3 +148,10 @@ git clone https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install --production
 ```
+
+## (メモ)Electronの利用に関して
+
+以前は、本リポジトリでElectronにも対応していたが別リポジトリを用意した。
+
+- [なでしこ3配布パック(Electron)](https://github.com/kujirahand/nadesiko3electron)
+
