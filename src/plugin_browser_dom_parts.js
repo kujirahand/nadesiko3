@@ -168,6 +168,24 @@ module.exports = {
       return dom
     }
   },
+  'セレクトボックスアイテム設定': { // @配列データをセレクトボックスdomのアイテムに差し替える // @せれくとぼっくすあいてむさくせい
+    type: 'func',
+    josi: [['を'], ['へ','に']],
+    pure: false,
+    fn: function (options, dom, sys) {
+      if (typeof(dom) === 'stirng') { dom = document.querySelector(dom) }
+      // 既存のoptionsをクリア
+      dom.options.length = 0
+      // アイテムを追加
+      for (let i = 0; i < options.length; i++) {
+        const item = document.createElement('option')
+        item.value = options[i]
+        item.appendChild(document.createTextNode(options[i]))
+        dom.appendChild(item)
+      }
+    },
+    return_none: true
+  },
   '色選択ボックス作成': { // @色選択ボックス(input[type='color'])を作成しDOMオブジェクトを返す // @いろせんたくぼっくすさくせい
     type: 'func',
     josi: [],

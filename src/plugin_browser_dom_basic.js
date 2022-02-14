@@ -97,9 +97,15 @@ module.exports = {
     pure: true,
     fn: function (dom) {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-
+      if (!dom.tagName) {
+        console.log('[DOMテキスト取得]でタグ名が取得できません。', dom)
+        return ''
+      }
       const tag = dom.tagName.toUpperCase()
-      if (tag === 'INPUT' || tag === 'TEXTAREA') { return dom.value } else if (tag === 'SELECT') {
+      // input or textarea
+      if (tag === 'INPUT' || tag === 'TEXTAREA') { return dom.value }
+      // select
+      if (tag === 'SELECT') {
         const idx = dom.selectedIndex
         if (idx < 0) { return null }
         return dom.options[idx].value
