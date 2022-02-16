@@ -89,14 +89,15 @@ const PluginSystem = {
         if (s.match(/^\d+\:\d+(\:\d+)?$/)) {
           const t = new Date()
           const a = (s + ':0').split(':')
-          return new Date(`${t.getFullYear()}-${t.getMonth()+1}-${t.getDate()} ${a[0]}:${a[1]}:${a[2]}`)
+          return new Date(
+            t.getFullYear(), t.getMonth(), t.getDate(), 
+            a[0], a[1], a[2])
         }
         // replace splitter to '/'
         s = s.replace(/[\-\s\:]/g, '/')
         s += '/0/0/0' // 日付だけのときのために時間分を足す
         const a = s.split('/')
-        const dateStr = `${a[0]}-${a[1]}-${a[2]} ${z2(a[3])}:${z2(a[4])}:${z2(a[5])}`
-        return new Date(dateStr)
+        return new Date(a[0], a[1]-1, a[2], a[3], a[4],a[5])
       }
       // 『継続表示』のための一時変数(『表示』実行で初期化)
       sys.__printPool = ''
