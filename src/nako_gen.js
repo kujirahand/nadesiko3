@@ -61,7 +61,7 @@ this.__locals = {};
 this.__genMode = 'sync';
 try {
   ${gen.getVarsCode()}
-  ${js}
+  ${js} 
 } catch (err) {
   if (!(err instanceof NakoRuntimeError)) {
     err = new NakoRuntimeError(err, __varslist[0].line);
@@ -1272,7 +1272,7 @@ try {
     }
 
     let funcCall = `${res.js}(${argsCode})`
-
+    if (func.asyncFn) { funcCall = `await ${funcCall}` }
     if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
       let key = funcName
       if (!key) {

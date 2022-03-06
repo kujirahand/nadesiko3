@@ -1950,20 +1950,34 @@ const PluginSystem = {
     }
   },
   // @タイマー
+  '秒待': { // @ N秒の間待機する // @びょうまつ
+    type: 'func',
+    josi: [['']],
+    pure: true,
+    asyncFn: true,
+    fn: function (n, sys) {
+      return new Promise((resolve, reject) => {
+        setTimeout(()=>{ resolve() }, n * 1000)
+      })
+    },
+    return_none: true
+  },
   '秒待機': { // @ 「!非同期モード」または「逐次実行構文」にて、N秒の間待機する // @びょうたいき
     type: 'func',
     josi: [['']],
-    pure: false,
+    pure: true,
     fn: function (n, sys) {
       if (sys.__genMode === '非同期モード') {
         const sysenv = sys.setAsync(sys)
         setTimeout(() => {
           sys.compAsync(sys, sysenv)
         }, n * 1000)
-      } else {
-        if (sys.resolve === undefined) { throw new Error('『秒待機』命令は『!非同期モード』で使ってください。') }
-        sys.__exec('秒逐次待機', [n, sys])
+        return
       }
+      if (sys.resolve === undefined) {
+        throw new Error('『秒待機』命令は『!非同期モード』で使ってください。') 
+      }
+      sys.__exec('秒逐次待機', [n, sys])
     },
     return_none: true
   },
