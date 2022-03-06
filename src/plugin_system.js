@@ -2116,7 +2116,7 @@ const PluginSystem = {
   '今日': { // @今日の日付を「YYYY/MM/DD」の形式で返す // @きょう
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys) {
       return sys.__formatDate(new Date())
     }
@@ -2124,7 +2124,7 @@ const PluginSystem = {
   '明日': { // @明日の日付を「YYYY/MM/DD」の形式で返す // @あした
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys) {
       const t = Date.now() + (24 * 60 * 60 * 1000)
       return sys.__formatDate(new Date(t))
@@ -2133,7 +2133,7 @@ const PluginSystem = {
   '昨日': { // @昨日の日付を「YYYY/MM/DD」の形式で返す // @きのう
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys) {
       const t = Date.now() - (24 * 60 * 60 * 1000)
       return sys.__formatDate(new Date(t))
@@ -2190,7 +2190,7 @@ const PluginSystem = {
   '曜日': { // @Sに指定した日付の曜日をで返す。不正な日付の場合は今日の曜日番号を返す。 // @ようび
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (s, sys) {
       const d = sys.__str2date(s)
       return '日月火水木金土'.charAt(d.getDay() %  7)
@@ -2209,7 +2209,7 @@ const PluginSystem = {
   'UNIXTIME変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXTIMEへんかん
     type: 'func',
     josi: [['の','を','から']],
-    pure: false,
+    pure: true,
     fn: function (s, sys) {
       const d = sys.__str2date(s)
       return d.getTime() / 1000;
@@ -2218,7 +2218,7 @@ const PluginSystem = {
   'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXじかんへんかん
     type: 'func',
     josi: [['の','を','から']],
-    pure: false,
+    pure: true,
     fn: function (s, sys) {
       const d = sys.__str2date(s)
       return d.getTime() / 1000;
@@ -2227,7 +2227,7 @@ const PluginSystem = {
   '日時変換': { // @UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換 // @にちじへんかん
     type: 'func',
     josi: [['を', 'から']],
-    pure: false,
+    pure: true,
     fn: function (tm, sys) {
       const t = tm * 1000
       return sys.__formatDateTime(new Date(t), '2022/01/01 00:00:00')
@@ -2236,7 +2236,7 @@ const PluginSystem = {
   '日時書式変換': { // @UNIX時間TM(または日付文字列)を「YYYY/MM/DD HH:mm:ss」または「YY-M-D H:m:s」その他、W:曜日、WWW:曜日英、MMM:月英、ccc:ミリ秒の書式に変換 // @にちじしょしきへんかん
     type: 'func',
     josi: [['を'], ['で']],
-    pure: false,
+    pure: true,
     fn: function (tm, fmt, sys) {
       const t = sys.__str2date(tm)
       fmt = fmt.replace(/(YYYY|ccc|WWW|MMM|YY|MM|DD|HH|mm|ss|[MDHmsW])/g, (m) => {
@@ -2266,7 +2266,7 @@ const PluginSystem = {
   '和暦変換': { // @Sを和暦に変換する。Sは明治以降の日付が有効。 // @われきへんかん
     type: 'func',
     josi: [['を']],
-    pure: false,
+    pure: true,
     fn: function (s, sys) {
       const d = sys.__str2date(s)
       const t = d.getTime()
@@ -2286,7 +2286,7 @@ const PluginSystem = {
   '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       const t1 = sys.__str2date(a)
       const t2 = sys.__str2date(b)
@@ -2296,7 +2296,7 @@ const PluginSystem = {
   '月数差': { // @日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @げっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       const t1 = sys.__str2date(a)
       const t2 = sys.__str2date(b)
@@ -2307,7 +2307,7 @@ const PluginSystem = {
   '日数差': { // @日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @にっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
@@ -2318,7 +2318,7 @@ const PluginSystem = {
   '時間差': { // @時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @じかんさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
@@ -2329,7 +2329,7 @@ const PluginSystem = {
   '分差': { // @時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @ふんさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
@@ -2340,7 +2340,7 @@ const PluginSystem = {
   '秒差': { // @時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @びょうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
@@ -2351,7 +2351,7 @@ const PluginSystem = {
   '日時差': { // @日時AとBの差を種類unitで返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @にちじさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの'], ['による']],
-    pure: false,
+    pure: true,
     fn: function (a, b, unit, sys) {
       switch (unit) {
         case '年': return sys.__exec('年数差', [a, b, sys]) 
@@ -2367,7 +2367,7 @@ const PluginSystem = {
   '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
     type: 'func',
     josi: [['に'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (s, a, sys) {
       let op = a.charAt(0)
       if (op === '-' || op === '+') {
@@ -2386,7 +2386,7 @@ const PluginSystem = {
   '日付加算': { // @日付SにAを加えて返す。Aには「(+｜-)yyyy/mm/dd」で指定する。 // @ひづけかさん
     type: 'func',
     josi: [['に'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (s, a, sys) {
       let op = 1
       let opc = a.charAt(0)
@@ -2408,7 +2408,7 @@ const PluginSystem = {
   '日時加算': { // @日時SにAを加えて返す。Aは「(+｜-)1(年|ヶ月|日|週|時間|分|秒)」のように指定する (v1非互換)。 // @にちじかさん
     type: 'func',
     josi: [['に'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (s, a, sys) {
       const r = ('' + a).match(/([+|-]?)(\d+)(年|ヶ月|日|週間|時間|分|秒)$/)
       if (!r) {throw new Error('『日付加算』は『(+｜-)1(年|ヶ月|日|時間|分|秒)』の書式で指定します。')}
@@ -2517,7 +2517,7 @@ const PluginSystem = {
   'プラグイン名設定': { // @プラグイン名をSに変更する // @プラグインめいせってい
     type: 'func',
     josi: [['に', 'へ']],
-    pure: false,
+    pure: true,
     fn: function (s, sys) {
       sys.__v0['プラグイン名'] = s
     },
@@ -2544,7 +2544,7 @@ const PluginSystem = {
   'URLパラメータ解析': { // @URLパラメータを解析してハッシュで返す // @URLぱらめーたかいせき
     type: 'func',
     josi: [['を', 'の', 'から']],
-    pure: false,
+    pure: true,
     fn: function (url, sys) {
       const res = {}
       if (typeof url !== 'string') {
