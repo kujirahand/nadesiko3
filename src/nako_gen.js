@@ -1409,11 +1409,16 @@ try {
     }
     // 変数名
     const name = node.name.value
-    const res = this.findVar(name)
+    let res = this.findVar(name)
     let code = ''
-    if (res === null) { this.varsSet.names.add(name) }
-    code += `if (typeof(${this.varname(name)}) === 'undefined') { ${this.varname(name)} = 0; }`
-    code += `${this.varname(name)} += ${value}`
+    if (res === null) {
+        this.varsSet.names.add(name)
+        res = this.findVar(name)
+    }
+    const jsName = res.js
+    // 自動初期化するか
+    code += `if (typeof(${jsName}) === 'undefined') { ${jsName} = 0; }`
+    code += `${jsName} += ${value}`
     return ';' + this.convLineno(node, false) + code + '\n'
   }
 
