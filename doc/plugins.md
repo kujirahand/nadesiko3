@@ -37,6 +37,7 @@ HTMLファイル内でなでしこ本体(wnako3.js)よりも後ろで`<script sr
     josi: [['を', 'から'], ['まで']], // 助詞を配列で宣言する (可変長引数として扱いたい助詞は末尾で宣言する)
     isVariableJosi: false, // 末尾の助詞を可変長引数として扱う場合 true にする
     uses: [], // この関数から別の関数を呼ぶ場合に記述する // (TODO: #282)
+    asyncFn: false, // async関数定義かPromiseを返す関数を定義する場合 true にする (参照: #1154)
     fn: function (aFrom, aTo, sys) { ... }, // 関数の実態
     return_none: false // 戻り値を返すかどうか
   },
