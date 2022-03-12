@@ -666,7 +666,7 @@ class NakoCompiler {
     }
     try {
       // eslint-disable-next-line no-new-func
-      new Function(out.runtimeEnv).apply(nakoGlobal)
+      new Function(out.runtimeEnv).apply(nakoGlobal);
       return nakoGlobal
     } catch (e) {
       let err = e

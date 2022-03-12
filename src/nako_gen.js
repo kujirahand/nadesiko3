@@ -37,6 +37,17 @@ class NakoGen {
     if (js && isTest) {
       js += '\n__self._runTests(__tests);\n'
     }
+    // async method
+    let canAsync = true
+    if (window && window.navigator && window.navigator.userAgent) {
+      const ua = window.navigator.userAgent
+      canAsync = (ua.indexOf('MSIE') === -1)
+    }
+    if (canAsync) {
+      js = '// <nadesiko3::gen::async>\n' +
+        `(async () => {\n${js}\n})();\n` +
+        '// </nadesiko3::gen::async>\n'  
+    }
 
     // デバッグメッセージ
     com.logger.trace('--- generate ---\n' + js)
@@ -61,7 +72,7 @@ this.__locals = {};
 this.__genMode = 'sync';
 try {
   ${gen.getVarsCode()}
-  ${js} 
+  ${js}
 } catch (err) {
   if (!(err instanceof NakoRuntimeError)) {
     err = new NakoRuntimeError(err, __varslist[0].line);
