@@ -38,15 +38,17 @@ class NakoGen {
       js += '\n__self._runTests(__tests);\n'
     }
     // async method
-    let canAsync = true
-    if (window && window.navigator && window.navigator.userAgent) {
-      const ua = window.navigator.userAgent
-      canAsync = (ua.indexOf('MSIE') === -1)
-    }
-    if (canAsync) {
-      js = '// <nadesiko3::gen::async>\n' +
-        `(async () => {\n${js}\n})();\n` +
-        '// </nadesiko3::gen::async>\n'  
+    if (gen.numAsyncFn > 0) {
+      let canAsync = true
+      if (window && window.navigator && window.navigator.userAgent) {
+        const ua = window.navigator.userAgent
+        canAsync = (ua.indexOf('MSIE') === -1)
+      }
+      if (canAsync) {
+        js = '// <nadesiko3::gen::async>\n' +
+          `(async () => {\n${js}\n})();\n` +
+          '// </nadesiko3::gen::async>\n'  
+      }
     }
 
     // デバッグメッセージ
@@ -113,6 +115,12 @@ try {
      * @type {number}
      */
     this.loop_id = 1
+
+    /**
+     * 非同関数を何回使ったか
+     * @type {number}
+     */
+    this.numAsyncFn = 0
 
     /**
      * 変換中の処理が、ループの中かどうかを判定する
@@ -1283,7 +1291,10 @@ try {
     }
 
     let funcCall = `${res.js}(${argsCode})`
-    if (func.asyncFn) { funcCall = `await ${funcCall}` }
+    if (func.asyncFn) {
+      funcCall = `await ${funcCall}`
+      this.numAsyncFn++
+    }
     if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
       let key = funcName
       if (!key) {
