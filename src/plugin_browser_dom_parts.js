@@ -385,7 +385,7 @@ module.exports = {
             td.style.backgroundColor = (rowNo == 0) ? bgHead : bgColor[rowNo % 2]
             td.style.color = (rowNo == 0) ? 'white' : 'black'
           }
-          if (col.match(/^\d+$/)) { // number?
+          if (col.match(/^(\+|\-)?\d+(\.\d+)?$/)) { // number?
             td.style.textAlign = 'right'
           }
           tr.appendChild(td)
