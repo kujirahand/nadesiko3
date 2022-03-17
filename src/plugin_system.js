@@ -475,6 +475,15 @@ const PluginSystem = {
     },
     return_none: true
   },
+  '敬具': { // @ソースコードを読む人を気持ちよくする // @けいぐ
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      sys.__reisetu += 100 // bonus point
+    },
+    return_none: true
+  },
   '礼節レベル取得': { // @(お遊び)敬語を何度使ったか返す // @おねがいします
     type: 'func',
     josi: [],
