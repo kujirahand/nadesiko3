@@ -40,7 +40,7 @@ class NakoGen {
     // async method
     if (gen.numAsyncFn > 0) {
       let canAsync = true
-      if (window && window.navigator && window.navigator.userAgent) {
+      if (typeof(window) == 'object' && window.navigator && window.navigator.userAgent) {
         const ua = window.navigator.userAgent
         canAsync = (ua.indexOf('MSIE') === -1)
       }

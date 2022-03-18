@@ -380,7 +380,7 @@ module.exports = {
       const txt = await res.text()
       return txt
     },
-    return_none: true
+    return_none: false
   },
   'AJAX_JSON取得': { // @AJAXでURLにアクセスしJSONの結果を得て、送信時AJAXオプションの値を参照。 // @AJAX_JSONしゅとく
     type: 'func',
@@ -394,6 +394,6 @@ module.exports = {
       const txt = await res.json()
       return txt
     },
-    return_none: true
+    return_none: false
   },
 }
