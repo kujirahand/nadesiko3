@@ -392,7 +392,6 @@ module.exports = {
         }
         table.appendChild(tr)
       }
-      sys.__exec('DOM親要素設定', [table, sys])
       return table
     }
   }
