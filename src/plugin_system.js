@@ -702,12 +702,21 @@ const PluginSystem = {
       return parseFloat(v)
     }
   },
-  'NAN判定': { // @値VがNaNかどうかを判定 // @NANはんてい
+  'NAN判定': { // @値VがNaNかどうかを判定(命令『非数判定』を使う事を推奨) // @NANはんてい
     type: 'func',
     josi: [['を']],
     pure: true,
     fn: function (v) {
       return isNaN(v)
+    }
+  },
+  '非数判定': { // @値Vが非数かどうかを判定(NAN判定より堅牢) // @ひすうはんてい
+    type: 'func',
+    josi: [['を']],
+    pure: true,
+    fn: function (v) {
+      // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
+      return Number.isNaN(v)
     }
   },
   'HEX': { // @値Vを16進数に変換 // @HEX
