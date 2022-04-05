@@ -1,5 +1,5 @@
 const NakoColors = require('./nako_colors')
-
+const {NakoRuntimeError} = require('./nako_errors')
 /**
  * コンパイルされたなでしこのプログラムで、グローバル空間のthisが指すオブジェクト
  */
@@ -23,6 +23,7 @@ class NakoGlobal {
     this.__stack = []
     this.__labels = []
     this.__genMode = gen.genMode
+    this.NakoRuntimeError = NakoRuntimeError
 
     // PluginSystemとdestroy()から参照するため
     this.__module = { ...compiler.__module } // shallow copy

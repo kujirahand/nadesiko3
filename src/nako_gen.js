@@ -45,9 +45,18 @@ class NakoGen {
         canAsync = (ua.indexOf('MSIE') === -1)
       }
       if (canAsync) {
-        js = '// <nadesiko3::gen::async>\n' +
-          `(async () => {\n${js}\n})();\n` +
-          '// </nadesiko3::gen::async>\n'  
+        js = `
+// <nadesiko3::gen::async>
+(async () => { // async::main
+${js}
+}).call(this).catch(err => {
+  if (!(err instanceof this.NakoRuntimeError)) {
+    err = new this.NakoRuntimeError(err, this.__varslist[0].line);
+  }
+  this.logger.error(err);
+  throw err;
+}); // async::main
+// <nadesiko3::gen::async>\n`
       }
     }
 
@@ -1218,7 +1227,7 @@ try {
 
     // 関数呼び出しで、引数の末尾にthisを追加する-システム情報を参照するため
     args.push('__self')
-    const funcDef = 'function'
+    let funcDef = 'function'
     let funcBegin = ''
     let funcEnd = ''
     // setter?
@@ -1292,6 +1301,7 @@ try {
 
     let funcCall = `${res.js}(${argsCode})`
     if (func.asyncFn) {
+      funcDef = `async ${funcDef}`
       funcCall = `await ${funcCall}`
       this.numAsyncFn++
     }
@@ -1325,6 +1335,7 @@ try {
 
     let code = ''
     if (func.return_none) {
+      // 戻り値のない関数の場合
       if (funcEnd === '') {
         if (funcBegin === '') {
           code = `${funcCall};\n`
@@ -1335,6 +1346,7 @@ try {
         code = `${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
       }
     } else {
+      // 戻り値のある関数の場合
       let sorePrefex = ''
       if (this.speedMode.invalidSore === 0) {
         sorePrefex = `${this.varname('それ')} = `
