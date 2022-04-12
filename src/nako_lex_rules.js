@@ -55,7 +55,7 @@ module.exports = {
     { name: '←', pattern: /^(←|<--)/ }, // 関数呼び出し演算子 #891 #899
     { name: 'eq', pattern: /^(=|🟰)/ },
     { name: 'line_comment', pattern: /^!(インデント構文|ここまでだるい)[^\n]*/ },
-    { name: 'not', pattern: /^!/ },
+    { name: 'not', pattern: /^(!|💡)/ }, // #1184
     { name: 'gt', pattern: /^>/ },
     { name: 'lt', pattern: /^</ },
     { name: 'and', pattern: /^(かつ|&&)/ },
