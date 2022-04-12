@@ -2,7 +2,7 @@
  * なでしこ3字句解析のためのルール
  */
 
-const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー]+/
+const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー\u2460-\u24FF\u2776-\u277F\u3251-\u32BF]+/
 const nakoJosiList = require('./nako_josi_list')
 const josiRE = nakoJosiList.josiRE
 const removeJosiMap = nakoJosiList.removeJosiMap
@@ -96,7 +96,7 @@ module.exports = {
     // 単語句
     {
       name: 'word',
-      pattern: /^[_a-zA-Z\u3005\u4E00-\u9FCFぁ-んァ-ヶ]/,
+      pattern: /^[_a-zA-Z\u3005\u4E00-\u9FCFぁ-んァ-ヶ\u2460-\u24FF\u2776-\u277F\u3251-\u32BF]/,
       cbParser: cbWordParser
     }
   ],
