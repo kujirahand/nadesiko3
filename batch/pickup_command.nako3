@@ -33,6 +33,7 @@ REPOSパス=基本パスを「../」で相対パス展開。
     ['nadesiko3-htmlparser/nadesiko3-htmlparser.js', 'cnako'],
     ['nadesiko3-websocket/nadesiko3-websocket.js', 'cnako'],
     ['nadesiko3-ml/nadesiko3-ml.js', 'cnako'],
+    ['nadesiko3-mecab/nadesiko3-mecab.js', 'cnako'],
     ['nadesiko3-odbc/src/plugin_odbc.js', 'cnako'],
     ['nadesiko3-mssql/src/plugin_mssql.js', 'cnako'],
     ['nadesiko3-mysql/src/plugin_mysql.js', 'cnako'],
