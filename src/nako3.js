@@ -88,7 +88,7 @@ function NakoGen (mode) {
  * }} Ast
  *
  * @typedef {(
- *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function, return_none: boolean }
+ *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function, return_none: boolean, asyncFn: boolean }
  *     | { type: 'var' | 'const', value: any}
  * )} NakoFunction
  */
@@ -123,7 +123,7 @@ class NakoCompiler {
     this.pluginfiles = {} // 取り込んだファイル一覧
     this.isSetter = false // 代入的関数呼び出しを管理(#290)
     this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
-    /** @type {Record<string, { josi: string[][], fn: string, type: 'func' }>} */
+    /** @type {Record<string, { josi: string[][], fn: string, type: 'func', asyncFn: boolean }>} */
     this.nako_func = {} // __v1に配置するJavaScriptのコードで定義された関数
 
     this.logger = new NakoLogger()
@@ -811,10 +811,11 @@ class NakoCompiler {
    * @param {string} key 関数名
    * @param {string[][]} josi 助詞
    * @param {Function} fn 関数
-   * @param {boolean} returnNone 値を返す関数の場合はfalseを設定する。
+   * @param {boolean} returnNone 値を返す関数の場合はfalseを指定
+   * @param {boolean} asyncFn Promiseを返す関数かを指定 
    */
-  addFunc (key, josi, fn, returnNone = true) {
-    this.funclist[key] = { josi, fn, type: 'func', return_none: returnNone }
+  addFunc (key, josi, fn, returnNone = true, asyncFn = false) {
+    this.funclist[key] = { josi, fn, type: 'func', return_none: returnNone, asyncFn }
     this.pluginFunclist[key] = cloneAsJSON(this.funclist[key])
     this.__varslist[0][key] = fn
   }
