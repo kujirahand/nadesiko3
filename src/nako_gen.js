@@ -8,6 +8,12 @@
 
 const { NakoSyntaxError, NakoError, NakoRuntimeError } = require('./nako_errors')
 const nakoVersion = require('./nako_version')
+const isIE11 = () => {
+  if (typeof(window) == 'object' && window.navigator && window.navigator.userAgent) {
+    return (window.navigator.userAgent.indexOf('MSIE') >= 0)
+  }
+  return false
+}
 
 /**
  * @typedef {import("./nako3").Ast} Ast
@@ -39,11 +45,7 @@ class NakoGen {
     }
     // async method
     if (gen.numAsyncFn > 0) {
-      let canAsync = true
-      if (typeof(window) == 'object' && window.navigator && window.navigator.userAgent) {
-        const ua = window.navigator.userAgent
-        canAsync = (ua.indexOf('MSIE') === -1)
-      }
+      let canAsync = !isIE11()
       if (canAsync) {
         js = `
 // <nadesiko3::gen::async>
@@ -734,7 +736,7 @@ try {
         'try {\n'
       performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n'
     }
-    const topOfFunction = '(function(){\n'
+    const topOfFunction = isIE11() ? '(function(){\n' : '(async function(){\n'
     const endOfFunction = '})'
     let variableDeclarations = ''
     let popStack = ''
