@@ -551,13 +551,13 @@ class NakoParser extends NakoParserBase {
     }
   }
 
-  /** @returns {Ast | null} */
-  yGetArg () {
-    // 値を一つ読む
-    const value1 = this.yValue()
-    if (value1 === null) { return null }
-    // 計算式がある場合を考慮
-    const args = [value1]
+  /** 
+   * 1つ目の値を与え、その後に続く計算式を取得し、優先規則に沿って並び替えして戻す
+   * @param {Ast | null} firstValue
+   * @returns {Ast | null} 
+   */
+  yGetArgOperator (firstValue) {
+    const args = [firstValue]
     while (!this.isEOF()) {
       // 演算子がある？
       const op = this.peek()
@@ -568,7 +568,7 @@ class NakoParser extends NakoParserBase {
         if (v === null) {
           throw NakoSyntaxError.fromNode(
             `計算式で演算子『${op.value}』後に値がありません`,
-            value1)
+            firstValue)
         }
         args.push(v)
         continue
@@ -578,6 +578,15 @@ class NakoParser extends NakoParserBase {
     if (args.length === 0) { return null }
     if (args.length === 1) { return args[0] }
     return this.infixToAST(args)
+  }
+
+  /** @returns {Ast | null} */
+  yGetArg () {
+    // 値を一つ読む
+    const value1 = this.yValue()
+    if (value1 === null) { return null }
+    // 計算式がある場合を考慮
+    return this.yGetArgOperator(value1)
   }
 
   infixToPolish (list) {
@@ -832,8 +841,11 @@ class NakoParser extends NakoParserBase {
   yReturn () {
     const map = this.peekSourceMap()
     if (!this.check('戻る')) { return null }
-    this.get() // skip '戻る'
+    const modoru = this.get() // skip '戻る'
     const v = this.popStack(['で', 'を'])
+    if (this.stack.length > 0) {
+      throw NakoSyntaxError.fromNode('『戻』文の直前に未解決の引数があります。『(式)を戻す』のように式をカッコで括ってください。', modoru)
+    }
     return {
       type: 'return',
       value: v,
@@ -1101,7 +1113,11 @@ class NakoParser extends NakoParserBase {
           this.pushStack(r)
           continue
         }
-        return r
+        // 関数呼び出しの直後に、四則演算があるか?
+        if (!this.checkTypes(operatorList)) { return r } // なければ関数呼び出しを戻す
+        // 四則演算があった場合、計算してスタックに載せる
+        this.pushStack(this.yGetArgOperator(r))
+        continue
       }
       // 値のとき → スタックに載せる
       const t = this.yGetArg()
