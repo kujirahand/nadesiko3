@@ -27,7 +27,7 @@ function isIndentSyntaxEnabled(src) {
   const keywords = DNCL_KEYWORDS
   const lines = src.split('\n', 30)
   for (const line of lines) {
-    const line2 = line.replace('！', '!')
+    const line2 = line.replace(/(！|💡)/, '!')
     if (keywords.indexOf(line2) >= 0) {
       return true
     }

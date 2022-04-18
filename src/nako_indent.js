@@ -27,7 +27,8 @@ function isIndentSyntaxEnabled (code) {
   const keywords = ['!インデント構文', '!ここまでだるい']
   const lines = code.split('\n', 30)
   for (const line of lines) {
-    const s9 = line.substr(0, 8).replace('！', '!')
+    const sline = line.replace(/^(！|💡)/, '!')
+    const s9 = sline.substring(0, 8)
     if (keywords.indexOf(s9) >= 0) {
       return true
     }
