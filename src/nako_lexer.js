@@ -236,6 +236,7 @@ class NakoLexer {
           type: 'func',
           josi,
           fn: null,
+          asyncFn: false,
           varnames,
           funcPointers
         }
@@ -498,7 +499,7 @@ class NakoLexer {
         columnCurrent = column
         lineCurrent = line
         column += m[0].length
-        src = src.substr(m[0].length)
+        src = src.substring(m[0].length)
         if ((rule.name === 'eol' && value === '\n') || rule.name === '_eol') {
           value = line++
           column = 1
@@ -509,7 +510,7 @@ class NakoLexer {
           // 単位があれば読み飛ばす
           const um = lexRules.unitRE.exec(src)
           if (um) {
-            src = src.substr(um[0].length)
+            src = src.substring(um[0].length)
             column += m[0].length
           }
         }
@@ -520,10 +521,10 @@ class NakoLexer {
           if (j) {
             josi = j[0].replace(/^\s+/, '')
             column += j[0].length
-            src = src.substr(j[0].length)
+            src = src.substring(j[0].length)
             // 助詞の直後にあるカンマを無視 #877
             if (src.charAt(0) === ',') {
-              src = src.substr(1)
+              src = src.substring(1)
             }
             // 「＊＊である」なら削除 #939 #974
             if (removeJosiMap[josi]) { josi = '' }

@@ -553,18 +553,6 @@ const PluginNode = {
     },
     return_none: true
   },
-  '秒待': { // @NodeでN秒待つ // @びょうまつ
-    type: 'func',
-    josi: [['']],
-    pure: true,
-    fn: function (sec, sys) {
-      const msleep = (n) => {
-        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n) // eslint-disable-line no-undef
-      }
-      msleep(sec * 1000)
-    },
-    return_none: true
-  },
   'OS取得': { // @OSプラットフォームを返す(darwin/win32/linux) // @OSしゅとく
     type: 'func',
     josi: [],

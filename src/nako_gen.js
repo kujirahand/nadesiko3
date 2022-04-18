@@ -799,6 +799,7 @@ try {
     this.usedAsyncFn = false
     const block = this._convGen(node.block, false)
     code += block.split('\n').map((line) => '  ' + line).join('\n') + '\n'
+    // console.log('@@@[', name, ']@@@', this.usedAsyncFn)
     // 関数の最後に、変数「それ」をreturnするようにする
     if (this.speedMode.invalidSore === 0) {
       code += `  return (${this.varname('それ')});\n`
@@ -1231,6 +1232,7 @@ try {
     if (res === null) {
       throw NakoSyntaxError.fromNode(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node)
     }
+    // どの関数を呼び出すのか関数を特定する
     /** @type {import('./nako3').NakoFunction} */
     let func
     if (res.i === 0) { // plugin function

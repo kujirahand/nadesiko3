@@ -87,10 +87,10 @@ function NakoGen (mode) {
  *   checkInit?: boolean
  * }} Ast
  *
- * @typedef {(
+ * @typedef {
  *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function, return_none: boolean, asyncFn: boolean }
  *     | { type: 'var' | 'const', value: any}
- * )} NakoFunction
+ * } NakoFunction
  */
 
 class NakoCompiler {
@@ -758,7 +758,7 @@ class NakoCompiler {
         throw new Error('プラグインの追加でエラー。')
       }
       // コマンドを登録するか?
-      if (key === '初期化' || key.substr(0, 1) === '!') { // 登録しない関数名
+      if (key === '初期化' || key.substring(0, 1) === '!') { // 登録しない関数名
         continue
       }
       this.commandlist.add(key)
