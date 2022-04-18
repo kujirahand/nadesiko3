@@ -27,8 +27,7 @@ REPOSパス=基本パスを「../」で相対パス展開。
     ['src/plugin_promise.js', 'wnako']
 ]
 拡張プラグイン一覧は[
-    ['nadesiko3-sqlite3/nadesiko3-sqlite3.js', 'cnako'],
-    ['nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js', 'cnako'],
+    ['nadesiko3-sqlite3/nadesiko3-sqlite3.js', 'cnako'],    
     ['nadesiko3-drone/nadesiko3-drone.js', 'cnako'],
     ['nadesiko3-htmlparser/nadesiko3-htmlparser.js', 'cnako'],
     ['nadesiko3-websocket/nadesiko3-websocket.js', 'cnako'],
@@ -43,7 +42,8 @@ REPOSパス=基本パスを「../」で相対パス展開。
 # サポートしない
 # 'nadesiko3-firebase/plugin_firebase.js',
 # 'nadesiko3-googlehome/plugin_googlehome.js',
-
+# 'nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js', # 利用は非推奨に
+    
 #------------------------
 結果データ＝「」
 基本プラグイン一覧を反復
