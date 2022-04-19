@@ -199,6 +199,12 @@ try {
       systemFunctionBody: 0 // システム関数(呼び出しコードを除く)
     }
 
+    /** 
+     * 未定義の変数の警告を行う
+     * @type { boolean } 
+     */
+    this.warnUndefinedVar = true
+
     // 暫定変数
     /** @type { number }  */
     this.warnUndefinedReturnUserFunc = 1
@@ -469,10 +475,14 @@ try {
     this.varslistSet = this.__self.__varslist.map((v) => ({ isFunction: false, names: new Set(Object.keys(v)), readonly: new Set() }))
     this.varslistSet[2] = this.varsSet
     
-    // 非同期関数(asyncFn)があるかどうかテストする --- 後ほど改めて再度同じ関数を呼ぶ      
+    // 非同期関数(asyncFn)があるかどうかテストする
+    // 後ほど改めて再度同じ関数を呼ぶため、警告などは抑止する
+    const tmpWarn = this.warnUndefinedVar   
+    this.warnUndefinedVar = false // 未定義の変数の警告を抑止 #1192
     for (let ff of funcList) {
       this.convDefFuncCommon(ff.node, ff.name)
     }
+    this.warnUndefinedVar = tmpWarn
   }
 
   /**
@@ -673,7 +683,9 @@ try {
       if (name === '引数' || name === 'それ' || name === '対象' || name === '対象キー') {
         // デフォルト定義されている変数名
       } else {
-        this.__self.logger.warn(`変数『${name}』は定義されていません。`, position)
+        if (this.warnUndefinedVar) {
+          this.__self.logger.warn(`変数『${name}』は定義されていません。`, position)
+        }
       }
       this.varsSet.names.add(name)
       return this.varname(name)
