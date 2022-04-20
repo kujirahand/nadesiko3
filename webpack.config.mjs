@@ -1,7 +1,7 @@
 // webpack
 import path from 'path'
 import { fileURLToPath } from 'url'
-// import StatsPlugin from 'stats-webpack-plugin' // バンドルサイズ解析のため
+import StatsPlugin from 'stats-webpack-plugin' // バンドルサイズ解析のため
 import TerserPlugin from 'terser-webpack-plugin' // サイズ縮小プラグイン
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -37,10 +37,8 @@ export default {
     filename: '[name].js'
   },
 
-  // devtool: 'cheap-module-eval-source-map',
   plugins: [
-    // new StatsPlugin('stats.json', { chunkModules: true }, null), // バンドルサイズ解析
-    // new AggressiveMergingPlugin()
+    new StatsPlugin('stats.json', { chunkModules: true }, null), // バンドルサイズ解析
   ],
 
   module: {
@@ -71,33 +69,11 @@ export default {
   },
 
   resolve: {
-    extensions: ['*', '.webpack.js', '.web.js', '.js', '.jsx'],
+    extensions: ['*', '.webpack.js', '.web.js', '.js', '.mjs', '.jsx'],
     mainFields: ['browser', 'main', 'module'],
-    fallback: {
-      /*
-      "crypto": require.resolve('crypto-browserify'),
-      "buffer": require.resolve("buffer/"),
-      "os": require.resolve("os-browserify/browser"),
-      "path": require.resolve("path-browserify"),
-      "constants": require.resolve("constants-browserify"),
-      "stream": require.resolve("stream-browserify"),
-      "assert": false,
-      "util": require.resolve("util/")
-      */
-    }
   },
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin()]
   },
-
-  // 大幅なコンパイル速度向上のために
-  /*
-  cache: {
-    type: 'filesystem',
-    buildDependencies: {
-      config: [__filename]
-    }
-  }
-  */
 }
