@@ -40,11 +40,11 @@ REPOSパス=基本パスを「../」で相対パス展開。
     ['nadesiko3php/src/plugin_php.php', 'phpnako'],
 ]
 # サポートしない
-# 'nadesiko3-firebase/plugin_firebase.mjs',
-# 'nadesiko3-googlehome/plugin_googlehome.mjs',
-# 'nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.mjs', # 利用は非推奨に
-# 'nadesiko3-drone/nadesiko3-drone.mjs', 'cnako', # ドローン
-    
+# 'nadesiko3-firebase/plugin_firebase.js',
+# 'nadesiko3-googlehome/plugin_googlehome.js',
+# 'nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js', # 利用は非推奨に
+# 'nadesiko3-drone/nadesiko3-drone.js', 'cnako', # ドローン
+
 #------------------------
 結果データ＝「」
 基本プラグイン一覧を反復
