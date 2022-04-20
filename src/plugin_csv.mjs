@@ -2,7 +2,7 @@
 
 import CSV from 'csv-lite-js'
 
-export default {
+const PluginCSV = {
   '初期化': {
     type: 'func',
     josi: [],
@@ -48,6 +48,7 @@ export default {
     }
   }
 }
+export default PluginCSV
 
 // scriptタグで取り込んだ時、自動で登録する
 if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') {
