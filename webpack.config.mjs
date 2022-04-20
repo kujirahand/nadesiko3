@@ -29,6 +29,7 @@ export default {
     plugin_datetime: [path.join(srcPath, 'plugin_datetime.mjs')],
     plugin_caniuse: [path.join(srcPath, 'plugin_caniuse.mjs')],
     plugin_webworker: [path.join(srcPath, 'plugin_webworker.mjs')],
+    plugin_weykturtle3d: [path.join(srcPath, 'plugin_weykturtle3d.mjs')],
     editor: [path.join(editorPath, 'edit_main.jsx')],
     version: [path.join(editorPath, 'version_main.jsx')]
   },

@@ -1206,9 +1206,7 @@ const PluginWeykTurtle3D = {
   }
 }
 
-if (typeof (global) === 'object' && typeof (global.process) === 'object') {
-  module.exports = PluginWeykTurtle3D
-}
+export default PluginWeykTurtle3D
 
 // ブラウザからscriptタグで取り込んだ時、自動で登録する
 if (typeof (navigator) === 'object') {

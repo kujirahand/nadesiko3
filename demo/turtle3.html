@@ -51,9 +51,12 @@ N=50
 
 <div class="sbox">
   <h4><a name="sankaku_txt_head">定期的にカメ画像を変更する</a></h4>
-  <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
+  <textarea id="gazou_henka" class="src" rows="5" title="ぐるぐる八角">
 # 画像のURLの配列を変数に代入
-画像リストは["turtle.png", "nako.png"]
+画像リストは[
+    "https://n3s.nadesi.com/image.php?f=53.png", 
+    "https://n3s.nadesi.com/image.php?f=26.png"
+]
 画像Iは1
 カメ画像URLは画像リスト[画像I]
 
@@ -70,8 +73,8 @@ N=20
 　　90だけカメ右回転
 　　N = N + 5
 ここまで。</textarea>
-  <div><p id="sankaku_txt_info" class="info"></p></div>
-  <button onclick="runBox('sankaku_txt')" class="default_button">実行</button>
+  <div><p id="gazou_henka_info" class="info"></p></div>
+  <button onclick="runBox('gazou_henka')" class="default_button">実行</button>
 </div>
 
 <div class="sbox">
@@ -95,7 +98,7 @@ N=20
 
 <div class="sbox">
   <h4><a name="sankaku_txt_head">ぐるぐる八角 - ナコ版</a></h4>
-  <textarea id="sankaku_txt" class="src" rows="5" title="ぐるぐる八角">
+  <textarea id="hakkaku" class="src" rows="5" title="ぐるぐる八角">
 「nako.png」にカメ画像変更。
 カメ作成。
 40にカメ速度設定。
@@ -109,13 +112,13 @@ N=20
 　　Nだけカメ進む
 　　45だけカメ右回転
 ここまで。</textarea>
-  <div><p id="sankaku_txt_info" class="info"></p></div>
-  <button onclick="runBox('sankaku_txt')" class="default_button">実行</button>
+  <div><p id="hakkaku_info" class="info"></p></div>
+  <button onclick="runBox('hakkaku')" class="default_button">実行</button>
 </div>
 
 <div class="sbox">
   <h4><a name="sikaku_txt_head">星星 - 二匹のカメを使う</a></h4>
-  <textarea id="sikaku_txt" class="src" rows="5" title="星星 - 二匹のカメを使う">
+  <textarea id="hosi_txt" class="src" rows="5" title="星星 - 二匹のカメを使う">
 ●星描画(歩数で)
 　　5回
 　　　　歩数だけカメ進む
@@ -124,7 +127,6 @@ N=20
 ここまで。
 カメ作成。
 50にカメ速度設定。
-「nako.png」にカメ画像変更。
 0にカメ角度設定。
 黄色にカメペン色設定。
 10回
@@ -132,7 +134,6 @@ N=20
 　　45だけカメ右回転。
 　　10だけカメ進む。
 ここまで。
-「turtle64.png」にカメ画像変更。
 カメ作成。
 90にカメ角度設定。
 緑色にカメペン色設定。
@@ -141,14 +142,14 @@ N=20
 　　45だけカメ右回転。
 　　10だけカメ進む。
 ここまで。</textarea>
-  <div><p id="sikaku_txt_info" class="info"></p></div>
-  <button onclick="runBox('sikaku_txt')" class="default_button">実行</button>
+  <div><p id="hosi_txt_info" class="info"></p></div>
+  <button onclick="runBox('hosi_txt')" class="default_button">実行</button>
 </div>
 
 
 <div class="sbox">
   <h4><a name="hosi_txt_head">18角形の描画</a></h4>
-  <textarea id="hosi_txt" class="src" rows="5" title="18角形の描画">
+  <textarea id="hosi18_txt" class="src" rows="5" title="18角形の描画">
 カメ作成。
 「turtle.png」にカメ画像変更。
 100にカメ速度設定。
@@ -162,12 +163,12 @@ A=360/18
 　　Ａだけカメ左回転。
 ここまで。</textarea>
   <div><p id="hosi_txt_info" class="info"></p></div>
-  <button onclick="runBox('hosi_txt')" class="default_button">実行</button>
+  <button onclick="runBox('hosi18_txt')" class="default_button">実行</button>
 </div>
 
 <div class="sbox">
   <h4><a name="hosi2_txt_head">花びら</a></h4>
-  <textarea id="hosi2_txt" class="src" rows="5" title="花びら">
+  <textarea id="hanabira_txt" class="src" rows="5" title="花びら">
 ●花びら描画(歩数で)
 　　4回
 　　　　60だけカメ右回転。
@@ -183,8 +184,8 @@ A=360/18
 12回
 　　３０で花びら描画。
 ここまで</textarea>
-  <div><p id="hosi2_txt_info" class="info"></p></div>
-  <button onclick="runBox('hosi2_txt')" class="default_button">実行</button>
+  <div><p id="hanabira_txt_info" class="info"></p></div>
+  <button onclick="runBox('hanabira_txt')" class="default_button">実行</button>
 </div>
 
 
