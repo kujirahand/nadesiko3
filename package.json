@@ -1,15 +1,15 @@
 {
   "name": "nadesiko3",
-  "version": "3.2.52",
+  "version": "3.3.0",
   "description": "Japanese Programming Language",
   "main": "src/index.js",
   "bin": {
-    "cnako3": "src/cnako3.js",
+    "cnako3": "src/cnako3.mjs",
     "nako3server": "src/nako3server.js",
     "nako3edit": "tools/nako3edit/run.js"
   },
   "scripts": {
-    "test": "cross-env TZ=Asia/Tokyo mocha",
+    "test": "cross-env TZ=Asia/Tokyo mocha test/common/*.mjs",
     "test:async": "mocha test/async -g aysnc_basic_test",
     "test:common": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/karma.config.js",
     "test:browser": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/browser/karma.config.js",
@@ -18,24 +18,24 @@
     "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.js",
     "test:all": "npm test && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
     "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
-    "start": "node src/nako3server.js",
-    "nako3edit": "node src/cnako3.js tools/nako3edit/index.nako3",
-    "nako3edit:run": "node tools/nako3edit/run.js",
-    "build:nako_version": "node src/cnako3.js batch/build_nako_version.nako3",
-    "build": "npm run build:browsers && npm run build:nako_version && npm run build:command && webpack --mode production && node src/cnako3.js batch/calc_hash.nako3",
+    "start": "node src/nako3server.mjs",
+    "nako3edit": "node src/cnako3.mjs tools/nako3edit/index.nako3",
+    "nako3edit:run": "node tools/nako3edit/run.mjs",
+    "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
+    "build": "npm run build:browsers && npm run build:nako_version && npm run build:command && webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
     "build:webpack": "webpack --mode development",
-    "check:command": "node src/cnako3.js batch/pickup_command.nako3",
-    "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.js batch/build_command.nako3",
-    "build:win32": "node src/cnako3.js installer/make-win32.nako3",
-    "build:browsers": "npx browserslist > src/browsers.txt && node src/cnako3.js batch/build_browsers.nako3",
+    "check:command": "node src/cnako3.mjs batch/pickup_command.nako3",
+    "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3",
+    "build:win32": "node src/cnako3.mjs installer/make-win32.nako3",
+    "build:browsers": "npx browserslist > src/browsers.txt && node src/cnako3.mjs batch/build_browsers.nako3",
     "watch": "webpack --watch --mode development",
     "analyze": "webpack-bundle-analyzer release/stats.json",
     "publish": "echo 'Please exec => npm run build && npm run test:all && npm publish && npm run publish:version'",
-    "publish:version": "node src/cnako3.js batch/publish_version.nako3",
+    "publish:version": "node src/cnako3.mjs batch/publish_version.nako3",
     "textlint": "textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md",
     "textlint:fix": "textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md",
     "extlib:clean": "rm -f -r demo/extlib/*",
-    "extlib:install": "node src/cnako3.js batch/download-extlib.nako3"
+    "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3"
   },
   "repository": {
     "type": "git",
@@ -68,7 +68,8 @@
     "last 2 versions",
     "Firefox ESR",
     "maintained node versions",
-    "not dead"
+    "not dead",
+    "not IE 11"
   ],
   "eslintConfig": {
     "extends": [
@@ -124,7 +125,7 @@
     "eslint-plugin-react": "^7.27.0",
     "fetch-mock": "^9.11.0",
     "hotkeys-js": "^3.8.7",
-    "karma": "^6.3.8",
+    "karma": "^6.3.19",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-firefox-launcher": "^2.1.2",
@@ -151,6 +152,7 @@
     "ssri": "^8.0.1",
     "standard": "^16.0.4",
     "stats-webpack-plugin": "^0.7.0",
+    "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.1",
     "stylelint": "^14.0.1",
     "stylelint-config-standard": "^24.0.0",
@@ -178,8 +180,7 @@
     "webpack": "^5.63.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
-    "ws": "^8.2.3",
-    "stream-browserify": "^3.0.0"
+    "ws": "^8.2.3"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
