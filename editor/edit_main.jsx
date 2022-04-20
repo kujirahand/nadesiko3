@@ -3,9 +3,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import dayjs from 'dayjs'
+import commandListJSON from '../release/command.json'
 
 /** @type {Record<string, Record<string, string[][]>>} */
-const commandListJSON = require('../release/command.json')
 const commandList = /** @type {{ name: String, group: { type: string, name: String, args: string, value: string }[] }[]} */([])
 for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
   const groups = commandListJSON[fname]

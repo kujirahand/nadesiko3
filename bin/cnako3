@@ -5,6 +5,6 @@ ROOT_DIR=$(
   pwd
 )
 SRC_DIR=$ROOT_DIR/src
-NAKO_JS=$SRC_DIR/cnako3.js
+NAKO_JS=$SRC_DIR/cnako3.mjs
 
 /usr/bin/env node "$NAKO_JS" $*

@@ -1,8 +1,8 @@
 /* global __html__ */
 import { assert } from 'chai'
-import NakoCompiler from 'nako3/nako3.js'
+import { NakoCompiler } from 'nako3/nako3.mjs'
 import { importStatus } from './import_plugin_checker.js'
-import PluginTurtle from 'nako3/plugin_turtle'
+import PluginTurtle from 'nako3/plugin_turtle.mjs'
 
 const htmlPath = 'test/html/'
 const imagePath = '/test/image/'
