@@ -22,7 +22,7 @@ export default {
     },
     return_none: true
   },
-  'AJAX受信': { // @「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る// @AJAXじゅしん
+  'AJAX受信': { // @ (非推奨)『AJAXテキスト取得』をご利用ください。-「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る// @AJAXじゅしん
     type: 'func',
     josi: [['から', 'を']],
     pure: true,
@@ -162,7 +162,7 @@ export default {
     },
     return_none: true
   },
-  'AJAX送信': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。 // @AJAXそうしん
+  'AJAX送信': { // @(非推奨)『AJAXテキスト取得』をご利用ください。- 逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。 // @AJAXそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
@@ -172,7 +172,7 @@ export default {
     },
     return_none: true
   },
-  'AJAX逐次送信': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。 // @AJAXちくじそうしん
+  'AJAX逐次送信': { // @(非推奨)『AJAXテキスト取得』をご利用ください。- 逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。 // @AJAXちくじそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
@@ -205,17 +205,17 @@ export default {
     },
     return_none: false
   },
-  'HTTP取得': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @HTTPしゅとく
+  'HTTP取得': { // @(非推奨)『AJAXテキスト取得』をご利用ください。- 逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @HTTPしゅとく
     type: 'func',
     josi: [['の', 'から', 'を']],
-    pure: false,
+    pure: true,
     fn: function (url, sys) {
       if (!sys.resolve) { throw new Error('『HTTP取得』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('AJAX逐次送信', [url, sys])
     },
     return_none: true
   },
-  'HTTP逐次取得': { // @逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @HTTPちくじしゅとく
+  'HTTP逐次取得': { // @(非推奨)『AJAXテキスト取得』をご利用ください。- 逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @HTTPちくじしゅとく
     type: 'func',
     josi: [['の', 'から', 'を']],
     pure: false,
