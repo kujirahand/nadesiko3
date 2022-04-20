@@ -1,0 +1,21 @@
+# src/turtle64.png を src/image_turtle64.mjs に変換する
+
+SRC_DIR = 母艦パスを「../src」で相対パス展開。
+SRC_DIRを表示。
+
+「turtle64.png」をJS変換処理
+「turtle-panda.png」をJS変換処理
+「turtle-elephant.png」をJS変換処理
+
+●(Fを)JS変換処理
+　　BIN =「{SRC_DIR}/{F}」をバイナリ読む。
+　　B64 = BINをBASE64エンコード
+　　FNAME=Fの「.png」を「.mjs」に置換。
+　　FULLNAME=「{SRC_DIR}/image_{FNAME}」
+　　「
+// file:{F}
+export default 'data:image/png;base64,{B64}'
+//
+    」をFULLNAMEへ保存。
+    FULLNAMEを表示。
+ここまで。

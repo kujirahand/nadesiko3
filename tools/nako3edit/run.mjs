@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 
-const spawn = require('child_process').spawn
-const path = require('path')
+import { spawn } from 'child_process'
+import path from 'path'
+
+// __dirname のために
+import url from 'url'
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const nakoHome = path.resolve(path.join(__dirname, '../../'))
 const cnako3 = path.resolve(path.join(nakoHome, 'src/cnako3.js'))
 const nako3edit = path.resolve(path.join(__dirname, 'index.nako3'))

@@ -1,11 +1,10 @@
-const assert = require('assert')
-const NakoCompiler = require('../../src/nako3.js')
-const NakoGenAsync = require('../../src/nako_gen_async.js')
+import assert from 'assert'
+import { NakoCompiler }  from '../../src/nako3.mjs'
+import { NakoGenASync } from '../../src/nako_gen_async.mjs'
 
 describe('aysnc_basic_test', () => {
   // @ts-ignore
   const nako = new NakoCompiler()
-  nako.addCodeGenerator('非同期モード', NakoGenAsync)
   const cmp = (/** @type {string} */code, /** @type {string} */res) => {
     code = '!非同期モード\n' + code
     nako.logger.debug('code=' + code)

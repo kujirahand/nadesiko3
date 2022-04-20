@@ -2622,7 +2622,7 @@ export default {
     pure: true,
     fn: function (text) {
       // browser?
-      if (window.btoa) {
+      if (typeof(window) !== 'undefined' && window.btoa) {
         const utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text))
         return btoa(utf8str)
       } else {
@@ -2635,7 +2635,7 @@ export default {
     josi: [['を', 'へ', 'に']],
     pure: true,
     fn: function (text) {
-      if (window.atob) {
+      if (typeof(window) !== 'undefined' && window.atob) {
         const decodedUtf8str = atob(text)
         const decodedArray = new Uint8Array(Array.prototype.map.call(decodedUtf8str, c => c.charCodeAt()))
         return new TextDecoder('UTF-8').decode(decodedArray)

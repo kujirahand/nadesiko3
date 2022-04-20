@@ -4,9 +4,9 @@
  * plugin_turtle.js
  */
 
-const turtleImage = require('./turtle64.png').default
-const elephantImage = require('./turtle-elephant.png').default
-const pandaImage = require('./turtle-panda.png').default
+import turtleImage from './image_turtle64.mjs'
+import elephantImage from './image_turtle-elephant.mjs'
+import pandaImage from './image_turtle-panda.mjs'
 
 const PluginTurtle = {
   '初期化': {
