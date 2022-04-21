@@ -723,7 +723,7 @@ export class LanguageFeatures {
      * @param {number} endRow
      */
   static toggleCommentLines (state, { doc }, startRow, endRow) {
-    const prepare = new NakoPrepare(new NakoLogger())
+    const prepare = NakoPrepare.getInstance(new NakoLogger())
     /**
          * @param {string} line
          * @returns {{ type: 'blank' | 'code' } | { type: 'comment', start: number, len: number }}

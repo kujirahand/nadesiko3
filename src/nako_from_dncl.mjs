@@ -2,8 +2,9 @@
  * DNCLに対応する構文
  */
 // import { NakoIndentError } from './nako_errors.mjs'
-import { NakoPrepare } from './nako_prepare.mjs'
+import { NakoPrepare, checkNakoMode } from './nako_prepare.mjs'
 
+// DNCLモードのキーワード
 const DNCL_KEYWORDS = ['!DNCLモード']
 
 /**
@@ -16,7 +17,7 @@ export function convertDNCL(src, filename) {
     // 改行を合わせる
     src = src.replace(/(\r\n|\r)/g, '\n')
     // 「!DNCLモード」を使うかチェック
-    if (!isIndentSyntaxEnabled(src)) { return src }
+    if (!checkNakoMode(src, DNCL_KEYWORDS)) { return src }
     let result = dncl2nako(src, filename)
     // console.log("=====\n" + result)
     // process.exit()
@@ -218,7 +219,7 @@ function dncl2nako(src, filename) {
  * @returns {string} converted source
  */
 function conv2half(src) {
-    const prepare = new NakoPrepare() // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
+    const prepare = NakoPrepare.getInstance(null) // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
     // 全角半角の統一
     let result = ''
     let flagStr = false

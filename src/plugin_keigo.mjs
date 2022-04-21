@@ -53,4 +53,3 @@ const PluginKeigo = {
 }
 
 export default PluginKeigo
-// module.exports = PluginKeigo

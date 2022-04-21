@@ -113,7 +113,7 @@ export class NakoCompiler {
     this.logger = new NakoLogger()
 
     // 必要なオブジェクトを覚えておく
-    this.prepare = new NakoPrepare(this.logger)
+    this.prepare = NakoPrepare.getInstance(this.logger)
     this.parser = new NakoParser(this.logger)
     this.lexer = new NakoLexer(this.logger)
 

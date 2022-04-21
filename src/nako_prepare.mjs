@@ -7,7 +7,7 @@
 /**
  * 置換後の位置から置換前の位置へマッピングできる文字列
  */
-class Replace {
+export class Replace {
   /**
    * @param {string} code
    */
@@ -65,15 +65,33 @@ class Replace {
   }
 }
 
-// 字句解析を行う前に全角文字を半角に揃える
-// ただし、文字列部分だけは、そのまま全角で出力するようにする
-// for https://github.com/kujirahand/nadesiko3/issues/94
+/** @type {NakoPrepare} */
+let nakoPrepareObj = null
+/**
+ * 字句解析を行う前に全角文字を半角に揃える
+ *    [memo]
+ *    ただし、文字列部分だけは、そのまま全角で出力するようにする
+ *    for https://github.com/kujirahand/nadesiko3/issues/94
+ */
 export class NakoPrepare {
+
+  /** 
+   * 唯一のインスタンスを返す
+   * @param {import("./nako_logger.mjs") | null} logger
+   * @returns {NakoPrepare}
+   */
+  static getInstance(logger) {
+    if (nakoPrepareObj === null) {
+      nakoPrepareObj = new NakoPrepare(logger)
+    }
+    return nakoPrepareObj
+  }
+
   /**
-   * @param {import("./nako_logger")} logger
+   * @param {import("./nako_logger.mjs") | null} logger
    */
   constructor (logger) {
-    this.logger = logger
+    if (logger !== null) { this.logger = logger }
 
     // 参考) https://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.html
     this.HYPHENS = { // ハイフン問題
@@ -294,3 +312,24 @@ export class NakoPrepare {
   }
 }
 
+/** 
+ * なでしこのソースコードのモード(!インデント構文など)が設定されているか調べる
+ * @param {string} code
+ * @param {Array<string>} modeNames
+ * @returns {boolean}
+ */
+export function checkNakoMode(code, modeNames) {
+  // 先頭の256文字について調べる
+  code = code.substring(0, 256)
+  // 全角半角の揺れを吸収
+  code = code.replace(/(！|💡)/, '!')
+  // 範囲コメントを削除
+  code = code.replace(/\/\*.*?\*\//g, '')
+  // 毎文調べる
+  const lines = code.split(/[;。\n]/, 30)
+  for (let line of lines) {
+    line = line.replace(/^\s+/, '').replace(/\s+$/, '') // trim
+    if (modeNames.indexOf(line) >= 0) return true
+  }
+  return false
+}

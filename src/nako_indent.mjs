@@ -1,5 +1,8 @@
 import { NakoIndentError } from './nako_errors.mjs'
-import { NakoPrepare } from './nako_prepare.mjs'
+import { NakoPrepare, checkNakoMode } from './nako_prepare.mjs'
+
+// インデント構文のキーワード
+const INDENT_MODE_KEYWORDS = ['!インデント構文', '!ここまでだるい']
 
 /**
  * インデント構文指定があればコードを変換する
@@ -8,8 +11,8 @@ import { NakoPrepare } from './nako_prepare.mjs'
  * @returns {{ code: string, insertedLines: number[], deletedLines: { lineNumber: number, len: number }[] }}
  */
 function convert (code, filename) {
-  // 最初の30行をチェック
-  if (isIndentSyntaxEnabled(code)) {
+  // インデント構文の適用が必要か？
+  if (checkNakoMode(code, INDENT_MODE_KEYWORDS)) {
     return convertGo(code, filename)
   }
   return { code, insertedLines: [], deletedLines: [] }
@@ -19,31 +22,13 @@ function convert (code, filename) {
 const SpecialRetMark = '🌟🌟改行🌟🌟s4j#WjcSb😀/FcX3🌟🌟'
 
 /**
- * @param {string} code
- * @returns {boolean}
- */
-function isIndentSyntaxEnabled (code) {
-  // プログラム冒頭に「!インデント構文」があればインデント構文が有効
-  const keywords = ['!インデント構文', '!ここまでだるい']
-  const lines = code.split('\n', 30)
-  for (const line of lines) {
-    const sline = line.replace(/^(！|💡)/, '!')
-    const s9 = sline.substring(0, 8)
-    if (keywords.indexOf(s9) >= 0) {
-      return true
-    }
-  }
-  return false
-}
-
-/**
  * ソースコードのある1行の中のコメントを全て取り除く。
  * 事前にreplaceRetMarkによって文字列や範囲コメント内の改行文字が置換されている必要がある。
  * @param {string} src
  * @return {string}
  */
 function removeCommentsFromLine (src) {
-  const prepare = new NakoPrepare() // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
+  const prepare = NakoPrepare.getInstance(null) // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
   const len = src.length
   let result = ''
   let eos = ''
@@ -312,7 +297,7 @@ function countIndent (line) {
 }
 
 function replaceRetMark (src) {
-  const prepare = new NakoPrepare() // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
+  const prepare = NakoPrepare.getInstance(null) // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
   const len = src.length
   let result = ''
   let eos = ''
@@ -477,5 +462,4 @@ export default {
   getBlockStructure,
   getIndent,
   countIndent,
-  isIndentSyntaxEnabled
 }
