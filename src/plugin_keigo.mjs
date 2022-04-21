@@ -52,4 +52,5 @@ const PluginKeigo = {
 
 }
 
-module.exports = PluginKeigo
+export default PluginKeigo
+// module.exports = PluginKeigo
