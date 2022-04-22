@@ -201,7 +201,12 @@ export class NakoCompiler {
     const inner = (code, filename, preCode) => {
       /** @type {Promise<unknown>[]} */
       const tasks = []
-      for (const item of NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode)).map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken) }))) {
+      // 取り込みが必要な情報一覧を調べる(トークン分割して、取り込みタグを得る)
+      const tags = NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode))
+      // パスを解決する
+      const tagsResolvePath = tags.map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken) }))
+      // 取り込み開始
+      for (const item of tagsResolvePath) {
         // 2回目以降の読み込み
         // eslint-disable-next-line no-prototype-builtins
         if (dependencies.hasOwnProperty(item.filePath)) {
@@ -233,7 +238,7 @@ export class NakoCompiler {
             // シンタックスハイライトの高速化のために、事前にファイルが定義する関数名のリストを取り出しておく。
             // preDefineFuncはトークン列に変更を加えるため、事前にクローンしておく。
             // 「プラグイン名設定」を行う (#956)
-            code = `「${item.filePath}」にプラグイン名設定;` + code + ';『メイン』にプラグイン名設定;'
+            code = `『${item.filePath}』にプラグイン名設定;` + code + ';『メイン』にプラグイン名設定;'
             const tokens = this.rawtokenize(code, 0, item.filePath)
             dependencies[item.filePath].tokens = tokens
             /** @type {import('./nako_lexer').FuncList} */
@@ -250,7 +255,7 @@ export class NakoCompiler {
             tasks.push(content.value.then((res) => registerFile(res)))
           }
         } else {
-          throw new NakoImportError(`ファイル ${item.value} を読み込めません。未対応の拡張子です。`, item.firstToken.line, item.firstToken.file)
+          throw new NakoImportError(`ファイル『${item.value}』を読み込めません。ファイルが存在しないか未対応の拡張子です。`, item.firstToken.file, item.firstToken.line)
         }
       }
 
@@ -264,15 +269,20 @@ export class NakoCompiler {
 
       // 非同期な場合のエラーハンドリング
       if (result !== undefined) {
-        result.catch((err) => { this.logger.error(err); throw err })
+        result.catch((err) => {
+          // 読み込みに失敗しても処理は続ける方針なので、失敗しても例外は投げない
+          // たぶん、その後の構文解析でエラーになるため  
+          this.logger.warn(err.msg)
+        })
       }
 
       // すべてが終わってからthis.dependenciesに代入する。そうしないと、「実行」ボタンを連打した場合など、
       // loadDependencies() が並列実行されるときに正しく動作しない。
       this.dependencies = dependencies
       return result
-    } catch (err) { // 同期的な場合のエラーハンドリング
-      this.logger.error(err)
+    } catch (err) {
+      // 同期処理では素直に例外を投げる
+      this.logger.warn(err.msg)
       throw err
     }
   }
@@ -443,9 +453,7 @@ export class NakoCompiler {
       }
       const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
       if (filePath === undefined) {
-        //console.log('@@@@=',r.value, this.dependencies)
-        // TODO: エラーが出るが、無視しても
-        // throw new NakoLexerError(`ファイル ${r.value} が読み込まれていません。`, r.firstToken.startOffset, r.firstToken.endOffset, r.firstToken.line, r.firstToken.file)
+        throw new NakoLexerError(`ファイル ${r.value} が読み込まれていません。`, r.firstToken.startOffset, r.firstToken.endOffset, r.firstToken.line, r.firstToken.file)
       }
       this.dependencies[filePath].addPluginFile()
       const children = cloneAsJSON(this.dependencies[filePath].tokens)

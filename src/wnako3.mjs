@@ -18,7 +18,7 @@ class WebNakoCompiler extends NakoCompiler {
   /**
    * ブラウザでtype="なでしこ"というスクリプトを得て実行する
    */
-  runNakoScript () {
+  async runNakoScript () {
     // スクリプトタグの中身を得る
     let nakoScriptCount = 0
     const scripts = document.querySelectorAll('script')
@@ -26,7 +26,14 @@ class WebNakoCompiler extends NakoCompiler {
       const script = scripts[i]
       if (script.type.match(NAKO_SCRIPT_RE)) {
         nakoScriptCount++
-        this.run(script.text, `script${i}.nako3`)
+        // URLからスクリプト名を見つける
+        const url = (typeof(window.location) == 'object') ? window.location.href : 'url_unknown'
+        const fname = `${url}#script${nakoScriptCount}.nako3`
+        const code = script.text
+        // 依存するライブラリをロード
+        await this.loadDependencies(code, fname)
+        // プログラムを実行
+        this.run(script.text, fname)
       }
     }
     console.log('実行したなでしこの個数=', nakoScriptCount)
@@ -59,11 +66,11 @@ class WebNakoCompiler extends NakoCompiler {
           value: (async () => {
             const res = await fetch(filePath)
             if (!res.ok) {
-              throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
+              throw new NakoImportError(`ファイル『${filePath}』のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
             }
             const text = await res.text()
             if (!text.includes('navigator.nako3.addPluginObject')) {
-              throw new NakoImportError(`ファイル ${filePath} の中に文字列 "navigator.nako3.addPluginObject" が存在しません。現在、ブラウザ版のなでしこ言語v3は自動登録するプラグインのみをサポートしています。`, token.line, token.file)
+              throw new NakoImportError(`ファイル ${filePath} の中に文字列 "navigator.nako3.addPluginObject" が存在しません。現在、ブラウザ版のなでしこ言語v3は自動登録するプラグインのみをサポートしています。`, token.file, token.line)
             }
             // textの例: `navigator.nako3.addPluginObject('PluginRequireTest', { requiretest: { type: 'var', value: 100 } })`
             return () => {
@@ -74,7 +81,7 @@ class WebNakoCompiler extends NakoCompiler {
                 // eslint-disable-next-line no-new-func
                 Function(text)()
               } catch (err) {
-                throw new NakoImportError(`プラグイン ${filePath} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`, token.line, token.file)
+                throw new NakoImportError(`プラグイン ${filePath} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`, token.file, token.line)
               } finally {
                 navigator.nako3 = globalNako3
               }
@@ -93,7 +100,7 @@ class WebNakoCompiler extends NakoCompiler {
           value: (async () => {
             const res = await fetch(filePath)
             if (!res.ok) {
-              throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.line, token.file)
+              throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
             }
             return await res.text()
           })()
@@ -114,17 +121,20 @@ class WebNakoCompiler extends NakoCompiler {
               const href = href_dir + '/' + name
               pathname = new URL(href).pathname
             } catch (e) {
-              throw new NakoImportError(`取り込み文の引数でパスが解決できません。https:// か http:// で始まるアドレスを指定してください。\n${e}`, token.line, token.file)
+              throw new NakoImportError(`取り込み文の引数でパスが解決できません。https:// か http:// で始まるアドレスを指定してください。\n${e}`, token.file, token.line)
             }
           }
         }
-        if (pathname.endsWith('.js') || pathname.endsWith('.js.txt')) {
+        // .js および .mjs なら JSプラグイン
+        if (pathname.endsWith('.js') || pathname.endsWith('.js.txt') || pathname.endsWith('.mjs') || pathname.endsWith('.mjs.txt')) {
           return { filePath: name, type: 'js' }
         }
+        // .nako3 なら なでしこ3プラグイン
         if (pathname.endsWith('.nako3') || pathname.endsWith('.nako3.txt')) {
           return { filePath: name, type: 'nako3' }
         }
-        return { filePath: name, type: 'invalid' }
+        // ファイル拡張子が未指定の場合
+        throw new NakoImportError(`ファイル『${name}』は拡張子が(.nako3|.js|.js.txt|.mjs|.mjs.txt)以外なので取り込めません。`, token.file, token.line)
       }
     })
   }

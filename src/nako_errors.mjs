@@ -155,10 +155,10 @@ export class NakoRuntimeError extends NakoError {
 export class NakoImportError extends NakoError {
   /**
    * @param {string} msg
-   * @param {number} line
    * @param {string} file
+   * @param {number} line
    */
-  constructor (msg, line, file) {
+  constructor (msg, file, line) {
     super('取り込みエラー', msg, file, line)
     this.file = file
     this.line = line

@@ -734,11 +734,11 @@ export class LanguageFeatures {
       if (indent === line) {
         return { type: 'blank' }
       }
-      line = line.substr(indent.length)
+      line = line.substring(indent.length)
 
       // 先頭がコメントの開始文字かどうか確認する
-      const ch2 = line.substr(0, 2).split('').map((c) => prepare.convert1ch(c)).join('')
-      if (ch2.substr(0, 1) === '#') {
+      const ch2 = line.substring(0, 2).split('').map((c) => prepare.convert1ch(c)).join('')
+      if (ch2.substring(0, 1) === '#') {
         return { type: 'comment', start: indent.length, len: 1 + (line.charAt(1) === ' ' ? 1 : 0) }
       }
       if (ch2 === '//') {

@@ -18,6 +18,15 @@ function convert (code, filename) {
   return { code, insertedLines: [], deletedLines: [] }
 }
 
+/**
+ * インデント構文指定があるかチェックする
+ * @param {string} code
+ * @returns {boolean}
+ */
+ function isIndentSyntaxEnabled(code) {
+  return checkNakoMode(code, INDENT_MODE_KEYWORDS)
+}
+
 // ありえない改行マークを定義
 const SpecialRetMark = '🌟🌟改行🌟🌟s4j#WjcSb😀/FcX3🌟🌟'
 
@@ -472,4 +481,5 @@ export default {
   getBlockStructure,
   getIndent,
   countIndent,
+  isIndentSyntaxEnabled,
 }

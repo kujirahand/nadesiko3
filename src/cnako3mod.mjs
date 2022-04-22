@@ -124,7 +124,9 @@ export class CNako3 extends NakoCompiler {
 
   // 実行する
   async execCommand () {
+    // コマンドを解析
     const opt = this.checkArguments()
+    // 使い方の表示か？
     if (opt.man) {
       this.cnakoMan(opt.man)
       return
@@ -309,9 +311,15 @@ export class CNako3 extends NakoCompiler {
     const log = []
     const tools = {
       resolvePath: (name, token) => {
+        // JSプラグインのパスを解決する
         if (/\.(js|mjs)(\.txt)?$/.test(name) || /^[^.]*$/.test(name)) {
-          return { filePath: path.resolve(CNako3.findPluginFile(name, this.filename, __dirname, log)), type: 'js' }
+          const jspath = CNako3.findJSPluginFile(name, this.filename, __dirname, log)
+          if (jspath === '') {
+            throw new NakoImportError(`ファイル『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
+          }
+          return { filePath: jspath, type: 'js' }
         }
+        // なでしこプラグインのパスを解決する
         if (/\.nako3?(\.txt)?$/.test(name)) {
           if (path.isAbsolute(name)) {
             return { filePath: path.resolve(name), type: 'nako3' }
@@ -327,7 +335,7 @@ export class CNako3 extends NakoCompiler {
       },
       readNako3: (name, token) => {
         if (!fs.existsSync(name)) {
-          throw new NakoImportError(`ファイル ${name} が存在しません。`, token.line, token.file)
+          throw new NakoImportError(`ファイル ${name} が存在しません。`, token.file, token.line)
         }
         return { sync: true, value: fs.readFileSync(name).toString() }
       },
@@ -345,7 +353,7 @@ export class CNako3 extends NakoCompiler {
               const obj = Object.assign({}, mod)
               resolve(() => { return obj.default })
             }).catch((err) => {
-              const err2 = new NakoImportError(`ファイル ${filePath} が読み込めません。${err}`, token.line, token.file)
+              const err2 = new NakoImportError(`ファイル『${filePath}』が読み込めません。${err}`, token.file, token.line)
               reject(err2)
             })
           })
@@ -362,84 +370,95 @@ export class CNako3 extends NakoCompiler {
    * @param {string} [preCode]
    */
   async run (code, fname, preCode = '') {
-    await this.loadDependencies(code, fname, preCode)
+    // 取り込む文の処理
+    await this.loadDependencies(code, fname, preCode).catch((err) => {
+      this.logger.error(err)
+    })
+    // 実行
     return this._runEx(code, fname, {}, preCode)
   }
 
   /**
    * プラグインファイルの検索を行う
-   * @param {string} pname
-   * @param {string} filename
+   * @param {string} pname プラグインの名前
+   * @param {string} filename 取り込み元ファイル名
    * @param {string} srcDir このファイルが存在するディレクトリ
    * @param {string[]} [log]
-   * @return {string} フルパス
+   * @return {string} フルパス、失敗した時は、''を返す
    */
-  static findPluginFile (pname, filename, srcDir, log = []) {
+  static findJSPluginFile (pname, filename, srcDir, log = []) {
     log.length = 0
+    const cachePath = {}
     /** @type {string[]} */
-    // フルパス指定か?
-    const p1 = pname.substr(0, 1)
-    if (p1 === '/') {
-      // フルパス指定なので何もしない
-      return pname
-    }
-    // 各パスを調べる
-    const exists = (f, desc) => {
-      const result = fs.existsSync(f)
+    const exists = (f, _desc) => {
+      // 同じパスを何度も検索することがないように
+      if (cachePath[f]) { return false }
+      cachePath[f] = true
       log.push(f)
-      // console.log(result, 'exists[', desc, '] =', f)
-      return result
+      const stat = fs.statSync(f, {throwIfNoEntry: false})
+      if (!stat) { return false }
+      return stat.isFile()
     }
+    // 普通にファイルをチェック
     const fCheck = (pathTest) => {
-      // 素直にチェック
+      // 素直に指定されたパスをチェック
       let fpath = path.join(pathTest, pname)
       if (exists(fpath, 'direct')) { return fpath }
-
-      // プラグイン名を分解してチェック
-      const m = pname.match(/^(plugin_|nadesiko3-)([a-zA-Z0-9_-]+)/)
-      if (!m) { return false }
-      const name = m[2]
-      // plugin_xxx.js
-      // eslint-disable-next-line camelcase
-      const plugin_xxx_js = 'plugin_' + name + '.js'
-      fpath = path.join(pathTest, plugin_xxx_js)
-      if (exists(fpath, 'plugin_xxx.js')) { return fpath }
-      fpath = path.join(pathTest, 'src', plugin_xxx_js)
-      if (exists(fpath, 'src/plugin_xxx.mjs')) { return fpath }
-      // nadesiko3-xxx
-      // eslint-disable-next-line camelcase
-      const nadesiko3_xxx = 'nadesiko3-' + name
-      fpath = path.join(pathTest, nadesiko3_xxx)
-      if (exists(fpath, 'nadesiko3-xxx')) { return fpath }
-      fpath = path.join(pathTest, 'node_modules', nadesiko3_xxx)
-      if (exists(fpath, 'node_modules/nadesiko3-xxx')) { return fpath }
       return false
     }
+    // ファイル および node_modules 以下を調べる
+    const fCheckEx = (pathTest) => {
+      const defPath = fCheck(pathTest)
+      if (defPath) { return defPath }
+      const fpath = path.join(pathTest, 'node_modules', pname)
+      const json = path.join(fpath, 'package.json')
+      if (exists(json)) {
+        // package.jsonを見つけたので、メインファイルを調べて取り込む (CommonJSモジュール対策)
+        const json_txt = fs.readFileSync(json, 'utf-8')
+        const obj = JSON.parse(json_txt)
+        if (!obj['main']) { return false } 
+        const mainFile = path.join(pathTest, 'node_modules', pname, obj['main'])
+        return mainFile
+      }
+      return false
+    }
+    // 各パスを検索していく
+    const p1 = pname.substring(0, 1)
+    // フルパス指定か?
+    if (p1 === '/') {
+      if (exists(pname)) { return pname }
+      const fileFullpath = fCheckEx(pname)
+      if (fileFullpath) { return fileFullpath }
+      return '' // フルパスの場合別のフォルダは調べない
+    }
     // 相対パスか?
-    if (p1 === '.') {
+    if (p1 === '.' || pname.indexOf('/') >= 0) {
       // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
       const pathRelative = path.resolve(path.dirname(filename))
-      const fileRelative = fCheck(pathRelative)
+      const fileRelative = fCheckEx(pathRelative)
       if (fileRelative) { return fileRelative }
+      return '' // 相対パスの場合も別のフォルダは調べない
     }
-    // nako3スクリプトパスか?
+    // plugin_xxx.mjs のようにファイル名のみが指定された場合のみ、いくつかのパスを調べる
+    // 母艦パス(元ファイルと同じフォルダ)か?
     const pathScript = path.resolve(path.dirname(filename))
-    const fileScript = fCheck(pathScript)
+    const fileScript = fCheckEx(pathScript)
     if (fileScript) { return fileScript }
 
     // ランタイムパス/src
-    const pathRuntimeSrc = path.resolve(srcDir)
+    const pathRuntimeSrc = path.resolve(srcDir) // cnako3mod.mjs は ランタイム/src に配置されていることが前提
     const fileRuntimeSrc = fCheck(pathRuntimeSrc)
     if (fileRuntimeSrc) { return fileRuntimeSrc }
+
     // ランタイムパス
-    const pathRuntime = path.dirname(pathRuntimeSrc)
-    const fileRuntime = fCheck(pathRuntime)
+    const pathRuntime = path.resolve(path.dirname(srcDir))
+    const fileRuntime = fCheckEx(pathRuntime)
     if (fileRuntime) { return fileRuntime }
 
     // 環境変数 NAKO_HOMEか?
     if (process.env.NAKO_HOME) {
       const NAKO_HOME = path.resolve(process.env.NAKO_HOME)
-      const fileHome = fCheck(NAKO_HOME)
+      const fileHome = fCheckEx(NAKO_HOME)
       if (fileHome) { return fileHome }
       // NAKO_HOME/src ?
       const pathNakoHomeSrc = path.join(NAKO_HOME, 'src')
@@ -449,10 +468,10 @@ export class CNako3 extends NakoCompiler {
     // 環境変数 NODE_PATH (global) 以下にあるか？
     if (process.env.NODE_PATH) {
       const pathNode = path.resolve(process.env.NODE_PATH)
-      const fileNode = fCheck(pathNode)
+      const fileNode = fCheckEx(pathNode)
       if (fileNode) { return fileNode }
     }
-    // Nodeのパス検索に任せる
-    return pname
+    // Nodeのパス検索には任せない(importで必ず失敗するので)
+    return ''
   }
 }
