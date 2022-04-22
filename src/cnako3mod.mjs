@@ -332,6 +332,11 @@ export class CNako3 extends NakoCompiler {
       },
       readJs: (filePath, token) => {
         const content = {sync: false, value: null}
+        if (process.platform === 'win32') {
+          if (filePath.substring(1, 3) === ':\\') {
+            filePath = 'file://' + filePath
+          }
+        }
         content.value = (
           new Promise((resolve, reject) => {
             import(filePath).then((mod) => {
