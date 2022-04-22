@@ -57,8 +57,12 @@ FNAME="無題.nako3"
     "appkey": APPKEY
   }をPOST送信した時には
     H＝対象をHTML変換して改行を「<br />」に置換。
-    Hの「(\[.*?\])」を「<span style='color:red;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
-    Hの「(『.*?』)」を「<span style='color:blue;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
+    Hで「エラー]」が何文字目。
+    もし、そうならば
+      Hの「(\[\d+m)」を「」に正規表現置換してHに代入。
+      Hの「(\[.*?\])」を「<span style='color:red;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
+      Hの「(『.*?』)」を「<span style='color:blue;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
+    ここまで。
     「#result」にHをDOMテキスト設定。
   ここまで。
 ここまで
