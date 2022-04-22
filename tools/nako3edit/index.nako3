@@ -158,7 +158,7 @@ WEBサーバ起動失敗した時には
       F_OS=OS取得。
       もし、F_OS="win32"ならば
       　　NODE=母艦パスを「../../nodejs/node.exe」で相対パス展開。
-      　　CNAKO3=母艦パスを「../../src/cnako3.js」で相対パス展開。
+      　　CNAKO3=母艦パスを「../../src/cnako3.mjs」で相対パス展開。
       　　BAT=「{USER_DIR}\__editor_run.bat」
       　　BATへ「cd "{USER_DIR}"{改行}"{NODE}" "{CNAKO3}" "{FPATH}"{改行}」を保存。
       　　RES=BATを起動待機。
