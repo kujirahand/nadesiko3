@@ -160,16 +160,20 @@ WEBサーバ起動失敗した時には
       　　NODE=母艦パスを「../../nodejs/node.exe」で相対パス展開。
       　　CNAKO3=母艦パスを「../../src/cnako3.mjs」で相対パス展開。
       　　BAT=「{USER_DIR}\__editor_run.bat」
-      　　BATへ「cd "{USER_DIR}"{改行}"{NODE}" "{CNAKO3}" "{FPATH}"{改行}」を保存。
-      　　RES=BATを起動待機。
+      　　BATへ「echo off{CR}{LF}chcp 65001{CR}{LF}echo -----{CR}{LF}cd "{USER_DIR}"{CR}{LF}"{NODE}" "{CNAKO3}" "{FPATH}"{CR}{LF}」を保存。
+      　　RES=「cmd.exe /c "{BAT}"」を起動待機。
       違えば
       　　CNAKO3=母艦パスを「../../bin/cnako3」で相対パス展開。
       　　SH=「{USER_DIR}/__editor_run.sh」
-      SHへ「cd "{USER_DIR}"{改行}"{CNAKO3}" "{FPATH}"{改行}」を保存。
+      SHへ「#!/bin/bash{LF}echo "-----"{LF}cd "{USER_DIR}"{LF}"{CNAKO3}" "{FPATH}"{LF}」を保存。
       　　
       　　RES=「bash "{SH}"」を起動待機。
       ここまで。
       「---」と表示。
+      I=RESで「-----」が何文字目
+      もし、I>0ならば
+        RES=(MID(RES,I+5,(RESの文字数))をトリム)
+      ここまで
       RESをWEBサーバ出力。
     エラーならば
       「[ERROR] {エラーメッセージ}」をWEBサーバ出力。
