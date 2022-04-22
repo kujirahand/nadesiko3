@@ -89,7 +89,7 @@ export class CNako3 extends NakoCompiler {
       source: app.eval || '',
       man: app.man || '',
       one_liner: app.eval || false,
-      debug: this.debug,
+      debug: this.debug || false,
       trace: app.trace,
       warn: app.warn,
       repl: app.repl || false,
@@ -155,10 +155,11 @@ export class CNako3 extends NakoCompiler {
     }
     try {
       if (opt.test) {
-        this.loadDependencies(src, opt.mainfile, '')
+        await this.loadDependencies(src, opt.mainfile, '')
         this.test(src, opt.mainfile)
       } else {
-        this.run(src, opt.mainfile)
+        // run はコンパイルと実行を行うメソッド
+        await this.run(src, opt.mainfile)
       }
       if (opt.test && this.numFailures > 0) {
         process.exit(1)
