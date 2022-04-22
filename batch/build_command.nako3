@@ -28,7 +28,7 @@
 「{基本パス}/batch/command_nakopad.txt」から「{基本パス}/installer/nako3-win32-template/bin/tools/command.txt」へファイルコピー。
 
 ●CNAKO実行(Cを)
-    CMD=「node {基本パス}/src/cnako3.js {C}」
+    CMD=「node {基本パス}/src/cnako3.mjs {C}」
     Cを表示。
     S=CMDを起動待機。
     成功フラグ＝はい。

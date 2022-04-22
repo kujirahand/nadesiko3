@@ -1,5 +1,5 @@
 # 予約語の定義
-PATH=母艦パスを「../src/nako_reserved_words.js」で相対パス展開。
+PATH=母艦パスを「../src/nako_reserved_words.mjs」で相対パス展開。
 A=[]
 PATHを開いて、改行で区切る。
 反復

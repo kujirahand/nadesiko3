@@ -1,4 +1,4 @@
-const assert = require('assert').strict
+const assert = require('assert')
 
 class PluginUtHelper {
   constructor (targePlugin) {

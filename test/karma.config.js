@@ -5,7 +5,7 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['mocha','webpack'],
     files: [
-      'common/*.js'
+      'common/*.mjs'
     ],
     plugins: [
       'karma-firefox-launcher',
@@ -32,7 +32,7 @@ module.exports = function(config) {
         }
     },
     preprocessors: {
-      'common/*.js': ['webpack']
+      'common/*.mjs': ['webpack']
     },
     // webpackの設定
     webpack: {
@@ -41,7 +41,7 @@ module.exports = function(config) {
       module: {
         rules: [
           {
-            test: /\.js$/,
+            test: /\.(js|mjs)$/,
             exclude: /(node_modules|bower_components)/,
             use: { loader: 'babel-loader' }
           }

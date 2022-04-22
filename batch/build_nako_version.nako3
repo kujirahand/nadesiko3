@@ -3,15 +3,12 @@
 VER=P@"version"
 定数[MAJOR,MINOR,PATCH]=(VERを「.」で区切る)
 VS=「// なでしこバージョン
-const nakoVersion = {波カッコ}
+export default {波カッコ}
   version: '{VER}',
   major: {MAJOR},
   minor: {MINOR},
   patch: {PATCH}
 {波カッコ閉}
-module.exports = nakoVersion
 」
 VSを表示。
-VSを「{基本パス}/src/nako_version.js」へ保存。
-
-
+VSを「{基本パス}/src/nako_version.mjs」へ保存。

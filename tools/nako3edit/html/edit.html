@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="winter">
 <head>
   <meta charset="utf-8" />
-  <title>なでしこ3(Node版)エディタ</title>
+  <title>Node版 なでしこ3 エディタ</title>
+  <!-- daisyUI-->
+  <link href="daisyui/tailwind.min.css" rel="stylesheet" type="text/css" />
+  <link href="daisyui/full.css" rel="stylesheet" type="text/css" />
+  <!-- nako3edit -->
   <link href="/html/nako3edit.css" rel="stylesheet" type="text/css" />
   <script defer type="text/javascript" src="/release/wnako3.js?run&v=1"></script>
   <script defer type="text/javascript" src="/html/edit_plugin.js"></script>
@@ -16,21 +20,28 @@ Pを表示。
 FNAME="無題.nako3"
 もし、P["file"]ならば、FNAME=P["file"]
 エディタ初期化。
+対象ファイル読込処理。
+
+●対象ファイル読込処理とは
+  # ファイル名解決
+  もし、FNAME=「new」ならば
+    FNAME=(「/get_new_filename?appkey={APPKEY}」からAJAX_JSON取得)
+    FILE2 = "new"
+  違えば
+    FILE2 = FNAMEをURLエンコード。
+  ここまで。
+  # ロード
+  「#name」にFNAMEをDOMテキスト設定。
+  「/load?file={FILE2}&appkey={APPKEY}」へGET送信した時には
+    「#body」に対象をDOMテキスト設定。
+  ここまで。
+ここまで。
 
 ●エディタ初期化
   「エディタ初期化」を表示。
   「#run_btn」の「onclick」に「P実行処理」をDOMイベント設定。
   「#save_btn」の「onclick」に「P保存処理」をDOMイベント設定。
-  もし、FNAME=「new」ならば
-    FNAME="無題.nako3"
-    FILE2 = "new"
-  違えば
-    FILE2 = FNAMEをURLエンコード。
-  ここまで。
-  「#name」にFNAMEをDOMテキスト設定
-  「/load?file={FILE2}&appkey={APPKEY}」へGET送信した時には
-    「#body」に対象をDOMテキスト設定。
-  ここまで。
+  「#clear_btn」の「onclick」に「Pクリア処理」をDOMイベント設定。
   # 戻るリンクをAPPKEYを入れて初期化
   「.backlink」のDOM要素全取得して反復
     対象["href"] = "/html/files.html?appkey={APPKEY}"
@@ -46,6 +57,8 @@ FNAME="無題.nako3"
     "appkey": APPKEY
   }をPOST送信した時には
     H＝対象をHTML変換して改行を「<br />」に置換。
+    Hの「(\[.*?\])」を「<span style='color:red;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
+    Hの「(『.*?』)」を「<span style='color:blue;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
     「#result」にHをDOMテキスト設定。
   ここまで。
 ここまで
@@ -58,26 +71,94 @@ FNAME="無題.nako3"
     "body": 「#body」のDOMテキスト取得,
     "appkey": APPKEY
   }をPOST送信した時には
-    H=対象をHTML変換
+    H=対象をHTML変換。
     「#result」にHをDOMテキスト設定。
   ここまで。
-ここまで
+ここまで。
+
+●Pクリア処理とは
+  「#result」に「」をDOMテキスト設定。
+ここまで。
 
 #-----------
   </script>
 </head>
 <body>
-  <h1>なでしこ3(Node版)エディタ - <span class="titlemenu"><a class="backlink" href="#">[ファイル一覧]</a></span></h1>
-  <div class="editbox">
-    <div class="namebox">file: <input type="text" id="name" size="40" /></div>
-    <div><textarea id="body" rows="12" cols="60"></textarea></div>
-    <div class="cmd_btn">
-      <button id="run_btn">実行(cnako3)</button>
-      <button id="save_btn">保存</button>
+  <div class="navbar bg-base-100">
+        
+    <div class="dropdown">
+      <label tabindex="0" class="btn btn-ghost btn-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+      </label>
+      <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+        <li><a class="backlink">ファイル一覧</a></li>
+        <li><label for="my-modal-desc" class="modal-button">このエディタについて</label></li>
+      </ul>
     </div>
-    <div id="result"></div>
+
+    <div class="flex-1">
+      <a class="btn btn-ghost normal-case text-xl">Node版 なでしこ3 エディタ</a>
+    </div>
+    <div class="flex-none">
+      <div class="namebox">file:
+        <input type="text" class="input input-bordered input-md max-w-xs" id="name" size="20" />
+      </div>
+    </div>
   </div>
-  <hr />
-  <div><a class="backlink" href="#">→ファイル一覧へ</a></div>
+
+  <div class="editbox">
+    <div class="text-sm breadcrumbs">
+      <ul>
+        <li>
+          <a class="backlink">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 mr-2 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+            ファイル一覧
+          </a>
+        </li> 
+        <li><label for="my-modal-desc" class="modal-button">エディタ</label></li> 
+      </ul>
+    </div> 
+    <div style="margin:1em;">
+      <textarea id="body" class="textarea" rows="12" cols="60"></textarea>
+    </div>
+    <div class="cmd_btn">
+      <button id="run_btn" class="btn btn-primary">実行(cnako3)</button>
+      <button id="save_btn" class="btn">保存</button>
+      <button id="clear_btn" class="btn">クリア</button>
+    </div>
+    <!-- 実行画面 -->
+    <div style="margin: 1em">
+      <div class="mockup-window">
+        <div id="result" class="bg-base-200"></div>
+      </div>
+      </div>
+    <div class="divider"></div>
+
+    <!-- フッターのリンク -->
+    <div class="text-sm breadcrumbs">
+      <ul>
+        <li>
+          <a class="backlink">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 mr-2 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+            ファイル一覧
+          </a>
+        </li> 
+        <li>
+          <label for="my-modal-desc" class="modal-button">エディタ</label>
+        </li> 
+      </ul>
+    </div> 
+  </div><!-- end of #editbox -->
 </body>
+
+<!-- エディタの説明モーダルダイアログ -->
+<input type="checkbox" id="my-modal-desc" class="modal-toggle">
+<div class="modal">
+  <div class="modal-box relative">
+    <label for="my-modal-desc" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+    <h3 class="text-lg font-bold">Node版 なでしこ3エディタとは</h3>
+    <p class="py-4">なでしこ3のNode.jsランタイムを実行するためのエディタです。</p>
+  </div>
+</div>
+
 </html>

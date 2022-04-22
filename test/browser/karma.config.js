@@ -1,3 +1,12 @@
+/*
+import express from 'express'
+import path from 'path'
+import multer from 'multer'
+import bodyParserRaw from 'body-parser/lib/types/raw.js'
+import bodyParserText from 'body-parser/lib/types/text.js'
+import bodyParserUrlencoded =from 'body-parser/lib/types/urlencoded.js'
+*/
+
 const multer =  require('multer')
 const bodyParserRaw = require('body-parser/lib/types/raw')
 const bodyParserText = require('body-parser/lib/types/text')

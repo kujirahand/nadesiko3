@@ -1,8 +1,8 @@
 import { assert } from 'chai'
-import { NakoImportError } from 'nako3/nako_errors'
+import { NakoImportError } from 'nako3/nako_errors.mjs'
 
 navigator.exportWNako3 = true
-const WebNakoCompiler = require('nako3/wnako3')
+const WebNakoCompiler = require('nako3/wnako3.mjs')
 navigator.exportWNako3 = false
 
 /**

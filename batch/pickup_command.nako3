@@ -11,28 +11,28 @@
 REPOSパス=基本パスを「../」で相対パス展開。
 
 基本プラグイン一覧は[
-    ['src/plugin_system.js', 'wnako,cnako,phpnako'],
-    ['src/plugin_browser.js','wnako'],
-    ['src/plugin_turtle.js', 'wnako'],
-    ['src/plugin_node.js', 'cnako,phpnako'],
-    ['src/plugin_express.js', 'cnako'],
-    ['src/plugin_markup.js', 'wnako,cnako'],
-    ['src/plugin_math.js', 'wnako,cnako'],
-    ['src/plugin_csv.js', 'wnako,cnako'],
-    ['src/plugin_datetime.js', 'wnako,cnako'],
-    ['src/plugin_caniuse.js', 'wnako,cnako'],
-    ['src/plugin_kansuji.js', 'wnako,cnako'],
-    ['src/plugin_weykturtle3d.js', 'wnako'],
-    ['src/plugin_webworker.js', 'wnako'],
-    ['src/plugin_promise.js', 'wnako']
+    ['src/plugin_system.mjs', 'wnako,cnako,phpnako'],
+    ['src/plugin_browser.mjs','wnako'],
+    ['src/plugin_turtle.mjs', 'wnako'],
+    ['src/plugin_node.mjs', 'cnako,phpnako'],
+    ['src/plugin_express.mjs', 'cnako'],
+    ['src/plugin_markup.mjs', 'wnako,cnako'],
+    ['src/plugin_math.mjs', 'wnako,cnako'],
+    ['src/plugin_csv.mjs', 'wnako,cnako'],
+    ['src/plugin_datetime.mjs', 'wnako,cnako'],
+    ['src/plugin_caniuse.mjs', 'wnako,cnako'],
+    ['src/plugin_kansuji.mjs', 'wnako,cnako'],
+    ['src/plugin_weykturtle3d.mjs', 'wnako'],
+    ['src/plugin_webworker.mjs', 'wnako'],
+    ['src/plugin_promise.mjs', 'wnako']
 ]
 拡張プラグイン一覧は[
     ['nadesiko3-sqlite3/nadesiko3-sqlite3.js', 'cnako'],    
-    ['nadesiko3-drone/nadesiko3-drone.js', 'cnako'],
     ['nadesiko3-htmlparser/nadesiko3-htmlparser.js', 'cnako'],
     ['nadesiko3-websocket/nadesiko3-websocket.js', 'cnako'],
     ['nadesiko3-ml/nadesiko3-ml.js', 'cnako'],
     ['nadesiko3-mecab/nadesiko3-mecab.js', 'cnako'],
+    ['nadesiko3-office/nadesiko3-office.js', 'cnako'],
     ['nadesiko3-odbc/src/plugin_odbc.js', 'cnako'],
     ['nadesiko3-mssql/src/plugin_mssql.js', 'cnako'],
     ['nadesiko3-mysql/src/plugin_mysql.js', 'cnako'],
@@ -43,7 +43,8 @@ REPOSパス=基本パスを「../」で相対パス展開。
 # 'nadesiko3-firebase/plugin_firebase.js',
 # 'nadesiko3-googlehome/plugin_googlehome.js',
 # 'nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js', # 利用は非推奨に
-    
+# 'nadesiko3-drone/nadesiko3-drone.js', 'cnako', # ドローン
+
 #------------------------
 結果データ＝「」
 基本プラグイン一覧を反復
@@ -70,8 +71,11 @@ REPOSパス=基本パスを「../」で相対パス展開。
 　　違えば
 　　　　「REPORT_ERR」の環境変数取得
 　　　　もしそうならば
-　　　　　　「[エラー]ファイルが存在しない: {パス}」を表示。
-　　　　　　「ファイルが存在しない:{パス}」のエラー発生。
+　　　　　　OS=OS取得
+　　　　　　もし、OS="darwin"ならば
+　　　　　　　　「[エラー]ファイルが存在しない: {パス}」を表示。
+　　　　　　　　「ファイルが存在しない:{パス}」のエラー発生。
+　　　　　　ここまで。
 　　　　ここまで。
 　　ここまで。
 ここまで。

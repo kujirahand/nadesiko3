@@ -32,7 +32,7 @@
 
 - [OS別のインストール方法](https://nadesi.com/doc3/index.php?OS%E5%88%A5)
 
-外部リポジトリに個別の配布パッケージを用意しています。（ただし、対応バージョンが古い場合があります。）
+外部リポジトリに個別の配布パッケージを用意しています（ただし、最新版とは限りません）
 
 - [なでしこ3配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
 - [なでしこ3配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
