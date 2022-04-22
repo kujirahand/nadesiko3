@@ -1,17 +1,20 @@
 h1 {
-  background-color: blue;
-  color: white;
   padding: 4px;
   margin: 0;
   font-size: 1em;
+}
+.btn {
+  text-transform: none;
 }
 
 .editbox {
   padding: 4px;
   margin: 0px;
   background-color: #f0f0f0;
+  text-align: center;
 }
 .namebox {
+  text-align: left;
   color: gray;
   padding: 4px;
   margin: 4px;
@@ -24,17 +27,13 @@ h1 {
   padding: 4px;
   font-size: 1em;
 }
-.cmd_btn > button {
-  margin: 4px;
-  padding: 8px;
-  font-size: 1.2em;
-}
 #result {
   background-color: white;
   border: 1px solid silver;
   margin: 4px;
   padding: 8px;
   font-size: 1em;
+  text-align: left;
 }
 #filesbox {
   border: 1px solid silver;

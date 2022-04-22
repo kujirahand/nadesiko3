@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="winter">
 <head>
   <meta charset="utf-8" />
-  <title>なでしこ3(Node版)エディタ - ファイル一覧</title>
+  <title>Node版 なでしこ3 エディタ - ファイル一覧</title>
+  <!-- daisyUI-->
+  <link href="daisyui/tailwind.min.css" rel="stylesheet" type="text/css" />
+  <link href="daisyui/full.css" rel="stylesheet" type="text/css" />
+  <!-- nako3edit -->
   <link href="/html/nako3edit.css" rel="stylesheet" type="text/css" />
   <script defer type="text/javascript" src="/release/wnako3.js"></script>
   <script defer type="text/javascript" src="/html/edit_plugin.js"></script>
+
   <script type="なでしこ">
 #-----------
 APPKEY=""
@@ -16,18 +21,36 @@ Pを表示。
 APPKEY=P["appkey"]
 Pを表示。
 ファイル一覧取得処理
-
+#-----------
+# 新規ボタン
+「#new_btn」をクリックした時には
+　　「/html/edit.html?file=new&appkey={APPKEY}」へブラウザ移動。
+ここまで。
+#-----------
 ●ファイル一覧取得処理
   「/files?appkey={APPKEY}」へAJAX送信した時には
-    HTML=「<li><a href="/html/edit.html?file=new&appkey={APPKEY}"><span class="newfile">→新規作成</span></a></li>」
+    HTML=「」
     一覧=対象をJSONデコード
     一覧を反復
       F=それ
+      もし、LEFT(F,2)="__"ならば、続ける。
       F2 = FをHTML変換
       F3 = FをURLエンコード
-      HTML=HTML&「<li><a href="/html/edit.html?file={F3}&appkey={APPKEY}">{F2}</a></li>」
-    ここまで
+      Fを「\.(csv|txt|tsv|js|bat|nako3|nako|css|html|htm|)$」で正規表現マッチ。
+      もし、そうならば
+        HTML=HTML&「<li>」
+        HTML=HTML&「<a class="btn btn-sm btn-warning del_btn" data-file="{F3}">削除</a> &nbsp;」
+        HTML=HTML&「<a href="/html/edit.html?file={F3}&appkey={APPKEY}">📝 {F2}</a>」
+        HTML=HTML&「</li>」
+      違えば
+        HTML=HTML&「<li>」
+        HTML=HTML&「<a class="btn btn-sm btn-warning del_btn" data-file="{F3}">削除</a> &nbsp;」
+        HTML=HTML&「<a>🌠 {F2}</a>」
+        HTML=HTML&「</li>」
+      ここまで。
+    ここまで。
     「#files_ul」にHTMLをDOM_HTML設定。
+    削除ボタンイベント設定。
   ここまで。
   # ---
   AJAX失敗した時には(err)
@@ -37,13 +60,66 @@ Pを表示。
     「#files_ul」にSをDOM_HTML設定。
   ここまで
 ここまで。
+
+●削除ボタンイベント設定
+　　「.del_btn」のDOM要素全取得して反復
+　　　　対象の「onclick」に「ファイル削除処理」をDOMイベント設定。
+　　ここまで。
+ここまで。
+
+●(Eの)ファイル削除処理とは
+　　「削除しても良いですか？」と二択。
+　　もし、それがいいえならば戻る。
+　　FF=E["target"]["dataset"]["file"]
+　　エラー監視
+　　　　RES=「/deletefile?appkey={APPKEY}&file={FF}」からAJAX_JSON取得。
+　　エラーならば
+　　　　「エラー」と言う。
+　　ここまで。
+　　もし、RES="ok"ならば、
+　　　　「削除しました」と言う。
+　　違えば
+　　　　「失敗しました」と言う。
+　　ここまで。
+　　「/html/files.html?appkey={APPKEY}」にブラウザ移動。
+ここまで。
+
 #-----------
   </script>
 </head>
 <body>
-  <h1>なでしこ3(Node版) - ファイル一覧</h1>
+  <div class="navbar bg-base-100">
+        
+    <div class="dropdown">
+      <label tabindex="0" class="btn btn-ghost btn-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+      </label>
+      <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+        <li><label for="my-modal-desc" class="modal-button">このエディタについて</label></li>
+      </ul>
+    </div>
+
+    <div class="flex-1">
+      <a class="btn btn-ghost normal-case text-xl">Node版 なでしこ3 エディタ</a>
+    </div>
+  </div>
   <div id="filesbox">
-    <ul id="files_ul"><li>現在読み込み中です。少々お待ちください。</li></ul>
+    <div>
+      <a class="btn btn-info" id="new_btn">→新規作成</a>
+    </div>
+    <ul id="files_ul"></ul>
   </div>
 </body>
+
+<!-- エディタの説明モーダルダイアログ -->
+<input type="checkbox" id="my-modal-desc" class="modal-toggle">
+<div class="modal">
+  <div class="modal-box relative">
+    <label for="my-modal-desc" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+    <h3 class="text-lg font-bold">Node版 なでしこ3エディタとは</h3>
+    <p class="py-4">なでしこ3のNode.js(PC版)ランタイムを実行するためのエディタです。</p>
+    <p class="py-4">もし、なでしこ3のWeb版を実行するには、「npm start」を実行してください。</p>
+  </div>
+</div>
+
 </html>
