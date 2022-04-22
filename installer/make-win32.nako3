@@ -55,7 +55,7 @@ NODEJS=「{出力先}/nodejs.7z」
 ●バッチ作成
   「README.md」を個別コピー処理。
   「package.json」を個別コピー処理。
-  「webpack.config.js」を個別コピー処理。
+  「webpack.config.mjs」を個別コピー処理。
   「bin」を削除付きファイルコピー処理。
   「batch」を削除付きファイルコピー処理。
   「demo」を削除付きファイルコピー処理。
