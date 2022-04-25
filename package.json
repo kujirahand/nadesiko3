@@ -10,6 +10,7 @@
   },
   "scripts": {
     "test": "cross-env TZ=Asia/Tokyo mocha test/common/*.mjs",
+    "test:node": "mocha --extension mjs test/node",
     "test:async": "mocha test/async -g aysnc_basic_test",
     "test:common": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/karma.config.js",
     "test:browser": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/browser/karma.config.js",
@@ -123,7 +124,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-react": "^7.29.4",
-    "fetch-mock": "^9.11.0",
+    "fetch-mock": "^9.5.0",
     "hotkeys-js": "^3.8.9",
     "karma": "^6.3.19",
     "karma-chai": "^0.1.0",

@@ -1,9 +1,9 @@
 import assert from 'assert'
 import path from 'path'
 
-import { NakoCompiler } from '../../src/nako3.js'
-import { CNako3 } from '../../src/cnako3mod.js'
-import { NakoSyntaxError } from '../../src/nako_errors.js'
+import { NakoCompiler } from '../../src/nako3.mjs'
+import { CNako3 } from '../../src/cnako3mod.mjs'
+import { NakoSyntaxError } from '../../src/nako_errors.mjs'
 
 // __dirname のために
 import url from 'url'
@@ -55,7 +55,7 @@ describe('side_effects_test', () => {
         nako.silent = true
 
         // 取り込み命令ありで実行
-        const code1 = '!「plugin_csv」を取り込む。\n「1,2」のCSV取得して表示'
+        const code1 = '!「plugin_csv.mjs」を取り込む。\n「1,2」のCSV取得して表示'
         assert.strictEqual((await nako.run(code1, 'main.nako3')).log, `1,2`)
 
         // [TODO] 取り込み命令なしで実行

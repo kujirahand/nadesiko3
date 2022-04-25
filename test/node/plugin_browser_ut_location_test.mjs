@@ -1,6 +1,6 @@
 import * as td from 'testdouble'
 import assert from 'assert'
-import PluginBrowser from '../../src/plugin_browser.js'
+import PluginBrowser from '../../src/plugin_browser.mjs'
 
 describe('plugin_browser_location', () => {
   describe('location-url', () => {

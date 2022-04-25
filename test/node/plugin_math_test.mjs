@@ -1,6 +1,6 @@
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.js'
-import { CNako3 } from '../../src/cnako3mod.js'
+import { NakoCompiler } from '../../src/nako3.mjs'
+import { CNako3 } from '../../src/cnako3mod.mjs'
 
 describe('plugin_math_test', () => {
   const wnako = new NakoCompiler()

@@ -1,8 +1,8 @@
 import assert from 'assert'
 import path from 'path'
-import { NakoCompiler } from '../../src/nako3.js'
-import { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } from '../../src/nako_errors.js'
-import { CNako3 } from '../../src/cnako3mod.js'
+import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } from '../../src/nako_errors.mjs'
+import { CNako3 } from '../../src/cnako3mod.mjs'
 
 describe('error_message', () => {
   const nako = new NakoCompiler()

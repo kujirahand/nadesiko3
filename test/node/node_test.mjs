@@ -2,7 +2,7 @@ import assert from 'assert'
 import path from 'path'
 import fs from 'fs'
 import { execSync, spawnSync } from 'child_process'
-import NakoVersion from '../../src/nako_version.js'
+import NakoVersion from '../../src/nako_version.mjs'
 const debug = false
 
 // __dirname のために
@@ -11,7 +11,7 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // PATH
-const cnako3 = path.join(__dirname, '../../src/cnako3.js')
+const cnako3 = path.join(__dirname, '../../src/cnako3.mjs')
 
 describe('node_test(cnako)', () => {
   const cmp = (code, exRes) => {

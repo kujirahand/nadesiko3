@@ -1,6 +1,5 @@
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.js'
-import { Nako3Assert } from '../../src/nako3_assert.js'
+import { Nako3Assert } from '../../src/nako3_assert.mjs'
 
 
 describe('async_test', () => {

@@ -1,8 +1,8 @@
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.js'
+import { NakoCompiler } from '../../src/nako3.mjs'
 import path from 'path'
-import PluginNode from '../../src/plugin_node.js'
-import PluginCSV from '../../src/plugin_csv.js'
+import PluginNode from '../../src/plugin_node.mjs'
+import PluginCSV from '../../src/plugin_csv.mjs'
 
 // __dirname のために
 import url from 'url'

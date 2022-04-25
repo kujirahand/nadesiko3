@@ -1,7 +1,7 @@
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.js'
-import PluginMarkup from '../../src/plugin_markup.js'
-import { CNako3 } from '../../src/cnako3mod.js'
+import { NakoCompiler } from '../../src/nako3.mjs'
+import PluginMarkup from '../../src/plugin_markup.mjs'
+import { CNako3 } from '../../src/cnako3mod.mjs'
 
 describe('plugin_markup_test', () => {
   const wnako = new NakoCompiler()

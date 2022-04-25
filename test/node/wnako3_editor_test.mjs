@@ -3,10 +3,10 @@ import fs from 'fs'
 import path from 'path'
 import { expect } from 'chai'
 
-import { NakoCompiler } from '../../src/nako3.js'
-import { tokenize, LanguageFeatures, BackgroundTokenizer } from '../../src/wnako3_editor.js'
-import { CNako3 } from '../../src/cnako3mod.js'
-import { NakoLexerError } from '../../src/nako_errors.js'
+import { NakoCompiler } from '../../src/nako3.mjs'
+import { tokenize, LanguageFeatures, BackgroundTokenizer } from '../../src/wnako3_editor.mjs'
+import { CNako3 } from '../../src/cnako3mod.mjs'
+import { NakoLexerError } from '../../src/nako_errors.mjs'
 
 // __dirname のために
 import url from 'url'
@@ -142,7 +142,7 @@ describe('wnako3_editor_test', () => {
         })
         it('明示的に取り込んだプラグインの関数', async () => {
             const compiler = new CNako3()
-            const code = `!「plugin_csv」を取り込む\n「1」のCSV取得`
+            const code = `!「plugin_csv.mjs」を取り込む\n「1」のCSV取得`
             await compiler.loadDependencies(code, '', '')
             const token = tokenize(code.split('\n'), compiler, false).editorTokens[1][1]
             expect(token.type).to.include('function')

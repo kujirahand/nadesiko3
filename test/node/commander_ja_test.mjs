@@ -1,5 +1,5 @@
 import assert from 'assert'
-import app from '../../src/commander_ja.js'
+import app from '../../src/commander_ja.mjs'
 
 describe('commnder_ja', () => {
     it('version', () => {

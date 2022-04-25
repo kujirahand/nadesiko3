@@ -1,6 +1,6 @@
 import assert from 'assert'
 import path from 'path'
-import { CNako3 } from '../../src/cnako3mod.js'
+import { CNako3 } from '../../src/cnako3mod.mjs'
 
 // __dirname のために
 import url from 'url'

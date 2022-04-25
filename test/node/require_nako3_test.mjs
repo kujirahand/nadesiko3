@@ -1,8 +1,8 @@
 import assert from 'assert'
 import path from 'path'
 
-import { CNako3 } from '../../src/cnako3mod.js'
-import { NakoImportError } from '../../src/nako_errors.js'
+import { CNako3 } from '../../src/cnako3mod.mjs'
+import { NakoImportError } from '../../src/nako_errors.mjs'
 
 // __dirname のために
 import url from 'url'
