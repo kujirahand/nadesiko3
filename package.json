@@ -17,7 +17,7 @@
     "test:bundled": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/bundled/karma.config.js",
     "test:bundled:watch": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --auto-watch --browsers FirefoxCustom test/bundled/karma.config.js",
     "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.js",
-    "test:all": "npm test && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
+    "test:all": "npm test && npm run test:node && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
     "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
     "start": "node src/nako3server.mjs",
     "nako3edit": "node src/cnako3.mjs tools/nako3edit/index.nako3",
