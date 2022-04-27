@@ -56,6 +56,7 @@
     "src",
     "test",
     "tools",
+    "batch",
     "release"
   ],
   "author": "kujirahand",
