@@ -1,12 +1,12 @@
 {
   "name": "nadesiko3",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "Japanese Programming Language",
-  "main": "src/index.js",
+  "main": "src/index.mjs",
   "bin": {
     "cnako3": "src/cnako3.mjs",
-    "nako3server": "src/nako3server.js",
-    "nako3edit": "tools/nako3edit/run.js"
+    "nako3server": "src/nako3server.mjs",
+    "nako3edit": "tools/nako3edit/run.mjs"
   },
   "scripts": {
     "test": "cross-env TZ=Asia/Tokyo mocha test/common/*.mjs",
