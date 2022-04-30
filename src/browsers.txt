@@ -25,7 +25,6 @@ kaios 2.5
 node 17.9.0
 node 16.14.0
 node 14.19.0
-node 12.22.0
 op_mini all
 op_mob 64
 opera 83

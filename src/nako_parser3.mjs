@@ -272,6 +272,7 @@ export class NakoParser extends NakoParserBase {
     if (this.check('ここから')) { multiline = true }
     if (this.check('eol')) { multiline = true }
     try {
+      this.funcLevel++
       if (multiline) {
         this.saveStack()
         block = this.yBlock()
@@ -282,6 +283,7 @@ export class NakoParser extends NakoParserBase {
         block = this.ySentence()
         this.loadStack()
       }
+      this.funcLevel--
     } catch (err) {
       this.logger.debug(this.nodeToStr(funcName, { depth: 0, typeName: '関数' }, true) +
         'の定義で以下のエラーがありました。\n' + err.message, def)
@@ -1001,6 +1003,7 @@ export class NakoParser extends NakoParserBase {
     // 「,」を飛ばす
     if (this.check('comma')) { this.get() }
     // ブロックを読む
+    this.funcLevel++
     this.saveStack()
     const block = this.yBlock()
     // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
@@ -1009,6 +1012,7 @@ export class NakoParser extends NakoParserBase {
     }
     this.get() // skip ここまで
     this.loadStack()
+    this.funcLevel--
     return {
       type: 'func_obj',
       args,
@@ -1785,7 +1789,7 @@ export class NakoParser extends NakoParserBase {
     // 一語関数
     const splitType = operatorList.concat(['eol', ')', ']', 'ならば', '回', '間', '反復', '条件分岐'])
     if (this.check2(['func', splitType])) {
-      const f = this.get()
+      const f = this.getVarNameRef(this.get())
       return {
         type: 'func',
         name: f.value,
@@ -1801,7 +1805,7 @@ export class NakoParser extends NakoParserBase {
       if (this.accept([['func', 'word'], '(', this.yGetArgParen, ')'])) {
         return {
           type: 'func',
-          name: this.getVarName(this.y[0]).value,
+          name: this.getVarNameRef(this.y[0]).value,
           args: this.y[2],
           josi: this.y[3].josi,
           ...map,
@@ -1882,14 +1886,14 @@ export class NakoParser extends NakoParserBase {
   yValueWord () {
     const map = this.peekSourceMap()
     if (this.check('word')) {
-      const word = this.get()
+      const word = this.getVarNameRef(this.get())
       if (this.skipRefArray) { return word }
 
       // word[n] || word@n
       if (word.josi === '' && this.checkTypes(['[', '@'])) {
         const ast = {
           type: '配列参照',
-          name: this.getVarName(word),
+          name: word,
           index: [],
           josi: '',
           ...map,
@@ -1901,7 +1905,7 @@ export class NakoParser extends NakoParserBase {
         if (ast.index.length === 0) { throw NakoSyntaxError.fromNode(`配列『${word.value}』アクセスで指定ミス`, word) }
         return ast
       }
-      return this.getVarNameRef(word)
+      return word
     }
     return null
   }
@@ -1914,11 +1918,11 @@ export class NakoParser extends NakoParserBase {
     // check word name
     const f = this.findVar(word.value)
     if (!f) { // 変数が見つからない
-      if (this.stackList.length === 0 && word.value.indexOf('__') < 0) {
+      if (this.funcLevel === 0 && word.value.indexOf('__') < 0) {
         const gname = this.modName + '__' + word.value
         word.value = gname
         this.funclist[gname] = {type: 'var', value: ''}
-      }　else {
+      } else {
         this.localvars[word.value] = {type: 'var', value: ''}
       }
     }
@@ -1936,7 +1940,7 @@ export class NakoParser extends NakoParserBase {
     // check word name
     const f = this.findVar(word.value)
     if (!f) { // 変数が見つからない
-      if (this.stackList.length === 0 && word.value.indexOf('__') < 0) {
+      if (this.funcLevel === 0 && word.value.indexOf('__') < 0) {
         word.value = this.modName + '__' + word.value
       }
     }

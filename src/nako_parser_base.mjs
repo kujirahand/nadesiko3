@@ -20,10 +20,11 @@ export class NakoParserBase {
     this.y = []
     /** モジュル名 @type {string} */
     this.modName = 'inline'
-    /** 利用するモジュールの名前一覧 @type {array[string]} */
+    /** 利用するモジュールの名前一覧 @type {Array[string]} */
     this.modList = []
     /** グローバル変数・関数の確認用 */
     this.funclist = {}
+    this.funcLevel = 0
     /** ローカル変数の確認用 */
     this.localvars = {'それ': {type: 'var', value: ''}}
     /** コード生成器の名前 */
