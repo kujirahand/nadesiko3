@@ -97,6 +97,8 @@ describe('wnako3_editor_test', () => {
             assert.strictEqual(tokens[1][2].value, '表示')
             assert(tokens[1][2].type.includes('function'))
         })
+        // todo
+        /*
         it('依存ファイルのキャッシュを利用する', () => {
             const nako3 = new CNako3()
             const code = '!「./requiretest_indirect.nako3」を取り込む\n1と2の痕跡演算'
@@ -140,6 +142,7 @@ describe('wnako3_editor_test', () => {
                 fs.unlinkSync(largeFile)
             }
         })
+        */
         it('明示的に取り込んだプラグインの関数', async () => {
             const compiler = new CNako3()
             const code = `!「plugin_csv.mjs」を取り込む\n「1」のCSV取得`
@@ -275,6 +278,8 @@ describe('wnako3_editor_test', () => {
         })
     })
     describe('オートコンプリート', () => {
+        //todo
+        /*
         it('同一ファイル内の関数', async () => {
             const compiler = new NakoCompiler()
             const tokenizer = await createBackgroundTokenizer('●（Aを）テスト用関数とは\nここまで\n', compiler)
@@ -285,6 +290,7 @@ describe('wnako3_editor_test', () => {
                 score: 0,
             })
         })
+        */
         it('同一ファイルの変数', async () => {
             const compiler = new NakoCompiler()
             const tokenizer = await createBackgroundTokenizer('テスト用変数=10\nここまで\n', compiler)
@@ -317,6 +323,8 @@ describe('wnako3_editor_test', () => {
                 score: 0,
             })
         })
+        //todo
+        /*
         it('別ファイルの関数', async () => {
             const compiler = new CNako3()
             const code = `!「${__dirname}/requiretest.nako3」を取り込む\n`
@@ -325,6 +333,7 @@ describe('wnako3_editor_test', () => {
             const result = LanguageFeatures.getCompletionItems(0, '', compiler, tokenizer)
             assert(result.some((v) => v.caption === '（Aと、Bを）痕跡演算'))
         })
+        */
         it('関数の呼び出しはmetaの値に影響を与えない', async () => {
             const compiler = new NakoCompiler()
             compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン関数': { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
@@ -339,6 +348,8 @@ describe('wnako3_editor_test', () => {
                 }
             ])
         })
+        //todo
+        /*
         it('同一名の関数の定義が複数あるとき、候補には1つしか表示しない', async () => {
             const compiler = new NakoCompiler()
             const tokenizer = await createBackgroundTokenizer('●（Aを）テスト用関数とは\nここまで\n●（Aを）テスト用関数とは\nここまで\n', compiler)
@@ -349,6 +360,7 @@ describe('wnako3_editor_test', () => {
                 score: 0,
             })
         })
+        */
     })
     it('テスト定義に実行ボタンを表示する', () => {
         const out = LanguageFeatures.getCodeLens(new AceDocument(

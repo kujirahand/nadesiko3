@@ -4,6 +4,7 @@
 import { opPriority, keizokuJosi } from './nako_parser_const.mjs'
 import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
+import { NakoLexer } from './nako_lexer.mjs'
 
 /**
  * @type {string[]}
@@ -12,20 +13,24 @@ const operatorList = []
 for (const key in opPriority) { operatorList.push(key) }
 
 /**
- * @typedef {import('./nako3').TokenWithSourceMap} TokenWithSourceMap
- * @typedef {import('./nako3').Ast} Ast
+ * 構文解析を行うクラス
+ * @typedef {import('./nako3.mjs').TokenWithSourceMap} TokenWithSourceMap
+ * @typedef {import('./nako3.mjs').Ast} Ast
  */
-
 // @ts-ignore
 export class NakoParser extends NakoParserBase {
   /**
+   * 構文解析を実行する
    * @param {TokenWithSourceMap[]} tokens 字句解析済みのトークンの配列
+   * @param {string} filename 解析対象のモジュール名
    * @return {Ast} AST(構文木)
    */
-  parse (tokens) {
+  parse (tokens, filename) {
     this.reset()
     /** @type {TokenWithSourceMap[]} */
     this.tokens = tokens
+    this.modName = NakoLexer.filenameToModName(filename)
+    this.modList.push(this.modName)
     // 解析開始
     return this.startParser()
   }
@@ -107,7 +112,7 @@ export class NakoParser extends NakoParserBase {
     if (this.check('逐次実行')) { return this.yTikuji() }
     if (this.accept(['抜ける'])) { return { type: 'break', josi: '', ...map, end: this.peekSourceMap() } }
     if (this.accept(['続ける'])) { return { type: 'continue', josi: '', ...map, end: this.peekSourceMap() } }
-    if (this.accept(['require', 'string', '取込'])) { return { type: 'require', value: this.y[1].value, josi: '', ...map, end: this.peekSourceMap() } }
+    if (this.accept(['require', 'string', '取込'])) { return this.yRequire() }
     if (this.accept(['not', '非同期モード'])) { return this.yASyncMode() }
     if (this.accept(['not', 'DNCLモード'])) { return this.yDNCLMode() }
     if (this.accept(['not', 'string', 'モード設定'])) { return this.ySetGenMode(this.y[1].value) }
@@ -170,6 +175,27 @@ export class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     this.genMode = mode
     return { type: 'eol', ...map, end: this.peekSourceMap() }
+  }
+
+  /** @returns {Ast} */
+  yRequire () {
+    const nameToken = this.y[1]
+    const filename = nameToken.value
+    const modName = NakoLexer.filenameToModName(filename)
+    if (this.modList.indexOf(modName) < 0) {
+      // 優先度が最も高いのは modList[0]
+      // [memo] モジュールの検索優先度は、下に書くほど高くなる
+      const modSelf = this.modList.shift()
+      this.modList.unshift(modName)
+      this.modList.unshift(modSelf)
+    }
+    return {
+      type: 'require', 
+      value: filename, 
+      josi: '', 
+      ...this.peekSourceMap(),
+      end: this.peekSourceMap() 
+    }  
   }
 
   /** @returns {Ast} */
@@ -1031,7 +1057,6 @@ export class NakoParser extends NakoParserBase {
     if (sadameru === null) { return null }
     const word = this.popStack(['を'])
     const value = this.popStack(['へ', 'に'])
-    console.log(word)
     if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== '配列参照')) {
       throw NakoSyntaxError.fromNode('『定める』文で定数が見当たりません。『(定数名)を(値)に定める』のように使います。', sadameru)
     }
@@ -1307,10 +1332,12 @@ export class NakoParser extends NakoParserBase {
             throw new Error('値が空です。')
           }
           if (this.check('comma')) { this.get() } // skip comma (ex) name1=val1, name2=val2
+          const nameToken = this.getVarName(this.y[0])
+          const valueToken = this.y[2]
           return {
             type: 'let',
-            name: this.y[0],
-            value: this.y[2],
+            name: nameToken,
+            value: valueToken,
             ...map,
             end: this.peekSourceMap()
           }
@@ -1348,7 +1375,7 @@ export class NakoParser extends NakoParserBase {
 
     // ローカル変数定義
     if (this.accept(['word', 'とは'])) {
-      const word = this.y[0]
+      let word = this.getVarName(this.y[0])
       if (!this.checkTypes(['変数', '定数'])) {
         throw NakoSyntaxError.fromNode('ローカル変数『' + word.value + '』の定義エラー', word)
       }
@@ -1372,9 +1399,10 @@ export class NakoParser extends NakoParserBase {
     }
     // ローカル変数定義（その２）
     if (this.accept(['変数', 'word', 'eq', this.yCalc])) {
+      let word = this.getVarName(this.y[1])
       return {
         type: 'def_local_var',
-        name: this.y[1],
+        name: word,
         vartype: '変数',
         value: this.y[3],
         ...map,
@@ -1383,9 +1411,10 @@ export class NakoParser extends NakoParserBase {
     }
 
     if (this.accept(['定数', 'word', 'eq', this.yCalc])) {
+      let word = this.getVarName(this.y[1])
       return {
         type: 'def_local_var',
-        name: this.y[1],
+        name: word,
         vartype: '定数',
         value: this.y[3],
         ...map,
@@ -1406,6 +1435,7 @@ export class NakoParser extends NakoParserBase {
       } else {
         throw NakoSyntaxError.fromNode('複数定数の代入文でエラー。『定数[A,B,C]=[1,2,3]』の書式で記述してください。', this.y[0])
       }
+      names.value = this.getVarNameList(names.value)
       return {
         type: 'def_local_varlist',
         names: names.value,
@@ -1428,6 +1458,7 @@ export class NakoParser extends NakoParserBase {
       } else {
         throw NakoSyntaxError.fromNode('複数変数の代入文でエラー。『変数[A,B,C]=[1,2,3]』の書式で記述してください。', this.y[0])
       }
+      names.value = this.getVarNameList(names.value)
       return {
         type: 'def_local_varlist',
         names: names.value,
@@ -1442,9 +1473,11 @@ export class NakoParser extends NakoParserBase {
     if (this.check2(['word', 'comma', 'word'])) {
       // 2 word
       if (this.accept(['word', 'comma', 'word', 'eq', this.yCalc])) {
+        let names = [this.y[0], this.y[2]]
+        names = this.getVarNameList(names)
         return {
           type: 'def_local_varlist',
-          names: [this.y[0], this.y[2]],
+          names,
           vartype: '変数',
           value: this.y[4],
           ...map,
@@ -1453,9 +1486,11 @@ export class NakoParser extends NakoParserBase {
       }
       // 3 word
       if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'eq', this.yCalc])) {
+        let names = [this.y[0], this.y[2], this.y[4]]
+        names = this.getVarNameList(names)
         return {
           type: 'def_local_varlist',
-          names: [this.y[0], this.y[2], this.y[4]],
+          names,
           vartype: '変数',
           value: this.y[6],
           ...map,
@@ -1464,9 +1499,11 @@ export class NakoParser extends NakoParserBase {
       }
       // 4 word
       if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'eq', this.yCalc])) {
+        let names = [this.y[0], this.y[2], this.y[4], this.y[6]]
+        names = this.getVarNameList(names) 
         return {
           type: 'def_local_varlist',
-          names: [this.y[0], this.y[2], this.y[4], this.y[6]],
+          names,
           vartype: '変数',
           value: this.y[8],
           ...map,
@@ -1475,9 +1512,11 @@ export class NakoParser extends NakoParserBase {
       }
       // 5 word
       if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'eq', this.yCalc])) {
+        let names = [this.y[0], this.y[2], this.y[4], this.y[6], this.y[8]]
+        names = this.getVarNameList(names) 
         return {
           type: 'def_local_varlist',
-          names: [this.y[0], this.y[2], this.y[4], this.y[6], this.y[8]],
+          names,
           vartype: '変数',
           value: this.y[10],
           ...map,
@@ -1528,7 +1567,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '@', this.yValue, 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: [this.checkArrayIndex(this.y[2])],
         value: this.y[4],
         ...map,
@@ -1540,7 +1579,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '@', this.yValue, '@', this.yValue, 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])]),
         value: this.y[6],
         ...map,
@@ -1552,7 +1591,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '@', this.yValue, '@', this.yValue, '@', this.yValue, 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4]), this.checkArrayIndex(this.y[6])]),
         value: this.y[8],
         ...map,
@@ -1564,7 +1603,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '@', this.yValue, 'comma', this.yValue, 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])]),
         value: this.y[6],
         ...map,
@@ -1576,7 +1615,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '@', this.yValue, 'comma', this.yValue, 'comma', this.yValue, 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4]), this.checkArrayIndex(this.y[6])]),
         value: this.y[8],
         ...map,
@@ -1592,7 +1631,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '[', this.yCalc, ']', 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: [this.checkArrayIndex(this.y[2])],
         value: this.y[5],
         ...map,
@@ -1604,7 +1643,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[5])]),
         value: this.y[8],
         tag: '2',
@@ -1615,7 +1654,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '[', this.yCalc, 'comma', this.yCalc, ']', 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])]),
         value: this.y[7],
         tag: '2',
@@ -1628,7 +1667,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[5]), this.checkArrayIndex(this.y[8])]),
         value: this.y[11],
         ...map,
@@ -1638,7 +1677,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', '[', this.yCalc, 'comma', this.yCalc, 'comma', this.yCalc, ']', 'eq', this.yCalc])) {
       return {
         type: 'let_array',
-        name: this.y[0],
+        name: this.getVarName(this.y[0]),
         index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4]), this.checkArrayIndex(this.y[6])]),
         value: this.y[9],
         ...map,
@@ -1762,7 +1801,7 @@ export class NakoParser extends NakoParserBase {
       if (this.accept([['func', 'word'], '(', this.yGetArgParen, ')'])) {
         return {
           type: 'func',
-          name: this.y[0].value,
+          name: this.getVarName(this.y[0]).value,
           args: this.y[2],
           josi: this.y[3].josi,
           ...map,
@@ -1850,7 +1889,7 @@ export class NakoParser extends NakoParserBase {
       if (word.josi === '' && this.checkTypes(['[', '@'])) {
         const ast = {
           type: '配列参照',
-          name: word,
+          name: this.getVarName(word),
           index: [],
           josi: '',
           ...map,
@@ -1862,9 +1901,60 @@ export class NakoParser extends NakoParserBase {
         if (ast.index.length === 0) { throw NakoSyntaxError.fromNode(`配列『${word.value}』アクセスで指定ミス`, word) }
         return ast
       }
-      return word
+      return this.getVarNameRef(word)
     }
     return null
+  }
+
+  /** 変数名を検索して解決する 
+   * @param {TokenWithSourceMap} word
+   * @return {TokenWithSourceMap}
+   */
+  getVarName(word) {
+    // check word name
+    const f = this.findVar(word.value)
+    if (!f) { // 変数が見つからない
+      if (this.stackList.length === 0 && word.value.indexOf('__') < 0) {
+        const gname = this.modName + '__' + word.value
+        word.value = gname
+        this.funclist[gname] = {type: 'var', value: ''}
+      }　else {
+        this.localvars[word.value] = {type: 'var', value: ''}
+      }
+    }
+    if (f && f.scope === 'global') {
+      word.value = f.name
+    }
+    return word
+  }
+
+  /** 変数名を検索して解決する 
+   * @param {TokenWithSourceMap} word
+   * @return {TokenWithSourceMap}
+   */
+  getVarNameRef(word) {
+    // check word name
+    const f = this.findVar(word.value)
+    if (!f) { // 変数が見つからない
+      if (this.stackList.length === 0 && word.value.indexOf('__') < 0) {
+        word.value = this.modName + '__' + word.value
+      }
+    }
+    if (f && f.scope === 'global') {
+      word.value = f.name
+    }
+    return word
+  }
+
+  /** 複数の変数名を検索して解決する 
+   * @param {TokenWithSourceMap[]} names
+   * @return {TokenWithSourceMap[]}
+   */
+   getVarNameList(words) {
+     for (let i = 0; i < words.length; i++) {
+       words[i] = this.getVarName(words[i])
+     }
+     return words
   }
 
   yJSONObjectValue () {

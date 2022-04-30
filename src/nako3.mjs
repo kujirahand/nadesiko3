@@ -67,6 +67,7 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  *     line?: number
  *     column?: number
  *   }
+ *   tag?: string
  *   genMode?: string
  *   checkInit?: boolean
  * }} Ast
@@ -97,7 +98,7 @@ export class NakoCompiler {
     /**
      * @type {NakoGlobal[]}
      */
-    this.__globals = [] // 生成した NakoGlobalのインスタンスを保持
+    this.__globals = [] // 生成した NakoGlobal のインスタンスを保持
     /** @type {Record<string, Record<string, NakoFunction>>} */
     this.__module = {} // requireなどで取り込んだモジュールの一覧
     /** @type {Record<string, NakoFunction>} */
@@ -359,10 +360,12 @@ export class NakoCompiler {
    * 単語の属性を構文解析に先立ち補正する
    * @param {TokenWithSourceMap[]} tokens トークンのリスト
    * @param {boolean} isFirst 最初の呼び出しかどうか
+   * @param {string} filename
    * @returns コード (なでしこ)
    */
-  converttoken (tokens, isFirst) {
-    return this.lexer.replaceTokens(tokens, isFirst)
+  converttoken (tokens, isFirst, filename) {
+    const tok = this.lexer.replaceTokens(tokens, isFirst, filename)
+    return tok
   }
 
   /**
@@ -429,7 +432,7 @@ export class NakoCompiler {
     const commentTokens = tokens.filter((t) => t.type === 'line_comment' || t.type === 'range_comment')
       .map((v) => ({ ...v })) // clone
 
-    tokens = this.converttoken(tokens, false)
+    tokens = this.converttoken(tokens, false, filename)
 
     return { tokens, commentTokens }
   }
@@ -501,13 +504,23 @@ export class NakoCompiler {
         t.type = 'require'
       }
     }
+    if (requireStatementTokens.length >= 3) {
+      // modList を更新
+      for (let i = 0; i < requireStatementTokens.length; i += 3) {
+        let modName = requireStatementTokens[i + 1].value
+        modName = NakoLexer.filenameToModName(modName)
+        if (this.lexer.modList.indexOf(modName) < 0) {
+          this.lexer.modList.push(modName)
+        }
+      }
+    }
 
     // convertTokenで消されるコメントのトークンを残す
     /** @type {TokenWithSourceMap[]} */
     const commentTokens = tokens.filter((t) => t.type === 'line_comment' || t.type === 'range_comment')
       .map((v) => ({ ...v })) // clone
 
-    tokens = this.converttoken(tokens, true)
+    tokens = this.converttoken(tokens, true, filename)
 
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i].type === 'code') {
@@ -542,7 +555,7 @@ export class NakoCompiler {
     let ast
     try {
       this.parser.genMode = 'sync' // set default
-      ast = this.parser.parse(lexerOutput.tokens)
+      ast = this.parser.parse(lexerOutput.tokens, filename)
     } catch (err) {
       if (typeof err.startOffset !== 'number') {
         throw NakoSyntaxError.fromNode(err.message, lexerOutput.tokens[this.parser.index])

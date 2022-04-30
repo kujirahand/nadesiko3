@@ -5,6 +5,7 @@
  */
 
 import { NakoSyntaxError, NakoError, NakoRuntimeError } from './nako_errors.mjs'
+import { NakoLexer } from './nako_lexer.mjs'
 import  nakoVersion from './nako_version.mjs'
 const isIE11 = () => {
   if (typeof(window) == 'object' && window.navigator && window.navigator.userAgent) {
@@ -436,6 +437,8 @@ export class NakoGen {
       case 'nop':
         break
       case 'block':
+        const modName = NakoLexer.filenameToModName(node.file)
+        code += `;__self.__modName='${modName}';\n`
         for (let i = 0; i < node.block.length; i++) {
           const b = node.block[i]
           code += this._convGen(b, false)

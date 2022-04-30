@@ -220,7 +220,7 @@ describe('error_message', () => {
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
       compiler.run(`xを表示`, 'main.nako3')
-      assert.strictEqual(log.split('。')[0], `[警告]main.nako3(1行目): 変数『x』は定義されていません`)
+      assert.strictEqual(log.split('。')[0], `[警告]main.nako3(1行目): 変数『main__x』は定義されていません`)
     })
     it('存在しない高速化オプションを指定したとき', () => {
       const compiler = new NakoCompiler()
@@ -234,14 +234,16 @@ describe('error_message', () => {
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
       compiler.run(`●Aとは\nここまで\n●Aとは\nここまで`, 'main.nako3')
-      assert.strictEqual(log, `[警告]main.nako3(3行目): 関数『A』は既に定義されています。`)
+      assert.strictEqual(log, `[警告]main.nako3(3行目): 関数『main__A』は既に定義されています。`)
     })
     it('プラグイン関数を上書きしたとき', () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
       compiler.run(`●（Aを）足すとは\nここまで`, 'main.nako3')
-      assert.strictEqual(log, '[警告]main.nako3(1行目): 関数『足』は既に定義されています。')
+      // 上記は「main::足す」という関数を定義したことになる
+      // assert.strictEqual(log, '[警告]main.nako3(1行目): 関数『足』は既に定義されています。')
+      assert.strictEqual(log, '')
     })
   })
 })

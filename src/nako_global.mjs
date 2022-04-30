@@ -6,8 +6,8 @@ import { NakoRuntimeError } from './nako_errors.mjs'
  */
 export class NakoGlobal {
   /**
-   * @param {import('./nako3')} compiler
-   * @param {import('./nako_gen')} gen
+   * @param {import('./nako3.mjs')} compiler
+   * @param {import('./nako_gen.mjs')} gen
    */
   constructor (compiler, gen) {
     // ユーザーのプログラムから編集される変数

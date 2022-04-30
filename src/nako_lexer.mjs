@@ -50,10 +50,17 @@ export class NakoLexer {
   constructor (logger) {
     /* @type {import("./nako_logger.mjs").NakoLogger} */
     this.logger = logger
-    /** @type {FuncList} */
+    /** 字句解析した際,確認された関数の一覧 @type {FuncList} */
     this.funclist = {}
+    /** 字句解析した際,取り込むモジュール一覧 
+     * nako3::lex で更新される
+     * @type {Array<string>} 
+     */
+    this.modList = []
     /** @type {TokenWithSourceMap[]} */
     this.result = []
+    /** モジュール名 */
+    this.modName = 'inline'
   }
 
   setFuncList (listObj) {
@@ -63,9 +70,11 @@ export class NakoLexer {
   /**
    * @param {TokenWithSourceMap[]} tokens
    * @param {boolean} isFirst
+   * @param {string} filename
    */
-  replaceTokens (tokens, isFirst) {
+  replaceTokens (tokens, isFirst, filename) {
     this.result = tokens
+    this.modName = NakoLexer.filenameToModName(filename)
     // 関数の定義があれば funclist を更新
     NakoLexer.preDefineFunc(tokens, this.logger, this.funclist)
     this._replaceWord(this.result)
@@ -127,7 +136,7 @@ export class NakoLexer {
    * ファイル内で定義されている関数名を列挙する。結果はfunclistに書き込む。その他のトークンの置換処理も行う。
    * シンタックスハイライトの処理から呼び出すためにstaticメソッドにしている。
    * @param {TokenWithSourceMap[]} tokens
-   * @param {import('./nako_logger.mjs')} logger
+   * @param {import('./nako_logger.mjs').NakoLogger} logger
    * @param {FuncList} funclist
    */
   static preDefineFunc (tokens, logger, funclist) {
@@ -214,12 +223,14 @@ export class NakoLexer {
       let varnames = []
       let funcPointers = []
       let funcName = ''
+      let funcNameToken
       // 関数名の前に引数定義
       if (tokens[i] && tokens[i].type === '(') { [josi, varnames, funcPointers] = readArgs() }
 
       // 関数名を得る
       if (!isMumei && tokens[i] && tokens[i].type === 'word') {
-        funcName = tokens[i++].value
+        funcNameToken = tokens[i++]
+        funcName = funcNameToken.value
       }
 
       // 関数名の後で引数定義
@@ -228,9 +239,12 @@ export class NakoLexer {
       // 名前のある関数定義ならば関数テーブルに関数名を登録
       // 無名関数は登録しないように気をつける
       if (funcName !== '') {
+        const modName = NakoLexer.filenameToModName(t.file)
+        funcName = modName + '__' + funcName
         if (funcName in funclist) { // 関数の二重定義を警告
           logger.warn(`関数『${funcName}』は既に定義されています。`, defToken)
         }
+        funcNameToken.value = funcName
         funclist[funcName] = {
           type: 'func',
           josi,
@@ -242,157 +256,6 @@ export class NakoLexer {
       }
       // 無名関数のために
       defToken.meta = { josi, varnames, funcPointers }
-    }
-    // グローバル変数も登録する
-    NakoLexer._preDefineFuncVars(tokens, logger, funclist)
-  }
-  /*
-   * @param {TokenWithSourceMap[]} tokens
-   * @param {import('./nako_logger.mjs')} logger
-   * @param {FuncList} funclist
-   */
-  static _preDefineFuncVars (tokens, logger, funclist) {
-    /** ブロック管理のためのスタック @type { string[] } */
-    const blockStack = []
-    let i = 0
-    const skipToJosi = (josiList) => {
-      while (i < tokens.length) {
-        const t = tokens[i]
-        if (t.type === 'eol') { // 改行まで調べる
-          return false
-        }
-        if (t.josi === '') {
-          i++
-          continue
-        }
-        const fi = josiList.indexOf(t.josi)
-        if (fi >= 0) {
-          return true
-        }
-        i++
-      }
-      return false
-    }
-    let isJokenBunki = false
-
-    // トークンを漏れなくチェックする
-    while (i < tokens.length) {
-      const t = tokens[i]
-      // 条件分岐の「＊＊ならば」の場合
-      if (isJokenBunki && t.josi === 'ならば') {
-        blockStack.push('条件分岐:ならば')
-        i++
-        continue
-      }
-      if (isJokenBunki && t.type === '違えば') {
-        blockStack.push('条件分岐:違えば')
-        i++
-        continue
-      }
-      if (t.type === 'ここまで') {
-        if (blockStack.length == 0) {
-          logger.warn(`ファイル『${t.file}』の${t.line}行目に不要な『ここまで』があります。`)
-        }
-        blockStack.pop()
-        i++
-        continue
-      }
-      if (t.type === 'もし') {
-        const r = skipToJosi(['ならば', 'でなければ'])
-        if (!r) {
-          logger.warn(`ファイル『${t.file}』の${t.line}行目の『もし』に対応する『ならば』がありません。`)
-          i++
-          continue
-        }
-        const t2 = tokens[i + 1]
-        if (t2 && t2.type === 'eol') {
-          blockStack.push('もし') // 複文の場合
-          i++
-        }
-        continue
-      }
-      if (t.type === '回') {
-        const t3 = tokens[i + 1]
-        if (t3 && t3.type === 'eol') {
-          blockStack.push('回') // 複文の場合
-        }
-        i++
-        continue
-      }
-      if (t.type === '反復') {
-        const t3 = tokens[i + 1]
-        if (t3 && t3.type === 'eol') {
-          blockStack.push('反復') // 複文の場合
-        }
-        i++
-        continue
-      }
-      if (t.type === '繰返') {
-        blockStack.push('繰返')
-        i++
-        continue
-      }
-      if (t.type === '間') {
-        blockStack.push('間')
-        i++
-        continue
-      }
-      if (t.type === '条件分岐') {
-        blockStack.push('条件分岐')
-        isJokenBunki = true
-        i++
-        continue
-      }
-      if (t.type === '実行速度優先') {
-        blockStack.push('実行速度優先')
-        i++
-        continue
-      }
-      if (t.type === 'エラー監視') { // エラー監視
-        blockStack.push('エラー監視')
-        i++
-        continue
-      }
-      
-      if (t.type === 'def_func' || t.type === 'def_test') {
-        blockStack.push('関数')
-        i++
-        continue
-      }
-      // グローバル変数の代入があるか
-      if (t.type === 'word') {
-        const t2 = tokens[i + 1]
-        if (!t2) {
-          i++
-          continue
-        }
-        // 代入文の場合
-        if (t.josi === 'は' || t2.type === 'eq') {
-          // blockStackに関数があれば、グローバル変数ではない。グローバルか？
-          if (blockStack.indexOf('関数') < 0) { // global
-            funclist[t.value] = { type: 'var', value: '' }
-          }
-          i += 2
-          continue
-        }
-        // Aとは変数
-        if (t.josi === 'とは' && t2.type === '変数') {
-          if (blockStack.indexOf('関数') < 0) { // global
-            funclist[t.value] = { type: 'var', value: '' }
-          }
-          i+= 2
-          continue
-        }
-        // Aとは定数
-        if (t.josi === 'とは' && t2.type === '定数') {
-          if (blockStack.indexOf('関数') < 0) { // global
-            funclist[t.value] = { type: 'const', value: '' }
-          }
-          i+= 2
-          continue
-        }
-      }
-      i++
     }
   }
 
@@ -430,15 +293,40 @@ export class NakoLexer {
       if (i <= 0) { return 'eol' }
       return tokens[i - 1].type
     }
+    const modSelf = (tokens.length > 0) ? NakoLexer.filenameToModName(tokens[0].file) : 'inline'
     while (i < tokens.length) {
       const t = tokens[i]
+      // 関数を強制的に置換( word => func )
       if (t.type === 'word' && t.value !== 'それ') {
         // 関数を変換
-        const fo = this.funclist[t.value]
+        const funcName = t.value
+        if (funcName.indexOf('__') < 0) {
+          // 自身のモジュール名を検索
+          const gname1 = `${modSelf}__${funcName}`
+          const gfo1 = this.funclist[gname1]
+          if (gfo1 && gfo1.type === 'func') {
+            t.type = 'func'
+            t.meta = gfo1
+            t.value = gname1
+            continue
+          }
+          // モジュール関数を置換
+          for (let mod of this.modList) {
+            const gname = `${mod}__${funcName}`
+            const gfo = this.funclist[gname]
+            if (gfo && gfo.type === 'func') {
+              t.type = 'func'
+              t.meta = gfo
+              t.value = gname
+              break
+            }
+          }
+          if (t.type === 'func') { continue }
+        }
+        const fo = this.funclist[funcName]
         if (fo && fo.type === 'func') {
           t.type = 'func'
           t.meta = fo
-          continue
         }
       }
       // 数字につくマイナス記号を判定
@@ -727,5 +615,21 @@ export class NakoLexer {
       return v.type
     })
     return a.join(sep)
+  }
+  /**
+   * ファイル名からモジュール名へ変換
+   * @param {string} filename 
+   * @returns {string}
+   */
+  static filenameToModName(filename) {
+    if (!filename) { return 'inline' }
+    // パスがあればパスを削除
+    filename = filename.replace(/[\\:]/g, '/') // Windowsのpath記号を/に置換
+    if (filename.indexOf('/') >= 0) {
+      const a = filename.split('/')
+      filename = a[a.length - 1]
+    }
+    filename = filename.replace(/\.nako3?$/, '')
+    return filename
   }
 }

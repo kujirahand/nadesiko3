@@ -3,26 +3,38 @@
  */
 export class NakoParserBase {
   /**
-   * @param {import("./nako_logger")} logger
+   * @param {import("./nako_logger.mjs")} logger
    */
   constructor (logger) {
     this.logger = logger
     /** @type any[] */
     this.stackList = [] // 関数定義の際にスタックが混乱しないように整理する
-    this.init()
-    /** @type {import('./nako3').TokenWithSourceMap[]} */
+    /** @type {import('./nako3.mjs').TokenWithSourceMap[]} */
     this.tokens = []
-    /** @type {import('./nako3').Ast[]} */
+    /** @type {import('./nako3.mjs').Ast[]} */
     this.stack = []
     this.index = 0
-    /** @type {import('./nako3').Ast[]} */
+    /** トークン出現チェック(accept関数)に利用する 
+     * @type {import('./nako3.mjs').Ast[]}
+     */
     this.y = []
+    /** モジュル名 @type {string} */
+    this.modName = 'inline'
+    /** 利用するモジュールの名前一覧 @type {array[string]} */
+    this.modList = []
+    /** グローバル変数・関数の確認用 */
+    this.funclist = {}
+    /** ローカル変数の確認用 */
+    this.localvars = {'それ': {type: 'var', value: ''}}
+    /** コード生成器の名前 */
     this.genMode = 'sync' // #637
     this.arrayIndexFrom = 0  // #1140
     this.flagReverseArrayIndex = false // #1140
     this.flagCheckArrayInit = false // #1140
     /** @type Object[] */
     this.recentlyCalledFunc = [] // 最近呼び出した関数(余剰エラーの報告に使う)
+
+    this.init()
   }
 
   init () {
@@ -31,7 +43,7 @@ export class NakoParserBase {
   }
 
   reset () {
-    /** @type {import('./nako3').TokenWithSourceMap[]} */
+    /** @type {import('./nako3.mjs').TokenWithSourceMap[]} */
     this.tokens = [] // 字句解析済みのトークンの一覧を保存
     this.index = 0 // tokens[] のどこまで読んだかを管理する
     this.stack = [] // 計算用のスタック ... 直接は操作せず、pushStack() popStack() を介して使う
@@ -75,6 +87,42 @@ export class NakoParserBase {
 
   loadStack () {
     this.stack = this.stackList.pop()
+    this.localvars = {'それ': {type: 'var', value: ''}}
+  }
+
+  /** 変数名を探す
+   * @param {string} name
+   * @returns {any}変数名の情報
+   */
+  findVar(name) {
+    // ローカル変数？
+    if (this.localvars[name]) {
+      return {
+        name: name,
+        scope: 'local',
+        info: this.localvars[name]
+      }
+    }
+    // グローバル変数（モジュールを検索）？
+    for (let mod of this.modList) {
+      const gname = `${mod}__${name}`
+      if (this.funclist[gname]) {
+        return {
+          name: gname,
+          scope: 'global',
+          info: this.funclist[gname] 
+        }
+      }
+    }
+    // システム変数 (funclistを普通に検索)
+    if (this.funclist[name]) {
+      return {
+        name,
+        scope: 'system',
+        info: this.funclist[name]
+      }
+    }
+    return undefined
   }
 
   /**

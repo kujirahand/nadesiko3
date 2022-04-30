@@ -7,9 +7,9 @@ export default {
     type: 'const',
     value: {
       pluginName: 'plugin_system', // プラグインの名前
-      pluginVersion: '3.2.24', // プラグインのバージョン
+      pluginVersion: '3.3.4', // プラグインのバージョン
       nakoRuntime: ['wnako', 'cnako', 'phpnako'], // 対象ランタイム
-      nakoVersion: '^3.2.24' // 要求なでしこバージョン
+      nakoVersion: '^3.3.4' // 要求なでしこバージョン
     }
   },
   '初期化': {
@@ -22,9 +22,11 @@ export default {
       sys.__findVar = function (nameStr, def) {
         if (typeof nameStr === 'function') { return nameStr }
         if (sys.__locals[nameStr]) { return sys.__locals[nameStr] }
+        let modName = (typeof(sys.__modName) !== 'undefined') ? sys.__modName : 'inline'
+        let gname = (nameStr.indexOf('__') >= 0) ? nameStr : modName + '__' + nameStr
         for (let i = 2; i >= 0; i--) {
           const scope = sys.__varslist[i]
-          if (scope[nameStr]) { return scope[nameStr] }
+          if (scope[gname]) { return scope[gname] }
         }
         return def
       }
@@ -558,10 +560,10 @@ export default {
         throw new Error('非同期モードでは「ナデシコ」は利用できません。')
       }
       sys.__varslist[0]['表示ログ'] = ''
-      sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: true })
+      sys.__self.runEx(code, sys.__modName, { resetEnv: false, resetLog: true })
       const out = sys.__varslist[0]['表示ログ'] + ''
       if (out) {
-        sys.logger.send('stdout', out)
+        sys.logger.trace(out)
       }
       return out
     }
@@ -573,10 +575,10 @@ export default {
       if (sys.__genMode === '非同期モード') {
         throw new Error('非同期モードでは「ナデシコ続」は利用できません。')
       }
-      sys.__self.runEx(code, 'immediate-code.nako3', { resetEnv: false, resetLog: false })
+      sys.__self.runEx(code, sys.__modName, { resetEnv: false, resetLog: false })
       const out = sys.__varslist[0]['表示ログ'] + ''
       if (out) {
-        sys.logger.send('stdout', out)
+        sys.logger.trace(out)
       }
       return out
     }
@@ -2479,6 +2481,20 @@ export default {
       throw new Error(s)
     }
   },
+  'グローバル関数一覧取得': { // @グローバル変数にある関数一覧を取得 // @ぐろーばるかんすういちらんしゅとく
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys) {
+      const f = []
+      for (const key in sys.__varslist[1]) {
+        if (sys.__v0.hasOwnProperty(key)) {
+          f.push(key)
+        }
+      }
+      return f
+    }
+  },
   'システム関数一覧取得': { // @システム関数の一覧を取得 // @しすてむかんすういちらんしゅとく
     type: 'func',
     josi: [],
@@ -2486,8 +2502,9 @@ export default {
     fn: function (sys) {
       const f = []
       for (const key in sys.__v0) {
-        const ff = sys.__v0[key]
-        if (typeof ff === 'function') { f.push(key) }
+        if (sys.__v0.hasOwnProperty(key)) {
+          f.push(key)
+        }
       }
       return f
     }
