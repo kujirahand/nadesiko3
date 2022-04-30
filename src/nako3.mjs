@@ -5,7 +5,7 @@
 import { NakoParser } from './nako_parser3.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import { NakoPrepare } from './nako_prepare.mjs'
-import { NakoGen, generateJS } from './nako_gen.mjs'
+import { generateJS } from './nako_gen.mjs'
 import { NakoGenASync } from './nako_gen_async.mjs'
 import NakoIndent from './nako_indent.mjs'
 import { convertDNCL } from './nako_from_dncl.mjs'
@@ -178,8 +178,7 @@ export class NakoCompiler {
    * プログラムが依存するファイルを再帰的に取得する。
    * - .jsであれば評価してthis.addPluginFileを呼び出し、.nako3であればファイルをfetchしてdependenciesに保存し再帰する。
    * - resolvePathはファイルを検索して正規化する必要がある。
-   * - needNako3やneedJsがPromiseを返すなら並列処理し、処理の終了を知らせるためのPromiseを返す。そうでなければ同期的に処理する。
-   *   （`instanceof Promise` はpolyfillで動作しない場合があるため、Promiseかどうかを明示する必要がある。）
+   * - readNako3やreadJsのsyncを確認してfalseならPromiseを返すので並列処理し、そうでなければ同期的に処理する。
    * - readNako3はソースコードを返す。readJsはrequireあるいはevalする関数を返す。
    * @param {string} code
    * @param {string} filename
@@ -258,10 +257,10 @@ export class NakoCompiler {
           throw new NakoImportError(`ファイル『${item.value}』を読み込めません。ファイルが存在しないか未対応の拡張子です。`, item.firstToken.file, item.firstToken.line)
         }
       }
-
       if (tasks.length > 0) {
         return Promise.all(tasks)
       }
+      return undefined
     }
 
     try {
@@ -315,7 +314,7 @@ export class NakoCompiler {
     /** @type {import('./nako_lexer').Token[]} */
     let tokens
     try {
-      tokens = this.lexer.setInput(preprocessed.map((v) => v.text).join(''), line, filename)
+      tokens = this.lexer.tokenize(preprocessed.map((v) => v.text).join(''), line, filename)
     } catch (err) {
       if (!(err instanceof InternalLexerError)) {
         throw err
@@ -363,7 +362,7 @@ export class NakoCompiler {
    * @returns コード (なでしこ)
    */
   converttoken (tokens, isFirst) {
-    return this.lexer.setInput2(tokens, isFirst)
+    return this.lexer.replaceTokens(tokens, isFirst)
   }
 
   /**
@@ -643,6 +642,7 @@ export class NakoCompiler {
    * @param {boolean} isReset
    * @param {boolean | string} isTest テストかどうか。stringの場合は1つのテストのみ。
    * @param {string} [preCode]
+   * @returns {nakoGlobal}
    */
   _run (code, fname, isReset, isTest, preCode = '') {
     const opts = {
@@ -665,6 +665,7 @@ export class NakoCompiler {
    * @param {Partial<CompilerOptions>} opts
    * @param {string} [preCode]
    * @param {NakoGlobal} [nakoGlobal] ナデシコ命令でスコープを共有するため
+   * @returns {nakoGlobal}
    */
   _runEx (code, fname, opts, preCode = '', nakoGlobal) {
     // コンパイル

@@ -3,7 +3,8 @@
 import { opPriority } from './nako_parser_const.mjs'
 
 // 予約語句
-// (memo)「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは replaceWord で word から変換
+// (memo)「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは _replaceWord で word から変換
+/** @types {Record<string, string>} */
 import reservedWords from './nako_reserved_words.mjs'
 
 // 助詞の一覧
@@ -15,7 +16,7 @@ import { rules, unitRE } from './nako_lex_rules.mjs'
 import { NakoLexerError, InternalLexerError } from './nako_errors.mjs'
 
 /**
- * @typedef {import('./nako3').TokenWithSourceMap} TokenWithSourceMap
+ * @typedef {import('./nako3.mjs').TokenWithSourceMap} TokenWithSourceMap
  * @typedef {{
  *   type: string;
  *   value: unknown;
@@ -40,13 +41,14 @@ import { NakoLexerError, InternalLexerError } from './nako_errors.mjs'
   *         value: unknown
   *    }
   * )>} FuncList
- */
+  */
 
 export class NakoLexer {
   /**
-   * @param {import("./nako_logger")} logger
+   * @param {import("./nako_logger.mjs").NakoLogger} logger
    */
   constructor (logger) {
+    /* @type {import("./nako_logger.mjs").NakoLogger} */
     this.logger = logger
     /** @type {FuncList} */
     this.funclist = {}
@@ -58,19 +60,15 @@ export class NakoLexer {
     this.funclist = listObj
   }
 
-  setInput (code, line, filename) {
-    // 最初に全部を区切ってしまう
-    return this.tokenize(code, line, filename)
-  }
-
   /**
    * @param {TokenWithSourceMap[]} tokens
+   * @param {boolean} isFirst
    */
-  setInput2 (tokens, isFirst) {
+  replaceTokens (tokens, isFirst) {
     this.result = tokens
     // 関数の定義があれば funclist を更新
     NakoLexer.preDefineFunc(tokens, this.logger, this.funclist)
-    this.replaceWord(this.result)
+    this._replaceWord(this.result)
 
     if (isFirst) {
       if (this.result.length > 0) {
@@ -129,7 +127,7 @@ export class NakoLexer {
    * ファイル内で定義されている関数名を列挙する。結果はfunclistに書き込む。その他のトークンの置換処理も行う。
    * シンタックスハイライトの処理から呼び出すためにstaticメソッドにしている。
    * @param {TokenWithSourceMap[]} tokens
-   * @param {import('./nako_logger')} logger
+   * @param {import('./nako_logger.mjs')} logger
    * @param {FuncList} funclist
    */
   static preDefineFunc (tokens, logger, funclist) {
@@ -144,7 +142,9 @@ export class NakoLexer {
       while (tokens[i]) {
         const t = tokens[i]
         i++
-        if (t.type === ')') { break } else if (t.type === 'func') { isFuncPointer = true } else if (t.type !== '|' && t.type !== 'comma') {
+        if (t.type === ')') { break }
+        if (t.type === 'func') { isFuncPointer = true }
+        else if (t.type !== '|' && t.type !== 'comma') {
           if (isFuncPointer) {
             t.funcPointer = true
             isFuncPointer = false
@@ -186,7 +186,7 @@ export class NakoLexer {
       // N回をN|回に置換
       if (t.type === 'word' && t.josi === '' && t.value.length >= 2) {
         if (t.value.match(/回$/)) {
-          t.value = t.value.substr(0, t.value.length - 1)
+          t.value = t.value.substring(0, t.value.length - 1)
           tokens.splice(i + 1, 0, { type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: '' })
           t.endOffset--
           i++
@@ -240,9 +240,159 @@ export class NakoLexer {
           funcPointers
         }
       }
-
       // 無名関数のために
       defToken.meta = { josi, varnames, funcPointers }
+    }
+    // グローバル変数も登録する
+    NakoLexer._preDefineFuncVars(tokens, logger, funclist)
+  }
+  /*
+   * @param {TokenWithSourceMap[]} tokens
+   * @param {import('./nako_logger.mjs')} logger
+   * @param {FuncList} funclist
+   */
+  static _preDefineFuncVars (tokens, logger, funclist) {
+    /** ブロック管理のためのスタック @type { string[] } */
+    const blockStack = []
+    let i = 0
+    const skipToJosi = (josiList) => {
+      while (i < tokens.length) {
+        const t = tokens[i]
+        if (t.type === 'eol') { // 改行まで調べる
+          return false
+        }
+        if (t.josi === '') {
+          i++
+          continue
+        }
+        const fi = josiList.indexOf(t.josi)
+        if (fi >= 0) {
+          return true
+        }
+        i++
+      }
+      return false
+    }
+    let isJokenBunki = false
+
+    // トークンを漏れなくチェックする
+    while (i < tokens.length) {
+      const t = tokens[i]
+      // 条件分岐の「＊＊ならば」の場合
+      if (isJokenBunki && t.josi === 'ならば') {
+        blockStack.push('条件分岐:ならば')
+        i++
+        continue
+      }
+      if (isJokenBunki && t.type === '違えば') {
+        blockStack.push('条件分岐:違えば')
+        i++
+        continue
+      }
+      if (t.type === 'ここまで') {
+        if (blockStack.length == 0) {
+          logger.warn(`ファイル『${t.file}』の${t.line}行目に不要な『ここまで』があります。`)
+        }
+        blockStack.pop()
+        i++
+        continue
+      }
+      if (t.type === 'もし') {
+        const r = skipToJosi(['ならば', 'でなければ'])
+        if (!r) {
+          logger.warn(`ファイル『${t.file}』の${t.line}行目の『もし』に対応する『ならば』がありません。`)
+          i++
+          continue
+        }
+        const t2 = tokens[i + 1]
+        if (t2 && t2.type === 'eol') {
+          blockStack.push('もし') // 複文の場合
+          i++
+        }
+        continue
+      }
+      if (t.type === '回') {
+        const t3 = tokens[i + 1]
+        if (t3 && t3.type === 'eol') {
+          blockStack.push('回') // 複文の場合
+        }
+        i++
+        continue
+      }
+      if (t.type === '反復') {
+        const t3 = tokens[i + 1]
+        if (t3 && t3.type === 'eol') {
+          blockStack.push('反復') // 複文の場合
+        }
+        i++
+        continue
+      }
+      if (t.type === '繰返') {
+        blockStack.push('繰返')
+        i++
+        continue
+      }
+      if (t.type === '間') {
+        blockStack.push('間')
+        i++
+        continue
+      }
+      if (t.type === '条件分岐') {
+        blockStack.push('条件分岐')
+        isJokenBunki = true
+        i++
+        continue
+      }
+      if (t.type === '実行速度優先') {
+        blockStack.push('実行速度優先')
+        i++
+        continue
+      }
+      if (t.type === 'エラー監視') { // エラー監視
+        blockStack.push('エラー監視')
+        i++
+        continue
+      }
+      
+      if (t.type === 'def_func' || t.type === 'def_test') {
+        blockStack.push('関数')
+        i++
+        continue
+      }
+      // グローバル変数の代入があるか
+      if (t.type === 'word') {
+        const t2 = tokens[i + 1]
+        if (!t2) {
+          i++
+          continue
+        }
+        // 代入文の場合
+        if (t.josi === 'は' || t2.type === 'eq') {
+          // blockStackに関数があれば、グローバル変数ではない。グローバルか？
+          if (blockStack.indexOf('関数') < 0) { // global
+            funclist[t.value] = { type: 'var', value: '' }
+          }
+          i += 2
+          continue
+        }
+        // Aとは変数
+        if (t.josi === 'とは' && t2.type === '変数') {
+          if (blockStack.indexOf('関数') < 0) { // global
+            funclist[t.value] = { type: 'var', value: '' }
+          }
+          i+= 2
+          continue
+        }
+        // Aとは定数
+        if (t.josi === 'とは' && t2.type === '定数') {
+          if (blockStack.indexOf('関数') < 0) { // global
+            funclist[t.value] = { type: 'const', value: '' }
+          }
+          i+= 2
+          continue
+        }
+      }
+      i++
     }
   }
 
@@ -273,7 +423,7 @@ export class NakoLexer {
   /**
    * @param {TokenWithSourceMap[]} tokens
    */
-  replaceWord (tokens) {
+  _replaceWord (tokens) {
     let comment = []
     let i = 0
     const getLastType = () => {
@@ -406,7 +556,7 @@ export class NakoLexer {
         // 空白ならスキップ
         if (rule.name === 'space') {
           column += m[0].length
-          src = src.substr(m[0].length)
+          src = src.substring(m[0].length)
           continue
         }
         // マッチしたルールがコールバックを持つなら
@@ -562,7 +712,7 @@ export class NakoLexer {
         break
       }
       if (!ok) {
-        throw new InternalLexerError('未知の語句: ' + src.substr(0, 3) + '...',
+        throw new InternalLexerError('未知の語句: ' + src.substring(0, 3) + '...',
           srcLength - src.length,
           srcLength - srcLength + 3,
           line
@@ -570,5 +720,12 @@ export class NakoLexer {
       }
     }
     return result
+  }
+  // トークン配列をtype文字列に変換
+  static tokensToTypeStr(tokens, sep) {
+    const a = tokens.map((v) => {
+      return v.type
+    })
+    return a.join(sep)
   }
 }

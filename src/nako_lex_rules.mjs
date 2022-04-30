@@ -39,7 +39,7 @@ export const rules = [
   { name: 'もし', pattern: /^もしも?/ },
   // 「ならば」は助詞として定義している
   { name: '違えば', pattern: /^違(えば)?/ },
-  // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」「条件分岐」などは replaceWord で word から変換
+  // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」「条件分岐」などは NakoLexer._replaceWord で word から変換
   // @see nako_reserved_words.js
   { name: 'shift_r0', pattern: /^>>>/ },
   { name: 'shift_r', pattern: /^>>/ },

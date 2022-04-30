@@ -11,7 +11,6 @@ import PluginNode from './plugin_node.mjs'
 import { NakoImportError } from './nako_errors.mjs'
 import app from './commander_ja.mjs'
 import nakoVersion from './nako_version.mjs'
-import fetch from 'node-fetch'
 
 // __dirname のために
 import url from 'url'
@@ -131,16 +130,19 @@ export class CNako3 extends NakoCompiler {
       this.cnakoMan(opt.man)
       return
     }
-    if (opt.browsers) { // 対応ブラウザを表示する
+    // 対応ブラウザを表示する
+    if (opt.browsers) {
       this.cnakoBrowsers()
       return
     }
     if (opt.mainfile) { this.filename = opt.mainfile }
-    if (opt.repl) { // REPLを実行する
+    // REPLを実行する
+    if (opt.repl) {
       this.cnakoRepl(opt)
       return
     }
-    if (opt.one_liner) { // ワンライナーで実行する
+    // ワンライナーで実行する
+    if (opt.one_liner) {
       this.cnakoOneLiner(opt)
       return
     }
@@ -151,26 +153,30 @@ export class CNako3 extends NakoCompiler {
       await this.nakoCompile(opt, src, false)
       return
     }
+    // ASTを出力する
     if (opt.ast) {
       this.outputAST(opt, src)
       return
     }
-    try {
-      if (opt.test) {
+    // テストを実行する
+    if (opt.test) {
+      try {
         await this.loadDependencies(src, opt.mainfile, '')
         this.test(src, opt.mainfile)
-      } else {
-        // run はコンパイルと実行を行うメソッド
-        await this.run(src, opt.mainfile)
-      }
-      if (opt.test && this.numFailures > 0) {
+        return
+      } catch (e) {
         process.exit(1)
       }
+    }
+    // ファイルを読んで実行する
+    try {
+      await this.run(src, opt.mainfile) // run はコンパイルと実行を行うメソッド
+      if (this.numFailures > 0) { process.exit(1) }
     } catch (e) {
+      // エラーメッセージはloggerへ送られるため無視してよい
       if (opt.debug || opt.trace) {
         throw e
       }
-      // エラーメッセージはloggerへ送られるため無視してよい
     }
   }
 
@@ -181,8 +187,9 @@ export class CNako3 extends NakoCompiler {
    * @param {boolean} isTest
    */
   async nakoCompile (opt, src, isTest) {
-    // system
+    // 依存ライブラリなどを読み込む
     await this.loadDependencies(src, this.filename, '')
+    // JSにコンパイル
     const jscode = this.compileStandalone(src, this.filename, isTest)
     console.log(opt.output)
     fs.writeFileSync(opt.output, jscode, 'utf-8')
@@ -301,79 +308,88 @@ export class CNako3 extends NakoCompiler {
     console.log(fs.readFileSync(fileMD, 'utf-8'))
   }
 
-  /**
-   * @param {string} code
-   * @param {string} filename
-   * @param {string} preCode
-   */
-  async loadDependencies (code, filename, preCode) {
+  // (js|nako3) loader
+  getLoaderTools() {
     /** @type {string[]} */
     const log = []
-    const tools = {
-      resolvePath: (name, token) => {
-        // JSプラグインのパスを解決する
-        if (/\.(js|mjs)(\.txt)?$/.test(name) || /^[^.]*$/.test(name)) {
-          const jspath = CNako3.findJSPluginFile(name, this.filename, __dirname, log)
-          if (jspath === '') {
-            throw new NakoImportError(`ファイル『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
-          }
-          return { filePath: jspath, type: 'js' }
+    const tools = {}
+    tools.resolvePath = (name, token) => {
+      // JSプラグインのパスを解決する
+      if (/\.(js|mjs)(\.txt)?$/.test(name) || /^[^.]*$/.test(name)) {
+        const jspath = CNako3.findJSPluginFile(name, this.filename, __dirname, log)
+        if (jspath === '') {
+          throw new NakoImportError(`ファイル『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
         }
-        // なでしこプラグインのパスを解決する
-        if (/\.nako3?(\.txt)?$/.test(name)) {
-          if (path.isAbsolute(name)) {
-            return { filePath: path.resolve(name), type: 'nako3' }
-          } else {
-            // filename が undefined のとき token.file が undefined になる。
-            if (token.file === undefined) {
-              throw new Error('ファイル名を指定してください。')
-            }
-            return { filePath: path.resolve(path.join(path.dirname(token.file), name)), type: 'nako3' }
+        return { filePath: jspath, type: 'js' }
+      }
+      // なでしこプラグインのパスを解決する
+      if (/\.nako3?(\.txt)?$/.test(name)) {
+        if (path.isAbsolute(name)) {
+          return { filePath: path.resolve(name), type: 'nako3' }
+        } else {
+          // filename が undefined のとき token.file が undefined になる。
+          if (token.file === undefined) {
+            throw new Error('ファイル名を指定してください。')
           }
+          return { filePath: path.resolve(path.join(path.dirname(token.file), name)), type: 'nako3' }
         }
-        return { filePath: name, type: 'invalid' }
-      },
-      readNako3: (name, token) => {
+      }
+      return { filePath: name, type: 'invalid' }
+    }
+    tools.readNako3 = (name, token) => {
         if (!fs.existsSync(name)) {
           throw new NakoImportError(`ファイル ${name} が存在しません。`, token.file, token.line)
         }
         return { sync: true, value: fs.readFileSync(name).toString() }
-      },
-      readJs: (filePath, token) => {
-        const content = {sync: false, value: null}
-        if (process.platform === 'win32') {
-          if (filePath.substring(1, 3) === ':\\') {
-            filePath = 'file://' + filePath
-          }
-        }
-        content.value = (
-          new Promise((resolve, reject) => {
-            import(filePath).then((mod) => {
-              // プラグインは export default で宣言されている? (moduleプラグインの場合)
-              const obj = Object.assign({}, mod)
-              resolve(() => { return obj.default })
-            }).catch((err) => {
-              const err2 = new NakoImportError(`ファイル『${filePath}』が読み込めません。${err}`, token.file, token.line)
-              reject(err2)
-            })
-          })
-        )
-        return content
-      }
     }
-    return super._loadDependencies(code, filename, preCode, tools)
+    tools.readJs = (filePath, token) => {
+      const content = {sync: false, value: null}
+      if (process.platform === 'win32') {
+        if (filePath.substring(1, 3) === ':\\') {
+          filePath = 'file://' + filePath
+        }
+      }
+      content.value = (
+        new Promise((resolve, reject) => {
+          import(filePath).then((mod) => {
+            // プラグインは export default で宣言されている? (moduleプラグインの場合)
+            const obj = Object.assign({}, mod)
+            resolve(() => { return obj.default })
+          }).catch((err) => {
+            const err2 = new NakoImportError(`ファイル『${filePath}』が読み込めません。${err}`, token.file, token.line)
+            reject(err2)
+          })
+        })
+      )
+      return content
+    }
+    return tools
+  }
+
+  /**
+   * @param {string} code
+   * @param {string} filename
+   * @param {string} preCode
+   * @returns {Promise<void>}
+   */
+  async loadDependencies (code, filename, preCode) {
+    const tools = this.getLoaderTools()
+    await super._loadDependencies(code, filename, preCode, tools)
   }
 
   /**
    * @param {string} code
    * @param {string} fname
    * @param {string} [preCode]
+   * @returns {Promise<nakoGlobal>}
    */
   async run (code, fname, preCode = '') {
     // 取り込む文の処理
-    await this.loadDependencies(code, fname, preCode).catch((err) => {
+    try {
+      await this.loadDependencies(code, fname, preCode)
+    } catch(err) {
       this.logger.error(err)
-    })
+    }
     // 実行
     return this._runEx(code, fname, {}, preCode)
   }
