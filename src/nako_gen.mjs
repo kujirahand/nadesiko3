@@ -360,7 +360,7 @@ export class NakoGen {
             josi: t.name.meta.josi,
             fn: '',
             type: 'func',
-            asyncFn: false
+            asyncFn: t.asyncFn
           }
           funcList.push({name: name, node: t})
         }
@@ -391,16 +391,7 @@ export class NakoGen {
     }
     this.varsSet = { isFunction: false, names: initialNames, readonly: new Set() }
     this.varslistSet = this.__self.__varslist.map((v) => ({ isFunction: false, names: new Set(Object.keys(v)), readonly: new Set() }))
-    this.varslistSet[2] = this.varsSet
-    
-    // 非同期関数(asyncFn)があるかどうかテストする
-    // 後ほど改めて再度同じ関数を呼ぶため、警告などは抑止する
-    const tmpWarn = this.warnUndefinedVar   
-    this.warnUndefinedVar = false // 未定義の変数の警告を抑止 #1192
-    for (let ff of funcList) {
-      this.convDefFuncCommon(ff.node, ff.name)
-    }
-    this.warnUndefinedVar = tmpWarn
+    this.varslistSet[2] = this.varsSet    
   }
 
   /**
@@ -1187,7 +1178,7 @@ export class NakoGen {
       throw NakoSyntaxError.fromNode(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node)
     }
     // どの関数を呼び出すのか関数を特定する
-    /** @type {import('./nako3').NakoFunction} */
+    /** @type {import('./nako3.mjs').NakoFunction} */
     let func
     if (res.i === 0) { // plugin function
       func = this.__self.funclist[funcName]

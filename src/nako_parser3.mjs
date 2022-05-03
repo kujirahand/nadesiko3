@@ -269,10 +269,12 @@ export class NakoParser extends NakoParserBase {
     if (this.check('とは')) { this.get() }
     let block = null
     let multiline = false
+    let funcFn = false
     if (this.check('ここから')) { multiline = true }
     if (this.check('eol')) { multiline = true }
     try {
       this.funcLevel++
+      this.usedFuncFn = false
       if (multiline) {
         this.saveStack()
         block = this.yBlock()
@@ -284,6 +286,7 @@ export class NakoParser extends NakoParserBase {
         this.loadStack()
       }
       this.funcLevel--
+      funcFn = this.usedFuncFn
     } catch (err) {
       this.logger.debug(this.nodeToStr(funcName, { depth: 0, typeName: '関数' }, true) +
         'の定義で以下のエラーがありました。\n' + err.message, def)
@@ -296,6 +299,7 @@ export class NakoParser extends NakoParserBase {
       name: funcName,
       args: defArgs,
       block,
+      funcFn,
       josi: '',
       ...map,
       end: this.peekSourceMap()
@@ -1203,6 +1207,9 @@ export class NakoParser extends NakoParserBase {
     // 最近使った関数を記録
     this.recentlyCalledFunc.push({name: t.value, ...f})
 
+    // 呼び出す関数が非同期呼び出しが必要(asyncFn)ならマーク
+    if (f && f.asyncFn) { this.usedFuncFn = true }
+
     // 関数の引数を取り出す処理
     const args = []
     let nullCount = 0
@@ -1951,7 +1958,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** 複数の変数名を検索して解決する 
-   * @param {TokenWithSourceMap[]} names
+   * @param {TokenWithSourceMap[]} words
    * @return {TokenWithSourceMap[]}
    */
    getVarNameList(words) {

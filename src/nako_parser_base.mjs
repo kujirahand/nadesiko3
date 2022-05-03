@@ -25,6 +25,7 @@ export class NakoParserBase {
     /** グローバル変数・関数の確認用 */
     this.funclist = {}
     this.funcLevel = 0
+    this.usedFuncFn = false // funcFnの呼び出しがあるかどうか
     /** ローカル変数の確認用 */
     this.localvars = {'それ': {type: 'var', value: ''}}
     /** コード生成器の名前 */
