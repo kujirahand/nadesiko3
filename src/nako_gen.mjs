@@ -391,7 +391,7 @@ export class NakoGen {
     }
     this.varsSet = { isFunction: false, names: initialNames, readonly: new Set() }
     this.varslistSet = this.__self.__varslist.map((v) => ({ isFunction: false, names: new Set(Object.keys(v)), readonly: new Set() }))
-    this.varslistSet[2] = this.varsSet    
+    this.varslistSet[2] = this.varsSet   
   }
 
   /**

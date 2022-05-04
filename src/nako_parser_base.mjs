@@ -97,12 +97,31 @@ export class NakoParserBase {
    * @returns {any}変数名の情報
    */
   findVar(name) {
+    // モジュール名を含んでいる?
+    if (name.indexOf('__') >= 0) {
+      if (this.funclist[name]) {
+        return {
+          name,
+          scope: 'global',
+          info: this.funclist[name]
+        }
+      } else { return undefined }
+    }
     // ローカル変数？
     if (this.localvars[name]) {
       return {
         name: name,
         scope: 'local',
         info: this.localvars[name]
+      }
+    }
+    // グローバル変数（自身）？
+    const gnameSelf = `${this.modName}__${name}`
+    if (this.funclist[gnameSelf]) {
+      return {
+        name: gnameSelf,
+        scope: 'global',
+        info: this.funclist[gnameSelf]
       }
     }
     // グローバル変数（モジュールを検索）？

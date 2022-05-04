@@ -153,11 +153,18 @@ export class CNako3 extends NakoCompiler {
       await this.nakoCompile(opt, src, false)
       return
     }
+    
     // ASTを出力する
     if (opt.ast) {
+      try {
+        await this.loadDependencies(src, opt.mainfile, '')
+      } catch (e) {
+        if (this.numFailures > 0) { process.exit(1) }
+      }
       this.outputAST(opt, src)
       return
     }
+
     // テストを実行する
     if (opt.test) {
       try {
@@ -168,6 +175,7 @@ export class CNako3 extends NakoCompiler {
         process.exit(1)
       }
     }
+
     // ファイルを読んで実行する
     try {
       await this.run(src, opt.mainfile) // run はコンパイルと実行を行うメソッド

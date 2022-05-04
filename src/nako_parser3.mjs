@@ -1247,8 +1247,16 @@ export class NakoParser extends NakoParserBase {
     if (nullCount >= 2 && (valueCount > 0 || t.josi === '' || keizokuJosi.indexOf(t.josi) >= 0)) { throw NakoSyntaxError.fromNode(`関数『${t.value}』の引数が不足しています。`, t) }
 
     const funcNode = { type: 'func', name: t.value, args: args, josi: t.josi, ...map, end: this.peekSourceMap() }
+    // 「プラグイン名設定」か
+    if (funcNode.name === 'プラグイン名設定') {
+      let fname = args[0].value
+      if (fname === 'メイン') { fname = args[0].file }
+      this.modName = NakoLexer.filenameToModName(fname)
+    }
+
     // 言い切りならそこで一度切る
     if (t.josi === '') { return funcNode }
+
 
     // **して、** の場合も一度切る
     if (keizokuJosi.indexOf(t.josi) >= 0) {

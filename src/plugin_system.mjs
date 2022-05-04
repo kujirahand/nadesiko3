@@ -2486,6 +2486,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys) {
+      console.log(sys.__varslist[2])
       const f = []
       for (const key in sys.__varslist[1]) {
         if (sys.__v0.hasOwnProperty(key)) {
