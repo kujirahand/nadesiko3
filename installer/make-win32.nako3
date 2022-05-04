@@ -32,7 +32,7 @@
 #ここまで。
 
 # --- Node.jsがあるか？
-NODEJS=「{出力先}/nodejs.7z」
+NODEJS=「{出力先}/setup/nodejs.7z」
 もし、NODEJSが存在するならば
   「OK:NODEJS存在」と表示。
 違えば
