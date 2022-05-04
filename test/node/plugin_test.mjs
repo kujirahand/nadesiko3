@@ -16,22 +16,25 @@ describe('plugin_test', () => {
   const cmp = async (code, res) => {
     nako.logger.debug('code=' + code)
     const ret = await nako.run(code)
+    if (ret.log != res) {
+        console.log('[ERROR]', ret.log, '!=', res)
+    }
     assert.strictEqual(ret.log, res)
   }
-  it('JS「取り込む」', () => {
-    const plug = path.join(__dirname, '..', '..', 'src', 'plugin_keigo.js')
-    cmp(`!「${plug}」を取り込む。\n拝啓。お世話になっております。礼節レベル取得して表示。`, '1')
+  it('JS「取り込む」', async () => {
+    const plug = path.join(__dirname, '..', '..', 'src', 'plugin_keigo.mjs')
+    await cmp(`!「${plug}」を取り込む。\n拝啓。お世話になっております。礼節レベル取得して表示。`, '1')
   })
-  it('NAKO3スコープテスト1__グローバル変数', () => {
-    cmp(`!「${scope1}」を取り込む。\n朝食値段を表示。`, '1000')
-    cmp(`!「${scope1}」を取り込む。\nスコープ取得して表示。`, `${scope1}`)
+  it('NAKO3スコープテスト1__グローバル変数', async () => {
+    await cmp(`!「${scope1}」を取り込む。\n朝食値段を表示。`, '1000')
+    await cmp(`!「${scope1}」を取り込む。\nscope1__スコープ取得して表示。`, 'scope1')
   })
-  it('NAKO3スコープテスト2__グローバル変数', () => {
-    cmp(`!「${scope2}」を取り込む。\n朝食値段を表示。`, '2000')
-    cmp(`!「${scope2}」を取り込む。\nスコープ取得して表示。`, `${scope1}`)
+  it('NAKO3スコープテスト2__グローバル変数', async () => {
+    await cmp(`!「${scope2}」を取り込む。\n朝食値段を表示。`, '2000')
+    await cmp(`!「${scope2}」を取り込む。\nscope2__スコープ取得して表示。`, 'scope2')
   })
   it('NAKO3スコープテスト1+2__関数', () => {
-    const scope = `!「${scope2}」を取り込む。\n!「${scope2}」を取り込む。\n`
+    const scope = `!「${scope1}」を取り込む。\n!「${scope2}」を取り込む。\n`
     cmp(`${scope};scope1__朝食取得して表示。`, '1000')
     cmp(`${scope};scope2__朝食取得して表示。`, '2000')
   })
