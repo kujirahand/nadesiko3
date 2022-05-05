@@ -1030,7 +1030,6 @@ export class NakoParser extends NakoParserBase {
 
   /** @returns {import('./nako3.mjs').Ast | null | undefined} */
   yDainyu () {
-    // @@@
     const map = this.peekSourceMap()
     const dainyu = this.get() // 代入
     if (dainyu === null) { return null }
@@ -1052,8 +1051,9 @@ export class NakoParser extends NakoParserBase {
       };
     }
     // 一般的な変数への代入
+    const word2 = this.getVarName(word)
     return {
-      type: 'let', name: word, 
+      type: 'let', name: word2,
       value: value, josi: '', 
       ...map, end: this.peekSourceMap()
     }
@@ -1934,15 +1934,16 @@ export class NakoParser extends NakoParserBase {
     // check word name
     const f = this.findVar(word.value)
     if (!f) { // 変数が見つからない
-      if (this.funcLevel === 0 && word.value.indexOf('__') < 0) {
-        const gname = this.modName + '__' + word.value
-        word.value = gname
+      if (this.funcLevel === 0) { // global
+        let gname = word.value
+        if (gname.indexOf('__') < 0) { gname = this.modName + '__' + word.value }
         this.funclist[gname] = {type: 'var', value: ''}
-      } else {
+        word.value = gname
+      } else { // local
         this.localvars[word.value] = {type: 'var', value: ''}
       }
     }
-    if (f && f.scope === 'global') {
+    else if (f && f.scope === 'global') {
       word.value = f.name
     }
     return word
