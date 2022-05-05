@@ -1028,8 +1028,9 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
-  /** @returns {import('./nako3').Ast | null | undefined} */
+  /** @returns {import('./nako3.mjs').Ast | null | undefined} */
   yDainyu () {
+    // @@@
     const map = this.peekSourceMap()
     const dainyu = this.get() // 代入
     if (dainyu === null) { return null }
@@ -1058,7 +1059,7 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
-  /** @returns {import('./nako3').Ast | null | undefined} */
+  /** @returns {import('./nako3.mjs').Ast | null | undefined} */
   ySadameru () {
     const map = this.peekSourceMap()
     const sadameru = this.get() // 定める
@@ -1075,7 +1076,7 @@ export class NakoParser extends NakoParserBase {
     };
   }
 
-  /** @returns {import('./nako3').Ast | null | undefined} */
+  /** @returns {import('./nako3.mjs').Ast | null | undefined} */
   yIncDec () {
     const map = this.peekSourceMap()
     const action = this.get() // (増やす|減らす)
@@ -1110,7 +1111,7 @@ export class NakoParser extends NakoParserBase {
     };
   }
 
-  /** @returns {import('./nako3').Ast | null | undefined} */
+  /** @returns {import('./nako3.mjs').Ast | null | undefined} */
   yCall () {
     if (this.isEOF()) { return null }
     
