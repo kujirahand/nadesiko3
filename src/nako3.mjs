@@ -198,19 +198,12 @@ export class NakoCompiler {
     const compiler = new NakoCompiler({ useBasicPlugin: true })
     
     const loadJS = (item, tasks) => {
-      // jsならプラグインとして読み込む。
+      // jsならプラグインとして読み込む。(ESMでは必ず動的に読む)
       const obj = tools.readJs(item.filePath, item.firstToken)
-      if (obj.sync) {
-        dependencies[item.filePath].addPluginFile = () => {
-          this.addPluginFile(item.value, item.filePath, dependencies[item.filePath].funclist = obj.value(), false) 
-        }
-      } else {
-        tasks.push(obj.value.then((res) => {
-          dependencies[item.filePath].addPluginFile = () => { 
-            this.addPluginFile(item.value, item.filePath, dependencies[item.filePath].funclist = res(), false) 
-          }
-        }))
-      }
+      tasks.push(obj.value.then((res) => {
+        dependencies[item.filePath].addPluginFile = () => { 
+          this.addPluginFile(item.value, item.filePath, dependencies[item.filePath].funclist = res(), false) 
+        }}))
     }
     const loadNako3 = (item, tasks) => {
       // nako3ならファイルを読んでdependenciesに保存する。
@@ -840,6 +833,10 @@ export class NakoCompiler {
    * @param {boolean} [persistent] falseのとき、次以降の実行では使えない
    */
   addPluginFile (objName, fpath, po, persistent = true) {
+    // Windowsのパスがあると、JSファイル書き出しでエラーになるので、置換する
+    if (objName.indexOf('\\') >= 0) {
+      objName = objName.replace(/\\/g, '/')
+    }
     this.addPluginObject(objName, po, persistent)
     if (this.pluginfiles[objName] === undefined) {
       this.pluginfiles[objName] = fpath

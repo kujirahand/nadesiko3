@@ -449,7 +449,7 @@ export class CNako3 extends NakoCompiler {
     // 各パスを検索していく
     const p1 = pname.substring(0, 1)
     // フルパス指定か?
-    if (p1 === '/') {
+    if (p1 === '/' || pname.substring(1, 3).toLowerCase() === ':\\') {
       if (exists(pname)) { return pname }
       const fileFullpath = fCheckEx(pname)
       if (fileFullpath) { return fileFullpath }
