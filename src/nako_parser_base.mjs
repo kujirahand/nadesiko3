@@ -89,7 +89,6 @@ export class NakoParserBase {
 
   loadStack () {
     this.stack = this.stackList.pop()
-    this.localvars = {'それ': {type: 'var', value: ''}}
   }
 
   /** 変数名を探す
@@ -97,6 +96,14 @@ export class NakoParserBase {
    * @returns {any}変数名の情報
    */
   findVar(name) {
+    // ローカル変数？
+    if (this.localvars[name]) {
+      return {
+        name: name,
+        scope: 'local',
+        info: this.localvars[name]
+      }
+    }
     // モジュール名を含んでいる?
     if (name.indexOf('__') >= 0) {
       if (this.funclist[name]) {
@@ -106,14 +113,6 @@ export class NakoParserBase {
           info: this.funclist[name]
         }
       } else { return undefined }
-    }
-    // ローカル変数？
-    if (this.localvars[name]) {
-      return {
-        name: name,
-        scope: 'local',
-        info: this.localvars[name]
-      }
     }
     // グローバル変数（自身）？
     const gnameSelf = `${this.modName}__${name}`

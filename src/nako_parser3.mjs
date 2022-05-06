@@ -275,6 +275,10 @@ export class NakoParser extends NakoParserBase {
     try {
       this.funcLevel++
       this.usedAsyncFn = false
+      // ローカル変数を生成     
+      const backupLocalvars = this.localvars
+      this.localvars = {'それ': {type: 'var', value: ''}}
+
       if (multiline) {
         this.saveStack()
         // 関数の引数をローカル変数として登録する
@@ -292,6 +296,7 @@ export class NakoParser extends NakoParserBase {
       }
       this.funcLevel--
       asyncFn = this.usedAsyncFn
+      this.localvars = backupLocalvars
     } catch (err) {
       this.logger.debug(this.nodeToStr(funcName, { depth: 0, typeName: '関数' }, true) +
         'の定義で以下のエラーがありました。\n' + err.message, def)
@@ -1966,7 +1971,7 @@ export class NakoParser extends NakoParserBase {
         word.value = this.modName + '__' + word.value
       }
     }
-    if (f && f.scope === 'global') {
+    else if (f && f.scope === 'global') {
       word.value = f.name
     }
     return word
