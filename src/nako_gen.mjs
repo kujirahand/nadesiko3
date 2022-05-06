@@ -20,14 +20,14 @@ const endOfFunction = '})'
 const topOfFunctionAsync = '(async function(){\n'
 
 /**
- * @typedef {import("./nako3").Ast} Ast
+ * @typedef {import("./nako3.mjs").Ast} Ast
  */
 /**
  * 構文木からJSのコードを生成するクラス
  */
 export class NakoGen {
   /**
-   * @param {import('./nako3')} com コンパイラのインスタンス
+   * @param {import('./nako3.mjs').NakoCompiler} com コンパイラのインスタンス
    */
   constructor (com) {
     /**
@@ -145,7 +145,7 @@ export class NakoGen {
   }
 
   /**
-   * @param {import("./nako3").Ast} node
+   * @param {import("./nako3.mjs").Ast} node
    * @param {boolean} forceUpdate
    */
   convLineno (node, forceUpdate) {
