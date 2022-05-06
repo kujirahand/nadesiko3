@@ -278,8 +278,9 @@ export class NakoParser extends NakoParserBase {
       if (multiline) {
         this.saveStack()
         // 関数の引数をローカル変数として登録する
-        for (const arg in defArgs) {
-          this.localvars[arg.value] = {'type': 'var', 'value': ''}
+        for (const arg of defArgs) {
+          const fnName = arg.value
+          this.localvars[fnName] = {'type': 'var', 'value': ''}
         }
         block = this.yBlock()
         if (this.check('ここまで')) { this.get() } else { throw NakoSyntaxError.fromNode('『ここまで』がありません。関数定義の末尾に必要です。', def) }
