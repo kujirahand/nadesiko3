@@ -1,9 +1,12 @@
 
-import {NakoCompiler} from './nako3.mjs'
+import { NakoCompiler } from './nako3.mjs'
+import { CNako3 } from './cnako3mod.mjs'
 import PluginNode from './plugin_node.mjs'
 
 export default {
-  // Node.jsのモジュールモードでなでしこを利用する場合
+  CNako3,
+  NakoCompiler,
   compiler: NakoCompiler,
   PluginNode
 }
+
