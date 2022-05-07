@@ -188,8 +188,18 @@ export class NakoGen {
     }
   }
 
-  /** @param {string} name */
+  /** 
+   * @param {string} name
+   * @returns {string}
+  */
   static getFuncName (name) {
+    if (name.indexOf('__') >= 0) { // スコープがある場合
+      const a = name.split('__')
+      let scope = a[0]
+      const name3 = NakoGen.getFuncName(a[1])
+      return `${scope}__${name3}`
+
+    }
     let name2 = name.replace(/[ぁ-ん]+$/, '')
     if (name2 === '') { name2 = name }
     return name2

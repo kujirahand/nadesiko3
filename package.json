@@ -23,7 +23,7 @@
     "nako3edit": "node src/cnako3.mjs tools/nako3edit/index.nako3",
     "nako3edit:run": "node tools/nako3edit/run.mjs",
     "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
-    "build": "npm run build:browsers && npm run build:nako_version && npm run build:command && webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
+    "build": "npm run build:nako_version && npm run build:command && webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
     "build:webpack": "webpack --mode development",
     "check:command": "node src/cnako3.mjs batch/pickup_command.nako3",
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3",
