@@ -7,12 +7,6 @@
 import { NakoSyntaxError, NakoError, NakoRuntimeError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import  nakoVersion from './nako_version.mjs'
-const isIE11 = () => {
-  if (typeof(window) == 'object' && window.navigator && window.navigator.userAgent) {
-    return (window.navigator.userAgent.indexOf('MSIE') >= 0)
-  }
-  return false
-}
 
 // なでしこで定義した関数の開始コードと終了コード
 const topOfFunction = '(function(){\n'
@@ -1546,7 +1540,7 @@ export class NakoGen {
 
 
 /**
- * @param {import('./nako3')} com
+ * @param {import('./nako3.mjs').NakoCompiler} com
  * @param {Ast} ast
  * @param {boolean | string} isTest 文字列なら1つのテストだけを実行する
  */
@@ -1573,9 +1567,7 @@ export function generateJS (com, ast, isTest) {
   }
   // async method
   if (gen.numAsyncFn > 0) {
-    let canAsync = !isIE11()
-    if (canAsync) {
-      js = `
+    js = `
 // <nadesiko3::gen::async>
 (async () => { // async::main
 ${js}
@@ -1587,7 +1579,6 @@ this.logger.error(err);
 throw err;
 }); // async::main
 // <nadesiko3::gen::async>\n`
-    }
   }
 
   // デバッグメッセージ

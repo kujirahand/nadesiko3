@@ -11,9 +11,8 @@ import iconv from 'iconv-lite'
 import opener from 'opener'
 import clipboardy from 'clipboardy'
 import assert from 'assert'
-// 「標準入力取得時」で利用
-import * as readline from 'readline'
-import { stdin as input, stdout as output } from 'process'
+// 「標準入力取得時」「尋」で利用
+import readline from 'readline'
 // ハッシュ関数で利用
 import crypto from 'crypto'
 import os from 'os'
@@ -585,11 +584,15 @@ export default {
     josi: [['と', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (msg, sys) {
-      const rl = readline.createInterface({ input, output });
-      const res = await rl.question(msg)
-      if (res.match(/^[0-9.]+$/)) { return parseFloat(res) }
-      return res
+    fn: function (msg, sys) {
+      return new Promise((resolve, _reject) => {
+        const rl = readline.createInterface(process.stdin, process.stdout)
+        rl.question(msg, (buf) => {
+          rl.close()
+          if (buf && buf.match(/^[0-9.]+$/)) { buf = parseFloat(buf) }
+          resolve(buf)
+        })
+      })
     }
   },
   // @テスト
@@ -598,7 +601,6 @@ export default {
     josi: [['と'], ['が']],
     pure: true,
     fn: function (a, b, sys) {
-      
       assert.strictEqual(a, b)
     }
   },
