@@ -1,5 +1,5 @@
 /**
- * file: plugin_node.js
+ * file: plugin_node.mjs
  * node.js のためのプラグイン
  */
 import fs from 'fs'

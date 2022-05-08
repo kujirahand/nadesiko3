@@ -4,6 +4,7 @@
  * 実際には cnako3.js から読み込まれる
  */
 import fs from 'fs'
+import fse from 'fs-extra'
 import { exec } from 'child_process'
 import path from 'path'
 import { NakoCompiler } from './nako3.mjs'
@@ -23,7 +24,7 @@ export class CNako3 extends NakoCompiler {
     super({ useBasicPlugin: true })
     this.silent = false
     if (!opts.nostd) {
-      this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.js'), PluginNode)
+      this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.mjs'), PluginNode)
     }
     this.__varslist[0]['ナデシコ種類'] = 'cnako3'
   }
@@ -99,21 +100,23 @@ export class CNako3 extends NakoCompiler {
     }
     args.mainfile = app.args[0]
     args.output = app.output
+    
+    // todo: ESModule 対応の '.mjs' のコードを履く #1217
+    const ext = '.js'
     if (/\.(nako|nako3|txt|bak)$/.test(args.mainfile)) {
       if (!args.output) {
         if (args.test) {
-          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.spec.js')
+          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.spec' + ext)
         } else {
-          // todo: 将来的に mjs のコードを履くように修正する↓ '.mjs'
-          args.output = args.mainfile.replace(/\.(nako|nako3)$/, '.js')
+          args.output = args.mainfile.replace(/\.(nako|nako3)$/, ext)
         }
       }
     } else {
       if (!args.output) {
         if (args.test) {
-          args.output = args.mainfile + '.spec.js'
+          args.output = args.mainfile + '.spec' + ext
         } else {
-          args.output = args.mainfile + '.js'
+          args.output = args.mainfile + ext
         }
       }
       args.mainfile += '.nako3'
@@ -201,6 +204,28 @@ export class CNako3 extends NakoCompiler {
     const jscode = this.compileStandalone(src, this.filename, isTest)
     console.log(opt.output)
     fs.writeFileSync(opt.output, jscode, 'utf-8')
+    
+    /*
+    // 実行に必要なファイルをコピー
+    const nakoRuntime = __dirname
+    const outRuntime = path.join(path.dirname(opt.output), 'nako3runtime')
+    if (!fs.existsSync(outRuntime)) { fs.mkdirSync(outRuntime) }
+    for (let mod of ['nako_version.mjs', 'nako_errors.mjs', 'plugin_node.mjs']) {
+      fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod))
+    }
+    // todo: 必要に応じてnode_modulesをコピー (時間が掛かりすぎるのでコピーしない)
+    const dstModule = path.join(path.dirname(opt.output), 'node_modules')
+    const orgModule = path.join(__dirname, '..', 'node_modules')
+    if (!fs.existsSync(dstModule)) { 
+      fs.mkdirSync(dstModule)
+      fse.copySync(path.join(orgModule), path.join(dstModule))
+    }
+    // or 以下のコピーだと依存ファイルがコピーされない package.jsonを見てコピーする必要がある
+    for (let mod of ['fs-extra', 'iconv-lite', 'opener', 'clipboardy', 'sendkeys-js']) {
+      fse.copySync(path.join(orgModule, mod), path.join(dstModule, mod))
+    }
+    */
+    
     if (opt.run) {
       exec(`node ${opt.output}`, function (err, stdout, stderr) {
         if (err) { console.log('[ERROR]', stderr) }

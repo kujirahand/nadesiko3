@@ -1572,11 +1572,12 @@ export function generateJS (com, ast, isTest) {
 (async () => { // async::main
 ${js}
 }).call(this).catch(err => {
-if (!(err instanceof this.NakoRuntimeError)) {
-  err = new this.NakoRuntimeError(err, this.__varslist[0].line);
-}
-this.logger.error(err);
-throw err;
+  if (typeof(NakoRuntimeError) === 'undefined') { NakoRuntimeError = this.NakoRuntimeError }
+  if (!(err instanceof NakoRuntimeError)) {
+    err = new NakoRuntimeError(err, this.__varslist[0].line);
+  }
+  this.logger.error(err);
+  throw err;
 }); // async::main
 // <nadesiko3::gen::async>\n`
   }
@@ -1586,36 +1587,37 @@ throw err;
   // todo: 将来的に mjs のコードを履くように修正する
   const standaloneJSCode = `\
 // <standaloneCode>
+// 将来的に ESModule に対応する #1217
+// import path from 'path'
+// import PluginNode from './nako3runtime/plugin_node.mjs'
+// import {NakoRuntimeError} from './nako3runtime/nako_errors.mjs'
+
 const path = require('path')
-const nakoVersion = ${JSON.stringify(nakoVersion)};
 ${NakoError.toString()}
-${NakoRuntimeError.toString()}
-function __nako3safunc() {
-this.logger = {
+${NakoRuntimeError.toString()} 
+const nakoVersion = ${JSON.stringify(nakoVersion)};
+const self = this
+self.logger = {
   error: (message) => { console.error(message) },
   send: (level, message) => { console.log(message) },
 };
-this.__varslist = [{}, {}, {}];
-this.__vars = this.__varslist[2];
-this.__module = {};
-this.__locals = {};
-this.__genMode = 'sync';
+self.__varslist = [{}, {}, {}];
+self.__vars = self.__varslist[2];
+self.__module = {};
+self.__locals = {};
+self.__genMode = 'sync';
 try {
 ${gen.getVarsCode()}
 ${js}
 } catch (err) {
   if (!(err instanceof NakoRuntimeError)) {
-    err = new NakoRuntimeError(err, __varslist[0].line);
+    err = new NakoRuntimeError(err, self.__varslist[0].line);
   }
-  this.logger.error(err);
+  self.logger.error(err);
   throw err;
 }
-//
-} // end of __nako3safunc function
-__nako3safunc();
 // </standaloneCode>
-`
-  
+`  
   return {
     // なでしこの実行環境ありの場合
     runtimeEnv: js,
