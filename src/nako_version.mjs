@@ -1,7 +1,7 @@
 // なでしこバージョン
 export default {
-  version: '3.3.13',
+  version: '3.3.14',
   major: 3,
   minor: 3,
-  patch: 13
+  patch: 14
 }
