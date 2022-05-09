@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * nadesiko v3
  */
@@ -185,11 +184,11 @@ export class NakoCompiler {
    * @param {string} preCode
    * @param {{
    *     resolvePath: (name: string, token: TokenWithSourceMap) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
-   *     readNako3: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<string> }
-   *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: false, value: Promise<() => object> }
+   *     readNako3: (filePath: string, token: TokenWithSourceMap) => { task: Promise<string> }
+   *     readJs: (filePath: string, token: TokenWithSourceMap) => { task: Promise<() => object> }
    * }} tools - 実行環境 (ブラウザ or Node.js) によって外部ファイルの取得・実行方法は異なるため、引数でそれらを行う関数を受け取る。
    *          - resolvePath は指定した名前をもつファイルを検索し、正規化されたファイル名を返す関数。返されたファイル名はreadNako3かreadJsの引数になる。
-   *          - readNako3は指定されたファイルの中身を返す関数。ファイルを同期的に取得できるなら sync: true、非同期処理が必要なら sync: false と共に結果を返す。
+   *          - readNako3は指定されたファイルの中身を返す関数。
    *          - readJsは指定したファイルをJavaScriptのプログラムとして実行し、`export default` でエクスポートされた値を返す関数。
    * @returns {Promise<unknown> | void}
    * @protected
@@ -202,10 +201,12 @@ export class NakoCompiler {
     const loadJS = (item, tasks) => {
       // jsならプラグインとして読み込む。(ESMでは必ず動的に読む)
       const obj = tools.readJs(item.filePath, item.firstToken)
-      tasks.push(obj.value.then((res) => {
-        dependencies[item.filePath].addPluginFile = () => { 
-          this.addPluginFile(item.value, item.filePath, dependencies[item.filePath].funclist = res(), false) 
-        }}))
+      tasks.push(obj.task.then((res) => {
+        const pluginFuncs = res()
+        this.addPluginFile(item.value, item.filePath, pluginFuncs, false) 
+        dependencies[item.filePath].funclist = pluginFuncs
+        dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, pluginFuncs, false) }
+      }))
     }
     const loadNako3 = (item, tasks) => {
       // nako3ならファイルを読んでdependenciesに保存する。
@@ -223,15 +224,11 @@ export class NakoCompiler {
         const funclist = {}
         NakoLexer.preDefineFunc(cloneAsJSON(tokens), this.logger, funclist)
         dependencies[item.filePath].funclist = funclist
-
         // 再帰
         return loadRec(code, item.filePath, '')
       }
-      if (content.sync) {
-        registerFile(content.value)
-      } else {
-        tasks.push(content.value.then((res) => registerFile(res)))
-      }
+      // 取り込み構文における問題を減らすため、必ず非同期でプログラムを読み込む仕様とした #1219
+      tasks.push(content.task.then((res) => registerFile(res)))
     }
     /** @param {string} code @param {string} filename @param {string} preCode @returns {Promise<unknown> | void} */
     const loadRec = (code, filename, preCode) => {

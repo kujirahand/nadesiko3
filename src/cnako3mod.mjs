@@ -1,12 +1,10 @@
-// @ts-nocheck
 /**
  * コマンドライン版のなでしこ3をモジュールとして定義
  * 実際には cnako3.js から読み込まれる
  */
 import fs from 'fs'
-import fse from 'fs-extra'
 import { exec } from 'child_process'
-import path from 'path'
+import path, { resolve } from 'path'
 import { NakoCompiler } from './nako3.mjs'
 import PluginNode from './plugin_node.mjs'
 import { NakoImportError } from './nako_errors.mjs'
@@ -62,12 +60,23 @@ export class CNako3 extends NakoCompiler {
 
   /**
    * コマンドライン引数を解析
-   * @returns {{warn: boolean, debug: boolean, compile: any | boolean, test: any | boolean, one_liner: any | boolean, trace: any, run: any | boolean, repl: any | boolean, source: any | string}}
+   * @returns {{
+   *  warn: boolean, 
+   *  debug: boolean, 
+   *  compile: any | boolean, 
+   *  test: any | boolean, 
+   *  one_liner: any | boolean, 
+   *  trace: any | boolean, 
+   *  run: any | boolean, 
+   *  repl: any | boolean, 
+   *  source: any | string,
+   *  mainfile: any | string,
+   * }}
    */
   checkArguments () {
     const app = this.registerCommands()
 
-    /** @type {import('./nako_logger').LogLevel} */
+    /** @type {import('./nako_logger.mjs').LogLevel} */
     let logLevel = 'error'
     if (app.trace) {
       logLevel = 'trace'
@@ -370,19 +379,28 @@ export class CNako3 extends NakoCompiler {
       return { filePath: name, type: 'invalid' }
     }
     tools.readNako3 = (name, token) => {
-        if (!fs.existsSync(name)) {
-          throw new NakoImportError(`ファイル ${name} が存在しません。`, token.file, token.line)
-        }
-        return { sync: true, value: fs.readFileSync(name).toString() }
+      // ファイルチェックだけ先に実行
+      if (!fs.existsSync(name)) {
+        throw new NakoImportError(`ファイル ${name} が存在しません。`, token.file, token.line)
+      }
+      // 非同期で読み込む
+      const loader = {task: null}
+      loader.task = (new Promise((resolve, reject) => {
+        fs.readFile(name, {encoding: 'utf-8'}, (err, data) => {
+          if (err) { return reject(err) }
+          resolve(data)
+        })
+      }))
+      return loader
     }
     tools.readJs = (filePath, token) => {
-      const content = {sync: false, value: null}
+      const loader = {task: null}
       if (process.platform === 'win32') {
         if (filePath.substring(1, 3) === ':\\') {
           filePath = 'file://' + filePath
         }
       }
-      content.value = (
+      loader.task = (
         new Promise((resolve, reject) => {
           import(filePath).then((mod) => {
             // プラグインは export default で宣言されている? (moduleプラグインの場合)
@@ -394,7 +412,7 @@ export class CNako3 extends NakoCompiler {
           })
         })
       )
-      return content
+      return loader
     }
     return tools
   }

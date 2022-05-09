@@ -1,5 +1,4 @@
 /**
- * file: nako_gen.js
  * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
  * なお速度優先で忠実にJavaScriptのコードを生成する。
  */

@@ -53,8 +53,7 @@ class WebNakoCompiler extends NakoCompiler {
         // eslint-disable-next-line no-prototype-builtins
         if (localFiles.hasOwnProperty(filePath)) {
           return {
-            sync: false,
-            value: (async () => () => {
+            task: (async () => () => {
               // eslint-disable-next-line no-new-func
               Function(localFiles[filePath])()
               return {}
@@ -62,8 +61,7 @@ class WebNakoCompiler extends NakoCompiler {
           }
         }
         return {
-          sync: false,
-          value: (async () => {
+          task: (async () => {
             const res = await fetch(filePath)
             if (!res.ok) {
               throw new NakoImportError(`ファイル『${filePath}』のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
@@ -93,11 +91,10 @@ class WebNakoCompiler extends NakoCompiler {
       readNako3: (filePath, token) => {
         // eslint-disable-next-line no-prototype-builtins
         if (localFiles.hasOwnProperty(filePath)) {
-          return { sync: true, value: localFiles[filePath] }
+          return {task: (async () => { return localFiles[filePath] })}
         }
         return {
-          sync: false,
-          value: (async () => {
+          task: (async () => {
             const res = await fetch(filePath)
             if (!res.ok) {
               throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
