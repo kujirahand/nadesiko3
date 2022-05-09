@@ -53,12 +53,12 @@ class WebNakoCompiler extends NakoCompiler {
         // eslint-disable-next-line no-prototype-builtins
         if (localFiles.hasOwnProperty(filePath)) {
           return {
-            sync: true,
-            value: () => {
+            sync: false,
+            value: (async () => () => {
               // eslint-disable-next-line no-new-func
               Function(localFiles[filePath])()
               return {}
-            }
+            })()
           }
         }
         return {

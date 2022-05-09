@@ -177,18 +177,20 @@ export class NakoCompiler {
 
   /**
    * プログラムが依存するファイルを再帰的に取得する。
-   * - .jsであれば評価してthis.addPluginFileを呼び出し、.nako3であればファイルをfetchしてdependenciesに保存し再帰する。
-   * - resolvePathはファイルを検索して正規化する必要がある。
-   * - readNako3やreadJsのsyncを確認してfalseならPromiseを返すので並列処理し、そうでなければ同期的に処理する。
-   * - readNako3はソースコードを返す。readJsはrequireあるいはevalする関数を返す。
+   * - 依存するファイルがJavaScriptファイルの場合、そのファイルを実行して評価結果をthis.addPluginFileに渡す。
+   * - 依存するファイルがなでしこ言語の場合、ファイルの中身を取得して変数に保存し、再帰する。
+   * 
    * @param {string} code
    * @param {string} filename
    * @param {string} preCode
    * @param {{
    *     resolvePath: (name: string, token: TokenWithSourceMap) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
    *     readNako3: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: string } | { sync: false, value: Promise<string> }
-   *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: true, value: () => object } | { sync: false, value: Promise<() => object> }
-   * }} tools
+   *     readJs: (filePath: string, token: TokenWithSourceMap) => { sync: false, value: Promise<() => object> }
+   * }} tools - 実行環境 (ブラウザ or Node.js) によって外部ファイルの取得・実行方法は異なるため、引数でそれらを行う関数を受け取る。
+   *          - resolvePath は指定した名前をもつファイルを検索し、正規化されたファイル名を返す関数。返されたファイル名はreadNako3かreadJsの引数になる。
+   *          - readNako3は指定されたファイルの中身を返す関数。ファイルを同期的に取得できるなら sync: true、非同期処理が必要なら sync: false と共に結果を返す。
+   *          - readJsは指定したファイルをJavaScriptのプログラムとして実行し、`export default` でエクスポートされた値を返す関数。
    * @returns {Promise<unknown> | void}
    * @protected
    */
