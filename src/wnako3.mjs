@@ -103,7 +103,7 @@ class WebNakoCompiler extends NakoCompiler {
           })()
         }
       },
-      resolvePath: (name, token) => {
+      resolvePath: (name, token, fromFile) => {
         // ローカルにファイルが存在するならそれを使う。そうでなければURLとして解釈する。
         let pathname = name
         // eslint-disable-next-line no-prototype-builtins
@@ -113,10 +113,13 @@ class WebNakoCompiler extends NakoCompiler {
           } catch (e) {
             // 単純にパスに変換できなければ、loccation.hrefを参考にパスを組み立てる
             try {
-              const href_a = window.location.href.split('/')
-              const href_dir = href_a.splice(0, href_a.length - 1).join('/');
-              const href = href_dir + '/' + name
-              pathname = new URL(href).pathname
+              let baseDir = dirname(fromFile)
+              if (baseDir === '') {
+                // https://2/3/4.html
+                const a = window.location.href.split('/')
+                baseDir = '/' + a.slice(3,a.length - 1).join('/')
+              }
+              pathname = resolveURL(baseDir, name)
             } catch (e) {
               throw new NakoImportError(`取り込み文の引数でパスが解決できません。https:// か http:// で始まるアドレスを指定してください。\n${e}`, token.file, token.line)
             }
@@ -124,11 +127,11 @@ class WebNakoCompiler extends NakoCompiler {
         }
         // .js および .mjs なら JSプラグイン
         if (pathname.endsWith('.js') || pathname.endsWith('.js.txt') || pathname.endsWith('.mjs') || pathname.endsWith('.mjs.txt')) {
-          return { filePath: name, type: 'js' }
+          return { filePath: pathname, type: 'js' }
         }
         // .nako3 なら なでしこ3プラグイン
         if (pathname.endsWith('.nako3') || pathname.endsWith('.nako3.txt')) {
-          return { filePath: name, type: 'nako3' }
+          return { filePath: pathname, type: 'nako3' }
         }
         // ファイル拡張子が未指定の場合
         throw new NakoImportError(`ファイル『${name}』は拡張子が(.nako3|.js|.js.txt|.mjs|.mjs.txt)以外なので取り込めません。`, token.file, token.line)
@@ -161,6 +164,29 @@ class WebNakoCompiler extends NakoCompiler {
   setupEditor (idOrElement) {
     return setupEditor(idOrElement, this, /** @type {any} */(window).ace)
   }
+}
+
+function dirname(s) {
+  const a = s.split('/')
+  if (a && a.length > 1) {
+    return a.slice(0, a.length - 1).join('/')
+  }
+  return ''
+}
+
+function resolveURL(base, s) {
+  const baseA = base.split('/')
+  const sA = s.split('/')
+  for (let p of sA) {
+    if (p === '') {continue}
+    if (p === '.') {continue}
+    if (p === '..') {
+      baseA.pop()
+      continue
+    }
+    baseA.push(p)
+  }
+  return baseA.join('/')
 }
 
 // ブラウザなら navigator.nako3 になでしこを登録

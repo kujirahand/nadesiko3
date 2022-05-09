@@ -183,7 +183,7 @@ export class NakoCompiler {
    * @param {string} filename
    * @param {string} preCode
    * @param {{
-   *     resolvePath: (name: string, token: TokenWithSourceMap) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
+   *     resolvePath: (name: string, token: TokenWithSourceMap, fromFile: string) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
    *     readNako3: (filePath: string, token: TokenWithSourceMap) => { task: Promise<string> }
    *     readJs: (filePath: string, token: TokenWithSourceMap) => { task: Promise<() => object> }
    * }} tools - 実行環境 (ブラウザ or Node.js) によって外部ファイルの取得・実行方法は異なるため、引数でそれらを行う関数を受け取る。
@@ -237,7 +237,7 @@ export class NakoCompiler {
       // 取り込みが必要な情報一覧を調べる(トークン分割して、取り込みタグを得る)
       const tags = NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode))
       // パスを解決する
-      const tagsResolvePath = tags.map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken) }))
+      const tagsResolvePath = tags.map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken, filename) }))
       // 取り込み開始
       for (const item of tagsResolvePath) {
         // 2回目以降の読み込み

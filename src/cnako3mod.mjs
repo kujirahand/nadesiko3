@@ -355,7 +355,7 @@ export class CNako3 extends NakoCompiler {
     /** @type {string[]} */
     const log = []
     const tools = {}
-    tools.resolvePath = (name, token) => {
+    tools.resolvePath = (name, token, fromFile) => {
       // JSプラグインのパスを解決する
       if (/\.(js|mjs)(\.txt)?$/.test(name) || /^[^.]*$/.test(name)) {
         const jspath = CNako3.findJSPluginFile(name, this.filename, __dirname, log)
@@ -370,10 +370,9 @@ export class CNako3 extends NakoCompiler {
           return { filePath: path.resolve(name), type: 'nako3' }
         } else {
           // filename が undefined のとき token.file が undefined になる。
-          if (token.file === undefined) {
-            throw new Error('ファイル名を指定してください。')
-          }
-          return { filePath: path.resolve(path.join(path.dirname(token.file), name)), type: 'nako3' }
+          if (token.file === undefined) { throw new Error('ファイル名を指定してください。') }
+          const dir = path.dirname(fromFile)
+          return { filePath: path.resolve(path.join(dir, name)), type: 'nako3' }
         }
       }
       return { filePath: name, type: 'invalid' }
