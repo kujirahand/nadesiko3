@@ -4,12 +4,13 @@
  */
 import fs from 'fs'
 import { exec } from 'child_process'
-import path, { resolve } from 'path'
+import path from 'path'
 import { NakoCompiler } from './nako3.mjs'
 import PluginNode from './plugin_node.mjs'
 import { NakoImportError } from './nako_errors.mjs'
 import app from './commander_ja.mjs'
 import nakoVersion from './nako_version.mjs'
+import fetch from 'node-fetch'
 
 // __dirname のために
 import url from 'url'
@@ -367,6 +368,10 @@ export class CNako3 extends NakoCompiler {
       }
       // なでしこプラグインか？
       if (/\.(nako3|nako)(\.txt)?$/.test(name)) {
+        // ファイルかHTTPか
+        if (name.startsWith('http://') || name.startsWith('https://')) {
+          return { filePath: name, type: 'nako3' }
+        }
         if (path.isAbsolute(name)) {
           return { filePath: path.resolve(name), type: 'nako3' }
         } else {
@@ -384,18 +389,31 @@ export class CNako3 extends NakoCompiler {
       return { filePath: jspath2, type: 'js' }
     }
     tools.readNako3 = (name, token) => {
-      // ファイルチェックだけ先に実行
-      if (!fs.existsSync(name)) {
-        throw new NakoImportError(`ファイル ${name} が存在しません。`, token.file, token.line)
+      const loader = {task: null}
+      // ファイルかHTTPか
+      if (name.startsWith('http://') || name.startsWith('https://')) {
+        // Webのファイルを非同期で読み込む
+        loader.task = (async () => {
+          const res = await fetch(name)
+          if (!res.ok) {
+            throw new NakoImportError(`『${name}』からのダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
+          }
+          return await res.text()
+        })()
+      } else {
+        // ファイルを非同期で読み込む
+        // ファイルチェックだけ先に実行
+        if (!fs.existsSync(name)) {
+          throw new NakoImportError(`ファイル ${name} が存在しません。`, token.file, token.line)
+        }
+        loader.task = (new Promise((resolve, reject) => {
+          fs.readFile(name, {encoding: 'utf-8'}, (err, data) => {
+            if (err) { return reject(err) }
+            resolve(data)
+          })
+        }))
       }
       // 非同期で読み込む
-      const loader = {task: null}
-      loader.task = (new Promise((resolve, reject) => {
-        fs.readFile(name, {encoding: 'utf-8'}, (err, data) => {
-          if (err) { return reject(err) }
-          resolve(data)
-        })
-      }))
       return loader
     }
     tools.readJs = (filePath, token) => {
