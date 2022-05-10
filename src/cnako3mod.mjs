@@ -356,16 +356,17 @@ export class CNako3 extends NakoCompiler {
     const log = []
     const tools = {}
     tools.resolvePath = (name, token, fromFile) => {
-      // JSプラグインのパスを解決する
-      if (/\.(js|mjs)(\.txt)?$/.test(name) || /^[^.]*$/.test(name)) {
-        const jspath = CNako3.findJSPluginFile(name, this.filename, __dirname, log)
+      // 最初に拡張子があるかどうかをチェック
+      // JSプラグインか？
+      if (/\.(js|mjs)(\.txt)?$/.test(name)) {
+        const jspath = CNako3.findJSPluginFile(name, fromFile, __dirname, log)
         if (jspath === '') {
-          throw new NakoImportError(`ファイル『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
+          throw new NakoImportError(`JSプラグイン『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
         }
         return { filePath: jspath, type: 'js' }
       }
-      // なでしこプラグインのパスを解決する
-      if (/\.nako3?(\.txt)?$/.test(name)) {
+      // なでしこプラグインか？
+      if (/\.(nako3|nako)(\.txt)?$/.test(name)) {
         if (path.isAbsolute(name)) {
           return { filePath: path.resolve(name), type: 'nako3' }
         } else {
@@ -375,7 +376,12 @@ export class CNako3 extends NakoCompiler {
           return { filePath: path.resolve(path.join(dir, name)), type: 'nako3' }
         }
       }
-      return { filePath: name, type: 'invalid' }
+      // 拡張子がない、あるいは、(.js|.mjs|.nako3|.nako)以外はJSモジュールと見なす
+      const jspath2 = CNako3.findJSPluginFile(name, fromFile, __dirname, log)
+      if (jspath2 === '') {
+        throw new NakoImportError(`JSプラグイン『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
+      }
+      return { filePath: jspath2, type: 'js' }
     }
     tools.readNako3 = (name, token) => {
       // ファイルチェックだけ先に実行
@@ -454,87 +460,111 @@ export class CNako3 extends NakoCompiler {
    */
   static findJSPluginFile (pname, filename, srcDir, log = []) {
     log.length = 0
+    /** @type {Object<string,boolean>} */
     const cachePath = {}
-    /** @type {string[]} */
-    const exists = (f, _desc) => {
+    /** キャッシュ付きでファイルがあるか検索
+     * @param {string} f
+     * @returns {boolean}
+     */
+    const exists = (f) => {
       // 同じパスを何度も検索することがないように
-      if (cachePath[f]) { return false }
-      cachePath[f] = true
-      log.push(f)
+      if (cachePath[f]) { return cachePath[f] }
       const stat = fs.statSync(f, {throwIfNoEntry: false})
-      if (!stat) { return false }
-      return stat.isFile()
+      const b = !!(stat && stat.isFile())
+      return cachePath[f] = b
     }
-    // 普通にファイルをチェック
-    const fCheck = (pathTest) => {
+    /** 普通にファイルをチェック
+     * @param {string} pathTest
+     * @param {string} desc
+     * @returns {boolean}
+     */ 
+    const fCheck = (pathTest, desc) => {
       // 素直に指定されたパスをチェック
-      let fpath = path.join(pathTest, pname)
-      if (exists(fpath, 'direct')) { return fpath }
-      return false
+      const bExists = exists(pathTest)
+      log.push(`[${desc}] ${pathTest}, ${bExists}`)
+      return bExists
     }
-    // ファイル および node_modules 以下を調べる
-    const fCheckEx = (pathTest) => {
-      const defPath = fCheck(pathTest)
-      if (defPath) { return defPath }
-      const fpath = path.join(pathTest, 'node_modules', pname)
-      const json = path.join(fpath, 'package.json')
-      if (exists(json)) {
+    /** 通常 + package.json のパスを調べる
+     * @param {string} pathTest
+     * @param {string} desc
+     * @returns {string}
+     */ 
+     const fCheckEx = (pathTest, desc) => {
+      // 直接JSファイルが指定された？
+      if (/\.(js|mjs)$/.test(pathTest)) {
+        if (fCheck(pathTest, desc)) { return pathTest }
+      }
+      // 指定パスのpackage.jsonを調べる
+      const json = path.join(pathTest, 'package.json')
+      if (fCheck(json, desc+'/package.json')) {
         // package.jsonを見つけたので、メインファイルを調べて取り込む (CommonJSモジュール対策)
         const json_txt = fs.readFileSync(json, 'utf-8')
         const obj = JSON.parse(json_txt)
-        if (!obj['main']) { return false } 
-        const mainFile = path.join(pathTest, 'node_modules', pname, obj['main'])
+        if (!obj['main']) { return '' } 
+        const mainFile = path.resolve(path.join(pathTest, obj['main']))
         return mainFile
       }
-      return false
+      return ''
+    }
+    
+    // URL指定か?
+    if (pname.substring(0, 8) === 'https://') {
+      return pname
     }
     // 各パスを検索していく
     const p1 = pname.substring(0, 1)
     // フルパス指定か?
-    if (p1 === '/' || pname.substring(1, 3).toLowerCase() === ':\\') {
-      if (exists(pname)) { return pname }
-      const fileFullpath = fCheckEx(pname)
+    if (p1 === '/' || pname.substring(1, 3).toLowerCase() === ':\\' || pname.substring(0, 6) === 'file:/') {
+      const fileFullpath = fCheckEx(pname, 'fullpath')
       if (fileFullpath) { return fileFullpath }
       return '' // フルパスの場合別のフォルダは調べない
     }
     // 相対パスか?
     if (p1 === '.' || pname.indexOf('/') >= 0) {
       // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
-      const pathRelative = path.resolve(path.dirname(filename))
-      const fileRelative = fCheckEx(pathRelative)
+      const pathRelative = path.join(path.resolve(path.dirname(filename)), pname)
+      const fileRelative = fCheckEx(pathRelative, 'relpath')
       if (fileRelative) { return fileRelative }
       return '' // 相対パスの場合も別のフォルダは調べない
     }
     // plugin_xxx.mjs のようにファイル名のみが指定された場合のみ、いくつかのパスを調べる
     // 母艦パス(元ファイルと同じフォルダ)か?
-    const pathScript = path.resolve(path.dirname(filename))
-    const fileScript = fCheckEx(pathScript)
+    const testScriptPath = path.join(path.resolve(path.dirname(filename)), pname)
+    const fileScript = fCheckEx(testScriptPath, 'scriptPath')
     if (fileScript) { return fileScript }
 
-    // ランタイムパス/src
-    const pathRuntimeSrc = path.resolve(srcDir) // cnako3mod.mjs は ランタイム/src に配置されていることが前提
-    const fileRuntimeSrc = fCheck(pathRuntimeSrc)
+    // ランタイムパス/src/<plugin>
+    const pathRuntimeSrc = path.join(path.resolve(srcDir), pname) // cnako3mod.mjs は ランタイム/src に配置されていることが前提
+    const fileRuntimeSrc = fCheckEx(pathRuntimeSrc, 'runtimeSrcPath')
     if (fileRuntimeSrc) { return fileRuntimeSrc }
 
-    // ランタイムパス
-    const pathRuntime = path.resolve(path.dirname(srcDir))
-    const fileRuntime = fCheckEx(pathRuntime)
+    // 環境変数をチェック
+    // 環境変数 NAKO_LIB か?
+    if (process.env.NAKO_LIB) {
+      const NAKO_LIB = path.join(path.resolve(process.env.NAKO_LIB), pname)
+      const fileLib = fCheckEx(NAKO_LIB, 'NAKO_LIB')
+      if (fileLib) { return fileLib }
+    }
+
+    // ランタイムパス/node_modules/<plugin>
+    const pathRuntime = path.join(path.resolve(__dirname), 'node_modules', pname)
+    const fileRuntime = fCheckEx(pathRuntime, 'runtime')
     if (fileRuntime) { return fileRuntime }
 
     // 環境変数 NAKO_HOMEか?
     if (process.env.NAKO_HOME) {
-      const NAKO_HOME = path.resolve(process.env.NAKO_HOME)
-      const fileHome = fCheckEx(NAKO_HOME)
+      const NAKO_HOME = path.join(path.resolve(process.env.NAKO_HOME), 'node_modules', pname)
+      const fileHome = fCheckEx(NAKO_HOME, 'NAKO_HOME')
       if (fileHome) { return fileHome }
       // NAKO_HOME/src ?
-      const pathNakoHomeSrc = path.join(NAKO_HOME, 'src')
-      const fileNakoHomeSrc = fCheck(pathNakoHomeSrc)
+      const pathNakoHomeSrc = path.join(NAKO_HOME, 'src', pname)
+      const fileNakoHomeSrc = fCheckEx(pathNakoHomeSrc, 'NAKO_HOME/src')
       if (fileNakoHomeSrc) { return fileNakoHomeSrc }
     }
     // 環境変数 NODE_PATH (global) 以下にあるか？
     if (process.env.NODE_PATH) {
-      const pathNode = path.resolve(process.env.NODE_PATH)
-      const fileNode = fCheckEx(pathNode)
+      const pathNode = path.join(path.resolve(process.env.NODE_PATH), pname)
+      const fileNode = fCheckEx(pathNode, 'NODE_PATH')
       if (fileNode) { return fileNode }
     }
     // Nodeのパス検索には任せない(importで必ず失敗するので)
