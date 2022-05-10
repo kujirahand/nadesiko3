@@ -423,10 +423,57 @@ export class CNako3 extends NakoCompiler {
           filePath = 'file://' + filePath
         }
       }
+      // URLからの読み取り
+      // ファイルかHTTPか
+      if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+        // 動的 import が http 未対応のため、一度、Webのファイルを非同期で読み込んで/tmpに保存してから動的importを行う
+        loader.task = (
+          new Promise((resolve, reject) => {
+            // 一時フォルダを得る
+            const osTmpDir = (process.platform === 'win32') ? process.env.TEMP : '/tmp'
+            const tmpDir = path.join(osTmpDir, 'com.nadesi.v3.cnako')
+            const tmpFile = path.join(tmpDir, filePath.replace(/[^a-zA-Z0-9_\.]/g, '_'))
+            if (!fs.existsSync(tmpDir)) { fs.mkdirSync(tmpDir)}
+            // WEBからダウンロード
+            fetch(filePath)
+            .then((res) => {
+              return res.text()
+            })
+            .then((txt) => {
+              // 一時ファイルに保存
+              try {
+                fs.writeFileSync(tmpFile, txt, 'utf-8')
+              } catch (err) {
+                const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたJSファイルがキャッシュに書き込めません。${err}`, token.file, token.line)
+                reject(err2)
+              }
+            })
+            .then(()=>{
+              // 一時ファイルから読み込む
+              import(tmpFile).then((mod) => {
+                // プラグインは export default で宣言
+                const obj = Object.assign({}, mod)
+                resolve(() => {
+                  return obj.default
+                })
+              }).catch((err) => {
+                const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたはずのJSファイル読み込めません。${err}`, token.file, token.line)
+                reject(err2)
+              })
+            })
+            .catch((err) => {
+              const err2 = new NakoImportError(`URL『${filePath}』からJSファイルが読み込めません。${err}`, token.file, token.line)
+              reject(err2)
+            })
+          })
+        )
+        return loader
+      }
+      // ファイルからの読み取り
       loader.task = (
         new Promise((resolve, reject) => {
           import(filePath).then((mod) => {
-            // プラグインは export default で宣言されている? (moduleプラグインの場合)
+            // プラグインは export default で宣言
             const obj = Object.assign({}, mod)
             resolve(() => { return obj.default })
           }).catch((err) => {
