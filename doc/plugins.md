@@ -2,15 +2,18 @@
 
 なでしこ3には、以下の二種類のプラグインがある。
 
-- (1) なでしこ3自身で開発したなでしこプラグイン
-- (2) JavaScriptで開発したJSプラグイン
+- (1) なでしこ3自身で開発した[NAKO3プラグイン](https://nadesi.com/v3/doc/index.php?%E6%96%87%E6%B3%95%2FNAKO3%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9&show)
+- (2) JavaScriptで開発した[JSプラグイン](https://nadesi.com/v3/doc/index.php?%E6%96%87%E6%B3%95%2FJS%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9&show)
 
 なお、(1)のプラグインはなでしこ自身で関数を定義するだけである。
 以下では、(2)のJavaScriptで開発したプラグインについて解説する。
 
-## Webプラグインを利用する手順
+## JSプラグインを利用する手順
 
-HTMLファイル内でなでしこ本体(wnako3.js)よりも後ろで`<script src="(JSプラグイン).js">`と記述して読み込む。
+次の2つの方法で利用ができる。
+
+- (1)「[取り込む構文](https://nadesi.com/v3/doc/index.php?%E6%96%87%E6%B3%95%2F%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E5%8F%96%E8%BE%BC&show)」を使ってプラグインを取り込める。
+- (2) HTMLファイル内でなでしこ本体(wnako3.js)よりも後ろで`<script src="(JSプラグイン).js">`と記述して読み込む。
 
 なお「wnako3.js」を読み込むと、ブラウザの「navigator」オブジェクトにプロパティ「nako3」(navigator.nako3)にコンパイラのインスタンスが作成される。
 
@@ -111,7 +114,7 @@ if (typeof (navigator) === 'object') {
 このオブジェクトを参照することで、システム変数にアクセスできる。
 
 ```js
-{
+'xxx': {
   type: 'func',
   josi: [],
   fn: function (sys) {
@@ -123,7 +126,7 @@ if (typeof (navigator) === 'object') {
 例えば、なでしこで管理されている変数「A」にアクセスしたいときは、以下のようなコードを記述する。なお、ローカル変数を参照するときpure: trueの関数は正しく動作しない。
 
 ```js
-{
+'xxx': {
   type: 'func',
   josi: [],
   fn: function (sys) {
@@ -136,7 +139,7 @@ if (typeof (navigator) === 'object') {
 そのほかに、なでしこ側で定義した関数「HOGE」を実行したいときは、以下のように記述する。
 
 ```js
-{
+'xxx': {
   type: 'func',
   josi: [],
   fn: function (sys) {
@@ -159,7 +162,7 @@ if (typeof (navigator) === 'object') {
 なお、最後の助詞を可変長引数として扱う場合、システム変数は末尾の引数の末尾の要素として挿入される。
 
 ```js
-{
+'xxx': {
   type: 'func',
   josi: [['は'], ['で']],
   isVariableJosi: true,
@@ -171,9 +174,46 @@ if (typeof (navigator) === 'object') {
 }
 ```
 
-## 非同期モードに対応した関数を作る場合
+## 非同期処理に対する関数を作る場合
 
-v3.2.22で導入された非同期モードに対応した関数を作るには、以下のように記述する。
+v3.3で`asyncFn`が導入された(参照： #1154)。このプロパティを`true`に設定した場合、関数は非同期処理で実行される。
+つまり、この関数を呼び出す前に、自動的に`await`が指定される。そのため、`asyncFn`を`true`とした場合、Promiseのオブジェクトを返すようにする。
+
+```js
+'xxx': {
+  type: 'func',
+  josi: [['で']],
+  asyncFn: true, // 非同期処理であることを明示
+  fn: function (msec, sys) {
+    // asyncFnをtrueにしたら、必ずPromiseを返すようにする
+    return new Promise((resolve, _reject) => {
+      setTimeout(()=>{
+        resolve()
+      }, msec)
+    })
+  }
+}
+```
+
+あるいは、以下のように、`async` をつけて関数を定義する。このように書くと、自動的にPromiseオブジェクトを返す。
+
+```js
+'xxx': {
+  type: 'func',
+  josi: [['で']],
+  asyncFn: true, // 非同期処理であることを明示
+  fn: async function (msec, sys) {
+    // ここで非同期処理
+  }
+}
+```
+
+この機能の追加により、`「!非同期モード」`や`「逐次実行」`の利用は非推奨となった。
+
+## (非推奨) 非同期モードに対応した関数を作る場合
+
+v3.2.22で導入された非同期モードの利用は非推奨となったが、非同期モードに対応した関数を作るには、以下のように記述する。
+なお、今後、非同期関数を利用するには、上記asyncFnを使うこと。
 
 ```js
   fn: function (n, sys) {
