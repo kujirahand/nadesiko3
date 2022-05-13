@@ -53,7 +53,6 @@ NODEJS=「{出力先}/setup/nodejs.7z」
 と実行してください。」と表示。
 
 ●バッチ作成
-  「README.md」を個別コピー処理。
   「package.json」を個別コピー処理。
   「webpack.config.mjs」を個別コピー処理。
   「bin」を削除付きファイルコピー処理。
@@ -68,7 +67,9 @@ NODEJS=「{出力先}/setup/nodejs.7z」
   「utils」を削除付きファイルコピー処理。
   「editor」を削除付きファイルコピー処理。
   テンプレートコピー処理。
-  DS_STORE削除
+  DS_STORE削除。
+  # README.mdを上書きしない
+  コマンド一覧＝コマンド一覧＆「『{コピー元}/README.md』を『{出力先}/README_nadesiko3.md』へファイルコピー。{改行}」
   コマンド一覧＝コマンド一覧＆「『ok.』と表示。{改行}# --- ここまで ---」&改行。
 ここまで
 
