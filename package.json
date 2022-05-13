@@ -36,7 +36,8 @@
     "textlint": "textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md",
     "textlint:fix": "textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md",
     "extlib:clean": "rm -f -r demo/extlib/*",
-    "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3"
+    "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
+    "check_new_version": "cnako3 tools/check_new_version.nako3" 
   },
   "repository": {
     "type": "git",
