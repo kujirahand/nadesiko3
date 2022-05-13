@@ -15,6 +15,8 @@ export class NakoError extends Error {
     super(`[${tag}]${positionJa}${msg}\n[バージョン] ${nakoVersion.version}`)
     this.tag = '[' + tag + ']'
     this.positionJa = positionJa
+    // #1223 エラーメッセージに「main__関数名」と表示されるので、main__は省略して表示
+    msg = msg.replace(/『main__(.+?)』/g, '『$1』')
     this.msg = msg
   }
 }
@@ -76,8 +78,8 @@ export class NakoLexerError extends NakoError {
 export class NakoSyntaxError extends NakoError {
   /**
    * @param {string} msg
-   * @param {import("./nako3").Ast | null | undefined} first
-   * @param {import("./nako3").Ast | null | undefined} [last]
+   * @param {import('./nako3.mjs').Ast | null | undefined} first
+   * @param {import('./nako3.mjs').Ast | null | undefined} [last]
    */
   static fromNode (msg, first, last) {
     if (!first) {
