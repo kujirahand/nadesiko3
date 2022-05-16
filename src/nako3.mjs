@@ -13,7 +13,7 @@ import PluginMath from './plugin_math.mjs'
 import PluginPromise from './plugin_promise.mjs'
 import PluginTest from './plugin_test.mjs'
 import { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } from './nako_source_mapping.mjs'
-import { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } from './nako_errors.mjs'
+import { NakoRuntimeError, NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError, NakoError } from './nako_errors.mjs'
 import { NakoLogger } from './nako_logger.mjs'
 import { NakoGlobal } from './nako_global.mjs'
 
@@ -33,6 +33,8 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  *   startOffset: number | null
  *   endOffset: number | null
  *   isDefinition?: boolean
+ *   funcPointer?: boolean
+ *   tag?: string
  * }} TokenWithSourceMap
  *
  * @typedef {{
@@ -76,6 +78,15 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  *     | { type: 'func', josi: string[][], pure?: boolean, fn?: Function, return_none: boolean, asyncFn: boolean }
  *     | { type: 'var' | 'const', value: any}
  * } NakoFunction
+ */
+
+/**
+ * インタプリタに「取り込み」文を追加するために用意するオブジェクト
+ * @typedef {{
+ *    resolvePath: (name: string, token: TokenWithSourceMap, fromFile: string) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
+ *    readNako3: (filePath: string, token: TokenWithSourceMap) => { task: Promise<string> }
+ *    readJs: (filePath: string, token: TokenWithSourceMap) => { task: Promise<() => object> }
+ * }} LoaderTool
  */
 
 export class NakoCompiler {
@@ -184,14 +195,10 @@ export class NakoCompiler {
    * @param {string} code
    * @param {string} filename
    * @param {string} preCode
-   * @param {{
-   *     resolvePath: (name: string, token: TokenWithSourceMap, fromFile: string) => { type: 'nako3' | 'js' | 'invalid', filePath: string }
-   *     readNako3: (filePath: string, token: TokenWithSourceMap) => { task: Promise<string> }
-   *     readJs: (filePath: string, token: TokenWithSourceMap) => { task: Promise<() => object> }
-   * }} tools - 実行環境 (ブラウザ or Node.js) によって外部ファイルの取得・実行方法は異なるため、引数でそれらを行う関数を受け取る。
-   *          - resolvePath は指定した名前をもつファイルを検索し、正規化されたファイル名を返す関数。返されたファイル名はreadNako3かreadJsの引数になる。
-   *          - readNako3は指定されたファイルの中身を返す関数。
-   *          - readJsは指定したファイルをJavaScriptのプログラムとして実行し、`export default` でエクスポートされた値を返す関数。
+   * @param {LoaderTool} tools 実行環境 (ブラウザ or Node.js) によって外部ファイルの取得・実行方法は異なるため、引数でそれらを行う関数を受け取る。
+   *  - resolvePath は指定した名前をもつファイルを検索し、正規化されたファイル名を返す関数。返されたファイル名はreadNako3かreadJsの引数になる。
+   *  - readNako3は指定されたファイルの中身を返す関数。
+   *  - readJsは指定したファイルをJavaScriptのプログラムとして実行し、`export default` でエクスポートされた値を返す関数。
    * @returns {Promise<unknown> | void}
    * @protected
    */
@@ -200,6 +207,10 @@ export class NakoCompiler {
     const dependencies = {}
     const compiler = new NakoCompiler({ useBasicPlugin: true })
     
+    /** 
+     * @param {any} item
+     * @param {any} tasks
+     */
     const loadJS = (item, tasks) => {
       // jsならプラグインとして読み込む。(ESMでは必ず動的に読む)
       const obj = tools.readJs(item.filePath, item.firstToken)
@@ -283,7 +294,7 @@ export class NakoCompiler {
       return result
     } catch (err) {
       // 同期処理では素直に例外を投げる
-      this.logger.warn(err.msg)
+      this.logger.warn('' + err)
       throw err
     }
   }

@@ -18,15 +18,15 @@ import { NakoLexerError, InternalLexerError } from './nako_errors.mjs'
 /**
  * @typedef {import('./nako3.mjs').TokenWithSourceMap} TokenWithSourceMap
  * @typedef {{
- *   type: string;
- *   value: unknown;
- *   line: number;
- *   column: number;
- *   file: string;
- *   josi: string;
- *   preprocessedCodeOffset: number;
- *   preprocessedCodeLength: number;
- *   meta?: any;
+ *   type: string,
+ *   value: unknown,
+ *   line: number,
+ *   column: number,
+ *   file: string,
+ *   josi: string,
+ *   preprocessedCodeOffset: number,
+ *   preprocessedCodeLength: number,
+ *   meta?: any
  * }} Token
  * @typedef {Record<string, (
  *     {
@@ -63,6 +63,9 @@ export class NakoLexer {
     this.modName = 'inline'
   }
 
+  /** 関数一覧をセット 
+   * @param {Object} listObj 
+   */
   setFuncList (listObj) {
     this.funclist = listObj
   }
@@ -145,6 +148,7 @@ export class NakoLexer {
     let isFuncPointer = false
     const readArgs = () => {
       const args = []
+      /** @type {Object.<string, Array<string>} */
       const keys = {}
       if (tokens[i].type !== '(') { return [] }
       i++
@@ -167,6 +171,7 @@ export class NakoLexer {
       const varnames = []
       const funcPointers = []
       const result = []
+      /** @type {Object.<string,boolean>} */
       const already = {}
       for (const arg of args) {
         if (!already[arg.value]) {
@@ -196,6 +201,7 @@ export class NakoLexer {
       if (t.type === 'word' && t.josi === '' && t.value.length >= 2) {
         if (t.value.match(/回$/)) {
           t.value = t.value.substring(0, t.value.length - 1)
+          // N回を挿入
           tokens.splice(i + 1, 0, { type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: '' })
           t.endOffset--
           i++
