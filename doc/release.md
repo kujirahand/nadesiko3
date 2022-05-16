@@ -4,23 +4,23 @@
 
 ## 1.GitHubのリリース機能を使う
 
-ただし、リリース前（コミット前）には必ずテストを実行して、テストが成功するか確認する。
+ただし、リリース前（コミット前）には必ずビルドとテストを実行して、テストが成功するか確認する。
 
 ```shell
+npm run build
 npm test
+npm run test:all
 ```
 
-なお、よくエラーが出る部分で「ナデシコバージョン」で問題があれば、package.jsonのversion値とsrc/plugin_system.jsの変数番号が合っているかを確認する。
+## 2.ファイルのビルドについて
 
-## 2.必要なファイルをビルドする
-
-まず、リリース用にwebpackでパックしたソースを生成する(/releaseに生成物が作られる)。
+リリース用にwebpackでパックしたソースを生成する(/releaseに生成物が作られる)。
 
 ```shell
 npm run build
 ```
 
-対応ブラウザを更新する。
+必要に応じて対応ブラウザを更新する。(以前は`npm run build`に含めていたが、OSによって異なる値を出力するため、毎回実行する必要はないことから省略された #1211)
 
 ```shell
 npm run build:browsers
@@ -36,13 +36,13 @@ npm publish
 
 ## 4.Webにアップロード
 
-必要なら、WEB(nadesi.com/doc3)の簡易エディタを最新版に更新する。
+Webの簡易エディタを最新版に更新する。
 
-## 5.Webサイトで最新版を告知
+- 情報サイト --- https://nadesi.com/doc3/
+- マニュアル --- https://nadesi.com/doc3/
+- 貯蔵庫 --- https://n3s.nadesi.com/
 
-リリース内容を告知する。
-
-## 6.Windowsバイナリ版のアップロード
+## 5.Windowsバイナリ版のアップロード
 
 Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、 `git clone` でnadesiko3win32のリポジトリを取得しておく必要がある。
 
@@ -76,3 +76,4 @@ bin\7z  -mx=9 a node_modules.7z node_modules
 git commit -a
 git push
 ```
+
