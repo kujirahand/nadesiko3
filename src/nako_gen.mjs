@@ -598,7 +598,9 @@ export class NakoGen {
         // デフォルト定義されている変数名
       } else {
         if (this.warnUndefinedVar) {
-          this.__self.logger.warn(`変数『${name}』は定義されていません。`, position)
+          // main__は省略して表示するように。 #1223
+          const dispName = name.replace(/^main__(.+)$/, '$1')
+          this.__self.logger.warn(`変数『${dispName}』は定義されていません。`, position)
         }
       }
       this.varsSet.names.add(name)

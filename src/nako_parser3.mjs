@@ -1917,7 +1917,6 @@ export class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     if (this.check('word')) {
       const word = this.getVarNameRef(this.get())
-      if (this.skipRefArray) { return word }
 
       // word[n] || word@n
       if (word.josi === '' && this.checkTypes(['[', '@'])) {
