@@ -1079,8 +1079,12 @@ export class NakoParser extends NakoParserBase {
     if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== '配列参照')) {
       throw NakoSyntaxError.fromNode('『定める』文で定数が見当たりません。『(定数名)を(値)に定める』のように使います。', sadameru)
     }
+    // 変数を生成する
+    const nameToken = this.getVarName(word)
     return {
-      type: 'def_local_var', name: word, vartype: '定数', 
+      type: 'def_local_var', 
+      name: nameToken, 
+      vartype: '定数', 
       value: value, josi: '', 
       ...map, end: this.peekSourceMap()
     };
