@@ -38,9 +38,9 @@ npm publish
 
 Webの簡易エディタを最新版に更新する。
 
-- 情報サイト --- https://nadesi.com/doc3/
-- マニュアル --- https://nadesi.com/doc3/
-- 貯蔵庫 --- https://n3s.nadesi.com/
+- [なでしこ3のサイト](https://nadesi.com/doc3/)
+- [マニュアル](https://nadesi.com/doc3/)
+- [貯蔵庫](https://n3s.nadesi.com/)
 
 ## 5.Windowsバイナリ版のアップロード
 
