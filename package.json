@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node src/nako3server.mjs",
-    "nako3edit": "cnako3 tools/nako3edit/index.nako3",
+    "nako3edit": "node src/cnako3.mjs tools/nako3edit/index.nako3",
     "test": "cross-env TZ=Asia/Tokyo mocha test/common/*.mjs",
     "test:node": "mocha --extension mjs test/node",
     "test:async": "mocha test/async -g aysnc_basic_test",
@@ -22,7 +22,7 @@
     "test:all": "npm test && npm run test:node && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
     "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
     "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
-    "build": "npm run build:nako_version && npm run build:command && webpack --mode production && cnako3 batch/calc_hash.nako3",
+    "build": "npm run build:nako_version && npm run build:command && webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
     "build:webpack": "webpack --mode development",
     "check:command": "node src/cnako3.mjs batch/pickup_command.nako3",
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3",
@@ -36,7 +36,7 @@
     "textlint:fix": "textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md",
     "extlib:clean": "rm -f -r demo/extlib/*",
     "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
-    "check_new_version": "cnako3 tools/check_new_version.nako3" 
+    "check_new_version": "node src/cnako3.mjs tools/check_new_version.nako3" 
   },
   "repository": {
     "type": "git",
