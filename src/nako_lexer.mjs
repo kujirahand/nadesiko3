@@ -242,7 +242,9 @@ export class NakoLexer {
         const modName = NakoLexer.filenameToModName(t.file)
         funcName = modName + '__' + funcName
         if (funcName in funclist) { // 関数の二重定義を警告
-          logger.warn(`関数『${funcName}』は既に定義されています。`, defToken)
+          // main__は省略 #1223
+          const dispName = funcName.replace(/^main__/, '')
+          logger.warn(`関数『${dispName}』は既に定義されています。`, defToken)
         }
         funcNameToken.value = funcName
         funclist[funcName] = {

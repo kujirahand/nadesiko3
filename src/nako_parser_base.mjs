@@ -3,7 +3,7 @@
  */
 export class NakoParserBase {
   /**
-   * @param {import("./nako_logger.mjs")} logger
+   * @param {import("./nako_logger.mjs").NakoLogger} logger
    */
   constructor (logger) {
     this.logger = logger

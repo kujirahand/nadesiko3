@@ -65,8 +65,12 @@ export class Replace {
   }
 }
 
-/** @type {NakoPrepare} */
+/** 
+ * Singletonとして使う
+ * @type {NakoPrepare | null} 
+ */
 let nakoPrepareObj = null
+
 /**
  * 字句解析を行う前に全角文字を半角に揃える
  *    [memo]
@@ -77,7 +81,7 @@ export class NakoPrepare {
 
   /** 
    * 唯一のインスタンスを返す
-   * @param {import("./nako_logger.mjs") | null} logger
+   * @param {import("./nako_logger.mjs").NakoLogger | null} logger
    * @returns {NakoPrepare}
    */
   static getInstance(logger) {
@@ -88,51 +92,49 @@ export class NakoPrepare {
   }
 
   /**
-   * @param {import("./nako_logger.mjs") | null} logger
+   * @param {import("./nako_logger.mjs").NakoLogger | null} logger
    */
   constructor (logger) {
     if (logger !== null) { this.logger = logger }
-
-    // 参考) https://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.html
-    this.HYPHENS = { // ハイフン問題
-      0x2d: true, // ASCIIのハイフン
-      0x2010: true, // 別のハイフン
-      0x2011: true, // 改行しないハイフン
-      0x2013: true, // ENダッシュ
-      0x2014: true, // EMダッシュ
-      0x2015: true, // 全角のダッシュ
-      0x2212: true // 全角のマイナス
-    }
-    this.TILDES = { // チルダ問題
-      0x7e: true,
-      0x02dc: true, // 小さなチルダ
-      0x02F7: true, // Modifier Letter Low Tilde
-      0x2053: true, // Swung Dash - 辞書のみだし
-      0x223c: true, // Tilde Operator: 数学で Similar to
-      0x301c: true, // Wave Dash(一般的な波ダッシュ)
-      0xFF5E: true // 全角チルダ
-    }
-    // スペース問題
-    // 参考) http://anti.rosx.net/etc/memo/002_space.html
-    this.SPACES = {
-      0x20: true,
-      0x2000: true, // EN QUAD
-      0x2002: true, // EN SPACE
-      0x2003: true, // EM SPACE
-      0x2004: true, // THREE-PER-EM SPACE
-      0x2005: true, // FOUR-PER-EM SPACE
-      0x2006: true, // SIX-PER-EM SPACE
-      0x2007: true, // FIGURE SPACE
-      0x2009: true, // THIN SPACE
-      0x200A: true, // HAIR SPACE
-      0x200B: true, // ZERO WIDTH SPACE
-      0x202F: true, // NARROW NO-BREAK SPACE
-      0x205F: true, // MEDIUM MATHEMATICAL SPACE
-      0x3000: true, // 全角スペース
-      0x3164: true // HANGUL FILLER
-    }
-    // その他の変換
-    this.convertTable = {
+    /** 単純な変換テーブル
+     * @type {Object.<number, String>}
+     */
+     this.convertTable = {
+      // ハイフンへの変換
+      // 参考) https://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.
+      // 0x2d: true, // ASCIIのハイフン
+      0x2010: '-', // 別のハイフン
+      0x2011: '-', // 改行しないハイフン
+      0x2013: '-', // ENダッシュ
+      0x2014: '-', // EMダッシュ
+      0x2015: '-', // 全角のダッシュ
+      0x2212: '-', // 全角のマイナス
+      // チルダの変換
+      // 0x7e: true,
+      0x02dc: '~', // 小さなチルダ
+      0x02F7: '~', // Modifier Letter Low Tilde
+      0x2053: '~', // Swung Dash - 辞書のみだし
+      0x223c: '~', // Tilde Operator: 数学で Similar to
+      0x301c: '~', // Wave Dash(一般的な波ダッシュ)
+      0xFF5E: '~', // 全角チルダ
+      // スペースの変換
+      // 参考) http://anti.rosx.net/etc/memo/002_space.html
+      // 0x20: true,
+      0x2000: ' ', // EN QUAD
+      0x2002: ' ', // EN SPACE
+      0x2003: ' ', // EM SPACE
+      0x2004: ' ', // THREE-PER-EM SPACE
+      0x2005: ' ', // FOUR-PER-EM SPACE
+      0x2006: ' ', // SIX-PER-EM SPACE
+      0x2007: ' ', // FIGURE SPACE
+      0x2009: ' ', // THIN SPACE
+      0x200A: ' ', // HAIR SPACE
+      0x200B: ' ', // ZERO WIDTH SPACE
+      0x202F: ' ', // NARROW NO-BREAK SPACE
+      0x205F: ' ', // MEDIUM MATHEMATICAL SPACE
+      0x3000: ' ', // 全角スペース
+      0x3164: ' ', // HANGUL FILLER
+      // その他の変換
       0x09: ' ', // TAB --> SPC
       0x203B: '#', // '※' --- コメント
       0x3002: ';', // 句点
@@ -154,7 +156,7 @@ export class NakoPrepare {
    */
   convert1ch (ch) {
     if (!ch) { return '' }
-    const c = ch.codePointAt(0)
+    const c = ch.codePointAt(0) || 0
     // テーブルによる変換
     if (this.convertTable[c]) { return this.convertTable[c] }
     // ASCIIエリア
@@ -164,10 +166,6 @@ export class NakoPrepare {
       const c2 = c - 0xFEE0
       return String.fromCodePoint(c2)
     }
-    // 問題のエリア
-    if (this.HYPHENS[c]) { return '-' }
-    if (this.TILDES[c]) { return '~' }
-    if (this.SPACES[c]) { return ' ' }
     return ch
   }
 

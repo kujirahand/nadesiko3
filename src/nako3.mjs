@@ -52,7 +52,7 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  *   name?: TokenWithSourceMap | Ast
  *   josi?: string
  *   value?: unknown
- *   line?: number
+ *   line: number
  *   column?: number
  *   file?: string
  *   startOffset: number | null
@@ -69,6 +69,7 @@ const cloneAsJSON = (x) => JSON.parse(JSON.stringify(x))
  *   tag?: string
  *   genMode?: string
  *   checkInit?: boolean
+ *   options?: Object.<string, boolean>
  * }} Ast
  *
  * @typedef {
@@ -110,6 +111,7 @@ export class NakoCompiler {
     /** @type {Record<string, { josi: string[][], fn: string, type: 'func', asyncFn: boolean }>} */
     this.nako_func = {} // __v1に配置するJavaScriptのコードで定義された関数
 
+    /** @type {import('./nako_logger.mjs').NakoLogger} */
     this.logger = new NakoLogger()
 
     // 必要なオブジェクトを覚えておく

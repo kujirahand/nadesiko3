@@ -49,6 +49,7 @@ export class NakoParser extends NakoParserBase {
   /** @returns {Ast} */
   ySentenceList () {
     const blocks = []
+    /** @type {number} */
     let line = -1
     const map = this.peekSourceMap()
     while (!this.isEOF()) {
@@ -71,7 +72,8 @@ export class NakoParser extends NakoParserBase {
     const eol = this.get()
     // 余剰スタックの確認
     if (this.stack.length > 0) {
-      // 余剰スタックのレポートを作る
+      /** 余剰スタックのレポートを作る 
+       * @type {Array<Ast>} */
       const words = []
       this.stack.forEach((t) => {
         let w = this.nodeToStr(t, { depth: 1 }, false)
