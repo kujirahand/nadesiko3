@@ -2,7 +2,7 @@
 /**
  * 予約語
  */
-
+/** @type {Object.<string, string>} */
 export default {
   '回': '回',
   '回繰返': '回', // (#924)

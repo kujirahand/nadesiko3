@@ -202,7 +202,9 @@ export class NakoLexer {
         if (t.value.match(/回$/)) {
           t.value = t.value.substring(0, t.value.length - 1)
           // N回を挿入
-          tokens.splice(i + 1, 0, { type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: '' })
+          if (!t.endOffset) { t.endOffset = 1 }
+          const kai = { type: '回', value: '回', line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: '' }
+          tokens.splice(i + 1, 0, kai)
           t.endOffset--
           i++
         }
