@@ -20,21 +20,30 @@ export class NakoParserBase {
     this.y = []
     /** モジュル名 @type {string} */
     this.modName = 'inline'
-    /** 利用するモジュールの名前一覧 @type {Array[string]} */
+    /** 
+     * 利用するモジュールの名前一覧 
+     * @type {Array<string>}
+     */
     this.modList = []
     /** グローバル変数・関数の確認用 */
     this.funclist = {}
     this.funcLevel = 0
     this.usedAsyncFn = false // asyncFnの呼び出しがあるかどうか
-    /** ローカル変数の確認用 */
+    /** 
+     * ローカル変数の確認用
+     * @type {Object.<string,Object>} 
+     */
     this.localvars = {'それ': {type: 'var', value: ''}}
-    /** コード生成器の名前 */
+    /** コード生成器の名前 @type {string} */
     this.genMode = 'sync' // #637
-    this.arrayIndexFrom = 0  // #1140
-    this.flagReverseArrayIndex = false // #1140
-    this.flagCheckArrayInit = false // #1140
-    /** @type Object[] */
-    this.recentlyCalledFunc = [] // 最近呼び出した関数(余剰エラーの報告に使う)
+    /** 配列のインデックスが先頭要素(#1140) @type {int} */
+    this.arrayIndexFrom = 0
+    /** 配列のインデックス順序を反対にするか(#1140) @type {boolean} */
+    this.flagReverseArrayIndex = false
+    /** 配列を自動的に初期化するか(#1140) @type {boolean} */
+    this.flagCheckArrayInit = false
+    /** 最近呼び出した関数(余剰エラーの報告に使う) @type {Object[]} */
+    this.recentlyCalledFunc = []
 
     this.init()
   }
@@ -60,7 +69,7 @@ export class NakoParserBase {
   /**
    * 特定の助詞を持つ要素をスタックから一つ下ろす、指定がなければ末尾を下ろす
    * @param {string[]} josiList 下ろしたい助詞の配列
-   * @returns {import('./nako3').Ast | null | undefined}
+   * @returns {import('./nako3.mjs').Ast | null | undefined}
    */
   popStack (josiList) {
     if (!josiList) { return this.stack.pop() }
@@ -234,7 +243,7 @@ export class NakoParserBase {
 
   /**
    * カーソル語句を取得して、カーソルを後ろに移動する
-   * @returns {import('./nako3').TokenWithSourceMap | null}
+   * @returns {import('./nako3.mjs').TokenWithSourceMap | null}
    */
   get () {
     if (this.isEOF()) { return null }
@@ -246,7 +255,7 @@ export class NakoParserBase {
   }
 
   /**
-   * @returns {import('./nako3').TokenWithSourceMap | null}
+   * @returns {import('./nako3.mjs').TokenWithSourceMap | null}
    */
   peek (i = 0) {
     if (this.isEOF()) { return null }
