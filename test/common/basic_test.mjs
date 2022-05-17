@@ -257,7 +257,8 @@ describe('basic', () => {
   })
   it('resetされた後に関数名を取得できない問題の修正 #849', (done) => {
     const nako = new NakoCompiler()
-    nako.logger.addListener('stdout', ({ noColor }) => {
+    nako.logger.addListener('stdout', (data) => {
+      const { noColor } = data
       assert(noColor.includes('function')) // JavaScriptのコード function() { var ... } が表示されるはず
       done()
     })

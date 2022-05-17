@@ -45,7 +45,7 @@ function removeCommentsFromLine (src) {
   let isComment = false
   while (i < len) {
     const c = src.charAt(i)
-    const ch2 = src.substr(i, 2)
+    const ch2 = src.substring(i, 2)
     const cPrepared = prepare.convert1ch(c)
     const ch2Prepared = ch2.split('').map((c) => prepare.convert1ch(c)).join('')
 

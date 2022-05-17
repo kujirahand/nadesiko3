@@ -23,6 +23,7 @@
     "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
     "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
     "build": "npm run build:nako_version && npm run build:command && webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
+    "tsc": "tsc",
     "build:webpack": "webpack --mode development",
     "check:command": "node src/cnako3.mjs batch/pickup_command.nako3",
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3",
@@ -36,7 +37,7 @@
     "textlint:fix": "textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md",
     "extlib:clean": "rm -f -r demo/extlib/*",
     "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
-    "check_new_version": "node src/cnako3.mjs tools/check_new_version.nako3" 
+    "check_new_version": "node src/cnako3.mjs tools/check_new_version.nako3"
   },
   "repository": {
     "type": "git",
@@ -109,6 +110,7 @@
     "@chiragrupani/karma-chromium-edge-launcher": "^2.2.1",
     "@textlint-ja/textlint-rule-no-insert-dropping-sa": "^2.0.1",
     "@types/mocha": "^9.1.0",
+    "@types/node": "^17.0.33",
     "babel-loader": "^8.2.5",
     "buffer": "^6.0.3",
     "chai": "^4.3.6",
@@ -176,6 +178,7 @@
     "textlint-rule-preset-ja-technical-writing": "^7.0.0",
     "textlint-rule-preset-jtf-style": "^2.3.12",
     "textlint-rule-spellcheck-tech-word": "^5.0.0",
+    "typescript": "^4.6.4",
     "url-loader": "^4.1.1",
     "util": "^0.12.4",
     "uuid": "^8.3.2",

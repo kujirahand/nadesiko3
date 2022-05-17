@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import StatsPlugin from 'stats-webpack-plugin' // バンドルサイズ解析のため
 import TerserPlugin from 'terser-webpack-plugin' // サイズ縮小プラグイン
 
+// @ts-ignore
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
