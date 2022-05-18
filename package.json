@@ -35,7 +35,7 @@
     "publish:version": "node src/cnako3.mjs batch/publish_version.nako3",
     "textlint": "textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md",
     "textlint:fix": "textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md",
-    "eslint": "eslint . --ext mts",
+    "eslint": "eslint . --ext mts,mjs",
     "extlib:clean": "rm -f -r demo/extlib/*",
     "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
     "check_new_version": "node src/cnako3.mjs tools/check_new_version.nako3"

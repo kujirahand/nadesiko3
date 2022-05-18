@@ -1,11 +1,13 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import path from 'path'
 import { CNako3 } from '../../src/cnako3mod.mjs'
 
 // __dirname のために
 import url from 'url'
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// @ts-ignore
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 describe('plugin_test', () => {
   const nako = new CNako3()
@@ -13,11 +15,11 @@ describe('plugin_test', () => {
   const scope2 = path.join(__dirname, 'scope2.nako3')
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.silent = true
-  const cmp = async (code, res) => {
+  const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     const ret = await nako.runAsync(code, 'main.nako3')
-    if (ret.log != res) {
-        console.log('[ERROR]', ret.log, '!=', res)
+    if (ret.log !== res) {
+      console.log('[ERROR]', ret.log, '!=', res)
     }
     assert.strictEqual(ret.log, res)
   }
@@ -39,4 +41,3 @@ describe('plugin_test', () => {
     cmp(`${scope};scope2__朝食取得して表示。`, '2000')
   })
 })
-

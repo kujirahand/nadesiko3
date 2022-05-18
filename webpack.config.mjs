@@ -5,7 +5,7 @@ import StatsPlugin from 'stats-webpack-plugin' // バンドルサイズ解析の
 import TerserPlugin from 'terser-webpack-plugin' // サイズ縮小プラグイン
 
 // @ts-ignore
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const srcPath = path.join(__dirname, 'src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
@@ -40,7 +40,7 @@ export default {
   },
 
   plugins: [
-    new StatsPlugin('stats.json', { chunkModules: true }, null), // バンドルサイズ解析
+    new StatsPlugin('stats.json', { chunkModules: true }, null) // バンドルサイズ解析
   ],
 
   module: {
@@ -72,10 +72,10 @@ export default {
 
   resolve: {
     extensions: ['*', '.webpack.js', '.web.js', '.js', '.mjs', '.jsx'],
-    mainFields: ['browser', 'main', 'module'],
+    mainFields: ['browser', 'main', 'module']
   },
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin()]
-  },
+  }
 }
