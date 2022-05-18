@@ -1,10 +1,10 @@
 // @ts-nocheck
 // plugin_browser_in_worker.js
 
-const PartBrowserColor = require('./plugin_browser_color.mjs')
-const PartBrowserAjax = require('./plugin_browser_ajax.mjs')
-const PartBrowserHtml = require('./plugin_browser_html.mjs')
-const PartBrowserWebsocket = require('./plugin_browser_websocket.mjs')
+import PartBrowserColor from './plugin_browser_color.mjs'
+import PartBrowserAjax from './plugin_browser_ajax.mjs'
+import PartBrowserHtml from './plugin_browser_html.mjs'
+import PartBrowserWebsocket from './plugin_browser_websocket.mjs'
 
 const BrowserParts = [
   PartBrowserColor,
@@ -41,4 +41,5 @@ BrowserParts.forEach((a) => {
   Object.assign(PluginBrowserInWorker, b)
 })
 
-module.exports = PluginBrowserInWorker
+// module.exports = PluginBrowserInWorker
+export default PluginBrowserInWorker

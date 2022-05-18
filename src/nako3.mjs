@@ -404,7 +404,7 @@ export class NakoCompiler {
      * @param {string} filename
      * @param {string} [preCode]
      */
-    lex(code, filename, preCode = '', syntaxHighlighting = false) {
+    lex(code, filename = 'main.nako3', preCode = '', syntaxHighlighting = false) {
         // 単語に分割
         let tokens = this.rawtokenize(code, 0, filename, preCode);
         // require文を再帰的に置換する

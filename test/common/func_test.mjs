@@ -4,7 +4,7 @@ import { NakoCompiler } from '../../src/nako3.mjs'
 describe('func_test', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  const cmp = (code, res) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code, 'main.nako3').log, res)
   }
@@ -68,12 +68,11 @@ describe('func_test', () => {
       'Nを表示。', '30')
   })
   it('ローカル定数2', () => {
-    let nako = new NakoCompiler()
-    let expected = '30'
+    const nako = new NakoCompiler()
+    const expected = '30'
     for (let i = 0; i < 2; i++) {
-      nako = nako.runEx('定数のN=30\nNを表示。', 'main.nako3', { resetLog: false })
-      assert.strictEqual(nako.log, expected)
-      expected += '\n30'
+      const env = nako.run('定数のN=30\nNを表示。', 'main.nako3')
+      assert.strictEqual(env.log, expected)
     }
   })
   it('助詞の複数定義', () => {

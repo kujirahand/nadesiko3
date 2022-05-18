@@ -2,12 +2,13 @@ import assert from 'assert'
 import { NakoCompiler } from '../../src/nako3.mjs'
 import PluginCSV from '../../src/plugin_csv.mjs'
 
+// eslint-disable-next-line no-undef
 describe('plugin_csv_test', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginObject('PluginCSV', PluginCSV)
-  
-  const cmp = (code, res) => {
+
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)
   }

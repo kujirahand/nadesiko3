@@ -7,7 +7,7 @@ const INDENT_MODE_KEYWORDS = ['!インデント構文', '!ここまでだるい'
  * @param {string} code
  * @param {string} filename
  */
-function convert(code, filename) {
+function convert(code, filename = 'main.nako3') {
     // インデント構文の適用が必要か？
     if (checkNakoMode(code, INDENT_MODE_KEYWORDS)) {
         return convertGo(code, filename);

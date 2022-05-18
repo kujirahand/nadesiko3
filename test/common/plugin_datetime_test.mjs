@@ -1,18 +1,20 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoCompiler } from '../../src/nako3.mjs'
-import {NakoRuntimeError} from '../../src/nako_errors.mjs'
+import { NakoRuntimeError } from '../../src/nako_errors.mjs'
 import PluginDateTime from '../../src/plugin_datetime.mjs'
 
+// eslint-disable-next-line no-undef
 describe('plugin_datetime_test', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginObject('PluginDateTime', PluginDateTime)
-  
-  const cmp = (code, res) => {
+
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)
   }
-  const cmd = (code) => {
+  const cmd = (/** @type {string} */ code) => {
     nako.logger.debug('code=' + code)
     nako.run(code)
   }
@@ -105,7 +107,7 @@ describe('plugin_datetime_test', () => {
     assert.throws(
       () => cmd('「1868/10/22」を和暦変換。それを表示'),
       NakoRuntimeError,
-      /『和暦変換』は明治以前の日付には対応していません。/
+      '『和暦変換』は明治以前の日付には対応していません。'
     )
     cmp('「1868/10/23」を和暦変換。それを表示', '明治元/10/23')
     cmp('「1912/07/29」を和暦変換。それを表示', '明治45/07/29')

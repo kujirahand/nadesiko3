@@ -1,6 +1,5 @@
 import assert from 'assert'
 import { NakoCompiler } from '../../src/nako3.mjs'
-import { expect } from 'chai'
 
 describe('array_test', () => {
   const nako = new NakoCompiler()

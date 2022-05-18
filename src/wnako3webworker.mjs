@@ -1,11 +1,9 @@
 // @ts-nocheck
 // nadesiko for web browser worker
 // wwnako3.js
-require('whatwg-fetch')
-
-const NakoCompiler = require('./nako3')
-const PluginBrowserInWorker = require('./plugin_browser_in_worker')
-const PluginWorker = require('./plugin_worker')
+import { NakoCompiler } from './nako3.mjs'
+import PluginBrowserInWorker from './plugin_browser_in_worker.mjs'
+import PluginWorker from './plugin_worker.mjs'
 
 class WebWorkerNakoCompiler extends NakoCompiler {
   constructor () {

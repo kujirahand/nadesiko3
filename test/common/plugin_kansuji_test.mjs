@@ -1,12 +1,14 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoCompiler } from '../../src/nako3.mjs'
 import PluginKansuji from '../../src/plugin_kansuji.mjs'
 
+// eslint-disable-next-line no-undef
 describe('plugin_kansuji_test', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginFile('PluginKansuji', 'plugin_kansuji.js', PluginKansuji)
-  const cmp = (code, res) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
 
     assert.strictEqual(nako.run(code).log, res)
@@ -47,7 +49,7 @@ describe('plugin_kansuji_test', () => {
     cmp('「28000103206018」の漢数字の算用数字を表示。', '28000103206018')
     cmp('「161803398874989484820458683436563811772030917980576286213544862270526046」の漢数字の算用数字を表示。', '161803398874989484820458683436563811772030917980576286213544862270526046')
   })
-  // 
+  //
   it('漢数字の0とマイナス #874', () => {
     cmp('0の漢数字を表示。', '零')
     cmp('「０」の漢数字を表示。', '零')

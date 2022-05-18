@@ -1,6 +1,5 @@
 import assert from 'assert'
-import { NakoCompiler }  from '../../src/nako3.mjs'
-import { NakoGenASync } from '../../src/nako_gen_async.mjs'
+import { NakoCompiler } from '../../src/nako3.mjs'
 
 describe('aysnc_basic_test', () => {
   // @ts-ignore

@@ -4,10 +4,7 @@ import { NakoCompiler } from '../../src/nako3.mjs'
 describe('calc_test.js', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  const cmp = (code, res) => {
-    if (nako.debug) {
-      console.log('code=' + code)
-    }
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     assert.strictEqual(nako.run(code).log, res)
   }
   it('basic', () => {

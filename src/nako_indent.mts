@@ -27,7 +27,7 @@ interface BlockStruct {
  * @param {string} code
  * @param {string} filename
  */
-function convert (code: string, filename: string): ConvertResult {
+function convert (code: string, filename = 'main.nako3'): ConvertResult {
   // インデント構文の適用が必要か？
   if (checkNakoMode(code, INDENT_MODE_KEYWORDS)) {
     return convertGo(code, filename)

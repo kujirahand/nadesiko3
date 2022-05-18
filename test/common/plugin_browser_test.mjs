@@ -3,10 +3,10 @@ import { NakoCompiler } from '../../src/nako3.mjs'
 import PluginBrowser from '../../src/plugin_browser.mjs'
 
 describe('plugin_browser_test', () => {
-  const nako = new NakoCompiler({useBasicPlugin: true})
+  const nako = new NakoCompiler({ useBasicPlugin: true })
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
-  const cmp = (code, res) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)
   }

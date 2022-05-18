@@ -4,7 +4,7 @@ import { NakoCompiler } from '../../src/nako3.mjs'
 describe('debug', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  const cmp = (code, res) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)
   }

@@ -5,11 +5,11 @@ import { NakoSyntaxError } from '../../src/nako_errors.mjs'
 describe('関数呼び出しテスト', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  const cmp = (code, res) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)
   }
-  const cmd = (code) => {
+  const cmd = (/** @type {string} */ code) => {
     nako.logger.debug('code=' + code)
     nako.run(code)
   }
@@ -65,7 +65,7 @@ describe('関数呼び出しテスト', () => {
   it('関数の引数に関数呼び出しがある場合', () => {
     cmp('A=「ab」;「abcd」の1から(Aの文字数)だけ文字削除。それを表示。', 'cd')
   })
-  it('配列カスタムソートの基本的な使い方例', ()=> {
+  it('配列カスタムソートの基本的な使い方例', () => {
     cmp('●MYSORT(a,b)とは\n' +
         '(INT(a) - INT(b))で戻る。\n' +
         'ここまで。\n' +
@@ -95,7 +95,7 @@ describe('関数呼び出しテスト', () => {
         'ここまで。\n' +
         'ARYをJSONエンコードして表示', '[3,4,8]')
   })
-  it('可変長引数 #729', () => { // 経緯 #501 → #729 
+  it('可変長引数 #729', () => { // 経緯 #501 → #729
     cmp('連続加算(1,2,3)を表示。', '6')
     cmp('1と2と3を連続加算して表示。', '6')
     cmp('1に2と3を連続加算して表示。', '6')
@@ -157,4 +157,3 @@ describe('関数呼び出しテスト', () => {
     cmp('おくら。;●おくらとは;「O」と表示;ここまで', 'O')
   })
 })
-

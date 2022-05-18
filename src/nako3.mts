@@ -511,7 +511,7 @@ export class NakoCompiler {
    * @param {string} filename
    * @param {string} [preCode]
    */
-  lex (code: string, filename: string, preCode = '', syntaxHighlighting = false): LexResult {
+  lex (code: string, filename = 'main.nako3', preCode = '', syntaxHighlighting = false): LexResult {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
 
