@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NakoRuntimeError } from './nako_errors.mjs'
 import NakoVersion from './nako_version.mjs'
 
@@ -16,14 +15,14 @@ export default {
     type: 'func',
     josi: [],
     pure: false,
-    fn: function (sys) {
+    fn: function (sys: any) {
       sys.__v0['ナデシコバージョン'] = typeof NakoVersion === 'undefined' ? '?' : NakoVersion.version
       // なでしこの関数や変数を探して返す
-      sys.__findVar = function (nameStr, def) {
+      sys.__findVar = function (nameStr: any, def: any): any {
         if (typeof nameStr === 'function') { return nameStr }
         if (sys.__locals[nameStr]) { return sys.__locals[nameStr] }
-        let modName = (typeof(sys.__modName) !== 'undefined') ? sys.__modName : 'inline'
-        let gname = (nameStr.indexOf('__') >= 0) ? nameStr : modName + '__' + nameStr
+        const modName = ((typeof sys.__modName) !== 'undefined') ? sys.__modName : 'inline'
+        const gname = (nameStr.indexOf('__') >= 0) ? nameStr : modName + '__' + nameStr
         for (let i = 2; i >= 0; i--) {
           const scope = sys.__varslist[i]
           if (scope[gname]) { return scope[gname] }
@@ -31,13 +30,13 @@ export default {
         return def
       }
       // 文字列から関数を探す
-      sys.__findFunc = function (nameStr, parentFunc) {
+      sys.__findFunc = function (nameStr: any, parentFunc: string): any {
         const f = sys.__findVar(nameStr)
         if (typeof f === 'function') { return f }
         throw new Error(`『${parentFunc}』に実行できない関数が指定されました。`)
       }
       // システム関数を実行
-      sys.__exec = function (func, params) {
+      sys.__exec = function (func: string, params: any[]): any {
         // システム命令を優先
         const f0 = sys.__v0[func]
         if (f0) { return f0.apply(this, params) }
@@ -50,23 +49,23 @@ export default {
       sys.__timeout = []
       sys.__interval = []
       // 日付処理などに使う
-      const z2 = sys.__zero2 = (s) => {
+      const z2 = sys.__zero2 = (s: string|number): string => {
         s = '00' + s
         return s.substring(s.length - 2)
       }
-      sys.__zero = (s, keta) => {
+      sys.__zero = (s: string, keta: number): string => {
         let zeroS = ''
-        for (let i = 0; i < keta; i++) {zeroS += '0'}
+        for (let i = 0; i < keta; i++) { zeroS += '0' }
         s = zeroS + s
         return s.substring(s.length - keta)
       }
-      sys.__formatDate = (t) => {
+      sys.__formatDate = (t: Date): string => {
         return t.getFullYear() + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate())
       }
-      sys.__formatTime = (t) => {
+      sys.__formatTime = (t: Date): string => {
         return z2(t.getHours()) + ':' + z2(t.getSeconds()) + ':' + z2(t.getMinutes())
       }
-      sys.__formatDateTime = (t, fmt) => {
+      sys.__formatDateTime = (t: Date, fmt: string): string => {
         const dateStr = t.getFullYear() + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate())
         const timeStr = z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
         if (fmt.match(/^\d+\/\d+\/\d+\s+\d+:\d+:\d+$/)) {
@@ -80,26 +79,27 @@ export default {
         }
         return dateStr + ' ' + timeStr
       }
-      sys.__str2date = (s) => {
+      sys.__str2date = (s: string): Date => {
         // trim
         s = ('' + s).replace(/(^\s+|\s+$)/, '')
         // is unix time
         if (s.match(/^(\d+|\d+\.\d+)$/)) {
-          return new Date(parseFloat(s) * 1000);
+          return new Date(parseFloat(s) * 1000)
         }
         // is time ?
-        if (s.match(/^\d+\:\d+(\:\d+)?$/)) {
+        if (s.match(/^\d+:\d+(:\d+)?$/)) {
           const t = new Date()
           const a = (s + ':0').split(':')
           return new Date(
-            t.getFullYear(), t.getMonth(), t.getDate(), 
-            a[0], a[1], a[2])
+            t.getFullYear(), t.getMonth(), t.getDate(),
+            parseInt(a[0]), parseInt(a[1]), parseInt(a[2]))
         }
         // replace splitter to '/'
-        s = s.replace(/[\-\s\:]/g, '/')
+        s = s.replace(/[\s:-]/g, '/')
         s += '/0/0/0' // 日付だけのときのために時間分を足す
         const a = s.split('/')
-        return new Date(a[0], a[1]-1, a[2], a[3], a[4],a[5])
+        return new Date(parseInt(a[0]), parseInt(a[1]) - 1, parseInt(a[2]),
+          parseInt(a[3]), parseInt(a[4]), parseInt(a[5]))
       }
       // 『継続表示』のための一時変数(『表示』実行で初期化)
       sys.__printPool = ''
@@ -109,7 +109,7 @@ export default {
     type: 'func',
     josi: [],
     pure: false,
-    fn: function (sys) {
+    fn: function (sys: any) {
       sys.__exec('全タイマー停止', [sys])
       if (sys.__genMode === '非同期モード') { sys.__stopAsync(sys) }
     }
@@ -152,7 +152,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (): any {
       return []
     }
   },
@@ -160,15 +160,15 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
-      return {} 
+    fn: function (): any {
+      return {}
     }
   },
   '空ハッシュ': { // @空のハッシュを返す(v3.2以降非推奨) // @からはっしゅ
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (): any {
       return {}
     }
   },
@@ -176,7 +176,7 @@ export default {
     type: 'func',
     josi: [],
     pure: false,
-    fn: function (sys) {
+    fn: function (sys: any): any {
       return sys.__exec('空ハッシュ', [sys])
     }
   },
@@ -186,11 +186,11 @@ export default {
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       // 継続表示の一時プールを出力
       s = sys.__printPool + s
       sys.__printPool = ''
-      // 
+      //
       sys.__varslist[0]['表示ログ'] += (s + '\n')
       sys.logger.send('stdout', s + '')
     },
@@ -200,7 +200,7 @@ export default {
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       sys.__printPool += s
     },
     return_none: true
@@ -210,7 +210,7 @@ export default {
     josi: [['と', 'を']],
     isVariableJosi: true,
     pure: true,
-    fn: function (...a) {
+    fn: function (...a:any) {
       const sys = a.pop()
       const v = a.join('')
       sys.__exec('表示', [v, sys])
@@ -222,7 +222,7 @@ export default {
     josi: [['と', 'を']],
     isVariableJosi: true,
     pure: true,
-    fn: function (...a) {
+    fn: function (...a:any) {
       const sys = a.pop()
       const v = a.join('')
       sys.__exec('継続表示', [v, sys])
@@ -234,7 +234,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       sys.__varslist[0]['表示ログ'] = ''
     },
     return_none: true
@@ -243,7 +243,7 @@ export default {
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       sys.logger.send('stdout', s + '')
     },
     return_none: true
@@ -252,7 +252,7 @@ export default {
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string) {
       console.log(s)
     },
     return_none: true
@@ -264,7 +264,7 @@ export default {
     josi: [['に', 'と'], ['を']],
     isVariableJosi: false,
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a + b
     }
   },
@@ -272,7 +272,7 @@ export default {
     type: 'func',
     josi: [['から'], ['を']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a - b
     }
   },
@@ -280,7 +280,7 @@ export default {
     type: 'func',
     josi: [['に', 'と'], ['を']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a * b
     }
   },
@@ -288,7 +288,7 @@ export default {
     type: 'func',
     josi: [['の'], ['']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a * b
     }
   },
@@ -296,7 +296,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a / b
     }
   },
@@ -304,7 +304,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a % b
     }
   },
@@ -312,23 +312,23 @@ export default {
     type: 'func',
     josi: [['が']],
     pure: true,
-    fn: function (a) {
-      return (a % 2 == 0)
+    fn: function (a: any) {
+      return (parseInt(a) % 2 === 0)
     }
   },
   '奇数': { // @Aが奇数なら真を返す // @きすう
     type: 'func',
     josi: [['が']],
     pure: true,
-    fn: function (a) {
-      return (a % 2 == 1)
+    fn: function (a: any) {
+      return (parseInt(a) % 2 === 1)
     }
   },
   '二乗': { // @Aを二乗する // @にじょう
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       return a * a
     }
   },
@@ -336,7 +336,7 @@ export default {
     type: 'func',
     josi: [['の'], ['の']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return Math.pow(a, b)
     }
   },
@@ -344,7 +344,7 @@ export default {
     type: 'func',
     josi: [['が'], ['']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a >= b
     }
   },
@@ -352,7 +352,7 @@ export default {
     type: 'func',
     josi: [['が'], ['']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a <= b
     }
   },
@@ -360,7 +360,7 @@ export default {
     type: 'func',
     josi: [['が'], ['']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a < b
     }
   },
@@ -368,7 +368,7 @@ export default {
     type: 'func',
     josi: [['が'], ['']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a > b
     }
   },
@@ -376,7 +376,7 @@ export default {
     type: 'func',
     josi: [['が'], ['と']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a === b
     }
   },
@@ -384,7 +384,7 @@ export default {
     type: 'func',
     josi: [['が'], ['と']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return a !== b
     }
   },
@@ -392,7 +392,7 @@ export default {
     type: 'func',
     josi: [['が'], ['と']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       // オブジェクトの場合、JSONに変換して比較
       if (typeof (a) === 'object') {
         const jsonA = JSON.stringify(a)
@@ -406,7 +406,7 @@ export default {
     type: 'func',
     josi: [['が'], ['と']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       // オブジェクトの場合、JSONに変換して比較
       if (typeof (a) === 'object') {
         const jsonA = JSON.stringify(a)
@@ -420,7 +420,7 @@ export default {
     type: 'func',
     josi: [['が'], ['から'], ['の']],
     pure: true,
-    fn: function (v, a, b) {
+    fn: function (v: any, a: any, b: any) {
       return (a <= v) && (v <= b)
     }
   },
@@ -429,11 +429,10 @@ export default {
     josi: [['を'], ['に', 'と']],
     isVariableJosi: true,
     pure: true,
-    fn: function (b, ...a) {
-      // 末尾のシステム変数を除外
-      a.pop()
+    fn: function (b: any, ...a: any) {
+      a.pop() // 必ず末尾に sys があるので、末尾のシステム変数を除外
       a.push(b)
-      return a.reduce((p, c) => p + c)
+      return a.reduce((p: any, c: any) => p + c)
     }
   },
 
@@ -442,7 +441,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
@@ -452,7 +451,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
@@ -462,7 +461,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
@@ -472,7 +471,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       sys.__reisetu = 0
     },
     return_none: true
@@ -481,7 +480,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       sys.__reisetu += 100 // bonus point
     },
     return_none: true
@@ -490,7 +489,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       if (!sys.__reisetu) { sys.__reisetu = 0 }
       return sys.__reisetu
     }
@@ -501,7 +500,7 @@ export default {
     type: 'func',
     josi: [['を', 'で']],
     pure: true,
-    fn: function (src, sys) {
+    fn: function (src: string) {
       return eval(src) // eslint-disable-line
     }
   },
@@ -509,14 +508,14 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: false,
-    fn: function (name, sys) {
+    fn: function (name: string, sys: any) {
       return sys.__findVar(name, null)
     }
   },
   'JS関数実行': { // @JavaScriptの関数NAMEを引数ARGS(配列)で実行する // @JSかんすうしゅとく
     type: 'func',
     josi: [['を'], ['で']],
-    fn: function (name, args, sys) {
+    fn: function (name: any, args: any) {
       // nameが文字列ならevalして関数を得る
       // eslint-disable-next-line no-eval
       if (typeof name === 'string') { name = eval(name) }
@@ -532,7 +531,7 @@ export default {
   'JSメソッド実行': { // @JavaScriptのオブジェクトOBJのメソッドMを引数ARGS(配列)で実行する // @JSめそっどじっこう
     type: 'func',
     josi: [['の'], ['を'], ['で']],
-    fn: function (obj, m, args, sys) {
+    fn: function (obj: any, m: any, args: any) {
       // objが文字列ならevalして関数を得る
       // eslint-disable-next-line no-eval
       if (typeof obj === 'string') { obj = eval(obj) }
@@ -555,7 +554,7 @@ export default {
     type: 'func',
     josi: [['を', 'で']],
     pure: false,
-    fn: function (code, sys) {
+    fn: function (code: string, sys: any) {
       if (sys.__genMode === '非同期モード') {
         throw new Error('非同期モードでは「ナデシコ」は利用できません。')
       }
@@ -571,7 +570,7 @@ export default {
   'ナデシコ続': { // @なでしこのコードCODEを実行する // @なでしこつづける
     type: 'func',
     josi: [['を', 'で']],
-    fn: function (code, sys) {
+    fn: function (code: string, sys: any) {
       if (sys.__genMode === '非同期モード') {
         throw new Error('非同期モードでは「ナデシコ続」は利用できません。')
       }
@@ -587,7 +586,7 @@ export default {
     type: 'func',
     josi: [['を', 'に', 'で']],
     pure: false,
-    fn: function (f, sys) {
+    fn: function (f: any, sys: any) {
       // #938 の規則に従って処理
       // 引数が関数なら実行
       if (typeof f === 'function') { return f(sys) }
@@ -606,7 +605,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: false,
-    fn: function (f, sys) {
+    fn: function (f: any, sys: any) {
       if (typeof f === 'string') { f = sys.__findFunc(f, '実行時間計測') }
       //
       if (performance && performance.now) {
@@ -628,23 +627,23 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
-      return typeof (v)
+    fn: function (v: any) {
+      return (typeof v)
     }
   },
   'TYPEOF': { // @変数Vの型を返す // @TYPEOF
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
-      return typeof (v)
+    fn: function (v: any) {
+      return (typeof v)
     }
   },
   '文字列変換': { // @値Vを文字列に変換 // @もじれつへんかん
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): string {
       return String(v)
     }
   },
@@ -652,7 +651,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): string {
       return String(v)
     }
   },
@@ -660,7 +659,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): number {
       return parseInt(v)
     }
   },
@@ -668,7 +667,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): number {
       return parseInt(v)
     }
   },
@@ -676,7 +675,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): number {
       return parseFloat(v)
     }
   },
@@ -684,7 +683,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): number {
       return parseFloat(v)
     }
   },
@@ -692,7 +691,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): number {
       return parseInt(v)
     }
   },
@@ -700,7 +699,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): number {
       return parseFloat(v)
     }
   },
@@ -708,7 +707,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): boolean {
       return isNaN(v)
     }
   },
@@ -716,7 +715,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): boolean {
       // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
       return Number.isNaN(v)
     }
@@ -725,15 +724,15 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any): string {
       return parseInt(a).toString(16)
     }
   },
   '進数変換': { // @値VをN進数に変換 // @しんすうへんかん
     type: 'func',
-    josi: [['を', 'の'],['']],
+    josi: [['を', 'の'], ['']],
     pure: true,
-    fn: function (v, n) {
+    fn: function (v: any, n: number): string {
       return parseInt(v).toString(n)
     }
   },
@@ -741,7 +740,7 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): string {
       return parseInt(v).toString(2)
     }
   },
@@ -749,19 +748,19 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function (v, sys) {
-        const s = parseInt(v).toString(2)
-        sys.__exec('表示', [s, sys])
+    fn: function (v: any, sys: any) {
+      const s = parseInt(v).toString(2)
+      sys.__exec('表示', [s, sys])
     }
   },
   'RGB': { // @HTML用のカラーコードを返すRGB(R,G,B)で各値は0-255 // @RGB
     type: 'func',
     josi: [['と'], ['の'], ['で']],
     pure: true,
-    fn: function (r, g, b) {
-      const z2 = (v) => {
-        const v2 = '00' + parseInt(v).toString(16)
-        return v2.substr(v2.length - 2, 2)
+    fn: function (r: any, g: any, b: any): string {
+      const z2 = (v: any): string => {
+        const v2: string = '00' + (parseInt('' + v).toString(16))
+        return v2.substring(v2.length - 2, v2.length)
       }
       return '#' + z2(r) + z2(g) + z2(b)
     }
@@ -772,7 +771,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a || b)
     }
   },
@@ -780,7 +779,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a && b)
     }
   },
@@ -788,7 +787,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any): number {
       return (!v) ? 1 : 0
     }
   },
@@ -798,7 +797,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a | b)
     }
   },
@@ -806,7 +805,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a & b)
     }
   },
@@ -814,7 +813,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a ^ b)
     }
   },
@@ -822,7 +821,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       return (~v)
     }
   },
@@ -830,7 +829,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a << b)
     }
   },
@@ -838,7 +837,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a >> b)
     }
   },
@@ -846,7 +845,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       return (a >>> b)
     }
   },
@@ -856,7 +855,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       if (!Array.from) { return String(v).length }
       return Array.from(v).length
     }
@@ -865,7 +864,7 @@ export default {
     type: 'func',
     josi: [['で', 'の'], ['が']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s: string, a: string): number {
       return String(s).indexOf(a) + 1
     }
   },
@@ -873,7 +872,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       if (!String.fromCodePoint) { return String.fromCharCode(v) }
       return String.fromCodePoint(v)
     }
@@ -882,7 +881,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       if (!String.prototype.codePointAt) { return String(v).charCodeAt(0) }
       return String(v).codePointAt(0)
     }
@@ -891,39 +890,47 @@ export default {
     type: 'func',
     josi: [['で', 'の'], ['に', 'へ'], ['を']],
     pure: true,
-    fn: function (s, i, a) {
+    fn: function (s: string, i: number, a: string): string {
       if (i <= 0) { i = 1 }
       const ss = String(s)
-      const mae = ss.substr(0, i - 1)
-      const usi = ss.substr(i - 1)
+      const mae = ss.substring(0, i - 1)
+      const usi = ss.substring(i - 1)
       return mae + a + usi
     }
   },
-  '文字検索': { // @文字列Sで文字列A文字目からBを検索。見つからなければ0を返す。(類似命令に『何文字目』がある)(v1非互換) // @もじけんさく
+  '文字検索': { // @文字列SでA文字目から文字列Bを検索。見つからなければ0を返す。(類似命令に『何文字目』がある)(v1非互換) // @もじけんさく
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を']],
     pure: true,
-    fn: function (s, a, b) {
+    fn: function (s: string, a: number, b: string): number {
       let str = String(s)
-      str = str.substr(a)
-      const res = str.indexOf(b)
+      str = str.substring(a)
+      const res: number = str.indexOf(b)
       if (res === -1) { return 0 }
       return res + 1 + a
     }
   },
-  '追加': { // @文字列SにAを追加して返す(v1非互換) // @ついか
+  '追加': { // @文字列または配列SにAを追加して返す(v1非互換) // @ついか
     type: 'func',
     josi: [['で', 'に', 'へ'], ['を']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s: any, a: any): any {
+      if (s instanceof Array) {
+        s.push(a)
+        return s
+      }
       return String(s) + String(a)
     }
   },
-  '一行追加': { // @文字列SにAと改行を追加して返す(v1非互換) // @いちぎょうついか
+  '一行追加': { // @文字列または配列SにAと改行を追加して返す(v1非互換) // @いちぎょうついか
     type: 'func',
     josi: [['で', 'に', 'へ'], ['を']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s: any, a: any): any {
+      if (s instanceof Array) {
+        s.push(a)
+        return s
+      }
       return String(s) + String(a) + '\n'
     }
   },
@@ -931,7 +938,7 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       if (!Array.from) { return String(v).split('') }
       return Array.from(v)
     }
@@ -940,7 +947,7 @@ export default {
     type: 'func',
     josi: [['を', 'の'], ['で']],
     pure: true,
-    fn: function (v, cnt) {
+    fn: function (v: any, cnt: number): string {
       let s = ''
       for (let i = 0; i < cnt; i++) { s += String(v) }
       return s
@@ -950,7 +957,7 @@ export default {
     type: 'func',
     josi: [['で'], ['の']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s: string, a: string) {
       s = '' + s
       a = '' + a
       return s.split(a).length - 1
@@ -960,59 +967,59 @@ export default {
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を']],
     pure: true,
-    fn: function (s, a, cnt) {
-      cnt = cnt || undefined
-      return (String(s).substr(a - 1, cnt))
+    fn: function (s: any, a: any, cnt: number) {
+      cnt = cnt || 1
+      return (String(s).substring(a - 1, a + cnt - 1))
     }
   },
   '文字抜出': { // @文字列SのA文字目からCNT文字を抽出する // @もじぬきだす
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を', '']],
     pure: true,
-    fn: function (s, a, cnt) {
-      cnt = cnt || undefined
-      return (String(s).substr(a - 1, cnt))
+    fn: function (s: any, a: any, cnt: number) {
+      cnt = cnt || 1
+      return (String(s).substring(a - 1, a + cnt - 1))
     }
   },
   'LEFT': { // @文字列Sの左端からCNT文字を抽出する // @LEFT
     type: 'func',
     josi: [['の', 'で'], ['だけ']],
     pure: true,
-    fn: function (s, cnt) {
-      return (String(s).substr(0, cnt))
+    fn: function (s: string, cnt: number): string {
+      return (String(s).substring(0, cnt))
     }
   },
   '文字左部分': { // @文字列Sの左端からCNT文字を抽出する // @もじひだりぶぶん
     type: 'func',
     josi: [['の', 'で'], ['だけ', '']],
     pure: true,
-    fn: function (s, cnt) {
-      return (String(s).substr(0, cnt))
+    fn: function (s: string, cnt: number): string {
+      return (String(s).substring(0, cnt))
     }
   },
   'RIGHT': { // @文字列Sの右端からCNT文字を抽出する // @RIGHT
     type: 'func',
     josi: [['の', 'で'], ['だけ']],
     pure: true,
-    fn: function (s, cnt) {
+    fn: function (s: string, cnt: number): string {
       s = '' + s
-      return (s.substr(s.length - cnt, cnt))
+      return (s.substring(s.length - cnt, s.length))
     }
   },
   '文字右部分': { // @文字列Sの右端からCNT文字を抽出する // @もじみぎぶぶん
     type: 'func',
     josi: [['の', 'で'], ['だけ', '']],
     pure: true,
-    fn: function (s, cnt) {
+    fn: function (s: string, cnt: number): string {
       s = '' + s
-      return (s.substr(s.length - cnt, cnt))
+      return (s.substring(s.length - cnt, s.length))
     }
   },
   '区切': { // @文字列Sを区切り文字Aで区切って配列で返す // @くぎる
     type: 'func',
     josi: [['の', 'を'], ['で']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s: any, a: any) {
       return ('' + s).split('' + a)
     }
   },
@@ -1020,39 +1027,39 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s: any, a: any) {
       s = '' + s
       a = '' + a
       const i = s.indexOf(a)
       if (i < 0) {
         return [s]
       }
-      return [s.substr(0, i), s.substr(i + a.length)]
+      return [s.substring(0, i), s.substring(i + a.length)]
     }
   },
   '切取': { // @文字列Sから文字列Aまでの部分を抽出する。切り取った残りは特殊変数『対象』に代入される。(v1非互換) // @きりとる
     type: 'func',
     josi: [['から', 'の'], ['まで', 'を']],
     pure: true,
-    fn: function (s, a, sys) {
+    fn: function (s: any, a: any, sys: any) {
       s = String(s)
       const i = s.indexOf(a)
       if (i < 0) {
-          sys.__v0['対象'] = '';
-          return s
+        sys.__v0['対象'] = ''
+        return s
       }
-      sys.__v0['対象'] = s.substr(i + a.length);
-      return s.substr(0, i)
+      sys.__v0['対象'] = s.substring(i + a.length)
+      return s.substring(0, i)
     }
   },
   '文字削除': { // @文字列SのA文字目からB文字分を削除して返す // @もじさくじょ
     type: 'func',
     josi: [['の'], ['から'], ['だけ', 'を', '']],
     pure: true,
-    fn: function (s, a, b) {
+    fn: function (s: string, a: number, b: number): string {
       s = '' + s
-      const mae = s.substr(0, a - 1)
-      const usi = s.substr((a - 1 + b))
+      const mae = s.substring(0, a - 1)
+      const usi = s.substring((a - 1 + b))
       return mae + usi
     }
   },
@@ -1062,7 +1069,7 @@ export default {
     type: 'func',
     josi: [['の', 'で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (s, a, b) {
+    fn: function (s: string, a: string, b: string) {
       return String(s).split(a).join(b)
     }
   },
@@ -1070,16 +1077,16 @@ export default {
     type: 'func',
     josi: [['の', 'で'], ['を'], ['に', 'へ']],
     pure: true,
-    fn: function (s, a, b) {
-        // replaceは最初の一度だけ置換する
-        return String(s).replace(a, b)
+    fn: function (s: string, a: string, b: string) {
+      // replaceは最初の一度だけ置換する
+      return String(s).replace(a, b)
     }
   },
   'トリム': { // @文字列Sの前後にある空白を削除する // @とりむ
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: string): string {
       s = String(s).replace(/^\s+/, '').replace(/\s+$/, '')
       return s
     }
@@ -1088,7 +1095,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: string): string {
       s = String(s).replace(/^\s+/, '').replace(/\s+$/, '')
       return s
     }
@@ -1099,7 +1106,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: string): string {
       return String(s).toUpperCase()
     }
   },
@@ -1107,7 +1114,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: string): string {
       return String(s).toLowerCase()
     }
   },
@@ -1115,36 +1122,36 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
-      const kanaToHira = (str) => {
+    fn: function (s: string): string {
+      const kanaToHira = (str: string) => {
         return String(str).replace(/[\u30a1-\u30f6]/g, function (m) {
           const chr = m.charCodeAt(0) - 0x60
           return String.fromCharCode(chr)
         })
       }
-      return kanaToHira(s)
+      return kanaToHira('' + s)
     }
   },
   'カタカナ変換': { // @文字列Sのひらがなをカタカナに変換 // @かたかなへんかん
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
-      const hiraToKana = (str) => {
+    fn: function (s: string): string {
+      const hiraToKana = (str: string) => {
         return String(str).replace(/[\u3041-\u3096]/g, function (m) {
           const chr = m.charCodeAt(0) + 0x60
           return String.fromCharCode(chr)
         })
       }
-      return hiraToKana(s)
+      return hiraToKana('' + s)
     }
   },
   '英数全角変換': { // @文字列Sの半角英数文字を全角に変換 // @えいすうぜんかくへんかん
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
-      return String(s).replace(/[A-Za-z0-9]/g, function (v) {
+    fn: function (s: string): string {
+      return String(s).replace(/[A-Za-z0-9]/g, function (v: any) {
         return String.fromCharCode(v.charCodeAt(0) + 0xFEE0)
       })
     }
@@ -1153,8 +1160,8 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
-      return String(s).replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (v) {
+    fn: function (s: string): string {
+      return String(s).replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (v: any) {
         return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
       })
     }
@@ -1163,8 +1170,8 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
-      return String(s).replace(/[\x20-\x7F]/g, function (v) {
+    fn: function (s: string): string {
+      return String(s).replace(/[\x20-\x7F]/g, function (v: any) {
         return String.fromCharCode(v.charCodeAt(0) + 0xFEE0)
       })
     }
@@ -1173,8 +1180,8 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s) {
-      return String(s).replace(/[\uFF00-\uFF5F]/g, function (v) {
+    fn: function (s: string): string {
+      return String(s).replace(/[\uFF00-\uFF5F]/g, function (v: any) {
         return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
       })
     }
@@ -1183,7 +1190,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       // 半角カタカナ
       const zen1 = sys.__v0['全角カナ一覧']
       const han1 = sys.__v0['半角カナ一覧']
@@ -1193,7 +1200,7 @@ export default {
       let i = 0
       while (i < s.length) {
         // 濁点の変換
-        const c2 = s.substr(i, 2)
+        const c2 = s.substring(i, i + 2)
         const n2 = han2.indexOf(c2)
         if (n2 >= 0) {
           str += zen2.charAt(n2 / 2)
@@ -1218,7 +1225,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       // 半角カタカナ
       const zen1 = sys.__v0['全角カナ一覧']
       const han1 = sys.__v0['半角カナ一覧']
@@ -1231,7 +1238,7 @@ export default {
         }
         const j = zen2.indexOf(c)
         if (j >= 0) {
-          return han2.substr(j * 2, 2)
+          return han2.substring(j * 2, j * 2 + 2)
         }
         return c
       }).join('')
@@ -1241,7 +1248,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: false,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       let result = s
       result = sys.__exec('カタカナ全角変換', [result, sys])
       result = sys.__exec('英数記号全角変換', [result, sys])
@@ -1252,7 +1259,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: false,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       let result = s
       result = sys.__exec('カタカナ半角変換', [result, sys])
       result = sys.__exec('英数記号半角変換', [result, sys])
@@ -1269,7 +1276,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       return JSON.stringify(v)
     }
   },
@@ -1277,7 +1284,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       return JSON.stringify(v, null, 2)
     }
   },
@@ -1285,7 +1292,7 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: string): string {
       return JSON.parse(s)
     }
   },
@@ -1295,15 +1302,15 @@ export default {
     type: 'func',
     josi: [['を', 'が'], ['で', 'に']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any): string {
       let re
-      const f = b.match(/^\/(.+)\/([a-zA-Z]*)$/)
+      const f = ('' + b).match(/^\/(.+)\/([a-zA-Z]*)$/)
       // パターンがない場合
       if (f === null) { re = new RegExp(b, 'g') } else { re = new RegExp(f[1], f[2]) }
 
-      const sa = sys.__varslist[0]['抽出文字列'] = []
+      const sa: any[] = sys.__varslist[0]['抽出文字列'] = []
       const m = String(a).match(re)
-      let result = m
+      let result: any = m
       if (re.global) {
         // no groups
       } else if (m) {
@@ -1321,7 +1328,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を', 'から'], ['で', 'に', 'へ']],
     pure: true,
-    fn: function (s, a, b) {
+    fn: function (s: string, a: string, b: string): string {
       let re
       const f = a.match(/^\/(.+)\/([a-zA-Z]*)/)
       if (f === null) { re = new RegExp(a, 'g') } else { re = new RegExp(f[1], f[2]) }
@@ -1333,7 +1340,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (s, a) {
+    fn: function (s: any, a: any) {
       let re
       const f = a.match(/^\/(.+)\/([a-zA-Z]*)/)
       if (f === null) { re = new RegExp(a, 'g') } else { re = new RegExp(f[1], f[2]) }
@@ -1347,7 +1354,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function (v) {
+    fn: function (v: any) {
       return String(v).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
     }
   },
@@ -1355,28 +1362,28 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (v, a) {
+    fn: function (v: any, a: any): string {
       v = String(v)
       let z = '0'
       for (let i = 0; i < a; i++) { z += '0' }
       a = parseInt(a)
       if (a < v.length) { a = v.length }
       const s = z + String(v)
-      return s.substr(s.length - a, a)
+      return s.substring(s.length - a, s.length)
     }
   },
   '空白埋': { // @文字列VをA桁の空白で埋める // @くうはくうめ
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (v, a) {
+    fn: function (v: any, a: any): string {
       v = String(v)
       let z = ' '
       for (let i = 0; i < a; i++) { z += ' ' }
       a = parseInt(a)
       if (a < v.length) { a = v.length }
       const s = z + String(v)
-      return s.substr(s.length - a, a)
+      return s.substring(s.length - a, s.length)
     }
   },
 
@@ -1385,7 +1392,7 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'が']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: any): boolean {
       const c = String(s).charCodeAt(0)
       return (c >= 0x3041 && c <= 0x309F)
     }
@@ -1394,7 +1401,7 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'が']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: any): boolean {
       const c = String(s).charCodeAt(0)
       return (c >= 0x30A1 && c <= 0x30FA)
     }
@@ -1403,7 +1410,7 @@ export default {
     type: 'func',
     josi: [['を', 'が']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: any): boolean {
       const c = String(s).charAt(0)
       return ((c >= '0' && c <= '9') || (c >= '０' && c <= '９'))
     }
@@ -1412,7 +1419,7 @@ export default {
     type: 'func',
     josi: [['を', 'が']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: any): boolean {
       return (String(s).match(/^[0-9.]+$/) !== null)
     }
   },
@@ -1422,7 +1429,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a, s) {
+    fn: function (a: any, s: string): string {
       // 配列ならOK
       if (a instanceof Array) { return a.join('' + s) }
 
@@ -1434,7 +1441,7 @@ export default {
     type: 'func',
     josi: [['の', 'から'], ['を']],
     pure: true,
-    fn: function (a, s) {
+    fn: function (a: any, s: any) {
       if (a instanceof Array) { return a.indexOf(s) }// 配列ならOK
 
       return -1
@@ -1444,7 +1451,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (a instanceof Array) { return a.length }// 配列ならOK
 
       if (a instanceof Object) { return Object.keys(a).length }
@@ -1456,7 +1463,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: false,
-    fn: function (a, sys) {
+    fn: function (a: any, sys: any) {
       return sys.__exec('配列要素数', [a])
     }
   },
@@ -1464,7 +1471,7 @@ export default {
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: true,
-    fn: function (a, i, s) {
+    fn: function (a: any, i: any, s: any) {
       if (a instanceof Array) { return a.splice(i, 0, s) } // 配列ならOK
 
       throw new Error('『配列挿入』で配列以外の要素への挿入。')
@@ -1474,7 +1481,7 @@ export default {
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: true,
-    fn: function (a, i, b) {
+    fn: function (a: any, i: any, b: any) {
       if (a instanceof Array && b instanceof Array) { // 配列ならOK
         for (let j = 0; j < b.length; j++) { a.splice(i + j, 0, b[j]) }
 
@@ -1487,7 +1494,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (a instanceof Array) { return a.sort() } // 配列ならOK
 
       throw new Error('『配列ソート』で配列以外が指定されました。')
@@ -1497,7 +1504,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       // 配列ならOK
       if (a instanceof Array) {
         return a.sort((a, b) => {
@@ -1512,7 +1519,7 @@ export default {
     type: 'func',
     josi: [['で'], ['の', 'を']],
     pure: false,
-    fn: function (f, a, sys) {
+    fn: function (f: any, a: any, sys: any) {
       let ufunc = f
       if (typeof f === 'string') {
         ufunc = sys.__findFunc(f, '配列カスタムソート')
@@ -1527,7 +1534,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (a instanceof Array) { return a.reverse() } // 配列ならOK
       throw new Error('『配列ソート』で配列以外が指定されました。')
     }
@@ -1536,7 +1543,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (a instanceof Array) { // 配列ならOK
         for (let i = a.length - 1; i > 0; i--) {
           const r = Math.floor(Math.random() * (i + 1))
@@ -1553,7 +1560,7 @@ export default {
     type: 'func',
     josi: [['の', 'から'], ['を']],
     pure: false,
-    fn: function (a, i, sys) {
+    fn: function (a: any, i: any, sys: any) {
       return sys.__exec('配列切取', [a, i, sys])
     }
   },
@@ -1561,7 +1568,7 @@ export default {
     type: 'func',
     josi: [['の', 'から'], ['を']],
     pure: true,
-    fn: function (a, i) {
+    fn: function (a: any, i: any) {
       // 配列変数のとき
       if (a instanceof Array) {
         const b = a.splice(i, 1)
@@ -1584,7 +1591,7 @@ export default {
     type: 'func',
     josi: [['の'], ['から'], ['を']],
     pure: true,
-    fn: function (a, i, cnt) {
+    fn: function (a: any, i: any, cnt: any) {
       if (a instanceof Array) { return a.splice(i, cnt) }
       throw new Error('『配列取出』で配列以外を指定。')
     }
@@ -1593,7 +1600,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (a instanceof Array) { return a.pop() }
       throw new Error('『配列ポップ』で配列以外の処理。')
     }
@@ -1602,7 +1609,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       if (a instanceof Array) { // 配列ならOK
         a.push(b)
         return a
@@ -1614,7 +1621,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       return JSON.parse(JSON.stringify(a))
     }
   },
@@ -1622,7 +1629,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'と'], ['を']],
     pure: true,
-    fn: function (a, b) {
+    fn: function (a: any, b: any) {
       if (a instanceof Array) {
         return a.concat(b)
       }
@@ -1633,23 +1640,23 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
-      return a.reduce((x, y) => Math.max(x, y))
+    fn: function (a: any) {
+      return a.reduce((x: any, y: any) => Math.max(x, y))
     }
   },
   '配列最小値': { // @配列Aの値の最小値を調べて返す。 // @はいれつさいしょうち
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
-      return a.reduce((x, y) => Math.min(x, y))
+    fn: function (a: any) {
+      return a.reduce((x: any, y: any) => Math.min(x, y))
     }
   },
   '配列合計': { // @配列Aの値を全て足して返す。配列の各要素を数値に変換して計算する。数値に変換できない文字列は0になる。 // @はいれつごうけい
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (a instanceof Array) {
         let v = 0
         a.forEach((n) => {
@@ -1667,7 +1674,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (a, no) {
+    fn: function (a: any, no: any) {
       if (!(a instanceof Array)) {
         throw new Error('『表ソート』には配列を指定する必要があります。')
       }
@@ -1690,7 +1697,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (a, no) {
+    fn: function (a: any, no: number) {
       if (!(a instanceof Array)) {
         throw new Error('『表数値ソート』には配列を指定する必要があります。')
       }
@@ -1706,7 +1713,7 @@ export default {
     type: 'func',
     josi: [['の'], ['から'], ['を', 'で']],
     pure: true,
-    fn: function (a, no, s) {
+    fn: function (a: any, no: number, s: any) {
       if (!(a instanceof Array)) { throw new Error('『表ピックアップ』には配列を指定する必要があります。') }
       return a.filter((row) => String(row[no]).indexOf(s) >= 0)
     }
@@ -1715,7 +1722,7 @@ export default {
     type: 'func',
     josi: [['の'], ['から'], ['を', 'で']],
     pure: true,
-    fn: function (a, no, s) {
+    fn: function (a: any, no: number, s: any) {
       if (!(a instanceof Array)) { throw new Error('『表完全ピックアップ』には配列を指定する必要があります。') }
       return a.filter((row) => row[no] === s)
     }
@@ -1724,7 +1731,7 @@ export default {
     type: 'func',
     josi: [['の'], ['で', 'に'], ['から'], ['を']],
     pure: true,
-    fn: function (a, col, row, s) {
+    fn: function (a: any, col: number, row: number, s: any) {
       if (!(a instanceof Array)) { throw new Error('『表検索』には配列を指定する必要があります。') }
       for (let i = row; i < a.length; i++) {
         if (a[i][col] === s) { return i }
@@ -1736,7 +1743,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (!(a instanceof Array)) { throw new Error('『表列数』には配列を指定する必要があります。') }
       let cols = 1
       for (let i = 0; i < a.length; i++) {
@@ -1749,7 +1756,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       if (!(a instanceof Array)) { throw new Error('『表行数』には配列を指定する必要があります。') }
       return a.length
     }
@@ -1758,13 +1765,13 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: false,
-    fn: function (a, sys) {
+    fn: function (a: any, sys: any) {
       if (!(a instanceof Array)) { throw new Error('『表行列交換』には配列を指定する必要があります。') }
       const cols = sys.__exec('表列数', [a])
       const rows = a.length
       const res = []
       for (let r = 0; r < cols; r++) {
-        const row = []
+        const row: any[] = []
         res.push(row)
         for (let c = 0; c < rows; c++) {
           row[c] = (a[c][r] !== undefined) ? a[c][r] : ''
@@ -1777,13 +1784,13 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: false,
-    fn: function (a, sys) {
+    fn: function (a: any, sys: any) {
       if (!(a instanceof Array)) { throw new Error('『表右回転』には配列を指定する必要があります。') }
       const cols = sys.__exec('表列数', [a])
       const rows = a.length
       const res = []
       for (let r = 0; r < cols; r++) {
-        const row = []
+        const row: any[] = []
         res.push(row)
         for (let c = 0; c < rows; c++) {
           row[c] = a[rows - c - 1][r]
@@ -1796,10 +1803,10 @@ export default {
     type: 'func',
     josi: [['の'], ['を', 'で']],
     pure: true,
-    fn: function (a, i, sys) {
+    fn: function (a: any, i: any) {
       if (!(a instanceof Array)) { throw new Error('『表重複削除』には配列を指定する必要があります。') }
-      const res = []
-      const keys = {}
+      const res: any[] = []
+      const keys:{[key: string]: boolean} = {}
       for (let n = 0; n < a.length; n++) {
         const k = a[n][i]
         if (undefined === keys[k]) {
@@ -1814,7 +1821,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (a, i, sys) {
+    fn: function (a: any, i: number) {
       if (!(a instanceof Array)) { throw new Error('『表列取得』には配列を指定する必要があります。') }
       const res = a.map(row => row[i])
       return res
@@ -1824,11 +1831,11 @@ export default {
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: true,
-    fn: function (a, i, s) {
+    fn: function (a: any, i: any, s: any) {
       if (!(a instanceof Array)) { throw new Error('『表列挿入』には配列を指定する必要があります。') }
-      const res = []
+      const res: any[] = []
       a.forEach((row, idx) => {
-        let nr = []
+        let nr: any[] = []
         if (i > 0) { nr = nr.concat(row.slice(0, i)) }
         nr.push(s[idx])
         nr = nr.concat(row.slice(i))
@@ -1841,10 +1848,10 @@ export default {
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (a, i) {
+    fn: function (a: any, i: any) {
       if (!(a instanceof Array)) { throw new Error('『表列削除』には配列を指定する必要があります。') }
-      const res = []
-      a.forEach((row, idx) => {
+      const res: any[] = []
+      a.forEach((row) => {
         const nr = row.slice(0)
         nr.splice(i, 1)
         res.push(nr)
@@ -1856,7 +1863,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を', 'で']],
     pure: true,
-    fn: function (a, i) {
+    fn: function (a: any, i: any) {
       if (!(a instanceof Array)) { throw new Error('『表列合計』には配列を指定する必要があります。') }
       let sum = 0
       a.forEach((row) => { sum += row[i] })
@@ -1867,12 +1874,12 @@ export default {
     type: 'func',
     josi: [['の'], ['から'], ['で'], ['を']],
     pure: true,
-    fn: function (a, row, col, s) {
+    fn: function (a: any, row: any, col: any, s: any) {
       if (!(a instanceof Array)) { throw new Error('『表曖昧検索』には配列を指定する必要があります。') }
       const re = new RegExp(s)
-      for (let i = 0; i < a.length; i++) {
-        const row = a[i]
-        if (re.test(row[col])) { return i }
+      for (let i = row; i < a.length; i++) {
+        const line = a[i]
+        if (re.test(line[col])) { return i }
       }
       return -1
     }
@@ -1881,7 +1888,7 @@ export default {
     type: 'func',
     josi: [['の', 'で'], ['から'], ['を']],
     pure: true,
-    fn: function (a, col, s) {
+    fn: function (a: any, col: any, s: any) {
       if (!(a instanceof Array)) { throw new Error('『表正規表現ピックアップ』には配列を指定する必要があります。') }
       const re = new RegExp(s)
       const res = []
@@ -1897,7 +1904,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       const keys = []
       if (a instanceof Object) { // オブジェクトのキーを返す
         for (const key in a) { keys.push(key) }
@@ -1914,7 +1921,7 @@ export default {
     type: 'func',
     josi: [['から', 'の'], ['を']],
     pure: true,
-    fn: function (a, key) {
+    fn: function (a: any, key: any) {
       if (a instanceof Object) { // オブジェクトのキーを返す
         if (a[key]) { delete a[key] }
         return a
@@ -1926,7 +1933,7 @@ export default {
     type: 'func',
     josi: [['の', 'に'], ['が']],
     pure: true,
-    fn: function (a, key) {
+    fn: function (a: any, key: any) {
       return key in a
     }
   },
@@ -1935,7 +1942,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: false,
-    fn: function (a, sys) {
+    fn: function (a: any, sys: any) {
       return sys.__exec('辞書キー列挙', [a, sys])
     }
   },
@@ -1943,7 +1950,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a) {
+    fn: function (a: any) {
       const body = []
       if (a instanceof Object) { // オブジェクトのキーを返す
         for (const key in a) { body.push(a[key]) }
@@ -1956,7 +1963,7 @@ export default {
     type: 'func',
     josi: [['から', 'の'], ['を']],
     pure: false,
-    fn: function (a, key, sys) {
+    fn: function (a: any, key: any, sys: any) {
       return sys.__exec('辞書キー削除', [a, key, sys])
     }
   },
@@ -1964,7 +1971,7 @@ export default {
     type: 'func',
     josi: [['の', 'に'], ['が']],
     pure: true,
-    fn: function (a, key) {
+    fn: function (a: any, key: any) {
       return key in a
     }
   },
@@ -1974,18 +1981,22 @@ export default {
     josi: [['']],
     pure: true,
     asyncFn: true,
-    fn: function (n, sys) {
+    fn: function (n: any): Promise<void> {
       return new Promise((resolve, reject) => {
-        setTimeout(()=>{ resolve() }, n * 1000)
+        try {
+          setTimeout(() => { resolve() }, parseFloat(n) * 1000)
+        } catch (err: any) {
+          reject(err)
+        }
       })
     },
     return_none: true
   },
-  '秒待機': { // @ 「!非同期モード」または「逐次実行構文」にて、N秒の間待機する // @びょうたいき
+  '秒待機': { // @ 「!非同期モード」または「逐次実行構文」にて、N秒の間待機する(将来的に『秒待』と同じになる予定) // @びょうたいき
     type: 'func',
     josi: [['']],
     pure: true,
-    fn: function (n, sys) {
+    fn: function (n: any, sys: any) {
       if (sys.__genMode === '非同期モード') {
         const sysenv = sys.setAsync(sys)
         setTimeout(() => {
@@ -1994,17 +2005,17 @@ export default {
         return
       }
       if (sys.resolve === undefined) {
-        throw new Error('『秒待機』命令は『!非同期モード』で使ってください。') 
+        throw new Error('『秒待機』命令は『!非同期モード』で使ってください。')
       }
       sys.__exec('秒逐次待機', [n, sys])
     },
     return_none: true
   },
-  '秒逐次待機': { // @ 逐次実行構文にて、N秒の間待機する // @びょうちくじたいき
+  '秒逐次待機': { // @ (非推奨) 逐次実行構文にて、N秒の間待機する // @びょうちくじたいき
     type: 'func',
     josi: [['']],
     pure: true,
-    fn: function (n, sys) {
+    fn: function (n: any, sys: any) {
       if (sys.resolve === undefined) { throw new Error('『秒逐次待機』命令は『逐次実行』構文と一緒に使ってください。') }
       const resolve = sys.resolve
       // const reject = sys.reject
@@ -2022,7 +2033,7 @@ export default {
     type: 'func',
     josi: [['を'], ['']],
     pure: false,
-    fn: function (f, n, sys) {
+    fn: function (f: any, n: any, sys: any) {
       // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') { f = sys.__findFunc(f, '秒後') }
       // 1回限りのタイマーをセット
@@ -2033,7 +2044,7 @@ export default {
         if (sys.__genMode === '非同期モード') { sys.newenv = true }
         try {
           f(timerId, sys)
-        } catch (e) {
+        } catch (e: any) {
           let err = e
           if (!(e instanceof NakoRuntimeError)) {
             err = new NakoRuntimeError(e, sys.__varslist[0].line)
@@ -2050,7 +2061,7 @@ export default {
     type: 'func',
     josi: [['を'], ['']],
     pure: false,
-    fn: function (f, n, sys) {
+    fn: function (f: any, n: any, sys: any) {
       // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') { f = sys.__findFunc(f, '秒毎') }
       // タイマーをセット
@@ -2068,7 +2079,7 @@ export default {
     type: 'func',
     josi: [['を'], ['']],
     pure: false,
-    fn: function (f, n, sys) {
+    fn: function (f: any, n: any, sys: any) {
       return sys.__exec('秒毎', [f, n, sys])
     }
   },
@@ -2076,7 +2087,7 @@ export default {
     type: 'func',
     josi: [['の', 'で']],
     pure: true,
-    fn: function (timerId, sys) {
+    fn: function (timerId: any, sys: any) {
       const i = sys.__interval.indexOf(timerId)
       if (i >= 0) {
         sys.__interval.splice(i, 1)
@@ -2097,7 +2108,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       // clearInterval
       for (let i = 0; i < sys.__interval.length; i++) {
         const timerId = sys.__interval[i]
@@ -2120,9 +2131,9 @@ export default {
     josi: [],
     pure: true,
     fn: function () {
-      const z2 = (n) => {
+      const z2 = (n: any) => {
         n = '00' + n
-        return n.substr(n.length - 2, 2)
+        return n.substring(n.length - 2, n.length)
       }
       const t = new Date()
       return z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
@@ -2150,7 +2161,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       return sys.__formatDate(new Date())
     }
   },
@@ -2158,7 +2169,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       const t = Date.now() + (24 * 60 * 60 * 1000)
       return sys.__formatDate(new Date(t))
     }
@@ -2167,7 +2178,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       const t = Date.now() - (24 * 60 * 60 * 1000)
       return sys.__formatDate(new Date(t))
     }
@@ -2224,16 +2235,16 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       const d = sys.__str2date(s)
-      return '日月火水木金土'.charAt(d.getDay() %  7)
+      return '日月火水木金土'.charAt(d.getDay() % 7)
     }
   },
   '曜日番号取得': { // @Sに指定した日付の曜日番号をで返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土) // @ようびばんごうしゅとく
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: any) {
       const a = s.split('/')
       const t = new Date(a[0], a[1] - 1, a[2])
       return t.getDay()
@@ -2241,27 +2252,27 @@ export default {
   },
   'UNIXTIME変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXTIMEへんかん
     type: 'func',
-    josi: [['の','を','から']],
+    josi: [['の', 'を', 'から']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       const d = sys.__str2date(s)
-      return d.getTime() / 1000;
+      return d.getTime() / 1000
     }
   },
   'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXじかんへんかん
     type: 'func',
-    josi: [['の','を','から']],
+    josi: [['の', 'を', 'から']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       const d = sys.__str2date(s)
-      return d.getTime() / 1000;
+      return d.getTime() / 1000
     }
   },
   '日時変換': { // @UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換 // @にちじへんかん
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (tm, sys) {
+    fn: function (tm: any, sys: any) {
       const t = tm * 1000
       return sys.__formatDateTime(new Date(t), '2022/01/01 00:00:00')
     }
@@ -2270,9 +2281,9 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (tm, fmt, sys) {
+    fn: function (tm: any, fmt: any, sys: any) {
       const t = sys.__str2date(tm)
-      fmt = fmt.replace(/(YYYY|ccc|WWW|MMM|YY|MM|DD|HH|mm|ss|[MDHmsW])/g, (m) => {
+      fmt = fmt.replace(/(YYYY|ccc|WWW|MMM|YY|MM|DD|HH|mm|ss|[MDHmsW])/g, (m: string) => {
         switch (m) {
           case 'YYYY': return t.getFullYear()
           case 'YY': return ('' + t.getFullYear()).substring(2)
@@ -2288,19 +2299,19 @@ export default {
           case 'm': return (t.getMinutes())
           case 's': return (t.getSeconds())
           case 'W': return '日月火水木金土'.charAt(t.getDay() % 7)
-          case 'WWW': return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getDay() % 7]
-          case 'MMM': return ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][t.getMonth()]
+          case 'WWW': return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][t.getDay() % 7]
+          case 'MMM': return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][t.getMonth()]
         }
         return m
       })
-     return fmt
+      return fmt
     }
   },
   '和暦変換': { // @Sを和暦に変換する。Sは明治以降の日付が有効。 // @われきへんかん
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       const d = sys.__str2date(s)
       const t = d.getTime()
       for (const era of sys.__v0['元号データ']) {
@@ -2308,8 +2319,8 @@ export default {
         const d2 = sys.__str2date(era['改元日'])
         const t2 = d2.getTime()
         if (t2 <= t) {
-          let y = (d.getFullYear() - d2.getFullYear()) + 1
-          if (y == 1) {y = '元'}
+          let y: any = (d.getFullYear() - d2.getFullYear()) + 1
+          if (y === 1) { y = '元' }
           return gengo + y + '年' + sys.__zero2(d.getMonth() + 1) + '月' + sys.__zero2(d.getDate()) + '日'
         }
       }
@@ -2320,7 +2331,7 @@ export default {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       const t1 = sys.__str2date(a)
       const t2 = sys.__str2date(b)
       return (t2.getFullYear() - t1.getFullYear())
@@ -2330,10 +2341,10 @@ export default {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       const t1 = sys.__str2date(a)
       const t2 = sys.__str2date(b)
-      return ((t2.getFullYear() * 12 + t2.getMonth()) - 
+      return ((t2.getFullYear() * 12 + t2.getMonth()) -
         (t1.getFullYear() * 12 + t1.getMonth()))
     }
   },
@@ -2341,7 +2352,7 @@ export default {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
       const days = Math.ceil((t2 - t1) / (60 * 60 * 24))
@@ -2352,7 +2363,7 @@ export default {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
       const hours = Math.ceil((t2 - t1) / (60 * 60))
@@ -2363,7 +2374,7 @@ export default {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
       const min = Math.ceil((t2 - t1) / (60))
@@ -2374,7 +2385,7 @@ export default {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       const t1 = Math.ceil(sys.__str2date(a).getTime() / 1000)
       const t2 = Math.ceil(sys.__str2date(b).getTime() / 1000)
       const sec = Math.ceil((t2 - t1))
@@ -2385,10 +2396,10 @@ export default {
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの'], ['による']],
     pure: true,
-    fn: function (a, b, unit, sys) {
+    fn: function (a: any, b: any, unit: string, sys: any): string {
       switch (unit) {
-        case '年': return sys.__exec('年数差', [a, b, sys]) 
-        case '月': return sys.__exec('月数差', [a, b, sys]) 
+        case '年': return sys.__exec('年数差', [a, b, sys])
+        case '月': return sys.__exec('月数差', [a, b, sys])
         case '日': return sys.__exec('日数差', [a, b, sys])
         case '時間': return sys.__exec('時間差', [a, b, sys])
         case '分': return sys.__exec('分差', [a, b, sys])
@@ -2401,8 +2412,8 @@ export default {
     type: 'func',
     josi: [['に'], ['を']],
     pure: true,
-    fn: function (s, a, sys) {
-      let op = a.charAt(0)
+    fn: function (s: any, a: any, sys: any) {
+      const op = a.charAt(0)
       if (op === '-' || op === '+') {
         a = a.substring(1)
       }
@@ -2411,7 +2422,7 @@ export default {
       let sec = parseInt(aa[0]) * 60 * 60 +
         parseInt(aa[1]) * 60 +
         parseInt(aa[2])
-      if (op === '-') {sec *= -1}
+      if (op === '-') { sec *= -1 }
       const rd = new Date(d.getTime() + (sec * 1000))
       return sys.__formatDateTime(rd, s)
     }
@@ -2420,12 +2431,12 @@ export default {
     type: 'func',
     josi: [['に'], ['を']],
     pure: true,
-    fn: function (s, a, sys) {
+    fn: function (s: any, a: any, sys: any) {
       let op = 1
-      let opc = a.charAt(0)
+      const opc = a.charAt(0)
       if (opc === '-' || opc === '+') {
         a = a.substring(1)
-        if (opc === '-') {op *= -1}
+        if (opc === '-') { op *= -1 }
       }
       const d = sys.__str2date(s)
       const aa = (a + '/0/0').split('/')
@@ -2435,20 +2446,20 @@ export default {
       d.setFullYear(d.getFullYear() + addY)
       d.setMonth(d.getMonth() + addM)
       d.setDate(d.getDate() + addD)
-      return sys.__formatDateTime(d, s)      
+      return sys.__formatDateTime(d, s)
     }
   },
   '日時加算': { // @日時SにAを加えて返す。Aは「(+｜-)1(年|ヶ月|日|週|時間|分|秒)」のように指定する (v1非互換)。 // @にちじかさん
     type: 'func',
     josi: [['に'], ['を']],
     pure: true,
-    fn: function (s, a, sys) {
+    fn: function (s: any, a: any, sys: any) {
       const r = ('' + a).match(/([+|-]?)(\d+)(年|ヶ月|日|週間|時間|分|秒)$/)
-      if (!r) {throw new Error('『日付加算』は『(+｜-)1(年|ヶ月|日|時間|分|秒)』の書式で指定します。')}
+      if (!r) { throw new Error('『日付加算』は『(+｜-)1(年|ヶ月|日|時間|分|秒)』の書式で指定します。') }
       switch (r[3]) {
         case '年': return sys.__exec('日付加算', [s, `${r[1]}${r[2]}/0/0`, sys])
         case 'ヶ月': return sys.__exec('日付加算', [s, `${r[1]}0/${r[2]}/0`, sys])
-        case '週間': return sys.__exec('日付加算', [s, `${r[1]}0/0/${r[2]*7}`, sys])
+        case '週間': return sys.__exec('日付加算', [s, `${r[1]}0/0/${parseInt(r[2]) * 7}`, sys])
         case '日': return sys.__exec('日付加算', [s, `${r[1]}0/0/${r[2]}`, sys])
         case '時間': return sys.__exec('時間加算', [s, `${r[1]}${r[2]}:0:0`, sys])
         case '分': return sys.__exec('時間加算', [s, `${r[1]}0:${r[2]}:0`, sys])
@@ -2476,7 +2487,7 @@ export default {
     type: 'func',
     josi: [['の', 'で']],
     pure: true,
-    fn: function (s) {
+    fn: function (s: any) {
       throw new Error(s)
     }
   },
@@ -2484,36 +2495,37 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
-      console.log(sys.__varslist[2])
-      const f = []
-      for (const key in sys.__varslist[1]) {
-        if (sys.__v0.hasOwnProperty(key)) {
-          f.push(key)
+    fn: function (sys: any) {
+      const vars: any = sys.__varslist[1]
+      const res: string[] = []
+      for (const key in vars) {
+        if (Object.prototype.hasOwnProperty.call(vars, key)) {
+          res.push(key)
         }
       }
-      return f
+      return res
     }
   },
   'システム関数一覧取得': { // @システム関数の一覧を取得 // @しすてむかんすういちらんしゅとく
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
-      const f = []
-      for (const key in sys.__v0) {
-        if (sys.__v0.hasOwnProperty(key)) {
-          f.push(key)
+    fn: function (sys: any) {
+      const vars: any = sys.__varslist[0]
+      const res: string[] = []
+      for (const key in vars) {
+        if (Object.prototype.hasOwnProperty.call(vars, key)) {
+          res.push(key)
         }
       }
-      return f
+      return res
     }
   },
   'システム関数存在': { // @文字列で関数名を指定してシステム関数が存在するかを調べる // @しすてむかんすうそんざい
     type: 'func',
     josi: [['が', 'の']],
     pure: true,
-    fn: function (fname, sys) {
+    fn: function (fname: string, sys: any) {
       return (typeof sys.__v0[fname] !== 'undefined')
     }
   },
@@ -2521,7 +2533,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       const a = []
       for (const f in sys.pluginfiles) { a.push(f) }
 
@@ -2532,7 +2544,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       const a = []
       for (const f in sys.__module) { a.push(f) }
 
@@ -2547,13 +2559,13 @@ export default {
     fn: function () {
       return new Promise((resolve, reject) => {
         import('./nako_josi_list.mjs')
-        .then((mod) => {
-          const obj = Object.assign({}, mod)
-          resolve(obj.josiList)
-        })
-        .catch((err) => {
-          reject(err)
-        })
+          .then((mod) => {
+            const obj = Object.assign({}, mod)
+            resolve(obj.josiList)
+          })
+          .catch((err) => {
+            reject(err)
+          })
       })
     }
   },
@@ -2566,17 +2578,17 @@ export default {
       // const words = require('./nako_reserved_words.mjs')
       return new Promise((resolve, reject) => {
         import('./nako_reserved_words.mjs')
-        .then((mod) => {
-          const obj = Object.assign({}, mod)
-          const w = []
-          for (const key in obj.default) {
-            w.push(key)
-          }
-          resolve(w)
-        })
-        .catch((err) => {
-          reject(err)
-        })
+          .then((mod) => {
+            const obj = Object.assign({}, mod)
+            const w = []
+            for (const key in obj.default) {
+              w.push(key)
+            }
+            resolve(w)
+          })
+          .catch((err) => {
+            reject(err)
+          })
       })
     }
   },
@@ -2586,7 +2598,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (s, sys) {
+    fn: function (s: string, sys: any) {
       sys.__v0['プラグイン名'] = s
     },
     return_none: true
@@ -2597,7 +2609,7 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (text) {
+    fn: function (text: any) {
       return encodeURIComponent(text)
     }
   },
@@ -2605,7 +2617,7 @@ export default {
     type: 'func',
     josi: [['を', 'へ', 'に']],
     pure: true,
-    fn: function (text) {
+    fn: function (text: any) {
       return decodeURIComponent(text)
     }
   },
@@ -2613,8 +2625,8 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function (url, sys) {
-      const res = {}
+    fn: function (url: string, sys: any) {
+      const res: any = {}
       if (typeof url !== 'string') {
         return res
       }
@@ -2637,10 +2649,11 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (text) {
+    fn: function (text: any) {
       // browser?
-      if (typeof(window) !== 'undefined' && window.btoa) {
-        const utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text))
+      if (typeof (window) !== 'undefined' && window.btoa) {
+        const u8a: any = new TextEncoder().encode(text)
+        const utf8str = String.fromCharCode.apply(null, u8a)
         return btoa(utf8str)
       } else {
         return Buffer.from(text).toString('base64')
@@ -2651,10 +2664,11 @@ export default {
     type: 'func',
     josi: [['を', 'へ', 'に']],
     pure: true,
-    fn: function (text) {
-      if (typeof(window) !== 'undefined' && window.atob) {
+    fn: function (text: any) {
+      if (typeof (window) !== 'undefined' && window.atob) {
         const decodedUtf8str = atob(text)
-        const decodedArray = new Uint8Array(Array.prototype.map.call(decodedUtf8str, c => c.charCodeAt()))
+        const dec: any = Array.prototype.map.call(decodedUtf8str, c => c.charCodeAt())
+        const decodedArray = new Uint8Array(dec)
         return new TextDecoder('UTF-8').decode(decodedArray)
       } else {
         return Buffer.from(text, 'base64').toString()

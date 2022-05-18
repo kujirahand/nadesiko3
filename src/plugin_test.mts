@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * file: plugin_test.js
  * テスト実行用プラグイン
@@ -9,7 +8,7 @@ export default {
     type: 'func',
     josi: [['と'], ['が']],
     pure: true,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any) {
       if (a !== b) {
         throw new Error(`不一致 [実際]${a} [期待]${b}`)
       }
@@ -20,7 +19,7 @@ export default {
     type: 'func',
     josi: [['と'], ['で']],
     pure: false,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       sys.__exec('ASSERT等', [a, b, sys])
     }
   },
@@ -28,9 +27,8 @@ export default {
     type: 'func',
     josi: [['と'], ['が']],
     pure: false,
-    fn: function (a, b, sys) {
+    fn: function (a: any, b: any, sys: any) {
       sys.__exec('ASSERT等', [a, b, sys])
     }
   }
-
 }

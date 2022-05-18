@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NakoRuntimeError } from './nako_errors.mjs';
 import NakoVersion from './nako_version.mjs';
 export default {
@@ -25,8 +24,8 @@ export default {
                 if (sys.__locals[nameStr]) {
                     return sys.__locals[nameStr];
                 }
-                let modName = (typeof (sys.__modName) !== 'undefined') ? sys.__modName : 'inline';
-                let gname = (nameStr.indexOf('__') >= 0) ? nameStr : modName + '__' + nameStr;
+                const modName = ((typeof sys.__modName) !== 'undefined') ? sys.__modName : 'inline';
+                const gname = (nameStr.indexOf('__') >= 0) ? nameStr : modName + '__' + nameStr;
                 for (let i = 2; i >= 0; i--) {
                     const scope = sys.__varslist[i];
                     if (scope[gname]) {
@@ -101,16 +100,16 @@ export default {
                     return new Date(parseFloat(s) * 1000);
                 }
                 // is time ?
-                if (s.match(/^\d+\:\d+(\:\d+)?$/)) {
+                if (s.match(/^\d+:\d+(:\d+)?$/)) {
                     const t = new Date();
                     const a = (s + ':0').split(':');
-                    return new Date(t.getFullYear(), t.getMonth(), t.getDate(), a[0], a[1], a[2]);
+                    return new Date(t.getFullYear(), t.getMonth(), t.getDate(), parseInt(a[0]), parseInt(a[1]), parseInt(a[2]));
                 }
                 // replace splitter to '/'
-                s = s.replace(/[\-\s\:]/g, '/');
+                s = s.replace(/[\s:-]/g, '/');
                 s += '/0/0/0'; // 日付だけのときのために時間分を足す
                 const a = s.split('/');
-                return new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
+                return new Date(parseInt(a[0]), parseInt(a[1]) - 1, parseInt(a[2]), parseInt(a[3]), parseInt(a[4]), parseInt(a[5]));
             };
             // 『継続表示』のための一時変数(『表示』実行で初期化)
             sys.__printPool = '';
@@ -164,7 +163,7 @@ export default {
         type: 'func',
         josi: [],
         pure: true,
-        fn: function (sys) {
+        fn: function () {
             return [];
         }
     },
@@ -172,7 +171,7 @@ export default {
         type: 'func',
         josi: [],
         pure: true,
-        fn: function (sys) {
+        fn: function () {
             return {};
         }
     },
@@ -180,7 +179,7 @@ export default {
         type: 'func',
         josi: [],
         pure: true,
-        fn: function (sys) {
+        fn: function () {
             return {};
         }
     },
@@ -201,7 +200,7 @@ export default {
             // 継続表示の一時プールを出力
             s = sys.__printPool + s;
             sys.__printPool = '';
-            // 
+            //
             sys.__varslist[0]['表示ログ'] += (s + '\n');
             sys.logger.send('stdout', s + '');
         },
@@ -263,7 +262,7 @@ export default {
         type: 'func',
         josi: [['を', 'と']],
         pure: true,
-        fn: function (s, sys) {
+        fn: function (s) {
             console.log(s);
         },
         return_none: true
@@ -323,7 +322,7 @@ export default {
         josi: [['が']],
         pure: true,
         fn: function (a) {
-            return (a % 2 == 0);
+            return (parseInt(a) % 2 === 0);
         }
     },
     '奇数': {
@@ -331,7 +330,7 @@ export default {
         josi: [['が']],
         pure: true,
         fn: function (a) {
-            return (a % 2 == 1);
+            return (parseInt(a) % 2 === 1);
         }
     },
     '二乗': {
@@ -440,8 +439,7 @@ export default {
         isVariableJosi: true,
         pure: true,
         fn: function (b, ...a) {
-            // 末尾のシステム変数を除外
-            a.pop();
+            a.pop(); // 必ず末尾に sys があるので、末尾のシステム変数を除外
             a.push(b);
             return a.reduce((p, c) => p + c);
         }
@@ -517,7 +515,7 @@ export default {
         type: 'func',
         josi: [['を', 'で']],
         pure: true,
-        fn: function (src, sys) {
+        fn: function (src) {
             return eval(src); // eslint-disable-line
         }
     },
@@ -532,7 +530,7 @@ export default {
     'JS関数実行': {
         type: 'func',
         josi: [['を'], ['で']],
-        fn: function (name, args, sys) {
+        fn: function (name, args) {
             // nameが文字列ならevalして関数を得る
             // eslint-disable-next-line no-eval
             if (typeof name === 'string') {
@@ -552,7 +550,7 @@ export default {
     'JSメソッド実行': {
         type: 'func',
         josi: [['の'], ['を'], ['で']],
-        fn: function (obj, m, args, sys) {
+        fn: function (obj, m, args) {
             // objが文字列ならevalして関数を得る
             // eslint-disable-next-line no-eval
             if (typeof obj === 'string') {
@@ -655,7 +653,7 @@ export default {
         josi: [['の']],
         pure: true,
         fn: function (v) {
-            return typeof (v);
+            return (typeof v);
         }
     },
     'TYPEOF': {
@@ -663,7 +661,7 @@ export default {
         josi: [['の']],
         pure: true,
         fn: function (v) {
-            return typeof (v);
+            return (typeof v);
         }
     },
     '文字列変換': {
@@ -786,8 +784,8 @@ export default {
         pure: true,
         fn: function (r, g, b) {
             const z2 = (v) => {
-                const v2 = '00' + parseInt(v).toString(16);
-                return v2.substr(v2.length - 2, 2);
+                const v2 = '00' + (parseInt('' + v).toString(16));
+                return v2.substring(v2.length - 2, v2.length);
             };
             return '#' + z2(r) + z2(g) + z2(b);
         }
@@ -925,8 +923,8 @@ export default {
                 i = 1;
             }
             const ss = String(s);
-            const mae = ss.substr(0, i - 1);
-            const usi = ss.substr(i - 1);
+            const mae = ss.substring(0, i - 1);
+            const usi = ss.substring(i - 1);
             return mae + a + usi;
         }
     },
@@ -936,7 +934,7 @@ export default {
         pure: true,
         fn: function (s, a, b) {
             let str = String(s);
-            str = str.substr(a);
+            str = str.substring(a);
             const res = str.indexOf(b);
             if (res === -1) {
                 return 0;
@@ -949,6 +947,10 @@ export default {
         josi: [['で', 'に', 'へ'], ['を']],
         pure: true,
         fn: function (s, a) {
+            if (s instanceof Array) {
+                s.push(a);
+                return s;
+            }
             return String(s) + String(a);
         }
     },
@@ -957,6 +959,10 @@ export default {
         josi: [['で', 'に', 'へ'], ['を']],
         pure: true,
         fn: function (s, a) {
+            if (s instanceof Array) {
+                s.push(a);
+                return s;
+            }
             return String(s) + String(a) + '\n';
         }
     },
@@ -998,8 +1004,8 @@ export default {
         josi: [['で', 'の'], ['から'], ['を']],
         pure: true,
         fn: function (s, a, cnt) {
-            cnt = cnt || undefined;
-            return (String(s).substr(a - 1, cnt));
+            cnt = cnt || 1;
+            return (String(s).substring(a - 1, a + cnt - 1));
         }
     },
     '文字抜出': {
@@ -1007,8 +1013,8 @@ export default {
         josi: [['で', 'の'], ['から'], ['を', '']],
         pure: true,
         fn: function (s, a, cnt) {
-            cnt = cnt || undefined;
-            return (String(s).substr(a - 1, cnt));
+            cnt = cnt || 1;
+            return (String(s).substring(a - 1, a + cnt - 1));
         }
     },
     'LEFT': {
@@ -1016,7 +1022,7 @@ export default {
         josi: [['の', 'で'], ['だけ']],
         pure: true,
         fn: function (s, cnt) {
-            return (String(s).substr(0, cnt));
+            return (String(s).substring(0, cnt));
         }
     },
     '文字左部分': {
@@ -1024,7 +1030,7 @@ export default {
         josi: [['の', 'で'], ['だけ', '']],
         pure: true,
         fn: function (s, cnt) {
-            return (String(s).substr(0, cnt));
+            return (String(s).substring(0, cnt));
         }
     },
     'RIGHT': {
@@ -1033,7 +1039,7 @@ export default {
         pure: true,
         fn: function (s, cnt) {
             s = '' + s;
-            return (s.substr(s.length - cnt, cnt));
+            return (s.substring(s.length - cnt, s.length));
         }
     },
     '文字右部分': {
@@ -1042,7 +1048,7 @@ export default {
         pure: true,
         fn: function (s, cnt) {
             s = '' + s;
-            return (s.substr(s.length - cnt, cnt));
+            return (s.substring(s.length - cnt, s.length));
         }
     },
     '区切': {
@@ -1064,7 +1070,7 @@ export default {
             if (i < 0) {
                 return [s];
             }
-            return [s.substr(0, i), s.substr(i + a.length)];
+            return [s.substring(0, i), s.substring(i + a.length)];
         }
     },
     '切取': {
@@ -1078,8 +1084,8 @@ export default {
                 sys.__v0['対象'] = '';
                 return s;
             }
-            sys.__v0['対象'] = s.substr(i + a.length);
-            return s.substr(0, i);
+            sys.__v0['対象'] = s.substring(i + a.length);
+            return s.substring(0, i);
         }
     },
     '文字削除': {
@@ -1088,8 +1094,8 @@ export default {
         pure: true,
         fn: function (s, a, b) {
             s = '' + s;
-            const mae = s.substr(0, a - 1);
-            const usi = s.substr((a - 1 + b));
+            const mae = s.substring(0, a - 1);
+            const usi = s.substring((a - 1 + b));
             return mae + usi;
         }
     },
@@ -1157,7 +1163,7 @@ export default {
                     return String.fromCharCode(chr);
                 });
             };
-            return kanaToHira(s);
+            return kanaToHira('' + s);
         }
     },
     'カタカナ変換': {
@@ -1171,7 +1177,7 @@ export default {
                     return String.fromCharCode(chr);
                 });
             };
-            return hiraToKana(s);
+            return hiraToKana('' + s);
         }
     },
     '英数全角変換': {
@@ -1228,7 +1234,7 @@ export default {
             let i = 0;
             while (i < s.length) {
                 // 濁点の変換
-                const c2 = s.substr(i, 2);
+                const c2 = s.substring(i, i + 2);
                 const n2 = han2.indexOf(c2);
                 if (n2 >= 0) {
                     str += zen2.charAt(n2 / 2);
@@ -1266,7 +1272,7 @@ export default {
                 }
                 const j = zen2.indexOf(c);
                 if (j >= 0) {
-                    return han2.substr(j * 2, 2);
+                    return han2.substring(j * 2, j * 2 + 2);
                 }
                 return c;
             }).join('');
@@ -1330,7 +1336,7 @@ export default {
         pure: true,
         fn: function (a, b, sys) {
             let re;
-            const f = b.match(/^\/(.+)\/([a-zA-Z]*)$/);
+            const f = ('' + b).match(/^\/(.+)\/([a-zA-Z]*)$/);
             // パターンがない場合
             if (f === null) {
                 re = new RegExp(b, 'g');
@@ -1413,7 +1419,7 @@ export default {
                 a = v.length;
             }
             const s = z + String(v);
-            return s.substr(s.length - a, a);
+            return s.substring(s.length - a, s.length);
         }
     },
     '空白埋': {
@@ -1431,7 +1437,7 @@ export default {
                 a = v.length;
             }
             const s = z + String(v);
-            return s.substr(s.length - a, a);
+            return s.substring(s.length - a, s.length);
         }
     },
     // @文字種類
@@ -1884,7 +1890,7 @@ export default {
         type: 'func',
         josi: [['の'], ['を', 'で']],
         pure: true,
-        fn: function (a, i, sys) {
+        fn: function (a, i) {
             if (!(a instanceof Array)) {
                 throw new Error('『表重複削除』には配列を指定する必要があります。');
             }
@@ -1904,7 +1910,7 @@ export default {
         type: 'func',
         josi: [['の'], ['を']],
         pure: true,
-        fn: function (a, i, sys) {
+        fn: function (a, i) {
             if (!(a instanceof Array)) {
                 throw new Error('『表列取得』には配列を指定する必要があります。');
             }
@@ -1942,7 +1948,7 @@ export default {
                 throw new Error('『表列削除』には配列を指定する必要があります。');
             }
             const res = [];
-            a.forEach((row, idx) => {
+            a.forEach((row) => {
                 const nr = row.slice(0);
                 nr.splice(i, 1);
                 res.push(nr);
@@ -1972,9 +1978,9 @@ export default {
                 throw new Error('『表曖昧検索』には配列を指定する必要があります。');
             }
             const re = new RegExp(s);
-            for (let i = 0; i < a.length; i++) {
-                const row = a[i];
-                if (re.test(row[col])) {
+            for (let i = row; i < a.length; i++) {
+                const line = a[i];
+                if (re.test(line[col])) {
                     return i;
                 }
             }
@@ -2090,9 +2096,14 @@ export default {
         josi: [['']],
         pure: true,
         asyncFn: true,
-        fn: function (n, sys) {
+        fn: function (n) {
             return new Promise((resolve, reject) => {
-                setTimeout(() => { resolve(); }, n * 1000);
+                try {
+                    setTimeout(() => { resolve(); }, parseFloat(n) * 1000);
+                }
+                catch (err) {
+                    reject(err);
+                }
             });
         },
         return_none: true
@@ -2253,7 +2264,7 @@ export default {
         fn: function () {
             const z2 = (n) => {
                 n = '00' + n;
-                return n.substr(n.length - 2, 2);
+                return n.substring(n.length - 2, n.length);
             };
             const t = new Date();
             return z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds());
@@ -2440,7 +2451,7 @@ export default {
                 const t2 = d2.getTime();
                 if (t2 <= t) {
                     let y = (d.getFullYear() - d2.getFullYear()) + 1;
-                    if (y == 1) {
+                    if (y === 1) {
                         y = '元';
                     }
                     return gengo + y + '年' + sys.__zero2(d.getMonth() + 1) + '月' + sys.__zero2(d.getDate()) + '日';
@@ -2535,7 +2546,7 @@ export default {
         josi: [['に'], ['を']],
         pure: true,
         fn: function (s, a, sys) {
-            let op = a.charAt(0);
+            const op = a.charAt(0);
             if (op === '-' || op === '+') {
                 a = a.substring(1);
             }
@@ -2557,7 +2568,7 @@ export default {
         pure: true,
         fn: function (s, a, sys) {
             let op = 1;
-            let opc = a.charAt(0);
+            const opc = a.charAt(0);
             if (opc === '-' || opc === '+') {
                 a = a.substring(1);
                 if (opc === '-') {
@@ -2587,7 +2598,7 @@ export default {
             switch (r[3]) {
                 case '年': return sys.__exec('日付加算', [s, `${r[1]}${r[2]}/0/0`, sys]);
                 case 'ヶ月': return sys.__exec('日付加算', [s, `${r[1]}0/${r[2]}/0`, sys]);
-                case '週間': return sys.__exec('日付加算', [s, `${r[1]}0/0/${r[2] * 7}`, sys]);
+                case '週間': return sys.__exec('日付加算', [s, `${r[1]}0/0/${parseInt(r[2]) * 7}`, sys]);
                 case '日': return sys.__exec('日付加算', [s, `${r[1]}0/0/${r[2]}`, sys]);
                 case '時間': return sys.__exec('時間加算', [s, `${r[1]}${r[2]}:0:0`, sys]);
                 case '分': return sys.__exec('時間加算', [s, `${r[1]}0:${r[2]}:0`, sys]);
@@ -2626,14 +2637,14 @@ export default {
         josi: [],
         pure: true,
         fn: function (sys) {
-            console.log(sys.__varslist[2]);
-            const f = [];
-            for (const key in sys.__varslist[1]) {
-                if (sys.__v0.hasOwnProperty(key)) {
-                    f.push(key);
+            const vars = sys.__varslist[1];
+            const res = [];
+            for (const key in vars) {
+                if (Object.prototype.hasOwnProperty.call(vars, key)) {
+                    res.push(key);
                 }
             }
-            return f;
+            return res;
         }
     },
     'システム関数一覧取得': {
@@ -2641,13 +2652,14 @@ export default {
         josi: [],
         pure: true,
         fn: function (sys) {
-            const f = [];
-            for (const key in sys.__v0) {
-                if (sys.__v0.hasOwnProperty(key)) {
-                    f.push(key);
+            const vars = sys.__varslist[0];
+            const res = [];
+            for (const key in vars) {
+                if (Object.prototype.hasOwnProperty.call(vars, key)) {
+                    res.push(key);
                 }
             }
-            return f;
+            return res;
         }
     },
     'システム関数存在': {
@@ -2782,7 +2794,8 @@ export default {
         fn: function (text) {
             // browser?
             if (typeof (window) !== 'undefined' && window.btoa) {
-                const utf8str = String.fromCharCode.apply(null, new TextEncoder('UTF-8').encode(text));
+                const u8a = new TextEncoder().encode(text);
+                const utf8str = String.fromCharCode.apply(null, u8a);
                 return btoa(utf8str);
             }
             else {
@@ -2797,7 +2810,8 @@ export default {
         fn: function (text) {
             if (typeof (window) !== 'undefined' && window.atob) {
                 const decodedUtf8str = atob(text);
-                const decodedArray = new Uint8Array(Array.prototype.map.call(decodedUtf8str, c => c.charCodeAt()));
+                const dec = Array.prototype.map.call(decodedUtf8str, c => c.charCodeAt());
+                const decodedArray = new Uint8Array(dec);
                 return new TextDecoder('UTF-8').decode(decodedArray);
             }
             else {
