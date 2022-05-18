@@ -1,10 +1,12 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoPrepare } from '../../src/nako_prepare.mjs'
 
+// eslint-disable-next-line no-undef
 describe('prepare', () => {
-  const p = new NakoPrepare()
+  const p = NakoPrepare.getInstance()
 
-  const convert = (code) => {
+  const convert = (/** @type {string} */ code) => {
     // 変換してからソースマップを除く
     return p.convert(code).map((v) => v.text).join('')
   }
@@ -67,7 +69,8 @@ describe('prepare', () => {
     const b = convert('123_ \r\n456 \n789')
     assert.strictEqual(b, '123_ \n456 \n789')
   })
-  it('CR+LF2', () => {    const a = convert('A= 1 + _ \r\n1 + 2  \nAを表示')
+  it('CR+LF2', () => {
+    const a = convert('A= 1 + _ \r\n1 + 2  \nAを表示')
     assert.strictEqual(a, 'A= 1 + _ \n1 + 2  \nAを表示')
   })
   it('Multibyte Flag to Singlebyte Flag', () => {

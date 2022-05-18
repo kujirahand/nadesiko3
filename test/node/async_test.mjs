@@ -1,16 +1,17 @@
+// @ts-nocheck
+/* eslint-disable no-undef */
 import assert from 'assert'
 import { Nako3Assert } from '../../src/nako3_assert.mjs'
 
-
+// eslint-disable-next-line no-undef
 describe('async_test', () => {
   const debug = false
   const nako3 = new Nako3Assert()
-  nako3.debug = debug
-  const cmp = (code, exRes) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ exRes) => {
     const result = nako3.run(code).log
     assert.strictEqual(result, exRes)
   }
-  const exe = (code) => {
+  const exe = (/** @type {string} */ code) => {
     nako3.run(code)
   }
 

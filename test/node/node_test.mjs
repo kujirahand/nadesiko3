@@ -1,20 +1,23 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import path from 'path'
 import fs from 'fs'
 import { execSync, spawnSync } from 'child_process'
 import NakoVersion from '../../src/nako_version.mjs'
-const debug = false
 
 // __dirname のために
 import url from 'url'
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const debug = false
+// @ts-ignore
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // PATH
 const cnako3 = path.join(__dirname, '../../src/cnako3.mjs')
 
+// eslint-disable-next-line no-undef
 describe('node_test(cnako)', () => {
-  const cmp = (code, exRes) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ exRes) => {
     const result = execSync(`node ${cnako3} -e "${code}"`).toString().replace(/\s+$/, '')
     if (debug) {
       console.log('code=' + code)
@@ -36,14 +39,14 @@ describe('node_test(cnako)', () => {
 
   it('単独で実行できるプログラムの出力(macの時のみ) - Node.js', function () {
     // [memo] 現状なでしこが生成するコードは cjs のもの
-    // testフォルダはmjsがデフォルト    
+    // testフォルダはmjsがデフォルト
     // そのため、とりあえずwindowsならテストしない macの時だけテスト
-    if (process.platform != 'darwin') { return this.skip() }
+    if (process.platform !== 'darwin') { return this.skip() }
     const nakofileOrg = path.join(__dirname, 'add_test.nako3')
     const nakofile = path.join('/tmp', 'add_test.nako3')
     const jsfile = path.join('/tmp', 'add_test.js')
-    fs.copyFileSync(nakofileOrg, nakofile)  
-    if (process.env.NODE_ENV === 'test') {return this.skip()}
+    fs.copyFileSync(nakofileOrg, nakofile)
+    if (process.env.NODE_ENV === 'test') { return this.skip() }
     const stderr = spawnSync('node', [cnako3, '-c', nakofile]).stderr
     try {
       if (stderr) { console.error(stderr.toString()) }

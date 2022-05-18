@@ -1,7 +1,9 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoCompiler } from '../../src/nako3.mjs'
 import { CNako3 } from '../../src/cnako3mod.mjs'
 
+// eslint-disable-next-line no-undef
 describe('plugin_math_test', () => {
   const wnako = new NakoCompiler()
 
@@ -9,9 +11,9 @@ describe('plugin_math_test', () => {
   cnako.silent = true
   // wnako.logger.addListener('trace', ({ nodeConsole }) => { console.log(nodeConsole) })
 
-  const cmp = async (code, res) => {
-    for (let nako of [cnako, wnako]) {
-      let c = code
+  const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
+    for (const nako of [cnako, wnako]) {
+      const c = code
       nako.logger.debug('code=' + code)
       assert.strictEqual((await nako.run(c)).log, res)
     }
