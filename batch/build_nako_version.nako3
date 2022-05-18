@@ -2,8 +2,15 @@
 「{基本パス}/package.json」を読んでJSONデコードして、Pに代入。
 VER=P@"version"
 定数[MAJOR,MINOR,PATCH]=(VERを「.」で区切る)
-VS=「// なでしこバージョン
-import {波カッコ}NakoVersion{波カッコ閉} from './nako_version_type.mjs'
+VS=「/** なでしこバージョン */
+// 型定義
+export interface NakoVersion {波カッコ}
+    version: string;
+    major: number;
+    minor: number;
+    patch: number;
+{波カッコ閉}
+// 実際のバージョン定義
 const nako3version: NakoVersion = {波カッコ}
   version: '{VER}',
   major: {MAJOR},

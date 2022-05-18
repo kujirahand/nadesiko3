@@ -1,3 +1,7 @@
+/**
+ * なでしこ3 の TypeScript のための型定義
+ */
+
 // 関数に関する定義
 export type FuncArgs = string[][]
 
