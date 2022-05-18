@@ -15,7 +15,7 @@ describe('plugin_test', () => {
   nako.silent = true
   const cmp = async (code, res) => {
     nako.logger.debug('code=' + code)
-    const ret = await nako.run(code)
+    const ret = await nako.runAsync(code, 'main.nako3')
     if (ret.log != res) {
         console.log('[ERROR]', ret.log, '!=', res)
     }

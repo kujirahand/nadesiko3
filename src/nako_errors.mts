@@ -1,4 +1,5 @@
 import nakoVersion from './nako_version.mjs'
+import {Ast, Token, SourceMap} from './nako_types.mjs'
 
 /**
  * なでしこ言語が投げる全てのエラーが継承するクラス
@@ -84,22 +85,15 @@ export class NakoLexerError extends NakoError {
   }
 }
 
-interface Ast {
-  startOffset: number | undefined;
-  endOffset: number | undefined;
-  line: number | undefined;
-  file: string | undefined;
-}
-
 export class NakoSyntaxError extends NakoError {
   public startOffset: number | undefined;
   public endOffset: number | undefined;
   /**
    * @param {string} msg
-   * @param {import('./nako3.mjs').Ast | null | undefined} first
-   * @param {import('./nako3.mjs').Ast | null | undefined} [last]
+   * @param {Ast} first
+   * @param {Ast} [last]
    */
-  public static fromNode (msg: string, first: Ast, last: Ast) {
+  public static fromNode (msg: string, first: Ast | Token | SourceMap, last: Ast|undefined = undefined) {
     if (!first) {
       return new NakoSyntaxError(msg, undefined, undefined, undefined, undefined)
     }

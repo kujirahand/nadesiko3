@@ -1,6 +1,7 @@
 /** NakoLogger */
-import { NakoError } from './nako_errors.mjs'
-import { NakoColors } from './nako_colors.mjs'
+import { NakoError } from './nako_errors.mjs';
+import { NakoColors } from './nako_colors.mjs';
+import { Token, Ast } from './nako_types.mjs';
 
 /** ログレベル - 数字が高いほど優先度が高い。*/
 
@@ -39,7 +40,7 @@ interface Position {
   line: number;
   file: string;
 }
-type PositionOrNull = Position | null;
+type PositionOrNull = Position | Token | Ast | null;
 
 interface LogListenerData {
   position: PositionOrNull; // ログの送信時にposition引数で渡されたデータ
@@ -146,6 +147,14 @@ export class NakoLogger {
       LogLevel.error, 
       `${NakoColors.color.bold}${NakoColors.color.red}[エラー]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, 
       position);
+  }
+
+  /** ユーザープログラムのデバッグ情報（重要なもの）
+   * @param {string} message 
+   * @param {Position | null} position
+   */
+   public log (message: string, position: PositionOrNull = null):void {
+    this.sendI(LogLevel.stdout, `${message}`, position)
   }
 
   /** 指定したlevelのlistenerにメッセージを送る。htmlやbrowserConsoleは無ければnodeConsoleから生成する。*/

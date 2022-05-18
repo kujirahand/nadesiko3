@@ -81,10 +81,10 @@ export class NakoSyntaxError extends NakoError {
     }
     /**
      * @param {string} msg
-     * @param {import('./nako3.mjs').Ast | null | undefined} first
-     * @param {import('./nako3.mjs').Ast | null | undefined} [last]
+     * @param {Ast} first
+     * @param {Ast} [last]
      */
-    static fromNode(msg, first, last) {
+    static fromNode(msg, first, last = undefined) {
         if (!first) {
             return new NakoSyntaxError(msg, undefined, undefined, undefined, undefined);
         }

@@ -3,8 +3,6 @@
  * 字句解析の前の前処理。全角文字を半角文字に変換するのが主な処理。
  * ただし、コメントや文字列の中は変換しないように考慮して変換する。
  */
-import { NakoLogger } from "./nako_logger.mjs";
-
 class ReplaceHistory {
   from: number;
   to: number;
@@ -81,17 +79,15 @@ export class NakoPrepare {
   // 唯一のインスタンス
   private static _instance: NakoPrepare;
   /** 唯一のインスタンスを返す */
-  public static getInstance(logger: NakoLogger): NakoPrepare {
+  public static getInstance(): NakoPrepare {
     if (!NakoPrepare._instance) {
-      NakoPrepare._instance = new NakoPrepare(logger)
+      NakoPrepare._instance = new NakoPrepare()
     }
     return NakoPrepare._instance
   }
 
-  private logger: NakoLogger;
   private convertTable: Map<number, string>;
-  private constructor (logger: NakoLogger) {
-    this.logger = logger;
+  private constructor () {
     // 単純な変換テーブル
     this.convertTable = new Map([
       // ハイフンへの変換

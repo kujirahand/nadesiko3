@@ -119,6 +119,13 @@ export class NakoLogger {
         }
         this.sendI(LogLevel.error, `${NakoColors.color.bold}${NakoColors.color.red}[エラー]${NakoColors.color.reset}${stringifyPosition(position)}${message}`, position);
     }
+    /** ユーザープログラムのデバッグ情報（重要なもの）
+     * @param {string} message
+     * @param {Position | null} position
+     */
+    log(message, position = null) {
+        this.sendI(LogLevel.stdout, `${message}`, position);
+    }
     /** 指定したlevelのlistenerにメッセージを送る。htmlやbrowserConsoleは無ければnodeConsoleから生成する。*/
     send(levelStr, nodeConsole, position, html = null, browserConsole = null) {
         const i = LogLevel.fromS(levelStr);

@@ -1,3 +1,8 @@
+/**
+ * nako_prepare.js
+ * 字句解析の前の前処理。全角文字を半角文字に変換するのが主な処理。
+ * ただし、コメントや文字列の中は変換しないように考慮して変換する。
+ */
 class ReplaceHistory {
     constructor(from, to, index) {
         this.from = from;
@@ -60,8 +65,7 @@ export class Replace {
  *    for https://github.com/kujirahand/nadesiko3/issues/94
  */
 export class NakoPrepare {
-    constructor(logger) {
-        this.logger = logger;
+    constructor() {
         // 単純な変換テーブル
         this.convertTable = new Map([
             // ハイフンへの変換
@@ -114,9 +118,9 @@ export class NakoPrepare {
         ]);
     }
     /** 唯一のインスタンスを返す */
-    static getInstance(logger) {
+    static getInstance() {
         if (!NakoPrepare._instance) {
-            NakoPrepare._instance = new NakoPrepare(logger);
+            NakoPrepare._instance = new NakoPrepare();
         }
         return NakoPrepare._instance;
     }

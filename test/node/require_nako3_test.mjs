@@ -27,21 +27,19 @@ describe('require_nako3_test', () => {
   it('「回」が1回だけ分割されることを確認する', () => {
     cmp('！「' + __dirname + '/kai_test.nako3」を取り込む', '')
   })
-  it('.jsと.nako3を同時に読み込む - .jsが先の場合', () => {
+  it('.jsと.nako3を同時に読み込む[1/2] .jsが先の場合', async () => {
     const nako = new CNako3()
     const code =
-      `!「plugin_csv」を取り込む。\n` +
+      `!「plugin_csv.mjs」を取り込む。\n` +
       `!「${__dirname}/requiretest.nako3」を取り込む。\n`
-    nako.loadDependencies(code, 'main.nako3', '')
-    nako.run(code, 'main.nako3') // エラーが飛ばないことを確認
+    await nako.runAsync(code, 'main.nako3') // エラーが飛ばないことを確認
   })
-  it('.jsと.nako3を同時に読み込む - .nako3が先の場合', () => {
+  it('.jsと.nako3を同時に読み込む[2/2] .nako3が先の場合', async () => {
     const nako = new CNako3()
     const code =
       `!「${__dirname}/requiretest.nako3」を取り込む。\n` +
-      `!「plugin_csv」を取り込む。\n`
-    nako.loadDependencies(code, 'main.nako3', '')
-    nako.run(code, 'main.nako3') // エラーが飛ばないことを確認
+      `!「plugin_csv.mjs」を取り込む。\n`
+    await nako.runAsync(code, 'main.nako3') // エラーが飛ばないことを確認
   })
   it('.jsファイルの投げたエラーを表示', async () => {
     const nako = new CNako3()
