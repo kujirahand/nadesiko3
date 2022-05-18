@@ -1,5 +1,5 @@
 import nakoVersion from './nako_version.mjs'
-import {Ast, Token, SourceMap} from './nako_types.mjs'
+import { Ast, Token, SourceMap } from './nako_types.mjs'
 
 /**
  * なでしこ言語が投げる全てのエラーが継承するクラス
@@ -20,10 +20,10 @@ export class NakoError extends Error {
     const positionJa = `${file || ''}${line === undefined ? '' : `(${line + 1}行目): `}`
     super(`[${tag}]${positionJa}${msg}\n[バージョン] ${nakoVersion.version}`)
     this.tag = '[' + tag + ']'
-    this.positionJa = positionJa;
+    this.positionJa = positionJa
     // #1223 エラーメッセージに「main__関数名」と表示されるので、main__は省略して表示
-    msg = msg.replace(/『main__(.+?)』/g, '『$1』');
-    this.msg = msg;
+    msg = msg.replace(/『main__(.+?)』/g, '『$1』')
+    this.msg = msg
   }
 }
 
@@ -97,11 +97,11 @@ export class NakoSyntaxError extends NakoError {
     if (!first) {
       return new NakoSyntaxError(msg, undefined, undefined, undefined, undefined)
     }
-    const startOffset = typeof first.startOffset === 'number' ? first.startOffset : undefined;
+    const startOffset = typeof first.startOffset === 'number' ? first.startOffset : undefined
     const endOffset =
       (last && typeof last.endOffset === 'number')
         ? last.endOffset
-        : (typeof first.endOffset === 'number' ? first.endOffset : undefined);
+        : (typeof first.endOffset === 'number' ? first.endOffset : undefined)
     return new NakoSyntaxError(msg, first.line, startOffset, endOffset, first.file)
   }
 

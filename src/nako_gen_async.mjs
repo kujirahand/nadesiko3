@@ -372,6 +372,7 @@ try {
                 if (t.type === 'def_func') {
                     const name = t.name.value;
                     this.used_func.add(name);
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
                     this.__self.__varslist[1][name] = function () { }; // 事前に適当な値を設定
                     this.nako_func[name] = {
                         josi: t.name.meta.josi,
@@ -1144,6 +1145,7 @@ try {
         this._convGen(node.block, false);
         this.varslistSet.pop();
         this.varsSet = this.varslistSet[this.varslistSet.length - 1];
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         this.__self.__varslist[1][funcName] = function () { };
         this.addCode(new NakoCode(NakoCodeReturn, ''));
         this.addCode(labelEnd);
@@ -1655,6 +1657,6 @@ if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') {
     // Webブラウザの場合
     const nako3 = navigator.nako3;
     if (nako3.addCodeGenerator) {
-        nako3.addCodeGenerator('非同期モード', NakoGenAsync);
+        nako3.addCodeGenerator('非同期モード', NakoGenASync);
     }
 }

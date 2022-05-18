@@ -299,7 +299,6 @@ export function checkNakoMode(code, modeNames) {
         if (modeNames.indexOf(line) >= 0) {
             return true;
         }
-        ;
     }
     return false;
 }

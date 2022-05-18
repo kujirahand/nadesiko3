@@ -4,7 +4,8 @@ export default {
         type: 'func',
         josi: [],
         pure: true,
-        fn: function (sys) {
+        fn: function (_sys) {
+            // 初期化不要
         }
     },
     // @三角関数

@@ -127,7 +127,7 @@ export class NakoParserBase {
             };
         }
         // グローバル変数（モジュールを検索）？
-        for (let mod of this.modList) {
+        for (const mod of this.modList) {
             const gname = `${mod}__${name}`;
             if (this.funclist[gname]) {
                 return {

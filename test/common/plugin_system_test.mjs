@@ -1,14 +1,16 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoCompiler } from '../../src/nako3.mjs'
 
+// eslint-disable-next-line no-undef
 describe('plugin_system_test', () => {
   const nako = new NakoCompiler()
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  const cmp = (code, res) => {
+  const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     nako.logger.debug('code=' + code)
     assert.strictEqual(nako.run(code).log, res)
   }
-  const cmpex = (code, exinfo) => {
+  const cmpex = (/** @type {string} */ code, /** @type {string | Error | undefined} */ exinfo) => {
     nako.logger.debug('code=' + code)
     assert.throws(() => { nako.run(code) }, exinfo)
   }
@@ -423,10 +425,10 @@ describe('plugin_system_test', () => {
     cmp('●Cとは\n5を戻す\nここまで\n「1+C()を表示する。」をナデシコする。C()を表示する。', '6\n5')
     cmp('「Dは4;Dを表示する。」をナデシコする。3+Dを表示する。', '4\n7')
     cmp('Eは5;「Eは3;Eを表示する。」をナデシコする。5+Eを表示する。', '3\n8')
-    //cmpex('「●Fとは\n2を戻す\nここまで\nF()を表示する。」をナデシコする。7+F()を表示する。', { name: 'Error', message: /関数『F』が見当たりません。/ })
+    // cmpex('「●Fとは\n2を戻す\nここまで\nF()を表示する。」をナデシコする。7+F()を表示する。', { name: 'Error', message: /関数『F』が見当たりません。/ })
     cmp('Bは2;Bを表示する。;「BはB+3。Bを表示する。」をナデシコする。Bを表示する。', '5\n5')
     cmp('Bは2;Bを表示する。;「BはB+3。Bを表示する。」をナデシコ続ける。Bを表示する。', '2\n5\n5')
-    cmp(`1と2を足す\n「それを表示」をナデシコする`, '3')
+    cmp('1と2を足す\n「それを表示」をナデシコする', '3')
   })
   it('敬語 #728', () => {
     cmp('32を表示してください', '32')
@@ -456,12 +458,15 @@ describe('plugin_system_test', () => {
       globalScope = global
       globalName = 'global'
     }
+    // @ts-ignore
     globalScope.jstest = () => { return 777 }
-    cmp('「'+globalName+'」の「jstest」を[]でJSメソッド実行して表示。', '777')
-    globalScope.jstest_x2 = (a) => { return a * 2 }
-    cmp('「'+globalName+'」の「jstest_x2」を30でJSメソッド実行して表示。', '60')
-    globalScope.jstest_mul = (a, b) => { return a * b }
-    cmp('「'+globalName+'」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
+    cmp('「' + globalName + '」の「jstest」を[]でJSメソッド実行して表示。', '777')
+    // @ts-ignore
+    globalScope.jstest_x2 = (/** @type {number} */ a) => { return a * 2 }
+    cmp('「' + globalName + '」の「jstest_x2」を30でJSメソッド実行して表示。', '60')
+    // @ts-ignore
+    globalScope.jstest_mul = (/** @type {number} */ a, /** @type {number} */ b) => { return a * b }
+    cmp('「' + globalName + '」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
   })
   it('BASE64 #1102', () => {
     cmp('「こんにちは」をBASE64エンコードして表示', '44GT44KT44Gr44Gh44Gv')

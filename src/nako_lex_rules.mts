@@ -4,15 +4,15 @@
 
 import { josiRE, removeJosiMap } from './nako_josi_list.mjs'
 
-const kanakanji: RegExp = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー\u2460-\u24FF\u2776-\u277F\u3251-\u32BF]+/
-const hira: RegExp = /^[ぁ-ん]/
-const allHiragana: RegExp = /^[ぁ-ん]+$/
-const wordHasIjoIka: RegExp = /^.+(以上|以下|超|未満)$/
+const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー\u2460-\u24FF\u2776-\u277F\u3251-\u32BF]+/
+const hira = /^[ぁ-ん]/
+const allHiragana = /^[ぁ-ん]+$/
+const wordHasIjoIka = /^.+(以上|以下|超|未満)$/
 const errorRead = (ch: string): any => {
   return function () { throw new Error('突然の『' + ch + '』があります。') }
 }
 
-export const unitRE: RegExp = /^(円|ドル|元|歩|㎡|坪|度|℃|°|個|つ|本|冊|才|歳|匹|枚|皿|セット|羽|人|件|行|列|機|品|m|mm|cm|km|g|kg|t|px|dot|pt|em|b|mb|kb|gb)/
+export const unitRE = /^(円|ドル|元|歩|㎡|坪|度|℃|°|個|つ|本|冊|才|歳|匹|枚|皿|セット|羽|人|件|行|列|機|品|m|mm|cm|km|g|kg|t|px|dot|pt|em|b|mb|kb|gb)/
 
 interface NakoLexParseResult {
   src: string;
@@ -27,8 +27,7 @@ export interface NakoLexRule {
   readJosi?: boolean;
   cb?: (v: string) => any;
   cbParser?: (v: string, b?: boolean) => NakoLexParseResult;
-};
-
+}
 
 export const rules: NakoLexRule[] = [
   // 上から順にマッチさせていく
@@ -150,7 +149,7 @@ function cbRangeComment (src: string): NakoLexParseResult {
 /**
  * @param {string} src
  */
-function cbWordParser (src: string, isTrimOkurigana: boolean = true): NakoLexParseResult {
+function cbWordParser (src: string, isTrimOkurigana = true): NakoLexParseResult {
   /*
     kanji    = [\u3005\u4E00-\u9FCF]
     hiragana = [ぁ-ん]

@@ -439,5 +439,5 @@ export default {
     getBlockStructure,
     getIndent,
     countIndent,
-    isIndentSyntaxEnabled,
+    isIndentSyntaxEnabled
 };

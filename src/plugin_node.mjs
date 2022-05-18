@@ -87,7 +87,7 @@ export default {
         pure: true,
         fn: function (s, f) {
             // Buffer?
-            if (typeof (s) === 'string') {
+            if (typeof s === 'string') {
                 fs.writeFileSync(f, s, 'utf-8');
             }
             else {
@@ -101,7 +101,7 @@ export default {
         josi: [['を', 'から']],
         pure: true,
         fn: function (s, sys) {
-            //iconv.skipDecodeWarning = true
+            // iconv.skipDecodeWarning = true
             const buf = fs.readFileSync(s);
             const text = iconv.decode(Buffer.from(buf), 'sjis');
             return text;
@@ -112,7 +112,7 @@ export default {
         josi: [['を'], ['へ', 'に']],
         pure: true,
         fn: function (s, f, sys) {
-            //iconv.skipDecodeWarning = true
+            // iconv.skipDecodeWarning = true
             const buf = iconv.encode(s, 'Shift_JIS');
             fs.writeFileSync(f, buf);
         },
@@ -626,9 +626,13 @@ export default {
         josi: [['と', 'を']],
         pure: true,
         asyncFn: true,
-        fn: function (msg, sys) {
-            return new Promise((resolve, _reject) => {
+        fn: function (msg) {
+            return new Promise((resolve, reject) => {
                 const rl = readline.createInterface(process.stdin, process.stdout);
+                if (!rl) {
+                    reject(new Error('『尋』命令で標準入力が取得できません'));
+                    return;
+                }
                 rl.question(msg, (buf) => {
                     rl.close();
                     if (buf && buf.match(/^[0-9.]+$/)) {
@@ -987,7 +991,7 @@ export default {
         josi: [['に', 'へ', 'を']],
         pure: true,
         fn: function (str, sys) {
-            //iconv.skipDecodeWarning = true
+            // iconv.skipDecodeWarning = true
             return iconv.encode(str, 'Shift_JIS');
         }
     },
@@ -996,7 +1000,7 @@ export default {
         josi: [['から', 'を', 'で']],
         pure: true,
         fn: function (buf, sys) {
-            //iconv.skipDecodeWarning = true
+            // iconv.skipDecodeWarning = true
             return iconv.decode(Buffer.from(buf), 'sjis');
         }
     },
@@ -1005,7 +1009,7 @@ export default {
         josi: [['を'], ['へ', 'で']],
         pure: true,
         fn: function (s, code, sys) {
-            //iconv.skipDecodeWarning = true
+            // iconv.skipDecodeWarning = true
             return iconv.encode(s, code);
         }
     },
@@ -1014,7 +1018,7 @@ export default {
         josi: [['を'], ['から', 'で']],
         pure: true,
         fn: function (buf, code, sys) {
-            //iconv.skipDecodeWarning = true
+            // iconv.skipDecodeWarning = true
             return iconv.decode(Buffer.from(buf), code);
         }
     },

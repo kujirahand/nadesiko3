@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoCompiler } from '../../src/nako3.mjs'
 import { expect } from 'chai'
@@ -11,7 +12,7 @@ describe('basic', () => {
   }
   const cmpNakoFuncs = (/** @type {string} */code, /** @type {Set<string>} */res) => {
     nako.logger.debug('code=' + code)
-    nako.run(code, '')
+    nako.parse(code, 'main.nako3')
     assert.deepStrictEqual(nako.usedFuncs, res)
   }
   // --- test ---
@@ -103,15 +104,18 @@ describe('basic', () => {
     cmp('A=50\nもしA=50ならば ／／ hogehoge\nAを表示\nここまで\n', '50')
   })
   it('ラインコメントに文字列記号があり閉じていないとエラーになる(#725)', () => {
-    cmp('A=50 # \"hogehoge\nAを表示', '50')
+    cmp('A=50 # "hogehoge\nAを表示', '50')
   })
   it('範囲コメントに文字列記号があり閉じていないとエラーになる(#731)', () => {
     cmp('A=50 /* " */Aを表示', '50')
     cmp('A=50 /* \' */Aを表示', '50')
   })
+  /*
+  // #1229
   it('usedFuncs', () => {
     cmpNakoFuncs('●({関数}fでaを)演算処理とは;それは、f(a);ここまで;●(aを)二倍処理とは;それはa*2;ここまで;二倍処理で2を演算処理して表示', new Set(['表示']))
   })
+  */
   it('論文などで使われる句読点「，」を「、」(#735)', () => {
     cmp('A1=30;B1=20;(A1+B1)を，表示', '50')
     cmp('A=３．１４;Aを，表示', '3.14')
@@ -148,12 +152,12 @@ describe('basic', () => {
     const naraba = out.tokens.find((t) => t.type === 'ならば')
 
     // 「存在する」
-    expect(sonzai).to.have.property("startOffset").and.to.equal(2)
-    expect(sonzai).to.have.property("endOffset").and.to.equal(6)
+    expect(sonzai).to.have.property('startOffset').and.to.equal(2)
+    expect(sonzai).to.have.property('endOffset').and.to.equal(6)
 
     // ならば
-    expect(naraba).to.have.property("startOffset").and.to.equal(6)
-    expect(naraba).to.have.property("endOffset").and.to.equal(9)
+    expect(naraba).to.have.property('startOffset').and.to.equal(6)
+    expect(naraba).to.have.property('endOffset').and.to.equal(9)
   })
   it('preCodeを考慮したソースマップ', () => {
     const preCode = '1を表示\n2を表示\n3を'
@@ -218,6 +222,7 @@ describe('basic', () => {
   })
   it('return_none: true のaddFuncで定義した関数が「それ」に値を代入しないことを確認する', () => {
     const nako = new NakoCompiler()
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     nako.addFunc('hoge', [], () => {}, true)
     assert.strictEqual(nako.run('1と2を足す\nhoge\nそれを表示', '').log, '3')
   })
@@ -243,8 +248,8 @@ describe('basic', () => {
         'もし、Fがhogeならば\n' +
         '    1を表示\n' +
         'ここまで',
-        // ---
-        '1')
+    // ---
+    '1')
   })
   it('無名関数が警告を出す問題の修正 #841', () => {
     let log = ''

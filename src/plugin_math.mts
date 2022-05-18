@@ -4,7 +4,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (_sys: any) {
+      // 初期化不要
     }
   },
   // @三角関数
@@ -222,7 +223,7 @@ export default {
   },
   '乱数範囲': { // @AからBまでの範囲の乱数を返す // @らんすうはんい
     type: 'func',
-    josi: [['から'],['までの','の']],
+    josi: [['から'], ['までの', 'の']],
     pure: true,
     fn: function (a, b) {
       return (Math.floor(Math.random() * (b - a + 1)) + a)

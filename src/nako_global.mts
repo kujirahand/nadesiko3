@@ -74,7 +74,7 @@ export class NakoGlobal {
    * @param {CompilerOptions} opts
    * @param {string} [preCode]
    */
-  runEx (code: string, fname: string, opts: CompilerOptions, preCode: string = '') {
+  runEx (code: string, fname: string, opts: CompilerOptions, preCode = '') {
     // スコープを共有して実行
     return this.compiler._runEx(code, fname, opts, preCode, this)
   }

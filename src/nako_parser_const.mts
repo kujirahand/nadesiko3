@@ -22,16 +22,16 @@ export const opPriority: {[key: string]: number} = {
   // * /
   '*': 5,
   '/': 5, // 一般的な割り算
-  '÷': 5,  // 一般的な割り算
+  '÷': 5, // 一般的な割り算
   '÷÷': 5, // 整数の割り算
   '%': 5,
   // ^
   '^': 6
-};
+}
 
 export const keizokuJosi: string[] = [
   'いて', 'えて', 'きて', 'けて', 'して', 'って', 'にて', 'みて', 'めて', 'ねて', 'には', 'んで'
-];
+]
 
-export const operatorList: string[] = [];
+export const operatorList: string[] = []
 for (const key in opPriority) { operatorList.push(key) }

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
  * なお速度優先で忠実にJavaScriptのコードを生成する。
@@ -51,7 +52,7 @@ export class NakoGen {
         this.__self = com;
         /** コードジェネレータの種類 */
         this.genMode = 'sync';
-        /** 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。*/
+        /** 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。 */
         this.lastLineNo = null;
         /** スタック */
         this.varslistSet = com.__varslist.map((v) => ({ isFunction: false, names: new Set(Object.keys(v)), readonly: new Set() }));
@@ -144,7 +145,7 @@ export class NakoGen {
     static getFuncName(name) {
         if (name.indexOf('__') >= 0) { // スコープがある場合
             const a = name.split('__');
-            let scope = a[0];
+            const scope = a[0];
             const name3 = NakoGen.getFuncName(a[1]);
             return `${scope}__${name3}`;
         }
@@ -318,16 +319,19 @@ export class NakoGen {
                     }
                     const name = t.name.value;
                     this.used_func.add(name);
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
                     this.__self.__varslist[1][name] = function () { }; // 事前に適当な値を設定
                     this.varslistSet[1].names.add(name); // global
                     const meta = (t.name).meta; // todo: 強制変換したが正しいかチェック
                     this.nako_func[name] = {
                         josi: meta.josi,
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
                         fn: () => { },
                         type: 'func',
                         asyncFn: t.asyncFn
                     };
                     funcList.push({ name: name, node: t });
+                    // eslint-disable-next-line brace-style
                 }
                 // 実行速度優先 などのオプションが付いている場合の処理
                 else if (t.type === 'speed_mode') {
@@ -408,11 +412,13 @@ export class NakoGen {
             case 'nop':
                 break;
             case 'block':
+                // eslint-disable-next-line no-case-declarations
                 const modName = NakoLexer.filenameToModName(node.file || '');
                 code += `;__self.__modName='${modName}';\n`;
                 if (!node.block) {
                     return code;
                 }
+                // eslint-disable-next-line no-case-declarations
                 const blocks = (node.block instanceof Array) ? node.block : [node.block];
                 for (let i = 0; i < blocks.length; i++) {
                     const b = blocks[i];
@@ -681,7 +687,7 @@ export class NakoGen {
             performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n';
         }
         let variableDeclarations = '';
-        let popStack = '';
+        const popStack = '';
         const initialNames = new Set();
         if (this.speedMode.invalidSore === 0) {
             initialNames.add('それ');
@@ -719,6 +725,7 @@ export class NakoGen {
                 // 既に generate で作成済みのはず(念のため)
                 this.nako_func[name] = {
                     josi: node.name.meta.josi,
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
                     fn: () => { },
                     type: 'func',
                     asyncFn: false
@@ -900,7 +907,7 @@ export class NakoGen {
         const kara = this._convGen(node.from, true);
         const made = this._convGen(node.to, true);
         let inc = '1';
-        if (node.inc !== null || node.inc === undefined || node.inc == 'null') {
+        if (node.inc !== null || node.inc === undefined || node.inc === 'null') {
             inc = this._convGen(node.inc, true);
         }
         // ループ内のブロック内容を得る
@@ -1045,7 +1052,7 @@ export class NakoGen {
         const varId = `$nako_i${id}`;
         const cond = this._convGen(node.cond, true);
         const block = this.convGenLoop(node.block);
-        const code = `for(;;) {\n` +
+        const code = 'for(;;) {\n' +
             `  ${block}\n` +
             `  let ${varId} = ${cond};\n` +
             `  if (${varId}) { continue } else { break }\n` +

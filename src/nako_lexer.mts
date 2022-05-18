@@ -6,16 +6,16 @@ import { opPriority } from './nako_parser_const.mjs'
 // (memo)「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」などは _replaceWord で word から変換
 /** @types {Record<string, string>} */
 import reservedWords from './nako_reserved_words.mjs'
-import {NakoLogger} from './nako_logger.mjs'
+import { NakoLogger } from './nako_logger.mjs'
 
 // 助詞の一覧
 import { josiRE, removeJosiMap, tararebaMap } from './nako_josi_list.mjs'
 
 // 字句解析ルールの一覧
-import { rules, unitRE } from './nako_lex_rules.mjs';
-import { NakoLexerError, InternalLexerError } from './nako_errors.mjs';
+import { rules, unitRE } from './nako_lex_rules.mjs'
+import { NakoLexerError, InternalLexerError } from './nako_errors.mjs'
 
-import { Token, FuncList, FuncArgs } from './nako_types.mjs';
+import { Token, FuncList, FuncArgs } from './nako_types.mjs'
 
 export class NakoLexer {
   public logger: NakoLogger;
@@ -27,11 +27,11 @@ export class NakoLexer {
    * @param logger
    */
   constructor (logger: NakoLogger) {
-    this.logger = logger; //字句解析した際,確認された関数の一覧
-    this.funclist = {};
-    this.modList = []; // 字句解析した際,取り込むモジュール一覧 --- nako3::lex で更新される
-    this.result = [];
-    this.modName = 'inline'; // モジュール名
+    this.logger = logger // 字句解析した際,確認された関数の一覧
+    this.funclist = {}
+    this.modList = [] // 字句解析した際,取り込むモジュール一覧 --- nako3::lex で更新される
+    this.result = []
+    this.modName = 'inline' // モジュール名
   }
 
   /** 関数一覧をセット */
@@ -124,8 +124,7 @@ export class NakoLexer {
         const t = tokens[i]
         i++
         if (t.type === ')') { break }
-        if (t.type === 'func') { isFuncPointer = true }
-        else if (t.type !== '|' && t.type !== 'comma') {
+        if (t.type === 'func') { isFuncPointer = true } else if (t.type !== '|' && t.type !== 'comma') {
           if (isFuncPointer) {
             t.funcPointer = true
             isFuncPointer = false
@@ -186,7 +185,7 @@ export class NakoLexer {
         continue
       }
       // 無名関数か普通関数定義かを判定する (1つ前が改行かどうかで判定)
-      let isMumei: boolean = true
+      let isMumei = true
       let prevToken = { type: 'eol' }
       if (i >= 1) { prevToken = tokens[i - 1] }
       if (prevToken.type === 'eol') { isMumei = false }
@@ -234,13 +233,13 @@ export class NakoLexer {
       defToken.meta = {
         type: 'func',
         josi,
-        varnames, 
+        varnames,
         funcPointers
       }
     }
   }
 
-  /** 文字列を{と}の部分で分割する。中括弧が対応していない場合nullを返す。*/
+  /** 文字列を{と}の部分で分割する。中括弧が対応していない場合nullを返す。 */
   splitStringEx (code: string): string[] | null {
     /** @type {string[]} */
     const list = []
@@ -285,7 +284,7 @@ export class NakoLexer {
             continue
           }
           // モジュール関数を置換
-          for (let mod of this.modList) {
+          for (const mod of this.modList) {
             const gname = `${mod}__${funcName}`
             const gfo = this.funclist[gname]
             if (gfo && gfo.type === 'func') {
@@ -300,7 +299,7 @@ export class NakoLexer {
         const fo = this.funclist[funcName]
         if (fo && fo.type === 'func') {
           t.type = 'func'
-          t.meta = fo;
+          t.meta = fo
         }
       }
       // 数字につくマイナス記号を判定
@@ -317,7 +316,7 @@ export class NakoLexer {
       // 助詞の「は」を = に展開
       if (t.josi === undefined) { t.josi = '' }
       if (t.josi === 'は') {
-        if (!t.rawJosi) { t.rawJosi = t.josi; }
+        if (!t.rawJosi) { t.rawJosi = t.josi }
         const startOffset = (t.endOffset === undefined) ? undefined : t.endOffset - t.rawJosi.length
         tokens.splice(i + 1, 0, {
           type: 'eq',
@@ -337,7 +336,7 @@ export class NakoLexer {
       }
       // 「とは」を一つの単語にする
       if (t.josi === 'とは') {
-        if (!t.rawJosi) { t.rawJosi = t.josi; }
+        if (!t.rawJosi) { t.rawJosi = t.josi }
         const startOffset = t.endOffset === undefined ? undefined : t.endOffset - t.rawJosi.length
         tokens.splice(i + 1, 0, {
           type: t.josi,
@@ -407,8 +406,8 @@ export class NakoLexer {
     const result: Token[] = []
     let columnCurrent
     let lineCurrent
-    let column: number = 1
-    let isDefTest: boolean = false
+    let column = 1
+    let isDefTest = false
     while (src !== '') {
       let ok = false
       // 各ルールについて
@@ -585,19 +584,21 @@ export class NakoLexer {
     }
     return result
   }
+
   // トークン配列をtype文字列に変換
-  static tokensToTypeStr(tokens: Token[], sep: string) {
+  static tokensToTypeStr (tokens: Token[], sep: string) {
     const a = tokens.map((v) => {
       return v.type
     })
     return a.join(sep)
   }
+
   /**
    * ファイル名からモジュール名へ変換
-   * @param {string} filename 
+   * @param {string} filename
    * @returns {string}
    */
-  static filenameToModName(filename: string) {
+  static filenameToModName (filename: string) {
     if (!filename) { return 'inline' }
     // パスがあればパスを削除
     filename = filename.replace(/[\\:]/g, '/') // Windowsのpath記号を/に置換

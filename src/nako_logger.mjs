@@ -1,9 +1,9 @@
 /** NakoLogger */
 import { NakoError } from './nako_errors.mjs';
 import { NakoColors } from './nako_colors.mjs';
-/** ログレベル - 数字が高いほど優先度が高い。*/
+/** ログレベル - 数字が高いほど優先度が高い。 */
 export class LogLevel {
-    // string to level no  
+    // string to level no
     static fromS(levelStr) {
         let level = LogLevel.trace;
         switch (levelStr) {
@@ -65,7 +65,7 @@ export class NakoLogger {
      * @param callback
      */
     addListener(levelStr, callback) {
-        let level = LogLevel.fromS(levelStr);
+        const level = LogLevel.fromS(levelStr);
         this.listeners.push({ level, callback });
     }
     /**
@@ -126,12 +126,12 @@ export class NakoLogger {
     log(message, position = null) {
         this.sendI(LogLevel.stdout, `${message}`, position);
     }
-    /** 指定したlevelのlistenerにメッセージを送る。htmlやbrowserConsoleは無ければnodeConsoleから生成する。*/
+    /** 指定したlevelのlistenerにメッセージを送る。htmlやbrowserConsoleは無ければnodeConsoleから生成する。 */
     send(levelStr, nodeConsole, position, html = null, browserConsole = null) {
         const i = LogLevel.fromS(levelStr);
         this.sendI(i, nodeConsole, position, html, browserConsole);
     }
-    /** 指定したlevelのlistenerにメッセージを送る。htmlやbrowserConsoleは無ければnodeConsoleから生成する。*/
+    /** 指定したlevelのlistenerにメッセージを送る。htmlやbrowserConsoleは無ければnodeConsoleから生成する。 */
     sendI(level, nodeConsole, position, html = null, browserConsole = null) {
         const makeData = () => {
             // nodeConsoleからnoColor, nodeCondoleなどの形式を生成する。

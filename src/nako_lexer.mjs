@@ -15,7 +15,7 @@ export class NakoLexer {
      * @param logger
      */
     constructor(logger) {
-        this.logger = logger; //字句解析した際,確認された関数の一覧
+        this.logger = logger; // 字句解析した際,確認された関数の一覧
         this.funclist = {};
         this.modList = []; // 字句解析した際,取り込むモジュール一覧 --- nako3::lex で更新される
         this.result = [];
@@ -244,7 +244,7 @@ export class NakoLexer {
             };
         }
     }
-    /** 文字列を{と}の部分で分割する。中括弧が対応していない場合nullを返す。*/
+    /** 文字列を{と}の部分で分割する。中括弧が対応していない場合nullを返す。 */
     splitStringEx(code) {
         /** @type {string[]} */
         const list = [];
@@ -288,7 +288,7 @@ export class NakoLexer {
                         continue;
                     }
                     // モジュール関数を置換
-                    for (let mod of this.modList) {
+                    for (const mod of this.modList) {
                         const gname = `${mod}__${funcName}`;
                         const gfo = this.funclist[gname];
                         if (gfo && gfo.type === 'func') {

@@ -84,7 +84,7 @@ export default {
     pure: true,
     fn: function (s: string, f: string) {
       // Buffer?
-      if (typeof(s) === 'string') { fs.writeFileSync(f, s, 'utf-8') } else { fs.writeFileSync(f, s) }
+      if (typeof s === 'string') { fs.writeFileSync(f, s, 'utf-8') } else { fs.writeFileSync(f, s) }
     },
     return_none: true
   },
@@ -93,7 +93,7 @@ export default {
     josi: [['を', 'から']],
     pure: true,
     fn: function (s: string, sys: any) {
-      //iconv.skipDecodeWarning = true
+      // iconv.skipDecodeWarning = true
       const buf = fs.readFileSync(s)
       const text = iconv.decode(Buffer.from(buf), 'sjis')
       return text
@@ -104,7 +104,7 @@ export default {
     josi: [['を'], ['へ', 'に']],
     pure: true,
     fn: function (s: string, f: string, sys: any) {
-      //iconv.skipDecodeWarning = true
+      // iconv.skipDecodeWarning = true
       const buf = iconv.encode(s, 'Shift_JIS')
       fs.writeFileSync(f, buf)
     },
@@ -134,7 +134,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を']],
     pure: true,
-    fn: function (callback: Function, s: string, sys: any) {
+    fn: function (callback: any, s: string, sys: any) {
       exec(s, (err, stdout, stderr) => {
         if (err) { throw new Error(stderr) } else { callback(stdout) }
       })
@@ -249,7 +249,7 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: Function, a: string, b: string, sys: any) {
+    fn: function (callback: any, a: string, b: string, sys: any) {
       return fse.copy(a, b, (err: any) => {
         if (err) { throw new Error('ファイルコピー時:' + err) }
         callback()
@@ -583,9 +583,13 @@ export default {
     josi: [['と', 'を']],
     pure: true,
     asyncFn: true,
-    fn: function (msg: string, sys: any) {
-      return new Promise((resolve, _reject) => {
+    fn: function (msg: string): Promise<any> {
+      return new Promise((resolve, reject) => {
         const rl = readline.createInterface(process.stdin, process.stdout)
+        if (!rl) {
+          reject(new Error('『尋』命令で標準入力が取得できません'))
+          return
+        }
         rl.question(msg, (buf: any) => {
           rl.close()
           if (buf && buf.match(/^[0-9.]+$/)) { buf = parseFloat(buf) }
@@ -617,7 +621,7 @@ export default {
       const result: string[] = []
       for (const dev in nif) {
         const n = nif[dev]
-        if (!n) { continue; }
+        if (!n) { continue }
         n.forEach((detail) => {
           if (detail.family === 'IPv4') { result.push(detail.address) }
         })
@@ -660,7 +664,7 @@ export default {
         callback(text)
       }).catch((err: any) => {
         console.log('[fetch.error]', err)
-        throw err;
+        throw err
       })
     },
     return_none: true
@@ -919,7 +923,7 @@ export default {
     josi: [['に', 'へ', 'を']],
     pure: true,
     fn: function (str: string, sys: any) {
-      //iconv.skipDecodeWarning = true
+      // iconv.skipDecodeWarning = true
       return iconv.encode(str, 'Shift_JIS')
     }
   },
@@ -928,7 +932,7 @@ export default {
     josi: [['から', 'を', 'で']],
     pure: true,
     fn: function (buf: any, sys: any) {
-      //iconv.skipDecodeWarning = true
+      // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), 'sjis')
     }
   },
@@ -937,7 +941,7 @@ export default {
     josi: [['を'], ['へ', 'で']],
     pure: true,
     fn: function (s: string, code: string, sys: any) {
-      //iconv.skipDecodeWarning = true
+      // iconv.skipDecodeWarning = true
       return iconv.encode(s, code)
     }
   },
@@ -946,7 +950,7 @@ export default {
     josi: [['を'], ['から', 'で']],
     pure: true,
     fn: function (buf: any, code: string, sys: any) {
-      //iconv.skipDecodeWarning = true
+      // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), code)
     }
   },

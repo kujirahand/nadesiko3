@@ -30,14 +30,14 @@ export class NakoParserBase {
     /** @type {import('./nako3.mjs').Ast[]} */
     this.stack = []
     this.index = 0
-    /** トークン出現チェック(accept関数)に利用する 
+    /** トークン出現チェック(accept関数)に利用する
      * @type {import('./nako3.mjs').Ast[]}
      */
     this.y = []
     /** モジュル名 @type {string} */
     this.modName = 'inline'
-    /** 
-     * 利用するモジュールの名前一覧 
+    /**
+     * 利用するモジュールの名前一覧
      * @type {Array<string>}
      */
     this.modList = []
@@ -45,11 +45,11 @@ export class NakoParserBase {
     this.funclist = {}
     this.funcLevel = 0
     this.usedAsyncFn = false // asyncFnの呼び出しがあるかどうか
-    /** 
+    /**
      * ローカル変数の確認用
-     * @type {Object.<string,Object>} 
+     * @type {Object.<string,Object>}
      */
-    this.localvars = {'それ': {type: 'var', value: ''}}
+    this.localvars = { 'それ': { type: 'var', value: '' } }
     /** コード生成器の名前 @type {string} */
     this.genMode = 'sync' // #637
     /** 配列のインデックスが先頭要素(#1140) @type {int} */
@@ -122,7 +122,7 @@ export class NakoParserBase {
    * @param {string} name
    * @returns {any}変数名の情報
    */
-  findVar(name: string): any {
+  findVar (name: string): any {
     // ローカル変数？
     if (this.localvars[name]) {
       return {
@@ -151,13 +151,13 @@ export class NakoParserBase {
       }
     }
     // グローバル変数（モジュールを検索）？
-    for (let mod of this.modList) {
+    for (const mod of this.modList) {
       const gname = `${mod}__${name}`
       if (this.funclist[gname]) {
         return {
           name: gname,
           scope: 'global',
-          info: this.funclist[gname] 
+          info: this.funclist[gname]
         }
       }
     }
@@ -186,7 +186,7 @@ export class NakoParserBase {
   isEOF (): boolean {
     return (this.index >= this.tokens.length)
   }
-  
+
   getIndex (): number {
     return this.index
   }
@@ -271,6 +271,7 @@ export class NakoParserBase {
     if (this.isEOF()) { return null }
     return this.tokens[this.index++]
   }
+
   /** カーソル語句を取得してカーソルを進める、取得できなければエラーを出す */
   getCur (): Token {
     if (this.isEOF()) { throw new Error('トークンが取得できません。') }
@@ -285,16 +286,17 @@ export class NakoParserBase {
 
   /** 解析中のトークンを返す */
   peek (i = 0): Token|null {
-    if (this.isEOF()) { return null; }
-    return this.tokens[this.index + i];
+    if (this.isEOF()) { return null }
+    return this.tokens[this.index + i]
   }
+
   /** 解析中のトークンを返す、無理なら def を返す */
   peekDef (def: Token|null = null): Token {
     if (this.isEOF()) {
       if (!def) { def = NewEmptyToken() }
-      return def; 
+      return def
     }
-    return this.tokens[this.index];
+    return this.tokens[this.index]
   }
 
   /**
@@ -315,21 +317,21 @@ export class NakoParserBase {
    * @param {boolean} debugMode
    */
   nodeToStr (node: Ast|Token|null, opts: {depth: number, typeName?: string}, debugMode: boolean): string {
-    const depth = opts.depth - 1;
-    const typeName = (name: string) => (opts.typeName !== undefined) ? opts.typeName : name;
-    const debug = debugMode ? (' debug: ' + JSON.stringify(node, null, 2)) : '';
-    if (!node) { return '(NULL)'; }
+    const depth = opts.depth - 1
+    const typeName = (name: string) => (opts.typeName !== undefined) ? opts.typeName : name
+    const debug = debugMode ? (' debug: ' + JSON.stringify(node, null, 2)) : ''
+    if (!node) { return '(NULL)' }
     switch (node.type) {
       case 'not':
         if (depth >= 0) {
-          const subNode: Ast = node.value as Ast;
+          const subNode: Ast = node.value as Ast
           return `${typeName('')}『${this.nodeToStr(subNode, { depth }, debugMode)}に演算子『not』を適用した式${debug}』`
         } else {
           return `${typeName('演算子')}『not』`
         }
       case 'op': {
-        const node2: Ast = node as Ast;
-        let operator: string = node2.operator || '';
+        const node2: Ast = node as Ast
+        let operator: string = node2.operator || ''
         const table:{[key: string]: string} = { eq: '＝', not: '!', gt: '>', lt: '<', and: 'かつ', or: 'または' }
         if (operator in table) {
           operator = table[operator]
@@ -358,12 +360,11 @@ export class NakoParserBase {
       case 'eof':
         return 'ファイルの末尾'
       default: {
-        let name:any = node.name;
-        if (name) { name = node.value; }
+        let name:any = node.name
+        if (name) { name = node.value }
         if (typeof name !== 'string') { name = node.type }
         return `${typeName('')}『${name}${debug}』`
       }
     }
   }
-  
 }

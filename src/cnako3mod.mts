@@ -11,23 +11,22 @@ import { NakoImportError } from './nako_errors.mjs'
 import app from './commander_ja.mjs'
 import nakoVersion from './nako_version.mjs'
 import fetch from 'node-fetch'
-import {Ast} from './nako_types.mjs'
+import { Ast } from './nako_types.mjs'
 
 // __dirname のために
 import url from 'url'
 import { NakoGlobal } from './nako_global.mjs'
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 interface CNako3Options {
   nostd: boolean;
 }
 
 export class CNako3 extends NakoCompiler {
-  
   debug: boolean;
-  
-  constructor (opts:CNako3Options = {nostd: false}) {
+
+  constructor (opts:CNako3Options = { nostd: false }) {
     super({ useBasicPlugin: !opts.nostd })
     this.debug = false
     this.silent = false
@@ -71,14 +70,14 @@ export class CNako3 extends NakoCompiler {
   /**
    * コマンドライン引数を解析
    * @returns {{
-   *  warn: boolean, 
-   *  debug: boolean, 
-   *  compile: any | boolean, 
-   *  test: any | boolean, 
-   *  one_liner: any | boolean, 
-   *  trace: any | boolean, 
-   *  run: any | boolean, 
-   *  repl: any | boolean, 
+   *  warn: boolean,
+   *  debug: boolean,
+   *  compile: any | boolean,
+   *  test: any | boolean,
+   *  one_liner: any | boolean,
+   *  trace: any | boolean,
+   *  run: any | boolean,
+   *  repl: any | boolean,
    *  source: any | string,
    *  mainfile: any | string,
    * }}
@@ -87,7 +86,7 @@ export class CNako3 extends NakoCompiler {
     const app: any = this.registerCommands()
 
     /** @type {import('./nako_logger.mjs').LogLevel} */
-    let logLevel: string = 'error'
+    let logLevel = 'error'
     if (app.trace) {
       logLevel = 'trace'
     } else if (app.debug) {
@@ -119,7 +118,7 @@ export class CNako3 extends NakoCompiler {
     }
     args.mainfile = app.args[0]
     args.output = app.output
-    
+
     // todo: ESModule 対応の '.mjs' のコードを履く #1217
     const ext = '.js'
     if (/\.(nako|nako3|txt|bak)$/.test(args.mainfile)) {
@@ -175,7 +174,7 @@ export class CNako3 extends NakoCompiler {
       await this.nakoCompile(opt, src, false)
       return
     }
-    
+
     // ASTを出力する
     if (opt.ast) {
       try {
@@ -223,7 +222,7 @@ export class CNako3 extends NakoCompiler {
     const jscode = this.compileStandalone(src, this.filename, isTest)
     console.log(opt.output)
     fs.writeFileSync(opt.output, jscode, 'utf-8')
-    
+
     /*
     // 実行に必要なファイルをコピー
     const nakoRuntime = __dirname
@@ -235,7 +234,7 @@ export class CNako3 extends NakoCompiler {
     // todo: 必要に応じてnode_modulesをコピー (時間が掛かりすぎるのでコピーしない)
     const dstModule = path.join(path.dirname(opt.output), 'node_modules')
     const orgModule = path.join(__dirname, '..', 'node_modules')
-    if (!fs.existsSync(dstModule)) { 
+    if (!fs.existsSync(dstModule)) {
       fs.mkdirSync(dstModule)
       fse.copySync(path.join(orgModule), path.join(dstModule))
     }
@@ -244,7 +243,7 @@ export class CNako3 extends NakoCompiler {
       fse.copySync(path.join(orgModule, mod), path.join(dstModule, mod))
     }
     */
-    
+
     if (opt.run) {
       exec(`node ${opt.output}`, function (err, stdout, stderr) {
         if (err) { console.log('[ERROR]', stderr) }
@@ -338,8 +337,8 @@ export class CNako3 extends NakoCompiler {
   // マニュアルを表示する
   cnakoMan (command: string) {
     try {
-      const path_commands = path.join(__dirname, '../release/command_cnako3.json')
-      const commands = JSON.parse(fs.readFileSync(path_commands, 'utf-8'))
+      const pathCommands = path.join(__dirname, '../release/command_cnako3.json')
+      const commands = JSON.parse(fs.readFileSync(pathCommands, 'utf-8'))
       const data = commands[command]
       for (const key in data) {
         console.log(`${key}: ${data[key]}`)
@@ -360,7 +359,7 @@ export class CNako3 extends NakoCompiler {
   }
 
   // (js|nako3) loader
-  getLoaderTools() {
+  getLoaderTools () {
     /** @type {string[]} */
     const log: string[] = []
     const tools: LoaderTool = {
@@ -397,7 +396,7 @@ export class CNako3 extends NakoCompiler {
         return { filePath: jspath2, type: 'js' }
       },
       readNako3: (name, token) => {
-        const loader:any = {task: null}
+        const loader:any = { task: null }
         // ファイルかHTTPか
         if (name.startsWith('http://') || name.startsWith('https://')) {
           // Webのファイルを非同期で読み込む
@@ -415,7 +414,7 @@ export class CNako3 extends NakoCompiler {
             throw new NakoImportError(`ファイル ${name} が存在しません。`, token.file, token.line)
           }
           loader.task = (new Promise((resolve, reject) => {
-            fs.readFile(name, {encoding: 'utf-8'}, (err, data) => {
+            fs.readFile(name, { encoding: 'utf-8' }, (err, data) => {
               if (err) { return reject(err) }
               resolve(data)
             })
@@ -425,7 +424,7 @@ export class CNako3 extends NakoCompiler {
         return loader
       },
       readJs: (filePath, token) => {
-        const loader: any = {task: null}
+        const loader: any = { task: null }
         if (process.platform === 'win32') {
           if (filePath.substring(1, 3) === ':\\') {
             filePath = 'file://' + filePath
@@ -439,41 +438,41 @@ export class CNako3 extends NakoCompiler {
             new Promise((resolve, reject) => {
               // 一時フォルダを得る
               const osTmpDir = (process.platform === 'win32') ? process.env.TEMP : '/tmp'
-              const osTmpDir2 = (osTmpDir) ? osTmpDir : path.join('./tmp')
+              const osTmpDir2 = (osTmpDir) || path.join('./tmp')
               const tmpDir = path.join(osTmpDir2, 'com.nadesi.v3.cnako')
-              const tmpFile = path.join(tmpDir, filePath.replace(/[^a-zA-Z0-9_\.]/g, '_'))
-              if (!fs.existsSync(tmpDir)) { fs.mkdirSync(tmpDir, {recursive: true})}
+              const tmpFile = path.join(tmpDir, filePath.replace(/[^a-zA-Z0-9_.]/g, '_'))
+              if (!fs.existsSync(tmpDir)) { fs.mkdirSync(tmpDir, { recursive: true }) }
               // WEBからダウンロード
               fetch(filePath)
-              .then((res: any) => {
-                return res.text()
-              })
-              .then((txt: string) => {
+                .then((res: any) => {
+                  return res.text()
+                })
+                .then((txt: string) => {
                 // 一時ファイルに保存
-                try {
-                  fs.writeFileSync(tmpFile, txt, 'utf-8')
-                } catch (err) {
-                  const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたJSファイルがキャッシュに書き込めません。${err}`, token.file, token.line)
-                  reject(err2)
-                }
-              })
-              .then(()=>{
+                  try {
+                    fs.writeFileSync(tmpFile, txt, 'utf-8')
+                  } catch (err) {
+                    const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたJSファイルがキャッシュに書き込めません。${err}`, token.file, token.line)
+                    reject(err2)
+                  }
+                })
+                .then(() => {
                 // 一時ファイルから読み込む
-                import(tmpFile).then((mod) => {
+                  import(tmpFile).then((mod) => {
                   // プラグインは export default で宣言
-                  const obj = Object.assign({}, mod)
-                  resolve(() => {
-                    return obj.default
+                    const obj = Object.assign({}, mod)
+                    resolve(() => {
+                      return obj.default
+                    })
+                  }).catch((err) => {
+                    const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたはずのJSファイル読み込めません。${err}`, token.file, token.line)
+                    reject(err2)
                   })
-                }).catch((err) => {
-                  const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたはずのJSファイル読み込めません。${err}`, token.file, token.line)
+                })
+                .catch((err: any) => {
+                  const err2 = new NakoImportError(`URL『${filePath}』からJSファイルが読み込めません。${err}`, token.file, token.line)
                   reject(err2)
                 })
-              })
-              .catch((err: any) => {
-                const err2 = new NakoImportError(`URL『${filePath}』からJSファイルが読み込めません。${err}`, token.file, token.line)
-                reject(err2)
-              })
             })
           )
           return loader
@@ -513,11 +512,11 @@ export class CNako3 extends NakoCompiler {
    * @param {string} [preCode]
    * @returns {Promise<NakoGlobal>}
    */
-  async runAsync (code: string, fname: string, preCode: string = ''): Promise<NakoGlobal> {
+  async runAsync (code: string, fname: string, preCode = ''): Promise<NakoGlobal> {
     // 取り込む文の処理
     try {
       await this.loadDependencies(code, fname, preCode)
-    } catch(err: any) {
+    } catch (err: any) {
       this.logger.error(err)
     }
     // 実行
@@ -539,15 +538,16 @@ export class CNako3 extends NakoCompiler {
     const exists = (f: string): boolean => {
       // 同じパスを何度も検索することがないように
       if (cachePath[f]) { return cachePath[f] }
-      const stat = fs.statSync(f, {throwIfNoEntry: false})
+      const stat = fs.statSync(f, { throwIfNoEntry: false })
       const b = !!(stat && stat.isFile())
-      return cachePath[f] = b
+      cachePath[f] = b
+      return b
     }
     /** 普通にファイルをチェック
      * @param {string} pathTest
      * @param {string} desc
      * @returns {boolean}
-     */ 
+     */
     const fCheck = (pathTest: string, desc: string): boolean => {
       // 素直に指定されたパスをチェック
       const bExists = exists(pathTest)
@@ -558,25 +558,25 @@ export class CNako3 extends NakoCompiler {
      * @param {string} pathTest
      * @param {string} desc
      * @returns {string}
-     */ 
-     const fCheckEx = (pathTest: string, desc: string): string => {
+     */
+    const fCheckEx = (pathTest: string, desc: string): string => {
       // 直接JSファイルが指定された？
       if (/\.(js|mjs)$/.test(pathTest)) {
         if (fCheck(pathTest, desc)) { return pathTest }
       }
       // 指定パスのpackage.jsonを調べる
       const json = path.join(pathTest, 'package.json')
-      if (fCheck(json, desc+'/package.json')) {
+      if (fCheck(json, desc + '/package.json')) {
         // package.jsonを見つけたので、メインファイルを調べて取り込む (CommonJSモジュール対策)
-        const json_txt = fs.readFileSync(json, 'utf-8')
-        const obj = JSON.parse(json_txt)
-        if (!obj['main']) { return '' } 
-        const mainFile = path.resolve(path.join(pathTest, obj['main']))
+        const jsonText = fs.readFileSync(json, 'utf-8')
+        const obj = JSON.parse(jsonText)
+        if (!obj.main) { return '' }
+        const mainFile = path.resolve(path.join(pathTest, obj.main))
         return mainFile
       }
       return ''
     }
-    
+
     // URL指定か?
     if (pname.substring(0, 8) === 'https://') {
       return pname

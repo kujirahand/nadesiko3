@@ -176,6 +176,7 @@ export class NakoCompiler {
                     continue;
                 }
                 // 初回の読み込み
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
                 dependencies[item.filePath] = { tokens: [], alias: new Set([item.value]), addPluginFile: () => { }, funclist: {} };
                 if (item.type === 'js' || item.type === 'mjs') {
                     loadJS(item, tasks);
@@ -198,7 +199,7 @@ export class NakoCompiler {
             if (result !== undefined) {
                 result.catch((err) => {
                     // 読み込みに失敗しても処理は続ける方針なので、失敗しても例外は投げない
-                    // たぶん、その後の構文解析でエラーになるため  
+                    // たぶん、その後の構文解析でエラーになるため
                     this.logger.warn(err.msg);
                 });
             }
@@ -367,7 +368,7 @@ export class NakoCompiler {
             const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value));
             if (filePath === undefined) {
                 if (!r.firstToken) {
-                    new Error(`ファイル『${r.value}』が読み込まれていません。`);
+                    throw new Error(`ファイル『${r.value}』が読み込まれていません。`);
                 }
                 throw new NakoLexerError(`ファイル『${r.value}』が読み込まれていません。`, r.firstToken.startOffset || 0, r.firstToken.endOffset || 0, r.firstToken.line, r.firstToken.file);
             }
@@ -494,7 +495,7 @@ export class NakoCompiler {
         if (['func', 'func_pointer'].includes(block.type) && block.name !== null && block.name !== undefined) {
             this.usedFuncs.add(block.name);
         }
-        astQueue.push.apply(astQueue, [block, block.block]);
+        astQueue.push([block, block.block]);
         blockQueue.push.apply(blockQueue, [block.value].concat(block.args));
     }
     deleteUnNakoFuncs() {
@@ -549,7 +550,7 @@ export class NakoCompiler {
         const opts = {
             resetEnv: isReset,
             resetAll: isReset,
-            testOnly: isTest,
+            testOnly: isTest
         };
         return this._runEx(code, fname, opts, preCode);
     }
@@ -628,7 +629,7 @@ export class NakoCompiler {
      * @param {string} fname
      * @param {string} [preCode]
      */
-    run(code, fname, preCode = '') {
+    run(code, fname = 'main.nako3', preCode = '') {
         return this._runEx(code, fname, { resetAll: false }, preCode);
     }
     /**
@@ -637,7 +638,7 @@ export class NakoCompiler {
      * @param {string} fname
      * @param {string} [preCode]
      */
-    runReset(code, fname, preCode = '') {
+    runReset(code, fname = 'main.nako3', preCode = '') {
         return this._runEx(code, fname, { resetAll: true }, preCode);
     }
     /**

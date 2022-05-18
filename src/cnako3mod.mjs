@@ -333,8 +333,8 @@ export class CNako3 extends NakoCompiler {
     // マニュアルを表示する
     cnakoMan(command) {
         try {
-            const path_commands = path.join(__dirname, '../release/command_cnako3.json');
-            const commands = JSON.parse(fs.readFileSync(path_commands, 'utf-8'));
+            const pathCommands = path.join(__dirname, '../release/command_cnako3.json');
+            const commands = JSON.parse(fs.readFileSync(pathCommands, 'utf-8'));
             const data = commands[command];
             for (const key in data) {
                 console.log(`${key}: ${data[key]}`);
@@ -439,9 +439,9 @@ export class CNako3 extends NakoCompiler {
                     loader.task = (new Promise((resolve, reject) => {
                         // 一時フォルダを得る
                         const osTmpDir = (process.platform === 'win32') ? process.env.TEMP : '/tmp';
-                        const osTmpDir2 = (osTmpDir) ? osTmpDir : path.join('./tmp');
+                        const osTmpDir2 = (osTmpDir) || path.join('./tmp');
                         const tmpDir = path.join(osTmpDir2, 'com.nadesi.v3.cnako');
-                        const tmpFile = path.join(tmpDir, filePath.replace(/[^a-zA-Z0-9_\.]/g, '_'));
+                        const tmpFile = path.join(tmpDir, filePath.replace(/[^a-zA-Z0-9_.]/g, '_'));
                         if (!fs.existsSync(tmpDir)) {
                             fs.mkdirSync(tmpDir, { recursive: true });
                         }
@@ -541,7 +541,8 @@ export class CNako3 extends NakoCompiler {
             }
             const stat = fs.statSync(f, { throwIfNoEntry: false });
             const b = !!(stat && stat.isFile());
-            return cachePath[f] = b;
+            cachePath[f] = b;
+            return b;
         };
         /** 普通にファイルをチェック
          * @param {string} pathTest
@@ -570,12 +571,12 @@ export class CNako3 extends NakoCompiler {
             const json = path.join(pathTest, 'package.json');
             if (fCheck(json, desc + '/package.json')) {
                 // package.jsonを見つけたので、メインファイルを調べて取り込む (CommonJSモジュール対策)
-                const json_txt = fs.readFileSync(json, 'utf-8');
-                const obj = JSON.parse(json_txt);
-                if (!obj['main']) {
+                const jsonText = fs.readFileSync(json, 'utf-8');
+                const obj = JSON.parse(jsonText);
+                if (!obj.main) {
                     return '';
                 }
-                const mainFile = path.resolve(path.join(pathTest, obj['main']));
+                const mainFile = path.resolve(path.join(pathTest, obj.main));
                 return mainFile;
             }
             return '';

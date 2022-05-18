@@ -17,7 +17,7 @@ const nako3version: NakoVersion = {波カッコ}
   minor: {MINOR},
   patch: {PATCH}
 {波カッコ閉}
-export default nako3version;
+export default nako3version
 」
 VSを表示。
 VSを「{基本パス}/src/nako_version.mts」へ保存。

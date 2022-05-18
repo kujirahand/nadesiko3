@@ -1,6 +1,6 @@
 
 interface PreprocessItem {
-  text: string; 
+  text: string;
   sourcePosition: number
 }
 
@@ -114,7 +114,7 @@ export class SourceMappingOfIndentSyntax {
      * @param {number | null} endOffset
      * @returns {{ startOffset: number | null, endOffset: number | null }}
      */
-  map (startOffset: number | null, endOffset:number | null): { startOffset: number | null, endOffset: number | null }  {
+  map (startOffset: number | null, endOffset:number | null): { startOffset: number | null, endOffset: number | null } {
     if (startOffset === null) {
       return { startOffset, endOffset }
     }
@@ -209,7 +209,7 @@ export class OffsetToLineColumn {
      * @param {boolean} oneBasedLineNumber trueのときlineを1から始める
      * @returns {{ line: number, column: number }}
      */
-  map (offset: number, oneBasedLineNumber: boolean):{ line: number, column: number }  {
+  map (offset: number, oneBasedLineNumber: boolean):{ line: number, column: number } {
     // 連続アクセスに対する高速化
     if (offset < this.lastOffset) {
       this.lastLineNumber = 0

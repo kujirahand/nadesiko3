@@ -11,10 +11,11 @@ export interface FuncListItem {
   value?: any;
   josi?: FuncArgs;
   isVariableJosi?: boolean;
-  fn?: null | ((...args: any[]) => any) | string | Function;
+  fn?: null | ((...args: any[]) => any) | string;
   varnames?: string[];
   funcPointers?: any[];
   asyncFn?: boolean;
+  // eslint-disable-next-line camelcase
   return_none?: boolean;
   pure?: boolean;
   name?: string;
@@ -44,6 +45,7 @@ export interface Token {
     tag?: string;
     preprocessedCodeOffset?: number | undefined;
     preprocessedCodeLength?: number | undefined;
+    // eslint-disable-next-line no-use-before-define
     name?: Token | Ast; // NakoPaserBase.nodeToStrの問題を回避するため
     start?: number;
     end?: number;
@@ -51,15 +53,15 @@ export interface Token {
     lastToken?: Token;
 }
 
-export function NewEmptyToken(type: string = '?', value: any = {}, line: number = 0, file: string = 'main.nako3'): Token {
-    return {
-        type,
-        value,
-        line,
-        column: 0,
-        file,
-        josi: ''
-    }
+export function NewEmptyToken (type = '?', value: any = {}, line = 0, file = 'main.nako3'): Token {
+  return {
+    type,
+    value,
+    line,
+    column: 0,
+    file,
+    josi: ''
+  }
 }
 
 export interface Ast {
@@ -75,9 +77,10 @@ export interface Ast {
     operator?: string; // 演算子の場合
     left?: Ast | Ast[]; // 演算子の場合
     right?: Ast | Ast[]; // 演算子の場合
+    // eslint-disable-next-line camelcase
     false_block?: Ast[] | Ast; // if
     from?: Ast[] | Ast; // for
-    to?: Ast[] | Ast; // for 
+    to?: Ast[] | Ast; // for
     inc?: Ast[] | Ast | null; // for
     word?: Ast | null; // for
     name?: Token | Ast | null | string;

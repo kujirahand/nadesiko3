@@ -35,4 +35,4 @@ const reserved: {[key: string]: string} = {
   'モード設定': 'モード設定', // (#1020)
   '取込': '取込'
 }
-export default reserved;
+export default reserved

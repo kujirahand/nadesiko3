@@ -10,7 +10,6 @@ const errorRead = (ch) => {
     return function () { throw new Error('突然の『' + ch + '』があります。'); };
 };
 export const unitRE = /^(円|ドル|元|歩|㎡|坪|度|℃|°|個|つ|本|冊|才|歳|匹|枚|皿|セット|羽|人|件|行|列|機|品|m|mm|cm|km|g|kg|t|px|dot|pt|em|b|mb|kb|gb)/;
-;
 export const rules = [
     // 上から順にマッチさせていく
     { name: 'ここまで', pattern: /^;;;/ },

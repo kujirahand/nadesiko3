@@ -9,10 +9,10 @@ interface DeletedLine {
   len: number;
 }
 
-interface ConvertResult { 
-  code: string; 
+interface ConvertResult {
+  code: string;
   insertedLines: number[];
-  deletedLines: DeletedLine[] 
+  deletedLines: DeletedLine[]
 }
 
 interface BlockStruct {
@@ -40,7 +40,7 @@ function convert (code: string, filename: string): ConvertResult {
  * @param {string} code
  * @returns {boolean}
  */
- function isIndentSyntaxEnabled(code: string): boolean {
+function isIndentSyntaxEnabled (code: string): boolean {
   return checkNakoMode(code, INDENT_MODE_KEYWORDS)
 }
 
@@ -271,7 +271,7 @@ function convertGo (code: string, filename: string) {
 
 /**
  * count分だけ字下げする
- * @param {number} count 
+ * @param {number} count
  */
 function makeIndent (count: number): string {
   let s = ''
@@ -321,7 +321,7 @@ function countIndent (line: string): number {
 }
 
 /**
- * @param {string} src 
+ * @param {string} src
  * @returns {string}
  */
 function replaceRetMark (src: string): string {
@@ -488,5 +488,5 @@ export default {
   getBlockStructure,
   getIndent,
   countIndent,
-  isIndentSyntaxEnabled,
+  isIndentSyntaxEnabled
 }

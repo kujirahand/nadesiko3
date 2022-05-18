@@ -76,16 +76,16 @@ export class NakoParser extends NakoParserBase {
             const desc = words.join(',');
             // 最近使った関数の使い方レポートを作る #1093
             let descFunc = '';
-            let chA = 'A'.charCodeAt(0);
-            for (let f of this.recentlyCalledFunc) {
+            const chA = 'A'.charCodeAt(0);
+            for (const f of this.recentlyCalledFunc) {
                 descFunc += ' - ';
                 let no = 0;
                 const josiA = f.josi;
                 if (josiA) {
-                    for (let arg of josiA) {
+                    for (const arg of josiA) {
                         const ch = String.fromCharCode(chA + no);
                         descFunc += ch;
-                        if (arg.length == 1) {
+                        if (arg.length === 1) {
                             descFunc += arg[0];
                         }
                         else {
@@ -318,7 +318,7 @@ export class NakoParser extends NakoParserBase {
         try {
             this.funcLevel++;
             this.usedAsyncFn = false;
-            // ローカル変数を生成     
+            // ローカル変数を生成
             const backupLocalvars = this.localvars;
             this.localvars = { 'それ': { type: 'var', value: '' } };
             if (multiline) {
@@ -963,9 +963,9 @@ export class NakoParser extends NakoParserBase {
         // スタックに(増や|減ら)してがある？
         const incdec = this.stack.pop();
         if (incdec) {
-            if (incdec.type == 'word' && (incdec.value === '増' || incdec.value === '減')) {
+            if (incdec.type === 'word' && (incdec.value === '増' || incdec.value === '減')) {
                 kurikaesu.type = incdec.value + kurikaesu.type;
-                // ↑ typeを増繰返 | 減繰返 に変換 
+                // ↑ typeを増繰返 | 減繰返 に変換
             }
             else {
                 // 普通の繰り返しの場合
@@ -1119,7 +1119,7 @@ export class NakoParser extends NakoParserBase {
             }
             // 違えば？
             let cond = null;
-            let condToken = this.peek();
+            const condToken = this.peek();
             if (condToken && condToken.type === '違えば') {
                 // 違えば
                 skippedKokomade = false;
@@ -1236,15 +1236,19 @@ export class NakoParser extends NakoParserBase {
                 value: value,
                 josi: '',
                 checkInit: this.flagCheckArrayInit,
-                ...map, end: this.peekSourceMap()
+                ...map,
+                end: this.peekSourceMap()
             };
         }
         // 一般的な変数への代入
         const word2 = this.getVarName(word);
         return {
-            type: 'let', name: word2,
-            value: value, josi: '',
-            ...map, end: this.peekSourceMap()
+            type: 'let',
+            name: word2,
+            value: value,
+            josi: '',
+            ...map,
+            end: this.peekSourceMap()
         };
     }
     /** 定める構文 */
@@ -1265,8 +1269,10 @@ export class NakoParser extends NakoParserBase {
             type: 'def_local_var',
             name: nameToken,
             vartype: '定数',
-            value: value, josi: '',
-            ...map, end: this.peekSourceMap()
+            value: value,
+            josi: '',
+            ...map,
+            end: this.peekSourceMap()
         };
     }
     yIncDec() {
@@ -1298,7 +1304,8 @@ export class NakoParser extends NakoParserBase {
             name: word,
             value: value,
             josi: action.josi,
-            ...map, end: this.peekSourceMap()
+            ...map,
+            end: this.peekSourceMap()
         };
     }
     yCall() {
@@ -1651,7 +1658,7 @@ export class NakoParser extends NakoParserBase {
         }
         // ローカル変数定義
         if (this.accept(['word', 'とは'])) {
-            let word = this.getVarName(this.y[0]);
+            const word = this.getVarName(this.y[0]);
             if (!this.checkTypes(['変数', '定数'])) {
                 throw NakoSyntaxError.fromNode('ローカル変数『' + word.value + '』の定義エラー', word);
             }
@@ -1676,7 +1683,7 @@ export class NakoParser extends NakoParserBase {
         }
         // ローカル変数定義（その２）
         if (this.accept(['変数', 'word', 'eq', this.yCalc])) {
-            let word = this.getVarName(this.y[1]);
+            const word = this.getVarName(this.y[1]);
             return {
                 type: 'def_local_var',
                 name: word,
@@ -1687,7 +1694,7 @@ export class NakoParser extends NakoParserBase {
             };
         }
         if (this.accept(['定数', 'word', 'eq', this.yCalc])) {
-            let word = this.getVarName(this.y[1]);
+            const word = this.getVarName(this.y[1]);
             return {
                 type: 'def_local_var',
                 name: word,
@@ -1809,7 +1816,7 @@ export class NakoParser extends NakoParserBase {
      */
     checkArrayIndex(node) {
         // 配列が0から始まるのであればそのまま返す
-        if (this.arrayIndexFrom == 0) {
+        if (this.arrayIndexFrom === 0) {
             return node;
         }
         // 配列が1から始まるのであれば演算を加えて返す
@@ -1821,8 +1828,8 @@ export class NakoParser extends NakoParserBase {
             'right': {
                 ...node,
                 'type': 'number',
-                'value': this.arrayIndexFrom,
-            },
+                'value': this.arrayIndexFrom
+            }
         };
     }
     /**
@@ -2168,7 +2175,7 @@ export class NakoParser extends NakoParserBase {
             if (this.accept(['[', this.yCalc, 'comma', this.yCalc, ']'])) {
                 const index = [
                     this.checkArrayIndex(this.y[1]),
-                    this.checkArrayIndex(this.y[3]),
+                    this.checkArrayIndex(this.y[3])
                 ];
                 ast.index = this.checkArrayReverse(index);
                 ast.josi = this.y[4].josi;
@@ -2180,7 +2187,7 @@ export class NakoParser extends NakoParserBase {
                 const index = [
                     this.checkArrayIndex(this.y[1]),
                     this.checkArrayIndex(this.y[3]),
-                    this.checkArrayIndex(this.y[5]),
+                    this.checkArrayIndex(this.y[5])
                 ];
                 ast.index = this.checkArrayReverse(index);
                 ast.josi = this.y[6].josi;

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
  * なお速度優先で忠実にJavaScriptのコードを生成する。
@@ -5,7 +6,7 @@
 
 import { NakoSyntaxError, NakoError, NakoRuntimeError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
-import  nakoVersion from './nako_version.mjs'
+import nakoVersion from './nako_version.mjs'
 import { Ast, FuncList, FuncArgs, Token } from './nako_types.mjs'
 import { NakoCompiler } from './nako3.mjs'
 
@@ -97,8 +98,8 @@ export class NakoGen {
      * 非同関数を何回使ったか
      */
     this.numAsyncFn = 0
-    
-    /** 
+
+    /**
      * 関数定義の際、関数の中でasyncFn=trueの関数を呼び出したかどうかを調べる @see convDefFuncCommon
      */
     this.usedAsyncFn = false
@@ -111,7 +112,7 @@ export class NakoGen {
     /** コードジェネレータの種類 */
     this.genMode = 'sync'
 
-    /** 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。*/
+    /** 行番号とファイル名が分かるときは `l123:main.nako3`、行番号だけ分かるときは `l123`、そうでなければ任意の文字列。 */
     this.lastLineNo = null
 
     /** スタック */
@@ -139,7 +140,7 @@ export class NakoGen {
       mumeiId: 0
     }
 
-    /** 
+    /**
      * 未定義の変数の警告を行う
      */
     this.warnUndefinedVar = true
@@ -162,7 +163,7 @@ export class NakoGen {
    * @param {Ast} node
    * @param {boolean} forceUpdate
    */
-  convLineno (node: Ast, forceUpdate: boolean = false): string {
+  convLineno (node: Ast, forceUpdate = false): string {
     if (this.speedMode.lineNumbers > 0) { return '' }
 
     let lineNo: string
@@ -201,17 +202,16 @@ export class NakoGen {
     }
   }
 
-  /** 
+  /**
    * @param {string} name
    * @returns {string}
   */
   static getFuncName (name: string): string {
     if (name.indexOf('__') >= 0) { // スコープがある場合
       const a = name.split('__')
-      let scope = a[0]
+      const scope = a[0]
       const name3 = NakoGen.getFuncName(a[1])
       return `${scope}__${name3}`
-
     }
     let name2 = name.replace(/[ぁ-ん]+$/, '')
     if (name2 === '') { name2 = name }
@@ -340,7 +340,7 @@ export class NakoGen {
    * @param josi 助詞
    * @param fn 関数
    */
-  addFunc (key: string, josi: FuncArgs, fn: Function) {
+  addFunc (key: string, josi: FuncArgs, fn: any) {
     this.__self.addFunc(key, josi, fn)
   }
 
@@ -349,7 +349,7 @@ export class NakoGen {
    * @param key 関数名
    * @param fn 関数
    */
-  setFunc (key: string, fn: Function) {
+  setFunc (key: string, fn: any) {
     // this.__self.setFunc(key, fn)
     throw new Error('非推奨の関数 setFunc を使いました')
   }
@@ -378,19 +378,22 @@ export class NakoGen {
       for (let i = 0; i < blockList.length; i++) {
         const t = blockList[i]
         if (t.type === 'def_func') {
-          if (!t.name) { throw new Error('[System Error] 関数の定義で関数名が指定されていない')}
+          if (!t.name) { throw new Error('[System Error] 関数の定義で関数名が指定されていない') }
           const name: string = (t.name as Token).value
           this.used_func.add(name)
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           this.__self.__varslist[1][name] = function () { } // 事前に適当な値を設定
           this.varslistSet[1].names.add(name) // global
           const meta = ((t.name) as Ast).meta // todo: 強制変換したが正しいかチェック
           this.nako_func[name] = {
             josi: meta.josi,
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             fn: () => {},
             type: 'func',
             asyncFn: t.asyncFn
           }
-          funcList.push({name: name, node: t})
+          funcList.push({ name: name, node: t })
+        // eslint-disable-next-line brace-style
         }
         // 実行速度優先 などのオプションが付いている場合の処理
         else if (t.type === 'speed_mode') {
@@ -400,8 +403,7 @@ export class NakoGen {
           } else {
             registFunc(t)
           }
-        }
-        else if (t.type === 'performance_monitor') {
+        } else if (t.type === 'performance_monitor') {
           if (!t.block) { continue }
           if ((t.block as Ast).type === 'block') {
             registFunc(t.block as Ast)
@@ -421,7 +423,7 @@ export class NakoGen {
     }
     this.varsSet = { isFunction: false, names: initialNames, readonly: new Set() }
     this.varslistSet = this.__self.__varslist.map((v) => ({ isFunction: false, names: new Set(Object.keys(v)), readonly: new Set() }))
-    this.varslistSet[2] = this.varsSet   
+    this.varslistSet[2] = this.varsSet
   }
 
   /**
@@ -459,10 +461,12 @@ export class NakoGen {
       case 'nop':
         break
       case 'block':
-        const modName = NakoLexer.filenameToModName(node.file || '')
+        // eslint-disable-next-line no-case-declarations
+        const modName: string = NakoLexer.filenameToModName(node.file || '')
         code += `;__self.__modName='${modName}';\n`
         if (!node.block) { return code }
-        const blocks: Ast[] = (node.block instanceof Array) ? node.block as Ast[] : [node.block]
+        // eslint-disable-next-line no-case-declarations
+        const blocks: any = (node.block instanceof Array) ? node.block : [node.block]
         for (let i = 0; i < blocks.length; i++) {
           const b = blocks[i]
           code += this._convGen(b, false)
@@ -728,7 +732,7 @@ export class NakoGen {
       performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n'
     }
     let variableDeclarations = ''
-    let popStack = ''
+    const popStack = ''
     const initialNames: Set<string> = new Set()
     if (this.speedMode.invalidSore === 0) {
       initialNames.add('それ')
@@ -765,6 +769,7 @@ export class NakoGen {
         // 既に generate で作成済みのはず(念のため)
         this.nako_func[name] = {
           josi: (node.name as Ast).meta.josi,
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           fn: () => {},
           type: 'func',
           asyncFn: false
@@ -825,7 +830,7 @@ export class NakoGen {
 
     this.varslistSet.pop()
     this.varsSet = this.varslistSet[this.varslistSet.length - 1]
-    if (name) {this.__self.__varslist[1][name] = code }
+    if (name) { this.__self.__varslist[1][name] = code }
     return code
   }
 
@@ -855,7 +860,7 @@ export class NakoGen {
     // ※ 関数の定義はプログラムの冒頭に移される。
     // ※ そのため、生成されたコードはここでは返さない
     // ※ registerFunction を参照
-    if (!node.name) { return ''}
+    if (!node.name) { return '' }
     const name = NakoGen.getFuncName((node.name as Ast).value as string)
     this.convDefFuncCommon(node, name)
     return ''
@@ -951,8 +956,8 @@ export class NakoGen {
     // ループ条件を確認
     const kara = this._convGen(node.from as Ast, true)
     const made = this._convGen(node.to as Ast, true)
-    let inc: string = '1'
-    if (node.inc !== null || node.inc === undefined || node.inc == 'null') {
+    let inc = '1'
+    if (node.inc !== null || node.inc === undefined || node.inc === 'null') {
       inc = this._convGen(node.inc as Ast, true)
     }
     // ループ内のブロック内容を得る
@@ -1100,7 +1105,7 @@ export class NakoGen {
     const cond = this._convGen(node.cond as Ast, true)
     const block = this.convGenLoop(node.block as Ast)
     const code =
-      `for(;;) {\n` +
+      'for(;;) {\n' +
       `  ${block}\n` +
       `  let ${varId} = ${cond};\n` +
       `  if (${varId}) { continue } else { break }\n` +
@@ -1195,7 +1200,7 @@ export class NakoGen {
         args.push(this.varname('それ'))
         opts.sore = true
       } else {
-        args.push(this._convGen(arg, true)) 
+        args.push(this._convGen(arg, true))
       }
     }
     return [args, opts]
@@ -1466,9 +1471,9 @@ export class NakoGen {
     let res = this.findVar(name)
     let code = ''
     if (res === null) {
-        this.varsSet.names.add(name)
-        res = this.findVar(name)
-        if (!res) { throw new Error('『増』または『減』で変数が見当たりません。') }
+      this.varsSet.names.add(name)
+      res = this.findVar(name)
+      if (!res) { throw new Error('『増』または『減』で変数が見当たりません。') }
     }
     const jsName = res.js
     // 自動初期化するか
@@ -1603,7 +1608,7 @@ export function generateJS (com: NakoCompiler, ast: Ast, isTest: boolean): NakoG
 
   // (2) JSコードを生成する
   let js = gen.convGen(ast, !!isTest)
-  
+
   // (3) JSコードを実行するための事前ヘッダ部分の生成
   js = gen.getDefFuncCode(isTest) + js
 
@@ -1663,7 +1668,7 @@ ${js}
   throw err;
 }
 // </standaloneCode>
-`  
+`
   return {
     // なでしこの実行環境ありの場合
     runtimeEnv: js,

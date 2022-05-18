@@ -20,7 +20,7 @@ export const removeJosiList: string[] = [
   'こと', 'である', 'です', 'します', 'でした'
 ]
 
-/** 
+/**
  * 「もし」文で使う「たら」「れば」などの一覧をプログラムで扱いやすいようマップに変換したもの
  */
 export const tararebaMap: {[key:string]: boolean} = {}
@@ -29,7 +29,7 @@ tararebaJosiList.forEach(josi => {
   tararebaMap[josi] = true
 })
 
-/** 
+/**
  * 意味のない助詞(削除する)をマップに変換したもの
  */
 export const removeJosiMap: {[key:string]: boolean} = {}
@@ -42,5 +42,4 @@ removeJosiList.forEach(josi => {
 josiList.sort((a, b) => b.length - a.length)
 
 // 正規表現で助詞をマッチできるようにする
-export const josiRE:RegExp = new RegExp('^[\\t ]*(' + josiList.join('|') + ')')
-
+export const josiRE = new RegExp('^[\\t ]*(' + josiList.join('|') + ')')

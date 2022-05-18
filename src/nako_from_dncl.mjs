@@ -18,7 +18,7 @@ export function convertDNCL(src, filename) {
     if (!checkNakoMode(src, DNCL_KEYWORDS)) {
         return src;
     }
-    let result = dncl2nako(src, filename);
+    const result = dncl2nako(src, filename);
     // console.log("=====\n" + result)
     // process.exit()
     return result;
@@ -39,7 +39,7 @@ function isIndentSyntaxEnabled(src) {
  * make space string
  * @param {number} n
  */
-function make_spaces(n) {
+function makeSpaces(n) {
     let s = '';
     for (let i = 0; i < n; i++) {
         s += ' ';
@@ -62,7 +62,7 @@ function dncl2nako(src, filename) {
         // インデントを消す
         let line = a[i];
         a[i] = line.replace(/^(\s*[|\s]+)(.*$)/, (m0, m1, m2) => {
-            return make_spaces(m1.length) + m2;
+            return makeSpaces(m1.length) + m2;
         });
         line = a[i];
         // 後判定の繰り返しの実装のため
@@ -82,9 +82,9 @@ function dncl2nako(src, filename) {
             a[i] = `もし、${sent};`;
             continue;
         }
-        //'のすべての値を0にする'
-        //'のすべての要素を0にする'
-        //'のすべての要素に0を代入する'
+        // 'のすべての値を0にする'
+        // 'のすべての要素を0にする'
+        // 'のすべての要素に0を代入する'
         const rall = line.match(/^(.+?)のすべての(要素|値)(を|に)(.+?)(にする|を代入)/);
         if (rall) {
             const varname = rall[1];
@@ -98,7 +98,7 @@ function dncl2nako(src, filename) {
     // 置換開始
     // ---------------------------------
     // 単純置換リスト
-    const simple_conv_list = {
+    const simpleConvList = {
         'を実行する': 'ここまで',
         'を実行し,そうでなくもし': '違えば、もし',
         'を実行し，そうでなくもし': '違えば、もし',
@@ -111,11 +111,11 @@ function dncl2nako(src, filename) {
         'ずつ増やしながら': 'ずつ増やし繰り返す',
         'ずつ減らしながら': 'ずつ減らし繰り返す',
         '二進で表示': '二進表示',
-        'でないならば': 'でなければ',
+        'でないならば': 'でなければ'
     };
-    let peekChar = () => src.charAt(0);
-    let nextChar = () => {
-        let ch = src.charAt(0);
+    const peekChar = () => src.charAt(0);
+    const nextChar = () => {
+        const ch = src.charAt(0);
         src = src.substring(1);
         return ch;
     };
@@ -125,7 +125,7 @@ function dncl2nako(src, filename) {
     let endStr = '';
     // 結果
     let result = '';
-    while (src != '') {
+    while (src !== '') {
         // 代入記号を変更
         const ch = src.charAt(0);
         if (flagStr) {
@@ -140,26 +140,26 @@ function dncl2nako(src, filename) {
             continue;
         }
         // 文字列？
-        if (ch == '"') {
+        if (ch === '"') {
             flagStr = true;
             endStr = '"';
             poolStr = nextChar();
             continue;
         }
-        if (ch == '「') {
+        if (ch === '「') {
             flagStr = true;
             endStr = '」';
             poolStr = nextChar();
             continue;
         }
-        if (ch == '『') {
+        if (ch === '『') {
             flagStr = true;
             endStr = '』';
             poolStr = nextChar();
             continue;
         }
         // 空白を飛ばす
-        if (ch === ' ' || ch === '　' || ch == '\t') {
+        if (ch === ' ' || ch === '　' || ch === '\t') {
             result += nextChar();
             continue;
         }
@@ -190,20 +190,18 @@ function dncl2nako(src, filename) {
             src = src.substring(3);
         }
         // 一覧から単純な変換
-        {
-            let flag = false;
-            for (let key in simple_conv_list) {
-                const src_key = src.substring(0, key.length);
-                if (src_key === key) {
-                    result += simple_conv_list[key];
-                    src = src.substring(key.length);
-                    flag = true;
-                    break;
-                }
+        let flag = false;
+        for (const key in simpleConvList) {
+            const srcKey = src.substring(0, key.length);
+            if (srcKey === key) {
+                result += simpleConvList[key];
+                src = src.substring(key.length);
+                flag = true;
+                break;
             }
-            if (flag) {
-                continue;
-            }
+        }
+        if (flag) {
+            continue;
         }
         // 1文字削る
         result += nextChar();
@@ -222,7 +220,7 @@ function conv2half(src) {
     let flagStr = false;
     let flagStrClose = '';
     for (let i = 0; i < src.length; i++) {
-        let c = src.charAt(i);
+        const c = src.charAt(i);
         let cHalf = prepare.convert1ch(c);
         if (flagStr) {
             if (cHalf === flagStrClose) {

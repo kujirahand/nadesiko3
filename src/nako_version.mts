@@ -13,4 +13,4 @@ const nako3version: NakoVersion = {
   minor: 3,
   patch: 18
 }
-export default nako3version;
+export default nako3version
