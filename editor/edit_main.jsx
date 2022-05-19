@@ -1,7 +1,7 @@
 // @ts-nocheck
 // edit_main.js --- for demo editor
 import React from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import dayjs from 'dayjs'
 import commandListJSON from '../release/command.json'
 
@@ -131,7 +131,8 @@ try {
     if (data.autoLoad && window.localStorage['nako3/editor/code']) {
       code = window.localStorage['nako3/editor/code']
     }
-    ReactDOM.render(<Editor code={code} editorId={i} autoSave={data.autoLoad ? 'nako3/editor/code' : undefined} />, e)
+    const doc = ReactDOM.createRoot(e)
+    doc.render(<Editor code={code} editorId={i} autoSave={data.autoLoad ? 'nako3/editor/code' : undefined} />)
   }
 } catch (err) {
   console.error(err) // IE11

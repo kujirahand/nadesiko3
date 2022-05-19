@@ -6,7 +6,6 @@ import { NakoError } from 'nadesiko3core/src/nako_errors.mjs';
 import NakoIndent from 'nadesiko3core/src/nako_indent.mjs';
 import { NakoPrepare } from 'nadesiko3core/src/nako_prepare.mjs';
 import { NakoLogger } from 'nadesiko3core/src/nako_logger.mjs';
-
 // alias
 const getBlockStructure = NakoIndent.getBlockStructure;
 const getIndent = NakoIndent.getIndent;
@@ -1507,7 +1506,7 @@ export function setupEditor(idOrElement, nako3, ace) {
                 return nako3.compile(preCode + code, file, false, preCode);
             }
             else {
-                return nako3.runReset(preCode + code, file, preCode);
+                return nako3.run(preCode + code, file, preCode);
             }
         })
             .catch((_) => {

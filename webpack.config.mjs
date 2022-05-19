@@ -7,6 +7,7 @@ import TerserPlugin from 'terser-webpack-plugin' // サイズ縮小プラグイ�
 // @ts-ignore
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const srcPath = path.join(__dirname, 'src')
+const srcCorePath = path.join(__dirname, 'node_modules/nadesiko3core/src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
 
@@ -22,11 +23,11 @@ export default {
   entry: {
     wnako3: [path.join(srcPath, 'wnako3.mjs')], // plugin_system+plugin_browser含む
     wnako3webworker: [path.join(srcPath, 'wnako3webworker.mjs')], // plugin_system+plugin_browser_in_worker含む
-    nako_gen_async: [path.join(srcPath, 'nako_gen_async.mjs')], // なでしこ3非同モード
+    nako_gen_async: [path.join(srcCorePath, 'nako_gen_async.mjs')], // なでしこ3非同モード
     plugin_kansuji: [path.join(srcPath, 'plugin_kansuji.mjs')],
     plugin_markup: [path.join(srcPath, 'plugin_markup.mjs')],
     plugin_turtle: [path.join(srcPath, 'plugin_turtle.mjs')],
-    plugin_csv: [path.join(srcPath, 'plugin_csv.mjs')],
+    // plugin_csv: [path.join(srcPath, 'plugin_csv.mjs')],
     plugin_datetime: [path.join(srcPath, 'plugin_datetime.mjs')],
     plugin_caniuse: [path.join(srcPath, 'plugin_caniuse.mjs')],
     plugin_webworker: [path.join(srcPath, 'plugin_webworker.mjs')],

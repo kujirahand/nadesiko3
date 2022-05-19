@@ -2,11 +2,11 @@
 /* eslint-disable no-template-curly-in-string */
 /** なでしこのtokenのtypeをscope（CSSのクラス名）に変換する。 */
 
-import { OffsetToLineColumn } from './nako_source_mapping.mjs'
-import { NakoError } from './nako_errors.mjs'
-import NakoIndent from './nako_indent.mjs'
-import { NakoPrepare } from './nako_prepare.mjs'
-import { NakoLogger } from './nako_logger.mjs'
+import { OffsetToLineColumn } from 'nadesiko3core/src/nako_source_mapping.mjs'
+import { NakoError } from 'nadesiko3core/src/nako_errors.mjs'
+import NakoIndent from 'nadesiko3core/src/nako_indent.mjs'
+import { NakoPrepare } from 'nadesiko3core/src/nako_prepare.mjs'
+import { NakoLogger } from 'nadesiko3core/src/nako_logger.mjs'
 
 // alias
 const getBlockStructure = NakoIndent.getBlockStructure
@@ -1619,7 +1619,7 @@ export function setupEditor (idOrElement, nako3, ace) {
         } else if (opts.method === 'compile') {
           return nako3.compile(preCode + code, file, false, preCode)
         } else {
-          return nako3.runReset(preCode + code, file, preCode)
+          return nako3.run(preCode + code, file, preCode)
         }
       })
       .catch((_) => {

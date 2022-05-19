@@ -11,20 +11,20 @@
 REPOSパス=基本パスを「../」で相対パス展開。
 
 基本プラグイン一覧は[
-    ['src/plugin_system.mts', 'wnako,cnako,phpnako'],
+    ['node_modules/nadesiko3core/src/plugin_system.mts', 'wnako,cnako,phpnako'],
+    ['node_modules/nadesiko3core/src/plugin_csv.mts', 'wnako,cnako'],
+    ['node_modules/nadesiko3core/src/plugin_math.mts', 'wnako,cnako'],
+    ['node_modules/nadesiko3core/src/plugin_promise.mts', 'wnako']
     ['src/plugin_browser.mjs','wnako'],
     ['src/plugin_turtle.mjs', 'wnako'],
     ['src/plugin_node.mts', 'cnako,phpnako'],
     ['src/plugin_express.mjs', 'cnako'],
     ['src/plugin_markup.mjs', 'wnako,cnako'],
-    ['src/plugin_math.mjs', 'wnako,cnako'],
-    ['src/plugin_csv.mjs', 'wnako,cnako'],
     ['src/plugin_datetime.mjs', 'wnako,cnako'],
     ['src/plugin_caniuse.mjs', 'wnako,cnako'],
     ['src/plugin_kansuji.mjs', 'wnako,cnako'],
     ['src/plugin_weykturtle3d.mjs', 'wnako'],
     ['src/plugin_webworker.mjs', 'wnako'],
-    ['src/plugin_promise.mts', 'wnako']
 ]
 拡張プラグイン一覧は[
     ['nadesiko3-sqlite3/nadesiko3-sqlite3.js', 'cnako'],    

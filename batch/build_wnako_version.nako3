@@ -4,20 +4,20 @@ VER=P@"version"
 定数[MAJOR,MINOR,PATCH]=(VERを「.」で区切る)
 VS=「/** なでしこバージョン */
 // 型定義
-export interface NakoVersion {波カッコ}
+export interface WNakoVersion {波カッコ}
     version: string;
     major: number;
     minor: number;
     patch: number;
 {波カッコ閉}
 // 実際のバージョン定義
-const nako3version: NakoVersion = {波カッコ}
+const wnako3version: WNakoVersion = {波カッコ}
   version: '{VER}',
   major: {MAJOR},
   minor: {MINOR},
   patch: {PATCH}
 {波カッコ閉}
-export default nako3version
+export default wnako3version
 」
 VSを表示。
-VSを「{基本パス}/src/nako_version.mts」へ保存。
+VSを「{基本パス}/src/wnako_version.mts」へ保存。
