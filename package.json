@@ -196,7 +196,7 @@
     "ws": "^8.5.0"
   },
   "dependencies": {
-    "nadesiko3core": "^3.3.19",
+    "nadesiko3core": "^3.3.21",
     "body-parser": "^1.20.0",
     "browserslist": "^4.20.2",
     "caniuse-db": "^1.0.30001332",

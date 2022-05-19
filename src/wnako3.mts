@@ -11,6 +11,7 @@ const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 class WebNakoCompiler extends NakoCompiler {
   constructor () {
     super({ useBasicPlugin: true })
+    this.addPluginObject('PluginBrowser', PluginBrowser)
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
   }
 
@@ -35,7 +36,9 @@ class WebNakoCompiler extends NakoCompiler {
         this.run(script.text, fname)
       }
     }
-    console.log('実行したなでしこの個数=', nakoScriptCount)
+    if (nakoScriptCount > 1) {
+      console.log('実行したなでしこの個数=', nakoScriptCount)
+    }
   }
 
   /**
@@ -203,9 +206,11 @@ function resolveURL (base: string, s: string) {
 // ブラウザなら navigator.nako3 になでしこを登録
 if ((typeof navigator) === 'object' && !(navigator as any).exportWNako3) {
   const nako3 = (navigator as any).nako3 = new WebNakoCompiler()
-  nako3.addPluginObject('PluginBrowser', PluginBrowser)
   window.addEventListener('DOMContentLoaded', (e) => {
     const isAutoRun = nako3.checkScriptTagParam()
     if (isAutoRun) { nako3.runNakoScript() }
   }, false)
-} else { module.exports = WebNakoCompiler }
+} else {
+  // export default WebNakoCompiler
+  console.error('wnako3 import error')
+}

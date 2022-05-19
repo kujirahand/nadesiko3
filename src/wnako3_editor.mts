@@ -723,7 +723,7 @@ export class LanguageFeatures {
      * @param {number} endRow
      */
   static toggleCommentLines (state, { doc }, startRow, endRow) {
-    const prepare = NakoPrepare.getInstance(new NakoLogger())
+    const prepare = NakoPrepare.getInstance()
     /**
          * @param {string} line
          * @returns {{ type: 'blank' | 'code' } | { type: 'comment', start: number, len: number }}
@@ -1241,10 +1241,9 @@ class Options {
     // showSettingsMenu 関数は new OptionPanel(editor).render() で新しい設定パネルのインスタンスを生成するため、
     // renderメソッドを上書きすることで、生成されたインスタンスにアクセスできる。
     const render = OptionPanel.prototype.render
-    const self = this
+    const self: any = globalThis
     OptionPanel.prototype.render = function (...args) {
       render.apply(this, ...args) // 元の処理
-
       // OptionPanel.setOption() で発火される setOption イベントをキャッチする
       this.on('setOption', () => {
         console.log('設定を保存しました。')
@@ -1601,40 +1600,45 @@ export function setupEditor (idOrElement, nako3, ace) {
       })
       opts.outputContainer.classList.add('nako3-output-container')
     }
-    const file = opts.file || 'main.nako3'
+    let filename = opts.file || 'main.nako3'
 
     // 警告とエラーをエディタ上に表示する。
     logger.addListener('info', ({ position, noColor, level }) => {
-      if (position.file === file && (level === 'warn' || level === 'error')) {
+      if (position && (position.file === filename && (level === 'warn' || level === 'error'))) {
         editorMarkers.addByError(code, { ...position, message: noColor }, level)
       }
     })
 
     // 依存ファイルを読み込む。
-    const promise = nako3.loadDependencies(preCode + code, file, preCode, opts.localFiles || {})
+    const promise = nako3.loadDependencies(preCode + code, filename, preCode, opts.localFiles || {})
       .then(() => {
         // プログラムを実行する。
+        if (!filename) { filename = 'main.nako3' }
         if (opts.method === 'test') {
-          return nako3.test(preCode + code, file, preCode, opts.testName)
+          return nako3.test(preCode + code, filename, preCode, opts.testName)
         } else if (opts.method === 'compile') {
-          return nako3.compile(preCode + code, file, false, preCode)
+          return nako3.compile(preCode + code, filename, false, preCode)
         } else {
-          return nako3.run(preCode + code, file, preCode)
+          return nako3.runReset(preCode + code, filename, preCode)
         }
       })
-      .catch((_) => {
-        // エラーはloggerに送られるためここでは何もしなくて良い
+      .catch((err) => {
+        // エラーはloggerに送られるため何もしなくて良い
+        // しかし念のため console.error で出力
+        console.error('[wnako3_editor]', err)
       })
       .then(async (res) => {
         // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
         retokenize()
-
         // シンタックスハイライトが終わるのを待つ
         while (backgroundTokenizer.dirty) {
           await new Promise((resolve) => setTimeout(resolve, 0))
         }
         return res
-      }).catch((err) => { console.error(err) })
+      })
+      .catch((err) => {
+        console.error('[wnako3_editor::run::promise]', err)
+      })
 
     return { promise, logger, code }
   }

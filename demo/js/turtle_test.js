@@ -23,7 +23,8 @@ function runBox (id) {
   displayId = id + '_info'
   document.getElementById(displayId).innerHTML = ''
   try {
-    navigator.nako3.runReset(src)
+    console.log('defCode=', defCode)
+    navigator.nako3.run(src, 'main.nako3', defCode)
     document.getElementById('backlink').href = '#' + id + '_head'
     window.location.href = '#run'
     document.getElementById('err').style.display = 'none'
