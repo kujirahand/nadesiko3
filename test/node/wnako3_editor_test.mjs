@@ -6,10 +6,10 @@ import fs from 'fs'
 import path from 'path'
 import { expect } from 'chai'
 
-import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import { tokenize, LanguageFeatures, BackgroundTokenizer } from '../../src/wnako3_editor.mjs'
 import { CNako3 } from '../../src/cnako3mod.mjs'
-import { NakoLexerError } from '../../src/nako_errors.mjs'
+import { NakoLexerError } from 'nadesiko3core/src/nako_errors.mjs'
 
 // __dirname のために
 import url from 'url'

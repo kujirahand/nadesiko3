@@ -1,7 +1,6 @@
-// nadesiko for web browser
-// wnako3.js
-import { NakoCompiler } from './nako3.mjs';
-import { NakoImportError } from './nako_errors.mjs';
+// wnako3 - nadesiko for web browser
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs';
+import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs';
 import { setupEditor } from './wnako3_editor.mjs';
 import PluginBrowser from './plugin_browser.mjs';
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/;

@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginMarkup from '../../src/plugin_markup.mjs'
 import { CNako3 } from '../../src/cnako3mod.mjs'
 

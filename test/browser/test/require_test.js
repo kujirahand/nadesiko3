@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { NakoImportError } from 'nako3/nako_errors.mjs'
+import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
 
 navigator.exportWNako3 = true
 const WebNakoCompiler = require('nako3/wnako3.mjs')

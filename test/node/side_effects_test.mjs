@@ -2,9 +2,9 @@
 import assert from 'assert'
 import path from 'path'
 
-import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import { CNako3 } from '../../src/cnako3mod.mjs'
-import { NakoSyntaxError } from '../../src/nako_errors.mjs'
+import { NakoSyntaxError } from 'nadesiko3core/src/nako_errors.mjs'
 
 // __dirname のために
 import url from 'url'

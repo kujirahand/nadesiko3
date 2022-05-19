@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import path from 'path'
 import PluginNode from '../../src/plugin_node.mjs'
-import PluginCSV from '../../src/plugin_csv.mjs'
+import PluginCSV from 'nadesiko3core/src/plugin_csv.mjs'
 
 // __dirname のために
 import url from 'url'

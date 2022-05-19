@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginBrowser from '../../src/plugin_browser.mjs'
 
 describe('plugin_browser_test', () => {

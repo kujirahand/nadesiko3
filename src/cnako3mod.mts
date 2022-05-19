@@ -5,19 +5,23 @@
 import fs from 'fs'
 import { exec } from 'child_process'
 import path from 'path'
-import { NakoCompiler, LoaderTool, LoaderToolTask } from './nako3.mjs'
+
+import core from 'nadesiko3core'
+import { NakoCompiler, LoaderTool, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
+import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
+import { Ast } from 'nadesiko3core/src/nako_types.mjs'
+import { NakoGlobal } from 'nadesiko3core/src/nako_global.mjs'
+
 import PluginNode from './plugin_node.mjs'
-import { NakoImportError } from './nako_errors.mjs'
 import app from './commander_ja.mjs'
-import nakoVersion from './nako_version.mjs'
 import fetch from 'node-fetch'
-import { Ast } from './nako_types.mjs'
 
 // __dirname のために
 import url from 'url'
-import { NakoGlobal } from './nako_global.mjs'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+const nakoVersion = core.version
 
 interface CNako3Options {
   nostd: boolean;
@@ -617,9 +621,15 @@ export class CNako3 extends NakoCompiler {
     }
 
     // ランタイムパス/node_modules/<plugin>
-    const pathRuntime = path.join(path.resolve(__dirname), 'node_modules', pname)
-    const fileRuntime = fCheckEx(pathRuntime, 'runtime')
+    const pathRuntime = path.join(path.dirname(path.resolve(__dirname)))
+    const pathRuntimePname = path.join(pathRuntime, 'node_modules', pname)
+    const fileRuntime = fCheckEx(pathRuntimePname, 'runtime')
     if (fileRuntime) { return fileRuntime }
+
+    // ランタイムパス/node_modules/nadesiko3core/src/<plugin>
+    const pathRuntimeSrc2 = path.join(pathRuntime, 'node_modules', 'nadesiko3core', 'src', pname) // cnako3mod.mjs は ランタイム/src に配置されていることが前提
+    const fileRuntimeSrc2 = fCheckEx(pathRuntimeSrc2, 'runtimeSrcPath2')
+    if (fileRuntimeSrc2) { return fileRuntimeSrc2 }
 
     // 環境変数 NAKO_HOMEか?
     if (process.env.NAKO_HOME) {

@@ -3,7 +3,7 @@ import assert from 'assert'
 import path from 'path'
 
 import { CNako3 } from '../../src/cnako3mod.mjs'
-import { NakoImportError } from '../../src/nako_errors.mjs'
+import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
 
 // __dirname のために
 import url from 'url'

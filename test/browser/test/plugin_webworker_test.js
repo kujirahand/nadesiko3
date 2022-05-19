@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 import { assert } from 'chai'
-import { NakoCompiler } from 'nako3/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginBrowser from 'nako3/plugin_browser.mjs'
 import { importStatus } from './import_plugin_checker.js'
 import PluginWebWorker from 'nako3/plugin_webworker.mjs'

@@ -1,6 +1,6 @@
 /* global __html__ */
 import { assert } from 'chai'
-import { NakoCompiler } from 'nako3/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import { importStatus } from './import_plugin_checker.js'
 import PluginTurtle from 'nako3/plugin_turtle.mjs'
 

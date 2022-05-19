@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginMarkup from '../../src/plugin_markup.mjs'
 
 // eslint-disable-next-line no-undef

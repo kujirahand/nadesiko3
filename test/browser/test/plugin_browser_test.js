@@ -1,5 +1,5 @@
 import 'whatwg-fetch'
-import { NakoCompiler } from 'nako3/nako3.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginBrowser from 'nako3/plugin_browser.mjs'
 
 import browserTestColor from './plugin_browser_test_color.js'

@@ -2,8 +2,8 @@
 /* eslint-disable no-undef */
 import assert from 'assert'
 import path from 'path'
-import { NakoCompiler } from '../../src/nako3.mjs'
-import { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } from '../../src/nako_errors.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
+import { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } from 'nadesiko3core/src/nako_errors.mjs'
 import { CNako3 } from '../../src/cnako3mod.mjs'
 
 // eslint-disable-next-line no-undef

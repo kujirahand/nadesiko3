@@ -1,7 +1,7 @@
 // @ts-nocheck
 /* eslint-disable no-undef */
 import assert from 'assert'
-import { Nako3Assert } from '../../src/nako3_assert.mjs'
+import { Nako3Assert } from 'nadesiko3core/src/nako3_assert.mjs'
 
 // eslint-disable-next-line no-undef
 describe('async_test', () => {

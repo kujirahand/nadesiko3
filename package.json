@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.3.18",
+  "version": "3.3.19",
   "description": "Japanese Programming Language",
   "main": "src/index.mjs",
   "bin": {
@@ -101,6 +101,7 @@
   "_moduleAliases": {
     "root": ".",
     "nako3": "./src",
+    "core": "./node_modules/nadesiko3core/src",
     "utils": "./utils"
   },
   "devDependencies": {
@@ -195,6 +196,7 @@
     "ws": "^8.5.0"
   },
   "dependencies": {
+    "nadesiko3core": "^3.3.19",
     "body-parser": "^1.20.0",
     "browserslist": "^4.20.2",
     "caniuse-db": "^1.0.30001332",
