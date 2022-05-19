@@ -10,9 +10,9 @@
 
 日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
 
-- [なでしこのWebサイト](https://nadesi.com/top/)
-  - [なでしこ3のWebサイト](https://nadesi.com/doc3/)
-  - [なでしこ3(GitHub Pages)](https://kujirahand.github.io/nadesiko3/)
+- [なでしこのWebサイト](https://nadesi.com/) / [なでしこ3のGitHub Pages)](https://kujirahand.github.io/nadesiko3/)
+- [なでしこ3のマニュアル](https://nadesi.com/v3/doc/)
+- [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
 
 ## 対応機器/ブラウザ
 
@@ -38,6 +38,10 @@
 - [なでしこ3配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
 - [なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 
+## 開発に必要な関連リポジトリ
+
+- [なでしこ3言語エンジン - nadesiko3core](https://github.com/kujirahand/nadesiko3core/)
+
 ## その他のなでしこ3について
 
 実験的な意味合いもありますが、各プログラミング言語で実装したなでしこ3があります。なでしこ3PHPでは掲示板、チャットなど、それなりに実用的なプログラムも作れます。
@@ -45,6 +49,7 @@
 - [なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
 - [なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
 - [なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
+
 
 ## npm でなでしこ3コマンドライン版をインストール
 
@@ -107,7 +112,7 @@ npm run test:all
 
 「なでしこ3」の開発は2017年に始まり、以後コツコツとバージョンアップを続けています。「誰でも簡単プログラマー」の目標を実現するために、これからも頑張ります。
 
-- (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更
+- (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更。言語コアを別リポジトリに移動。
 - (2022-04-20) v3.3.2を公開(モジュール構造をCommonJS→ESModuleへ変更/asyncFnの実装)
 - (2021-04-09) v3.2.1を公開
 - (2020-04-24) v3.1.2を公開
