@@ -51,11 +51,12 @@ FNAME="無題.nako3"
 ●P実行処理
   「実行」を表示。
   S=「#body」のDOMテキスト取得
-  「/run」へ{
+  {
     "file": 「#name」のDOMテキスト取得,
     "body": 「#body」のDOMテキスト取得,
     "appkey": APPKEY
-  }をPOST送信した時には
+  }のPOSTデータ生成して、Pに代入。
+  「/run?{P}」へGET送信した時には
     H＝対象をHTML変換して改行を「<br />」に置換。
     Hで「エラー]」が何文字目。
     もし、そうならば
@@ -70,11 +71,12 @@ FNAME="無題.nako3"
 ●P保存処理
   「保存」を表示。
   S=「#body」のDOMテキスト取得
-  「/save」へ{
+  {
     "file": 「#name」のDOMテキスト取得,
     "body": 「#body」のDOMテキスト取得,
     "appkey": APPKEY
-  }をPOST送信した時には
+  }のPOSTデータ生成して、Pに代入。
+  「/save?{P}」へGET送信した時には
     H=対象をHTML変換。
     「#result」にHをDOMテキスト設定。
   ここまで。

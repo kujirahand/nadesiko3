@@ -74,8 +74,8 @@ const PluginBrowser = {
             };
             sys.__tohtmlQ = (text) => {
                 return sys.__tohtml(text)
-                    .replace(/\"/g, '&#34;')
-                    .replace(/\'/g, '&#39;');
+                    .replace(/"/g, '&#34;')
+                    .replace(/'/g, '&#39;');
             };
             // 「!クリア」でDOMイベントを削除するため
             sys.__dom_events = []; // [{}, {}, {} ...]

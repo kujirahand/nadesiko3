@@ -4,13 +4,18 @@
 import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs';
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs';
 import { setupEditor } from './wnako3_editor.mjs';
+import wnakoVersion from './wnako_version.mjs';
 import PluginBrowser from './plugin_browser.mjs';
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/;
 export class WebNakoCompiler extends NakoCompiler {
     constructor() {
         super({ useBasicPlugin: true });
+        this.wnakoVersion = wnakoVersion;
+        // プラグインを追加
         this.addPluginObject('PluginBrowser', PluginBrowser);
+        // 必要な定数を埋める
         this.__varslist[0]['ナデシコ種類'] = 'wnako3';
+        this.__varslist[0]['WNAKOバージョン'] = wnakoVersion.version;
     }
     /**
      * ブラウザでtype="なでしこ"というスクリプトを得て実行する

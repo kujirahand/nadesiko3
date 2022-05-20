@@ -9,6 +9,7 @@
 - [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
   - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コア
 - [なでしこ3拡張プラグイン](https://nadesi.com/v3/doc/index.php?FAQ%2F%E6%8B%A1%E5%BC%B5%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&show)
+  - [nadesiko3-server](https://github.com/kujirahand/nadesiko3-server) --- Webサーバ(HTTP)
   - [nadesiko3-websocket](https://github.com/kujirahand/nadesiko3-websocket) --- WebSocket
   - [nadesiko3-office](https://github.com/kujirahand/nadesiko3-office) --- Excelなど
   - [nadesiko3-sqlite3](https://github.com/kujirahand/nadesiko3-sqlite3/) --- SQLite3

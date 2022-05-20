@@ -1,5 +1,6 @@
 export default {
   // @システム
+  'WNAKOバージョン': { type: 'const', value: '' }, // @WNAKOなでしこランタイムバージョン(言語エンジンのナデシコバージョンと異なることがある) // @WNAKOばーじょん
   '終': { // @ブラウザでプログラムの実行を強制終了する // @おわる
     type: 'func',
     josi: [],
@@ -15,16 +16,16 @@ export default {
     pure: true,
     fn: function () {
       const ua = window.navigator.userAgent.toLowerCase()
-      if (ua.indexOf('windows') !== -1) { return "windows" }
-      if (ua.indexOf('android') !== -1) { return "android" }
-      if (ua.indexOf('iphone') !== -1) { return "iphone" }
-      if (ua.indexOf('ipad') !== -1) { return "ipad" }
-      if (ua.indexOf('mac os x') !== -1) { return "darwin" }
-      if (ua.indexOf('macintosh') !== -1) { return "darwin" }
-      if (ua.indexOf('cros') !== -1) { return "chromeos" }
-      if (ua.indexOf('ubuntu') !== -1) { return "ubuntu" }
-      if (ua.indexOf('linux') !== -1) { return "linux" }
-      return "unknown"
+      if (ua.indexOf('windows') !== -1) { return 'windows' }
+      if (ua.indexOf('android') !== -1) { return 'android' }
+      if (ua.indexOf('iphone') !== -1) { return 'iphone' }
+      if (ua.indexOf('ipad') !== -1) { return 'ipad' }
+      if (ua.indexOf('mac os x') !== -1) { return 'darwin' }
+      if (ua.indexOf('macintosh') !== -1) { return 'darwin' }
+      if (ua.indexOf('cros') !== -1) { return 'chromeos' }
+      if (ua.indexOf('ubuntu') !== -1) { return 'ubuntu' }
+      if (ua.indexOf('linux') !== -1) { return 'linux' }
+      return 'unknown'
     }
   }
 }

@@ -56,8 +56,8 @@ const PluginBrowser = {
     pure: true,
     fn: function (sys) {
       /* eslint no-global-assign: 0 */
-      const doc = (typeof document === 'undefined') ? {'body': {}} : document
-      const win = (typeof window === 'undefined') ? {'location': { 'href': '' }} : window
+      const doc = (typeof document === 'undefined') ? { 'body': {} } : document
+      const win = (typeof window === 'undefined') ? { 'location': { 'href': '' } } : window
       const nav = (typeof navigator === 'undefined') ? {} : navigator
 
       // 定数を初期化
@@ -78,8 +78,8 @@ const PluginBrowser = {
       }
       sys.__tohtmlQ = (text) => {
         return sys.__tohtml(text)
-          .replace(/\"/g, '&#34;')
-          .replace(/\'/g, '&#39;')
+          .replace(/"/g, '&#34;')
+          .replace(/'/g, '&#39;')
       }
 
       // 「!クリア」でDOMイベントを削除するため

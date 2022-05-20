@@ -20,7 +20,6 @@ CORE="node_modules/nadesiko3core/src"
     ['src/plugin_browser.mjs','wnako'],
     ['src/plugin_turtle.mjs', 'wnako'],
     ['src/plugin_node.mts', 'cnako,phpnako'],
-    ['src/plugin_express.mjs', 'cnako'],
     ['src/plugin_markup.mjs', 'wnako,cnako'],
     ['src/plugin_datetime.mjs', 'wnako,cnako'],
     ['src/plugin_caniuse.mjs', 'wnako,cnako'],
@@ -30,6 +29,7 @@ CORE="node_modules/nadesiko3core/src"
 ]
 拡張プラグイン一覧は[
     ['nadesiko3-tools/nadesiko3-tools.mjs', 'cnako'],    
+    ['nadesiko3-server/nadesiko3-server.mjs', 'cnako'],
     ['nadesiko3-sqlite3/nadesiko3-sqlite3.js', 'cnako'],    
     ['nadesiko3-htmlparser/nadesiko3-htmlparser.js', 'cnako'],
     ['nadesiko3-websocket/nadesiko3-websocket.js', 'cnako'],

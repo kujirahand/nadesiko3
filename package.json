@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node src/nako3server.mjs",
-    "nako3edit": "node src/cnako3.mjs tools/nako3edit/index.nako3",
+    "nako3edit": "node tools/nako3edit/index.mjs",
     "test": "cross-env TZ=Asia/Tokyo mocha test/common/*.mjs",
     "test:node": "mocha --extension mjs test/node",
     "test:async": "mocha test/async -g aysnc_basic_test",
@@ -178,12 +178,9 @@
   },
   "dependencies": {
     "nadesiko3core": "^3.3.23",
-    "body-parser": "^1.20.0",
     "browserslist": "^4.20.2",
     "caniuse-db": "^1.0.30001332",
     "dayjs": "^1.11.1",
-    "express": "^4.17.3",
-    "form-data": "^4.0.0",
     "fs-extra": "^10.1.0",
     "html": "^1.0.0",
     "iconv-lite": "^0.6.3",

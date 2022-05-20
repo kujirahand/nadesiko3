@@ -5,15 +5,21 @@ import { NakoCompiler, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
 import { Token } from 'nadesiko3core/src/nako_types.mjs'
 import { setupEditor } from './wnako3_editor.mjs'
+import wnakoVersion, { WNakoVersion } from './wnako_version.mjs'
 import PluginBrowser from './plugin_browser.mjs'
 
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 
 export class WebNakoCompiler extends NakoCompiler {
+  wnakoVersion: WNakoVersion;
   constructor () {
     super({ useBasicPlugin: true })
+    this.wnakoVersion = wnakoVersion
+    // プラグインを追加
     this.addPluginObject('PluginBrowser', PluginBrowser)
+    // 必要な定数を埋める
     this.__varslist[0]['ナデシコ種類'] = 'wnako3'
+    this.__varslist[0]['WNAKOバージョン'] = wnakoVersion.version
   }
 
   /**
