@@ -5,7 +5,7 @@
 そのため、textlint のセットアップ方法については、ここで別途書いておく。
 
 > なお、`git push`したときには、GitHub側でtextlintが自動でかかるため、コミットしてエラーが出たら、以下の項目を実施すること。
-> [(参照)`.github/workflows/textlint.yml`](.github/workflows/textlint.yml)を参照。
+> [→GitHub側で実行されるtextlint](/.github/workflows/textlint.yml)
 
 ## textlint のインストール
 
