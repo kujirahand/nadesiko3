@@ -27,7 +27,7 @@ export default {
     plugin_kansuji: [path.join(srcPath, 'plugin_kansuji.mjs')],
     plugin_markup: [path.join(srcPath, 'plugin_markup.mjs')],
     plugin_turtle: [path.join(srcPath, 'plugin_turtle.mjs')],
-    plugin_csv: [path.join(srcCorePath, 'plugin_csv.mjs')],
+    // plugin_csv: [path.join(srcCorePath, 'plugin_csv.mjs')],
     plugin_datetime: [path.join(srcPath, 'plugin_datetime.mjs')],
     plugin_caniuse: [path.join(srcPath, 'plugin_caniuse.mjs')],
     plugin_webworker: [path.join(srcPath, 'plugin_webworker.mjs')],
