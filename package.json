@@ -117,6 +117,7 @@
     "@typescript-eslint/parser": "^5.25.0",
     "babel-loader": "^8.2.5",
     "buffer": "^6.0.3",
+    "browserslist": "^4.20.2",
     "chai": "^4.3.6",
     "constants-browserify": "^1.0.0",
     "core-js": "^3.22.1",
@@ -178,16 +179,12 @@
   },
   "dependencies": {
     "nadesiko3core": "^3.3.23",
-    "browserslist": "^4.20.2",
-    "caniuse-db": "^1.0.30001332",
     "dayjs": "^1.11.1",
     "fs-extra": "^10.1.0",
     "html": "^1.0.0",
     "iconv-lite": "^0.6.3",
     "marked": "^4.0.14",
     "node-fetch": "^3.2.3",
-    "opener": "^1.5.2",
-    "readline-sync": "^1.4.10",
-    "whatwg-fetch": "^3.6.2"
+    "opener": "^1.5.2"
   }
 }
