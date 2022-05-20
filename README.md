@@ -20,13 +20,13 @@
   - [nadesiko3-postgresql](https://github.com/kujirahand/nadesiko3-postgresql) --- データベースPostgreSQL
   - [nadesiko3-mssql](https://github.com/kujirahand/nadesiko3-mssql) --- データベースmssql
 - 配布用パッケージ
-  - [なでしこ3軽量配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
-  - [なでしこ3フル配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
-  - [なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
+  - [nadesiko3webkit - なでしこ3軽量配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
+  - [nadesiko3electron - なでしこ3フル配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
+  - [nadesiko3win32 - なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
 - 実験的に別言語で実装したなでしこ3
-  - [なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
-  - [なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
-  - [なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
+  - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
+  - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
+  - [nadesiko3go - なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
 
 ## 「なでしこ3」とは
 
