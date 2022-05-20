@@ -10,11 +10,13 @@
 母艦パス取得してパス抽出して基本パスに代入。
 REPOSパス=基本パスを「../」で相対パス展開。
 
+CORE="node_modules/nadesiko3core/src"
+
 基本プラグイン一覧は[
-    ['node_modules/nadesiko3core/src/plugin_system.mts', 'wnako,cnako,phpnako'],
-    ['node_modules/nadesiko3core/src/plugin_csv.mts', 'wnako,cnako'],
-    ['node_modules/nadesiko3core/src/plugin_math.mts', 'wnako,cnako'],
-    ['node_modules/nadesiko3core/src/plugin_promise.mts', 'wnako']
+    ["{CORE}/plugin_system.mts", 'wnako,cnako,phpnako'],
+    ["{CORE}/plugin_csv.mts", 'wnako,cnako'],
+    ["{CORE}/plugin_math.mts", 'wnako,cnako'],
+    ["{CORE}/plugin_promise.mts", 'wnako']
     ['src/plugin_browser.mjs','wnako'],
     ['src/plugin_turtle.mjs', 'wnako'],
     ['src/plugin_node.mts', 'cnako,phpnako'],

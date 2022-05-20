@@ -24,7 +24,7 @@
     "build:nako_version": "node src/cnako3.mjs batch/build_wnako_version.nako3",
     "build": "npm run build:nako_version && tsc && npm run build:command && webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
     "tsc": "tsc --watch",
-    "build:webpack": "webpack --mode development",
+    "build:webpack": "tsc && webpack --mode development",
     "check:command": "node src/cnako3.mjs batch/pickup_command.nako3",
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3",
     "build:win32": "node src/cnako3.mjs installer/make-win32.nako3",
@@ -177,7 +177,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "nadesiko3core": "^3.3.22",
+    "nadesiko3core": "^3.3.23",
     "body-parser": "^1.20.0",
     "browserslist": "^4.20.2",
     "caniuse-db": "^1.0.30001332",

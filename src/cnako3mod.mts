@@ -6,7 +6,7 @@ import fs from 'fs'
 import { exec } from 'child_process'
 import path from 'path'
 
-import core from 'nadesiko3core'
+import nakoVersion from 'nadesiko3core/src/nako_version.mjs'
 import { NakoCompiler, LoaderTool, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
 import { Ast } from 'nadesiko3core/src/nako_types.mjs'
@@ -20,8 +20,6 @@ import fetch from 'node-fetch'
 import url from 'url'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-const nakoVersion = core.version
 
 interface CNako3Options {
   nostd: boolean;
