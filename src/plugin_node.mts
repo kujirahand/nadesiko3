@@ -9,7 +9,6 @@ import { exec, execSync } from 'child_process'
 import path from 'path'
 import iconv from 'iconv-lite'
 import opener from 'opener'
-import clipboardy from 'clipboardy'
 import assert from 'assert'
 // 「標準入力取得時」「尋」で利用
 import readline from 'readline'
@@ -546,18 +545,6 @@ export default {
     pure: true,
     fn: function (sys: any) {
       return process.arch
-    }
-  },
-  // @クリップボード操作
-  'クリップボード': { // @クリップボードを取得設定（『クリップボード←値』で書換が可能） // @くりっぷぼーど
-    type: 'func',
-    josi: [['を']],
-    pure: true,
-    fn: function (v: string, sys: any) {
-      // copy
-      if (sys && sys.isSetter) { return clipboardy.writeSync(v) }
-      // paste
-      return clipboardy.readSync()
     }
   },
   // @コマンドラインと標準入出力

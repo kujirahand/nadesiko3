@@ -29,6 +29,7 @@ CORE="node_modules/nadesiko3core/src"
     ['src/plugin_webworker.mjs', 'wnako'],
 ]
 拡張プラグイン一覧は[
+    ['nadesiko3-tools/nadesiko3-tools.mjs', 'cnako'],    
     ['nadesiko3-sqlite3/nadesiko3-sqlite3.js', 'cnako'],    
     ['nadesiko3-htmlparser/nadesiko3-htmlparser.js', 'cnako'],
     ['nadesiko3-websocket/nadesiko3-websocket.js', 'cnako'],

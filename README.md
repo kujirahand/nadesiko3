@@ -12,6 +12,7 @@
   - [nadesiko3-websocket](https://github.com/kujirahand/nadesiko3-websocket) --- WebSocket
   - [nadesiko3-office](https://github.com/kujirahand/nadesiko3-office) --- Excelなど
   - [nadesiko3-sqlite3](https://github.com/kujirahand/nadesiko3-sqlite3/) --- SQLite3
+  - [nadesiko3-tools](https://github.com/kujirahand/nadesiko3-tools) --- 便利ツール
   - [nadesiko3-mecab](https://github.com/kujirahand/nadesiko3-mecab/) --- 形態素解析(Mecab)
   - [nadesiko3-htmlparser](https://github.com/kujirahand/nadesiko3-htmlparser) --- スクレイピング
   - [nadesiko3-ml](https://github.com/kujirahand/nadesiko3-ml/) --- 機械学習
