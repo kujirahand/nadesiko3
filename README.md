@@ -4,15 +4,37 @@
 [![npm version](https://badge.fury.io/js/nadesiko3.svg)](https://www.npmjs.com/package/nadesiko3)
 ![Node.js CI](https://github.com/kujirahand/nadesiko3/workflows/Node.js%20CI/badge.svg)
 
+## 関連リポジトリへのリンク
+
+- [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
+  - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コア
+- [なでしこ3拡張プラグイン](https://nadesi.com/v3/doc/index.php?FAQ%2F%E6%8B%A1%E5%BC%B5%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&show)
+  - [nadesiko3-websocket](https://github.com/kujirahand/nadesiko3-websocket) --- WebSocket
+  - [nadesiko3-office](https://github.com/kujirahand/nadesiko3-office) --- Excelなど
+  - [nadesiko3-sqlite3](https://github.com/kujirahand/nadesiko3-sqlite3/) --- SQLite3
+  - [nadesiko3-mecab](https://github.com/kujirahand/nadesiko3-mecab/) --- 形態素解析(Mecab)
+  - [nadesiko3-htmlparser](https://github.com/kujirahand/nadesiko3-htmlparser) --- スクレイピング
+  - [nadesiko3-ml](https://github.com/kujirahand/nadesiko3-ml/) --- 機械学習
+  - [nadesiko3-odbc](https://github.com/kujirahand/nadesiko3-odbc) --- データベース(ODBC)
+  - [nadesiko3-mysql](https://github.com/kujirahand/nadesiko3-mysql) --- データベースMySQL
+  - [nadesiko3-postgresql](https://github.com/kujirahand/nadesiko3-postgresql) --- データベースPostgreSQL
+  - [nadesiko3-mssql](https://github.com/kujirahand/nadesiko3-mssql) --- データベースmssql
+- 配布用パッケージ
+  - [なでしこ3軽量配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
+  - [なでしこ3フル配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
+  - [なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
+- 実験的に別言語で実装したなでしこ3
+  - [なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
+  - [なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
+  - [なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
+
 ## 「なでしこ3」とは
 
-「なでしこ3」とは、日本語のプログラミング言語です。HTML5/JavaScript(TypeScript)をベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。
+「なでしこ3」とは、日本語のプログラミング言語です。HTML5/JavaScript(TypeScript)をベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
 
-日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
-
-- [なでしこのWebサイト](https://nadesi.com/) / [なでしこ3のGitHub Pages)](https://kujirahand.github.io/nadesiko3/)
-- [なでしこ3のマニュアル](https://nadesi.com/v3/doc/)
-- [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
+- [なでしこのWebサイト](https://nadesi.com/)
+- [なでしこ3のGitHub Pages)](https://kujirahand.github.io/nadesiko3/)
+- [マニュアル](https://nadesi.com/v3/doc/)
 
 ## 対応機器/ブラウザ
 
@@ -31,25 +53,6 @@
 なでしこ3をPC向けにローカル環境で動作させることも可能です。
 
 - [OS別のインストール方法](https://nadesi.com/doc3/index.php?OS%E5%88%A5)
-
-外部リポジトリに個別の配布パッケージを用意しています（ただし、最新版とは限りません）
-
-- [なでしこ3配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
-- [なでしこ3配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
-- [なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
-
-## 開発に必要な関連リポジトリ
-
-- [なでしこ3言語エンジン - nadesiko3core](https://github.com/kujirahand/nadesiko3core/)
-
-## その他のなでしこ3について
-
-実験的な意味合いもありますが、各プログラミング言語で実装したなでしこ3があります。なでしこ3PHPでは掲示板、チャットなど、それなりに実用的なプログラムも作れます。
-
-- [なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
-- [なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
-- [なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
-
 
 ## npm でなでしこ3コマンドライン版をインストール
 
