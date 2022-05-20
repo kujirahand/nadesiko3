@@ -9,14 +9,12 @@ import { exec, execSync } from 'child_process';
 import path from 'path';
 import iconv from 'iconv-lite';
 import opener from 'opener';
-import clipboardy from 'clipboardy';
 import assert from 'assert';
 // 「標準入力取得時」「尋」で利用
 import readline from 'readline';
 // ハッシュ関数で利用
 import crypto from 'crypto';
 import os from 'os';
-import sendkeysJS from 'sendkeys-js';
 export default {
     '初期化': {
         type: 'func',
@@ -589,20 +587,6 @@ export default {
             return process.arch;
         }
     },
-    // @クリップボード操作
-    'クリップボード': {
-        type: 'func',
-        josi: [['を']],
-        pure: true,
-        fn: function (v, sys) {
-            // copy
-            if (sys && sys.isSetter) {
-                return clipboardy.writeSync(v);
-            }
-            // paste
-            return clipboardy.readSync();
-        }
-    },
     // @コマンドラインと標準入出力
     'コマンドライン': { type: 'const', value: '' },
     'ナデシコランタイム': { type: 'const', value: '' },
@@ -1021,25 +1005,6 @@ export default {
             // iconv.skipDecodeWarning = true
             return iconv.decode(Buffer.from(buf), code);
         }
-    },
-    // @マウスとキーボード操作
-    'キー送信': {
-        type: 'func',
-        josi: [['を', 'の']],
-        pure: true,
-        fn: function (s, sys) {
-            sendkeysJS.sendKeys(s);
-        },
-        return_none: true
-    },
-    '窓アクティブ': {
-        type: 'func',
-        josi: [['を', 'の']],
-        pure: true,
-        fn: function (s, sys) {
-            sendkeysJS.activate(s);
-        },
-        return_none: true
     },
     // @ハッシュ関数
     'ハッシュ関数一覧取得': {
