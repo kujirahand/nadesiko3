@@ -8,21 +8,21 @@
 
 ```shell
 npm install -g textlint \
-	textlint-rule-abbr-within-parentheses \
-	textlint-rule-footnote-order \
-	textlint-rule-general-novel-style-ja \
-    textlint-rule-ja-hiragana-fukushi \
-    textlint-rule-ja-hiragana-hojodoushi \
-    textlint-rule-ja-hiragana-keishikimeishi \
-    textlint-rule-ja-unnatural-alphabet \
-    textlint-rule-ng-word \
-    textlint-rule-no-dead-link \
-    textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet \
-    textlint-rule-prefer-tari-tari \
-    textlint-rule-preset-ja-spacing \
-    textlint-rule-preset-ja-technical-writing \
-    textlint-rule-preset-jtf-style \
-    textlint-rule-spellcheck-tech-word \
+  textlint-rule-abbr-within-parentheses \
+  textlint-rule-footnote-order \
+  textlint-rule-general-novel-style-ja \
+  textlint-rule-ja-hiragana-fukushi \
+  textlint-rule-ja-hiragana-hojodoushi \
+  textlint-rule-ja-hiragana-keishikimeishi \
+  textlint-rule-ja-unnatural-alphabet \
+  textlint-rule-ng-word \
+  textlint-rule-no-dead-link \
+  textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet \
+  textlint-rule-prefer-tari-tari \
+  textlint-rule-preset-ja-spacing \
+  textlint-rule-preset-ja-technical-writing \
+  textlint-rule-preset-jtf-style \
+  textlint-rule-spellcheck-tech-word \
  ```
 
 ## textlint の実行
