@@ -191,7 +191,6 @@
     "node-fetch": "^3.2.3",
     "opener": "^1.5.2",
     "readline-sync": "^1.4.10",
-    "sendkeys-js": "0.0.4",
     "whatwg-fetch": "^3.6.2"
   }
 }

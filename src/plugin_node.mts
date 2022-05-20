@@ -15,8 +15,6 @@ import readline from 'readline'
 // ハッシュ関数で利用
 import crypto from 'crypto'
 import os from 'os'
-import sendkeysJS from 'sendkeys-js'
-import { Func } from 'mocha'
 
 export default {
   '初期化': {
@@ -940,25 +938,6 @@ export default {
       // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), code)
     }
-  },
-  // @マウスとキーボード操作
-  'キー送信': { // @Sのキーを送信 // @きーそうしん
-    type: 'func',
-    josi: [['を', 'の']],
-    pure: true,
-    fn: function (s: string, sys: any) {
-      sendkeysJS.sendKeys(s)
-    },
-    return_none: true
-  },
-  '窓アクティブ': { // @Sの窓をアクティブにする // @まどあくてぃぶ
-    type: 'func',
-    josi: [['を', 'の']],
-    pure: true,
-    fn: function (s: string, sys: any) {
-      sendkeysJS.activate(s)
-    },
-    return_none: true
   },
   // @ハッシュ関数
   'ハッシュ関数一覧取得': { // @利用可能なハッシュ関数の一覧を返す // @ はっしゅかんすういちらんしゅとく
