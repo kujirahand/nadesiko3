@@ -6,6 +6,7 @@ import fs from 'fs';
 import { exec } from 'child_process';
 import path from 'path';
 import nakoVersion from 'nadesiko3core/src/nako_version.mjs';
+import wnakoVersion from './wnako_version.mjs';
 import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs';
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs';
 import PluginNode from './plugin_node.mjs';
@@ -31,10 +32,11 @@ export class CNako3 extends NakoCompiler {
         if (process.argv.length <= 2) {
             process.argv.push('-h');
         }
+        const verInfo = `v${wnakoVersion.version} (core:v${nakoVersion.version})`;
         // commanderを使って引数を解析する
         app
-            .title('日本語プログラミング言語「なでしこ」v' + nakoVersion.version)
-            .version(nakoVersion.version, '-v, --version')
+            .title('日本語プログラミング言語「なでしこ」' + verInfo)
+            .version(verInfo, '-v, --version')
             .usage('[オプション] 入力ファイル.nako3')
             .option('-h, --help', 'コマンドの使い方を表示')
             .option('-w, --warn', '警告を表示する')
@@ -107,7 +109,7 @@ export class CNako3 extends NakoCompiler {
         };
         args.mainfile = app.args[0];
         args.output = app.output;
-        // todo: ESModule 対応の '.mjs' のコードを履く #1217
+        // todo: ESModule 対応の '.mjs' のコードを吐くように修正 #1217
         const ext = '.js';
         if (/\.(nako|nako3|txt|bak)$/.test(args.mainfile)) {
             if (!args.output) {
@@ -634,9 +636,15 @@ export class CNako3 extends NakoCompiler {
         if (fileRuntime) {
             return fileRuntime;
         }
-        // ランタイムパス/node_modules/nadesiko3core/src/<plugin>
+        // ランタイムと同じ配置 | ランタイムパス/../<plugin>
+        const runtimeLib = path.join(pathRuntime, '..', pname);
+        const fileLib = fCheckEx(runtimeLib, 'runtimeLib');
+        if (fileLib) {
+            return fileLib;
+        }
+        // nadesiko3core | ランタイムパス/node_modules/nadesiko3core/src/<plugin>
         const pathRuntimeSrc2 = path.join(pathRuntime, 'node_modules', 'nadesiko3core', 'src', pname); // cnako3mod.mjs は ランタイム/src に配置されていることが前提
-        const fileRuntimeSrc2 = fCheckEx(pathRuntimeSrc2, 'runtimeSrcPath2');
+        const fileRuntimeSrc2 = fCheckEx(pathRuntimeSrc2, 'nadesiko3core');
         if (fileRuntimeSrc2) {
             return fileRuntimeSrc2;
         }

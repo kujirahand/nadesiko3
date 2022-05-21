@@ -7,6 +7,7 @@ import { exec } from 'child_process'
 import path from 'path'
 
 import nakoVersion from 'nadesiko3core/src/nako_version.mjs'
+import wnakoVersion from './wnako_version.mjs'
 import { NakoCompiler, LoaderTool, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
 import { Ast } from 'nadesiko3core/src/nako_types.mjs'
@@ -43,10 +44,11 @@ export class CNako3 extends NakoCompiler {
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
     if (process.argv.length <= 2) { process.argv.push('-h') }
 
+    const verInfo = `v${wnakoVersion.version} (core:v${nakoVersion.version})`
     // commanderを使って引数を解析する
     app
-      .title('日本語プログラミング言語「なでしこ」v' + nakoVersion.version)
-      .version(nakoVersion.version, '-v, --version')
+      .title('日本語プログラミング言語「なでしこ」' + verInfo)
+      .version(verInfo, '-v, --version')
       .usage('[オプション] 入力ファイル.nako3')
       .option('-h, --help', 'コマンドの使い方を表示')
       .option('-w, --warn', '警告を表示する')
