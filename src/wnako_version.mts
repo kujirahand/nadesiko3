@@ -8,9 +8,9 @@ export interface WNakoVersion {
 }
 // 実際のバージョン定義
 const wnako3version: WNakoVersion = {
-  version: '3.3.26',
+  version: '3.3.27',
   major: 3,
   minor: 3,
-  patch: 26
+  patch: 27
 }
 export default wnako3version
