@@ -40,7 +40,7 @@ const server = http.createServer(function (req, res) {
     const q = String(a[1]).split('&')
     for (const kv of q) {
       const qq = kv.split('=')
-      params[qq[0]] = decodeURI(qq[1])
+      params[qq[0]] = decodeURIComponent(qq[1])
     }
   }
   // サニタイズ
@@ -60,6 +60,15 @@ const server = http.createServer(function (req, res) {
   }
   if (uri === '/run') {
     apiRun(res, params)
+    return
+  }
+  if (uri === '/get_new_filename') {
+    res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
+    res.end('"new.nako3"')
+    return
+  }
+  if (uri === '/deletefile') {
+    apiDelete(res, params)
     return
   }
 
@@ -189,5 +198,20 @@ function apiRun (res, params) {
   } catch (err) {
     res.writeHead(200, { 'Content-Type': 'text/plain' })
     res.end('error')
+  }
+}
+
+function apiDelete (res, params) {
+  const fname = params.file
+  const body = params.body
+  const fullpath = path.join(userDir, fname)
+  try {
+    fs.unlinkSync(fullpath)
+    res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
+    res.end('"ok"')
+    return
+  } catch (err) {
+    res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
+    res.end('error:' + err.message)
   }
 }
