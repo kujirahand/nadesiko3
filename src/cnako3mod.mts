@@ -121,7 +121,7 @@ export class CNako3 extends NakoCompiler {
     args.mainfile = app.args[0]
     args.output = app.output
 
-    // todo: ESModule 対応の '.mjs' のコードを履く #1217
+    // todo: ESModule 対応の '.mjs' のコードを吐くように修正 #1217
     const ext = '.js'
     if (/\.(nako|nako3|txt|bak)$/.test(args.mainfile)) {
       if (!args.output) {
@@ -624,9 +624,14 @@ export class CNako3 extends NakoCompiler {
     const fileRuntime = fCheckEx(pathRuntimePname, 'runtime')
     if (fileRuntime) { return fileRuntime }
 
-    // ランタイムパス/node_modules/nadesiko3core/src/<plugin>
+    // ランタイムと同じ配置 | ランタイムパス/../<plugin>
+    const runtimeLib = path.join(pathRuntime, '..', pname)
+    const fileLib = fCheckEx(runtimeLib, 'runtimeLib')
+    if (fileLib) { return fileLib }
+
+    // nadesiko3core | ランタイムパス/node_modules/nadesiko3core/src/<plugin>
     const pathRuntimeSrc2 = path.join(pathRuntime, 'node_modules', 'nadesiko3core', 'src', pname) // cnako3mod.mjs は ランタイム/src に配置されていることが前提
-    const fileRuntimeSrc2 = fCheckEx(pathRuntimeSrc2, 'runtimeSrcPath2')
+    const fileRuntimeSrc2 = fCheckEx(pathRuntimeSrc2, 'nadesiko3core')
     if (fileRuntimeSrc2) { return fileRuntimeSrc2 }
 
     // 環境変数 NAKO_HOMEか?
