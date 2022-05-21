@@ -16,8 +16,14 @@ const SERVER_PORT = 3000
 const rootDir = path.resolve(path.join(__dirname, '../'))
 
 // ライブラリがあるかチェック
-if (!fs.existsSync(path.resolve(rootDir, 'extlib/pure.min.css'))) {
-  execSync('npm run extlib:install')
+const testFile = path.join(rootDir, 'demo/extlib/pure-min.css')
+if (!fs.existsSync(testFile)) {
+  console.log('try to downlod extlib')
+  try {
+    execSync('npm run extlib:install')
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 // root => redirect to demo/
