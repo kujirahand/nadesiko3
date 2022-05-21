@@ -21,11 +21,6 @@ const userDir = path.join(homeDir, 'nadesiko3_user')
 const CNAKO3 = path.resolve(path.join(__dirname, '../../src/cnako3.mjs'))
 const NODE = process.argv[0]
 
-// ライブラリがあるかチェック
-if (!fs.existsSync(path.resolve(rootDir, 'extlib/pure.min.css'))) {
-  execSync('npm run extlib:install')
-}
-
 // サーバ
 const server = http.createServer(function (req, res) {
   console.log('[ようこそ]', JSON.stringify(req.url))
@@ -170,6 +165,7 @@ function apiSave (res, params) {
     res.end('error')
   }
 }
+
 function apiRun (res, params) {
   const fname = params.file
   const body = params.body
@@ -177,7 +173,13 @@ function apiRun (res, params) {
   try {
     fs.writeFileSync(fullpath, body, 'utf-8')
     const cmd = `"${NODE}" "${CNAKO3}" "${fullpath}"`
-    const result = execSync(cmd)
+    let result = ''
+    try {
+      result = execSync(cmd)
+      result = String(result)
+    } catch (err) {
+      console.error(err)
+    }
     console.log('[run] file=', fname)
     console.log('--------------------------------')
     console.log(result)
