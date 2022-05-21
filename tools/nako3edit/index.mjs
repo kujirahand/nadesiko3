@@ -20,6 +20,7 @@ const homeDir = process.env[isWin ? 'USERPROFILE' : 'HOME']
 const userDir = path.join(homeDir, 'nadesiko3_user')
 const CNAKO3 = path.resolve(path.join(__dirname, '../../src/cnako3.mjs'))
 const NODE = process.argv[0]
+const appkey = 'K' + Math.floor(Math.random() * 10000000).toString(16)
 
 // サーバ
 const server = http.createServer(function (req, res) {
@@ -27,7 +28,7 @@ const server = http.createServer(function (req, res) {
 
   // root なら "demo/"へリダイレクト
   if (req.url === '/') {
-    res.writeHead(302, { 'Location': '/html/files.html' })
+    res.writeHead(302, { 'Location': `/html/files.html?appkey=${appkey}` })
     res.end('<a href="/html/files.html">HTML</a>')
     return
   }
@@ -63,8 +64,7 @@ const server = http.createServer(function (req, res) {
     return
   }
   if (uri === '/get_new_filename') {
-    res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
-    res.end('"new.nako3"')
+    apiGetNewFilename(res)
     return
   }
   if (uri === '/deletefile') {
@@ -159,6 +159,12 @@ function apiLoad (res, params) {
   res.end(text)
 }
 function apiSave (res, params) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
+  const appkeyUser = params.appkey
+  if (appkey !== appkeyUser) {
+    res.end('[ERROR] キーが違います')
+    return
+  }
   const fname = params.file
   const body = params.body
   const fullpath = path.join(userDir, fname)
@@ -167,15 +173,19 @@ function apiSave (res, params) {
     console.log('[save] file=', fullpath)
     console.log('body=', body)
     console.log('--------------------------------')
-    res.writeHead(200, { 'Content-Type': 'text/plain' })
     res.end('ok')
   } catch (err) {
-    res.writeHead(200, { 'Content-Type': 'text/plain' })
-    res.end('error')
+    res.end('[ERROR] 保存に失敗しました😭')
   }
 }
 
 function apiRun (res, params) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
+  const appkeyUser = params.appkey
+  if (appkey !== appkeyUser) {
+    res.end('[ERROR] キーが違います')
+    return
+  }
   const fname = params.file
   const body = params.body
   const fullpath = path.join(userDir, fname)
@@ -193,25 +203,40 @@ function apiRun (res, params) {
     console.log('--------------------------------')
     console.log(result)
     console.log('--------------------------------')
-    res.writeHead(200, { 'Content-Type': 'text/plain' })
     res.end(result)
   } catch (err) {
-    res.writeHead(200, { 'Content-Type': 'text/plain' })
-    res.end('error')
+    res.end('[ERROR] 実行に失敗しました。')
   }
 }
 
 function apiDelete (res, params) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
+  const appkeyUser = params.appkey
+  if (appkey !== appkeyUser) {
+    res.end('[ERROR] キーが違います')
+    return
+  }
   const fname = params.file
   const body = params.body
   const fullpath = path.join(userDir, fname)
   try {
     fs.unlinkSync(fullpath)
-    res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
     res.end('"ok"')
     return
   } catch (err) {
-    res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
     res.end('error:' + err.message)
   }
 }
+
+function apiGetNewFilename (res) {
+  let fname = 'newfile.nako3'
+  for (let i = 1; i <= 999; i++) {
+    fname = `newfile${i}.nako3`
+    const full = path.join(userDir, fname)
+    if (fs.existsSync(fname)) { continue }
+    break
+  }
+  res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
+  res.end(`"${fname}"`)
+}
+
