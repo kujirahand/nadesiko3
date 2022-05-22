@@ -8,10 +8,9 @@ export default {
     josi: [['の', 'へ', 'で']],
     pure: true,
     fn: function (cv, sys) {
-      if (typeof cv === 'string')
-        {cv = document.querySelector(cv) || document.getElementById(cv)}
+      if (typeof cv === 'string') { cv = document.querySelector(cv) || document.getElementById(cv) }
 
-      if (!cv) {throw new Error('『描画開始』でCanvasを取得できませんでした。')}
+      if (!cv) { throw new Error('『描画開始』でCanvasを取得できませんでした。') }
       sys.__canvas = cv
       sys.__ctx = cv.getContext('2d')
       sys.__fillStyle = 'black'
@@ -21,14 +20,14 @@ export default {
     },
     return_none: true
   },
-  '描画中キャンバス': {type: 'const', value: null}, // @ びょうがちゅうきゃんばす
-  '描画中コンテキスト': {type: 'const', value: null}, // @ びょうがちゅうこんてきすと
+  '描画中キャンバス': { type: 'const', value: null }, // @ びょうがちゅうきゃんばす
+  '描画中コンテキスト': { type: 'const', value: null }, // @ びょうがちゅうこんてきすと
   'キャンバス状態保存': { // @Canvasの状態を保存(save)   // @ きゃんばすじょうたいほぞん
     type: 'func',
     josi: [],
     pure: true,
     fn: function (sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.save()
     },
     return_none: true
@@ -38,7 +37,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.restore()
     },
     return_none: true
@@ -48,9 +47,9 @@ export default {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (v, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__strokeStyle = v
-      if (v != '') {
+      if (v !== '') {
         sys.__ctx.strokeStyle = v
       }
     },
@@ -61,9 +60,9 @@ export default {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (v, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__fillStyle = v
-      if (v != '') {
+      if (v !== '') {
         sys.__ctx.fillStyle = v
       }
     },
@@ -74,7 +73,7 @@ export default {
     josi: [['から'], ['へ', 'まで']],
     pure: true,
     fn: function (a, b, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.beginPath()
       sys.__ctx.moveTo(a[0], a[1])
       sys.__ctx.lineTo(b[0], b[1])
@@ -87,7 +86,7 @@ export default {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (v, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.lineWidth = v
     },
     return_none: true
@@ -97,12 +96,12 @@ export default {
     josi: [['の', 'へ', 'に']],
     pure: true,
     fn: function (b, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       sys.__ctx.rect(b[0], b[1], b[2], b[3])
-      if (sys.__fillStyle != '') {sys.__ctx.fill()}
-      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
+      if (sys.__fillStyle !== '') { sys.__ctx.fill() }
+      if (sys.__strokeStyle !== '') { sys.__ctx.stroke() }
     },
     return_none: true
   },
@@ -111,7 +110,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.clearRect(0, 0,
         sys.__canvas.width, sys.__canvas.height)
     },
@@ -122,12 +121,11 @@ export default {
     josi: [['の', 'へ', 'に']],
     pure: true,
     fn: function (b, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       if (!(b instanceof Array)) { b = [] }
-      if (b.length == 0) {
+      if (b.length === 0) {
         b = [0, 0, sys.__canvas.width, sys.__canvas.height]
-      }
-      else if (b.length <= 2) {
+      } else if (b.length <= 2) {
         b.unshift(0)
         b.unshift(0)
       }
@@ -140,12 +138,12 @@ export default {
     josi: [['へ', 'に'], ['の']],
     pure: true,
     fn: function (xy, r, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       sys.__ctx.arc(xy[0], xy[1], r, 0, 2 * Math.PI, false)
-      if (sys.__fillStyle != '') {sys.__ctx.fill()}
-      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
+      if (sys.__fillStyle !== '') { sys.__ctx.fill() }
+      if (sys.__strokeStyle !== '') { sys.__ctx.stroke() }
     },
     return_none: true
   },
@@ -154,20 +152,20 @@ export default {
     josi: [['へ', 'に', 'の']],
     pure: true,
     fn: function (args, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      if (!args) {throw new Error('楕円描画の引数配列が無効です')}
-      if (args.length < 4) {throw new Error('楕円描画の引数配列が不足しています')}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      if (!args) { throw new Error('楕円描画の引数配列が無効です') }
+      if (args.length < 4) { throw new Error('楕円描画の引数配列が不足しています') }
       if (args.length < 7) {
-        if (!args[4]) {args[4] = 0}
-        if (!args[5]) {args[5] = 0}
-        if (!args[6]) {args[6] = Math.PI * 2}
-        if (!args[7]) {args[7] = true}
+        if (!args[4]) { args[4] = 0 }
+        if (!args[5]) { args[5] = 0 }
+        if (!args[6]) { args[6] = Math.PI * 2 }
+        if (!args[7]) { args[7] = true }
       }
-      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
+      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       sys.__ctx.ellipse.apply(sys.__ctx, args)
-      if (sys.__fillStyle != '') {sys.__ctx.fill()}
-      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
+      if (sys.__fillStyle !== '') { sys.__ctx.fill() }
+      if (sys.__strokeStyle !== '') { sys.__ctx.stroke() }
     },
     return_none: true
   },
@@ -176,18 +174,18 @@ export default {
     josi: [['で', 'の', 'を']],
     pure: true,
     fn: function (a, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      if (sys.__fillStyle == '' && sys.__strokeStyle == '') {return}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       const p = a[0]
       sys.__ctx.moveTo(p[0], p[1])
       for (let i = 1; i < a.length; i++) {
-        const t = a[i];
+        const t = a[i]
         sys.__ctx.lineTo(t[0], t[1])
       }
       sys.__ctx.lineTo(p[0], p[1])
-      if (sys.__fillStyle != '') {sys.__ctx.fill()}
-      if (sys.__strokeStyle != '') {sys.__ctx.stroke()}     
+      if (sys.__fillStyle !== '') { sys.__ctx.fill() }
+      if (sys.__strokeStyle !== '') { sys.__ctx.stroke() }
     },
     return_none: true
   },
@@ -206,7 +204,7 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (url, sys) {
-      if (sys.resolve === undefined) {throw new Error('『画像逐次読』は『逐次実行』構文で使ってください。')}
+      if (sys.resolve === undefined) { throw new Error('『画像逐次読』は『逐次実行』構文で使ってください。') }
       sys.resolveCount++
       const img = new window.Image()
       img.src = url
@@ -247,18 +245,15 @@ export default {
     josi: [['の', 'を'], ['へ', 'に']],
     pure: true,
     fn: function (img, xy, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       const drawFunc = (im, ctx) => {
-        if (xy.length === 2){
+        if (xy.length === 2) {
           ctx.drawImage(im, xy[0], xy[1])
-        }
-        else if (xy.length === 4) {
+        } else if (xy.length === 4) {
           ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3])
-        }
-        else if (xy.length === 8) {
+        } else if (xy.length === 8) {
           ctx.drawImage(im, xy[0], xy[1], xy[2], xy[3], xy[4], xy[5], xy[6], xy[7])
-        }
-        else {
+        } else {
           throw new Error('『画像描画』の第二引数の配列要素は2,4,8個のいずれかです。')
         }
       }
@@ -281,42 +276,37 @@ export default {
     josi: [['の'], ['を', 'から'], ['へ', 'に']],
     pure: true,
     fn: function (img, sxy, dxy, sys) {
-      const errArgLen = 
+      const errArgLen =
         '『画像部分描画』に使える引数は画像と、描画する座標へ2つか、' +
         '描画する座標とその位置の4つか、使用する座標と使用する位置と描画する座標と大きさの8つだけです。'
-      if(img && sxy){
-        if (!Array.isArray(sxy) && Array.isArray(img)){ //逆になっていれば入れ替える
-          if (typeof sxy === 'string' || String(sxy.__proto__) === '[object HTMLImageElement]'){
-            let sw = img
+      if (img && sxy) {
+        if (!Array.isArray(sxy) && Array.isArray(img)) { // 逆になっていれば入れ替える
+          // eslint-disable-next-line no-proto
+          if (typeof sxy === 'string' || String(sxy.__proto__) === '[object HTMLImageElement]') {
+            const sw = img
             img = sxy
             sxy = sw
           }
         }
       }
 
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       const drawFunc = (im, ctx) => {
-        if (!dxy){
-          if(!sxy){
+        if (!dxy) {
+          if (!sxy) {
             ctx.drawImage(im)
-          }
-          else if(sxy.length >= 2){ //もしsxyがあるのにdxyがなかったらdxyを代わりにする
+          } else if (sxy.length >= 2) { // もしsxyがあるのにdxyがなかったらdxyを代わりにする
             dxy = sxy
             sxy = undefined
           }
         }
-        if (dxy.length === 2)
-          {ctx.drawImage(im, dxy[0], dxy[1])}
-        else if (dxy.length === 4) {
+        if (dxy.length === 2) { ctx.drawImage(im, dxy[0], dxy[1]) } else if (dxy.length === 4) {
           if (!sxy) {
             ctx.drawImage(im, dxy[0], dxy[1], dxy[2], dxy[3])
-          }
-          else if (sxy.length === 4){
+          } else if (sxy.length === 4) {
             ctx.drawImage(im, sxy[0], sxy[1], sxy[2], sxy[3], dxy[0], dxy[1], dxy[2], dxy[3])
-          }
-          else {throw new Error(errArgLen)}
-        }
-        else {throw new Error(errArgLen)}
+          } else { throw new Error(errArgLen) }
+        } else { throw new Error(errArgLen) }
       }
       if (typeof img === 'string') {
         const image = new window.Image()
@@ -338,11 +328,9 @@ export default {
     pure: true,
     fn: function (n, sys) {
       // 数値だけならフォントサイズのみの指定
-      if (typeof(n) === 'number') {
-        n = n + 'px sans-serif'
-      }
+      if (typeof n === 'number') { n += 'px sans-serif' }
       // ピクセル数のみの指定なら適当にフォントを足す
-      else if (/^[0-9]+(px|em)$/.test(n)) {
+      if (/^[0-9]+(px|em)$/.test(n)) {
         n = n + ' sans-serif'
       }
       sys.__ctx.font = n
@@ -354,7 +342,7 @@ export default {
     josi: [['へ', 'に'], ['の', 'を']],
     pure: true,
     fn: function (xy, s, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.fillText(s, xy[0], xy[1])
     },
     return_none: true
@@ -364,7 +352,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (s, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       return sys.__ctx.measureText(s)
     },
     return_none: true
@@ -374,8 +362,8 @@ export default {
     josi: [['へ', 'に']],
     pure: true,
     fn: function (xy, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      sys.__ctx.translate(xy[0],xy[1])
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      sys.__ctx.translate(xy[0], xy[1])
     },
     return_none: true
   },
@@ -384,7 +372,7 @@ export default {
     josi: [['だけ', 'に', 'へ']],
     pure: true,
     fn: function (a, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.rotate(a * Math.PI / 180)
     },
     return_none: true
@@ -394,7 +382,7 @@ export default {
     josi: [['だけ', 'に', 'へ']],
     pure: true,
     fn: function (xy, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.scale(xy[0], xy[1])
     },
     return_none: true
@@ -404,8 +392,8 @@ export default {
     josi: [['だけ', 'に', 'へ']],
     pure: true,
     fn: function (a, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      sys.__ctx.setTransform(a[0],a[1],a[2],a[3],a[4],a[5],a[6])
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      sys.__ctx.setTransform(a[0], a[1], a[2], a[3], a[4], a[5], a[6])
     },
     return_none: true
   },
@@ -414,8 +402,8 @@ export default {
     josi: [['だけ', 'に', 'へ']],
     pure: true,
     fn: function (a, sys) {
-      if (!sys.__ctx) {throw new Error(errMsgCanvasInit)}
-      sys.__ctx.transform(a[0],a[1],a[2],a[3],a[4],a[5],a[6])
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      sys.__ctx.transform(a[0], a[1], a[2], a[3], a[4], a[5], a[6])
     },
     return_none: true
   },
@@ -434,10 +422,10 @@ export default {
     josi: [['へ', 'に']],
     pure: false,
     fn: function (dom, sys) {
-      if (typeof dom === 'string') { dom = document.querySelector(dom)}
-      if (!dom){ throw new Error('『描画ダウンロードリンク作成』でDOMが見当たりません。')}
+      if (typeof dom === 'string') { dom = document.querySelector(dom) }
+      if (!dom) { throw new Error('『描画ダウンロードリンク作成』でDOMが見当たりません。') }
       const cv = sys.__v0['描画中キャンバス']
-      if (!cv){ throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。')}
+      if (!cv) { throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。') }
       dom.href = cv.toDataURL('image/png')
       dom.download = 'canvas.png'
     },
@@ -448,9 +436,9 @@ export default {
     josi: [],
     pure: false,
     fn: function (sys) {
-      if (typeof dom === 'string') { dom = document.querySelector(dom)}
+      if (typeof dom === 'string') { dom = document.querySelector(dom) }
       const cv = sys.__v0['描画中キャンバス']
-      if (!cv){ throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。')}
+      if (!cv) { throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。') }
       const a = document.createElement('a')
       a.href = cv.toDataURL('image/png')
       a.download = 'canvas.png'

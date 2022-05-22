@@ -395,5 +395,5 @@ export default {
       return txt
     },
     return_none: false
-  },
+  }
 }

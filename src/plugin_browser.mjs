@@ -1,5 +1,5 @@
+// plugin_browser
 // @ts-nocheck
-// plugin_browser.js
 import PartBrowserColor from './plugin_browser_color.mjs';
 import PartBrowserSystem from './plugin_browser_system.mjs';
 import PartBrowserDialog from './plugin_browser_dialog.mjs';

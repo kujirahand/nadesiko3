@@ -1,5 +1,4 @@
-// @ts-nocheck
-// file: plugin_datetime.js
+// PluginDateTime
 import dayjs from 'dayjs'
 import _ja from 'dayjs/locale/ja.js'
 
@@ -68,7 +67,6 @@ const PluginDateTime = {
     josi: [],
     pure: true,
     fn: function () {
-      
       return dayjs().add(1, 'years').year()
     }
   },
@@ -77,7 +75,6 @@ const PluginDateTime = {
     josi: [],
     pure: true,
     fn: function () {
-      
       return dayjs().subtract(1, 'years').year()
     }
   },
@@ -86,7 +83,6 @@ const PluginDateTime = {
     josi: [],
     pure: true,
     fn: function () {
-      
       return dayjs().month() + 1
     }
   },
@@ -95,7 +91,6 @@ const PluginDateTime = {
     josi: [],
     pure: true,
     fn: function () {
-      
       return dayjs().add(1, 'months').month() + 1
     }
   },
@@ -104,7 +99,6 @@ const PluginDateTime = {
     josi: [],
     pure: true,
     fn: function () {
-      
       return dayjs().subtract(1, 'months').month() + 1
     }
   },
@@ -142,7 +136,6 @@ const PluginDateTime = {
     josi: [['の', 'を', 'から']],
     pure: true,
     fn: function (s) {
-      
       return dayjs(s, 'YYYY/MM/DD HH:mm:ss').unix()
     }
   },
@@ -151,7 +144,6 @@ const PluginDateTime = {
     josi: [['を', 'から']],
     pure: true,
     fn: function (tm) {
-      
       return dayjs.unix(tm).format('YYYY/MM/DD HH:mm:ss')
     }
   },
@@ -160,7 +152,6 @@ const PluginDateTime = {
     josi: [['を']],
     pure: true,
     fn: function (s, sys) {
-      
       const date = dayjs(s, 'YYYY/MM/DD')
 
       for (const era of sys.__v0['元号データ']) {
@@ -208,8 +199,6 @@ const PluginDateTime = {
     josi: [['と', 'から'], ['の', 'までの'], ['による']],
     pure: true,
     fn: function (a, b, unit) {
-      
-
       switch (unit) {
         case '年':
           unit = 'years'
@@ -403,5 +392,3 @@ export default PluginDateTime
 // scriptタグで取り込んだ時、自動で登録する
 /* istanbul ignore else */
 if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') { navigator.nako3.addPluginObject('PluginDateTime', PluginDateTime) }
-
-

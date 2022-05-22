@@ -1,5 +1,5 @@
+// plugin_browser
 // @ts-nocheck
-// plugin_browser.js
 import PartBrowserColor from './plugin_browser_color.mjs'
 import PartBrowserSystem from './plugin_browser_system.mjs'
 import PartBrowserDialog from './plugin_browser_dialog.mjs'
@@ -54,14 +54,14 @@ const PluginBrowser = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: any) {
       /* eslint no-global-assign: 0 */
-      const doc = (typeof document === 'undefined') ? { 'body': {} } : document
-      const win = (typeof window === 'undefined') ? { 'location': { 'href': '' } } : window
-      const nav = (typeof navigator === 'undefined') ? {} : navigator
+      const doc: any = (typeof document === 'undefined') ? { 'body': {} } : document
+      const win: any = (typeof window === 'undefined') ? { 'location': { 'href': '' } } : window
+      const nav: any = (typeof navigator === 'undefined') ? {} : navigator
 
       // 定数を初期化
-      sys.__v0['AJAX:ONERROR'] = (err) => { console.log(err) }
+      sys.__v0['AJAX:ONERROR'] = (err: any) => { console.log(err) }
       // オブジェクトを初期化
       sys.__v0.DOCUMENT = doc
       sys.__v0.WINDOW = win
@@ -70,13 +70,13 @@ const PluginBrowser = {
       sys.__v0['ブラウザURL'] = win.location.href
 
       // 便利なメソッドを定義
-      sys.__tohtml = (text) => {
+      sys.__tohtml = (text: string): string => {
         return ('' + text)
           .replace(/&/g, '&amp;')
           .replace(/>/g, '&gt;')
           .replace(/</g, '&lt;')
       }
-      sys.__tohtmlQ = (text) => {
+      sys.__tohtmlQ = (text: string): string => {
         return sys.__tohtml(text)
           .replace(/"/g, '&#34;')
           .replace(/'/g, '&#39;')
@@ -85,7 +85,7 @@ const PluginBrowser = {
       // 「!クリア」でDOMイベントを削除するため
       sys.__dom_events = [] // [{}, {}, {} ...]
       // DOM追加イベント
-      sys.__addEvent = (dom, event, func, setHandler) => {
+      sys.__addEvent = (dom: any, event: any, func: any, setHandler: any) => {
         // dom
         if (typeof (dom) === 'string') {
           dom = doc.querySelector(dom)
@@ -97,7 +97,7 @@ const PluginBrowser = {
           if (!func) { throw new Error('DOMイベントが追加できません。関数が見当たりません。') }
         }
         // make wrapper func
-        const wrapperFunc = (e) => {
+        const wrapperFunc = (e: any) => {
           sys.__v0['対象'] = e.target
           sys.__v0['対象イベント'] = e
           // 追加データが得られる場合
@@ -110,7 +110,7 @@ const PluginBrowser = {
         dom.addEventListener(event, wrapperFunc)
       }
       // キーイベントハンドラ
-      sys.__keyHandler = (e, sys) => {
+      sys.__keyHandler = (e: any, sys: any) => {
         sys.__v0['押キー'] = e.key
       }
       // マウスイベントハンドラ
@@ -193,7 +193,7 @@ const PluginBrowser = {
 }
 
 BrowserParts.forEach((a) => {
-  const b = {}
+  const b: any = {}
   Object.assign(b, a)
   // 各モジュールでの初期化処理は認めない
   if (typeof b['初期化'] !== 'undefined') {

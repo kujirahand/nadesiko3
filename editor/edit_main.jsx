@@ -26,9 +26,15 @@ const clearNako = (editorId, outputContainer) => {
     outputContainer.innerHTML = ''
     outputContainer.style.display = 'none'
   }
+  // plugins clear
+  navigator.nako3.clearPlugins()
+  // div clear
   const nako3div = document.querySelector(`#nako3_div_${editorId}`)
   nako3div.innerHTML = ''
-  navigator.nako3.clearPlugins()
+  // canvas caler
+  const nako3canvas = document.querySelector(`#nako3_canvas_${editorId}`)
+  const ctx = nako3canvas.getContext('2d')
+  ctx.clearRect(0, 0, nako3canvas.width, nako3canvas.height)
 }
 
 const getNako3 = () => /** @type {import('../src/wnako3')} */(navigator.nako3)

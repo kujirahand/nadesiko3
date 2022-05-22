@@ -1508,7 +1508,8 @@ export function setupEditor(idOrElement, nako3, ace) {
                 return nako3.compile(preCode + code, filename, false, preCode);
             }
             else {
-                return nako3.runReset(preCode + code, filename, preCode);
+                const opt = { resetEnv: true, resetAll: true };
+                return nako3.runEx(preCode + code, filename, opt, preCode);
             }
         })
             .catch((err) => {
@@ -1526,7 +1527,7 @@ export function setupEditor(idOrElement, nako3, ace) {
             return res;
         })
             .catch((err) => {
-            console.error('[wnako3_editor::run::promise]', err);
+            console.error('[wnako3_editor::run::promise::catch]', err);
         });
         return { promise, logger, code };
     };

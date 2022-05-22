@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.3.27",
+  "version": "3.3.28",
   "description": "Japanese Programming Language",
   "main": "src/index.mjs",
   "bin": {
@@ -178,7 +178,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "nadesiko3core": "^3.3.23",
+    "nadesiko3core": "^3.3.28",
     "dayjs": "^1.11.1",
     "fs-extra": "^10.1.0",
     "html": "^1.0.0",

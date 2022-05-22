@@ -72,7 +72,7 @@ export default {
   },
 
   resolve: {
-    extensions: ['*',  '.webpack.mjs', '.webpack.js', '.web.js', '.js', '.mjs', '.jsx'],
+    extensions: ['*', '.webpack.mjs', '.webpack.js', '.web.js', '.js', '.mjs', '.jsx'],
     mainFields: ['browser', 'main', 'module']
   },
   optimization: {

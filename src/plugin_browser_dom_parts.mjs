@@ -1,9 +1,9 @@
 // @ts-nocheck
- export default {
+export default {
   // @DOM部品操作
   'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
   'DOM部品個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
-  'DOM部品オプション': { type: 'const', value: {'自動改行': false, 'テーブル背景色': ['#AA4040', '#ffffff','#fff0f0']} }, // @DOMぶひんおぷしょん
+  'DOM部品オプション': { type: 'const', value: { '自動改行': false, 'テーブル背景色': ['#AA4040', '#ffffff', '#fff0f0'] } }, // @DOMぶひんおぷしょん
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」など『DOM部品作成』で追加する要素の親要素を指定(デフォルトはdocument)して要素を返す。 // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
@@ -39,7 +39,7 @@
     pure: false,
     fn: function (elm, sys) {
       const parent = sys.__v0['DOM親要素']
-      const btn = (typeof(elm) === 'string') ? document.createElement(elm) : elm
+      const btn = (typeof (elm) === 'string') ? document.createElement(elm) : elm
       btn.id = 'nadesi-dom-' + sys.__v0['DOM部品個数']
       // スキン適用
       const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
@@ -50,7 +50,7 @@
       // オプションを適用
       const opt = sys.__v0['DOM部品オプション']
       if (opt['自動改行']) {
-        parent.appendChild(document.createElement('br'));
+        parent.appendChild(document.createElement('br'))
       }
       return btn
     }
@@ -170,10 +170,10 @@
   },
   'セレクトボックスアイテム設定': { // @配列データをセレクトボックスdomのアイテムに差し替える // @せれくとぼっくすあいてむさくせい
     type: 'func',
-    josi: [['を'], ['へ','に']],
+    josi: [['を'], ['へ', 'に']],
     pure: false,
     fn: function (options, dom, sys) {
-      if (typeof(dom) === 'stirng') { dom = document.querySelector(dom) }
+      if (typeof dom === 'string') { dom = document.querySelector(dom) }
       // 既存のoptionsをクリア
       dom.options.length = 0
       // アイテムを追加
@@ -208,7 +208,7 @@
   },
   'パスワード入力エディタ作成': { // @パスワード入力エディタ(input[type='password'])を作成し初期値Sを設定し、DOMオブジェクトを返す // @ぱすわーどにゅうりょくさくせい
     type: 'func',
-    josi: [['の','で']],
+    josi: [['の', 'で']],
     pure: false,
     fn: function (s, sys) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
@@ -219,7 +219,7 @@
   },
   '値指定バー作成': { // @範囲RANGE(配列で[最小,最大[,値]])を指定するバー(input[type='range'])を作成しDOMオブジェクトを返す // @ぱすわーどにゅうりょくさくせい
     type: 'func',
-    josi: [['の','で']],
+    josi: [['の', 'で']],
     pure: false,
     fn: function (range, sys) {
       if (!(range instanceof Array) || range.length < 2) {
@@ -249,22 +249,22 @@
   },
   'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}で項目一覧S「a=初期値{改行}b=初期値{改行}色=?c#fff0f0{改行}=?送信」を送信フォームを作成しDOMオブジェクトを返す // @ふぉーむさくせい
     type: 'func',
-    josi: [['で','の'],['を']],
+    josi: [['で', 'の'], ['を']],
     pure: false,
     fn: function (obj, s, sys) {
       const frm = sys.__exec('DOM部品作成', ['form', sys])
       // 可能ならformにobjの値を移し替える
       if (obj instanceof Object) {
-        for (let key in obj) {
+        for (const key in obj) {
           if (frm[key]) { frm[key] = obj[key] }
         }
       }
       // 入力項目をtableで作る
       const rows = s.split('\n')
       const table = document.createElement('table')
-      for (let rowIndex in rows) {
+      for (const rowIndex in rows) {
         let row = '' + (rows[rowIndex])
-        if (row === '') {continue}
+        if (row === '') { continue }
         if (row.indexOf('=') < 0) { row += '=' }
         const cols = row.split('=')
         const key = cols[0]
@@ -283,7 +283,7 @@
           const items = its.split('|')
           const select = document.createElement('select')
           select.name = key
-          for (let it of items) {
+          for (const it of items) {
             const option = document.createElement('option')
             option.value = it
             option.text = it
@@ -300,7 +300,7 @@
           if (val === '?送信' || val === '?submit') {
             inp.type = 'submit'
             inp.value = val.substring(1)
-            if (key != '') { inp.name = key }
+            if (key !== '') { inp.name = key }
           } else if (val.substring(0, 2) === '?c') {
             inp.type = 'color'
             inp.value = val.substring(2)
@@ -309,7 +309,7 @@
             inp.type = 'text'
             inp.value = val
             inp.name = key
-          }    
+          }
         }
         const tr = document.createElement('tr')
         tr.appendChild(th)
@@ -322,16 +322,16 @@
   },
   'フォーム入力一括取得': { // @DOMのフォームを取得し、そのフォーム以下にある入力項目のnameとvalueを辞書形式で返す // @ふぉーむにゅうりょくいっかつしゅとく
     type: 'func',
-    josi: [['の','から']],
+    josi: [['の', 'から']],
     pure: true,
     fn: function (dom) {
-      if (typeof(dom) === 'string') { dom = document.querySelector(dom) }
+      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const res = {}
       const getChildren = (pa) => {
-        if (!pa || !pa.childNodes) {return}
+        if (!pa || !pa.childNodes) { return }
         for (let i = 0; i < pa.childNodes.length; i++) {
           const el = pa.childNodes[i]
-          if (!el.tagName) {return}
+          if (!el.tagName) { return }
           const tag = el.tagName.toLowerCase()
           if (tag === 'input') {
             if (el.type === 'checkbox') {
@@ -340,11 +340,9 @@
             }
             res[el.name] = el.value
             continue
-          }
-          else if (tag === 'textarea') {
+          } else if (tag === 'textarea') {
             res[el.name] = el.value
-          }
-          else if (tag === 'select') {
+          } else if (tag === 'select') {
             if (el.selectedIndex >= 0) {
               res[el.name] = el.options[el.selectedIndex].value
             } else {
@@ -363,29 +361,29 @@
     josi: [['の', 'から']],
     pure: false,
     fn: function (aa, sys) {
-      if (typeof(aa) === 'string') {
+      if (typeof (aa) === 'string') {
         const rr = []
         const rows = aa.split('\n')
-        for (let row of rows) { rr.push(row.split(',')) }
+        for (const row of rows) { rr.push(row.split(',')) }
         aa = rr
       }
       const bgColor = JSON.parse(JSON.stringify(sys.__v0['DOM部品オプション']['テーブル背景色']))
-      for (let i = 0; i < 3; i++) {bgColor.push('')}
+      for (let i = 0; i < 3; i++) { bgColor.push('') }
       const bgHead = bgColor.shift()
       const table = sys.__exec('DOM部品作成', ['table', sys])
-      for (let rowNo in aa) {
+      for (const rowNo in aa) {
         const row = aa[rowNo]
         const tr = document.createElement('tr')
         for (let col of row) {
           col = '' + col
-          const td = document.createElement((rowNo == 0) ? 'th' : 'td')
+          const td = document.createElement((rowNo === 0) ? 'th' : 'td')
           td.innerHTML = sys.__tohtml(col)
           // 色指定
-          if (bgHead != '') {
-            td.style.backgroundColor = (rowNo == 0) ? bgHead : bgColor[rowNo % 2]
-            td.style.color = (rowNo == 0) ? 'white' : 'black'
+          if (bgHead !== '') {
+            td.style.backgroundColor = (rowNo === 0) ? bgHead : bgColor[rowNo % 2]
+            td.style.color = (rowNo === 0) ? 'white' : 'black'
           }
-          if (col.match(/^(\+|\-)?\d+(\.\d+)?$/)) { // number?
+          if (col.match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
             td.style.textAlign = 'right'
           }
           tr.appendChild(td)
