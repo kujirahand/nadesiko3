@@ -5,8 +5,8 @@
   "main": "src/index.mjs",
   "bin": {
     "cnako3": "src/cnako3.mjs",
-    "nako3server": "node src/nako3server.mjs",
-    "nako3edit": "node tools/nako3edit/index.mjs"
+    "nako3server": "src/nako3server.mjs",
+    "nako3edit": "tools/nako3edit/index.mjs"
   },
   "scripts": {
     "start": "node src/nako3server.mjs",

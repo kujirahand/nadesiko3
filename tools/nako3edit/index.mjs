@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** nako3edit用の超簡易サーバ(生のnodeだけで簡単HTTPサーバ) */
 import path from 'path'
-import fs from 'fs'
+import fs, { existsSync } from 'fs'
 import { execSync } from 'child_process'
 import opener from 'opener'
 import http from 'http'
@@ -21,6 +21,9 @@ const userDir = path.join(homeDir, 'nadesiko3_user')
 const CNAKO3 = path.resolve(path.join(__dirname, '../../src/cnako3.mjs'))
 const NODE = process.argv[0]
 const appkey = 'K' + Math.floor(Math.random() * 10000000).toString(16)
+
+// ユーザーフォルダを作成
+if (!fs.existsSync(userDir)) { fs.mkdirSync(userDir) }
 
 // サーバ
 const server = http.createServer(function (req, res) {
