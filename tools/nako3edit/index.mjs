@@ -12,7 +12,7 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // CONST
-const SERVER_PORT = 3000
+const SERVER_PORT = 8888
 const rootDir = path.resolve(__dirname)
 const releaseDir = path.resolve(path.join(__dirname, '../../release'))
 const isWin = process.platform === 'win32'
@@ -242,4 +242,3 @@ function apiGetNewFilename (res) {
   res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
   res.end(`"${fname}"`)
 }
-

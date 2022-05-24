@@ -5,11 +5,12 @@
   "main": "src/index.mjs",
   "bin": {
     "cnako3": "src/cnako3.mjs",
-    "nako3server": "src/nako3server.mjs",
+    "nako3server": "tools/nako3server/index.mjs",
     "nako3edit": "tools/nako3edit/index.mjs"
   },
   "scripts": {
-    "start": "node src/nako3server.mjs",
+    "start": "node tools/nako3server/index.mjs",
+    "nako3server": "node tools/nako3server/index.mjs",
     "nako3edit": "node tools/nako3edit/index.mjs",
     "test": "cross-env TZ=Asia/Tokyo mocha test/common/*.mjs",
     "test:node": "mocha --extension mjs test/node",

@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename)
 
 // CONST
 const SERVER_PORT = 3000
-const rootDir = path.resolve(path.join(__dirname, '../'))
+const rootDir = path.resolve(__dirname, '../../')
 
 // ライブラリがあるかチェック
 const testFile = path.join(rootDir, 'demo/extlib/pure-min.css')
