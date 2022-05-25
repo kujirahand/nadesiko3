@@ -48,7 +48,7 @@ const CommanderJa = {
     option(cmd, desc) {
         this._help.push([cmd, desc]);
         let name1 = '';
-        const name2 = ([]);
+        const name2 = /** @type {string[]} */ ([]);
         const cmdList = cmd.split(',');
         cmdList.forEach((t) => {
             const c = t.replace(/\s+/, '');

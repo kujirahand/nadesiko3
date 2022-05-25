@@ -129,7 +129,7 @@ export class WebNakoCompiler extends NakoCompiler {
             try {
               pathname = new URL(name).pathname
             } catch (e) {
-              // 単純にパスに変換できなければ、loccation.hrefを参考にパスを組み立てる
+              // 単純にパスに変換できなければ、location.hrefを参考にパスを組み立てる
               try {
                 let baseDir = dirname(fromFile)
                 if (baseDir === '') {
@@ -179,7 +179,7 @@ export class WebNakoCompiler extends NakoCompiler {
 
   /**
    * 指定したidのHTML要素をなでしこ言語のエディタにする。
- * @param {string | Element} idOrElement HTML要素
+   * @param {string | Element} idOrElement HTML要素
    * @see {setupEditor}
    */
   setupEditor (idOrElement: any) {
