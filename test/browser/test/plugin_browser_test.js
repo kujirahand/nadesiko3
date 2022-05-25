@@ -1,4 +1,3 @@
-import 'whatwg-fetch'
 import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginBrowser from 'nako3/plugin_browser.mjs'
 

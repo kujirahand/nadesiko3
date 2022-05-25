@@ -12,11 +12,14 @@ REPOSパス=基本パスを「../」で相対パス展開。
 
 CORE="node_modules/nadesiko3core/src"
 
+コアプラグイン一覧は[
+    ["plugin_system.mts", 'wnako,cnako,phpnako'],
+    ["plugin_csv.mts", 'wnako,cnako'],
+    ["plugin_math.mts", 'wnako,cnako'],
+    ["plugin_promise.mts", 'wnako']
+]
+
 基本プラグイン一覧は[
-    ["{CORE}/plugin_system.mts", 'wnako,cnako,phpnako'],
-    ["{CORE}/plugin_csv.mts", 'wnako,cnako'],
-    ["{CORE}/plugin_math.mts", 'wnako,cnako'],
-    ["{CORE}/plugin_promise.mts", 'wnako']
     ['src/plugin_browser.mjs','wnako'],
     ['src/plugin_turtle.mjs', 'wnako'],
     ['src/plugin_node.mts', 'cnako,phpnako'],
@@ -50,9 +53,27 @@ CORE="node_modules/nadesiko3core/src"
 
 #------------------------
 結果データ＝「」
+SRC_URL=""
+FILE_PATH=""
+#------------------------
+コアプラグイン一覧を反復
+　　PNAME=対象@0
+　　カレントプラグイン＝"{CORE}/{PNAME}"
+　　FILE_PATH="{基本パス}/{CORE}/{PNAME}"
+　　# https://github.com/kujirahand/nadesiko3core/blob/main/src/{PNAME}#L119
+　　SRC_URL="https://github.com/kujirahand/nadesiko3core/blob/main/src/{PNAME}"
+　　ナコタイプ＝対象＠1
+　　パスは「{基本パス}/{カレントプラグイン}」
+　　パスを「(基本プラグイン,{ナコタイプ})」でプラグイン要約作成
+　　結果データ＝結果データ＆それ＆改行＆改行。
+ここまで
+#------------------------
 基本プラグイン一覧を反復
-　　カレントプラグイン＝それ@0
-　　ナコタイプ＝それ＠1
+　　PNAME=対象@0
+　　カレントプラグイン＝対象@0
+　　ナコタイプ＝対象＠1
+　　FILE_PATH="{基本パス}/{PNAME}"
+　　SRC_URL="https://github.com/kujirahand/nadesiko3/tree/master/{PNAME}"
 　　パスは「{基本パス}/{カレントプラグイン}」
 　　パスを「(基本プラグイン,{ナコタイプ})」でプラグイン要約作成
 　　結果データ＝結果データ＆それ＆改行＆改行。
@@ -62,6 +83,8 @@ CORE="node_modules/nadesiko3core/src"
 　　カレントプラグイン＝それ@0
 　　ナコタイプ＝それ＠1
 　　パスは「{REPOSパス}/{カレントプラグイン}」
+　　FILE_PATH="{REPOSパス}/{カレントプラグイン}"
+　　SRC_URL="https://github.com/kujirahand/{カレントプラグイン}"
 　　パスが存在
 　　もし、そうならば
 　　　　 # パスを表示。
