@@ -1,6 +1,6 @@
 /**
  * コマンドライン版のなでしこ3をモジュールとして定義
- * 実際には cnako3.js から読み込まれる
+ * 実際には cnako3.mjs から読み込まれる
  */
 import fs from 'fs'
 import { exec } from 'child_process'
@@ -23,11 +23,11 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 interface CNako3Options {
-  nostd: boolean;
+  nostd: boolean
 }
 
 export class CNako3 extends NakoCompiler {
-  debug: boolean;
+  debug: boolean
 
   constructor (opts:CNako3Options = { nostd: false }) {
     super({ useBasicPlugin: !opts.nostd })

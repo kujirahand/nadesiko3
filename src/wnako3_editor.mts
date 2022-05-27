@@ -304,7 +304,7 @@ export function tokenize (lines, nako3, underlineJosi) {
         if (token.type === 'word' && token.value !== 'それ' && funclist[token.value]) {
           token.type = 'func'
           // meta.file に定義元のファイル名を持たせる。
-          token.meta = { ...funclist[token.value + ''], file: file }
+          token.meta = { ...funclist[token.value + ''], file }
         }
       }
     }

@@ -1,6 +1,6 @@
 /**
  * コマンドライン版のなでしこ3をモジュールとして定義
- * 実際には cnako3.js から読み込まれる
+ * 実際には cnako3.mjs から読み込まれる
  */
 import fs from 'fs';
 import { exec } from 'child_process';
