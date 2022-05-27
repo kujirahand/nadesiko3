@@ -22,7 +22,7 @@
     "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.js",
     "test:all": "npm test && npm run test:node && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
     "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
-    "build:nako_version": "node src/cnako3.mjs batch/build_wnako_version.nako3",
+    "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
     "build": "npm run build:nako_version && tsc && npm run build:command && webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
     "tsc": "tsc --watch",
     "build:webpack": "tsc && webpack --mode development",
