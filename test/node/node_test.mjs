@@ -3,7 +3,7 @@ import assert from 'assert'
 import path from 'path'
 import fs from 'fs'
 import { execSync, spawnSync } from 'child_process'
-import NakoVersion from 'nadesiko3core/src/nako_version.mjs'
+import NakoVersion from '../../src/nako_version.mjs'
 
 // __dirname のために
 import url from 'url'

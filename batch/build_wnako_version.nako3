@@ -1,23 +1,42 @@
+#!/usr/bin/env cnako3
+# -----------------------------------------------------
+# なでしこのバージョン情報を自動生成する
+# -----------------------------------------------------
+# ●説明
+# package.json の内容を読んで ./src/nako_version.mts を生成
+# -----------------------------------------------------
 母艦パス取得してパス抽出して基本パスに代入。
 「{基本パス}/package.json」を読んでJSONデコードして、Pに代入。
 VER=P@"version"
 定数[MAJOR,MINOR,PATCH]=(VERを「.」で区切る)
-VS=「/** なでしこバージョン */
+QS=『{』
+QE=『}』
+VS=「/**
+ * なでしこのバージョン情報
+ * package.json から自動的に作成されます。このファイルを編集しないでください。
+ */
 // 型定義
-export interface WNakoVersion {波カッコ}
+export interface NakoVersion {QS}
     version: string;
     major: number;
     minor: number;
     patch: number;
-{波カッコ閉}
-// 実際のバージョン定義
-const wnako3version: WNakoVersion = {波カッコ}
+{QE}
+// 実際のバージョン定義 (自動生成されるので以下を編集しない)
+const nakoVersion: NakoVersion = {QS}
   version: '{VER}',
   major: {MAJOR},
   minor: {MINOR},
   patch: {PATCH}
-{波カッコ閉}
-export default wnako3version
+{QE}
+export default nakoVersion
 」
-VSを表示。
-VSを「{基本パス}/src/wnako_version.mts」へ保存。
+保存先=「{基本パス}/src/nako_version.mts」
+VSを保存先へ保存。
+「
+# ---------------------------------------------
+# ● なでしこのバージョン情報を更新しました。
+# version {VER}
+# file: {保存先}
+# ---------------------------------------------
+」を表示。

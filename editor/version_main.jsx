@@ -1,7 +1,7 @@
 // version_main.js
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import nakoVersion from 'nadesiko3core/src/nako_version.mjs'
+import nakoVersion from '../src/nako_version.mjs'
 
 try {
   for (const e of Array.from(document.getElementsByClassName('version-component'))) {

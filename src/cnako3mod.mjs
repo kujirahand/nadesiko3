@@ -5,8 +5,7 @@
 import fs from 'fs';
 import { exec } from 'child_process';
 import path from 'path';
-import nakoVersion from 'nadesiko3core/src/nako_version.mjs';
-import wnakoVersion from './wnako_version.mjs';
+import nakoVersion from './nako_version.mjs';
 import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs';
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs';
 import PluginNode from './plugin_node.mjs';
@@ -20,7 +19,7 @@ export class CNako3 extends NakoCompiler {
     constructor(opts = { nostd: false }) {
         super({ useBasicPlugin: !opts.nostd });
         this.debug = false;
-        this.silent = false;
+        this.filename = 'main.nako3';
         if (!opts.nostd) {
             this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.mjs'), PluginNode);
         }
@@ -32,7 +31,7 @@ export class CNako3 extends NakoCompiler {
         if (process.argv.length <= 2) {
             process.argv.push('-h');
         }
-        const verInfo = `v${wnakoVersion.version} (core:v${nakoVersion.version})`;
+        const verInfo = `v${nakoVersion.version}`;
         // commanderを使って引数を解析する
         app
             .title('日本語プログラミング言語「なでしこ」' + verInfo)
@@ -86,8 +85,8 @@ export class CNako3 extends NakoCompiler {
         else if (app.warn) {
             logLevel = 'warn';
         }
-        this.logger.addListener(logLevel, ({ level, nodeConsole }) => {
-            if (this.silent && level === 'stdout') {
+        this.getLogger().addListener(logLevel, ({ level, nodeConsole }) => {
+            if (level === 'stdout') {
                 return;
             }
             console.log(nodeConsole);
@@ -148,9 +147,6 @@ export class CNako3 extends NakoCompiler {
             this.cnakoBrowsers();
             return;
         }
-        if (opt.mainfile) {
-            this.filename = opt.mainfile;
-        }
         // REPLを実行する
         if (opt.repl) {
             this.cnakoRepl(opt);
@@ -162,6 +158,7 @@ export class CNako3 extends NakoCompiler {
             return;
         }
         // メインプログラムを読み込む
+        this.filename = opt.mainfile;
         const src = fs.readFileSync(opt.mainfile, 'utf-8');
         if (opt.compile) {
             await this.nakoCompile(opt, src, false);
@@ -188,7 +185,9 @@ export class CNako3 extends NakoCompiler {
                 return;
             }
             catch (e) {
-                process.exit(1);
+                if (this.numFailures > 0) {
+                    process.exit(1);
+                }
             }
         }
         // ファイルを読んで実行する
@@ -519,7 +518,7 @@ export class CNako3 extends NakoCompiler {
             await this.loadDependencies(code, fname, preCode);
         }
         catch (err) {
-            this.logger.error(err);
+            this.getLogger().error(err);
         }
         // 実行
         return this._runEx(code, fname, {}, preCode);
