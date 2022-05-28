@@ -13,9 +13,11 @@ export class WebNakoCompiler extends NakoCompiler {
         this.wnakoVersion = nakoVersion;
         // プラグインを追加
         this.addPluginObject('PluginBrowser', PluginBrowser);
-        // 必要な定数を埋める
-        this.__varslist[0]['ナデシコ種類'] = 'wnako3';
-        this.__varslist[0]['ナデシコバージョン'] = nakoVersion.version;
+        // 必要な定数を設定
+        this.addListener('beforeRun', (g) => {
+            g.__varslist[0]['ナデシコ種類'] = 'wnako3';
+            g.__varslist[0]['ナデシコバージョン'] = nakoVersion.version;
+        });
     }
     /**
      * ブラウザでtype="なでしこ"というスクリプトを得て実行する

@@ -2,6 +2,7 @@
 // - wnako3 から wnako3mod を取り込む。
 // - このファイルはモジュールとして別のファイルから取り込み可能。
 import { NakoCompiler, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
+import { NakoGlobal } from 'nadesiko3core/src/nako_global.mjs'
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
 import { Token } from 'nadesiko3core/src/nako_types.mjs'
 import { setupEditor } from './wnako3_editor.mjs'
@@ -17,9 +18,11 @@ export class WebNakoCompiler extends NakoCompiler {
     this.wnakoVersion = nakoVersion
     // プラグインを追加
     this.addPluginObject('PluginBrowser', PluginBrowser)
-    // 必要な定数を埋める
-    this.__varslist[0]['ナデシコ種類'] = 'wnako3'
-    this.__varslist[0]['ナデシコバージョン'] = nakoVersion.version
+    // 必要な定数を設定
+    this.addListener('beforeRun', (g: NakoGlobal) => {
+      g.__varslist[0]['ナデシコ種類'] = 'wnako3'
+      g.__varslist[0]['ナデシコバージョン'] = nakoVersion.version
+    })
   }
 
   /**

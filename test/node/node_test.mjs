@@ -3,7 +3,7 @@ import assert from 'assert'
 import path from 'path'
 import fs from 'fs'
 import { execSync, spawnSync } from 'child_process'
-import NakoVersion from '../../src/nako_version.mjs'
+import nakoVersion from '../../src/nako_version.mjs'
 
 // __dirname のために
 import url from 'url'
@@ -27,7 +27,7 @@ describe('node_test(cnako)', () => {
   }
   // --- バージョンチェック ---
   it('ナデシコバージョン:src/plugin_system.jsを正しく設定しているか？', () => {
-    cmp('ナデシコバージョンを表示', NakoVersion.version)
+    cmp('ナデシコバージョンを表示', nakoVersion.version)
     cmp('ナデシコ種類を表示', 'cnako3')
   })
   // --- test ---

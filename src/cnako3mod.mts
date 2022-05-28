@@ -3,41 +3,68 @@
  * 実際には cnako3.mjs から読み込まれる
  */
 import fs from 'fs'
+import fse from 'fs-extra'
 import { exec } from 'child_process'
 import path from 'path'
 
-import coreVersion from 'nadesiko3core/src/nako_core_version.mjs'
-import nakoVersion from './nako_version.mjs'
 import { NakoCompiler, LoaderTool, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
+
 import { Ast } from 'nadesiko3core/src/nako_types.mjs'
 import { NakoGlobal } from 'nadesiko3core/src/nako_global.mjs'
+import nakoVersion from './nako_version.mjs'
 
 import PluginNode from './plugin_node.mjs'
 import app from './commander_ja.mjs'
 import fetch from 'node-fetch'
+
+import { NakoGenOptions } from 'nadesiko3core/src/nako_gen.mjs'
 
 // __dirname のために
 import url from 'url'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+/** コマンドラインアクション */
+interface CNako3ArgOptions {
+  warn: boolean
+  debug: boolean
+  compile: any | boolean
+  test: any | boolean
+  one_liner: any | boolean
+  trace: any | boolean
+  run: any | boolean
+  repl: any | boolean
+  source: any | string
+  mainfile: any | string
+  man: string
+  browsers: boolean
+  ast: boolean
+}
+
 interface CNako3Options {
   nostd: boolean
 }
 
+/** CNako3 */
 export class CNako3 extends NakoCompiler {
   debug: boolean
   filename: string
+  version: string
 
   constructor (opts:CNako3Options = { nostd: false }) {
     super({ useBasicPlugin: !opts.nostd })
     this.debug = false
     this.filename = 'main.nako3'
+    this.version = nakoVersion.version
     if (!opts.nostd) {
       this.addPluginFile('PluginNode', path.join(__dirname, 'plugin_node.mjs'), PluginNode)
     }
-    this.__varslist[0]['ナデシコ種類'] = 'cnako3'
+    // 必要な定数を設定
+    this.addListener('beforeRun', (g: NakoGlobal) => {
+      g.__varslist[0]['ナデシコ種類'] = 'cnako3'
+      g.__varslist[0]['ナデシコバージョン'] = this.version
+    })
   }
 
   // CNAKO3で使えるコマンドを登録する
@@ -72,25 +99,10 @@ export class CNako3 extends NakoCompiler {
     return app
   }
 
-  /**
-   * コマンドライン引数を解析
-   * @returns {{
-   *  warn: boolean,
-   *  debug: boolean,
-   *  compile: any | boolean,
-   *  test: any | boolean,
-   *  one_liner: any | boolean,
-   *  trace: any | boolean,
-   *  run: any | boolean,
-   *  repl: any | boolean,
-   *  source: any | string,
-   *  mainfile: any | string,
-   * }}
-   */
-  checkArguments () {
+  /** コマンドライン引数を解析 */
+  checkArguments (): CNako3ArgOptions {
     const app: any = this.registerCommands()
 
-    /** @type {import('./nako_logger.mjs').LogLevel} */
     let logLevel = 'error'
     if (app.trace) {
       logLevel = 'trace'
@@ -100,9 +112,6 @@ export class CNako3 extends NakoCompiler {
       logLevel = 'warn'
     }
     this.getLogger().addListener(logLevel, ({ level, nodeConsole }) => {
-      if (level === 'stdout') {
-        return
-      }
       console.log(nodeConsole)
     })
 
@@ -125,7 +134,7 @@ export class CNako3 extends NakoCompiler {
     args.output = app.output
 
     // todo: ESModule 対応の '.mjs' のコードを吐くように修正 #1217
-    const ext = '.js'
+    const ext = '.mjs'
     if (/\.(nako|nako3|txt|bak)$/.test(args.mainfile)) {
       if (!args.output) {
         if (args.test) {
@@ -208,12 +217,11 @@ export class CNako3 extends NakoCompiler {
 
     // ファイルを読んで実行する
     try {
-      await this.runAsync(src, opt.mainfile) // run はコンパイルと実行を行うメソッド
-      if (this.numFailures > 0) {
-        process.exit(1)
-      }
-    } catch (e) {
-      // エラーメッセージはloggerへ送られるため無視してよい
+      // コンパイルと実行を行うメソッド
+      const g = await this.runAsync(src, opt.mainfile)
+      return g
+    } catch (e: any) {
+      // 文法エラーなどがあった場合
       if (opt.debug || opt.trace) {
         throw e
       }
@@ -230,30 +238,53 @@ export class CNako3 extends NakoCompiler {
     // 依存ライブラリなどを読み込む
     await this.loadDependencies(src, this.filename, '')
     // JSにコンパイル
-    const jscode = this.compileStandalone(src, this.filename, isTest)
+    const genOpt = new NakoGenOptions(
+      isTest,
+      ['plugin_node.mjs'],
+      'self.__varslist[0][\'ナデシコ種類\']=\'cnako3\';'
+    )
+    const jscode = this.compileStandalone(src, this.filename, genOpt)
     console.log(opt.output)
     fs.writeFileSync(opt.output, jscode, 'utf-8')
 
-    /*
     // 実行に必要なファイルをコピー
     const nakoRuntime = __dirname
     const outRuntime = path.join(path.dirname(opt.output), 'nako3runtime')
     if (!fs.existsSync(outRuntime)) { fs.mkdirSync(outRuntime) }
-    for (let mod of ['nako_version.mjs', 'nako_errors.mjs', 'plugin_node.mjs']) {
+    // from ./src
+    for (const mod of ['nako_version.mjs', 'plugin_node.mjs']) {
       fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod))
     }
-    // todo: 必要に応じてnode_modulesをコピー (時間が掛かりすぎるのでコピーしない)
-    const dstModule = path.join(path.dirname(opt.output), 'node_modules')
-    const orgModule = path.join(__dirname, '..', 'node_modules')
-    if (!fs.existsSync(dstModule)) {
-      fs.mkdirSync(dstModule)
-      fse.copySync(path.join(orgModule), path.join(dstModule))
+    // from nadesiko3core/src
+    const srcDir = path.join(__dirname, '..', 'node_modules', 'nadesiko3core', 'src')
+    const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs', 
+      'plugin_system.mjs', 'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs']
+    for (const mod of baseFiles) {
+      fs.copyFileSync(path.join(srcDir, mod), path.join(outRuntime, mod))
     }
     // or 以下のコピーだと依存ファイルがコピーされない package.jsonを見てコピーする必要がある
-    for (let mod of ['fs-extra', 'iconv-lite', 'opener', 'clipboardy', 'sendkeys-js']) {
-      fse.copySync(path.join(orgModule, mod), path.join(dstModule, mod))
+    const orgModule = path.join(__dirname, '..', 'node_modules')
+    const dirNodeModules = path.join(path.dirname(opt.output), 'node_modules')
+    const modlist = ['fs-extra', 'iconv-lite', 'opener', 'node-fetch']
+    const copied: { [key: string]: boolean } = {}
+    // 再帰的に必要なモジュールをコピーする
+    const copyModule = (mod: string) => {
+      if (copied[mod]) { return }
+      copied[mod] = true
+      // ライブラリ自身をコピー
+      fse.copySync(path.join(orgModule, mod), path.join(dirNodeModules, mod))
+      // 依存ライブラリをコピー
+      const packageFile = path.join(orgModule, mod, 'package.json')
+      const jsonStr = fs.readFileSync(packageFile, 'utf-8')
+      const jsonData = JSON.parse(jsonStr)
+      // サブモジュールをコピー
+      for (const smod in jsonData.dependencies) {
+        copyModule(smod)
+      }
     }
-    */
+    for (const mod of modlist) {
+      copyModule(mod)
+    }
 
     if (opt.run) {
       exec(`node ${opt.output}`, function (err, stdout, stderr) {
@@ -518,16 +549,16 @@ export class CNako3 extends NakoCompiler {
   }
 
   /**
-   * @param {string} code
-   * @param {string} fname
-   * @param {string} [preCode]
-   * @returns {Promise<NakoGlobal>}
+   * @param code
+   * @param fname
+   * @param [preCode]
    */
   async runAsync (code: string, fname: string, preCode = ''): Promise<NakoGlobal> {
     // 取り込む文の処理
     try {
       await this.loadDependencies(code, fname, preCode)
     } catch (err: any) {
+      // 読み込みエラーは報告のみして続けて実行してみる
       this.getLogger().error(err)
     }
     // 実行
