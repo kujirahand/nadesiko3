@@ -1,24 +1,37 @@
 // @ts-nocheck
 /* eslint-disable no-undef */
 import assert from 'assert'
-import { Nako3Assert } from 'nadesiko3core/src/nako3_assert.mjs'
+import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
+
+const PluginMyTest = {
+  'テスト': {
+    type: 'func',
+    josi: [['と'], ['で']],
+    fn: (a, b) => {
+      assert.strictEqual(a, b)
+    }
+  }
+}
 
 // eslint-disable-next-line no-undef
-describe('async_test', () => {
+describe('async_test', async () => {
   const debug = false
-  const nako3 = new Nako3Assert()
-  const cmp = (/** @type {string} */ code, /** @type {string} */ exRes) => {
-    const result = nako3.run(code).log
-    assert.strictEqual(result, exRes)
+  const cmp = async (/** @type {string} */ code, /** @type {string} */ exRes) => {
+    const nako3 = new NakoCompiler()
+    nako3.addPluginObject('PluginMyTest', PluginMyTest)
+    const result = await nako3.runAsync(code)
+    assert.strictEqual(result.log, exRes)
   }
   const exe = (/** @type {string} */ code) => {
-    nako3.run(code)
+    const nako3 = new NakoCompiler()
+    nako3.addPluginObject('PluginMyTest', PluginMyTest)
+    nako3.runSync(code)
   }
 
   // assert test
-  it('アサート自体のテスト', () => {
+  it('アサート自体のテスト', async () => {
     exe('3と3でテスト。')
-    cmp('3を表示', '3')
+    await cmp('3を表示', '3')
   })
 
   // --- async ---

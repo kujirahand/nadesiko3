@@ -44,7 +44,7 @@ describe('node_test(cnako)', () => {
     if (process.platform !== 'darwin') { return this.skip() }
     const nakofileOrg = path.join(__dirname, 'add_test.nako3')
     const nakofile = path.join('/tmp', 'add_test.nako3')
-    const jsfile = path.join('/tmp', 'add_test.js')
+    const jsfile = path.join('/tmp', 'add_test.mjs')
     fs.copyFileSync(nakofileOrg, nakofile)
     if (process.env.NODE_ENV === 'test') { return this.skip() }
     const stderr = spawnSync('node', [cnako3, '-c', nakofile]).stderr

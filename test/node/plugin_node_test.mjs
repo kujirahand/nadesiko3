@@ -18,11 +18,11 @@ describe('plugin_node_test', () => {
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
   const cmp = async (/** @type {string} */ code, /** @type {string | undefined} */ res) => {
-    nako.logger.debug('code=' + code)
+    nako.getLogger().debug('code=' + code)
     assert.strictEqual((await nako.run(code)).log, res)
   }
   const cmd = (/** @type {string} */ code) => {
-    nako.logger.debug('code=' + code)
+    nako.getLogger().debug('code=' + code)
     nako.run(code)
   }
   // --- test ---

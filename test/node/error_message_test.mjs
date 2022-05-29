@@ -119,7 +119,7 @@ describe('error_message', () => {
       assert.throws(
         () => nako.run('1を表示\n1のエラー発生', 'main.nako3'),
         err => {
-          assert(err instanceof NakoRuntimeError)
+          assert.strictEqual(err.type, 'NakoRuntimeError')
           assert.strictEqual(err.line, 1) // 2行目
           assert.strictEqual(err.file, 'main.nako3')
           return true
@@ -130,7 +130,7 @@ describe('error_message', () => {
       assert.throws(
         () => nako.run('1を表示\n1を表示。1のエラー発生。1を表示。', 'main.nako3'),
         err => {
-          assert(err instanceof NakoRuntimeError)
+          assert.strictEqual(err.type, 'NakoRuntimeError')
           assert.strictEqual(err.line, 1) // 2行目
           assert.strictEqual(err.file, 'main.nako3')
           return true
@@ -141,7 +141,7 @@ describe('error_message', () => {
       assert.throws(
         () => nako.run('1のエラー発生', 'main.nako3'),
         err => {
-          assert(err instanceof NakoRuntimeError)
+          assert.strictEqual(err.type, 'NakoRuntimeError')
           assert.strictEqual(err.line, 0) // 1行目
           assert.strictEqual(err.file, 'main.nako3')
           return true
@@ -149,30 +149,32 @@ describe('error_message', () => {
       )
     })
     it('エラー位置をプロパティから取得 - repeatTimes', () => {
+      const nako = new NakoCompiler()
       assert.throws(
         () => nako.run('3回\n1のエラー発生\nここまで', 'main.nako3'),
         err => {
-          assert(err instanceof NakoRuntimeError)
+          assert.strictEqual(err.type, 'NakoRuntimeError')
           assert.strictEqual(err.line, 1) // 2行目
           assert.strictEqual(err.file, 'main.nako3')
           return true
         }
       )
     })
-    it('「秒後」の中でエラーが発生した場合', (done) => {
+    it('「秒後」の中でエラーが発生した場合', async () => {
       const nako = new NakoCompiler()
-      const logger = nako.run('0.0001秒後には\n1のエラー発生\nここまで', 'main.nako3').logger
+      const logger = nako.getLogger()
       logger.addListener('error', ({ level, noColor }) => {
+        const s = (noColor + '\n').split('\n')[0]
         assert.strictEqual(level, 'error')
-        assert.strictEqual(noColor, '[実行時エラー]main.nako3(2行目): エラー『1』が発生しました。')
-        done()
+        assert.strictEqual(s, '[実行時エラー]main.nako3(2行目): 1')
       })
+      await nako.run('0.0001秒後には\n1のエラー発生\nここまで', 'main.nako3')
     })
     it('JavaScriptのみで動くコードの場合 - エラー発生', function () {
       if (process.env.NODE_ENV === 'test') { return this.skip() }
       const nako = new NakoCompiler()
       const code = nako.compileStandalone('10のエラー発生')
-      const silent = 'const console = { error() {} };\n'
+      const silent = 'const console = { error: () => {} };\n'
       assert.rejects(
         // eslint-disable-next-line no-new-func
         async () => await (new Function(silent + code)()),
@@ -182,19 +184,6 @@ describe('error_message', () => {
         }
       )
     })
-    /*
-    // 生成される standalone コードが cjs なのでパス
-    it('JavaScriptのみで動くコードの場合 - 「秒後」内の場合', function (done) {
-      if (process.env.NODE_ENV === 'test') {return this.skip()}
-      const nako = new NakoCompiler()
-      new Function('const console = { error: this.callback };\n' + nako.compileStandalone('0.0001秒後には\n20のエラー発生\nここまで')).apply({
-        callback: (err) => {
-          assert.strictEqual(err.message.split('\n')[0], '[実行時エラー](2行目): エラー『20』が発生しました。')
-          done()
-        }
-      })
-    })
-    */
   })
   describe('インデント構文のエラー', () => {
     it('『ここまで』を使用', () => {

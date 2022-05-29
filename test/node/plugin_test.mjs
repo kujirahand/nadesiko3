@@ -22,6 +22,7 @@ describe('plugin_test', () => {
       console.log('[ERROR]', ret.log, '!=', res)
     }
     assert.strictEqual(ret.log, res)
+    nako.reset()
   }
   it('JS「取り込む」', async () => {
     const plug = path.join(__dirname, '..', '..', 'src', 'plugin_keigo.mjs')

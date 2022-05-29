@@ -10,7 +10,7 @@ import path from 'path'
 import { NakoCompiler, LoaderTool, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
 import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
 
-import { Ast } from 'nadesiko3core/src/nako_types.mjs'
+import { Ast, CompilerOptions } from 'nadesiko3core/src/nako_types.mjs'
 import { NakoGlobal } from 'nadesiko3core/src/nako_global.mjs'
 import nakoVersion from './nako_version.mjs'
 
@@ -193,8 +193,9 @@ export class CNako3 extends NakoCompiler {
     if (opt.ast) {
       try {
         await this.loadDependencies(src, opt.mainfile, '')
-      } catch (e) {
+      } catch (err: any) {
         if (this.numFailures > 0) {
+          this.logger.error(err)
           process.exit(1)
         }
       }
@@ -208,8 +209,9 @@ export class CNako3 extends NakoCompiler {
         await this.loadDependencies(src, opt.mainfile, '')
         this.test(src, opt.mainfile)
         return
-      } catch (e) {
+      } catch (e: any) {
         if (this.numFailures > 0) {
+          this.logger.error(e)
           process.exit(1)
         }
       }
@@ -221,6 +223,7 @@ export class CNako3 extends NakoCompiler {
       const g = await this.runAsync(src, opt.mainfile)
       return g
     } catch (e: any) {
+      this.logger.error(e)
       // 文法エラーなどがあった場合
       if (opt.debug || opt.trace) {
         throw e
@@ -257,7 +260,7 @@ export class CNako3 extends NakoCompiler {
     }
     // from nadesiko3core/src
     const srcDir = path.join(__dirname, '..', 'node_modules', 'nadesiko3core', 'src')
-    const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs', 
+    const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs',
       'plugin_system.mjs', 'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs']
     for (const mod of baseFiles) {
       fs.copyFileSync(path.join(srcDir, mod), path.join(outRuntime, mod))
@@ -553,16 +556,16 @@ export class CNako3 extends NakoCompiler {
    * @param fname
    * @param [preCode]
    */
-  async runAsync (code: string, fname: string, preCode = ''): Promise<NakoGlobal> {
+  async runAsync (code: string, fname: string, options: CompilerOptions = new CompilerOptions()): Promise<NakoGlobal> {
     // 取り込む文の処理
     try {
-      await this.loadDependencies(code, fname, preCode)
+      await this.loadDependencies(code, fname, options.preCode)
     } catch (err: any) {
       // 読み込みエラーは報告のみして続けて実行してみる
       this.getLogger().error(err)
     }
     // 実行
-    return this._runEx(code, fname, {}, preCode)
+    return super.runAsync(code, fname, options)
   }
 
   /**

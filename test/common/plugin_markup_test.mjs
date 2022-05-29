@@ -5,11 +5,10 @@ import PluginMarkup from '../../src/plugin_markup.mjs'
 
 // eslint-disable-next-line no-undef
 describe('plugin_markup_test', () => {
-  const nako = new NakoCompiler()
-  nako.addPluginObject('PluginMarkup', PluginMarkup)
 
   const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
-    nako.logger.debug('code=' + code)
+    const nako = new NakoCompiler()
+    nako.addPluginObject('PluginMarkup', PluginMarkup)
     assert.strictEqual(nako.run(code).log, res)
   }
 
