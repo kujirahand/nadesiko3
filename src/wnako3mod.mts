@@ -1,10 +1,10 @@
 // wnako3mod - nadesiko for web browser
 // - wnako3 から wnako3mod を取り込む。
 // - このファイルはモジュールとして別のファイルから取り込み可能。
-import { NakoCompiler, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
-import { NakoGlobal } from 'nadesiko3core/src/nako_global.mjs'
-import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
-import { Token } from 'nadesiko3core/src/nako_types.mjs'
+import { NakoCompiler, LoaderToolTask } from '../core/src/nako3.mjs'
+import { NakoGlobal } from '../core/src/nako_global.mjs'
+import { NakoImportError } from '../core/src/nako_errors.mjs'
+import { Token } from '../core/src/nako_types.mjs'
 import { setupEditor } from './wnako3_editor.mjs'
 import nakoVersion, { NakoVersion } from './nako_version.mjs'
 import PluginBrowser from './plugin_browser.mjs'

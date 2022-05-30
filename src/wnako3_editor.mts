@@ -2,11 +2,11 @@
 /* eslint-disable no-template-curly-in-string */
 /** なでしこのtokenのtypeをscope（CSSのクラス名）に変換する。 */
 
-import { OffsetToLineColumn } from 'nadesiko3core/src/nako_source_mapping.mjs'
-import { NakoError } from 'nadesiko3core/src/nako_errors.mjs'
-import NakoIndent from 'nadesiko3core/src/nako_indent.mjs'
-import { NakoPrepare } from 'nadesiko3core/src/nako_prepare.mjs'
-import { NakoLogger } from 'nadesiko3core/src/nako_logger.mjs'
+import { OffsetToLineColumn } from '../core/src/nako_source_mapping.mjs'
+import { NakoError } from '../core/src/nako_errors.mjs'
+import NakoIndent from '../core/src/nako_indent.mjs'
+import { NakoPrepare } from '../core/src/nako_prepare.mjs'
+import { NakoLogger } from '../core/src/nako_logger.mjs'
 
 // alias
 const getBlockStructure = NakoIndent.getBlockStructure
@@ -1654,3 +1654,4 @@ export default {
   EditorMarkers,
   BackgroundTokenizer
 }
+

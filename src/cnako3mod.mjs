@@ -6,14 +6,14 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import { exec } from 'child_process';
 import path from 'path';
-import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs';
-import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs';
-import { CompilerOptions } from 'nadesiko3core/src/nako_types.mjs';
+import { NakoCompiler } from '../core/src/nako3.mjs';
+import { NakoImportError } from '../core/src/nako_errors.mjs';
+import { CompilerOptions } from '../core/src/nako_types.mjs';
 import nakoVersion from './nako_version.mjs';
 import PluginNode from './plugin_node.mjs';
 import app from './commander_ja.mjs';
 import fetch from 'node-fetch';
-import { NakoGenOptions } from 'nadesiko3core/src/nako_gen.mjs';
+import { NakoGenOptions } from '../core/src/nako_gen.mjs';
 // __dirname のために
 import url from 'url';
 const __filename = url.fileURLToPath(import.meta.url);

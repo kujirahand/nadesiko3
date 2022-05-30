@@ -7,7 +7,7 @@ import TerserPlugin from 'terser-webpack-plugin' // サイズ縮小プラグイ�
 // @ts-ignore
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const srcPath = path.join(__dirname, 'src')
-const srcCorePath = path.join(__dirname, 'node_modules/nadesiko3core/src')
+const srcCorePath = path.join(__dirname, 'core/src')
 const releasePath = path.join(__dirname, 'release')
 const editorPath = path.join(__dirname, 'editor')
 

@@ -7,18 +7,18 @@ import fse from 'fs-extra'
 import { exec } from 'child_process'
 import path from 'path'
 
-import { NakoCompiler, LoaderTool, LoaderToolTask } from 'nadesiko3core/src/nako3.mjs'
-import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
+import { NakoCompiler, LoaderTool, LoaderToolTask } from '../core/src/nako3.mjs'
+import { NakoImportError } from '../core/src/nako_errors.mjs'
 
-import { Ast, CompilerOptions } from 'nadesiko3core/src/nako_types.mjs'
-import { NakoGlobal } from 'nadesiko3core/src/nako_global.mjs'
+import { Ast, CompilerOptions } from '../core/src/nako_types.mjs'
+import { NakoGlobal } from '../core/src/nako_global.mjs'
 import nakoVersion from './nako_version.mjs'
 
 import PluginNode from './plugin_node.mjs'
 import app from './commander_ja.mjs'
 import fetch from 'node-fetch'
 
-import { NakoGenOptions } from 'nadesiko3core/src/nako_gen.mjs'
+import { NakoGenOptions } from '../core/src/nako_gen.mjs'
 
 // __dirname のために
 import url from 'url'
@@ -697,3 +697,4 @@ export class CNako3 extends NakoCompiler {
     return ''
   }
 }
+

@@ -1,7 +1,7 @@
 // @ts-nocheck
 // nadesiko for web browser worker
 // wwnako3.js
-import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
+import { NakoCompiler } from '../core/src/nako3.mjs'
 import PluginBrowserInWorker from './plugin_browser_in_worker.mjs'
 import PluginWorker from './plugin_worker.mjs'
 
@@ -66,3 +66,4 @@ if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope
     }
   }
 }
+

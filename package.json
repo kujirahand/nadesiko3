@@ -100,7 +100,7 @@
   "_moduleAliases": {
     "root": ".",
     "nako3": "./src",
-    "core": "./node_modules/nadesiko3core/src",
+    "core": "./core/src",
     "utils": "./utils"
   },
   "devDependencies": {
@@ -185,7 +185,6 @@
     "html": "^1.0.0",
     "iconv-lite": "^0.6.3",
     "marked": "^4.0.16",
-    "nadesiko3core": "^3.3.46",
     "node-fetch": "^3.2.4",
     "opener": "^1.5.2"
   }
