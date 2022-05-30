@@ -3,7 +3,7 @@ import assert from 'assert'
 import path from 'path'
 
 import { CNako3 } from '../../src/cnako3mod.mjs'
-import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
+import { NakoImportError } from '../../core/src/nako_errors.mjs'
 
 // __dirname のために
 import url from 'url'
@@ -64,3 +64,4 @@ describe('require_nako3_test', () => {
     cmp('!「' + fname + '」を取り込む。リクエスト名前取得して表示。', fname)
   })
 })
+

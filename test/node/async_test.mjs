@@ -1,7 +1,7 @@
 // @ts-nocheck
 /* eslint-disable no-undef */
 import assert from 'assert'
-import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
+import { NakoCompiler } from '../../core/src/nako3.mjs'
 
 const PluginMyTest = {
   'テスト': {
@@ -93,3 +93,4 @@ describe('async_test', async () => {
     )
   })
 })
+

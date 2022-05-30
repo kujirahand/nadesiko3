@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import assert from 'assert'
-import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
+import { NakoCompiler } from '../../core/src/nako3.mjs'
 import PluginMarkup from '../../src/plugin_markup.mjs'
 
 // eslint-disable-next-line no-undef
@@ -20,3 +20,4 @@ describe('plugin_markup_test', () => {
     cmp('「<p><h1>hoge</h1></p>」をHTML整形して表示', '<p>\n  <h1>hoge</h1>\n</p>')
   })
 })
+

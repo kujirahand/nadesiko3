@@ -569,7 +569,7 @@ export class CNako3 extends NakoCompiler {
         const fCheck = (pathTest, desc) => {
             // 素直に指定されたパスをチェック
             const bExists = exists(pathTest);
-            log.push(`[${desc}] ${pathTest}, ${bExists}`);
+            log.push(`- (${desc}) ${pathTest}, ${bExists}`);
             return bExists;
         };
         /** 通常 + package.json のパスを調べる
@@ -606,7 +606,7 @@ export class CNako3 extends NakoCompiler {
         const p1 = pname.substring(0, 1);
         // フルパス指定か?
         if (p1 === '/' || pname.substring(1, 3).toLowerCase() === ':\\' || pname.substring(0, 6) === 'file:/') {
-            const fileFullpath = fCheckEx(pname, 'fullpath');
+            const fileFullpath = fCheckEx(pname, 'フルパス');
             if (fileFullpath) {
                 return fileFullpath;
             }
@@ -616,7 +616,7 @@ export class CNako3 extends NakoCompiler {
         if (p1 === '.' || pname.indexOf('/') >= 0) {
             // 相対パス指定なので、なでしこのプログラムからの相対指定を調べる
             const pathRelative = path.join(path.resolve(path.dirname(filename)), pname);
-            const fileRelative = fCheckEx(pathRelative, 'relpath');
+            const fileRelative = fCheckEx(pathRelative, '相対パス');
             if (fileRelative) {
                 return fileRelative;
             }
@@ -625,15 +625,25 @@ export class CNako3 extends NakoCompiler {
         // plugin_xxx.mjs のようにファイル名のみが指定された場合のみ、いくつかのパスを調べる
         // 母艦パス(元ファイルと同じフォルダ)か?
         const testScriptPath = path.join(path.resolve(path.dirname(filename)), pname);
-        const fileScript = fCheckEx(testScriptPath, 'scriptPath');
+        const fileScript = fCheckEx(testScriptPath, '母艦パス');
         if (fileScript) {
             return fileScript;
         }
         // ランタイムパス/src/<plugin>
-        const pathRuntimeSrc = path.join(path.resolve(srcDir), pname); // cnako3mod.mjs は ランタイム/src に配置されていることが前提
-        const fileRuntimeSrc = fCheckEx(pathRuntimeSrc, 'runtimeSrcPath');
-        if (fileRuntimeSrc) {
-            return fileRuntimeSrc;
+        if (pname.match(/^plugin_[a-z0-9_]+\.mjs/)) {
+            // cnako3mod.mjs は ランタイム/src に配置されていることが前提
+            const pathRoot = path.resolve(__dirname, '..');
+            const pathRuntimeSrc = path.join(pathRoot, 'src', pname);
+            const fileRuntimeSrc = fCheckEx(pathRuntimeSrc, 'CNAKO3パス');
+            if (fileRuntimeSrc) {
+                return fileRuntimeSrc;
+            }
+            // ランタイム/core/src/<plugin>
+            const pathCore = path.join(pathRoot, 'core', 'src', pname);
+            const fileCore = fCheckEx(pathCore, 'CNAKO3パス');
+            if (fileCore) {
+                return fileCore;
+            }
         }
         // 環境変数をチェック
         // 環境変数 NAKO_LIB か?

@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 import assert from 'assert'
-import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
+import { NakoCompiler } from '../../core/src/nako3.mjs'
 import path from 'path'
 import PluginNode from '../../src/plugin_node.mjs'
-import PluginCSV from 'nadesiko3core/src/plugin_csv.mjs'
+import PluginCSV from '../../core/src/plugin_csv.mjs'
 
 // __dirname のために
 import url from 'url'
@@ -95,3 +95,4 @@ describe('plugin_node_test', () => {
     cmp('「some data to hash」を「sha256」の「hex」でハッシュ値計算して表示。', '6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50')
   })
 })
+
