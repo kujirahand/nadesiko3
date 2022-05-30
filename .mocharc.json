@@ -3,5 +3,5 @@
     "exit": true,
     "timeout": 15000,
     "require": "module-alias/register",
-    "spec": "./test/+(common|node)/*.js"
+    "spec": "./test/+(common|node)/*.mjs"
 }

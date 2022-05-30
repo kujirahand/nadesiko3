@@ -382,4 +382,3 @@ describe('wnako3_editor_test', () => {
     ])
   })
 })
-

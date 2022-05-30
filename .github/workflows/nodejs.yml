@@ -31,6 +31,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: git submodule update --init --recursive
     - run: npm install
     - run: npm run build
     - run: npm run test

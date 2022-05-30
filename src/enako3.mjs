@@ -1,7 +1,6 @@
-'use strict'
+import path from 'path'
+import electron from 'electron'
 
-const path = require('path')
-const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu

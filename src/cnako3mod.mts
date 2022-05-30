@@ -652,7 +652,7 @@ export class CNako3 extends NakoCompiler {
     if (pname.match(/^plugin_[a-z0-9_]+\.mjs/)) {
       // cnako3mod.mjs は ランタイム/src に配置されていることが前提
       const pathRoot = path.resolve(__dirname, '..')
-      const pathRuntimeSrc = path.join(pathRoot, 'src', pname) 
+      const pathRuntimeSrc = path.join(pathRoot, 'src', pname)
       const fileRuntimeSrc = fCheckEx(pathRuntimeSrc, 'CNAKO3パス')
       if (fileRuntimeSrc) { return fileRuntimeSrc }
       // ランタイム/core/src/<plugin>
@@ -705,4 +705,3 @@ export class CNako3 extends NakoCompiler {
     return ''
   }
 }
-
