@@ -7,7 +7,6 @@
 ## 関連リポジトリへのリンク
 
 - [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
-  - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コア
 - [なでしこ3拡張プラグイン](https://nadesi.com/v3/doc/index.php?FAQ%2F%E6%8B%A1%E5%BC%B5%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&show)
   - [nadesiko3-server](https://github.com/kujirahand/nadesiko3-server) --- Webサーバ(HTTP)
   - [nadesiko3-websocket](https://github.com/kujirahand/nadesiko3-websocket) --- WebSocket
@@ -29,6 +28,8 @@
   - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
   - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
   - [nadesiko3go - なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
+- 本リポジトリのサブモジュール
+  - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コア
 
 ## 「なでしこ3」とは
 
@@ -81,9 +82,19 @@ npm run nako3server
 また、以下のコマンドを実行すると、ブラウザ上になでしこの簡易エディタが起動します。
 
 ```bash
-git clone https://github.com/kujirahand/nadesiko3.git
+git clone --recursive https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install
+```
+
+サブモジュールとして[`nadesiko3core`](https://github.com/kujirahand/nadesiko3core.git)を利用するので、`--recursive` を付け忘れたら以下のコマンドを実行して、サブモジュールも取得してください。
+
+```bash
+# 以下のように --recursive 付け忘れた場合
+git clone https://github.com/kujirahand/nadesiko3.git
+cd nadesiko3
+# サブモジュールを取得する
+git submodule update --init --recursive
 ```
 
 ## 追加インストール(macOS/Linux)

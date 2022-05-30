@@ -9,8 +9,7 @@
 # 基本パスを取得
 母艦パス取得してパス抽出して基本パスに代入。
 REPOSパス=基本パスを「../」で相対パス展開。
-
-CORE="node_modules/nadesiko3core/src"
+CORE="core/src"
 
 コアプラグイン一覧は[
     ["plugin_system.mts", 'wnako,cnako,phpnako'],
