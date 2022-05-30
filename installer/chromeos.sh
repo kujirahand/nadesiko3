@@ -6,7 +6,10 @@ sudo apt install -y nodejs npm
 
 # Node.jsを最新版にアップデート
 sudo npm install n -g
-sudo n stable
+sudo n i lts
+
+# remove old
+sudo apt purge -y nodejs npm
 sudo ln -sf /usr/local/bin/node /usr/bin/node
 sudo ln -sf /usr/local/bin/npm /usr/bin/npm
 
