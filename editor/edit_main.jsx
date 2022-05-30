@@ -74,7 +74,13 @@ const Editor = ({ code, editorId, autoSave }) => {
 
   return <div>
     <Section title="エディタ">
-      <div ref={preCodeEditorRef} data-nako3-readonly style={{ height: '100px', borderBottom: 'gray 1px solid' }}>{preCode}</div>
+      <div>
+        <div id={'hideLabel' + editorId}><span style={{ color: 'silver' }} onClick={() => {
+          document.querySelector('#hideEdit' + editorId).style.display = 'block'
+          document.querySelector('#hideLabel' + editorId).style.display = 'none'
+        }}>&nbsp;&nbsp;&lt;&lt;&lt;</span></div>
+        <div id={'hideEdit' + editorId} ref={preCodeEditorRef} data-nako3-readonly style={{ height: '100px', borderBottom: 'gray 1px solid', display: 'none' }}>{preCode}</div>
+      </div>
       <div className="nako3_editor_code" ref={editorRef}>{code}</div>
       <div className="buttons">
         <Button text="実行" onClick={async () => {
@@ -101,7 +107,7 @@ const Editor = ({ code, editorId, autoSave }) => {
     <Section title="実行結果">
       <div id={`nako3_editor_info_${editorId}`} className="info"></div>
       <div id={`nako3_div_${editorId}`}></div>
-      <canvas id={`nako3_canvas_${editorId}`} width="310" height="150"/>
+      <canvas id={`nako3_canvas_${editorId}`} width="410" height="250"/>
     </Section>
     <Section title="使用した命令"><p className="info">{
       usedFuncs && <span>{

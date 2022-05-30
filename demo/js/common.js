@@ -1,8 +1,8 @@
 // なでしこの関数をカスタマイズ
-navigator.nako3.setFunc('言', [['と', 'を']], function (msg) {
+navigator.nako3.addFunc('言', [['と', 'を']], function (msg) {
   window.alert(msg)
 }, true)
-navigator.nako3.setFunc('表示', [['と', 'を']], function (msg) {
+navigator.nako3.addFunc('表示', [['と', 'を']], function (msg) {
   window.alert(msg)
 }, true)
 

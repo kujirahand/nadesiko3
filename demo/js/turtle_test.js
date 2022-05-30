@@ -7,10 +7,10 @@ const defCode =
 let displayId = 'info'
 
 // なでしこの関数をカスタマイズ
-navigator.nako3.setFunc('表示', [['と', 'を']], function (s) {
+navigator.nako3.addFunc('表示', [['と', 'を']], function (s) {
   console.log(s)
   document.getElementById(displayId).innerHTML += toHtml(s) + '<br>'
-})
+}, true)
 
 // 簡易DOMアクセス関数など
 function runBox (id) {

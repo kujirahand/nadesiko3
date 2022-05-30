@@ -43,7 +43,7 @@ export class WebNakoCompiler extends NakoCompiler {
         // 依存するライブラリをロード
         await this.loadDependencies(code, fname)
         // プログラムを実行
-        this.run(script.text, fname)
+        await this.runAsync(script.text, fname)
       }
     }
     if (nakoScriptCount > 1) {
