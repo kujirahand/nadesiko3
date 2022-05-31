@@ -26,16 +26,15 @@ jobs:
         node-version: [16.x, 14.x, 12.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
         fetch-depth: 0
         token: ${{secrets.SUBMODULE_TOKEN}}
-        submodules: true
-        
-    - run: git submodule update --init --recursive
+        submodules: recursive
+
     - run: npm install
     - run: npm run build
     - run: npm run test
