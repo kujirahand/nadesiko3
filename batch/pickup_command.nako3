@@ -84,7 +84,10 @@ FILE_PATH=""
 　　ナコタイプ＝それ＠1
 　　パスは「{REPOSパス}/{カレントプラグイン}」
 　　FILE_PATH="{REPOSパス}/{カレントプラグイン}"
-　　SRC_URL="https://github.com/kujirahand/{カレントプラグイン}"
+　　カレントプラグインを「/」で区切ってAに代入。
+　　P0＝Aの0を配列切取。
+　　P1=Aを「/」で配列結合。
+　　SRC_URL="https://github.com/kujirahand/{P0}/blob/master/{P1}"
 　　パスが存在
 　　もし、そうならば
 　　　　 # パスを表示。
