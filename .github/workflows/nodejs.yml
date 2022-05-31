@@ -36,7 +36,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      # checkout すれば動く機能を試す
+      - run: npm run hello
+      # 各種ライブラリをインストール
       - run: npm install
+      # 各種ビルドしてテストする
       - run: npm run build
       - run: npm run test
 
