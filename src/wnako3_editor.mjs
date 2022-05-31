@@ -276,7 +276,6 @@ export function tokenize(lines, nako3, underlineJosi) {
     const code = lines.join('\n');
     // 取り込み文を含めてしまうと依存ファイルが大きい時に時間がかかってしまうため、
     // 取り込み文を無視してトークン化してから、依存ファイルで定義された関数名と一致するトークンを関数のトークンへ変換する。
-    nako3.reset();
     const lexerOutput = withoutLogger(nako3, () => nako3.lex(code, 'main.nako3', undefined, true));
     lexerOutput.commentTokens = lexerOutput.commentTokens.filter((t) => t.file === 'main.nako3');
     lexerOutput.requireTokens = lexerOutput.requireTokens.filter((t) => t.file === 'main.nako3');

@@ -165,9 +165,9 @@ export class WebNakoCompiler extends NakoCompiler {
 
   /**
    * type=なでしこ のスクリプトを自動実行するべきかどうかを返す
-   * @returns {boolean} type=なでしこ のスクリプトを自動実行するべきかどうか
+   * @returns type=なでしこ のスクリプトを自動実行するべきかどうか
    */
-  checkScriptTagParam () {
+  checkScriptTagParam (): boolean {
     const scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
       const script = scripts[i]
