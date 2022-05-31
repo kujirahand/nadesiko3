@@ -79,7 +79,7 @@ npm run nako3server
 
 ## Gitからインストール
 
-また、以下のコマンドを実行すると、ブラウザ上になでしこの簡易エディタが起動します。
+また、以下のコマンドを実行すると、なでしこの開発環境をセットアップできます。
 
 ```bash
 git clone --recursive https://github.com/kujirahand/nadesiko3.git
