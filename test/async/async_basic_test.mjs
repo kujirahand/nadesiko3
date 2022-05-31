@@ -1,12 +1,12 @@
 import assert from 'assert'
-import { NakoCompiler } from '../../src/nako3.mjs'
+import { NakoCompiler } from '../../core/src/nako3.mjs'
 
 describe('aysnc_basic_test', () => {
   // @ts-ignore
-  const nako = new NakoCompiler()
   const cmp = (/** @type {string} */code, /** @type {string} */res) => {
     code = '!非同期モード\n' + code
-    nako.logger.debug('code=' + code)
+    const nako = new NakoCompiler()
+    nako.getLogger().debug('code=' + code)
     assert.strictEqual(nako.run(code, '').log, res)
   }
   // --- test ---
