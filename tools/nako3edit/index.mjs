@@ -137,11 +137,15 @@ function getMIMEType (url) {
 
 // ディレクトリか判定
 function isDir (pathName) {
-  const stats = fs.statSync(pathName, { throwIfNoEntry: false })
-  if (stats && stats.isDirectory()) {
-    return true
+  try {
+    // node v12以下ではエラーがあると例外を返す
+    const stats = fs.statSync(pathName)
+    if (stats && stats.isDirectory()) {
+      return true
+    }
+  } catch (err) {
+    return false
   }
-  return false
 }
 
 // API
