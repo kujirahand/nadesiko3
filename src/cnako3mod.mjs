@@ -556,10 +556,16 @@ export class CNako3 extends NakoCompiler {
             if (cachePath[f]) {
                 return cachePath[f];
             }
-            const stat = fs.statSync(f, { throwIfNoEntry: false });
-            const b = !!(stat && stat.isFile());
-            cachePath[f] = b;
-            return b;
+            try {
+                // ファイルがないと例外が出る
+                const stat = fs.statSync(f);
+                const b = !!(stat && stat.isFile());
+                cachePath[f] = b;
+                return b;
+            }
+            catch (err) {
+                return false;
+            }
         };
         /** 普通にファイルをチェック
          * @param {string} pathTest

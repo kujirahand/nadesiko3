@@ -583,10 +583,15 @@ export class CNako3 extends NakoCompiler {
     const exists = (f: string): boolean => {
       // 同じパスを何度も検索することがないように
       if (cachePath[f]) { return cachePath[f] }
-      const stat = fs.statSync(f, { throwIfNoEntry: false })
-      const b = !!(stat && stat.isFile())
-      cachePath[f] = b
-      return b
+      try {
+        // ファイルがないと例外が出る
+        const stat = fs.statSync(f)
+        const b = !!(stat && stat.isFile())
+        cachePath[f] = b
+        return b
+      } catch (err: any) {
+        return false
+      }
     }
     /** 普通にファイルをチェック
      * @param {string} pathTest

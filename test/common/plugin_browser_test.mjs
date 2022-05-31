@@ -5,7 +5,7 @@ import PluginBrowser from '../../src/plugin_browser.mjs'
 describe('plugin_browser_test', () => {
   const cmp = (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler({ useBasicPlugin: true })
-    nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
+    nako.addPluginFile('PluginBrowser', 'plugin_browser.mjs', PluginBrowser)
     assert.strictEqual(nako.run(code).log, res)
   }
   // --- test ---

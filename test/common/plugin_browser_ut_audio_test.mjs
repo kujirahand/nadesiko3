@@ -1,7 +1,7 @@
 import * as td from 'testdouble'
 import assert from 'assert'
 import PluginBrowser from '../../src/plugin_browser.mjs'
-import { PluginUtHelper } from '../../utils/plugin_ut_helper.js'
+import { PluginUtHelper } from '../../utils/plugin_ut_helper.mjs'
 
 class StubAudio {
   contructor () {

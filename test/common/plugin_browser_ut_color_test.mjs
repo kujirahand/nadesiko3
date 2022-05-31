@@ -1,5 +1,5 @@
 import PluginBrowser from '../../src/plugin_browser.mjs'
-import { PluginUtHelper } from '../../utils/plugin_ut_helper.js'
+import { PluginUtHelper } from '../../utils/plugin_ut_helper.mjs'
 
 describe('plugin_browser_color', () => {
   const cu = new PluginUtHelper(PluginBrowser)

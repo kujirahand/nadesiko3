@@ -57,8 +57,9 @@ const PluginBrowser = {
     fn: function (sys: any) {
       /* eslint no-global-assign: 0 */
       const doc: any = (typeof document === 'undefined') ? { 'body': {} } : document
-      const win: any = (typeof window === 'undefined') ? { 'location': { 'href': '' } } : window
+      const win: any = (typeof window === 'undefined') ? { 'location': { 'href': 'http://localhost/' } } : window
       const nav: any = (typeof navigator === 'undefined') ? {} : navigator
+      const loc: any = (typeof win.location === 'undefined') ? { 'href': 'http://localhost/' } : win.location
 
       // 定数を初期化
       sys.__v0['AJAX:ONERROR'] = (err: any) => { console.log(err) }
@@ -67,7 +68,7 @@ const PluginBrowser = {
       sys.__v0.WINDOW = win
       sys.__v0.NAVIGATOR = nav
       sys.__v0['DOM親要素'] = doc.body
-      sys.__v0['ブラウザURL'] = win.location.href
+      sys.__v0['ブラウザURL'] = loc.href
 
       // 便利なメソッドを定義
       sys.__tohtml = (text: string): string => {
