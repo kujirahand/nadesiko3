@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.3.49",
+  "version": "3.3.50",
   "description": "Japanese Programming Language",
   "type": "module",
   "main": "src/index.mjs",
@@ -34,7 +34,7 @@
     "build:browsers": "npx browserslist > src/browsers.txt && node src/cnako3.mjs batch/build_browsers.nako3",
     "watch": "webpack --watch --mode development",
     "analyze": "webpack-bundle-analyzer release/stats.json",
-    "publish": "node -e \"console.log('Please exec => npm run build && npm run test:all && npm publish && npm run publish:version')",
+    "publish:desc": "node -e \"console.log('Please exec => npm run build && npm run test:all && npm publish && npm run publish:version')",
     "publish:version": "node src/cnako3.mjs batch/publish_version.nako3",
     "eslint": "eslint . --ext mts,mjs",
     "extlib:clean": "rm -f -r demo/extlib/*",
