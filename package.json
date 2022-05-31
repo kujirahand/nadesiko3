@@ -38,7 +38,7 @@
     "extlib:clean": "rm -f -r demo/extlib/*",
     "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
     "check_new_version": "node src/cnako3.mjs tools/check_new_version.nako3",
-    "hello": "node src/cnako3.mjs -e \"'hello'と表示\""
+    "hello": "node core/command/snako.mjs -e \"'hello'と表示\""
   },
   "repository": {
     "type": "git",
