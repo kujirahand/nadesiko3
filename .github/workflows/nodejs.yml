@@ -34,7 +34,8 @@ jobs:
         fetch-depth: 0
         token: ${{secrets.SUBMODULE_TOKEN}}
         submodules: true
-    - run: git submodule update --remote ./core/
+        
+    - run: git submodule update --init --recursive
     - run: npm install
     - run: npm run build
     - run: npm run test
