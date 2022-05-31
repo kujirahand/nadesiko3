@@ -7,6 +7,7 @@ import { NakoError } from '../core/src/nako_errors.mjs'
 import NakoIndent from '../core/src/nako_indent.mjs'
 import { NakoPrepare } from '../core/src/nako_prepare.mjs'
 import { NakoLogger } from '../core/src/nako_logger.mjs'
+import { NakoCompiler } from '../core/src/nako3.mjs'
 
 // alias
 const getBlockStructure = NakoIndent.getBlockStructure
@@ -279,15 +280,16 @@ const withoutLogger = (nako3, f) => {
 
 /**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
- * @param {string[]} lines
- * @param {NakoCompiler} nako3
- * @param {boolean} underlineJosi
+ * @param lines
+ * @param nako3
+ * @param underlineJosi
  */
-export function tokenize (lines, nako3, underlineJosi) {
+export function tokenize (lines: string[], nako3: NakoCompiler, underlineJosi: boolean) {
   const code = lines.join('\n')
 
   // 取り込み文を含めてしまうと依存ファイルが大きい時に時間がかかってしまうため、
   // 取り込み文を無視してトークン化してから、依存ファイルで定義された関数名と一致するトークンを関数のトークンへ変換する。
+  nako3.reset({needToClearPlugin: false})
   const lexerOutput = withoutLogger(nako3, () => nako3.lex(code, 'main.nako3', undefined, true))
   lexerOutput.commentTokens = lexerOutput.commentTokens.filter((t) => t.file === 'main.nako3')
   lexerOutput.requireTokens = lexerOutput.requireTokens.filter((t) => t.file === 'main.nako3')
