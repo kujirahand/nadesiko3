@@ -9,6 +9,8 @@ const ERR_NOHTTPSERVER = '最初に『簡易HTTPサーバ起動時』を実行�
 // オブジェクト
 type EasyURLActionType = 'static' | 'callback'
 type EasyURLCallback = (req: any, res: any) => void
+type EasyHTTPOnStart = (sys: any) => void
+
 class EasyURLItem {
   url: string
   action: EasyURLActionType
@@ -172,11 +174,11 @@ const PluginHttpServer = {
   },
   // @簡易HTTPサーバ
   'GETデータ': { type: 'const', value: '' }, // @GETでーた
-  '簡易HTTPサーバ起動時': { // @簡易HTTPサーバを起動してCALLBACKを実行する。ポート番号PORTを指定する。 // @かんいHTTPさーばきどうしたとき
+  '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。 // @かんいHTTPさーばきどうしたとき
     type: 'func',
     josi: [['を'], ['の', 'で']],
     pure: true,
-    fn: function (callback: (sys: any) => void, port: number, sys: any) {
+    fn: function (callback: EasyHTTPOnStart, port: number, sys: any) {
       // 管理オブジェクトを作成する
       const dp = sys.__httpserver = new EasyURLDispather(sys)
       // サーバオブジェクトを生成

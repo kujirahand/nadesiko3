@@ -22,6 +22,7 @@ CORE="core/src"
     ['src/plugin_browser.mjs','wnako'],
     ['src/plugin_turtle.mjs', 'wnako'],
     ['src/plugin_node.mts', 'cnako,phpnako'],
+    ['src/plugin_httpserver.mts', 'cnako'],
     ['src/plugin_markup.mjs', 'wnako,cnako'],
     ['src/plugin_datetime.mjs', 'wnako,cnako'],
     ['src/plugin_caniuse.mjs', 'wnako,cnako'],
