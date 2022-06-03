@@ -38,9 +38,9 @@ describe('node_test(cnako)', () => {
   }).timeout(15000)
 
   it('単独で実行できるプログラムの出力(macの時のみ) - Node.js', function () {
-    // [memo] 現状なでしこが生成するコードは cjs のもの
+    // [memo] なでしこが生成するコードも ESM ("".mjs") です
     // testフォルダはmjsがデフォルト
-    // そのため、とりあえずwindowsならテストしない macの時だけテスト
+    // /tmp を使うので、windowsならテストしない macの時だけテスト
     if (process.platform !== 'darwin') { return this.skip() }
     const nakofileOrg = path.join(__dirname, 'add_test.nako3')
     const nakofile = path.join('/tmp', 'add_test.nako3')

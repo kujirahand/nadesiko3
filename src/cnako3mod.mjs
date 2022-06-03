@@ -6,9 +6,8 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import { exec } from 'child_process';
 import path from 'path';
-import { NakoCompiler } from '../core/src/nako3.mjs';
+import { NakoCompiler, newCompilerOptions } from '../core/src/nako3.mjs';
 import { NakoImportError } from '../core/src/nako_errors.mjs';
-import { CompilerOptions } from '../core/src/nako_types.mjs';
 import nakoVersion from './nako_version.mjs';
 import PluginNode from './plugin_node.mjs';
 import app from './commander_ja.mjs';
@@ -199,9 +198,6 @@ export class CNako3 extends NakoCompiler {
     }
     /**
      * コンパイルモードの場合
-     * @param opt
-     * @param {string} src
-     * @param {boolean} isTest
      */
     async nakoCompile(opt, src, isTest) {
         // 依存ライブラリなどを読み込む
@@ -222,7 +218,7 @@ export class CNako3 extends NakoCompiler {
             fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod));
         }
         // from nadesiko3core/src
-        const srcDir = path.join(__dirname, '..', 'node_modules', 'nadesiko3core', 'src');
+        const srcDir = path.join(__dirname, '..', 'core', 'src');
         const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs',
             'plugin_system.mjs', 'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs'];
         for (const mod of baseFiles) {
@@ -293,8 +289,6 @@ export class CNako3 extends NakoCompiler {
     }
     /**
      * ASTを出力
-     * @param opt
-     * @param {string} src
      */
     outputAST(opt, src) {
         const ast = this.parse(src, opt.mainfile);
@@ -306,12 +300,7 @@ export class CNako3 extends NakoCompiler {
             return s;
         };
         const trim = (s) => { return s.replace(/(^\s+|\s+$)/g, ''); };
-        /**
-         * AST文字列に変換して返す
-         * @param {*} ast
-         * @param {number} level
-         * @return {string}
-         */
+        /** AST文字列に変換して返す */
         const outAST = (ast, level) => {
             if (typeof (ast) === 'string') {
                 return makeIndent(level) + '"' + ast + '"';
@@ -512,25 +501,19 @@ export class CNako3 extends NakoCompiler {
         };
         return tools;
     }
-    /**
-     * @param {string} code
-     * @param {string} filename
-     * @param {string} preCode
-     * @returns {Promise<void>}
-     */
+    /** 『!「xxx」を取込』の処理 */
     async loadDependencies(code, filename, preCode) {
         const tools = this.getLoaderTools();
         await super._loadDependencies(code, filename, preCode, tools);
     }
     /**
-     * @param code
-     * @param fname
-     * @param [preCode]
+     * 非同期でなでしこのコードを実行する
      */
-    async runAsync(code, fname, options = new CompilerOptions()) {
+    async runAsync(code, fname, options = undefined) {
         // 取り込む文の処理
         try {
-            await this.loadDependencies(code, fname, options.preCode);
+            const opt = newCompilerOptions(options);
+            await this.loadDependencies(code, fname, opt.preCode);
         }
         catch (err) {
             // 読み込みエラーは報告のみして続けて実行してみる
@@ -541,11 +524,11 @@ export class CNako3 extends NakoCompiler {
     }
     /**
      * プラグインファイルの検索を行う
-     * @param {string} pname プラグインの名前
-     * @param {string} filename 取り込み元ファイル名
-     * @param {string} srcDir このファイルが存在するディレクトリ
-     * @param {string[]} [log]
-     * @return {string} フルパス、失敗した時は、''を返す
+     * @param pname プラグインの名前
+     * @param filename 取り込み元ファイル名
+     * @param srcDir このファイルが存在するディレクトリ
+     * @param log
+     * @return フルパス、失敗した時は、''を返す
      */
     static findJSPluginFile(pname, filename, srcDir, log = []) {
         log.length = 0;
@@ -567,22 +550,14 @@ export class CNako3 extends NakoCompiler {
                 return false;
             }
         };
-        /** 普通にファイルをチェック
-         * @param {string} pathTest
-         * @param {string} desc
-         * @returns {boolean}
-         */
+        /** 普通にファイルをチェック */
         const fCheck = (pathTest, desc) => {
             // 素直に指定されたパスをチェック
             const bExists = exists(pathTest);
             log.push(`- (${desc}) ${pathTest}, ${bExists}`);
             return bExists;
         };
-        /** 通常 + package.json のパスを調べる
-         * @param {string} pathTest
-         * @param {string} desc
-         * @returns {string}
-         */
+        /** 通常 + package.json のパスを調べる */
         const fCheckEx = (pathTest, desc) => {
             // 直接JSファイルが指定された？
             if (/\.(js|mjs)$/.test(pathTest)) {

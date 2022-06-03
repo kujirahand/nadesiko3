@@ -7,7 +7,7 @@ import fse from 'fs-extra'
 import { exec } from 'child_process'
 import path from 'path'
 
-import { NakoCompiler, LoaderTool, LoaderToolTask } from '../core/src/nako3.mjs'
+import { NakoCompiler, LoaderTool, LoaderToolTask, newCompilerOptions } from '../core/src/nako3.mjs'
 import { NakoImportError } from '../core/src/nako_errors.mjs'
 
 import { Ast, CompilerOptions } from '../core/src/nako_types.mjs'
@@ -233,9 +233,6 @@ export class CNako3 extends NakoCompiler {
 
   /**
    * コンパイルモードの場合
-   * @param opt
-   * @param {string} src
-   * @param {boolean} isTest
    */
   async nakoCompile (opt: any, src: string, isTest: boolean) {
     // 依存ライブラリなどを読み込む
@@ -325,8 +322,6 @@ export class CNako3 extends NakoCompiler {
 
   /**
    * ASTを出力
-   * @param opt
-   * @param {string} src
    */
   outputAST (opt: any, src: string) {
     const ast = this.parse(src, opt.mainfile)
@@ -336,12 +331,7 @@ export class CNako3 extends NakoCompiler {
       return s
     }
     const trim = (s: string) => { return s.replace(/(^\s+|\s+$)/g, '') }
-    /**
-     * AST文字列に変換して返す
-     * @param {*} ast
-     * @param {number} level
-     * @return {string}
-     */
+    /** AST文字列に変換して返す */
     const outAST = (ast: Ast, level: number): string => {
       if (typeof (ast) === 'string') {
         return makeIndent(level) + '"' + ast + '"'
@@ -540,26 +530,20 @@ export class CNako3 extends NakoCompiler {
     return tools
   }
 
-  /**
-   * @param {string} code
-   * @param {string} filename
-   * @param {string} preCode
-   * @returns {Promise<void>}
-   */
+  /** 『!「xxx」を取込』の処理 */
   async loadDependencies (code: string, filename: string, preCode: string) {
     const tools = this.getLoaderTools()
     await super._loadDependencies(code, filename, preCode, tools)
   }
 
   /**
-   * @param code
-   * @param fname
-   * @param [preCode]
+   * 非同期でなでしこのコードを実行する
    */
-  async runAsync (code: string, fname: string, options: CompilerOptions = new CompilerOptions()): Promise<NakoGlobal> {
+  async runAsync (code: string, fname: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
     // 取り込む文の処理
     try {
-      await this.loadDependencies(code, fname, options.preCode)
+      const opt = newCompilerOptions(options)
+      await this.loadDependencies(code, fname, opt.preCode)
     } catch (err: any) {
       // 読み込みエラーは報告のみして続けて実行してみる
       this.getLogger().error(err)
@@ -570,11 +554,11 @@ export class CNako3 extends NakoCompiler {
 
   /**
    * プラグインファイルの検索を行う
-   * @param {string} pname プラグインの名前
-   * @param {string} filename 取り込み元ファイル名
-   * @param {string} srcDir このファイルが存在するディレクトリ
-   * @param {string[]} [log]
-   * @return {string} フルパス、失敗した時は、''を返す
+   * @param pname プラグインの名前
+   * @param filename 取り込み元ファイル名
+   * @param srcDir このファイルが存在するディレクトリ
+   * @param log
+   * @return フルパス、失敗した時は、''を返す
    */
   static findJSPluginFile (pname: string, filename: string, srcDir: string, log: string[] = []): string {
     log.length = 0
@@ -593,22 +577,14 @@ export class CNako3 extends NakoCompiler {
         return false
       }
     }
-    /** 普通にファイルをチェック
-     * @param {string} pathTest
-     * @param {string} desc
-     * @returns {boolean}
-     */
+    /** 普通にファイルをチェック */
     const fCheck = (pathTest: string, desc: string): boolean => {
       // 素直に指定されたパスをチェック
       const bExists = exists(pathTest)
       log.push(`- (${desc}) ${pathTest}, ${bExists}`)
       return bExists
     }
-    /** 通常 + package.json のパスを調べる
-     * @param {string} pathTest
-     * @param {string} desc
-     * @returns {string}
-     */
+    /** 通常 + package.json のパスを調べる */
     const fCheckEx = (pathTest: string, desc: string): string => {
       // 直接JSファイルが指定された？
       if (/\.(js|mjs)$/.test(pathTest)) {
