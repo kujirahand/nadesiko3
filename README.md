@@ -36,7 +36,7 @@
 「なでしこ3」とは、日本語のプログラミング言語です。HTML5/JavaScript(TypeScript)をベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
 
 - [なでしこのWebサイト](https://nadesi.com/)
-- [なでしこ3のGitHub Pages)](https://kujirahand.github.io/nadesiko3/)
+- [なでしこ3のGitHub Pages](https://kujirahand.github.io/nadesiko3/)
 - [マニュアル](https://nadesi.com/v3/doc/)
 
 ## 対応機器/ブラウザ
