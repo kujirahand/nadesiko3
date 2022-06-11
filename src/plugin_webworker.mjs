@@ -210,7 +210,7 @@ const PluginWebWorker = {
     fn: function (work, data, sys) {
       const msg = {
         type: 'run',
-        data: data
+        data: sys.__modName + '__' + data
       }
       work.postMessage(msg)
     },
@@ -294,6 +294,7 @@ const PluginWebWorker = {
       const obj = []
       if (typeof datas === 'string') { datas = [datas] }
       datas.forEach(data => {
+        data = sys.__modName + '__' + data
         if (typeof sys.__varslist[2][data] !== 'undefined') {
           obj.push({
             type: 'val',
@@ -306,11 +307,12 @@ const PluginWebWorker = {
             type: 'func',
             name: data,
             content: {
-              meta: sys.gen.nako_func[data],
+              meta: sys.gen.nakoFuncList[data],
               func: Object.assign({}, sys.compiler.funclist[data], { fn: null })
             }
           })
         } else {
+          console.error('指定した名前のユーザ関数もしくはグローバル変数がありません:' + data)
           throw new Error('指定した名前のユーザ関数もしくはグローバル変数がありません:' + data)
         }
       })

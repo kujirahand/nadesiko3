@@ -67,8 +67,7 @@ const isIndentSyntaxEnabled = NakoIndent.isIndentSyntaxEnabled;
 /**
  * シンタックスハイライトでは一般にテキストの各部分に 'comment.line' のようなラベルを付け、各エディタテーマがそのそれぞれの色を設定する。
  * ace editor では例えば 'comment.line' が付いた部分はクラス .ace_comment.ace_line が付いたHTMLタグで囲まれ、各テーマはそれに対応するCSSを実装する。
- * @param {TokenWithSourceMap} token
- * @returns {TokenType}
+ * @returns TokenType
  */
 export function getScope(token) {
     switch (token.type) {
@@ -172,9 +171,6 @@ export function getEditorTokens(compilerToken, nako3, value, includesLastCharact
 }
 /**
  * `name` が定義されたプラグインの名前を返す。
- * @param {string} name
- * @param {NakoCompiler} nako3
- * @returns {string | null}
  */
 export function findPluginName(name, nako3) {
     for (const pluginName of Object.keys(nako3.__module)) {
@@ -186,8 +182,6 @@ export function findPluginName(name, nako3) {
 }
 /**
  * i = 0, 1, 2, ... に対して 'A', 'B', 'C', ... 'Z', 'AA', 'AB', ... を返す。
- * @param {number} i
- * @returns {string}
  */
 export function createParameterName(i) {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -195,8 +189,6 @@ export function createParameterName(i) {
 }
 /**
  * パラメータの定義を表す文字列を生成する。例えば `[['と', 'の'], ['を']]` に対して `'（Aと|Aの、Bを）'` を返す、パラメータが無い場合、空文字列を返す。
- * @param {string[][]} josi
- * @retunrs {string}
  */
 export function createParameterDeclaration(josi) {
     const args = josi.map((union, i) => union.map((v) => `${createParameterName(i)}${v}`).join('|')).join('、');
@@ -208,7 +200,6 @@ export function createParameterDeclaration(josi) {
     }
 }
 // https://stackoverflow.com/a/6234804
-/** @param {string} t */
 export function escapeHTML(t) {
     return t
         .replace(/&/g, '&amp;')
@@ -219,15 +210,10 @@ export function escapeHTML(t) {
 }
 /**
  * 関数のドキュメントを返す。
- * @param {TokenWithSourceMap} token
- * @param {NakoCompiler} nako3
- * @returns {string | null}
  */
 export function getDocumentationHTML(token, nako3) {
-    /** @param {string} text */
     const meta = (text) => `<span class="tooltip-plugin-name">${escapeHTML(text)}</span>`;
     if (token.type === 'func') {
-        /** @type {string | null} */
         const pluginName = findPluginName(token.value + '', nako3) || (token.meta && token.meta.file ? token.meta.file : null);
         const josi = (token.meta && token.meta.josi) ? createParameterDeclaration(token.meta.josi) : ''; // {関数} のとき token.meta.josi が存在しない
         if (pluginName) {
@@ -247,8 +233,6 @@ export function getDocumentationHTML(token, nako3) {
 /**
  * ace editor ではエディタの文字列の全ての部分に何らかの `type` を付けなければならない。
  * なでしこのエディタでは 'markup.other' をデフォルト値として使うことにした。
- * @param {number} row
- * @param {AceDocument} doc
  * @returns {EditorToken[]}
  */
 const getDefaultTokens = (row, doc) => [{ type: 'markup.other', value: doc.getLine(row), docHTML: null }];
@@ -1496,7 +1480,7 @@ export function setupEditor(idOrElement, nako3, ace) {
         });
         // 依存ファイルを読み込む。
         const promise = nako3.loadDependencies(preCode + code, filename, preCode, opts.localFiles || {})
-            .then(() => {
+            .then(async () => {
             // プログラムを実行する。
             if (!filename) {
                 filename = 'main.nako3';
@@ -1509,13 +1493,14 @@ export function setupEditor(idOrElement, nako3, ace) {
             }
             else {
                 const opt = { resetEnv: true, resetAll: true };
-                return nako3.runEx(preCode + code, filename, opt, preCode);
+                return await nako3.runAsync(preCode + code, filename, opt, preCode);
             }
         })
             .catch((err) => {
             // エラーはloggerに送られるため何もしなくて良い
             // しかし念のため console.error で出力
             console.error('[wnako3_editor]', err);
+            console.error('[wnako3_editor]', nako3.__globalObj);
         })
             .then(async (res) => {
             // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。

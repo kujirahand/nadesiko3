@@ -41,5 +41,4 @@ BrowserParts.forEach((a) => {
   Object.assign(PluginBrowserInWorker, b)
 })
 
-// module.exports = PluginBrowserInWorker
 export default PluginBrowserInWorker

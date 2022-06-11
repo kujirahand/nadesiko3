@@ -106,12 +106,13 @@ export class WebNakoCompiler extends NakoCompiler {
       task: (async () => {
         // もし動的インポートに対応していれば動的インポートを試す
         const basename = ('/' + filePath).split('/').pop() || '?'
+        /*
         try {
           const obj = await import(filePath)
           this.addPluginObject(basename, obj)
           return {}
-        } catch (e) {
-        }
+        } catch (e) { }
+        */
         // WebPackの関係で動的インポートが失敗するので、テキストとしてJSソースを取り出して処理する
         // JavaScriptをテキストとして取得
         const res = await fetch(filePath)
