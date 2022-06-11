@@ -223,7 +223,6 @@ export class CNako3 extends NakoCompiler {
       const g = await this.runAsync(src, opt.mainfile)
       return g
     } catch (e: any) {
-      this.logger.error(e)
       // 文法エラーなどがあった場合
       if (opt.debug || opt.trace) {
         throw e
@@ -465,8 +464,8 @@ export class CNako3 extends NakoCompiler {
             filePath = 'file://' + filePath
           }
         }
-        // URLからの読み取り
-        // ファイルかHTTPか
+        // + プラグインの読み込みタスクを生成する
+        // | プラグインがWeb(https?://...)に配置されている場合
         if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
           // 動的 import が http 未対応のため、一度、Webのファイルを非同期で読み込んで/tmpに保存してから動的importを行う
           loader.task = (
@@ -512,6 +511,7 @@ export class CNako3 extends NakoCompiler {
           )
           return loader
         }
+        // | プラグインがファイル上に配置されている場合
         loader.task = (
           new Promise((resolve, reject) => {
             import(filePath).then((mod) => {
@@ -541,15 +541,10 @@ export class CNako3 extends NakoCompiler {
    */
   async runAsync (code: string, fname: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
     // 取り込む文の処理
-    try {
-      const opt = newCompilerOptions(options)
-      await this.loadDependencies(code, fname, opt.preCode)
-    } catch (err: any) {
-      // 読み込みエラーは報告のみして続けて実行してみる
-      this.getLogger().error(err)
-    }
+    const opt = newCompilerOptions(options)
+    await this.loadDependencies(code, fname, opt.preCode)
     // 実行
-    return super.runAsync(code, fname, options)
+    return await super.runAsync(code, fname, options)
   }
 
   /**

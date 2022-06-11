@@ -217,8 +217,8 @@ export class CNako3 extends NakoCompiler {
         for (const mod of ['nako_version.mjs', 'plugin_node.mjs']) {
             fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod));
         }
-        // from nadesiko3core/src
-        const srcDir = path.join(__dirname, '..', 'node_modules', 'nadesiko3core', 'src');
+        // from core/src
+        const srcDir = path.join(__dirname, '..', 'core', 'src');
         const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs',
             'plugin_system.mjs', 'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs'];
         for (const mod of baseFiles) {
@@ -438,8 +438,8 @@ export class CNako3 extends NakoCompiler {
                         filePath = 'file://' + filePath;
                     }
                 }
-                // URLからの読み取り
-                // ファイルかHTTPか
+                // + プラグインの読み込みタスクを生成する
+                // | プラグインがWeb(https?://...)に配置されている場合
                 if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
                     // 動的 import が http 未対応のため、一度、Webのファイルを非同期で読み込んで/tmpに保存してから動的importを行う
                     loader.task = (new Promise((resolve, reject) => {
@@ -486,6 +486,7 @@ export class CNako3 extends NakoCompiler {
                     }));
                     return loader;
                 }
+                // | プラグインがファイル上に配置されている場合
                 loader.task = (new Promise((resolve, reject) => {
                     import(filePath).then((mod) => {
                         // プラグインは export default で宣言
