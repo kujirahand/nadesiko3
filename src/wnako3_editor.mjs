@@ -1499,8 +1499,7 @@ export function setupEditor(idOrElement, nako3, ace) {
             .catch((err) => {
             // エラーはloggerに送られるため何もしなくて良い
             // しかし念のため console.error で出力
-            console.error('[wnako3_editor]', err);
-            console.error('[wnako3_editor]', nako3.__globalObj);
+            console.error('[wnako3_editor]', err, nako3.__globalObj);
         })
             .then(async (res) => {
             // 読み込んだ依存ファイルの情報を使って再度シンタックスハイライトする。
