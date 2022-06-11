@@ -40,6 +40,9 @@ const server = http.createServer(function (req, res) {
   // サニタイズ
   let uri = '' + req.url
   uri = uri.replace(/\.\./g, '') // 上のフォルダは許さない
+  if (uri.indexOf('?') >= 0) {
+    uri = (uri + '?').split('?')[0]
+  }
 
   // ファイルパスを生成
   let filePath = path.join(rootDir, uri)

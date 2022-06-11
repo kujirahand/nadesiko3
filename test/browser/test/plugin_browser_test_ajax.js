@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as td from 'testdouble'
 import { CompareUtil, waitTimer, retry } from './compare_util.js'
 

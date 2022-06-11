@@ -19,9 +19,9 @@
     "test:common": "cross-env TZ=Asia/Tokyo mocha test/common",
     "test:async": "mocha test/async -g aysnc_basic_test",
     "test:browser": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/browser/karma.config.cjs",
-    "test:bundled": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/bundled/karma.config.mjs",
-    "test:bundled:watch": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --auto-watch --browsers FirefoxCustom test/bundled/karma.config.mjs",
-    "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.mjs",
+    "test:bundled": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/bundled/karma.config.cjs",
+    "test:bundled:watch": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --auto-watch --browsers FirefoxCustom test/bundled/karma.config.cjs",
+    "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.cjs",
     "test:all": "npm test && npm run test:core && npm run test:node && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
     "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
     "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
@@ -189,6 +189,7 @@
     "html": "^1.0.0",
     "iconv-lite": "^0.6.3",
     "marked": "^4.0.16",
+    "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.2.4",
     "opener": "^1.5.2"
   }
