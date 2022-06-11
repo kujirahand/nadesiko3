@@ -1603,8 +1603,8 @@ export function setupEditor (idOrElement, nako3, ace) {
         } else if (opts.method === 'compile') {
           return nako3.compile(preCode + code, filename, false, preCode)
         } else {
-          const opt = { resetEnv: true, resetAll: true }
-          return await nako3.runAsync(preCode + code, filename, opt, preCode)
+          const opt = { resetEnv: true, resetAll: true, preCode }
+          return await nako3.runAsync(preCode + code, filename, opt)
         }
       })
       .catch((err) => {
