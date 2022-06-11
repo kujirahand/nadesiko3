@@ -1,11 +1,14 @@
 // @ts-nocheck
-const path = require('path')
-
-module.exports = function (config) {
+import path from 'path'
+export default function (config) {
   config.set({
     frameworks: ['mocha', 'webpack'],
     files: [
-      'test/*_test.js',
+      {
+        pattern: 'test/*_test.js',
+        type: 'module',
+        included: false
+      },
       {
         pattern: '../../release/*.js',
         included: false,

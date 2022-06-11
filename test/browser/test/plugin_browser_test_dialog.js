@@ -1,5 +1,5 @@
 import * as td from 'testdouble'
-import { assert } from './compare_util'
+import { assert } from './compare_util.js'
 
 export default (nako) => {
   describe('言う', () => {

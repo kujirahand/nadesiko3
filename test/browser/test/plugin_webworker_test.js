@@ -3,7 +3,7 @@ import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginBrowser from 'nako3/plugin_browser.mjs'
 import { importStatus } from './import_plugin_checker.js'
 import PluginWebWorker from 'nako3/plugin_webworker.mjs'
-import { retry } from './compare_util'
+import { retry } from './compare_util.js'
 
 describe('plugin_webworker_test', () => {
   let nako = null

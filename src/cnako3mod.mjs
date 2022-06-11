@@ -189,7 +189,6 @@ export class CNako3 extends NakoCompiler {
             return g;
         }
         catch (e) {
-            this.logger.error(e);
             // 文法エラーなどがあった場合
             if (opt.debug || opt.trace) {
                 throw e;
@@ -217,8 +216,8 @@ export class CNako3 extends NakoCompiler {
         for (const mod of ['nako_version.mjs', 'plugin_node.mjs']) {
             fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod));
         }
-        // from core/src
-        const srcDir = path.join(__dirname, '..', 'core', 'src');
+        // from nadesiko3core/src
+        const srcDir = path.join(__dirname, '..', 'node_modules', 'nadesiko3core', 'src');
         const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs',
             'plugin_system.mjs', 'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs'];
         for (const mod of baseFiles) {
@@ -511,17 +510,12 @@ export class CNako3 extends NakoCompiler {
      * 非同期でなでしこのコードを実行する
      */
     async runAsync(code, fname, options = undefined) {
-        // 取り込む文の処理
-        try {
-            const opt = newCompilerOptions(options);
-            await this.loadDependencies(code, fname, opt.preCode);
-        }
-        catch (err) {
-            // 読み込みエラーは報告のみして続けて実行してみる
-            this.getLogger().error(err);
-        }
+        // オプション
+        const opt = newCompilerOptions(options);
+        // 取り込む文
+        await this.loadDependencies(code, fname, opt.preCode);
         // 実行
-        return super.runAsync(code, fname, options);
+        return await super.runAsync(code, fname, options);
     }
     /**
      * プラグインファイルの検索を行う

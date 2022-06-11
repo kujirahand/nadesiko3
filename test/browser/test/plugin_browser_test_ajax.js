@@ -1,5 +1,5 @@
 import * as td from 'testdouble'
-import { CompareUtil, waitTimer, retry } from './compare_util'
+import { CompareUtil, waitTimer, retry } from './compare_util.js'
 
 export default (nako) => {
   const cu = new CompareUtil(nako)

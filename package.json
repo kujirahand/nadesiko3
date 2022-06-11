@@ -18,10 +18,10 @@
     "test:node": "mocha test/node",
     "test:common": "cross-env TZ=Asia/Tokyo mocha test/common",
     "test:async": "mocha test/async -g aysnc_basic_test",
-    "test:browser": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/browser/karma.config.js",
-    "test:bundled": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/bundled/karma.config.js",
-    "test:bundled:watch": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --auto-watch --browsers FirefoxCustom test/bundled/karma.config.js",
-    "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.js",
+    "test:browser": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless --reporters=mocha test/browser/karma.config.cjs",
+    "test:bundled": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/bundled/karma.config.mjs",
+    "test:bundled:watch": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --auto-watch --browsers FirefoxCustom test/bundled/karma.config.mjs",
+    "test:ace-editor": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless test/ace_editor/karma.config.mjs",
     "test:all": "npm test && npm run test:core && npm run test:node && npm run test:browser && npm run test:bundled && npm run test:ace-editor",
     "test:bundled:win": "cross-env TZ=Asia/Tokyo NODE_ENV=development karma start --single-run --browsers FirefoxCustomHeadless,ChromeCustomHeadless,EdgeHeadless,IE test/bundled/karma.config.base.js",
     "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
@@ -103,9 +103,9 @@
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "_moduleAliases": {
     "root": ".",
-    "nako3": "./src",
-    "core": "./core/src",
-    "utils": "./utils"
+    "nako3": "/src",
+    "nadesiko3core": "/core",
+    "utils": "/utils"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",

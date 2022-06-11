@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { NakoImportError } from 'nadesiko3core/src/nako_errors.mjs'
+import { NakoImportError } from '../../../core/src/nako_errors.mjs'
 import { WebNakoCompiler } from 'nako3/wnako3mod.mjs'
 
 /**

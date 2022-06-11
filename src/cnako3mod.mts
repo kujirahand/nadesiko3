@@ -540,8 +540,9 @@ export class CNako3 extends NakoCompiler {
    * 非同期でなでしこのコードを実行する
    */
   async runAsync (code: string, fname: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
-    // 取り込む文の処理
+    // オプション
     const opt = newCompilerOptions(options)
+    // 取り込む文
     await this.loadDependencies(code, fname, opt.preCode)
     // 実行
     return await super.runAsync(code, fname, options)

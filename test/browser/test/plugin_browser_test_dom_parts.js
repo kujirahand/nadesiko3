@@ -1,4 +1,4 @@
-import { CompareUtil, waitTimer, assert } from './compare_util'
+import { CompareUtil, waitTimer, assert } from './compare_util.js'
 
 const htmlPath = 'test/html/'
 
