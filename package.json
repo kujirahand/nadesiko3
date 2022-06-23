@@ -156,7 +156,7 @@
     "mocha": "^10.0.0",
     "mocha-css": "^1.0.1",
     "module-alias": "^2.2.2",
-    "npm-check-updates": "^13.0.3",
+    "npm-check-updates": "^14.0.2",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "prettier": "^2.6.2",
