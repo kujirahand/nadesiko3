@@ -217,7 +217,7 @@ export class CNako3 extends NakoCompiler {
             fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod));
         }
         // from nadesiko3core/src
-        const srcDir = path.join(__dirname, '..', 'node_modules', 'nadesiko3core', 'src');
+        const srcDir = path.join(__dirname, '..', 'core', 'src');
         const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs',
             'plugin_system.mjs', 'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs'];
         for (const mod of baseFiles) {
