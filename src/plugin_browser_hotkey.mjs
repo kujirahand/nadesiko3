@@ -10,7 +10,8 @@ export default {
     fn: function (key, fname, sys) {
       hotkeys(key, function (event, handler) {
         event.preventDefault()
-        sys.__v1[fname]()
+        const f = sys.__findFunc(fname)
+        f(sys)
       })
     }
   },
