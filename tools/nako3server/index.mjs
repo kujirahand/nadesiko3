@@ -111,9 +111,13 @@ function getMIMEType (url) {
 
 // ディレクトリか判定
 function isDir (pathName) {
-  const stats = fs.statSync(pathName, { throwIfNoEntry: false })
-  if (stats && stats.isDirectory()) {
-    return true
+  try {
+    const stats = fs.statSync(pathName, { throwIfNoEntry: false })
+    if (stats && stats.isDirectory()) {
+      return true
+    }
+  } catch (e) {
+    return false
   }
   return false
 }
