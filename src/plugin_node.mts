@@ -393,7 +393,7 @@ export default {
   'デスクトップ': { // @デスクトップパスを取得して返す // @ですくとっぷ
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys: any) {
       const home = sys.__exec('ホームディレクトリ取得', [sys])
       return path.join(home, 'Desktop')
@@ -402,7 +402,7 @@ export default {
   'マイドキュメント': { // @マイドキュメントのパスを取得して返す // @まいどきゅめんと
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys: any) {
       const home = sys.__exec('ホームディレクトリ取得', [sys])
       return path.join(home, 'Documents')
@@ -415,6 +415,23 @@ export default {
     pure: true,
     fn: function (sys: any) {
       return sys.__getBokanPath()
+    }
+  },
+  'テンポラリフォルダ': { // @テンポラリフォルダのパスを取得して返す // @てんぽらりふぉるだ
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys: any) {
+      // 環境変数からテンポラリフォルダを取得
+      const tmpDir = process.env['TMPDIR'] // mac or linux
+      if (tmpDir) { return tmpDir }
+      const tmp = process.env['TMP'] // win
+      if (tmp) { return tmp }
+      const temp = process.env['TEMP'] // win
+      if (temp) { return temp }
+      // IEEE POSIX
+      if (fs.existsSync('/tmp')) { return '/tmp' }
+      throw new Error('申し訳ありません。テンポラリフォルダを特定できません。')
     }
   },
   // @環境変数
