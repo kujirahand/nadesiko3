@@ -88,6 +88,12 @@ export default {
             if (typeof s === 'string') {
                 fs.writeFileSync(f, s, 'utf-8');
             }
+            else if (s instanceof Buffer) {
+                fs.writeFileSync(f, s);
+            }
+            else if (s instanceof ArrayBuffer) {
+                fs.writeFileSync(f, Buffer.from(s));
+            }
             else {
                 fs.writeFileSync(f, s);
             }
@@ -983,6 +989,22 @@ export default {
             const res = await fetch(url, options);
             const txt = await res.json();
             return txt;
+        },
+        return_none: false
+    },
+    'AJAXバイナリ取得': {
+        type: 'func',
+        josi: [['から']],
+        pure: true,
+        asyncFn: true,
+        fn: async function (url, sys) {
+            let options = sys.__v0['AJAXオプション'];
+            if (options === '') {
+                options = { method: 'GET' };
+            }
+            const res = await fetch(url, options);
+            const bin = await res.arrayBuffer();
+            return bin;
         },
         return_none: false
     },

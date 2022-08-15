@@ -79,9 +79,12 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-    fn: function (s: string, f: string) {
+    fn: function (s: any, f: string) {
       // Buffer?
-      if (typeof s === 'string') { fs.writeFileSync(f, s, 'utf-8') } else { fs.writeFileSync(f, s) }
+      if (typeof s === 'string') { fs.writeFileSync(f, s, 'utf-8') }
+      else if (s instanceof Buffer) { fs.writeFileSync(f, s) }
+      else if (s instanceof ArrayBuffer) { fs.writeFileSync(f, Buffer.from(s)) }
+      else { fs.writeFileSync(f, s) }
     },
     return_none: true
   },
@@ -908,6 +911,20 @@ export default {
       const res = await fetch(url, options)
       const txt = await res.json()
       return txt
+    },
+    return_none: false
+  },
+  'AJAXバイナリ取得': { // @AJAXでURLにアクセスしバイナリ(arrayBuffer)形式で結果を得る。送信時AJAXオプションの値を参照。 // @AJAXばいなりしゅとく
+    type: 'func',
+    josi: [['から']],
+    pure: true,
+    asyncFn: true,
+    fn: async function (url: string, sys: any) {
+      let options = sys.__v0['AJAXオプション']
+      if (options === '') { options = { method: 'GET' } }
+      const res = await fetch(url, options)
+      const bin = await res.arrayBuffer()
+      return bin
     },
     return_none: false
   },

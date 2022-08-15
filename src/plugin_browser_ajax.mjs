@@ -395,5 +395,19 @@ export default {
       return txt
     },
     return_none: false
+  },
+  'AJAXバイナリ取得': { // @AJAXでURLにアクセスしバイナリ(blob)形式で結果を得る。送信時AJAXオプションの値を参照。 // @AJAXばいなりしゅとく
+    type: 'func',
+    josi: [['から']],
+    pure: true,
+    asyncFn: true,
+    fn: async function (url, sys) {
+      let options = sys.__v0['AJAXオプション']
+      if (options === '') { options = { method: 'GET' } }
+      const res = await fetch(url, options)
+      const bin = await res.blob()
+      return bin
+    },
+    return_none: false
   }
 }
