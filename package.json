@@ -152,7 +152,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-webpack": "^5.0.0",
     "markdownlint": "^0.25.1",
-    "markdownlint-cli": "^0.31.1",
+    "markdownlint-cli": "^0.32.2",
     "mocha": "^10.0.0",
     "mocha-css": "^1.0.1",
     "module-alias": "^2.2.2",
