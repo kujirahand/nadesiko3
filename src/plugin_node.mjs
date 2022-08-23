@@ -21,6 +21,18 @@ export default {
         josi: [],
         pure: true,
         fn: function (sys) {
+            sys.__quotePath = (fpath) => {
+                if (process.platform === 'win32') {
+                    fpath = fpath.replaceAll('"', '');
+                    fpath = fpath.replaceAll('%', '%%');
+                    fpath = '"' + fpath + '"';
+                }
+                else {
+                    fpath = fpath.replaceAll('\'', '\'\\\'\''); // '\''
+                    fpath = '\'' + fpath + '\'';
+                }
+                return fpath;
+            };
             sys.__getBinPath = (tool) => {
                 let fpath = tool;
                 if (process.platform === 'win32') {
@@ -29,7 +41,7 @@ export default {
                         const root = path.resolve(path.join(nodeDir, '..'));
                         fpath = path.join(root, 'bin', tool + '.exe');
                         if (fileExists(fpath)) {
-                            return `"${fpath}"`;
+                            return sys.__quotePath(`${fpath}`);
                         }
                         return tool;
                     }
@@ -517,8 +529,10 @@ export default {
         josi: [['を', 'から'], ['に', 'へ']],
         pure: true,
         fn: function (a, b, sys) {
-            const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']);
-            const cmd = `${tpath} x "${a}" -o"${b}" -y`;
+            const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']));
+            a = sys.__quotePath(a);
+            b = sys.__quotePath(b);
+            const cmd = `${tpath} x ${a} -o${b} -y`;
             execSync(cmd);
             return true;
         }
@@ -528,8 +542,10 @@ export default {
         josi: [['で'], ['を', 'から'], ['に', 'へ']],
         pure: true,
         fn: function (callback, a, b, sys) {
-            const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']);
-            const cmd = `${tpath} x "${a}" -o"${b}" -y`;
+            const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']));
+            a = sys.__quotePath(a);
+            b = sys.__quotePath(b);
+            const cmd = `${tpath} x ${a} -o${b} -y`;
             exec(cmd, (err, stdout, stderr) => {
                 if (err) {
                     throw new Error('[エラー]『解凍時』' + err);
@@ -544,8 +560,10 @@ export default {
         josi: [['を', 'から'], ['に', 'へ']],
         pure: true,
         fn: function (a, b, sys) {
-            const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']);
-            const cmd = `${tpath} a -r "${b}" "${a}" -y`;
+            const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']));
+            a = sys.__quotePath(a);
+            b = sys.__quotePath(b);
+            const cmd = `${tpath} a -r ${b} ${a} -y`;
             execSync(cmd);
             return true;
         }
@@ -555,8 +573,10 @@ export default {
         josi: [['で'], ['を', 'から'], ['に', 'へ']],
         pure: true,
         fn: function (callback, a, b, sys) {
-            const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']);
-            const cmd = `${tpath} a -r "${b}" "${a}" -y`;
+            const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']));
+            a = sys.__quotePath(a);
+            b = sys.__quotePath(b);
+            const cmd = `${tpath} a -r ${b} ${a} -y`;
             exec(cmd, (err, stdout, stderr) => {
                 if (err) {
                     throw new Error('[エラー]『圧縮時』' + err);
