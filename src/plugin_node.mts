@@ -15,6 +15,9 @@ import readline from 'readline'
 // ハッシュ関数で利用
 import crypto from 'crypto'
 import os from 'os'
+import url from 'url';
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default {
   '初期化': {
@@ -25,7 +28,7 @@ export default {
         sys.__quotePath = (fpath: string) => {
           if (process.platform === 'win32') {
             fpath = fpath.replaceAll('"', '')
-            fpath = fpath.replaceAll('%', '%%')
+            fpath = fpath.replaceAll('%', '"^%"')
             fpath = '"' + fpath + '"'
           } else {
             fpath = fpath.replaceAll('\'', '\'\\\'\'') // '\''
@@ -37,10 +40,9 @@ export default {
         let fpath = tool
         if (process.platform === 'win32') {
           if (!fileExists(tool)) {
-            const nodeDir = path.dirname(process.argv[0])
-            const root = path.resolve(path.join(nodeDir, '..'))
+            const root = path.resolve(path.join(__dirname, '..'))
             fpath = path.join(root, 'bin', tool + '.exe')
-            if (fileExists(fpath)) { return sys.__quotePath(`${fpath}`) }
+            if (fileExists(fpath)) { return `${fpath}` }
             return tool
           }
         }
