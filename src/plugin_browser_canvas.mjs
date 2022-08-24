@@ -196,6 +196,7 @@ export default {
     fn: function (url, sys) {
       const img = new window.Image()
       img.src = url
+      img.crossOrigin = 'Anonymous'
       return img
     }
   },
@@ -208,6 +209,7 @@ export default {
       sys.resolveCount++
       const img = new window.Image()
       img.src = url
+      img.crossOrigin = 'Anonymous'
       img.onload = () => {
         sys.__v0['対象'] = img
         sys.resolve()
@@ -229,6 +231,7 @@ export default {
       // 画像を読む
       const img = new window.Image()
       img.src = url
+      img.crossOrigin = 'Anonymous'
       img.onload = () => {
         sys.__v0['対象'] = img
         func(sys)
@@ -260,6 +263,7 @@ export default {
       if (typeof img === 'string') {
         const image = new window.Image()
         image.src = img
+        image.crossOrigin = 'Anonymous'
         image.onload = () => {
           drawFunc(image, sys.__ctx)
         }
@@ -311,6 +315,7 @@ export default {
       if (typeof img === 'string') {
         const image = new window.Image()
         image.src = img
+        image.crossOrigin = 'Anonymous'
         image.onload = () => {
           drawFunc(image, sys.__ctx)
         }
