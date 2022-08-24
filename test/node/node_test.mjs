@@ -57,28 +57,4 @@ describe('node_test(cnako)', () => {
       if (fs.existsSync(jsfile)) { fs.unlinkSync(jsfile) }
     }
   })
-  it('圧縮/解凍', function () {
-    if (process.platform === 'win32') { return this.skip() }
-    try { execSync('which 7z').toString() } catch (e) { return this.skip() }
-    const pathSrc = 'FILE=「{テンポラリフォルダ}/test.txt」;ZIP=「{テンポラリフォルダ}/test.zip」;'
-    cmp(`${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
-    cmp(`${pathSrc}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
-  })
-  it('圧縮/解凍 - OS Command Injection #1325', function () {
-    // 7z がない環境ではテストを飛ばす
-    if (process.platform === 'win32') { return this.skip() }
-    try { execSync('which 7z').toString() } catch (e) { return this.skip() }
-    // (1) 元ファイルへのインジェクション
-    const pathSrc = 'FILE=「{テンポラリフォルダ}/`touch hoge`.txt」;ZIP=「{テンポラリフォルダ}/test.zip」;'
-    cmp('F=「{テンポラリフォルダ}/hoge」;Fが存在;もしそうならば、Fをファイル削除;' +
-        `${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
-    cmp(`${pathSrc}「{テンポラリフォルダ}/hoge」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
-    cmp(`${pathSrc}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
-    // (2) ZIPファイルへのインジェクション
-    const pathSrc2 = 'FILE=「{テンポラリフォルダ}/test2.txt」;ZIP=「{テンポラリフォルダ}/`touch bbb`.zip」;'
-    cmp('F=「{テンポラリフォルダ}/bbb」;Fが存在;もしそうならば、Fをファイル削除;' +
-        `${pathSrc2}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
-    cmp(`${pathSrc2}「{テンポラリフォルダ}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
-    cmp(`${pathSrc2}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
-  })
 })
