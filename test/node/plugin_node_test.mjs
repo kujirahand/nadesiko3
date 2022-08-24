@@ -94,5 +94,8 @@ describe('plugin_node_test', () => {
     cmp('「hello world」を「sha256」の「hex」でハッシュ値計算して表示。', 'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9')
     cmp('「some data to hash」を「sha256」の「hex」でハッシュ値計算して表示。', '6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50')
   })
+  it('テンポラリフォルダ', () => {
+    cmd('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
+  })
 })
 

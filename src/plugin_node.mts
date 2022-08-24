@@ -438,14 +438,18 @@ export default {
     pure: true,
     fn: function (sys: any) {
       // 環境変数からテンポラリフォルダを取得
-      const tmpDir = process.env['TMPDIR'] // mac or linux
-      if (tmpDir) { return tmpDir }
-      const tmp = process.env['TMP'] // win
-      if (tmp) { return tmp }
-      const temp = process.env['TEMP'] // win
-      if (temp) { return temp }
-      // IEEE POSIX
-      if (fs.existsSync('/tmp')) { return '/tmp' }
+      if (process.platform === 'win32') { // win
+        const tmp = process.env['TMP']
+        if (tmp) { return tmp }
+        const temp = process.env['TEMP']
+        if (temp) { return temp }
+      } else {
+        const tmpDir = process.env['TMPDIR'] // mac or linux
+        if (tmpDir) { return tmpDir }
+        // IEEE POSIX
+        if (fs.existsSync('/tmp')) { return '/tmp' }
+        if (fs.existsSync('/var/tmp')) { return '/var/tmp' }
+      }
       throw new Error('申し訳ありません。テンポラリフォルダを特定できません。')
     }
   },
