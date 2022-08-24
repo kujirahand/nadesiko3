@@ -80,7 +80,7 @@ describe('plugin_node_test', () => {
     cmp('「some data to hash」を「sha256」の「hex」でハッシュ値計算して表示。', '6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50')
   })
   it('テンポラリフォルダ', () => {
-    cmd('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
+    cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
   })
   it('圧縮解凍', () => {
     let path7z = '7z'
@@ -125,4 +125,3 @@ describe('plugin_node_test', () => {
     cmp(`${pathSrc2}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
   })
 })
-

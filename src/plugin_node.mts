@@ -27,11 +27,11 @@ export default {
     fn: function (sys: any) {
         sys.__quotePath = (fpath: string) => {
           if (process.platform === 'win32') {
-            fpath = fpath.replaceAll('"', '')
-            fpath = fpath.replaceAll('%', '"^%"')
+            fpath = fpath.replace(/\"/g, '')
+            fpath = fpath.replace(/\%/g, '"^%"')
             fpath = '"' + fpath + '"'
           } else {
-            fpath = fpath.replaceAll('\'', '\'\\\'\'') // '\''
+            fpath = fpath.replace(/\'/, '\'\\\'\'') // '\''
             fpath = '\'' + fpath + '\''
           }
           return fpath
