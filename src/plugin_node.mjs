@@ -26,12 +26,12 @@ export default {
         fn: function (sys) {
             sys.__quotePath = (fpath) => {
                 if (process.platform === 'win32') {
-                    fpath = fpath.replaceAll('"', '');
-                    fpath = fpath.replaceAll('%', '"^%"');
+                    fpath = fpath.replace(/\"/g, '');
+                    fpath = fpath.replace(/\%/g, '"^%"');
                     fpath = '"' + fpath + '"';
                 }
                 else {
-                    fpath = fpath.replaceAll('\'', '\'\\\'\''); // '\''
+                    fpath = fpath.replace(/\'/, '\'\\\'\''); // '\''
                     fpath = '\'' + fpath + '\'';
                 }
                 return fpath;
@@ -479,21 +479,28 @@ export default {
         pure: true,
         fn: function (sys) {
             // 環境変数からテンポラリフォルダを取得
-            const tmpDir = process.env['TMPDIR']; // mac or linux
-            if (tmpDir) {
-                return tmpDir;
+            if (process.platform === 'win32') { // win
+                const tmp = process.env['TMP'];
+                if (tmp) {
+                    return tmp;
+                }
+                const temp = process.env['TEMP'];
+                if (temp) {
+                    return temp;
+                }
             }
-            const tmp = process.env['TMP']; // win
-            if (tmp) {
-                return tmp;
-            }
-            const temp = process.env['TEMP']; // win
-            if (temp) {
-                return temp;
-            }
-            // IEEE POSIX
-            if (fs.existsSync('/tmp')) {
-                return '/tmp';
+            else {
+                const tmpDir = process.env['TMPDIR']; // mac or linux
+                if (tmpDir) {
+                    return tmpDir;
+                }
+                // IEEE POSIX
+                if (fs.existsSync('/tmp')) {
+                    return '/tmp';
+                }
+                if (fs.existsSync('/var/tmp')) {
+                    return '/var/tmp';
+                }
             }
             throw new Error('申し訳ありません。テンポラリフォルダを特定できません。');
         }
