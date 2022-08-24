@@ -15,6 +15,9 @@ import readline from 'readline'
 // ハッシュ関数で利用
 import crypto from 'crypto'
 import os from 'os'
+import url from 'url';
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default {
   '初期化': {
@@ -22,18 +25,27 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: any) {
-      sys.__getBinPath = (tool: any) => {
+        sys.__quotePath = (fpath: string) => {
+          if (process.platform === 'win32') {
+            fpath = fpath.replace(/\"/g, '')
+            fpath = fpath.replace(/\%/g, '"^%"')
+            fpath = '"' + fpath + '"'
+          } else {
+            fpath = fpath.replace(/\'/, '\'\\\'\'') // '\''
+            fpath = '\'' + fpath + '\''
+          }
+          return fpath
+        }
+        sys.__getBinPath = (tool: any) => {
         let fpath = tool
         if (process.platform === 'win32') {
           if (!fileExists(tool)) {
-            const nodeDir = path.dirname(process.argv[0])
-            const root = path.resolve(path.join(nodeDir, '..'))
+            const root = path.resolve(path.join(__dirname, '..'))
             fpath = path.join(root, 'bin', tool + '.exe')
-            if (fileExists(fpath)) { return `"${fpath}"` }
+            if (fileExists(fpath)) { return `${fpath}` }
             return tool
           }
         }
-
         return fpath
       }
       sys.__getBokanPath = () => {
@@ -426,14 +438,18 @@ export default {
     pure: true,
     fn: function (sys: any) {
       // 環境変数からテンポラリフォルダを取得
-      const tmpDir = process.env['TMPDIR'] // mac or linux
-      if (tmpDir) { return tmpDir }
-      const tmp = process.env['TMP'] // win
-      if (tmp) { return tmp }
-      const temp = process.env['TEMP'] // win
-      if (temp) { return temp }
-      // IEEE POSIX
-      if (fs.existsSync('/tmp')) { return '/tmp' }
+      if (process.platform === 'win32') { // win
+        const tmp = process.env['TMP']
+        if (tmp) { return tmp }
+        const temp = process.env['TEMP']
+        if (temp) { return temp }
+      } else {
+        const tmpDir = process.env['TMPDIR'] // mac or linux
+        if (tmpDir) { return tmpDir }
+        // IEEE POSIX
+        if (fs.existsSync('/tmp')) { return '/tmp' }
+        if (fs.existsSync('/var/tmp')) { return '/var/tmp' }
+      }
       throw new Error('申し訳ありません。テンポラリフォルダを特定できません。')
     }
   },
@@ -470,8 +486,10 @@ export default {
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (a: string, b: string, sys: any) {
-      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${tpath} x "${a}" -o"${b}" -y`
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      a = sys.__quotePath(a)
+      b = sys.__quotePath(b)
+      const cmd = `${tpath} x ${a} -o${b} -y`
       execSync(cmd)
       return true
     }
@@ -481,8 +499,10 @@ export default {
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (callback: any, a: string, b: string, sys: any) {
-      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${tpath} x "${a}" -o"${b}" -y`
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      a = sys.__quotePath(a)
+      b = sys.__quotePath(b)
+      const cmd = `${tpath} x ${a} -o${b} -y`
       exec(cmd, (err, stdout, stderr) => {
         if (err) { throw new Error('[エラー]『解凍時』' + err) }
         callback(stdout)
@@ -495,8 +515,10 @@ export default {
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (a: string, b: string, sys: any) {
-      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${tpath} a -r "${b}" "${a}" -y`
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      a = sys.__quotePath(a)
+      b = sys.__quotePath(b)
+      const cmd = `${tpath} a -r ${b} ${a} -y`
       execSync(cmd)
       return true
     }
@@ -506,8 +528,10 @@ export default {
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (callback: any, a: string, b: string, sys: any) {
-      const tpath = sys.__getBinPath(sys.__v0['圧縮解凍ツールパス'])
-      const cmd = `${tpath} a -r "${b}" "${a}" -y`
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      a = sys.__quotePath(a)
+      b = sys.__quotePath(b)
+      const cmd = `${tpath} a -r ${b} ${a} -y`
       exec(cmd, (err, stdout, stderr) => {
         if (err) { throw new Error('[エラー]『圧縮時』' + err) }
         callback(stdout)

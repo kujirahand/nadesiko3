@@ -4,6 +4,7 @@ import { NakoCompiler } from '../../core/src/nako3.mjs'
 import path from 'path'
 import PluginNode from '../../src/plugin_node.mjs'
 import PluginCSV from '../../core/src/plugin_csv.mjs'
+import { execSync } from 'child_process'
 
 // __dirname のために
 import url from 'url'
@@ -49,22 +50,6 @@ describe('plugin_node_test', () => {
     const path = process.env.PATH
     cmp('「PATH」の環境変数取得して表示。', path)
   })
-  it('圧縮解凍', () => {
-    let path7z = '7z'
-    if (process.platform === 'win32') {
-      path7z = path.join(__dirname, '../../bin/7z.exe')
-    }
-    cmp('FIN=「' + testFileMe + '」;' +
-      'HOME=ホームディレクトリ取得;' +
-      'TMP=HOME&"/.temp";' +
-      '「' + path7z + '」に圧縮解凍ツールパス変更;' +
-      'もし、!(TMPが存在する)ならば、TMPのフォルダ作成。' +
-      'FZIP=「{TMP}/test.zip」;\n' +
-      'FINをFZIPへ圧縮。FZIPを「{TMP}/」に解凍。\n' +
-      'S1=「{TMP}/plugin_node_test.js」を読む。\n' +
-      'S2=FINを読む。\n' +
-      'もし(S1＝S2)ならば、"OK"と表示。\n', 'OK')
-  })
   it('ファイルサイズ取得', () => {
     cmp('「' + testFileMe + '」のファイルサイズ取得;もし、それが2000以上ならば;「OK」と表示。違えば「NG」と表示。', 'OK')
   })
@@ -94,5 +79,49 @@ describe('plugin_node_test', () => {
     cmp('「hello world」を「sha256」の「hex」でハッシュ値計算して表示。', 'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9')
     cmp('「some data to hash」を「sha256」の「hex」でハッシュ値計算して表示。', '6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50')
   })
+  it('テンポラリフォルダ', () => {
+    cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
+  })
+  it('圧縮解凍', () => {
+    let path7z = '7z'
+    if (process.platform === 'win32') {
+      path7z = path.join(__dirname, '../../bin/7z.exe')
+    }
+    cmp('FIN=「' + testFileMe + '」;' +
+      'TMP=テンポラリフォルダ;' +
+      '『' + path7z + '』に圧縮解凍ツールパス変更;' +
+      'もし、!(TMPが存在する)ならば、TMPのフォルダ作成。' +
+      'FZIP=「{TMP}/test.zip」;\n' +
+      'FINをFZIPへ圧縮。FZIPを「{TMP}/」に解凍。\n' +
+      'S1=「{TMP}/plugin_node_test.js」を読む。\n' +
+      'S2=FINを読む。\n' +
+      'もし(S1＝S2)ならば、"OK"と表示。\n', 'OK')
+  })
+  it('圧縮/解凍', function () {
+    if (process.platform === 'win32') { return this.skip() }
+    try { execSync('which 7z').toString() } catch (e) { return this.skip() }
+    const pathSrc = 'FILE=「{テンポラリフォルダ}/test.txt」;ZIP=「{テンポラリフォルダ}/test.zip」;'
+    cmp(`${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
+    cmp(`${pathSrc}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+  })
+  it('圧縮/解凍 - OSコマンドインジェクション対策がなされているか #1325', function () {
+    // 7z がない環境ではテストを飛ばす
+    if (process.platform === 'win32') {
+      return this.skip()
+    } else {
+      try { execSync('which 7z').toString() } catch (e) { return this.skip() }
+    }
+    // (1) 元ファイルへのインジェクション
+    const pathSrc = 'FILE=「{テンポラリフォルダ}/`touch hoge`.txt」;ZIP=「{テンポラリフォルダ}/test.zip」;'
+    cmp('F=「{テンポラリフォルダ}/hoge」;Fが存在;もしそうならば、Fをファイル削除;' +
+        `${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
+    cmp(`${pathSrc}「{テンポラリフォルダ}/hoge」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
+    cmp(`${pathSrc}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+    // (2) ZIPファイルへのインジェクション
+    const pathSrc2 = 'FILE=「{テンポラリフォルダ}/test2.txt」;ZIP=「{テンポラリフォルダ}/`touch bbb`.zip」;'
+    cmp('F=「{テンポラリフォルダ}/bbb」;Fが存在;もしそうならば、Fをファイル削除;' +
+        `${pathSrc2}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
+    cmp(`${pathSrc2}「{テンポラリフォルダ}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
+    cmp(`${pathSrc2}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+  })
 })
-
