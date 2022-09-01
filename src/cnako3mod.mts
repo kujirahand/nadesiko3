@@ -40,6 +40,7 @@ interface CNako3ArgOptions {
   man: string
   browsers: boolean
   ast: boolean
+  lex: boolean
 }
 
 interface CNako3Options {
@@ -92,7 +93,8 @@ export class CNako3 extends NakoCompiler {
       .option('-b, --browsers', '対応機器/Webブラウザを表示する')
       .option('-m, --man [command]', 'マニュアルを表示する')
       .option('-p, --speed', 'スピード優先モードの指定')
-      .option('-A, --ast', 'パースした結果をASTで出力する')
+      .option('-A, --ast', '構文解析した結果をASTで出力する')
+      .option('-X, --lex', '字句解析した結果をJSONで出力する')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
       .parse(process.argv)
@@ -128,7 +130,8 @@ export class CNako3 extends NakoCompiler {
       test: app.test || false,
       browsers: app.browsers || false,
       speed: app.speed || false,
-      ast: app.ast || false
+      ast: app.ast || false,
+      lex: app.lex || false,
     }
     args.mainfile = app.args[0]
     args.output = app.output
@@ -159,7 +162,7 @@ export class CNako3 extends NakoCompiler {
   // 実行する
   async execCommand () {
     // コマンドを解析
-    const opt = this.checkArguments()
+    const opt: CNako3ArgOptions = this.checkArguments()
     // 使い方の表示か？
     if (opt.man) {
       this.cnakoMan(opt.man)
@@ -188,7 +191,12 @@ export class CNako3 extends NakoCompiler {
       await this.nakoCompile(opt, src, false)
       return
     }
-
+    // 字句解析の結果をJSONで出力
+    if (opt.lex) {
+      const lex = this.lex(src, opt.mainfile)
+      console.log(lex)
+      return
+    }
     // ASTを出力する
     if (opt.ast) {
       try {
