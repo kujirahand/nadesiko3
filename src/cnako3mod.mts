@@ -194,7 +194,7 @@ export class CNako3 extends NakoCompiler {
     // 字句解析の結果をJSONで出力
     if (opt.lex) {
       const lex = this.lex(src, opt.mainfile)
-      console.log(lex)
+      console.log(this.outputJSON(lex, 0))
       return
     }
     // ASTを出力する
@@ -326,47 +326,49 @@ export class CNako3 extends NakoCompiler {
       }
     }
   }
-
   /**
-   * ASTを出力
+   * JSONを出力
    */
-  outputAST (opt: any, src: string) {
-    const ast = this.parse(src, opt.mainfile)
+  outputJSON (ast: any, level: number): string {
     const makeIndent = (level: number) => {
       let s = ''
       for (let i = 0; i < level; i++) { s += '  ' }
       return s
     }
     const trim = (s: string) => { return s.replace(/(^\s+|\s+$)/g, '') }
-    /** AST文字列に変換して返す */
-    const outAST = (ast: Ast, level: number): string => {
-      if (typeof (ast) === 'string') {
-        return makeIndent(level) + '"' + ast + '"'
-      }
-      if (typeof (ast) === 'number') {
-        return makeIndent(level) + ast
-      }
-      if (ast instanceof Array) {
-        const s = makeIndent(level) + '[\n'
-        const sa: string[] = []
-        ast.forEach((a: Ast) => {
-          sa.push(outAST(a, level + 1))
-        })
-        return s + sa.join(',\n') + '\n' + makeIndent(level) + ']'
-      }
-      if (ast instanceof Object) {
-        const s = makeIndent(level) + '{\n'
-        const sa = []
-        for (const key in ast) {
-          const sv = trim(outAST((ast as any)[key], level + 1))
-          const so = makeIndent(level + 1) + '"' + key + '": ' + sv
-          sa.push(so)
-        }
-        return s + sa.join(',\n') + '\n' + makeIndent(level) + '}'
-      }
+
+    if (typeof (ast) === 'string') {
+      return makeIndent(level) + '"' + ast + '"'
+    }
+    if (typeof (ast) === 'number') {
       return makeIndent(level) + ast
     }
-    console.log(outAST(ast, 0))
+    if (ast instanceof Array) {
+      const s = makeIndent(level) + '[\n'
+      const sa: string[] = []
+      ast.forEach((a: Ast) => {
+        sa.push(this.outputJSON(a, level + 1))
+      })
+      return s + sa.join(',\n') + '\n' + makeIndent(level) + ']'
+    }
+    if (ast instanceof Object) {
+      const s = makeIndent(level) + '{\n'
+      const sa = []
+      for (const key in ast) {
+        const sv = trim(this.outputJSON((ast as any)[key], level + 1))
+        const so = makeIndent(level + 1) + '"' + key + '": ' + sv
+        sa.push(so)
+      }
+      return s + sa.join(',\n') + '\n' + makeIndent(level) + '}'
+    }
+    return makeIndent(level) + ast
+  }
+  /**
+   * ASTを出力
+   */
+  outputAST (opt: any, src: string) {
+    const ast = this.parse(src, opt.mainfile)
+    console.log(this.outputJSON(ast, 0))
   }
 
   // REPL(対話実行環境)の場合
