@@ -26,12 +26,12 @@ describe('node_test(cnako)', () => {
     assert.strictEqual(result, exRes)
   }
   // --- バージョンチェック ---
-  it('ナデシコバージョン:src/plugin_system.jsを正しく設定しているか？', () => {
+  it('ナデシコバージョン:src/plugin_system.jsを正しく設定しているか？', async () => {
     cmp('ナデシコバージョンを表示', nakoVersion.version)
     cmp('ナデシコ種類を表示', 'cnako3')
   })
   // --- test ---
-  it('print simple', () => {
+  it('print simple', async () => {
     cmp('3を表示', '3')
     cmp('1+2*3を表示', '7')
     cmp('A=30;「--{A}--」を表示', '--30--')

@@ -15,7 +15,6 @@ const PluginMyTest = {
 
 // eslint-disable-next-line no-undef
 describe('async_test', async () => {
-  const debug = false
   const cmp = async (/** @type {string} */ code, /** @type {string} */ exRes) => {
     const nako3 = new NakoCompiler()
     nako3.addPluginObject('PluginMyTest', PluginMyTest)
@@ -93,4 +92,3 @@ describe('async_test', async () => {
     )
   })
 })
-

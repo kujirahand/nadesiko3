@@ -11,23 +11,20 @@ import url from 'url'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-describe('require_nako3_test', () => {
-  const nako = new CNako3()
-  // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  nako.silent = true
+describe('require_nako3_test', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
-    nako.logger.debug('code=' + code)
-    const ret = await nako.run(code, 'main.nako3')
-    assert.strictEqual(ret.log, res)
+    const nako = new CNako3()
+    const g = await nako.runAsync(code, 'main.nako3')
+    assert.strictEqual(g.log, res)
   }
-  it('「ファイルを取り込む」', () => {
-    cmp('!「' + __dirname + '/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。', '5\n8')
+  it('「ファイルを取り込む」', async () => {
+    await cmp('!「' + __dirname + '/requiretest.nako3」を取り込む。\n痕跡を表示。3と5を痕跡演算して、表示。', '5\n8')
   })
-  it('CNakoの相対インポート', () => {
-    cmp('!「' + __dirname + '/relative_import_test_2.nako3」を取り込む。', '1\n2')
+  it('CNakoの相対インポート', async () => {
+    await cmp('!「' + __dirname + '/relative_import_test_2.nako3」を取り込む。', '1\n2')
   })
-  it('「回」が1回だけ分割されることを確認する', () => {
-    cmp('！「' + __dirname + '/kai_test.nako3」を取り込む', '')
+  it('「回」が1回だけ分割されることを確認する', async () => {
+    await cmp('！「' + __dirname + '/kai_test.nako3」を取り込む', '')
   })
   it('.jsと.nako3を同時に読み込む[1/2] .jsが先の場合', async () => {
     const nako = new CNako3()
@@ -59,9 +56,8 @@ describe('require_nako3_test', () => {
       }
     )
   })
-  it('『プラグイン名』のテスト。(#956)', () => {
-    const fname = __dirname + path.sep + 'requiretest_name.nako3'
-    cmp('!「' + fname + '」を取り込む。リクエスト名前取得して表示。', fname)
+  it('『プラグイン名』のテスト。(#956)(#1112)', async () => {
+    const fname = path.join(__dirname, 'requiretest_name.nako3')
+    await cmp('!「' + fname + '」を取り込む。リクエスト名前取得して表示。', 'requiretest_name')
   })
 })
-
