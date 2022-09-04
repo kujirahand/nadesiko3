@@ -14,7 +14,7 @@
     "nako3server": "node tools/nako3server/index.mjs",
     "nako3edit": "node tools/nako3edit/index.mjs",
     "test": "npm run test:core && npm run test:node && npm run test:common",
-    "test:core": "mocha core/test",
+    "test:core": "cross-env TZ=Asia/Tokyo mocha core/test",
     "test:node": "mocha test/node",
     "test:common": "cross-env TZ=Asia/Tokyo mocha test/common",
     "test:async": "mocha test/async -g aysnc_basic_test",
