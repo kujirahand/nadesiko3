@@ -453,7 +453,6 @@ export default {
     josi: [],
     pure: false,
     fn: function (sys) {
-      if (typeof dom === 'string') { dom = document.querySelector(dom) }
       const cv = sys.__v0['描画中キャンバス']
       if (!cv) { throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。') }
       const a = document.createElement('a')

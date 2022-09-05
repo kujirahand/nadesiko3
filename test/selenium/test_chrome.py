@@ -1,10 +1,15 @@
-from email.mime import base
+'''
+Seleniumを使ってChromeを操作してテストを実行する。
+'''
+import os
+import glob
+import time
+import sys
+import urllib.parse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-import os, glob, time, sys
-import urllib.parse
 
 SERVER_SCRIPT = 'http://localhost:8887/index.php'
 SCRIPT = os.path.abspath(__file__)
@@ -16,14 +21,14 @@ error_log = []
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 
 def run_test_all():
-    # test all
+    '''test all'''
     for fname in glob.glob(os.path.join(TEST_TARGET, '*.nako3')):
         run_test(fname)
 
 def run_test(fname):
-    # get code
-    with open(fname, 'r', encoding='utf-8') as fp:
-        code = fp.read()
+    '''test one file'''
+    with open(fname, 'r', encoding='utf-8') as file:
+        code = file.read()
     code_u = urllib.parse.quote(code)
     code_result = ''
     for line in code.split('\n'):
@@ -45,6 +50,7 @@ def run_test(fname):
         error_log.append({'file': fname, 'expect': code_result, 'real': result})
 
 def report_test():
+    '''report file'''
     driver.close()
     if len(error_log) == 0:
         print('done.')
@@ -61,4 +67,3 @@ if __name__ == '__main__':
     else:
         run_test(os.path.join(TEST_TARGET, sys.argv[1]))
     report_test()
-

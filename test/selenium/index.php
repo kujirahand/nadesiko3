@@ -1,5 +1,5 @@
 <?php
-function main() {
+function main(): void {
   $dir = __DIR__;
   $release = dirname(dirname($dir)).'/release';
   $m = empty($_GET['m']) ? '' : $_GET['m'];
@@ -62,7 +62,7 @@ function main() {
 }
 main();
 
-function testcode($code) {
+function testcode(string $code): void {
   echo <<< EOS
 <!DOCTYPE><html><head><meta charset="UTF-8">
 <script src="index.php?m=release&f=wnako3.js&run=1"></script>
@@ -84,7 +84,7 @@ function testcode($code) {
 </body></html>
 EOS;
 }
-function defaultPage() {
+function defaultPage(): void {
   echo <<< EOS
 <!DOCTYPE><html><head><meta charset="UTF-8">
 </head><body>
