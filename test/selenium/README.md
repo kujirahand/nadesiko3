@@ -8,7 +8,7 @@ test_target以下になでしこ3のプログラムを配置する。
 実行には、PHP8/Python3/Chromeが必要です。
 
 ```bash
-$ python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 ## テストの実行
@@ -16,13 +16,13 @@ $ python3 -m pip install -r requirements.txt
 PORT=8887を使います。
 
 ```bash
-$ bash ./gotest.sh
+bash ./gotest.sh
 ```
 
 ## ブラウザ上でスクリプトを実行したい場合
 
 ```bash
-$ ./server-start.sh
+./server-start.sh
 ```
 
 その後、index.php?m=file&f=スクリプト名
@@ -32,14 +32,14 @@ $ ./server-start.sh
 test_targetにファイルを配置しているものとして
 
 ```bash
-$ python3 test_chrome.py スクリプト名
+python3 test_chrome.py スクリプト名
 ```
 
 例えば、test_target/ajax.nako3をテストする場合:
 
 ```bash
-$ ./server-start.sh
-$ python3 test_chrome.py ajax.nako3
+./server-start.sh
+python3 test_chrome.py ajax.nako3
 ```
 
 
