@@ -1,0 +1,16 @@
+# canvas
+
+# --- キャンバスへ四角を描画 ---
+「#main_cv」で描画開始。
+黒色に塗り色設定。
+[0,0,8,8]へ四角描画。
+描画データURL変換して表示。
+### data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAABNJREFUKFNjZGBg+M+ABzCODAUAhWQIAfo8R2AAAAAASUVORK5CYII=
+
+# --- BLOBを得てアップロード ---
+IMG=描画データBLOB変換。
+「index.php?m=upload-b64」へ{"file": BLOB作成([IMG],{"content-type":"image/png"})}をPOSTフォーム送信して表示。
+### iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAABNJREFUKFNjZGBg+M+ABzCODAUAhWQIAfo8R2AAAAAASUVORK5CYII=
+
+# --- ---
+

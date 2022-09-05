@@ -1,0 +1,14 @@
+{
+  "name": "selenium-test-for-nadesiko3",
+  "version": "0.0.1",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "start": "./gotest.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+  }
+}

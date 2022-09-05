@@ -1,0 +1,22 @@
+# AJAXのテスト
+「/index.php?m=hello」からAJAXテキスト取得してトリムして表示。
+### hello
+
+0.1秒待つ
+「/index.php?m=echo&p=1111」からAJAXテキスト取得して表示。
+### 1111
+
+0.1秒待つ。
+「/index.php?m=echo&p=2222」からHTTP取得して表示
+### 2222
+
+0.1秒待つ。
+「/index.php?m=echo&p=3333」からAJAX受信して表示
+### 3333
+
+0.1秒待つ。
+「/index.php?m=echo&p=4444」からAJAX受信した時には
+　　対象を表示
+ここまで。
+### 4444
+

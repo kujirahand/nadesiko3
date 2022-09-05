@@ -1,0 +1,17 @@
+# ajax test 4 post
+
+「index.php?m=echopost」へ{"p": 111}をPOST送信時には：
+　　対象を表示。
+### 111
+
+0.1秒待つ
+「index.php?m=echopost」へ{"p": 222}をPOST送信して表示。
+### 222
+
+「index.php?m=echopost」へ{"p": 333}をPOSTフォーム送信して表示。
+### 333
+
+
+「index.php?m=upload」へ{"file": BLOB作成(["4444"],{"content-type":"text/plain"})}をPOSTフォーム送信して表示。
+### 4444
+

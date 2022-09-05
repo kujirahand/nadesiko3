@@ -1,0 +1,16 @@
+# ajax test 3
+
+「index.php?m=echo&p=111」をAJAXテキスト取得して表示。
+### 111
+
+0.1秒待つ。
+URL=「index.php?m=echo&p=」＆URLエンコード("[222]")
+J=URLからAJAX_JSON取得
+J[0]を表示。
+### 222
+
+0.1秒待つ。
+「index.php?m=echo&p=333」へGET送信時には：
+　　対象を表示。
+### 333
+

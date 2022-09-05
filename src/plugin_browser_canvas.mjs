@@ -415,17 +415,29 @@ export default {
   '描画データURL変換': { // @ 描画内容をPNG形式のデータURLに変換して得る。 // @ びょうがでーたURLへんかん
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys) {
       const cv = sys.__v0['描画中キャンバス']
       const url = cv.toDataURL('image/png')
       return url
     }
   },
+  '描画データBLOB変換': { // @ 描画内容をPNG形式のBLOBオブジェクトに変換して戻す。 // @ びょうがでーたBLOBへんかん
+    type: 'func',
+    josi: [],
+    pure: true,
+    asyncFn: true,
+    fn: function (sys) {
+      return new Promise((resolve, reject) => {
+        const cv = sys.__v0['描画中キャンバス']
+        cv.toBlob((result) => { resolve(result) }, 'image/png')
+      })
+    }
+  },
   '描画ダウンロードリンク作成': { // @ 描画内容をPNG形式のデータURLに変換してDOMに設定する。 // @ びょうがだうんろーどりんくさくせい
     type: 'func',
     josi: [['へ', 'に']],
-    pure: false,
+    pure: true,
     fn: function (dom, sys) {
       if (typeof dom === 'string') { dom = document.querySelector(dom) }
       if (!dom) { throw new Error('『描画ダウンロードリンク作成』でDOMが見当たりません。') }
