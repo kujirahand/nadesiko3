@@ -432,13 +432,25 @@ export default {
       return sys.__getBokanPath()
     }
   },
-  'テンポラリフォルダ': { // @テンポラリフォルダのパスを取得して返す(末尾に) // @てんぽらりふぉるだ
+  'テンポラリフォルダ': { // @テンポラリフォルダのパスを取得して返す // @てんぽらりふぉるだ
     type: 'func',
     josi: [],
     pure: true,
     fn: function (sys: any) {
       // 環境変数からテンポラリフォルダを取得
       return os.tmpdir()
+    }
+  },
+  '一時フォルダ作成': { // @指定のフォルダに作業用の一時フォルダを作成して取得して返す // @いちじふぉるださくせい
+    type: 'func',
+    josi: [['に', 'へ']],
+    pure: true,
+    fn: function (dir: string, sys: any) {
+      if (dir === '' || !dir) {
+        dir = os.tmpdir()
+      }
+      // 環境変数からテンポラリフォルダを取得
+      return fs.mkdtempSync(dir)
     }
   },
   // @環境変数

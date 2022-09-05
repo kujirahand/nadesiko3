@@ -1,10 +1,13 @@
 /* eslint-disable no-undef */
+import fs from 'fs'
+import os from 'os'
 import assert from 'assert'
-import { NakoCompiler } from '../../core/src/nako3.mjs'
 import path from 'path'
+import { execSync } from 'child_process'
+
+import { NakoCompiler } from '../../core/src/nako3.mjs'
 import PluginNode from '../../src/plugin_node.mjs'
 import PluginCSV from '../../core/src/plugin_csv.mjs'
-import { execSync } from 'child_process'
 
 // __dirname のために
 import url from 'url'
@@ -89,7 +92,7 @@ describe('plugin_node_test', async () => {
       path7z = path.join(__dirname, '../../bin/7z.exe')
     }
     const code = 'FIN=「' + testFileMe + '」;' +
-      'TMP=テンポラリフォルダ;' +
+      'テンポラリフォルダへ一時フォルダ作成してTMPに代入;' +
       '『' + path7z + '』に圧縮解凍ツールパス変更;' +
       'もし、TMPが存在しないならば、TMPのフォルダ作成。' +
       'FZIP=「{TMP}/test.zip」;\n' +
@@ -102,9 +105,10 @@ describe('plugin_node_test', async () => {
   it('圧縮/解凍', async function () {
     if (process.platform === 'win32') { return this.skip() }
     try { execSync('which 7z').toString() } catch (e) { return this.skip() }
-    const pathSrc = 'FILE=「{テンポラリフォルダ}/test.txt」;ZIP=「{テンポラリフォルダ}/test.zip」;'
+    const tmp = fs.mkdtempSync(os.tmpdir())
+    const pathSrc = `TMP="${tmp}";FILE=「{TMP}/test.txt」;ZIP=「{TMP}/test.zip」;`
     await cmp(`${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
-    await cmp(`${pathSrc}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+    await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
   })
   it('圧縮/解凍 - OSコマンドインジェクション対策がなされているか #1325', async function () {
     // 7z がない環境ではテストを飛ばす
@@ -113,17 +117,24 @@ describe('plugin_node_test', async () => {
     } else {
       try { execSync('which 7z').toString() } catch (e) { return this.skip() }
     }
+    const tmp = fs.mkdtempSync(os.tmpdir())
     // (1) 元ファイルへのインジェクション
-    const pathSrc = 'FILE=「{テンポラリフォルダ}/`touch hoge`.txt」;ZIP=「{テンポラリフォルダ}/test.zip」;'
-    await cmp('F=「{テンポラリフォルダ}/hoge」;Fが存在;もしそうならば、Fをファイル削除;' +
-        `${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
-    await cmp(`${pathSrc}「{テンポラリフォルダ}/hoge」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
-    await cmp(`${pathSrc}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+    const pathSrc = '' +
+      `TMP="${tmp}"\n` +
+      'FILE=「{TMP}/`touch hoge`.txt」;ZIP=「{TMP}/test.zip」\n'
+    await cmp(pathSrc +
+        'F=「{TMP}/hoge」;Fが存在;もしそうならば、Fをファイル削除;' +
+        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok')
+    await cmp(`${pathSrc}「{TMP}/hoge」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
+    await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
     // (2) ZIPファイルへのインジェクション
-    const pathSrc2 = 'FILE=「{テンポラリフォルダ}/test2.txt」;ZIP=「{テンポラリフォルダ}/`touch bbb`.zip」;'
-    await cmp('F=「{テンポラリフォルダ}/bbb」;Fが存在;もしそうならば、Fをファイル削除;' +
-        `${pathSrc2}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
-    await cmp(`${pathSrc2}「{テンポラリフォルダ}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
-    await cmp(`${pathSrc2}FILEをファイル削除。ZIPをテンポラリフォルダに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+    const pathSrc2 = '' +
+      `TMP="${tmp}"\n` +
+      'FILE=「{TMP}/test2.txt」;ZIP=「{TMP}/`touch bbb`.zip」;'
+    await cmp(pathSrc2 +
+        'F=「{TMP}/bbb」;Fが存在;もしそうならば、Fをファイル削除;' +
+        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok')
+    await cmp(`${pathSrc2}「{TMP}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
+    await cmp(`${pathSrc2}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
   })
 })

@@ -479,30 +479,19 @@ export default {
         pure: true,
         fn: function (sys) {
             // 環境変数からテンポラリフォルダを取得
-            if (process.platform === 'win32') { // win
-                const tmp = process.env['TMP'];
-                if (tmp) {
-                    return tmp;
-                }
-                const temp = process.env['TEMP'];
-                if (temp) {
-                    return temp;
-                }
+            return os.tmpdir();
+        }
+    },
+    '一時フォルダ作成': {
+        type: 'func',
+        josi: [['に', 'へ']],
+        pure: true,
+        fn: function (dir, sys) {
+            if (dir === '' || !dir) {
+                dir = os.tmpdir();
             }
-            else {
-                const tmpDir = process.env['TMPDIR']; // mac or linux
-                if (tmpDir) {
-                    return tmpDir;
-                }
-                // IEEE POSIX
-                if (fs.existsSync('/tmp')) {
-                    return '/tmp';
-                }
-                if (fs.existsSync('/var/tmp')) {
-                    return '/var/tmp';
-                }
-            }
-            throw new Error('申し訳ありません。テンポラリフォルダを特定できません。');
+            // 環境変数からテンポラリフォルダを取得
+            return fs.mkdtempSync(dir);
         }
     },
     // @環境変数
