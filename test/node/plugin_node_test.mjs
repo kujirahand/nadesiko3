@@ -92,7 +92,7 @@ describe('plugin_node_test', async () => {
       path7z = path.join(__dirname, '../../bin/7z.exe')
     }
     const code = 'FIN=「' + testFileMe + '」;' +
-      'テンポラリフォルダへ一時フォルダ作成してTMPに代入;' +
+      'TMP=「.」へ一時フォルダ作成。' +
       '『' + path7z + '』に圧縮解凍ツールパス変更;' +
       'もし、TMPが存在しないならば、TMPのフォルダ作成。' +
       'FZIP=「{TMP}/test.zip」;\n' +
@@ -105,7 +105,12 @@ describe('plugin_node_test', async () => {
   it('圧縮/解凍', async function () {
     if (process.platform === 'win32') { return this.skip() }
     try { execSync('which 7z').toString() } catch (e) { return this.skip() }
-    const tmp = fs.mkdtempSync(os.tmpdir())
+    let tmp = '/tmp'
+    if (process.platform === 'linux') {
+      tmp = fs.mkdtempSync(process.cwd())
+    } else {
+      tmp = fs.mkdtempSync(os.tmpdir())
+    }
     const pathSrc = `TMP="${tmp}";FILE=「{TMP}/test.txt」;ZIP=「{TMP}/test.zip」;`
     await cmp(`${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
     await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
@@ -117,7 +122,12 @@ describe('plugin_node_test', async () => {
     } else {
       try { execSync('which 7z').toString() } catch (e) { return this.skip() }
     }
-    const tmp = fs.mkdtempSync(os.tmpdir())
+    let tmp = '/tmp'
+    if (process.platform === 'linux') {
+      tmp = fs.mkdtempSync(process.cwd())
+    } else {
+      tmp = fs.mkdtempSync(os.tmpdir())
+    }
     // (1) 元ファイルへのインジェクション
     const pathSrc = '' +
       `TMP="${tmp}"\n` +
