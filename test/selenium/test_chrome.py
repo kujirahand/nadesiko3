@@ -53,8 +53,9 @@ def report_test():
     '''report file'''
     driver.close()
     if len(error_log) == 0:
-        print('done.')
+        print('⭐⭐⭐ 全てのテストが成功しました ⭐⭐⭐')
     else:
+        print('😭😭😭 いくつかのテストが失敗 😭😭😭')
         for log in error_log:
             print('+[ERROR] file=', os.path.basename(log['file']))
             print('- expect:', log['expect'].replace('\n', '\\n'))
