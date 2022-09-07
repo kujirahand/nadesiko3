@@ -6,6 +6,7 @@ import fs from 'fs';
 import fse from 'fs-extra';
 import fetch from 'node-fetch';
 import { exec, execSync } from 'child_process';
+import shellQuote from 'shell-quote';
 import path from 'path';
 import iconv from 'iconv-lite';
 import opener from 'opener';
@@ -31,8 +32,9 @@ export default {
                     fpath = '"' + fpath + '"';
                 }
                 else {
-                    fpath = fpath.replace(/\'/, '\'\\\'\''); // '\''
-                    fpath = '\'' + fpath + '\'';
+                    console.log('before:', fpath);
+                    fpath = shellQuote.quote([fpath]);
+                    console.log('after:', fpath);
                 }
                 return fpath;
             };

@@ -147,4 +147,27 @@ describe('plugin_node_test', async () => {
     await cmp(`${pathSrc2}「{TMP}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
     await cmp(`${pathSrc2}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
   })
+  it('圧縮/解凍 - OSコマンドインジェクション対策(修正が不完全だった件の修正) #1325', async function () {
+    // 7z がない環境ではテストを飛ばす
+    if (process.platform === 'win32') {
+      return this.skip()
+    } else {
+      try { execSync('which 7z').toString() } catch (e) { return this.skip() }
+    }
+    let tmp = '/tmp'
+    if (process.platform === 'linux') {
+      tmp = fs.mkdtempSync(process.cwd())
+    } else {
+      tmp = fs.mkdtempSync(os.tmpdir())
+    }
+    // (1) 元ファイルへのインジェクション
+    const pathSrc = '' +
+      `TMP="${tmp}"\n` +
+      'FILE=「{TMP}/\'a\'`touch xxx`\'c」;ZIP=「{TMP}/test.zip」\n'
+    await cmp(pathSrc +
+        'F=「{TMP}/xxx」;Fが存在;もしそうならば、Fをファイル削除;' +
+        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok')
+    await cmp(`${pathSrc}「{TMP}/xxx」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
+    await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+  })
 })

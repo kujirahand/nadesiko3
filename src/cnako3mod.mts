@@ -272,7 +272,7 @@ export class CNako3 extends NakoCompiler {
     // or 以下のコピーだと依存ファイルがコピーされない package.jsonを見てコピーする必要がある
     const orgModule = path.join(__dirname, '..', 'node_modules')
     const dirNodeModules = path.join(path.dirname(opt.output), 'node_modules')
-    const modlist = ['fs-extra', 'iconv-lite', 'opener', 'node-fetch']
+    const modlist = ['fs-extra', 'iconv-lite', 'opener', 'node-fetch', 'shell-quote']
     const copied: { [key: string]: boolean } = {}
     // 再帰的に必要なモジュールをコピーする
     const copyModule = (mod: string) => {
