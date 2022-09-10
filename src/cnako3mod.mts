@@ -50,7 +50,6 @@ interface CNako3Options {
 /** CNako3 */
 export class CNako3 extends NakoCompiler {
   debug: boolean
-  filename: string
   version: string
 
   constructor (opts:CNako3Options = { nostd: false }) {

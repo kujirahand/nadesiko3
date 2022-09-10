@@ -42,8 +42,8 @@ describe('scope_test', async () => {
     await cmp(`${codeInclude}\n3のscope_c__四倍表示処理。`, '12')
   })
   it('関数の中から関数を呼ぶ', async () => {
-    // await cmp(`${codeInclude}\n●AAAとは\n3の二倍表示処理\nここまで。AAA;`, '6')
-    // await cmp(`${codeInclude}\n●AAAとは\n3の三倍表示処理\nここまで。AAA;`, '9')
-    // await cmp(`${codeInclude}\n●AAAとは\n3の四倍表示処理\nここまで。AAA;`, '12')
+    await cmp(`${codeInclude}\n●AAAとは\n3の二倍表示処理\nここまで。AAA;`, '6')
+    await cmp(`${codeInclude}\n●AAAとは\n3の三倍表示処理\nここまで。AAA;`, '9')
+    await cmp(`${codeInclude}\n●AAAとは\n3の四倍表示処理\nここまで。AAA;`, '12')
   })
 })
