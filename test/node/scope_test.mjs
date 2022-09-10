@@ -18,6 +18,7 @@ describe('scope_test', async () => {
   const scopeA = path.join(__dirname, 'scope_a.nako3')
   const scopeB = path.join(__dirname, 'scope_b.nako3')
   const scopeC = path.join(__dirname, 'scope_c.nako3')
+  const codeInclude = `!「${scopeA}」を取り込む。\n!「${scopeB}」を取り込む。\n!「${scopeC}」を取り込む。\n`
   // test
   it('scope_a', async () => {
     await cmp(`!「${scopeA}」を取り込む。3の二倍表示処理。`, '6')
@@ -31,7 +32,6 @@ describe('scope_test', async () => {
     await cmp(`!「${scopeA}」を取り込む。\n!「${scopeB}」を取り込む。\n3のscope_b__三倍表示処理。`, '9')
   })
   it('scope_a & scope_b & scope_c', async () => {
-    const codeInclude = `!「${scopeA}」を取り込む。\n!「${scopeB}」を取り込む。\n!「${scopeC}」を取り込む。\n`
     // scope なし
     await cmp(`${codeInclude}\n3の二倍表示処理。`, '6')
     await cmp(`${codeInclude}\n3の三倍表示処理。`, '9')
@@ -40,5 +40,10 @@ describe('scope_test', async () => {
     await cmp(`${codeInclude}\n3のscope_a__二倍表示処理。`, '6')
     await cmp(`${codeInclude}\n3のscope_b__三倍表示処理。`, '9')
     await cmp(`${codeInclude}\n3のscope_c__四倍表示処理。`, '12')
+  })
+  it('関数の中から関数を呼ぶ', async () => {
+    // await cmp(`${codeInclude}\n●AAAとは\n3の二倍表示処理\nここまで。AAA;`, '6')
+    // await cmp(`${codeInclude}\n●AAAとは\n3の三倍表示処理\nここまで。AAA;`, '9')
+    // await cmp(`${codeInclude}\n●AAAとは\n3の四倍表示処理\nここまで。AAA;`, '12')
   })
 })

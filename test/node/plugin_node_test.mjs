@@ -91,8 +91,14 @@ describe('plugin_node_test', async () => {
     if (process.platform === 'win32') {
       path7z = path.join(__dirname, '../../bin/7z.exe')
     }
+    let tmp = '/tmp'
+    if (process.platform === 'linux') {
+      tmp = fs.mkdtempSync(process.cwd())
+    } else {
+      tmp = fs.mkdtempSync(os.tmpdir())
+    }
     const code = 'FIN=「' + testFileMe + '」;' +
-      'TMP=「.」へ一時フォルダ作成。' +
+      `TMP=「${tmp}」へ一時フォルダ作成。` +
       '『' + path7z + '』に圧縮解凍ツールパス変更;' +
       'もし、TMPが存在しないならば、TMPのフォルダ作成。' +
       'FZIP=「{TMP}/test.zip」;\n' +

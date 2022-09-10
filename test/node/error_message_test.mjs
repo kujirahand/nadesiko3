@@ -208,36 +208,35 @@ describe('error_message', () => {
     })
   })
   describe('警告の表示', () => {
-    it('未定義の変数を参照したとき', () => {
+    it('未定義の変数を参照したとき', async () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor })
-      compiler.run('xを表示', 'main.nako3')
+      await compiler.runAsync('xを表示', 'main.nako3')
       assert.strictEqual(log.split('。')[0], '[警告]main.nako3(1行目): 変数『x』は定義されていません')
     })
-    it('存在しない高速化オプションを指定したとき', () => {
+    it('存在しない高速化オプションを指定したとき', async () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor })
-      compiler.run('「あ」で実行速度優先\nここまで', 'main.nako3')
+      await compiler.runAsync('「あ」で実行速度優先\nここまで', 'main.nako3')
       assert.strictEqual(log, '[警告]main.nako3(1行目): 実行速度優先文のオプション『あ』は存在しません。')
     })
-    it('ユーザー定義関数を上書きしたとき', () => {
+    it('ユーザー定義関数を上書きしたとき', async () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
-      compiler.run('●Aとは\nここまで\n●Aとは\nここまで', 'main.nako3')
+      await compiler.runAsync('●Aとは\nここまで\n●Aとは\nここまで', 'main.nako3')
       assert.strictEqual(log, '[警告]main.nako3(3行目): 関数『A』は既に定義されています。')
     })
-    it('プラグイン関数を上書きしたとき', () => {
+    it('プラグイン関数を上書きしたとき', async () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor }, false)
-      compiler.run('●（Aを）足すとは\nここまで', 'main.nako3')
+      await compiler.runAsync('●（Aを）足すとは\nここまで', 'main.nako3')
       // 上記は「main::足す」という関数を定義したことになる
       // assert.strictEqual(log, '[警告]main.nako3(1行目): 関数『足』は既に定義されています。')
       assert.strictEqual(log, '')
     })
   })
 })
-
