@@ -5,6 +5,8 @@ import ReactDOM from 'react-dom/client'
 import dayjs from 'dayjs'
 import commandListJSON from '../release/command.json'
 
+let activeEditor = null
+
 /** @type {Record<string, Record<string, string[][]>>} */
 const commandList = /** @type {{ name: String, group: { type: string, name: String, args: string, value: string }[] }[]} */([])
 for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
@@ -84,9 +86,35 @@ const Editor = ({ code, editorId, autoSave }) => {
       <div className="nako3_editor_code" ref={editorRef}>{code}</div>
       <div className="buttons">
         <Button text="実行" onClick={async () => {
+          const nako3 = getNako3()
+          activeEditor = editor.current
+          nako3.debugOption.useDebug = false
+          nako3.debugOption.waitTime = 0
           clearNako(editorId, editorOptions().outputContainer)
           await editor.current.run({ ...editorOptions() }).promise
           setUsedFuncs(getNako3().usedFuncs)
+        }} />
+        <Button text="デバッグ実行" onClick={async () => {
+          const nako3 = getNako3()
+          activeEditor = editor.current
+          nako3.debugOption.useDebug = true
+          nako3.debugOption.waitTime = 0.3
+          nako3.debugOption.messageAction = 'debug.line'
+          nako3.addListener('beforeRun', (g) => {
+            console.log('DEBUG_MODE=', g.__varslist[0]['ナデシコバージョン'])
+          })
+          clearNako(editorId, editorOptions().outputContainer)
+          await activeEditor.run({ ...editorOptions() }).promise
+          setUsedFuncs(getNako3().usedFuncs)
+          window.addEventListener('message', (e) => {
+            if (e.data.action === 'debug.line') {
+              const line = e.data.line
+              const m = line.match(/^l(\d+):/)
+              if (m && activeEditor) {
+                activeEditor.editor.gotoLine(m[1], 0) // move cursor
+              }
+            }
+          })
         }} />
         <Button text="テスト" onClick={() => editor.current.run({ ...editorOptions(), method: 'test' })} />
         <Button text="クリア" onClick={() => {
