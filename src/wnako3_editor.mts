@@ -1513,14 +1513,14 @@ export function setupEditor (idOrElement, nako3, ace) {
     console.error(e) // ext/code_lens のscriptタグが読み込まれていない場合など。
   }
 
-  // 「全画面表示」ボタン
+  // 「全画面」ボタン
   const exitFullscreen = () => {
     editor.container.classList.remove('fullscreen')
     editor.renderer.setScrollMargin(0, 0, 0, 0) // marginを元に戻す
   }
   const fullscreenButton = document.createElement('span')
   fullscreenButton.classList.add('editor-button')
-  fullscreenButton.innerText = '全画面表示'
+  fullscreenButton.innerText = '全画面'
   fullscreenButton.addEventListener('click', (e) => {
     if (editor.container.classList.contains('fullscreen')) {
       exitFullscreen()
@@ -1532,10 +1532,10 @@ export function setupEditor (idOrElement, nako3, ace) {
   })
   buttonContainer.appendChild(fullscreenButton)
 
-  // 「設定を開く」ボタン
+  // 「設定」ボタン
   const settingsButton = document.createElement('span')
   settingsButton.classList.add('editor-button')
-  settingsButton.innerText = '設定を開く'
+  settingsButton.innerText = '設定'
   settingsButton.addEventListener('click', (e) => {
     exitFullscreen()
     editor.execCommand('showSettingsMenu')

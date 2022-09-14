@@ -5,8 +5,15 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
-      throw new Error('__終わる__')
+    fn: function (sys) {
+      // v3.3.74以降 plguin_system.mjsと挙動が同じになった
+      // デバッグモードでなければ例外を投げることでプログラムを終了させる
+      if (sys && sys.__v0) {
+        sys.__v0.forceClose = true
+        if (!sys.__v0.useDebug) { throw new Error('__終わる__') }
+      } else {
+        throw new Error('__終わる__')
+      }
     },
     return_none: true
   },
