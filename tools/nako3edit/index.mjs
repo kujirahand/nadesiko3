@@ -20,7 +20,11 @@ const homeDir = process.env[isWin ? 'USERPROFILE' : 'HOME']
 const userDir = path.join(homeDir, 'nadesiko3_user')
 const CNAKO3 = path.resolve(path.join(__dirname, '../../src/cnako3.mjs'))
 const NODE = process.argv[0]
-const appkey = 'K' + Math.floor(Math.random() * 0xFFFFFFFF).toString(32) + Math.floor(Math.random() * 0xFFFFFFFF).toString(32)
+const appkey = 'k' +
+  Math.floor(Math.random() * 0xFFFFFFFF).toString(16) +
+  Math.floor(Math.random() * 0xFFFFFFFF).toString(16) +
+  Math.floor(Math.random() * 0xFFFFFFFF).toString(16) +
+  Math.floor(Math.random() * 0xFFFFFFFF).toString(16)
 
 // ユーザーフォルダを作成
 if (!fs.existsSync(userDir)) { fs.mkdirSync(userDir) }
@@ -159,7 +163,7 @@ function apiFiles (res) {
   res.end(JSON.stringify(files))
 }
 function apiLoad (res, params) {
-  const fname = removeFlag(params.file)
+  const fname = removePathFlag(params.file)
   const fullpath = path.join(userDir, fname)
   console.log('load=', fullpath)
   let text = '# 新規ファイル\n「こんにちは」と表示。'
@@ -176,7 +180,7 @@ function apiSave (res, params) {
     res.end('[ERROR] キーが違います')
     return
   }
-  const fname = removeFlag(params.file)
+  const fname = removePathFlag(params.file)
   const body = params.body
   const fullpath = path.join(userDir, fname)
   try {
@@ -190,9 +194,10 @@ function apiSave (res, params) {
   }
 }
 
-function removeFlag (s) {
+function removePathFlag (s) {
   // ファイル名をサニタイズ
   s = s.replace(/['"`\\?/<>*]/g, '_')
+  s = s.replace(/_{2,}/g, '') // '__'を削除
   return s
 }
 
@@ -203,7 +208,7 @@ function apiRun (res, params) {
     res.end('[ERROR] キーが違います')
     return
   }
-  const fname = removeFlag(params.file)
+  const fname = removePathFlag(params.file)
   const body = params.body
   const fullpath = path.join(userDir, fname)
   try {
@@ -233,24 +238,29 @@ function apiDelete (res, params) {
   res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
   const appkeyUser = params.appkey
   if (appkey !== appkeyUser) {
-    res.end('[ERROR] キーが違います')
+    res.end('"[ERROR] キーが違います"')
     return
   }
-  const fname = params.file
+  const fname = removePathFlag(params.file)
   const fullpath = path.join(userDir, fname)
   try {
-    fs.unlinkSync(fullpath)
-    res.end('"ok"')
+    if (fs.existsSync(fullpath)) {
+      fs.unlinkSync(fullpath)
+      res.end('"ok"')
+    } else {
+      res.end('"[ERROR] ファイルが見つかりません。"')
+    }
     return
   } catch (err) {
+    console.error(err)
     res.end('error:' + err.message)
   }
 }
 
 function apiGetNewFilename (res) {
   let fname = 'newfile.nako3'
-  for (let i = 1; i <= 999; i++) {
-    fname = `newfile${i}.nako3`
+  for (let i = 1; i <= 9999; i++) {
+    fname = `file${i}.nako3`
     const full = path.join(userDir, fname)
     if (fs.existsSync(full)) { continue }
     break
