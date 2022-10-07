@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** nako3edit用の超簡易サーバ(生のnodeだけで簡単HTTPサーバ) */
 import path from 'path'
-import fs, { existsSync } from 'fs'
+import fs from 'fs'
 import { execSync } from 'child_process'
 import opener from 'opener'
 import http from 'http'
@@ -20,7 +20,7 @@ const homeDir = process.env[isWin ? 'USERPROFILE' : 'HOME']
 const userDir = path.join(homeDir, 'nadesiko3_user')
 const CNAKO3 = path.resolve(path.join(__dirname, '../../src/cnako3.mjs'))
 const NODE = process.argv[0]
-const appkey = 'K' + Math.floor(Math.random() * 10000000).toString(16)
+const appkey = 'K' + Math.floor(Math.random() * 0xFFFFFFFF).toString(32) + Math.floor(Math.random() * 0xFFFFFFFF).toString(32)
 
 // ユーザーフォルダを作成
 if (!fs.existsSync(userDir)) { fs.mkdirSync(userDir) }
@@ -44,7 +44,11 @@ const server = http.createServer(function (req, res) {
     const q = String(a[1]).split('&')
     for (const kv of q) {
       const qq = kv.split('=')
-      params[qq[0]] = decodeURIComponent(qq[1])
+      try {
+        params[qq[0]] = decodeURIComponent(qq[1])
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
   // サニタイズ
@@ -155,7 +159,7 @@ function apiFiles (res) {
   res.end(JSON.stringify(files))
 }
 function apiLoad (res, params) {
-  const fname = params.file
+  const fname = removeFlag(params.file)
   const fullpath = path.join(userDir, fname)
   console.log('load=', fullpath)
   let text = '# 新規ファイル\n「こんにちは」と表示。'
@@ -172,7 +176,7 @@ function apiSave (res, params) {
     res.end('[ERROR] キーが違います')
     return
   }
-  const fname = params.file
+  const fname = removeFlag(params.file)
   const body = params.body
   const fullpath = path.join(userDir, fname)
   try {
@@ -186,6 +190,12 @@ function apiSave (res, params) {
   }
 }
 
+function removeFlag (s) {
+  // ファイル名をサニタイズ
+  s = s.replace(/['"`\\?/<>*]/g, '_')
+  return s
+}
+
 function apiRun (res, params) {
   res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
   const appkeyUser = params.appkey
@@ -193,7 +203,7 @@ function apiRun (res, params) {
     res.end('[ERROR] キーが違います')
     return
   }
-  const fname = params.file
+  const fname = removeFlag(params.file)
   const body = params.body
   const fullpath = path.join(userDir, fname)
   try {
@@ -205,6 +215,8 @@ function apiRun (res, params) {
       result = String(result)
     } catch (err) {
       console.error(err)
+      res.end('[ERROR]実行に失敗しました。' + err.toString())
+      return
     }
     console.log('[run] file=', fname)
     console.log('--------------------------------')
@@ -212,6 +224,7 @@ function apiRun (res, params) {
     console.log('--------------------------------')
     res.end(result)
   } catch (err) {
+    console.error(err)
     res.end('[ERROR] 実行に失敗しました。')
   }
 }
@@ -224,7 +237,6 @@ function apiDelete (res, params) {
     return
   }
   const fname = params.file
-  const body = params.body
   const fullpath = path.join(userDir, fname)
   try {
     fs.unlinkSync(fullpath)
@@ -240,7 +252,7 @@ function apiGetNewFilename (res) {
   for (let i = 1; i <= 999; i++) {
     fname = `newfile${i}.nako3`
     const full = path.join(userDir, fname)
-    if (fs.existsSync(fname)) { continue }
+    if (fs.existsSync(full)) { continue }
     break
   }
   res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
