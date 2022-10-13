@@ -38,6 +38,7 @@ CORE="core/src"
     ['nadesiko3-websocket/nadesiko3-websocket.js', 'cnako'],
     ['nadesiko3-ml/nadesiko3-ml.js', 'cnako'],
     ['nadesiko3-mecab/nadesiko3-mecab.js', 'cnako'],
+    ['nadesiko3-smtp/nadesiko3-smtp.js', 'cnako'],
     ['nadesiko3-office/nadesiko3-office.js', 'cnako'],
     ['nadesiko3-odbc/src/plugin_odbc.js', 'cnako'],
     ['nadesiko3-mssql/src/plugin_mssql.js', 'cnako'],
