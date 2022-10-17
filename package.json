@@ -158,7 +158,7 @@
     "react-dom": "^18.1.0",
     "regenerator-runtime": "^0.13.9",
     "source-map": "^0.7.3",
-    "ssri": "^9.0.1",
+    "ssri": "^10.0.0",
     "standard": "^17.0.0",
     "stats-webpack-plugin": "^0.7.0",
     "stream-browserify": "^3.0.0",
