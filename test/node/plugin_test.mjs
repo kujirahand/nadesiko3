@@ -14,9 +14,8 @@ describe('plugin_test', () => {
   const scope1 = path.join(__dirname, 'scope1.nako3')
   const scope2 = path.join(__dirname, 'scope2.nako3')
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
-  nako.silent = true
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
-    nako.logger.debug('code=' + code)
+    nako.getLogger().debug('code=' + code)
     const ret = await nako.runAsync(code, 'main.nako3')
     if (ret.log !== res) {
       console.log('[ERROR]', ret.log, '!=', res)
