@@ -138,6 +138,26 @@ export default {
         },
         return_none: true
     },
+    'EUCファイル読': {
+        type: 'func',
+        josi: [['を', 'から']],
+        pure: true,
+        fn: function (s, sys) {
+            const buf = fs.readFileSync(s);
+            const text = iconv.decode(Buffer.from(buf), 'euc-jp');
+            return text;
+        }
+    },
+    'EUCファイル保存': {
+        type: 'func',
+        josi: [['を'], ['へ', 'に']],
+        pure: true,
+        fn: function (s, f, sys) {
+            const buf = iconv.encode(s, 'euc-jp');
+            fs.writeFileSync(f, buf);
+        },
+        return_none: true
+    },
     '起動待機': {
         type: 'func',
         josi: [['を']],

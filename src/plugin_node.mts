@@ -124,6 +124,26 @@ export default {
     },
     return_none: true
   },
+  'EUCファイル読': { // @euc-jp形式のファイルSを読み込む // @EUCふぁいるよむ
+    type: 'func',
+    josi: [['を', 'から']],
+    pure: true,
+    fn: function (s: string, sys: any) {
+      const buf = fs.readFileSync(s)
+      const text = iconv.decode(Buffer.from(buf), 'euc-jp')
+      return text
+    }
+  },
+  'EUCファイル保存': { // @Sをeuc-jp形式でファイルFへ書き込む // @EUCふぁいるほぞん
+    type: 'func',
+    josi: [['を'], ['へ', 'に']],
+    pure: true,
+    fn: function (s: string, f: string, sys: any) {
+      const buf = iconv.encode(s, 'euc-jp')
+      fs.writeFileSync(f, buf)
+    },
+    return_none: true
+  },
   '起動待機': { // @シェルコマンドSを起動し実行終了まで待機する // @きどうたいき
     type: 'func',
     josi: [['を']],
