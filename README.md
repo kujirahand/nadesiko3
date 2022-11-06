@@ -4,33 +4,6 @@
 [![npm version](https://badge.fury.io/js/nadesiko3.svg)](https://www.npmjs.com/package/nadesiko3)
 ![Node.js CI](https://github.com/kujirahand/nadesiko3/workflows/Node.js%20CI/badge.svg)
 
-## 関連リポジトリへのリンク
-
-- [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
-- [なでしこ3拡張プラグイン](https://nadesi.com/v3/doc/index.php?FAQ%2F%E6%8B%A1%E5%BC%B5%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&show)
-  - [nadesiko3-server](https://github.com/kujirahand/nadesiko3-server) --- Webサーバ(HTTP)
-  - [nadesiko3-websocket](https://github.com/kujirahand/nadesiko3-websocket) --- WebSocket
-  - [nadesiko3-office](https://github.com/kujirahand/nadesiko3-office) --- Excelなど
-  - [nadesiko3-sqlite3](https://github.com/kujirahand/nadesiko3-sqlite3/) --- SQLite3
-  - [nadesiko3-tools](https://github.com/kujirahand/nadesiko3-tools) --- 便利ツール
-  - [nadesiko3-mecab](https://github.com/kujirahand/nadesiko3-mecab/) --- 形態素解析(Mecab)
-  - [nadesiko3-htmlparser](https://github.com/kujirahand/nadesiko3-htmlparser) --- スクレイピング
-  - [nadesiko3-ml](https://github.com/kujirahand/nadesiko3-ml/) --- 機械学習
-  - [nadesiko3-odbc](https://github.com/kujirahand/nadesiko3-odbc) --- データベース(ODBC)
-  - [nadesiko3-mysql](https://github.com/kujirahand/nadesiko3-mysql) --- データベースMySQL
-  - [nadesiko3-postgresql](https://github.com/kujirahand/nadesiko3-postgresql) --- データベースPostgreSQL
-  - [nadesiko3-mssql](https://github.com/kujirahand/nadesiko3-mssql) --- データベースmssql
-- 配布用パッケージ
-  - [nadesiko3webkit - なでしこ3軽量配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
-  - [nadesiko3electron - なでしこ3フル配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
-  - [nadesiko3win32 - なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
-- 実験的に別言語で実装したなでしこ3
-  - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
-  - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
-  - [nadesiko3go - なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
-- 本リポジトリのサブモジュール
-  - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コア
-
 ## 「なでしこ3」とは
 
 「なでしこ3」とは、日本語のプログラミング言語です。HTML5/JavaScript(TypeScript)をベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
@@ -97,6 +70,24 @@ cd nadesiko3
 git submodule update --init --recursive
 ```
 
+## Ubuntuへの開発環境のセットアップ
+
+まっさらなUbuntu22.04でなでしこ3の開発環境を整える方法
+
+```
+# nvm で Node.js をインストール
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+source ~/.bashrc
+nvm install v18.12.1
+# リポジトリのセットアップ
+git clone --recursive https://github.com/kujirahand/nadesiko3.git
+cd nadesiko3
+npm install
+# なでしこ3のビルド
+npm run build
+# cnako3をパスに追加する
+```
+
 ## 追加インストール(macOS/Linux)
 
 必要に応じて以下のコマンドをインストールします。
@@ -141,3 +132,30 @@ npm run test:all
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
 また、なでしこ3開発者向けの[Gitter](https://gitter.im/nadesiko3/community)への参加も可能です。
+
+## 関連リポジトリへのリンク
+
+- [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
+- [なでしこ3拡張プラグイン](https://nadesi.com/v3/doc/index.php?FAQ%2F%E6%8B%A1%E5%BC%B5%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&show)
+  - [nadesiko3-server](https://github.com/kujirahand/nadesiko3-server) --- Webサーバ(HTTP)
+  - [nadesiko3-websocket](https://github.com/kujirahand/nadesiko3-websocket) --- WebSocket
+  - [nadesiko3-office](https://github.com/kujirahand/nadesiko3-office) --- Excelなど
+  - [nadesiko3-sqlite3](https://github.com/kujirahand/nadesiko3-sqlite3/) --- SQLite3
+  - [nadesiko3-tools](https://github.com/kujirahand/nadesiko3-tools) --- 便利ツール
+  - [nadesiko3-mecab](https://github.com/kujirahand/nadesiko3-mecab/) --- 形態素解析(Mecab)
+  - [nadesiko3-htmlparser](https://github.com/kujirahand/nadesiko3-htmlparser) --- スクレイピング
+  - [nadesiko3-ml](https://github.com/kujirahand/nadesiko3-ml/) --- 機械学習
+  - [nadesiko3-odbc](https://github.com/kujirahand/nadesiko3-odbc) --- データベース(ODBC)
+  - [nadesiko3-mysql](https://github.com/kujirahand/nadesiko3-mysql) --- データベースMySQL
+  - [nadesiko3-postgresql](https://github.com/kujirahand/nadesiko3-postgresql) --- データベースPostgreSQL
+  - [nadesiko3-mssql](https://github.com/kujirahand/nadesiko3-mssql) --- データベースmssql
+- 配布用パッケージ
+  - [nadesiko3webkit - なでしこ3軽量配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
+  - [nadesiko3electron - なでしこ3フル配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
+  - [nadesiko3win32 - なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
+- 実験的に別言語で実装したなでしこ3
+  - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
+  - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
+  - [nadesiko3go - なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
+- 本リポジトリのサブモジュール
+  - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コア
