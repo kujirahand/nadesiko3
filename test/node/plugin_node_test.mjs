@@ -93,7 +93,7 @@ describe('plugin_node_test', async () => {
     }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
-      tmp = fs.mkdtempSync(process.cwd())
+      tmp = path.join(os.tmpdir(), 'nadesiko3test') 
     } else {
       tmp = fs.mkdtempSync(os.tmpdir())
     }
@@ -113,7 +113,7 @@ describe('plugin_node_test', async () => {
     try { execSync('which 7z').toString() } catch (e) { return this.skip() }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
-      tmp = fs.mkdtempSync(process.cwd())
+      tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nadesiko3zip-test'))
     } else {
       tmp = fs.mkdtempSync(os.tmpdir())
     }
@@ -130,7 +130,7 @@ describe('plugin_node_test', async () => {
     }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
-      tmp = fs.mkdtempSync(process.cwd())
+      tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'test_nako3zip'))
     } else {
       tmp = fs.mkdtempSync(os.tmpdir())
     }
@@ -162,7 +162,7 @@ describe('plugin_node_test', async () => {
     }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
-      tmp = fs.mkdtempSync(process.cwd())
+      tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'test_nako3zip'))
     } else {
       tmp = fs.mkdtempSync(os.tmpdir())
     }
