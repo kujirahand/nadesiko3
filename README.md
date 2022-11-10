@@ -75,6 +75,7 @@ git submodule update --init --recursive
 まっさらなUbuntu22.04でなでしこ3の開発環境を整える方法
 
 ```
+sudo apt update
 # nvm で Node.js をインストール
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 source ~/.bashrc
@@ -85,6 +86,8 @@ cd nadesiko3
 npm install
 # なでしこ3のビルド
 npm run build
+# 『圧縮』『解凍』命令のために
+sudo apt install -y p7zip-full
 # cnako3をパスに追加する
 ```
 
