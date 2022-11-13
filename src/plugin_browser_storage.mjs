@@ -70,12 +70,11 @@ export default {
   },
   'ローカルストレージキー列挙': { // @ブラウザのlocalStorageのキー一覧を返す // @ろーかるすとれーじきーれっきょ
     type: 'func',
-    josi: [[]],
+    josi: [],
     pure: true,
-    fn: function (key) {
+    fn: function (sys) {
       const keys = []
       for (const key in window.localStorage) { keys.push(key) }
-
       return keys
     },
     return_none: false
