@@ -189,8 +189,8 @@ const PluginTurtle = {
               this.ctx.strokeStyle = tt.color
               break
             case 'size':
-              this.ctx.lineWidth = tt.lineWidth
               tt.lineWidth = m[1]
+              this.ctx.lineWidth = tt.lineWidth
               break
             case 'penOn':
               tt.flagDown = m[1]
