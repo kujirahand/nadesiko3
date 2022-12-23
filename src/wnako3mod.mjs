@@ -169,7 +169,7 @@ export class WebNakoCompiler extends NakoCompiler {
     resolvePath(name, token, fromFile) {
         let pathname = name;
         // http から始まっていれば解決は不要
-        if (pathname.match(/^https?\:\/\//)) { // フルパスなら解決不要
+        if (pathname.match(/^https?:\/\//)) { // フルパスなら解決不要
         }
         else if (this.localFiles && this.localFiles[name]) {
             pathname = this.localFiles[name];

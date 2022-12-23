@@ -1,7 +1,7 @@
 /** 簡易HTTPサーバ */
 import fs from 'fs'
 import http from 'http'
-import path, { parse } from 'path'
+import path from 'path'
 
 // 定数
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
@@ -218,7 +218,7 @@ const PluginHttpServer = {
       }
       const dp: EasyURLDispather = sys.__httpserver
       const it: EasyURLItem = new EasyURLItem('callback')
-      if (url === '') { url = '/'}
+      if (url === '') { url = '/' }
       if (url.charAt(0) !== '/') { url = '/' + url }
       it.url = url
       if (typeof callback === 'string') { callback = sys.__findFunc(callback) }
@@ -240,7 +240,7 @@ const PluginHttpServer = {
       }
       if (!dp.usedHeader) {
         dp.usedHeader = true
-        dp.curRes.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'})
+        dp.curRes.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
       }
       dp.curRes.end(s)
       dp.isEnd = true
@@ -276,7 +276,7 @@ const PluginHttpServer = {
         throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
       }
       console.log(HTTPSERVER_LOGID, '移動=', url)
-      dp.curRes.writeHead(302, {'Location': url})
+      dp.curRes.writeHead(302, { 'Location': url })
       dp.curRes.end(`<html><body><a href="${url}">JUMP</a></body></html>`)
       dp.isEnd = true
     }

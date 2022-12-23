@@ -181,7 +181,7 @@ export class WebNakoCompiler extends NakoCompiler {
   resolvePath (name: string, token: Token, fromFile: string) {
     let pathname = name
     // http から始まっていれば解決は不要
-    if (pathname.match(/^https?\:\/\//)) { // フルパスなら解決不要
+    if (pathname.match(/^https?:\/\//)) { // フルパスなら解決不要
     } else if (this.localFiles && this.localFiles[name]) {
       pathname = this.localFiles[name]
     } else {
@@ -221,7 +221,6 @@ export class WebNakoCompiler extends NakoCompiler {
     // ファイル拡張子が未指定の場合
     throw new NakoImportError(`ファイル『${name}』は拡張子が(.nako3|.js|.js.txt|.mjs|.mjs.txt)以外なので取り込めません。`, token.file, token.line)
   }
-
 }
 
 function dirname (s: string) {

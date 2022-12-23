@@ -1,4 +1,3 @@
-// @ts-nocheck
 export default {
   // @DOM部品操作
   'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
@@ -164,7 +163,7 @@ export default {
         dom.appendChild(item)
       }
       // 親部品に追加
-      const obj = sys.__exec('DOM部品作成', [dom, sys])
+      sys.__exec('DOM部品作成', [dom, sys])
       return dom
     }
   },
@@ -326,8 +325,8 @@ export default {
     pure: true,
     fn: function (dom: any) {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-      const res = {}
-      const getChildren = (pa) => {
+      const res: any = {}
+      const getChildren = (pa: any) => {
         if (!pa || !pa.childNodes) { return }
         for (let i = 0; i < pa.childNodes.length; i++) {
           const el = pa.childNodes[i]
@@ -371,7 +370,8 @@ export default {
       for (let i = 0; i < 3; i++) { bgColor.push('') }
       const bgHead = bgColor.shift()
       const table = sys.__exec('DOM部品作成', ['table', sys])
-      for (const rowNo in aa) {
+      for (let i = 0; i < aa.length; i++) {
+        const rowNo = i
         const row = aa[rowNo]
         const tr = document.createElement('tr')
         for (let col of row) {
@@ -394,4 +394,3 @@ export default {
     }
   }
 }
-

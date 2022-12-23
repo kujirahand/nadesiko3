@@ -2,7 +2,7 @@ export default {
     "env": {
         "browser": true,
         "commonjs": false,
-        "es2021": true
+        "es2022": true
     },
     "extends": [
         "standard",
@@ -13,7 +13,8 @@ export default {
         "ecmaVersion": "latest",
         "sourceType": "module",
         "project": "./tsconfig.json",
-        "extraFileExtensions": ['.mts', '.mjs']
+        "extraFileExtensions": ['.mts', '.mjs'],
+        "ecmaVersion": 13
     },
     "rules": {
         "@typescript-eslint/ban-ts-comment": "off",

@@ -19,4 +19,3 @@ export default {
   },
   'ブラウザURL': { type: 'const', value: '' } // @NぶらうざURL
 }
-

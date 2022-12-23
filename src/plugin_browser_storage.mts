@@ -118,4 +118,3 @@ export default {
     return_none: true
   }
 }
-

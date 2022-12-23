@@ -7,7 +7,7 @@ import fse from 'fs-extra'
 import { exec } from 'child_process'
 import path from 'path'
 
-import { NakoCompiler, LoaderTool, LoaderToolTask, newCompilerOptions } from '../core/src/nako3.mjs'
+import { NakoCompiler, LoaderTool, newCompilerOptions } from '../core/src/nako3.mjs'
 import { NakoImportError } from '../core/src/nako_errors.mjs'
 
 import { Ast, CompilerOptions } from '../core/src/nako_types.mjs'
@@ -130,7 +130,7 @@ export class CNako3 extends NakoCompiler {
       browsers: app.browsers || false,
       speed: app.speed || false,
       ast: app.ast || false,
-      lex: app.lex || false,
+      lex: app.lex || false
     }
     args.mainfile = app.args[0]
     args.output = app.output
@@ -325,6 +325,7 @@ export class CNako3 extends NakoCompiler {
       }
     }
   }
+
   /**
    * JSONを出力
    */
@@ -362,6 +363,7 @@ export class CNako3 extends NakoCompiler {
     }
     return makeIndent(level) + ast
   }
+
   /**
    * ASTを出力
    */

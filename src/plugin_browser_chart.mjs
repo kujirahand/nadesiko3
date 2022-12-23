@@ -42,7 +42,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['line', data, sys]);
             const d = {
                 type: 'line',
-                data: data,
+                data,
                 options: sys.__v0['グラフオプション']
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -58,7 +58,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys]);
             const d = {
                 type: 'bar',
-                data: data,
+                data,
                 options: gopt
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -74,7 +74,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys]);
             const d = {
                 type: 'bar',
-                data: data,
+                data,
                 options: gopt
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -96,7 +96,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys]);
             const d = {
                 type: 'bar',
-                data: data,
+                data,
                 options: gopt
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -118,7 +118,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys]);
             const d = {
                 type: 'bar',
-                data: data,
+                data,
                 options: gopt
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -134,7 +134,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['scatter', data, sys]);
             const d = {
                 type: 'scatter',
-                data: data,
+                data,
                 options: gopt
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -148,7 +148,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys]);
             const d = {
                 type: 'pie',
-                data: data,
+                data,
                 options: sys.__v0['グラフオプション']
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -162,7 +162,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys]);
             const d = {
                 type: 'doughnut',
-                data: data,
+                data,
                 options: sys.__v0['グラフオプション']
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -176,7 +176,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys]);
             const d = {
                 type: 'polarArea',
-                data: data,
+                data,
                 options: sys.__v0['グラフオプション']
             };
             return sys.__exec('グラフ描画', [d, sys]);
@@ -190,7 +190,7 @@ export default {
             data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys]);
             const d = {
                 type: 'radar',
-                data: data,
+                data,
                 options: sys.__v0['グラフオプション']
             };
             return sys.__exec('グラフ描画', [d, sys]);

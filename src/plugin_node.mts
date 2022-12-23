@@ -16,9 +16,9 @@ import readline from 'readline'
 // ハッシュ関数で利用
 import crypto from 'crypto'
 import os from 'os'
-import url from 'url';
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import url from 'url'
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default {
   '初期化': {
@@ -26,19 +26,19 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: any) {
-        sys.__quotePath = (fpath: string) => {
-          if (process.platform === 'win32') {
-            fpath = fpath.replace(/\"/g, '')
-            fpath = fpath.replace(/\%/g, '"^%"')
-            fpath = '"' + fpath + '"'
-          } else {
-            console.log('before:', fpath)
-            fpath = shellQuote.quote([fpath])
-            console.log('after:', fpath)
-          }
-          return fpath
+      sys.__quotePath = (fpath: string) => {
+        if (process.platform === 'win32') {
+          fpath = fpath.replace(/"/g, '')
+          fpath = fpath.replace(/%/g, '"^%"')
+          fpath = '"' + fpath + '"'
+        } else {
+          console.log('before:', fpath)
+          fpath = shellQuote.quote([fpath])
+          console.log('after:', fpath)
         }
-        sys.__getBinPath = (tool: any) => {
+        return fpath
+      }
+      sys.__getBinPath = (tool: any) => {
         let fpath = tool
         if (process.platform === 'win32') {
           if (!fileExists(tool)) {
@@ -95,10 +95,7 @@ export default {
     pure: true,
     fn: function (s: any, f: string) {
       // Buffer?
-      if (typeof s === 'string') { fs.writeFileSync(f, s, 'utf-8') }
-      else if (s instanceof Buffer) { fs.writeFileSync(f, s) }
-      else if (s instanceof ArrayBuffer) { fs.writeFileSync(f, Buffer.from(s)) }
-      else { fs.writeFileSync(f, s) }
+      if (typeof s === 'string') { fs.writeFileSync(f, s, 'utf-8') } else if (s instanceof Buffer) { fs.writeFileSync(f, s) } else if (s instanceof ArrayBuffer) { fs.writeFileSync(f, Buffer.from(s)) } else { fs.writeFileSync(f, s) }
     },
     return_none: true
   },
@@ -159,8 +156,9 @@ export default {
     pure: true,
     fn: function (s: string) {
       exec(s, (err, stdout, stderr) => {
-        if (err) { console.error(stderr) } else
-        if (stdout) { console.log(stdout) }
+        if (err) { console.error(stderr) } else {
+          if (stdout) { console.log(stdout) }
+        }
       })
     }
   },

@@ -11,60 +11,6 @@ const getIndent = NakoIndent.getIndent;
 const countIndent = NakoIndent.countIndent;
 const isIndentSyntaxEnabled = NakoIndent.isIndentSyntaxEnabled;
 /**
- * @typedef {import('./nako3')} NakoCompiler
- *
- * @typedef {{
- *     getValue(): string
- *     setValue(text: string): void
- *     session: Session
- *     execCommand(command: string): void
- *     setReadOnly(value: boolean): void
- *     setOption(key: string, value: unknown): void
- *     getOption(key: string): unknown
- *     setOptions(entries: Record<string, unknown>): void
- *     setFontSize(px: number): void
- *     setKeyboardHandler(name: string): void
- *     setTheme(name: string): void
- *     container: HTMLElement
- *     wnako3EditorId?: number
- *     getCursorPosition(): { row: number, column: number }
- *     commands: { addCommand(data: { name: string, exec: (editor: AceEditor, args: any[]) => void }): void }
- * }} AceEditor
- *
- * @typedef {import("./nako_lexer").TokenWithSourceMap} TokenWithSourceMap
- *
- * @typedef {{
- *     getLine(row: number): string
- *     getAllLines(): string[]
- *     getLength(): number
- *     insertInLine(position: { row: number, column: number }, text: string): void
- *     removeInLine(row: number, columnStart: number, columnEnd: number): void
- *     replace(range: AceRange, text: string): void
- * }} AceDocument
- *
- * @typedef {{
- *     doc: AceDocument
- *     bgTokenizer: BackgroundTokenizer
- *     getScrollTop(): number
- *     setScrollTop(x: number): void
- *     getScrollLeft(): number
- *     setScrollLeft(x: number): void
- *     getUndoManager(): any
- *     setUndoManager(x: any): void
- *     selection: { getRange(): AceRange, isBackwards(): boolean, setRange(range: AceRange, reversed: boolean): void, clearSelection(): void }
- *     setMode(mode: string | object): void
- * }} Session
- *
- * @typedef {{}} AceRange
- *
- * @typedef {new (startLine: number, startColumn: number, endLine: number, endColumn: number) => AceRange} TypeofAceRange
- *
- * @typedef {string} TokenType
- * @typedef {{ type: TokenType, value: string, docHTML: string | null }} EditorToken
- *
- * @typedef {{ start: { row: number }, command: { id: string, title: string, arguments: string[] } }} CodeLens
- */
-/**
  * シンタックスハイライトでは一般にテキストの各部分に 'comment.line' のようなラベルを付け、各エディタテーマがそのそれぞれの色を設定する。
  * ace editor では例えば 'comment.line' が付いた部分はクラス .ace_comment.ace_line が付いたHTMLタグで囲まれ、各テーマはそれに対応するCSSを実装する。
  * @returns TokenType

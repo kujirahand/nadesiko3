@@ -47,4 +47,3 @@ export default {
     return_none: false
   }
 }
-

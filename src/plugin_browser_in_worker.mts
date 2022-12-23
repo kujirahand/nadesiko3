@@ -42,4 +42,3 @@ BrowserParts.forEach((a) => {
 })
 
 export default PluginBrowserInWorker
-

@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 // @ts-nocheck
 /* eslint-disable no-undef */
 import assert from 'assert'
-import fs from 'fs'
-import path from 'path'
+// import fs from 'fs'
+// import path from 'path'
 import { expect } from 'chai'
 
 import { NakoCompiler } from '../../core/src/nako3.mjs'
@@ -12,10 +11,10 @@ import { CNako3 } from '../../src/cnako3mod.mjs'
 import { NakoLexerError } from '../../core/src/nako_errors.mjs'
 
 // __dirname のために
-import url from 'url'
+// import url from 'url'
 // @ts-ignore
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+// const __filename = url.fileURLToPath(import.meta.url)
+// const __dirname = path.dirname(__filename)
 
 describe('wnako3_editor_test', () => {
   class AceRange {

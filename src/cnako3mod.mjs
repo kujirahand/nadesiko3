@@ -96,7 +96,7 @@ export class CNako3 extends NakoCompiler {
             browsers: app.browsers || false,
             speed: app.speed || false,
             ast: app.ast || false,
-            lex: app.lex || false,
+            lex: app.lex || false
         };
         args.mainfile = app.args[0];
         args.output = app.output;

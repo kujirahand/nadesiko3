@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
-import fs from 'fs'
+// import fs from 'fs'
 import os from 'os'
+import fs from 'fs'
 import assert from 'assert'
 import path from 'path'
 import { execSync } from 'child_process'
@@ -93,7 +94,7 @@ describe('plugin_node_test', async () => {
     }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
-      tmp = path.join(os.tmpdir(), 'nadesiko3test') 
+      tmp = path.join(os.tmpdir(), 'nadesiko3test')
     } else {
       tmp = fs.mkdtempSync(os.tmpdir())
     }

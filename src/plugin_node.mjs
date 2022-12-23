@@ -27,8 +27,8 @@ export default {
         fn: function (sys) {
             sys.__quotePath = (fpath) => {
                 if (process.platform === 'win32') {
-                    fpath = fpath.replace(/\"/g, '');
-                    fpath = fpath.replace(/\%/g, '"^%"');
+                    fpath = fpath.replace(/"/g, '');
+                    fpath = fpath.replace(/%/g, '"^%"');
                     fpath = '"' + fpath + '"';
                 }
                 else {
@@ -176,8 +176,10 @@ export default {
                 if (err) {
                     console.error(stderr);
                 }
-                else if (stdout) {
-                    console.log(stdout);
+                else {
+                    if (stdout) {
+                        console.log(stdout);
+                    }
                 }
             });
         }
