@@ -50,6 +50,8 @@ npm run nako3edit
 npm run nako3server
 ```
 
+> Node.jsの推奨バージョンは、v14以上です。
+
 ## Gitからインストール
 
 また、以下のコマンドを実行すると、なでしこの開発環境をセットアップできます。
