@@ -166,29 +166,44 @@ export default {
       return sys.__exec('DOM_HTML取得', [dom, sys])
     }
   },
-  'DOM属性設定': { // @DOMの属性Sに値Vを設定 // @DOMぞくせいせってい
+  'DOM属性設定': { // @DOMの属性Sに値Vを設定(属性Sには『DOM和属性』も適用される) // @DOMぞくせいせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
-    uses: ['DOM和スタイル'],
+    uses: ['DOM和属性'],
     pure: true,
     fn: function (dom, s, v, sys) {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-      const wa = sys.__v0['DOM和スタイル']
+      const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
-      dom[s] = v
+      dom.setAttribute(s, v)
     },
     return_none: true
   },
-  'DOM属性取得': { // @DOMの属性Sを取得 // @DOMぞくせいしゅとく
+  'DOM属性取得': { // @DOMの属性Sを取得(属性Sには『DOM和属性』も適用される) // @DOMぞくせいしゅとく
     type: 'func',
     josi: [['の', 'から'], ['を']],
-    uses: ['DOM和スタイル'],
+    uses: ['DOM和属性'],
     pure: true,
     fn: function (dom, s, sys) {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-      const wa = sys.__v0['DOM和スタイル']
+      const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
-      return dom[s]
+      return dom.getAttribute(s)
+    }
+  },
+  'DOM和属性': { // const // @DOMわぞくせい
+    type: 'const',
+    value: { // (ref) https://developer.mozilla.org/ja/docs/Web/API/Element
+      '幅': 'width',
+      '高さ': 'height',
+      '高': 'height',
+      'タイプ': 'type',
+      'データ': 'data',
+      '名前': 'name',
+      'ID': 'id',
+      '読取専用': 'readOnly',
+      '読み取り専用': 'readOnly',
+      '無効化': 'disabled'
     }
   },
   'DOM和スタイル': { // const // @DOMわすたいる
