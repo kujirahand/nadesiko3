@@ -211,7 +211,10 @@ export default {
       'なし': 'none',
       'ブロック': 'block',
       '表示位置': 'float',
-      '重なり': 'z-index'
+      '重なり': 'z-index',
+      '読取専用': 'readOnly',
+      '読み取り専用': 'readOnly',
+      'readonly': 'readOnly'
     }
   },
   'DOMスタイル設定': { // @DOMのスタイルAに値Bを設定 // @DOMすたいるせってい
