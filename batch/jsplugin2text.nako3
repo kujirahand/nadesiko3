@@ -84,7 +84,7 @@ LINENO=0
 　　　　もし、そうならば
 　　　　　　対象を「plugin_[0-9a-zA-Z_]+.mjs」で正規表現マッチ。
 　　　　　　もし、そうならば
-　　　　　　　　FNAME=それ
+　　　　　　　　FNAME=それの「.mjs」を「.mts」に置換。
 　　　　　　　　SRC_URL=「https://github.com/kujirahand/nadesiko3/blob/master/src/{FNAME}」
 　　　　　　　　「{DIR}/{FNAME}」を開く
 　　　　　　　　LINENO=1
