@@ -14,7 +14,6 @@ npm install -g textlint \
   textlint-rule-abbr-within-parentheses \
   textlint-rule-footnote-order \
   textlint-rule-general-novel-style-ja \
-  textlint-rule-ja-hiragana-fukushi \
   textlint-rule-ja-hiragana-hojodoushi \
   textlint-rule-ja-hiragana-keishikimeishi \
   textlint-rule-ja-unnatural-alphabet \
@@ -26,6 +25,7 @@ npm install -g textlint \
   textlint-rule-preset-ja-technical-writing \
   textlint-rule-preset-jtf-style \
   textlint-rule-spellcheck-tech-word \
+  @textlint-ja/textlint-rule-no-insert-dropping-sa
  ```
 
 ## textlint の実行
