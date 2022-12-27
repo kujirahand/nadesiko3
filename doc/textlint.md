@@ -14,7 +14,6 @@ npm install -g textlint \
   textlint-rule-abbr-within-parentheses \
   textlint-rule-footnote-order \
   textlint-rule-general-novel-style-ja \
-  textlint-rule-ja-hiragana-fukushi \
   textlint-rule-ja-hiragana-hojodoushi \
   textlint-rule-ja-hiragana-keishikimeishi \
   textlint-rule-ja-unnatural-alphabet \

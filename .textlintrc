@@ -10,7 +10,6 @@
         // アラビア数字の桁数は2桁まで (false: チェックしない)
         "max_arabic_numeral_digits": false
     },
-    "ja-hiragana-fukushi": true,
     "ja-hiragana-hojodoushi": true,
     "ja-hiragana-keishikimeishi": true,
     "ja-unnatural-alphabet": true,
