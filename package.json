@@ -187,6 +187,22 @@
     "marked": "^4.0.16",
     "node-fetch": "^3.2.4",
     "opener": "^1.5.2",
-    "shell-quote": "^1.7.3"
+    "shell-quote": "^1.7.3",
+    "textlint": "^12.2.4",
+    "textlint-rule-abbr-within-parentheses": "^1.0.2",
+    "textlint-rule-footnote-order": "^1.0.3",
+    "textlint-rule-general-novel-style-ja": "^1.3.0",
+    "textlint-rule-ja-hiragana-fukushi": "^1.3.0",
+    "textlint-rule-ja-hiragana-hojodoushi": "^1.0.4",
+    "textlint-rule-ja-hiragana-keishikimeishi": "^1.1.0",
+    "textlint-rule-ja-unnatural-alphabet": "^2.0.1",
+    "textlint-rule-ng-word": "^1.0.0",
+    "textlint-rule-no-dead-link": "^5.1.2",
+    "textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet": "^1.0.1",
+    "textlint-rule-prefer-tari-tari": "^1.0.3",
+    "textlint-rule-preset-ja-spacing": "^2.2.0",
+    "textlint-rule-preset-ja-technical-writing": "^7.0.0",
+    "textlint-rule-preset-jtf-style": "^2.3.13",
+    "textlint-rule-spellcheck-tech-word": "^5.0.0"
   }
 }
