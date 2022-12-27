@@ -22,12 +22,27 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          yarn install -D
+          npm install textlint \
+            textlint-rule-abbr-within-parentheses \
+            textlint-rule-footnote-order \
+            textlint-rule-general-novel-style-ja \
+            textlint-rule-ja-hiragana-fukushi \
+            textlint-rule-ja-hiragana-hojodoushi \
+            textlint-rule-ja-hiragana-keishikimeishi \
+            textlint-rule-ja-unnatural-alphabet \
+            textlint-rule-ng-word \
+            textlint-rule-no-dead-link \
+            textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet \
+            textlint-rule-prefer-tari-tari \
+            textlint-rule-preset-ja-spacing \
+            textlint-rule-preset-ja-technical-writing \
+            textlint-rule-preset-jtf-style \
+            textlint-rule-spellcheck-tech-word
       # lintする
       - name: Lint files
         id: lint
         run: |
-          result="$(yarn run textlint 2>&1)" || true
+          result="$(textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md 2>&1)" || true
           echo "$result"
           result="${result//'%'/'%25'}"
           result="${result//$'\n'/'%0A'}"
@@ -93,12 +108,27 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          yarn install -D
+          npm install textlint \
+            textlint-rule-abbr-within-parentheses \
+            textlint-rule-footnote-order \
+            textlint-rule-general-novel-style-ja \
+            textlint-rule-ja-hiragana-fukushi \
+            textlint-rule-ja-hiragana-hojodoushi \
+            textlint-rule-ja-hiragana-keishikimeishi \
+            textlint-rule-ja-unnatural-alphabet \
+            textlint-rule-ng-word \
+            textlint-rule-no-dead-link \
+            textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet \
+            textlint-rule-prefer-tari-tari \
+            textlint-rule-preset-ja-spacing \
+            textlint-rule-preset-ja-technical-writing \
+            textlint-rule-preset-jtf-style \
+            textlint-rule-spellcheck-tech-word
       # textlintでformatする
       - name: Format files
         id: format
         run: |
-          yarn run textlint:fix
+          textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md
         continue-on-error: true
       # 差分があったときは差分を出力する
       - name: Show diff
