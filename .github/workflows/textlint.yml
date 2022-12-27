@@ -128,7 +128,10 @@ jobs:
       - name: Format files
         id: format
         run: |
-          textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md
+          textlint --fix *.md
+          textlint --fix doc/*.md
+          textlint --fix batch/*.md
+          textlint --fix tools/*.md
         continue-on-error: true
       # 差分があったときは差分を出力する
       - name: Show diff
