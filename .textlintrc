@@ -1,7 +1,7 @@
 {
   "filters": {},
   "rules": {
-    "@textlint-ja/no-insert-dropping-sa": true,
+    "@textlint-ja/textlint-rule-no-insert-dropping-sa": true,
     "abbr-within-parentheses": true,
     "footnote-order": true,
     "general-novel-style-ja": {
