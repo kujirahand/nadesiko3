@@ -2,7 +2,7 @@
 
 配布パッケージのスリム化のために、必要性が低いパッケージについては、別途グローバルにインストールして、時々チェックするという方針にした。([参考#1231](https://github.com/kujirahand/nadesiko3/issues/1231))
 
-そのため、textlint のセットアップ方法については、ここで別途書いておく。
+そのため、textlintのセットアップ方法については、ここで別途書いておく。
 
 > なお、`git push`したときには、GitHub側でtextlintが自動でかかるため、コミットしてエラーが出たら、以下の項目を実施すること。
 > [→GitHub側で実行されるtextlint](/.github/workflows/textlint.yml)
