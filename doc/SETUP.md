@@ -124,7 +124,6 @@ npm start
 コマンドラインから以下を実行して、以下のファイルを生成。
 
 * [doc/browsers.md](browsers.md): 対応機器/ブラウザ (マークダウン形式)
-* [demo/browsers.html](../demo/browsers.html): 対応機器/ブラウザ (HTML形式, なでしこ3エディタ用)
 
 ```bash
 npm run build:browsers
