@@ -22,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          npm install textlint \
+          npm install -g textlint \
             textlint-rule-abbr-within-parentheses \
             textlint-rule-footnote-order \
             textlint-rule-general-novel-style-ja \
@@ -108,7 +108,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          npm install textlint \
+          npm install -g textlint \
             textlint-rule-abbr-within-parentheses \
             textlint-rule-footnote-order \
             textlint-rule-general-novel-style-ja \
