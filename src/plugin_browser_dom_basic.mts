@@ -175,7 +175,11 @@ export default {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
-      dom.setAttribute(s, v)
+      if (s === 'disabled') {
+        dom[s] = v
+      } else {
+        dom.setAttribute(s, v)
+      }
     },
     return_none: true
   },
@@ -188,7 +192,11 @@ export default {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
-      return dom.getAttribute(s)
+      if (s === 'disabled') {
+        return dom[s]
+      } else {
+        return dom.getAttribute(s)
+      }
     }
   },
   'DOM和属性': { // const // @DOMわぞくせい
