@@ -24,7 +24,7 @@ npm install -g textlint \
   textlint-rule-preset-ja-spacing \
   textlint-rule-preset-ja-technical-writing \
   textlint-rule-preset-jtf-style \
-  textlint-rule-spellcheck-tech-word \
+  @proofdict/textlint-rule-proofdict \
   @textlint-ja/textlint-rule-no-insert-dropping-sa
  ```
 

@@ -2,6 +2,9 @@
   "filters": {},
   "rules": {
     "@textlint-ja/textlint-rule-no-insert-dropping-sa": true,
+    "@proofdict/proofdict": {
+      "dictURL": "https://azu.github.io/proof-dictionary/"
+    },
     "abbr-within-parentheses": true,
     "footnote-order": true,
     "general-novel-style-ja": {
@@ -28,7 +31,6 @@
     "preset-jtf-style": {
         "1.2.1.句点(。)と読点(、)": false,
         "4.3.1.丸かっこ（）": false
-    },
-    "spellcheck-tech-word": true
+    }
   }
 }
