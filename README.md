@@ -8,7 +8,7 @@
 
 「なでしこ3」とは、日本語のプログラミング言語です。HTML5/JavaScript(TypeScript)をベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
 
-- [なでしこのWebサイト](https://nadesi.com/)
+- [なでしこのWebサイト](https://nadesi.com/top/)
 - [なでしこ3のGitHub Pages](https://kujirahand.github.io/nadesiko3/)
 - [マニュアル](https://nadesi.com/v3/doc/)
 
@@ -62,7 +62,7 @@ cd nadesiko3
 npm install
 ```
 
-サブモジュールとして[`nadesiko3core`](https://github.com/kujirahand/nadesiko3core.git)を利用するので、`--recursive` を付け忘れたら以下のコマンドを実行して、サブモジュールも取得してください。
+サブモジュールとして[`nadesiko3core`](https://github.com/kujirahand/nadesiko3core)を利用するので、`--recursive` を付け忘れたら以下のコマンドを実行して、サブモジュールも取得してください。
 
 ```bash
 # 以下のように --recursive 付け忘れた場合
@@ -74,7 +74,7 @@ git submodule update --init --recursive
 
 ## Ubuntuへの開発環境のセットアップ
 
-まっさらなUbuntu22.04でなでしこ3の開発環境を整える方法
+まっさらなUbuntu22.04でなでしこ3の開発環境を整える場合は以下のコマンドを実行します。
 
 ```
 sudo apt update
@@ -124,7 +124,7 @@ npm run test:all
 
 「なでしこ3」の開発は2017年に始まり、以後コツコツとバージョンアップを続けています。「誰でも簡単プログラマー」の目標を実現するために、これからも頑張ります。
 
-- (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更。言語コアを別リポジトリに移動。
+- (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更。言語コアを別リポジトリに移動
 - (2022-04-20) v3.3.2を公開(モジュール構造をCommonJS→ESModuleへ変更/asyncFnの実装)
 - (2021-04-09) v3.2.1を公開
 - (2020-04-24) v3.1.2を公開
@@ -147,7 +147,7 @@ npm run test:all
   - [nadesiko3-office](https://github.com/kujirahand/nadesiko3-office) --- Excelなど
   - [nadesiko3-sqlite3](https://github.com/kujirahand/nadesiko3-sqlite3/) --- SQLite3
   - [nadesiko3-tools](https://github.com/kujirahand/nadesiko3-tools) --- 便利ツール
-  - [nadesiko3-mecab](https://github.com/kujirahand/nadesiko3-mecab/) --- 形態素解析(Mecab)
+  - [nadesiko3-mecab](https://github.com/kujirahand/nadesiko3-mecab/) --- 形態素解析(MeCab)
   - [nadesiko3-htmlparser](https://github.com/kujirahand/nadesiko3-htmlparser) --- スクレイピング
   - [nadesiko3-ml](https://github.com/kujirahand/nadesiko3-ml/) --- 機械学習
   - [nadesiko3-odbc](https://github.com/kujirahand/nadesiko3-odbc) --- データベース(ODBC)

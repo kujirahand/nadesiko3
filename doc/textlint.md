@@ -2,7 +2,7 @@
 
 配布パッケージのスリム化のために、必要性が低いパッケージについては、別途グローバルにインストールして、時々チェックするという方針にした。([参考#1231](https://github.com/kujirahand/nadesiko3/issues/1231))
 
-そのため、textlint のセットアップ方法については、ここで別途書いておく。
+そのため、textlintのセットアップ方法については、ここで別途書いておく。
 
 > なお、`git push`したときには、GitHub側でtextlintが自動でかかるため、コミットしてエラーが出たら、以下の項目を実施すること。
 > [→GitHub側で実行されるtextlint](/.github/workflows/textlint.yml)
@@ -14,7 +14,6 @@ npm install -g textlint \
   textlint-rule-abbr-within-parentheses \
   textlint-rule-footnote-order \
   textlint-rule-general-novel-style-ja \
-  textlint-rule-ja-hiragana-fukushi \
   textlint-rule-ja-hiragana-hojodoushi \
   textlint-rule-ja-hiragana-keishikimeishi \
   textlint-rule-ja-unnatural-alphabet \
@@ -25,18 +24,19 @@ npm install -g textlint \
   textlint-rule-preset-ja-spacing \
   textlint-rule-preset-ja-technical-writing \
   textlint-rule-preset-jtf-style \
-  textlint-rule-spellcheck-tech-word \
+  @proofdict/textlint-rule-proofdict \
+  @textlint-ja/textlint-rule-no-insert-dropping-sa
  ```
 
 ## textlint の実行
 
-textlintの実行
+textlintを実行する場合は以下のコマンドを実行します。
 
 ```shell
 textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md
 ```
 
-textlintで自動修正
+textlintで自動修正する場合は以下のコマンドを実行します。
 
 ```shell
 textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md

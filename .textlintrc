@@ -1,7 +1,10 @@
 {
   "filters": {},
   "rules": {
-    "@textlint-ja/no-insert-dropping-sa": true,
+    "@textlint-ja/textlint-rule-no-insert-dropping-sa": true,
+    "@proofdict/proofdict": {
+      "dictURL": "https://azu.github.io/proof-dictionary/"
+    },
     "abbr-within-parentheses": true,
     "footnote-order": true,
     "general-novel-style-ja": {
@@ -9,9 +12,6 @@
         "chars_leading_paragraph": false,
         // アラビア数字の桁数は2桁まで (false: チェックしない)
         "max_arabic_numeral_digits": false
-    },
-    "ja-hiragana-fukushi": {
-        "rulePath": "fukushi.yml"
     },
     "ja-hiragana-hojodoushi": true,
     "ja-hiragana-keishikimeishi": true,
@@ -31,7 +31,6 @@
     "preset-jtf-style": {
         "1.2.1.句点(。)と読点(、)": false,
         "4.3.1.丸かっこ（）": false
-    },
-    "spellcheck-tech-word": true
+    }
   }
 }
