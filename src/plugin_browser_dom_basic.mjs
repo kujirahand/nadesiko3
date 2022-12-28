@@ -199,7 +199,8 @@ export default {
             if (wa[s]) {
                 s = wa[s];
             }
-            if (s === 'disabled') {
+            // domのプロパティを確認して存在すればその値を設定する #1392
+            if (s in dom) {
                 dom[s] = v;
             }
             else {
@@ -221,12 +222,11 @@ export default {
             if (wa[s]) {
                 s = wa[s];
             }
-            if (s === 'disabled') {
+            // domのプロパティを確認して存在すればその値を取得する #1392
+            if (s in dom) {
                 return dom[s];
             }
-            else {
-                return dom.getAttribute(s);
-            }
+            return dom.getAttribute(s);
         }
     },
     'DOM和属性': {

@@ -175,7 +175,8 @@ export default {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
-      if (s === 'disabled') {
+      // domのプロパティを確認して存在すればその値を設定する #1392
+      if (s in dom) {
         dom[s] = v
       } else {
         dom.setAttribute(s, v)
@@ -192,11 +193,11 @@ export default {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
-      if (s === 'disabled') {
+      // domのプロパティを確認して存在すればその値を取得する #1392
+      if (s in dom) {
         return dom[s]
-      } else {
-        return dom.getAttribute(s)
       }
+      return dom.getAttribute(s)
     }
   },
   'DOM和属性': { // const // @DOMわぞくせい
