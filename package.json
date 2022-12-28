@@ -42,6 +42,7 @@
     "extlib:clean": "rm -f -r demo/extlib/*",
     "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
     "check_new_version": "node src/cnako3.mjs tools/check_new_version.nako3",
+    "markdownlint": "markdownlint **/*.md --ignore node_modules",
     "hello": "node core/command/snako.mjs -e \"'hello'と表示\""
   },
   "repository": {

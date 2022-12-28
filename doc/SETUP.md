@@ -51,7 +51,7 @@ npm run build
 
 ```bash
 # バンドルファイル内の各パッケージがどのぐらいの容量を占めているかを可視化
-$ npm run analyze
+npm run analyze
 ```
 
 開発時、以下のコマンドを実行すれば、監視ビルドさせることができる。
@@ -153,4 +153,3 @@ npm install --production
 以前は、本リポジトリでElectronにも対応していたが別リポジトリを用意した。
 
 - [なでしこ3配布パック(Electron)](https://github.com/kujirahand/nadesiko3electron)
-
