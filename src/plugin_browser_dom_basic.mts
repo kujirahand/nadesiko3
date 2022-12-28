@@ -200,7 +200,7 @@ export default {
       return dom.getAttribute(s)
     }
   },
-  'DOM和属性': { // const // @DOMわぞくせい
+  'DOM和属性': { // 'const' // @DOMわぞくせい
     type: 'const',
     value: { // (ref) https://developer.mozilla.org/ja/docs/Web/API/Element
       '幅': 'width',
@@ -215,7 +215,7 @@ export default {
       '無効化': 'disabled'
     }
   },
-  'DOM和スタイル': { // const // @DOMわすたいる
+  'DOM和スタイル': { // 'const' // @DOMわすたいる
     type: 'const',
     value: {
       '幅': 'width',
