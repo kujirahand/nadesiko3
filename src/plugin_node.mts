@@ -929,6 +929,20 @@ export default {
     },
     return_none: true
   },
+  'POSTデータ生成': { // @辞書形式のデータPARAMSをkey=value&key=value...の形式に変換する // @POSTでーたせいせい
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (params: any, sys: any) {
+      const flist = []
+      for (const key in params) {
+        const v = params[key]
+        const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
+        flist.push(kv)
+      }
+      return flist.join('&')
+    }
+  },
   // @新AJAX
   'AJAXテキスト取得': { // @AJAXでURLにアクセスしテキスト形式で結果を得る。送信時AJAXオプションの値を参照。 // @AJAXてきすとしゅとく
     type: 'func',
@@ -938,6 +952,7 @@ export default {
     fn: async function (url: string, sys: any) {
       let options = sys.__v0['AJAXオプション']
       if (options === '') { options = { method: 'GET' } }
+      console.log(url, options)
       const res = await fetch(url, options)
       const txt = await res.text()
       return txt
@@ -969,6 +984,29 @@ export default {
       const res = await fetch(url, options)
       const bin = await res.arrayBuffer()
       return bin
+    },
+    return_none: false
+  },
+  // @LINE
+  'LINE送信': { // @ LINEにメッセージを送信する。先にLINE Notifyのページで宛先のトークンを取得する。TOKENへMESSAGEをLINE送信する。 // @LINEそうしん
+    type: 'func',
+    josi: [['へ', 'に'], ['を']],
+    pure: true,
+    asyncFn: true,
+    fn: async function (token: string, message: string, sys: any) {
+      const lineNotifyUrl = 'https://notify-api.line.me/api/notify'
+      const bodyData = sys.__exec('POSTデータ生成', [{ message }, sys])
+      const options = {
+        'method': 'POST',
+        'headers': {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`
+        },
+        'body': bodyData
+      }
+      const res = await fetch(lineNotifyUrl, options)
+      const jsonObj = await res.json()
+      return jsonObj
     },
     return_none: false
   },

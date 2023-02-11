@@ -1001,6 +1001,20 @@ export default {
         },
         return_none: true
     },
+    'POSTデータ生成': {
+        type: 'func',
+        josi: [['の', 'を']],
+        pure: true,
+        fn: function (params, sys) {
+            const flist = [];
+            for (const key in params) {
+                const v = params[key];
+                const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v);
+                flist.push(kv);
+            }
+            return flist.join('&');
+        }
+    },
     // @新AJAX
     'AJAXテキスト取得': {
         type: 'func',
@@ -1012,6 +1026,7 @@ export default {
             if (options === '') {
                 options = { method: 'GET' };
             }
+            console.log(url, options);
             const res = await fetch(url, options);
             const txt = await res.text();
             return txt;
@@ -1047,6 +1062,29 @@ export default {
             const res = await fetch(url, options);
             const bin = await res.arrayBuffer();
             return bin;
+        },
+        return_none: false
+    },
+    // @LINE
+    'LINE送信': {
+        type: 'func',
+        josi: [['へ', 'に'], ['を']],
+        pure: true,
+        asyncFn: true,
+        fn: async function (token, message, sys) {
+            const lineNotifyUrl = 'https://notify-api.line.me/api/notify';
+            const bodyData = sys.__exec('POSTデータ生成', [{ message }, sys]);
+            const options = {
+                'method': 'POST',
+                'headers': {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Bearer ${token}`
+                },
+                'body': bodyData
+            };
+            const res = await fetch(lineNotifyUrl, options);
+            const jsonObj = await res.json();
+            return jsonObj;
         },
         return_none: false
     },
