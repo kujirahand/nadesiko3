@@ -4,7 +4,7 @@
  */
 import fs from 'fs'
 import fse from 'fs-extra'
-import fetch from 'node-fetch'
+import fetch, { FormData, Blob } from 'node-fetch'
 import { exec, execSync } from 'child_process'
 import shellQuote from 'shell-quote'
 import path from 'path'
@@ -1006,7 +1006,31 @@ export default {
       }
       const res = await fetch(lineNotifyUrl, options)
       const jsonObj = await res.json()
-      return jsonObj
+      return JSON.stringify(jsonObj)
+    },
+    return_none: false
+  },
+  'LINE画像送信': { // @ LINEにメッセージを送信する。先にLINE Notifyのページで宛先のトークンを取得する。TOKENへIMAGE_FILEとMESSAGEをLINE画像送信する。 // @LINEがぞうそうしん
+    type: 'func',
+    josi: [['へ', 'に'], ['と'], ['を']],
+    pure: true,
+    asyncFn: true,
+    fn: async function (token: string, imageFile: string, message: string, sys: any) {
+      const lineNotifyUrl = 'https://notify-api.line.me/api/notify'
+      const formData = new FormData()
+      formData.append('message', message)
+      const imageData = fs.readFileSync(imageFile)
+      formData.append('imageFile', new Blob([imageData]))
+      const options = {
+        'method': 'POST',
+        'headers': {
+          'Authorization': `Bearer ${token}`
+        },
+        'body': formData
+      }
+      const res = await fetch(lineNotifyUrl, options)
+      const jsonObj = await res.json()
+      return JSON.stringify(jsonObj)
     },
     return_none: false
   },
