@@ -200,7 +200,9 @@ export default {
         type: 'func',
         josi: [['の'], ['を']],
         pure: false,
-        fn: function (t, data, sys) {
+        fn: function (t, dataOrg, sys) {
+            // データを破壊的に変更してしまうので最初にデータをコピー (#1416)
+            const data = JSON.parse(JSON.stringify(dataOrg));
             const bgcolorList = [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
