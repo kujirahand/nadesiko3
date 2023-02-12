@@ -20,6 +20,7 @@ const mode_ = (process.env.NODE_ENV) ? process.env.NODE_ENV : 'development'
 export default {
   mode: mode_,
   target: ['web', 'es5'],
+  devtool: 'source-map',
   entry: {
     wnako3: [path.join(srcPath, 'wnako3.mjs')], // plugin_system+plugin_browser含む
     wnako3webworker: [path.join(srcPath, 'wnako3webworker.mjs')], // plugin_system+plugin_browser_in_worker含む
