@@ -17,10 +17,11 @@ export default {
         type: 'func',
         josi: [['を']],
         pure: true,
-        fn: function (text) {
+        asyncFn: true,
+        fn: async function (text) {
             // Clipboard APIをサポートしているか
             if (navigator.clipboard) {
-                navigator.clipboard.writeText(text);
+                await navigator.clipboard.writeText(text);
             }
             else {
                 const tmp = document.createElement('div');
@@ -54,6 +55,22 @@ export default {
                     sys.__v0['対象'] = text;
                     f(sys);
                 });
+            }
+            else {
+                throw new Error('Clipbard APIが利用できません。');
+            }
+        }
+    },
+    'クリップボード取得': {
+        type: 'func',
+        josi: [],
+        pure: true,
+        asyncFn: true,
+        fn: async function (sys) {
+            // Clipboard APIをサポートしているか
+            if (navigator.clipboard) {
+                const result = await navigator.clipboard.readText();
+                return result;
             }
             else {
                 throw new Error('Clipbard APIが利用できません。');

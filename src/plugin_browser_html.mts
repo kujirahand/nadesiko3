@@ -17,10 +17,11 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (text: any) {
+    asyncFn: true,
+    fn: async function (text: any) {
       // Clipboard APIをサポートしているか
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(text)
+        await navigator.clipboard.writeText(text)
       } else {
         const tmp = document.createElement('div')
         const pre = document.createElement('pre')
@@ -51,6 +52,21 @@ export default {
           sys.__v0['対象'] = text
           f(sys)
         })
+      } else {
+        throw new Error('Clipbard APIが利用できません。')
+      }
+    }
+  },
+  'クリップボード取得': { // @クリップボードの値を取得して結果を返す(ユーザーの許可が必要)。 // @くりっぷぼーどしゅとく
+    type: 'func',
+    josi: [],
+    pure: true,
+    asyncFn: true,
+    fn: async function (sys: any) {
+      // Clipboard APIをサポートしているか
+      if (navigator.clipboard) {
+        const result = await navigator.clipboard.readText()
+        return result
       } else {
         throw new Error('Clipbard APIが利用できません。')
       }
