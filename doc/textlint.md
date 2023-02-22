@@ -39,5 +39,8 @@ textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md
 textlintで自動修正する場合は以下のコマンドを実行します。
 
 ```shell
-textlint --fix *.md && textlint --fix doc/*.md && textlint --fix batch/*.md && textlint --fix tools/*.md
+textlint --fix *.md && \
+  textlint --fix doc/*.md && \
+  textlint --fix batch/*.md && \
+  textlint --fix tools/*.md
 ```

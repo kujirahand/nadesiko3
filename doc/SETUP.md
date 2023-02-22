@@ -152,4 +152,4 @@ npm install --production
 
 以前は、本リポジトリでElectronにも対応していたが別リポジトリを用意した。
 
-- [なでしこ3配布パック(Electron)](https://github.com/kujirahand/nadesiko3electron)
+[なでしこ3配布パック(Electron)](https://github.com/kujirahand/nadesiko3electron)

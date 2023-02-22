@@ -20,7 +20,8 @@ npm run test:all
 npm run build
 ```
 
-必要に応じて対応ブラウザを更新する。(以前は`npm run build`に含めていたが、OSによって異なる値を出力するため、毎回実行する必要はないことから省略された #1211)
+必要に応じて対応ブラウザを更新する。
+(以前は`npm run build`に含めていた。しかし、OSによって異なる値を出力するため手動に変更した。 #1211)
 
 ```shell
 npm run build:browsers
@@ -76,4 +77,3 @@ bin\7z  -mx=9 a node_modules.7z node_modules
 git commit -a
 git push
 ```
-

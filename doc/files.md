@@ -36,4 +36,3 @@
 ## src/enako3.mjs
 
 Electronによるアプリ本体。
-
