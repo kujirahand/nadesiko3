@@ -122,7 +122,8 @@ npm run test:all
 
 ## なでしこの開発履歴
 
-「なでしこ3」の開発は2017年に始まり、以後コツコツとバージョンアップを続けています。「誰でも簡単プログラマー」の目標を実現するために、これからも頑張ります。
+「なでしこ3」の開発は2017年に始まり、以後コツコツとバージョンアップを続けています。
+「誰でも簡単プログラマー」の目標を実現するために、これからも頑張ります。
 
 - (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更。言語コアを別リポジトリに移動
 - (2022-04-20) v3.3.2を公開(モジュール構造をCommonJS→ESModuleへ変更/asyncFnの実装)
@@ -158,6 +159,9 @@ npm run test:all
   - [nadesiko3webkit - なでしこ3軽量配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
   - [nadesiko3electron - なでしこ3フル配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
   - [nadesiko3win32 - なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
+- サーバーサイドJavaScriptエンジン用の実装
+  - [nadesiko3(Node.js)](https://github.com/kujirahand/nadesiko3)
+  - [nadesiko3(Deno)](https://github.com/kujirahand/nadesiko3deno)
 - 実験的に別言語で実装したなでしこ3
   - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
   - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)

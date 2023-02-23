@@ -31,10 +31,12 @@ Homebrew( <https://brew.sh/index_ja> ) (そしてXcode)をインストールし�
 
 ## 【共通】
 
-コマンドラインから以下を実行して、nadesiko3のリポジトリをcloneし、必要なライブラリをインストール。ただし、Node.jsのバージョンv10以上が必要。もし、Ubuntuで古いのNode.jsをインストールした場合など、nモジュールを利用して最新安定版のNode.jsを利用してください。
+コマンドラインから以下を実行して、nadesiko3のリポジトリをcloneし、必要なライブラリをインストール。ただし、Node.jsのバージョンv10以上が必要。もし、Ubuntuで古いのNode.jsをインストールした場合などは最新安定版のNode.jsを利用してください。
+
+なお、gitでリポジトリを取得する際、サブモジュールを利用するので、--recursiveを指定するのを忘れないようにしましょう。
 
 ```bash
-git clone https://github.com/kujirahand/nadesiko3
+git clone --recursive https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install --no-optional
 ```
@@ -79,7 +81,7 @@ apm install linter
 apm install linter-js-standard
 ```
 
-また、EditorConfigに対応しています。
+また、EditorConfigに対応している。
 (詳しくは[どんなエディタでもEditorConfigを使ってコードの統一性を高める - Qiita](https://qiita.com/naru0504/items/82f09881abaf3f4dc171)を参照)
 これに対応したエディタを使用することで、開発者側が意識することなくインデントやタブに関する規則に対応することが可能。
 
@@ -143,7 +145,7 @@ npm update --no-optional
 最低限のライブラリで良い場合には、``npm install --production``を実行するだけ。
 
 ```bash
-git clone https://github.com/kujirahand/nadesiko3.git
+git clone --recursive https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install --production
 ```
