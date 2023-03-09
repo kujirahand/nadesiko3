@@ -176,7 +176,7 @@
     height: 100%;
 }
 #ace_settingsmenu button, 
-##ace_settingsmenu input {
+#ace_settingsmenu input {
     height: 100%;
     font-size: 13px;
 }
@@ -190,6 +190,11 @@
     overflow-wrap: anywhere;
 }
 
+/* ブレイクポイント */
+.ace_gutter-cell.ace_breakpoint{ 
+    border-radius: 20px 0px 0px 20px; 
+    box-shadow: 0px 0px 1px 1px red inset; 
+}
 
 /*
  * ※があるとカーソルがずれる問題の修正

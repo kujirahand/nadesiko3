@@ -1149,7 +1149,7 @@ export function setupEditor(idOrElement, nako3, ace) {
     const editor = ace.edit(idOrElement);
     const element = typeof idOrElement === 'string' ? document.getElementById(idOrElement) : idOrElement;
     if (element === null) {
-        throw new Error(`idが ${idOrElement} のHTML要素は存在しません。`);
+        throw new Error(`[wnako3_editor] idが ${idOrElement} のHTML要素は存在しません。`);
     }
     /** @type {TypeofAceRange} */
     const AceRange = ace.require('ace/range').Range;
@@ -1241,7 +1241,25 @@ export function setupEditor(idOrElement, nako3, ace) {
         editorMarkers.clear();
     });
     editor.on('guttermousedown', (e) => {
-        console.log('@@@', e);
+        const target = e.domEvent.target;
+        if (target.className.indexOf('ace_gutter-cell') === -1) {
+            return;
+        }
+        if (!editor.isFocused()) {
+            return;
+        }
+        const row = e.getDocumentPosition().row;
+        const editorId = e.editor.editorId || 0;
+        if (target.className.indexOf('ace_breakpoint') === -1) {
+            e.editor.session.setBreakpoint(row);
+            window.postMessage({ action: 'breakpoint:on', row, editorId });
+        }
+        else {
+            e.editor.session.clearBreakpoint(row);
+            window.postMessage({ action: 'breakpoint:off', row, editorId });
+        }
+        // console.log('BREAKPOINT=', row, 'editorId=', editorId)
+        e.stop();
     });
     const forceSyntaxHighlighting = !!element.dataset.nako3ForceSyntaxHighlighting;
     let isFirstTime = true;
@@ -1392,14 +1410,6 @@ export function setupEditor(idOrElement, nako3, ace) {
     /**
        * プログラムを実行して、エラーがあればエディタ上に波線を表示する。出力はoutputContainerに表示する。
        * methodが'test'のとき、testNameを指定すると1つのテストだけ実行できる。
-       * @param {{
-       *     outputContainer?: HTMLElement
-       *     file?: string
-       *     preCode?: string
-       *     localFiles?: Record<string, string>
-       *     method?: 'run' | 'test' | 'compile'
-       *     testName?: string
-       * }} opts
        */
     const run = (opts) => {
         const code = editor.getValue();

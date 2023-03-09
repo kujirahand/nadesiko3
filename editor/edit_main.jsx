@@ -1,5 +1,7 @@
-// @ts-nocheck
+/* eslint-disable react/prop-types */
+//
 // edit_main.js --- for demo editor
+//
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import dayjs from 'dayjs'
@@ -7,6 +9,7 @@ import commandListJSON from '../release/command.json'
 
 let activeEditor = null
 
+// --- コマンドリストの読み込みなど ---
 /** @type {Record<string, Record<string, string[][]>>} */
 const commandList = /** @type {{ name: String, group: { type: string, name: String, args: string, value: string }[] }[]} */([])
 for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
@@ -23,6 +26,7 @@ for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
   }
 }
 
+// --- 処理のクリア ---
 const clearNako = (editorId, outputContainer) => {
   if (outputContainer) {
     outputContainer.innerHTML = ''
@@ -39,16 +43,17 @@ const clearNako = (editorId, outputContainer) => {
   ctx.clearRect(0, 0, nako3canvas.width, nako3canvas.height)
 }
 
+// ---
 const getNako3 = () => /** @type {import('../src/wnako3')} */(navigator.nako3)
-
 /** @type {React.FC<{ onClick: () => void, text: string }>} */
 const Button = (props) => <button className="default_button" onClick={props.onClick}>{props.text}</button>
-
 /** @type {React.FC<{ title: string }>} */
 const Section = (props) => <section><h5 className="edit_head">{props.title}</h5>{props.children}</section>
-
 /** @type {React.FC<{ code: string, editorId: number, autoSave?: string }>} */
-const Editor = ({ code, editorId, autoSave }) => {
+
+// --- エディタの初期化処理 ---
+const Editor = (params) => {
+  const { code, editorId, autoSave } = params
   const preCode = `\
 # 自動実行されるコード (編集不可)
 カメ描画先は『#nako3_canvas_${editorId}』。
@@ -60,20 +65,58 @@ const Editor = ({ code, editorId, autoSave }) => {
   const [showCommandList, toggleCommandList] = React.useReducer((x) => !x, false)
 
   // ace editor の初期化
+  const nako3 = getNako3()
   const preCodeEditorRef = /** @type {React.MutableRefObject<HTMLDivElement>} */(React.useRef())
   const editorRef = /** @type {React.MutableRefObject<HTMLDivElement>} */(React.useRef())
   const editor = /** @type {React.MutableRefObject<ReturnType<import('../src/wnako3')['setupEditor']>>} */(React.useRef())
-  React.useEffect(() => { getNako3().setupEditor(preCodeEditorRef.current) }, [])
+  const breakpoints = []
+  React.useEffect(() => { nako3.setupEditor(preCodeEditorRef.current) }, [])
   React.useEffect(() => {
-    editor.current = getNako3().setupEditor(editorRef.current)
+    editor.current = nako3.setupEditor(editorRef.current)
+    console.log('editorId=', editorId)
+    const edt = editor.current.editor
+    edt.editorId = editorId
     if (autoSave) {
-      editor.current.editor.on('change', () => {
-        window.localStorage[autoSave] = editor.current.editor.getValue()
+      edt.on('change', () => {
+        window.localStorage[autoSave] = edt.getValue()
       })
     }
+    window.addEventListener('message', (e) => {
+      const data = e.data
+      if (!data.action) { return }
+      if (data.editorId !== editorId) { return }
+      if (data.action === 'breakpoint:on') {
+        breakpoints.push(data.row + 1)
+      }
+      if (data.action === 'breakpoint:off') {
+        const i = breakpoints.indexOf(data.row + 1)
+        if (i >= 0) { breakpoints.splice(i, 1) }
+      }
+      // nako3にブレイクポイントの変更を通知
+      if (nako3.__global) {
+        nako3.__global.__v0['__DEBUGブレイクポイント一覧'] = breakpoints
+      }
+      // breakpoint buttons
+      document.querySelector(`#hideButtons${editorId}`).style.display = (breakpoints.length > 0) ? 'block' : 'none'
+      console.log('breakpoints=', breakpoints)
+    })
   }, [])
   const editorOptions = () => ({ preCode, outputContainer: /** @type {HTMLDivElement} */(document.getElementById(`nako3_editor_info_${editorId}`)) })
+  const breakpointNext = () => {
+    if (!nako3.__global) { return }
+    if (!activeEditor) { return }
+    // const cur = activeEditor.editor.selection.getCursor()
+    nako3.__global.__v0['__DEBUG強制待機'] = 1
+    nako3.__global.__v0['__DEBUG待機フラグ'] = 1
+    console.log('@breakpointNext=', nako3.__global.__v0['__DEBUG強制待機'])
+  }
+  const breakpointPlay = () => {
+    if (!nako3.__global) { return }
+    nako3.__global.__v0['__DEBUG待機フラグ'] = 1
+    console.log('@breakpointPlay')
+  }
 
+  // --- エディタのUI ---
   return <div>
     <Section title="エディタ">
       <div>
@@ -95,6 +138,8 @@ const Editor = ({ code, editorId, autoSave }) => {
           setUsedFuncs(getNako3().usedFuncs)
         }} />
         <Button text="デバッグ実行" onClick={async () => {
+          // breakpoint buttons
+          document.querySelector(`#hideButtons${editorId}`).style.display = (breakpoints.length > 0) ? 'block' : 'none'
           const nako3 = getNako3()
           activeEditor = editor.current
           nako3.debugOption.useDebug = true
@@ -102,6 +147,8 @@ const Editor = ({ code, editorId, autoSave }) => {
           nako3.debugOption.messageAction = 'debug.line'
           nako3.addListener('beforeRun', (g) => {
             console.log('DEBUG_MODE=', g.__varslist[0]['ナデシコバージョン'])
+            g.__varslist[0]['__DEBUGブレイクポイント一覧'] = breakpoints
+            nako3.__global = g
           })
           clearNako(editorId, editorOptions().outputContainer)
           await activeEditor.run({ ...editorOptions() }).promise
@@ -130,6 +177,11 @@ const Editor = ({ code, editorId, autoSave }) => {
             link.click()
           }
         }} />
+      </div>
+      <div className="buttons" id={'hideButtons' + editorId} style={{ display: 'none', fontSize: '0.8em' }}>
+        ブレイクポイント制御:
+        <button onClick={ () => { breakpointPlay() } }>▶ 処理再開</button>
+        <button onClick={ () => { breakpointNext() } }>↩ 次の行へ</button>
       </div>
     </Section>
     <Section title="実行結果">
