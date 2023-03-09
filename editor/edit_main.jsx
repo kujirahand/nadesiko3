@@ -1,7 +1,5 @@
-/* eslint-disable react/prop-types */
-//
 // edit_main.js --- for demo editor
-//
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import dayjs from 'dayjs'
