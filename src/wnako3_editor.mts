@@ -123,7 +123,9 @@ export function getScope (token: Token): string {
     case '@':
     case '+':
     case '-':
+    case '**':
     case '*':
+    case '÷÷':
     case '/':
     case '%':
     case '^':
@@ -1075,8 +1077,8 @@ class EditorTabs {
 }
 
 class Options {
-  /** @param {AceEditor} editor */
-  static save (editor) {
+  /** Save Options */
+  static save (editor: AceEditor) {
     try {
       /** @type {any} */
       const obj = {}
@@ -1126,12 +1128,8 @@ class Options {
     }
   }
 
-  /**
-     * OptionPanelクラスをなでしこ用に書き換える。
-     * @param {any} OptionPanel
-     * @param {AceEditor} editor
-     */
-  static initPanel (OptionPanel, editor) {
+  /** OptionPanelクラスをなでしこ用に書き換える。 */
+  static initPanel (OptionPanel: any, editor: AceEditor) {
     const panel = new OptionPanel(editor) // editorはエラーが飛ばなければ何でも良い
 
     // ページ内で一度だけ呼ぶ
@@ -1216,13 +1214,12 @@ class Options {
     // showSettingsMenu 関数は new OptionPanel(editor).render() で新しい設定パネルのインスタンスを生成するため、
     // renderメソッドを上書きすることで、生成されたインスタンスにアクセスできる。
     const render = OptionPanel.prototype.render
-    const self: any = globalThis
     OptionPanel.prototype.render = function (...args) {
       render.apply(this, ...args) // 元の処理
       // OptionPanel.setOption() で発火される setOption イベントをキャッチする
       this.on('setOption', () => {
         console.log('設定を保存しました。')
-        self.save(this.editor)
+        Options.save(this.editor)
       })
     }
   }
@@ -1376,6 +1373,9 @@ export function setupEditor (idOrElement, nako3, ace) {
 
     // 文字入力したらマーカーを消す
     editorMarkers.clear()
+  })
+  editor.on('guttermousedown', (e) => {
+    console.log('@@@', e)
   })
 
   const forceSyntaxHighlighting = !!element.dataset.nako3ForceSyntaxHighlighting
