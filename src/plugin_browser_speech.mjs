@@ -4,7 +4,53 @@ export default {
     '話': {
         type: 'func',
         josi: [['と', 'を', 'の']],
-        pure: false,
+        pure: true,
+        fn: function (s, sys) {
+            const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys]);
+            window.speechSynthesis.speak(msg);
+            console.log('#話す:', s);
+            return s;
+        }
+    },
+    '話終': {
+        type: 'func',
+        josi: [['と', 'を', 'の']],
+        pure: true,
+        asyncFn: true,
+        fn: function (s, sys) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys]);
+                    msg.onend = () => { resolve(); };
+                    window.speechSynthesis.speak(msg);
+                    console.log('#話す:', s);
+                }
+                catch (err) {
+                    reject(err);
+                }
+            });
+        }
+    },
+    '話終時': {
+        type: 'func',
+        josi: [['で'], ['と', 'を', 'の']],
+        pure: true,
+        fn: function (callback, s, sys) {
+            const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys]);
+            msg.onend = (e) => {
+                console.log('#話終時');
+                sys.__v0['対象イベント'] = e;
+                callback(sys);
+            };
+            window.speechSynthesis.speak(msg);
+            console.log('#話す:', s);
+            return s;
+        }
+    },
+    '音声合成発話オブジェクト取得': {
+        type: 'func',
+        josi: [['の', 'で']],
+        pure: true,
         fn: function (s, sys) {
             // 話者の特定
             let voice = sys.__v0['話:話者'];
@@ -20,38 +66,7 @@ export default {
             msg.rate = sys.__v0['話者速度'];
             msg.pitch = sys.__v0['話者声高'];
             msg.volume = sys.__v0['話者音量'];
-            window.speechSynthesis.speak(msg);
-            console.log('#話す:', s);
-            return s;
-        }
-    },
-    '話終時': {
-        type: 'func',
-        josi: [['で'], ['と', 'を', 'の']],
-        pure: false,
-        fn: function (callback, s, sys) {
-            // 話者の特定
-            let voice = sys.__v0['話:話者'];
-            if (!voice) {
-                voice = sys.__exec('話者設定', ['ja', sys]);
-            }
-            // インスタンス作成
-            const msg = new SpeechSynthesisUtterance(s);
-            msg.voice = voice;
-            if (voice) {
-                msg.lang = voice.lang;
-            } // 必ず話者の特定に成功している訳ではない
-            msg.rate = sys.__v0['話者速度'];
-            msg.pitch = sys.__v0['話者声高'];
-            msg.volume = sys.__v0['話者音量'];
-            msg.onend = (e) => {
-                console.log('#話終時');
-                sys.__v0['対象イベント'] = e;
-                callback(sys);
-            };
-            window.speechSynthesis.speak(msg);
-            console.log('#話す:', s);
-            return s;
+            return msg;
         }
     },
     '話者一覧取得': {
