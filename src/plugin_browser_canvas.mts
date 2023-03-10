@@ -200,7 +200,24 @@ export default {
       return img
     }
   },
-  '画像逐次読': { // @ 画像のURLを読み込んでImageオブジェクトを返す。また完了時『対象』にも代入する。『逐次実行』構文で使う。 // @ がぞうちくじよむ
+  '画像読待': { // @ 画像のURLを読み込んでImageオブジェクトを返す。その際、画像の読み込みが終わるまで待つ。// @ がぞうよみまつ
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    asyncFn: true,
+    fn: function (url: any) {
+      return new Promise((resolve, reject) => {
+        const img = new window.Image()
+        img.src = url
+        img.crossOrigin = 'Anonymous'
+        img.onload = () => { resolve(img) }
+        img.onerror = () => {
+          reject(new Error(`『画像読待』で読込みエラー。URL=『${url}』`))
+        }
+      })
+    }
+  },
+  '画像逐次読': { // @ (非推奨) 画像のURLを読み込んでImageオブジェクトを返す。また完了時『対象』にも代入する。『逐次実行』構文で使う。 // @ がぞうちくじよむ
     type: 'func',
     josi: [['の', 'を']],
     pure: true,

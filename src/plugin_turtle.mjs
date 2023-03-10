@@ -24,7 +24,6 @@ const PluginTurtle = {
         canvas_r: { left: 0, top: 0, width: 640, height: 400 },
         clearAll: function () {
           const me = this
-          console.log('[TURTLE] clearAll')
           for (let i = 0; i < me.list.length; i++) {
             const tt = me.list[i]
             tt.mlist = [] // ジョブをクリア

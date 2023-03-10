@@ -264,6 +264,23 @@ export default {
             return img;
         }
     },
+    '画像読待': {
+        type: 'func',
+        josi: [['の', 'を']],
+        pure: true,
+        asyncFn: true,
+        fn: function (url) {
+            return new Promise((resolve, reject) => {
+                const img = new window.Image();
+                img.src = url;
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => { resolve(img); };
+                img.onerror = () => {
+                    reject(new Error(`『画像読待』で読込みエラー。URL=『${url}』`));
+                };
+            });
+        }
+    },
     '画像逐次読': {
         type: 'func',
         josi: [['の', 'を']],
