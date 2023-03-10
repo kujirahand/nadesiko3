@@ -16,8 +16,10 @@ export class WebNakoCompiler extends NakoCompiler {
         this.addPluginObject('PluginBrowser', PluginBrowser);
         // 必要な定数を設定
         this.addListener('beforeRun', (g) => {
+            // バージョン情報を設定
             g.__varslist[0]['ナデシコ種類'] = 'wnako3';
             g.__varslist[0]['ナデシコバージョン'] = nakoVersion.version;
+            g.__varslist[0]['WNAKOバージョン'] = nakoVersion.version;
         });
     }
     /**

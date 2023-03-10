@@ -1,4 +1,4 @@
-export default {
+{
     "env": {
         "browser": true,
         "commonjs": false,
@@ -10,17 +10,16 @@ export default {
         "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
-        "ecmaVersion": "latest",
         "sourceType": "module",
         "project": "./tsconfig.json",
-        "extraFileExtensions": ['.mts', '.mjs'],
-        "ecmaVersion": 13
+        "extraFileExtensions": [".mts", ".mjs"],
+        "ecmaVersion": "latest"
     },
     "rules": {
         "@typescript-eslint/ban-ts-comment": "off",
         "quote-props": "off",
         "no-unused-vars": "off",
-        "no-undef": "Off",
+        "no-undef": "off",
         "@typescript-eslint/no-unused-vars":  "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-empty-function": "off",

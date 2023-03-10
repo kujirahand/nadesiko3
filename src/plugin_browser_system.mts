@@ -1,6 +1,6 @@
 export default {
   // @システム
-  'WNAKOバージョン': { type: 'const', value: '' }, // @WNAKOなでしこランタイムバージョン(言語エンジンのナデシコバージョンと異なることがある) // @WNAKOばーじょん
+  'WNAKOバージョン': { type: 'const', value: '?' }, // @WNAKOばーじょん
   '終': { // @ブラウザでプログラムの実行を強制終了する // @おわる
     type: 'func',
     josi: [],

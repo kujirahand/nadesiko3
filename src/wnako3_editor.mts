@@ -14,7 +14,7 @@ const getIndent = NakoIndent.getIndent
 const countIndent = NakoIndent.countIndent
 const isIndentSyntaxEnabled = NakoIndent.isIndentSyntaxEnabled
 
-type AceRange = {}
+type AceRange = any
 // type TypeofAceRange = (new (startLine: number, startColumn: number, endLine: number, endColumn: number) => AceRange)
 // type TokenType = string
 // type EditorToken = { type: TokenType, value: string, docHTML: string | null }

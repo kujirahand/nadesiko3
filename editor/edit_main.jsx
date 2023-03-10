@@ -71,7 +71,6 @@ const Editor = (params) => {
   React.useEffect(() => { nako3.setupEditor(preCodeEditorRef.current) }, [])
   React.useEffect(() => {
     editor.current = nako3.setupEditor(editorRef.current)
-    console.log('editorId=', editorId)
     const edt = editor.current.editor
     edt.editorId = editorId
     if (autoSave) {

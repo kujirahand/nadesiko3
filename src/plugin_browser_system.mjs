@@ -1,6 +1,6 @@
 export default {
     // @システム
-    'WNAKOバージョン': { type: 'const', value: '' },
+    'WNAKOバージョン': { type: 'const', value: '?' },
     '終': {
         type: 'func',
         josi: [],
