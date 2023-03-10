@@ -8,7 +8,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (id: any) {
+    fn: function (id: string) {
       return document.getElementById(id)
     }
   },
@@ -17,7 +17,10 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (q: any) {
-      return document.querySelector(q)
+      if (typeof q === 'string') {
+        return document.querySelector(q)
+      }
+      return q
     }
   },
   'DOM要素全取得': { // @DOMの要素をクエリqで全部取得して返す // @DOMようそぜんしゅとく
@@ -33,15 +36,15 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (tag: any) {
-      return document.getElementsByTagName(tag)
+      return Array.from(document.getElementsByTagName(tag))
     }
   },
   'DOM子要素取得': { // @DOMの要素PAの子要素をクエリqを指定して結果を一つ取得して返す // @DOMこようそしゅとく
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (pa: any, q: any) {
-      if (typeof pa === 'string') { pa = document.querySelector(pa) }
+    fn: function (pa: any, q: any, sys: any) {
+      pa = sys.__query(pa, 'DOM子要素取得', true)
       if (!pa.querySelector) {
         throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
       }
@@ -52,12 +55,12 @@ export default {
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (pa: any, q: any) {
-      if (typeof pa === 'string') { pa = document.querySelector(pa) }
+    fn: function (pa: any, q: any, sys: any) {
+      pa = sys.__query(pa, 'DOM子要素全取得', true)
       if (!pa.querySelectorAll) {
-        throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
+        throw new Error('『DOM子要素全取得』で親要素がDOMではありません。')
       }
-      return pa.querySelectorAll(q)
+      return Array.from(pa.querySelectorAll(q))
     }
   },
   'DOMイベント設定': { // @DOMのEVENTになでしこ関数名funcStrのイベントを設定 // @DOMいべんとせってい
@@ -65,8 +68,7 @@ export default {
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: false,
     fn: function (dom: any, event: any, funcStr: any, sys: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-
+      dom = sys.__query(dom, 'DOMイベント設定', false)
       dom[event] = sys.__findVar(funcStr, null)
     },
     return_none: true
@@ -75,9 +77,8 @@ export default {
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: any, text: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-
+    fn: function (dom: any, text: any, sys: any) {
+      dom = sys.__query(dom, 'DOMテキスト設定', false)
       const tag = dom.tagName.toUpperCase()
       if (tag === 'INPUT' || tag === 'TEXTAREA') { dom.value = text } else if (tag === 'SELECT') {
         for (let i = 0; i < dom.options.length; i++) {
@@ -95,12 +96,9 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (dom: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-      if (!dom.tagName) {
-        console.log('[DOMテキスト取得]でタグ名が取得できません。', dom)
-        return ''
-      }
+    fn: function (dom: any, sys: any) {
+      dom = sys.__query(dom, 'DOMテキスト取得', true)
+      if (!dom) { return '' }
       const tag = dom.tagName.toUpperCase()
       // input or textarea
       if (tag === 'INPUT' || tag === 'TEXTAREA') { return dom.value }
@@ -117,9 +115,8 @@ export default {
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: any, text: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-
+    fn: function (dom: any, text: any, sys: any) {
+      dom = sys.__query(dom, 'DOM_HTML設定', false)
       dom.innerHTML = text
     },
     return_none: true
@@ -128,9 +125,9 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (dom: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-
+    fn: function (dom: any, sys: any) {
+      dom = sys.__query(dom, 'DOM_HTML取得', true)
+      if (!dom) { return '' }
       return dom.innerHTML
     }
   },
@@ -172,7 +169,7 @@ export default {
     uses: ['DOM和属性'],
     pure: true,
     fn: function (dom: any, s: any, v: any, sys: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
+      dom = sys.__query(dom, 'DOM属性設定', false)
       const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
       // domのプロパティを確認して存在すればその値を設定する #1392
@@ -190,7 +187,8 @@ export default {
     uses: ['DOM和属性'],
     pure: true,
     fn: function (dom: any, s: any, sys: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
+      dom = sys.__query(dom, 'DOM属性取得', true)
+      if (!dom) { return '' }
       const wa = sys.__v0['DOM和属性']
       if (wa[s]) { s = wa[s] }
       // domのプロパティを確認して存在すればその値を取得する #1392
@@ -247,7 +245,7 @@ export default {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom: any, s: any, v: any, sys: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
+      dom = sys.__query(dom, 'DOMスタイル設定', false)
       const wa = sys.__v0['DOM和スタイル']
       if (wa[s] !== undefined) { s = wa[s] }
       if (wa[v] !== undefined) { v = wa[v] }
@@ -261,8 +259,7 @@ export default {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom: any, values: any, sys: any) {
-      if (typeof dom === 'string') { dom = document.querySelectorAll(dom) }
-      if (!dom) { return }
+      dom = sys.__query(dom, 'DOMスタイル一括設定', false)
       if (dom instanceof window.HTMLElement) { dom = [dom] }
       const wa = sys.__v0['DOM和スタイル']
       // 列挙したDOM一覧を全てスタイル変更する
@@ -285,7 +282,7 @@ export default {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom: any, style: any, sys: any) {
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
+      dom = sys.__query(dom, 'DOMスタイル取得', true)
       if (!dom) { return '' }
       const wa = sys.__v0['DOM和スタイル']
       if (wa[style]) { style = wa[style] }
@@ -299,8 +296,7 @@ export default {
     pure: true,
     fn: function (dom: any, style: any, sys: any) {
       const res = {}
-      if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
-
+      dom = sys.__query(dom, 'DOMスタイル一括取得', true)
       if (!dom) { return res }
       if (style instanceof String) { style = [style] }
 
@@ -334,9 +330,9 @@ export default {
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     pure: true,
-    fn: function (pa: any, el: any) {
-      if (typeof el === 'string') { el = document.querySelector(el) }
-      if (typeof pa === 'string') { pa = document.querySelector(pa) }
+    fn: function (pa: any, el: any, sys: any) {
+      pa = sys.__query(pa, 'DOM子要素追加', false)
+      el = sys.__query(el, 'DOM子要素追加', false)
       pa.appendChild(el)
     }
   },
@@ -344,19 +340,19 @@ export default {
     type: 'func',
     josi: [['から'], ['を']],
     pure: true,
-    fn: function (pa: any, el: any) {
-      if (typeof el === 'string') { el = document.querySelector(el) }
-      if (typeof pa === 'string') { pa = document.querySelector(pa) }
+    fn: function (pa: any, el: any, sys: any) {
+      pa = sys.__query(pa, 'DOM子要素削除', false)
+      el = sys.__query(el, 'DOM子要素削除', false)
       pa.removeChild(el)
     }
   },
-  '注目': { // @DOMの要素Aにフォーカスする(カーソルを移動する) // @ちゅうもく
+  '注目': { // @要素DOMにフォーカスする(カーソルを移動する) // @ちゅうもく
     type: 'func',
     josi: [['を', 'へ', 'に']],
     pure: true,
-    fn: function (el: any) {
-      if (typeof el === 'string') { el = document.querySelector(el) }
-      if (el.focus) { el.focus() }
+    fn: function (dom: any, sys: any) {
+      dom = sys.__query(dom, '注目', true)
+      if (dom && dom.focus) { dom.focus() }
     },
     return_none: true
   }

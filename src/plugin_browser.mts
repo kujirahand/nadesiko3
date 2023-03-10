@@ -176,6 +176,21 @@ const PluginBrowser = {
           sys.__requestAnimationFrameLastId = 0
         }
       }
+      // DOM取得のために使う
+      sys.__query = (dom, commandName, isGetFunc) => {
+        const elm = (typeof dom === 'string') ? document.querySelector(dom) : dom
+        if (!elm) {
+          if (isGetFunc) {
+            // 取得イベントではコンソールにヒントを出す
+            console.warn(`[ヒント](${sys.__v0.line})『${commandName}』でDOM取得に失敗しています。DOM=`, dom)
+          } else {
+            // 設定イベントでは実行時エラーにする
+            const desc = (typeof dom === 'string') ? dom : String(dom)
+            throw new Error(`『${commandName}』でクエリ『${desc}』でDOM取得に失敗しました。`)
+          }
+        }
+        return elm
+      }
     }
   },
   '!クリア': {

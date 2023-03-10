@@ -17,7 +17,10 @@ export default {
         josi: [['の', 'を']],
         pure: true,
         fn: function (q) {
-            return document.querySelector(q);
+            if (typeof q === 'string') {
+                return document.querySelector(q);
+            }
+            return q;
         }
     },
     'DOM要素全取得': {
@@ -33,17 +36,15 @@ export default {
         josi: [['の', 'を']],
         pure: true,
         fn: function (tag) {
-            return document.getElementsByTagName(tag);
+            return Array.from(document.getElementsByTagName(tag));
         }
     },
     'DOM子要素取得': {
         type: 'func',
         josi: [['の'], ['を']],
         pure: true,
-        fn: function (pa, q) {
-            if (typeof pa === 'string') {
-                pa = document.querySelector(pa);
-            }
+        fn: function (pa, q, sys) {
+            pa = sys.__query(pa, 'DOM子要素取得', true);
             if (!pa.querySelector) {
                 throw new Error('『DOM子要素取得』で親要素がDOMではありません。');
             }
@@ -54,14 +55,12 @@ export default {
         type: 'func',
         josi: [['の'], ['を']],
         pure: true,
-        fn: function (pa, q) {
-            if (typeof pa === 'string') {
-                pa = document.querySelector(pa);
-            }
+        fn: function (pa, q, sys) {
+            pa = sys.__query(pa, 'DOM子要素全取得', true);
             if (!pa.querySelectorAll) {
-                throw new Error('『DOM子要素取得』で親要素がDOMではありません。');
+                throw new Error('『DOM子要素全取得』で親要素がDOMではありません。');
             }
-            return pa.querySelectorAll(q);
+            return Array.from(pa.querySelectorAll(q));
         }
     },
     'DOMイベント設定': {
@@ -69,9 +68,7 @@ export default {
         josi: [['の'], ['に', 'へ'], ['を']],
         pure: false,
         fn: function (dom, event, funcStr, sys) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
+            dom = sys.__query(dom, 'DOMイベント設定', false);
             dom[event] = sys.__findVar(funcStr, null);
         },
         return_none: true
@@ -80,10 +77,8 @@ export default {
         type: 'func',
         josi: [['に', 'の', 'へ'], ['を']],
         pure: true,
-        fn: function (dom, text) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
+        fn: function (dom, text, sys) {
+            dom = sys.__query(dom, 'DOMテキスト設定', false);
             const tag = dom.tagName.toUpperCase();
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
                 dom.value = text;
@@ -107,12 +102,9 @@ export default {
         type: 'func',
         josi: [['の', 'から']],
         pure: true,
-        fn: function (dom) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
-            if (!dom.tagName) {
-                console.log('[DOMテキスト取得]でタグ名が取得できません。', dom);
+        fn: function (dom, sys) {
+            dom = sys.__query(dom, 'DOMテキスト取得', true);
+            if (!dom) {
                 return '';
             }
             const tag = dom.tagName.toUpperCase();
@@ -135,10 +127,8 @@ export default {
         type: 'func',
         josi: [['に', 'の', 'へ'], ['を']],
         pure: true,
-        fn: function (dom, text) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
+        fn: function (dom, text, sys) {
+            dom = sys.__query(dom, 'DOM_HTML設定', false);
             dom.innerHTML = text;
         },
         return_none: true
@@ -147,9 +137,10 @@ export default {
         type: 'func',
         josi: [['の', 'から']],
         pure: true,
-        fn: function (dom) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
+        fn: function (dom, sys) {
+            dom = sys.__query(dom, 'DOM_HTML取得', true);
+            if (!dom) {
+                return '';
             }
             return dom.innerHTML;
         }
@@ -192,9 +183,7 @@ export default {
         uses: ['DOM和属性'],
         pure: true,
         fn: function (dom, s, v, sys) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
+            dom = sys.__query(dom, 'DOM属性設定', false);
             const wa = sys.__v0['DOM和属性'];
             if (wa[s]) {
                 s = wa[s];
@@ -215,8 +204,9 @@ export default {
         uses: ['DOM和属性'],
         pure: true,
         fn: function (dom, s, sys) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
+            dom = sys.__query(dom, 'DOM属性取得', true);
+            if (!dom) {
+                return '';
             }
             const wa = sys.__v0['DOM和属性'];
             if (wa[s]) {
@@ -276,9 +266,7 @@ export default {
         uses: ['DOM和スタイル'],
         pure: true,
         fn: function (dom, s, v, sys) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
+            dom = sys.__query(dom, 'DOMスタイル設定', false);
             const wa = sys.__v0['DOM和スタイル'];
             if (wa[s] !== undefined) {
                 s = wa[s];
@@ -296,12 +284,7 @@ export default {
         uses: ['DOM和スタイル'],
         pure: true,
         fn: function (dom, values, sys) {
-            if (typeof dom === 'string') {
-                dom = document.querySelectorAll(dom);
-            }
-            if (!dom) {
-                return;
-            }
+            dom = sys.__query(dom, 'DOMスタイル一括設定', false);
             if (dom instanceof window.HTMLElement) {
                 dom = [dom];
             }
@@ -330,9 +313,7 @@ export default {
         uses: ['DOM和スタイル'],
         pure: true,
         fn: function (dom, style, sys) {
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
+            dom = sys.__query(dom, 'DOMスタイル取得', true);
             if (!dom) {
                 return '';
             }
@@ -350,9 +331,7 @@ export default {
         pure: true,
         fn: function (dom, style, sys) {
             const res = {};
-            if (typeof (dom) === 'string') {
-                dom = document.querySelector(dom);
-            }
+            dom = sys.__query(dom, 'DOMスタイル一括取得', true);
             if (!dom) {
                 return res;
             }
@@ -393,13 +372,9 @@ export default {
         type: 'func',
         josi: [['に', 'へ'], ['を']],
         pure: true,
-        fn: function (pa, el) {
-            if (typeof el === 'string') {
-                el = document.querySelector(el);
-            }
-            if (typeof pa === 'string') {
-                pa = document.querySelector(pa);
-            }
+        fn: function (pa, el, sys) {
+            pa = sys.__query(pa, 'DOM子要素追加', false);
+            el = sys.__query(el, 'DOM子要素追加', false);
             pa.appendChild(el);
         }
     },
@@ -407,13 +382,9 @@ export default {
         type: 'func',
         josi: [['から'], ['を']],
         pure: true,
-        fn: function (pa, el) {
-            if (typeof el === 'string') {
-                el = document.querySelector(el);
-            }
-            if (typeof pa === 'string') {
-                pa = document.querySelector(pa);
-            }
+        fn: function (pa, el, sys) {
+            pa = sys.__query(pa, 'DOM子要素削除', false);
+            el = sys.__query(el, 'DOM子要素削除', false);
             pa.removeChild(el);
         }
     },
@@ -421,12 +392,10 @@ export default {
         type: 'func',
         josi: [['を', 'へ', 'に']],
         pure: true,
-        fn: function (el) {
-            if (typeof el === 'string') {
-                el = document.querySelector(el);
-            }
-            if (el.focus) {
-                el.focus();
+        fn: function (dom, sys) {
+            dom = sys.__query(dom, '注目', true);
+            if (dom && dom.focus) {
+                dom.focus();
             }
         },
         return_none: true
