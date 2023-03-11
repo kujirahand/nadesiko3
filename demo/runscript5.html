@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>なでしこ3</title>
+</head>
+<body>
+<h1>なでしこ3デモ5</h1>
+<div>
+  <div id="print"></div>
+  <canvas id="demo_canvas" width="300" height="300"></script>
+</div>
+<hr>
+<div class="sbox">
+  <h3>その他</h3>
+  <ul>
+    <li><a href="index.html">デモトップへ戻る</a></li>
+    <li><a href="browsers.html">対応機器/Webブラウザ</a></li>
+  </ul>
+</div>
+
+<!-- なでしこを使う準備 -->
+<script src="../release/wnako3.js?run"></script>
+<script>
+  // === 独自の関数を定義 ===
+  const nako3 = navigator.nako3
+  
+  // 最も適当な「表示」関数を定義する
+  nako3.addFunc('表示', [['と', 'を']], (s, sys) => {
+    s = toHtml(s)
+    const p = document.querySelector('#print')
+    p.innerHTML += `${s}<br>`
+  }, true)
+  
+  // 「遅い乱数」関数を定義する(非同期関数)
+  nako3.addFunc('遅乱数', [], () => new Promise((resolve, reject) => {
+    setTimeout(()=>{
+      const val = Math.floor(Math.random() * 100)
+      resolve(val)
+    }, 500)
+  }), false, true)
+
+  // 「劇遅乱数」関数を定義する(非同期関数)
+  nako3.addFunc('劇遅乱数', [], async () => {
+    const m = await delay(()=>100, 500)
+    const r = await delay(()=>(Math.floor(Math.random() * 1000) + m), 500)
+    return r
+  }, false, true)
+
+  function delay(func, msec) {
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        const res = func()
+        resolve(res)
+      }, msec)
+    })  
+  }
+
+  function toHtml(s) {
+    s = '' + s
+    s = s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+    return s
+  }
+</script>
+<script type="なでしこ">
+  「--- test ---」と表示。
+  10回
+      R=遅い乱数
+      「{回数}: {R}」と表示。
+      R=劇遅乱数
+      「{回数}: {R}」と表示。
+  ここまで。
+</script>
+</body>
+</html>
