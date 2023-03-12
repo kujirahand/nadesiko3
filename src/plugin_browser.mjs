@@ -206,7 +206,7 @@ const PluginBrowser = {
     '!クリア': {
         type: 'func',
         josi: [],
-        pure: false,
+        pure: true,
         fn: function (sys) {
             // chart.jsを破棄
             if (sys.__chartjs) {

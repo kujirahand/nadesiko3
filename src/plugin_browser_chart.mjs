@@ -1,4 +1,3 @@
-// @ts-nocheck
 export default {
     // @グラフ描画_CHARTJS
     'グラフ描画': {
@@ -7,9 +6,14 @@ export default {
         pure: true,
         fn: function (data, sys) {
             // Chart.jsが使えるかチェック
-            if (!window.Chart) {
+            const win = sys.__v0.WINDOW;
+            if (typeof win === 'undefined') {
+                throw new Error('『グラフ描画』のエラー。ブラウザで実行してください。');
+            }
+            if (typeof win.Chart === 'undefined') {
                 throw new Error('『グラフ描画』のエラー。Chart.jsを取り込んでください。');
             }
+            const Chart = win.Chart;
             // Canvasが有効？
             if (!sys.__canvas) {
                 throw new Error('『グラフ描画』のエラー。『描画開始』命令で描画先のCanvasを指定してください。 ');
@@ -37,7 +41,7 @@ export default {
     '線グラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             data = sys.__exec('二次元グラフデータ変形', ['line', data, sys]);
             const d = {
@@ -51,7 +55,7 @@ export default {
     '棒グラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             // グラフオプションの差分作成
             const gopt = Object.assign({}, sys.__v0['グラフオプション'], { 'indexAxis': 'x' });
@@ -67,7 +71,7 @@ export default {
     '横棒グラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             // グラフオプションの差分作成
             const gopt = Object.assign({}, sys.__v0['グラフオプション'], { 'indexAxis': 'y' });
@@ -83,7 +87,7 @@ export default {
     '積上棒グラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             // グラフオプションの差分作成
             const gopt = Object.assign({}, sys.__v0['グラフオプション'], {
@@ -105,7 +109,7 @@ export default {
     '積上横棒グラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             // グラフオプションの差分作成
             const gopt = Object.assign({}, sys.__v0['グラフオプション'], {
@@ -127,7 +131,7 @@ export default {
     '散布図描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             // グラフオプションの差分作成
             const gopt = Object.assign({}, sys.__v0['グラフオプション'], {});
@@ -143,7 +147,7 @@ export default {
     '円グラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys]);
             const d = {
@@ -157,7 +161,7 @@ export default {
     'ドーナツグラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys]);
             const d = {
@@ -171,7 +175,7 @@ export default {
     'ポーラーグラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys]);
             const d = {
@@ -185,7 +189,7 @@ export default {
     'レーダーグラフ描画': {
         type: 'func',
         josi: [['を', 'で', 'の']],
-        pure: false,
+        pure: true,
         fn: function (data, sys) {
             data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys]);
             const d = {
@@ -199,7 +203,7 @@ export default {
     '二次元グラフデータ変形': {
         type: 'func',
         josi: [['の'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (t, dataOrg, sys) {
             // データを破壊的に変更してしまうので最初にデータをコピー (#1416)
             const data = JSON.parse(JSON.stringify(dataOrg));

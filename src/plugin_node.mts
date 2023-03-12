@@ -76,7 +76,7 @@ export default {
   '読': { // @ファイルSを開く // @よむ
     type: 'func',
     josi: [['を', 'から']],
-    pure: false,
+    pure: true,
     fn: function (s: string, sys: any) {
       return sys.__exec('開', [s])
     }
@@ -587,7 +587,7 @@ export default {
   '終了': { // @Nodeでプログラム実行を強制終了する // @しゅうりょう
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys: any) {
       sys.__exec('終', [])
     },
@@ -730,7 +730,7 @@ export default {
   'GET送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @GETそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
-    pure: false,
+    pure: true,
     fn: function (callback: any, url: string, sys: any) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },

@@ -82,7 +82,7 @@ export default {
     '読': {
         type: 'func',
         josi: [['を', 'から']],
-        pure: false,
+        pure: true,
         fn: function (s, sys) {
             return sys.__exec('開', [s]);
         }
@@ -638,7 +638,7 @@ export default {
     '終了': {
         type: 'func',
         josi: [],
-        pure: false,
+        pure: true,
         fn: function (sys) {
             sys.__exec('終', []);
         },
@@ -795,7 +795,7 @@ export default {
     'GET送信時': {
         type: 'func',
         josi: [['の'], ['まで', 'へ', 'に']],
-        pure: false,
+        pure: true,
         fn: function (callback, url, sys) {
             sys.__exec('AJAX送信時', [callback, url, sys]);
         },

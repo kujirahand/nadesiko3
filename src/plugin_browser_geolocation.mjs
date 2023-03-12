@@ -4,7 +4,7 @@ export default {
     '位置情報取得時': {
         type: 'func',
         josi: [['の', 'に', 'へ']],
-        pure: false,
+        pure: true,
         fn: function (func, sys) {
             let cb = func;
             if (typeof cb === 'string') {
@@ -26,7 +26,7 @@ export default {
     '位置情報監視時': {
         type: 'func',
         josi: [['の', 'に', 'へ']],
-        pure: false,
+        pure: true,
         fn: function (func, sys) {
             let cb = func;
             if (typeof cb === 'string') {

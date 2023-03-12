@@ -6,7 +6,7 @@ export default {
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」など『DOM部品作成』で追加する要素の親要素を指定(デフォルトはdocument)して要素を返す。 // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
-    pure: false,
+    pure: true,
     fn: function (el: any, sys: any) {
       if (typeof el === 'string') { el = document.querySelector(el) || document.getElementById(el) }
       sys.__v0['DOM親要素'] = el
@@ -16,7 +16,7 @@ export default {
   'DOM親部品設定': { // @ DOM部品作成でDOM要素を追加する親の対象を指定。『DOM親要素設定』と同じ。// @DOMおやぶひんせってい
     type: 'func',
     josi: [['に', 'へ']],
-    pure: false,
+    pure: true,
     fn: function (el: any, sys: any) {
       return sys.__exec('DOM親要素設定', [el, sys])
     }
@@ -26,7 +26,7 @@ export default {
   'DOMスキン設定': { // @「ボタン作成」「エディタ作成」などで適用するスキンを指定する(#1033) // @DOMすきんせってい
     type: 'func',
     josi: [['を', 'に', 'の']],
-    pure: false,
+    pure: true,
     fn: function (skin: any, sys: any) {
       sys.__v0['DOMスキン'] = skin
     },
@@ -35,7 +35,7 @@ export default {
   'DOM部品作成': { // @elmの要素を作成して『DOM親要素設定』で指定した要素に追加して、DOMオブジェクトを返す。(elmがDOM要素なら追加する) // @DOMぶひんさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (elm: any, sys: any) {
       const parent = sys.__v0['DOM親要素']
       const btn = (typeof (elm) === 'string') ? document.createElement(elm) : elm
@@ -57,7 +57,7 @@ export default {
   'ボタン作成': { // @ラベルlabelを持つbutton要素を追加しDOMオブジェクトを返す // @ぼたんさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (label: any, sys: any) {
       const btn = sys.__exec('DOM部品作成', ['button', sys])
       btn.innerHTML = label
@@ -67,7 +67,7 @@ export default {
   'エディタ作成': { // @textの値を持つテキストボックス(input[type='text'])の要素を追加しDOMオブジェクトを返す // @えでぃたさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (text: any, sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'text'
@@ -78,7 +78,7 @@ export default {
   'テキストエリア作成': { // @textの値を持つtextarea要素を追加しDOMオブジェクトを返す // @てきすとえりあさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (text: any, sys: any) {
       const te = sys.__exec('DOM部品作成', ['textarea', sys])
       te.value = text
@@ -88,7 +88,7 @@ export default {
   'ラベル作成': { // @textの値を持つラベル(span要素)を追加しDOMオブジェクトを返す // @らべるさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (text: any, sys: any) {
       const lbl = sys.__exec('DOM部品作成', ['span', sys])
       lbl.innerHTML = text
@@ -98,7 +98,7 @@ export default {
   'キャンバス作成': { // @大きさ[幅, 高]のcanvas要素を追加しDOMオブジェクトを返す // @きゃんばすさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (size: any, sys: any) {
       const cv = sys.__exec('DOM部品作成', ['canvas', sys])
       cv.width = size[0]
@@ -113,7 +113,7 @@ export default {
   '画像作成': { // @URLを指定してimg要素を追加しDOMオブジェクトを返す // @がぞうさくせい
     type: 'func',
     josi: [['の', 'から']],
-    pure: false,
+    pure: true,
     fn: function (url: any, sys: any) {
       const img = sys.__exec('DOM部品作成', ['img', sys])
       img.src = url
@@ -123,7 +123,7 @@ export default {
   '改行作成': { // @改行(br要素)を追加しDOMオブジェクトを返す // @かいぎょうさくせい
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys: any) {
       const br = sys.__exec('DOM部品作成', ['br', sys])
       return br
@@ -132,7 +132,7 @@ export default {
   'チェックボックス作成': { // @textのラベルを持つチェックボックス(input[type='checkbox'])要素を追加しDOMオブジェクトを返す // @ちぇっくぼっくすさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (text: any, sys: any) {
       // チェックボックスは、<span><input><label></span>で成り立つように構築
       const span = document.createElement('span')
@@ -153,7 +153,7 @@ export default {
   'セレクトボックス作成': { // @配列optionsの選択肢を持つselect要素を追加しDOMオブジェクトを返す // @せれくとぼっくすさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (options: any, sys: any) {
       const dom = document.createElement('select')
       for (let i = 0; i < options.length; i++) {
@@ -170,7 +170,7 @@ export default {
   'セレクトボックスアイテム設定': { // @配列データをセレクトボックスdomのアイテムに差し替える // @せれくとぼっくすあいてむさくせい
     type: 'func',
     josi: [['を'], ['へ', 'に']],
-    pure: false,
+    pure: true,
     fn: function (options: any, dom: any, sys: any) {
       if (typeof dom === 'string') { dom = document.querySelector(dom) }
       // 既存のoptionsをクリア
@@ -188,7 +188,7 @@ export default {
   '色選択ボックス作成': { // @色選択ボックス(input[type='color'])を作成しDOMオブジェクトを返す // @いろせんたくぼっくすさくせい
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'color'
@@ -198,7 +198,7 @@ export default {
   '日付選択ボックス作成': { // @日付選択ボックス(input[type='date'])を作成しDOMオブジェクトを返す // @ひづけせんたくぼっくすさくせい
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'date'
@@ -208,7 +208,7 @@ export default {
   'パスワード入力エディタ作成': { // @パスワード入力エディタ(input[type='password'])を作成し初期値Sを設定し、DOMオブジェクトを返す // @ぱすわーどにゅうりょくさくせい
     type: 'func',
     josi: [['の', 'で']],
-    pure: false,
+    pure: true,
     fn: function (s: any, sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'password'
@@ -219,7 +219,7 @@ export default {
   '値指定バー作成': { // @範囲RANGE(配列で[最小,最大[,値]])を指定するバー(input[type='range'])を作成しDOMオブジェクトを返す // @ぱすわーどにゅうりょくさくせい
     type: 'func',
     josi: [['の', 'で']],
-    pure: false,
+    pure: true,
     fn: function (range: any, sys: any) {
       if (!(range instanceof Array) || range.length < 2) {
         range = [0, 100, 50]
@@ -238,7 +238,7 @@ export default {
   '送信ボタン作成': { // @ラベルSの送信ボタン(input[type='submit'])を作成しDOMオブジェクトを返す // @そうしんぼたんさくせい
     type: 'func',
     josi: [['の']],
-    pure: false,
+    pure: true,
     fn: function (label: any, sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'submit'
@@ -249,7 +249,7 @@ export default {
   'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}で項目一覧S「a=初期値{改行}b=初期値{改行}色=?c#fff0f0{改行}=?送信」を送信フォームを作成しDOMオブジェクトを返す // @ふぉーむさくせい
     type: 'func',
     josi: [['で', 'の'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (obj: any, s: any, sys: any) {
       const frm = sys.__exec('DOM部品作成', ['form', sys])
       // 可能ならformにobjの値を移し替える
@@ -358,7 +358,7 @@ export default {
   'テーブル作成': { // @二次元配列AA(あるいは文字列の簡易CSVデータ)からTABLE要素を作成し、DOMオブジェクトを返す // @てーぶるさくせい
     type: 'func',
     josi: [['の', 'から']],
-    pure: false,
+    pure: true,
     fn: function (aa: any, sys: any) {
       if (typeof (aa) === 'string') {
         const rr = []

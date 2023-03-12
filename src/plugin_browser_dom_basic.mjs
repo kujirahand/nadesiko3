@@ -66,7 +66,7 @@ export default {
     'DOMイベント設定': {
         type: 'func',
         josi: [['の'], ['に', 'へ'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (dom, event, funcStr, sys) {
             dom = sys.__query(dom, 'DOMイベント設定', false);
             dom[event] = sys.__findVar(funcStr, null);
@@ -148,7 +148,7 @@ export default {
     'テキスト設定': {
         type: 'func',
         josi: [['に', 'の', 'へ'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (dom, v, sys) {
             return sys.__exec('DOMテキスト設定', [dom, v, sys]);
         }
@@ -156,7 +156,7 @@ export default {
     'テキスト取得': {
         type: 'func',
         josi: [['の', 'から']],
-        pure: false,
+        pure: true,
         fn: function (dom, sys) {
             return sys.__exec('DOMテキスト取得', [dom, sys]);
         }
@@ -164,7 +164,7 @@ export default {
     'HTML設定': {
         type: 'func',
         josi: [['に', 'の', 'へ'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (dom, v, sys) {
             return sys.__exec('DOM_HTML設定', [dom, v, sys]);
         }
@@ -172,7 +172,7 @@ export default {
     'HTML取得': {
         type: 'func',
         josi: [['の', 'から']],
-        pure: false,
+        pure: true,
         fn: function (dom, sys) {
             return sys.__exec('DOM_HTML取得', [dom, sys]);
         }

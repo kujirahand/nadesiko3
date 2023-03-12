@@ -5,7 +5,7 @@ export default {
     'DOMイベント追加': {
         type: 'func',
         josi: [['の'], ['に', 'へ'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (dom, event, funcStr, sys) {
             sys.__addEvent(dom, event, funcStr, null);
         },
@@ -14,7 +14,7 @@ export default {
     'DOMイベント削除': {
         type: 'func',
         josi: [['の'], ['から'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (dom, event, funcStr, sys) {
             sys.__removeEvent(dom, event, funcStr);
         },
@@ -41,7 +41,7 @@ export default {
     'クリック時': {
         type: 'func',
         josi: [['で'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'click', func, null);
         },
@@ -50,7 +50,7 @@ export default {
     '読込時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'load', func, null);
         },
@@ -59,7 +59,7 @@ export default {
     'フォーム送信時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'submit', func, null);
         },
@@ -69,7 +69,7 @@ export default {
     'キー押時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'keydown', func, sys.__keyHandler);
         },
@@ -78,7 +78,7 @@ export default {
     'キー離時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'keyup', func, sys.__keyHandler);
         },
@@ -87,7 +87,7 @@ export default {
     'キータイピング時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'keypress', func, sys.__keyHandler);
         },
@@ -98,7 +98,7 @@ export default {
     'マウス押時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'mousedown', func, sys.__mouseHandler);
         },
@@ -107,7 +107,7 @@ export default {
     'マウス移動時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'mousemove', func, sys.__mouseHandler);
         },
@@ -116,7 +116,7 @@ export default {
     'マウス離時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'mouseup', func, sys.__mouseHandler);
         },
@@ -136,7 +136,7 @@ export default {
     'タッチ開始時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'touchstart', func, sys.__touchHandler);
         },
@@ -145,7 +145,7 @@ export default {
     'タッチ時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'touchmove', func, sys.__touchHandler);
         },
@@ -154,7 +154,7 @@ export default {
     'タッチ終了時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'touchend', func, sys.__touchHandler);
         },
@@ -163,7 +163,7 @@ export default {
     'タッチキャンセル時': {
         type: 'func',
         josi: [['で'], ['を', 'の']],
-        pure: false,
+        pure: true,
         fn: function (func, dom, sys) {
             sys.__addEvent(dom, 'touchcancel', func, sys.__touchHandler);
         },
@@ -172,7 +172,7 @@ export default {
     '画面更新時実行': {
         type: 'func',
         josi: [['を']],
-        pure: false,
+        pure: true,
         fn: function (func, sys) {
             func = sys.__findVar(func, null); // 文字列指定なら関数に変換
             if (!func) {
@@ -185,7 +185,7 @@ export default {
     '画面更新処理取消': {
         type: 'func',
         josi: [['の', 'を']],
-        pure: false,
+        pure: true,
         fn: function (id, sys) {
             window.cancelAnimationFrame(id);
             if (sys.__requestAnimationFrameLastId === id) {

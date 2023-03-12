@@ -66,7 +66,7 @@ export default {
   'DOMイベント設定': { // @DOMのEVENTになでしこ関数名funcStrのイベントを設定 // @DOMいべんとせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (dom: any, event: any, funcStr: any, sys: any) {
       dom = sys.__query(dom, 'DOMイベント設定', false)
       dom[event] = sys.__findVar(funcStr, null)
@@ -134,7 +134,7 @@ export default {
   'テキスト設定': { // @DOMのテキストにVを設定 // @てきすとせってい
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (dom: any, v: any, sys: any) {
       return sys.__exec('DOMテキスト設定', [dom, v, sys])
     }
@@ -142,7 +142,7 @@ export default {
   'テキスト取得': { // @DOMのテキストを取得 // @てきすとしゅとく
     type: 'func',
     josi: [['の', 'から']],
-    pure: false,
+    pure: true,
     fn: function (dom: any, sys: any) {
       return sys.__exec('DOMテキスト取得', [dom, sys])
     }
@@ -150,7 +150,7 @@ export default {
   'HTML設定': { // @DOMのHTMLにVを設定 // @HTMLせってい
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (dom: any, v: any, sys: any) {
       return sys.__exec('DOM_HTML設定', [dom, v, sys])
     }
@@ -158,7 +158,7 @@ export default {
   'HTML取得': { // @DOMのテキストを取得 // @HTMLしゅとく
     type: 'func',
     josi: [['の', 'から']],
-    pure: false,
+    pure: true,
     fn: function (dom: any, sys: any) {
       return sys.__exec('DOM_HTML取得', [dom, sys])
     }

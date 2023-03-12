@@ -4,7 +4,7 @@ export default {
   '位置情報取得時': { // @位置情報を取得してコールバック関数内で変数「対象」に配列で[緯度,経度]を返す // @いちじょうほうしゅとくしたとき
     type: 'func',
     josi: [['の', 'に', 'へ']],
-    pure: false,
+    pure: true,
     fn: function (func: any, sys: any) {
       let cb = func
       if (typeof cb === 'string') { cb = sys.__findVar(cb) }
@@ -23,7 +23,7 @@ export default {
   '位置情報監視時': { // @位置情報を監視してIDを返す。引数に指定したコールバック関数内で変数「対象」に配列で[緯度,経度]を返す // @いちじょうほうかんししたとき
     type: 'func',
     josi: [['の', 'に', 'へ']],
-    pure: false,
+    pure: true,
     fn: function (func: any, sys: any) {
       let cb = func
       if (typeof cb === 'string') { cb = sys.__findVar(cb) }

@@ -574,7 +574,7 @@ export default {
     '描画ダウンロード': {
         type: 'func',
         josi: [],
-        pure: false,
+        pure: true,
         fn: function (sys) {
             const cv = sys.__v0['描画中キャンバス'];
             if (!cv) {

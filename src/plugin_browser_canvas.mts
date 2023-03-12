@@ -468,7 +468,7 @@ export default {
   '描画ダウンロード': { // @ 描画内容をPNG形式のデータURLに変換してダウンロードする。(「クリックした時」などと組み合わせて使う) // @ びょうがだうんろーど
     type: 'func',
     josi: [],
-    pure: false,
+    pure: true,
     fn: function (sys: any) {
       const cv = sys.__v0['描画中キャンバス']
       if (!cv) { throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。') }

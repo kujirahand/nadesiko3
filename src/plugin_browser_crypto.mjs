@@ -3,7 +3,7 @@ export default {
     'ハッシュ値計算時': {
         type: 'func',
         josi: [['へ'], ['を'], ['で']],
-        pure: false,
+        pure: true,
         fn: function (func, s, alg, sys) {
             func = sys.__findVar(func, null); // 文字列指定なら関数に変換
             // convert

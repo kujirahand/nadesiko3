@@ -126,7 +126,7 @@ const PluginDateTime = {
   'UNIX時間変換': { // @日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換) // @UNIXじかんへんかん
     type: 'func',
     josi: [['の', 'を', 'から']],
-    pure: false,
+    pure: true,
     fn: function (s, sys) {
       return sys.__exec('UNIXTIME変換', [s])
     }
@@ -173,7 +173,7 @@ const PluginDateTime = {
   '年数差': { // @日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @ねんすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       return sys.__exec('日時差', [a, b, '年'])
     }
@@ -181,7 +181,7 @@ const PluginDateTime = {
   '月数差': { // @日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。 // @げっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       return sys.__exec('日時差', [a, b, '月'])
     }
@@ -189,7 +189,7 @@ const PluginDateTime = {
   '日数差': { // @日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @にっすうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       return sys.__exec('日時差', [a, b, '日'])
     }
@@ -252,7 +252,7 @@ const PluginDateTime = {
   '時間差': { // @時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @じかんさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       return sys.__exec('日時差', [a, b, '時間'])
     }
@@ -260,7 +260,7 @@ const PluginDateTime = {
   '分差': { // @時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @ふんさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       return sys.__exec('日時差', [a, b, '分'])
     }
@@ -268,7 +268,7 @@ const PluginDateTime = {
   '秒差': { // @時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。 // @びょうさ
     type: 'func',
     josi: [['と', 'から'], ['の', 'までの']],
-    pure: false,
+    pure: true,
     fn: function (a, b, sys) {
       return sys.__exec('日時差', [a, b, '秒'])
     }
@@ -276,7 +276,7 @@ const PluginDateTime = {
   '時間加算': { // @時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。 // @じかんかさん
     type: 'func',
     josi: [['に'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (s, a, sys) {
       const pm = a.slice(0, 1)
 
@@ -297,7 +297,7 @@ const PluginDateTime = {
   '日付加算': { // @日付SにAを加えて返す。Aには「(+｜-)yyyy/mm/dd」で指定する。 // @ひづけかさん
     type: 'func',
     josi: [['に'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (s, a, sys) {
       const pm = a.slice(0, 1)
 

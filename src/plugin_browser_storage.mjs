@@ -4,7 +4,7 @@ export default {
     '保存': {
         type: 'func',
         josi: [['を'], ['に', 'へ']],
-        pure: false,
+        pure: true,
         fn: function (v, key, sys) {
             sys.__exec('ローカルストレージ保存', [v, key, sys]);
         },
@@ -13,7 +13,7 @@ export default {
     '開': {
         type: 'func',
         josi: [['を', 'から', 'の']],
-        pure: false,
+        pure: true,
         fn: function (key, sys) {
             return sys.__exec('ローカルストレージ読', [key, sys]);
         },
@@ -22,7 +22,7 @@ export default {
     '読': {
         type: 'func',
         josi: [['を', 'から', 'の']],
-        pure: false,
+        pure: true,
         fn: function (key, sys) {
             return sys.__exec('ローカルストレージ読', [key, sys]);
         },

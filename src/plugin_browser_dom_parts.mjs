@@ -6,7 +6,7 @@ export default {
     'DOM親要素設定': {
         type: 'func',
         josi: [['に', 'へ']],
-        pure: false,
+        pure: true,
         fn: function (el, sys) {
             if (typeof el === 'string') {
                 el = document.querySelector(el) || document.getElementById(el);
@@ -18,7 +18,7 @@ export default {
     'DOM親部品設定': {
         type: 'func',
         josi: [['に', 'へ']],
-        pure: false,
+        pure: true,
         fn: function (el, sys) {
             return sys.__exec('DOM親要素設定', [el, sys]);
         }
@@ -28,7 +28,7 @@ export default {
     'DOMスキン設定': {
         type: 'func',
         josi: [['を', 'に', 'の']],
-        pure: false,
+        pure: true,
         fn: function (skin, sys) {
             sys.__v0['DOMスキン'] = skin;
         },
@@ -37,7 +37,7 @@ export default {
     'DOM部品作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (elm, sys) {
             const parent = sys.__v0['DOM親要素'];
             const btn = (typeof (elm) === 'string') ? document.createElement(elm) : elm;
@@ -61,7 +61,7 @@ export default {
     'ボタン作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (label, sys) {
             const btn = sys.__exec('DOM部品作成', ['button', sys]);
             btn.innerHTML = label;
@@ -71,7 +71,7 @@ export default {
     'エディタ作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (text, sys) {
             const inp = sys.__exec('DOM部品作成', ['input', sys]);
             inp.type = 'text';
@@ -82,7 +82,7 @@ export default {
     'テキストエリア作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (text, sys) {
             const te = sys.__exec('DOM部品作成', ['textarea', sys]);
             te.value = text;
@@ -92,7 +92,7 @@ export default {
     'ラベル作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (text, sys) {
             const lbl = sys.__exec('DOM部品作成', ['span', sys]);
             lbl.innerHTML = text;
@@ -102,7 +102,7 @@ export default {
     'キャンバス作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (size, sys) {
             const cv = sys.__exec('DOM部品作成', ['canvas', sys]);
             cv.width = size[0];
@@ -117,7 +117,7 @@ export default {
     '画像作成': {
         type: 'func',
         josi: [['の', 'から']],
-        pure: false,
+        pure: true,
         fn: function (url, sys) {
             const img = sys.__exec('DOM部品作成', ['img', sys]);
             img.src = url;
@@ -127,7 +127,7 @@ export default {
     '改行作成': {
         type: 'func',
         josi: [],
-        pure: false,
+        pure: true,
         fn: function (sys) {
             const br = sys.__exec('DOM部品作成', ['br', sys]);
             return br;
@@ -136,7 +136,7 @@ export default {
     'チェックボックス作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (text, sys) {
             // チェックボックスは、<span><input><label></span>で成り立つように構築
             const span = document.createElement('span');
@@ -157,7 +157,7 @@ export default {
     'セレクトボックス作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (options, sys) {
             const dom = document.createElement('select');
             for (let i = 0; i < options.length; i++) {
@@ -174,7 +174,7 @@ export default {
     'セレクトボックスアイテム設定': {
         type: 'func',
         josi: [['を'], ['へ', 'に']],
-        pure: false,
+        pure: true,
         fn: function (options, dom, sys) {
             if (typeof dom === 'string') {
                 dom = document.querySelector(dom);
@@ -194,7 +194,7 @@ export default {
     '色選択ボックス作成': {
         type: 'func',
         josi: [],
-        pure: false,
+        pure: true,
         fn: function (sys) {
             const inp = sys.__exec('DOM部品作成', ['input', sys]);
             inp.type = 'color';
@@ -204,7 +204,7 @@ export default {
     '日付選択ボックス作成': {
         type: 'func',
         josi: [],
-        pure: false,
+        pure: true,
         fn: function (sys) {
             const inp = sys.__exec('DOM部品作成', ['input', sys]);
             inp.type = 'date';
@@ -214,7 +214,7 @@ export default {
     'パスワード入力エディタ作成': {
         type: 'func',
         josi: [['の', 'で']],
-        pure: false,
+        pure: true,
         fn: function (s, sys) {
             const inp = sys.__exec('DOM部品作成', ['input', sys]);
             inp.type = 'password';
@@ -225,7 +225,7 @@ export default {
     '値指定バー作成': {
         type: 'func',
         josi: [['の', 'で']],
-        pure: false,
+        pure: true,
         fn: function (range, sys) {
             if (!(range instanceof Array) || range.length < 2) {
                 range = [0, 100, 50];
@@ -244,7 +244,7 @@ export default {
     '送信ボタン作成': {
         type: 'func',
         josi: [['の']],
-        pure: false,
+        pure: true,
         fn: function (label, sys) {
             const inp = sys.__exec('DOM部品作成', ['input', sys]);
             inp.type = 'submit';
@@ -255,7 +255,7 @@ export default {
     'フォーム作成': {
         type: 'func',
         josi: [['で', 'の'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (obj, s, sys) {
             const frm = sys.__exec('DOM部品作成', ['form', sys]);
             // 可能ならformにobjの値を移し替える
@@ -386,7 +386,7 @@ export default {
     'テーブル作成': {
         type: 'func',
         josi: [['の', 'から']],
-        pure: false,
+        pure: true,
         fn: function (aa, sys) {
             if (typeof (aa) === 'string') {
                 const rr = [];

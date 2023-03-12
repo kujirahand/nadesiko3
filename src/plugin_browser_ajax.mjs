@@ -147,7 +147,7 @@ export default {
     'GET送信時': {
         type: 'func',
         josi: [['の'], ['まで', 'へ', 'に']],
-        pure: false,
+        pure: true,
         fn: function (callback, url, sys) {
             sys.__exec('AJAX送信時', [callback, url, sys]);
         },
@@ -156,7 +156,7 @@ export default {
     'POST送信時': {
         type: 'func',
         josi: [['の'], ['まで', 'へ', 'に'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (callback, url, params, sys) {
             const bodyData = sys.__exec('POSTデータ生成', [params, sys]);
             const options = {
@@ -216,7 +216,7 @@ export default {
     'POST送信': {
         type: 'func',
         josi: [['まで', 'へ', 'に'], ['を']],
-        pure: false,
+        pure: true,
         asyncFn: true,
         fn: function (url, params, sys) {
             return new Promise((resolve, reject) => {
@@ -241,7 +241,7 @@ export default {
     'POSTフォーム送信': {
         type: 'func',
         josi: [['まで', 'へ', 'に'], ['を']],
-        pure: false,
+        pure: true,
         asyncFn: true,
         fn: function (url, params, sys) {
             return new Promise((resolve, reject) => {
@@ -387,7 +387,7 @@ export default {
     'HTTP逐次取得': {
         type: 'func',
         josi: [['の', 'から', 'を']],
-        pure: false,
+        pure: true,
         fn: function (url, sys) {
             if (!sys.resolve) {
                 throw new Error('『HTTP逐次取得』は『逐次実行』構文内で利用する必要があります。');
@@ -399,7 +399,7 @@ export default {
     'POST逐次送信': {
         type: 'func',
         josi: [['まで', 'へ', 'に'], ['を']],
-        pure: false,
+        pure: true,
         fn: function (url, params, sys) {
             if (!sys.resolve) {
                 throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。');

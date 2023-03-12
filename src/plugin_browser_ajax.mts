@@ -139,7 +139,7 @@ export default {
   'GET送信時': { // @非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。 // @GETそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
-    pure: false,
+    pure: true,
     fn: function (callback: any, url: any, sys: any) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
@@ -148,7 +148,7 @@ export default {
   'POST送信時': { // @AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定 // @POSTそうしんしたとき
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (callback: any, url: any, params: any, sys: any) {
       const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
@@ -195,10 +195,10 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (params: any, sys: any) {
-      const flist = []
+      const flist: string[] = []
       for (const key in params) {
         const v = params[key]
-        const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
+        const kv: string = encodeURIComponent(key) + '=' + encodeURIComponent(v)
         flist.push(kv)
       }
       return flist.join('&')
@@ -207,7 +207,7 @@ export default {
   'POST送信': { // @非同期通信(AJAX)でPOSTメソッドにてURLへPARAMS(辞書型)を送信して応答を戻す。 // @POSTそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
-    pure: false,
+    pure: true,
     asyncFn: true,
     fn: function (url: any, params: any, sys: any) {
       return new Promise((resolve, reject) => {
@@ -232,7 +232,7 @@ export default {
   'POSTフォーム送信': { // @非同期通信(AJAX)でURLにPARAMS(辞書型)をフォームとしてPOSTメソッドにてURLへ送信し応答を返す。 // @POSTふぉーむそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
-    pure: false,
+    pure: true,
     asyncFn: true,
     fn: function (url: any, params: any, sys: any) {
       return new Promise((resolve, reject) => {
@@ -367,7 +367,7 @@ export default {
   'HTTP逐次取得': { // @(非推奨)『AJAXテキスト取得』をご利用ください。- 逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。 // @HTTPちくじしゅとく
     type: 'func',
     josi: [['の', 'から', 'を']],
-    pure: false,
+    pure: true,
     fn: function (url: any, sys: any) {
       if (!sys.resolve) { throw new Error('『HTTP逐次取得』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('AJAX逐次送信', [url, sys])
@@ -377,7 +377,7 @@ export default {
   'POST逐次送信': { // @(非推奨)逐次実行構文にて、AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。 // @POSTちくじそうしん
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
-    pure: false,
+    pure: true,
     fn: function (url: any, params: any, sys: any) {
       if (!sys.resolve) { throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.resolveCount++

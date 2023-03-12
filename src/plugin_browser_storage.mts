@@ -4,7 +4,7 @@ export default {
   '保存': { // @ブラウザのlocalStorageのキーKに文字列Vを保存 // @ほぞん
     type: 'func',
     josi: [['を'], ['に', 'へ']],
-    pure: false,
+    pure: true,
     fn: function (v: any, key: any, sys: any) {
       sys.__exec('ローカルストレージ保存', [v, key, sys])
     },
@@ -13,7 +13,7 @@ export default {
   '開': { // @ブラウザのlocalStorageからVを読む // @ひらく
     type: 'func',
     josi: [['を', 'から', 'の']],
-    pure: false,
+    pure: true,
     fn: function (key: any, sys: any) {
       return sys.__exec('ローカルストレージ読', [key, sys])
     },
@@ -22,7 +22,7 @@ export default {
   '読': { // @ブラウザのlocalStorageからVを読む // @よむ
     type: 'func',
     josi: [['を', 'から', 'の']],
-    pure: false,
+    pure: true,
     fn: function (key: any, sys: any) {
       return sys.__exec('ローカルストレージ読', [key, sys])
     },
