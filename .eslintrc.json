@@ -2,7 +2,8 @@
     "env": {
         "browser": true,
         "commonjs": false,
-        "es2022": true
+        "es2022": true,
+        "node": true
     },
     "extends": [
         "standard",
@@ -12,7 +13,6 @@
     "parserOptions": {
         "sourceType": "module",
         "project": "./tsconfig.json",
-        "extraFileExtensions": [".mts", ".mjs"],
         "ecmaVersion": "latest"
     },
     "rules": {
@@ -25,6 +25,10 @@
         "@typescript-eslint/no-empty-function": "off",
         "react/prop-types": "off"
     },
+    "ignorePatterns": [
+        "src/*.mjs",
+        "**/*.js"
+    ],
     "plugins": [
         "@typescript-eslint"
     ],

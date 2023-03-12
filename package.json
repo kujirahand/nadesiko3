@@ -36,7 +36,7 @@
     "analyze": "webpack-bundle-analyzer release/stats.json",
     "publish:desc": "node -e \"console.log('Please exec => npm run build && npm run test:all && npm publish && npm run publish:version')",
     "publish:version": "node src/cnako3.mjs batch/publish_version.nako3",
-    "eslint": "eslint . --ext mts",
+    "eslint": "eslint src/*.mts core/src/*.mts",
     "eslint:fix": "eslint . --ext mts --fix",
     "extlib:clean": "rm -f -r demo/extlib/*",
     "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
@@ -80,34 +80,6 @@
     "not dead",
     "not IE 11"
   ],
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "extends": [
-      "standard",
-      "eslint:recommended",
-      "plugin:react/recommended"
-    ],
-    "env": {
-      "mocha": true,
-      "browser": true,
-      "es2022": true
-    },
-    "rules": {
-      "no-console": "off",
-      "curly": [
-        "error",
-        "all"
-      ],
-      "quote-props": "off",
-      "react/prop-types": "off"
-    },
-    "plugins": [
-      "react"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 13
-    }
-  },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "_moduleAliases": {
     "root": ".",
