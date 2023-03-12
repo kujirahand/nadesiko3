@@ -215,7 +215,7 @@ export default {
                 return;
             }
             sys.__ctx.beginPath();
-            sys.__ctx.ellipse.apply(sys.__ctx, args);
+            sys.__ctx.ellipse(...args);
             if (sys.__fillStyle !== '') {
                 sys.__ctx.fill();
             }

@@ -163,7 +163,7 @@ export default {
       }
       if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
-      sys.__ctx.ellipse.apply(sys.__ctx, args)
+      sys.__ctx.ellipse(...args)
       if (sys.__fillStyle !== '') { sys.__ctx.fill() }
       if (sys.__strokeStyle !== '') { sys.__ctx.stroke() }
     },
