@@ -91,6 +91,7 @@ describe('plugin_node_test', async () => {
     let path7z = '7z'
     if (process.platform === 'win32') {
       path7z = path.join(__dirname, '../../bin/7z.exe')
+      if (!fs.existsSync(path7z)) { return }
     }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
