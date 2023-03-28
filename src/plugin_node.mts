@@ -634,12 +634,16 @@ export default {
     asyncFn: true,
     fn: function (msg: string): Promise<any> {
       return new Promise((resolve, reject) => {
-        const rl = readline.createInterface(process.stdin, process.stdout)
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+          terminal: false
+        })
         if (!rl) {
           reject(new Error('『尋』命令で標準入力が取得できません'))
           return
         }
-        rl.question(msg, (buf: any) => {
+        rl.question((msg === undefined ? "" : msg), (buf: any) => {
           rl.close()
           if (buf && buf.match(/^[0-9.]+$/)) { buf = parseFloat(buf) }
           resolve(buf)
