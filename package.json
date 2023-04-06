@@ -156,7 +156,6 @@
     "marked": "^4.0.16",
     "node-fetch": "^3.2.4",
     "opener": "^1.5.2",
-    "readline-sync": "^1.4.10",
     "shell-quote": "^1.7.3"
   }
 }
