@@ -683,19 +683,61 @@ export default {
         josi: [['と', 'を']],
         pure: true,
         asyncFn: true,
-        fn: function (msg) {
+        fn: function (msg, sys) {
             return new Promise((resolve, reject) => {
-                const rl = readline.createInterface(process.stdin, process.stdout);
-                if (!rl) {
+                // process.stdin.resume()
+                const cli = readline.createInterface(process.stdin, process.stdout);
+                if (!cli) {
                     reject(new Error('『尋』命令で標準入力が取得できません'));
                     return;
                 }
-                rl.question(msg, (buf) => {
-                    rl.close();
-                    if (buf && buf.match(/^[0-9.]+$/)) {
-                        buf = parseFloat(buf);
+                cli.question(msg, (line) => {
+                    if (line & line.match(/^[0-9.]+$/)) {
+                        line = parseFloat(line);
                     }
+                    cli.close();
+                    resolve(line);
+                });
+            });
+        }
+    },
+    '文字尋': {
+        type: 'func',
+        josi: [['と', 'を']],
+        pure: true,
+        asyncFn: true,
+        fn: function (msg) {
+            return new Promise((resolve, reject) => {
+                const cli = readline.createInterface(process.stdin, process.stdout);
+                if (!cli) {
+                    reject(new Error('『尋』命令で標準入力が取得できません'));
+                    return;
+                }
+                cli.question(msg, (buf) => {
+                    cli.close();
                     resolve(buf);
+                });
+            });
+        }
+    },
+    '標準入力全取得': {
+        type: 'func',
+        josi: [],
+        pure: true,
+        asyncFn: true,
+        fn: function () {
+            return new Promise((resolve, _reject) => {
+                let dataStr = '';
+                const reader = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout
+                });
+                reader.on('line', (line) => {
+                    dataStr += line + '\n';
+                });
+                reader.on('close', () => {
+                    reader.close();
+                    resolve(dataStr);
                 });
             });
         }

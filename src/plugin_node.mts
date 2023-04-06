@@ -2,7 +2,7 @@
  * file: plugin_node.mjs
  * node.js のためのプラグイン
  */
-import fs from 'fs'
+import fs, { read } from 'fs'
 import fse from 'fs-extra'
 import fetch, { FormData, Blob } from 'node-fetch'
 import { exec, execSync } from 'child_process'
@@ -10,7 +10,7 @@ import shellQuote from 'shell-quote'
 import path from 'path'
 import iconv from 'iconv-lite'
 import opener from 'opener'
-import assert from 'assert'
+import assert, { rejects } from 'assert'
 // 「標準入力取得時」「尋」で利用
 import readline from 'readline'
 // ハッシュ関数で利用
@@ -632,17 +632,61 @@ export default {
     josi: [['と', 'を']],
     pure: true,
     asyncFn: true,
-    fn: function (msg: string): Promise<any> {
+    fn: function (msg: string, sys: any): Promise<string> {
       return new Promise((resolve, reject) => {
-        const rl = readline.createInterface(process.stdin, process.stdout)
-        if (!rl) {
+        // process.stdin.resume()
+        const cli = readline.createInterface(process.stdin, process.stdout)
+        if (!cli) {
           reject(new Error('『尋』命令で標準入力が取得できません'))
           return
         }
-        rl.question(msg, (buf: any) => {
-          rl.close()
-          if (buf && buf.match(/^[0-9.]+$/)) { buf = parseFloat(buf) }
+        cli.question(msg, (line: any) => {
+          if (line & line.match(/^[0-9.]+$/)) {
+            line = parseFloat(line)
+          }
+          cli.close()
+          resolve(line)
+        })
+      })
+    }
+  },
+  '文字尋': { // @標準入力を一行取得する。ただし自動で数値に変換しない // @もじたずねる
+    type: 'func',
+    josi: [['と', 'を']],
+    pure: true,
+    asyncFn: true,
+    fn: function (msg: string): Promise<any> {
+      return new Promise((resolve, reject) => {
+        const cli = readline.createInterface(process.stdin, process.stdout)
+        if (!cli) {
+          reject(new Error('『尋』命令で標準入力が取得できません'))
+          return
+        }
+        cli.question(msg, (buf: any) => {
+          cli.close()
           resolve(buf)
+        })
+      })
+    }
+  },
+  '標準入力全取得': { // @標準入力を全部取得して返す // @ひょうじゅんにゅうりょくぜんしゅとく
+    type: 'func',
+    josi: [],
+    pure: true,
+    asyncFn: true,
+    fn: function (): Promise<string> {
+      return new Promise((resolve, _reject) => {
+        let dataStr = ''
+        const reader = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        })
+        reader.on('line', (line) => {
+          dataStr += line + '\n'
+        })
+        reader.on('close', () => {
+          reader.close()
+          resolve(dataStr)
         })
       })
     }
