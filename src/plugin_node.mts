@@ -2,7 +2,7 @@
  * file: plugin_node.mjs
  * node.js のためのプラグイン
  */
-import fs, { read } from 'fs'
+import fs from 'fs'
 import fse from 'fs-extra'
 import fetch, { FormData, Blob } from 'node-fetch'
 import { exec, execSync } from 'child_process'
@@ -10,7 +10,7 @@ import shellQuote from 'shell-quote'
 import path from 'path'
 import iconv from 'iconv-lite'
 import opener from 'opener'
-import assert, { rejects } from 'assert'
+import assert from 'assert'
 // 「標準入力取得時」「尋」で利用
 import readline from 'readline'
 // ハッシュ関数で利用
