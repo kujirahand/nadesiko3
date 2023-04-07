@@ -658,8 +658,11 @@ export default {
       sys.__linereader.resume()
       if (msg !== undefined) process.stdout.write(msg)
       let line = await sys.__linegetter()
+      if (!line) {
+        throw new Error('『尋』命令で標準入力が取得できません。最後の入力が終わった可能性があります')
+      }
       sys.__linereader.pause()
-      if (line & line.match(/^[0-9.]+$/)) {
+      if (line.match(/^[0-9.]+$/)) {
         line = parseFloat(line)
       }
       return line
@@ -677,6 +680,9 @@ export default {
       sys.__linereader.resume()
       if (msg !== undefined) process.stdout.write(msg)
       let line = await sys.__linegetter()
+      if (!line) {
+        throw new Error('『文字尋』命令で標準入力が取得できません。最後の入力が終わった可能性があります')
+      }
       sys.__linereader.pause()
       return line
     }
