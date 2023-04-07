@@ -68,6 +68,24 @@ export default {
             sys.__v0['ナデシコランタイム'] = path.basename(process.argv[0]);
             sys.__v0['母艦パス'] = sys.__getBokanPath();
             sys.__v0['AJAX:ONERROR'] = null;
+            // 『尋』『文字尋』『標準入力取得時』『標準入力全取得』のための一時変数
+            // .pause() しないと Ctrl+D するまで永遠に入力待ちになる
+            // .resume() することで標準入力の受け取り待ちになる
+            sys.__linereader = readline.createInterface({ input: process.stdin, output: process.stdout });
+            if (sys.__linereader === null) {
+                sys.__linegetter = null;
+            }
+            else {
+                sys.__linegetter = (function () {
+                    const getLineGen = (async function* () {
+                        for await (const line of sys.__linereader) {
+                            yield line;
+                        }
+                    })();
+                    return async () => ((await getLineGen.next()).value);
+                })();
+                sys.__linereader.pause();
+            }
         }
     },
     // @ファイル入出力
@@ -668,12 +686,12 @@ export default {
         type: 'func',
         josi: [['を']],
         pure: true,
-        fn: function (callback) {
-            const reader = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout
-            });
-            reader.on('line', function (line) {
+        fn: function (callback, sys) {
+            if (!sys.__linereader) {
+                throw new Error('『標準入力取得時』命令で標準入力が取得できません');
+            }
+            sys.__linereader.resume();
+            sys.__linereader.on('line', function (line) {
                 callback(line);
             });
         }
@@ -683,22 +701,19 @@ export default {
         josi: [['と', 'を']],
         pure: true,
         asyncFn: true,
-        fn: function (msg, sys) {
-            return new Promise((resolve, reject) => {
-                // process.stdin.resume()
-                const cli = readline.createInterface(process.stdin, process.stdout);
-                if (!cli) {
-                    reject(new Error('『尋』命令で標準入力が取得できません'));
-                    return;
-                }
-                cli.question(msg, (line) => {
-                    if (line & line.match(/^[0-9.]+$/)) {
-                        line = parseFloat(line);
-                    }
-                    cli.close();
-                    resolve(line);
-                });
-            });
+        fn: async function (msg, sys) {
+            if (!sys.__linereader) {
+                throw new Error('『尋』命令で標準入力が取得できません');
+            }
+            sys.__linereader.resume();
+            if (msg !== undefined)
+                process.stdout.write(msg);
+            let line = await sys.__linegetter();
+            sys.__linereader.pause();
+            if (line & line.match(/^[0-9.]+$/)) {
+                line = parseFloat(line);
+            }
+            return line;
         }
     },
     '文字尋': {
@@ -706,18 +721,16 @@ export default {
         josi: [['と', 'を']],
         pure: true,
         asyncFn: true,
-        fn: function (msg) {
-            return new Promise((resolve, reject) => {
-                const cli = readline.createInterface(process.stdin, process.stdout);
-                if (!cli) {
-                    reject(new Error('『尋』命令で標準入力が取得できません'));
-                    return;
-                }
-                cli.question(msg, (buf) => {
-                    cli.close();
-                    resolve(buf);
-                });
-            });
+        fn: async function (msg, sys) {
+            if (!sys.__linereader) {
+                throw new Error('『文字尋』命令で標準入力が取得できません');
+            }
+            sys.__linereader.resume();
+            if (msg !== undefined)
+                process.stdout.write(msg);
+            let line = await sys.__linegetter();
+            sys.__linereader.pause();
+            return line;
         }
     },
     '標準入力全取得': {
@@ -725,18 +738,18 @@ export default {
         josi: [],
         pure: true,
         asyncFn: true,
-        fn: function () {
+        fn: function (sys) {
             return new Promise((resolve, _reject) => {
                 let dataStr = '';
-                const reader = readline.createInterface({
-                    input: process.stdin,
-                    output: process.stdout
-                });
-                reader.on('line', (line) => {
+                if (!sys.__linereader) {
+                    throw new Error('『標準入力全取得』命令で標準入力が取得できません');
+                }
+                sys.__linereader.resume();
+                sys.__linereader.on('line', (line) => {
                     dataStr += line + '\n';
                 });
-                reader.on('close', () => {
-                    reader.close();
+                sys.__linereader.on('close', () => {
+                    sys.__linereader.close();
                     resolve(dataStr);
                 });
             });
