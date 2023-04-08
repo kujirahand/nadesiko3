@@ -63,16 +63,15 @@ export default {
       sys.__v0['母艦パス'] = sys.__getBokanPath()
       sys.__v0['AJAX:ONERROR'] = null
 
-
       // 『尋』『文字尋』『標準入力取得時』『標準入力全取得』のための一時変数
       // .pause() しないと Ctrl+D するまで永遠に入力待ちになる
       // .resume() することで標準入力の受け取り待ちになる
-      sys.__linereader = readline.createInterface({ input: process.stdin , output: process.stdout })
+      sys.__linereader = readline.createInterface({ input: process.stdin, output: process.stdout })
       if (sys.__linereader === null) {
         sys.__linegetter = null
       } else {
         sys.__linegetter = (function () {
-          const getLineGen = (async function* () {
+          const getLineGen = (async function * () {
             for await (const line of sys.__linereader) {
               yield line
             }
@@ -679,7 +678,7 @@ export default {
       }
       sys.__linereader.resume()
       if (msg !== undefined) process.stdout.write(msg)
-      let line = await sys.__linegetter()
+      const line = await sys.__linegetter()
       if (!line) {
         throw new Error('『文字尋』命令で標準入力が取得できません。最後の入力が終わった可能性があります')
       }
