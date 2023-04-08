@@ -138,7 +138,7 @@
     "stats-webpack-plugin": "^0.7.0",
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.1",
-    "stylelint": "^14.8",
+    "stylelint": "^15.4",
     "terser-webpack-plugin": "^5.3.1",
     "testdouble": "^3.16.5",
     "typescript": "^5.0.3",
