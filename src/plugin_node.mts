@@ -656,15 +656,17 @@ export default {
       }
       sys.__linereader.resume()
       if (msg !== undefined) process.stdout.write(msg)
-      let line = await sys.__linegetter()
+      const line = await sys.__linegetter()
       if (!line) {
         throw new Error('『尋』命令で標準入力が取得できません。最後の入力が終わった可能性があります')
       }
       sys.__linereader.pause()
-      if (line.match(/^[0-9.]+$/)) {
-        line = parseFloat(line)
+      const line_as_number = Number(line)
+      if (isNaN(line_as_number)) {
+        return line
+      } else {
+        return line_as_number
       }
-      return line
     }
   },
   '文字尋': { // @標準入力を一行取得する。ただし自動で数値に変換しない // @もじたずねる
