@@ -661,11 +661,11 @@ export default {
         throw new Error('『尋』命令で標準入力が取得できません。最後の入力が終わった可能性があります')
       }
       sys.__linereader.pause()
-      const line_as_number = Number(line)
-      if (isNaN(line_as_number)) {
+      const lineAsNumber = Number(line)
+      if (isNaN(lineAsNumber)) {
         return line
       } else {
-        return line_as_number
+        return lineAsNumber
       }
     }
   },
