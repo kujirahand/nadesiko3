@@ -24,21 +24,30 @@ jobs:
         node-version: [18.x, 16.x, 14.x]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout submodule
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
           token: ${{ secrets.SUBMODULE_TOKEN }}
-          submodules: recursive
+          submodules: true
+          
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+    
       # checkout すれば動く機能を試す
-      - run: npm run hello
+      - name: npm run hello
+        run: npm run hello
+      
       # 各種ライブラリをインストール
-      - run: npm install
+      - name: npm install
+        run: npm install
+      
       # 各種ビルドしてテストする
-      - run: npm run build
-      - run: npm run test
+      - name: npm run build
+        run: npm run build
+        
+      - name: npm run test
+        run: npm run test
 
