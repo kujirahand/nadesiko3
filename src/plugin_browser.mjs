@@ -175,7 +175,6 @@ const PluginBrowser = {
             // DOMイベント全クリア
             sys.__removeAllDomEvent = () => {
                 sys.__dom_events.forEach(e => {
-                    console.log(e.event, e.dom, e);
                     e.dom.removeEventListener(e.event, e.func);
                 });
                 sys.__dom_events = [];
