@@ -27,10 +27,7 @@ jobs:
       - name: Checkout submodule
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
-          token: ${{ secrets.SUBMODULE_TOKEN }}
-          submodules: true
-          
+          submodules: recursive
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -45,8 +42,8 @@ jobs:
         run: npm install
       
       # 各種ビルドしてテストする --- なぜかビルドで失敗するようなので一時的にコメントアウト
-      #- name: npm run build
-      #  run: npm run build
+      - name: npm run build
+        run: npm run build
         
       - name: npm run test
         run: npm run test
