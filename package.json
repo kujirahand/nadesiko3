@@ -32,7 +32,7 @@
     "build:webpack": "tsc && webpack --mode development",
     "check:command": "node src/cnako3.mjs batch/pickup_command.nako3",
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3",
-    "build:browsers": "npx browserslist > src/browsers.txt && node src/cnako3.mjs batch/build_browsers.nako3",
+    "build:browsers": "browserslist > src/browsers.txt && node src/cnako3.mjs batch/build_browsers.nako3",
     "watch": "webpack --watch --mode development",
     "analyze": "webpack-bundle-analyzer release/stats.json",
     "publish:desc": "node -e \"console.log('Please exec => npm run build && npm run test:all && npm publish && npm run publish:version')",

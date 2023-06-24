@@ -50,7 +50,7 @@ npm run nako3edit
 npm run nako3server
 ```
 
-> Node.jsの推奨バージョンは、v14以上です。
+> Node.jsの推奨バージョンは、v16.20以上です。
 
 ## Gitからインストール
 
