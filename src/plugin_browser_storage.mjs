@@ -44,8 +44,13 @@ export default {
         pure: true,
         fn: function (v, key, sys) {
             let body = v;
-            if (sys.__v0['保存オプション'] && (sys.__v0['保存オプション'].indexOf('json') >= 0)) {
-                body = JSON.stringify(body);
+            if (sys.__v0['保存オプション']) {
+                if ((sys.__v0['保存オプション'].indexOf('json') >= 0)) {
+                    body = JSON.stringify(body);
+                }
+                else if (sys.__v0['保存オプション'] === 'raw') {
+                    // なにもしない
+                }
             }
             window.localStorage[key] = body;
         },

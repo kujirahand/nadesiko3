@@ -44,8 +44,12 @@ export default {
     pure: true,
     fn: function (v: any, key: any, sys: any) {
       let body = v
-      if (sys.__v0['保存オプション'] && (sys.__v0['保存オプション'].indexOf('json') >= 0)) {
-        body = JSON.stringify(body)
+      if (sys.__v0['保存オプション']) {
+        if ((sys.__v0['保存オプション'].indexOf('json') >= 0)) {
+          body = JSON.stringify(body)
+        } else if (sys.__v0['保存オプション'] === 'raw') {
+          // なにもしない
+        }
       }
       window.localStorage[key] = body
     },
@@ -107,7 +111,7 @@ export default {
     return_none: false
   },
   '保存オプション': { type: 'const', value: 'json' }, // @ ほぞんおぷしょん
-  '保存オプション設定': { // @ブラウザのlocalStorageへの保存オプション「json」を設定する // @ほぞんおぷしょんせってい
+  '保存オプション設定': { // @ブラウザのlocalStorageへの保存オプション「json」または「raw」を設定する // @ほぞんおぷしょんせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
