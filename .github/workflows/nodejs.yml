@@ -39,7 +39,7 @@ jobs:
       
       # 各種ライブラリをインストール
       - name: npm install
-        run: npm install --include:dev
+        run: npm install
       
       # 各種ビルドしてテストする --- なぜかビルドで失敗するようなので一時的にコメントアウト
       - name: npm run build
