@@ -31,6 +31,22 @@ describe('plugin_node_test', async () => {
     nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
     await nako.runAsync(code, 'main')
   }
+  function get7zPath () {
+    if (process.platform === 'linux') { // Linuxならパスを調べる
+      if (fs.existsSync('/usr/bin/7z')) { return '/usr/bin/7z' }
+    }
+    if (process.platform === 'darwin') { // macOSでもパスを調べる
+      const appleSilicon = '/opt/homebrew/bin/7z'
+      if (fs.existsSync(appleSilicon)) { return appleSilicon }
+      const intelMac = '/usr/local/bin/7z'
+      if (fs.existsSync(intelMac)) { return intelMac }
+    }
+    if (process.platform === 'win32') {
+      const path7z = path.join(__dirname, '../../bin/7z.exe')
+      if (!fs.existsSync(path7z)) { return path7z }
+    }
+    return '' // なし
+  }
   // --- test ---
   it('表示', async () => {
     await cmp('3を表示', '3')
@@ -87,12 +103,9 @@ describe('plugin_node_test', async () => {
   it('テンポラリフォルダ', async () => {
     await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
   })
-  it('圧縮解凍', async () => {
-    let path7z = '7z'
-    if (process.platform === 'win32') {
-      path7z = path.join(__dirname, '../../bin/7z.exe')
-      if (!fs.existsSync(path7z)) { return }
-    }
+  it('圧縮解凍', async function () {
+    let path7z = get7zPath()
+    if (path7z === '') { return this.skip() }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
       tmp = path.join(os.tmpdir(), 'nadesiko3test')
@@ -111,8 +124,8 @@ describe('plugin_node_test', async () => {
     await cmp(code, 'OK')
   })
   it('圧縮/解凍', async function () {
-    if (process.platform === 'win32') { return this.skip() }
-    try { execSync('which 7z').toString() } catch (e) { return this.skip() }
+    let path7z = get7zPath()
+    if (path7z === '') { return this.skip() }
     let tmp = '/tmp'
     if (process.platform === 'linux') {
       tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nadesiko3zip-test'))
@@ -157,11 +170,9 @@ describe('plugin_node_test', async () => {
   })
   it('圧縮/解凍 - OSコマンドインジェクション対策(修正が不完全だった件の修正) #1325', async function () {
     // 7z がない環境ではテストを飛ばす
-    if (process.platform === 'win32') {
-      return this.skip()
-    } else {
-      try { execSync('which 7z').toString() } catch (e) { return this.skip() }
-    }
+    let path7z = get7zPath()
+    if (path7z === '') { return this.skip() }
+    //
     let tmp = '/tmp'
     if (process.platform === 'linux') {
       tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'test_nako3zip'))
