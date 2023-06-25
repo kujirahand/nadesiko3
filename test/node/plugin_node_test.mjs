@@ -9,8 +9,6 @@ import { NakoCompiler } from '../../core/src/nako3.mjs'
 import PluginNode from '../../src/plugin_node.mjs'
 import PluginCSV from '../../core/src/plugin_csv.mjs'
 
-import { CNako3 } from '../../src/cnako3mod.mjs'
-
 // __dirname のために
 import url from 'url'
 // @ts-ignore
@@ -83,7 +81,7 @@ describe('plugin_node_test', () => {
   })
   it('環境変数取得', async () => {
     const path = process.env.PATH
-    await cmp('「PATH」の環境変数取得して表示。', path)
+    await cmp('「PATH」の環境変数取得して表示。', path || '')
   })
   it('ファイルサイズ取得', async () => {
     await cmp('「' + testFileMe + '」のファイルサイズ取得;もし、それが2000以上ならば;「OK」と表示。違えば「NG」と表示。', 'OK')
@@ -136,7 +134,7 @@ describe('plugin_node_test', () => {
       'S1=「{TMP}/plugin_node_test.mjs」を読む。\n' +
       'S2=FINを読む。\n' +
       'もし(S1＝S2)ならば、"OK"と表示。\n'
-    await cmp(code, 'OK')
+    await cmp(code, 'OK', 300)
   })
   it('圧縮/解凍', async function () {
     let path7z = get7zPath()

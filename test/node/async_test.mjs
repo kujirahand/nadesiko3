@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 /// 
 /// Node.js用の非同期テストを行うためのテンプレート
 ///

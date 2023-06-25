@@ -1,4 +1,11 @@
 {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "sourceType": "module",
+      "project": ["./tsconfig.json", "./test/node"],
+      "ecmaVersion": "latest",
+      "extraFileExtensions": [".mjs", ".mts"]
+    },
     "env": {
         "browser": true,
         "commonjs": false,
@@ -10,11 +17,6 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
     ],
-    "parserOptions": {
-        "sourceType": "module",
-        "project": "./tsconfig.json",
-        "ecmaVersion": "latest"
-    },
     "rules": {
         "@typescript-eslint/ban-ts-comment": "off",
         "quote-props": "off",
