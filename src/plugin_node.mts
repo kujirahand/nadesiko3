@@ -101,17 +101,17 @@ export default {
       })
     }
   },
-  '読': { // @ファイルSを開く // @よむ
+  '読': { // @ファイFSを開く // @よむ
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
     asyncFn: true,
-    fn: function (s: string, _sys: any) {
+    fn: function (f: string, sys: any) {
       return new Promise((resolve, reject) => {
         // ファイルを読む
-        fs.readFile(s, 'utf-8', (err: any, text: any) => {
+        fs.readFile(f, 'utf-8', (err: any, text: any) => {
           if (err) {
-            reject(new Error(`ファイル『${s}』が開けませんでした。理由:${err.message}`))
+            reject(new Error(`ファイル『${f}』が開けませんでした。理由:${err.message}`))
             return
           }
           resolve(text)

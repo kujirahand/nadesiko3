@@ -112,12 +112,12 @@ export default {
         josi: [['を', 'から']],
         pure: true,
         asyncFn: true,
-        fn: function (s, _sys) {
+        fn: function (f, sys) {
             return new Promise((resolve, reject) => {
                 // ファイルを読む
-                fs.readFile(s, 'utf-8', (err, text) => {
+                fs.readFile(f, 'utf-8', (err, text) => {
                     if (err) {
-                        reject(new Error(`ファイル『${s}』が開けませんでした。理由:${err.message}`));
+                        reject(new Error(`ファイル『${f}』が開けませんでした。理由:${err.message}`));
                         return;
                     }
                     resolve(text);
