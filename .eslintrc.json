@@ -2,7 +2,7 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
       "sourceType": "module",
-      "project": ["./tsconfig.json", "./test/node"],
+      "project": ["./tsconfig.json"],
       "ecmaVersion": "latest",
       "extraFileExtensions": [".mjs", ".mts"]
     },

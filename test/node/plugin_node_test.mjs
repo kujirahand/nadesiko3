@@ -16,7 +16,6 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const testFileMe = path.join(__dirname, 'plugin_node_test.mjs')
 
-
 async function cmp(/** @type {string} */code, /** @type {string} */res, /** @type {number} */ms=10) {
   // (原則) EvalやFunctionの中で行う非同期処理は、その中で行うこと！
   // @see https://qiita.com/kujirahand/items/880917172bb0de8d30b9
@@ -151,11 +150,9 @@ describe('plugin_node_test', () => {
   })
   it('圧縮/解凍 - OSコマンドインジェクション対策がなされているか #1325', async function () {
     // 7z がない環境ではテストを飛ばす
-    if (process.platform === 'win32') {
-      return this.skip()
-    } else {
-      try { execSync('which 7z').toString() } catch (e) { return this.skip() }
-    }
+    let path7z = get7zPath()
+    if (path7z === '') { return this.skip() }
+    // 一時フォルダを作成
     let tmp = '/tmp'
     if (process.platform === 'linux') {
       tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'test_nako3zip'))
@@ -168,16 +165,16 @@ describe('plugin_node_test', () => {
       'FILE=「{TMP}/`touch hoge`.txt」;ZIP=「{TMP}/test.zip」\n'
     await cmp(pathSrc +
         'F=「{TMP}/hoge」;Fが存在;もしそうならば、Fをファイル削除;' +
-        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok')
-    await cmp(`${pathSrc}「{TMP}/hoge」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
-    await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok', 200)
+    await cmp(`${pathSrc}「{TMP}/hoge」が存在。もし,そうならば「OS_INJECTION」と表示。`, '', 50)
+    await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc', 50)
     // (2) ZIPファイルへのインジェクション
     const pathSrc2 = '' +
       `TMP="${tmp}"\n` +
       'FILE=「{TMP}/test2.txt」;ZIP=「{TMP}/`touch bbb`.zip」;'
     await cmp(pathSrc2 +
         'F=「{TMP}/bbb」;Fが存在;もしそうならば、Fをファイル削除;' +
-        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok')
+        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok', 200)
     await cmp(`${pathSrc2}「{TMP}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
     await cmp(`${pathSrc2}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
   })
@@ -199,7 +196,7 @@ describe('plugin_node_test', () => {
     const code1 = pathSrc +
       'F=「{TMP}/xxx」;Fが存在;もしそうならば、Fをファイル削除;' +
       'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。'
-    await cmp(code1, 'ok')
+    await cmp(code1, 'ok', 200)
     await cmp(`${pathSrc}「{TMP}/xxx」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
     await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
   })
