@@ -112,7 +112,7 @@ describe('plugin_node_test', () => {
     await cmp('「some data to hash」を「sha256」の「hex」でハッシュ値計算して表示。', '6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50')
   })
   it('テンポラリフォルダ', async () => {
-    await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。S=Fを読む。Sを表示。', 'abc')
+    await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。S=Fを読む。Sを表示。', 'abc', 100)
     // await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
   })
   it('圧縮解凍', async function () {
