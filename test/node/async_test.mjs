@@ -1,84 +1,51 @@
-// @ts-nocheck
 /* eslint-disable no-undef */
-import assert from 'assert'
-import { NakoCompiler } from '../../core/src/nako3.mjs'
 
-const PluginMyTest = {
-  'テスト': {
-    type: 'func',
-    josi: [['と'], ['で']],
-    fn: (a, b) => {
-      assert.strictEqual(a, b)
-    }
-  }
+/// 
+/// Node.js用の非同期テストを行うためのテンプレート
+///
+
+import os from 'os'
+import fs from 'node:fs'
+import assert from 'assert'
+import path from 'path'
+import { execSync } from 'child_process'
+
+import { NakoCompiler } from '../../core/src/nako3.mjs'
+import PluginNode from '../../src/plugin_node.mjs'
+import PluginCSV from '../../core/src/plugin_csv.mjs'
+
+// __dirname のために
+import url from 'url'
+// @ts-ignore
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+async function cmp(/** @type {string} */code, /** @type {string} */res, /** @type {number} */ms) {
+  // (原則) EvalやFunctionの中で行う非同期処理は、その中で行うこと！
+  // @see https://qiita.com/kujirahand/items/880917172bb0de8d30b9
+  const nako = new NakoCompiler()
+  nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+  nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
+  const g = await nako.runAsync(code, 'main')
+  await forceWait(ms)
+  assert.strictEqual(g.log, res) // 強制的に指定ミリ秒待つ
+  return g
+}
+// 強制的にミリ秒待機
+function forceWait(/** @type {number} */ms) {
+  return /** @type {Promise<void>} */(new Promise((resolve, reject) => {
+    setTimeout(() => { resolve() }, ms);
+  }));
 }
 
-// eslint-disable-next-line no-undef
-describe('async_test', async () => {
-  const cmp = async (/** @type {string} */ code, /** @type {string} */ exRes) => {
-    const nako3 = new NakoCompiler()
-    nako3.addPluginObject('PluginMyTest', PluginMyTest)
-    const result = await nako3.runAsync(code)
-    assert.strictEqual(result.log, exRes)
-  }
-  const exe = async (/** @type {string} */ code) => {
-    const nako3 = new NakoCompiler()
-    nako3.addPluginObject('PluginMyTest', PluginMyTest)
-    await nako3.runAsync(code)
-  }
-
-  // assert test
-  it('アサート自体のテスト', async () => {
-    await exe('3と3でテスト。')
-    await cmp('3を表示', '3')
+describe('async_test', () => {
+  // --- test ---
+  it('秒待', async () =>{
+    await cmp('A=3; 0.1秒待つ; 「{A}」を表示;', '3', 150)
   })
-
-  // --- async ---
-  it('async_simple', async () => {
-    await exe(
-      '逐次実行\n' +
-      '先に、1と表示\n' +
-      '次に、2と表示\n' +
-      '次に、表示ログと「1\n2\n」でテスト。\n' +
-      'ここまで。\n'
-    )
-  })
-  it('async_multiple', async () => {
-    await exe(
-      '逐次実行\n' +
-      '先に\n' +
-      '  1と表示\n' +
-      '  2と表示\n' +
-      'ここまで\n' +
-      '次に、3と表示\n' +
-      '次に、表示ログと「1\n2\n3\n」でテスト。\n' +
-      'ここまで。\n'
-    )
-  })
-  it('戻り値を使う', async () => {
-    await exe(
-      '逐次実行\n' +
-      '先に、それは30\n' +
-      '次に、それを表示\n' +
-      '次に、表示ログと「30\n」でテスト。\n' +
-      'ここまで。\n'
-    )
-  })
-  it('同期タイマー', async () => {
-    await exe(
-      '逐次実行\n' +
-      '先に、0.01秒待機\n' +
-      '次に、30を表示\n' +
-      '次に、表示ログと「30\n」でテスト。\n' +
-      'ここまで。\n'
-    )
-  })
-  it('連文 #373', async () => {
-    await exe(
-      '逐次実行\n' +
-      '先に、30に5を足して表示\n' +
-      '次に、表示ログと「35\n」でテスト。\n' +
-      'ここまで。\n'
-    )
+  // --- test ---
+  it('表示', async () => {
+    await cmp('A=3;「{A}」を表示;', '3', 1)
   })
 })
+

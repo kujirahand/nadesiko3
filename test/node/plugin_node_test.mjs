@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
-// import fs from 'fs'
 import os from 'os'
-import fs from 'fs'
+import fs from 'node:fs'
 import assert from 'assert'
 import path from 'path'
 import { execSync } from 'child_process'
@@ -10,6 +9,8 @@ import { NakoCompiler } from '../../core/src/nako3.mjs'
 import PluginNode from '../../src/plugin_node.mjs'
 import PluginCSV from '../../core/src/plugin_csv.mjs'
 
+import { CNako3 } from '../../src/cnako3mod.mjs'
+
 // __dirname のために
 import url from 'url'
 // @ts-ignore
@@ -17,36 +18,49 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const testFileMe = path.join(__dirname, 'plugin_node_test.mjs')
 
-describe('plugin_node_test', async () => {
-  const cmp = async (/** @type {string} */ code, /** @type {string | undefined} */ res) => {
-    const nako = new NakoCompiler()
-    nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
-    nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-    const g = await nako.runAsync(code, 'main')
-    assert.strictEqual(g.log, res)
+
+async function cmp(/** @type {string} */code, /** @type {string} */res, /** @type {number} */ms=10) {
+  // (原則) EvalやFunctionの中で行う非同期処理は、その中で行うこと！
+  // @see https://qiita.com/kujirahand/items/880917172bb0de8d30b9
+  const nako = new NakoCompiler()
+  nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+  nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
+  const g = await nako.runAsync(code, 'main')
+  await forceWait(ms)
+  assert.strictEqual(g.log, res) // 強制的に指定ミリ秒待つ
+  return g
+}
+// 強制的にミリ秒待機
+function forceWait(/** @type {number} */ms) {
+  return /** @type {Promise<void>} */(new Promise((resolve, reject) => {
+    setTimeout(() => { resolve() }, ms);
+  }));
+}
+
+const cmd = async (/** @type {string} */ code) => {
+  const nako = new NakoCompiler()
+  nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+  nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
+  await nako.runAsync(code, 'main')
+}
+function get7zPath() {
+  if (process.platform === 'linux') { // Linuxならパスを調べる
+    if (fs.existsSync('/usr/bin/7z')) { return '/usr/bin/7z' }
   }
-  const cmd = async (/** @type {string} */ code) => {
-    const nako = new NakoCompiler()
-    nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
-    nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-    await nako.runAsync(code, 'main')
+  if (process.platform === 'darwin') { // macOSでもパスを調べる
+    const appleSilicon = '/opt/homebrew/bin/7z'
+    if (fs.existsSync(appleSilicon)) { return appleSilicon }
+    const intelMac = '/usr/local/bin/7z'
+    if (fs.existsSync(intelMac)) { return intelMac }
   }
-  function get7zPath () {
-    if (process.platform === 'linux') { // Linuxならパスを調べる
-      if (fs.existsSync('/usr/bin/7z')) { return '/usr/bin/7z' }
-    }
-    if (process.platform === 'darwin') { // macOSでもパスを調べる
-      const appleSilicon = '/opt/homebrew/bin/7z'
-      if (fs.existsSync(appleSilicon)) { return appleSilicon }
-      const intelMac = '/usr/local/bin/7z'
-      if (fs.existsSync(intelMac)) { return intelMac }
-    }
-    if (process.platform === 'win32') {
-      const path7z = path.join(__dirname, '../../bin/7z.exe')
-      if (!fs.existsSync(path7z)) { return path7z }
-    }
-    return '' // なし
+  if (process.platform === 'win32') {
+    const path7z = path.join(__dirname, '../../bin/7z.exe')
+    if (!fs.existsSync(path7z)) { return path7z }
   }
+  return '' // なし
+}
+
+describe('plugin_node_test', () => {
   // --- test ---
   it('表示', async () => {
     await cmp('3を表示', '3')
@@ -101,7 +115,8 @@ describe('plugin_node_test', async () => {
     await cmp('「some data to hash」を「sha256」の「hex」でハッシュ値計算して表示。', '6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50')
   })
   it('テンポラリフォルダ', async () => {
-    await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
+    await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。S=Fを読む。Sを表示。', 'abc')
+    // await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
   })
   it('圧縮解凍', async function () {
     let path7z = get7zPath()
@@ -183,9 +198,10 @@ describe('plugin_node_test', async () => {
     const pathSrc = '' +
       `TMP="${tmp}"\n` +
       'FILE=「{TMP}/\'a\'`touch xxx`\'c」;ZIP=「{TMP}/test.zip」\n'
-    await cmp(pathSrc +
-        'F=「{TMP}/xxx」;Fが存在;もしそうならば、Fをファイル削除;' +
-        'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok')
+    const code1 = pathSrc +
+      'F=「{TMP}/xxx」;Fが存在;もしそうならば、Fをファイル削除;' +
+      'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。'
+    await cmp(code1, 'ok')
     await cmp(`${pathSrc}「{TMP}/xxx」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
     await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
   })

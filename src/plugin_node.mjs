@@ -32,9 +32,9 @@ export default {
                     fpath = '"' + fpath + '"';
                 }
                 else {
-                    console.log('before:', fpath);
+                    // console.log('before:', fpath)
                     fpath = shellQuote.quote([fpath]);
-                    console.log('after:', fpath);
+                    // console.log('after:', fpath)
                 }
                 return fpath;
             };
@@ -93,16 +93,36 @@ export default {
         type: 'func',
         josi: [['を', 'から']],
         pure: true,
-        fn: function (s) {
-            return fs.readFileSync(s, 'utf-8');
+        asyncFn: true,
+        fn: function (f) {
+            return new Promise((resolve, reject) => {
+                // ファイルを開く
+                fs.readFile(f, 'utf-8', (err, text) => {
+                    if (err) {
+                        reject(new Error(`ファイル『${f}』が開けませんでした。理由:${err.message}`));
+                        return;
+                    }
+                    resolve(text);
+                });
+            });
         }
     },
     '読': {
         type: 'func',
         josi: [['を', 'から']],
         pure: true,
-        fn: function (s, sys) {
-            return sys.__exec('開', [s]);
+        asyncFn: true,
+        fn: function (s, _sys) {
+            return new Promise((resolve, reject) => {
+                // ファイルを読む
+                fs.readFile(s, 'utf-8', (err, text) => {
+                    if (err) {
+                        reject(new Error(`ファイル『${s}』が開けませんでした。理由:${err.message}`));
+                        return;
+                    }
+                    resolve(text);
+                });
+            });
         }
     },
     'バイナリ読': {
@@ -117,20 +137,26 @@ export default {
         type: 'func',
         josi: [['を'], ['へ', 'に']],
         pure: true,
+        asyncFn: true,
         fn: function (s, f) {
-            // Buffer?
-            if (typeof s === 'string') {
-                fs.writeFileSync(f, s, 'utf-8');
-            }
-            else if (s instanceof Buffer) {
-                fs.writeFileSync(f, s);
-            }
-            else if (s instanceof ArrayBuffer) {
-                fs.writeFileSync(f, Buffer.from(s));
-            }
-            else {
-                fs.writeFileSync(f, s);
-            }
+            return new Promise((resolve, reject) => {
+                // 引数sの型によって書き込みオプションを変更する
+                const options = {};
+                if (typeof s === 'string') {
+                    options.encoding = 'utf-8';
+                }
+                if (s instanceof ArrayBuffer) {
+                    s = Buffer.from(s);
+                }
+                // データをファイルへ書き込む
+                fs.writeFile(f, s, options, (err) => {
+                    if (err) {
+                        reject(new Error(`ファイル『${f}』に保存できませんでした。理由:${err.message}`));
+                        return;
+                    }
+                    resolve(null);
+                });
+            });
         },
         return_none: true
     },
