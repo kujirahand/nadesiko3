@@ -153,7 +153,7 @@
     "fs-extra": "^11.1.0",
     "html": "^1.0.0",
     "iconv-lite": "^0.6.3",
-    "marked": "^4.0.16",
+    "marked": "^7.0.3",
     "node-fetch": "^3.2.4",
     "opener": "^1.5.2",
     "shell-quote": "^1.7.3"
