@@ -3,8 +3,7 @@
     "parserOptions": {
       "sourceType": "module",
       "project": ["./tsconfig.json"],
-      "ecmaVersion": "latest",
-      "extraFileExtensions": [".mjs", ".mts"]
+      "ecmaVersion": "latest"
     },
     "env": {
         "browser": true,
@@ -28,9 +27,12 @@
         "react/prop-types": "off"
     },
     "ignorePatterns": [
-        "src/*.mjs",
-        "**/*.js"
-    ],
+        "node_modules/",
+        "src/**/*.mjs",
+        "**/*.js",
+        "core/command/*.mts",
+        "core/deno/*.ts"
+      ],
     "plugins": [
         "@typescript-eslint"
     ],
