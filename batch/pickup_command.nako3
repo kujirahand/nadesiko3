@@ -45,6 +45,7 @@ CORE="core/src"
     ['nadesiko3-mysql/src/plugin_mysql.js', 'cnako'],
     ['nadesiko3-postgresql/src/plugin_postgresql.js', 'cnako'],
     ['nadesiko3php/src/plugin_php.php', 'phpnako'],
+    ['nadesiko3electron/src/plugin_electron_node.mjs'],
 ]
 # サポートしない
 # 'nadesiko3-firebase/plugin_firebase.js',
