@@ -31,6 +31,7 @@ CORE="core/src"
     ['src/plugin_webworker.mjs', 'wnako'],
 ]
 拡張プラグイン一覧は[
+    ['nadesiko3-music/nadesiko3-music.js', 'wnako'],
     ['nadesiko3-tools/nadesiko3-tools.mjs', 'cnako'],    
     ['nadesiko3-server/nadesiko3-server.mjs', 'cnako'],
     ['nadesiko3-sqlite3/nadesiko3-sqlite3.js', 'cnako'],    
