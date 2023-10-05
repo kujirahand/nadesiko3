@@ -1072,7 +1072,7 @@
 |KUDBタグ検索,"TAGの|TAGを","KUDBでデータ一覧からTAGプロパティを検索する",0,,命令,KUDBたぐけんさく
 |KUDBタグ削除,"TAGの|TAGを","KUDBでTAGを指定して削除",0,,命令,KUDBたぐさくじょ
 |KUDBタグ更新,"TAGをVに|Vへ","KUDBで指定TAGの内容をVに更新",0,,命令,KUDBたぐこうしん
-+ plugin_electron_node(拡張プラグイン,undefined)
++ plugin_electron_node(拡張プラグイン,enako)
 - システム定数
 |Eアプリ,"","app",0,,変数,Eあぷり
 |IPCメイン,"","ipcMain",0,,変数,IPCめいん
