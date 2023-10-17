@@ -71,7 +71,7 @@ export default {
                 data,
                 options: gopt
             };
-            return await sys.__exec('グラフ描画', [d, sys]);
+            return sys.__exec('グラフ描画', [d, sys]);
         }
     },
     '横棒グラフ描画': {
