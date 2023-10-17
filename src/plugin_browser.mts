@@ -190,6 +190,19 @@ const PluginBrowser = {
         }
         return elm
       }
+      // 動的にJSライブラリを取り込む
+      sys.__loadScript = (url) => {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+          script.type = 'text/javascript'
+          script.src = url
+          script.onload = resolve
+          script.onerror = () => {
+            reject(new Error(`Failed to load script at url: ${url}`))
+          }
+          document.getElementsByTagName('head')[0].appendChild(script)
+        })
+      }
     }
   },
   '!クリア': {

@@ -13,7 +13,7 @@ export default {
             // Chart.jsがないので自動的に取り込む
             if (typeof win.Chart === 'undefined') {
                 console.log('try to load chart.js');
-                await loadScript('https://cdn.jsdelivr.net/npm/chart.js@4.4.0');
+                await sys.__loadScript('https://cdn.jsdelivr.net/npm/chart.js@4.4.0');
                 console.log('loaded chart.js');
             }
             if (typeof win.Chart === 'undefined') {
@@ -303,16 +303,3 @@ export default {
         }
     }
 };
-// scriptタグを追加して外部ライブラリを読み込む
-function loadScript(url) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = url;
-        script.onload = resolve;
-        script.onerror = () => {
-            reject(new Error(`Failed to load script at url: ${url}`));
-        };
-        document.getElementsByTagName('head')[0].appendChild(script);
-    });
-}

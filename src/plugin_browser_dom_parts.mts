@@ -392,5 +392,25 @@ export default {
       }
       return table
     }
+  },
+  'マーメイド作成': { // @ Mermaid記法を使ってSRCのチャートを作成する // @ まーめいどさくせい
+    type: 'func',
+    josi: [['の']],
+    pure: true,
+    asyncFn: true,
+    fn: async function (src: string, sys: any) {
+      console.log('aaa')
+      const div = sys.__exec('DOM部品作成', ['div', sys])
+      div.classList.add('mermaid')
+      div.innerHTML = src
+      // ライブラリを読み込む
+      if (typeof sys.__v0.WINDOW.mermaid === 'undefined') {
+        console.log('try to load mermaid')
+        await sys.__loadScript('https://cdn.jsdelivr.net/npm/mermaid@10.5.0/dist/mermaid.min.js')
+        console.log('loaded mermaid')
+      }
+      await sys.__v0.WINDOW.mermaid.run()
+      return div
+    }
   }
 }
