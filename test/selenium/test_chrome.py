@@ -18,7 +18,7 @@ TEST_TARGET = os.path.join(SCRIPT_DIR, 'test_target')
 
 error_log = []
 # chrome
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+driver = webdriver.Chrome()
 
 def run_test_all():
     '''test all'''
