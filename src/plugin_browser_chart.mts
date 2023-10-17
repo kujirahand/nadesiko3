@@ -3,15 +3,21 @@ export default {
   'グラフ描画': { // @ Chart.jsを利用して、DATAのグラフを描画 // @ぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       // Chart.jsが使えるかチェック
       const win: any = sys.__v0.WINDOW
       if (typeof win === 'undefined') {
         throw new Error('『グラフ描画』のエラー。ブラウザで実行してください。')
       }
+      // Chart.jsがないので自動的に取り込む
       if (typeof win.Chart === 'undefined') {
-        throw new Error('『グラフ描画』のエラー。Chart.jsを取り込んでください。')
+        console.log('try to load chart.js')
+        await loadScript('https://cdn.jsdelivr.net/npm/chart.js@4.4.0')
+        console.log('loaded chart.js')
+      }
+      if (typeof win.Chart === 'undefined') {
+        throw new Error('『グラフ描画』のエラー。Chart.jsを取り込みに失敗しました。')
       }
       const Chart = win.Chart
       // Canvasが有効？
@@ -35,8 +41,8 @@ export default {
   '線グラフ描画': { // @ 線グラフを描画 // @せんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['line', data, sys])
       const d = {
         type: 'line',
@@ -49,8 +55,8 @@ export default {
   '棒グラフ描画': { // @ 棒グラフを描画 // @ぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
@@ -61,14 +67,15 @@ export default {
         data,
         options: gopt
       }
-      return sys.__exec('グラフ描画', [d, sys])
+      return await sys.__exec('グラフ描画', [d, sys])
     }
   },
   '横棒グラフ描画': { // @ 横棒グラフを描画 // @よこぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
@@ -85,8 +92,8 @@ export default {
   '積上棒グラフ描画': { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
@@ -109,8 +116,8 @@ export default {
   '積上横棒グラフ描画': { // @ 複数列のデータがある場合積み上げ棒グラフを描画 // @つみあげよこぼうぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
@@ -133,8 +140,8 @@ export default {
   '散布図描画': { // @ 散布図を描画 // @さんぷず
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__v0['グラフオプション'],
@@ -151,8 +158,8 @@ export default {
   '円グラフ描画': { // @ 円グラフを描画 // @えんぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
         type: 'pie',
@@ -165,8 +172,8 @@ export default {
   'ドーナツグラフ描画': { // @ 円グラフ（ドーナツ）を描画 // @ドーナツぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
         type: 'doughnut',
@@ -179,8 +186,8 @@ export default {
   'ポーラーグラフ描画': { // @ 円グラフ（鶏頭グラフ/ポーラーエリアチャート）を描画 // @ぽーらーぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
         type: 'polarArea',
@@ -193,8 +200,8 @@ export default {
   'レーダーグラフ描画': { // @ レーダーチャートを描画 // @れーだーぐらふびょうが
     type: 'func',
     josi: [['を', 'で', 'の']],
-    pure: true,
-    fn: function (data: any, sys: any) {
+    asyncFn: true,
+    fn: async function (data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
         type: 'radar',
@@ -207,7 +214,6 @@ export default {
   '二次元グラフデータ変形': { // @ 二次元配列をXXグラフ描画の形式に整形する。種類TとDATAを指定。 // @にじげんぐらふでーたへんけい
     type: 'func',
     josi: [['の'], ['を']],
-    pure: true,
     fn: function (t: any, dataOrg: any, sys: any) {
       // データを破壊的に変更してしまうので最初にデータをコピー (#1416)
       const data = JSON.parse(JSON.stringify(dataOrg))
@@ -297,4 +303,18 @@ export default {
       return sys.__exec('二次元グラフデータ変形', [[data], sys])
     }
   }
+}
+
+// scriptタグを追加して外部ライブラリを読み込む
+function loadScript (url: string) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = url
+    script.onload = resolve
+    script.onerror = () => {
+      reject(new Error(`Failed to load script at url: ${url}`))
+    }
+    document.getElementsByTagName('head')[0].appendChild(script)
+  });
 }
