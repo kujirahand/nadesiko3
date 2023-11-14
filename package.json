@@ -98,7 +98,7 @@
     "@types/node": "^18.16.18",
     "@types/opener": "^1.4.0",
     "@types/shell-quote": "^1.7.1",
-    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^5.26.0",
     "babel-loader": "^9.1.2",
     "browserslist": "^4.20.3",
