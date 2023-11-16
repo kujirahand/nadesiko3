@@ -119,7 +119,7 @@
     "eslint-plugin-react": "^7.25.3",
     "fetch-mock": "^9.10.10",
     "hotkeys-js": "^3.9.4",
-    "markdownlint": "^0.28.1",
+    "markdownlint": "^0.32.1",
     "markdownlint-cli": "^0.33.0",
     "mocha": "^10.2.0",
     "mocha-css": "^1.0.1",
