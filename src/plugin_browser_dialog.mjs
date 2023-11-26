@@ -10,6 +10,7 @@ export default {
         },
         return_none: true
     },
+    'ダイアログキャンセル値': { type: 'var', value: '' },
     '尋': {
         type: 'func',
         josi: [['と', 'を']],
@@ -17,7 +18,7 @@ export default {
         fn: function (s, sys) {
             const r = window.prompt(s);
             if (!r) {
-                return sys.__v0['空'];
+                return sys.__v0['ダイアログキャンセル値'];
             }
             if (/^[-+]?[0-9]+(\.[0-9]+)?$/.test(r)) {
                 return parseFloat(r);
@@ -37,7 +38,7 @@ export default {
         fn: function (s, sys) {
             const r = window.prompt(s);
             if (!r) {
-                return sys.__v0['空'];
+                return sys.__v0['ダイアログキャンセル値'];
             }
             return r;
         }

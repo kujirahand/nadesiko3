@@ -10,6 +10,7 @@ export default {
     },
     return_none: true
   },
+  'ダイアログキャンセル値': { type: 'var', value: '' }, // @だいあろぐきゃんせるち
   '尋': { // @メッセージSと入力ボックスを出して尋ねる // @たずねる
     type: 'func',
     josi: [['と', 'を']],
@@ -17,7 +18,7 @@ export default {
     fn: function (s: any, sys: any) {
       const r = window.prompt(s)
       if (!r) {
-        return sys.__v0['空']
+        return sys.__v0['ダイアログキャンセル値']
       }
       if (/^[-+]?[0-9]+(\.[0-9]+)?$/.test(r)) {
         return parseFloat(r)
@@ -37,12 +38,12 @@ export default {
     fn: function (s: any, sys: any) {
       const r = window.prompt(s)
       if (!r) {
-        return sys.__v0['空']
+        return sys.__v0['ダイアログキャンセル値']
       }
       return r
     }
   },
-  '二択': { // @メッセージSと[OK]と[キャンセル]のダイアログを出して尋ねる // @にたく
+  '二択': { // @メッセージSと[OK][キャンセル]のダイアログを出して尋ねる。戻り値はtrueかfalseのどちらかになる。 // @にたく
     type: 'func',
     josi: [['で', 'の', 'と', 'を']],
     pure: true,
