@@ -81,7 +81,7 @@
 - 特殊命令
 |JS実行,"SRCを|SRCで","JavaScriptのコードSRCを実行する(変数sysでなでしこシステムを参照できる)",0,,命令,JSじっこう
 |JSオブジェクト取得,"NAMEの","なでしこで定義した関数や変数nameのJavaScriptオブジェクトを取得する",0,,命令,JSおぶじぇくとしゅとく
-|JS関数実行,"NAMEをARGSで","JavaScriptの関数NAMEを引数ARGS(配列)で実行する",0,,命令,JSかんすじっこう
+|JS関数実行,"NAMEをARGSで","JavaScriptの関数NAMEを引数ARGS(配列)で実行する",0,,命令,JSかんすうじっこう
 |ASYNC,"","なでしこのユーザー関数定義でASYNC(非同期関数である)ことを宣言する",0,,命令,ASYNC
 |AWAIT実行,"FをARGSで","JavaScriptの非同期関数(Promise/async関数)のFを引数ARGSでawait実行する",0,,命令,JSかんすうAWAIT
 |JSメソッド実行,"OBJのMをARGSで","JavaScriptのオブジェクトOBJのメソッドMを引数ARGS(配列)で実行する",0,,命令,JSめそっどじっこう
