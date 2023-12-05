@@ -17,7 +17,7 @@ export default {
         pure: true,
         fn: function (s, sys) {
             const r = window.prompt(s);
-            if (!r) {
+            if (r === null) {
                 return sys.__v0['ダイアログキャンセル値'];
             }
             if (/^[-+]?[0-9]+(\.[0-9]+)?$/.test(r)) {
