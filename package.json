@@ -103,7 +103,7 @@
     "babel-loader": "^9.1.2",
     "browserslist": "^4.20.3",
     "buffer": "^6.0.3",
-    "chai": "^4.3.6",
+    "chai": "^5.0.0",
     "constants-browserify": "^1.0.0",
     "core-js": "^3.22.7",
     "cross-env": "^7.0.3",
