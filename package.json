@@ -129,7 +129,7 @@
     "npm-check-updates": "^16.6.2",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
-    "prettier": "^2.6.2",
+    "prettier": "^3.1.1",
     "prop-types": "^15.8.1",
     "pump": "^3.0.0",
     "react": "^18.2.0",
