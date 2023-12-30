@@ -7,4 +7,10 @@ ROOT_DIR=$(
 SRC_DIR=$ROOT_DIR/src
 NAKO_JS=$SRC_DIR/cnako3.mjs
 
+# check compiled file
+if [ ! -e "$NAKO_JS" ]; then
+  npm run build
+fi
+
+# run cnako3.js
 /usr/bin/env node "$NAKO_JS" $*
