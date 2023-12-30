@@ -981,18 +981,18 @@ export default {
       if (type === 'TEXT' || type === 'テキスト') {
         return res.text()
       } else
-      if (type === 'JSON') {
-        return res.json()
-      } else
-      if (type === 'BLOB') {
-        return res.blob()
-      } else
-      if (type === 'ARRAY' || type === '配列') {
-        return res.arrayBuffer()
-      } else
-      if (type === 'BODY' || type === '本体') {
-        return res.body
-      }
+        if (type === 'JSON') {
+          return res.json()
+        } else
+          if (type === 'BLOB') {
+            return res.blob()
+          } else
+            if (type === 'ARRAY' || type === '配列') {
+              return res.arrayBuffer()
+            } else
+              if (type === 'BODY' || type === '本体') {
+                return res.body
+              }
       return res.body()
     },
     return_none: false
