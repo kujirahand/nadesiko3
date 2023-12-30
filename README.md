@@ -60,6 +60,7 @@ npm run nako3server
 git clone --recursive https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install
+npm run build
 ```
 
 サブモジュールとして[`nadesiko3core`](https://github.com/kujirahand/nadesiko3core)を利用するので、`--recursive` を付け忘れたら以下のコマンドを実行して、サブモジュールも取得してください。
