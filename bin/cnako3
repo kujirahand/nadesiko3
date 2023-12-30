@@ -9,7 +9,7 @@ NAKO_JS=$SRC_DIR/cnako3.mjs
 
 # check compiled file
 if [ ! -e "$NAKO_JS" ]; then
-  npm run build
+  cd $ROOT_DIR && npm run build
 fi
 
 # run cnako3.js
