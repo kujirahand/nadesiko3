@@ -28,7 +28,7 @@
     "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
     "build:tsc": "tsc",
     "build": "npm run build:nako_version && npm run build:tsc && npm run build:command && npx webpack --mode production && node src/cnako3.mjs batch/calc_hash.nako3",
-    "clean": "npm run tsc:once && node src/cnako3.mjs batch/clear_compiled.nako3",
+    "clean": "npm run tsc:once && node src/cnako3.mjs batch/clean.nako3",
     "tsc": "tsc --watch",
     "tsc:once": "tsc",
     "build:webpack": "tsc && webpack --mode development",
@@ -158,6 +158,7 @@
     "marked": "^4.0.16",
     "node-fetch": "^3.2.4",
     "opener": "^1.5.2",
-    "shell-quote": "^1.7.3"
+    "shell-quote": "^1.7.3",
+    "ts-node": "^10.9.2"
   }
 }
