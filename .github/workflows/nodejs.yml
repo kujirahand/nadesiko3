@@ -33,18 +33,19 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
     
-      # checkout すれば動く機能を試す
-      - name: npm run hello
-        run: npm run hello
-      
       # 各種ライブラリをインストール
       - name: npm install
         run: npm install
       
-      # 各種ビルドしてテストする --- なぜかビルドで失敗するようなので一時的にコメントアウト
+      # 各種ビルド
       - name: npm run build
         run: npm run build
         
+      # hello
+      - name: npm run hello
+        run: npm run hello
+      
+      # run test
       - name: npm run test
         run: npm run test
 
