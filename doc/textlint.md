@@ -9,7 +9,7 @@
 
 ## textlint のインストール
 
-```shell
+```sh
 npm install -g textlint \
   textlint-rule-abbr-within-parentheses \
   textlint-rule-footnote-order \
@@ -30,15 +30,19 @@ npm install -g textlint \
 
 ## textlint の実行
 
-textlintを実行する場合は以下のコマンドを実行します。
+`bach/textlint.sh`を実行して結果を確認します。
 
-```shell
+### コマンドラインから textlint を実行する場合
+
+手動の場合、次のコマンドを実行します。
+
+```sh
 textlint *.md && textlint doc/*.md && textlint batch/*.md && textlint tools/*.md
 ```
 
-textlintで自動修正する場合は以下のコマンドを実行します。
+textlintで自動修正する場合は次のコマンドを実行します。
 
-```shell
+```sh
 textlint --fix *.md && \
   textlint --fix doc/*.md && \
   textlint --fix batch/*.md && \

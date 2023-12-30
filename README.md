@@ -8,7 +8,7 @@
 
 「なでしこ3」とは、日本語のプログラミング言語です。HTML5/JavaScript(TypeScript)をベースとしているので、PC/スマホ/タブレットなど、さまざまな環境で動作させることができます。日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
 
-- [なでしこのWebサイト](https://nadesi.com/top/)
+- [なでしこのWebサイト](https://nadesi.com/)
 - [なでしこ3のGitHub Pages](https://kujirahand.github.io/nadesiko3/)
 - [マニュアル](https://nadesi.com/v3/doc/)
 
@@ -33,7 +33,7 @@
 ## npm でなでしこ3コマンドライン版をインストール
 
 先にNode.jsをインストールします。
-次いで、コマンドラインから以下のコマンドを実行します。
+次いで、コマンドラインから次のコマンドを実行します。
 
 ```bash
 npm install -g nadesiko3
@@ -54,7 +54,7 @@ npm run nako3server
 
 ## Gitからインストール
 
-また、以下のコマンドを実行すると、なでしこの開発環境をセットアップできます。
+また、次のコマンドを実行すると、なでしこの開発環境をセットアップできます。
 
 ```bash
 git clone --recursive https://github.com/kujirahand/nadesiko3.git
@@ -63,7 +63,7 @@ npm install
 npm run build
 ```
 
-サブモジュールとして[`nadesiko3core`](https://github.com/kujirahand/nadesiko3core)を利用するので、`--recursive` を付け忘れたら以下のコマンドを実行して、サブモジュールも取得してください。
+サブモジュールとして[`nadesiko3core`](https://github.com/kujirahand/nadesiko3core)を利用するので、`--recursive` を付け忘れたら次のコマンドを実行して、サブモジュールも取得してください。
 
 ```bash
 # 以下のように --recursive 付け忘れた場合
@@ -75,7 +75,7 @@ git submodule update --init --recursive
 
 ## Ubuntuへの開発環境のセットアップ
 
-まっさらなUbuntu22.04でなでしこ3の開発環境を整える場合は以下のコマンドを実行します。
+まっさらなUbuntu22.04でなでしこ3の開発環境を整える場合は次のコマンドを実行します。
 
 ```
 sudo apt update
@@ -96,7 +96,7 @@ sudo apt install -y p7zip-full
 
 ## 追加インストール(macOS/Linux)
 
-必要に応じて以下のコマンドをインストールします。
+必要に応じて次のコマンドをインストールします。
 
 macOS:
 
@@ -114,7 +114,7 @@ sudo apt install p7zip-full
 sudo apt install xdotool
 ```
 
-全てのコマンドが正しく動くかを確認するには、以下のコマンドを実行します。
+全てのコマンドが正しく動くかを確認するには、次のコマンドを実行します。
 
 ```bash
 npm test
@@ -132,14 +132,14 @@ npm run test:all
 - (2020-04-24) v3.1.2を公開
 - (2017-12-29) v3.0.19を公開(無名関数の「には」構文の実装など)
 - (2017-06-25) 内部構造を大幅に修正(PEGパーサーから独自のパーサーに変更)
-- (2017-02-13) 「なでしこ3」のプロジェクトが開始
-- (2004-08-01) 「ひまわり2」としてゼロから「なでしこ」の開発が開始
-- (2001-08-03) 「なでしこ」の前身「ひまわり」の開発を開始
+- (2017-02-13)「なでしこ3」のプロジェクトが開始
+- (2004-08-01)「ひまわり2」としてゼロから「なでしこ」の開発が開始
+- (2001-08-03)「なでしこ」の前身「ひまわり」の開発を開始
 
 ## なでしこ3の開発に参加する
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
-また、なでしこ3開発者向けの[Gitter](https://gitter.im/nadesiko3/community)への参加も可能です。
+また、なでしこ3開発者向けの[Gitter](https://app.gitter.im/#/room/#nadesiko3_community:gitter.im)への参加も可能です。
 
 ## 関連リポジトリへのリンク
 
