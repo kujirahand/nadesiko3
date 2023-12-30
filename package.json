@@ -44,7 +44,7 @@
     "extlib:install": "node src/cnako3.mjs batch/download-extlib.nako3",
     "check_new_version": "node src/cnako3.mjs tools/check_new_version.nako3",
     "markdownlint": "markdownlint **/*.md --ignore node_modules",
-    "hello": "node core/command/snako.mjs -e \"「hello」と表示\""
+    "hello": "node --no-warnings=ExperimentalWarning --loader ts-node/esm core/command/snako.mts -e \"「hello」と表示\""
   },
   "repository": {
     "type": "git",
@@ -143,6 +143,7 @@
     "terser-webpack-plugin": "^5.3.1",
     "testdouble": "^3.16.5",
     "typescript": "^5.0.3",
+    "ts-node": "^10.9.2",
     "url-loader": "^4.1.1",
     "util": "^0.12.4",
     "webpack": "^5.72.1",
@@ -157,7 +158,6 @@
     "marked": "^4.0.16",
     "node-fetch": "^3.2.4",
     "opener": "^1.5.2",
-    "shell-quote": "^1.7.3",
-    "ts-node": "^10.9.2"
+    "shell-quote": "^1.7.3"
   }
 }
