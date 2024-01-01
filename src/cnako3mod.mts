@@ -414,7 +414,7 @@ export class CNako3 extends NakoCompiler {
         if (/\.(js|mjs)(\.txt)?$/.test(name)) {
           const jspath = CNako3.findJSPluginFile(name, fromFile, __dirname, log)
           if (jspath === '') {
-            throw new NakoImportError(`JSプラグイン『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
+            throw new NakoImportError(`JSプラグイン『${name}』が見つかりません。コマンドラインで『npm install ${name}』を実行してみてください。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
           }
           return { filePath: jspath, type: 'js' }
         }
@@ -436,7 +436,7 @@ export class CNako3 extends NakoCompiler {
         // 拡張子がない、あるいは、(.js|.mjs|.nako3|.nako)以外はJSモジュールと見なす
         const jspath2 = CNako3.findJSPluginFile(name, fromFile, __dirname, log)
         if (jspath2 === '') {
-          throw new NakoImportError(`JSプラグイン『${name}』が見つかりません。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
+          throw new NakoImportError(`JSプラグイン『${name}』が見つかりません。コマンドラインで『npm install ${name}』を実行してみてください。以下のパスを検索しました。\n${log.join('\n')}`, token.file, token.line)
         }
         return { filePath: jspath2, type: 'js' }
       },
@@ -493,7 +493,12 @@ export class CNako3 extends NakoCompiler {
                   return res.text()
                 })
                 .then((txt: string) => {
-                // 一時ファイルに保存
+                  // ダウンロード
+                  if (txt.indexOf('Failed to fetch') >= 0) {
+                    const errFetch = new NakoImportError(`URL『${filePath}』のライブラリが存在しないか、指定のバージョンが間違っています。`, token.file, token.line)
+                    reject(errFetch)
+                  }
+                  // 一時ファイルに保存
                   try {
                     fs.writeFileSync(tmpFile, txt, 'utf-8')
                   } catch (err) {
@@ -510,8 +515,14 @@ export class CNako3 extends NakoCompiler {
                       return obj.default
                     })
                   }).catch((err) => {
-                    const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたはずのJSファイル読み込めません。${err}`, token.file, token.line)
-                    reject(err2)
+                    const errS = '' + err
+                    if (errS.indexOf('SyntaxError:') >= 0) {
+                      const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたJSファイルに文法エラーがあります。${err}`, token.file, token.line)
+                      reject(err2)
+                    } else {
+                      const err3 = new NakoImportError(`URL『${filePath}』からダウンロードしたはずのJSファイル読み込めません。${err}`, token.file, token.line)
+                      reject(err3)
+                    }
                   })
                 })
                 .catch((err: any) => {
