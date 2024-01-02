@@ -51,11 +51,22 @@ export default {
         return fpath
       }
       sys.__getBokanPath = () => {
-        let nakofile
-        const cmd = path.basename(process.argv[1])
-        if (cmd.indexOf('cnako3') < 0) { nakofile = process.argv[1] } else { nakofile = process.argv[2] }
-
-        return path.dirname(path.resolve(nakofile))
+        // Electronから実行した場合
+        if (process.argv.length === 1) {
+          return path.dirname(path.resolve(process.argv[0]))
+        }
+        // cnako3のときランタイムを除いたメインファイルのパスを取得する
+        let mainfile = '.'
+        for (let i = 0; i < process.argv.length; i++) {
+          const f = process.argv[i]
+          const bf = path.basename(f)
+          if (bf === 'node' || bf === 'node.exe') { continue } // runtime
+          if (bf === 'cnako3.mjs') { continue } // mjs
+          if (bf.substring(0, 1) === '-') { continue } // options
+          mainfile = bf
+          break
+        }
+        return path.dirname(path.resolve(mainfile))
       }
       sys.__v0['コマンドライン'] = process.argv
       sys.__v0['ナデシコランタイムパス'] = process.argv[0]
