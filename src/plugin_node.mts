@@ -61,9 +61,9 @@ export default {
           const f = process.argv[i]
           const bf = path.basename(f)
           if (bf === 'node' || bf === 'node.exe') { continue } // runtime
-          if (bf === 'cnako3.mjs') { continue } // mjs
+          if (bf === 'cnako3.mjs' || bf === 'cnako3.mts') { continue } // mts/mjs
           if (bf.substring(0, 1) === '-') { continue } // options
-          mainfile = bf
+          mainfile = f
           break
         }
         return path.dirname(path.resolve(mainfile))
