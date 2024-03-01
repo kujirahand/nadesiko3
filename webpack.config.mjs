@@ -24,7 +24,6 @@ export default {
   entry: {
     wnako3: [path.join(srcPath, 'wnako3.mjs')], // plugin_system+plugin_browser含む
     wnako3webworker: [path.join(srcPath, 'wnako3webworker.mjs')], // plugin_system+plugin_browser_in_worker含む
-    nako_gen_async: [path.join(srcCorePath, 'nako_gen_async.mjs')], // なでしこ3非同モード
     plugin_kansuji: [path.join(srcPath, 'plugin_kansuji.mjs')],
     plugin_markup: [path.join(srcPath, 'plugin_markup.mjs')],
     plugin_turtle: [path.join(srcPath, 'plugin_turtle.mjs')],
