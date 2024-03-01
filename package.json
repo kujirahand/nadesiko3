@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "Japanese Programming Language",
   "type": "module",
   "main": "src/index.mjs",
