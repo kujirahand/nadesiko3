@@ -210,7 +210,7 @@ const PluginWebWorker = {
     fn: function (work, data, sys) {
       const msg = {
         type: 'run',
-        data: sys.__modName + '__' + data
+        data: data
       }
       work.postMessage(msg)
     },
@@ -291,10 +291,25 @@ const PluginWebWorker = {
     pure: false,
     fn: function (datas, work, sys) {
       if (typeof sys === 'undefined') { sys = work; work = self }
+      const modNameList = []
       const obj = []
       if (typeof datas === 'string') { datas = [datas] }
       datas.forEach(data => {
-        data = sys.__modName + '__' + data
+        if (data.indexOf('__') === -1) {
+          for (const modname of sys.__modList) {
+            const varname = modname + '__' + data
+            if (typeof sys.__varslist[2][varname] !== 'undefined' || typeof sys.__varslist[1][varname] !== 'undefined') {
+              data = varname
+              break
+            }
+          }
+        }
+        if (data.indexOf('__') > -1) {
+          const modname = data.split('__')[0]
+          if (modNameList.indexOf(modname) === -1) {
+            modNameList.push(modname)
+          }
+        }
         if (typeof sys.__varslist[2][data] !== 'undefined') {
           obj.push({
             type: 'val',
@@ -317,6 +332,28 @@ const PluginWebWorker = {
         }
       })
       if (obj.length > 0) {
+        const modInfoList = []
+        for (const modname of modNameList) {
+          modInfoList.push({
+            name: modname,
+            export: sys.compiler.moduleExport[modname]
+          })
+        }
+        obj.push({
+          type: 'env',
+          name: 'modlist',
+          content: modInfoList
+        })
+        obj.push({
+          type: 'env',
+          name: 'constPools',
+          content: sys.constPools
+        })
+        obj.push({
+          type: 'env',
+          name: 'constPoolsTemplate',
+          content: sys.constPoolsTemplate
+        })
         const msg = {
           type: 'trans',
           data: obj

@@ -54,6 +54,23 @@ if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope
             nako3Compiler.__varslist[1][o.name] = () => {}
           } else if (o.type === 'val') {
             nako3Compiler.__varslist[2][o.name] = o.content
+          } else if (o.type === 'env') {
+            if (o.name === 'modlist') {
+              for (const modInfo of o.content) {
+                if (nako3Compiler.lexer.modList.indexOf(modInfo.name) < 0) {
+                  nako3Compiler.lexer.modList.push(modInfo.name)
+                }
+                if (modInfo.export != null && !nako3Compiler.moduleExport.hasOwnProperty(modInfo.name)) {
+                  nako3Compiler.moduleExport[modInfo.name] = modInfo.export
+                }
+              }
+            } else if (o.name === 'constPools') {
+              nako3Compiler.constPools = o.content
+            } else if (o.name === 'constPoolsTemplate') {
+              nako3Compiler.constPoolsTemplate = o.content
+            } else if (o.name === 'chk') {
+              nako3Compiler.chk = o.content
+            }
           }
         })
         break
