@@ -118,8 +118,12 @@ sudo apt install xdotool
 
 ```bash
 npm test
-npm run test:all
 ```
+
+## Colabでビルドテスト
+
+Google Colabでなでしこのビルドテストできます。
+- [ノートブック](https://colab.research.google.com/drive/1a-Choj3tCBCA1R7x7vPdNQN48vGzBd7E?usp=sharing)
 
 ## なでしこの開発履歴
 
