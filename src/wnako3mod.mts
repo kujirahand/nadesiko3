@@ -12,10 +12,12 @@ import PluginBrowser from './plugin_browser.mjs'
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 
 export class WebNakoCompiler extends NakoCompiler {
+  version: string
   wnakoVersion: NakoVersion
   localFiles: Record<string, string>
   constructor () {
     super({ useBasicPlugin: true })
+    this.version = nakoVersion.version
     this.wnakoVersion = nakoVersion
     this.localFiles = {}
     // プラグインを追加
