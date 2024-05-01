@@ -11,9 +11,9 @@ export interface NakoVersion {
 }
 // 実際のバージョン定義 (自動生成されるので以下を編集しない)
 const nakoVersion: NakoVersion = {
-  version: '3.5.3',
+  version: '3.6.0',
   major: 3,
-  minor: 5,
-  patch: 3
+  minor: 6,
+  patch: 0
 }
 export default nakoVersion

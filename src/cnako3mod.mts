@@ -62,8 +62,8 @@ export class CNako3 extends NakoCompiler {
     }
     // 必要な定数を設定
     this.addListener('beforeRun', (g: NakoGlobal) => {
-      g.__varslist[0]['ナデシコ種類'] = 'cnako3'
-      g.__varslist[0]['ナデシコバージョン'] = this.version
+      g.__varslist[0].set('ナデシコ種類', 'cnako3')
+      g.__varslist[0].set('ナデシコバージョン', this.version)
     })
   }
 

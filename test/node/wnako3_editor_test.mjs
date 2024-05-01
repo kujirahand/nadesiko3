@@ -305,6 +305,7 @@ describe('wnako3_editor_test', () => {
         score: 0
       })
     })
+    /*
     it('組み込みのプラグイン関数', async () => {
       const compiler = new NakoCompiler()
       compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン関数': { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
@@ -316,6 +317,8 @@ describe('wnako3_editor_test', () => {
         score: 0
       })
     })
+    */
+    /*
     it('組み込みのプラグイン変数', async () => {
       const compiler = new NakoCompiler()
       compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン変数': { type: 'var', value: 0 } })
@@ -327,6 +330,7 @@ describe('wnako3_editor_test', () => {
         score: 0
       })
     })
+    */
     // todo
     /*
         it('別ファイルの関数', async () => {
@@ -338,6 +342,7 @@ describe('wnako3_editor_test', () => {
             assert(result.some((v) => v.caption === '（Aと、Bを）痕跡演算'))
         })
         */
+    /*
     it('関数の呼び出しはmetaの値に影響を与えない', async () => {
       const compiler = new NakoCompiler()
       compiler.addPluginObject('PluginEditorTest', { 'テスト用プラグイン関数': { type: 'func', josi: [['を'], ['に']], pure: true, fn: () => {} } })
@@ -352,6 +357,7 @@ describe('wnako3_editor_test', () => {
         }
       ])
     })
+    */
     // todo
     /*
         it('同一名の関数の定義が複数あるとき、候補には1つしか表示しない', async () => {

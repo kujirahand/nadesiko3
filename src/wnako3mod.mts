@@ -25,9 +25,9 @@ export class WebNakoCompiler extends NakoCompiler {
     // 必要な定数を設定
     this.addListener('beforeRun', (g: NakoGlobal) => {
       // バージョン情報を設定
-      g.__varslist[0]['ナデシコ種類'] = 'wnako3'
-      g.__varslist[0]['ナデシコバージョン'] = nakoVersion.version
-      g.__varslist[0]['WNAKOバージョン'] = nakoVersion.version
+      g.__varslist[0].set('ナデシコ種類', 'wnako3')
+      g.__varslist[0].set('ナデシコバージョン', nakoVersion.version)
+      g.__varslist[0].set('WNAKOバージョン', nakoVersion.version)
     })
   }
 

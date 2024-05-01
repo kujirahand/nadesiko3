@@ -68,11 +68,11 @@ export default {
         }
         return path.dirname(path.resolve(mainfile))
       }
-      sys.__v0['コマンドライン'] = process.argv
-      sys.__v0['ナデシコランタイムパス'] = process.argv[0]
-      sys.__v0['ナデシコランタイム'] = path.basename(process.argv[0])
-      sys.__v0['母艦パス'] = sys.__getBokanPath()
-      sys.__v0['AJAX:ONERROR'] = null
+      sys.__setSysVar('コマンドライン', process.argv)
+      sys.__setSysVar('ナデシコランタイムパス', process.argv[0])
+      sys.__setSysVar('ナデシコランタイム', path.basename(process.argv[0]))
+      sys.__setSysVar('母艦パス', sys.__getBokanPath())
+      sys.__setSysVar('AJAX:ONERROR', null)
 
       // 『尋』『文字尋』『標準入力取得時』『標準入力全取得』のための一時変数
       // .pause() しないと Ctrl+D するまで永遠に入力待ちになる
@@ -559,7 +559,7 @@ export default {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (v: string, sys: any) {
-      sys.__v0['圧縮解凍ツールパス'] = v
+      sys.__setSysVar('圧縮解凍ツールパス', v)
     },
     return_none: true
   },
@@ -568,7 +568,7 @@ export default {
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.__quotePath(a)
       b = sys.__quotePath(b)
       const cmd = `${tpath} x ${a} -o${b} -y`
@@ -581,7 +581,7 @@ export default {
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (callback: any, a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.__quotePath(a)
       b = sys.__quotePath(b)
       const cmd = `${tpath} x ${a} -o${b} -y`
@@ -597,7 +597,7 @@ export default {
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.__quotePath(a)
       b = sys.__quotePath(b)
       const cmd = `${tpath} a -r ${b} ${a} -y`
@@ -610,7 +610,7 @@ export default {
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function (callback: any, a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__v0['圧縮解凍ツールパス']))
+      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.__quotePath(a)
       b = sys.__quotePath(b)
       const cmd = `${tpath} a -r ${b} ${a} -y`
@@ -811,12 +811,12 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
     fn: function (callback: any, url: string, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then((res: any) => {
         return res.text()
       }).then((text: string) => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         callback(text)
       }).catch((err: any) => {
         console.log('[fetch.error]', err)
@@ -865,10 +865,10 @@ export default {
       fetch(url, options).then((res: any) => {
         return res.text()
       }).then((text: string) => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         callback(text)
       }).catch((err: any) => {
-        sys.__v0['AJAX:ONERROR'](err)
+        sys.__getSysVar('AJAX:ONERROR')(err)
       })
     }
   },
@@ -890,10 +890,10 @@ export default {
       fetch(url, options).then((res: any) => {
         return res.text()
       }).then((text: string) => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         callback(text)
       }).catch((err: any) => {
-        sys.__v0['AJAX:ONERROR'](err)
+        sys.__getSysVar('AJAX:ONERROR')(err)
       })
     }
   },
@@ -902,7 +902,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (callback: any, sys: any) {
-      sys.__v0['AJAX:ONERROR'] = callback
+      sys.__setSysVar('AJAX:ONERROR', callback)
     }
   },
   'AJAXオプション': { type: 'const', value: '' }, // @Ajax関連のオプションを指定 // @AJAXおぷしょん
@@ -911,7 +911,7 @@ export default {
     josi: [['に', 'へ', 'と']],
     pure: true,
     fn: function (option: any, sys: any) {
-      sys.__v0['AJAXオプション'] = option
+      sys.__setSysVar('AJAXオプション', option)
     },
     return_none: true
   },
@@ -920,7 +920,7 @@ export default {
     josi: [['まで', 'へ', 'に']],
     pure: true,
     fn: function (url: string, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       return fetch(url, options)
     },
@@ -1017,7 +1017,7 @@ export default {
         throw new Error('『AJAX受信』を使うには、プログラムの冒頭で「!非同期モード」と宣言してください。')
       }
       const sysenv = sys.setAsync(sys)
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       // fetch 実行
       fetch(url, options).then((res: any) => {
@@ -1027,7 +1027,7 @@ export default {
           throw new Error('status=' + res.status)
         }
       }).then((text: string) => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         sys.compAsync(sys, sysenv)
       }).catch((err: any) => {
         console.error('[AJAX受信のエラー]', err)
@@ -1057,9 +1057,9 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (url: string, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
-      console.log(url, options)
+      // console.log(url, options)
       const res = await fetch(url, options)
       const txt = await res.text()
       return txt
@@ -1072,7 +1072,7 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (url: string, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
       const txt = await res.json()
@@ -1086,7 +1086,7 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (url: string, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
       const bin = await res.arrayBuffer()

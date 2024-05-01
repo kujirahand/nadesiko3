@@ -62,13 +62,13 @@ const PluginBrowser = {
       const loc: any = (typeof win.location === 'undefined') ? { 'href': 'http://localhost/' } : win.location
 
       // 定数を初期化
-      sys.__v0['AJAX:ONERROR'] = (err: any) => { console.log(err) }
+      sys.__setSysVar('AJAX:ONERROR', (err: any) => { console.log(err) })
       // オブジェクトを初期化
-      sys.__v0.DOCUMENT = doc
-      sys.__v0.WINDOW = win
-      sys.__v0.NAVIGATOR = nav
-      sys.__v0['DOM親要素'] = doc.body
-      sys.__v0['ブラウザURL'] = loc.href
+      sys.__setSysVar('DOCUMENT', doc)
+      sys.__setSysVar('WINDOW', win)
+      sys.__setSysVar('NAVIGATOR', nav)
+      sys.__setSysVar('DOM親要素', doc.body)
+      sys.__setSysVar('ブラウザURL', loc.href)
 
       // 便利なメソッドを定義
       sys.__tohtml = (text: string): string => {
@@ -99,8 +99,8 @@ const PluginBrowser = {
         }
         // make wrapper func
         const wrapperFunc = (e: any) => {
-          sys.__v0['対象'] = e.target
-          sys.__v0['対象イベント'] = e
+          sys.__setSysVar('対象', e.target)
+          sys.__setSysVar('対象イベント', e)
           // 追加データが得られる場合
           if (setHandler) { setHandler(e, sys) }
           if (sys.__genMode === '非同期モード') { sys.newenv = true }
@@ -112,13 +112,13 @@ const PluginBrowser = {
       }
       // キーイベントハンドラ
       sys.__keyHandler = (e: any, sys: any) => {
-        sys.__v0['押キー'] = e.key
+        sys.__setSysVar('押キー', e.key)
       }
       // マウスイベントハンドラ
       sys.__mouseHandler = (e, sys) => {
         const box = e.target.getBoundingClientRect()
-        sys.__v0['マウスX'] = e.clientX - box.left
-        sys.__v0['マウスY'] = e.clientY - box.top
+        sys.__setSysVar('マウスX', e.clientX - box.left)
+        sys.__setSysVar('マウスY', e.clientY - box.top)
       }
       // タッチイベントハンドラ
       sys.__touchHandler = (e, sys) => {
@@ -131,12 +131,12 @@ const PluginBrowser = {
           const tx = t.clientX - box.left
           const ty = t.clientY - box.top
           if (i === 0) {
-            sys.__v0['タッチX'] = tx
-            sys.__v0['タッチY'] = ty
+            sys.__setSysVar('タッチX', tx)
+            sys.__setSysVar('タッチY', ty)
           }
           ts.push([tx, ty])
         }
-        sys.__v0['タッチ配列'] = ts
+        sys.__setSysVar('タッチ配列', ts)
         return ts
       }
       // DOMイベント削除 (探して削除)
@@ -181,7 +181,7 @@ const PluginBrowser = {
         if (!elm) {
           if (isGetFunc) {
             // 取得イベントではコンソールにヒントを出す
-            console.warn(`[ヒント](${sys.__v0.line})『${commandName}』でDOM取得に失敗しています。DOM=`, dom)
+            console.warn(`[ヒント](${sys.__getSysVar('__line')})『${commandName}』でDOM取得に失敗しています。DOM=`, dom)
           } else {
             // 設定イベントでは実行時エラーにする
             const desc = (typeof dom === 'string') ? dom : String(dom)
