@@ -10,7 +10,7 @@ let activeEditor = null
 // --- コマンドリストの読み込みなど ---
 /** @type {Record<string, Record<string, string[][]>>} */
 const commandList = /** @type {{ name: String, group: { type: string, name: String, args: string, value: string }[] }[]} */([])
-for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system']) {
+for (const fname of ['plugin_browser', 'plugin_turtle', 'plugin_system', 'plugin_math', 'plugin_csv', 'plugin_datetime']) {
   const groups = commandListJSON[fname]
   if (!groups) {
     console.log('command.jsonの[' + fname + ']が読み込めません。')
@@ -91,7 +91,7 @@ const Editor = (params) => {
       }
       // nako3にブレイクポイントの変更を通知
       if (nako3.__global) {
-        nako3.__global.__v0['__DEBUGブレイクポイント一覧'] = breakpoints
+        nako3.__global.__setSysVar('__DEBUGブレイクポイント一覧', breakpoints)
       }
       // breakpoint buttons
       document.querySelector(`#hideButtons${editorId}`).style.display = (breakpoints.length > 0) ? 'block' : 'none'
@@ -100,16 +100,15 @@ const Editor = (params) => {
   }, [])
   const editorOptions = () => ({ preCode, outputContainer: /** @type {HTMLDivElement} */(document.getElementById(`nako3_editor_info_${editorId}`)) })
   const breakpointNext = () => {
-    if (!nako3.__global) { return }
-    if (!activeEditor) { return }
+    if (!nako3.__global || !activeEditor) { return }
     // const cur = activeEditor.editor.selection.getCursor()
-    nako3.__global.__v0['__DEBUG強制待機'] = 1
-    nako3.__global.__v0['__DEBUG待機フラグ'] = 1
-    console.log('@breakpointNext=', nako3.__global.__v0['__DEBUG強制待機'])
+    nako3.__global.__setSysVar('__DEBUG強制待機', 1) // 一行進んで強制待機する
+    nako3.__global.__setSysVar('__DEBUG待機フラグ', 1) // ブレイクポイントで停止する
+    console.log('@breakpointNext=', nako3.__global.__getSysVar('__DEBUG強制待機'))
   }
   const breakpointPlay = () => {
-    if (!nako3.__global) { return }
-    nako3.__global.__v0['__DEBUG待機フラグ'] = 1
+    if (!nako3.__global || !activeEditor) { return }
+    nako3.__global.__setSysVar('__DEBUG待機フラグ', 1)
     console.log('@breakpointPlay')
   }
 
@@ -143,8 +142,8 @@ const Editor = (params) => {
           nako3.debugOption.waitTime = 0.3
           nako3.debugOption.messageAction = 'debug.line'
           nako3.addListener('beforeRun', (g) => {
-            console.log('DEBUG_MODE=', g.__varslist[0]['ナデシコバージョン'])
-            g.__varslist[0]['__DEBUGブレイクポイント一覧'] = breakpoints
+            console.log('DEBUG_MODE=', g.__getSysVar('ナデシコバージョン'))
+            g.__setSysVar('__DEBUGブレイクポイント一覧', breakpoints)
             nako3.__global = g
           })
           clearNako(editorId, editorOptions().outputContainer)
@@ -152,6 +151,7 @@ const Editor = (params) => {
           setUsedFuncs(getNako3().usedFuncs)
           window.addEventListener('message', (e) => {
             if (e.data.action === 'debug.line') {
+              console.log('@e.data=', e.data)
               const line = e.data.line
               const m = line.match(/^l(\d+):/)
               if (m && activeEditor) {
