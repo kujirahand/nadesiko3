@@ -48,7 +48,8 @@ describe('plugin_browser_dialog', () => {
       chkprompt(['あいうえお'], 'あかね', 'あいうえお', 'あかね')
     })
     it('尋 - キャンセル', () => {
-      const sys = { __v0: { 'ダイアログキャンセル値': '' } }
+      const v0 = new Map([['ダイアログキャンセル値', '']])
+      const sys = { __v0: v0, __getSysVar: (key) => sys.__v0.get(key) }
       chkprompt(['あいうえお', sys], null, 'あいうえお', '')
     })
   })
@@ -77,7 +78,8 @@ describe('plugin_browser_dialog', () => {
       chkprompt(['あいうえお'], '1.2.3', 'あいうえお', '1.2.3')
     })
     it('文字尋 - キャンセル', () => {
-      const sys = { __v0: { 'ダイアログキャンセル値': '' } }
+      const v0 = new Map([['ダイアログキャンセル値', '']])
+      const sys = { __v0: v0, __getSysVar: (key) => sys.__v0.get(key) }
       chkprompt(['あいうえお', sys], null, 'あいうえお', '')
     })
   })
