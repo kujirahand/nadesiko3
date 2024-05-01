@@ -6,7 +6,7 @@ export default {
     asyncFn: true,
     fn: async function (data: any, sys: any) {
       // Chart.jsが使えるかチェック
-      const win: any = sys.__v0.WINDOW
+      const win: any = sys.__getSysVar('WINDOW')
       if (typeof win === 'undefined') {
         throw new Error('『グラフ描画』のエラー。ブラウザで実行してください。')
       }
