@@ -21,6 +21,16 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export default {
+  'meta': {
+    type: 'const',
+    value: {
+      pluginName: 'plugin_node', // プラグインの名前
+      description: 'Node.js向けプラグイン', // プラグインの説明
+      pluginVersion: '3.6.0', // プラグインのバージョン
+      nakoRuntime: ['cnako'], // 対象ランタイム
+      nakoVersion: '3.6.0' // 要求なでしこバージョン
+    }
+  },
   '初期化': {
     type: 'func',
     josi: [],

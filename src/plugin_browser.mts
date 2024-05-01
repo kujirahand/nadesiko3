@@ -45,9 +45,10 @@ const PluginBrowser = {
     type: 'const',
     value: {
       pluginName: 'plugin_browser', // プラグインの名前
-      pluginVersion: '3.4.22', // プラグインのバージョン
+      description: 'ブラウザ用のプラグイン', // 説明
+      pluginVersion: '3.6.0', // プラグインのバージョン
       nakoRuntime: ['wnako'], // 対象ランタイム
-      nakoVersion: '^3.4.22' // 要求なでしこバージョン
+      nakoVersion: '3.6.0' // 要求なでしこバージョン
     }
   },
   '初期化': {

@@ -25,7 +25,17 @@
 ```js
 // file: testfunc.mjs
 // なでしこ3プラグインはモジュールオブジェクト
-default export {
+export default {
+  'meta': {
+    type: 'const',
+    value: {
+      pluginName: 'plugin_***', // プラグインの名前
+      description: '説明',
+      pluginVersion: '3.6.0', // プラグインのバージョン
+      nakoRuntime: ['wnako', 'cnako', 'phpnako'], // 対象ランタイム
+      NakoVersion: '3.6.0' // 最小要求なでしこバージョン
+    }
+  },
   'テスト加算': {
       type: 'func',
       josi: [['と'],['を']],
@@ -81,8 +91,6 @@ default export {
   ...
 }
 ```
-
-なお、コメントを記述した場合、`npm run build:command`を実行すると自動的にコマンドマニュアルが生成される。
 
 ### 定義：定数
 
@@ -243,25 +251,6 @@ v3.3で`asyncFn`が導入された(参照： #1154)。このプロパティを`t
 ```
 
 この機能の追加により、`「!非同期モード」`や`「逐次実行」`の利用は非推奨となった。
-
-## (非推奨) 非同期モードに対応した関数を作る場合
-
-v3.2.22で導入された非同期モードの利用は非推奨となったが、非同期モードに対応した関数を作るには、次のように記述する。
-なお、今後、非同期関数を利用するには、上記asyncFnを使うこと。
-
-```js
-  fn: function (n, sys) {
-      if (sys.__genMode == '非同期モード') {
-        sys.async = true // 非同期モードを使うことを明示
-        setTimeout(() => {
-          sys.nextAsync(sys) // ここで非同期処理が完了した時にこの関数を呼ぶ
-        }, n * 1000)
-      } else {
-        // 非同期モードに対応していない時の処理
-        throw new Error('「!非同期モード」で使ってください')
-      }
-  }
-```
 
 ## マニュアルを自動生成する
 
