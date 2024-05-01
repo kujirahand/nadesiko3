@@ -17,7 +17,7 @@ export default {
           const pad = '00' + h
           codes.push(pad.substr(pad.length - 2, 2))
         }
-        const res = sys.__v0['対象'] = codes.join('')
+        const res = sys.__setSysVar('対象', codes.join(''))
         func(res)
       })
     },

@@ -50,7 +50,7 @@ export default {
         if (typeof (f) === 'string') { f = sys.__findFunc(f, 'クリップボード取得時') }
         const pm = navigator.clipboard.readText()
         pm.then(text => {
-          sys.__v0['対象'] = text
+          sys.__setSysVar('対象', text)
           f(sys)
         })
       } else {

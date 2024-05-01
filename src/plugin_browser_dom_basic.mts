@@ -170,7 +170,7 @@ export default {
     pure: true,
     fn: function (dom: any, s: any, v: any, sys: any) {
       dom = sys.__query(dom, 'DOM属性設定', false)
-      const wa = sys.__v0['DOM和属性']
+      const wa = sys.__getSysVar('DOM和属性')
       if (wa[s]) { s = wa[s] }
       // domのプロパティを確認して存在すればその値を設定する #1392
       if (s in dom) {
@@ -189,7 +189,7 @@ export default {
     fn: function (dom: any, s: any, sys: any) {
       dom = sys.__query(dom, 'DOM属性取得', true)
       if (!dom) { return '' }
-      const wa = sys.__v0['DOM和属性']
+      const wa = sys.__getSysVar('DOM和属性')
       if (wa[s]) { s = wa[s] }
       // domのプロパティを確認して存在すればその値を取得する #1392
       if (s in dom) {
@@ -246,7 +246,7 @@ export default {
     pure: true,
     fn: function (dom: any, s: any, v: any, sys: any) {
       dom = sys.__query(dom, 'DOMスタイル設定', false)
-      const wa = sys.__v0['DOM和スタイル']
+      const wa = sys.__getSysVar('DOM和スタイル')
       if (wa[s] !== undefined) { s = wa[s] }
       if (wa[v] !== undefined) { v = wa[v] }
       dom.style[s] = v
@@ -261,7 +261,7 @@ export default {
     fn: function (dom: any, values: any, sys: any) {
       dom = sys.__query(dom, 'DOMスタイル一括設定', false)
       if (dom instanceof window.HTMLElement) { dom = [dom] }
-      const wa = sys.__v0['DOM和スタイル']
+      const wa = sys.__getSysVar('DOM和スタイル')
       // 列挙したDOM一覧を全てスタイル変更する
       for (let i = 0; i < dom.length; i++) {
         const e = dom[i]
@@ -284,7 +284,7 @@ export default {
     fn: function (dom: any, style: any, sys: any) {
       dom = sys.__query(dom, 'DOMスタイル取得', true)
       if (!dom) { return '' }
-      const wa = sys.__v0['DOM和スタイル']
+      const wa = sys.__getSysVar('DOM和スタイル')
       if (wa[style]) { style = wa[style] }
       return dom.style[style]
     }
@@ -300,7 +300,7 @@ export default {
       if (!dom) { return res }
       if (style instanceof String) { style = [style] }
 
-      const wa = sys.__v0['DOM和スタイル']
+      const wa = sys.__getSysVar('DOM和スタイル')
       if (style instanceof Array) {
         style.forEach((key) => {
           if (wa[key]) { key = wa[key] }

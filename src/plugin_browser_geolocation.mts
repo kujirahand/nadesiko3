@@ -11,10 +11,10 @@ export default {
       if (!('geolocation' in navigator)) { throw new Error('関数『位置情報取得時』は使えません。') }
 
       navigator.geolocation.getCurrentPosition((position) => {
-        sys.__v0['対象'] = [
+        sys.__setSysVar('対象', [
           position.coords.latitude,
           position.coords.longitude
-        ]
+        ])
         cb(position)
       })
     },
@@ -30,10 +30,10 @@ export default {
       if (!('geolocation' in navigator)) { throw new Error('関数『位置情報監視時』は使えません。') }
 
       return navigator.geolocation.watchPosition((position) => {
-        sys.__v0['対象'] = [
+        sys.__setSysVar('対象', [
           position.coords.latitude,
           position.coords.longitude
-        ]
+        ])
         cb(position)
       })
     },

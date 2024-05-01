@@ -15,8 +15,8 @@ export default {
       sys.__ctx = cv.getContext('2d')
       sys.__fillStyle = 'black'
       sys.__strokeStyle = 'black'
-      sys.__v0['描画中キャンバス'] = cv
-      sys.__v0['描画中コンテキスト'] = sys.__ctx
+      sys.__setSysVar('描画中キャンバス', cv)
+      sys.__setSysVar('描画中コンテキスト', sys.__ctx)
     },
     return_none: true
   },
@@ -228,11 +228,11 @@ export default {
       img.src = url
       img.crossOrigin = 'Anonymous'
       img.onload = () => {
-        sys.__v0['対象'] = img
+        sys.__setSysVar('対象', img)
         sys.resolve()
       }
       img.onerror = () => {
-        sys.__v0['対象'] = ''
+        sys.__setSysVar('対象', '')
         sys.reject()
       }
       return img
@@ -250,11 +250,11 @@ export default {
       img.src = url
       img.crossOrigin = 'Anonymous'
       img.onload = () => {
-        sys.__v0['対象'] = img
+        sys.__setSysVar('対象', img)
         func(sys)
       }
       img.onerror = () => {
-        sys.__v0['対象'] = ''
+        sys.__setSysVar('対象', '')
         func(sys)
       }
     },
@@ -434,7 +434,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: any) {
-      const cv = sys.__v0['描画中キャンバス']
+      const cv = sys.__getSysVar('描画中キャンバス')
       const url = cv.toDataURL('image/png')
       return url
     }
@@ -446,7 +446,7 @@ export default {
     asyncFn: true,
     fn: function (sys: any) {
       return new Promise((resolve, reject) => {
-        const cv = sys.__v0['描画中キャンバス']
+        const cv = sys.__getSysVar('描画中キャンバス')
         cv.toBlob((result: any) => { resolve(result) }, 'image/png')
       })
     }
@@ -458,7 +458,7 @@ export default {
     fn: function (dom: any, sys: any) {
       if (typeof dom === 'string') { dom = document.querySelector(dom) }
       if (!dom) { throw new Error('『描画ダウンロードリンク作成』でDOMが見当たりません。') }
-      const cv = sys.__v0['描画中キャンバス']
+      const cv = sys.__getSysVar('描画中キャンバス')
       if (!cv) { throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。') }
       dom.href = cv.toDataURL('image/png')
       dom.download = 'canvas.png'
@@ -470,7 +470,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: any) {
-      const cv = sys.__v0['描画中キャンバス']
+      const cv = sys.__getSysVar('描画中キャンバス')
       if (!cv) { throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。') }
       const a = document.createElement('a')
       a.href = cv.toDataURL('image/png')

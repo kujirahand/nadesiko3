@@ -18,7 +18,7 @@ export default {
     fn: function (s: any, sys: any) {
       const r = window.prompt(s)
       if (r === null) {
-        return sys.__v0['ダイアログキャンセル値']
+        return sys.__getSysVar('ダイアログキャンセル値')
       }
       if (/^[-+]?[0-9]+(\.[0-9]+)?$/.test(r)) {
         return parseFloat(r)
@@ -38,7 +38,7 @@ export default {
     fn: function (s: any, sys: any) {
       const r = window.prompt(s)
       if (r === null) {
-        return sys.__v0['ダイアログキャンセル値']
+        return sys.__getSysVar('ダイアログキャンセル値')
       }
       return r
     }

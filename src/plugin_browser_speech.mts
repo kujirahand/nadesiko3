@@ -38,7 +38,7 @@ export default {
       const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys])
       msg.onend = (e) => {
         console.log('#話終時')
-        sys.__v0['対象イベント'] = e
+        sys.__setSysVar('対象イベント', e)
         callback(sys)
       }
       window.speechSynthesis.speak(msg)
@@ -52,15 +52,15 @@ export default {
     pure: true,
     fn: function (s: string, sys: any) {
       // 話者の特定
-      let voice = sys.__v0['話:話者']
+      let voice = sys.__getSysVar('話:話者')
       if (!voice) { voice = sys.__exec('話者設定', ['ja', sys]) }
       // インスタンス作成
       const msg = new SpeechSynthesisUtterance(s)
       msg.voice = voice
       if (voice) { msg.lang = voice.lang } // 必ず話者の特定に成功している訳ではない
-      msg.rate = sys.__v0['話者速度']
-      msg.pitch = sys.__v0['話者声高']
-      msg.volume = sys.__v0['話者音量']
+      msg.rate = sys.__getSysVar('話者速度')
+      msg.pitch = sys.__getSysVar('話者声高')
+      msg.volume = sys.__getSysVar('話者音量')
       return msg
     }
   },
@@ -90,7 +90,7 @@ export default {
             const msg = new SpeechSynthesisUtterance()
             msg.voice = i
             msg.lang = i.lang
-            sys.__v0['話:話者'] = i
+            sys.__setSysVar('話:話者', i)
             console.log('#話者:', i.name)
             return i
           }
@@ -98,7 +98,7 @@ export default {
       }
       // 話者一覧取得で得たオブジェクトを直接指定した場合
       if (typeof v === 'object') {
-        sys.__v0['話:話者'] = v
+        sys.__setSysVar('話:話者', v)
         return v
       }
       return undefined
@@ -113,9 +113,9 @@ export default {
     pure: true,
     fn: function (obj: any, sys: any) {
       const changeFunc = (key, v) => {
-        if (key === '速度') { sys.__v0['話者速度'] = v }
-        if (key === '声高' || key === 'ピッチ') { sys.__v0['話者声高'] = v }
-        if (key === '音量') { sys.__v0['話者音量'] = v }
+        if (key === '速度') { sys.__setSysVar('話者速度', v) }
+        if (key === '声高' || key === 'ピッチ') { sys.__setSysVar('話者声高', v) }
+        if (key === '音量') { sys.__setSysVar('話者音量', v) }
       }
       // 一括変更
       for (const key in obj) {

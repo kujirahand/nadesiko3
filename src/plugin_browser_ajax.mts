@@ -41,19 +41,19 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
     fn: function (callback: any, url: any, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then(res => {
         // もし301であれば自動でリダイレクトするため,200だけをチェックすれば良い
         if (res.status !== 200) {
-          return sys.__v0['AJAX:ONERROR'](res.status)
+          return sys.__getSysVar('AJAX:ONERROR')(res.status)
         }
         return res.text()
       }).then(text => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         callback(text, sys)
       }).catch(err => {
-        sys.__v0['AJAX:ONERROR'](err)
+        sys.__getSysVar('AJAX:ONERROR')(err)
       })
     },
     return_none: true
@@ -64,7 +64,7 @@ export default {
     josi: [['に', 'へ', 'と']],
     pure: true,
     fn: function (option: any, sys: any) {
-      sys.__v0['AJAXオプション'] = option
+      sys.__setSysVar('AJAXオプション', option)
     },
     return_none: true
   },
@@ -81,7 +81,7 @@ export default {
         },
         body: bodyData
       }
-      sys.__v0['AJAXオプション'] = options
+      sys.__setSysVar('AJAXオプション', options)
     },
     return_none: true
   },
@@ -90,7 +90,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (callback: any, sys: any) {
-      sys.__v0['AJAX:ONERROR'] = callback
+      sys.__setSysVar('AJAX:ONERROR', callback)
     }
   },
   'AJAXテキスト取得': { // @AJAXでURLにアクセスしテキスト形式で結果を得る。送信時『AJAXオプション』の値を参照。 // @AJAXてきすとしゅとく
@@ -99,7 +99,7 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (url: any, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
       const txt = await res.text()
@@ -113,7 +113,7 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (url: any, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
       const txt = await res.json()
@@ -127,7 +127,7 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (url: any, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
       const bin = await res.blob()
@@ -161,10 +161,10 @@ export default {
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         callback(text)
       }).catch(err => {
-        sys.__v0['AJAX:ONERROR'](err)
+        sys.__getSysVar('AJAX:ONERROR')(err)
       })
     }
   },
@@ -183,10 +183,10 @@ export default {
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         callback(text)
       }).catch(err => {
-        sys.__v0['AJAX:ONERROR'](err)
+        sys.__getSysVar('AJAX:ONERROR')(err)
       })
     }
   },
@@ -258,7 +258,7 @@ export default {
     josi: [['まで', 'へ', 'に']],
     pure: true,
     fn: function (url: any, sys: any) {
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       return fetch(url, options)
     },
@@ -351,12 +351,12 @@ export default {
       sys.resolveCount++
       const resolve = sys.resolve
       const reject = sys.reject
-      let options = sys.__v0['AJAXオプション']
+      let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         resolve()
       }).catch(err => {
         reject(err.message)
@@ -394,7 +394,7 @@ export default {
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         resolve(text)
       }).catch(err => {
         reject(err.message)
@@ -421,7 +421,7 @@ export default {
       fetch(url, options).then(res => {
         return res.text()
       }).then(text => {
-        sys.__v0['対象'] = text
+        sys.__setSysVar('対象', text)
         resolve(text)
       }).catch(err => {
         reject(err.message)

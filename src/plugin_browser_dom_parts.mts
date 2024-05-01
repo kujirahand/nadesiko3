@@ -9,7 +9,7 @@ export default {
     pure: true,
     fn: function (el: any, sys: any) {
       if (typeof el === 'string') { el = document.querySelector(el) || document.getElementById(el) }
-      sys.__v0['DOM親要素'] = el
+      sys.__setSysVar('DOM親要素', el)
       return el
     }
   },
@@ -28,7 +28,7 @@ export default {
     josi: [['を', 'に', 'の']],
     pure: true,
     fn: function (skin: any, sys: any) {
-      sys.__v0['DOMスキン'] = skin
+      sys.__setSysVar('DOMスキン', skin)
     },
     return_none: true
   },
@@ -37,17 +37,17 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (elm: any, sys: any) {
-      const parent = sys.__v0['DOM親要素']
+      const parent = sys.__getSysVar('DOM親要素')
       const btn = (typeof (elm) === 'string') ? document.createElement(elm) : elm
-      btn.id = 'nadesi-dom-' + sys.__v0['DOM部品個数']
+      btn.id = 'nadesi-dom-' + sys.__getSysVar('DOM部品個数')
       // スキン適用
-      const func = sys.__v0['DOMスキン辞書'][sys.__v0['DOMスキン']]
+      const func = sys.__getSysVar('DOMスキン辞書')[sys.__getSysVar('DOMスキン')]
       if (typeof (func) === 'function') { func(elm, btn, sys) }
       // DOM追加
       parent.appendChild(btn)
-      sys.__v0['DOM部品個数']++
+      sys.__setSysVar('DOM部品個数', sys.__getSysVar('DOM部品個数', 0) + 1)
       // オプションを適用
-      const opt = sys.__v0['DOM部品オプション']
+      const opt = sys.__getSysVar('DOM部品オプション')
       if (opt['自動改行']) {
         parent.appendChild(document.createElement('br'))
       }
@@ -138,8 +138,8 @@ export default {
       const span = document.createElement('span')
       const inp = document.createElement('input')
       inp.type = 'checkbox'
-      inp.id = 'nadesi-dom-' + sys.__v0['DOM部品個数']
-      sys.__v0['DOM部品個数']++
+      inp.id = 'nadesi-dom-' + sys.__getSysVar('DOM部品個数', 0)
+      sys.__setSysVar('DOM部品個数', sys.__getSysVar('DOM部品個数', 0) + 1)
       const label = document.createElement('label')
       label.innerHTML = text
       label.htmlFor = inp.id
@@ -366,7 +366,7 @@ export default {
         for (const row of rows) { rr.push(row.split(',')) }
         aa = rr
       }
-      const bgColor = JSON.parse(JSON.stringify(sys.__v0['DOM部品オプション']['テーブル背景色']))
+      const bgColor = JSON.parse(JSON.stringify(sys.__getSysVar('DOM部品オプション')['テーブル背景色']))
       for (let i = 0; i < 3; i++) { bgColor.push('') }
       const bgHead = bgColor.shift()
       const table = sys.__exec('DOM部品作成', ['table', sys])

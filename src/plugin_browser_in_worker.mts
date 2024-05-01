@@ -24,7 +24,7 @@ const PluginBrowserInWorker = {
       if (typeof navigator === 'undefined') { navigator = {} }
 
       // 定数を初期化
-      sys.__v0['AJAX:ONERROR'] = (err) => { console.log(err) }
+      sys.__setSysVar('AJAX:ONERROR', (err) => { console.log(err) })
       // オブジェクトを初期化
       sys.__v0.SELF = self
       sys.__v0.NAVIGATOR = navigator

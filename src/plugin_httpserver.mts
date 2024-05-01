@@ -48,7 +48,7 @@ class EasyURLDispather {
     console.log(`${HTTPSERVER_LOGID} 要求あり URL=` + req.url)
     const params = this.parseURL(req.url)
     const url = params['?URL']
-    this.sys.__v0['GETデータ'] = params
+    this.sys.__setSysVar('GETデータ', params)
     // URLの一致を調べてアクションを実行
     const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
     for (const it of filtered) {

@@ -44,10 +44,10 @@ export default {
     pure: true,
     fn: function (v: any, key: any, sys: any) {
       let body = v
-      if (sys.__v0['保存オプション']) {
-        if ((sys.__v0['保存オプション'].indexOf('json') >= 0)) {
+      if (sys.__getSysVar('保存オプション')) {
+        if ((sys.__getSysVar('保存オプション').indexOf('json') >= 0)) {
           body = JSON.stringify(body)
-        } else if (sys.__v0['保存オプション'] === 'raw') {
+        } else if (sys.__getSysVar('保存オプション') === 'raw') {
           // なにもしない
         }
       }
@@ -61,7 +61,7 @@ export default {
     pure: true,
     fn: function (key: any, sys: any) {
       const v = window.localStorage[key]
-      if (sys.__v0['保存オプション'] && (sys.__v0['保存オプション'].indexOf('json') >= 0)) {
+      if (sys.__getSysVar('保存オプション') && (sys.__getSysVar('保存オプション').indexOf('json') >= 0)) {
         try {
           return JSON.parse(v)
         } catch (e) {
@@ -117,7 +117,7 @@ export default {
     pure: true,
     fn: function (v: any, sys: any) {
       v = v.toUpperCase(v)
-      sys.__v0['保存オプション'] = v
+      sys.__setSysVar('保存オプション', v)
     },
     return_none: true
   }

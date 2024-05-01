@@ -47,7 +47,7 @@ export default {
       const d = {
         type: 'line',
         data,
-        options: sys.__v0['グラフオプション']
+        options: sys.__getSysVar('グラフオプション')
       }
       return sys.__exec('グラフ描画', [d, sys])
     }
@@ -59,7 +59,7 @@ export default {
     fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
-        sys.__v0['グラフオプション'],
+        sys.__getSysVar('グラフオプション'),
         { 'indexAxis': 'x' })
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
@@ -78,7 +78,7 @@ export default {
     fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
-        sys.__v0['グラフオプション'],
+        sys.__getSysVar('グラフオプション'),
         { 'indexAxis': 'y' })
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
@@ -96,7 +96,7 @@ export default {
     fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
-        sys.__v0['グラフオプション'],
+        sys.__getSysVar('グラフオプション'),
         {
           'indexAxis': 'x',
           'scales': {
@@ -120,7 +120,7 @@ export default {
     fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
-        sys.__v0['グラフオプション'],
+        sys.__getSysVar('グラフオプション'),
         {
           'indexAxis': 'y',
           'scales': {
@@ -144,7 +144,7 @@ export default {
     fn: async function (data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
-        sys.__v0['グラフオプション'],
+        sys.__getSysVar('グラフオプション'),
         {})
       data = sys.__exec('二次元グラフデータ変形', ['scatter', data, sys])
       const d = {
@@ -164,7 +164,7 @@ export default {
       const d = {
         type: 'pie',
         data,
-        options: sys.__v0['グラフオプション']
+        options: sys.__getSysVar('グラフオプション')
       }
       return sys.__exec('グラフ描画', [d, sys])
     }
@@ -178,7 +178,7 @@ export default {
       const d = {
         type: 'doughnut',
         data,
-        options: sys.__v0['グラフオプション']
+        options: sys.__getSysVar('グラフオプション')
       }
       return sys.__exec('グラフ描画', [d, sys])
     }
@@ -192,7 +192,7 @@ export default {
       const d = {
         type: 'polarArea',
         data,
-        options: sys.__v0['グラフオプション']
+        options: sys.__getSysVar('グラフオプション')
       }
       return sys.__exec('グラフ描画', [d, sys])
     }
@@ -206,7 +206,7 @@ export default {
       const d = {
         type: 'radar',
         data,
-        options: sys.__v0['グラフオプション']
+        options: sys.__getSysVar('グラフオプション')
       }
       return sys.__exec('グラフ描画', [d, sys])
     }
