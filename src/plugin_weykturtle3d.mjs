@@ -682,7 +682,7 @@ const PluginWeykTurtle3D = {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (v, sys) {
-      sys.__varslist[0]['T3Dカメ速度'] = v
+      sys.__setSysVar('T3Dカメ速度', v)
     },
     return_none: true
   },

@@ -247,7 +247,7 @@ export class CNako3 extends NakoCompiler {
     const genOpt = new NakoGenOptions(
       isTest,
       ['plugin_node.mjs'],
-      'self.__varslist[0][\'ナデシコ種類\']=\'cnako3\';'
+      'self.__setSysVar(\'ナデシコ種類\', \'cnako3\');'
     )
     const jscode = this.compileStandalone(src, this.filename, genOpt)
     console.log(opt.output)

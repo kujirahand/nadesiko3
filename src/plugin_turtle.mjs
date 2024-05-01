@@ -384,7 +384,7 @@ const PluginTurtle = {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (v, sys) {
-      sys.__varslist[0]['カメ速度'] = v
+      sys.__setSysVar('カメ速度', v)
     }
   },
   'カメ移動': { // @カメの位置を[x,y]へ移動する // @かめいどう

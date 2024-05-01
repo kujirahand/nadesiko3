@@ -7,10 +7,10 @@ import PluginWorker from './plugin_worker.mjs'
 class WebWorkerNakoCompiler extends NakoCompiler {
   constructor () {
     super()
-    this.__varslist[0]['ナデシコ種類'] = 'wwnako3'
-    this.__varslist[0]['PluginWorker:ondata'] = (data, event) => {
+    this.__setSysVar('ナデシコ種類', 'wwnako3')
+    this.__setSysVar('PluginWorker:ondata', (data, event) => {
       throw new Error('『NAKOワーカーデータ受信時』が呼ばれていません。')
-    }
+    })
   }
 }
 
@@ -51,9 +51,9 @@ if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope
           if (o.type === 'func') {
             nako3Compiler.nakoFuncList[o.name] = o.content.meta
             nako3Compiler.funclist[o.name] = o.content.func
-            nako3Compiler.__varslist[1][o.name] = () => {}
+            nako3Compiler.__varslist[1].set(o.name, () => {})
           } else if (o.type === 'val') {
-            nako3Compiler.__varslist[2][o.name] = o.content
+            nako3Compiler.__varslist[2].set(o.name, o.content)
           } else if (o.type === 'env') {
             if (o.name === 'modlist') {
               for (const modInfo of o.content) {
@@ -75,8 +75,8 @@ if (typeof (navigator) === 'object' && self && self instanceof WorkerGlobalScope
         })
         break
       case 'data':
-        if (nako3Global.__varslist[0]['PluginWorker:ondata']) {
-          nako3Global.__varslist[0]['PluginWorker:ondata'].apply(nako3Global, [value, event])
+        if (nako3Global.__getSysVar('PluginWorker:ondata')) {
+          nako3Global.__getSysVar('PluginWorker:ondata').apply(nako3Global, [value, event])
         }
         break
     }

@@ -298,7 +298,7 @@ const PluginWebWorker = {
         if (data.indexOf('__') === -1) {
           for (const modname of sys.__modList) {
             const varname = modname + '__' + data
-            if (typeof sys.__varslist[2][varname] !== 'undefined' || typeof sys.__varslist[1][varname] !== 'undefined') {
+            if (typeof sys.__varslist[2].get(varname) !== 'undefined' || typeof sys.__varslist[1].get(varname) !== 'undefined') {
               data = varname
               break
             }
@@ -310,14 +310,14 @@ const PluginWebWorker = {
             modNameList.push(modname)
           }
         }
-        if (typeof sys.__varslist[2][data] !== 'undefined') {
+        if (typeof sys.__varslist[2].get(data) !== 'undefined') {
           obj.push({
             type: 'val',
             name: data,
-            content: sys.__varslist[2][data]
+            content: sys.__varslist[2].get(data)
           })
         } else
-        if (typeof sys.__varslist[1][data] !== 'undefined') {
+        if (typeof sys.__varslist[1].get(data) !== 'undefined') {
           obj.push({
             type: 'func',
             name: data,
