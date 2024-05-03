@@ -159,7 +159,11 @@ describe('wnako3_editor_test', () => {
   describe('ドキュメントのホバー', () => {
     it('プラグイン関数の助詞のドキュメントを表示する', () => {
       const nako3 = new NakoCompiler()
-      nako3.addPluginObject('PluginEditorTest', {
+      nako3.addPlugin({
+        'meta': {
+          type: 'const',
+          value: { pluginName: 'PluginEditorTest', nakoVersion: '3.6.3' }
+        },
         'プラグイン関数テスト': {
           type: 'func',
           josi: [['を', 'と'], ['に', 'は']],

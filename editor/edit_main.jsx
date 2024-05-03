@@ -151,7 +151,6 @@ const Editor = (params) => {
           setUsedFuncs(getNako3().usedFuncs)
           window.addEventListener('message', (e) => {
             if (e.data.action === 'debug.line') {
-              console.log('@e.data=', e.data)
               const line = e.data.line
               const m = line.match(/^l(\d+):/)
               if (m && activeEditor) {
