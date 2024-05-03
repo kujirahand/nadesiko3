@@ -9,8 +9,8 @@ export default {
       // v3.3.74以降 plguin_system.mjsと挙動が同じになった
       // デバッグモードでなければ例外を投げることでプログラムを終了させる
       if (sys && sys.__v0) {
-        sys.__v0.forceClose = true
-        if (!sys.__v0.useDebug) { throw new Error('__終わる__') }
+        sys.__setSysVar('__forceClose', true)
+        if (!sys.__getSysVar('__useDebug')) { throw new Error('__終わる__') }
       } else {
         throw new Error('__終わる__')
       }
