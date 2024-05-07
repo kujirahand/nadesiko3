@@ -40,14 +40,15 @@ h1 {
   padding: 8px;
   margin: 4px;
 }
-#filesbox > ul {
+#filesbox ul {
   margin: 0;
   padding: 4px;
 }
-#filesbox > ul > li {
+#filesbox ul > li {
   border-bottom: 1px solid silver;
   padding: 8px;
   list-style-type: none;
+  position: relative;
 }
 .newfile {
   padding: 4px;
@@ -62,4 +63,31 @@ h1 {
 .titlemenu a {
   color: yellow;
   text-decoration: none;
+}
+
+.menu-box {
+  border: 1px solid silver;
+  padding: 0.5em;
+  border-radius: 0.3em;
+}
+
+.del_btn {
+  position: absolute;
+  right: 0;
+  top: 8px;
+}
+
+.result_output {
+  color: silver;
+  font-size: 0.8em;
+}
+
+#stdout {
+  background-color: white;
+  border: 1px solid silver;
+  margin: 4px;
+  padding: 8px;
+  font-size: 1em;
+  text-align: left;
+  border-radius: 0.4em;
 }

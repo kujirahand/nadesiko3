@@ -74,6 +74,10 @@ const server = http.createServer(function (req, res) {
     apiRun(res, params)
     return
   }
+  if (uri === '/run_direct') {
+    apiRunDirect(res, params)
+    return
+  }
   if (uri === '/get_new_filename') {
     apiGetNewFilename(res)
     return
@@ -214,6 +218,38 @@ function apiRun (res, params) {
   try {
     fs.writeFileSync(fullpath, body, 'utf-8')
     const cmd = `"${NODE}" "${CNAKO3}" "${fullpath}"`
+    let result = ''
+    try {
+      result = execSync(cmd)
+      result = String(result)
+    } catch (err) {
+      console.error(err)
+      res.end('[ERROR]実行に失敗しました。' + err.toString())
+      return
+    }
+    console.log('[run] file=', fname)
+    console.log('--------------------------------')
+    console.log(result)
+    console.log('--------------------------------')
+    res.end(result)
+  } catch (err) {
+    console.error(err)
+    res.end('[ERROR] 実行に失敗しました。')
+  }
+}
+
+function apiRunDirect(res, params) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
+  const appkeyUser = params.appkey
+  if (appkey !== appkeyUser) {
+    res.end('[ERROR] キーが違います')
+    return
+  }
+  const fname = removePathFlag(params.file)
+  const fullpath = path.join(userDir, fname)
+  try {
+    const cmd = `"${NODE}" "${CNAKO3}" "${fullpath}"`
+    console.log("@run=", cmd)
     let result = ''
     try {
       result = execSync(cmd)

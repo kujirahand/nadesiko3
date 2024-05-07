@@ -36,21 +36,26 @@ Pを表示。
       もし、LEFT(F,2)="__"ならば、続ける。
       F2 = FをHTML変換
       F3 = FをURLエンコード
+      # 編集可能ファイルか？
       Fを「\.(csv|txt|tsv|js|bat|nako3|nako|css|html|htm|)$」で正規表現マッチ。
       もし、そうならば
         HTML=HTML&「<li>」
         HTML=HTML&「<a class="btn btn-sm btn-warning del_btn" data-file="{F3}">削除</a> &nbsp;」
+        HTML=HTML&「<a class="btn btn-sm btn-accent run_btn" data-file="{F3}">▶ 実行</a>&nbsp;」
+        HTML=HTML&「<a class="btn btn-sm btn-primary" href="/html/edit.html?file={F3}&appkey={APPKEY}">編集</a>&nbsp;」
         HTML=HTML&「<a href="/html/edit.html?file={F3}&appkey={APPKEY}">📝 {F2}</a>」
         HTML=HTML&「</li>」
       違えば
         HTML=HTML&「<li>」
+        HTML=HTML&「<div style="float:right;">」
         HTML=HTML&「<a class="btn btn-sm btn-warning del_btn" data-file="{F3}">削除</a> &nbsp;」
         HTML=HTML&「<a>🌠 {F2}</a>」
+        HTML=HTML&「</div><div style="clear:both;"></div>」
         HTML=HTML&「</li>」
       ここまで。
     ここまで。
     「#files_ul」にHTMLをDOM_HTML設定。
-    削除ボタンイベント設定。
+    各種ボタンイベント設定。
   ここまで。
   # ---
   AJAX失敗した時には(err)
@@ -61,16 +66,19 @@ Pを表示。
   ここまで
 ここまで。
 
-●削除ボタンイベント設定
+●各種ボタンイベント設定
 　　「.del_btn」のDOM要素全取得して反復
 　　　　対象の「onclick」に「ファイル削除処理」をDOMイベント設定。
+　　ここまで。
+　　「.run_btn」のDOM要素全取得して反復
+　　　　対象の「onclick」に「ファイル実行処理」をDOMイベント設定。
 　　ここまで。
 ここまで。
 
 ●(Eの)ファイル削除処理とは
-　　「削除しても良いですか？」と二択。
-　　もし、それがいいえならば戻る。
 　　FF=E["target"]["dataset"]["file"]
+　　「以下のファイルを削除しても良いですか？{改行}{FF}」と二択。
+　　もし、それがいいえならば戻る。
 　　エラー監視
 　　　　RES=「/deletefile?appkey={APPKEY}&file={FF}」からAJAX_JSON取得。
 　　エラーならば
@@ -82,6 +90,14 @@ Pを表示。
 　　　　「失敗しました」と言う。
 　　ここまで。
 　　「/html/files.html?appkey={APPKEY}」にブラウザ移動。
+ここまで。
+
+●(Eの)ファイル実行処理とは
+　　FF=E["target"]["dataset"]["file"]
+　　RES=「/run_direct?appkey={APPKEY}&file={FF}」からAJAXテキスト取得。
+　　「RUN: {FF}」を表示。
+　　RES_HTML = RESをHTML変換
+　　「#stdout」にRES_HTMLをHTML設定。
 ここまで。
 
 #-----------
@@ -104,10 +120,16 @@ Pを表示。
     </div>
   </div>
   <div id="filesbox">
-    <div>
+    <div class="menu-box">
       <a class="btn btn-info" id="new_btn">→新規作成</a>
     </div>
-    <ul id="files_ul"></ul>
+    <div>
+      <ul id="files_ul"></ul>
+    </div>
+    <div class="menu-box">
+      <div class="result_output">出力結果:</div>
+      <div id="stdout"></div>
+    </div>
   </div>
 </body>
 
