@@ -175,7 +175,7 @@ class NakoTurtleSystem {
         }
         const m = tt.mlist.shift();
         const cmd = (m !== undefined) ? m[0] : '';
-        console.log('@@@doMacro', cmd, m, tt.x, tt.y, ': dir=', tt.dir);
+        // console.log('@@@doMacro', cmd, m, tt.x, tt.y, ': dir=', tt.dir)
         switch (cmd) {
             case 'xy':
                 // 起点を移動する
