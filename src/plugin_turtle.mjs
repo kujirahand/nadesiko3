@@ -29,29 +29,28 @@ class NakoTurtle {
         document.body.removeChild(this.canvas);
     }
     loadImage(url, callback) {
-        const tt = this;
         this.canvas = document.createElement('canvas');
-        this.ctx = tt.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d');
         this.canvas.id = this.id;
         this.img = document.createElement('img');
         this.img.onload = () => {
-            tt.cx = tt.img.width / 2;
-            tt.cy = tt.img.height / 2;
-            tt.canvas.width = tt.img.width;
-            tt.canvas.height = tt.img.height;
-            tt.flagLoaded = true;
-            tt.f_update = true;
-            tt.canvas.style.position = 'absolute';
-            document.body.appendChild(tt.canvas);
+            this.cx = this.img.width / 2;
+            this.cy = this.img.height / 2;
+            this.canvas.width = this.img.width;
+            this.canvas.height = this.img.height;
+            this.flagLoaded = true;
+            this.f_update = true;
+            this.canvas.style.position = 'absolute';
+            document.body.appendChild(this.canvas);
             // console.log('createTurtle::this.turtles=', this)
-            callback(tt);
+            callback(this);
         };
         this.img.onerror = () => {
             console.log('カメの読み込みに失敗');
-            tt.flagLoaded = true;
-            tt.f_visible = false;
-            tt.f_update = true;
-            callback(tt);
+            this.flagLoaded = true;
+            this.f_visible = false;
+            this.f_update = true;
+            callback(this);
         };
         this.img.src = url;
     }
@@ -63,7 +62,6 @@ class NakoTurtleSystem {
         }
         const i = NakoTurtleSystem.instance;
         i.instanceCount += 1;
-        // console.log('@@instanceCount=', i.instanceCount)
         return NakoTurtleSystem.instance;
     }
     constructor(sys) {
@@ -131,11 +129,12 @@ class NakoTurtleSystem {
         return this.turtles[this.target];
     }
     setTimer() {
+        // コマンド設定後、1度だけこの関数を呼び出す
         if (this.flagSetTimer) {
             return;
         }
         this.flagSetTimer = true;
-        console.log('[TURTLE] standby ...');
+        // 記録したマクロを再生する
         if (this.timerId) {
             clearTimeout(this.timerId);
         }
@@ -164,14 +163,19 @@ class NakoTurtleSystem {
             ctx.stroke();
         }
     }
+    addMacro(args) {
+        const tt = this.getCur();
+        tt.mlist.push(args);
+        this.setTimer();
+    }
     doMacro(tt, wait) {
-        const me = this;
         if (!tt.flagLoaded && wait > 0) {
             // console.log('[TURTLE] waiting ...')
             return true;
         }
         const m = tt.mlist.shift();
         const cmd = (m !== undefined) ? m[0] : '';
+        console.log('@@@doMacro', cmd, m, tt.x, tt.y, ': dir=', tt.dir);
         switch (cmd) {
             case 'xy':
                 // 起点を移動する
@@ -214,7 +218,7 @@ class NakoTurtleSystem {
                 break;
             case 'mv': {
                 // 線を引く
-                me.line(tt, tt.x, tt.y, m[1], m[2]);
+                this.line(tt, tt.x, tt.y, m[1], m[2]);
                 // カメの角度を変更
                 const mvRad = Math.atan2(m[2] - tt.y, m[1] - tt.x);
                 tt.dir = mvRad * 57.29577951308232;
@@ -229,9 +233,10 @@ class NakoTurtleSystem {
                 const rad = tt.dir * 0.017453292519943295;
                 const x2 = tt.x + Math.cos(rad) * fdv;
                 const y2 = tt.y + Math.sin(rad) * fdv;
-                me.line(tt, tt.x, tt.y, x2, y2);
+                this.line(tt, tt.x, tt.y, x2, y2);
                 tt.x = x2;
                 tt.y = y2;
+                // console.log('@@@fd', m, tt.x, tt.y, ': dir=', tt.dir)
                 break;
             }
             case 'angle': {
@@ -288,23 +293,24 @@ class NakoTurtleSystem {
         return hasNext;
     }
     play() {
-        const me = this;
         const wait = this.sys.__getSysVar('カメ速度');
         let hasNext = this.doMacroAll(wait);
         if (wait <= 0) {
+            // 待ち時間なしで全部実行
             while (hasNext) {
                 hasNext = this.doMacroAll(wait);
             }
         }
         else if (hasNext) {
+            // 一つずつ実行
             if (this.timerId) {
                 clearTimeout(this.timerId);
             }
-            this.timerId = setTimeout(() => me.play(), wait);
+            this.timerId = setTimeout(() => this.play(), wait);
             return;
         }
         console.log('[TURTLE] finished.');
-        me.flagSetTimer = false;
+        this.flagSetTimer = false;
     }
     setupCanvas() {
         // 描画先をセットする
@@ -338,7 +344,6 @@ class NakoTurtleSystem {
         };
     }
     createTurtle(imageUrl) {
-        const self = this;
         // キャンバス情報は毎回参照する (#734)
         this.setupCanvas();
         // カメの情報をリストに追加
@@ -348,23 +353,33 @@ class NakoTurtleSystem {
         this.target = id;
         // 画像を読み込む
         tt.loadImage(imageUrl, (tt) => {
-            self.drawTurtle(tt.id);
+            this.drawTurtle(tt.id);
             console.log(`tutrle.onload(id=${tt.id})`);
         });
         // デフォルト位置(中央)の設定
-        tt.x = self.canvas_r.width / 2;
-        tt.y = self.canvas_r.height / 2;
+        tt.x = this.canvas_r.width / 2;
+        tt.y = this.canvas_r.height / 2;
         return id;
     }
 }
 const PluginTurtle = {
+    'meta': {
+        type: 'const',
+        value: {
+            pluginName: 'plugin_turtle', // プラグインの名前
+            description: 'タートルグラフィックス用のプラグイン', // 説明
+            pluginVersion: '3.6.0', // プラグインのバージョン
+            nakoRuntime: ['wnako'], // 対象ランタイム
+            nakoVersion: '3.6.3' // 要求なでしこバージョン
+        }
+    },
     '初期化': {
         type: 'func',
         josi: [],
         pure: true,
         fn: function (sys) {
             const turtleSystem = NakoTurtleSystem.getInstance(sys);
-            sys.tags._turtle = turtleSystem;
+            sys.tags.turtles = turtleSystem;
         }
     },
     '!クリア': {
@@ -373,7 +388,7 @@ const PluginTurtle = {
         pure: true,
         fn: function (sys) {
             // console.log('tutle::!クリア')
-            sys.tags._turtle.clearAll();
+            sys.tags.turtles.clearAll();
         }
     },
     // @タートルグラフィックス・カメ描画
@@ -383,7 +398,7 @@ const PluginTurtle = {
         pure: true,
         fn: function (sys) {
             const imageUrl = sys.__getSysVar('カメ画像URL');
-            return sys.tags._turtle.createTurtle(imageUrl);
+            return sys.tags.turtles.createTurtle(imageUrl);
         }
     },
     'ゾウ作成': {
@@ -392,7 +407,7 @@ const PluginTurtle = {
         pure: true,
         fn: function (sys) {
             const imageUrl = elephantImage;
-            return sys.tags._turtle.createTurtle(imageUrl);
+            return sys.tags.turtles.createTurtle(imageUrl);
         }
     },
     'パンダ作成': {
@@ -401,7 +416,7 @@ const PluginTurtle = {
         pure: true,
         fn: function (sys) {
             const imageUrl = pandaImage;
-            return sys.tags._turtle.createTurtle(imageUrl);
+            return sys.tags.turtles.createTurtle(imageUrl);
         }
     },
     'カメ操作対象設定': {
@@ -409,7 +424,7 @@ const PluginTurtle = {
         josi: [['に', 'へ', 'の']],
         pure: true,
         fn: function (id, sys) {
-            sys.tags._turtle.target = id;
+            sys.tags.turtles.target = id;
         },
         return_none: true
     },
@@ -420,9 +435,8 @@ const PluginTurtle = {
         josi: [['に', 'へ']],
         pure: true,
         fn: function (url, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['changeImage', url]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['changeImage', url]);
         },
         return_none: true
     },
@@ -440,9 +454,8 @@ const PluginTurtle = {
         josi: [['に', 'へ']],
         pure: true,
         fn: function (xy, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['mv', xy[0], xy[1]]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['mv', xy[0], xy[1]]);
         },
         return_none: true
     },
@@ -451,9 +464,8 @@ const PluginTurtle = {
         josi: [['に', 'へ']],
         pure: true,
         fn: function (xy, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['xy', xy[0], xy[1]]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['xy', xy[0], xy[1]]);
         },
         return_none: true
     },
@@ -462,9 +474,8 @@ const PluginTurtle = {
         josi: [['だけ']],
         pure: true,
         fn: function (v, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['fd', v, 1]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['fd', v, 1]);
         },
         return_none: true
     },
@@ -473,9 +484,8 @@ const PluginTurtle = {
         josi: [['だけ']],
         pure: true,
         fn: function (v, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['fd', v, -1]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['fd', v, -1]);
         },
         return_none: true
     },
@@ -484,9 +494,8 @@ const PluginTurtle = {
         josi: [['に', 'へ', 'の']],
         pure: true,
         fn: function (v, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['angle', v]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['angle', v]);
         },
         return_none: true
     },
@@ -495,9 +504,8 @@ const PluginTurtle = {
         josi: [['だけ']],
         pure: true,
         fn: function (v, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['rotr', v]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['rotr', v]);
         },
         return_none: true
     },
@@ -506,9 +514,8 @@ const PluginTurtle = {
         josi: [['だけ']],
         pure: true,
         fn: function (v, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['rotl', v]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['rotl', v]);
         },
         return_none: true
     },
@@ -517,9 +524,8 @@ const PluginTurtle = {
         josi: [['に', 'へ']],
         pure: true,
         fn: function (c, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['color', c]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['color', c]);
         },
         return_none: true
     },
@@ -528,9 +534,8 @@ const PluginTurtle = {
         josi: [['に', 'へ']],
         pure: true,
         fn: function (w, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['size', w]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['size', w]);
         }
     },
     'カメペン設定': {
@@ -538,9 +543,8 @@ const PluginTurtle = {
         josi: [['に', 'へ']],
         pure: true,
         fn: function (w, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['penOn', w]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['penOn', w]);
         }
     },
     'カメパス開始': {
@@ -548,9 +552,8 @@ const PluginTurtle = {
         josi: [],
         pure: true,
         fn: function (sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['begin']);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['begin']);
         }
     },
     'カメパス閉': {
@@ -558,9 +561,8 @@ const PluginTurtle = {
         josi: [],
         pure: true,
         fn: function (sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['close']);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['close']);
         }
     },
     'カメパス線引': {
@@ -568,9 +570,8 @@ const PluginTurtle = {
         josi: [],
         pure: true,
         fn: function (sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['stroke']);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['stroke']);
         }
     },
     'カメパス塗': {
@@ -578,9 +579,8 @@ const PluginTurtle = {
         josi: [],
         pure: true,
         fn: function (sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['fill']);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['fill']);
         }
     },
     'カメ文字描画': {
@@ -588,9 +588,8 @@ const PluginTurtle = {
         josi: [['を', 'と', 'の']],
         pure: true,
         fn: function (s, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['text', s]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['text', s]);
         }
     },
     'カメ文字設定': {
@@ -605,9 +604,8 @@ const PluginTurtle = {
             else if (s.match(/^\d+(px|em)$/)) {
                 s = s + ' serif';
             }
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['textset', s]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['textset', s]);
         }
     },
     'カメ塗色設定': {
@@ -615,9 +613,8 @@ const PluginTurtle = {
         josi: [['に', 'へ']],
         pure: true,
         fn: function (c, sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['fillStyle', c]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['fillStyle', c]);
         },
         return_none: true
     },
@@ -626,7 +623,7 @@ const PluginTurtle = {
         josi: [],
         pure: true,
         fn: function (sys) {
-            sys.tags._turtle.clearAll();
+            sys.tags.turtles.clearAll();
         },
         return_none: true
     },
@@ -635,16 +632,15 @@ const PluginTurtle = {
         josi: [['の', 'を']],
         pure: true,
         fn: function (cmd, sys) {
-            const tt = sys.tags._turtle.getCur();
+            const turtles = sys.tags.turtles;
             const a = cmd.split(/(\n|;)/);
             for (let i = 0; i < a.length; i++) {
                 let c = a[i];
                 c = c.replace(/^([a-zA-Z_]+)\s*(\d+)/, '$1,$2');
                 c = c.replace(/^([a-zA-Z_]+)\s*=/, '$1,');
                 const ca = c.split(/\s*,\s*/);
-                tt.mlist.push(ca);
+                turtles.addMacro(ca);
             }
-            sys.tags._turtle.setTimer();
         },
         return_none: true
     },
@@ -653,9 +649,8 @@ const PluginTurtle = {
         josi: [],
         pure: true,
         fn: function (sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['visible', false]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['visible', false]);
         },
         return_none: true
     },
@@ -664,9 +659,8 @@ const PluginTurtle = {
         josi: [],
         pure: true,
         fn: function (sys) {
-            const tt = sys.tags._turtle.getCur();
-            tt.mlist.push(['visible', true]);
-            sys.tags._turtle.setTimer();
+            const turtles = sys.tags.turtles;
+            turtles.addMacro(['visible', true]);
         },
         return_none: true
     },
@@ -676,11 +670,14 @@ const PluginTurtle = {
         pure: false,
         fn: function (func, sys) {
             func = sys.__findVar(func, null); // 文字列指定なら関数に変換
-            const tid = sys.tags._turtle.target;
-            const tt = sys.tags._turtle.list[tid];
+            if (typeof func !== 'function') {
+                return;
+            }
+            const tid = sys.tags.turtles.target;
+            const tt = sys.tags.turtles.list[tid];
             tt.canvas.onclick = (e) => {
                 sys.__setSysVar('対象', e.target);
-                return func(e, sys);
+                return func(e);
             };
         },
         return_none: true

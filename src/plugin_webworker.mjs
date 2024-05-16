@@ -1,5 +1,16 @@
 // @ts-nocheck
 const PluginWebWorker = {
+  'meta': {
+    type: 'const',
+    value: {
+      pluginName: 'plugin_webworker', // プラグインの名前
+      description: 'ブラウザのWebWorkerのためのプラグイン', // 説明
+      pluginVersion: '3.6.0', // プラグインのバージョン
+      nakoRuntime: ['wnako'], // 対象ランタイム
+      nakoVersion: '3.6.0' // 要求なでしこバージョン
+    }
+  },
+
   '初期化': {
     type: 'func',
     josi: [],
