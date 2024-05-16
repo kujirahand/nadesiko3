@@ -6,6 +6,16 @@ import browsers from './browsers.mjs'
 import agents from './browsers_agents.mjs'
 
 const PluginCaniuse = {
+  'meta': {
+    type: 'const',
+    value: {
+      pluginName: 'plugin_caniuse', // プラグインの名前
+      description: '対応ブラウザを判定するためのプラグイン', // 説明
+      pluginVersion: '3.6.0', // プラグインのバージョン
+      nakoRuntime: ['wnako'], // 対象ランタイム
+      nakoVersion: '3.6.0' // 要求なでしこバージョン
+    }
+  },
   '初期化': {
     type: 'func',
     josi: [],
