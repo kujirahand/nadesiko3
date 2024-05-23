@@ -11,7 +11,7 @@ const PluginCaniuse = {
     value: {
       pluginName: 'plugin_caniuse', // プラグインの名前
       description: '対応ブラウザを判定するためのプラグイン', // 説明
-      pluginVersion: '3.6.0', // プラグインのバージョン
+      pluginVersion: '3.6.1', // プラグインのバージョン
       nakoRuntime: ['wnako'], // 対象ランタイム
       nakoVersion: '3.6.0' // 要求なでしこバージョン
     }
