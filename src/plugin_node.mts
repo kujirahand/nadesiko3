@@ -11,14 +11,32 @@ import path from 'path'
 import iconv from 'iconv-lite'
 import opener from 'opener'
 import assert from 'assert'
-// 「標準入力取得時」「尋」で利用
-import readline from 'readline'
 // ハッシュ関数で利用
 import crypto from 'crypto'
 import os from 'os'
 import url from 'url'
+import { NakoSystem } from '../core/src/plugin_api.mjs'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+// ローカル関数
+function fileExists (f: string): boolean {
+  try {
+    fs.statSync(f)
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
+function isDir (f: string): boolean {
+  try {
+    const st = fs.statSync(f)
+    return st.isDirectory()
+  } catch (err) {
+    return false
+  }
+}
 
 export default {
   'meta': {
@@ -35,8 +53,9 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
-      sys.__quotePath = (fpath: string) => {
+    fn: function (sys: NakoSystem) {
+      // プラグインの初期化
+      sys.tags.__quotePath = (fpath: string) => {
         if (process.platform === 'win32') {
           fpath = fpath.replace(/"/g, '')
           fpath = fpath.replace(/%/g, '"^%"')
@@ -48,7 +67,7 @@ export default {
         }
         return fpath
       }
-      sys.__getBinPath = (tool: any) => {
+      sys.tags.__getBinPath = (tool: any) => {
         let fpath = tool
         if (process.platform === 'win32') {
           if (!fileExists(tool)) {
@@ -60,7 +79,7 @@ export default {
         }
         return fpath
       }
-      sys.__getBokanPath = () => {
+      sys.tags.__getBokanPath = () => {
         // Electronから実行した場合
         if (process.argv.length === 1) {
           return path.dirname(path.resolve(process.argv[0]))
@@ -81,25 +100,68 @@ export default {
       sys.__setSysVar('コマンドライン', process.argv)
       sys.__setSysVar('ナデシコランタイムパス', process.argv[0])
       sys.__setSysVar('ナデシコランタイム', path.basename(process.argv[0]))
-      sys.__setSysVar('母艦パス', sys.__getBokanPath())
+      sys.__setSysVar('母艦パス', sys.tags.__getBokanPath())
       sys.__setSysVar('AJAX:ONERROR', null)
 
       // 『尋』『文字尋』『標準入力取得時』『標準入力全取得』のための一時変数
-      // .pause() しないと Ctrl+D するまで永遠に入力待ちになる
-      // .resume() することで標準入力の受け取り待ちになる
-      sys.__linereader = readline.createInterface({ input: process.stdin, output: process.stdout })
-      if (sys.__linereader === null) {
-        sys.__linegetter = null
-      } else {
-        sys.__linegetter = (function () {
-          const getLineGen = (async function * () {
-            for await (const line of sys.__linereader) {
-              yield line
+      // nadesiko3-serverを起動した時、ctrl+cでプロセスが止まらない(#1668)を考慮した設計にする
+      // 非同期通信を使うと標準入力を占有してしまうため、一時的に全部の標準入力を取得しておいて、残りをバッファに入れておく仕組みにする
+      // 加えて、pause/resumeを使わない仕掛けにする
+      sys.tags.readBuffers = []
+      sys.tags.readline = (question: string, handler?: (line: string) => void) => {
+        if (question) {
+          process.stdout.write(question)
+        }
+        if (sys.tags.readBuffers.length > 0) {
+          const buf = sys.tags.readBuffers.shift()
+          return buf
+        }
+        let data: string = ''
+        process.stdin.on('data', (buf: Buffer) => {
+          const bufStr = buf.toString()
+          let line: string = data
+          for (let i = 0; i < bufStr.length; i++) {
+            const c = bufStr.charAt(i)
+            if (c === '\r') {
+              continue
             }
-          })()
-          return async () => ((await getLineGen.next()).value)
-        })()
-        sys.__linereader.pause()
+            if (c === '\n') {
+              if (handler) {
+                handler(line)
+              } else {
+                sys.tags.readBuffers.push(line)
+              }
+              line = ''
+              continue
+            }
+            line += c
+          }
+          data = line
+        })
+        process.stdin.on('end', () => {
+          if (handler) {
+            handler(data)
+          } else {
+            if (data !== '') {
+              sys.tags.readBuffers.push(data)
+            }
+          }
+          data = ''
+        })
+        if (handler !== undefined) { return true }
+        return new Promise((resolve, _reject) => {
+          const timerCallback = () => {
+            if (sys.tags.readBuffers.length > 0) {
+              const buf = sys.tags.readBuffers.shift()
+              process.stdin.removeAllListeners()
+              resolve(buf)
+            } else {
+              setTimeout(timerCallback, 100)
+            }
+          }
+          // 100msごとにチェック
+          setTimeout(() => { timerCallback() }, 10)
+        })
       }
     }
   },
@@ -127,7 +189,7 @@ export default {
     josi: [['を', 'から']],
     pure: true,
     asyncFn: true,
-    fn: function (f: string, sys: any) {
+    fn: function (f: string, sys: NakoSystem) {
       return new Promise((resolve, reject) => {
         // ファイルを読む
         fs.readFile(f, 'utf-8', (err: any, text: any) => {
@@ -144,7 +206,7 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (s: string, sys: any) {
+    fn: function (s: string, sys: NakoSystem) {
       return fs.readFileSync(s)
     }
   },
@@ -175,7 +237,7 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (s: string, sys: any) {
+    fn: function (s: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       const buf = fs.readFileSync(s)
       const text = iconv.decode(Buffer.from(buf), 'sjis')
@@ -186,7 +248,7 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-    fn: function (s: string, f: string, sys: any) {
+    fn: function (s: string, f: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       const buf = iconv.encode(s, 'Shift_JIS')
       fs.writeFileSync(f, buf)
@@ -197,7 +259,7 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (s: string, sys: any) {
+    fn: function (s: string, sys: NakoSystem) {
       const buf = fs.readFileSync(s)
       const text = iconv.decode(Buffer.from(buf), 'euc-jp')
       return text
@@ -207,7 +269,7 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-    fn: function (s: string, f: string, sys: any) {
+    fn: function (s: string, f: string, sys: NakoSystem) {
       const buf = iconv.encode(s, 'euc-jp')
       fs.writeFileSync(f, buf)
     },
@@ -238,7 +300,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を']],
     pure: true,
-    fn: function (callback: any, s: string, sys: any) {
+    fn: function (callback: any, s: string, sys: NakoSystem) {
       exec(s, (err, stdout, stderr) => {
         if (err) { throw new Error(stderr) } else { callback(stdout) }
       })
@@ -298,13 +360,12 @@ export default {
         for (const f of list) {
           if (f === '.' || f === '..') { continue }
           const fullpath = path.join(base, f)
-          let st = null
+          let st: fs.Stats
           try {
             st = fs.statSync(fullpath)
           } catch (e) {
-            st = null
+            continue
           }
-          if (st == null) { continue }
           if (st.isDirectory()) {
             enumR(fullpath)
             continue
@@ -345,7 +406,7 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: any) {
+    fn: function (a: string, b: string, sys: NakoSystem) {
       return fse.copySync(a, b)
     }
   },
@@ -353,7 +414,7 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: any, a: string, b: string, sys: any) {
+    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
       return fse.copy(a, b, (err: any) => {
         if (err) { throw new Error('ファイルコピー時:' + err) }
         callback()
@@ -365,7 +426,7 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: any) {
+    fn: function (a: string, b: string, sys: NakoSystem) {
       return fse.moveSync(a, b)
     }
   },
@@ -373,7 +434,7 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: any, a: string, b: string, sys: any) {
+    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
       fse.move(a, b, (err: any) => {
         if (err) { throw new Error('ファイル移動時:' + err) }
         callback()
@@ -385,7 +446,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (path: string, sys: any) {
+    fn: function (path: string, sys: NakoSystem) {
       return fse.removeSync(path)
     }
   },
@@ -393,7 +454,7 @@ export default {
     type: 'func',
     josi: [['で'], ['の', 'を']],
     pure: true,
-    fn: function (callback: any, path: string, sys: any) {
+    fn: function (callback: any, path: string, sys: NakoSystem) {
       return fse.remove(path, (err: any) => {
         if (err) { throw new Error('ファイル削除時:' + err) }
         callback()
@@ -405,7 +466,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (path: string, sys: any) {
+    fn: function (path: string, sys: NakoSystem) {
       return fs.statSync(path)
     }
   },
@@ -413,7 +474,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (path: string, sys: any) {
+    fn: function (path: string, sys: NakoSystem) {
       const st = fs.statSync(path)
       if (!st) { return -1 }
       return st.size
@@ -501,7 +562,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       const home = sys.__exec('ホームディレクトリ取得', [sys])
       return path.join(home, 'Desktop')
     }
@@ -510,7 +571,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       const home = sys.__exec('ホームディレクトリ取得', [sys])
       return path.join(home, 'Documents')
     }
@@ -520,15 +581,15 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
-      return sys.__getBokanPath()
+    fn: function (sys: NakoSystem) {
+      return sys.tags.__getBokanPath()
     }
   },
   'テンポラリフォルダ': { // @テンポラリフォルダのパスを取得して返す // @てんぽらりふぉるだ
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       // 環境変数からテンポラリフォルダを取得
       return os.tmpdir()
     }
@@ -537,7 +598,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (dir: string, sys: any) {
+    fn: function (dir: string, sys: NakoSystem) {
       if (dir === '' || !dir) {
         dir = os.tmpdir()
       }
@@ -568,7 +629,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: string, sys: any) {
+    fn: function (v: string, sys: NakoSystem) {
       sys.__setSysVar('圧縮解凍ツールパス', v)
     },
     return_none: true
@@ -577,10 +638,10 @@ export default {
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
-      a = sys.__quotePath(a)
-      b = sys.__quotePath(b)
+    fn: function (a: string, b: string, sys: NakoSystem) {
+      const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
+      a = sys.tags.__quotePath(a)
+      b = sys.tags.__quotePath(b)
       const cmd = `${tpath} x ${a} -o${b} -y`
       execSync(cmd)
       return true
@@ -590,10 +651,10 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: any, a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
-      a = sys.__quotePath(a)
-      b = sys.__quotePath(b)
+    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
+      const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
+      a = sys.tags.__quotePath(a)
+      b = sys.tags.__quotePath(b)
       const cmd = `${tpath} x ${a} -o${b} -y`
       exec(cmd, (err, stdout, stderr) => {
         if (err) { throw new Error('[エラー]『解凍時』' + err) }
@@ -606,10 +667,10 @@ export default {
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
-      a = sys.__quotePath(a)
-      b = sys.__quotePath(b)
+    fn: function (a: string, b: string, sys: NakoSystem) {
+      const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
+      a = sys.tags.__quotePath(a)
+      b = sys.tags.__quotePath(b)
       const cmd = `${tpath} a -r ${b} ${a} -y`
       execSync(cmd)
       return true
@@ -619,10 +680,10 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: any, a: string, b: string, sys: any) {
-      const tpath = sys.__quotePath(sys.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
-      a = sys.__quotePath(a)
-      b = sys.__quotePath(b)
+    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
+      const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
+      a = sys.tags.__quotePath(a)
+      b = sys.tags.__quotePath(b)
       const cmd = `${tpath} a -r ${b} ${a} -y`
       exec(cmd, (err, stdout, stderr) => {
         if (err) { throw new Error('[エラー]『圧縮時』' + err) }
@@ -645,7 +706,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (func: any, sys: any) {
+    fn: function (func: any, sys: NakoSystem) {
       if (typeof (func) === 'string') {
         func = sys.__findFunc(func, '強制終了時')
       }
@@ -660,7 +721,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       sys.__exec('終', [])
     },
     return_none: true
@@ -669,7 +730,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       return process.platform
     }
   },
@@ -677,7 +738,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       return process.arch
     }
   },
@@ -685,16 +746,19 @@ export default {
   'コマンドライン': { type: 'const', value: '' }, // @こまんどらいん
   'ナデシコランタイム': { type: 'const', value: '' }, // @なでしこらんたいむ
   'ナデシコランタイムパス': { type: 'const', value: '' }, // @なでしこらんたいむぱす
-  '標準入力取得時': { // @標準入力を一行取得した時に、無名関数（あるいは、文字列で関数名を指定）F(s: string)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
+  '標準入力取得時': { // @標準入力を一行取得した時に、変数『対象』に取得した文字列を代入し、無名関数（あるいは、文字列で関数名を指定）F(s: string)を実行する // @ひょうじゅんにゅうりょくしゅとくしたとき
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (callback: any, sys: any) {
-      if (!sys.__linereader) {
+    fn: function (callback: (f: string)=>void, sys: NakoSystem) {
+      if (!sys.tags.readline) {
         throw new Error('『標準入力取得時』命令で標準入力が取得できません')
       }
-      sys.__linereader.resume()
-      sys.__linereader.on('line', function (line :string) {
+      if (typeof callback === 'string') {
+        callback = sys.__findFunc(callback, '標準入力取得時')
+      }
+      sys.tags.readline('', (line: string) => {
+        sys.__setSysVar('対象', line)
         callback(line)
       })
     }
@@ -704,17 +768,11 @@ export default {
     josi: [['と', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (msg: string, sys: any) {
-      if (!sys.__linereader) {
+    fn: async function (msg: string, sys: NakoSystem) {
+      if (!sys.tags.readline) {
         throw new Error('『尋』命令で標準入力が取得できません')
       }
-      sys.__linereader.resume()
-      if (msg !== undefined) process.stdout.write(msg)
-      const line = await sys.__linegetter()
-      if (!line) {
-        throw new Error('『尋』命令で標準入力が取得できません。最後の入力が終わった可能性があります')
-      }
-      sys.__linereader.pause()
+      const line = await sys.tags.readline(msg)
       const lineAsNumber = Number(line)
       if (isNaN(lineAsNumber)) {
         return line
@@ -728,17 +786,11 @@ export default {
     josi: [['と', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (msg: string, sys: any) {
-      if (!sys.__linereader) {
-        throw new Error('『文字尋』命令で標準入力が取得できません')
+    fn: async function (msg: string, sys: NakoSystem) {
+      if (!sys.tags.readline) {
+        throw new Error('『尋』命令で標準入力が取得できません')
       }
-      sys.__linereader.resume()
-      if (msg !== undefined) process.stdout.write(msg)
-      const line = await sys.__linegetter()
-      if (!line) {
-        throw new Error('『文字尋』命令で標準入力が取得できません。最後の入力が終わった可能性があります')
-      }
-      sys.__linereader.pause()
+      const line = await sys.tags.readline(msg)
       return line
     }
   },
@@ -747,18 +799,14 @@ export default {
     josi: [],
     pure: true,
     asyncFn: true,
-    fn: function (sys: any): Promise<string> {
+    fn: function (sys: NakoSystem): Promise<string> {
       return new Promise((resolve, _reject) => {
         let dataStr = ''
-        if (!sys.__linereader) {
-          throw new Error('『標準入力全取得』命令で標準入力が取得できません')
-        }
-        sys.__linereader.resume()
-        sys.__linereader.on('line', (line : string) => {
-          dataStr += line + '\n'
+        process.stdin.on('data', (data) => {
+          dataStr += data.toString()
         })
-        sys.__linereader.on('close', () => {
-          sys.__linereader.close()
+        process.stdin.on('end', () => {
+          process.stdin.removeAllListeners()
           resolve(dataStr)
         })
       })
@@ -769,7 +817,7 @@ export default {
     type: 'func',
     josi: [['と'], ['が']],
     pure: true,
-    fn: function (a: any, b: any, sys: any) {
+    fn: function (a: any, b: any, sys: NakoSystem) {
       assert.strictEqual(a, b)
     }
   },
@@ -778,7 +826,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       const nif = os.networkInterfaces()
       if (!nif) { throw new Error('『自分IPアドレス取得』でネットワークのインターフェイスが種畜できません。') }
       /**
@@ -800,7 +848,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       const nif = os.networkInterfaces()
       if (!nif) { throw new Error('『自分IPアドレス取得』でネットワークのインターフェイスが種畜できません。') }
       const result: string[] = []
@@ -820,7 +868,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
-    fn: function (callback: any, url: string, sys: any) {
+    fn: function (callback: any, url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then((res: any) => {
@@ -839,7 +887,7 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を']],
     pure: true,
-    fn: function (callback: any, url: string, sys: any) {
+    fn: function (callback: any, url: string, sys: NakoSystem) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -848,7 +896,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
-    fn: function (callback: any, url: string, sys: any) {
+    fn: function (callback: any, url: string, sys: NakoSystem) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -857,11 +905,11 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (callback: any, url: string, params: any, sys: any) {
-      const flist = []
+    fn: function (callback: any, url: string, params: [key: string], sys: NakoSystem) {
+      const flist: Array<string> = []
       for (const key in params) {
-        const v = params[key]
-        const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
+        const v: string = params[key]
+        const kv: string = encodeURIComponent(key) + '=' + encodeURIComponent(v)
         flist.push(kv)
       }
       const bodyData = flist.join('&')
@@ -886,7 +934,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (callback: any, url: string, params: any, sys: any) {
+    fn: function (callback: any, url: string, params: any, sys: NakoSystem) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -911,7 +959,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (callback: any, sys: any) {
+    fn: function (callback: any, sys: NakoSystem) {
       sys.__setSysVar('AJAX:ONERROR', callback)
     }
   },
@@ -920,7 +968,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'と']],
     pure: true,
-    fn: function (option: any, sys: any) {
+    fn: function (option: any, sys: NakoSystem) {
       sys.__setSysVar('AJAXオプション', option)
     },
     return_none: true
@@ -929,7 +977,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
-    fn: function (url: string, sys: any) {
+    fn: function (url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       return fetch(url, options)
@@ -940,7 +988,7 @@ export default {
     type: 'func',
     josi: [['の', 'から', 'を']],
     pure: true,
-    fn: function (url: string, sys: any) {
+    fn: function (url: string, sys: NakoSystem) {
       return sys.__exec('AJAX保障送信', [url, sys])
     },
     return_none: false
@@ -949,7 +997,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
-    fn: function (url: string, sys: any) {
+    fn: function (url: string, sys: NakoSystem) {
       return sys.__exec('AJAX保障送信', [url, sys])
     },
     return_none: false
@@ -958,11 +1006,11 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (url: string, params: any, sys: any) {
-      const flist = []
+    fn: function (url: string, params: [key: string], sys: NakoSystem) {
+      const flist: Array<string> = []
       for (const key in params) {
-        const v = params[key]
-        const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
+        const v: string = params[key]
+        const kv: string = encodeURIComponent(key) + '=' + encodeURIComponent(v)
         flist.push(kv)
       }
       const bodyData = flist.join('&')
@@ -981,7 +1029,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (url: string, params: any, sys: any) {
+    fn: function (url: string, params: any, sys: NakoSystem) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -997,7 +1045,7 @@ export default {
     type: 'func',
     josi: [['から'], ['で']],
     pure: true,
-    fn: function (res: any, type: string, sys: any) {
+    fn: function (res: any, type: string, sys: NakoSystem) {
       type = type.toString().toUpperCase()
       if (type === 'TEXT' || type === 'テキスト') {
         return res.text()
@@ -1022,11 +1070,7 @@ export default {
     type: 'func',
     josi: [['から', 'を']],
     pure: true,
-    fn: function (url: string, sys: any) {
-      if (sys.__genMode !== '非同期モード') {
-        throw new Error('『AJAX受信』を使うには、プログラムの冒頭で「!非同期モード」と宣言してください。')
-      }
-      const sysenv = sys.setAsync(sys)
+    fn: function (url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       // fetch 実行
@@ -1038,10 +1082,8 @@ export default {
         }
       }).then((text: string) => {
         sys.__setSysVar('対象', text)
-        sys.compAsync(sys, sysenv)
       }).catch((err: any) => {
         console.error('[AJAX受信のエラー]', err)
-        sys.__errorAsync(err, sys)
       })
     },
     return_none: true
@@ -1050,8 +1092,8 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (params: any, sys: any) {
-      const flist = []
+    fn: function (params: any, sys: NakoSystem) {
+      const flist: Array<string> = []
       for (const key in params) {
         const v = params[key]
         const kv = encodeURIComponent(key) + '=' + encodeURIComponent(v)
@@ -1066,7 +1108,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, sys: any) {
+    fn: async function (url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       // console.log(url, options)
@@ -1081,7 +1123,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, sys: any) {
+    fn: async function (url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
@@ -1095,7 +1137,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, sys: any) {
+    fn: async function (url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
@@ -1110,7 +1152,7 @@ export default {
     josi: [['へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: async function (token: string, message: string, sys: any) {
+    fn: async function (token: string, message: string, sys: NakoSystem) {
       const lineNotifyUrl = 'https://notify-api.line.me/api/notify'
       const bodyData = sys.__exec('POSTデータ生成', [{ message }, sys])
       const options = {
@@ -1132,7 +1174,7 @@ export default {
     josi: [['へ', 'に'], ['と'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: async function (token: string, imageFile: string, message: string, sys: any) {
+    fn: async function (token: string, imageFile: string, message: string, sys: NakoSystem) {
       const lineNotifyUrl = 'https://notify-api.line.me/api/notify'
       const formData = new FormData()
       formData.append('message', message)
@@ -1156,7 +1198,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (code: string, sys: any) {
+    fn: function (code: string, sys: NakoSystem) {
       return iconv.encodingExists(code)
     }
   },
@@ -1164,7 +1206,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'を']],
     pure: true,
-    fn: function (str: string, sys: any) {
+    fn: function (str: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.encode(str, 'Shift_JIS')
     }
@@ -1173,7 +1215,7 @@ export default {
     type: 'func',
     josi: [['から', 'を', 'で']],
     pure: true,
-    fn: function (buf: any, sys: any) {
+    fn: function (buf: any, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), 'sjis')
     }
@@ -1182,7 +1224,7 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'で']],
     pure: true,
-    fn: function (s: string, code: string, sys: any) {
+    fn: function (s: string, code: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.encode(s, code)
     }
@@ -1191,7 +1233,7 @@ export default {
     type: 'func',
     josi: [['を'], ['から', 'で']],
     pure: true,
-    fn: function (buf: any, code: string, sys: any) {
+    fn: function (buf: any, code: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), code)
     }
@@ -1201,7 +1243,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoSystem) {
       return crypto.getHashes()
     }
   },
@@ -1209,29 +1251,10 @@ export default {
     type: 'func',
     josi: [['を'], ['の'], ['で']],
     pure: true,
-    fn: function (s: any, alg: string, enc: any, sys: any) {
+    fn: function (s: any, alg: string, enc: any, sys: NakoSystem) {
       const hashsum = crypto.createHash(alg)
       hashsum.update(s)
       return hashsum.digest(enc)
     }
-  }
-}
-
-// ローカル関数
-function fileExists (f: string): boolean {
-  try {
-    fs.statSync(f)
-    return true
-  } catch (err) {
-    return false
-  }
-}
-
-function isDir (f: string): boolean {
-  try {
-    const st = fs.statSync(f)
-    return st.isDirectory()
-  } catch (err) {
-    return false
   }
 }
