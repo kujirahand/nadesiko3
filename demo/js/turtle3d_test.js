@@ -1,4 +1,9 @@
 // 追加のデフォルトコード
+const defCodeForImportmap =
+  'T3DベースURLは空。' +
+  'T3Dライブラリ読み込む。' +
+  '["three/addons/controls/OrbitControls.js"]をT3Dプラグイン読み込む。';
+
 const defCode =
   'T3Dカメ描画先は『turtle3d_div』。' +
   'T3Dオービットコントロール設定。';
@@ -38,7 +43,7 @@ function resetBoxTurtle3D (id) {
     id = 'src_box'
 
   document.getElementById(id + '_info').innerHTML = ''
-  navigator.nako3._runEx('T3Dカメ全消去', '', {}, '', nakoGlobal)
+  navigator.nako3._runEx('T3Dカメ全消去;T3Dレンダラ破棄', '', {}, '', nakoGlobal)
   document.getElementById('turtle3d_div').innerHTML = ''
   nakoGlobal = undefined
 }
