@@ -1,5 +1,7 @@
 export namespace THREENS {
-  interface RendererOptions {
+  export type EulerOrder = string
+  export type EulerArray = [number,number,number]|[number,number,number,EulerOrder]
+    interface RendererOptions {
     antialias?: boolean
     alpha?: boolean
     canvas?: HTMLCanvasElement
@@ -46,7 +48,7 @@ export namespace THREENS {
   }
   interface Euler {
     new (): Euler
-    fromArray (n:number): void
+    fromArray (a:[number,number,number]|[number,number,number,string]): void
   }
   interface Float32BufferAttribute extends BufferAttribute {
     new (n: number, m: number): Float32BufferAttribute

@@ -21,6 +21,8 @@ interface NakoSystem extends NakoSystemBase {
   tags: { weykturtle3d?: WeykTurtle3DSystem }
 }
 
+type CallbackType<T> = (a:T) => void
+type NumericArray3 = [ number, number, number ]
 type NakoRumtimeName = 'wnako'|'cnako'
 interface NakoVariables {
   type: 'const'|'var'
@@ -79,6 +81,129 @@ interface Turtle3D extends EventTarget {
      options?: boolean | EventListenerOptions,): void
   removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void
 }
+class CommandPromise {
+  resolve: (result:any) => void
+  reject: (err:Error) => void
+  command: Command
+  constructor (command: Command, resolve: (result: any) => void, reject: (err: Error) => void) {
+    this.command = command
+    this.resolve = resolve
+    this.reject = reject
+  }
+}
+class Command {
+  
+}
+class CommandHome extends Command {
+  cmd: string = 'home'
+  mode: 'set'|'jump'
+  constructor (mode: 'set'|'jump') {
+    super()
+    this.mode = mode
+  }
+}
+class CommandJump extends Command {
+  cmd: string = 'jump'
+  v: THREENS.Vector3
+  constructor (v: THREENS.Vector3) {
+    super()
+    this.v = v
+  }
+}
+class CommandMoveAbsolute extends Command {
+  cmd: string = 'move'
+  v: THREENS.Vector3
+  constructor (v: THREENS.Vector3) {
+    super()
+    this.v = v
+  }
+}
+class CommandAngle extends Command {
+  cmd: string = 'angle'
+  angle: THREENS.EulerArray
+  constructor (angle: THREENS.EulerArray) {
+    super()
+    this.angle = angle
+  }
+}
+type MoveDirection = 'f'|'b'|'u'|'d'|'l'|'r'
+type RotateDirection = 'u'|'d'|'l'|'r'
+type RollDirection = 'l'|'r'
+class CommandMoveDirection extends Command {
+  cmd: string = 'slide'
+  direction: MoveDirection
+  length: number
+  constructor (dir: MoveDirection, l: number) {
+    super()
+    this.direction = dir
+    this.length = l
+  }
+}
+class CommandRotate extends Command {
+  cmd: string = 'rotate'
+  direction: RotateDirection
+  angle: number
+  constructor (dir: RotateDirection, a: number) {
+    super()
+    this.direction = dir
+    this.angle = a
+  }
+}
+class CommandRoll extends Command {
+  cmd: string = 'roll'
+  direction: RollDirection
+  angle: number
+  constructor (dir: RollDirection, a: number) {
+    super()
+    this.direction = dir
+    this.angle = a
+  }
+}
+class CommandPenEnable extends Command {
+  cmd: string = 'pen'
+  subcmd: string = 'enable'
+  enable: boolean
+  constructor (enable: boolean) {
+    super()
+    this.enable = enable
+  }
+}
+class CommandPenColor extends Command {
+  cmd: string = 'pen'
+  subcmd: string = 'color'
+  color: THREENS.Color
+  constructor (color: THREENS.Color) {
+    super()
+    this.color = color
+  }
+}
+class CommandPenWidth extends Command {
+  cmd: string = 'pen'
+  subcmd: string = 'width'
+  width: number
+  constructor (width: number) {
+    super()
+    this.width = width
+  }
+}
+class CommandVisible extends Command {
+  cmd: string = 'attr'
+  subcmd: string = 'visible'
+  visible: boolean
+  constructor (visible: boolean) {
+    super()
+    this.visible = visible
+  }
+}
+class CommandModel extends Command {
+  cmd: string = 'attr'
+  subcmd: string = 'model'
+  model: any
+  constructor (model: any) {
+    super()
+    this.model = model
+  }
+}
 
 class Turtle3D extends EventTarget {
   private three: THREENS.THREE
@@ -91,7 +216,7 @@ class Turtle3D extends EventTarget {
   flagDown: boolean
   flagLoaded: boolean
   f_visible: boolean
-  macros: any[]
+  macros: CommandPromise[]
 
   constructor(three: THREENS.THREE, id: number) {
     super()
@@ -115,15 +240,30 @@ class Turtle3D extends EventTarget {
     this.home.quaternion.copy(modelBase.quaternion)
   }
 
+  clear (): void {
+    // 未実行ジョブのPromiseを全て完了にする
+    for (const job of this.macros) {
+      job.resolve(0)
+    }
+    this.macros = [] // ジョブをクリア
+    // かめのモデルをカメから削除
+    this.discardModel()
+    this.f_visible = true
+    this.obj.visible = true
+  }
+  discardModel (): void {
+    if (this.disposal) {
+      ThreeUtil.disposeChildObject(this.obj)
+      this.disposal = false
+    } else {
+      this.obj.remove(this.obj.children[0])
+    }
+    this.flagLoaded = false
+  }
   loadTurtle (model: THREENS.Object3D|string) {
     if (this.isObject3D(model)) {
-      if (this.disposal) {
-        ThreeUtil.disposeChildObject(this.obj)
-      } else {
-        this.obj = new this.three.Group()
-      }
-      const obj = model
-      this.obj.add(obj)
+      this.discardModel()
+      this.obj.add(model)
       this.disposal = false
       this.flagLoaded = true
       this.raiseModelChanged()
@@ -131,13 +271,8 @@ class Turtle3D extends EventTarget {
     }
     const url = model
     if (url.length === 0) {
-      if (this.disposal) {
-        ThreeUtil.disposeChildObject(this.obj)
-      } else {
-        this.obj = new this.three.Group()
-      }
-      const obj = this.createDefaultTurtle()
-      this.obj.add(obj)
+      this.discardModel()
+      this.obj.add(this.createDefaultTurtle())
       this.disposal = true
       this.flagLoaded = true
       this.raiseModelChanged()
@@ -145,11 +280,7 @@ class Turtle3D extends EventTarget {
     }
     const loader = new this.three.ObjectLoader()
     loader.load(url, (obj: THREENS.Object3D) => {
-      if (this.disposal) {
-        ThreeUtil.disposeChildObject(this.obj)
-      } else {
-        this.obj = new this.three.Group()
-      }
+      this.discardModel()
       this.obj.add(obj)
       this.disposal = true
       this.flagLoaded = true
@@ -157,33 +288,27 @@ class Turtle3D extends EventTarget {
     }, (xhr: XMLHttpRequest) => {
       // nothing
     }, (xhr: XMLHttpRequest) => {
-      this.flagLoaded = true
+      this.discardModel()
       this.f_visible = false
       this.obj.visible = false
-      if (this.disposal) {
-        ThreeUtil.disposeChildObject(this.obj)
-      } else {
-        this.obj = new this.three.Group()
-      }
-      this.disposal = false
       this.raiseModelChanged()
     })
   }
 
-  doMacro (wait: number) {
-    if (!this.flagLoaded && wait > 0) {
+  doMacro (noWait: boolean): boolean {
+    if (!this.flagLoaded && !noWait) {
       return true
     }
-    const m = this.macros.shift()
-    const cmd = (m !== undefined) ? m[0] : ''
-    switch (cmd) {
-      case 'xyz':
+    const que = this.macros.shift()
+    if (typeof que === 'undefined') { return false }
+    const m = que instanceof CommandPromise ? que.command : que
+      if (m instanceof CommandJump) {
         // 起点を移動する
-        this.obj.position.copy(m[1])
-        break
-      case 'mv': {
+        this.obj.position.copy(m.v)
+      } else
+      if (m instanceof CommandMoveAbsolute) {
         const v1 = this.obj.position.clone()
-        const v2 = m[1]
+        const v2 = m.v
         // 線を引く
         this.line(v1, v2)
         // カメの角度を変更
@@ -194,163 +319,104 @@ class Turtle3D extends EventTarget {
         this.obj.quaternion.multiply(headup90)
         // カメを移動
         this.obj.position.copy(v2)
-        break
-      }
-      case 'fd': {
+      } else
+      if (m instanceof CommandMoveDirection) {
+        const dir = m.direction
+        const l = m.length * ((dir === 'b') ? -1 : 1)
         const v1 = this.obj.position.clone()
-        const v2 =new this.three.Vector3(0, m[1] * m[2], 0)
-        v2.applyQuaternion(this.obj.quaternion)
+        const v2 =new this.three.Vector3(0, l, 0) 
+        if (dir === 'f' || dir === 'b') {
+          v2.applyQuaternion(this.obj.quaternion)
+        } else {
+          // u
+          const modifier = new this.three.Quaternion()
+          const target = this.obj.quaternion.clone()
+          if (dir === 'u' || dir === 'd') {
+            const axis = new this.three.Vector3(1, 0, 0)
+            if (dir === 'u') {
+              modifier.setFromAxisAngle(axis, (-90) * Math.PI / 180)
+            } else { // dir === 'd'
+              modifier.setFromAxisAngle(axis, 90 * Math.PI / 180)
+            }
+          } else { // dir === 'l' || dir === 'r'
+            const axis = new this.three.Vector3(0, 0, 1)
+            if (dir === 'l') {
+              modifier.setFromAxisAngle(axis, 90 * Math.PI / 180)
+            } else { // dir === 'r'
+              modifier.setFromAxisAngle(axis, (-90) * Math.PI / 180)
+            }
+          }
+          target.multiply(modifier)
+          v2.applyQuaternion(target)
+        }
         v2.add(v1)
         this.line(v1, v2)
         this.obj.position.copy(v2)
-        break
-      }
-      case 'su': {
-        const v1 = this.obj.position.clone()
-        const v2 = new this.three.Vector3(0, m[1], 0)
-        const modifier = new this.three.Quaternion()
-        const axis = new this.three.Vector3(1, 0, 0)
-        modifier.setFromAxisAngle(axis, (-90) * Math.PI / 180)
-        const target = this.obj.quaternion.clone()
-        target.multiply(modifier)
-        v2.applyQuaternion(target)
-        v2.add(v1)
-        this.line(v1, v2)
-        this.obj.position.copy(v2)
-        break
-      }
-      case 'sd': {
-        const v1 = this.obj.position.clone()
-        const v2 = new this.three.Vector3(0, m[1], 0)
-        const modifier = new this.three.Quaternion()
-        const axis = new this.three.Vector3(1, 0, 0)
-        modifier.setFromAxisAngle(axis, 90 * Math.PI / 180)
-        const target = this.obj.quaternion.clone()
-        target.multiply(modifier)
-        v2.applyQuaternion(target)
-        v2.add(v1)
-        this.line(v1, v2)
-        this.obj.position.copy(v2)
-        break
-      }
-      case 'sl': {
-        const v1 = this.obj.position.clone()
-        const v2 = new this.three.Vector3(0, m[1], 0)
-        const modifier = new this.three.Quaternion()
-        const axis = new this.three.Vector3(0, 0, 1)
-        modifier.setFromAxisAngle(axis, 90 * Math.PI / 180)
-        const target = this.obj.quaternion.clone()
-        target.multiply(modifier)
-        v2.applyQuaternion(target)
-        v2.add(v1)
-        this.line(v1, v2)
-        this.obj.position.copy(v2)
-        break
-      }
-      case 'sr': {
-        const v1 = this.obj.position.clone()
-        const v2 = new this.three.Vector3(0, m[1], 0)
-        const modifier = new this.three.Quaternion()
-        const axis = new this.three.Vector3(0, 0, 1)
-        modifier.setFromAxisAngle(axis, (-90) * Math.PI / 180)
-        const target = this.obj.quaternion.clone()
-        target.multiply(modifier)
-        v2.applyQuaternion(target)
-        v2.add(v1)
-        this.line(v1, v2)
-        this.obj.position.copy(v2)
-        break
-      }
-      case 'angle': {
-        const euler = new this.three.Euler()
-        euler.fromArray(m[1])
-        // eslint-disable-next-line no-unused-vars
-        const dir = new this.three.Quaternion()
-        this.obj.quaternion.setFromEuler(euler)
-        break
-      }
-      case 'rotr': {
-        const rv = m[1]
+      } else
+      if (m instanceof CommandHome) {
+        const mode = m.mode
+        switch (mode) {
+          case 'set':
+            this.home.position.copy(this.obj.position)
+            this.home.quaternion.copy(this.obj.quaternion)
+            break
+          case 'jump':
+            this.obj.position.copy(this.home.position)
+            this.obj.quaternion.copy(this.home.quaternion)
+            break
+        }
+      } else
+      if (m instanceof CommandRotate) {
+        const dir = m.direction
+        const rv = m.angle * (dir === 'l' || dir === 'd' ? 1 : -1)
         const target = new this.three.Quaternion()
-        const axis = new this.three.Vector3(0, 0, 1)
-        target.setFromAxisAngle(axis, (-rv % 360) * Math.PI / 180)
-        this.obj.quaternion.multiply(target)
-        break
-      }
-      case 'rotl': {
-        const rv = m[1]
-        const target = new this.three.Quaternion()
-        const axis = new this.three.Vector3(0, 0, 1)
+        let axis:THREENS.Vector3
+        if (dir === 'l' || dir === 'r') {
+          axis =  new this.three.Vector3(0, 0, 1)
+        } else {
+          axis = new this.three.Vector3(1, 0, 0)
+        }
         target.setFromAxisAngle(axis, (rv % 360) * Math.PI / 180)
         this.obj.quaternion.multiply(target)
-        break
-      }
-      case 'rotu': {
-        const rv = m[1]
-        const target = new this.three.Quaternion()
-        const axis = new this.three.Vector3(1, 0, 0)
-        target.setFromAxisAngle(axis, (-rv % 360) * Math.PI / 180)
-        this.obj.quaternion.multiply(target)
-        break
-      }
-      case 'rotd': {
-        const rv = m[1]
-        const target = new this.three.Quaternion()
-        const axis = new this.three.Vector3(1, 0, 0)
-        target.setFromAxisAngle(axis, (rv % 360) * Math.PI / 180)
-        this.obj.quaternion.multiply(target)
-        break
-      }
-      case 'rolr': {
-        const rv = m[1]
-        const target = new this.three.Quaternion()
+      } else
+      if (m instanceof CommandRoll) {
+        const dir = m.direction
+        const rv = m.angle * (dir === 'r' ? 1 : -1)
         const axis = new this.three.Vector3(0, 1, 0)
+        const target = new this.three.Quaternion()
         target.setFromAxisAngle(axis, (rv % 360) * Math.PI / 180)
         this.obj.quaternion.multiply(target)
-        break
-      }
-      case 'roll': {
-        const rv = m[1]
-        const target = new this.three.Quaternion()
-        const axis = new this.three.Vector3(0, 1, 0)
-        target.setFromAxisAngle(axis, (-rv % 360) * Math.PI / 180)
-        this.obj.quaternion.multiply(target)
-        break
-      }
-      case 'color':
-        this.color = new this.three.Color(m[1])
-        break
-      case 'size':
-        this.lineWidth = m[1]
-        break
-      case 'penOn':
-        this.flagDown = m[1]
-        break
-      case 'visible':
-        this.f_visible = m[1]
+      } else
+      if (m instanceof CommandPenColor) {
+        this.color = m.color
+      } else
+      if (m instanceof CommandPenWidth) {
+        this.lineWidth = m.width
+      } else
+      if (m instanceof CommandPenEnable) {
+        this.flagDown = m.enable
+      } else
+      if (m instanceof CommandVisible) {
+        this.f_visible = m.visible
         if (this.f_visible) {
           this.obj.visible = true
         } else {
           this.obj.visible = false
         }
-        break
-      case 'changeModel':
+      } else
+      if (m instanceof CommandModel) {
         this.flagLoaded = false
-        this.loadTurtle(m[1])
-        break
-/*
-      case 'changeCamera':
-        this.camera = m[1]
-        break
-*/
-      case 'sethome':
-        this.home.position.copy(this.obj.position)
-        this.home.quaternion.copy(this.obj.quaternion)
-        break
-      case 'gohome':
-        this.obj.position.copy(this.home.position)
-        this.obj.quaternion.copy(this.home.quaternion)
-        break
+        this.loadTurtle(m.model)
+      } else
+      if (m instanceof CommandAngle) {
+        const euler = new this.three.Euler()
+        euler.fromArray(m.angle)
+        // eslint-disable-next-line no-unused-vars
+        const dir = new this.three.Quaternion()
+        this.obj.quaternion.setFromEuler(euler)
+      }
+    if (que instanceof CommandPromise) {
+      que.resolve(0)
     }
     return (this.macros.length > 0)
   }
@@ -505,11 +571,8 @@ class WeykTurtle3DSystem {
   }
   disposeAllTurtle () {
     // カメをクリア
-    for (let i = 0; i < this.turtles.length; i++) {
-      const tt = this.turtles[i]
-      tt.macros = [] // ジョブをクリア
-      // かめのモデルをカメから削除
-      ThreeUtil.disposeChildObject(tt.obj)
+    for (const tt of this.turtles) {
+      tt.clear()
     }
     this.turtles = []
     this.target = -1
@@ -546,9 +609,7 @@ class WeykTurtle3DSystem {
     this.target = id
     tt.loadTurtle(modelUrl)
     const scene = this.getScene()
-    if (scene) {
-      scene.add(tt.obj)
-    }
+    scene.add(tt.obj)
     return id
   }
   initTurtle (): void {
@@ -582,10 +643,14 @@ class WeykTurtle3DSystem {
     }
     return this.turtles[this.target]
   }
-  queCurrentTurtle (cmd: [ string,...any]) {
+  queCurrentTurtle (cmd: Command): Promise<number> {
     const tt = this.getCur()
-    tt.macros.push(cmd)
-    this.animationStart()
+    const promise = new Promise<number>((resolve,reject) => {
+      const que = new CommandPromise(cmd, resolve, reject)
+      tt.macros.push(que)
+      this.animationStart()
+    })
+    return promise
   }
   doDraw (beforeClear: boolean) {
     if (this.camera === -1) { return }
@@ -655,11 +720,7 @@ class WeykTurtle3DSystem {
   getScene (): THREENS.Scene {
     const three = this.getThree()
     if (this._scene === null) {
-      const scene = new three.Scene()
-      if (scene === null) {
-        throw new Error('シーンを作成できません')
-      }
-      this._scene = scene
+      this._scene = new three.Scene()
     }
     return this._scene
   }
@@ -667,9 +728,6 @@ class WeykTurtle3DSystem {
     const three = this.getThree()
     if (this._camera === null) {
       const camera = new three.PerspectiveCamera(60, 1.0, 1, 65000)
-      if (camera === null) {
-        throw new Error('カメラを作成できません')
-      }
       this.resetCamera(camera)
       this._camera = camera
     }
@@ -778,7 +836,7 @@ class WeykTurtle3DSystem {
     this._controls = controls
     return this._controls
   }
-  drawLine (v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color) {
+  drawLine (v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color):void {
     const three = this.getThree()
     const geometry = new three.BufferGeometry()
     const vertices = new three.Float32BufferAttribute(6, 3)
@@ -790,21 +848,20 @@ class WeykTurtle3DSystem {
       this._lines.add(line)
     }
   }
-  doMacroAllTurtles (wait: number) {
+  doMacroAllTurtles (): boolean {
     let hasNext = false
-    for (let i = 0; i < this.turtles.length; i++) {
-      const tt = this.turtles[i]
-      if (tt.doMacro(wait)) { hasNext = true }
+    for (const tt of this.turtles) {
+      if (tt.doMacro(this.isNoWait())) { hasNext = true }
     }
     return hasNext
   }
-  animationStart () {
+  animationStart ():void {
     const wait = this.getWait()
     const macrorun = !!this.sys.__getSysVar('T3D自動実行')
     if (!macrorun) {
       return
     }
-    if (wait === 0) {
+    if (this.isNoWait()) {
       this.animation()
       return
     }
@@ -812,8 +869,11 @@ class WeykTurtle3DSystem {
     this.flagSetTimer = true
     this.animationFrame(() => this.animation())
   }
-  getWait () {
+  getWait (): number {
     return this.sys.__getSysVar('T3Dカメ速度')
+  }
+  isNoWait (): boolean {
+    return this.sys.__getSysVar('T3Dカメ速度') === 0
   }
   animation () {
     const redraw = !!this.sys.__getSysVar('T3D自動描画')
@@ -830,20 +890,29 @@ class WeykTurtle3DSystem {
   }
   animationTick () {
     const now = Date.now()
-    const elapsedMs = now - this._prevUpdatedTime
-    const wait = this.getWait()
-    if (wait > 0 && elapsedMs < wait) {
-      return true
+    const noWait = this.isNoWait()
+    // ノーウエイトではない場合の時間待ち処理
+    if (!noWait) {
+      const elapsedMs = now - this._prevUpdatedTime
+      const wait = this.getWait()
+      if (wait > 0 && elapsedMs < wait) {
+        return true
+      }
     }
     this._prevUpdatedTime = now
-    let hasNext = this.doMacroAllTurtles(wait)
-    if (wait <= 0) {
-      while (hasNext) {
-        hasNext = this.doMacroAllTurtles(wait)
+    let hasNext:boolean
+    if (noWait) {
+      while (this.doMacroAllTurtles()) {
+        // no-op
       }
-    } else if (hasNext) {
-    }
+      hasNext = false
+    } else {
+      hasNext = this.doMacroAllTurtles()
+    } 
     return hasNext
+  }
+  animationFrame (callback: () => void, element?: Element) {
+    window.setTimeout(callback, 1000 / 60)
   }
   ck (): THREENS.THREE {
     if (this.three === null) {
@@ -864,9 +933,6 @@ class WeykTurtle3DSystem {
       this._lines = new this.three.Group()
     }
     return this.three
-  }
-  animationFrame (callback: () => void, element?: Element) {
-    window.setTimeout(callback, 1000 / 60)
   }
   static getTurtle3D(sys: NakoSystem): WeykTurtle3DSystem {
     if (!sys.tags.weykturtle3d) {
@@ -896,7 +962,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function (sys: NakoSystem):void {
       if (sys.tags.weykturtle3d) { return }
       const turtle3dSystem = WeykTurtle3DSystem.getInstance(sys)
       sys.tags.weykturtle3d = turtle3dSystem
@@ -905,11 +971,9 @@ const PluginWeykTurtle3D: NakoPluginObject = {
       sys.__setSysVar('THREE', null)
     }
   },
+  // @3Dタートルグラフィックス・ライブラリとプラグイン
   'THREE': {type: 'const', value: ''}, // @THREE
   'T3DベースURL': {type: 'var', value: 'https://cdn.jsdelivr.net/npm/three@0.127.0'}, // @T3DべーすURL
-  'T3D自動描画': {type: 'var', value: true}, // @T3Dじどうびょうが
-  'T3D自動実行': {type: 'var', value: true}, // @T3Dじどうじっこう
-  // @ライブラリ・プラグイン
   'T3Dライブラリ読込': { // @ThreeJSのライブラリを動的に読み込む // @T3Dらいぶらりよみこむ
     type: 'func',
     josi: [],
@@ -941,7 +1005,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に']],
     pure: true,
-    fn: function (callback: (success: boolean) => {}, sys: NakoSystem):void {
+    fn: function (callback: CallbackType<boolean>, sys: NakoSystem):void {
       const turtle3d = WeykTurtle3DSystem.getTurtle3D(sys)
       if (turtle3d.three === null && sys.__getSysVar('THREE') === null) {
         const baseUrl = sys.__getSysVar('T3DベースURL')
@@ -1012,7 +1076,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に'], ['を']],
     pure: true,
-    fn: function (callback: () => {} , plugins: string[], sys: NakoSystem):void {
+    fn: function (callback: CallbackType<void> , plugins: string[], sys: NakoSystem):void {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
       const l = plugins.length
       if (l === 0) {
@@ -1044,7 +1108,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     },
     return_none: true
   },
-  // @3Dタートルグラフィックス/カメ操作
+  // @3Dタートルグラフィックス・カメ操作
   'T3Dカメ作成': { // @タートルグラフィックスを開始してカメのIDを返す // @T3Dかめさくせい
     type: 'func',
     josi: [],
@@ -1074,14 +1138,14 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (url: string, sys: NakoSystem):void {
+    fn: function (url: string, sys: NakoSystem):Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['changeModel', url])
+      return turtle3d.queCurrentTurtle(new CommandModel(url))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメ速度': { type: 'const', value: 100 }, // @T3Dかめそくど
-  'T3Dカメ速度設定': { // @カメの動作速度vに設定(大きいほど遅い) // @T3Dかめそくどせってい
+  'T3Dカメ速度設定': { // @カメの動作速度Vに設定(大きいほど遅い) // @T3Dかめそくどせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -1094,279 +1158,277 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (xyz: [number, number, number], sys: NakoSystem):void {
+    fn: function (xyz: NumericArray3, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['mv', new three.Vector3(xyz[0], xyz[1], xyz[2])])
+      return turtle3d.queCurrentTurtle(new CommandMoveAbsolute(new three.Vector3(xyz[0], xyz[1], xyz[2])))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメ原点設定': { // @カメの原点を現在の位置・向きに設定する // @T3Dかめげんてんせってい
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function (sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['sethome'])
+      return turtle3d.queCurrentTurtle(new CommandHome('set'))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメ原点移動': { // @カメを原点の位置・向きに移動する(描画はしない) // @T3Dかめげんてんいどう
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function (sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['gohome'])
+      return turtle3d.queCurrentTurtle(new CommandHome('jump'))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメ起点移動': { // @カメの描画起点位置を[x,y,z]へ移動する // @T3Dかめきてんいどう
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (xyz: [number, number, number], sys: NakoSystem):void {
+    fn: function (xyz: NumericArray3, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['xyz', new three.Vector3(xyz[0], xyz[1], xyz[2])])
+      return turtle3d.queCurrentTurtle(new CommandJump(new three.Vector3(xyz[0], xyz[1], xyz[2])))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ進': { // @カメの位置をVだけ進める // @T3Dかめすすむ
+  'T3Dカメ進': { // @カメの位置をLだけ進める // @T3Dかめすすむ
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (l: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['fd', v, 1])
+      return turtle3d.queCurrentTurtle(new CommandMoveDirection('f', l))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ戻': { // @カメの位置をVだけ戻す // @T3Dかめもどる
+  'T3Dカメ戻': { // @カメの位置をLだけ戻す // @T3Dかめもどる
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (l: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['fd', v, -1])
+      return turtle3d.queCurrentTurtle(new CommandMoveDirection('b', l))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ上平行移動': { // @カメの位置を上にVだけ進める // @T3Dかめうえへいこういどう
+  'T3Dカメ上平行移動': { // @カメの位置を上にLだけ進める // @T3Dかめうえへいこういどう
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (l: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['su', v])
+      return turtle3d.queCurrentTurtle(new CommandMoveDirection('u', l))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ下平行移動': { // @カメの位置を下にVだけ進める // @T3Dかめしたへいこういどう
+  'T3Dカメ下平行移動': { // @カメの位置を下にLだけ進める // @T3Dかめしたへいこういどう
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (l: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['sd', v])
+      return turtle3d.queCurrentTurtle(new CommandMoveDirection('d', l))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ左平行移動': { // @カメの位置を左にVだけ進める // @T3Dかめひだりへいこういどう
+  'T3Dカメ左平行移動': { // @カメの位置を左にLだけ進める // @T3Dかめひだりへいこういどう
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (l: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['sl', v])
+      return turtle3d.queCurrentTurtle(new CommandMoveDirection('l', l))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ右平行移動': { // @カメの位置を右にVだけ進める // @T3Dかめみぎへいこういどう
+  'T3Dカメ右平行移動': { // @カメの位置を右にLだけ進める // @T3Dかめみぎへいこういどう
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (l: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['sr', v])
+      return turtle3d.queCurrentTurtle(new CommandMoveDirection('r', l))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ動': { // @カメの位置をDIRにVだけ進める // @T3Dかめうごく
+  'T3Dカメ動': { // @カメの位置をDIRにLだけ進める // @T3Dかめうごく
     type: 'func',
     josi: [['へ', 'に'], ['だけ']],
     pure: true,
-    fn: function (dir: string, v: number, sys: NakoSystem):void {
+    fn: function (dir:string, l: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      if (dir === '前' || dir === '後') {
-        if (dir === '前') {
-          turtle3d.queCurrentTurtle(['fd', v, 1])
-        } else {
-          turtle3d.queCurrentTurtle(['fd', v, -1])
-        }
+      let cmd:MoveDirection
+      if (dir === '前' || dir === 'FORWARD' || dir === 'まえ') {
+        cmd = 'f'
+      } else
+      if (dir === '後' || dir === 'BACK' || dir === 'うしろ' || dir === 'BACKWARD' || dir === 'あと') {
+        cmd = 'b'
+      } else
+      if (dir === '上' || dir === 'UP' || dir === 'うえ') {
+        cmd = 'u'
+      } else
+      if (dir === '下' || dir === 'DOWN' || dir === 'した') {
+        cmd = 'd'
+      } else
+      if (dir === '右' || dir === 'RIGHT' || dir === 'みぎ') {
+        cmd = 'r'
+      } else
+      if (dir === '左' || dir === 'LEFT' || dir === 'ひだり') {
+        cmd = 'l'
       } else {
-        let cmd = ''
-        if (dir === '上' || dir === 'UP' || dir === 'うえ') {
-          cmd = 'su'
-        } else
-        if (dir === '下' || dir === 'DOWN' || dir === 'した') {
-          cmd = 'sd'
-        } else
-        if (dir === '右' || dir === 'RIGHT' || dir === 'みぎ') {
-          cmd = 'sr'
-        } else
-        if (dir === '左' || dir === 'LEFT' || dir === 'ひだり') {
-          cmd = 'sl'
-        } else {
-          throw Error('方向の指定が正しくありません。前後上下左右のいずれかで指定してください。')
-        }
-        turtle3d.queCurrentTurtle([cmd, v])
+        throw Error('方向の指定が正しくありません。前後上下左右のいずれかで指定してください。')
       }
+      return turtle3d.queCurrentTurtle(new CommandMoveDirection(cmd, l))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ角度設定': { // @カメの向きをオイラー(XYZ)にて設定する // @T3Dかめかくどせってい
+  'T3Dカメ角度設定': { // @カメの向きをオイラー([x,y,z,XYZ])にて設定する // @T3Dかめかくどせってい
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
-    fn: function (v: number|string, sys: NakoSystem):void {
+    fn: function (angle: THREENS.EulerArray, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      if (typeof v === 'string') { v = parseFloat(v) }
-      turtle3d.queCurrentTurtle(['angle', v])
+      return turtle3d.queCurrentTurtle(new CommandAngle(angle))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ右回転': { // @カメの向きをDEGだけ右に向ける // @T3Dかめみぎかいてん
+  'T3Dカメ右回転': { // @カメの向きをAだけ右に向ける // @T3Dかめみぎかいてん
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['rotr', v])
+      return turtle3d.queCurrentTurtle(new CommandRotate('r', a))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ左回転': { // @カメの向きをDEGだけ左に向ける // @T3Dかめひだりかいてん
+  'T3Dカメ左回転': { // @カメの向きをAだけ左に向ける // @T3Dかめひだりかいてん
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['rotl', v])
+      return turtle3d.queCurrentTurtle(new CommandRotate('l', a))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ上回転': { // @カメの向きをDEGだけ上に向ける // @T3Dかめうえかいてん
+  'T3Dカメ上回転': { // @カメの向きをAだけ上に向ける // @T3Dかめうえかいてん
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['rotu', v])
+      return turtle3d.queCurrentTurtle(new CommandRotate('u', a))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ下回転': { // @カメの向きをDEGだけ下に向ける // @T3Dかめしたかいてん
+  'T3Dカメ下回転': { // @カメの向きをAだけ下に向ける // @T3Dかめしたかいてん
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['rotd', v])
+      return turtle3d.queCurrentTurtle(new CommandRotate('d', a))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ回転': { // @カメの向きをDEGだけDIRに向ける // @T3Dかめかいてん
+  'T3Dカメ回転': { // @カメの向きをAだけDIRに向ける // @T3Dかめかいてん
     type: 'func',
     josi: [['へ', 'に'], ['だけ']],
     pure: true,
-    fn: function (dir: string, v: number, sys: NakoSystem):void {
+    fn: function (dir: string, a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      let cmd = ''
+      let cmd:RotateDirection
       if (dir === '上' || dir === 'UP' || dir === 'うえ') {
-        cmd = 'rotu'
+        cmd = 'u'
       } else
       if (dir === '下' || dir === 'DOWN' || dir === 'した') {
-        cmd = 'rotd'
+        cmd = 'd'
       } else
       if (dir === '右' || dir === 'RIGHT' || dir === 'みぎ') {
-        cmd = 'rotr'
+        cmd = 'r'
       } else
       if (dir === '左' || dir === 'LEFT' || dir === 'ひだり') {
-        cmd = 'rotl'
+        cmd = 'l'
       } else {
         throw Error('方向の指定が正しくありません。上下左右のいずれかで指定してください。')
       }
-      turtle3d.queCurrentTurtle([cmd, v])
+      return turtle3d.queCurrentTurtle(new CommandRotate(cmd, a))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ右ロール': { // @カメをDEGだけ右に傾ける // @T3Dかめみぎろーる
+  'T3Dカメ右ロール': { // @カメをAだけ右に傾ける // @T3Dかめみぎろーる
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['rolr', v])
+      return turtle3d.queCurrentTurtle(new CommandRoll('r', a))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ左ロール': { // @カメのDEGだけ左に傾ける // @T3Dかめひだりろーる
+  'T3Dカメ左ロール': { // @カメのAだけ左に傾ける // @T3Dかめひだりろーる
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function (a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['roll', v])
+      return turtle3d.queCurrentTurtle(new CommandRoll('l', a))
     },
-    return_none: true
+    return_none: false
   },
-  'T3Dカメ傾': { // @カメをDEGだけDIRに傾ける // @T3Dかめかたむける
+  'T3Dカメ傾': { // @カメをAだけDIRに傾ける // @T3Dかめかたむける
     type: 'func',
     josi: [['に', 'へ'], ['だけ']],
     pure: true,
-    fn: function (dir: string, v: number, sys: NakoSystem):void {
+    fn: function (dir: string, a: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      let cmd = ''
+      let cmd:RollDirection
       if (dir === '右' || dir === 'RIGHT' || dir === 'みぎ') {
-        cmd = 'rolr'
+        cmd = 'r'
       } else
       if (dir === '左' || dir === 'LEFT' || dir === 'ひだり') {
-        cmd = 'roll'
+        cmd = 'l'
       } else {
         throw Error('向きの指定が正しくありません。左右のどちらかで指定してください。')
       }
-      turtle3d.queCurrentTurtle([cmd, v])
+      return turtle3d.queCurrentTurtle(new CommandRoll(cmd, a))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメペン色設定': { // @カメのペン描画色をCに設定する // @T3Dかめぺんいろせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (c: string|number, sys: NakoSystem):void {
+    fn: function (c: number|THREENS.Color, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['color', c])
+      if (typeof c === 'number') { c = new three.Color(c) }
+      return turtle3d.queCurrentTurtle(new CommandPenColor(c))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメペンサイズ設定': { // @カメペンのサイズをWに設定する // @T3Dかめぺんさいずせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (w: number, sys: NakoSystem):void {
+    fn: function (w: number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['size', w])
+      return turtle3d.queCurrentTurtle(new CommandPenWidth(w))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメペン設定': { // @カメペンを使うかどうかをV(オン/オフ)に設定する // @T3Dかめぺんせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (w: boolean|number, sys: NakoSystem):void {
+    fn: function (w: boolean|number, sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['penOn', w])
+      return turtle3d.queCurrentTurtle(new CommandPenEnable(!!w))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメ全消去': { // @表示しているカメと描画内容を全部消去する // @T3Dかめぜんしょうきょ
     type: 'func',
@@ -1382,37 +1444,39 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function (sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['visible', false])
+      return turtle3d.queCurrentTurtle(new CommandVisible(false))
     },
-    return_none: true
+    return_none: false
   },
   'T3Dカメ表示': { // @非表示にしたカメのモデルを表示する。 // @T3Dかめひょうじ
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function (sys: NakoSystem): Promise<number> {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      turtle3d.queCurrentTurtle(['visible', true])
+      return turtle3d.queCurrentTurtle(new CommandVisible(true))
     },
-    return_none: true
+    return_none: false
   },
   'T3D視点カメ設定': { // @指定したカメを視点として使用する // @T3Dしてんかめせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (w: number, sys: NakoSystem):void {
+    fn: function (n: number, sys: NakoSystem):void {
       const [ turtle3d, three ] = WeykTurtle3DSystem.getEnv(sys)
-      if (w < 0 || w >= turtle3d.turtles.length) {
+      if (n < 0 || n >= turtle3d.turtles.length) {
         throw Error('指定された番号のカメはいません。')
       }
-      turtle3d.camera = w
+      turtle3d.camera = n
       turtle3d.animationStart()
     },
     return_none: true
   },
-  // @3Dタートルグラフィックス/基本機能
+  // @3Dタートルグラフィックス・基本機能
+  'T3D自動描画': {type: 'var', value: true}, // @T3Dじどうびょうが
+  'T3D自動実行': {type: 'var', value: true}, // @T3Dじどうじっこう
   'T3D描画準備': { // @指定したDOMのIDに対する描画を準備し、描画オブジェクトを返す // @T3Dびょうがじゅんび
     type: 'func',
     josi: [['に', 'へ']],
@@ -1557,7 +1621,17 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     },
     return_none: false
   },
-  // @ヘルパ機能
+  'T3D待': { // @Promiseの終了を待って結果を返す // @T3Dまつ
+    type: 'func',
+    josi: [['を']],
+    asyncFn: true,
+    pure: true,
+    fn: function (p: Promise<any>, sys: NakoSystem): Promise<any> {
+      return p
+    },
+    return_none: false
+  },
+  // @3Dタートルグラフィックス・ヘルパ機能
   'T3Dオービットコントロール設定': { // オービットコントロールを組み込む // @T3Dおーびっとこんとろーるせってい
     type: 'func',
     josi: [],
