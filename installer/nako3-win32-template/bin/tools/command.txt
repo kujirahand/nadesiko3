@@ -695,7 +695,7 @@
 |コマンドライン,"","''",0,,変数,こまんどらいん
 |ナデシコランタイム,"","''",0,,変数,なでしこらんたいむ
 |ナデシコランタイムパス,"","''",0,,変数,なでしこらんたいむぱす
-|標準入力取得時,"CALLBACKを","標準入力を一行取得した時に、無名関数（あるいは、文字列で関数名を指定）F(s: string)を実行する",0,,命令,ひょうじゅんにゅうりょくしゅとくしたとき
+|標準入力取得時,"CALLBACK: (Fを","標準入力を一行取得した時に、変数『対象』に取得した文字列を代入し、無名関数（あるいは、文字列で関数名を指定）F(s: string)を実行する",0,,命令,ひょうじゅんにゅうりょくしゅとくしたとき
 |尋,"MSGと|MSGを","標準入力を一行取得する",0,,命令,たずねる
 |文字尋,"MSGと|MSGを","標準入力を一行取得する。ただし自動で数値に変換しない",0,,命令,もじたずねる
 |標準入力全取得,"","標準入力を全部取得して返す",0,,命令,ひょうじゅんにゅうりょくぜんしゅとく
@@ -708,7 +708,7 @@
 |AJAX送信時,"CALLBACKのURLまで|URLへ|URLに","非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。",0,,命令,AJAXそうしんしたとき
 |AJAX受信時,"CALLBACKでURLから|URLを","非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。",0,,命令,AJAXそうしんしたとき
 |GET送信時,"CALLBACKのURLまで|URLへ|URLに","非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。",0,,命令,GETそうしんしたとき
-|POST送信時,"CALLBACKのURLまでPARAMSを|URLへ|URLに","AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定",0,,命令,POSTそうしんしたとき
+|POST送信時,"CALLBACKのURLまでPARAMS: [KEY]を|URLへ|URLに","AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定",0,,命令,POSTそうしんしたとき
 |POSTフォーム送信時,"CALLBACKのURLまでPARAMSを|URLへ|URLに","AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定",0,,命令,POSTふぉーむそうしんしたとき
 |AJAX失敗時,"CALLBACKの","Ajax命令でエラーが起きたとき",0,,命令,AJAXえらーしっぱいしたとき
 |AJAXオプション,"","''",0,,変数,Ajax関連のオプションを指定
@@ -716,7 +716,7 @@
 |AJAX保障送信,"URLまで|URLへ|URLに","非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。",0,,命令,AJAXほしょうそうしん
 |HTTP保障取得,"URLの|URLから|URLを","非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。",0,,命令,HTTPほしょうしゅとく
 |GET保障送信,"URLまで|URLへ|URLに","非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。",0,,命令,GETほしょうそうしん
-|POST保障送信,"URLまでPARAMSを|URLへ|URLに","非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。",0,,命令,POSTほしょうそうしん
+|POST保障送信,"URLまでPARAMS: [KEY]を|URLへ|URLに","非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。",0,,命令,POSTほしょうそうしん
 |POSTフォーム保障送信,"URLまでPARAMSを|URLへ|URLに","非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。",0,,命令,POSTふぉーむほしょうそうしん
 |AJAX内容取得,"RESからTYPEで","非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。",0,,命令,AJAXないようしゅとく
 |AJAX受信,"URLから|URLを","「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る",0,,命令,AJAXじゅしん
@@ -897,14 +897,11 @@
 |SQLITE3閉,"","アクティブなSQlite3のデータベースを閉じる",0,,命令,SQLITE3とじる
 |SQLITE3切替,"DBに|DBへ","アクティブなSQlite3のデータベースをDB(SQLITE3開くで開いたもの)に切り替える",0,,命令,SQLITE3きりかえる
 |SQLITE3実行時,"FにSQLをPARAMSで","SQLをパラメータPARAMSで実行する。完了するとコールバック関数Fを実行する。",0,,命令,SQLITE3じっこうしたとき
+|SQLITE3実行後,"FにSQLをPARAMSで","『SQLITE3実行時』と同じ。",0,,命令,SQLITE3じっこうしたあと
 |SQLITE3取得時,"FにSQLをPARAMSで","SQLをパラメータPARAMSで取得実行する。完了するとコールバック関数Fが実行され、結果は第一引数に与えられる。",0,,命令,SQLITE3しゅとくしたとき
 |SQLITE3実行,"SQLをPARAMSで","SQLをパラメータPARAMSで実行する。",0,,命令,SQLITE3じっこう
 |SQLITE3取得,"SQLをPARAMSで","SQLをパラメータPARAMSで取得する。",0,,命令,SQLITE3しゅとく
 |SQLITE3全取得,"SQLをPARAMSで","SQLをパラメータPARAMSで全部取得する。",0,,命令,SQLITE3ぜんしゅとく
-- 非推奨
-|SQLITE3逐次実行,"SQLをPARAMSで","(非推奨) 逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。",0,,命令,SQLITE3ちくじじっこう
-|SQLITE3逐次全取得,"SQLをPARAMSで","(非推奨)逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじぜんしゅとく
-|SQLITE3逐次取得,"SQLをPARAMSで","(非推奨)逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。",0,,命令,SQLITE3ちくじしゅとく
 + nadesiko3-htmlparser(拡張プラグイン,cnako)
 - HTMLパーサ(コンソール)
 |HTML_URL開,"URLを","任意のURLを開いてパースする。",0,,命令,HTML_URLひらく
