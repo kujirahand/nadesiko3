@@ -27,7 +27,7 @@ CORE="core/src"
     ['src/plugin_datetime.mjs', 'wnako,cnako'],
     ['src/plugin_caniuse.mjs', 'wnako,cnako'],
     ['src/plugin_kansuji.mjs', 'wnako,cnako'],
-    ['src/plugin_weykturtle3d.mjs', 'wnako'],
+    ['src/plugin_weykturtle3d.mts', 'wnako'],
     ['src/plugin_webworker.mjs', 'wnako'],
 ]
 拡張プラグイン一覧は[
