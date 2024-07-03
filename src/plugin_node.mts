@@ -1102,6 +1102,54 @@ export default {
       return flist.join('&')
     }
   },
+  'POST送信': { // @非同期通信(AJAX)でPOSTメソッドにてURLへPARAMS(辞書型)を送信して応答を戻す。 // @POSTそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に'], ['を']],
+    pure: true,
+    asyncFn: true,
+    fn: function (url: any, params: any, sys: any) {
+      return new Promise((resolve, reject) => {
+        const bodyData = sys.__exec('POSTデータ生成', [params, sys])
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: bodyData
+        }
+        fetch(url, options).then(res => {
+          return res.text()
+        }).then(text => {
+          resolve(text)
+        }).catch(err => {
+          reject(err.message)
+        })
+      })
+    }
+  },
+  'POSTフォーム送信': { // @非同期通信(AJAX)でURLにPARAMS(辞書型)をフォームとしてPOSTメソッドにてURLへ送信し応答を返す。 // @POSTふぉーむそうしん
+    type: 'func',
+    josi: [['まで', 'へ', 'に'], ['を']],
+    pure: true,
+    asyncFn: true,
+    fn: function (url: any, params: any, sys: any) {
+      return new Promise((resolve, reject) => {
+        const fd = new FormData()
+        for (const key in params) { fd.set(key, params[key]) }
+        const options = {
+          method: 'POST',
+          body: fd
+        }
+        fetch(url, options).then(res => {
+          return res.text()
+        }).then(text => {
+          resolve(text)
+        }).catch(err => {
+          reject(err.message)
+        })
+      })
+    }
+  },
   // @新AJAX
   'AJAXテキスト取得': { // @AJAXでURLにアクセスしテキスト形式で結果を得る。送信時AJAXオプションの値を参照。 // @AJAXてきすとしゅとく
     type: 'func',

@@ -1,0 +1,5 @@
+{
+  "tasks":{
+    "build": "deno run --allow-env --allow-read --allow-run bundle_esbuild.ts",
+  }
+}
