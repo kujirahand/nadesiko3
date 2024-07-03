@@ -16,15 +16,15 @@ const files = [
   'src/plugin_turtle.mts',
   'src/plugin_weykturtle3d.mts',
   'editor/edit_main.jsx',
-  'editor/version_main.jsx',
+  'editor/version_main.jsx'
 ]
 
 // bundle
 for (const file of files) {
   // output filename
   const out = file
-                .replace(/\.(mts|mjs|jsx)$/, '.js')
-                .replace(/^(src|editor)\//, 'release/')
+    .replace(/\.(mts|mjs|jsx)$/, '.js')
+    .replace(/^(src|editor)\//, 'release/')
   console.log('-', out)
   // build
   await esbuild.build({
@@ -32,6 +32,6 @@ for (const file of files) {
     bundle: true,
     outfile: out,
     minify: true,
-    sourcemap: true,
+    sourcemap: true
   })
 }
