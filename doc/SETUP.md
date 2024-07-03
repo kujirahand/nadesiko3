@@ -4,7 +4,7 @@
 
 なでしこ3自身を開発する手順をまとめたもの。なでしこ3を使うだけならば、次の手順は不要。
 
-[Node.js](https://nodejs.org/en/download)をインストールしておく。
+[Node.js](https://nodejs.org/en/download/package-manager)をインストールしておく。
 
 コマンドラインから以下を実行して、必要なライブラリをシステムにインストール。
 
