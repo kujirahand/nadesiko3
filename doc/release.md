@@ -6,7 +6,7 @@
 
 ただし、リリース前（コミット前）には必ずビルドとテストを実行して、テストが成功するか確認する。
 
-```shell
+```sh
 npm run build
 npm test
 npm run test:all
@@ -14,16 +14,23 @@ npm run test:all
 
 ## 2.ファイルのビルドについて
 
-リリース用にwebpackでパックしたソースを生成する(/releaseに生成物が作られる)。
+リリース用にesbuildでパックしたソースを生成する(/releaseに生成物が作られる)。
 
-```shell
+```sh
 npm run build
 ```
+
+自動生成されるファイルを削除する場合には、以下のコマンドを実行する。
+
+```sh
+npm run clean
+```
+
 
 必要に応じて対応ブラウザを更新する。
 (以前は`npm run build`に含めていた。しかし、OSによって異なる値を出力するため手動に変更した。 #1211)
 
-```shell
+```sh
 npm run build:browsers
 ```
 
@@ -31,7 +38,7 @@ npm run build:browsers
 
 package.jsonのバージョン番号を更新したことを確認する。npm publishでnpmに公開する。
 
-```shell
+```sh
 npm publish
 ```
 
@@ -47,33 +54,33 @@ Webの簡易エディタを最新版に更新する。
 
 Windows用のリポジトリ生成のためにファイルをnadesiko3win32へコピーする。ただし、事前準備として、 `git clone` でnadesiko3win32のリポジトリを取得しておく必要がある。
 
-```shell
+```sh
 npm run build:win32
 bash ./win32.bash
 ```
 
 nadesiko3win32のフォルダに移動。
 
-```shell
+```sh
 cd ../nadesiko3win32
 ```
 
 なお、Windowsで実行してモジュールの最新版を取得。
 
-```shell
+```sh
 nodejs\npm install --production
 nodejs\npm audit fix
 ```
 
 次に、7zipでモジュールを固める。
 
-```shell
+```sh
 bin\7z  -mx=9 a node_modules.7z node_modules
 ```
 
 最後にGitへアップする。
 
-```shell
+```sh
 git commit -a
 git push
 ```

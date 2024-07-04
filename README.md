@@ -143,7 +143,7 @@ Google Colabでなでしこのビルドテストできます。
 ## なでしこ3の開発に参加する
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
-また、なでしこ3開発者向けの[Gitter](https://app.gitter.im/#/room/#nadesiko3_community:gitter.im)への参加も可能です。
+なでしこユーザーと開発者用のための[Discord](https://discord.com/invite/WkaQAxbDaE)があります。
 
 ## 関連リポジトリへのリンク
 
