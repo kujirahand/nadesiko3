@@ -151,6 +151,7 @@
     "marked": "^13.0.1",
     "node-fetch": "^3.3.2",
     "opener": "^1.5.2",
-    "shell-quote": "^1.8.1"
+    "shell-quote": "^1.8.1",
+    "ts-node": "^10.9.2"
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * file: plugin_node.mjs
  * node.js のためのプラグイン
