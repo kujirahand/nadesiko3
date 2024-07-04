@@ -1,5 +1,6 @@
 {
   "tasks":{
     "build": "deno run --allow-env --allow-read --allow-run bundle_esbuild.ts",
+    "hello": "deno run --allow-env --allow-read --allow-run src/cnako3.mts hello.nako3"
   }
 }

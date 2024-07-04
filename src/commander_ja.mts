@@ -1,4 +1,4 @@
-// commander_ja.js
+// commander_ja.mts
 const CommanderJa: {[key: string]: any} = {
   args: /** @type {string[]} */([]),
   _alias: /** @type {Record<string, string>} */({}),
@@ -48,7 +48,7 @@ const CommanderJa: {[key: string]: any} = {
   option (cmd: string, desc: string) {
     this._help.push([cmd, desc])
     let name1 = ''
-    const name2:any = /** @type {string[]} */([])
+    const name2: any = /** @type {string[]} */([])
     const cmdList = cmd.split(',')
     cmdList.forEach((t) => {
       const c = t.replace(/\s+/, '')
@@ -139,7 +139,12 @@ const CommanderJa: {[key: string]: any} = {
       return this
     }
     console.log(s)
-    process.exit(0)
+    if (typeof process !== 'undefined') {
+      process.exit(0)
+    }
+    if (typeof (globalThis as any).Deno !== 'undefined') {
+      (globalThis as any).Deno.exit(0)
+    }
   },
 
   getHelp () {

@@ -2,19 +2,19 @@
  * file: plugin_node.mjs
  * node.js のためのプラグイン
  */
-import fs from 'fs'
+import fs from 'node:fs'
 import fse from 'fs-extra'
 import fetch, { FormData, Blob } from 'node-fetch'
-import { exec, execSync } from 'child_process'
+import { exec, execSync } from 'node:child_process'
 import shellQuote from 'shell-quote'
-import path from 'path'
+import path from 'node:path'
 import iconv from 'iconv-lite'
 import opener from 'opener'
-import assert from 'assert'
+import assert from 'node:assert'
 // ハッシュ関数で利用
-import crypto from 'crypto'
-import os from 'os'
-import url from 'url'
+import crypto from 'node:crypto'
+import os from 'node:os'
+import url from 'node:url'
 import { NakoSystem } from '../core/src/plugin_api.mjs'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -38,6 +38,23 @@ function isDir (f: string): boolean {
   }
 }
 
+let nodeProcess: any = globalThis.process
+
+// Denoのためのラッパー
+if (typeof (globalThis as any).Deno !== 'undefined') {
+  nodeProcess = {
+    platform: (globalThis as any).Deno.build.os,
+    arch: (globalThis as any).Deno.build.arch,
+    argv: ['deno', ...(globalThis as any).Deno.args],
+    exit: (code: number) => {
+      (globalThis as any).Deno.exit(code)
+    },
+    cwd: () => {
+      return (globalThis as any).Deno.cwd()
+    }
+  }
+}
+
 export default {
   'meta': {
     type: 'const',
@@ -54,9 +71,12 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: NakoSystem) {
+      // OS判定
+      const isWin = (nodeProcess.platform === 'win32') || (nodeProcess.platform === 'windows')
+      sys.tags.isWin = isWin
       // プラグインの初期化
       sys.tags.__quotePath = (fpath: string) => {
-        if (process.platform === 'win32') {
+        if (isWin) {
           fpath = fpath.replace(/"/g, '')
           fpath = fpath.replace(/%/g, '"^%"')
           fpath = '"' + fpath + '"'
@@ -69,7 +89,7 @@ export default {
       }
       sys.tags.__getBinPath = (tool: any) => {
         let fpath = tool
-        if (process.platform === 'win32') {
+        if (isWin) {
           if (!fileExists(tool)) {
             const root = path.resolve(path.join(__dirname, '..'))
             fpath = path.join(root, 'bin', tool + '.exe')
@@ -81,13 +101,13 @@ export default {
       }
       sys.tags.__getBokanPath = () => {
         // Electronから実行した場合
-        if (process.argv.length === 1) {
-          return path.dirname(path.resolve(process.argv[0]))
+        if (nodeProcess.argv.length === 1) {
+          return path.dirname(path.resolve(nodeProcess.argv[0]))
         }
         // cnako3のときランタイムを除いたメインファイルのパスを取得する
         let mainfile = '.'
-        for (let i = 0; i < process.argv.length; i++) {
-          const f = process.argv[i]
+        for (let i = 0; i < nodeProcess.argv.length; i++) {
+          const f = nodeProcess.argv[i]
           const bf = path.basename(f)
           if (bf === 'node' || bf === 'node.exe') { continue } // runtime
           if (bf === 'cnako3.mjs' || bf === 'cnako3.mts') { continue } // mts/mjs
@@ -97,9 +117,9 @@ export default {
         }
         return path.dirname(path.resolve(mainfile))
       }
-      sys.__setSysVar('コマンドライン', process.argv)
-      sys.__setSysVar('ナデシコランタイムパス', process.argv[0])
-      sys.__setSysVar('ナデシコランタイム', path.basename(process.argv[0]))
+      sys.__setSysVar('コマンドライン', nodeProcess.argv)
+      sys.__setSysVar('ナデシコランタイムパス', nodeProcess.argv[0])
+      sys.__setSysVar('ナデシコランタイム', path.basename(nodeProcess.argv[0]))
       sys.__setSysVar('母艦パス', sys.tags.__getBokanPath())
       sys.__setSysVar('AJAX:ONERROR', null)
 
@@ -110,14 +130,14 @@ export default {
       sys.tags.readBuffers = []
       sys.tags.readline = (question: string, handler?: (line: string) => void) => {
         if (question) {
-          process.stdout.write(question)
+          nodeProcess.stdout.write(question)
         }
         if (sys.tags.readBuffers.length > 0) {
           const buf = sys.tags.readBuffers.shift()
           return buf
         }
         let data: string = ''
-        process.stdin.on('data', (buf: Buffer) => {
+        nodeProcess.stdin.on('data', (buf: Buffer) => {
           const bufStr = buf.toString()
           let line: string = data
           for (let i = 0; i < bufStr.length; i++) {
@@ -138,7 +158,7 @@ export default {
           }
           data = line
         })
-        process.stdin.on('end', () => {
+        nodeProcess.stdin.on('end', () => {
           if (handler) {
             handler(data)
           } else {
@@ -153,7 +173,7 @@ export default {
           const timerCallback = () => {
             if (sys.tags.readBuffers.length > 0) {
               const buf = sys.tags.readBuffers.shift()
-              process.stdin.removeAllListeners()
+              nodeProcess.stdin.removeAllListeners()
               resolve(buf)
             } else {
               setTimeout(timerCallback, 100)
@@ -519,7 +539,7 @@ export default {
     josi: [],
     pure: true,
     fn: function () {
-      const cwd = process.cwd()
+      const cwd = nodeProcess.cwd()
       return path.resolve(cwd)
     }
   },
@@ -528,7 +548,7 @@ export default {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (dir: string) {
-      process.chdir(dir)
+      nodeProcess.chdir(dir)
     },
     return_none: true
   },
@@ -537,7 +557,7 @@ export default {
     josi: [],
     pure: true,
     fn: function () {
-      const cwd = process.cwd()
+      const cwd = nodeProcess.cwd()
       return path.resolve(cwd)
     }
   },
@@ -546,7 +566,7 @@ export default {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (dir: string) {
-      process.chdir(dir)
+      nodeProcess.chdir(dir)
     },
     return_none: true
   },
@@ -554,8 +574,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
-      return process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
+    fn: function (sys: NakoSystem) {
+      return nodeProcess.env[sys.tags.isWin ? 'USERPROFILE' : 'HOME']
     }
   },
   'デスクトップ': { // @デスクトップパスを取得して返す // @ですくとっぷ
@@ -612,7 +632,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (s: string) {
-      return process.env[s]
+      return nodeProcess.env[s]
     }
   },
   '環境変数一覧取得': { // @環境変数の一覧を返す // @かんきょうへんすういちらんしゅとく
@@ -620,7 +640,7 @@ export default {
     josi: [],
     pure: true,
     fn: function () {
-      return process.env
+      return nodeProcess.env
     }
   },
   // @圧縮・解凍
@@ -698,7 +718,7 @@ export default {
     josi: [],
     pure: true,
     fn: function () {
-      process.exit()
+      nodeProcess.exit()
     },
     return_none: true
   },
@@ -710,9 +730,9 @@ export default {
       if (typeof (func) === 'string') {
         func = sys.__findFunc(func, '強制終了時')
       }
-      process.on('SIGINT', (signal) => {
+      nodeProcess.on('SIGINT', (signal: any) => {
         const flag = func(sys)
-        if (flag) { process.exit() }
+        if (flag) { nodeProcess.exit() }
       })
     },
     return_none: true
@@ -731,7 +751,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: NakoSystem) {
-      return process.platform
+      return nodeProcess.platform
     }
   },
   'OSアーキテクチャ取得': { // @OSアーキテクチャを返す // @OSあーきてくちゃしゅとく
@@ -739,7 +759,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: NakoSystem) {
-      return process.arch
+      return nodeProcess.arch
     }
   },
   // @コマンドラインと標準入出力
@@ -802,11 +822,11 @@ export default {
     fn: function (sys: NakoSystem): Promise<string> {
       return new Promise((resolve, _reject) => {
         let dataStr = ''
-        process.stdin.on('data', (data) => {
+        nodeProcess.stdin.on('data', (data: any) => {
           dataStr += data.toString()
         })
-        process.stdin.on('end', () => {
-          process.stdin.removeAllListeners()
+        nodeProcess.stdin.on('end', () => {
+          nodeProcess.stdin.removeAllListeners()
           resolve(dataStr)
         })
       })

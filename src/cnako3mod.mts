@@ -2,10 +2,10 @@
  * コマンドライン版のなでしこ3をモジュールとして定義
  * 実際には cnako3.mjs から読み込まれる
  */
-import fs from 'fs'
+import fs from 'node:fs'
 import fse from 'fs-extra'
-import { exec } from 'child_process'
-import path from 'path'
+import { exec } from 'node:child_process'
+import path from 'node:path'
 
 import { NakoCompiler, LoaderTool, newCompilerOptions } from '../core/src/nako3.mjs'
 import { NakoImportError } from '../core/src/nako_errors.mjs'
@@ -21,7 +21,7 @@ import fetch from 'node-fetch'
 import { NakoGenOptions } from '../core/src/nako_gen.mjs'
 
 // __dirname のために
-import url from 'url'
+import url from 'node:url'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -69,8 +69,18 @@ export class CNako3 extends NakoCompiler {
 
   // CNAKO3で使えるコマンドを登録する
   registerCommands () {
+    // コマンドライン引数を得る
+    let args: Array<string> = []
+    if (typeof process !== 'undefined' && process.argv !== undefined) {
+      args = process.argv
+    }
+    else if (typeof (globalThis as any).Deno !== 'undefined') {
+      args = (globalThis as any).Deno.args
+      args.unshift('deno')
+      args.unshift('cnako3.mts')
+    }
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
-    if (process.argv.length <= 2) { process.argv.push('-h') }
+    if (args.length <= 2) { args.push('-h') }
 
     const verInfo = `v${nakoVersion.version}`
     // commanderを使って引数を解析する
@@ -96,7 +106,7 @@ export class CNako3 extends NakoCompiler {
       .option('-X, --lex', '字句解析した結果をJSONで出力する')
       // .option('-h, --help', '使い方を表示する')
       // .option('-v, --version', 'バージョンを表示する')
-      .parse(process.argv)
+      .parse(args)
     return app
   }
 
