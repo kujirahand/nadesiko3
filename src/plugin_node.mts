@@ -17,6 +17,8 @@ import crypto from 'node:crypto'
 import os from 'node:os'
 import url from 'node:url'
 import { NakoSystem } from '../core/src/plugin_api.mjs'
+import { getEnv, isWindows, getCommandLineArgs, exit } from './deno_wrapper.mjs'
+
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -46,7 +48,7 @@ if (typeof (globalThis as any).Deno !== 'undefined') {
   nodeProcess = {
     platform: (globalThis as any).Deno.build.os,
     arch: (globalThis as any).Deno.build.arch,
-    argv: ['deno', ...(globalThis as any).Deno.args],
+    argv: getCommandLineArgs(),
     exit: (code: number) => {
       (globalThis as any).Deno.exit(code)
     },
@@ -73,7 +75,7 @@ export default {
     pure: true,
     fn: function (sys: NakoSystem) {
       // OS判定
-      const isWin = (nodeProcess.platform === 'win32') || (nodeProcess.platform === 'windows')
+      const isWin = isWindows()
       sys.tags.isWin = isWin
       // プラグインの初期化
       sys.tags.__quotePath = (fpath: string) => {

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// deno-lint-ignore-file no-explicit-any
 /**
  * コマンドライン版のなでしこ3をモジュールとして定義
  * 実際には cnako3.mjs から読み込まれる
@@ -19,6 +21,8 @@ import app from './commander_ja.mjs'
 import fetch from 'node-fetch'
 
 import { NakoGenOptions } from '../core/src/nako_gen.mjs'
+
+import { getEnv, isWindows, getCommandLineArgs, exit } from './deno_wrapper.mjs'
 
 // __dirname のために
 import url from 'node:url'
@@ -70,15 +74,7 @@ export class CNako3 extends NakoCompiler {
   // CNAKO3で使えるコマンドを登録する
   registerCommands () {
     // コマンドライン引数を得る
-    let args: Array<string> = []
-    if (typeof process !== 'undefined' && process.argv !== undefined) {
-      args = process.argv
-    }
-    else if (typeof (globalThis as any).Deno !== 'undefined') {
-      args = (globalThis as any).Deno.args
-      args.unshift('deno')
-      args.unshift('cnako3.mts')
-    }
+    const args: string[] = getCommandLineArgs()
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
     if (args.length <= 2) { args.push('-h') }
 
@@ -213,7 +209,7 @@ export class CNako3 extends NakoCompiler {
       } catch (err: any) {
         if (this.numFailures > 0) {
           this.logger.error(err)
-          process.exit(1)
+          exit(1)
         }
       }
       this.outputAST(opt, src)
@@ -229,7 +225,7 @@ export class CNako3 extends NakoCompiler {
       } catch (e: any) {
         if (this.numFailures > 0) {
           this.logger.error(e)
-          process.exit(1)
+          exit(1)
         }
       }
     }
@@ -268,7 +264,7 @@ export class CNako3 extends NakoCompiler {
     const outRuntime = path.join(path.dirname(opt.output), 'nako3runtime')
     if (!fs.existsSync(outRuntime)) { fs.mkdirSync(outRuntime) }
     // from ./src
-    for (const mod of ['nako_version.mjs', 'plugin_node.mjs']) {
+    for (const mod of ['nako_version.mjs', 'plugin_node.mjs', 'deno_wrapper.mjs']) {
       fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod))
     }
     // from nadesiko3core/src
@@ -480,7 +476,7 @@ export class CNako3 extends NakoCompiler {
       },
       readJs: (filePath, token) => {
         const loader: any = { task: null }
-        if (process.platform === 'win32') {
+        if (isWindows()) {
           if (filePath.substring(1, 3) === ':\\') {
             filePath = 'file://' + filePath
           }
@@ -492,7 +488,8 @@ export class CNako3 extends NakoCompiler {
           loader.task = (
             new Promise((resolve, reject) => {
               // 一時フォルダを得る
-              const osTmpDir = (process.platform === 'win32') ? process.env.TEMP : '/tmp'
+              const tempDir = getEnv('TEMP')
+              const osTmpDir = isWindows() ? tempDir : '/tmp'
               const osTmpDir2 = (osTmpDir) || path.join('./tmp')
               const tmpDir = path.join(osTmpDir2, 'com.nadesi.v3.cnako')
               const tmpFile = path.join(tmpDir, filePath.replace(/[^a-zA-Z0-9_.]/g, '_'))
@@ -672,10 +669,11 @@ export class CNako3 extends NakoCompiler {
 
     // 環境変数をチェック
     // 環境変数 NAKO_LIB か?
-    if (process.env.NAKO_LIB) {
-      const NAKO_LIB = path.join(path.resolve(process.env.NAKO_LIB), pname)
-      const fileLib = fCheckEx(NAKO_LIB, 'NAKO_LIB')
-      if (fileLib) { return fileLib }
+    const nako_lib = getEnv('NAKO_LIB')
+    if (nako_lib) {
+      const nako_lib_full = path.join(path.resolve(nako_lib), pname)
+      const nako_lib_full2 = fCheckEx(nako_lib_full, 'NAKO_LIB')
+      if (nako_lib_full2) { return nako_lib_full2 }
     }
 
     // ランタイムパス/node_modules/<plugin>
@@ -695,18 +693,20 @@ export class CNako3 extends NakoCompiler {
     if (fileRuntimeSrc2) { return fileRuntimeSrc2 }
 
     // 環境変数 NAKO_HOMEか?
-    if (process.env.NAKO_HOME) {
-      const NAKO_HOME = path.join(path.resolve(process.env.NAKO_HOME), 'node_modules', pname)
-      const fileHome = fCheckEx(NAKO_HOME, 'NAKO_HOME')
-      if (fileHome) { return fileHome }
+    const nako_home = getEnv('NAKO_HOME')
+    if (nako_home) {
+      const nako_home_full = path.join(path.resolve(nako_home), 'node_modules', pname)
+      const nako_home_full2 = fCheckEx(nako_home_full, 'NAKO_HOME')
+      if (nako_home_full2) { return nako_home_full2 }
       // NAKO_HOME/src ?
-      const pathNakoHomeSrc = path.join(NAKO_HOME, 'src', pname)
+      const pathNakoHomeSrc = path.join(nako_home, 'src', pname)
       const fileNakoHomeSrc = fCheckEx(pathNakoHomeSrc, 'NAKO_HOME/src')
       if (fileNakoHomeSrc) { return fileNakoHomeSrc }
     }
     // 環境変数 NODE_PATH (global) 以下にあるか？
-    if (process.env.NODE_PATH) {
-      const pathNode = path.join(path.resolve(process.env.NODE_PATH), pname)
+    const node_path = getEnv('NODE_PATH')
+    if (node_path) {
+      const pathNode = path.join(path.resolve(node_path), pname)
       const fileNode = fCheckEx(pathNode, 'NODE_PATH')
       if (fileNode) { return fileNode }
     }
