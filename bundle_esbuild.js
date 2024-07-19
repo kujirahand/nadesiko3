@@ -12,7 +12,6 @@ const files = [
   'src/plugin_datetime.mjs',
   'src/plugin_caniuse.mjs',
   // mts
-  'src/plugin_toml.mts',
   'src/plugin_keigo.mts',
   'src/plugin_three.mts',
   'src/plugin_turtle.mts',

@@ -28,7 +28,6 @@ CORE="core/src"
     ['src/plugin_caniuse.mjs', 'wnako,cnako'],
     ['src/plugin_kansuji.mjs', 'wnako,cnako'],
     ['src/plugin_weykturtle3d.mts', 'wnako'],
-    ['src/plugin_toml.mts', 'wnako,cnako'],
     ['src/plugin_webworker.mjs', 'wnako'],
 ]
 拡張プラグイン一覧は[
@@ -48,6 +47,7 @@ CORE="core/src"
     ['nadesiko3-postgresql/src/plugin_postgresql.js', 'cnako'],
     ['nadesiko3php/src/plugin_php.php', 'phpnako'],
     ['nadesiko3electron/src/plugin_electron_node.mjs', 'enako'],
+    ['nadesiko3-toml/nadesiko3-toml.js', 'wnako,cnako'],
 ]
 # サポートしない
 # 'nadesiko3-firebase/plugin_firebase.js',

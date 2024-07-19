@@ -15,7 +15,6 @@ import { NakoGlobal } from '../core/src/nako_global.mjs'
 import nakoVersion from './nako_version.mjs'
 
 import PluginNode from './plugin_node.mjs'
-import PluginToml from './plugin_toml.mjs'
 import app from './commander_ja.mjs'
 import fetch from 'node-fetch'
 
@@ -60,7 +59,6 @@ export class CNako3 extends NakoCompiler {
     this.version = nakoVersion.version
     if (!opts.nostd) {
       this.addPluginFromFile('PluginNode', PluginNode, true)
-      this.addPluginFromFile('PluginToml', PluginToml, true)
     }
     // 必要な定数を設定
     this.addListener('beforeRun', (g: NakoGlobal) => {
