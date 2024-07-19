@@ -19,8 +19,8 @@ CORE="core/src"
 ]
 
 基本プラグイン一覧は[
-    ['src/plugin_browser.mjs','wnako'],
-    ['src/plugin_turtle.mjs', 'wnako'],
+    ['src/plugin_browser.mts','wnako'],
+    ['src/plugin_turtle.mts', 'wnako'],
     ['src/plugin_node.mts', 'cnako,phpnako'],
     ['src/plugin_httpserver.mts', 'cnako'],
     ['src/plugin_markup.mjs', 'wnako,cnako'],
@@ -28,6 +28,7 @@ CORE="core/src"
     ['src/plugin_caniuse.mjs', 'wnako,cnako'],
     ['src/plugin_kansuji.mjs', 'wnako,cnako'],
     ['src/plugin_weykturtle3d.mts', 'wnako'],
+    ['src/plugin_toml.mts', 'wnako,cnako'],
     ['src/plugin_webworker.mjs', 'wnako'],
 ]
 拡張プラグイン一覧は[
