@@ -21,13 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x, 18.x]
+        node-version: [22.x, 20.x, 18.x]
 
     steps:
       - name: Checkout submodule
         uses: actions/checkout@v2
-        with:
-          submodules: recursive
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
