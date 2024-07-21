@@ -212,8 +212,15 @@ describe('error_message', () => {
       const compiler = new NakoCompiler()
       let log = ''
       compiler.logger.addListener('warn', ({ noColor }) => { log += noColor })
-      await compiler.runAsync('xを表示', 'main.nako3')
+      await compiler.runAsync('!厳しくチェック;xを表示', 'main.nako3')
       assert.strictEqual(log.split('。')[0], '[警告]main.nako3(1行目): 変数『x』は定義されていません')
+    })
+    it('関数の引数にundefinedを与えたとき', async () => {
+      const compiler = new NakoCompiler()
+      let log = ''
+      compiler.logger.addListener('warn', ({ noColor }) => { log += noColor })
+      await compiler.runAsync('!厳しくチェック;undefinedを表示', 'main.nako3')
+      assert.strictEqual(log.split('。')[0], '[警告]main.nako3(1行目): 命令『表示』の引数にundefinedを渡しています')
     })
     it('存在しない高速化オプションを指定したとき', async () => {
       const compiler = new NakoCompiler()
