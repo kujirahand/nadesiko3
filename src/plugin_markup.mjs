@@ -39,4 +39,4 @@ const PluginMarkup = {
 }
 export default PluginMarkup
 // scriptタグで取り込んだ時、自動で登録する
-if (typeof (navigator) === 'object') { navigator.nako3.addPluginObject('PluginMarkup', PluginMarkup) }
+if (typeof (navigator) === 'object' && typeof navigator.nako3 === 'object') { navigator.nako3.addPluginObject('PluginMarkup', PluginMarkup) }
