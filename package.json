@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3",
-  "version": "3.6.10",
+  "version": "3.6.11",
   "description": "Japanese Programming Language",
   "type": "module",
   "main": "src/index.mjs",
@@ -36,7 +36,7 @@
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3",
     "build:browsers": "browserslist > src/browsers.txt && node src/cnako3.mjs batch/build_browsers.nako3",
     "publish:desc": "node -e \"console.log('Please exec => npm run build && npm run test:all && npm publish && npm run publish:version')",
-    "publish:version": "node src/cnako3.mjs batch/publish_version.nako3",
+    "publish:version": "node src/cnako3.mjs batch/publish_version.nako3 && node src/cnako3.mjs batch/copy_core.nako3",
     "eslint": "eslint src/*.mts core/src/*.mts",
     "eslint:fix": "eslint . --ext mts --fix",
     "extlib:clean": "rm -f -r demo/extlib/*",

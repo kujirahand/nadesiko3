@@ -56,21 +56,11 @@ npm run nako3server
 
 また、次のコマンドを実行すると、なでしこの開発環境をセットアップできます。
 
-```bash
-git clone --recursive https://github.com/kujirahand/nadesiko3.git
+```sh
+git clone https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install
 npm run build
-```
-
-サブモジュールとして[`nadesiko3core`](https://github.com/kujirahand/nadesiko3core)を利用するので、`--recursive` を付け忘れたら次のコマンドを実行して、サブモジュールも取得してください。
-
-```bash
-# 以下のように --recursive 付け忘れた場合
-git clone https://github.com/kujirahand/nadesiko3.git
-cd nadesiko3
-# サブモジュールを取得する
-git submodule update --init --recursive
 ```
 
 ## Ubuntuへの開発環境のセットアップ
@@ -84,14 +74,11 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 source ~/.bashrc
 nvm install v18.12.1
 # リポジトリのセットアップ
-git clone --recursive https://github.com/kujirahand/nadesiko3.git
+git clone https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
 npm install
 # なでしこ3のビルド
 npm run build
-# 『圧縮』『解凍』命令のために
-sudo apt install -y p7zip-full
-# cnako3をパスに追加する
 ```
 
 ## 追加インストール(macOS/Linux)
@@ -130,8 +117,9 @@ Google Colabでなでしこのビルドテストできます。
 「なでしこ3」の開発は2017年に始まり、以後コツコツとバージョンアップを続けています。
 「誰でも簡単プログラマー」の目標を実現するために、これからも頑張ります。
 
-- (2024/07/04) v3.6.8(予定)で、バンドルツールを`webpack`から`esbuild`に変更(#1690) / 実行ランタイムにDenoを追加(#1654)。
-- (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更。言語コアを別リポジトリに移動
+- (2024/07/22) v.3.6.11でcoreに分割した開発用リポジトリを再び本家に統合
+- (2024/07/04) v3.6.8で、バンドルツールを`webpack`から`esbuild`に変更(#1690) / 実行ランタイムにDenoを追加(#1654)。
+- (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更。言語コアを別リポジトリcoreに移動
 - (2022-04-20) v3.3.2を公開(モジュール構造をCommonJS→ESModuleへ変更/asyncFnの実装)
 - (2021-04-09) v3.2.1を公開
 - (2020-04-24) v3.1.2を公開
@@ -173,5 +161,5 @@ Google Colabでなでしこのビルドテストできます。
   - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
   - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
   - [nadesiko3go - なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
-- 本リポジトリのサブモジュール
-  - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コア
+  - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コアのみ取り出したもの
+

@@ -1,0 +1,34 @@
+SCRIPT_DIR=母艦パスを絶対パス変換
+NAKO3_DIR=SCRIPT_DIRからパス抽出
+REPOS_DIR=NAKO3_DIRからパス抽出
+NAKO3CORE_DIR=REPOS_DIR&「/nadesiko3core」
+もし、（NAKO3CORE_DIRが存在する）ならば
+　　「[check] {NAKO3CORE_DIR}」を表示。
+違えば
+　　「*** nadesiko3core を clone してください。」と表示。終わり。
+ここまで。
+＃＃＃
+「{NAKO3_DIR}/core/src/*.mts」を「{NAKO3CORE_DIR}/src」へ列挙コピー。
+「{NAKO3_DIR}/core/*.mts」を「{NAKO3CORE_DIR}」へ列挙コピー。
+「{NAKO3_DIR}/core/package.json」を「{NAKO3CORE_DIR}/package.json」へファイルコピー。
+「[OK] COPY」と表示。
+＃＃＃
+MSG="auto commit ver{ナデシコバージョン}"
+エラー監視
+　　CMD=「cd "{NAKO3CORE_DIR}" && git commit -a -m "{MSG}" && git push」
+　　CMDを起動待機
+エラーならば
+　　「エラーか変更無し」と表示。
+ここまで
+＃＃＃
+CMD=「cd "{NAKO3_DIR}"」
+CMDを起動待機
+
+●(SRCをDESへ)列挙コピーとは:
+　　BASE=SRCからパス抽出
+　　SRCのファイル列挙して反復：
+　　　　A＝「{BASE}/{対象}」
+　　　　B＝「{DES}/{対象}」
+　　　　「- {A}」を表示。
+　　　　AからBへファイルコピー。
+
