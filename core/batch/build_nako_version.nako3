@@ -1,0 +1,42 @@
+#!/usr/bin/env cnako3
+# -----------------------------------------------------
+# なでしこのバージョン情報を自動生成する
+# -----------------------------------------------------
+# ●説明
+# package.json の内容を読んで ./src/nako_core_version.mts を生成
+# -----------------------------------------------------
+母艦パスからパス抽出して、基本パスに代入。
+「{基本パス}/package.json」を読んでJSONデコードして、Pに代入。
+VER=P@"version"
+定数[MAJOR,MINOR,PATCH]=(VERを「.」で区切る)
+QS=『{』
+QE=『}』
+VS=「/**
+ * なでしこのバージョン情報
+ * package.json から自動的に作成されます。このファイルを編集しないでください。
+ */
+// 型定義
+export interface NakoCoreVersion {QS}
+    version: string;
+    major: number;
+    minor: number;
+    patch: number;
+{QE}
+// 実際のバージョン定義 (自動生成されるので以下を編集しない)
+const coreVersion: NakoCoreVersion = {QS}
+  version: '{VER}',
+  major: {MAJOR},
+  minor: {MINOR},
+  patch: {PATCH}
+{QE}
+export default coreVersion
+」
+保存先=「{基本パス}/src/nako_core_version.mts」
+VSを保存先へ保存。
+「
+# ---------------------------------------------
+# ● なでしこのバージョン情報を更新しました。
+# version {VER}
+# file: {保存先}
+# ---------------------------------------------
+」を表示。
