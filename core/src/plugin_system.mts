@@ -204,6 +204,8 @@ export default {
   'LF': { type: 'const', value: '\n' }, // @LF
   '非数': { type: 'const', value: NaN }, // @ひすう
   '無限大': { type: 'const', value: Infinity }, // @むげんだい
+  '戻値無': { type: 'const', value: 0 }, // @もどりちなし
+  '戻値有': { type: 'const', value: 1 }, // @もどりちあり
   '空配列': { // @空の配列を返す。『[]』と同義。 // @からはいれつ
     type: 'func',
     josi: [],
