@@ -14,7 +14,13 @@
 
 ## 対応機器/ブラウザ
 
-主要ブラウザ(Chrome/Safari/Edge/Firefox)に対応しています。詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。
+なでしこ3は、JavaScriptに変換されて実行されます。そのため、JavaScriptが動作するさまざまな端末で実行できます。
+
+1. Webブラウザ(wnako) - 主要ブラウザ(Chrome/Safari/Edge/Firefox)に対応
+2. コマンドライン(cnako) - JavaScriptの実行エンジン「Node.js」上で動作
+3. 配付パッケージ - Electronなどを利用してブラウザ版のなでしこをローカルPC上で動作させることも可能
+
+対応ブラウザについて詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。
 
 ## ブラウザで利用する場合
 
@@ -35,22 +41,18 @@
 先にNode.jsをインストールします。
 次いで、コマンドラインから次のコマンドを実行します。
 
-```bash
+```sh
 npm install -g nadesiko3
 ```
 
-すると、cnako3というコマンドで、なでしこを利用できます。
+すると、`cnako3`というコマンドで、なでしこを利用できます。
 
-```bash
-# なでしこのサーバーを起動
-npm start
-# なでしこエディタ(PC版)を起動
-npm run nako3edit
-# なでしこエディタ(WEB版)を起動
-npm run nako3server
+```sh
+# コマンドラインからプログラムを実行
+cnako3 -e "「こんにちは」と表示。"
+# ソースコード hello.nako3 を実行
+cnako3 hello.nako3
 ```
-
-> Node.jsの推奨バージョンは、v16.20以上です。
 
 ## Gitからインストール
 
@@ -67,7 +69,7 @@ npm run build
 
 まっさらなUbuntu22.04でなでしこ3の開発環境を整える場合は次のコマンドを実行します。
 
-```
+```sh
 sudo apt update
 # nvm で Node.js をインストール
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
@@ -87,14 +89,14 @@ npm run build
 
 macOS:
 
-```bash
+```sh
 # 『圧縮』『解凍』命令のために
 brew install p7zip
 ```
 
 Ubuntu/Debian:
 
-```bash
+```sh
 # 『圧縮』『解凍』命令のために
 sudo apt install p7zip-full
 # 『キー送信』命令のために
@@ -103,9 +105,32 @@ sudo apt install xdotool
 
 全てのコマンドが正しく動くかを確認するには、次のコマンドを実行します。
 
-```bash
+```sh
 npm test
 ```
+
+## コマンドライン版なでしこをインストールして使えるコマンド
+
+ローカルPCになでしこをインストールしたら、次のコマンドを実行して、ブラウザ動作するエディタを起動できます。
+
+```sh
+# なでしこのサーバーを起動
+npm start
+# なでしこエディタ(PC版)を起動
+npm run nako3edit
+# なでしこエディタ(WEB版)を起動
+npm run nako3server
+```
+
+> Node.jsの推奨バージョンは、v18 以上です。
+
+
+## Colabでなでしこを使って作業をする場合
+
+以下にColabを使ってなでしこを使う場合の作業用テンプレートを用意しました。
+ノートを複製して自分の作業に利用できます。
+
+- [作業用テンプレート](https://colab.research.google.com/drive/1FmOIoJGeFP57C9fgZXCP5pvcVJ6HmvH4?usp=sharing)
 
 ## Colabでビルドテスト
 
@@ -118,7 +143,7 @@ Google Colabでなでしこのビルドテストできます。
 「誰でも簡単プログラマー」の目標を実現するために、これからも頑張ります。
 
 - (2024/07/22) v.3.6.11でcoreに分割した開発用リポジトリを再び本家に統合
-- (2024/07/04) v3.6.8で、バンドルツールを`webpack`から`esbuild`に変更(#1690) / 実行ランタイムにDenoを追加(#1654)。
+- (2024/07/04) v3.6.8で、バンドルツールを`webpack`から`esbuild`に変更(#1690)
 - (2022-05-19) v3.3.18でJavaScriptからTypeScriptへ変更。言語コアを別リポジトリcoreに移動
 - (2022-04-20) v3.3.2を公開(モジュール構造をCommonJS→ESModuleへ変更/asyncFnの実装)
 - (2021-04-09) v3.2.1を公開
@@ -129,7 +154,7 @@ Google Colabでなでしこのビルドテストできます。
 - (2004-08-01)「ひまわり2」としてゼロから「なでしこ」の開発が開始
 - (2001-08-03)「なでしこ」の前身「ひまわり」の開発を開始
 
-## なでしこ3の開発に参加する
+## なでしこ3の開発に参加
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
 なでしこユーザーと開発者用のための[Discord](https://discord.com/invite/WkaQAxbDaE)があります。

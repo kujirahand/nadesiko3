@@ -1,13 +1,6 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-# (memo)
-# GitHubで頻繁にブラウザテストが失敗するので
-# コミット時のテストを簡易化しています。
-# ただし、リリース前には必ず全テスト実行するように
-# publish用のスクリプトを追加してミスを防ぎます。 
-# [詳細] https://github.com/kujirahand/nadesiko3/issues/1037
-
 name: Node.js CI
 
 on:
