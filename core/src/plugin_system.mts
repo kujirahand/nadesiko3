@@ -502,6 +502,17 @@ export default {
       return (a <= v) && (v <= b)
     }
   },
+  '範囲': { // @AからBの範囲を表現する範囲オブジェクトを返す // @はんい
+    type: 'func',
+    josi: [['から'], ['の', 'までの']],
+    pure: true,
+    fn: function (a: any, b: any) {
+      return {
+        '先頭': a,
+        '末尾': b
+      }
+    }
+  },
   '連続加算': { // @A1+A2+A3...にBを足す // @れんぞくかさん
     type: 'func',
     josi: [['を'], ['に', 'と']],

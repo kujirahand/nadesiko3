@@ -5,7 +5,7 @@ import { opPriority, RenbunJosi, operatorList } from './nako_parser_const.mjs'
 import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
-import { Token, Ast, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
+import { Token, Ast, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap, RangeObject } from './nako_types.mjs'
 
 /**
  * 構文解析を行うクラス
@@ -828,6 +828,7 @@ export class NakoParser extends NakoParserBase {
 
   /** @returns {Ast | null} */
   yFor (): Ast|null {
+    const errorForArguments = '『繰り返す』文でAからBまでの指定がありません。'
     let flagDown = true // AからBまでの時、A>=Bを許容するかどうか
     let loopDirection : null | 'up' | 'down' = null // ループの方向を一方向に限定する
     const map = this.peekSourceMap()
@@ -854,11 +855,16 @@ export class NakoParser extends NakoParserBase {
       if (kurikaesu.type === '増繰返') { flagDown = false }
       loopDirection = kurikaesu.type === '増繰返' ? 'up' : 'down'
     }
-    const vTo = this.popStack(['まで'])
+    const vTo = this.popStack(['まで', 'を']) // 範囲オブジェクトの場合もあり
     const vFrom = this.popStack(['から'])
     const word = this.popStack(['を', 'で'])
     if (vFrom === null || vTo === null) {
-      throw NakoSyntaxError.fromNode('『繰り返す』文でAからBまでの指定がありません。', kurikaesu)
+      // 『AからBの範囲を繰り返す』構文のとき (#1704)
+      if (vFrom == null && vTo && (vTo.type === 'func' && vTo.name === '範囲')) {
+        // ok
+      } else {
+        throw NakoSyntaxError.fromNode(errorForArguments, kurikaesu)
+      }
     }
     if (this.check('comma')) { this.get() } // skip comma
     let multiline = false
@@ -878,7 +884,7 @@ export class NakoParser extends NakoParserBase {
         throw NakoSyntaxError.fromNode('『ここまで』がありません。『繰り返す』...『ここまで』を対応させてください。', map)
       }
     } else { block = this.ySentence() }
-
+    
     return {
       type: 'for',
       from: vFrom,

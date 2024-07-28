@@ -1085,9 +1085,26 @@ export class NakoGen {
       this.varsSet.names.add(varName)
       loopVarSetter = this.varname_set(varName, varI)
     }
+    // ループ条件を変数に入れる用
+    const varFrom = `$nako_from${idLoop}`
+    const varTo = `$nako_to${idLoop}`
+    const varTemp = `$nako_temp${idLoop}`
+    let sorePrefex = ''
+    if (this.speedMode.invalidSore === 0) {
+      sorePrefex = this.varname_set('それ', varI)
+    }
     // ループ条件を確認
-    const kara = this._convGen(node.from as Ast, true)
-    const made = this._convGen(node.to as Ast, true)
+    let kara = '0'
+    let made = '0'
+    let temp = '0'
+    if (node.to && node.to.type === 'func' && node.to.name === '範囲') {
+      temp = this._convGen(node.to as Ast, true)
+      kara = `${varTemp}['先頭'] || 0`
+      made = `${varTemp}['末尾'] || 0`
+    } else {
+      kara = this._convGen(node.from as Ast, true)
+      made = this._convGen(node.to as Ast, true)
+    }
     const flagDown = node.flagDown
     let inc = '1'
     if (node.inc && node.inc !== 'null') {
@@ -1095,16 +1112,10 @@ export class NakoGen {
     }
     // ループ内のブロック内容を得る
     const block = this.convGenLoop(node.block as Ast)
-    // ループ条件を変数に入れる用
-    const varFrom = `$nako_from${idLoop}`
-    const varTo = `$nako_to${idLoop}`
-    let sorePrefex = ''
-    if (this.speedMode.invalidSore === 0) {
-      sorePrefex = this.varname_set('それ', varI)
-    }
     const code =
       this.convLineno(node, false) + '\n' +
       `/*[convFor id=${idLoop}]*/\n` +
+      `const ${varTemp} = ${temp};\n` +
       `const ${varFrom} = ${kara};\n` +
       `const ${varTo} = ${made};\n` +
       `if (${varFrom} <= ${varTo}) { // up\n` +

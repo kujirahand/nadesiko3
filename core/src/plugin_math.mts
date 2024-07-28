@@ -226,12 +226,28 @@ export default {
       return Math.trunc(a)
     }
   },
-  '乱数': { // @0から(A-1)までの乱数を返す // @らんすう
+  '乱数': { // @0から(A-1)までの乱数を返す。引数Aには範囲オブジェクトや配列[最小,最大]も指定可能 // @らんすう
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
-      return Math.floor(Math.random() * a)
+    fn: function (a: any): number | undefined {
+      // numberの場合
+      if (typeof a === 'number') {
+       return Math.floor(Math.random() * a)
+      }
+      // 範囲オブジェクトの場合
+      if (typeof a === 'object' && a['先頭'] !== undefined) {
+        const min = a['先頭']
+        const max = a['末尾']
+        return Math.floor(Math.random() * (max - min + 1)) + min
+      }
+      // 配列の場合
+      if (Array.isArray(a)) {
+        const min = a[0]
+        const max = a[1]
+        return Math.floor(Math.random() * (max - min + 1)) + min
+      }
+      return undefined
     }
   },
   '乱数範囲': { // @AからBまでの範囲の乱数を返す // @らんすうはんい
