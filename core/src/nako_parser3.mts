@@ -617,10 +617,31 @@ export class NakoParser extends NakoParserBase {
     return this.infixToAST(args)
   }
 
+  yRange (kara: Ast): Ast|null {
+    // 範囲オブジェクト?
+    if (!this.check('…')) { return null }
+    const map = this.peekSourceMap()
+    this.get() // skip '…'
+    const made = this.yValue()
+    if (!kara || !made) {
+      throw NakoSyntaxError.fromNode('範囲オブジェクトの指定エラー。『A…B』の書式で指定してください。', map)
+    }
+    return {
+      type: 'func',
+      name: '範囲',
+      args: [kara, made],
+      josi: made.josi,
+      ...map,
+      end: this.peekSourceMap()
+    }
+  }
+
   yGetArg (): Ast|null {
     // 値を一つ読む
     const value1 = this.yValue()
     if (value1 === null) { return null }
+    // 範囲オブジェクト？
+    if (this.check('…')) { return this.yRange(value1) }
     // 計算式がある場合を考慮
     return this.yGetArgOperator(value1)
   }

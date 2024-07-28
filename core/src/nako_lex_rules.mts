@@ -44,16 +44,18 @@ export const rules: NakoLexRule[] = [
   { name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment },
   { name: 'def_test', pattern: /^●テスト:/ },
   { name: 'def_func', pattern: /^●/ },
+  { name: '…', pattern: /^…/ }, // 範囲オブジェクト(#1704)
+  { name: '…', pattern: /^\.{2,3}/ }, // 範囲オブジェクト(#1704)
   // 多倍長整数リテラルの判定。整数の末尾に「n」がついているだけな為、数値判定より上に書かないとただの整数にされる
   { name: 'bigint', pattern: /^0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*n/, readJosi: true },
   { name: 'bigint', pattern: /^0[oO][0-7]+(_[0-7]+)*n/, readJosi: true },
   { name: 'bigint', pattern: /^0[bB][0-1]+(_[0-1]+)*n/, readJosi: true },
   { name: 'bigint', pattern: /^\d+(_\d+)*?n/, readJosi: true },
-  // 数値の判定 --- この後nako_lexerにて単位を読む処理が入る(#994)
+  // 16進/8進/2進法の数値判定 --- この後nako_lexerにて単位を読む処理が入る(#994)
   { name: 'number', pattern: /^0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*/, readJosi: true, cb: parseNumber },
   { name: 'number', pattern: /^0[oO][0-7]+(_[0-7]+)*/, readJosi: true, cb: parseNumber },
   { name: 'number', pattern: /^0[bB][0-1]+(_[0-1]+)*/, readJosi: true, cb: parseNumber },
-  // 下の三つは小数点が挟まっている場合、小数点から始まっている場合、小数点がない場合の十進法の数値にマッチします
+  // 下の三つは小数点が挟まっている場合、小数点から始まっている場合、小数点がない場合の十進法の数値にマッチする
   { name: 'number', pattern: /^\d+(_\d+)*\.(\d+(_\d+)*)?([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber },
   { name: 'number', pattern: /^\.\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber },
   { name: 'number', pattern: /^\d+(_\d+)*([eE][+|-]?\d+(_\d+)*)?/, readJosi: true, cb: parseNumber },

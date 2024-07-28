@@ -152,6 +152,7 @@ export interface NakoEvent {
   callback: (event: any) => void
 }
 
+/// 範囲オブジェクト (#1704)
 export interface RangeObject {
   先頭: number,
   末尾: number,
