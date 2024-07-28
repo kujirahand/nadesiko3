@@ -1733,15 +1733,22 @@ export default {
       return sys.__exec('配列切取', [a, i, sys])
     }
   },
-  '配列切取': { // @配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。辞書型変数ならキーIを削除する。 // @はいれつきりとる
+  '配列切取': { // @配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。引数Iには範囲オブジェクトを指定できる。その場合戻り値は配列型となる。辞書型変数ならキーIを削除する。 // @はいれつきりとる
     type: 'func',
     josi: [['の', 'から'], ['を']],
     pure: true,
     fn: function (a: any, i: any) {
       // 配列変数のとき
       if (a instanceof Array) {
-        const b = a.splice(i, 1)
-        if (b instanceof Array) { return b[0] } // 切り取った戻り値は必ずArrayになるので。
+        if (typeof i === 'number') {
+          const b = a.splice(i, 1)
+          if (b instanceof Array) { return b[0] } // 切り取った戻り値は必ずArrayになるので。
+        }
+        if (typeof i === 'object' && typeof i['先頭'] === 'number') {
+          const idx = i['先頭']
+          const cnt = i['末尾'] - i['先頭'] + 1
+          return a.splice(idx, cnt)
+        }
         return null
       }
       // 辞書型変数のとき
@@ -1800,6 +1807,74 @@ export default {
     pure: true,
     fn: function (a: any) {
       return JSON.parse(JSON.stringify(a))
+    }
+  },
+  '配列範囲コピー': { // @配列Aの範囲I(数値化範囲オブジェクト)を複製して返す。 // @はいれつはんいこぴー
+    type: 'func',
+    josi: [['の','から'],['を']],
+    pure: true,
+    fn: function (a: any, i: any) {
+      if (!Array.isArray(a)) {
+        throw new Error('『配列範囲コピー』で配列以外の値が指定されました。')
+      }
+      if (typeof i === 'number') {
+        if (typeof a[i] === 'object') {
+          return JSON.parse(JSON.stringify(a[i]))
+        }
+        return a[i]
+      }
+      // 範囲オブジェクトのとき
+      if (typeof i === 'object' && typeof i['先頭'] === 'number') {
+        const start = i['先頭']
+        const last = i['末尾'] + 1
+        return JSON.parse(JSON.stringify(a.slice(start, last)))
+      }
+      return undefined
+    }
+  },
+  '参照': { // @値A(配列/文字列/辞書型)の範囲I(キーまたは範囲オブジェクト)を参照して(コピーせず)返す // @さんしょう
+    type: 'func',
+    josi: [['から', 'の'], ['を']],
+    pure: true,
+    fn: function (a: any, i: any, sys: any) {
+      // 文字列のとき
+      if (typeof a === 'string') {
+        if (typeof i === 'number') {
+          return a.charAt(i)
+        }
+        // 範囲オブジェクトのとき
+        if (typeof i === 'object' && typeof i['先頭'] === 'number') {
+          const start = i['先頭']
+          const last = i['末尾'] + 1
+          return a.substring(start, last)
+        }
+        throw new Error(`『参照』で文字列型の範囲指定(${JSON.stringify(i)})が不正です。`)
+      }
+      // 配列型のとき
+      if (Array.isArray(a)) {
+        if (typeof i === 'number') {
+          return a[i]
+        }
+        // 範囲オブジェクトのとき
+        if (typeof i === 'object' && typeof i['先頭'] === 'number') {
+          const start = i['先頭']
+          const last = i['末尾'] + 1
+          return a.slice(start, last)
+        }
+      }
+      // 辞書型のとき
+      if (typeof a === 'object') {
+        return a[i]
+      }
+      throw new Error('『参照』で文字列/配列/辞書型以外の値が指定されました。')
+    }
+  },
+  '配列参照': { // @値A(配列/文字列/辞書型)の範囲I(キーまたは範囲オブジェクト)を参照して(コピーせず)返す(『参照』と同じ) // @はいれつはんいさんしょう
+    type: 'func',
+    josi: [['の', 'から'], ['を']],
+    pure: true,
+    fn: function (a: any, i: any, sys: any) {
+      return sys.__exec('参照', [a, i, sys])
     }
   },
   '配列足': { // @配列Aに配列Bを足し合わせて返す。 // @はいれつたす
