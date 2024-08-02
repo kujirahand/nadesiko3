@@ -20,6 +20,9 @@ const files = [
   'editor/version_main.jsx'
 ]
 
+const watch = process.argv.includes('--watch')
+const ctxArray = []
+
 // bundle
 for (const file of files) {
   // output filename
@@ -28,11 +31,25 @@ for (const file of files) {
     .replace(/^(src|editor)\//, 'release/')
   console.log('-', out)
   // build
-  await esbuild.build({
+  const ctx = await esbuild.context({
     entryPoints: [file],
     bundle: true,
     outfile: out,
     minify: true,
-    sourcemap: true
+    sourcemap: true,
   })
+  ctxArray.push(ctx)
+}
+for (const ctx of ctxArray) {
+  const result = await ctx.rebuild()
+  if (result.errors.length > 0) {
+    console.warn(result)
+  }
+}
+
+// watch
+if (watch) {
+  for (const ctx of ctxArray) {
+    await ctx.watch()
+  }
 }

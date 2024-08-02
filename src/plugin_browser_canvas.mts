@@ -377,7 +377,7 @@ export default {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       return sys.__ctx.measureText(s)
     },
-    return_none: true
+    return_none: false
   },
   '描画起点設定': { // @ 描画位置の起点を[x,y]へ設定する(translate) // @ びょうがきてんせってい
     type: 'func',

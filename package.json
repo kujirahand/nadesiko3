@@ -29,6 +29,7 @@
     "build:nako_version": "node src/cnako3.mjs batch/build_nako_version.nako3",
     "build:tsc": "tsc",
     "build": "npm run build:tsc && npm run build:nako_version && npm run build:tsc && npm run build:command && npm run build:esbuild && node src/cnako3.mjs batch/calc_hash.nako3",
+    "build:watch": "node bundle_esbuild.js --watch",
     "clean": "npm run build:tsc && node src/cnako3.mjs batch/clean.nako3",
     "tsc": "tsc --watch",
     "build:esbuild": "tsc && node bundle_esbuild.js",
