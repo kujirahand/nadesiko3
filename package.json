@@ -124,7 +124,7 @@
     "mocha": "^10.4.0",
     "mocha-css": "^1.0.1",
     "module-alias": "^2.2.3",
-    "npm-check-updates": "^16.14.20",
+    "npm-check-updates": "^17.0.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "prettier": "^3.2.5",
