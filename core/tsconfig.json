@@ -30,14 +30,14 @@
     // "useDefineForClassFields": true,                  /* Emit ECMAScript-standard-compliant class fields. */
 
     /* Modules */
-    "module": "NodeNext",                                  /* Specify what module code is generated. */
+    "module": "NodeNext",                                /* Specify what module code is generated. */
     // "rootDir": "./",                                  /* Specify the root folder within your source files. */
-    "moduleResolution": "NodeNext",                          /* Specify how TypeScript looks up a file from a given module specifier. */
-    "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
+    "moduleResolution": "NodeNext",                      /* Specify how TypeScript looks up a file from a given module specifier. */
+    "baseUrl": "./",                                     /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": ["src/@types", "node_modules/@types"],  /* Specify multiple folders that act like `./node_modules/@types`. */
-    "types": ["node", "mocha"],                          /* Specify type package names to be included without being referenced in a source file. */
+    "types": ["node"],                                   /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
     // "resolveJsonModule": true,                        /* Enable importing .json files */
     // "noResolve": true,                                /* Disallow `import`s, `require`s or `<reference>`s from expanding the number of files TypeScript should add to a project. */
