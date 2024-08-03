@@ -29,6 +29,11 @@ const files = [
 const outdir = path.join(__dirname, 'release')
 const watch = process.argv.includes('--watch')
 
+// create outdir
+if (!fs.existsSync(outdir)) {
+  fs.mkdirSync(outdir)
+  console.log(`[esbuild] created ${outdir}`)
+}
 // build options
 const options = {
   entryPoints: files,
@@ -40,8 +45,11 @@ const options = {
 if (!watch) {
   await esbuild.build(options)
   // 例外的なコピー
-  fs.copyFileSync(path.join(outdir, 'edit_main.js'), path.join(outdir, 'editor.js'))
-  fs.copyFileSync(path.join(outdir, 'version_main.js'), path.join(outdir, 'version.js'))
+  const src = path.join(outdir, 'edit_main.js')
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, path.join(outdir, 'editor.js'))
+    fs.copyFileSync(path.join(outdir, 'version_main.js'), path.join(outdir, 'version.js'))
+  }
 } else {
   const ctx = await esbuild.context(options)
   await ctx.watch()

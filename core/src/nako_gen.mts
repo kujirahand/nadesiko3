@@ -269,10 +269,10 @@ export class NakoGen {
   varname_set (name: string, jsvalue: string): string {
     if (this.varslistSet.length === 3) {
       // グローバル
-      return `__self.__varslist[${2}].set(${JSON.stringify(name)}, ${jsvalue})`
+      return `__self.__varslist[${2}].set(${JSON.stringify(name)}, (${jsvalue}))`
     } else {
       // ローカル
-      return `__self.__vars.set(${JSON.stringify(name)}, ${jsvalue})`
+      return `__self.__vars.set(${JSON.stringify(name)}, (${jsvalue}))`
     }
   }
 
@@ -1712,7 +1712,6 @@ export class NakoGen {
       }
       code = `${res.js_set};`
     }
-
     return ';' + this.convLineno(node, false) + code + '\n'
   }
 
