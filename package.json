@@ -140,7 +140,7 @@
     "stylelint": "^16.4.0",
     "testdouble": "^3.20.2",
     "typescript": "^5.5.3",
-    "typescript-eslint": "^7.15.0",
+    "typescript-eslint": "^8.0.0",
     "url-loader": "^4.1.1",
     "util": "^0.12.5"
   },
