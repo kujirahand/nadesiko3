@@ -1,4 +1,11 @@
 import * as esbuild from 'esbuild'
+import path from 'node:path'
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 // esbuild でバンドルするファイルのリスト
 const files = [
@@ -19,37 +26,23 @@ const files = [
   'editor/edit_main.jsx',
   'editor/version_main.jsx'
 ]
-
+const outdir = path.join(__dirname, 'release')
 const watch = process.argv.includes('--watch')
-const ctxArray = []
 
-// bundle
-for (const file of files) {
-  // output filename
-  const out = file
-    .replace(/\.(mts|mjs|jsx)$/, '.js')
-    .replace(/^(src|editor)\//, 'release/')
-  console.log('-', out)
-  // build
-  const ctx = await esbuild.context({
-    entryPoints: [file],
-    bundle: true,
-    outfile: out,
-    minify: true,
-    sourcemap: true,
-  })
-  ctxArray.push(ctx)
+// build options
+const options = {
+  entryPoints: files,
+  bundle: true,
+  outdir,
+  minify: true,
+  sourcemap: true,
 }
-for (const ctx of ctxArray) {
-  const result = await ctx.rebuild()
-  if (result.errors.length > 0) {
-    console.warn(result)
-  }
-}
-
-// watch
-if (watch) {
-  for (const ctx of ctxArray) {
-    await ctx.watch()
-  }
+if (!watch) {
+  await esbuild.build(options)
+  // 例外的なコピー
+  fs.copyFileSync(path.join(outdir, 'edit_main.js'), path.join(outdir, 'editor.js'))
+  fs.copyFileSync(path.join(outdir, 'version_main.js'), path.join(outdir, 'version.js'))
+} else {
+  const ctx = await esbuild.context(options)
+  await ctx.watch()
 }
