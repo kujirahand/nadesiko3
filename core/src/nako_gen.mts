@@ -1693,10 +1693,22 @@ export class NakoGen {
     // もし値が省略されていたら、変数「それ」に代入する
     let value = null
     if (this.speedMode.invalidSore === 0) { value = this.varname_get('それ') }
-    if (node.value) { value = this._convGen(node.value, true) }
+    // 値のプログラムを生成
+    if (node.value) {
+      const ast = node.value
+      if (ast.type === 'func' && ast.name !== undefined) {
+        const func = this.__self.getFunc(ast.name)
+        if (func && func.return_none) {
+          throw NakoSyntaxError.fromNode(`関数『${ast.name}』は戻り値がないので結果を代入できません。`, node)
+        }
+      }
+      value = this._convGen(node.value, true)
+    }
+    // 戻り値の検証
     if (value == null) {
       throw NakoSyntaxError.fromNode('代入する先の変数名がありません。', node)
     }
+
     // 変数名
     const name: string = (node.name as Ast).value
     const res = this.findVar(name, value)

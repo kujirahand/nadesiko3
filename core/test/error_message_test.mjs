@@ -207,4 +207,19 @@ describe('error_message', () => {
       assert.strictEqual(log, '')
     })
   })
+  it('戻り値のない関数を代入文の結果に使おうとする #175', async () => {
+    const compiler = new NakoCompiler()
+    const logger = compiler.getLogger()
+    logger.addListener('error', ({ level, noColor }) => {
+      const s = (noColor + '\n').split('\n')[0].replace('[エラー]', '')
+      assert.strictEqual(level, 'error')
+      assert.strictEqual(s, '[文法エラー]main.nako3(1行目): 関数『表示』は戻り値がないので結果を代入できません。')
+      return true
+    })
+    try {
+      await compiler.runAsync('A=「あ」を表示', 'main.nako3')
+    } catch (_) {
+      // pass
+    }
+  })
 })
