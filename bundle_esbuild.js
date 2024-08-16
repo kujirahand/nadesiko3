@@ -46,7 +46,7 @@ if (!watch) {
       minify: true,
       sourcemap: true,
     }
-    console.log('[esbuild] build start', options)
+    // console.log('[esbuild] build start', options)
     await esbuild.build(options)
   }
   // 例外的なコピー
