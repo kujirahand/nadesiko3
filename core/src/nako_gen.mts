@@ -268,12 +268,19 @@ export class NakoGen {
    */
   varname_set (name: string, jsvalue: string): string {
     if (this.varslistSet.length === 3) {
-      // グローバル
-      return `__self.__varslist[${2}].set(${JSON.stringify(name)}, (${jsvalue}))`
+      return `__self.__varslist[2].set(${JSON.stringify(name)}, (${jsvalue}))`
     } else {
-      // ローカル
       return `__self.__vars.set(${JSON.stringify(name)}, (${jsvalue}))`
     }
+  }
+
+  /**
+   * ローカル変数の設定用JavaScriptコードを生成する。
+   * @param {string} name
+   * @param {string} jsvalue
+   */
+  varname_set_sys(name: string, jsvalue: string): string {
+    return `__self.__setSysVar(${JSON.stringify(name)}, (${jsvalue}))`
   }
 
   /**
@@ -1145,20 +1152,22 @@ export class NakoGen {
     const loopKeyVar = `$nako_i${id}`
     const loopValueVar = `$nako_foreach_value${id}`
     const loopDataVar = `$nako_foreach_data${id}`
+    
     // 「対象」「対象キー」を取得 --- blockより早く変数を定義する必要がある
-    let valueVar = '対象'
+    let taisyoPrefex = this.varname_set_sys('対象', loopValueVar);
     if (node.name) { // 対象変数がある場合、対象は設定されない
-      valueVar = '' + (node.name as Ast).value
+      const valueVar = '' + (node.name as Ast).value
+      this.varsSet.names.add(valueVar)
+      taisyoPrefex = this.varname_set(valueVar, loopValueVar)
     }
-    this.varsSet.names.add(valueVar)
     const keyVar = '対象キー'
-    this.varsSet.names.add(keyVar)
-    const keySetter = this.varname_set(keyVar, loopKeyVar)
+    const keySetter = this.varname_set_sys(keyVar, loopKeyVar)
     // 「それ」(対象のエイリアス)の設定
     let sorePrefex = ''
     if (this.speedMode.invalidSore === 0) {
       sorePrefex = this.varname_set('それ', loopValueVar)
     }
+
     // 反復するデータを取得
     let targetData = ''
     if (node.target === null) {
@@ -1189,7 +1198,7 @@ export class NakoGen {
       '  // 対象の設定\n' +
       `  let ${loopValueVar} = $nako_foreach_data${id}[${loopKeyVar}]\n` +
       `  ${sorePrefex};\n` +
-      `  ${this.varname_set(valueVar, loopValueVar)}\n` +
+      `  ${taisyoPrefex};\n` +
       '  // [convForeach::block]\n' +
       `  ${block}\n` +
       '  // [/convForeach::block]\n' +

@@ -28,6 +28,7 @@ const files = [
 ]
 const outdir = path.join(__dirname, 'release')
 const watch = process.argv.includes('--watch')
+const filesFullpath = files.map((f) => path.join(__dirname, f))
 
 // create outdir
 if (!fs.existsSync(outdir)) {
@@ -35,15 +36,19 @@ if (!fs.existsSync(outdir)) {
   console.log(`[esbuild] created ${outdir}`)
 }
 // build options
-const options = {
-  entryPoints: files,
-  bundle: true,
-  outdir,
-  minify: true,
-  sourcemap: true,
-}
 if (!watch) {
-  await esbuild.build(options)
+  for (const f of files) {
+    const outfile = path.join(outdir, path.basename(f).replace(/\.(mjs|mts|jsx)$/, '.js'))
+    const options = {
+      entryPoints: [f],
+      bundle: true,
+      outfile,
+      minify: true,
+      sourcemap: true,
+    }
+    console.log('[esbuild] build start', options)
+    await esbuild.build(options)
+  }
   // 例外的なコピー
   const src = path.join(outdir, 'edit_main.js')
   if (fs.existsSync(src)) {
@@ -51,6 +56,14 @@ if (!watch) {
     fs.copyFileSync(path.join(outdir, 'version_main.js'), path.join(outdir, 'version.js'))
   }
 } else {
+  // TODO: watch がうまく動かない
+  const options = {
+    entryPoints: filesFullpath,
+    bundle: true,
+    outdir,
+    minify: true,
+    sourcemap: true,
+  }
   const ctx = await esbuild.context(options)
   await ctx.watch()
 }
