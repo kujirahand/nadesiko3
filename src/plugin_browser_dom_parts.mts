@@ -396,6 +396,16 @@ export default {
       return table
     }
   },
+  'ヘッダ無テーブル作成': { // @二次元配列AA(あるいは文字列の簡易CSVデータ)からヘッダ無しのTABLE要素を作成し、DOMオブジェクトを返す // @へっだなしてーぶるさくせい
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (aa: any, sys: any) {
+      const domOption = sys.__getSysVar('DOM部品オプション')
+      domOption['テーブルヘッダ'] = false
+      return sys.__exec('テーブル作成', [aa, sys])
+    }
+  },
   'マーメイド作成': { // @ Mermaid記法を使ってSRCのチャートを作成する // @ まーめいどさくせい
     type: 'func',
     josi: [['の']],
