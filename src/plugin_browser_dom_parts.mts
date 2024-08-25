@@ -2,7 +2,7 @@ export default {
   // @DOM部品操作
   'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
   'DOM部品個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
-  'DOM部品オプション': { type: 'const', value: { '自動改行': false, 'テーブル背景色': ['#AA4040', '#ffffff', '#fff0f0'] } }, // @DOMぶひんおぷしょん
+  'DOM部品オプション': { type: 'const', value: { '自動改行': false, 'テーブルヘッダ': true, 'テーブル背景色': ['#AA4040', '#ffffff', '#fff0f0'] } }, // @DOMぶひんおぷしょん
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」など『DOM部品作成』で追加する要素の親要素を指定(デフォルトはdocument)して要素を返す。 // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
@@ -366,7 +366,9 @@ export default {
         for (const row of rows) { rr.push(row.split(',')) }
         aa = rr
       }
-      const bgColor = JSON.parse(JSON.stringify(sys.__getSysVar('DOM部品オプション')['テーブル背景色']))
+      const domOption = sys.__getSysVar('DOM部品オプション')
+      const bgColor = JSON.parse(JSON.stringify(domOption['テーブル背景色'])) // 複製して使う
+      const hasHeader = domOption['テーブルヘッダ']
       for (let i = 0; i < 3; i++) { bgColor.push('') }
       const bgHead = bgColor.shift()
       const table = sys.__exec('DOM部品作成', ['table', sys])
@@ -376,12 +378,13 @@ export default {
         const tr = document.createElement('tr')
         for (let col of row) {
           col = '' + col
-          const td = document.createElement((rowNo === 0) ? 'th' : 'td')
+          const td = document.createElement((rowNo === 0 && hasHeader) ? 'th' : 'td')
           td.innerHTML = sys.__tohtml(col)
           // 色指定
           if (bgHead !== '') {
-            td.style.backgroundColor = (rowNo === 0) ? bgHead : bgColor[rowNo % 2]
-            td.style.color = (rowNo === 0) ? 'white' : 'black'
+            const no = hasHeader ? rowNo : rowNo + 1
+            td.style.backgroundColor = (no === 0) ? bgHead : bgColor[no % 2]
+            td.style.color = (no === 0) ? 'white' : 'black'
           }
           if (col.match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
             td.style.textAlign = 'right'
