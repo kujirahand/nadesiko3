@@ -154,6 +154,15 @@ export default {
         }
         return value
       }
+      // eval function
+      sys.__evalJS = (src: string) => {
+        try {
+          return eval(src) // eslint-disable-line
+        } catch (e) {
+          console.error('[eval]', e)
+          return null
+        }
+      }
     }
   },
   '!クリア': {
@@ -593,7 +602,7 @@ export default {
     fn: function (src: string, sys: NakoSystem) {
       // [メモ] ↑のsys は eval の中でも有効なので消さない!!
       // https://github.com/kujirahand/nadesiko3/issues/1237
-      return eval(src) // eslint-disable-line
+      return sys.__evalJS(src) // eslint-disable-line
     }
   },
   'JSオブジェクト取得': { // @なでしこで定義した関数や変数nameのJavaScriptオブジェクトを取得する // @JSおぶじぇくとしゅとく
@@ -607,10 +616,10 @@ export default {
   'JS関数実行': { // @JavaScriptの関数NAMEを引数ARGS(配列)で実行する // @JSかんすうじっこう
     type: 'func',
     josi: [['を'], ['で']],
-    fn: function (name: any, args: any) {
+    fn: function (name: any, args: any, sys: NakoSystem) {
       // nameが文字列ならevalして関数を得る
       // eslint-disable-next-line no-eval
-      if (typeof name === 'string') { name = eval(name) }
+      if (typeof name === 'string') { name = sys.__evalJS(name) }
       if (typeof name !== 'function') { throw new Error('JS関数取得で実行できません。') }
 
       // argsがArrayでなければArrayに変換する
@@ -647,10 +656,10 @@ export default {
   'JSメソッド実行': { // @JavaScriptのオブジェクトOBJのメソッドMを引数ARGS(配列)で実行する // @JSめそっどじっこう
     type: 'func',
     josi: [['の'], ['を'], ['で']],
-    fn: function (obj: any, m: any, args: any) {
+    fn: function (obj: any, m: any, args: any, sys: NakoSystem) {
       // objが文字列ならevalして関数を得る
       // eslint-disable-next-line no-eval
-      if (typeof obj === 'string') { obj = eval(obj) }
+      if (typeof obj === 'string') { obj = sys.__evalJS(obj) }
       if (typeof obj !== 'object') { throw new Error('JSオブジェクトを取得できませんでした。') }
 
       // method を求める

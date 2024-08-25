@@ -45,6 +45,7 @@ if (!watch) {
       outfile,
       minify: true,
       sourcemap: true,
+      ignoreAnnotations: true,
     }
     // console.log('[esbuild] build start', options)
     await esbuild.build(options)
@@ -63,6 +64,7 @@ if (!watch) {
     outdir,
     minify: true,
     sourcemap: true,
+    ignoreAnnotations: true,
   }
   const ctx = await esbuild.context(options)
   await ctx.watch()
