@@ -510,13 +510,7 @@ export class NakoGen {
       case 'nop':
         break
       case 'block':
-        if (!node.block) { return code }
-        // eslint-disable-next-line no-case-declarations
-        const blocks: any = (node.block instanceof Array) ? node.block : [node.block]
-        for (let i = 0; i < blocks.length; i++) {
-          const b = blocks[i]
-          code += this._convGen(b, false)
-        }
+        code += this.convBlock(node)
         break
       case 'comment':
       case 'eol':
@@ -717,6 +711,17 @@ export class NakoGen {
   convGetVar (node: Ast): string {
     const name = node.value
     return this.genVar(name, node)
+  }
+
+  convBlock (node: Ast): string {
+    if (!node.block) { return "" }
+    let code = ''
+    const blocks = (node.block instanceof Array) ? node.block : [node.block]
+    for (let i = 0; i < blocks.length; i++) {
+      const b = blocks[i]
+      code += this._convGen(b, false)
+    }
+    return code
   }
 
   convComment (node: Ast): string {
@@ -1370,7 +1375,9 @@ export class NakoGen {
         args.push(this.varname_get('それ'))
         opts.sore = true
       } else {
-        const argCode = this._convGen(arg, true)
+        let argCode = this._convGen(arg, true)
+        if (argCode === "") { argCode = 'undefined' }
+        if (typeof argCode !== 'string') { argCode = "undefined"; }
         args.push(`/*arg${i}*/${argCode}`)
       }
     }
