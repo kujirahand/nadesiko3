@@ -376,16 +376,16 @@ export default {
         const rowNo = i
         const row = aa[rowNo]
         const tr = document.createElement('tr')
+        // 色指定
+        if (bgHead !== '') {
+          const no = hasHeader ? rowNo : rowNo + 1
+          tr.style.backgroundColor = (no === 0) ? bgHead : bgColor[no % 2]
+          tr.style.color = (no === 0) ? 'white' : 'black'
+        }
         for (let col of row) {
           col = '' + col
           const td = document.createElement((rowNo === 0 && hasHeader) ? 'th' : 'td')
           td.innerHTML = sys.__tohtml(col)
-          // 色指定
-          if (bgHead !== '') {
-            const no = hasHeader ? rowNo : rowNo + 1
-            td.style.backgroundColor = (no === 0) ? bgHead : bgColor[no % 2]
-            td.style.color = (no === 0) ? 'white' : 'black'
-          }
           if (col.match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
             td.style.textAlign = 'right'
           }
@@ -405,6 +405,50 @@ export default {
       domOption['テーブルヘッダ'] = false
       return sys.__exec('テーブル作成', [aa, sys])
     }
+  },
+  'テーブルセル変更': { // @TABLE要素のセル[行,列]をVへ変更する。Vが二次元配列変数であれば複数のセルを一括変更する // @てーぶるせるへんこう
+    type: 'func',
+    josi: [['の'], ['を'], ['に', 'へ']],
+    pure: true,
+    fn: function (t: any, cell: any, v: string | Array<Array<string>>, sys: any) {
+      if (typeof (t) === 'string') { t = document.querySelector(t) }
+      if (typeof (cell) === 'string') { cell = cell.split(',') }
+      if (cell.length !== 2) {
+        throw new Error('『テーブルセル変更』の引数「を」は[行,列]の形式で指定してください。')
+      }
+      const row = cell[0]
+      const col = cell[1]
+      if (!(v instanceof Array)) {
+        v = [[v]]
+      }
+      const domOption = sys.__getSysVar('DOM部品オプション')
+      const bgColor = JSON.parse(JSON.stringify(domOption['テーブル背景色'])) // 複製して使う
+      bgColor.push("white")
+      bgColor.push("white")
+      bgColor.push("white")
+      // 複数の範囲を一気に変更
+      for (let y = 0; y < v.length; y++) {
+        const vRow = v[y]
+        for (let x = 0; x < vRow.length; x++) {
+          let yy = row + y
+          let domTR = t.childNodes[yy]
+          while (!domTR) {
+            const newTR = document.createElement('tr')
+            t.appendChild(newTR)
+            domTR = t.childNodes[yy]
+            domTR.style.backgroundColor = bgColor[yy % 2 + 1]
+          }
+          let domCell = domTR.childNodes[col + x]
+          while (!domCell) {
+            const newTD = document.createElement('td')
+            domTR.appendChild(newTD)
+            domCell = domTR.childNodes[col + x]
+          }
+          domCell.innerHTML = sys.__tohtml(vRow[x])
+        }
+      }
+    },
+    return_none: true
   },
   'マーメイド作成': { // @ Mermaid記法を使ってSRCのチャートを作成する // @ まーめいどさくせい
     type: 'func',

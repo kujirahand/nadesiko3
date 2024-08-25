@@ -27,7 +27,7 @@ const files = [
   'editor/version_main.jsx'
 ]
 const outdir = path.join(__dirname, 'release')
-const watch = process.argv.includes('--watch')
+const watchMode = process.argv.includes('--watch')
 const filesFullpath = files.map((f) => path.join(__dirname, f))
 
 // create outdir
@@ -36,7 +36,8 @@ if (!fs.existsSync(outdir)) {
   console.log(`[esbuild] created ${outdir}`)
 }
 // build options
-if (!watch) {
+if (!watchMode) {
+  // normal mode
   for (const f of files) {
     const outfile = path.join(outdir, path.basename(f).replace(/\.(mjs|mts|jsx)$/, '.js'))
     const options = {
@@ -57,15 +58,25 @@ if (!watch) {
     fs.copyFileSync(path.join(outdir, 'version_main.js'), path.join(outdir, 'version.js'))
   }
 } else {
-  // TODO: watch がうまく動かない
-  const options = {
-    entryPoints: filesFullpath,
-    bundle: true,
-    outdir,
-    minify: true,
-    sourcemap: true,
-    ignoreAnnotations: true,
+  // watch mode
+  const ctxList = []
+  for (const f of files) {
+    const outfile = path.join(outdir, path.basename(f).replace(/\.(mjs|mts|jsx)$/, '.js'))
+    const options = {
+      entryPoints: [f],
+      bundle: true,
+      outfile,
+      minify: true,
+      sourcemap: true,
+      ignoreAnnotations: true,
+    }
+    const c = await esbuild.context(options)
+    c.opt = options
+    ctxList.push(c)
   }
-  const ctx = await esbuild.context(options)
-  await ctx.watch()
+  for (const ctx of ctxList) {
+    ctx.watch().then(()=>{
+      console.log('[esbuild] watch', ctx.opt.entryPoints)
+    })
+  }
 }
