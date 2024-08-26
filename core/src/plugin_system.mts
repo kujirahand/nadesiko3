@@ -156,10 +156,13 @@ export default {
       }
       // eval function
       sys.__evalJS = (src: string) => {
+        // evalのスコープを変えるためのテクニック
+        // https://esbuild.github.io/content-types/#direct-eval
+        const _eval = eval
         try {
-          return eval(src) // eslint-disable-line
+          return _eval(src)
         } catch (e) {
-          console.error('[eval]', e)
+          console.warn('[eval]', e)
           return null
         }
       }

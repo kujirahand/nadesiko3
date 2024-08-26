@@ -2,7 +2,7 @@ export default {
   // @DOM部品操作
   'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
   'DOM部品個数': { type: 'const', value: 0 }, // @DOMせいせいこすう
-  'DOM部品オプション': { type: 'const', value: { '自動改行': false, 'テーブルヘッダ': true, 'テーブル背景色': ['#AA4040', '#ffffff', '#fff0f0'] } }, // @DOMぶひんおぷしょん
+  'DOM部品オプション': { type: 'const', value: { '自動改行': false, 'テーブルヘッダ': true, 'テーブル背景色': ['#AA4040', '#ffffff', '#fff0f0'], 'テーブル数値右寄せ': true } }, // @DOMぶひんおぷしょん
   'DOM親要素設定': { // @「ボタン作成」「エディタ作成」など『DOM部品作成』で追加する要素の親要素を指定(デフォルトはdocument)して要素を返す。 // @DOMおやようそせってい
     type: 'func',
     josi: [['に', 'へ']],
@@ -367,10 +367,11 @@ export default {
         aa = rr
       }
       const domOption = sys.__getSysVar('DOM部品オプション')
-      const bgColor = JSON.parse(JSON.stringify(domOption['テーブル背景色'])) // 複製して使う
-      const hasHeader = domOption['テーブルヘッダ']
+      const bgColor: Array<string> = JSON.parse(JSON.stringify(domOption['テーブル背景色'])) // 複製して使う
+      const hasHeader: boolean = domOption['テーブルヘッダ']
+      const isNumRight: boolean = domOption['テーブル数値右寄せ']
       for (let i = 0; i < 3; i++) { bgColor.push('') }
-      const bgHead = bgColor.shift()
+      const bgHead = bgColor.shift() || ''
       const table = sys.__exec('DOM部品作成', ['table', sys])
       for (let i = 0; i < aa.length; i++) {
         const rowNo = i
@@ -386,7 +387,7 @@ export default {
           col = '' + col
           const td = document.createElement((rowNo === 0 && hasHeader) ? 'th' : 'td')
           td.innerHTML = sys.__tohtml(col)
-          if (col.match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
+          if (isNumRight && col.match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
             td.style.textAlign = 'right'
           }
           tr.appendChild(td)
@@ -421,16 +422,18 @@ export default {
       if (!(v instanceof Array)) {
         v = [[v]]
       }
+      // オプションを取得
       const domOption = sys.__getSysVar('DOM部品オプション')
       const bgColor = JSON.parse(JSON.stringify(domOption['テーブル背景色'])) // 複製して使う
-      bgColor.push("white")
-      bgColor.push("white")
-      bgColor.push("white")
+      const isNumRight: boolean = domOption['テーブル数値右寄せ']
+      while (bgColor.length < 3) { // オプションが壊れていた時のための補完
+        bgColor.push("white")
+      }
       // 複数の範囲を一気に変更
       for (let y = 0; y < v.length; y++) {
         const vRow = v[y]
         for (let x = 0; x < vRow.length; x++) {
-          let yy = row + y
+          const yy = row + y
           let domTR = t.childNodes[yy]
           while (!domTR) {
             const newTR = document.createElement('tr')
@@ -438,13 +441,16 @@ export default {
             domTR = t.childNodes[yy]
             domTR.style.backgroundColor = bgColor[yy % 2 + 1]
           }
-          let domCell = domTR.childNodes[col + x]
-          while (!domCell) {
+          let td = domTR.childNodes[col + x]
+          while (!td) {
             const newTD = document.createElement('td')
             domTR.appendChild(newTD)
-            domCell = domTR.childNodes[col + x]
+            td = domTR.childNodes[col + x]
           }
-          domCell.innerHTML = sys.__tohtml(vRow[x])
+          td.innerHTML = sys.__tohtml(vRow[x])
+          if (isNumRight && vRow[x].match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
+            td.style.textAlign = 'right'
+          }
         }
       }
     },
