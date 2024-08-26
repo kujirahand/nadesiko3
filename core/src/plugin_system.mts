@@ -154,7 +154,7 @@ export default {
         }
         return value
       }
-      // eval function
+      // eval function #1733
       sys.__evalJS = (src: string) => {
         // evalのスコープを変えるためのテクニック
         // https://esbuild.github.io/content-types/#direct-eval
@@ -600,11 +600,8 @@ export default {
     type: 'func',
     josi: [['を', 'で']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (src: string, sys: NakoSystem) {
-      // [メモ] ↑のsys は eval の中でも有効なので消さない!!
-      // https://github.com/kujirahand/nadesiko3/issues/1237
-      return sys.__evalJS(src) // eslint-disable-line
+      return sys.__evalJS(src) // #1733
     }
   },
   'JSオブジェクト取得': { // @なでしこで定義した関数や変数nameのJavaScriptオブジェクトを取得する // @JSおぶじぇくとしゅとく
