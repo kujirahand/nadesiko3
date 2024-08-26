@@ -279,7 +279,7 @@ export default {
     josi: [['と', 'を']],
     isVariableJosi: true,
     pure: true,
-    fn: function (...a:any) {
+    fn: function (...a: any) {
       const sys = a.pop()
       const v = a.join('')
       sys.__exec('表示', [v, sys])
@@ -291,7 +291,7 @@ export default {
     josi: [['と', 'を']],
     isVariableJosi: true,
     pure: true,
-    fn: function (...a:any) {
+    fn: function (...a: any) {
       const sys = a.pop()
       const v = a.join('')
       sys.__exec('継続表示', [v, sys])
