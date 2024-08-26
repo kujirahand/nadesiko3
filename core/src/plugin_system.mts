@@ -168,7 +168,6 @@ export default {
   '!クリア': {
     type: 'func',
     josi: [],
-    pure: false,
     fn: function (sys: NakoSystem) {
       if (sys.__exec) { sys.__exec('全タイマー停止', [sys]) }
       sys.__setSysVar('表示ログ', '')
