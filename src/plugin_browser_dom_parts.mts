@@ -411,7 +411,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を'], ['に', 'へ']],
     pure: true,
-    fn: function (t: any, cell: any, v: string | Array<Array<string>>, sys: any) {
+    fn: function (t: any, cell: any, v: string|Array<Array<string>>, sys: any) {
       if (typeof (t) === 'string') { t = document.querySelector(t) }
       if (typeof (cell) === 'string') { cell = cell.split(',') }
       if (cell.length !== 2) {
