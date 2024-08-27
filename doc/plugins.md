@@ -74,7 +74,8 @@ export default {
 }
 ```
 
-追加したい定数と、命令を次のような書式で追加していく。
+上記の簡単なプラグインや[nadesiko3-hoge](https://github.com/kujirahand/nadesiko3-hoge)を参考にして、metaプロパティを指定しよう。
+また、追加したい定数と、命令を次のような書式で追加していく。
 
 ### 定義：関数
 
