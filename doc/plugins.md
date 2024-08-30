@@ -33,7 +33,7 @@ export default {
       description: '説明',
       pluginVersion: '3.6.0', // プラグインのバージョン
       nakoRuntime: ['wnako', 'cnako', 'phpnako'], // 対象ランタイム
-      NakoVersion: '3.6.0' // 最小要求なでしこバージョン
+      nakoVersion: '3.6.0' // 最小要求なでしこバージョン
     }
   },
   'テスト加算': {
