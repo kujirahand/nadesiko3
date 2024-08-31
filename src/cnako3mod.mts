@@ -598,7 +598,8 @@ export class CNako3 extends NakoCompiler {
         const b = !!(stat && stat.isFile())
         cachePath[f] = b
         return b
-      } catch (_e: any) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_: any) {
         return false
       }
     }

@@ -5,7 +5,7 @@
 
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { FuncList, FuncArgs, Token, NakoDebugOption } from './nako_types.mjs'
-import { Ast, AstIf } from './nako_ast.mjs'
+import { getBlocksFromAst, Ast, AstBlock, AstIf, AstWhile, AstFor, AstForeach } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
@@ -422,8 +422,8 @@ export class NakoGen {
     const funcList: {name: string; node:Ast}[] = []
     // なでしこ関数を定義して this.nako_func[name] に定義する
     const registFunc = (node: Ast) => {
-      if (!node.block) { return }
-      const blockList: Ast[] = (node.block instanceof Array) ? node.block : [node.block]
+      const blockList = getBlocksFromAst(node)
+      if (blockList.length == 0) { return }
       for (let i = 0; i < blockList.length; i++) {
         const t = blockList[i]
         if (t.type === 'def_func') {
@@ -511,7 +511,7 @@ export class NakoGen {
       case 'nop':
         break
       case 'block':
-        code += this.convBlock(node)
+        code += this.convBlock(node as AstBlock)
         break
       case 'comment':
       case 'eol':
@@ -573,10 +573,10 @@ export class NakoGen {
         code += this.convIf(node as AstIf)
         break
       case 'for':
-        code += this.convFor(node)
+        code += this.convFor(node as AstFor)
         break
-      case 'foreach':
-        code += this.convForeach(node)
+      case '反復': // foreach
+        code += this.convForeach(node as AstForeach)
         break
       case 'repeat_times':
         code += this.convRepeatTimes(node)
@@ -588,7 +588,7 @@ export class NakoGen {
         code += this.convPerformanceMonitor(node, isExpression)
         break
       case 'while':
-        code += this.convWhile(node)
+        code += this.convWhile(node as AstWhile)
         break
       case 'atohantei':
         code += this.convAtohantei(node)
@@ -714,13 +714,10 @@ export class NakoGen {
     return this.genVar(name, node)
   }
 
-  convBlock (node: Ast): string {
-    if (!node.block) { return "" }
+  convBlock (node: AstBlock): string {
     let code = ''
-    const blocks = (node.block instanceof Array) ? node.block : [node.block]
-    for (let i = 0; i < blocks.length; i++) {
-      const b = blocks[i]
-      code += this._convGen(b, false)
+    for (const block of node.blocks) {
+      code += this._convGen(block, false)
     }
     return code
   }
@@ -1088,14 +1085,14 @@ export class NakoGen {
     }
   }
 
-  convFor (node: Ast): string {
+  convFor (node: AstFor): string {
     // forのIDを取得
     const idLoop = this.loopId++
     const varI = `$nako_i${idLoop}`
     // ループ変数について
     let loopVarSetter = ''
-    if (node.word !== null) { // ループ変数を使う時
-      const varName = (node.word as Token).value
+    if (node.word !== '') { // ループ変数を使う時
+      const varName = node.word
       this.varsSet.names.add(varName)
       loopVarSetter = this.varname_set(varName, varI)
     }
@@ -1111,18 +1108,18 @@ export class NakoGen {
     let kara = '0'
     let made = '0'
     let temp = '0'
-    if (node.to && node.to.type === 'func' && node.to.name === '範囲') {
-      temp = this._convGen(node.to as Ast, true)
+    if (node.valueTo && node.valueTo.type === 'func' && node.valueTo.name === '範囲') {
+      temp = this._convGen(node.valueTo as Ast, true)
       kara = `${varTemp}['先頭'] || 0`
       made = `${varTemp}['末尾'] || 0`
     } else {
-      kara = this._convGen(node.from as Ast, true)
-      made = this._convGen(node.to as Ast, true)
+      kara = this._convGen(node.valueFrom as Ast, true)
+      made = this._convGen(node.valueTo as Ast, true)
     }
     const flagDown = node.flagDown
     let inc = '1'
-    if (node.inc && node.inc !== 'null') {
-      inc = this._convGen(node.inc as Ast, true)
+    if (node.valueInc) {
+      inc = this._convGen(node.valueInc as Ast, true)
     }
     // ループ内のブロック内容を得る
     const block = this.convGenLoop(node.block as Ast)
@@ -1153,17 +1150,17 @@ export class NakoGen {
     return code
   }
 
-  convForeach (node: Ast): string {
+  convForeach (node: AstForeach): string {
     // foreachのIDを取得
     const id = this.loopId++
     const loopKeyVar = `$nako_i${id}`
     const loopValueVar = `$nako_foreach_value${id}`
     const loopDataVar = `$nako_foreach_data${id}`
-    
+
     // 「対象」「対象キー」を取得 --- blockより早く変数を定義する必要がある
     let taisyoPrefex = this.varname_set_sys('対象', loopValueVar);
-    if (node.name) { // 対象変数がある場合、対象は設定されない
-      const valueVar = '' + (node.name as Ast).value
+    if (node.word !== '') { // 対象変数がある場合、対象は設定されない
+      const valueVar = node.word
       this.varsSet.names.add(valueVar)
       taisyoPrefex = this.varname_set(valueVar, loopValueVar)
     }
@@ -1177,14 +1174,14 @@ export class NakoGen {
 
     // 反復するデータを取得
     let targetData = ''
-    if (node.target === null) {
+    if (node.expr === null) {
       if (this.speedMode.invalidSore === 0) {
         targetData = this.varname_get('それ')
       } else {
         throw NakoSyntaxError.fromNode('『反復』の対象がありません。', node)
       }
     } else {
-      targetData = this._convGen(node.target as Ast, true)
+      targetData = this._convGen(node.expr as Ast, true)
     }
     // 反復するブロックを取得
     const block = trim(cleanGeneratedCode(this.convGenLoop(node.block as Ast), 1))
@@ -1291,8 +1288,8 @@ export class NakoGen {
     }
   }
 
-  convWhile (node: Ast): string {
-    const cond = this._convGen(node.cond as Ast, true)
+  convWhile (node: AstWhile): string {
+    const cond = this._convGen(node.expr as Ast, true)
     const block = trim(cleanGeneratedCode(this.convGenLoop(node.block as Ast), 1))
     const code =
       '// [convWhile]\n' +

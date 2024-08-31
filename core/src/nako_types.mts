@@ -5,7 +5,7 @@
 import { NakoGlobal } from './nako_global.mjs'
 import { Ast as AstRaw } from './nako_ast.mjs'
 
-export type Ast = AstRaw
+export type Ast = AstRaw;
 
 // 関数に関する定義
 export type FuncArgs = string[][]

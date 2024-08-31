@@ -4,23 +4,66 @@
 
 import { Token } from './nako_types.mjs'
 
+/** ASTのノードの種類を定義 */
+export type NodeType = 'nop'
+  | 'eol'
+  | 'comment'
+  | 'number'
+  | 'bigint'
+  | 'bool'
+  | 'null'
+  | 'word'
+  | 'string'
+  | 'block'
+  | 'end'
+  | 'if'
+  | 'while'
+  | 'atohantei'
+  | 'for'
+  | '反復' // foreach
+  | 'repeat_times'
+  | 'switch'
+  | 'try_except'
+  | 'def_func'
+  | 'return'
+  | 'continue'
+  | 'break'
+  | 'def_test'
+  | 'let'
+  | 'let_array'
+  | 'json_array'
+  | 'json_obj'
+  | 'op'
+  | 'calc'
+  | 'variable'
+  | 'not'
+  | 'and'
+  | 'or'
+  | 'eq'
+  | 'inc'
+  | 'func'
+  | 'calc_func'
+  | 'func_pointer'
+  | 'func_obj'
+  | 'renbun'
+  | 'def_local_var'
+  | 'def_local_varlist'
+  | '配列参照'
+  | 'require'
+  | 'performance_monitor'
+  | 'speed_mode'
+  | 'run_mode'
+
+
 export interface Ast {
-  type: string;
-  expr?: Ast[] | Ast; // todo: cond と共通化できそう
+  type: NodeType;
   cond?: Ast;
-  block?: Ast[] | Ast;
-  target?: Ast[] | Ast | null; // 反復
+  block?: Ast;
   errBlock?: Ast[] | Ast; // todo: エラー監視の中でのみ使われる
-  cases?: any[]; // 条件分岐
+  cases?: Ast[]; // 条件分岐
   operator?: string; // 演算子の場合
   left?: Ast | Ast[]; // 演算子の場合
   right?: Ast | Ast[]; // 演算子の場合
-  from?: Ast | null; // for
-  to?: Ast; // for
-  inc?: Ast[] | Ast | null | string; // for
-  word?: Ast | Token | null; // for
-  flagDown?: boolean; // for
-  loopDirection?: null | 'up' | 'down'; // for
   name?: Token | Ast | null | string;
   names?: Ast[];
   args?: Ast[]; // 関数の引数
@@ -51,8 +94,48 @@ export interface Ast {
   options?: { [key: string]: boolean };
 }
 
+export interface AstEOL extends Ast {
+  value: string;
+}
+
+export interface AstBlock extends Ast {
+  blocks: Ast[];
+}
+
+// 必ずブロックリストを取得
+export function getBlocksFromAst(node: Ast): Ast[] {
+  if (node.type === 'block') {
+    return (node as AstBlock).blocks;
+  }
+  if (node.block) {
+    return [node];
+  }
+  return []
+}
+
 export interface AstIf extends Ast {
   expr: Ast;
   trueBlock: Ast;
   falseBlock: Ast;
+}
+
+export interface AstWhile extends Ast {
+  expr: Ast;
+  block: Ast;
+}
+
+export interface AstFor extends Ast {
+  word: string; // 変数名(変数を使わないときは'')
+  valueFrom: Ast | null; // 値から (nullの場合、valueToに範囲が入っている)
+  valueTo: Ast; // 値まで
+  valueInc: Ast | null; // 増分
+  flagDown: boolean; // 
+  loopDirection: null | 'up' | 'down'; // ループの方向
+  block: Ast;
+}
+
+export interface AstForeach extends Ast {
+  word: string; // 変数名(使わない時は'')
+  expr: Ast | null; // 繰り返し対象 (nullなら「それ」の値を使う)
+  block: Ast;
 }

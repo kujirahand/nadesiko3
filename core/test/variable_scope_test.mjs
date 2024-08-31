@@ -5,7 +5,7 @@ import { NakoCompiler } from '../src/nako3.mjs'
 describe('variable_scope_test', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    const realResult = (await nako.runAsync(code)).log
+    const realResult = (await nako.runAsync(code, 'main.nako3')).log
     assert.strictEqual(realResult, res)
   }
 

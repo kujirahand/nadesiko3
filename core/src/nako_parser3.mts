@@ -6,7 +6,7 @@ import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import { Token, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
-import { Ast, AstIf } from './nako_ast.mjs'
+import { NodeType, Ast, AstEOL, AstBlock, AstIf, AstWhile, AstFor, AstForeach } from './nako_ast.mjs'
 
 /**
  * 構文解析を行うクラス
@@ -36,8 +36,20 @@ export class NakoParser extends NakoParserBase {
     return b
   }
 
+  /** 何もしない
+   * @returns {Ast}
+   */
+  yNop (): Ast {
+    return {
+      type: 'nop',
+      josi: '',
+      ...this.peekSourceMap(),
+      end: this.peekSourceMap()
+    }
+  }
+
   /** 複数文を返す */
-  ySentenceList (): Ast {
+  ySentenceList(): AstBlock {
     const blocks = []
     let line = -1
     const map = this.peekSourceMap()
@@ -53,7 +65,7 @@ export class NakoParser extends NakoParserBase {
       throw NakoSyntaxError.fromNode('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, false), token)
     }
 
-    return { type: 'block', block: blocks, ...map, end: this.peekSourceMap(), genMode: this.genMode }
+    return { type: 'block', blocks: blocks, ...map, end: this.peekSourceMap(), genMode: this.genMode }
   }
 
   /** 余剰スタックのレポートを作る */
@@ -86,7 +98,7 @@ export class NakoParser extends NakoParserBase {
     return `未解決の単語があります: [${desc}]\n次の命令の可能性があります:\n${descFunc}`
   }
 
-  yEOL (): Ast | null {
+  yEOL (): AstEOL | null {
     // 行末のチェック #1009
     const eol = this.get()
     if (!eol) { return null }
@@ -96,7 +108,13 @@ export class NakoParser extends NakoParserBase {
       throw NakoSyntaxError.fromNode(report, eol)
     }
     this.recentlyCalledFunc = []
-    return eol as any // Token to Ast
+    return {
+      type: 'eol',
+      value: eol.value,
+      line: eol.line,
+      column: eol.column,
+      file: eol.file,
+    }
   }
 
   /** @returns {Ast | null} */
@@ -154,11 +172,11 @@ export class NakoParser extends NakoParserBase {
         if (c2 !== null) {
           return {
             type: 'block',
-            block: [c1, c2],
+            blocks: [c1, c2],
             josi: c2.josi,
             ...map,
             end: this.peekSourceMap()
-          }
+          } as AstBlock
         }
       }
       return c1
@@ -210,8 +228,8 @@ export class NakoParser extends NakoParserBase {
     return { type: 'run_mode', value: mode, ...map, end: this.peekSourceMap() }
   }
 
-  /** @returns {Ast} */
-  yBlock (): Ast {
+  /** @returns {AstBlock} */
+  yBlock(): AstBlock {
     const map = this.peekSourceMap()
     const blocks = []
     if (this.check('ここから')) { this.get() }
@@ -220,7 +238,7 @@ export class NakoParser extends NakoParserBase {
       if (!this.accept([this.ySentence])) { break }
       blocks.push(this.y[0])
     }
-    return { type: 'block', block: blocks, ...map, end: this.peekSourceMap() }
+    return { type: 'block', blocks: blocks, ...map, end: this.peekSourceMap() }
   }
 
   yDefFuncReadArgs (): Ast[]|null {
@@ -248,7 +266,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** ユーザー関数の定義 */
-  yDef (type: string): Ast|null {
+  yDef (type: NodeType): Ast|null {
     if (!this.check(type)) { // yDefFuncから呼ばれれば def_func なのかをチェックする
       return null
     }
@@ -328,7 +346,7 @@ export class NakoParser extends NakoParserBase {
       type,
       name: funcName,
       args: defArgs,
-      block: block || [],
+      block: block || this.yNop(),
       asyncFn,
       isExport,
       josi: '',
@@ -391,7 +409,7 @@ export class NakoParser extends NakoParserBase {
     }
     // (ならば|でなければ)を確認
     if (!this.check('ならば')) {
-      const smap: Ast = a || { type: '?', ...map }
+      const smap: Ast = a || this.yNop()
       this.logger.debug(
         'もし文で『ならば』がないか、条件が複雑過ぎます。' + this.nodeToStr(this.peek(), { depth: 1 }, false) + 'の直前に『ならば』を書いてください。', smap)
       throw NakoSyntaxError.fromNode(
@@ -415,7 +433,8 @@ export class NakoParser extends NakoParserBase {
     return a
   }
 
-  /** 「もし」文 */
+  /** もし文
+   * @returns {AstIf | null} */
   yIF (): AstIf | null {
     const map = this.peekSourceMap()
     // 「もし」があれば「もし」文である
@@ -433,11 +452,13 @@ export class NakoParser extends NakoParserBase {
     return this.yIfThen(expr, map)
   }
 
-  /** 「もし」文の「もし」以降の判定 ... 「もし」がなくても条件分岐は動くようになっている */
+  /** 「もし」文の「もし」以降の判定 ... 「もし」がなくても条件分岐は動くようになっている
+   * @returns {AstIf | null}
+  */
   yIfThen (expr: Ast, map: SourceMap): AstIf | null {
     // 「もし」文の 真偽のブロックを取得
-    let trueBlock: Ast = { type: 'nop', ...map }
-    let falseBlock: Ast = { type: 'nop', ...map }
+    let trueBlock: Ast = this.yNop()
+    let falseBlock: Ast = this.yNop()
     let tanbun = false
 
     // True Block
@@ -520,18 +541,18 @@ export class NakoParser extends NakoParserBase {
       multiline = true
     }
 
-    let block = null
+    let block: Ast = this.yNop()
     if (multiline) {
       block = this.yBlock()
       if (this.check('ここまで')) { this.get() }
     } else {
-      block = this.ySentence()
+      block = this.ySentence() || block
     }
 
     return {
       type: 'speed_mode',
       options,
-      block: block || [],
+      block,
       josi: '',
       ...map
     }
@@ -573,18 +594,18 @@ export class NakoParser extends NakoParserBase {
       multiline = true
     }
 
-    let block = null
+    let block: Ast = this.yNop()
     if (multiline) {
       block = this.yBlock()
       if (this.check('ここまで')) { this.get() }
     } else {
-      block = this.ySentence()
+      block = this.ySentence() || block
     }
 
     return {
       type: 'performance_monitor',
       options,
-      block: block || [],
+      block,
       josi: '',
       ...map
     }
@@ -763,7 +784,7 @@ export class NakoParser extends NakoParserBase {
     if (this.check('繰返')) { this.get() } // skip 'N回、繰り返す' (#924)
     let num = this.popStack([])
     let multiline = false
-    let block = null
+    let block: Ast = this.yNop()
     if (num === null) { num = { type: 'word', value: 'それ', josi: '', ...map, end: this.peekSourceMap() } }
     if (this.check('comma')) { this.get() }
     if (this.check('ここから')) {
@@ -777,28 +798,29 @@ export class NakoParser extends NakoParserBase {
       if (this.check('ここまで')) { this.get() } else { throw NakoSyntaxError.fromNode('『ここまで』がありません。『回』...『ここまで』を対応させてください。', map) }
     } else {
       // singleline
-      block = this.ySentence()
+      const b = this.ySentence()
+      if (b) { block = b }
     }
 
     return {
       type: 'repeat_times',
       value: num,
-      block: block || [],
+      block,
       josi: '',
       ...map,
       end: this.peekSourceMap()
     }
   }
 
-  /** @returns {Ast | null} */
-  yWhile (): Ast | null {
+  /** @returns {AstWhile | null} */
+  yWhile(): AstWhile | null { // 「＊の間」文
     const map = this.peekSourceMap()
     if (!this.check('間')) { return null }
     this.get() // skip '間'
     while (this.check('comma')) { this.get() } // skip ','
     if (this.check('繰返')) { this.get() } // skip '繰り返す' #927
-    const cond = this.popStack()
-    if (cond === null) {
+    const expr = this.popStack()
+    if (expr === null) {
       throw NakoSyntaxError.fromNode('『間』で条件がありません。', map)
     }
     if (this.check('comma')) { this.get() }
@@ -813,7 +835,7 @@ export class NakoParser extends NakoParserBase {
     }
     return {
       type: 'while',
-      cond,
+      expr,
       block,
       josi: '',
       ...map,
@@ -858,8 +880,8 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
-  /** @returns {Ast | null} */
-  yFor (): Ast|null {
+  /** @returns {AstFor | null} */
+  yFor (): AstFor | null {
     const errorForArguments = '『繰り返す』文でAからBまでの指定がありません。'
     let flagDown = true // AからBまでの時、A>=Bを許容するかどうか
     let loopDirection : null | 'up' | 'down' = null // ループの方向を一方向に限定する
@@ -889,7 +911,14 @@ export class NakoParser extends NakoParserBase {
     }
     const vTo = this.popStack(['まで', 'を']) // 範囲オブジェクトの場合もあり
     const vFrom = this.popStack(['から'])
-    const word = this.popStack(['を', 'で'])
+    const vWord: Ast|null = this.popStack(['を', 'で'])
+    let wordStr: string = ''
+    if (vWord !== null) { // 変数
+      if (vWord.type !== 'word') {
+        throw NakoSyntaxError.fromNode('『(変数名)をAからBまで繰り返す』で指定してください。', vWord)
+      }
+      wordStr = vWord.value
+    }
     if (vFrom === null || vTo === null) {
       // 『AからBの範囲を繰り返す』構文のとき (#1704)
       if (vFrom == null && vTo && (vTo.type === 'func' && vTo.name === '範囲')) {
@@ -907,7 +936,7 @@ export class NakoParser extends NakoParserBase {
       multiline = true
       this.get()
     }
-    let block = null
+    let block: Ast = this.yNop()
     if (multiline) {
       block = this.yBlock()
       if (this.check('ここまで')) {
@@ -915,17 +944,22 @@ export class NakoParser extends NakoParserBase {
       } else {
         throw NakoSyntaxError.fromNode('『ここまで』がありません。『繰り返す』...『ここまで』を対応させてください。', map)
       }
-    } else { block = this.ySentence() }
+    } else {
+      const b = this.ySentence()
+      if (b) { block = b }
+    }
     
+    if (!block) { block = this.yNop() }
+
     return {
       type: 'for',
-      from: vFrom,
-      to: vTo,
-      inc: vInc,
+      valueFrom: vFrom,
+      valueTo: vTo,
+      valueInc: vInc,
       flagDown,
       loopDirection,
-      word,
-      block: block || [],
+      word: wordStr,
+      block,
       josi: '',
       ...map,
       end: this.peekSourceMap()
@@ -950,15 +984,23 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
-  /** @returns {Ast | null} */
-  yForEach (): Ast|null {
+  /** @returns {AstForeach | null} */
+  yForEach(): AstForeach |null {
     const map = this.peekSourceMap()
     if (!this.check('反復')) { return null }
     this.get() // skip '反復'
     while (this.check('comma')) { this.get() } // skip ','
     const target = this.popStack(['を'])
+    // target == null なら「それ」の値が使われる
     const name = this.popStack(['で'])
-    let block = null
+    let wordStr: string = ''
+    if (name !== null) {
+      if (name.type !== 'word') {
+        throw NakoSyntaxError.fromNode('『(変数名)で(配列)を反復』で指定してください。', map)
+      }
+      wordStr = name.value
+    }
+    let block: Ast = this.yNop()
     let multiline = false
     if (this.check('ここから')) {
       multiline = true
@@ -972,13 +1014,16 @@ export class NakoParser extends NakoParserBase {
       } else {
         throw NakoSyntaxError.fromNode('『ここまで』がありません。『反復』...『ここまで』を対応させてください。', map)
       }
-    } else { block = this.ySentence() }
+    } else {
+      const b = this.ySentence()
+      if (b) { block = b }
+    }
 
     return {
-      type: 'foreach',
-      name,
-      target,
-      block: block || [],
+      type: '反復',
+      word: wordStr,
+      expr: target,
+      block,
       josi: '',
       ...map,
       end: this.peekSourceMap()
