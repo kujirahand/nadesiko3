@@ -58,7 +58,6 @@ export type NodeType = 'nop'
 
 export interface Ast {
   type: NodeType;
-  block?: Ast;
   errBlock?: Ast[] | Ast; // todo: エラー監視の中でのみ使われる
   name?: Token | Ast | null | string;
   names?: Ast[];
@@ -93,23 +92,13 @@ export interface AstEol extends Ast {
   comment: string;
 }
 
-export interface AstBlock extends Ast {
+// 複数ブロックを持つAST
+export interface AstBlocks extends Ast {
   blocks: Ast[];
 }
 
 export interface AstConst extends Ast {
   value: number | string
-}
-
-// 必ずブロックリストを取得
-export function getBlocksFromAst(node: Ast): Ast[] {
-  if (node.type === 'block') {
-    return (node as AstBlock).blocks;
-  }
-  if (node.block) {
-    return [node];
-  }
-  return []
 }
 
 export interface AstOperator extends Ast {
@@ -118,48 +107,69 @@ export interface AstOperator extends Ast {
   right: Ast;
 }
 
-export interface AstIf extends Ast {
-  expr: Ast;
-  trueBlock: Ast;
-  falseBlock: Ast;
-}
+export type AstIf = AstBlocks
+// blocks[0] ... expr
+// blocks[1] ... TRUE block
+// blocks[2] ... FALSE black
 
-export interface AstWhile extends Ast {
-  expr: Ast;
-  block: Ast;
-}
+export type AstWhile = AstBlocks
+// blocks[0] ... expr
+// blocks[1] ... loop block
 
-export interface AstAtohantei extends Ast {
-  expr: Ast;
-  block: Ast;
-}
+export type AstAtohantei = AstBlocks
+// blocks[0] ... expr
+// blocks[1] ... loop block
 
-export interface AstFor extends Ast {
+export interface AstFor extends AstBlocks {
   word: string; // 変数名(変数を使わないときは'')
-  valueFrom: Ast | null; // 値から (nullの場合、valueToに範囲が入っている)
+  // blocks[0] ... valueFrom
+  // blocks[1] ... valueTo
+  // blocks[2] ... valueInc
+  // blocks[3] ... loop block
+  flagDown: boolean; // 
+  loopDirection: null | 'up' | 'down'; // ループの方向
+}
+
+export interface AstForDesc extends Ast {
+  word: string; // 変数名(変数を使わないときは'')
+  valueFrom: Ast; // 値から (nopの場合、valueToに範囲が入っている)
   valueTo: Ast; // 値まで
-  valueInc: Ast | null; // 増分
+  valueInc: Ast; // 増分
   flagDown: boolean; // 
   loopDirection: null | 'up' | 'down'; // ループの方向
   block: Ast;
 }
 
-export interface AstForeach extends Ast {
+export function AstForToDesc(node: AstFor): AstForDesc {
+  return {
+    ...node,
+    word: node.word,
+    valueFrom: node.blocks[0],
+    valueTo: node.blocks[1],
+    valueInc: node.blocks[2],
+    block: node.blocks[3],
+    flagDown: node.flagDown,
+    loopDirection: node.loopDirection,
+  }
+}
+
+export interface AstForeach extends AstBlocks {
   word: string; // 変数名(使わない時は'')
-  expr: Ast | null; // 繰り返し対象 (nullなら「それ」の値を使う)
-  block: Ast;
+  // blocks[0] ... 繰り返し対象 (nopなら「それ」の値を使う)
+  // blocks[1] ... loop block
 }
 
-export interface AstRepeatTimes extends Ast {
-  expr: Ast;
-  block: Ast;
-}
+export type AstRepeatTimes = AstBlocks
+// blocks[0] ... expr
+// blocks[1] ... loop block
 
-
-export type AstSwitchCase = [Ast, Ast];
-
-export interface AstSwitch extends Ast {
-  expr: Ast | null;
-  cases: AstSwitchCase[];
-  defaultBlock: Ast;
+export interface AstSwitch extends AstBlocks {
+  case_count: number; // caseの数
+  // blocks[0] ... expr
+  // blocks[1] ... default
+  // blocks[2] ... case[0] expr
+  // blocks[3] ... case[0] block
+  // blocks[4] ... case[1] expr
+  // blocks[5] ... case[1] block
+  // ...
 }

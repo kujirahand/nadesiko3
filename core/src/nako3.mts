@@ -5,7 +5,7 @@
  */
 // types
 import { Token, FuncList, FuncListItem, FuncArgs, NakoEvent, CompilerOptions, NakoComEventName, NakoDebugOption, ExportMap } from './nako_types.mjs'
-import { Ast, AstBlock } from './nako_ast.mjs'
+import { Ast, AstBlocks } from './nako_ast.mjs'
 // parser / lexer
 import { NakoParser } from './nako_parser3.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
@@ -680,23 +680,11 @@ export class NakoCompiler {
     if ((ast.type === 'func' || ast.type === 'func_pointer')&& ast.name) {
       this.usedFuncs.add(ast.name as string)
     }
-    else if (ast.type === 'block') {
-      for (const a of (ast as AstBlock).blocks) {
+    else if ((ast as AstBlocks).blocks) { // プロパティにblocksを含んでいる？
+      for (const a of (ast as AstBlocks).blocks) {
         this._getUsedFuncs(a)
       }
     }
-    else if (ast.block) {
-      this._getUsedFuncs(ast.block)
-    }
-  }
-
-  getUsedAndDefFunc (block: Ast, astQueue: any[], blockQueue: Ast[]): void {
-    if (['func', 'func_pointer'].includes(block.type) && block.name !== null && block.name !== undefined) {
-      this.usedFuncs.add(block.name as string)
-    }
-    astQueue.push([block, block.block as Ast])
-    // eslint-disable-next-line prefer-spread
-    blockQueue.push.apply(blockQueue, [block.value].concat(block.args))
   }
 
   deleteUnNakoFuncs (): Set<string> {

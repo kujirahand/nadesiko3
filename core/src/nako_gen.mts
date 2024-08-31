@@ -6,7 +6,7 @@
 
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { FuncList, FuncArgs, Token, NakoDebugOption } from './nako_types.mjs'
-import { getBlocksFromAst, Ast, AstEol, AstBlock, AstOperator, AstConst, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes } from './nako_ast.mjs'
+import { Ast, AstEol, AstBlocks, AstOperator, AstConst, AstIf, AstWhile, AstAtohantei, AstFor, AstForToDesc, AstForeach, AstSwitch, AstRepeatTimes } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
@@ -421,44 +421,42 @@ export class NakoGen {
 
     /** 関数一覧 */
     const funcList: {name: string; node:Ast}[] = []
+    
     // なでしこ関数を定義して this.nako_func[name] に定義する
-    const registFunc = (node: Ast) => {
-      const blockList = getBlocksFromAst(node)
-      if (blockList.length == 0) { return }
-      for (let i = 0; i < blockList.length; i++) {
-        const t = blockList[i]
-        if (t.type === 'def_func') {
-          if (!t.name) { throw new Error('[System Error] 関数の定義で関数名が指定されていません') }
-          const name: string = (t.name as Token).value
-          this.usedFuncSet.add(name)
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          this.__self.__varslist[1].set(name, () => { }) // 事前に適当な値を設定
-          this.varslistSet[1].names.add(name) // global
-          const meta = ((t.name) as Ast).meta // 強制変換
-          if (!meta) { throw new Error('[System Error] 関数の定義で関数名のメタ情報が指定されていません') }
-          this.nakoFuncList.set(name, {
-            josi: meta.josi,
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            fn: () => {},
-            type: 'func',
-            asyncFn: t.asyncFn,
-            isExport: t.isExport
-          })
-          funcList.push({ name, node: t })
-        // eslint-disable-next-line brace-style
-        }
-        // 実行速度優先 などのオプションが付いている場合の処理
-        else if (t.type === 'speed_mode') {
-          if (!t.block) { continue }
-          registFunc(t.block)
-        } else if (t.type === 'performance_monitor') {
-          if (!t.block) { continue }
-          registFunc(t.block)
+    const registFunc = (t: Ast) => {
+      if (!t.name) { throw new Error('[System Error] 関数の定義で関数名が指定されていません') }
+      const name: string = (t.name as Token).value
+      this.usedFuncSet.add(name)
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.__self.__varslist[1].set(name, () => { }) // 事前に適当な値を設定
+      this.varslistSet[1].names.add(name) // global
+      const meta = ((t.name) as Ast).meta // 強制変換
+      if (!meta) { throw new Error('[System Error] 関数の定義で関数名のメタ情報が指定されていません') }
+      this.nakoFuncList.set(name, {
+        josi: meta.josi,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        fn: () => {},
+        type: 'func',
+        asyncFn: t.asyncFn,
+        isExport: t.isExport
+      })
+      funcList.push({ name, node: t })
+    }
+    const registFuncs = (ast: Ast) => {
+      // blocksプロパティを持っているか？
+      if ((ast as AstBlocks).blocks) {
+        // 各ブロックをくまなく巡回チェック
+        for (const t of (ast as AstBlocks).blocks) {
+          if (t.type == 'def_func') { // 関数定義
+            registFunc(t)
+          } else {
+            registFuncs(t)
+          }
         }
       }
     }
     // 関数の登録
-    registFunc(ast)
+    registFuncs(ast)
 
     // __self.__varslistの変更を反映
     const initialNames: Set<string> = new Set()
@@ -505,7 +503,7 @@ export class NakoGen {
       case 'nop':
         break
       case 'block':
-        code += this.convBlock(node as AstBlock)
+        code += this.convBlock(node as AstBlocks)
         break
       case 'comment':
       case 'eol':
@@ -576,10 +574,10 @@ export class NakoGen {
         code += this.convRepeatTimes(node as AstRepeatTimes)
         break
       case 'speed_mode':
-        code += this.convSpeedMode(node, isExpression)
+        code += this.convSpeedMode(node as AstBlocks, isExpression)
         break
       case 'performance_monitor':
-        code += this.convPerformanceMonitor(node, isExpression)
+        code += this.convPerformanceMonitor(node as AstBlocks, isExpression)
         break
       case 'while':
         code += this.convWhile(node as AstWhile)
@@ -603,7 +601,7 @@ export class NakoGen {
         code += this.convJsonObj(node)
         break
       case 'func_obj':
-        code += this.convFuncObj(node)
+        code += this.convFuncObj(node as AstBlocks)
         break
       case 'bool':
         code += (node.value) ? 'true' : 'false'
@@ -612,16 +610,16 @@ export class NakoGen {
         code += 'null'
         break
       case 'def_test':
-        code += this.convDefTest(node)
+        code += this.convDefTest(node as AstBlocks)
         break
       case 'def_func':
-        code += this.convDefFunc(node)
+        code += this.convDefFunc(node as AstBlocks)
         break
       case 'return':
         code += this.convReturn(node)
         break
       case 'try_except':
-        code += this.convTryExcept(node)
+        code += this.convTryExcept(node as AstBlocks)
         break
       case 'require':
         code += this.convRequire(node)
@@ -708,7 +706,7 @@ export class NakoGen {
     return this.genVar(name, node)
   }
 
-  convBlock (node: AstBlock): string {
+  convBlock (node: AstBlocks): string {
     let code = ''
     for (const block of node.blocks) {
       code += this._convGen(block, false)
@@ -801,7 +799,7 @@ export class NakoGen {
     return this.convLineno(node) + cmd + ';'
   }
 
-  convDefFuncCommon (node: Ast, name: string): string {
+  convDefFuncCommon (node: AstBlocks, name: string): string {
     // 定義中の関数名を記録
     this.defFuncName = name
     // パフォーマンスモニタ:ユーザ関数のinjectの定義
@@ -902,7 +900,7 @@ export class NakoGen {
     const oldUsedAsyncFn = this.usedAsyncFn
     this.usedAsyncFn = false
     if (this.debugOption.useDebug) { this.usedAsyncFn = true }
-    const block = this._convGen(node.block as Ast, false)
+    const block = this._convGen(node.blocks[0], false)
     code += block.split('\n').map((line) => '  ' + line).join('\n') + '\n'
     // 関数の最後に、変数「それ」をreturnするようにする
     if (this.speedMode.invalidSore === 0) {
@@ -957,12 +955,12 @@ export class NakoGen {
     return code
   }
 
-  convDefTest (node: Ast): string {
+  convDefTest (node: AstBlocks): string {
     const name = (node.name as Ast).value
     let code = `__tests.push({ name: '${name}', f: () => {\n`
 
     // ブロックを解析
-    const block = this._convGen(node.block as Ast, false)
+    const block = this._convGen(node.blocks[0] as Ast, false)
 
     code += `   ${block}\n` +
       '}});'
@@ -978,7 +976,7 @@ export class NakoGen {
     return ''
   }
 
-  convDefFunc (node: Ast): string {
+  convDefFunc (node: AstBlocks): string {
     // ※ [関数定義のメモ]
     // ※ 関数の定義はプログラムの冒頭に移される。
     // ※ そのため、生成されたコードはここでは返さない
@@ -989,7 +987,7 @@ export class NakoGen {
     return ''
   }
 
-  convFuncObj (node: Ast): string {
+  convFuncObj (node: AstBlocks): string {
     return '/*convFuncObj*/' + this.convDefFuncCommon(node, '')
   }
 
@@ -1079,7 +1077,8 @@ export class NakoGen {
     }
   }
 
-  convFor (node: AstFor): string {
+  convFor (nodeRaw: AstFor): string {
+    const node = AstForToDesc(nodeRaw)
     // forのIDを取得
     const idLoop = this.loopId++
     const varI = `$nako_i${idLoop}`
@@ -1112,7 +1111,7 @@ export class NakoGen {
     }
     const flagDown = node.flagDown
     let inc = '1'
-    if (node.valueInc) {
+    if (node.valueInc.type !== 'nop') {
       inc = this._convGen(node.valueInc as Ast, true)
     }
     // ループ内のブロック内容を得る
@@ -1145,6 +1144,8 @@ export class NakoGen {
   }
 
   convForeach (node: AstForeach): string {
+    const exprAst = node.blocks[0]
+    const blockAst = node.blocks[1]
     // foreachのIDを取得
     const id = this.loopId++
     const loopKeyVar = `$nako_i${id}`
@@ -1168,17 +1169,17 @@ export class NakoGen {
 
     // 反復するデータを取得
     let targetData = ''
-    if (node.expr === null) {
+    if (exprAst.type === 'nop') {
       if (this.speedMode.invalidSore === 0) {
         targetData = this.varname_get('それ')
       } else {
         throw NakoSyntaxError.fromNode('『反復』の対象がありません。', node)
       }
     } else {
-      targetData = this._convGen(node.expr as Ast, true)
+      targetData = this._convGen(exprAst, true)
     }
     // 反復するブロックを取得
-    const block = trim(cleanGeneratedCode(this.convGenLoop(node.block as Ast), 1))
+    const block = trim(cleanGeneratedCode(this.convGenLoop(blockAst), 1))
     // コードを生成
     const code =
       this.convLineno(node, false) + '\n' +
@@ -1210,12 +1211,12 @@ export class NakoGen {
     const id = this.loopId++
     const varI = `$nako_i${id}`
     const varCount = `$nako_times_data${id}`
-    const codeCount = this._convGen(node.expr, true)
+    const codeCount = this._convGen(node.blocks[0], true)
     // 回数
     this.varsSet.names.add('回数')
     const codeCounterSetter = this.varname_set('回数', varI)
     // ブロックを得る
-    const block = trim(cleanGeneratedCode(this.convGenLoop(node.block as Ast), 1))
+    const block = trim(cleanGeneratedCode(this.convGenLoop(node.blocks[1]), 1))
     // それ
     let sorePrefex = ''
     if (this.speedMode.invalidSore === 0) {
@@ -1237,7 +1238,7 @@ export class NakoGen {
    * @param {Ast} node
    * @param {boolean} isExpression
    */
-  convSpeedMode (node: Ast, isExpression: boolean): string {
+  convSpeedMode (node: AstBlocks, isExpression: boolean): string {
     if (!node.options) { return '' }
     const prev = { ...this.speedMode }
     if (node.options['行番号無し']) {
@@ -1253,7 +1254,7 @@ export class NakoGen {
       this.speedMode.invalidSore++
     }
     try {
-      return this._convGen(node.block as Ast, isExpression)
+      return this._convGen(node.blocks[0], isExpression)
     } finally {
       this.speedMode = prev
     }
@@ -1263,7 +1264,7 @@ export class NakoGen {
    * @param {Ast} node
    * @param {boolean} isExpression
    */
-  convPerformanceMonitor (node: Ast, isExpression: boolean): string {
+  convPerformanceMonitor (node: AstBlocks, isExpression: boolean): string {
     const prev = { ...this.performanceMonitor }
     if (!node.options) { return '' }
     if (node.options['ユーザ関数']) {
@@ -1276,15 +1277,17 @@ export class NakoGen {
       this.performanceMonitor.systemFunction++
     }
     try {
-      return this._convGen(node.block as Ast, isExpression)
+      return this._convGen(node.blocks[0], isExpression)
     } finally {
       this.performanceMonitor = prev
     }
   }
 
   convWhile (node: AstWhile): string {
-    const cond = this._convGen(node.expr as Ast, true)
-    const block = trim(cleanGeneratedCode(this.convGenLoop(node.block as Ast), 1))
+    const exprAst = node.blocks[0]
+    const blockAst = node.blocks[1]
+    const cond = this._convGen(exprAst, true)
+    const block = trim(cleanGeneratedCode(this.convGenLoop(blockAst), 1))
     const code =
       '// [convWhile]\n' +
       this.convLineno(node, false) + '\n' +
@@ -1298,8 +1301,8 @@ export class NakoGen {
   convAtohantei(node: AstAtohantei): string {
     const id = this.loopId++
     const varId = `$nako_i${id}`
-    const cond = this._convGen(node.expr as Ast, true)
-    const block = this.convGenLoop(node.block as Ast)
+    const cond = this._convGen(node.blocks[0], true)
+    const block = this.convGenLoop(node.blocks[1])
     const code =
       'while (true) {\n' +
       `  ${block}\n` +
@@ -1310,46 +1313,45 @@ export class NakoGen {
   }
 
   convSwitch (node: AstSwitch): string {
-    const expr: string = this._convGen(node.expr, true)
-    const cases: any[] = node.cases || []
+    const expr: string = this._convGen(node.blocks[0], true)
+    const defaultStr = this._convGen(node.blocks[1], false)
     let body = ''
-    for (let i = 0; i < cases.length; i++) {
-      const cvalue = cases[i][0]
-      const cblock = this.convGenLoop(cases[i][1])
-      const cvalueCode = this._convGen(cvalue, true)
-      body += `  case ${cvalueCode}:\n`
-      body += `    ${cblock}\n` +
+    for (let i = 0; i < node.case_count; i++) {
+      const caseIndex = i * 2 + 2
+      const condStr = this._convGen(node.blocks[caseIndex + 0], true)
+      const blockStr = this.convGenLoop(node.blocks[caseIndex + 1])
+      body += `  case ${condStr}:\n`
+      body += `    ${blockStr}\n` +
               '    break\n'
     }
-    const defaultBlockStr = this._convGen(node.defaultBlock, false)
     const code =
       '// [switch]\n' + 
       `switch (${expr})` + '{\n' +
       `${body}` + '\n' +
       '  default:\n' +
-      `    ${defaultBlockStr}\n` +
+      `    ${defaultStr}\n` +
       '}\n' +
       '// [/switch]\n' 
     return this.convLineno(node, false) + code
   }
 
   convIf (node: AstIf): string {
+    const exprAst = node.blocks[0]
+    const trueAst = node.blocks[1]
+    const falseAst = node.blocks[2]
     // 条件
-    const expr = this._convGen(node.expr, true)
+    const expr = this._convGen(exprAst, true)
     // TRUEブロック
-    const block = trim(cleanGeneratedCode(this._convGen(node.trueBlock, false), 1))
+    const trueBlock = trim(cleanGeneratedCode(this._convGen(trueAst, false), 1))
     // FALSEブロック
-    let falseBlock = ''
-    if (node.falseBlock) {
-      falseBlock = trim(cleanGeneratedCode(this._convGen(node.falseBlock, false), 1))
-    }
+    const falseBlock = trim(cleanGeneratedCode(this._convGen(falseAst, false), 1))
     let code =
       '// [convIf]\n' +
       this.convLineno(node, false) + '\n' +
       `if (${expr}) {\n` +
-      `  ${block}\n` +
+      `  ${trueBlock}\n` +
       '}'
-    if (falseBlock !== '') {
+    if (trim(falseBlock) !== '') {
       code +=
         '  else {\n' +
         `  ${falseBlock}\n` +
@@ -1792,9 +1794,9 @@ export class NakoGen {
     return '"' + value + '"'
   }
 
-  convTryExcept (node: Ast): string {
-    const block = this._convGen(node.block as Ast, false)
-    const errBlock = this._convGen(node.errBlock as Ast, false)
+  convTryExcept (node: AstBlocks): string {
+    const block = this._convGen(node.blocks[0], false)
+    const errBlock = this._convGen(node.blocks[1], false)
     return this.convLineno(node, false) +
       `try {\n${block}\n} catch (e) {\n` +
       '  __self.__setSysVar("エラーメッセージ", e.message);\n' +
