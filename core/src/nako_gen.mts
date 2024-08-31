@@ -448,18 +448,10 @@ export class NakoGen {
         // 実行速度優先 などのオプションが付いている場合の処理
         else if (t.type === 'speed_mode') {
           if (!t.block) { continue }
-          if ((t.block as Ast).type === 'block') {
-            registFunc(t.block as Ast)
-          } else {
-            registFunc(t)
-          }
+          registFunc(t.block)
         } else if (t.type === 'performance_monitor') {
           if (!t.block) { continue }
-          if ((t.block as Ast).type === 'block') {
-            registFunc(t.block as Ast)
-          } else {
-            registFunc(t)
-          }
+          registFunc(t.block)
         }
       }
     }
