@@ -5,7 +5,8 @@ import { opPriority, RenbunJosi, operatorList } from './nako_parser_const.mjs'
 import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
-import { Token, Ast, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap, RangeObject } from './nako_types.mjs'
+import { Token, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
+import { Ast, AstIf } from './nako_ast.mjs'
 
 /**
  * 構文解析を行うクラス
@@ -143,7 +144,7 @@ export class NakoParser extends NakoParserBase {
         const cond = c1
         this.get() // skip ならば
         // もし文の条件として関数呼び出しがある場合
-        return this.yIfThen(map, cond)
+        return this.yIfThen(cond, map)
       } else if (RenbunJosi.indexOf(c1.josi || '') >= 0) { // 連文をblockとして接続する(もし構文などのため)
         if (this.stack.length >= 1) { // スタックの余剰をチェック
           const report = this.makeStackBalanceReport()
@@ -336,11 +337,14 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
-  /** @returns {Ast | null} */
-  yIFCond (): Ast | null { // もしの条件の取得
+  /** 「もし」文の条件を取得 */
+  yIFCond (): Ast {
     const map = this.peekSourceMap()
     let a: Ast | null = this.yGetArg()
-    if (!a) { return null }
+    if (!a) {
+      throw NakoSyntaxError.fromNode(
+        '「もし」文の条件式に間違いがあります。' + this.nodeToStr(this.peek(), { depth: 1 }, false), map)
+    }
     // console.log('@@yIFCond=', a)
     // チェック : Aならば
     if (a.josi === 'ならば') { return a }
@@ -404,39 +408,44 @@ export class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       }
     }
+    if (!a) {
+      throw NakoSyntaxError.fromNode(
+        '「もし」文の条件式に間違いがあります。' + this.nodeToStr(this.peek(), { depth: 1 }, false), map)
+    }
     return a
   }
 
-  /** @returns {Ast | null} */
-  yIF (): Ast | null {
+  /** 「もし」文 */
+  yIF (): AstIf | null {
     const map = this.peekSourceMap()
+    // 「もし」があれば「もし」文である
     if (!this.check('もし')) { return null }
     const mosi:Token|null = this.get() // skip もし
     if (mosi == null) { return null }
-    while (this.check('comma')) { this.get() } // skip commafffff
-    let cond: Ast|null = null
+    while (this.check('comma')) { this.get() } // skip comma
+    // 「もし」文の条件を取得
+    let expr: Ast | null = null
     try {
-      cond = this.yIFCond()
+      expr = this.yIFCond()
     } catch (err: any) {
       throw NakoSyntaxError.fromNode('『もし』文の条件で次のエラーがあります。\n' + err.message, mosi)
     }
-    if (cond === null) {
-      throw NakoSyntaxError.fromNode('『もし』文で条件の指定が空です。', mosi)
-    }
-    return this.yIfThen(map, cond)
+    return this.yIfThen(expr, map)
   }
 
-  /** @returns {Ast | null} */
-  yIfThen (map: SourceMap, cond: Ast | null): Ast | null {
-    let trueBlock: Ast | null = null
-    let falseBlock: Ast | null = null
+  /** 「もし」文の「もし」以降の判定 ... 「もし」がなくても条件分岐は動くようになっている */
+  yIfThen (expr: Ast, map: SourceMap): AstIf | null {
+    // 「もし」文の 真偽のブロックを取得
+    let trueBlock: Ast = { type: 'nop', ...map }
+    let falseBlock: Ast = { type: 'nop', ...map }
     let tanbun = false
 
     // True Block
     if (this.check('eol')) {
       trueBlock = this.yBlock()
     } else {
-      trueBlock = this.ySentence()
+      const block: Ast|null = this.ySentence()
+      if (block) { trueBlock = block }
       tanbun = true
     }
 
@@ -450,7 +459,8 @@ export class NakoParser extends NakoParserBase {
       if (this.check('eol')) {
         falseBlock = this.yBlock()
       } else {
-        falseBlock = this.ySentence()
+        const block: Ast|null = this.ySentence() 
+        if (block) { falseBlock = block }
         tanbun = true
       }
     }
@@ -464,9 +474,9 @@ export class NakoParser extends NakoParserBase {
     }
     return {
       type: 'if',
-      expr: cond || [],
-      block: trueBlock || [],
-      false_block: falseBlock || [],
+      expr,
+      trueBlock,
+      falseBlock,
       josi: '',
       ...map,
       end: this.peekSourceMap()
@@ -837,9 +847,10 @@ export class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       }
     }
+    if (!cond) { cond = {type: 'number', value: 1, josi: '', ...map, end: this.peekSourceMap()} }
     return {
       type: 'atohantei',
-      cond: cond || [],
+      cond,
       block,
       josi: '',
       ...map,
@@ -1318,7 +1329,7 @@ export class NakoParser extends NakoParserBase {
     let nullCount = 0
     let valueCount = 0
     for (let i = f.josi.length - 1; i >= 0; i--) {
-      while (true) {
+      for (;;) {
         // スタックから任意の助詞を持つ値を一つ取り出す、助詞がなければ末尾から得る
         let popArg = this.popStack(f.josi[i])
         if (popArg !== null) {
@@ -2092,7 +2103,7 @@ export class NakoParser extends NakoParserBase {
 
       // word[n] || word@n
       if (word.josi === '' && this.checkTypes(['[', '@'])) {
-        const ast:Ast = {
+        const ast: Ast = {
           type: '配列参照',
           name: word,
           index: [],

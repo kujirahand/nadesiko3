@@ -3,6 +3,9 @@
  */
 
 import { NakoGlobal } from './nako_global.mjs'
+import { Ast as AstRaw } from './nako_ast.mjs'
+
+export type Ast = AstRaw
 
 // 関数に関する定義
 export type FuncArgs = string[][]
@@ -75,55 +78,6 @@ export function NewEmptyToken (type = '?', value: any = '', indent = -1, line = 
     file,
     josi: ''
   }
-}
-
-export interface Ast {
-    type: string;
-    cond?: Ast[] | Ast;
-    expr?: Ast[] | Ast; // todo: cond と共通化できそう
-    block?: Ast[] | Ast;
-    target?: Ast[] | Ast | null; // 反復
-    errBlock?: Ast[] | Ast; // todo: エラー監視の中でのみ使われる
-    cases?: any[]; // 条件分岐
-    operator?: string; // 演算子の場合
-    left?: Ast | Ast[]; // 演算子の場合
-    right?: Ast | Ast[]; // 演算子の場合
-    // eslint-disable-next-line camelcase
-    false_block?: Ast[] | Ast; // if
-    from?: Ast | null; // for
-    to?: Ast; // for
-    inc?: Ast[] | Ast | null | string; // for
-    word?: Ast | Token | null; // for
-    flagDown?: boolean; // for
-    loopDirection?: null | 'up' | 'down'; // for
-    name?: Token | Ast | null | string;
-    names?: Ast[];
-    args?: Ast[]; // 関数の引数
-    asyncFn?: boolean; // 関数の定義
-    isExport?: boolean;
-    meta?: any; // 関数の定義
-    setter?: boolean; // 関数の定義
-    index?: Ast[]; // 配列へのアクセスに利用
-    josi?: string;
-    value?: any;
-    mode?: string; // 文字列の展開などで利用
-    line: number;
-    column?: number;
-    file?: string;
-    startOffset?: number | undefined;
-    endOffset?: number | undefined;
-    rawJosi?: string;
-    vartype?: string;
-    end?: {
-        startOffset: number | undefined;
-        endOffset: number | undefined;
-        line?: number;
-        column?: number;
-    }
-    tag?: string;
-    genMode?: string;
-    checkInit?: boolean;
-    options?: { [key: string]: boolean };
 }
 
 export interface SourceMap {

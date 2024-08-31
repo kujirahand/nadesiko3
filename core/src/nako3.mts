@@ -3,7 +3,8 @@
  * nadesiko v3
  */
 // types
-import { Token, Ast, FuncList, FuncListItem, FuncArgs, NakoEvent, CompilerOptions, NakoComEventName, NakoDebugOption, ExportMap } from './nako_types.mjs'
+import { Token, FuncList, FuncListItem, FuncArgs, NakoEvent, CompilerOptions, NakoComEventName, NakoDebugOption, ExportMap } from './nako_types.mjs'
+import { Ast } from './nako_ast.mjs'
 // parser / lexer
 import { NakoParser } from './nako_parser3.mjs'
 import { NakoLexer } from './nako_lexer.mjs'

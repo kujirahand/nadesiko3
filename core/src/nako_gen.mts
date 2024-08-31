@@ -4,7 +4,8 @@
  */
 
 import { NakoSyntaxError } from './nako_errors.mjs'
-import { Ast, FuncList, FuncArgs, Token, NakoDebugOption } from './nako_types.mjs'
+import { FuncList, FuncArgs, Token, NakoDebugOption } from './nako_types.mjs'
+import { Ast, AstIf } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
@@ -569,7 +570,7 @@ export class NakoGen {
         code += this.convCallFunc(node, isExpression)
         break
       case 'if':
-        code += this.convIf(node)
+        code += this.convIf(node as AstIf)
         break
       case 'for':
         code += this.convFor(node)
@@ -908,7 +909,8 @@ export class NakoGen {
     }
     // ブロックを解析
     const oldUsedAsyncFn = this.usedAsyncFn
-    this.usedAsyncFn = false || this.debugOption.useDebug
+    this.usedAsyncFn = false
+    if (this.debugOption.useDebug) { this.usedAsyncFn = true }
     const block = this._convGen(node.block as Ast, false)
     code += block.split('\n').map((line) => '  ' + line).join('\n') + '\n'
     // 関数の最後に、変数「それ」をreturnするようにする
@@ -1339,15 +1341,15 @@ export class NakoGen {
     return this.convLineno(node, false) + code
   }
 
-  convIf (node: Ast): string {
+  convIf (node: AstIf): string {
     // 条件
-    const expr = this._convGen(node.expr as Ast, true)
+    const expr = this._convGen(node.expr, true)
     // TRUEブロック
-    const block = trim(cleanGeneratedCode(this._convGen(node.block as Ast, false), 1))
+    const block = trim(cleanGeneratedCode(this._convGen(node.trueBlock, false), 1))
     // FALSEブロック
     let falseBlock = ''
-    if (node.false_block) {
-      falseBlock = trim(cleanGeneratedCode(this.convGenLoop(node.false_block as Ast), 1))
+    if (node.falseBlock) {
+      falseBlock = trim(cleanGeneratedCode(this._convGen(node.falseBlock, false), 1))
     }
     let code =
       '// [convIf]\n' +

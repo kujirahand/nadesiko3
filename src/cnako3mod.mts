@@ -118,7 +118,7 @@ export class CNako3 extends NakoCompiler {
     } else if (app.warn) {
       logLevel = 'warn'
     }
-    this.getLogger().addListener(logLevel, ({ level, nodeConsole }) => {
+    this.getLogger().addListener(logLevel, ({ nodeConsole }) => {
       console.log(nodeConsole)
     })
 
@@ -180,7 +180,7 @@ export class CNako3 extends NakoCompiler {
     }
     // REPLを実行する
     if (opt.repl) {
-      this.cnakoRepl(opt)
+      this.cnakoRepl()
       return
     }
     // ワンライナーで実行する
@@ -379,7 +379,7 @@ export class CNako3 extends NakoCompiler {
   }
 
   // REPL(対話実行環境)の場合
-  async cnakoRepl (_opt: any) {
+  async cnakoRepl () {
     const fname = path.join(__dirname, 'repl.nako3')
     const src = fs.readFileSync(fname, 'utf-8')
     await this.runAsync(src, 'main.nako3')
@@ -598,7 +598,7 @@ export class CNako3 extends NakoCompiler {
         const b = !!(stat && stat.isFile())
         cachePath[f] = b
         return b
-      } catch (err: any) {
+      } catch (_e: any) {
         return false
       }
     }
