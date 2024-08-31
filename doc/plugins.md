@@ -33,7 +33,7 @@ export default {
       description: '説明',
       pluginVersion: '3.6.0', // プラグインのバージョン
       nakoRuntime: ['wnako', 'cnako', 'phpnako'], // 対象ランタイム
-      NakoVersion: '3.6.0' // 最小要求なでしこバージョン
+      nakoVersion: '3.6.0' // 最小要求なでしこバージョン
     }
   },
   'テスト加算': {
@@ -63,15 +63,19 @@ export default {
 
 ## プラグイン側の実装方法
 
-プラグインの実体は、Object。
+プラグインの実体は、Objectである。プラグインには必ず「meta」プロパティを追加する必要がある。
 
 ```js
 {
+  'meta': { type: 'const', value: { ... } },
   '定数名': { 定義 },
   '命令名': { 定義 },
   ...
 }
 ```
+
+上記の簡単なプラグインや[nadesiko3-hoge](https://github.com/kujirahand/nadesiko3-hoge)を参考にして、metaプロパティを指定しよう。
+また、追加したい定数と、命令を次のような書式で追加していく。
 
 ### 定義：関数
 
