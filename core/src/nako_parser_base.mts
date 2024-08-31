@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NakoLogger } from './nako_logger.mjs'
 import { FuncList, FuncListItem, Token, Ast, SourceMap, NewEmptyToken, ExportMap } from './nako_types.mjs'
+import { AstOperator } from './nako_ast.mjs'
 
 /**
  * なでしこの構文解析のためのユーティリティクラス
@@ -351,7 +353,7 @@ export class NakoParserBase {
           return `${typeName('演算子')}『not』`
         }
       case 'op': {
-        const node2: Ast = node as Ast
+        const node2: AstOperator = node as AstOperator
         let operator: string = node2.operator || ''
         const table:{[key: string]: string} = { eq: '＝', not: '!', gt: '>', lt: '<', and: 'かつ', or: 'または' }
         if (operator in table) {

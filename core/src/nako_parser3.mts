@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * nadesiko v3 parser
  */
@@ -6,7 +7,7 @@ import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import { Token, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
-import { NodeType, Ast, AstEOL, AstBlock, AstIf, AstWhile, AstFor, AstForeach } from './nako_ast.mjs'
+import { NodeType, Ast, AstEol, AstBlock, AstOperator, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstSwitchCase, AstRepeatTimes } from './nako_ast.mjs'
 
 /**
  * 構文解析を行うクラス
@@ -98,7 +99,7 @@ export class NakoParser extends NakoParserBase {
     return `未解決の単語があります: [${desc}]\n次の命令の可能性があります:\n${descFunc}`
   }
 
-  yEOL (): AstEOL | null {
+  yEOL(): AstEol | null {
     // 行末のチェック #1009
     const eol = this.get()
     if (!eol) { return null }
@@ -110,7 +111,7 @@ export class NakoParser extends NakoParserBase {
     this.recentlyCalledFunc = []
     return {
       type: 'eol',
-      value: eol.value,
+      comment: eol.value,
       line: eol.line,
       column: eol.column,
       file: eol.file,
@@ -398,7 +399,7 @@ export class NakoParser extends NakoParserBase {
             josi: '',
             ...map,
             end: this.peekSourceMap()
-          }
+          } as AstOperator
         }
         this.index = tmpI
       }
@@ -728,8 +729,8 @@ export class NakoParser extends NakoParserBase {
         this.logger.debug('--- 計算式(逆ポーランド) ---\n' + JSON.stringify(polish))
         throw NakoSyntaxError.fromNode('計算式でエラー', node)
       }
-      /** @type {Ast} */
-      const op:Ast = {
+      /** @type {AstOperator} */
+      const op: AstOperator = {
         type: 'op',
         operator: t.type,
         left: a,
@@ -775,8 +776,8 @@ export class NakoParser extends NakoParserBase {
     return a
   }
 
-  /** @returns {Ast | null} */
-  yRepeatTime (): Ast|null {
+  /** @returns {AstRepeatTimes | null} */
+  yRepeatTime(): AstRepeatTimes | null {
     const map = this.peekSourceMap()
     if (!this.check('回')) { return null }
     this.get() // skip '回'
@@ -801,10 +802,9 @@ export class NakoParser extends NakoParserBase {
       const b = this.ySentence()
       if (b) { block = b }
     }
-
     return {
-      type: 'repeat_times',
-      value: num,
+      type: '回',
+      expr: num,
       block,
       josi: '',
       ...map,
@@ -843,8 +843,8 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
-  /** @returns {Ast | null} */
-  yAtohantei (): Ast|null {
+  /** @returns {AstAtohantei | null} */
+  yAtohantei(): AstAtohantei |null {
     const map = this.peekSourceMap()
     if (this.check('後判定')) { this.get() } // skip 後判定
     if (this.check('繰返')) { this.get() } // skip 繰り返す
@@ -872,7 +872,7 @@ export class NakoParser extends NakoParserBase {
     if (!cond) { cond = {type: 'number', value: 1, josi: '', ...map, end: this.peekSourceMap()} }
     return {
       type: 'atohantei',
-      cond,
+      expr: cond,
       block,
       josi: '',
       ...map,
@@ -1030,87 +1030,80 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
-  /** 条件分岐構文 */
-  ySwitch (): Ast | null {
+  /** 条件分岐構文
+   * @returns {AstSwitch | null}
+   */
+  ySwitch (): AstSwitch | null {
     const map = this.peekSourceMap()
     if (!this.check('条件分岐')) { return null }
     const joukenbunki = this.get() // skip '条件分岐'
     if (!joukenbunki) { return null }
     const eol = this.get() // skip 'eol'
     if (!eol) { return null }
-    const value = this.popStack(['で'])
-    if (!value) {
+    const expr = this.popStack(['で'])
+    if (!expr) {
       throw NakoSyntaxError.fromNode('『(値)で条件分岐』のように記述してください。', joukenbunki)
     }
     if (eol.type !== 'eol') {
       throw NakoSyntaxError.fromNode('『条件分岐』の直後は改行してください。', joukenbunki)
     }
-    let isDefaultClause = false // 「違えば」内かどうか
-    let skippedKokomade = false
-    const cases: any[] = []
+    let defaultBlock = this.yNop()
+    const cases: AstSwitchCase[] = []
     while (!this.isEOF()) {
-      if (this.check('ここまで')) {
-        if (skippedKokomade) {
-          throw NakoSyntaxError.fromNode('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。', joukenbunki)
-        }
-        this.get() // skip ここまで
-        break
-      }
       if (this.check('eol')) {
         this.get()
         continue
       }
-      if (isDefaultClause) {
-        throw NakoSyntaxError.fromNode('『条件分岐』で『違えば〜ここまで』の後に処理を続けることは出来ません。', joukenbunki)
+      // ここまで？
+      if (this.check('ここまで')) {
+        this.get() // skip ここまで
+        break
       }
       // 違えば？
-      let cond: Ast|null = null
       const condToken: Token|null = this.peek()
       if (condToken && condToken.type === '違えば') {
-        // 違えば
-        skippedKokomade = false
-        isDefaultClause = true
-        cond = this.get() as any // skip 違えば // Token to Ast
+        this.get() // skip 違えば
         if (this.check('comma')) { this.get() } // skip ','
-      } else {
-        // ＊＊＊ならば
-        if (skippedKokomade) {
-          throw NakoSyntaxError.fromNode('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。', joukenbunki)
+        defaultBlock = this.yBlock()
+        if (this.check('ここまで')) {
+          this.get() // skip ここまで (違えばとペア)
         }
-        // 「＊＊ならば」を得る
-        cond = this.yValue()
-        if (!cond) {
-          throw NakoSyntaxError.fromNode('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。', joukenbunki)
+        while (this.check('eol')) { this.get() } // skip eol
+        if (this.check('ここまで')) {
+          this.get() // skip ここまで (条件分岐：ここまで)
         }
-        const naraba = this.get() // skip ならば
-        if (!naraba || naraba.type !== 'ならば') {
-          throw NakoSyntaxError.fromNode('『条件分岐』で条件は＊＊ならばと記述してください。', joukenbunki)
-        }
-        if (this.check('comma')) { this.get() } // skip ','
+        break
       }
+      // 通常の条件
+      const cond: Ast | null = this.yValue()
+      if (!cond) {
+        throw NakoSyntaxError.fromNode('『条件分岐』は『(条件)ならば〜ここまで』と記述してください。', joukenbunki)
+      }
+      const naraba = this.get() // skip ならば
+      if (!naraba || naraba.type !== 'ならば') {
+        throw NakoSyntaxError.fromNode('『条件分岐』で条件は＊＊ならばと記述してください。', joukenbunki)
+      }
+      if (this.check('comma')) { this.get() } // skip ','
       // 条件にあったときに実行すること
       const condBlock = this.yBlock()
       const kokomade = this.peek()
       if (kokomade && kokomade.type === 'ここまで') {
         this.get() // skip ここまで
-      } else {
-        if (isDefaultClause) {
-          throw NakoSyntaxError.fromNode('『条件分岐』は『違えば〜ここまで』と記述してください。', joukenbunki)
-        }
-        // 次が「違えば」の場合に限り、「もし〜ここまで」の「ここまで」を省略できる
-        skippedKokomade = true
       }
-      cases.push([cond, condBlock])
+      const casePair: AstSwitchCase = [cond, condBlock]
+      cases.push(casePair)
     }
-
-    return {
+    const ast: AstSwitch = {
       type: 'switch',
-      value,
-      cases: cases || [],
+      expr,
+      cases,
+      defaultBlock,
       josi: '',
       ...map,
       end: this.peekSourceMap()
     }
+    console.log('@@@', ast)
+    return ast
   }
 
   /** 無名関数 */
@@ -1243,7 +1236,7 @@ export class NakoParser extends NakoParserBase {
 
     // 減らすなら-1かける
     if (action.value === '減') {
-      value = { type: 'op', operator: '*', left: value, right: { type: 'number', value: -1, line: action.line }, josi: '', ...map }
+      value = { type: 'op', operator: '*', left: value, right: { type: 'number', value: -1, line: action.line }, josi: '', ...map } as AstOperator
     }
 
     return {
@@ -1737,7 +1730,7 @@ export class NakoParser extends NakoParserBase {
         'type': 'number',
         'value': this.arrayIndexFrom
       }
-    }
+    } as AstOperator
   }
 
   /**
@@ -1906,12 +1899,13 @@ export class NakoParser extends NakoParserBase {
       if (t2) {
         fCalc = {
           type: 'renbun',
+          operator: 'renbun',
           left: t1,
           right: t2,
           josi: t2.josi,
           ...map,
           end: this.peekSourceMap()
-        }
+        } as AstOperator
       }
     }
     // 演算子があれば続ける
@@ -1975,7 +1969,7 @@ export class NakoParser extends NakoParserBase {
         josi,
         ...map,
         end: this.peekSourceMap()
-      }
+      } as AstOperator
     }
     // NOT
     if (this.check('not')) {

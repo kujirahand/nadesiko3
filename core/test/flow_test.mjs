@@ -6,8 +6,7 @@ describe('flow_test', async () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    nako.logger.debug('code=' + code)
-    assert.strictEqual((await nako.runAsync(code)).log, res)
+    assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }
   it('もし', async () => {
     await cmp('もし3>1ならば「あ」と表示。', 'あ')

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * なでしこ3 の TypeScript のための型定義
  */

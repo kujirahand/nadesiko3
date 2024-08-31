@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * 抽象構文木( Abstract Syntax Tree )を定義したもの
  */
@@ -21,7 +22,7 @@ export type NodeType = 'nop'
   | 'atohantei'
   | 'for'
   | '反復' // foreach
-  | 'repeat_times'
+  | '回' // repeat_times
   | 'switch'
   | 'try_except'
   | 'def_func'
@@ -57,13 +58,8 @@ export type NodeType = 'nop'
 
 export interface Ast {
   type: NodeType;
-  cond?: Ast;
   block?: Ast;
   errBlock?: Ast[] | Ast; // todo: エラー監視の中でのみ使われる
-  cases?: Ast[]; // 条件分岐
-  operator?: string; // 演算子の場合
-  left?: Ast | Ast[]; // 演算子の場合
-  right?: Ast | Ast[]; // 演算子の場合
   name?: Token | Ast | null | string;
   names?: Ast[];
   args?: Ast[]; // 関数の引数
@@ -94,8 +90,8 @@ export interface Ast {
   options?: { [key: string]: boolean };
 }
 
-export interface AstEOL extends Ast {
-  value: string;
+export interface AstEol extends Ast {
+  comment: string;
 }
 
 export interface AstBlock extends Ast {
@@ -113,6 +109,12 @@ export function getBlocksFromAst(node: Ast): Ast[] {
   return []
 }
 
+export interface AstOperator extends Ast {
+  operator: string;
+  left: Ast;
+  right: Ast;
+}
+
 export interface AstIf extends Ast {
   expr: Ast;
   trueBlock: Ast;
@@ -120,6 +122,11 @@ export interface AstIf extends Ast {
 }
 
 export interface AstWhile extends Ast {
+  expr: Ast;
+  block: Ast;
+}
+
+export interface AstAtohantei extends Ast {
   expr: Ast;
   block: Ast;
 }
@@ -138,4 +145,18 @@ export interface AstForeach extends Ast {
   word: string; // 変数名(使わない時は'')
   expr: Ast | null; // 繰り返し対象 (nullなら「それ」の値を使う)
   block: Ast;
+}
+
+export interface AstRepeatTimes extends Ast {
+  expr: Ast;
+  block: Ast;
+}
+
+
+export type AstSwitchCase = [Ast, Ast];
+
+export interface AstSwitch extends Ast {
+  expr: Ast | null;
+  cases: AstSwitchCase[];
+  defaultBlock: Ast;
 }
