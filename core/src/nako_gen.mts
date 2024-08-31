@@ -6,7 +6,7 @@
 
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { FuncList, FuncArgs, Token, NakoDebugOption } from './nako_types.mjs'
-import { getBlocksFromAst, Ast, AstEol, AstBlock, AstOperator, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes } from './nako_ast.mjs'
+import { getBlocksFromAst, Ast, AstEol, AstBlock, AstOperator, AstConst, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
@@ -524,13 +524,13 @@ export class NakoGen {
         code += '__v0.get(\'終\')(__self);'
         break
       case 'number':
-        code += node.value
+        code += (node as AstConst).value
         break
       case 'bigint':
-        code += node.value
+        code += (node as AstConst).value
         break
       case 'string':
-        code += this.convString(node)
+        code += this.convString(node as AstConst)
         break
       case 'def_local_var':
         code += this.convDefLocalVar(node)
@@ -1783,20 +1783,12 @@ export class NakoGen {
       '/*[/convDefLocalVarlist]*/\n'
   }
 
-  convString (node: Ast): string {
+  convString (node: AstConst): string {
     let value = '' + node.value
-    const mode = node.mode
     value = value.replace(/\\/g, '\\\\')
     value = value.replace(/"/g, '\\"')
     value = value.replace(/\r/g, '\\r')
     value = value.replace(/\n/g, '\\n')
-    if (mode === 'ex') {
-      const rf = (a: string, name: string) => {
-        return '"+' + this.genVar(name, node) + '+"'
-      }
-      value = value.replace(/\{(.+?)\}/g, rf)
-      value = value.replace(/｛(.+?)｝/g, rf)
-    }
     return '"' + value + '"'
   }
 

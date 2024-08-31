@@ -10,7 +10,8 @@ export type TokenType = '?'
   | 'require'
   | 'line_comment' | 'range_comment'
   | 'とは' // ?
-  | 'string' | 'string_ex'
+  | 'string'
+  | 'string_ex' // nako_lexerの中で展開されるため、nako_parser3には現れない
   | 'number'
   | 'word'
   | 'ならば'
@@ -22,7 +23,7 @@ export type TokenType = '?'
   | 'func'
   | 'func_pointer'
   | 'not'
-  | 'code'
+  | 'code' // string_exで文字列の展開に使う
   | 'space'
   | 'def_test'
   | 'def_func'

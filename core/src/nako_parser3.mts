@@ -7,7 +7,7 @@ import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import { Token, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
-import { NodeType, Ast, AstEol, AstBlock, AstOperator, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstSwitchCase, AstRepeatTimes } from './nako_ast.mjs'
+import { NodeType, Ast, AstEol, AstBlock, AstOperator, AstConst, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstSwitchCase, AstRepeatTimes } from './nako_ast.mjs'
 
 /**
  * 構文解析を行うクラス
@@ -869,7 +869,7 @@ export class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       }
     }
-    if (!cond) { cond = {type: 'number', value: 1, josi: '', ...map, end: this.peekSourceMap()} }
+    if (!cond) { cond = {type: 'number', value: 1, josi: '', ...map, end: this.peekSourceMap()} as AstConst }
     return {
       type: 'atohantei',
       expr: cond,
@@ -1109,7 +1109,6 @@ export class NakoParser extends NakoParserBase {
       ...map,
       end: this.peekSourceMap()
     }
-    console.log('@@@', ast)
     return ast
   }
 
@@ -1232,7 +1231,7 @@ export class NakoParser extends NakoParserBase {
     // スタックから引数をポップ
     let value = this.popStack(['だけ', ''])
     if (!value) {
-      value = { type: 'number', value: 1, josi: 'だけ', ...map, end: this.peekSourceMap() }
+      value = { type: 'number', value: 1, josi: 'だけ', ...map, end: this.peekSourceMap() } as AstConst
     }
     const word = this.popStack(['を'])
     if (!word || (word.type !== 'word' && word.type !== '配列参照')) {
@@ -1243,7 +1242,7 @@ export class NakoParser extends NakoParserBase {
 
     // 減らすなら-1かける
     if (action.value === '減') {
-      value = { type: 'op', operator: '*', left: value, right: { type: 'number', value: -1, line: action.line }, josi: '', ...map } as AstOperator
+      value = { type: 'op', operator: '*', left: value, right: { type: 'number', value: -1, line: action.line } as AstConst, josi: '', ...map } as AstOperator
     }
 
     return {
@@ -1957,7 +1956,16 @@ export class NakoParser extends NakoParserBase {
     if (this.check('comma')) { this.get() }
 
     // プリミティブな値
-    if (this.checkTypes(['number', 'bigint', 'string'])) { return this.getCur() as any } // Token To Ast
+    if (this.checkTypes(['number', 'bigint', 'string'])) {
+      const tok = this.getCur()
+      const astConst: AstConst = {
+        type: tok.type as NodeType,
+        value: tok.value,
+        josi: tok.josi,
+        ...map
+      }
+      return astConst
+    }
 
     // 丸括弧
     if (this.check('(')) { return this.yValueKakko() }
@@ -1971,7 +1979,7 @@ export class NakoParser extends NakoParserBase {
       return {
         type: 'op',
         operator: '*',
-        left: { type: 'number', value: -1, line },
+        left: { type: 'number', value: -1, line } as AstConst,
         right: v || [],
         josi,
         ...map,

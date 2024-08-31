@@ -2,6 +2,7 @@
 import { NakoLogger } from './nako_logger.mjs'
 import { FuncList, FuncListItem, Token, Ast, SourceMap, NewEmptyToken, ExportMap } from './nako_types.mjs'
 import { AstOperator } from './nako_ast.mjs'
+import { TokenType } from './nako_token.mjs'
 
 /**
  * なでしこの構文解析のためのユーティリティクラス
@@ -243,7 +244,7 @@ export class NakoParserBase {
   /**
    * カーソル位置の型を確認するが、複数の種類を確かめられる
    */
-  checkTypes (a: string[]): boolean {
+  checkTypes (a: TokenType[]): boolean {
     const type = this.tokens[this.index].type
     return (a.indexOf(type) >= 0)
   }

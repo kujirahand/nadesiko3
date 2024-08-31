@@ -5,7 +5,7 @@
  */
 // types
 import { Token, FuncList, FuncListItem, FuncArgs, NakoEvent, CompilerOptions, NakoComEventName, NakoDebugOption, ExportMap } from './nako_types.mjs'
-import { Ast } from './nako_ast.mjs'
+import { Ast, AstBlock } from './nako_ast.mjs'
 // parser / lexer
 import { NakoParser } from './nako_parser3.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
@@ -670,26 +670,23 @@ export class NakoCompiler {
   }
 
   getUsedFuncs (ast: Ast): Set<string> {
-    const queue = [ast]
     this.usedFuncs = new Set()
-
-    while (queue.length > 0) {
-      const ast_ = queue.pop()
-
-      if (ast_ !== null && ast_ !== undefined && ast_.block !== null && ast_.block !== undefined) {
-        this.getUsedAndDefFuncs(queue, JSON.parse(JSON.stringify(ast_.block)))
-      }
-    }
+    this._getUsedFuncs(ast)
     return this.deleteUnNakoFuncs()
   }
 
-  getUsedAndDefFuncs (astQueue: Ast[], blockQueue: Ast[]): void {
-    while (blockQueue.length > 0) {
-      const block = blockQueue.pop()
-
-      if (block !== null && block !== undefined) {
-        this.getUsedAndDefFunc(block, astQueue, blockQueue)
+  _getUsedFuncs (ast: Ast): void {
+    if (!ast) { return }
+    if ((ast.type === 'func' || ast.type === 'func_pointer')&& ast.name) {
+      this.usedFuncs.add(ast.name as string)
+    }
+    else if (ast.type === 'block') {
+      for (const a of (ast as AstBlock).blocks) {
+        this._getUsedFuncs(a)
       }
+    }
+    else if (ast.block) {
+      this._getUsedFuncs(ast.block)
     }
   }
 

@@ -70,7 +70,6 @@ export interface Ast {
   index?: Ast[]; // 配列へのアクセスに利用
   josi?: string;
   value?: any;
-  mode?: string; // 文字列の展開などで利用
   line: number;
   column?: number;
   file?: string;
@@ -96,6 +95,10 @@ export interface AstEol extends Ast {
 
 export interface AstBlock extends Ast {
   blocks: Ast[];
+}
+
+export interface AstConst extends Ast {
+  value: number | string
 }
 
 // 必ずブロックリストを取得
