@@ -897,7 +897,14 @@ export class NakoParser extends NakoParserBase {
     if (incdec) {
       if (incdec.type === 'word' && (incdec.value === '増' || incdec.value === '減')) {
         if (incdec.value === '増') { flagDown = false }
-        kurikaesu.type = incdec.value + kurikaesu.type // typeを増繰返 | 減繰返 に変換
+        const w = incdec.value + kurikaesu.type
+        if (w == '増繰返') {
+          kurikaesu.type =  '増繰返'
+        } else if (w == '減繰返') {
+          kurikaesu.type = '減繰返'
+        } else {
+          throw Error('[System Error] 増繰り返し | 減繰り返しのエラー。')
+        }
       } else {
         // 普通の繰り返しの場合
         this.stack.push(incdec) // 違ったので改めて追加

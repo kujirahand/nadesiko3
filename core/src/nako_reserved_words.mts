@@ -1,5 +1,8 @@
+import { TokenType } from './nako_token.mjs'
+
 /** 予約語 */
-const reserved: Map<string, string> = new Map([
+const reserved: Map<string, TokenType> = new Map([
+  ['もし', 'もし'],
   ['回', '回'],
   ['回繰返', '回'], // (#924)
   ['間', '間'],
@@ -32,6 +35,7 @@ const reserved: Map<string, string> = new Map([
   ['インデント構文', 'インデント構文'], // https://nadesi.com/v3/doc/go.php?949
   ['非同期モード', '非同期モード'], // (#637)
   ['DNCLモード', 'DNCLモード'], // (#1140)
+  ['DNCL2モード', 'DNCL2モード'],
   ['モード設定', 'モード設定'], // (#1020)
   ['取込', '取込'],
   ['モジュール公開既定値', 'モジュール公開既定値'],

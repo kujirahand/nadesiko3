@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
 import { opPriority } from './nako_parser_const.mjs'
@@ -214,7 +215,7 @@ export class NakoLexer {
           t.value = t.value.substring(0, t.value.length - 1)
           // N回を挿入
           if (!t.endOffset) { t.endOffset = 1 }
-          const kai = { type: '回', value: '回', indent: t.indent, line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: '' }
+          const kai: Token = { type: '回', value: '回', indent: t.indent, line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset - 1, endOffset: t.endOffset, rawJosi: '' }
           tokens.splice(i + 1, 0, kai)
           t.endOffset--
           i++
@@ -458,7 +459,7 @@ export class NakoLexer {
         if (!t.rawJosi) { t.rawJosi = t.josi }
         const startOffset = t.endOffset === undefined ? undefined : t.endOffset - t.rawJosi.length
         tokens.splice(i + 1, 0, {
-          type: t.josi,
+          type: 'とは',
           indent: t.indent,
           line: t.line,
           column: t.column,

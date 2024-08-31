@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * よく使う処理をまとめたもの
  */
 import { Token, NewEmptyToken } from './nako_types.mjs'
+import { TokenType } from './nako_token.mjs'
 
 /**
  * トークンの内容をデバッグ出力する関数
@@ -37,7 +39,7 @@ export function makeIndent (n: number): string {
 }
 
 let lastTokenInfo = NewEmptyToken()
-export function newToken (type: string, value: any, templateToken: Token|undefined = undefined): Token {
+export function newToken (type: TokenType, value: any, templateToken: Token|undefined = undefined): Token {
   if (templateToken) {
     lastTokenInfo = templateToken
   }

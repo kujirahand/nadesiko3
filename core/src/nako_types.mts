@@ -5,13 +5,16 @@
 
 import { NakoGlobal } from './nako_global.mjs'
 import { Ast as AstRaw } from './nako_ast.mjs'
+import { Token as TokenRaw, TokenType } from './nako_token.mjs'
 
 export type Ast = AstRaw;
+export type Token = TokenRaw;
 
 // 関数に関する定義
 export type FuncArgs = string[][]
 
 export type FuncListItemType = 'func' | 'var' | 'const' | 'test_func'
+
 // FuncListの定義
 export interface FuncListItem {
   type: FuncListItemType;
@@ -43,33 +46,7 @@ export interface TokenMeta {
     funcPointers: any[] | undefined;
 }
 
-// トークン
-export interface Token {
-    type: string;
-    value: any;
-    line: number;
-    column: number;
-    file: string;
-    josi: string;
-    indent: number;
-    meta?: FuncListItem;
-    rawJosi?: string;
-    startOffset?: number | undefined;
-    endOffset?: number | undefined;
-    isDefinition?: boolean;
-    funcPointer?: boolean;
-    tag?: string;
-    preprocessedCodeOffset?: number | undefined;
-    preprocessedCodeLength?: number | undefined;
-    // eslint-disable-next-line no-use-before-define
-    name?: Token | Ast; // NakoPaserBase.nodeToStrの問題を回避するため
-    start?: number;
-    end?: number;
-    firstToken?: Token;
-    lastToken?: Token;
-}
-
-export function NewEmptyToken (type = '?', value: any = '', indent = -1, line = 0, file = 'main.nako3'): Token {
+export function NewEmptyToken(type: TokenType = '?', value: any = '', indent = -1, line = 0, file = 'main.nako3'): Token {
   return {
     type,
     value,

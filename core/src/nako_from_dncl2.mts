@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * DNCL ver2 に対応する構文
  */
@@ -5,6 +6,7 @@
 import { Token, NewEmptyToken } from './nako_types.mjs'
 import { joinTokenLines, splitTokens } from './nako_indent_inline.mjs'
 import { newToken, debugTokens } from './nako_tools.mjs'
+import { TokenType } from './nako_token.mjs'
 
 const IS_DEBUG = false
 const DNCL_ARRAY_INIT_COUNT = 30
@@ -250,7 +252,7 @@ export function convertDNCL2 (tokens: Token[]): Token[] {
     const t = tokens[i]
     const a = DNCL_SIMPLES[t.type + ':' + t.value]
     if (a !== undefined) {
-      t.type = a[0]
+      t.type = a[0] as TokenType
       t.value = a[1]
     }
   }

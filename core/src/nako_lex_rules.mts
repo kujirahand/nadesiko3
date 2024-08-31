@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * なでしこ3字句解析のためのルール
  */
 
 import { josiRE, removeJosiMap } from './nako_josi_list.mjs'
+import { TokenType } from './nako_token.mjs'
 
 const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー\u2460-\u24FF\u2776-\u277F\u3251-\u32BF]+/
 const hira = /^[ぁ-ん]/
@@ -23,7 +25,7 @@ export interface NakoLexParseResult {
 }
 
 export interface NakoLexRule {
-  name: string;
+  name: TokenType;
   pattern: RegExp;
   readJosi?: boolean;
   cb?: (v: string) => any;

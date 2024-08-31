@@ -4,6 +4,7 @@
 // import { NakoIndentError } from './nako_errors.mjs'
 import { Token, NewEmptyToken } from './nako_types.mjs'
 import { joinTokenLines, splitTokens } from './nako_indent_inline.mjs'
+import { TokenType } from './nako_token.mjs'
 
 // DNCLモードのキーワード
 const DNCL_KEYWORDS = ['!DNCLモード', '💡DNCLモード']
@@ -183,7 +184,7 @@ export function convertDNCL (tokens: Token[]): Token[] {
     const t = tokens[i]
     const a = DNCL_SIMPLES[t.type + ':' + t.value]
     if (a !== undefined) {
-      t.type = a[0]
+      t.type = a[0] as TokenType
       t.value = a[1]
     }
   }
