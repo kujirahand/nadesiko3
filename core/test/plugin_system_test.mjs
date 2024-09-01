@@ -7,15 +7,15 @@ import { NakoCompiler } from '../src/nako3.mjs'
 describe('plugin_system_test', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    nako.logger.debug('code=' + code)
-    const g = await nako.runAsync(code)
+    nako.getLogger().debug('code=' + code)
+    const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
   }
   const cmpex = async (/** @type {string} */ code, /** @type { name: String, message: string } */ exinfo) => {
     const nako = new NakoCompiler()
-    nako.logger.debug('code=' + code)
+    nako.getLogger().debug('code=' + code)
     try {
-      const g = nako.runAsync(code)
+      const g = nako.runAsync(code, 'main.nako3')
     } catch (err) {
       console.log(err.message)
       assert.strictEqual(err.name, exinfo.name)

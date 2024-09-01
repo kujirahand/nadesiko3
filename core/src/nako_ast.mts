@@ -59,21 +59,18 @@ export type NodeType = 'nop'
 export interface Ast {
   type: NodeType;
   name?: Token | Ast | null | string;
-  names?: Ast[];
   // args?: Ast[]; // 関数の引数
   asyncFn?: boolean; // 関数の定義
   isExport?: boolean;
   setter?: boolean; // 関数の定義
   index?: Ast[]; // 配列へのアクセスに利用
   josi?: string;
-  value?: any;
   line: number;
   column?: number;
   file?: string;
   startOffset?: number | undefined;
   endOffset?: number | undefined;
   rawJosi?: string;
-  vartype?: string;
   end?: {
     startOffset: number | undefined;
     endOffset: number | undefined;
@@ -82,12 +79,42 @@ export interface Ast {
   }
   tag?: string;
   genMode?: string; // sync ... 現在利用していない
-  checkInit?: boolean;
   options?: { [key: string]: boolean };
 }
 
 export interface AstEol extends Ast {
   comment: string;
+}
+
+// 文字型のvalueを持つ要素
+export interface AstStrValue extends Ast {
+  value: string;
+}
+
+
+type VarOrConstType = '変数' | '定数'
+export interface AstDefVar extends AstBlocks {
+  name: string;
+  vartype: VarOrConstType
+}
+
+export interface AstDefVarList extends AstBlocks {
+  names: Ast[];
+  vartype: VarOrConstType
+}
+
+export interface AstLet extends AstBlocks {
+  name: string;
+  // blocks[0] ... value
+}
+
+export interface AstLetArray extends AstBlocks {
+  name: string;
+  checkInit: boolean; // DNCLモードの場合
+  // blocks[0] ... value
+  // blocks[1] ... index0
+  // blocks[2] ... index1
+  // blocks[3] ... index2
 }
 
 // 複数ブロックを持つAST
@@ -96,7 +123,7 @@ export interface AstBlocks extends Ast {
 }
 
 export interface AstConst extends Ast {
-  value: number | string
+  value: number | string | boolean
 }
 
 export interface AstOperator extends AstBlocks {
@@ -152,12 +179,13 @@ export interface AstSwitch extends AstBlocks {
 export interface AstDefFunc extends AstBlocks {
   name: string;
   args: Ast[];
-  meta?: FuncListItem
+  meta: FuncListItem
 }
 
 export interface AstCallFunc extends AstBlocks {
   name: string;
   meta: FuncListItem
+  asyncFn: boolean;
   // blocks[0] ... args[0]
   // blocks[1] ... args[1]
   // blocks[2] ... args[2]

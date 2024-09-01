@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NakoLogger } from './nako_logger.mjs'
-import { FuncList, FuncListItem, Token, Ast, SourceMap, NewEmptyToken, ExportMap } from './nako_types.mjs'
-import { AstOperator } from './nako_ast.mjs'
-import { TokenType } from './nako_token.mjs'
+import { FuncList, FuncListItem, SourceMap, NewEmptyToken, ExportMap } from './nako_types.mjs'
+import { Ast, AstBlocks, AstOperator, AstConst, AstStrValue } from './nako_ast.mjs'
+import { Token, TokenType } from './nako_token.mjs'
 
 /**
  * なでしこの構文解析のためのユーティリティクラス
@@ -326,8 +326,8 @@ export class NakoParserBase {
   /**
    * 現在のカーソル語句のソースコード上の位置を取得する。
    */
-  peekSourceMap (): SourceMap {
-    const token = this.peek()
+  peekSourceMap (t: Token|undefined = undefined): SourceMap {
+    const token = (t === undefined) ? this.peek() : t
     if (token === null) {
       return { startOffset: undefined, endOffset: undefined, file: undefined, line: 0, column: 0 }
     }
@@ -348,7 +348,7 @@ export class NakoParserBase {
     switch (node.type) {
       case 'not':
         if (depth >= 0) {
-          const subNode: Ast = node.value as Ast
+          const subNode: Ast = (node as AstBlocks).blocks[0] as Ast
           return `${typeName('')}『${this.nodeToStr(subNode, { depth }, debugMode)}に演算子『not』を適用した式${debug}』`
         } else {
           return `${typeName('演算子')}『not』`
@@ -372,22 +372,22 @@ export class NakoParserBase {
         }
       }
       case 'number':
-        return `${typeName('数値')}${node.value}`
+        return `${typeName('数値')}${(node as AstConst).value}`
       case 'bigint':
-        return `${typeName('巨大整数')}${node.value}`
+        return `${typeName('巨大整数')}${(node as AstConst).value}`
       case 'string':
-        return `${typeName('文字列')}『${node.value}${debug}』`
+        return `${typeName('文字列')}『${(node as AstConst).value}${debug}』`
       case 'word':
-        return `${typeName('単語')}『${node.value}${debug}』`
+        return `${typeName('単語')}『${(node as AstStrValue).value}${debug}』`
       case 'func':
-        return `${typeName('関数')}『${node.name || node.value}${debug}』`
+        return `${typeName('関数')}『${node.name || (node as AstStrValue).value}${debug}』`
       case 'eol':
         return '行の末尾'
       case 'eof':
         return 'ファイルの末尾'
       default: {
         let name:any = node.name
-        if (name) { name = node.value }
+        if (name) { name = (node as AstStrValue).value }
         if (typeof name !== 'string') { name = node.type }
         return `${typeName('')}『${name}${debug}』`
       }

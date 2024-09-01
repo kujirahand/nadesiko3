@@ -111,7 +111,6 @@ export interface Token {
   file: string;
   josi: string;
   indent: number;
-  meta?: FuncListItem;
   rawJosi?: string;
   startOffset?: number | undefined;
   endOffset?: number | undefined;
@@ -126,4 +125,16 @@ export interface Token {
   end?: number;
   firstToken?: Token;
   lastToken?: Token;
+}
+
+export interface TokenStrValue {
+  value: string;
+}
+
+export interface TokenDefFunc extends Token {
+  meta: FuncListItem;
+}
+
+export interface TokenCallFunc extends Token {
+  meta: FuncListItem;
 }
