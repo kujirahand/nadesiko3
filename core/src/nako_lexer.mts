@@ -21,7 +21,7 @@ import { Token, FuncList, FuncArgs, ExportMap, FuncListItem } from './nako_types
 
 export class NakoLexer {
   public logger: NakoLogger
-  public funclist: FuncList
+  public funclist: FuncList // 先読みした関数の一覧
   public modList: string[]
   public result: Token[]
   public modName: string

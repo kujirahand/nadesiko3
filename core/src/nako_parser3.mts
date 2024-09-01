@@ -7,7 +7,7 @@ import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import { Token, FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
-import { NodeType, Ast, AstEol, AstBlocks, AstOperator, AstConst, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes } from './nako_ast.mjs'
+import { NodeType, Ast, AstEol, AstBlocks, AstOperator, AstConst, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc } from './nako_ast.mjs'
 
 /**
  * 構文解析を行うクラス
@@ -259,20 +259,24 @@ export class NakoParser extends NakoParserBase {
   }
 
   yDefTest (): Ast|null {
-    return this.yDef('def_test')
+    return this.yDefFuncCommon('def_test')
   }
 
   yDefFunc (): Ast|null {
-    return this.yDef('def_func')
+    return this.yDefFuncCommon('def_func')
   }
 
-  /** ユーザー関数の定義 */
-  yDef (type: NodeType): AstBlocks|null {
+  /** ユーザー関数の定義
+   * @returns {AstDefFunc | null}
+  */
+  yDefFuncCommon(type: NodeType): AstDefFunc | null {
     if (!this.check(type)) { // yDefFuncから呼ばれれば def_func なのかをチェックする
       return null
     }
     const map = this.peekSourceMap()
-    const def = this.get() // ●
+    // 関数定義トークンを取得(このmetaに先読みした関数の型などが入っている)
+    // (ref) NakoLexer.preDefineFunc
+    const def = this.get() // 'def_func' or 'def_test'
     if (!def) { return null }
 
     let isExport: boolean = this.isExportDefault
@@ -345,12 +349,13 @@ export class NakoParser extends NakoParserBase {
 
     return {
       type,
-      name: funcName,
+      name: funcName.value,
       args: defArgs,
       blocks: [block],
       asyncFn,
       isExport,
       josi: '',
+      meta: def.meta,
       ...map,
       end: this.peekSourceMap()
     }
@@ -394,8 +399,7 @@ export class NakoParser extends NakoParserBase {
           return {
             type: 'op',
             operator: (b.josi === 'でなければ') ? 'noteq' : 'eq',
-            left: a,
-            right: b,
+            blocks: [a, b],
             josi: '',
             ...map,
             end: this.peekSourceMap()
@@ -647,7 +651,12 @@ export class NakoParser extends NakoParserBase {
     return this.infixToAST(args)
   }
 
-  yRange (kara: Ast): Ast|null {
+  /**
+   * 範囲(関数)を返す
+   * @param kara 
+   * @returns {AstCallFunc | null}
+   */
+  yRange(kara: Ast): AstCallFunc | null {
     // 範囲オブジェクト?
     if (!this.check('…')) { return null }
     const map = this.peekSourceMap()
@@ -656,11 +665,14 @@ export class NakoParser extends NakoParserBase {
     if (!kara || !made) {
       throw NakoSyntaxError.fromNode('範囲オブジェクトの指定エラー。『A…B』の書式で指定してください。', map)
     }
+    const meta = this.funclist.get('範囲')
+    if (!meta) { throw new Error('関数『範囲』が見つかりません。plugin_systemをシステムに追加してください。') }
     return {
       type: 'func',
       name: '範囲',
-      args: [kara, made],
+      blocks: [kara, made],
       josi: made.josi,
+      meta,
       ...map,
       end: this.peekSourceMap()
     }
@@ -731,8 +743,7 @@ export class NakoParser extends NakoParserBase {
       const op: AstOperator = {
         type: 'op',
         operator: t.type,
-        left: a,
-        right: b,
+        blocks: [a, b],
         josi,
         startOffset: a.startOffset,
         endOffset: a.endOffset,
@@ -1107,8 +1118,10 @@ export class NakoParser extends NakoParserBase {
     return ast
   }
 
-  /** 無名関数 */
-  yMumeiFunc (): AstBlocks | null { // 無名関数の定義
+  /** 無名関数
+   * @returns {AstDefFunc|null}
+  */
+  yMumeiFunc(): AstDefFunc | null { // 無名関数の定義
     const map = this.peekSourceMap()
     if (!this.check('def_func')) { return null }
     const def = this.get()
@@ -1133,6 +1146,7 @@ export class NakoParser extends NakoParserBase {
     this.funcLevel--
     return {
       type: 'func_obj',
+      name: '',
       args,
       blocks: [block],
       meta: def.meta,
@@ -1237,7 +1251,8 @@ export class NakoParser extends NakoParserBase {
 
     // 減らすなら-1かける
     if (action.value === '減') {
-      value = { type: 'op', operator: '*', left: value, right: { type: 'number', value: -1, line: action.line } as AstConst, josi: '', ...map } as AstOperator
+      const minus_one = { type: 'number', value: -1, line: action.line } as AstConst
+      value = { type: 'op', operator: '*', blocks: [value, minus_one], josi: '', ...map } as AstOperator
     }
 
     return {
@@ -1400,10 +1415,11 @@ export class NakoParser extends NakoParserBase {
     }
     this.usedFuncs.add(t.value)
     // 関数呼び出しのAstを構築
-    const funcNode: Ast = {
+    const funcNode: AstCallFunc = {
       type: 'func',
       name: t.value,
-      args,
+      blocks: args,
+      meta: f,
       josi: t.josi,
       ...map,
       end: this.peekSourceMap()
@@ -1721,16 +1737,16 @@ export class NakoParser extends NakoParserBase {
     // 配列が0から始まるのであればそのまま返す
     if (this.arrayIndexFrom === 0) { return node }
     // 配列が1から始まるのであれば演算を加えて返す
+    const minus_num = {
+      ...node,
+      'type': 'number',
+      'value': this.arrayIndexFrom
+    } 
     return {
       ...node,
-      'type': 'op',
-      'operator': '-',
-      'left': node,
-      'right': {
-        ...node,
-        'type': 'number',
-        'value': this.arrayIndexFrom
-      }
+      type: 'op',
+      operator: '-',
+      blocks: [node, minus_num]
     } as AstOperator
   }
 
@@ -1901,8 +1917,7 @@ export class NakoParser extends NakoParserBase {
         fCalc = {
           type: 'renbun',
           operator: 'renbun',
-          left: t1,
-          right: t2,
+          blocks: [t1, t2],
           josi: t2.josi,
           ...map,
           end: this.peekSourceMap()
@@ -1971,11 +1986,12 @@ export class NakoParser extends NakoParserBase {
       const v = this.yValue()
       const josi = (v && v.josi) ? v.josi : ''
       const line = (m && m.line) ? m.line : 0
+      const astLeft = { type: 'number', value: -1, line } as AstConst
+      const astRight = v || this.yNop()
       return {
         type: 'op',
         operator: '*',
-        left: { type: 'number', value: -1, line } as AstConst,
-        right: v || [],
+        blocks: [astLeft, astRight],
         josi,
         ...map,
         end: this.peekSourceMap()
@@ -2018,11 +2034,12 @@ export class NakoParser extends NakoParserBase {
       return {
         type: 'func',
         name: f.value,
-        args,
+        blocks: args,
         josi: f.josi,
+        meta,
         ...map,
         end: this.peekSourceMap()
-      }
+      } as AstCallFunc
     }
     // C風関数呼び出し FUNC(...)
     if (this.check2([['func', 'word'], '(']) && this.peekDef().josi === '') {
@@ -2047,11 +2064,12 @@ export class NakoParser extends NakoParserBase {
         return {
           type: 'func',
           name: funcName,
-          args,
+          blocks: args,
           josi: this.y[3].josi,
+          meta,
           ...map,
           end: this.peekSourceMap()
-        }
+        } as AstCallFunc
       }
       throw NakoSyntaxError.fromNode('C風関数呼び出しのエラー', f || NewEmptyToken())
     }

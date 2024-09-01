@@ -624,6 +624,7 @@ export class NakoCompiler {
 
     tokens = this.converttoken(tokens, true, filename)
 
+    // 'string_ex'トークンから変換された'code'トークンを字句解析する
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i] && tokens[i].type === 'code') {
         const children = this.lexCodeToken(tokens[i].value, tokens[i].line, filename, tokens[i].startOffset || 0)

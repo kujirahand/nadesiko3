@@ -45,9 +45,9 @@
   - func (表示):
     - args:
       - op(+)
-        - left:
+        - blocks[0]: (left)
           - number (2)
-        - right:
+        - blocks[1]: (right)
           - number (3)
 
 ## コード生成
@@ -65,4 +65,3 @@
 
 [実行](/src/nako3.mts)は、JavaScriptのコードを評価する[evalJS](https://github.com/kujirahand/nadesiko3core/blob/7db54415b74815739fdb64aa05df7da9e5ab1bdf/src/nako3.mts#L749)メソッドで行います。
 JavaScriptの`new Function(code)`を使ってJavaScriptのコードを実行します。
-

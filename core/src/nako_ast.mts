@@ -3,7 +3,7 @@
  * 抽象構文木( Abstract Syntax Tree )を定義したもの
  */
 
-import { Token } from './nako_types.mjs'
+import { Token, FuncListItem } from './nako_types.mjs'
 
 /** ASTのノードの種類を定義 */
 export type NodeType = 'nop'
@@ -58,13 +58,11 @@ export type NodeType = 'nop'
 
 export interface Ast {
   type: NodeType;
-  errBlock?: Ast[] | Ast; // todo: エラー監視の中でのみ使われる
   name?: Token | Ast | null | string;
   names?: Ast[];
-  args?: Ast[]; // 関数の引数
+  // args?: Ast[]; // 関数の引数
   asyncFn?: boolean; // 関数の定義
   isExport?: boolean;
-  meta?: any; // 関数の定義
   setter?: boolean; // 関数の定義
   index?: Ast[]; // 配列へのアクセスに利用
   josi?: string;
@@ -83,7 +81,7 @@ export interface Ast {
     column?: number;
   }
   tag?: string;
-  genMode?: string;
+  genMode?: string; // sync ... 現在利用していない
   checkInit?: boolean;
   options?: { [key: string]: boolean };
 }
@@ -101,10 +99,10 @@ export interface AstConst extends Ast {
   value: number | string
 }
 
-export interface AstOperator extends Ast {
+export interface AstOperator extends AstBlocks {
   operator: string;
-  left: Ast;
-  right: Ast;
+  // blocks[0] ... left expr
+  // blocks[1] ... right expr
 }
 
 export type AstIf = AstBlocks
@@ -130,29 +128,6 @@ export interface AstFor extends AstBlocks {
   loopDirection: null | 'up' | 'down'; // ループの方向
 }
 
-export interface AstForDesc extends Ast {
-  word: string; // 変数名(変数を使わないときは'')
-  valueFrom: Ast; // 値から (nopの場合、valueToに範囲が入っている)
-  valueTo: Ast; // 値まで
-  valueInc: Ast; // 増分
-  flagDown: boolean; // 
-  loopDirection: null | 'up' | 'down'; // ループの方向
-  block: Ast;
-}
-
-export function AstForToDesc(node: AstFor): AstForDesc {
-  return {
-    ...node,
-    word: node.word,
-    valueFrom: node.blocks[0],
-    valueTo: node.blocks[1],
-    valueInc: node.blocks[2],
-    block: node.blocks[3],
-    flagDown: node.flagDown,
-    loopDirection: node.loopDirection,
-  }
-}
-
 export interface AstForeach extends AstBlocks {
   word: string; // 変数名(使わない時は'')
   // blocks[0] ... 繰り返し対象 (nopなら「それ」の値を使う)
@@ -171,5 +146,20 @@ export interface AstSwitch extends AstBlocks {
   // blocks[3] ... case[0] block
   // blocks[4] ... case[1] expr
   // blocks[5] ... case[1] block
+  // ...
+}
+
+export interface AstDefFunc extends AstBlocks {
+  name: string;
+  args: Ast[];
+  meta?: FuncListItem
+}
+
+export interface AstCallFunc extends AstBlocks {
+  name: string;
+  meta: FuncListItem
+  // blocks[0] ... args[0]
+  // blocks[1] ... args[1]
+  // blocks[2] ... args[2]
   // ...
 }

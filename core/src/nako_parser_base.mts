@@ -361,8 +361,8 @@ export class NakoParserBase {
           operator = table[operator]
         }
         if (depth >= 0) {
-          const left: string = this.nodeToStr(node2.left as Ast, { depth }, debugMode)
-          const right: string = this.nodeToStr(node2.right as Ast, { depth }, debugMode)
+          const left: string = this.nodeToStr(node2.blocks[0] as Ast, { depth }, debugMode)
+          const right: string = this.nodeToStr(node2.blocks[1] as Ast, { depth }, debugMode)
           if (node2.operator === 'eq') {
             return `${typeName('')}『${left}と${right}が等しいかどうかの比較${debug}』`
           }
