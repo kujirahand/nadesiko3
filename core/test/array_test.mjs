@@ -5,8 +5,8 @@ import { NakoCompiler } from '../src/nako3.mjs'
 describe('array_test', async () => {
   const cmp = async (/** @type {string} */code, /** @type {string} */res) => {
     const nako = new NakoCompiler()
-    nako.logger.debug('code=' + code)
-    assert.strictEqual((await nako.runAsync(code)).log, res)
+    nako.getLogger().debug('code=' + code)
+    assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }
   // --- test ---
   it('配列の基本テスト', async () => {

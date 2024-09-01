@@ -31,6 +31,7 @@ export class NakoParserBase {
   protected isReadingCalc: boolean
   protected isExportDefault: boolean
   protected isExportStack: boolean[]
+  protected isModifiedNodes: boolean
 
   constructor (logger: NakoLogger) {
     this.logger = logger
@@ -77,6 +78,7 @@ export class NakoParserBase {
     this.isExportDefault = true
     this.isExportStack = []
     this.moduleExport = new Map()
+    this.isModifiedNodes = false
 
     this.init()
   }

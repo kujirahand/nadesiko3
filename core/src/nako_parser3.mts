@@ -27,7 +27,12 @@ export class NakoParser extends NakoParserBase {
     const result = this.startParser()
 
     // 関数毎に非同期処理が必要かどうかを判定する
-    this.checkAsyncFn(result)
+    this.isModifiedNodes = false
+    this._checkAsyncFn(result)
+    while (this.isModifiedNodes) {
+      this.isModifiedNodes = false
+      this._checkAsyncFn(result)
+    }
 
     return result
   }
@@ -2469,10 +2474,6 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** 関数ごとにasyncFnが必要か確認する */
-  checkAsyncFn (node: Ast) {
-    this._checkAsyncFn(node)
-  }
-
   _checkAsyncFn (node: Ast): boolean {
     if (!node) { return false }
     // 関数定義があれば関数
@@ -2481,13 +2482,15 @@ export class NakoParser extends NakoParserBase {
       const def: AstDefFunc = node as AstDefFunc
       if (def.asyncFn) { return true } // 既にasyncFnが指定されている
       // 関数定義の中身を調べてasyncFnであるならtrueに変更する
+      let isAsyncFn = false
       for (const n of def.blocks) {
-        let isAsyncFn = false
         if (this._checkAsyncFn(n)) {
           isAsyncFn = true
+          def.asyncFn = isAsyncFn
+          def.meta.asyncFn = isAsyncFn
+          this.isModifiedNodes = true
+          return true
         }
-        def.asyncFn = isAsyncFn
-        def.meta.asyncFn = isAsyncFn
       }
     }
     // 関数呼び出しを調べて非同期処理が必要ならtrueを返す
@@ -2499,7 +2502,29 @@ export class NakoParser extends NakoParserBase {
       }
       // 続けて、以下の関数呼び出しの引数などに非同期処理があるかどうか調べる
       // 関数の引数は、node.blocksに格納されている
+      if (callNode.blocks) {
+        for (const n of callNode.blocks) {
+          if (this._checkAsyncFn(n)) {
+            callNode.asyncFn = true
+            this.isModifiedNodes = true
+            return true
+          }
+        }
+      }
+      // さらに、関数のリンクを調べる
+      const func = this.funclist.get(callNode.name)
+      if (func && func.asyncFn) {
+        callNode.asyncFn = true
+        this.isModifiedNodes = true
+        return true
+      }
+      return false
     }
+    // 連文 ... 現在、効率は悪いが非同期で実行することになっている
+    if (node.type == 'renbun') {
+      return true
+    }
+    // その他
     if ((node as AstBlocks).blocks) {
       for (const n of (node as AstBlocks).blocks) {
         if (this._checkAsyncFn(n)) {
