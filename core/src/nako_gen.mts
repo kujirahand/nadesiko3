@@ -812,6 +812,8 @@ export class NakoGen {
   convDefFuncCommon(node: AstDefFunc, name: string): string {
     // 定義中の関数名を記録
     this.defFuncName = name
+    // 変数をJS変数に展開するかどうか (TODO)
+    const isExtractJS = false
     // パフォーマンスモニタ:ユーザ関数のinjectの定義
     let performanceMonitorInjectAtStart = ''
     let performanceMonitorInjectAtEnd = ''
@@ -854,7 +856,12 @@ export class NakoGen {
     // ローカル変数をPUSHする
     this.varslistSet.push(this.varsSet)
     // JSの引数と引数をバインド
-    variableDeclarations += indent + 'const 引数 = arguments;\n'
+    if (isExtractJS) {
+      variableDeclarations += indent + 'var 引数 = arguments;\n'
+    } else {
+      variableDeclarations += indent + '__self.__vars.set(\'引数\', arguments);\n'
+    }
+    
     // ローカル変数を生成 (再帰関数呼び出しで引数の値が壊れる問題がある #1663)
     // 暫定変数__localVarsに現在のローカル変数の値をPUSHし、変数を抜ける時にPOPする)
     // 関数として宣言しているが、JS関数となでしこ関数では変数管理の方法が異なるため、完全なローカル変数としては使えない
@@ -876,6 +883,7 @@ export class NakoGen {
     if (!meta.varnames) { meta.varnames = []}
     for (let i = 0; i < meta.varnames.length; i++) {
       const word = meta.varnames[i]
+      if (word === '引数') { continue }
       if (!this.warnUndefinedCalledUserFuncArgs) {
         code += indent + this.varname_set(word, `arguments[${i}]`) + ';\n'
       } else {
@@ -929,18 +937,20 @@ export class NakoGen {
     // 関数の末尾に、ローカル変数をPOP
 
     // 関数内で定義されたローカル変数の宣言
-    for (const name of Array.from(this.varsSet.names.values())) {
-      if (!varsDeclared.includes(name)) {
-        if (NakoGen.isValidIdentifier(name)) {
-          variableDeclarations += `  var ${name};\n`
+    if (isExtractJS) {
+      for (const name of Array.from(this.varsSet.names.values())) {
+        if (!varsDeclared.includes(name)) {
+          if (NakoGen.isValidIdentifier(name)) {
+            variableDeclarations += `  var ${name};\n`
+          }
         }
       }
-    }
-    if (this.speedMode.invalidSore === 0) {
-      if (NakoGen.isValidIdentifier('それ')) {
-        variableDeclarations += '  var それ = \'\';\n'
-      } else {
-        variableDeclarations += `  ${this.varname_get('それ')} = '';`
+      if (this.speedMode.invalidSore === 0) {
+        if (NakoGen.isValidIdentifier('それ')) {
+          variableDeclarations += '  var それ = \'\';\n'
+        } else {
+          variableDeclarations += `  ${this.varname_get('それ')} = '';`
+        }
       }
     }
     // usedAsyncFnの値に応じて関数定義の方法を変更

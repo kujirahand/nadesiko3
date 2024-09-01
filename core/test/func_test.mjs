@@ -6,8 +6,8 @@ describe('func_test', async () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    nako.logger.debug('code=' + code)
-    assert.strictEqual((await nako.runAsync(code)).log, res)
+    nako.getLogger().debug('code=' + code)
+    assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }
   // --- test ---
 
@@ -146,5 +146,9 @@ describe('func_test', async () => {
   it('**すること #936', async () => {
     await cmp('●(AとBを)加算処理とは\nAとBを足すこと。。。3と5を加算処理して表示。', '8')
     await cmp('●(Nを)二乗処理とは;A=0；N回,AにNを足してAに代入すること。それはA。。。5を二乗処理して表示。', '25')
+  })
+  it('関数で使える「引数」が使えなくなっている #1741', async () => {
+    await cmp('●(AとBを)加算処理とは\n引数[0]と引数[1]を足すこと。。。3と5を加算処理して表示。', '8')
+    await cmp('●(AとBをCで)加算処理とは\nそれ=引数[0]+引数[1]+引数[2]。。。3と5を2で加算処理して表示。', '10')
   })
 })
