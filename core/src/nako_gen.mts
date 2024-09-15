@@ -1242,10 +1242,8 @@ export class NakoGen {
     const id = this.loopId++
     const varI = `$nako_i${id}`
     const varCount = `$nako_times_data${id}`
+    const varKaisuTemp = `$nako_kaisu_temp${id}`
     const codeCount = this._convGen(node.blocks[0], true)
-    // 回数
-    this.varsSet.names.add('回数')
-    const codeCounterSetter = this.varname_set('回数', varI)
     // ブロックを得る
     const block = trim(cleanGeneratedCode(this.convGenLoop(node.blocks[1]), 1))
     // それ
@@ -1253,14 +1251,17 @@ export class NakoGen {
     if (this.speedMode.invalidSore === 0) {
       sorePrefex = this.varname_set('それ', varI)
     }
+    sorePrefex += `;__self.__setSysVar('回数', ${varI})`
     const code =
       this.convLineno(node, false) + '\n' +
       `// [convRepeatTimes id=${id}] // 『n回』構文\n` +
+      `let ${varKaisuTemp} = __self.__getSysVar('回数')\n` +
       `let ${varCount} = ${codeCount};\n` +
       `for (let ${varI} = 1; ${varI} <= ${varCount}; ${varI}++) {\n` +
-      `  ${sorePrefex};${codeCounterSetter}\n` +
+      `  ${sorePrefex}\n` +
       `  ${block}\n` +
       '}\n' +
+      `__self.__setSysVar('回数', ${varKaisuTemp})\n` +
       `// [/convRepeatTimes id=${id}]\n`
     return code
   }
