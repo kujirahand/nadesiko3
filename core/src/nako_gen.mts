@@ -1182,6 +1182,9 @@ export class NakoGen {
     const loopKeyVar = `$nako_i${id}`
     const loopValueVar = `$nako_foreach_value${id}`
     const loopDataVar = `$nako_foreach_data${id}`
+    const taisyouTemp = `$nako_taisyou_temp${id}`
+    const taisyouKeyTemp = `$nako_taisyou_key_temp${id}`
+    const soreTemp = `$nako_foreach_sore_temp${id}`
 
     // 「対象」「対象キー」を取得 --- blockより早く変数を定義する必要がある
     let taisyoPrefex = this.varname_set_sys('対象', loopValueVar);
@@ -1194,8 +1197,12 @@ export class NakoGen {
     const keySetter = this.varname_set_sys(keyVar, loopKeyVar)
     // 「それ」(対象のエイリアス)の設定
     let sorePrefex = ''
+    let soreRecover = ''
+    let soreBackup = ''
     if (this.speedMode.invalidSore === 0) {
       sorePrefex = this.varname_set('それ', loopValueVar)
+      soreRecover = this.varname_set('それ', soreTemp)
+      soreBackup = `let ${soreTemp} = ` + this.varname_get('それ') + ';'
     }
 
     // 反復するデータを取得
@@ -1215,6 +1222,8 @@ export class NakoGen {
     const code =
       this.convLineno(node, false) + '\n' +
       `// [convForeach id=${id}]\n` +
+      `const ${taisyouTemp} = __self.__getSysVar('対象'); ${soreBackup}; ` +
+      `const ${taisyouKeyTemp} = __self.__getSysVar('対象キー');\n` +
       `let ${loopDataVar} = ${targetData};\n` +
       '// foreach Map?\n' +
       `if (${loopDataVar} instanceof Map) { // Objectに強制変換\n` +
@@ -1233,6 +1242,8 @@ export class NakoGen {
       `  ${block}\n` +
       '  // [/convForeach::block]\n' +
       '}\n' +
+      `__self.__setSysVar('対象', ${taisyouTemp});${soreRecover};` +
+      `__self.__setSysVar('対象キー', ${taisyouKeyTemp});` +
       `// [/convForeach id=${id}]\n`
     return code
   }
@@ -1248,10 +1259,14 @@ export class NakoGen {
     const block = trim(cleanGeneratedCode(this.convGenLoop(node.blocks[1]), 1))
     // それ
     let sorePrefex = ''
+    let soreRecover = ''
     if (this.speedMode.invalidSore === 0) {
       sorePrefex = this.varname_set('それ', varI)
+      soreRecover = this.varname_set('それ', varKaisuTemp)
     }
-    sorePrefex += `;__self.__setSysVar('回数', ${varI})`
+    // 回数
+    sorePrefex += `;__self.__setSysVar('回数', ${varI});`
+    soreRecover += `;__self.__setSysVar('回数', ${varKaisuTemp});`
     const code =
       this.convLineno(node, false) + '\n' +
       `// [convRepeatTimes id=${id}] // 『n回』構文\n` +
@@ -1261,7 +1276,7 @@ export class NakoGen {
       `  ${sorePrefex}\n` +
       `  ${block}\n` +
       '}\n' +
-      `__self.__setSysVar('回数', ${varKaisuTemp})\n` +
+      `${soreRecover}\n` +
       `// [/convRepeatTimes id=${id}]\n`
     return code
   }
