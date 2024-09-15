@@ -46,9 +46,8 @@ if (!watchMode) {
       outfile,
       minify: true,
       sourcemap: true,
-      ignoreAnnotations: true,
     }
-    // console.log('[esbuild] build start', options)
+    console.log('[esbuild]', f)
     await esbuild.build(options)
   }
   // 例外的なコピー
@@ -68,7 +67,6 @@ if (!watchMode) {
       outfile,
       minify: true,
       sourcemap: true,
-      ignoreAnnotations: true,
     }
     const c = await esbuild.context(options)
     c.opt = options
