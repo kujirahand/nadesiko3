@@ -101,6 +101,7 @@ export type TokenType = '?'
   | '厳チェック' // 厳しくチェック (#1698)
   | '」' // error - エラーチェックのため
   | '』' // error - エラーチェックのため
+  | '??' // 「表示」のエイリアス
 
 // トークン
 export interface Token {

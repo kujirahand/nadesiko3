@@ -100,6 +100,7 @@ export const rules: NakoLexRule[] = [
   { name: '(', pattern: /^\(/ },
   { name: ')', pattern: /^\)/, readJosi: true },
   { name: '|', pattern: /^\|/ },
+  { name: '??', pattern: /^\?\?/ }, // 「表示」のエイリアス #1745
   { name: 'string', pattern: /^🌿/, cbParser: src => cbString('🌿', '🌿', src) },
   { name: 'string_ex', pattern: /^🌴/, cbParser: src => cbString('🌴', '🌴', src) },
   { name: 'string_ex', pattern: /^「/, cbParser: src => cbString('「', '」', src) },

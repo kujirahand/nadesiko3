@@ -11,7 +11,7 @@ describe('plugin_system_test', async () => {
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
   }
-  const cmpex = async (/** @type {string} */ code, /** @type { name: String, message: string } */ exinfo) => {
+  const cmpex = async (/** @type {string} */ code, /** @type { name: string, message: string } */ exinfo) => {
     const nako = new NakoCompiler()
     nako.getLogger().debug('code=' + code)
     try {
@@ -692,5 +692,10 @@ describe('plugin_system_test', async () => {
     await cmp('A=[0,1,2,3];Aから0...3を参照してJSONエンコードして表示', '[0,1,2,3]')
     await cmp('A=[0,1,2,3];Aから0...5を参照してJSONエンコードして表示', '[0,1,2,3]') // 範囲を超えて指定もエラーにならない
     await cmp('A=[0,1,2,3];Aから5...9を参照してJSONエンコードして表示', '[]') // 範囲を超えて指定もエラーにならない
+  })
+  it('「?? 計算式文」 #1745', async () => {
+    await cmp('??1+1', '2')
+    await cmp('??1+2*3', '7')
+    await cmp('??(1+2)*3', '9')
   })
 })
