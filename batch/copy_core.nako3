@@ -15,8 +15,11 @@ NAKO3CORE_DIR=REPOS_DIR&「/nadesiko3core」
 ＃＃＃
 MSG="auto commit ver{ナデシコバージョン}"
 エラー監視
+　　「echo "=== GIT ==="」を起動待機。
+　　CMD=「cd "{NAKO3CORE_DIR}" && cd src && git add *.mts」
+　　CMDを起動待機。
 　　CMD=「cd "{NAKO3CORE_DIR}" && git commit -a -m "{MSG}" && git push」
-　　CMDを起動待機
+　　CMDを起動待機。
 エラーならば
 　　「エラーか変更無し」と表示。
 ここまで
