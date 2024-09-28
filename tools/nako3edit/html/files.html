@@ -26,6 +26,9 @@ Pを表示。
 「#new_btn」をクリックした時には
 　　「/html/edit.html?file=new&appkey={APPKEY}」へブラウザ移動。
 ここまで。
+「#add_plugins」をクリックした時には
+　　「/html/plugins.html?appkey={APPKEY}」へブラウザ移動。
+ここまで。
 #-----------
 ●ファイル一覧取得処理
   「/files?appkey={APPKEY}」へAJAX送信した時には
@@ -121,7 +124,8 @@ Pを表示。
   </div>
   <div id="filesbox">
     <div class="menu-box">
-      <a class="btn btn-info" id="new_btn">→新規作成</a>
+      <a class="btn btn-info" id="new_btn">→ファイルの新規作成</a>
+      <a class="btn btn-info" id="add_plugins">🔌プラグインの追加</a>
     </div>
     <div>
       <ul id="files_ul"></ul>

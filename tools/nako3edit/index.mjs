@@ -16,7 +16,7 @@ const SERVER_PORT = 8888
 const rootDir = path.resolve(__dirname)
 const releaseDir = path.resolve(path.join(__dirname, '../../release'))
 const isWin = process.platform === 'win32'
-const homeDir = process.env[isWin ? 'USERPROFILE' : 'HOME']
+const homeDir = process.env[isWin ? 'USERPROFILE' : 'HOME'] ?? '.'
 const userDir = path.join(homeDir, 'nadesiko3_user')
 const CNAKO3 = path.resolve(path.join(__dirname, '../../src/cnako3.mjs'))
 const NODE = process.argv[0]
@@ -84,6 +84,14 @@ const server = http.createServer(function (req, res) {
   }
   if (uri === '/deletefile') {
     apiDelete(res, params)
+    return
+  }
+  if (uri === '/get_plugins') {
+    apiGetPlugins(res, params)
+    return
+  }
+  if (uri === '/add_plugins') {
+    apiAddPlugins(res, params)
     return
   }
 
@@ -155,7 +163,8 @@ function isDir (pathName) {
     if (stats && stats.isDirectory()) {
       return true
     }
-  } catch (err) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_err) {
     return false
   }
 }
@@ -193,7 +202,8 @@ function apiSave (res, params) {
     console.log('body=', body)
     console.log('--------------------------------')
     res.end('ok')
-  } catch (err) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_err) {
     res.end('[ERROR] 保存に失敗しました😭')
   }
 }
@@ -220,8 +230,7 @@ function apiRun (res, params) {
     const cmd = `"${NODE}" "${CNAKO3}" "${fullpath}"`
     let result = ''
     try {
-      result = execSync(cmd)
-      result = String(result)
+      result = execSync(cmd).toString()
     } catch (err) {
       console.error(err)
       res.end('[ERROR]実行に失敗しました。' + err.toString())
@@ -252,8 +261,7 @@ function apiRunDirect(res, params) {
     console.log("@run=", cmd)
     let result = ''
     try {
-      result = execSync(cmd)
-      result = String(result)
+      result = execSync(cmd).toString()
     } catch (err) {
       console.error(err)
       res.end('[ERROR]実行に失敗しました。' + err.toString())
@@ -303,4 +311,44 @@ function apiGetNewFilename (res) {
   }
   res.writeHead(200, { 'Content-Type': 'text/plaing; charset=utf-8' })
   res.end(`"${fname}"`)
+}
+
+function apiGetPlugins (res, params) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
+  const appkeyUser = params.appkey
+  if (appkey !== appkeyUser) {
+    res.end('"[ERROR] キーが違います"')
+    return
+  }
+  try {
+    // コマンドを実行してプラグインを取得
+    const cmd = 'npm search "nadesiko3\\-" --json'
+    const result = execSync(cmd).toString()
+    res.end(result)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
+    res.end('"[ERROR] プラグインの取得に失敗しました。"')
+  }
+}
+
+function apiAddPlugins(res, params) {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
+  const appkeyUser = params.appkey
+  if (appkey !== appkeyUser) {
+    res.end('"[ERROR] キーが違います"')
+    return
+  }
+  try {
+    const name = params.name
+    if (!name) {
+      res.end('"[ERROR] プラグイン名が指定されていません。"')
+      return
+    }
+    const cmd = `npm install "${name}"`
+    const result = execSync(cmd).toString()
+    res.end("実行しました:" + result)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
+    res.end('"[ERROR] プラグインの取得に失敗しました。"')
+  }
 }
