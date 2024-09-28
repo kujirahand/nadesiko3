@@ -12,7 +12,10 @@
 
 ## 本リポジトリについて
 
-本リポジトリは、なでしこ3の言語エンジンのみを取り出したものです。最小限の構成となっています。
+本リポジトリは、なでしこ3の言語エンジンのみを**取り出したもの**です。最小限の構成となっています。
+
+[こちら](https://github.com/kujirahand/nadesiko3)のメインのリポジトリから定期的に[該当ソースファイル](https://github.com/kujirahand/nadesiko3/tree/master/core)がコピーされます。プルリクエストなどは、メインのリポジトリへ送ってください。
+
 言語機能と最小限のプラグインのみを備えています。
 
 - [なでしこの基本文法(外部サイト)](https://nadesi.com/v3/doc/index.php?%E6%96%87%E6%B3%95)
@@ -78,12 +81,3 @@ snako nadesiko3core/sample/hello.nako3
 
 なでしこの内部構造の仕組みについては、[こちら](/doc/README.md)に詳しく書かれています。
 
-## 開発時のメモ
-
-新バージョンを`npm publish`する場合、必ず、ビルドしてからpublishすること。
-
-```sh
-# build
-npm run build
-npm publish
-```
