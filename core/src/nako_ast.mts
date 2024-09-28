@@ -152,6 +152,7 @@ export interface AstFor extends AstBlocks {
   // blocks[2] ... valueInc
   // blocks[3] ... loop block
   flagDown: boolean; // 
+  flagUp: boolean; // 
   loopDirection: null | 'up' | 'down'; // ループの方向
 }
 
