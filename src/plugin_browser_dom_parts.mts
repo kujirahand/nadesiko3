@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default {
   // @DOM部品操作
   'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
@@ -53,6 +54,16 @@ export default {
       }
       return btn
     }
+  },
+  'DOM部品削除': { // @elmの要素を削除する // @DOMぶひんさくじょ
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (elm: any) {
+      if (typeof elm === 'string') { elm = document.querySelector(elm) }
+      if (elm) { elm.parentNode.removeChild(elm) }
+    },
+    return_none: true
   },
   'ボタン作成': { // @ラベルlabelを持つbutton要素を追加しDOMオブジェクトを返す // @ぼたんさくせい
     type: 'func',
@@ -171,7 +182,7 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-    fn: function (options: any, dom: any, sys: any) {
+    fn: function (options: any, dom: any) {
       if (typeof dom === 'string') { dom = document.querySelector(dom) }
       // 既存のoptionsをクリア
       dom.options.length = 0
