@@ -36,7 +36,10 @@ Pを表示。
   S=「<table>」
   FILESを反復
   　　NAME=対象["name"]
+  　　# --- リストに表示したくない場合はここに記述 ---
   　　もし、NAME=「nadesiko3」ならば、続ける。
+  　　もし、NAME=「nadesiko3-googlehome」ならば、続ける。
+  　　# --- ここまで
   　　NAMEで「-」が何文字目
   　　もし、それが0ならば、続ける。
   　　DESC=対象["description"]
@@ -47,7 +50,17 @@ Pを表示。
   　　もし、対象["author"]ならば
   　　　　AUTH=対象["author"]["name"]
   　　ここまで。
+  　　もし、AUTH="kujirahand"ならば
+  　　　　AUTH="公式"
+  　　ここまで。
   　　VER=対象["version"]
+  　　AV="{VER}.0.0.0"を「.」で区切る
+  　　MAJOR=AV[0]
+  　　MINOR=AV[1]
+  　　PATCH=AV[2]
+  　　# v3.6以下のプラグインは表示しない
+  　　もし、AUTH="公式"かつ(MAJOR≠3)ならば、続ける
+  　　もし、AUTH="公式"かつ(MINOR<6)ならば、続ける
   　　URL=""
   　　もし、対象["links"]ならば
   　　　　URL=対象["links"]["npm"]
@@ -71,6 +84,7 @@ Pを表示。
   ここまで。
   S=S&「</table>」
   「#files」にSをHTML設定。
+  # ボタンに対応するイベントを設定する
   PLUGINSを反復
   　　NO=対象キー
   　　「#btn-{NO}」をクリックした時には
@@ -88,8 +102,6 @@ Pを表示。
   　　ここまで。
   ここまで。
 ここまで。
-
-
 #-----------
   </script>
 </head>
@@ -102,8 +114,16 @@ Pを表示。
   </div>
   <div id="filesbox">
     <div class="menu-box">
+      「追加」ボタンを押すと、システムにプラグインを追加します。
+      以下に列挙したプラグインはnpmに登録されているものを全て表示しています。
+      <b>信用できるプラグインのみ</b>を追加してください。
+      「🔗」をクリックするとnpmで詳細を確認できます。
+    </div>
+    <br>
+    <div class="menu-box">
       <div id="files">現在取得中です。少々お待ちください。</div>
     </div>
+    <br>
     <div class="menu-box">
       <div class="result_output">出力結果:</div>
       <div id="stdout"></div>
