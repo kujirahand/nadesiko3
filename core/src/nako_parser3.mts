@@ -935,6 +935,7 @@ export class NakoParser extends NakoParserBase {
   yFor (): AstFor | null {
     const errorForArguments = '『繰り返す』文でAからBまでの指定がありません。'
     let flagDown = true // AからBまでの時、A>=Bを許容するかどうか
+    let flagUp = true // AからBまでの時、A<=Bを許容するかどうか
     let loopDirection : null | 'up' | 'down' = null // ループの方向を一方向に限定する
     const map = this.peekSourceMap()
     if (this.check('繰返') || this.check('増繰返') || this.check('減繰返')) {
@@ -947,7 +948,7 @@ export class NakoParser extends NakoParserBase {
     const incdec = this.stack.pop()
     if (incdec) {
       if (incdec.type === 'word' && (incdec.value === '増' || incdec.value === '減')) {
-        if (incdec.value === '増') { flagDown = false }
+        if (incdec.value === '増') { flagDown = false } else { flagUp = false }
         const w = incdec.value + kurikaesu.type
         if (w == '増繰返') {
           kurikaesu.type =  '増繰返'
@@ -964,7 +965,7 @@ export class NakoParser extends NakoParserBase {
     let vInc: Ast = this.yNop()
     if (kurikaesu.type === '増繰返' || kurikaesu.type === '減繰返') {
       vInc = this.popStack(['ずつ']) || this.yNop()
-      if (kurikaesu.type === '増繰返') { flagDown = false }
+      if (kurikaesu.type === '増繰返') { flagDown = false } else { flagUp = false }
       loopDirection = kurikaesu.type === '増繰返' ? 'up' : 'down'
     }
     const vTo = this.popStack(['まで', 'を']) // 範囲オブジェクトの場合もあり
@@ -1013,6 +1014,7 @@ export class NakoParser extends NakoParserBase {
       type: 'for',
       blocks: [vFrom, vTo, vInc, block],
       flagDown,
+      flagUp,
       loopDirection,
       word: wordStr,
       josi: '',

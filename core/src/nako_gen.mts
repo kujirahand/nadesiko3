@@ -1141,6 +1141,7 @@ export class NakoGen {
       made = this._convGen(astTo, true)
     }
     const flagDown = node.flagDown
+    const flagUp = node.flagUp
     let inc = '1'
     if (astInc.type !== 'nop') {
       inc = this._convGen(astInc, true)
@@ -1154,11 +1155,13 @@ export class NakoGen {
       `const ${varFrom} = ${kara};\n` +
       `const ${varTo} = ${made};\n` +
       `if (${varFrom} <= ${varTo}) { // up\n` +
-      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}+= ${inc}) {\n` +
-      `    ${sorePrefex};${loopVarSetter}\n` +
-      '    // for block begin\n' +
-      `    ${block}\n` +
-      '    // for block end\n' +
+      `  if (${flagUp}) {` +
+      `    for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}+= ${inc}) {\n` +
+      `      ${sorePrefex};${loopVarSetter}\n` +
+      '      // for block begin\n' +
+      `      ${block}\n` +
+      '      // for block end\n' +
+      '    };\n' +
       '  };\n' +
       '} else { // down\n' +
       `  if (${flagDown}) {` +
