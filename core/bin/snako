@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+ROOT_DIR=$(
+  cd $(dirname "$0")
+  cd ..
+  pwd
+)
+
+COMMAND_DIR=$ROOT_DIR/command
+NAKO_JS=$COMMAND_DIR/snako.mjs
+
+# check compiled file
+if [ ! -e "$NAKO_JS" ]; then
+  cd $ROOT_DIR && npm install && npm run build
+fi
+
+# run cnako3.js
+/usr/bin/env node "$NAKO_JS" $*

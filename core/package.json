@@ -10,6 +10,7 @@
     "test:indent": "mocha ./test/indent_test.mjs",
     "test:indent_inline": "mocha ./test/inline_indent_test.mjs",
     "test:a": "mocha ./test/side_effects_test.mjs",
+    "clean": "cnako3 batch/clean.nako3",
     "tsc": "tsc --watch",
     "build": "tsc && node command/snako.mjs batch/build_nako_version.nako3 && tsc",
     "eslint": "eslint ./src/*.mts",
