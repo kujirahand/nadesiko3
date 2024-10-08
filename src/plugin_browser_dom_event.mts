@@ -47,6 +47,15 @@ export default {
     },
     return_none: true
   },
+  '変更時': { // @無名関数FでDOMを変更した時に実行するイベントを設定 // @へんこうしたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    pure: true,
+    fn: function (func: any, dom: any, sys: any) {
+      sys.__addEvent(dom, 'click', func, null)
+    },
+    return_none: true
+  },
   '読込時': { // @無名関数FでDOMを読み込んだ時に実行するイベントを設定 // @よみこんだとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
