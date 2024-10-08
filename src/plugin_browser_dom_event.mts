@@ -40,7 +40,7 @@ export default {
   },
   'クリック時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
     type: 'func',
-    josi: [['で'], ['を']],
+    josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function (func: any, dom: any, sys: any) {
       sys.__addEvent(dom, 'click', func, null)
