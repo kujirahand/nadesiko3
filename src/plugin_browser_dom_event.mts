@@ -38,12 +38,21 @@ export default {
     },
     return_none: true
   },
-  'クリック時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
+  'クリック時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定。『押したボタン』に「左」「中央」「右」が設定される。 // @くりっくしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function (func: any, dom: any, sys: any) {
-      sys.__addEvent(dom, 'click', func, null)
+      sys.__addEvent(dom, 'click', func, sys.__mouseHandler)
+    },
+    return_none: true
+  },
+  'ダブルクリック時': { // @無名関数FでDOMをダブルクリックした時に実行するイベントを設定。『押したボタン』に「左」「中央」「右」が設定される。 // @だぶるくりっくしたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    pure: true,
+    fn: function (func: any, dom: any, sys: any) {
+      sys.__addEvent(dom, 'dblclick', func, sys.__mouseHandler)
     },
     return_none: true
   },
@@ -104,7 +113,8 @@ export default {
   },
   'マウスX': { type: 'const', value: 0 }, // @まうすX
   'マウスY': { type: 'const', value: 0 }, // @まうすY
-  'マウス押時': { // @無名関数FでDOMに対してマウスボタンを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすおしたとき
+  '押ボタン': { type: 'const', value: 0 }, // @おされたぼたん
+  'マウス押時': { // @無名関数FでDOMに対してマウスボタンを押した時に実行するイベントを設定。『マウスX』『マウスY』に座標が、『押したボタン』に押したボタン(左,中央,右)が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすおしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
@@ -113,7 +123,7 @@ export default {
     },
     return_none: true
   },
-  'マウス移動時': { // @無名関数FでDOMに対してマウスカーソルが移動した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすいどうしたとき
+  'マウス移動時': { // @無名関数FでDOMに対してマウスカーソルが移動した時に実行するイベントを設定。『マウスX』『マウスY』に座標が、『押したボタン』に押したボタンが設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすいどうしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
@@ -122,12 +132,42 @@ export default {
     },
     return_none: true
   },
-  'マウス離時': { // @無名関数FでDOMに対してマウスボタンを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすはなしたとき
+  'マウス離時': { // @無名関数FでDOMに対してマウスボタンを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が、『押したボタン』に押したボタン(左,中央,右)が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすはなしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function (func: any, dom: any, sys: any) {
       sys.__addEvent(dom, 'mouseup', func, sys.__mouseHandler)
+    },
+    return_none: true
+  },
+  'マウス入時': { // @無名関数FでDOMに対してマウスカーソルが入った時のイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすはいったとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    pure: true,
+    fn: function (func: any, dom: any, sys: any) {
+      sys.__addEvent(dom, 'mouseover', func, sys.__mouseHandler)
+    },
+    return_none: true
+  },
+  'マウス出時': { // @無名関数FでDOMに対してマウスカーソルが出た時のイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすでたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    pure: true,
+    fn: function (func: any, dom: any, sys: any) {
+      sys.__addEvent(dom, 'mouseout', func, sys.__mouseHandler)
+    },
+    return_none: true
+  },
+  'マウスホイール値': { type: 'const', value: 0 }, // @まうすほいーるち
+  'マウスホイール時': { // @無名関数FでDOMに対してマウスホイールを回した時のイベントを設定。『マウスホイール値』に値が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすほいーるしたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    pure: true,
+    fn: function (func: any, dom: any, sys: any) {
+      sys.__addEvent(dom, 'wheel', func, (e) => {
+        sys.__setSysVar('マウスホイール値', e.deltaY)
+      })
     },
     return_none: true
   },

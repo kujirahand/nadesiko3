@@ -120,6 +120,10 @@ const PluginBrowser = {
         const box = e.target.getBoundingClientRect()
         sys.__setSysVar('マウスX', e.clientX - box.left)
         sys.__setSysVar('マウスY', e.clientY - box.top)
+        if (e.button !== undefined) {
+          const buttonLabels = ['左', '中央', '右']
+          sys.__setSysVar('押ボタン', buttonLabels[e.button])
+        }
       }
       // タッチイベントハンドラ
       sys.__touchHandler = (e, sys) => {
