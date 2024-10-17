@@ -473,17 +473,17 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (src: string, sys: any) {
-      console.log('aaa')
       const div = sys.__exec('DOM部品作成', ['div', sys])
       div.classList.add('mermaid')
       div.innerHTML = src
       // ライブラリを読み込む
-      if (typeof sys.__v0.WINDOW.mermaid === 'undefined') {
+      const win = sys.__getSysVar('WINDOW')
+      if (typeof win.mermaid === 'undefined') {
         console.log('try to load mermaid')
         await sys.__loadScript('https://cdn.jsdelivr.net/npm/mermaid@10.5.0/dist/mermaid.min.js')
-        console.log('loaded mermaid')
+        console.log('mermaid.jsを読み込みました')
       }
-      await sys.__v0.WINDOW.mermaid.run()
+      await win.mermaid.run()
       return div
     }
   }
