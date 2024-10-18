@@ -41,7 +41,7 @@ LINENO=0
 　　ここまで。
 　　# プラグイン名を決定
 　　Ｆからファイル名抽出
-　　「\.(php|mjs|mts|js|ts)$」を空に正規表現置換;
+　　「\.(php|mjs|mts|js|ts)$」を空に正規表現置換。
 　　それをプラグイン名に代入。
 　　結果＝「■{プラグイン名}{プラグイン種類}{改行}」
 　　Fを『/\.php$/』で正規表現マッチ。
@@ -86,8 +86,15 @@ LINENO=0
 　　　　　　対象を「plugin_[0-9a-zA-Z_]+.mjs」で正規表現マッチ。
 　　　　　　もし、そうならば
 　　　　　　　　FNAME=それの「.mjs」を「.mts」に置換。
+　　　　　　　　もし、FNAME=「plugin_api.mts」ならば、続ける。
 　　　　　　　　SRC_URL=「https://github.com/kujirahand/nadesiko3/blob/master/src/{FNAME}」
-　　　　　　　　「{DIR}/{FNAME}」を開く
+　　　　　　　　FULL＝「{DIR}/{FNAME}」
+　　　　　　　　もし、FULLが存在ならば
+　　　　　　　　　　FULLを開く
+　　　　　　　　違えば
+　　　　　　　　　　「[ERROR] プラグインREQUIRE読み込み - {FULL} ... {FNAME}」を表示。
+　　　　　　　　　　終わる。
+　　　　　　　　ここまで。
 　　　　　　　　LINENO=1
 　　　　　　　　改行で区切る
 　　　　　　　　反復
@@ -269,7 +276,7 @@ LINENO=0
                     ARG＝引数一覧[NO]
                     JOSI＝助詞定義JSON[NO][I]
                     SS = SS & ARG & JOSI
-                ここまで;
+                ここまで。
                 もし、SS≠空ならば
                   AAにSSを配列追加。
                 ここまで。

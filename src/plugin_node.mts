@@ -17,6 +17,8 @@ import crypto from 'node:crypto'
 import os from 'node:os'
 import url from 'node:url'
 import { NakoSystem } from '../core/src/plugin_api.mjs'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getEnv, isWindows, getCommandLineArgs, exit } from './deno_wrapper.mjs'
 
 const __filename = url.fileURLToPath(import.meta.url)
