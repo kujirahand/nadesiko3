@@ -700,9 +700,9 @@ const PluginTurtle = {
       if (typeof func !== 'function') { return }
       const tid = sys.tags.turtles.target
       const tt = sys.tags.turtles.list[tid]
-      tt.canvas.onclick = (e: any) => {
+      tt.canvas.onclick = (e: Event) => {
         sys.__setSysVar('対象', e.target)
-        return func(e)
+        return func(e, sys)
       }
     },
     return_none: true

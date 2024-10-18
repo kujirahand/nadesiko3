@@ -9,7 +9,7 @@ import { CNako3 } from './cnako3mod.mjs'
   const cnako3: CNako3 = new CNako3()
   try {
     await cnako3.execCommand()
-  } catch (err: any) {
+  } catch (err: unknown) {
     // 何かしらのエラーがあればコンソールに返す
     // ここで出るエラーは致命的なエラー
     console.error('[cnako3のエラー]', err)

@@ -1,5 +1,9 @@
-// plugin_browser
-// @ts-nocheck
+/**
+ * @fileOverview ブラウザプラグイン
+ */
+import { NakoValue, NakoCallback, NakoCallbackEvent } from '../core/src/plugin_api.mjs'
+import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation } from './plugin_browser_api.mjs'
+
 import PartBrowserColor from './plugin_browser_color.mjs'
 import PartBrowserSystem from './plugin_browser_system.mjs'
 import PartBrowserDialog from './plugin_browser_dialog.mjs'
@@ -55,20 +59,20 @@ const PluginBrowser = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function (sys: NakoBrowsesrSystem) {
       /* eslint no-global-assign: 0 */
-      const doc: any = (typeof document === 'undefined') ? { 'body': {} } : document
-      const win: any = (typeof window === 'undefined') ? { 'location': { 'href': 'http://localhost/' } } : window
-      const nav: any = (typeof navigator === 'undefined') ? {} : navigator
-      const loc: any = (typeof win.location === 'undefined') ? { 'href': 'http://localhost/' } : win.location
+      const doc: IBrowserDocument = (typeof document === 'undefined') ? { 'body': {}, 'querySelector': ()=>null } : document
+      const win: IBrowserWindow = (typeof window === 'undefined') ? { 'location': { 'href': 'http://localhost/' } } : window
+      const nav: object = (typeof navigator === 'undefined') ? {} : navigator
+      const loc: IBrowserLocation = (typeof win.location === 'undefined') ? { 'href': 'http://localhost/' } : win.location
 
       // 定数を初期化
-      sys.__setSysVar('AJAX:ONERROR', (err: any) => { console.log(err) })
+      sys.__setSysVar('AJAX:ONERROR', (err: unknown) => { console.log(err) })
       // オブジェクトを初期化
-      sys.__setSysVar('DOCUMENT', doc)
-      sys.__setSysVar('WINDOW', win)
-      sys.__setSysVar('NAVIGATOR', nav)
-      sys.__setSysVar('DOM親要素', doc.body)
+      sys.__setSysVar('DOCUMENT', doc as unknown as NakoValue)
+      sys.__setSysVar('WINDOW', win as unknown as NakoValue)
+      sys.__setSysVar('NAVIGATOR', nav as unknown as NakoValue)
+      sys.__setSysVar('DOM親要素', doc.body as NakoValue)
       sys.__setSysVar('ブラウザURL', loc.href)
 
       // 便利なメソッドを定義
@@ -87,69 +91,86 @@ const PluginBrowser = {
       // 「!クリア」でDOMイベントを削除するため
       sys.__dom_events = [] // [{}, {}, {} ...]
       // DOM追加イベント
-      sys.__addEvent = (dom: any, event: any, func: any, setHandler: any) => {
-        // dom
+      sys.__addEvent = (dom: HTMLElement|string, event: string, func: NakoCallback, setHandler: NakoCallbackEvent) => {
+        // dom element
+        let domElement: HTMLElement|null = null
         if (typeof (dom) === 'string') {
-          dom = doc.querySelector(dom)
-          if (!dom) { throw new Error('DOMイベントが追加できません。要素が見当たりません。') }
+          domElement = doc.querySelector(dom)
+          if (!domElement) { throw new Error('DOMイベントが追加できません。要素が見当たりません。') }
+        } else {
+          domElement = dom
         }
         // func
         if (typeof (func) === 'string') {
-          func = sys.__findVar(func, null)
+          func = sys.__findVar(func, null) as NakoCallback
           if (!func) { throw new Error('DOMイベントが追加できません。関数が見当たりません。') }
         }
         // make wrapper func
-        const wrapperFunc = (e: any) => {
+        const wrapperFunc = (e: Event) => {
           sys.__setSysVar('対象', e.target)
           sys.__setSysVar('対象イベント', e)
           // 追加データが得られる場合
           if (setHandler) { setHandler(e, sys) }
-          if (sys.__genMode === '非同期モード') { sys.newenv = true }
-          return func(e, sys)
+          if (typeof func == 'function') {
+            return func(e, sys)
+          }
+          return false
         }
         // add
-        sys.__dom_events.push({ dom, event, func: wrapperFunc, rawFunc: func })
-        dom.addEventListener(event, wrapperFunc)
+        sys.__dom_events.push({ dom: domElement, event, func: wrapperFunc, rawFunc: func })
+        const domWithEventListenr = dom as { addEventListener: (event: string, func: (e: Event) => void) => void }
+        if (typeof domWithEventListenr.addEventListener === 'function') {
+          domWithEventListenr.addEventListener(event, wrapperFunc)
+        }
       }
       // キーイベントハンドラ
-      sys.__keyHandler = (e: any, sys: any) => {
+      sys.__keyHandler = (e: KeyboardEvent, sys: NakoBrowsesrSystem) => {
         sys.__setSysVar('押キー', e.key)
       }
       // マウスイベントハンドラ
-      sys.__mouseHandler = (e, sys) => {
-        const box = e.target.getBoundingClientRect()
-        sys.__setSysVar('マウスX', e.clientX - box.left)
-        sys.__setSysVar('マウスY', e.clientY - box.top)
-        if (e.button !== undefined) {
-          const buttonLabels = ['左', '中央', '右']
-          sys.__setSysVar('押ボタン', buttonLabels[e.button])
+      sys.__mouseHandler = (e: MouseEvent, sys: NakoBrowsesrSystem) => {
+        const target = e.target as HTMLElement;
+        if (target && target instanceof HTMLElement) {
+          const box = target.getBoundingClientRect()
+          sys.__setSysVar('マウスX', e.clientX - box.left)
+          sys.__setSysVar('マウスY', e.clientY - box.top)
+          if (e.button !== undefined) {
+            const buttonLabels = ['左', '中央', '右']
+            sys.__setSysVar('押ボタン', buttonLabels[e.button])
+          }
         }
       }
       // タッチイベントハンドラ
-      sys.__touchHandler = (e, sys) => {
-        const box = e.target.getBoundingClientRect()
-        const touches = e.changedTouches
-        if (touches.length <= 0) { return }
-        const ts = []
-        for (let i = 0; i < touches.length; i++) {
-          const t = touches[i]
-          const tx = t.clientX - box.left
-          const ty = t.clientY - box.top
-          if (i === 0) {
-            sys.__setSysVar('タッチX', tx)
-            sys.__setSysVar('タッチY', ty)
+      sys.__touchHandler = (e: TouchEvent, sys: NakoBrowsesrSystem) => {
+        const target = e.target as HTMLElement;
+        if (target && target instanceof HTMLElement) {
+          const box = target.getBoundingClientRect()
+          const touches = e.changedTouches
+          if (touches.length <= 0) { return }
+          const ts = []
+          for (let i = 0; i < touches.length; i++) {
+            const t = touches[i]
+            const tx = t.clientX - box.left
+            const ty = t.clientY - box.top
+            if (i === 0) {
+              sys.__setSysVar('タッチX', tx)
+              sys.__setSysVar('タッチY', ty)
+            }
+            ts.push([tx, ty])
           }
-          ts.push([tx, ty])
+          sys.__setSysVar('タッチ配列', ts)
+          return ts
         }
-        sys.__setSysVar('タッチ配列', ts)
-        return ts
       }
       // DOMイベント削除 (探して削除)
       sys.__removeEvent = (dom, event, func) => {
         // dom
+        let domElement: HTMLElement|null = null
         if (typeof (dom) === 'string') {
-          dom = doc.querySelector(dom)
-          if (!dom) { throw new Error('DOMイベントが削除できません。要素が見当たりません。') }
+          domElement = doc.querySelector(dom)
+          if (!domElement) { throw new Error('DOMイベントが削除できません。要素が見当たりません。') }
+        } else {
+          domElement = dom
         }
         // func
         if (typeof (func) === 'string') {
@@ -169,19 +190,19 @@ const PluginBrowser = {
       // requestAnimationFrame のためのid
       sys.__requestAnimationFrameLastId = 0
       // DOMイベント全クリア
-      sys.__removeAllDomEvent = () => {
+      sys.__removeAllDomEvents = () => {
         sys.__dom_events.forEach(e => {
           e.dom.removeEventListener(e.event, e.func)
         })
         sys.__dom_events = []
         // requestAnimationFrame
         if (sys.__requestAnimationFrameLastId > 0) {
-          win.cancelAnimationFrame(sys.__requestAnimationFrameLastId)
+          (win as Window).cancelAnimationFrame(sys.__requestAnimationFrameLastId)
           sys.__requestAnimationFrameLastId = 0
         }
       }
       // DOM取得のために使う
-      sys.__query = (dom, commandName, isGetFunc) => {
+      sys.__query = (dom: object|string, commandName: string, isGetFunc: boolean) => {
         const elm = (typeof dom === 'string') ? document.querySelector(dom) : dom
         if (!elm) {
           if (isGetFunc) {
@@ -201,7 +222,7 @@ const PluginBrowser = {
           const script = document.createElement('script')
           script.type = 'text/javascript'
           script.src = url
-          script.onload = resolve
+          script.onload = () => { resolve() }
           script.onerror = () => {
             reject(new Error(`Failed to load script at url: ${url}`))
           }
@@ -214,13 +235,16 @@ const PluginBrowser = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys) {
+    fn: function (sys: NakoBrowsesrSystem) {
       // chart.jsを破棄
       if (sys.__chartjs) {
-        sys.__chartjs.destroy()
+        const chartjs = sys.__chartjs as { destroy: () => void }
+        if (typeof chartjs.destroy === 'function') {
+          chartjs.destroy()
+        }
       }
       // 全DOMイベントをクリア
-      sys.__removeAllDomEvent()
+      sys.__removeAllDomEvents()
     }
   }
 }
