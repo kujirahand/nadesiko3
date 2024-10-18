@@ -76,8 +76,7 @@ export class NakoParser extends NakoParserBase {
       this.logger.debug('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, true), token)
       throw NakoSyntaxError.fromNode('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, false), token)
     }
-
-    return { type: 'block', blocks: blocks, josi: '', ...map, end: this.peekSourceMap(), genMode: this.genMode }
+    return { type: 'block', blocks: blocks, josi: '', ...map, end: this.peekSourceMap() }
   }
 
   /** 余剰スタックのレポートを作る */

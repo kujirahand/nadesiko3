@@ -34,7 +34,7 @@ export type NodeType = 'nop'
   | 'let_array'
   | 'json_array'
   | 'json_obj'
-  | 'op'
+  | 'op' // operator
   | 'calc'
   | 'variable'
   | 'not'
@@ -78,7 +78,6 @@ export interface Ast {
     column?: number;
   }
   tag?: string;
-  genMode?: string; // sync ... 現在利用していない
   options?: { [key: string]: boolean };
 }
 

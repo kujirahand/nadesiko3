@@ -740,10 +740,10 @@ export class NakoCompiler {
    * プログラムをコンパイルしてJavaScriptのコードオブジェクトを返す
    * @param ast
    * @param opt テストかどうか
+   * @param mode 一般的に 'sync' を指定
    */
-  generateCode (ast: Ast, opt: NakoGenOptions): NakoGenResult {
+  generateCode (ast: Ast, opt: NakoGenOptions, mode: string = 'sync'): NakoGenResult {
     // Select Code Generator #637
-    const mode: string = ast.genMode || ''
     // normal mode
     if (mode === 'sync') {
       return generateJS(this, ast, opt)
@@ -819,7 +819,7 @@ export class NakoCompiler {
   }
 
   /**
-   * 同期的になでしこのプログラムcodeを実行する
+   * (非推奨) 同期的になでしこのプログラムcodeを実行する
    * @param code なでしこのプログラム
    * @param filename ファイル名
    * @param options オプション
@@ -1097,7 +1097,7 @@ export class NakoCompiler {
     return this.runSync(code, filename, opts)
   }
 
-  /** 同期的になでしこのプログラムcodeを実行する
+  /** (非推奨) 同期的になでしこのプログラムcodeを実行する
    * @param code
    * @param fname
    * @param opts
@@ -1115,8 +1115,8 @@ export class NakoCompiler {
    * @param [preCode]
    */
   async runReset (code: string, fname = 'main.nako3', preCode = ''): Promise<NakoGlobal> {
-    const opts = newCompilerOptions({ resetAll: true, resetEnv: true })
-    return this._runEx(code, fname, opts, preCode)
+    const opts = newCompilerOptions({ resetAll: true, resetEnv: true, preCode })
+    return this.runAsync(code, fname, opts)
   }
 
   /**
