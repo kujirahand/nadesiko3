@@ -21,8 +21,8 @@ export type NodeType = 'nop'
   | 'while'
   | 'atohantei'
   | 'for'
-  | '反復' // foreach
-  | '回' // repeat_times
+  | 'foreach' // 反復
+  | 'repeat_times' // n回
   | 'switch'
   | 'try_except'
   | 'def_func'
@@ -34,7 +34,7 @@ export type NodeType = 'nop'
   | 'let_array'
   | 'json_array'
   | 'json_obj'
-  | 'op'
+  | 'op' // operator
   | 'calc'
   | 'variable'
   | 'not'
@@ -49,20 +49,17 @@ export type NodeType = 'nop'
   | 'renbun'
   | 'def_local_var'
   | 'def_local_varlist'
-  | '配列参照'
+  | 'ref_array' // 配列参照
   | 'require'
   | 'performance_monitor'
   | 'speed_mode'
   | 'run_mode'
 
 
+/** 基本的なASTの構造 */
 export interface Ast {
   type: NodeType;
   name?: Token | Ast | null | string;
-  // args?: Ast[]; // 関数の引数
-  asyncFn?: boolean; // 関数の定義
-  isExport?: boolean;
-  setter?: boolean; // 関数の定義
   index?: Ast[]; // 配列へのアクセスに利用
   josi?: string;
   line: number;
@@ -77,32 +74,43 @@ export interface Ast {
     line?: number;
     column?: number;
   }
-  tag?: string;
-  genMode?: string; // sync ... 現在利用していない
   options?: { [key: string]: boolean };
 }
 
+/** 複数ブロックを持つAST */
+export interface AstBlocks extends Ast {
+  blocks: Ast[];
+}
+
+/** 改行やコメントなど */
 export interface AstEol extends Ast {
   comment: string;
 }
 
-// 文字型のvalueを持つ要素
+/** 文字型のvalueを持つ要素 */
 export interface AstStrValue extends Ast {
   value: string;
 }
 
-
+/** 変数か定数を選択するタイプ */
 type VarOrConstType = '変数' | '定数'
+/** 変数や定数の宣言 */
 export interface AstDefVar extends AstBlocks {
   name: string;
   vartype: VarOrConstType
+  // blocks[0] ... value
 }
 
+/** 複数変数の宣言 */
 export interface AstDefVarList extends AstBlocks {
   names: Ast[];
   vartype: VarOrConstType
+  // blocks[0] ... value0
+  // blocks[1] ... value1
+  // ...
 }
 
+/** 変数の代入 */
 export interface AstLet extends AstBlocks {
   name: string;
   // blocks[0] ... value
@@ -115,11 +123,6 @@ export interface AstLetArray extends AstBlocks {
   // blocks[1] ... index0
   // blocks[2] ... index1
   // blocks[3] ... index2
-}
-
-// 複数ブロックを持つAST
-export interface AstBlocks extends Ast {
-  blocks: Ast[];
 }
 
 export interface AstConst extends Ast {
@@ -181,12 +184,15 @@ export interface AstDefFunc extends AstBlocks {
   name: string;
   args: Ast[];
   meta: FuncListItem
+  isExport: boolean; // 公開するかどうか
+  asyncFn: boolean; // 非同期関数かどうか
 }
 
 export interface AstCallFunc extends AstBlocks {
   name: string;
   meta: FuncListItem
-  asyncFn: boolean;
+  asyncFn: boolean; // 非同期関数かどうか
+  setter?: boolean; // 関数の定義
   // blocks[0] ... args[0]
   // blocks[1] ... args[1]
   // blocks[2] ... args[2]

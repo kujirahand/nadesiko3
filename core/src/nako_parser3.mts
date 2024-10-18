@@ -76,8 +76,7 @@ export class NakoParser extends NakoParserBase {
       this.logger.debug('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, true), token)
       throw NakoSyntaxError.fromNode('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, false), token)
     }
-
-    return { type: 'block', blocks: blocks, josi: '', ...map, end: this.peekSourceMap(), genMode: this.genMode }
+    return { type: 'block', blocks: blocks, josi: '', ...map, end: this.peekSourceMap() }
   }
 
   /** 余剰スタックのレポートを作る */
@@ -856,7 +855,7 @@ export class NakoParser extends NakoParserBase {
       if (b) { block = b }
     }
     return {
-      type: '回',
+      type: 'repeat_times',
       blocks: [num, block],
       josi: '',
       ...map,
@@ -1077,7 +1076,7 @@ export class NakoParser extends NakoParserBase {
     }
 
     return {
-      type: '反復',
+      type: 'foreach',
       word: wordStr,
       blocks: [target, block],
       josi: '',
@@ -1184,13 +1183,17 @@ export class NakoParser extends NakoParserBase {
     // ブロックを読む
     this.funcLevel++
     this.saveStack()
+    const backupAsyncFn = this.usedAsyncFn
+    this.usedAsyncFn = false
     const block = this.yBlock()
+    const isAsyncFn = this.usedAsyncFn
     // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
     if (!this.check('ここまで')) {
       throw NakoSyntaxError.fromNode('『ここまで』がありません。『には』構文か無名関数の末尾に『ここまで』が必要です。', map)
     }
     this.get() // skip ここまで
     this.loadStack()
+    this.usedAsyncFn = backupAsyncFn
     this.funcLevel--
     return {
       type: 'func_obj',
@@ -1199,6 +1202,8 @@ export class NakoParser extends NakoParserBase {
       blocks: [block],
       meta: def.meta,
       josi: '',
+      isExport: false, // 無名関数は外部公開しない
+      asyncFn: isAsyncFn, // asyncFnかどうか
       ...map,
       end: this.peekSourceMap()
     }
@@ -1211,11 +1216,11 @@ export class NakoParser extends NakoParserBase {
     if (dainyu === null) { return null }
     const value = this.popStack(['を']) || {type: 'word', value: 'それ', josi: 'を', ...map} as AstStrValue
     const word: Ast|null = this.popStack(['へ', 'に'])
-    if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== '配列参照')) {
+    if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
       throw NakoSyntaxError.fromNode('代入文で代入先の変数が見当たりません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
     // 配列への代入
-    if (word.type === '配列参照') {
+    if (word.type === 'ref_array') {
       const indexArray = word.index || []
       const blocks = [value, ...indexArray]
       return {
@@ -1248,7 +1253,7 @@ export class NakoParser extends NakoParserBase {
     if (sadameru === null) { return null }
     // 引数(定数名)を取得
     const word = this.popStack(['を']) || { type: 'word', value: 'それ', josi: 'を', ...map, end: this.peekSourceMap() } as AstStrValue
-    if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== '配列参照')) {
+    if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
       throw NakoSyntaxError.fromNode('『定める』文で定数が見当たりません。『(定数名)を(値)に定める』のように使います。', sadameru)
     }
     // 引数(値)を取得
@@ -1296,7 +1301,7 @@ export class NakoParser extends NakoParserBase {
       value = { type: 'number', value: 1, josi: 'だけ', ...map, end: this.peekSourceMap() } as AstConst
     }
     const word = this.popStack(['を'])
-    if (!word || (word.type !== 'word' && word.type !== '配列参照')) {
+    if (!word || (word.type !== 'word' && word.type !== 'ref_array')) {
       throw NakoSyntaxError.fromNode(
         `『${action.type}』文で定数が見当たりません。『(変数名)を(値)だけ${action.type}』のように使います。`,
         action)
@@ -2273,7 +2278,7 @@ export class NakoParser extends NakoParserBase {
       // word[n] || word@n
       if (word.josi === '' && this.checkTypes(['[', '@'])) {
         const ast: Ast = {
-          type: '配列参照',
+          type: 'ref_array', // 配列参照
           name: word,
           index: [],
           josi: '',
