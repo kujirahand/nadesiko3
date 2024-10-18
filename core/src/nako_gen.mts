@@ -568,10 +568,10 @@ export class NakoGen {
       case 'for':
         code += this.convFor(node as AstFor)
         break
-      case '反復': // foreach
+      case 'foreach': // 反復
         code += this.convForeach(node as AstForeach)
         break
-      case '回': // repeat_times
+      case 'repeat_times': // 回
         code += this.convRepeatTimes(node as AstRepeatTimes)
         break
       case 'speed_mode':
@@ -592,7 +592,7 @@ export class NakoGen {
       case 'let_array':
         code += this.convLetArray(node as AstLetArray)
         break
-      case '配列参照':
+      case 'ref_array':
         code += this.convRefArray(node)
         break
       case 'json_array':
@@ -1720,7 +1720,7 @@ export class NakoGen {
     let varSetter = ''
     let varInitter = ''
     const nodeName = node.name as Ast
-    if (nodeName.type === '配列参照') {
+    if (nodeName.type === 'ref_array') {
       varGetter = this.convRefArray(nodeName)
       varSetter = `${varGetter} = ${valueVar}`
       varInitter = `${varGetter} = 0`
