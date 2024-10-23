@@ -68,7 +68,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'click', func, null)
+      sys.__addEvent(dom, 'change', func, null)
     },
     return_none: true
   },
