@@ -318,6 +318,65 @@ export default {
       return dom.style[style]
     }
   },
+  'データ属性取得': { // @DOMのdata-PROPの値を取得 // @でーたぞくせいしゅとく
+    type: 'func',
+    josi: [['の', 'から'], ['を']],
+    fn: function (dom: any, prop: any, sys: any) {
+      dom = sys.__query(dom, 'データ属性取得', true)
+      if (!dom) { return '' }
+      return dom.dataset[prop] // dom.getAttribute('data-' + prop) と同じ
+    }
+  },
+  'データ属性設定': { // @DOMのdata-PROPに値Vを設定 // @でーたぞくせいせってい
+    type: 'func',
+    josi: [['の'], ['に', 'へ'], ['を']],
+    fn: function (dom: any, prop: any, val: any, sys: any) {
+      dom = sys.__query(dom, 'データ属性設定', true)
+      if (!dom) { return '' }
+      dom.dataset[prop] = val // dom.setAttribute('data-' + prop, val) と同じ
+    }
+  },
+  'ポケット取得': { // @DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる) // @ぽけっとしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (dom: any, sys: any) {
+      dom = sys.__query(dom, 'ポケット取得', true)
+      if (!dom) { return '' }
+      try {
+        return JSON.parse(dom.dataset.pocket)
+      } catch (e) {
+        console.log('[なでしこ] ポケット取得のJSONデータの不正:', e)
+        return dom.dataset.pocket
+      }
+    }
+  },
+  'ポケット設定': { // @DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる) // @ぽけっとせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (dom: any, val: any, sys: any) {
+      dom = sys.__query(dom, 'ポケット設定', true)
+      if (!dom) { return '' }
+      dom.dataset.pocket = JSON.stringify(val)
+    }
+  },
+  'ヒント取得': { // @DOMのヒント(title属性)の値を取得 // @ひんとしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (dom: any, sys: any) {
+      dom = sys.__query(dom, 'ヒント取得', true)
+      if (!dom) { return '' }
+      return dom.getAttribute('title')
+    }
+  },
+  'ヒント設定': { // @DOMのヒント(title属性)に値Vを設定 // @ひんとせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (dom: any, val: any, sys: any) {
+      dom = sys.__query(dom, 'ヒント設定', true)
+      if (!dom) { return '' }
+      dom.setAttribute('title', JSON.stringify(val))
+    }
+  },
   'DOM要素作成': { // @DOMにTAGの新規要素を作成 // @DOMようそさくせい
     type: 'func',
     josi: [['の', 'を']],
