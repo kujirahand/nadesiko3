@@ -134,9 +134,10 @@ const PluginBrowser = {
           const box = target.getBoundingClientRect()
           sys.__setSysVar('マウスX', e.clientX - box.left)
           sys.__setSysVar('マウスY', e.clientY - box.top)
-          if (e.button !== undefined) {
-            const buttonLabels = ['左', '中央', '右']
-            sys.__setSysVar('押ボタン', buttonLabels[e.button])
+          if (e.buttons !== undefined) {
+            // (ref) https://developer.mozilla.org/ja/docs/Web/API/MouseEvent/buttons
+            const buttonLabels = ['', '左', '右', '', '中央']
+            sys.__setSysVar('押ボタン', buttonLabels[e.buttons])
           }
         }
       }
