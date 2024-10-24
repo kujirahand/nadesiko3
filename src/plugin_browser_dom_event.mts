@@ -45,7 +45,7 @@ export default {
     },
     return_none: true
   },
-  'クリック時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定。『押したボタン』に「左」「中央」「右」が設定される。 // @くりっくしたとき
+  'クリック時': { // @無名関数FでDOMをクリックした時に実行するイベントを設定 // @くりっくしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
@@ -54,12 +54,21 @@ export default {
     },
     return_none: true
   },
-  'ダブルクリック時': { // @無名関数FでDOMをダブルクリックした時に実行するイベントを設定。『押したボタン』に「左」「中央」「右」が設定される。 // @だぶるくりっくしたとき
+  'ダブルクリック時': { // @無名関数FでDOMをダブルクリックした時に実行するイベントを設定 // @だぶるくりっくしたとき
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'dblclick', func, sys.__mouseHandler as NakoCallbackEvent)
+    },
+    return_none: true
+  },
+  '右クリック時': { // @無名関数FでDOMを右クリックした時に実行するイベント(contextmenu)を設定 // @みぎくりっくしたとき
+    type: 'func',
+    josi: [['で'], ['を', 'の']],
+    pure: true,
+    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+      sys.__addEvent(dom, 'contextmenu', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
   },
@@ -130,9 +139,9 @@ export default {
     },
     return_none: true
   },
-  'マウス移動時': { // @無名関数FでDOMに対してマウスカーソルが移動した時に実行するイベントを設定。『マウスX』『マウスY』に座標が、『押したボタン』に押したボタンが設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすいどうしたとき
+  'マウス移動時': { // @無名関数FでDOMに対してマウスカーソルが移動した時に実行するイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすいどうしたとき
     type: 'func',
-    josi: [['で'], ['を', 'の']],
+    josi: [['で'], ['を', 'の', 'へ', 'に']],
     pure: true,
     fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mousemove', func, sys.__mouseHandler as NakoCallbackEvent)
@@ -141,7 +150,7 @@ export default {
   },
   'マウス離時': { // @無名関数FでDOMに対してマウスボタンを離した時に実行するイベントを設定。『マウスX』『マウスY』に座標が、『押したボタン』に押したボタン(左,中央,右)が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすはなしたとき
     type: 'func',
-    josi: [['で'], ['を', 'の']],
+    josi: [['で'], ['を', 'の', 'から']],
     pure: true,
     fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mouseup', func, sys.__mouseHandler as NakoCallbackEvent)
@@ -150,7 +159,7 @@ export default {
   },
   'マウス入時': { // @無名関数FでDOMに対してマウスカーソルが入った時のイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすはいったとき
     type: 'func',
-    josi: [['で'], ['を', 'の']],
+    josi: [['で'], ['を', 'の', 'に', 'へ']],
     pure: true,
     fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mouseover', func, sys.__mouseHandler as NakoCallbackEvent)
@@ -159,7 +168,7 @@ export default {
   },
   'マウス出時': { // @無名関数FでDOMに対してマウスカーソルが出た時のイベントを設定。『マウスX』『マウスY』に座標が設定される。『対象』にイベントDOM。『対象イベント』にイベント引数。 // @まうすでたとき
     type: 'func',
-    josi: [['で'], ['を', 'の']],
+    josi: [['で'], ['を', 'の', 'から']],
     pure: true,
     fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mouseout', func, sys.__mouseHandler as NakoCallbackEvent)
