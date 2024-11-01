@@ -5,12 +5,12 @@ import { NakoCompiler } from '../src/nako3.mjs'
 describe('calc_test.js', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    assert.strictEqual((await nako.runAsync(code)).log, res)
+    assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }
   const errorTest = async (/** @type {string} */ code, /** @type {string} */ errorType, /** @type {string} */ partOfErrorStr) => {
     const nako = new NakoCompiler()
     try {
-      await nako.runAsync(code)
+      await nako.runAsync(code, 'main.nako3')
     } catch (err) {
       assert.strictEqual(errorType, err.type)
       assert.strictEqual(err.msg.indexOf(partOfErrorStr) >= 0, true)
@@ -236,4 +236,5 @@ describe('calc_test.js', async () => {
     await cmp('1234567890123456789n<<60nを表示', '1423359869420436337641010675071320064')
     await cmp('123456789012345678901234567890123456789n>>60nを表示', '107081695084215790682')
   })
+
 })

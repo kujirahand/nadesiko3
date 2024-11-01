@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NakoRuntimeError } from './nako_errors.mjs'
 import { NakoSystem } from './plugin_api.mjs'
 
@@ -167,6 +168,7 @@ export default {
         }
       }
       // eval function #1733 - 互換性を優先するため、direct evalを使うことに
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       sys.__evalJS = (src: string, sys?: NakoSystem) => {
         try {
           return eval(src)
@@ -1853,6 +1855,7 @@ export default {
     type: 'func',
     josi: [['から', 'の'], ['を']],
     pure: true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (a: any, i: any, sys: any) {
       // 文字列のとき
       if (typeof a === 'string') {
@@ -2374,7 +2377,7 @@ export default {
       // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') { f = sys.__findFunc(f, '秒後') }
       // 1回限りのタイマーをセット
-      const timerId = setTimeout(() => {
+      const timerId = setTimeout(async () => {
         // 使用中リストに追加したIDを削除
         const i = sys.__timeout.indexOf(timerId)
         if (i >= 0) { sys.__timeout.splice(i, 1) }
@@ -2925,7 +2928,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    asyncFn: true,
+    asyncFn: false,
     fn: function (sys: NakoSystem) {
       return sys.josiList
     }
@@ -2934,7 +2937,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    asyncFn: true,
+    asyncFn: false,
     fn: function (sys: NakoSystem) {
       return sys.reservedWords
     }

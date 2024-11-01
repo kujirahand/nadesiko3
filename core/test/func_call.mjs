@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 /* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
@@ -5,7 +6,7 @@ import { NakoCompiler } from '../src/nako3.mjs'
 describe('関数呼び出しテスト', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    nako.logger.debug('code=' + code)
+    nako.getLogger().debug('code=' + code)
     const g = await nako.runAsync(code, 'main.nako3')
     if (code.indexOf('秒待') >= 0) {
       await forceWait(200)
@@ -14,7 +15,7 @@ describe('関数呼び出しテスト', async () => {
   }
   // 強制的にミリ秒待機
   function forceWait(/** @type {number} */ms) {
-    return /** @type {Promise<void>} */(new Promise((resolve, reject) => {
+    return /** @type {Promise<void>} */(new Promise((resolve) => {
       setTimeout(() => { resolve() }, ms);
     }));
   }
@@ -189,5 +190,41 @@ describe('関数呼び出しテスト', async () => {
 それを表示
     `
     await cmp(code, 'CCCBBBCCCAAA')
+  })
+  
+  it('後方で宣言した関数がasyncFnだったときその関数が正しく実行できない(1) #1758', async () => {
+    const code = `
+●test1():
+　xとは変数= 1
+　0.05秒待つ
+　xを表示
+●test2():
+　xとは変数= 2
+　0.05秒待つ
+　xを表示
+
+0.01秒後には:
+　test1
+0.05秒後には:
+　test2`
+    await cmp(code, '1\n2')
+  })
+  it('後方で宣言した関数がasyncFnだったときその関数が正しく実行できない(2) #1758', async () => {
+    const code = `
+0.1秒後には:
+　Aとは変数 = 「A」
+　関数A
+　Aを表示　//→undefined
+
+●関数Aとは:
+　Bとは変数 = 「B」
+　関数B
+　Bを表示　//→undefined
+
+●関数Bとは:
+　もし0ならば:
+　　0.01秒待つ　//（待たない）
+    `
+    await cmp(code, 'B\nA')
   })
 })
