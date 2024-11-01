@@ -438,7 +438,7 @@ export class NakoGen {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         fn: () => {},
         type: 'func',
-        asyncFn: t.asyncFn,
+        asyncFn: false,
         isExport: t.isExport
       })
       funcList.push({ name, node: t })
@@ -862,7 +862,7 @@ export class NakoGen {
       variableDeclarations += indent + '__self.__vars.set(\'引数\', arguments);\n'
     }
     
-    // ローカル変数を生成 (再帰関数呼び出しで引数の値が壊れる問題がある #1663)
+    // ローカル変数を生成 (再帰関数呼び出しで引数の値が壊れる問題があるので修正 #1663 / タイミングによって壊れるので修理 #1758)
     // 暫定変数__localVarsに現在のローカル変数の値をPUSHし、変数を抜ける時にPOPする)
     // 関数として宣言しているが、JS関数となでしこ関数では変数管理の方法が異なるため、完全なローカル変数としては使えない
     // 必ず、pushStack/popStack する必要がある
@@ -874,6 +874,7 @@ export class NakoGen {
     popStack += indent + '// POP STACK\n'
     popStack += indent + 'self.__vars = __localvars;\n'
     popStack += '}\n'
+
     // 宣言済みの名前を保存
     const varsDeclared = Array.from(this.varsSet.names.values())
     let code = ''
@@ -929,7 +930,8 @@ export class NakoGen {
     }
     // パフォーマンスモニタ:ユーザ関数のinject
     code += performanceMonitorInjectAtEnd
-    // ブロックでasyncFnを使ったか
+    
+    // 名前のある関数で非同期関数であれば、関数にasyncを付与する
     if (name && this.usedAsyncFn) {
       const f = this.nakoFuncList.get(name)
       if (f) { f.asyncFn = true }
@@ -1565,6 +1567,11 @@ export class NakoGen {
       funcCall = `await ${funcCall}`
       this.numAsyncFn++
       this.usedAsyncFn = true
+      // 非同期関数の呼び出し前に __self.__vars を待避しておく必要がある (#1758)
+      const varI = `$nako_i${this.loopId}`
+      this.loopId++
+      funcBegin += `const __local_async${varI} = __self.__vars;\n`
+      funcEnd += `__self.__vars = __local_async${varI};\n`
     }
     if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
       let key = funcName
@@ -1600,9 +1607,9 @@ export class NakoGen {
       // 戻り値のない関数の場合
       // ------------------------------------
       if (funcEnd === '') {
-        code = `/*戻値のない関数呼出1*/${funcBegin}${funcCall};\n`
+        code = `/*VOID関数呼出*/${funcBegin}${funcCall};\n`
       } else {
-        code = `/*戻値のない関数呼出2*/${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
+        code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
       }
     } else {
       // ------------------------------------
@@ -1624,7 +1631,20 @@ export class NakoGen {
           const funcCallThis = `(${funcObj}).call(this)`
           code = `/* funcCallThis1 */${funcCallThis}`
         } else { // つまり、pure=falseの場合
-          code = `/* funcCallThis2 */(${funcDef}(){\n${indent(`${funcBegin}try {\n${indent(`return ${sorePrefex}${funcCall}${sorePostfix};`, 1)}\n} finally {\n${indent(funcEnd, 1)}}`, 1)}}).call(this)`
+          const varI = `$nako_i${this.loopId}`
+          this.loopId++
+          code = `/* funcCallThis2 */(${funcDef}(){\n` +
+            indent(funcBegin, 1) + '\n' +
+            indent('try {', 1) + '\n' +
+            indent(`let ${varI} = ${funcCall};`, 2) + '\n' +
+            indent(`return ${sorePrefex}${varI}${sorePostfix};`, 2) + '\n' +
+            indent('} finally {', 2) + '\n' +
+            indent(funcEnd, 1) + '\n' +
+            indent('}', 1) + '\n' +
+            '}).call(this)'
+          if (func.asyncFn) {
+            code = `await (${code})`
+          }
         }
       }
       // ...して
@@ -2072,7 +2092,6 @@ ${syncMain}(__self)
   // --- 生成したコードの簡単な整形 ---
   js = cleanGeneratedCode(js)
   // デバッグメッセージ
-  com.getLogger().trace('--- generate ---\n' + js)
   let codeImportFiles = ''
   const importNames = []
   for (const f of opt.importFiles) {
@@ -2092,6 +2111,8 @@ ${initCode}
 ${js}
 // </runtimeEnvCode>
 `
+  com.getLogger().trace('--- generate::jsInit ---\n' + jsInit)
+  com.getLogger().trace('--- generate::js ---\n' + js)
   return {
     // なでしこの実行環境ありの場合(thisが有効)
     runtimeEnv: runtimeEnvCode,
