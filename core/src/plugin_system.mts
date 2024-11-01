@@ -2377,7 +2377,7 @@ export default {
       // 文字列で指定された関数をオブジェクトに変換
       if (typeof f === 'string') { f = sys.__findFunc(f, '秒後') }
       // 1回限りのタイマーをセット
-      const timerId = setTimeout(async () => {
+      const timerId = setTimeout(() => {
         // 使用中リストに追加したIDを削除
         const i = sys.__timeout.indexOf(timerId)
         if (i >= 0) { sys.__timeout.splice(i, 1) }
