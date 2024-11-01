@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-nocheck
 export default {
   // @DOM操作
@@ -137,7 +138,8 @@ export default {
     pure: true,
     fn: function (dom: any, v: any, sys: any) {
       return sys.__exec('DOMテキスト設定', [dom, v, sys])
-    }
+    },
+    return_none: true
   },
   'テキスト取得': { // @DOMのテキストを取得 // @てきすとしゅとく
     type: 'func',
@@ -153,7 +155,8 @@ export default {
     pure: true,
     fn: function (dom: any, v: any, sys: any) {
       return sys.__exec('DOM_HTML設定', [dom, v, sys])
-    }
+    },
+    return_none: true
   },
   'HTML取得': { // @DOMのテキストを取得 // @HTMLしゅとく
     type: 'func',
@@ -334,7 +337,8 @@ export default {
       dom = sys.__query(dom, 'データ属性設定', true)
       if (!dom) { return '' }
       dom.dataset[prop] = val // dom.setAttribute('data-' + prop, val) と同じ
-    }
+    },
+    return_none: true
   },
   'ポケット取得': { // @DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる) // @ぽけっとしゅとく
     type: 'func',
@@ -357,7 +361,8 @@ export default {
       dom = sys.__query(dom, 'ポケット設定', true)
       if (!dom) { return '' }
       dom.dataset.pocket = JSON.stringify(val)
-    }
+    },
+    return_none: true
   },
   'ヒント取得': { // @DOMのヒント(title属性)の値を取得 // @ひんとしゅとく
     type: 'func',
@@ -371,11 +376,12 @@ export default {
   'ヒント設定': { // @DOMのヒント(title属性)に値Vを設定 // @ひんとせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom: any, val: any, sys: any) {
+    fn: function (dom: any, val: string, sys: any) {
       dom = sys.__query(dom, 'ヒント設定', true)
       if (!dom) { return '' }
-      dom.setAttribute('title', JSON.stringify(val))
-    }
+      dom.setAttribute('title', val)
+    },
+    return_none: true
   },
   'DOM要素作成': { // @DOMにTAGの新規要素を作成 // @DOMようそさくせい
     type: 'func',
