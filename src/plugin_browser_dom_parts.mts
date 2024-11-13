@@ -371,41 +371,8 @@ export default {
     josi: [['の', 'から']],
     pure: true,
     fn: function (aa: any, sys: any) {
-      if (typeof (aa) === 'string') {
-        const rr = []
-        const rows = aa.split('\n')
-        for (const row of rows) { rr.push(row.split(',')) }
-        aa = rr
-      }
-      const domOption = sys.__getSysVar('DOM部品オプション')
-      const bgColor: Array<string> = JSON.parse(JSON.stringify(domOption['テーブル背景色'])) // 複製して使う
-      const hasHeader: boolean = domOption['テーブルヘッダ']
-      const isNumRight: boolean = domOption['テーブル数値右寄せ']
-      for (let i = 0; i < 3; i++) { bgColor.push('') }
-      const bgHead = bgColor.shift() || ''
       const table = sys.__exec('DOM部品作成', ['table', sys])
-      for (let i = 0; i < aa.length; i++) {
-        const rowNo = i
-        const row = aa[rowNo]
-        const tr = document.createElement('tr')
-        // 色指定
-        if (bgHead !== '') {
-          const no = hasHeader ? rowNo : rowNo + 1
-          tr.style.backgroundColor = (no === 0) ? bgHead : bgColor[no % 2]
-          tr.style.color = (no === 0) ? 'white' : 'black'
-        }
-        for (let col of row) {
-          col = '' + col
-          const td = document.createElement((rowNo === 0 && hasHeader) ? 'th' : 'td')
-          td.innerHTML = sys.__tohtml(col)
-          if (isNumRight && col.match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
-            td.style.textAlign = 'right'
-          }
-          tr.appendChild(td)
-        }
-        table.appendChild(tr)
-      }
-      return table
+      return sys.__exec('テーブル更新', [table, aa, sys])
     }
   },
   'ヘッダ無テーブル作成': { // @二次元配列AA(あるいは文字列の簡易CSVデータ)からヘッダ無しのTABLE要素を作成し、DOMオブジェクトを返す // @へっだなしてーぶるさくせい
@@ -417,6 +384,63 @@ export default {
       domOption['テーブルヘッダ'] = false
       return sys.__exec('テーブル作成', [aa, sys])
     }
+  },
+  'テーブル更新': { // @既に作成したテーブルTBLを二次元配列AA(あるいは文字列の簡易CSVデータ)で更新する // @てーぶるこうしん
+    type: 'func',
+    josi: [['を'], ['に', 'へ']],
+    pure: true,
+    fn: function (tbl: any, aa: any, sys: any) {
+      // 既存のテーブルを取得
+      if (typeof tbl === 'string') {
+        tbl = sys.__query(tbl, 'テーブル更新', false);
+      }
+      tbl.innerHTML = ''; // 初期化
+      // テーブルに差し込むデータを確認
+      if (typeof aa === 'string') {
+        const rr = [];
+        const rows = aa.split('\n');
+        for (const row of rows) {
+          rr.push(row.split(","));
+        }
+        aa = rr;
+      }
+      const domOption = sys.__getSysVar("DOM部品オプション");
+      const bgColor: Array<string> = JSON.parse(
+        JSON.stringify(domOption["テーブル背景色"]),
+      ); // 複製して使う
+      const hasHeader: boolean = domOption["テーブルヘッダ"];
+      const isNumRight: boolean = domOption["テーブル数値右寄せ"];
+      for (let i = 0; i < 3; i++) {
+        bgColor.push("");
+      }
+      const bgHead = bgColor.shift() || "";
+      const table = tbl
+      for (let i = 0; i < aa.length; i++) {
+        const rowNo = i;
+        const row = aa[rowNo];
+        const tr = document.createElement("tr");
+        // 色指定
+        if (bgHead !== "") {
+          const no = hasHeader ? rowNo : rowNo + 1;
+          tr.style.backgroundColor = no === 0 ? bgHead : bgColor[no % 2];
+          tr.style.color = no === 0 ? "white" : "black";
+        }
+        for (let col of row) {
+          col = "" + col;
+          const td = document.createElement(
+            rowNo === 0 && hasHeader ? "th" : "td",
+          );
+          td.innerHTML = sys.__tohtml(col);
+          if (isNumRight && col.match(/^(\+|-)?\d+(\.\d+)?$/)) {
+            // number?
+            td.style.textAlign = "right";
+          }
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      }
+      return table;
+    },
   },
   'テーブルセル変更': { // @TABLE要素のセル[行,列]をVへ変更する。Vが二次元配列変数であれば複数のセルを一括変更する // @てーぶるせるへんこう
     type: 'func',
