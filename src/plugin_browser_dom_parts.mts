@@ -68,9 +68,9 @@ export default {
         }
         // check DOM和属性
         const waAttr = sys.__getSysVar('DOM和属性')
-        if (waAttr[prop] === undefined) {
+        if (waAttr[prop] !== undefined) {
           prop = waAttr[prop]
-          return btn.getAttribute(prop)
+          return btn[prop]
         }
         // others
         return btn[prop]

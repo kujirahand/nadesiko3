@@ -1568,7 +1568,8 @@ export class NakoParser extends NakoParserBase {
           return {
             type: 'let_prop',
             name: (nameToken as AstStrValue).value,
-            blocks: [propToken, valueToken],
+            index: [propToken],
+            blocks: [valueToken],
             josi: '',
             ...map,
             end: this.peekSourceMap()

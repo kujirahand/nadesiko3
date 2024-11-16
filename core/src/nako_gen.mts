@@ -1832,8 +1832,10 @@ export class NakoGen {
 
   // プロパティへの代入式 (#1793)
   convLetProp(node: AstLet): string {
-    const astProp = node.blocks[0]
-    const astValue = node.blocks[1]
+    if (!node.index || node.index.length == 0) { throw NakoSyntaxError.fromNode('代入する先のプロパティ名がありません。', node) }
+    if (!node.blocks || node.blocks.length == 0) { throw NakoSyntaxError.fromNode('代入する値がありません。', node) }
+    const astProp = node.index[0]
+    const astValue = node.blocks[0]
     let prop = ''
     if (astProp) {
       prop = (astProp as AstStrValue).value

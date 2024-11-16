@@ -214,7 +214,9 @@ export default {
       '読取専用': 'readOnly',
       '読み取り専用': 'readOnly',
       '無効化': 'disabled',
-      '値': 'value'
+      '値': 'value',
+      'テキスト': 'innerText',
+      'HTML': 'innerHTML',
     }
   },
   'DOM和スタイル': { // 'const' // @DOMわすたいる
