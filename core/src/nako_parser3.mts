@@ -1556,36 +1556,24 @@ export class NakoParser extends NakoParserBase {
         throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`, map)
       }
     }
-    // プロパティ代入文
-    if (this.check2(['word', '$', 'word', 'eq'])) {
+    // プロパティ代入文 (#1793)
+    if (this.check2(['word', '$', 'word', 'eq']) || this.check2(['word', '$', 'string', 'eq'])) {
       const word = this.peek()
-      let threw = false
-      try {
-        if (this.accept(['word', '$', 'word', 'eq', this.yCalc])) {
-          const nameToken = this.getVarName(this.y[0])
-          const propToken = this.getVarName(this.y[2])
-          const valueToken = this.y[4]
-          return {
-            type: 'let_prop',
-            name: (nameToken as AstStrValue).value,
-            index: [propToken],
-            blocks: [valueToken],
-            josi: '',
-            ...map,
-            end: this.peekSourceMap()
-          } as AstLet
-        } else {
-          threw = true
-          this.logger.debug(`${this.nodeToStr(word, { depth: 1 }, true)}への代入文で計算式に書き間違いがあります。`, word)
-          throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文で計算式に書き間違いがあります。`, map)
-        }
-      } catch (err: any) {
-        if (threw) {
-          throw err
-        }
-        this.logger.debug(`${this.nodeToStr(word, { depth: 1 }, true)}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`, word)
-        throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`, map)
+      if (this.accept(['word', '$', 'word', 'eq', this.yCalc]) || this.accept(['word', '$', 'string', 'eq', this.yCalc])) {
+        const nameToken = this.getVarName(this.y[0])
+        const propToken = this.y[2]
+        const valueToken = this.y[4]
+        return {
+          type: 'let_prop',
+          name: (nameToken as AstStrValue).value,
+          index: [propToken],
+          blocks: [valueToken],
+          josi: '',
+          ...map,
+          end: this.peekSourceMap()
+        } as AstLet
       }
+      throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文の計算式に書き間違いがあります。`, map)
     }
 
     // let_array ?
@@ -2324,7 +2312,7 @@ export class NakoParser extends NakoParserBase {
       }
 
       // word$prop
-      if (word.josi === '' && this.check2(['$', 'word'])) {
+      if (word.josi === '' && (this.check2(['$', 'word']) || this.check2(['$', 'string']))) {
         this.get() // skip '$'
         const prop = this.get() as Token
         return {

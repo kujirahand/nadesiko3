@@ -53,7 +53,7 @@ export default {
         const waAttr = sys.__getSysVar('DOM和属性')
         if (waAttr[prop] !== undefined) {
           prop = waAttr[prop]
-          btn.setAttribute(prop, value)
+          btn[prop] = value
           return
         }
         // others
