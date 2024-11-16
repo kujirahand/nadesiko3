@@ -31,6 +31,7 @@ export type NodeType = 'nop'
   | 'break'
   | 'def_test'
   | 'let'
+  | 'let_prop' // #1793
   | 'let_array'
   | 'json_array'
   | 'json_obj'
@@ -50,6 +51,7 @@ export type NodeType = 'nop'
   | 'def_local_var'
   | 'def_local_varlist'
   | 'ref_array' // 配列参照
+  | 'ref_prop' // #1793 (プロパティ参照)
   | 'require'
   | 'performance_monitor'
   | 'speed_mode'

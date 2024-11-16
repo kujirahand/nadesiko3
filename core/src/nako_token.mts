@@ -102,6 +102,7 @@ export type TokenType = '?'
   | '」' // error - エラーチェックのため
   | '』' // error - エラーチェックのため
   | '??' // 「表示」のエイリアス
+  | '$' // プロパティアクセス
 
 // トークン
 export interface Token {

@@ -372,4 +372,22 @@ describe('basic', async () => {
     await cmp('constructor=10;constructorを表示', '10')
     await cmp('super=10;superを表示', '10')
   })
+  it('オブジェクトを手軽に設定する-通常(#1793)', async () => {
+    await cmp('A={"幅":30};A$幅=50;A$幅を表示', '50')
+    await cmp('A={"高":30};A$高さ=50;A$高さを表示', '50') // 送り仮名の省略
+  })
+  it('オブジェクトを手軽に設定する-プロパティ関数(#1793)', async () => {
+    // プロパティの値を取得して10倍にして返す
+    await cmp(
+      '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
+      '『 (function(prop, val, sys){ this[prop] = val })』をJS実行してF_SETに代入。\n' +
+      'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
+      'A$幅=5; A$幅を表示', '50')
+    // 値を10倍にして格納
+    await cmp(
+      '『 (function(prop, sys){ return this[prop] })』をJS実行してF_GETに代入。\n' +
+      '『 (function(prop, val, sys){ this[prop] = val*10 })』をJS実行してF_SETに代入。\n' +
+      'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
+      'A$幅=5; A$幅を表示', '50')
+  })
 })

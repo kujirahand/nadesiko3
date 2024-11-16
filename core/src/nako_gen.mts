@@ -540,6 +540,12 @@ export class NakoGen {
       case 'let':
         code += this.convLet(node as AstLet)
         break
+      case 'let_prop':
+        code += this.convLetProp(node as AstLet)
+        break
+      case 'ref_prop':
+        code += this.convRefProp(node as AstLet)
+        break
       case 'inc':
         code += this.convInc(node as AstBlocks)
         break
@@ -1050,6 +1056,19 @@ export class NakoGen {
       const idx = this._convGen(list[i] as Ast, true)
       code += '[' + idx + ']'
     }
+    return code
+  }
+
+  convRefProp (node: Ast): string {
+    const name = this._convGen(node.name as Ast, true)
+    const list: Ast[] | undefined = node.index
+    if (!list || list.length <= 0) {
+      throw NakoSyntaxError.fromNode('プロパティがありません。', node)
+    }
+    const prop = (list[0] as AstStrValue).value
+    const code =
+      `( (function(){ if (${name}.__getProp) { return ${name}.__getProp('${prop}', __self) } ` +
+      `else { return ${name}['${prop}'] } })() )`
     return code
   }
 
@@ -1808,6 +1827,45 @@ export class NakoGen {
       }
       code = `${res.js_set};`
     }
+    return ';' + this.convLineno(node, false) + code + '\n'
+  }
+
+  // プロパティへの代入式 (#1793)
+  convLetProp(node: AstLet): string {
+    if (!node.index || node.index.length == 0) { throw NakoSyntaxError.fromNode('代入する先のプロパティ名がありません。', node) }
+    if (!node.blocks || node.blocks.length == 0) { throw NakoSyntaxError.fromNode('代入する値がありません。', node) }
+    const astProp = node.index[0]
+    const astValue = node.blocks[0]
+    let prop = ''
+    if (astProp) {
+      prop = (astProp as AstStrValue).value
+    } else {
+      throw NakoSyntaxError.fromNode('代入する先のプロパティ名がありません。', node)
+    }
+    let value = null
+    // 値のプログラムを生成
+    if (astValue) {
+      value = this._convGen(astValue, true)
+    } else {
+      throw NakoSyntaxError.fromNode('代入する値がありません。', node)
+    }
+
+    // 変数名
+    const name: string = node.name
+    const res = this.findVar(name, value)
+    let code = '/*[convLetProp]*/'
+    // 変数が存在しないとき
+    if (res === null) {
+      throw NakoSyntaxError.fromNode('変数が見当たりません。', node)
+    }
+    // ネームスペースを削除
+    if (prop.indexOf('__') >= 0) {
+      prop = prop.split('__')[1]
+    }
+    // プロパティへの代入式を作る
+    const propVar = `${res.js}['${prop}']`
+    code += `if (typeof ${res.js}.__setProp === 'function') { ${res.js}.__setProp('${prop}', ${value}, __self); } `
+    code += `else { ${propVar} = ${value} };`
     return ';' + this.convLineno(node, false) + code + '\n'
   }
 

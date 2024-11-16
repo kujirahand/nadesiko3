@@ -101,6 +101,7 @@ export const rules: NakoLexRule[] = [
   { name: ')', pattern: /^\)/, readJosi: true },
   { name: '|', pattern: /^\|/ },
   { name: '??', pattern: /^\?\?/ }, // 「表示」のエイリアス #1745
+  { name: '$', pattern: /^\$/ }, // #1793 プロパティアクセス
   { name: 'string', pattern: /^🌿/, cbParser: src => cbString('🌿', '🌿', src) },
   { name: 'string_ex', pattern: /^🌴/, cbParser: src => cbString('🌴', '🌴', src) },
   { name: 'string_ex', pattern: /^「/, cbParser: src => cbString('「', '」', src) },

@@ -41,6 +41,40 @@ export default {
       const parent = sys.__getSysVar('DOM親要素')
       const btn = (typeof (elm) === 'string') ? document.createElement(elm) : elm
       btn.id = 'nadesi-dom-' + sys.__getSysVar('DOM部品個数')
+      btn.__setProp = (prop: string, value: any, sys: any) => {
+        // check DOM和スタイル
+        const wa = sys.__getSysVar('DOM和スタイル')
+        if (wa[prop] !== undefined) {
+          prop = wa[prop]
+          btn.style[prop] = value
+          return
+        }
+        // check DOM和属性
+        const waAttr = sys.__getSysVar('DOM和属性')
+        if (waAttr[prop] !== undefined) {
+          prop = waAttr[prop]
+          btn.setAttribute(prop, value)
+          return
+        }
+        // others
+        btn[prop] = value
+      }
+      btn.__getProp = (prop: string, sys: any) => {
+        // check DOM和スタイル
+        const wa = sys.__getSysVar('DOM和スタイル')
+        if (wa[prop] !== undefined) {
+          prop = wa[prop]
+          return btn.style[prop]
+        }
+        // check DOM和属性
+        const waAttr = sys.__getSysVar('DOM和属性')
+        if (waAttr[prop] !== undefined) {
+          prop = waAttr[prop]
+          return btn[prop]
+        }
+        // others
+        return btn[prop]
+      }
       // スキン適用
       const func = sys.__getSysVar('DOMスキン辞書')[sys.__getSysVar('DOMスキン')]
       if (typeof (func) === 'function') { func(elm, btn, sys) }
@@ -52,6 +86,8 @@ export default {
       if (opt['自動改行']) {
         parent.appendChild(document.createElement('br'))
       }
+      // 「その」を設定
+      sys.__setSysVar('そ', btn)
       return btn
     }
   },
