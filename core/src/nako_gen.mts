@@ -1856,11 +1856,7 @@ export class NakoGen {
     let code = '/*[convLetProp]*/'
     // 変数が存在しないとき
     if (res === null) {
-      throw NakoSyntaxError.fromNode('変数が見当たりません。', node)
-    }
-    // ネームスペースを削除
-    if (prop.indexOf('__') >= 0) {
-      prop = prop.split('__')[1]
+      throw NakoSyntaxError.fromNode(`変数『${name}』が見当たりません。`, node)
     }
     // プロパティへの代入式を作る
     const propVar = `${res.js}['${prop}']`
