@@ -8,7 +8,7 @@
   <link href="daisyui/full.css" rel="stylesheet" type="text/css" />
   <!-- nako3edit -->
   <link href="/html/nako3edit.css" rel="stylesheet" type="text/css" />
-  <script defer type="text/javascript" src="/release/wnako3.js"></script>
+  <script defer type="text/javascript" src="/release/wnako3.js"></script><!-- edit_plugin.js で自動起動 -->
   <script defer type="text/javascript" src="/html/edit_plugin.js"></script>
 
   <script type="なでしこ">
@@ -19,14 +19,16 @@ HREFを表示。
 P=HREFをURLパラメータ解析
 Pを表示。
 APPKEY=P["appkey"]
-Pを表示。
-ファイル一覧取得処理
+「APPKEY={APPKEY}」を表示。
+ファイル一覧取得処理。
 #-----------
 # 新規ボタン
-「#new_btn」をクリックした時には
+NEW_BTN=「#new_btn」のDOM要素取得。
+NEW_BTNをクリックした時には
 　　「/html/edit.html?file=new&appkey={APPKEY}」へブラウザ移動。
 ここまで。
-「#add_plugins」をクリックした時には
+ADD_BTN=「#add_plugins」のDOM要素取得。
+ADD_BTNをクリックした時には
 　　「/html/plugins.html?appkey={APPKEY}」へブラウザ移動。
 ここまで。
 #-----------
