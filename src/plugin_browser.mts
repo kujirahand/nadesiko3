@@ -118,7 +118,7 @@ const PluginBrowser = {
         }
         // add
         sys.__dom_events.push({ dom: domElement, event, func: wrapperFunc, rawFunc: func })
-        const domWithEventListenr = dom as { addEventListener: (event: string, func: (e: Event) => void) => void }
+        const domWithEventListenr = domElement as { addEventListener: (event: string, func: (e: Event) => void) => void }
         if (typeof domWithEventListenr.addEventListener === 'function') {
           domWithEventListenr.addEventListener(event, wrapperFunc)
         }

@@ -214,9 +214,17 @@ export default {
       '読取専用': 'readOnly',
       '読み取り専用': 'readOnly',
       '無効化': 'disabled',
+      '非表示': 'hidden',
       '値': 'value',
       'テキスト': 'innerText',
       'HTML': 'innerHTML',
+      'ステップ': 'step',
+      '最小値': 'min',
+      '最大値': 'max',
+      '必須項目': 'required',
+      '選択状態': 'checked',
+      '入力ヒント': 'placeholder',
+      '文字幅': 'size',
     }
   },
   'DOM和スタイル': { // 'const' // @DOMわすたいる
