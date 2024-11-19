@@ -225,6 +225,7 @@ export default {
       '選択状態': 'checked',
       '入力ヒント': 'placeholder',
       '文字幅': 'size',
+      'スタイル': 'style',
     }
   },
   'DOM和スタイル': { // 'const' // @DOMわすたいる
@@ -350,6 +351,91 @@ export default {
       dom.dataset[prop] = val // dom.setAttribute('data-' + prop, val) と同じ
     },
     return_none: true
+  },
+  'DOM設定変更': { // @DOMの属性とスタイルを適当に設定 // @DOMせっていへんこう
+    type: 'func',
+    josi: [['の'], ['に', 'へ'], ['を']],
+    fn: function (dom: any, prop: string|string[], value:any, sys: any) {
+      dom = sys.__query(dom, 'DOM設定変更', false)
+      const wa = sys.__getSysVar('DOM和スタイル')
+      const waAttr = sys.__getSysVar('DOM和属性')
+      // check prop is array
+      if (prop instanceof Array) {
+        for (let i = 0; i < prop.length; i++) {
+          let propName = prop[i]
+          if (wa[propName] !== undefined) { // DOM和スタイル
+            propName = wa[propName]
+          }
+          else if (waAttr[propName] !== undefined) { // dom和スタイル
+            propName = waAttr[propName]
+          }
+          if (i < prop.length - 1) {
+            dom = dom[propName]
+          } else {
+            dom[propName] = value
+          }
+        }
+      } else {
+        // check DOM和スタイル
+        if (wa[prop] !== undefined) {
+          prop = wa[prop]
+          dom.style[prop] = value
+          return
+        }
+        // check DOM和属性
+        if (waAttr[prop] !== undefined) {
+          prop = waAttr[prop]
+          dom[prop] = value
+          return
+        }
+        // others
+        dom[prop] = value
+      }
+    },
+    return_none: true
+  },
+  'DOM設定取得': { // @DDOMの属性とスタイルを適当に取得 // @DOMせっていしゅとく
+    type: 'func',
+    josi: [['の', 'から'], ['を']],
+    fn: function (dom: any, prop: string|string[], sys: any) {
+      dom = sys.__query(dom, 'DOM設定取得', true)
+      const waStyle = sys.__getSysVar('DOM和スタイル')
+      const waAttr = sys.__getSysVar('DOM和属性')
+      // array
+      if (prop instanceof Array) {
+        for (let i = 0; i < prop.length; i++) {
+          let propName = prop[i]
+          if (waStyle[propName] !== undefined) { // DOM和スタイル
+            propName = waStyle[propName]
+          }
+          else if (waAttr[propName] !== undefined) { // dom和スタイル
+            propName = waAttr[propName]
+          }
+          if (i < prop.length - 1) {
+            dom = dom[propName]
+          } else {
+            return dom[propName]
+          }
+        }
+      }
+      // string
+      // check DOM和スタイル
+      if (waStyle[prop] !== undefined) {
+        prop = waStyle[prop]
+        const valStyle = dom.style[prop]
+        if (valStyle !== undefined) { return valStyle }
+        const val = dom[prop]
+        if (val !== undefined) { return val }
+      }
+      // check DOM和属性
+      if (waAttr[prop] !== undefined) {
+        prop = waAttr[prop]
+        const val = dom[prop]
+        if (val !== undefined) { return val }
+      }
+      // others
+      return dom[prop]
+    }
   },
   'ポケット取得': { // @DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる) // @ぽけっとしゅとく
     type: 'func',

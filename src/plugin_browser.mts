@@ -202,6 +202,18 @@ const PluginBrowser = {
           sys.__requestAnimationFrameLastId = 0
         }
       }
+      // DOMに動的プロパティの取得と設定を追加する
+      sys.__addPropMethod = (obj: any) => {
+        if (!obj) { return }
+        if (obj.__setProp === undefined) {
+          obj.__setProp = (prop: string|string[], value: object, sys: NakoBrowsesrSystem) => {
+            sys.__exec('DOM設定変更', [obj, prop, value, sys])
+          }
+          obj.__getProp = (prop: string|string[], sys: NakoBrowsesrSystem) => {
+            return sys.__exec('DOM設定取得', [obj, prop, sys])
+          }
+        }
+      }
       // DOM取得のために使う
       sys.__query = (dom: object|string, commandName: string, isGetFunc: boolean) => {
         const elm = (typeof dom === 'string') ? document.querySelector(dom) : dom
@@ -215,6 +227,7 @@ const PluginBrowser = {
             throw new Error(`『${commandName}』でクエリ『${desc}』でDOM取得に失敗しました。`)
           }
         }
+        sys.__addPropMethod(elm)
         return elm
       }
       // 動的にJSライブラリを取り込む
