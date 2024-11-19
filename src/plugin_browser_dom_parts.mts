@@ -11,6 +11,7 @@ export default {
     fn: function (el: any, sys: any) {
       if (typeof el === 'string') { el = document.querySelector(el) || document.getElementById(el) }
       sys.__setSysVar('DOM親要素', el)
+      sys.__addPropMethod(el)
       return el
     }
   },
@@ -31,6 +32,7 @@ export default {
     fn: function (skin: any, sys: any) {
       sys.__setSysVar('DOMスキン', skin)
     },
+    
     return_none: true
   },
   'DOM部品作成': { // @elmの要素を作成して『DOM親要素設定』で指定した要素に追加して、DOMオブジェクトを返す。(elmがDOM要素なら追加する) // @DOMぶひんさくせい
@@ -41,40 +43,7 @@ export default {
       const parent = sys.__getSysVar('DOM親要素')
       const btn = (typeof (elm) === 'string') ? document.createElement(elm) : elm
       btn.id = 'nadesi-dom-' + sys.__getSysVar('DOM部品個数')
-      btn.__setProp = (prop: string, value: any, sys: any) => {
-        // check DOM和スタイル
-        const wa = sys.__getSysVar('DOM和スタイル')
-        if (wa[prop] !== undefined) {
-          prop = wa[prop]
-          btn.style[prop] = value
-          return
-        }
-        // check DOM和属性
-        const waAttr = sys.__getSysVar('DOM和属性')
-        if (waAttr[prop] !== undefined) {
-          prop = waAttr[prop]
-          btn[prop] = value
-          return
-        }
-        // others
-        btn[prop] = value
-      }
-      btn.__getProp = (prop: string, sys: any) => {
-        // check DOM和スタイル
-        const wa = sys.__getSysVar('DOM和スタイル')
-        if (wa[prop] !== undefined) {
-          prop = wa[prop]
-          return btn.style[prop]
-        }
-        // check DOM和属性
-        const waAttr = sys.__getSysVar('DOM和属性')
-        if (waAttr[prop] !== undefined) {
-          prop = waAttr[prop]
-          return btn[prop]
-        }
-        // others
-        return btn[prop]
-      }
+      sys.__addPropMethod(btn)
       // スキン適用
       const func = sys.__getSysVar('DOMスキン辞書')[sys.__getSysVar('DOMスキン')]
       if (typeof (func) === 'function') { func(elm, btn, sys) }

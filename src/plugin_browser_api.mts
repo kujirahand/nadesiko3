@@ -41,6 +41,7 @@ export interface NakoBrowsesrSystem extends NakoSystem {
   __tohtmlQ(text: string): string
   __dom_events: NakoDomEvent[]
   __requestAnimationFrameLastId: number
+  __addPropMethod(obj: any): void // プロパティ構文のために、__setProp / __getProp メソッドを追加する
   __chartjs: object
 }
 

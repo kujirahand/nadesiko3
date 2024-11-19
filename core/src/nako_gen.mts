@@ -1865,24 +1865,29 @@ export class NakoGen {
     if (!list || list.length <= 0) {
       throw NakoSyntaxError.fromNode('プロパティがありません。', node)
     }
-    let nameJs = name
+    let code
     const propList = list as AstStrValue[]
-    const propTopAst = propList.pop()
-    if (propTopAst === undefined) {
-      throw NakoSyntaxError.fromNode(`変数『${name}』のプロパティがありません。`, node)
-    }
-    const propTop = (typeof propTopAst.value === 'string') ? propTopAst.value : undefined
-    if (propTop === undefined) {
-      throw NakoSyntaxError.fromNode(`変数『${name}』のプロパティがありません。`, node)
-    }
-    for (const prop of propList) {
-      if (typeof prop.value === 'string') {
-        nameJs += `['${prop.value}']`
+    if (propList.length <= 1) {
+      const propKey = propList[0].value
+      const code_call = `${name}.__getProp('${propKey}', __self)`
+      const code_prop = `${name}['${propKey}']`
+      const code_if = `if (${name}.__getProp) { return ${code_call} } else { return ${code_prop} }`
+      code = `( (()=>{ ${code_if} })() )`
+    } else {
+      const arrs = []
+      const keys = []
+      for (let i = 0; i < propList.length; i++) {
+        const propKey = propList[i].value
+        keys.push(`['${propKey}']`)
+        arrs.push(`'${propKey}'`)
       }
+      const keyStr = keys.join('')
+      const arrStr = '[' + arrs.join(',') + ']'
+      const code_call = `${name}.__getProp(${arrStr}, __self)`
+      const code_prop = `${name}${keyStr}`
+      const code_if = `if (${name}.__getProp) { return ${code_call} } else { return ${code_prop} }`
+      code = `( (()=>{ ${code_if} })() )`
     }
-    const code =
-      `( (function(){ if (${nameJs}.__getProp) { return ${nameJs}.__getProp('${propTop}', __self) } ` +
-      `else { return ${nameJs}['${propTop}'] } })() )`
     return code
   }
 
