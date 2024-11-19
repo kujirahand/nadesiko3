@@ -1059,19 +1059,6 @@ export class NakoGen {
     return code
   }
 
-  convRefProp (node: Ast): string {
-    const name = this._convGen(node.name as Ast, true)
-    const list: Ast[] | undefined = node.index
-    if (!list || list.length <= 0) {
-      throw NakoSyntaxError.fromNode('プロパティがありません。', node)
-    }
-    const prop = (list[0] as AstStrValue).value
-    const code =
-      `( (function(){ if (${name}.__getProp) { return ${name}.__getProp('${prop}', __self) } ` +
-      `else { return ${name}['${prop}'] } })() )`
-    return code
-  }
-
   convLetArray (node: AstLetArray): string {
     const id = this.loopId++
     const valueNode: Ast = node.blocks[0]
@@ -1834,14 +1821,11 @@ export class NakoGen {
   convLetProp(node: AstLet): string {
     if (!node.index || node.index.length == 0) { throw NakoSyntaxError.fromNode('代入する先のプロパティ名がありません。', node) }
     if (!node.blocks || node.blocks.length == 0) { throw NakoSyntaxError.fromNode('代入する値がありません。', node) }
-    const astProp = node.index[0]
+    const propList = node.index as AstStrValue[]
+    const propTopAst = propList.pop()
+    if (propTopAst === undefined) { throw NakoSyntaxError.fromNode('代入する先のプロパティ名がありません。', node) }
+    const propTop = (typeof propTopAst.value === 'string') ? propTopAst.value : ''
     const astValue = node.blocks[0]
-    let prop = ''
-    if (astProp) {
-      prop = (astProp as AstStrValue).value
-    } else {
-      throw NakoSyntaxError.fromNode('代入する先のプロパティ名がありません。', node)
-    }
     let value = null
     // 値のプログラムを生成
     if (astValue) {
@@ -1849,7 +1833,6 @@ export class NakoGen {
     } else {
       throw NakoSyntaxError.fromNode('代入する値がありません。', node)
     }
-
     // 変数名
     const name: string = node.name
     const res = this.findVar(name, value)
@@ -1858,11 +1841,49 @@ export class NakoGen {
     if (res === null) {
       throw NakoSyntaxError.fromNode(`変数『${name}』が見当たりません。`, node)
     }
+    // 変数のプロパティ
+    let nameJs = res.js
+    if (propList.length > 0) {
+      for (const prop of propList) {
+        if (typeof prop.value === 'string') {
+          nameJs += `['${prop.value}']`
+        } else {
+          throw NakoSyntaxError.fromNode(
+            `変数『${nameJs}』以下のプロパティにアクセスできません。`, node)
+        }
+      }
+    }
     // プロパティへの代入式を作る
-    const propVar = `${res.js}['${prop}']`
-    code += `if (typeof ${res.js}.__setProp === 'function') { ${res.js}.__setProp('${prop}', ${value}, __self); } `
-    code += `else { ${propVar} = ${value} };`
+    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } `
+    code += `else { ${nameJs}['${propTop}'] = ${value} };`
     return ';' + this.convLineno(node, false) + code + '\n'
+  }
+  // プロパティへの参照 (#1793)
+  convRefProp(node: Ast): string {
+    const name = this._convGen(node.name as Ast, true)
+    const list: Ast[] | undefined = node.index
+    if (!list || list.length <= 0) {
+      throw NakoSyntaxError.fromNode('プロパティがありません。', node)
+    }
+    let nameJs = name
+    const propList = list as AstStrValue[]
+    const propTopAst = propList.pop()
+    if (propTopAst === undefined) {
+      throw NakoSyntaxError.fromNode(`変数『${name}』のプロパティがありません。`, node)
+    }
+    const propTop = (typeof propTopAst.value === 'string') ? propTopAst.value : undefined
+    if (propTop === undefined) {
+      throw NakoSyntaxError.fromNode(`変数『${name}』のプロパティがありません。`, node)
+    }
+    for (const prop of propList) {
+      if (typeof prop.value === 'string') {
+        nameJs += `['${prop.value}']`
+      }
+    }
+    const code =
+      `( (function(){ if (${nameJs}.__getProp) { return ${nameJs}.__getProp('${propTop}', __self) } ` +
+      `else { return ${nameJs}['${propTop}'] } })() )`
+    return code
   }
 
   convDefLocalVar(node: AstDefVar): string {

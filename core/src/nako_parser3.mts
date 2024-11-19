@@ -1556,25 +1556,33 @@ export class NakoParser extends NakoParserBase {
         throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`, map)
       }
     }
-    // プロパティ代入文 (#1793)
-    if (this.check2(['word', '$', 'word', 'eq']) || this.check2(['word', '$', 'string', 'eq'])) {
-      const word = this.peek()
-      if (this.accept(['word', '$', 'word', 'eq', this.yCalc]) || this.accept(['word', '$', 'string', 'eq', this.yCalc])) {
-        const nameToken = this.getVarName(this.y[0])
-        const propToken = this.y[2]
-        const valueToken = this.y[4]
-        return {
-          type: 'let_prop',
-          name: (nameToken as AstStrValue).value,
-          index: [propToken],
-          blocks: [valueToken],
-          josi: '',
-          ...map,
-          end: this.peekSourceMap()
-        } as AstLet
+
+    // オブジェクトプロパティ構文 代入文 (#1793)
+    if (this.check2(['word', '$', '*', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', 'eq'])) {
+      const propList = []
+      const word = this.getVarName(this.get() as Token)
+      for (;;) {
+        const flag = this.peek()
+        if (flag === null || flag.type !== '$') { break }
+        this.get() // skip $
+        propList.push(this.get() as Ast) // property
       }
-      throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文の計算式に書き間違いがあります。`, map)
+      this.get() // skip eq
+      const valueToken = this.yCalc() // calc
+      if (valueToken === null) {
+        throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文の計算式に書き間違いがあります。`, map)
+      }
+      return {
+        type: 'let_prop',
+        name: (word as AstStrValue).value,
+        index: propList,
+        blocks: [valueToken],
+        josi: '',
+        ...map,
+        end: this.peekSourceMap()
+      } as AstLet
     }
+    // オブジェクトプロパティ構文 ここまで
 
     // let_array ?
     if (this.check2(['word', '@'])) {
@@ -2311,15 +2319,21 @@ export class NakoParser extends NakoParserBase {
         return ast
       }
 
-      // word$prop
+      // オブジェクトプロパティ構文(参照) word$prop (#1793)
       if (word.josi === '' && (this.check2(['$', 'word']) || this.check2(['$', 'string']))) {
-        this.get() // skip '$'
-        const prop = this.get() as Token
+        const propList: Ast[] = []
+        let josi = ''
+        while (this.check('$')) {
+          this.get() // skip '$'
+          const prop = this.get() as Token
+          propList.push(prop as Ast)
+          josi = prop.josi
+        }
         return {
           type: 'ref_prop', // プロパティ参照
           name: word,
-          index: [prop as Ast],
-          josi: prop.josi,
+          index: propList,
+          josi: josi,
           ...map,
           end: this.peekSourceMap()
         }
