@@ -211,7 +211,7 @@ export default {
       'データ': 'data',
       '名前': 'name',
       'ID': 'id',
-      'クラス': 'class',
+      'クラス': 'className',
       '読取専用': 'readOnly', // エディタ・テキストエリア用 (#1822)
       '読み取り専用': 'readOnly',
       '無効化': 'disabled',
@@ -269,6 +269,10 @@ export default {
       '幅': 'style',
       '高': 'style',
       '読取専用': 'attribute',
+      '有効': 'hook', // 「DOM有効設定」「DOM有効取得」を呼び出す
+      '可視': 'hook', // 「DOM可視設定」「DOM可視取得」を呼び出す
+      'ポケット': 'hook', // 「DOMポケット設定」「DOMポケット取得」を呼び出す
+      'ヒント': 'hook', // 「DOMヒント設定」「DOMヒント取得」を呼び出す
     }
   },
   'DOMスタイル設定': { // @DOMのスタイルAに値Bを設定 // @DOMすたいるせってい
@@ -395,7 +399,7 @@ export default {
         }
       } else {
         // 優先ルールに従って適用する (#1822)
-        if (waAttr[prop] !== undefined && waStyle[prop] !== undefined) {
+        if (waPriority[prop] !== undefined) {
           const p = waPriority[prop]
           if (p === 'style') {
             prop = waStyle[prop]
@@ -404,6 +408,10 @@ export default {
           } else if (p === 'attribute') {
             prop = waAttr[prop]
             dom[prop] = value
+            return
+          } else if (p === 'hook') { // フック関数を実行する (#1823)
+            const hookName = `DOM${prop}設定`
+            sys.__exec(hookName, [dom, value, sys])
             return
           }
         }
@@ -447,6 +455,7 @@ export default {
       dom = sys.__query(dom, 'DOM設定取得', true)
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
+      const waPriority = sys.__getSysVar('DOM和優先指定')
       // prop is array:
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
@@ -466,7 +475,7 @@ export default {
       }
       // prop is string:
       // 優先ルールに従って適用する (#1822)
-      if (waAttr[prop] !== undefined && waStyle[prop] !== undefined) {
+      if (waPriority[prop] !== undefined) {
         const p = waPriority[prop]
         if (p === 'style') {
           prop = waStyle[prop]
@@ -474,6 +483,9 @@ export default {
         } else if (p === 'attribute') {
           prop = waAttr[prop]
           return dom[prop]
+        } else if (p === 'hook') { // フック関数を実行する (#1823)
+          const hookName = `DOM${prop}取得`
+          return sys.__exec(hookName, [dom, sys])
         }
       }
       // check DOM和属性
@@ -494,6 +506,44 @@ export default {
       return dom[prop]
     }
   },
+  'DOM有効設定': { // @DOMのdata-有効の値を設定 // @DOMゆうこうせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (dom: any, value: string, sys: any) {
+      dom = sys.__query(dom, 'DOM有効設定', true)
+      if (!dom) { return '' }
+      dom.dataset['有効'] = value
+      dom.disabled = (value) ? false : true
+    }
+  },
+  'DOM有効取得': { // @DOMのdata-有効の値を取得 // @DOMゆうこうしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (dom: any, sys: any) {
+      dom = sys.__query(dom, 'DOM有効取得', true)
+      if (!dom) { return '' }
+      return dom.dataset['有効']
+    }
+  },
+  'DOM可視設定': { // @DOMのdata-可視の値を設定 // @DOMかしせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (dom: any, value: string, sys: any) {
+      dom = sys.__query(dom, 'DOM可視設定', true)
+      if (!dom) { return '' }
+      dom.dataset['可視'] = value
+      dom.style.visibility = (value) ? 'visible' : 'hidden'
+    }
+  },
+  'DOM可視取得': { // @DOMのdata-可視の値を取得 // @DOMかししゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (dom: any, sys: any) {
+      dom = sys.__query(dom, 'DOM可視取得', true)
+      if (!dom) { return '' }
+      return dom.dataset['可視']
+    }
+  },
   'ポケット取得': { // @DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる) // @ぽけっとしゅとく
     type: 'func',
     josi: [['の', 'から']],
@@ -508,6 +558,13 @@ export default {
       }
     }
   },
+  'DOMポケット取得': { // @DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる) // @DOMぽけっとしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (dom: any, sys: any) {
+      return sys.__exec('ポケット取得', [dom, sys])
+    }
+  },
   'ポケット設定': { // @DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる) // @ぽけっとせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
@@ -515,6 +572,14 @@ export default {
       dom = sys.__query(dom, 'ポケット設定', true)
       if (!dom) { return '' }
       dom.dataset.pocket = JSON.stringify(val)
+    },
+    return_none: true
+  },
+  'DOMポケット設定': { // @DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる) // @DOMぽけっとせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (dom: any, val: any, sys: any) {
+      return sys.__exec('ポケット設定', [dom, val, sys])
     },
     return_none: true
   },
@@ -527,6 +592,13 @@ export default {
       return dom.getAttribute('title')
     }
   },
+  'DOMヒント取得': { // @DOMのヒント(title属性)の値を取得 // @ひんとしゅとく
+    type: 'func',
+    josi: [['の', 'から']],
+    fn: function (dom: any, sys: any) {
+      return sys.__exec('ヒント取得', [dom, sys])
+    }
+  },
   'ヒント設定': { // @DOMのヒント(title属性)に値Vを設定 // @ひんとせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
@@ -534,6 +606,14 @@ export default {
       dom = sys.__query(dom, 'ヒント設定', true)
       if (!dom) { return '' }
       dom.setAttribute('title', val)
+    },
+    return_none: true
+  },
+  'DOMヒント設定': { // @DOMのヒント(title属性)に値Vを設定 // @ひんとせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    fn: function (dom: any, val: string, sys: any) {
+      return sys.__exec('ヒント設定', [dom, val, sys])
     },
     return_none: true
   },
