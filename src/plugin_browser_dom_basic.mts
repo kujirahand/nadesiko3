@@ -226,6 +226,12 @@ export default {
       '入力ヒント': 'placeholder',
       '文字幅': 'size',
       'スタイル': 'style',
+      '行数': 'rows', // テキストエリア用
+      '列数': 'cols', // テキストエリア用
+      '自動入力': 'autocomplete', // 'on' or 'off'
+      '自動フォーカス': 'autofocus',
+      '最大文字数': 'maxlength',
+      '最小文字数': 'minlength',
     }
   },
   'DOM和スタイル': { // 'const' // @DOMわすたいる
