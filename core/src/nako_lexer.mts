@@ -14,7 +14,7 @@ import { isIndentChars } from './nako_indent_chars.mjs'
 import { josiRE, removeJosiMap, tararebaMap, josiListExport } from './nako_josi_list.mjs'
 
 // 字句解析ルールの一覧
-import { rules, unitRE, NakoLexParseResult } from './nako_lex_rules.mjs'
+import { rules, unitRE, cssUnitRE, NakoLexParseResult } from './nako_lex_rules.mjs'
 import { NakoLexerError, InternalLexerError } from './nako_errors.mjs'
 
 import { FuncList, FuncArgs, ExportMap, FuncListItem } from './nako_types.mjs'
@@ -563,6 +563,7 @@ export class NakoLexer {
         // 正規表現でマッチ
         const m = rule.pattern.exec(src)
         if (!m) { continue }
+        let ruleName = rule.name
         ok = true
         // 空白ならスキップ
         if (rule.name === 'space') {
@@ -673,6 +674,14 @@ export class NakoLexer {
             src = src.substring(um[0].length)
             column += m[0].length
           }
+          // CSSの単位なら自動的に文字列として認識させる #1811
+          const cssUnit = cssUnitRE.exec(src)
+          if (cssUnit) {
+            ruleName = 'string'
+            src = src.substring(cssUnit[0].length)
+            column += m[0].length
+            value += cssUnit[0]
+          }
         }
 
         let josi = ''
@@ -696,7 +705,7 @@ export class NakoLexer {
           }
         }
 
-        switch (rule.name) {
+        switch (ruleName) {
           case 'def_test': {
             isDefTest = true
             break
@@ -710,13 +719,13 @@ export class NakoLexer {
           }
         }
         // ここまで‰(#682) を処理
-        if (rule.name === 'dec_lineno') {
+        if (ruleName === 'dec_lineno') {
           line--
           continue
         }
 
         result.push({
-          type: rule.name,
+          type: ruleName,
           value,
           indent,
           line: lineCurrent,
@@ -727,7 +736,7 @@ export class NakoLexer {
           preprocessedCodeLength: (srcLength - src.length) - srcOffset
         })
         // 改行のとき次の行のインデントを調べる。なお、改行の後は必ずcolumnが1になる。インデント構文のため、一行に2つ以上の文を含むときを考慮する。(core #66)
-        if (rule.name === 'eol' && column === 1) {
+        if (ruleName === 'eol' && column === 1) {
           const ia = this.countIndent(src)
           indent = ia[0]
           column += ia[1]

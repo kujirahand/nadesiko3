@@ -402,4 +402,9 @@ describe('basic', async () => {
     await cmp('A={"スタイル":{"幅":300}};A$スタイル$幅=1;A$スタイル$幅を表示', '1')
     await cmp('A={"猫":{"三毛猫":1, "日本猫":2}};A$猫$日本猫=123;A$猫$日本猫を表示', '123')
   })
+  it('CSSの単位付き数値を文字列として認識させる #1811', async () => {
+    await cmp('(TYPEOF(30px))を表示', 'string')
+    await cmp('A=30em;Aを表示', '30em')
+    await cmp('A=30px;AをJSONエンコードして表示', '"30px"')
+  })
 })

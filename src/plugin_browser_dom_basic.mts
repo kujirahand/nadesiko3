@@ -359,7 +359,7 @@ export default {
       dom = sys.__query(dom, 'DOM設定変更', false)
       const wa = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
-      // check prop is array
+      // check prop is array --- 配列で指定された場合、曖昧ルールは適用しない
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
           let propName = prop[i]
@@ -376,6 +376,20 @@ export default {
           }
         }
       } else {
+        // スタイルの優先ルール --- valueが単位付き数値ならスタイルに適用
+        if (typeof value === 'string' && value.match(/^[0-9.]+([a-z]{2,5}|%)$/)) {
+          // 和スタイル
+          if (waAttr[prop] !== undefined) {
+            prop = waAttr[prop]
+            dom.style[prop] = value
+            return
+          }
+          // その他の属性でよくある単位が指定されているならスタイルに適用
+          if (value.match(/^[0-9.]+(px|em|ex|rem|vw|vh)$/)) {
+            dom.style[prop] = value
+            return
+          }
+        }
         // check DOM和スタイル
         if (wa[prop] !== undefined) {
           prop = wa[prop]
