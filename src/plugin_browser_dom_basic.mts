@@ -352,7 +352,7 @@ export default {
     },
     return_none: true
   },
-  'DOM設定変更': { // @DOMの属性とスタイルを適当に設定 // @DOMせっていへんこう
+  'DOM設定変更': { // @DOMの属性とスタイルPROP(配列で指定可能)を適当にVALUEに設定 // @DOMせっていへんこう
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     fn: function (dom: any, prop: string|string[], value:any, sys: any) {
@@ -394,7 +394,7 @@ export default {
     },
     return_none: true
   },
-  'DOM設定取得': { // @DDOMの属性とスタイルを適当に取得 // @DOMせっていしゅとく
+  'DOM設定取得': { // @DOMの属性とスタイルPROP(配列で指定可能)の値を適当に取得 // @DOMせっていしゅとく
     type: 'func',
     josi: [['の', 'から'], ['を']],
     fn: function (dom: any, prop: string|string[], sys: any) {
