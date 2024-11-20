@@ -211,7 +211,8 @@ export default {
       'データ': 'data',
       '名前': 'name',
       'ID': 'id',
-      '読取専用': 'readOnly',
+      'クラス': 'class',
+      '読取専用': 'readOnly', // エディタ・テキストエリア用 (#1822)
       '読み取り専用': 'readOnly',
       '無効化': 'disabled',
       '非表示': 'hidden',
@@ -246,6 +247,7 @@ export default {
       '余白': 'padding',
       '文字サイズ': 'font-size',
       '行揃え': 'text-align',
+      '上': 'top',
       '左': 'left',
       '右': 'right',
       '中央': 'center',
@@ -255,9 +257,18 @@ export default {
       'ブロック': 'block',
       '表示位置': 'float',
       '重なり': 'z-index',
+      '重': 'z-index',
       '読取専用': 'readOnly',
       '読み取り専用': 'readOnly',
       'readonly': 'readOnly'
+    }
+  },
+  'DOM和優先指定': { // 'const' // @DOMわゆうせんしてい
+    type: 'const',
+    value: { // DOM和属性とDOM和スタイルのどちらが優先かを指定する (#1822)
+      '幅': 'style',
+      '高': 'style',
+      '読取専用': 'attribute',
     }
   },
   'DOMスタイル設定': { // @DOMのスタイルAに値Bを設定 // @DOMすたいるせってい
@@ -363,14 +374,15 @@ export default {
     josi: [['の'], ['に', 'へ'], ['を']],
     fn: function (dom: any, prop: string|string[], value:any, sys: any) {
       dom = sys.__query(dom, 'DOM設定変更', false)
-      const wa = sys.__getSysVar('DOM和スタイル')
+      const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
+      const waPriority = sys.__getSysVar('DOM和優先指定')
       // check prop is array --- 配列で指定された場合、曖昧ルールは適用しない
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
           let propName = prop[i]
-          if (wa[propName] !== undefined) { // DOM和スタイル
-            propName = wa[propName]
+          if (waStyle[propName] !== undefined) { // DOM和スタイル
+            propName = waStyle[propName]
           }
           else if (waAttr[propName] !== undefined) { // dom和スタイル
             propName = waAttr[propName]
@@ -382,30 +394,44 @@ export default {
           }
         }
       } else {
-        // スタイルの優先ルール --- valueが単位付き数値ならスタイルに適用
-        if (typeof value === 'string' && value.match(/^[0-9.]+([a-z]{2,5}|%)$/)) {
-          // 和スタイル
-          if (waAttr[prop] !== undefined) {
-            prop = waAttr[prop]
+        // 優先ルールに従って適用する (#1822)
+        if (waAttr[prop] !== undefined && waStyle[prop] !== undefined) {
+          const p = waPriority[prop]
+          if (p === 'style') {
+            prop = waStyle[prop]
             dom.style[prop] = value
             return
-          }
-          // その他の属性でよくある単位が指定されているならスタイルに適用
-          if (value.match(/^[0-9.]+(px|em|ex|rem|vw|vh)$/)) {
-            dom.style[prop] = value
+          } else if (p === 'attribute') {
+            prop = waAttr[prop]
+            dom[prop] = value
             return
           }
         }
-        // check DOM和スタイル
-        if (wa[prop] !== undefined) {
-          prop = wa[prop]
+        // 単位付きスタイルの優先ルール --- valueが単位付き数値ならスタイルに適用
+        if (waStyle[prop] !== undefined && typeof value === 'string' && value.match(/^[0-9.]+([a-z]{2,5})$/)) {
+          // 例えば 3px や 6em などの値が指定されたらスタイルに対する適用
+          prop = waStyle[prop]
           dom.style[prop] = value
+          // console.log('waStyle', prop, value)
           return
         }
         // check DOM和属性
         if (waAttr[prop] !== undefined) {
           prop = waAttr[prop]
           dom[prop] = value
+          // console.log('waAttr', prop, value)
+          return
+        }
+        // check DOM和スタイル
+        if (waStyle[prop] !== undefined) {
+          prop = waStyle[prop]
+          dom.style[prop] = value
+          // console.log('waStyle', prop, value)
+          return
+        }
+        // DOM和スタイルでなくてもよくある単位が指定されているなら直接スタイルに適用。(ただしDOM和属性に存在しないものに限る=判定後に適用)
+        if (value.match(/^[0-9.]+(px|em|ex|rem|vw|vh)$/)) {
+          dom.style[prop] = value
           return
         }
         // others
@@ -421,14 +447,14 @@ export default {
       dom = sys.__query(dom, 'DOM設定取得', true)
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
-      // array
+      // prop is array:
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
           let propName = prop[i]
           if (waStyle[propName] !== undefined) { // DOM和スタイル
             propName = waStyle[propName]
           }
-          else if (waAttr[propName] !== undefined) { // dom和スタイル
+          else if (waAttr[propName] !== undefined) { // dom和属性
             propName = waAttr[propName]
           }
           if (i < prop.length - 1) {
@@ -438,18 +464,29 @@ export default {
           }
         }
       }
-      // string
+      // prop is string:
+      // 優先ルールに従って適用する (#1822)
+      if (waAttr[prop] !== undefined && waStyle[prop] !== undefined) {
+        const p = waPriority[prop]
+        if (p === 'style') {
+          prop = waStyle[prop]
+          return dom.style[prop]
+        } else if (p === 'attribute') {
+          prop = waAttr[prop]
+          return dom[prop]
+        }
+      }
+      // check DOM和属性
+      if (waAttr[prop] !== undefined) {
+        prop = waAttr[prop]
+        const val = dom[prop]
+        if (val !== undefined) { return val }
+      }
       // check DOM和スタイル
       if (waStyle[prop] !== undefined) {
         prop = waStyle[prop]
         const valStyle = dom.style[prop]
         if (valStyle !== undefined) { return valStyle }
-        const val = dom[prop]
-        if (val !== undefined) { return val }
-      }
-      // check DOM和属性
-      if (waAttr[prop] !== undefined) {
-        prop = waAttr[prop]
         const val = dom[prop]
         if (val !== undefined) { return val }
       }
