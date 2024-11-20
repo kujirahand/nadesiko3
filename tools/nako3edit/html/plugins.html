@@ -20,13 +20,13 @@ HREFを表示。
 P=HREFをURLパラメータ解析
 Pを表示。
 APPKEY=P["appkey"]
-Pを表示。
+「APPKEY={APPKEY}」を表示。
 プラグイン取得処理
 #-----------
 # 新規ボタン
-「#new_btn」をクリックした時には
-　　「/html/edit.html?file=new&appkey={APPKEY}」へブラウザ移動。
-ここまで。
+FILES_A=「#gotoFilesLink」のDOM要素取得
+「@@@{FILES_A}」を表示。
+FILES_A["href"]=「/html/files.html?appkey={APPKEY}」
 #-----------
 ●プラグイン取得処理
   API=「/get_plugins?appkey={APPKEY}」
@@ -108,7 +108,7 @@ Pを表示。
 <body>
   <div class="navbar bg-base-100">
     <div class="flex-1">
-      <a class="btn btn-ghost normal-case text-xl" href="files.html">Node版 なでしこ3 エディタ</a>
+      <a class="btn btn-ghost normal-case text-xl" href="#" id="gotoFilesLink">Node版 なでしこ3 エディタ</a>
       &gt; プラグインの追加
     </div>
   </div>
