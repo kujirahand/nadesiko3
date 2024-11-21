@@ -181,8 +181,8 @@ describe('plugin_node_test', () => {
     await cmp(pathSrc2 +
         'F=「{TMP}/bbb」;Fが存在;もしそうならば、Fをファイル削除;' +
         'FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。', 'ok', 200)
-    await cmp(`${pathSrc2}「{TMP}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
-    await cmp(`${pathSrc2}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+    await cmp(`${pathSrc2};「{TMP}/bbb」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
+    await cmp(`${pathSrc2};FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリムして表示。`, 'abc')
   })
   it('圧縮/解凍 - OSコマンドインジェクション対策(修正が不完全だった件の修正) #1325', async function () {
     // 7z がない環境ではテストを飛ばす
