@@ -263,9 +263,9 @@ export default {
       'readonly': 'readOnly'
     }
   },
-  'DOM和優先指定': { // 'const' // @DOMわゆうせんしてい
+  'DOMプロパティ情報': { // 'const' // @DOMぷろぱてぃじょうほう
     type: 'const',
-    value: { // DOM和属性とDOM和スタイルのどちらが優先かを指定する (#1822)
+    value: { // 「DOM和属性」(attribute)「DOM和スタイル」(style)「関数フック」(hook)のどれかを指定する (#1822)
       '幅': 'style',
       '高': 'style',
       '読取専用': 'attribute',
@@ -380,7 +380,7 @@ export default {
       dom = sys.__query(dom, 'DOM設定変更', false)
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
-      const waPriority = sys.__getSysVar('DOM和優先指定')
+      const waPriority = sys.__getSysVar('DOMプロパティ情報')
       // check prop is array --- 配列で指定された場合、曖昧ルールは適用しない
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
@@ -455,7 +455,7 @@ export default {
       dom = sys.__query(dom, 'DOM設定取得', true)
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
-      const waPriority = sys.__getSysVar('DOM和優先指定')
+      const waPriority = sys.__getSysVar('DOMプロパティ情報')
       // prop is array:
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
