@@ -1461,6 +1461,30 @@ export default {
       return JSON.parse(s)
     }
   },
+  'JSON_E': { // @オブジェクトVをJSON形式にエンコードして返す(JSONエンコードと同じ) // @JSON_E
+    type: 'func',
+    josi: [['を', 'の']],
+    pure: true,
+    fn: function (v: any) {
+      return JSON.stringify(v)
+    }
+  },
+  'JSON_ES': { // @オブジェクトVをJSON形式にエンコードして整形して返す(JSONエンコード整形と同じ) // @JSON_ES
+    type: 'func',
+    josi: [['を', 'の']],
+    pure: true,
+    fn: function (v: any) {
+      return JSON.stringify(v, null, 2)
+    }
+  },
+  'JSON_D': { // @JSON文字列Sをオブジェクトにデコードして返す(JSONデコードと同じ) // @JSON_D
+    type: 'func',
+    josi: [['を', 'の', 'から']],
+    pure: true,
+    fn: function (s: string): string {
+      return JSON.parse(s)
+    }
+  },
 
   // @正規表現
   '正規表現マッチ': { // @文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定。optにgの指定がなければ部分マッチが『抽出文字列』に入る) // @せいきひょうげんまっち
