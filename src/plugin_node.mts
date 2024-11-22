@@ -195,36 +195,16 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    asyncFn: true,
     fn: function (f: string) {
-      return new Promise((resolve, reject) => {
-        // ファイルを開く
-        fs.readFile(f, 'utf-8', (err: any, text: any) => {
-          if (err) {
-            reject(new Error(`ファイル『${f}』が開けませんでした。理由:${err.message}`))
-            return
-          }
-          resolve(text)
-        })
-      })
+      return fs.readFileSync(f, 'utf-8')
     }
   },
   '読': { // @ファイFSを開く // @よむ
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    asyncFn: true,
-    fn: function (f: string, sys: NakoSystem) {
-      return new Promise((resolve, reject) => {
-        // ファイルを読む
-        fs.readFile(f, 'utf-8', (err: any, text: any) => {
-          if (err) {
-            reject(new Error(`ファイル『${f}』が開けませんでした。理由:${err.message}`))
-            return
-          }
-          resolve(text)
-        })
-      })
+    fn: function (f: string) {
+      return fs.readFileSync(f, 'utf-8')
     }
   },
   'バイナリ読': { // @ファイルSをバイナリ(Buffer)として開く // @ばいなりよむ
