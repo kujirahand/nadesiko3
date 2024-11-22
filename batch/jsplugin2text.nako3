@@ -79,13 +79,14 @@ LINENO=0
 　　SS=「」
 　　# 結果＝「■plugin_browser(wnako)」&改行
 　　DIR=Fからパス抽出。
-　　Fを開いて改行で区切る
-　　反復
-　　　　対象を「import .*\'(.+\.mjs)\'」で正規表現マッチ。
+　　Fから開く。改行で区切る。SAに代入。
+　　SAを反復
+　　　　LINE＝対象をトリム。
+　　　　LINEを『^import .*\'(.+?\.mjs)\'』で正規表現マッチ。
 　　　　もし、そうならば
-　　　　　　対象を「plugin_[0-9a-zA-Z_]+.mjs」で正規表現マッチ。
-　　　　　　もし、そうならば
-　　　　　　　　FNAME=それの「.mjs」を「.mts」に置換。
+　　　　　　LINEを「plugin_[0-9a-zA-Z_]+.mjs」で正規表現マッチして、F2に代入。
+　　　　　　もし、F2≠「」ならば
+　　　　　　　　FNAME=F2の「.mjs」を「.mts」に置換。
 　　　　　　　　もし、FNAME=「plugin_api.mts」ならば、続ける。
 　　　　　　　　SRC_URL=「https://github.com/kujirahand/nadesiko3/blob/master/src/{FNAME}」
 　　　　　　　　FULL＝「{DIR}/{FNAME}」
@@ -200,7 +201,7 @@ LINENO=0
     いいえで、戻る。
 ここまで
 
-●（Sを)毎行処理
+●(Sを)毎行処理
     S = トリム(S)
     # @ の例外
     「// eslint」がSで何文字目。もし、そうならば、戻る。
