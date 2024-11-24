@@ -297,10 +297,13 @@ export default {
         const val = cols[1]
         const opt1 = cols[2]
         const opt2 = cols[3]
+        let isHidden = false
         if (key === '' && val === '') { continue } // 空行は無視
         // key
         const th = document.createElement('th')
-        th.innerHTML = sys.__tohtmlQ(key)
+        const lbl = document.createElement('label')
+        lbl.innerHTML = sys.__tohtmlQ(key)
+        th.appendChild(lbl)
         // val
         const td = document.createElement('td')
         if (val.substring(0, 2) === '?(') {
@@ -325,7 +328,10 @@ export default {
           // input element
           const inp = document.createElement('input')
           td.appendChild(inp)
+          const lbl2 = document.createElement('label')
+          td.appendChild(lbl2)
           inp.id = 'nako3form_' + key
+          lbl.htmlFor = inp.id
           // check type v3.6.37
           if (val === '?text') {
             inp.type = 'text'
@@ -345,17 +351,63 @@ export default {
             inp.placeholder = opt2
             inp.name = key
           }
+          else if (val === '?email') {
+            inp.type = 'email'
+            inp.value = opt1
+            inp.placeholder = opt2
+            inp.name = key
+          }
+          else if (val === '?tel') {
+            inp.type = 'tel'
+            inp.value = opt1
+            inp.placeholder = opt2
+            inp.name = key
+          }
+          else if (val === '?file') {
+            inp.type = 'file'
+            inp.name = key
+          }
+          else if (val === '?date') {
+            inp.type = 'date'
+            inp.value = opt1.replace(/\//g, '-')
+            inp.name = key
+          }
+          else if (val === '?month') {
+            inp.type = 'month'
+            inp.value = opt1.replace(/\//g, '-')
+            inp.name = key
+          }
+          else if (val === '?time') {
+            inp.type = 'time'
+            inp.value = opt1
+            inp.name = key
+          }
           else if (val === '?color') {
             inp.type = 'color'
             inp.value = opt1
             inp.name = key
+          }
+          else if (val === '?hidden') {
+            inp.type = 'hidden'
+            inp.value = opt1
+            inp.name = key
+            isHidden = true
+            frm.appendChild(inp)
+          }
+          else if (val === '?checkbox') {
+            inp.type = 'checkbox'
+            inp.value = opt1
+            inp.name = key
+            lbl2.innerHTML = ' ' + sys.__tohtmlQ(opt2)
+            lbl2.htmlFor = inp.id
           }
           // v3.2.33での拡張
           else if (val === '?送信' || val === '?submit') {
             inp.type = 'submit'
             inp.value = val.substring(1)
             if (key !== '') { inp.name = key }
-          } else if (val.substring(0, 2) === '?c') {
+          }
+          else if (val.substring(0, 3) === '?c#') {
             inp.type = 'color'
             inp.value = val.substring(2)
             inp.name = key
@@ -365,6 +417,7 @@ export default {
             inp.name = key
           }
         }
+        if (isHidden) { continue }
         const tr = document.createElement('tr')
         tr.appendChild(th)
         tr.appendChild(td)
