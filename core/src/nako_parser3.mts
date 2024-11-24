@@ -360,7 +360,10 @@ export class NakoParser extends NakoParserBase {
       throw NakoSyntaxError.fromNode(this.nodeToStr(funcName, { depth: 0, typeName: '関数' }, false) +
         'の定義で以下のエラーがありました。\n' + err.message, def)
     }
-
+    const func = this.funclist.get(funcName.value)
+    if (func && !func.asyncFn && asyncFn) {
+      func.asyncFn = asyncFn
+    }
     return {
       type,
       name: funcName.value,
