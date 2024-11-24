@@ -9,17 +9,21 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (id: string) {
-      return document.getElementById(id)
+    fn: function (id: string, sys: any) {
+      const dom = document.getElementById(id)
+      sys.__addPropMethod(dom)
+      return dom
     }
   },
   'DOM要素取得': { // @DOMの要素をクエリqで取得して返す // @DOMようそしゅとく
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (q: any) {
+    fn: function (q: any, sys: any) {
       if (typeof q === 'string') {
-        return document.querySelector(q)
+        const dom = document.querySelector(q)
+        sys.__addPropMethod(dom)
+        return dom
       }
       return q
     }
@@ -29,7 +33,12 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (q: any) {
-      return Array.from(document.querySelectorAll(q))
+      const domList = Array.from(document.querySelectorAll(q))
+      if (!domList) { return [] }
+      for (const dom of domList) {
+        sys.__addPropMethod(dom)
+      }
+      return domList
     }
   },
   'タグ一覧取得': { // @任意のタグの一覧を取得して返す // @たぐいちらんしゅとく
@@ -49,7 +58,9 @@ export default {
       if (!pa.querySelector) {
         throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
       }
-      return pa.querySelector(q)
+      const dom = pa.querySelector(q)
+      sys.__addPropMethod(dom)
+      return dom
     }
   },
   'DOM子要素全取得': { // @DOMの要素PAの子要素をクエリqを指定して結果を複数取得して返す // @DOMこようそぜんしゅとく
@@ -61,7 +72,12 @@ export default {
       if (!pa.querySelectorAll) {
         throw new Error('『DOM子要素全取得』で親要素がDOMではありません。')
       }
-      return Array.from(pa.querySelectorAll(q))
+      const domList = Array.from(pa.querySelectorAll(q))
+      if (!domList) { return [] }
+      for (const dom of domList) {
+        sys.__addPropMethod(dom)
+      }
+      return domList
     }
   },
   'DOMイベント設定': { // @DOMのEVENTになでしこ関数名funcStrのイベントを設定 // @DOMいべんとせってい
@@ -417,7 +433,7 @@ export default {
           }
         }
         // 単位付きスタイルの優先ルール --- valueが単位付き数値ならスタイルに適用
-        if (waStyle[prop] !== undefined && typeof value === 'string' && value.match(/^[0-9.]+([a-z]{2,5})$/)) {
+        if (waStyle[prop] !== undefined && (typeof value === 'string') && (value.match(/^[0-9.]+([a-z]{2,5})$/))) {
           // 例えば 3px や 6em などの値が指定されたらスタイルに対する適用
           prop = waStyle[prop]
           dom.style[prop] = value
@@ -439,7 +455,7 @@ export default {
           return
         }
         // DOM和スタイルでなくてもよくある単位が指定されているなら直接スタイルに適用。(ただしDOM和属性に存在しないものに限る=判定後に適用)
-        if (value.match(/^[0-9.]+(px|em|ex|rem|vw|vh)$/)) {
+        if (typeof value === 'string' && value.match(/^[0-9.]+(px|em|ex|rem|vw|vh)$/)) {
           dom.style[prop] = value
           return
         }

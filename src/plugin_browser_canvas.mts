@@ -9,8 +9,8 @@ export default {
     pure: true,
     fn: function (cv: any, sys: any) {
       if (typeof cv === 'string') { cv = document.querySelector(cv) || document.getElementById(cv) }
-
       if (!cv) { throw new Error('『描画開始』でCanvasを取得できませんでした。') }
+      sys.__addPropMethod(cv)
       sys.__canvas = cv
       sys.__ctx = cv.getContext('2d')
       sys.__fillStyle = 'black'
