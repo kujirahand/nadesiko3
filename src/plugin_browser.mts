@@ -216,7 +216,17 @@ const PluginBrowser = {
       }
       // DOM取得のために使う
       sys.__query = (dom: object|string, commandName: string, isGetFunc: boolean) => {
-        const elm = (typeof dom === 'string') ? document.querySelector(dom) : dom
+        // get element
+        let elm: HTMLElement|null = null
+        if (typeof dom === 'string') { // string to HTMLElement
+          elm = document.querySelector(dom)
+          if (!elm) {
+            elm = document.getElementById(dom)
+          }
+        } else {
+          elm = dom as HTMLElement
+        }
+        // check element
         if (!elm) {
           if (isGetFunc) {
             // 取得イベントではコンソールにヒントを出す
