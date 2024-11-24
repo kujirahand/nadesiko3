@@ -262,7 +262,7 @@ export default {
       return inp
     }
   },
-  'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}で項目一覧S「項目1=初期値1{改行}項目2=?(選択肢1|選択肢2){改行}項目色=?c#fff0f0{改行}=?送信」を送信フォームを作成しDOMオブジェクトを返す // @ふぉーむさくせい
+  'フォーム作成': { // @属性OBJ{method:"GET",action:"..."}で項目一覧S「項目1=初期値1{改行}項目2=初期値2{改行}…」を送信フォームを作成しDOMオブジェクトを返す。「=?」でオプションの指定が可能 // @ふぉーむさくせい
     type: 'func',
     josi: [['で', 'の'], ['を']],
     pure: true,
@@ -292,10 +292,12 @@ export default {
         } else {
           cols = row
         }
-        if (cols.length < 2) { cols.push('') }
+        while (cols.length < 4) { cols.push('') }
         const key = cols[0]
         const val = cols[1]
-        if (key === '') { continue } // 空行は無視
+        const opt1 = cols[2]
+        const opt2 = cols[3]
+        if (key === '' && val === '') { continue } // 空行は無視
         // key
         const th = document.createElement('th')
         th.innerHTML = sys.__tohtmlQ(key)
@@ -324,7 +326,32 @@ export default {
           const inp = document.createElement('input')
           td.appendChild(inp)
           inp.id = 'nako3form_' + key
-          if (val === '?送信' || val === '?submit') {
+          // check type v3.6.37
+          if (val === '?text') {
+            inp.type = 'text'
+            inp.value = opt1
+            inp.placeholder = opt2
+            inp.name = key
+          }
+          else if (val === '?password') {
+            inp.type = 'password'
+            inp.value = opt1
+            inp.placeholder = opt2
+            inp.name = key
+          }
+          else if (val === '?number') {
+            inp.type = 'number'
+            inp.value = opt1
+            inp.placeholder = opt2
+            inp.name = key
+          }
+          else if (val === '?color') {
+            inp.type = 'color'
+            inp.value = opt1
+            inp.name = key
+          }
+          // v3.2.33での拡張
+          else if (val === '?送信' || val === '?submit') {
             inp.type = 'submit'
             inp.value = val.substring(1)
             if (key !== '') { inp.name = key }
