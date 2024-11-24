@@ -266,7 +266,7 @@ export default {
     type: 'func',
     josi: [['で', 'の'], ['を']],
     pure: true,
-    fn: function (obj: any, s: any, sys: any) {
+    fn: function (obj: any, s: string|Array<string>|Array<Array<string>>, sys: any) {
       const frm = sys.__exec('DOM部品作成', ['form', sys])
       // 可能ならformにobjの値を移し替える
       if (obj instanceof Object) {
@@ -275,13 +275,24 @@ export default {
         }
       }
       // 入力項目をtableで作る
-      const rows = s.split('\n')
       const table = document.createElement('table')
+      // 入力項目がstringの場合、改行で分割
+      let rows: Array<string>|Array<Array<string>>
+      if (typeof s === 'string') {
+        rows = s.split('\n')
+      } else {
+        rows = s
+      }
+      // 入力項目に合わせて行を追加
       for (const rowIndex in rows) {
-        let row = '' + (rows[rowIndex])
-        if (row === '') { continue }
-        if (row.indexOf('=') < 0) { row += '=' }
-        const cols = row.split('=')
+        const row: Array<string>|string = rows[rowIndex]
+        let cols: Array<string>
+        if (typeof row === 'string') {
+          cols = row.split('=')
+        } else {
+          cols = row
+        }
+        if (cols.length < 2) { cols.push('') }
         const key = cols[0]
         const val = cols[1]
         // key
