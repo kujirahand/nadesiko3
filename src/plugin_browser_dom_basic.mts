@@ -312,7 +312,13 @@ export default {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom: any, values: any, sys: any) {
-      if (typeof dom === 'string') { dom = document.querySelectorAll(dom) }
+      if (typeof dom === 'string') {
+        const domList = document.querySelectorAll(dom)
+        if (domList === undefined || domList === null || domList.length === 0) {
+          throw new Error(`『DOMスタイル一括設定』で『${dom}』が見つかりません。`)
+        }
+        dom = domList
+      }
       if (dom instanceof window.HTMLElement) { dom = [dom] }
       const wa = sys.__getSysVar('DOM和スタイル')
       // 列挙したDOM一覧を全てスタイル変更する
