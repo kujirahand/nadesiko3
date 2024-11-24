@@ -312,12 +312,13 @@ export default {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom: any, values: any, sys: any) {
-      dom = sys.__query(dom, 'DOMスタイル一括設定', false)
+      if (typeof dom === 'string') { dom = document.querySelectorAll(dom) }
       if (dom instanceof window.HTMLElement) { dom = [dom] }
       const wa = sys.__getSysVar('DOM和スタイル')
       // 列挙したDOM一覧を全てスタイル変更する
       for (let i = 0; i < dom.length; i++) {
         const e = dom[i]
+        sys.__addPropMethod(e)
         for (const key in values) {
           let s = key
           let v = values[key]
