@@ -295,6 +295,7 @@ export default {
         if (cols.length < 2) { cols.push('') }
         const key = cols[0]
         const val = cols[1]
+        if (key === '') { continue } // 空行は無視
         // key
         const th = document.createElement('th')
         th.innerHTML = sys.__tohtmlQ(key)
