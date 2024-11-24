@@ -3,6 +3,7 @@
  * なでしこ3字句解析のためのルール
  */
 
+import { NakoLexerError } from './nako_errors.mjs'
 import { josiRE, removeJosiMap } from './nako_josi_list.mjs'
 import { TokenType } from './nako_token.mjs'
 
@@ -104,6 +105,7 @@ export const rules: NakoLexRule[] = [
   { name: ')', pattern: /^\)/, readJosi: true },
   { name: '|', pattern: /^\|/ },
   { name: '??', pattern: /^\?\?/ }, // 「表示」のエイリアス #1745
+  { name: 'word', pattern: /^\$\{.+?\}/, cbParser: src => cbExtWord(src) }, // 特別名前トークン(#1836)(#672)
   { name: '$', pattern: /^(\$|\.)/ }, // プロパティアクセス (#1793)(#1807)
   { name: 'string', pattern: /^🌿/, cbParser: src => cbString('🌿', '🌿', src) },
   { name: 'string_ex', pattern: /^🌴/, cbParser: src => cbString('🌴', '🌴', src) },
@@ -283,6 +285,35 @@ function cbString (beginTag: string, closeTag: string, src: string): NakoLexPars
 
   // 改行を数える
   for (let i = 0; i < res.length; i++) { if (res.charAt(i) === '\n') { numEOL++ } }
+
+  return { src, res, josi, numEOL }
+}
+
+function cbExtWord (src: string): NakoLexParseResult {
+  let res = ''
+  let josi = ''
+  let numEOL = 0
+
+  src = src.substring(2) // skip '${'
+  const i = src.indexOf('}')
+  if (i < 0) { // not found
+    throw new Error('変数名の終わりが見つかりません。')
+  }
+  res = src.substring(0, i)
+  src = src.substring(i + 1)
+
+  // 文字列直後の助詞を取得
+  const j = josiRE.exec(src)
+  if (j) {
+    josi = j[0].replace(/^\s+/, '')
+    src = src.substring(j[0].length)
+    // 助詞の後のカンマ #877
+    if (src.charAt(0) === ',') { src = src.substring(1) }
+  }
+
+  // 改行を数える(あり得ないけど)
+  for (let i = 0; i < res.length; i++) { if (res.charAt(i) === '\n') { numEOL++ } }
+  if (numEOL > 0) { throw new Error('変数名に改行を含めることはできません。') }
 
   return { src, res, josi, numEOL }
 }
