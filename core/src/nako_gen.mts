@@ -438,7 +438,7 @@ export class NakoGen {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         fn: () => {},
         type: 'func',
-        asyncFn: false,
+        asyncFn: t.asyncFn ? true : false,
         isExport: t.isExport
       })
       funcList.push({ name, node: t })
@@ -1467,7 +1467,7 @@ export class NakoGen {
     } else {
       func = this.nakoFuncList.get(funcName)
       // 無名関数の可能性
-      if (func === undefined) { func = { return_none: false } }
+      if (func === undefined) { func = { return_none: false, asyncFn: node.asyncFn ? true : false } }
     }
     // 関数の参照渡しか？
     if (node.type === 'func_pointer') {
@@ -1643,7 +1643,7 @@ export class NakoGen {
             indent(funcBegin, 1) + '\n' +
             indent('try {', 1) + '\n' +
             indent(`let ${varI} = ${funcCall};`, 2) + '\n' +
-            indent(`return ${sorePrefex}${varI}${sorePostfix};`, 2) + '\n' +
+            indent(`return ${varI};`, 2) + '\n' +
             indent('} finally {', 2) + '\n' +
             indent(funcEnd, 1) + '\n' +
             indent('}', 1) + '\n' +
@@ -1651,6 +1651,7 @@ export class NakoGen {
           if (func.asyncFn) {
             code = `await (${code})`
           }
+          code = `${sorePrefex}${code}${sorePostfix}`
         }
       }
       // ...して
