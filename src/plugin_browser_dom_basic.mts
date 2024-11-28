@@ -223,6 +223,8 @@ export default {
       '幅': 'width',
       '高さ': 'height',
       '高': 'height',
+      '幅属性': 'width',
+      '高属性': 'height',
       'タイプ': 'type',
       'データ': 'data',
       '名前': 'name',
@@ -285,6 +287,8 @@ export default {
       '幅': 'style',
       '高': 'style',
       '読取専用': 'attribute',
+      '幅属性': 'attribute',
+      '高属性': 'attribute',
       '有効': 'hook', // 「DOM有効設定」「DOM有効取得」を呼び出す
       '可視': 'hook', // 「DOM可視設定」「DOM可視取得」を呼び出す
       'ポケット': 'hook', // 「DOMポケット設定」「DOMポケット取得」を呼び出す
