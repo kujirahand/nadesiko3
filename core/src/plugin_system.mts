@@ -1007,22 +1007,38 @@ export default {
       return String(s).indexOf(a) + 1
     }
   },
-  'CHR': { // @文字コードから文字を返す // @CHR
+  'CHR': { // @文字コードV(あるいは文字列配列)から文字を返す // @CHR
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any) {
-      if (!String.fromCodePoint) { return String.fromCharCode(v) }
-      return String.fromCodePoint(v)
+    fn: function (v: number|number[]): string|string[] {
+      if (typeof v === 'number') {
+        if (!String.fromCodePoint) { return String.fromCharCode(v) }
+        return String.fromCodePoint(v)
+      }
+      const res: string[] = []
+      for (const s of v) {
+        if (!String.fromCodePoint) { res.push(String.fromCharCode(s)) }
+        res.push(String.fromCodePoint(s))
+      }
+      return res
     }
   },
-  'ASC': { // @文字列Vの最初の文字の文字コードを返す // @ASC
+  'ASC': { // @文字列V(あるいは文字列配列)の最初の文字の文字コードを返す // @ASC
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any) {
-      if (!String.prototype.codePointAt) { return String(v).charCodeAt(0) }
-      return String(v).codePointAt(0)
+    fn: function (v: string|string[]): number|number[] {
+      if (typeof v === 'string') {
+        if (!String.prototype.codePointAt) { return String(v).charCodeAt(0) }
+        return String(v).codePointAt(0) || 0
+      }
+      const res: number[] = []
+      for (const s of v) {
+        if (!String.prototype.codePointAt) { res.push(String(s).charCodeAt(0)) }
+        res.push(String(s).codePointAt(0) || 0)
+      }
+      return res
     }
   },
   '文字挿入': { // @文字列SのI文字目に文字列Aを挿入する // @もじそうにゅう
@@ -1625,6 +1641,16 @@ export default {
 
       const a2 = String(a).split('\n') // 配列でなければ無理矢理改行で区切ってみる
       return a2.join('' + s)
+    }
+  },
+  '配列只結合': { // @配列Aの要素をただ結合して文字列で返す。(「」で配列結合と同じ) // @はいれつただけつごう
+    type: 'func',
+    josi: [['を']],
+    pure: true,
+    fn: function (a: any): string {
+      if (a instanceof Array) { return a.join('') }
+      const a2 = String(a).split('\n') // 配列でなければ無理矢理改行で区切ってみる
+      return a2.join('')
     }
   },
   '配列検索': { // @配列Aから文字列Sを探してインデックス番号(0起点)を返す。見つからなければ-1を返す。 // @はいれつけんさく
