@@ -698,4 +698,10 @@ describe('plugin_system_test', async () => {
     await cmp('??1+2*3', '7')
     await cmp('??(1+2)*3', '9')
   })
+  it('ASC/CHRの配列 #1853', async () => {
+    await cmp('["a","b","c"]のASCをJSON_Eして表示', '[97,98,99]') // 配列なら全ての文字のASC
+    await cmp('「abc」のASCをJSON_Eして表示', '97') // 文字列なら最初の文字のみ
+    await cmp('[97,98,99]のCHRを「」で配列結合して表示', 'abc') // 配列なら全てのCHR
+    await cmp('97のCHRを表示', 'a') // 数値
+  })
 })
