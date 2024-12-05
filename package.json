@@ -121,7 +121,7 @@
     "globals": "^15.1.0",
     "hotkeys-js": "^3.13.7",
     "markdownlint": "^0.36.1",
-    "markdownlint-cli": "^0.42.0",
+    "markdownlint-cli": "^0.43.0",
     "mocha": "^10.4.0",
     "mocha-css": "^1.0.1",
     "module-alias": "^2.2.3",
