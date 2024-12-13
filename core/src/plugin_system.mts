@@ -177,6 +177,34 @@ export default {
           return null
         }
       }
+      // Propアクセス支援
+      sys.__registPropAccessor = (f: Function, getProp: (prop: string|string[], sys: NakoSystem) => any, setProp: (prop: string|string[], value: object, sys: NakoSystem) => any, sys?: NakoSystem) => {
+        system.__propAccessor.push(
+          {
+            target: f,
+            getProp,
+            setProp
+          }
+        )
+      }
+      sys.__checkPropAccessor = (mode: 'get'|'set', obj: any):void => {
+        if ((mode === 'get' && obj.__getProp === undefined) || (mode === 'set' && obj.__setProp === undefined)) {
+          for (let i = 0; i < system.__propAccessor.length; i++) {
+            const accs = system.__propAccessor[i]
+            if (accs.target[Symbol.hasInstance](obj)) {
+              if (accs.getProp) {
+                obj.__getProp = accs.getProp
+              } else { obj.__getProp = null }
+              if (accs.setProp) {
+                obj.__setProp = accs.setProp
+              } else { obj.__setProp = null }
+              return
+            }
+          }
+          obj.__getProp = obj.__setProp = null
+        }
+      }
+
     }
   },
   '!クリア': {

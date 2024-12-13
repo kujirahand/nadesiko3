@@ -339,6 +339,8 @@ export class NakoGen {
     // 定数を埋め込む
     code += '__self.constPools = ' + JSON.stringify(this.constPools) + ';\n'
     code += '__self.constPoolsTemplate = ' + JSON.stringify(this.constPoolsTemplate) + ';\n'
+    //
+    code += '__self.__propAccessor = [];\n'
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
     this.nakoFuncList.forEach((value, key) => {
@@ -1855,8 +1857,10 @@ export class NakoGen {
       }
     }
     // プロパティへの代入式を作る
-    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } `
-    code += `else { ${nameJs}['${propTop}'] = ${value} };`
+    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else {`
+    code += `__self.__checkPropAccessor('set', ${nameJs});`
+    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else {`
+    code += `${nameJs}['${propTop}'] = ${value} }};`
     return ';' + this.convLineno(node, false) + code + '\n'
   }
   // プロパティへの参照 (#1793)
@@ -1872,7 +1876,10 @@ export class NakoGen {
       const propKey = propList[0].value
       const code_call = `${name}.__getProp('${propKey}', __self)`
       const code_prop = `${name}['${propKey}']`
-      const code_if = `if (${name}.__getProp) { return ${code_call} } else { return ${code_prop} }`
+      const code_checkAccessor = `__self.__checkPropAccessor('get', ${name});\n` +
+      `if (typeof ${name}.__getProp === 'function') { return ${code_call} }\n` +
+      `return ${code_prop}\n`
+      const code_if = `if (${name}.__getProp) { return ${code_call} } else { ${code_checkAccessor} }`
       code = `( (()=>{ ${code_if} })() )`
     } else {
       const arrs = []
@@ -1886,7 +1893,10 @@ export class NakoGen {
       const arrStr = '[' + arrs.join(',') + ']'
       const code_call = `${name}.__getProp(${arrStr}, __self)`
       const code_prop = `${name}${keyStr}`
-      const code_if = `if (${name}.__getProp) { return ${code_call} } else { return ${code_prop} }`
+      const code_checkAccessor = `__self.__checkPropAccessor('get', ${name});\n` +
+      `if (${name}.__getProp) { return ${code_call} }\n` +
+      `return ${code_prop}\n`
+      const code_if = `if (${name}.__getProp) { return ${code_call} } else { ${code_checkAccessor} }`
       code = `( (()=>{ ${code_if} })() )`
     }
     return code
@@ -2027,6 +2037,7 @@ self.__varslist = [self.newVariables(), self.newVariables(), self.newVariables()
 self.__v0 = self.__varslist[0]
 self.initFuncList = []
 self.clearFuncList = []
+self.__propAccessor = []
 // --- jsInit ---
 __jsInit__
 // --- Copy module functions ---

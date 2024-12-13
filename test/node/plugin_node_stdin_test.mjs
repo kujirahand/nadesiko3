@@ -3,6 +3,7 @@ import assert from 'assert'
 import path from 'path'
 import fs from 'fs'
 import { execSync, spawnSync } from 'child_process'
+import os from 'node:os'
 
 // __dirname のために
 import url from 'url'
@@ -11,6 +12,8 @@ const debug = false
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+const execOption = os.platform() === 'win32' ? { shell: 'powershell.exe' } : undefined
+
 // PATH
 const cnako3 = path.join(__dirname, '../../src/cnako3.mjs')
 
@@ -18,7 +21,7 @@ const cnako3 = path.join(__dirname, '../../src/cnako3.mjs')
 describe('plugin_node_stdin_test(cnako)', () => {
   const cmp = (code, exRes, stdinStr) => {
     const cmd = `echo "${stdinStr}" | node ${cnako3} -e "${code}"`
-    const result = execSync(cmd).toString().trimEnd()
+    const result = execSync(cmd, execOption).toString().trimEnd()
     if (debug) {
       console.log('code=' + code)
       console.log('result=' + result)
