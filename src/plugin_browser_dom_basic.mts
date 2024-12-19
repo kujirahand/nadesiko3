@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// @ts-nocheck
+import { NakoSystem } from '../core/src/plugin_api.mjs'
 export default {
   // @DOM操作
   'DOCUMENT': { type: 'const', value: '' }, // @DOCUMENT
@@ -32,11 +32,11 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (q: any) {
+    fn: function (q: any, sys: NakoSystem) {
       const domList = Array.from(document.querySelectorAll(q))
       if (!domList) { return [] }
       for (const dom of domList) {
-        sys.__addPropMethod(dom)
+        (sys as any).__addPropMethod(dom)
       }
       return domList
     }
@@ -264,7 +264,8 @@ export default {
       'マージン': 'margin',
       '余白': 'padding',
       '文字サイズ': 'font-size',
-      '行揃え': 'text-align',
+      '行揃え': 'text-align', // 送り仮名の省略により、うまくアクセスできない #1859
+      '行揃': 'text-align',
       '上': 'top',
       '左': 'left',
       '右': 'right',
