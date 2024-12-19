@@ -360,7 +360,7 @@ export default {
     uses: ['DOM和スタイル'],
     pure: true,
     fn: function (dom: any, style: any, sys: any) {
-      const res = {}
+      const res: any = {}
       dom = sys.__query(dom, 'DOMスタイル一括取得', true)
       if (!dom) { return res }
       if (style instanceof String) { style = [style] }
@@ -410,6 +410,9 @@ export default {
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
       const waPriority = sys.__getSysVar('DOMプロパティ情報')
+      if (waStyle[value] !== undefined) { // 値がDOM和スタイルの場合
+        value = waStyle[value]
+      }
       // check prop is array --- 配列で指定された場合、曖昧ルールは適用しない
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
@@ -419,6 +422,9 @@ export default {
           }
           else if (waAttr[propName] !== undefined) { // dom和スタイル
             propName = waAttr[propName]
+            if (waAttr[value] !== undefined) { // 値がDOM和属性の場合
+              value = waAttr[value]
+            }
           }
           if (i < prop.length - 1) {
             dom = dom[propName]
@@ -427,52 +433,57 @@ export default {
           }
         }
       } else {
+        let propStr: string = prop
         // 優先ルールに従って適用する (#1822)
-        if (waPriority[prop] !== undefined) {
-          const p = waPriority[prop]
+        if (waPriority[propStr] !== undefined) {
+          const p = waPriority[propStr]
           if (p === 'style') {
-            prop = waStyle[prop]
-            dom.style[prop] = value
+            propStr = waStyle[propStr]
+            dom.style[propStr] = value
             return
           } else if (p === 'attribute') {
-            prop = waAttr[prop]
-            dom[prop] = value
+            propStr = waAttr[propStr]
+            if (waAttr[value] !== undefined) { // 値がDOM和属性の場合
+              value = waAttr[value]
+            }
+            dom[propStr] = value
             return
           } else if (p === 'hook') { // フック関数を実行する (#1823)
-            const hookName = `DOM${prop}設定`
+            const hookName = `DOM${propStr}設定`
             sys.__exec(hookName, [dom, value, sys])
             return
           }
         }
         // 単位付きスタイルの優先ルール --- valueが単位付き数値ならスタイルに適用
-        if (waStyle[prop] !== undefined && (typeof value === 'string') && (value.match(/^[0-9.]+([a-z]{2,5})$/))) {
+        if (waStyle[propStr] !== undefined && (typeof value === 'string') && (value.match(/^[0-9.]+([a-z]{2,5})$/))) {
           // 例えば 3px や 6em などの値が指定されたらスタイルに対する適用
-          prop = waStyle[prop]
-          dom.style[prop] = value
+          propStr = waStyle[propStr]
+          dom.style[propStr] = value
           // console.log('waStyle', prop, value)
           return
         }
         // check DOM和属性
-        if (waAttr[prop] !== undefined) {
-          prop = waAttr[prop]
-          dom[prop] = value
-          // console.log('waAttr', prop, value)
+        if (waAttr[propStr] !== undefined) {
+          propStr = waAttr[propStr]
+          if (waAttr[value] !== undefined) { // 値がDOM和属性の場合
+            value = waAttr[value]
+          }
+          dom[propStr] = value
           return
         }
         // check DOM和スタイル
-        if (waStyle[prop] !== undefined) {
-          prop = waStyle[prop]
-          dom.style[prop] = value
-          // console.log('waStyle', prop, value)
+        if (waStyle[propStr] !== undefined) {
+          propStr = waStyle[propStr]
+          dom.style[propStr] = value
           return
         }
         // DOM和スタイルでなくてもよくある単位が指定されているなら直接スタイルに適用。(ただしDOM和属性に存在しないものに限る=判定後に適用)
         if (typeof value === 'string' && value.match(/^[0-9.]+(px|em|ex|rem|vw|vh)$/)) {
-          dom.style[prop] = value
+          dom.style[propStr] = value
           return
         }
         // others
-        dom[prop] = value
+        dom[propStr] = value
       }
     },
     return_none: true
@@ -501,38 +512,40 @@ export default {
             return dom[propName]
           }
         }
-      }
-      // prop is string:
-      // 優先ルールに従って適用する (#1822)
-      if (waPriority[prop] !== undefined) {
-        const p = waPriority[prop]
-        if (p === 'style') {
-          prop = waStyle[prop]
-          return dom.style[prop]
-        } else if (p === 'attribute') {
-          prop = waAttr[prop]
-          return dom[prop]
-        } else if (p === 'hook') { // フック関数を実行する (#1823)
-          const hookName = `DOM${prop}取得`
-          return sys.__exec(hookName, [dom, sys])
+      } else {
+        // prop is string:
+        let propStr: string = prop
+        // 優先ルールに従って適用する (#1822)
+        if (waPriority[propStr] !== undefined) {
+          const p = waPriority[propStr]
+          if (p === 'style') {
+            propStr = waStyle[propStr]
+            return dom.style[propStr]
+          } else if (p === 'attribute') {
+            propStr = waAttr[propStr]
+            return dom[propStr]
+          } else if (p === 'hook') { // フック関数を実行する (#1823)
+            const hookName = `DOM${propStr}取得`
+            return sys.__exec(hookName, [dom, sys])
+          }
         }
+        // check DOM和属性
+        if (waAttr[propStr] !== undefined) {
+          propStr = waAttr[propStr]
+          const val = dom[propStr]
+          if (val !== undefined) { return val }
+        }
+        // check DOM和スタイル
+        if (waStyle[propStr] !== undefined) {
+          propStr = waStyle[propStr]
+          const valStyle = dom.style[propStr]
+          if (valStyle !== undefined) { return valStyle }
+          const val = dom[propStr]
+          if (val !== undefined) { return val }
+        }
+        // others
+        return dom[propStr]
       }
-      // check DOM和属性
-      if (waAttr[prop] !== undefined) {
-        prop = waAttr[prop]
-        const val = dom[prop]
-        if (val !== undefined) { return val }
-      }
-      // check DOM和スタイル
-      if (waStyle[prop] !== undefined) {
-        prop = waStyle[prop]
-        const valStyle = dom.style[prop]
-        if (valStyle !== undefined) { return valStyle }
-        const val = dom[prop]
-        if (val !== undefined) { return val }
-      }
-      // others
-      return dom[prop]
     }
   },
   'DOM有効設定': { // @DOMのdata-有効の値を設定 // @DOMゆうこうせってい

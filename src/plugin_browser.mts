@@ -203,6 +203,7 @@ const PluginBrowser = {
         }
       }
       // DOMに動的プロパティの取得と設定を追加する
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sys.__addPropMethod = (obj: any) => {
         if (!obj) { return }
         if (obj.__setProp === undefined) {
@@ -214,14 +215,17 @@ const PluginBrowser = {
           }
         }
       }
-      // Elementのクラスに対してDOMに動的プロパティの取得と設定を適用するよう登録する
+      // Elementのクラスに対してDOMに動的プロパティの取得と設定を適用するよう登録する #1863
       if (sys.__registPropAccessor && globalThis.Element) {
-        sys.__registPropAccessor(Element,
-          function (prop: string|string[], sys: NakoSystem):any { // @ts-ignore
-            return sys.__exec('DOM設定取得', [this as Element, prop, sys as NakoBrowsesrSystem])
+        sys.__registPropAccessor(
+          Element,
+          function (prop: string|string[], sys: NakoSystem): unknown {
+            // @ts-expect-error: use this
+            return sys.__exec('DOM設定取得', [(this as Element), prop, sys as NakoBrowsesrSystem])
           },
-          function (prop: string|string[], value: object, sys: NakoSystem):any { // @ts-ignore
-            sys.__exec('DOM設定変更', [this as Element, prop, value, sys as NakoBrowsesrSystem])
+          function (prop: string|string[], value: object, sys: NakoSystem): void {
+            // @ts-expect-error: use this
+            sys.__exec('DOM設定変更', [(this as Element), prop, value, sys as NakoBrowsesrSystem])
           }
         )
       }
@@ -285,6 +289,7 @@ const PluginBrowser = {
 }
 
 BrowserParts.forEach((a) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const b: any = {}
   Object.assign(b, a)
   // 各モジュールでの初期化処理は認めない
