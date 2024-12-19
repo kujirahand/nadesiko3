@@ -178,7 +178,6 @@ export default {
         }
       }
       // Propアクセス支援
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
       sys.__registPropAccessor = (f: Function, getProp: (prop: string|string[], sys: NakoSystem) => any, setProp: (prop: string|string[], value: object, sys: NakoSystem) => any) => {
         system.__propAccessor.push(
           {
