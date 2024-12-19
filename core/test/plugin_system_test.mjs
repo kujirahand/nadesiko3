@@ -11,7 +11,7 @@ describe('plugin_system_test', async () => {
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
   }
-  const cmpex = async (/** @type {string} */ code, /** @type { name: string, message: string } */ exinfo) => {
+  const cmpex = async (/** @type {string} */ code, /** @type {name: string, message: string} */ exinfo) => {
     const nako = new NakoCompiler()
     nako.getLogger().debug('code=' + code)
     try {
@@ -484,8 +484,8 @@ describe('plugin_system_test', async () => {
   it('「ナデシコ」が空白行を出力してしまう問題の修正', async () => {
     let lineCount = 0
     const nako = new NakoCompiler()
-    nako.logger.addListener('stdout', (_data) => { lineCount++ })
-    nako.run('「a=1+2」をナデシコ')
+    nako.getLogger().addListener('stdout', (_data) => { lineCount++ })
+    await nako.runAsync('「a=1+2」をナデシコ', 'main.nako')
     assert.strictEqual(lineCount, 0)
   })
   it('JSメソッド実行 #854', async () => {
@@ -498,13 +498,10 @@ describe('plugin_system_test', async () => {
       globalScope = global
       globalName = 'global'
     }
-    // @ts-ignore
     globalScope.jstest = () => { return 777 }
     await cmp('「' + globalName + '」の「jstest」を[]でJSメソッド実行して表示。', '777')
-    // @ts-ignore
     globalScope.jstest_x2 = (/** @type {number} */ a) => { return a * 2 }
     await cmp('「' + globalName + '」の「jstest_x2」を30でJSメソッド実行して表示。', '60')
-    // @ts-ignore
     globalScope.jstest_mul = (/** @type {number} */ a, /** @type {number} */ b) => { return a * b }
     await cmp('「' + globalName + '」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
   })
@@ -703,5 +700,11 @@ describe('plugin_system_test', async () => {
     await cmp('「abc」のASCをJSON_Eして表示', '97') // 文字列なら最初の文字のみ
     await cmp('[97,98,99]のCHRを「」で配列結合して表示', 'abc') // 配列なら全てのCHR
     await cmp('97のCHRを表示', 'a') // 数値
+  })
+  it('右トリム/末尾空白除去 #1866', async () => {
+    await cmp('「 abc 」を右トリムして表示', ' abc')
+    await cmp('「 abc 」を末尾空白除去して表示', ' abc')
+    await cmp('「 abc     」を右トリムして表示', ' abc')
+    await cmp('「 abc     」を末尾空白除去して表示', ' abc')
   })
 })

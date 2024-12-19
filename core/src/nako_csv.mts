@@ -139,6 +139,7 @@ export function parse (txt: string, delimiter: string|undefined = undefined): st
   return res
 }
 
+// convert 2D array to CSV string
 export function stringify (ary: string[][], delimiter: string|undefined = undefined, eol: string|undefined = undefined): string {
   // check arguments
   if (delimiter === undefined) {

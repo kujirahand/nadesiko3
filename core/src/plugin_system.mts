@@ -178,7 +178,8 @@ export default {
         }
       }
       // Propアクセス支援
-      sys.__registPropAccessor = (f: Function, getProp: (prop: string|string[], sys: NakoSystem) => any, setProp: (prop: string|string[], value: object, sys: NakoSystem) => any, sys?: NakoSystem) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+      sys.__registPropAccessor = (f: Function, getProp: (prop: string|string[], sys: NakoSystem) => any, setProp: (prop: string|string[], value: object, sys: NakoSystem) => any) => {
         system.__propAccessor.push(
           {
             target: f,
@@ -1306,6 +1307,24 @@ export default {
     pure: true,
     fn: function (s: string): string {
       s = String(s).replace(/^\s+/, '').replace(/\s+$/, '')
+      return s
+    }
+  },
+  '右トリム': { // @文字列Sの末尾にある空白を削除する // @みぎとりむ
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (s: string): string {
+      s = String(s).replace(/\s+$/, '')
+      return s
+    }
+  },
+  '末尾空白除去': { // @文字列Sの末尾にある空白を削除する // @まつびくうはくじょきょ
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (s: string): string {
+      s = String(s).replace(/\s+$/, '')
       return s
     }
   },
