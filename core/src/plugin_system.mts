@@ -2931,7 +2931,7 @@ export default {
       const fname = a[1]
       // オブジェクトならJSON文字列に変換
       if (typeof s == 'object') {
-        s = JSON.stringify(s, null, 2)
+        s = JSON.stringify(s)
       }
       s = `${fname}(${no}): ${s}`
       sys.__exec('表示', [s, sys])
@@ -2955,9 +2955,7 @@ export default {
         const fa: ((s: string, sys: NakoSystem)=>string)[] = (s as Array<string>).map((fstr: string) => {
           if (fstr.substring(0, 3) === 'JS:') {
             const code = fstr.substring(3)
-            return (s: string, sys: NakoSystem) => {
-              return sys.__evalSafe(code)
-            }
+            return sys.__evalJS(code, sys)
           } else {
             return sys.__getSysVar(fstr, 'デバッグ表示')
           }
