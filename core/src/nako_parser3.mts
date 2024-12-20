@@ -2448,8 +2448,27 @@ export class NakoParser extends NakoParserBase {
     return a
   }
 
+  yJSONObject(): AstBlocks | Ast | null {
+    const a = this.yJSONObjectRaw()
+    if (!a) { return null }
+    // 配列の直後に@や[]があるか？助詞がある場合には、別の引数の可能性があるので無視。 (例) [0,1,2]を[3,4,5]に配列＊＊＊
+    if (a.josi === '' && this.checkTypes(['@', '['])) {
+      const ast: Ast = {
+        type: 'ref_array',
+        name: '__ARRAY__',
+        index: [a],
+        josi: '',
+        line: a.line,
+        end: this.peekSourceMap()
+      }
+      this.yValueWordGetIndex(ast)
+      return ast
+    }
+    return a
+  }
+
   /** @returns {Ast | null} */
-  yJSONObject (): AstBlocks | null {
+  yJSONObjectRaw (): AstBlocks | null {
     const map = this.peekSourceMap()
     if (this.accept(['{', '}'])) {
       return {
