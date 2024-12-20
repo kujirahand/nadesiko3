@@ -2261,7 +2261,9 @@ export class NakoParser extends NakoParserBase {
           this.checkArrayIndex(this.y[1]),
           this.checkArrayIndex(this.y[3])
         ]
+        const aa = ast.index.pop()
         ast.index = this.checkArrayReverse(index)
+        if (aa) { ast.index.unshift(aa) }
         ast.josi = this.y[4].josi
         return this.y[4].josi === '' // 助詞があればそこで終了(false)を返す
       }
@@ -2273,7 +2275,9 @@ export class NakoParser extends NakoParserBase {
           this.checkArrayIndex(this.y[3]),
           this.checkArrayIndex(this.y[5])
         ]
+        const aa = ast.index.pop()
         ast.index = this.checkArrayReverse(index)
+        if (aa) { ast.index.unshift(aa) }
         ast.josi = this.y[6].josi
         return this.y[6].josi === '' // 助詞があればそこで終了(false)を返す
       }
@@ -2496,8 +2500,28 @@ export class NakoParser extends NakoParserBase {
     return a
   }
 
+  yJSONArray(): AstBlocks | Ast | null {
+    // 配列を得る
+    const a = this.yJSONArrayRaw()
+    if (!a) { return null }
+    // 配列の直後に@や[]があるか？助詞がある場合には、別の引数の可能性があるので無視。 (例) [0,1,2]を[3,4,5]に配列＊＊＊
+    if (a.josi === '' && this.checkTypes(['@', '['])) {
+      const ast: Ast = {
+        type: 'ref_array',
+        name: '__ARRAY__',
+        index: [a],
+        josi: '',
+        line: a.line,
+        end: this.peekSourceMap()
+      }
+      this.yValueWordGetIndex(ast)
+      return ast
+    }
+    return a
+  }
+
   /** @returns {AstBlocks | null} */
-  yJSONArray (): AstBlocks | null {
+  yJSONArrayRaw (): AstBlocks | null {
     const map = this.peekSourceMap()
     if (this.accept(['[', ']'])) {
       return {
