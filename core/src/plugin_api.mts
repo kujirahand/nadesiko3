@@ -26,6 +26,7 @@ export interface NakoSystem {
   __setSore(v: any): void;
   __getSore(): any;
   __loadScript(url: string): Promise<void>; // JSのスクリプトを読み込む (ex) グラフ描画(plguin_browser_chart.mts)
+  __hatena: (s: string, sys: NakoSystem) => void; // 「？？」記法の関数キャッシュ #1852
   logger: any; // Logger
   // 便利なメソッド
   __zero (s: string, keta: number): string; // 桁を指定してゼロ埋めする

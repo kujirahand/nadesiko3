@@ -3,7 +3,6 @@
  * なでしこ3字句解析のためのルール
  */
 
-import { NakoLexerError } from './nako_errors.mjs'
 import { josiRE, removeJosiMap } from './nako_josi_list.mjs'
 import { TokenType } from './nako_token.mjs'
 

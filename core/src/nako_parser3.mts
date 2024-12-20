@@ -139,7 +139,7 @@ export class NakoParser extends NakoParserBase {
     if (this.check('エラー監視')) { return this.yTryExcept() }
     if (this.accept(['抜ける'])) { return { type: 'break', josi: '', ...map, end: this.peekSourceMap() } }
     if (this.accept(['続ける'])) { return { type: 'continue', josi: '', ...map, end: this.peekSourceMap() } }
-    if (this.check('??')) { return this.yPrint() }
+    if (this.check('??')) { return this.yDebugPrint() }
     // 実行モードの指定
     if (this.accept(['DNCLモード'])) { return this.yDNCLMode(1) }
     if (this.accept(['DNCL2モード'])) { return this.yDNCLMode(2) }
@@ -699,9 +699,8 @@ export class NakoParser extends NakoParserBase {
 
   /**
    * 表示(関数)を返す 「??」のエイリアスで利用 (#1745)
-   * @returns {AstCallFunc | null}
    */
-  yPrint (): AstCallFunc | null {
+  yDebugPrint (): AstCallFunc | null {
     const map = this.peekSourceMap()
     const t = this.get() // skip '??'
     if (!t || t.value !== '??') {
@@ -711,11 +710,11 @@ export class NakoParser extends NakoParserBase {
     if (!arg) {
       throw NakoSyntaxError.fromNode('『??(計算式)』で指定してください。', map)
     }
-    const meta = this.funclist.get('表示')
-    if (!meta) { throw new Error('関数『表示』が見つかりません。plugin_systemをシステムに追加してください。') }
+    const meta = this.funclist.get('ハテナ関数実行')
+    if (!meta) { throw new Error('関数『ハテナ関数実行』が見つかりません。plugin_systemをシステムに追加してください。') }
     return {
       type: 'func',
-      name: '表示',
+      name: 'ハテナ関数実行',
       blocks: [arg],
       josi: '',
       meta,
