@@ -579,8 +579,9 @@ export default {
             domTR.appendChild(newTD)
             td = domTR.childNodes[col + x]
           }
-          td.innerHTML = sys.__tohtml(vRow[x])
-          if (isNumRight && vRow[x].match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
+          const v = String(vRow[x])
+          td.innerHTML = sys.__tohtml(v)
+          if (isNumRight && v.match(/^(\+|-)?\d+(\.\d+)?$/)) { // number?
             td.style.textAlign = 'right'
           }
         }
