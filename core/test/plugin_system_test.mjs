@@ -11,7 +11,7 @@ describe('plugin_system_test', async () => {
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
   }
-  const cmpex = async (/** @type {string} */ code, /** @type {name: string, message: string} */ exinfo) => {
+  const cmpex = async (/** @type {string} */ code, /** @type {{name: string, message: string}} */ exinfo) => {
     const nako = new NakoCompiler()
     nako.getLogger().debug('code=' + code)
     try {
@@ -690,11 +690,6 @@ describe('plugin_system_test', async () => {
     await cmp('A=[0,1,2,3];Aから0...5を参照してJSONエンコードして表示', '[0,1,2,3]') // 範囲を超えて指定もエラーにならない
     await cmp('A=[0,1,2,3];Aから5...9を参照してJSONエンコードして表示', '[]') // 範囲を超えて指定もエラーにならない
   })
-  it('「?? 計算式文」 #1745', async () => {
-    await cmp('??1+1', '2')
-    await cmp('??1+2*3', '7')
-    await cmp('??(1+2)*3', '9')
-  })
   it('ASC/CHRの配列 #1853', async () => {
     await cmp('["a","b","c"]のASCをJSON_Eして表示', '[97,98,99]') // 配列なら全ての文字のASC
     await cmp('「abc」のASCをJSON_Eして表示', '97') // 文字列なら最初の文字のみ
@@ -706,5 +701,16 @@ describe('plugin_system_test', async () => {
     await cmp('「 abc 」を末尾空白除去して表示', ' abc')
     await cmp('「 abc     」を右トリムして表示', ' abc')
     await cmp('「 abc     」を末尾空白除去して表示', ' abc')
+  })
+  it('「?? 計算式文」 #1745', async () => {
+    await cmp('「表示」をハテナ関数設定; ?? 1+1', '2')
+    await cmp('「表示」をハテナ関数設定; ?? 1+2*3', '7')
+    await cmp('「表示」をハテナ関数設定; ?? (1+2)*3', '9')
+  })
+  it('「??」のカスタマイズ機能を追加 #1852', async () => {
+    await cmp('["JSON_E","表示"]をハテナ関数設定; ?? [1,2,3]', '[1,2,3]')
+    await cmp('["文字列分解", "ASC", "JSON_E","表示"]をハテナ関数設定; ?? "abc"', '[97,98,99]')
+    await cmp('["JS:Math.ceil","表示"]をハテナ関数設定; ?? 3.2', '4')
+    await cmp('[『JS:(function(v,sys){return Math.ceil(v);})』,"表示"]をハテナ関数設定; ?? 3.2', '4')
   })
 })

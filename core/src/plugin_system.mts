@@ -205,7 +205,8 @@ export default {
           obj.__getProp = obj.__setProp = null
         }
       }
-
+      // 「??」ハテナ関数の設定
+      sys.__hatena = sys.__getSysVar('デバッグ表示')
     }
   },
   '!クリア': {
@@ -2918,6 +2919,69 @@ export default {
     }
   },
   // @デバッグ支援
+  'デバッグ表示': { // @デバッグ用にSを表示する // @でばっぐひょうじ
+    type: 'func',
+    josi: [['と', 'を', 'の']],
+    pure: true,
+    fn: function (s: any, sys: NakoSystem) {
+      // 行番号の情報を得る
+      const lineInfo: string = sys.__getSysVar('__line', 0) + '::'
+      const a = lineInfo.split(':', 2)
+      const no = parseInt(String(a[0]).replace('l', '')) + 1
+      const fname = a[1]
+      // オブジェクトならJSON文字列に変換
+      if (typeof s == 'object') {
+        s = JSON.stringify(s)
+      }
+      s = `${fname}(${no}): ${s}`
+      sys.__exec('表示', [s, sys])
+    },
+    return_none: true
+  },
+  'ハテナ関数設定': { // @ハテナ関数「?? (計算式)」の動作をカスタマイズする。文字列の配列を指定可能で、システム関数名か「js:code」を指定可能。 // @はてなかんすうせってい
+    type: 'func',
+    josi: [['を', 'の']],
+    pure: true,
+    fn: function (s: any, sys: NakoSystem) {
+      if (typeof s === 'function') {
+        sys.__hatena = s
+        return
+      }
+      if (typeof s === 'string') {
+        sys.__hatena = sys.__getSysVar(s, 'デバッグ表示')
+        return
+      }
+      if (s instanceof Array) {
+        const fa: ((s: string, sys: NakoSystem)=>string)[] = (s as Array<string>).map((fstr: string) => {
+          if (fstr.substring(0, 3) === 'JS:') {
+            const code = fstr.substring(3)
+            return sys.__evalJS(code, sys)
+          } else {
+            return sys.__getSysVar(fstr, 'デバッグ表示')
+          }
+        })
+        sys.__hatena = (p: any, sys: NakoSystem) => {
+          let param: any = p
+          for (const f of fa) {
+            param = f(param, sys)
+          }
+          return
+        }
+        return
+      }
+      sys.__hatena = sys.__getSysVar('デバッグ表示')
+    },
+    return_none: true
+  },
+  'ハテナ関数実行': { // @『ハテナ関数設定』で設定した関数を実行する // @はてなかんすうじっこう
+    type: 'func',
+    josi: [['の', 'を', 'と']],
+    pure: true,
+    fn: function (s: any, sys: NakoSystem) {
+      sys.__hatena(s, sys)
+    },
+    return_none: true
+  },
   'エラー発生': { // @故意にエラーSを発生させる // @えらーはっせい
     type: 'func',
     josi: [['の', 'で']],
