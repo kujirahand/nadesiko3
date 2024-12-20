@@ -1050,9 +1050,18 @@ export class NakoGen {
   }
 
   convRefArray (node: Ast): string {
-    const name = this._convGen(node.name as Ast, true)
+    let code = ''
+    if (node.name === '__ARRAY__') {
+      const a = node.index?.shift()
+      if (a) {
+        code = this._convGen(a, true)
+      } else {
+        code = '[]'
+      }
+    } else {
+      code = this._convGen(node.name as Ast, true)
+    }
     const list: Ast[] | undefined = node.index
-    let code = name
     if (!list) { return code }
     for (let i = 0; i < list.length; i++) {
       const idx = this._convGen(list[i] as Ast, true)
