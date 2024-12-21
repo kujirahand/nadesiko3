@@ -2659,7 +2659,7 @@ export default {
       return (new Date()).getMonth() + 2
     }
   },
-  '先月': { // @先月が何月かをかえす // @せんげつ
+  '先月': { // @先月が何月かを返す // @せんげつ
     type: 'func',
     josi: [],
     pure: true,
