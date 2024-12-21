@@ -174,7 +174,7 @@ export default {
     },
     return_none: true
   },
-  'HTML取得': { // @DOMのテキストを取得 // @HTMLしゅとく
+  'HTML取得': { // @DOMのHTMLを取得 // @HTMLしゅとく
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
