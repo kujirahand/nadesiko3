@@ -1608,7 +1608,7 @@ export default {
     josi: [['を', 'の']],
     pure: true,
     fn: function (v: any) {
-      return String(v).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
+      return String(v).replace(/(?<!\.\d*?)(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
     }
   },
   'ゼロ埋': { // @数値VをA桁の0で埋める // @ぜろうめ
