@@ -576,6 +576,56 @@ export default {
       return a.reduce((p: any, c: any) => p + c)
     }
   },
+  'MAX': { // @2個以上の数値のうち最大値を返す。// @MAX
+    type: 'func',
+    josi: [['の'], ['と']],
+    isVariableJosi: true,
+    pure: true,
+    fn: function (b: number, ...a: any): number {
+      const sys = a.pop()
+      return sys.__exec('最大値', [b, ...a, sys])
+    }
+  },
+  '最大値': { // @2個以上の数値のうち最大値を返す。// @さいだいち
+    type: 'func',
+    josi: [['の'], ['と']],
+    isVariableJosi: true,
+    pure: true,
+    fn: function (b: number, ...a: any): number {
+      a.pop() // 必ず末尾に sys があるので、末尾のシステム変数を除外
+      a.push(b)
+      return a.reduce((p: number, c: number) => Math.max(p, c))
+    }
+  },
+  'MIN': { // @2個以上の数値のうち最小値を返す。// @MIN
+    type: 'func',
+    josi: [['の'], ['と']],
+    isVariableJosi: true,
+    pure: true,
+    fn: function (b: number, ...a: any): number {
+      const sys = a.pop()
+      return sys.__exec('最小値', [b, ...a, sys])
+    }
+  },
+  '最小値': { // @2個以上の数値のうち最小値を返す。// @さいしょうち
+   type: 'func',
+    josi: [['の'], ['と']],
+    isVariableJosi: true,
+    pure: true,
+    fn: function (b: number, ...a: any): number {
+      a.pop() // 必ず末尾に sys があるので、末尾のシステム変数を除外
+      a.push(b)
+      return a.reduce((p: number, c: number) => Math.min(p, c))
+    }
+  },
+  'CLAMP': { // @数値を下限から上限の範囲内に収めた値を返す。// @CLAMP
+    type: 'func',
+    josi: [['の', 'を'], ['から'], ['までの', 'で']],
+    pure: true,
+    fn: function (x: number, a: number, b: number): number {
+      return Math.min(Math.max(x, a), b)
+    }
+  },
 
   // @敬語
   'ください': { // @敬語対応のため // @ください

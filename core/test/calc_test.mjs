@@ -37,6 +37,34 @@ describe('calc_test.js', async () => {
   it('連続演算：て-3に5を掛けて表示', async () => {
     await cmp('3に5を掛けて表示', '15')
   })
+  it('MAX', async () => {
+    await cmp('10と20のMAXを表示', '20')
+    await cmp('MAX(10, 20)を表示', '20')
+    await cmp('MAX(10, 20, 30)を表示', '30')
+  })
+  it('最大値', async () => {
+    await cmp('10と20の最大値を表示', '20')
+    await cmp('10と20と30の最大値を表示', '30')
+    await cmp('10と10の最大値を表示', '10')
+  })
+  it('MIN', async () => {
+    await cmp('10と20のMINを表示', '10')
+    await cmp('MIN(10, 20)を表示', '10')
+    await cmp('MIN(5, 10, 20, 30)を表示', '5')
+  })
+  it('最小値', async () => {
+    await cmp('10と20の最小値を表示', '10')
+    await cmp('5と10と20と30の最小値を表示', '5')
+    await cmp('10と10の最小値を表示', '10')
+  })
+  it('CLAMP', async () => {
+    await cmp('10の20から30までのCLAMPを表示', '20')
+    await cmp('40を20から30でCLAMPして表示', '30')
+    await cmp('25の20から30までのCLAMPを表示', '25')
+    await cmp('CLAMP(10, 20, 30)を表示', '20')
+    await cmp('CLAMP(20, 20, 30)を表示', '20')
+    await cmp('CLAMP(30, 20, 30)を表示', '30')
+  })
   it('配列', async () => {
     await cmp('a=[];a[1]=30;a[1]を表示', '30')
     await cmp('a=[];a【1】=30;a[1]を表示', '30')
