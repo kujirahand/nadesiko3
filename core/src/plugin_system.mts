@@ -582,9 +582,8 @@ export default {
     isVariableJosi: true,
     pure: true,
     fn: function (b: number, ...a: any): number {
-      a.pop() // 必ず末尾に sys があるので、末尾のシステム変数を除外
-      a.push(b)
-      return a.reduce((p: number, c: number) => Math.max(p, c))
+      const sys = a.pop()
+      return sys.__exec('最大値', [b, ...a, sys])
     }
   },
   '最大値': { // @2個以上の数値のうち最大値を返す。// @さいだいち
@@ -604,9 +603,8 @@ export default {
     isVariableJosi: true,
     pure: true,
     fn: function (b: number, ...a: any): number {
-      a.pop() // 必ず末尾に sys があるので、末尾のシステム変数を除外
-      a.push(b)
-      return a.reduce((p: number, c: number) => Math.min(p, c))
+      const sys = a.pop()
+      return sys.__exec('最小値', [b, ...a, sys])
     }
   },
   '最小値': { // @2個以上の数値のうち最小値を返す。// @さいしょうち
