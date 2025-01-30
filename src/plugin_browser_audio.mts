@@ -12,7 +12,7 @@ export default {
     },
     return_none: false
   },
-  'オーディオ再生': { // @AudioオブジェクトOBJを指定してオーディを再生 // @おーでぃおさいせい
+  'オーディオ再生': { // @AudioオブジェクトOBJを指定してオーディオを再生 // @おーでぃおさいせい
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -23,7 +23,7 @@ export default {
     },
     return_none: true
   },
-  'オーディオループ再生': { // @AudioオブジェクトOBJを指定してオーディをループ再生する // @おーでぃおるーぷさいせい
+  'オーディオループ再生': { // @AudioオブジェクトOBJを指定してオーディオをループ再生する // @おーでぃおるーぷさいせい
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -34,7 +34,7 @@ export default {
     },
     return_none: true
   },
-  'オーディオ停止': { // @AudioオブジェクトOBJを指定してオーディを停止 // @おーでぃおていし
+  'オーディオ停止': { // @AudioオブジェクトOBJを指定してオーディオを停止 // @おーでぃおていし
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -49,7 +49,7 @@ export default {
     },
     return_none: true
   },
-  'オーディオ一時停止': { // @AudioオブジェクトOBJを指定してオーディを一時停止 // @おーでぃおいちじていし
+  'オーディオ一時停止': { // @AudioオブジェクトOBJを指定してオーディオを一時停止 // @おーでぃおいちじていし
     type: 'func',
     josi: [['を']],
     pure: true,
@@ -78,7 +78,7 @@ export default {
     },
     return_none: true
   },
-  'オーディオ長取得': { // @AudioオブジェクトOBJを指定してオーディの長さを取得して返す // @おーでぃおながさしゅとく
+  'オーディオ長取得': { // @AudioオブジェクトOBJを指定してオーディオの長さを取得して返す // @おーでぃおながさしゅとく
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
@@ -87,7 +87,7 @@ export default {
       return obj.duration
     }
   },
-  'オーディオ再生位置取得': { // @AudioオブジェクトOBJを指定してオーディの再生位置を取得して返す // @おーでぃおさいせいいちしゅとく
+  'オーディオ再生位置取得': { // @AudioオブジェクトOBJを指定してオーディオの再生位置を取得して返す // @おーでぃおさいせいいちしゅとく
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
@@ -96,7 +96,7 @@ export default {
       return obj.currentTime
     }
   },
-  'オーディオ再生位置設定': { // @AudioオブジェクトOBJを指定してオーディの位置を数値Vで設定する // @おーでぃおさいせい
+  'オーディオ再生位置設定': { // @AudioオブジェクトOBJを指定してオーディオの位置を数値Vで設定する // @おーでぃおさいせい
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
