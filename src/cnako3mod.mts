@@ -92,7 +92,7 @@ export class CNako3 extends NakoCompiler {
       .option('-t, --test', 'コンパイルモードの指定 (テスト用コードを出力)')
       .option('-r, --run', 'コンパイルモードでも実行する')
       .option('-e, --eval [src]', '直接プログラムを実行するワンライナーモード')
-      .option('-o, --output', '出力ファイル名の指定')
+      .option('-o, --output [filename]', '出力ファイル名の指定')
       .option('-s, --silent', 'サイレントモードの指定')
       .option('-l, --repl', '対話シェル(REPL)の実行')
       .option('-b, --browsers', '対応機器/Webブラウザを表示する')
