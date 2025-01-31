@@ -129,7 +129,7 @@ const PluginKansuji = {
       return flag + res
     }
   },
-  '算用数字': { // @U引数を漢数字と解釈して数値を返す // @さんようすうじ
+  '算用数字': { // @引数を漢数字と解釈して数値を返す // @さんようすうじ
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
