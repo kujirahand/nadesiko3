@@ -1036,7 +1036,7 @@ export default {
       return (a ^ b)
     }
   },
-  'NOT': { // @(ビット演算で)vの各ビットを反転して返す。// @NOT
+  'NOT': { // @(ビット演算で)Vの各ビットを反転して返す。// @NOT
     type: 'func',
     josi: [['の']],
     pure: true,
@@ -1048,24 +1048,24 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a: any, b: any) {
-      return (a << b)
+    fn: function (v: any, a: any) {
+      return (v << a)
     }
   },
   'SHIFT_R': { // @VをAビット右へシフトして返す(符号を維持する) // @SHIFT_R
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a: any, b: any) {
-      return (a >> b)
+    fn: function (v: any, a: any) {
+      return (v >> a)
     }
   },
   'SHIFT_UR': { // @VをAビット右へシフトして返す(符号を維持しない、0で埋める) // @SHIFT_UR
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a: any, b: any) {
-      return (a >>> b)
+    fn: function (v: any, a: any) {
+      return (v >>> a)
     }
   },
 
