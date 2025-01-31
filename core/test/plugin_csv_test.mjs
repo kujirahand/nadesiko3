@@ -35,4 +35,14 @@ describe('plugin_csv_test', () => {
     await cmp('[[1,2,3],[4,5,6]]を表TSV変換して表示', '1\t2\t3\r\n4\t5\t6')
     await cmp('[[1,2,"3\r\n\t"],[4,5,6]]を表TSV変換して表示', '1\t2\t"3\r\n\t"\r\n4\t5\t6')
   })
+  it('「2024.01.01」のような日付形式が実数として誤判定する #1910', async () => {
+    await cmp('a=「2024.01.01,200,300\n4,5,6」のCSV取得。a[0][0]を表示', '2024.01.01')
+    await cmp('a=「3.14,200,300\n4,5,6」のCSV取得。a[0][0]を表示', '3.14')
+    await cmp('a=「3.14,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'number')
+    await cmp('a=「2010.1.5,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'string')
+  })
+  it('「2024.01.01」のような日付形式が実数として誤判定する #1910', async () => {
+    await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'string')
+    await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。a[0][0]を表示', '2024.01')
+  })
 })
