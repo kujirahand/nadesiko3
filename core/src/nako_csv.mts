@@ -22,7 +22,7 @@ function is_numeric(str: string): boolean {
   return /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(str);
 }
 
-export function parse (txt: string, delimiter: string|undefined = undefined): string[][] {
+export function parse (txt: string, delimiter: string|undefined = undefined): (string|number)[][] {
   // delimiter
   if (delimiter === undefined) {
     delimiter = options.delimiter

@@ -24,7 +24,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
-    fn: function (str: string): string[][] {
+    fn: function (str: string): (string | number)[][] {
       options.delimiter = ','
       return parse(str)
     }
@@ -33,7 +33,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
-    fn: function (str: string): string[][] {
+    fn: function (str: string): (string|number)[][] {
       options.delimiter = '\t'
       return parse(str)
     }
