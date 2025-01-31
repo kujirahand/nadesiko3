@@ -2,16 +2,24 @@
 export interface CSVOptions {
   delimiter: string;
   eol: string;
+  auto_convert_number: boolean;
 }
 
 export const options: CSVOptions = {
   delimiter: ',',
-  eol: '\r\n'
+  eol: '\r\n',
+  auto_convert_number: true
 }
 
 export function resetEnv (): void {
   options.delimiter = ','
   options.eol = '\r\n'
+  options.auto_convert_number = true
+}
+
+/// 文字列が数値化どうか判定する関数
+function is_numeric(str: string): boolean {
+  return /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(str);
 }
 
 export function parse (txt: string, delimiter: string|undefined = undefined): string[][] {
@@ -29,13 +37,14 @@ export function parse (txt: string, delimiter: string|undefined = undefined): st
   const patToDelim = '^(.*?)([\\' + delimiter + '\\n])'
   const reToDelim = new RegExp(patToDelim)
   // if value is number then convert to float
-  const convType = function (v: any) {
+  const convType = function (v: string) {
+    let result: string|number = v
     if (typeof (v) === 'string') {
-      if (v.search(/^[0-9.]+$/) >= 0) {
-        v = parseFloat(v) // convert number
+      if (options.auto_convert_number && is_numeric(v)) {
+        result = parseFloat(v) // convert number
       }
     }
-    return v
+    return result
   }
   // parse txt
   const res = []; let cells = []; let c = ''
