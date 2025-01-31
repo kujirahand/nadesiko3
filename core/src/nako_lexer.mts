@@ -194,7 +194,7 @@ export class NakoLexer {
         }
       }
       // 無名関数の定義：「xxには**」があった場合 ... 暗黙的な関数定義とする
-      if ((t.type === 'word' && t.josi === 'には') || (t.type === 'word' && t.josi === 'は~')) {
+      if (t.type === 'word' && t.josi === 'には') {
         t.josi = 'には'
         tokens.splice(i + 1, 0, { type: 'def_func', value: '関数', indent: t.indent, line: t.line, column: t.column, file: t.file, josi: '', startOffset: t.endOffset, endOffset: t.endOffset, rawJosi: '', tag: '無名関数' })
         i++
