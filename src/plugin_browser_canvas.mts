@@ -42,7 +42,7 @@ export default {
     },
     return_none: true
   },
-  '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろしてい
+  '線色設定': { // @Canvasの線の描画色(lineStyle)を指定する   // @ せんいろせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
@@ -55,7 +55,7 @@ export default {
     },
     return_none: true
   },
-  '塗色設定': { // @Canvasへの描画色(fillStyle)を指定する   // @ ぬりいろしてい
+  '塗色設定': { // @Canvasへの描画色(fillStyle)を指定する   // @ ぬりいろせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
