@@ -17,5 +17,5 @@ export default {
       window.history.back(-1)
     }
   },
-  'ブラウザURL': { type: 'const', value: '' } // @NぶらうざURL
+  'ブラウザURL': { type: 'const', value: '' } // @ぶらうざURL
 }
