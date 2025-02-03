@@ -232,7 +232,7 @@ export default {
       return inp
     }
   },
-  '値指定バー作成': { // @範囲RANGE(配列で[最小,最大[,値]])を指定するバー(input[type='range'])を作成しDOMオブジェクトを返す // @ぱすわーどにゅうりょくさくせい
+  '値指定バー作成': { // @範囲RANGE(配列で[最小,最大[,値]])を指定するバー(input[type='range'])を作成しDOMオブジェクトを返す // @あたいしていばーさくせい
     type: 'func',
     josi: [['の', 'で']],
     pure: true,
