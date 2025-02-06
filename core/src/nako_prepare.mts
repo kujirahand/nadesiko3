@@ -14,7 +14,7 @@ class ReplaceHistory {
   }
 }
 
-class ConvertResult {
+export class ConvertResult {
   public text: string
   public sourcePosition: number
   constructor (text: string, sourcePosition: number) {
@@ -186,7 +186,7 @@ export class NakoPrepare {
     let i = 0
     while (i < src.getText().length) {
       const c = src.getText().charAt(i)
-      const ch2 = src.getText().substr(i, 2)
+      const ch2 = src.getText().substring(i, i + 2)
       // 文字列のとき
       if (flagStr) {
         if (c === endOfStr) {
@@ -308,7 +308,13 @@ export class NakoPrepare {
       left = i
     }
     if (flagStr || flagStr2) {
-      res.push(new ConvertResult(str + endOfStr, src.getSourcePosition(left)))
+      if (endOfStr === '"' || endOfStr === '\'' || endOfStr === '」' || endOfStr === '』') {
+        // throw new Error(`(${startLineOfStr+1}行目) 文字列が記号『${endOfStr}』で閉じられていません。`)
+        // ここではエラーはリポートしない nako_lex_rule.js でエラーをリポートする
+      } else {
+        // 文字列以外のコメントなどは自動で閉じる
+        res.push(new ConvertResult(str + endOfStr, src.getSourcePosition(left)))
+      }
     }
     return res
   }
