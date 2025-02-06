@@ -315,7 +315,7 @@ export default {
     },
     return_none: true
   },
-  '連続表示': { // @引数に指定した引数を全て表示する // @れんぞく表示
+  '連続表示': { // @引数に指定した引数を全て表示する // @れんぞくひょうじ
     type: 'func',
     josi: [['と', 'を']],
     isVariableJosi: true,
@@ -830,7 +830,7 @@ export default {
       }
     }
   },
-  '終': { // @終わる // @終わる
+  '終': { // @終わる // @おわる
     type: 'func',
     josi: [],
     pure: true,
@@ -3052,7 +3052,7 @@ export default {
   },
   '__DEBUG強制待機': { type: 'const', value: 0 }, // @__DEBUGきょうせいたいき
   '__DEBUGブレイクポイント一覧': { type: 'const', value: [] }, // @__DEBUGぶれいくぽいんといちらん
-  '__DEBUG待機フラグ': { type: 'const', value: 0 }, // @__DEBUGたいきフラグ
+  '__DEBUG待機フラグ': { type: 'const', value: 0 }, // @__DEBUGたいきふらぐ
   '__DEBUG_BP_WAIT': { // @エディタのブレイクポイント機能のための待機 // @__DEBUG_BP_WAIT
     type: 'func',
     josi: [['で']],
@@ -3155,7 +3155,7 @@ export default {
   },
   // @プラグイン管理
   'プラグイン名': { type: 'const', value: 'メイン' }, // @ぷらぐいんめい
-  'プラグイン名設定': { // @プラグイン名をSに変更する(システムにより自動的に「メイン」あるいはプラグインのファイル名が呼ばれる) // @プラグインめいせってい
+  'プラグイン名設定': { // @プラグイン名をSに変更する(システムにより自動的に「メイン」あるいはプラグインのファイル名が呼ばれる) // @ぷらぐいんめいせってい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
