@@ -255,6 +255,7 @@ function cbString (beginTag: string, closeTag: string, src: string): NakoLexPars
   if (i < 0) { // not found
     res = src
     src = ''
+    throw new Error(`『${beginTag}』で始めた文字列の終端記号『${closeTag}』が見つかりません。`)
   } else {
     res = src.substring(0, i)
     src = src.substring(i + closeTag.length)
