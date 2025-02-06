@@ -82,7 +82,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (XY: number[]): number {
-      return Math.atan2(XY[1], XY[0]) * 180 / Math.PI
+      return Math.atan2(XY[1], XY[0]) / Math.PI * 180
     }
   },
   'RAD2DEG': { // @ラジアンから度に変換 // @RAD2DEG
