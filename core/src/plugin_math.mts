@@ -176,7 +176,7 @@ export default {
       return Math.hypot(a, b)
     }
   },
-  'LN': { // @実数式 A の自然対数（Ln(A) = 1）を返す // @LN
+  'LN': { // @実数式 A の自然対数（Ln(e) = 1）を返す // @LN
     type: 'func',
     josi: [['の']],
     pure: true,
