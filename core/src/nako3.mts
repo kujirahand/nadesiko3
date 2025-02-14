@@ -469,7 +469,11 @@ export class NakoCompiler {
       // 通常、リセット処理では、プラグインの!クリアを呼ぶ。
       // しかし、エディタではクリアイベントを呼ぶと、時計などのコンテンツが止まってしまう
       // そのため、例外的にオプションを指定すると、プラグインのクリアイベントを呼ばない
-      this.clearPlugins()
+      try {
+        this.clearPlugins()
+      } catch (_) {
+        // pass
+      }
     }
     /**
      * なでしこのローカル変数をスタックで管理
@@ -786,6 +790,7 @@ export class NakoCompiler {
   clearPlugins () {
     // 他に実行している「なでしこ」があればクリアする
     this.__globals.forEach((sys: NakoGlobal) => {
+      if (!sys) { return }
       // core #56
       sys.__setSysVar('__forceClose', true)
       sys.reset()

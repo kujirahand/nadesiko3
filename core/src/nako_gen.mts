@@ -1624,7 +1624,7 @@ export class NakoGen {
       // 戻り値のない関数の場合
       // ------------------------------------
       if (funcEnd === '') {
-        code = `/*VOID関数呼出*/${funcBegin}${funcCall};\n`
+        code = `/*VOID関数呼出*/${funcBegin}${funcCall}\n`
       } else {
         code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
       }

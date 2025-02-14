@@ -152,7 +152,11 @@ export class NakoGlobal {
     for (const pname in this.pluginfiles) {
       const po = this.__module[pname]
       if (po[clearName] && po[clearName].fn) {
-        po[clearName].fn(this)
+        try {
+          po[clearName].fn(this)
+        } catch (e: any) {
+          this.logger.error(`プラグイン『${pname}』のクリア関数でエラーが発生しました:` + e.message)
+        }
       }
     }
   }
