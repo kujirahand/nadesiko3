@@ -64,8 +64,8 @@ FILE_PATH=""
 　　PNAME=対象@0
 　　カレントプラグイン＝"{CORE}/{PNAME}"
 　　FILE_PATH="{基本パス}/{CORE}/{PNAME}"
-　　# https://github.com/kujirahand/nadesiko3core/blob/main/src/{PNAME}#L119
-　　SRC_URL="https://github.com/kujirahand/nadesiko3core/blob/main/src/{PNAME}"
+　　# (ex) https://github.com/kujirahand/nadesiko3/blob/master/core/src/nako3.mts#L81
+　　SRC_URL="https://github.com/kujirahand/nadesiko3/blob/master/core/src/{PNAME}"
 　　ナコタイプ＝対象＠1
 　　パスは「{基本パス}/{カレントプラグイン}」
 　　パスを「(基本プラグイン,{ナコタイプ})」でプラグイン要約作成
