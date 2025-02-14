@@ -1251,6 +1251,7 @@ export default {
         },
         'body': bodyData
       }
+      console.warn('『LINE送信』は2025年3月で使えなくなります。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
       const res = await fetch(lineNotifyUrl, options)
       const jsonObj = await res.json()
       return JSON.stringify(jsonObj)
