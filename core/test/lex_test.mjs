@@ -41,8 +41,8 @@ describe('lex_test', async () => {
     await cmp('手説明＝["グー","チョキ","パー"];「自分は{手説明@1}、相手は{手説明@0}」と表示', '自分はチョキ、相手はグー')
   })
   it('はい/いいえ', async () => {
-    await cmp('はいを表示', '1')
-    await cmp('いいえを表示', '0')
+    await cmp('はいを表示', 'true')
+    await cmp('いいえを表示', 'false')
   })
   it('A = 8の書き方', async () => {
     await cmp('A = 8;Aを表示', '8')

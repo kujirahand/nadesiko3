@@ -223,13 +223,13 @@ export default {
   'ナデシコ言語バージョン': { type: 'const', value: '?' }, // @なでしこげんごばーじょん
   'ナデシコエンジン': { type: 'const', value: 'nadesi.com/v3' }, // @なでしこえんじん
   'ナデシコ種類': { type: 'const', value: '?' }, // @なでしこしゅるい
-  'はい': { type: 'const', value: 1 }, // @はい
-  'いいえ': { type: 'const', value: 0 }, // @いいえ
-  '真': { type: 'const', value: 1 }, // @しん
-  '偽': { type: 'const', value: 0 }, // @ぎ
-  '永遠': { type: 'const', value: 1 }, // @えいえん
-  'オン': { type: 'const', value: 1 }, // @おん
-  'オフ': { type: 'const', value: 0 }, // @おふ
+  'はい': { type: 'const', value: true }, // @はい
+  'いいえ': { type: 'const', value: false }, // @いいえ
+  '真': { type: 'const', value: true }, // @しん
+  '偽': { type: 'const', value: false }, // @ぎ
+  '永遠': { type: 'const', value: true }, // @えいえん
+  'オン': { type: 'const', value: true }, // @おん
+  'オフ': { type: 'const', value: false }, // @おふ
   '改行': { type: 'const', value: '\n' }, // @かいぎょう
   'タブ': { type: 'const', value: '\t' }, // @たぶ
   'カッコ': { type: 'const', value: '「' }, // @かっこ
@@ -288,6 +288,14 @@ export default {
     pure: false,
     fn: function (sys: NakoSystem): any {
       return sys.__exec('空ハッシュ', [sys])
+    }
+  },
+  '真偽判定': { // @引数bが真(true)ならば「真」を偽(false)ならば「偽」を返す // @しんぎはんてい
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (b: any): string {
+      return b ? '真' : '偽'
     }
   },
 
