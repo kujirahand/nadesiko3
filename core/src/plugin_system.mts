@@ -1007,7 +1007,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (v: any): number {
-      return (!v) ? 1 : 0
+      return (!v) ? true : false
     }
   },
 
