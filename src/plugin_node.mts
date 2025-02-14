@@ -659,7 +659,7 @@ export default {
     },
     return_none: true
   },
-  '解凍': { // @(v1非互換)ZIPファイルAをBに解凍(実行には7-zipが必要-https://goo.gl/LmKswH) // @かいとう
+  '解凍': { // @(v1非互換)ZIPファイルAをBに解凍(実行には7-Zipが必要-https://7-zip.opensource.jp/ ) // @かいとう
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
@@ -689,7 +689,7 @@ export default {
     },
     return_none: false
   },
-  '圧縮': { // @(v1非互換)ファイルAをBにZIP圧縮(実行には7-zipが必要-https://goo.gl/LmKswH) // @あっしゅく
+  '圧縮': { // @(v1非互換)ファイルAをBにZIP圧縮(実行には7-Zipが必要-https://7-zip.opensource.jp/ ) // @あっしゅく
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
