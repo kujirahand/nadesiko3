@@ -408,9 +408,9 @@ describe('plugin_system_test', async () => {
     await cmp('NOT(0xFF)を表示', '-256')
   })
   it('論理演算', async () => {
-    await cmp('論理OR(1,0)を表示', '1')
-    await cmp('論理AND(1,0)を表示', '0')
-    await cmp('論理NOT(1)を表示', '0')
+    await cmp('論理OR(TRUE,FALSE)を表示', 'true')
+    await cmp('論理AND(TRUE,FALSE)を表示', 'false')
+    await cmp('論理NOT(TRUE)を表示', 'false')
   })
   it('英数記号全角半角変換', async () => {
     await cmp('「＃！」を英数記号半角変換して表示', '#!')
