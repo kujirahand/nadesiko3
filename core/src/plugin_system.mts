@@ -986,27 +986,27 @@ export default {
   },
 
   // @論理演算
-  '論理OR': { // @(ビット演算で)AとBの論理和を返す(v1非互換)。 // @ろんりOR
+  '論理OR': { // @AとBの論理和を返す(v1非互換)。 // @ろんりOR
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a: any, b: any) {
+    fn: function (a: any, b: any): any {
       return (a || b)
     }
   },
-  '論理AND': { // @(ビット演算で)AとBの論理積を返す(v1非互換)。日本語の「AかつB」に相当する // @ろんりAND
+  '論理AND': { // @AとBの論理積を返す(v1非互換)。日本語の「AかつB」に相当する // @ろんりAND
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a: any, b: any) {
+    fn: function (a: any, b: any): boolean {
       return (a && b)
     }
   },
-  '論理NOT': { // @値Vが0ならば1、それ以外ならば0を返す(v1非互換) // @ろんりNOT
+  '論理NOT': { // @値Vが0や空ならばtrue、それ以外ならばfalseを返す(v1非互換) // @ろんりNOT
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any): number {
+    fn: function (v: any): boolean {
       return (!v) ? true : false
     }
   },
@@ -1016,7 +1016,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a: any, b: any) {
+    fn: function (a: any, b: any): any {
       return (a | b)
     }
   },
@@ -1024,7 +1024,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a: any, b: any) {
+    fn: function (a: any, b: any): any {
       return (a & b)
     }
   },
@@ -1032,7 +1032,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a: any, b: any) {
+    fn: function (a: any, b: any): any {
       return (a ^ b)
     }
   },
@@ -1040,7 +1040,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any) {
+    fn: function (v: any): any {
       return (~v)
     }
   },
@@ -1048,7 +1048,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (v: any, a: any) {
+    fn: function (v: number, a: number): number {
       return (v << a)
     }
   },
@@ -1056,7 +1056,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (v: any, a: any) {
+    fn: function (v: number, a: number): number {
       return (v >> a)
     }
   },
@@ -1064,7 +1064,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (v: any, a: any) {
+    fn: function (v: number, a: number): number {
       return (v >>> a)
     }
   },
@@ -1074,7 +1074,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any) {
+    fn: function (v: any): number {
       if (!Array.from) { return String(v).length }
       return Array.from(v).length
     }
