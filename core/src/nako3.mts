@@ -291,10 +291,10 @@ export class NakoCompiler {
       const obj = tools.readJs(item.filePath, item.firstToken)
       tasks.push(obj.task.then((res: any) => {
         const pluginFuncs = res()
-        this.addPluginFile(item.value, item.filePath, pluginFuncs, false)
+        this.addPluginFromFile(item.filePath, pluginFuncs)
         dependencies[item.filePath].funclist = pluginFuncs
         dependencies[item.filePath].moduleExport = {}
-        dependencies[item.filePath].addPluginFile = () => { this.addPluginFile(item.value, item.filePath, pluginFuncs, false) }
+        dependencies[item.filePath].addPluginFile = () => { this.addPluginFromFile(item.filePath, pluginFuncs) }
       }))
     }
     const loadNako3 = (item: any, tasks: any) => {
