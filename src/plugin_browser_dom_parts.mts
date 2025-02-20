@@ -479,7 +479,9 @@ export default {
     fn: function (aa: any, sys: any) {
       const domOption = sys.__getSysVar('DOM部品オプション')
       domOption['テーブルヘッダ'] = false
-      return sys.__exec('テーブル作成', [aa, sys])
+      const obj = sys.__exec('テーブル作成', [aa, sys])
+      domOption['テーブルヘッダ'] = true
+      return obj
     }
   },
   'テーブル更新': { // @既に作成したテーブルTBLを二次元配列AA(あるいは文字列の簡易CSVデータ)で更新する // @てーぶるこうしん
