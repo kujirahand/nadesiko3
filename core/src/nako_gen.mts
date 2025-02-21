@@ -1783,7 +1783,7 @@ export class NakoGen {
     code += this.convLineno(node, false) + '\n'
     code += `let ${valueVar} = ${varGetter}\n`
     code += `if (typeof ${valueVar} === 'undefined') { ${varInitter}; }\n`
-    code += `${valueVar} = ${varGetter} + ${incValue};\n`
+    code += `${valueVar} = Number(${varGetter}) + Number(${incValue});\n`
     code += `${varSetter}\n`
     code += '/*[/convInc]*/\n'
     return code
