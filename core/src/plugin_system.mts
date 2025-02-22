@@ -1196,6 +1196,16 @@ export default {
       return String(s) + String(a) + '\n'
     }
   },
+  '連結': { // @引数(可変)に指定した文字列を連結して文字列を返す // @れんけつ
+    type: 'func',
+    josi: [['と', 'を']],
+    pure: true,
+    isVariableJosi: true,
+    fn: function (...a: any) {
+      a.pop() // NakoSystemを取り除く
+      return a.join('')
+    },
+  },
   '文字列分解': { // @文字列Vを一文字ずつに分解して返す // @もじれつぶんかい
     type: 'func',
     josi: [['を', 'の', 'で']],
