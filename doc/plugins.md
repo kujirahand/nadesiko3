@@ -83,7 +83,7 @@ export default {
 
 ```js
 {
-  '関数名': { // @関数の説明 // @ヨミガナ
+  '関数名': { // @関数の説明 // @よみがな
     type: 'func', // 関数であれば func にする
     josi: [['を', 'から'], ['まで']], // 助詞を配列で宣言する (可変長引数として扱いたい助詞は末尾で宣言する)
     isVariableJosi: false, // 末尾の助詞を可変長引数として扱う場合 true にする
@@ -101,7 +101,7 @@ export default {
 typeプロパティに「const」を指定して、valueプロパティに値を指定する。
 
 ```js
-{ type: 'const', value: 100 } // @ヨミガナ
+{ type: 'const', value: 100 } // @よみがな
 ```
 
 ### 定義：変数
@@ -109,7 +109,7 @@ typeプロパティに「const」を指定して、valueプロパティに値を
 typeプロパティに「var」を指定して、valueプロパティに値を指定する。
 
 ```js
-{ type: 'var', value: 100 } // @ヨミガナ
+{ type: 'var', value: 100 } // @よみがな
 ```
 
 ### プラグインの自動登録
