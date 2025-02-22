@@ -93,6 +93,7 @@ export default {
   '束': { // @非同期処理をまとめる。 // @たばねる
     type: 'func',
     josi: [['と', 'を']],
+    isVariableJosi: true,
     pure: true,
     fn: function (...args:any): any {
       const sys = args.pop()
