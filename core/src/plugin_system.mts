@@ -1084,6 +1084,7 @@ export default {
     pure: true,
     fn: function (v: any): number {
       if (!Array.from) { return String(v).length }
+      // Unicodeのサロゲートペアを考慮して文字数をカウント #1954 を参照
       return Array.from(v).length
     }
   },
@@ -1092,7 +1093,16 @@ export default {
     josi: [['で', 'の'], ['が']],
     pure: true,
     fn: function (s: string, a: string): number {
-      return String(s).indexOf(a) + 1
+      // Unicodeのサロゲートペアを考慮して、文字列を検索 #1954 を参照
+      // return String(s).indexOf(a) + 1 // サロゲートペアを無視した場合
+      const strArray = Array.from(s)
+      const searchArray = Array.from(a)
+      for (let i = 0; i < strArray.length; i++) {
+        if (strArray.slice(i, i + searchArray.length).join('') === searchArray.join('')) {
+          return i + 1
+        }
+      }
+      return 0
     }
   },
   'CHR': { // @文字コードV(あるいは文字列配列)から文字を返す // @CHR
@@ -1100,10 +1110,12 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (v: number|number[]): string|string[] {
+      // 数値のとき
       if (typeof v === 'number') {
         if (!String.fromCodePoint) { return String.fromCharCode(v) }
         return String.fromCodePoint(v)
       }
+      // 配列のとき
       const res: string[] = []
       for (const s of v) {
         if (!String.fromCodePoint) { res.push(String.fromCharCode(s)) }
@@ -1135,10 +1147,9 @@ export default {
     pure: true,
     fn: function (s: string, i: number, a: string): string {
       if (i <= 0) { i = 1 }
-      const ss = String(s)
-      const mae = ss.substring(0, i - 1)
-      const usi = ss.substring(i - 1)
-      return mae + a + usi
+      const strArray = Array.from(s)
+      strArray.splice(i-1, 0, a)
+      return strArray.join('')
     }
   },
   '文字検索': { // @文字列SでA文字目から文字列Bを検索。見つからなければ0を返す。(類似命令に『何文字目』がある)(v1非互換) // @もじけんさく
@@ -1146,11 +1157,19 @@ export default {
     josi: [['で', 'の'], ['から'], ['を']],
     pure: true,
     fn: function (s: string, a: number, b: string): number {
-      let str = String(s)
-      str = str.substring(a)
-      const res: number = str.indexOf(b)
-      if (res === -1) { return 0 }
-      return res + 1 + a
+      // サロゲートペアを考慮して文字列を検索する
+      // return String(s).indexOf(b, a - 1) + 1
+      if (a <= 0) { a = 1 }
+      const strArray = Array.from(s)
+      const searchArray = Array.from(b)
+      // Unicode単位で検索
+      for (let i = a - 1; i < strArray.length; i++) {
+        if (strArray.slice(i, i + searchArray.length).join('') === searchArray.join('')) {
+          // 合致した
+          return i + 1
+        }
+      }
+      return 0
     }
   },
   '追加': { // @文字列または配列SにAを追加して返す(v1非互換) // @ついか
@@ -1206,13 +1225,12 @@ export default {
       return s.split(a).length - 1
     }
   },
-  'MID': { // @文字列SのA文字目からCNT文字を抽出する // @MID
+  'MID': { // @文字列SのA文字目からCNT文字を抽出する(『文字抜出』と同じ) // @MID
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を']],
     pure: true,
-    fn: function (s: any, a: any, cnt: number) {
-      cnt = cnt || 1
-      return (String(s).substring(a - 1, a + cnt - 1))
+    fn: function (s: any, a: any, cnt: number, sys: NakoSystem) {
+      return sys.__exec('文字抜出', [s, a, cnt])
     }
   },
   '文字抜出': { // @文字列SのA文字目からCNT文字を抽出する // @もじぬきだす
@@ -1221,15 +1239,18 @@ export default {
     pure: true,
     fn: function (s: any, a: any, cnt: number) {
       cnt = cnt || 1
-      return (String(s).substring(a - 1, a + cnt - 1))
+      // return (String(s).substring(a - 1, a + cnt - 1))
+      // サロゲートペアを考慮
+      const strArray = Array.from(s)
+      return strArray.slice(a - 1, a + cnt - 1).join('')
     }
   },
   'LEFT': { // @文字列Sの左端からCNT文字を抽出する // @LEFT
     type: 'func',
     josi: [['の', 'で'], ['だけ']],
     pure: true,
-    fn: function (s: string, cnt: number): string {
-      return (String(s).substring(0, cnt))
+    fn: function (s: string, cnt: number, sys: NakoSystem): string {
+      return sys.__exec('文字左部分', [s, cnt])
     }
   },
   '文字左部分': { // @文字列Sの左端からCNT文字を抽出する // @もじひだりぶぶん
@@ -1237,16 +1258,18 @@ export default {
     josi: [['の', 'で'], ['だけ', '']],
     pure: true,
     fn: function (s: string, cnt: number): string {
-      return (String(s).substring(0, cnt))
+      // return (String(s).substring(0, cnt))
+      // サロゲートペアを考慮
+      const strArray = Array.from(s)
+      return strArray.slice(0, cnt).join('')
     }
   },
-  'RIGHT': { // @文字列Sの右端からCNT文字を抽出する // @RIGHT
+  'RIGHT': { // @文字列Sの右端からCNT文字を抽出する(『文字右部分』と同じ) // @RIGHT
     type: 'func',
     josi: [['の', 'で'], ['だけ']],
     pure: true,
-    fn: function (s: string, cnt: number): string {
-      s = '' + s
-      return (s.substring(s.length - cnt, s.length))
+    fn: function (s: string, cnt: number, sys: NakoSystem): string {
+      return sys.__exec('文字右部分', [s, cnt])
     }
   },
   '文字右部分': { // @文字列Sの右端からCNT文字を抽出する // @もじみぎぶぶん
@@ -1254,8 +1277,10 @@ export default {
     josi: [['の', 'で'], ['だけ', '']],
     pure: true,
     fn: function (s: string, cnt: number): string {
-      s = '' + s
-      return (s.substring(s.length - cnt, s.length))
+      // return (s.substring(s.length - cnt, s.length))
+      // サロゲートペアを考慮
+      const strArray = Array.from(s)
+      return strArray.slice(strArray.length - cnt, strArray.length).join('')
     }
   },
   '区切': { // @文字列Sを区切り文字Aで区切って配列で返す // @くぎる
@@ -1326,10 +1351,10 @@ export default {
     josi: [['の'], ['から'], ['だけ', 'を', '']],
     pure: true,
     fn: function (s: string, a: number, b: number): string {
-      s = '' + s
-      const mae = s.substring(0, a - 1)
-      const usi = s.substring((a - 1 + b))
-      return mae + usi
+      // サロゲートペアを考慮
+      const strArray = Array.from(s)
+      strArray.splice(a - 1, b)
+      return strArray.join('')
     }
   },
 
@@ -1356,8 +1381,7 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      s = String(s).replace(/^\s+/, '').replace(/\s+$/, '')
-      return s
+      return String(s).replace(/^\s+/, '').replace(/\s+$/, '')
     }
   },
   '空白除去': { // @文字列Sの前後にある空白を削除する // @くうはくじょきょ
@@ -1365,8 +1389,7 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      s = String(s).replace(/^\s+/, '').replace(/\s+$/, '')
-      return s
+      return String(s).replace(/^\s+/, '').replace(/\s+$/, '')
     }
   },
   '右トリム': { // @文字列Sの末尾にある空白を削除する // @みぎとりむ
@@ -1374,8 +1397,15 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      s = String(s).replace(/\s+$/, '')
-      return s
+      return String(s).replace(/\s+$/, '')
+    }
+  },
+  '左トリム': { // @文字列Sの先頭にある空白を削除する // @ひだりとりむ
+    type: 'func',
+    josi: [['の', 'を']],
+    pure: true,
+    fn: function (s: string): string {
+      return String(s).replace(/^\s+/, '')
     }
   },
   '末尾空白除去': { // @文字列Sの末尾にある空白を削除する // @まつびくうはくじょきょ
@@ -1383,8 +1413,7 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      s = String(s).replace(/\s+$/, '')
-      return s
+      return String(s).replace(/\s+$/, '')
     }
   },
 
