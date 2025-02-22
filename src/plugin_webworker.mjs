@@ -227,7 +227,7 @@ const PluginWebWorker = {
     },
     return_none: true
   },
-  'NAKOワーカーリセット': { // @WORKERに固有の形式でプログラムの転送と実行行う。 // @わーかーりせっと
+  'NAKOワーカーリセット': { // @WORKERに固有の形式でプログラムの転送と実行行う。 // @NAKOわーかーりせっと
     type: 'func',
     josi: [['を']],
     pure: true,
