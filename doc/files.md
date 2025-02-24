@@ -1,6 +1,6 @@
 # なでしこを構成するファイルたち
 
-## src/nako3.mjs
+## core/src/nako3.mjs
 
 なでしこコンパイラ本体。なでしこのソースコードをJSに変換する。変換処理は、次のように行われる。
 
@@ -9,15 +9,15 @@
 - (3) 構文木(中間表現)
 - (3) JavaScriptソース
 
-## src/nako_prepare.mjs
+## core/src/nako_prepare.mjs
 
 なでしこのソースコードの前置処理を行うもの。主に全角半角の変換処理を行う。
 
-## src/nako_parser3.mjs
+## core/src/nako_parser3.mjs
 
 なでしこ構文から構文木を生成するもの。
 
-## src/nako_gen.mjs
+## core/src/nako_gen.mjs
 
 構文木を元に、JavaScriptのコードを生成するもの。
 
