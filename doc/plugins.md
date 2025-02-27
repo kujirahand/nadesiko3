@@ -207,7 +207,7 @@ const value = sys.__getSysVar('変数名')
 sys.__setSysVar('変数名', value)
 ```
 
-なお、プラグインでは、次のメソッドが使えるようになる。(すべてsrc/plugin_system.jsで定義されている。システム関数の初期化時に、これらの関数が追加される)
+なお、プラグインでは、次のメソッドが使えるようになる。(すべてcore/src/plugin_system.mjsで定義されている。システム関数の初期化時に、これらの関数が追加される)
 
 - sys.__findVar(name)
 - sys.__exec(name, params)
