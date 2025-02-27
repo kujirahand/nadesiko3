@@ -1290,7 +1290,9 @@ export default {
       // return (s.substring(s.length - cnt, s.length))
       // サロゲートペアを考慮
       const strArray = Array.from(s)
-      return strArray.slice(strArray.length - cnt, strArray.length).join('')
+      let index = strArray.length - cnt
+      if (index < 0) { index = 0 }
+      return strArray.slice(index, strArray.length).join('')
     }
   },
   '区切': { // @文字列Sを区切り文字Aで区切って配列で返す // @くぎる
