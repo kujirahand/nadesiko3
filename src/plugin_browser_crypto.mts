@@ -43,7 +43,7 @@ export default {
       return window.crypto.randomUUID()
     },
   },
-  'ランダム配列生成': { // @暗号強度の強い乱数のバイト配列(Uint8Array)を指定個数返す // @ らんだむはいれつせいせい
+  'ランダム配列生成': { // @暗号強度の強い乱数のバイト配列(Uint8Array)を指定の長さで返す // @ らんだむはいれつせいせい
     type: 'func',
     josi: [['の']],
     pure: true,
