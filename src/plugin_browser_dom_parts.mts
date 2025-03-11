@@ -503,17 +503,31 @@ export default {
         }
         aa = rr;
       }
-      const domOption = sys.__getSysVar("DOM部品オプション");
+      const table = tbl
+      // テーブル作成/テーブル更新の設定を読み取る
+      const domOption = sys.__getSysVar("DOM部品オプション")
+      // 背景色は複製して使う
       const bgColor: Array<string> = JSON.parse(
         JSON.stringify(domOption["テーブル背景色"]),
-      ); // 複製して使う
-      const hasHeader: boolean = domOption["テーブルヘッダ"];
-      const isNumRight: boolean = domOption["テーブル数値右寄せ"];
+      );
       for (let i = 0; i < 3; i++) {
         bgColor.push("");
       }
       const bgHead = bgColor.shift() || "";
-      const table = tbl
+      let hasHeader: boolean = domOption["テーブルヘッダ"]
+      let isNumRight: boolean = domOption["テーブル数値右寄せ"]
+      if (table.dataset.nakoTags) {
+        // 既存DOMから設定を読む
+        hasHeader = table.dataset.nakoTags.hasHeader
+        isNumRight = table.dataset.nakoTags.isNumRight
+      } else {
+        // 設定をDOMに保存する
+        table.dataset.nakoTags = {
+          hasHeader,
+          isNumRight,
+        }
+      }
+      // テーブルにデータを追加していく
       for (let i = 0; i < aa.length; i++) {
         const rowNo = i;
         const row = aa[rowNo];
