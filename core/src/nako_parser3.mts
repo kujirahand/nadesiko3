@@ -344,7 +344,16 @@ export class NakoParser extends NakoParserBase {
           this.localvars.set(fnName, { 'type': 'var', 'value': '' })
         }
         block = this.yBlock()
-        if (this.check('ここまで')) { this.get() } else { throw NakoSyntaxError.fromNode('『ここまで』がありません。関数定義の末尾に必要です。', def) }
+        // 「ここまで」のチェック
+        if (this.check('ここまで')) {
+          this.get() // skip 'ここまで'
+        } else {
+          // 「ここまで」が見当たらない
+          const nextWordO = this.peek()
+          let nextWord = JSON.stringify(nextWordO)
+          if (nextWordO && nextWordO.type && nextWordO.value) { nextWord = nextWordO.value }
+          throw NakoSyntaxError.fromNode(`『ここまで』がありません。関数定義の末尾に必要です。『${nextWord}』の前に『ここまで』を記述してください。`, def)
+        }
         this.loadStack()
       } else {
         this.saveStack()
@@ -1694,9 +1703,10 @@ export class NakoParser extends NakoParserBase {
       }
     }
 
-    if (this.accept(['定数', 'word', 'eq', this.yCalc])) {
-      const word = this.createVar(this.y[1], true, this.isExportDefault)
-      const astValue = this.y[3] || this.yNop()
+    if (this.accept(['定数', 'word', 'eq'])) {
+      const constName = this.y[1]
+      const word = this.createVar(constName, true, this.isExportDefault)
+      const astValue = this.yCalc() || this.yNop()
       return {
         type: 'def_local_var',
         name: (word as AstStrValue).value,
@@ -1707,12 +1717,12 @@ export class NakoParser extends NakoParserBase {
       } as AstDefVar
     }
 
-    if (this.accept(['定数', 'word', '{', 'word', '}', 'eq', this.yCalc])) {
+    if (this.accept(['定数', 'word', '{', 'word', '}', 'eq'])) {
       let isExport : boolean = this.isExportDefault
       const attr = this.y[3].value
       if (attr === '公開') { isExport = true } else if (attr === '非公開') { isExport = false } else if (attr === 'エクスポート') { isExport = true } else { this.logger.warn(`不明な定数属性『${attr}』が指定されています。`) }
       const word = this.createVar(this.y[1], true, isExport)
-      const astValue = this.y[6] || this.yNop()
+      const astValue = this.yCalc() || this.yNop()
       return {
         type: 'def_local_var',
         name: (word as AstStrValue).value,
@@ -1725,7 +1735,7 @@ export class NakoParser extends NakoParserBase {
     }
 
     // 複数定数への代入 #563
-    if (this.accept(['定数', this.yJSONArray, 'eq', this.yCalc])) {
+    if (this.accept(['定数', this.yJSONArray, 'eq'])) {
       const names = this.y[1]
       // check array
       if (names && names.blocks instanceof Array) {
@@ -1738,7 +1748,7 @@ export class NakoParser extends NakoParserBase {
         throw NakoSyntaxError.fromNode('複数定数の代入文でエラー。『定数[A,B,C]=[1,2,3]』の書式で記述してください。', this.y[0])
       }
       const namesAst = this._tokensToNodes(this.createVarList(names.blocks, true, this.isExportDefault))
-      const astValue = this.y[3] || this.yNop()
+      const astValue = this.yCalc() || this.yNop()
       return {
         type: 'def_local_varlist',
         names: namesAst,
@@ -1749,7 +1759,7 @@ export class NakoParser extends NakoParserBase {
       } as AstDefVarList
     }
     // 複数変数への代入 #563
-    if (this.accept(['変数', this.yJSONArray, 'eq', this.yCalc])) {
+    if (this.accept(['変数', this.yJSONArray, 'eq'])) {
       const names: AstBlocks = this.y[1]
       // check array
       if (names && names.blocks instanceof Array) {
@@ -1762,7 +1772,7 @@ export class NakoParser extends NakoParserBase {
         throw NakoSyntaxError.fromNode('複数変数の代入文でエラー。『変数[A,B,C]=[1,2,3]』の書式で記述してください。', this.y[0])
       }
       const namesAst = this._tokensToNodes(this.createVarList(names.blocks as Token[], false, this.isExportDefault))
-      const astValue = this.y[3] || this.yNop()
+      const astValue = this.yCalc() || this.yNop()
       return {
         type: 'def_local_varlist',
         names: namesAst,
@@ -1776,10 +1786,10 @@ export class NakoParser extends NakoParserBase {
     // 複数変数への代入 #563
     if (this.check2(['word', 'comma', 'word'])) {
       // 2 word
-      if (this.accept(['word', 'comma', 'word', 'eq', this.yCalc])) {
+      if (this.accept(['word', 'comma', 'word', 'eq'])) {
         let names = [this.y[0], this.y[2]]
         names = this.createVarList(names, false, this.isExportDefault)
-        const astValue = this.y[4] || this.yNop()
+        const astValue = this.yCalc() || this.yNop()
         return {
           type: 'def_local_varlist',
           names,
@@ -1790,10 +1800,10 @@ export class NakoParser extends NakoParserBase {
         } as AstDefVarList
       }
       // 3 word
-      if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'eq', this.yCalc])) {
+      if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'eq'])) {
         let names = [this.y[0], this.y[2], this.y[4]]
         names = this.createVarList(names, false, this.isExportDefault)
-        const astValue = this.y[6] || this.yNop()
+        const astValue = this.yCalc() || this.yNop()
         return {
           type: 'def_local_varlist',
           names,
@@ -1804,10 +1814,10 @@ export class NakoParser extends NakoParserBase {
         } as AstDefVarList
       }
       // 4 word
-      if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'eq', this.yCalc])) {
+      if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'eq'])) {
         let names = [this.y[0], this.y[2], this.y[4], this.y[6]]
         names = this.createVarList(names, false, this.isExportDefault)
-        const astValue = this.y[8] || this.yNop()
+        const astValue = this.yCalc() || this.yNop()
         return {
           type: 'def_local_varlist',
           names,
@@ -1818,10 +1828,10 @@ export class NakoParser extends NakoParserBase {
         } as AstDefVarList
       }
       // 5 word
-      if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'eq', this.yCalc])) {
+      if (this.accept(['word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'comma', 'word', 'eq'])) {
         let names = [this.y[0], this.y[2], this.y[4], this.y[6], this.y[8]]
         names = this.createVarList(names, false, this.isExportDefault)
-        const astValue = this.y[10] || this.yNop()
+        const astValue = this.yCalc() || this.yNop()
         return {
           type: 'def_local_varlist',
           names,
