@@ -9,7 +9,7 @@ import { Ast, AstBlocks } from './nako_ast.mjs'
 // parser / lexer
 import { NakoParser } from './nako_parser3.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
-import { NakoPrepare, ConvertResult } from './nako_prepare.mjs'
+import { NakoPrepare } from './nako_prepare.mjs'
 import { NakoGen, generateJS, NakoGenOptions, NakoGenResult } from './nako_gen.mjs'
 import { convertInlineIndent, convertIndentSyntax } from './nako_indent_inline.mjs'
 import { convertDNCL } from './nako_from_dncl.mjs'

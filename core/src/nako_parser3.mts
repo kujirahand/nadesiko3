@@ -1221,6 +1221,9 @@ export class NakoParser extends NakoParserBase {
     if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
       throw NakoSyntaxError.fromNode('代入文で代入先の変数が見当たりません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
+    if (word.type === 'func') {
+      throw NakoSyntaxError.fromNode('関数『' + word.name + '』に代入できません。『(変数名)に(値)を代入』のように使います。', dainyu)
+    }
     // 配列への代入
     if (word.type === 'ref_array') {
       const indexArray = word.index || []
