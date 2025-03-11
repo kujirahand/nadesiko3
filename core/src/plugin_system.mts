@@ -377,13 +377,45 @@ export default {
   },
 
   // @四則演算
-  '足': { // @AとBを足す // @たす
+  '足': { // @AとBを足す(算術演算を行う) // @たす
     type: 'func',
     josi: [['に', 'と'], ['を']],
     isVariableJosi: false,
     pure: true,
     fn: function (a: any, b: any) {
-      return a + b
+      if (typeof(a) === 'bigint' || typeof(b) === 'bigint') {
+        return BigInt(a) + BigInt(b)
+      }
+      return parseFloat(a) + parseFloat(b)
+    }
+  },
+  '合計': { // @引数(可変)に指定した値を全て合計して返す // @ごうけい
+    type: 'func',
+    josi: [['と', 'を', 'の']],
+    isVariableJosi: true,
+    pure: true,
+    fn: function (...a: any) {
+      const sys = a.pop() // remove NakoSystem
+      if (a.length >= 1 && a[0] instanceof Array) {
+        return sys.__exec('配列合計', [a[0], sys])
+      }
+      let isBigInt = false
+      let sum = 0
+      for (const v of a) {
+        if (typeof(v) === 'bigint') {
+          isBigInt = true
+          break
+         }
+        sum += parseFloat(v)
+      }
+      if (isBigInt) {
+        let bigsum = 0n
+        for (const v of a) {
+          bigsum += BigInt(v)
+        }
+        return bigsum
+      }
+      return sum
     }
   },
   '引': { // @AからBを引く // @ひく
@@ -1197,6 +1229,16 @@ export default {
     }
   },
   '連結': { // @引数(可変)に指定した文字列を連結して文字列を返す // @れんけつ
+    type: 'func',
+    josi: [['と', 'を']],
+    pure: true,
+    isVariableJosi: true,
+    fn: function (...a: any) {
+      a.pop() // NakoSystemを取り除く
+      return a.join('')
+    },
+  },
+  '文字列連結': { // @引数(可変)に指定した文字列を連結して文字列を返す // @もじれつれんけつ
     type: 'func',
     josi: [['と', 'を']],
     pure: true,
