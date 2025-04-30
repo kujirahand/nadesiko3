@@ -1494,7 +1494,7 @@ export default {
     pure: true,
     fn: function (s: string): string {
       const kanaToHira = (str: string) => {
-        return String(str).replace(/[\u30a1-\u30f6]/g, function (m) {
+        return String(str).replace(/[\u30a1-\u30f6]/g, function (m: string) {
           const chr = m.charCodeAt(0) - 0x60
           return String.fromCharCode(chr)
         })
@@ -1508,7 +1508,7 @@ export default {
     pure: true,
     fn: function (s: string): string {
       const hiraToKana = (str: string) => {
-        return String(str).replace(/[\u3041-\u3096]/g, function (m) {
+        return String(str).replace(/[\u3041-\u3096]/g, function (m: string) {
           const chr = m.charCodeAt(0) + 0x60
           return String.fromCharCode(chr)
         })
@@ -1521,7 +1521,7 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      return String(s).replace(/[A-Za-z0-9]/g, function (v: any) {
+      return String(s).replace(/[A-Za-z0-9]/g, function (v: string) {
         return String.fromCharCode(v.charCodeAt(0) + 0xFEE0)
       })
     }
@@ -1531,7 +1531,7 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      return String(s).replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (v: any) {
+      return String(s).replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (v: string) {
         return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
       })
     }
@@ -1541,7 +1541,8 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      return String(s).replace(/[\x20-\x7F]/g, function (v: any) {
+      return String(s).replace(/[\x20-\x7E]/g, function (v: string) {
+        if (v === ' ') { return '　' } // 半角スペース(0x20)を全角スペース(U+3000)に
         return String.fromCharCode(v.charCodeAt(0) + 0xFEE0)
       })
     }
@@ -1551,7 +1552,8 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     fn: function (s: string): string {
-      return String(s).replace(/[\uFF00-\uFF5F]/g, function (v: any) {
+      return String(s).replace(/[\u3000\uFF00-\uFF5F]/g, function (v: string) {
+        if (v === '　') { return ' ' } // 全角スペース(U+3000)を半角スペース(U+0020)
         return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
       })
     }
