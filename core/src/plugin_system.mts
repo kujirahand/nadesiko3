@@ -2212,14 +2212,14 @@ export default {
     type: 'func',
     josi: [['を'], ['だけ', 'で']],
     pure: true,
-    fn: function <T>(a: T, b: number | number[]) {
+    fn: function (a: any, b: number | number[]) {
       // value が配列やオブジェクトでも深くコピーするヘルパー
-      const cloneValue = (v: T): T => {
+      const cloneValue = (v: any): any => {
         if (Array.isArray(v)) {
-          return (v as any[]).map(item => cloneValue(item)) as unknown as T
+          return (v as any[]).map(item => cloneValue(item)) as any
         }
         if (v instanceof Date) {
-          return new Date(v.getTime()) as T
+          return new Date(v.getTime())
         }
         if (typeof v === 'object' && v !== null) {
           return JSON.parse(JSON.stringify(v))
