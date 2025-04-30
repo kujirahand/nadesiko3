@@ -2208,16 +2208,42 @@ export default {
       return result
     }
   },
-  '配列要素作成': { // @値AをB個持つ配列を生成して返す。 // @はいれつようそさくせい
+  '配列要素作成': { // @値AをB個持つ配列を生成して返す。引数Bに配列を指定すると二次元以上の配列を生成する。// @はいれつようそさくせい
     type: 'func',
-    josi: [['を'], ['だけ']],
+    josi: [['を'], ['だけ', 'で']],
     pure: true,
-    fn: function (a: number, b: number) {
-      const result: number[] = []
-      for (let i = 0; i < b; i++) {
-        result.push(a)
+    fn: function <T>(a: T, b: number | number[]) {
+      // value が配列やオブジェクトでも深くコピーするヘルパー
+      const cloneValue = (v: T): T => {
+        if (Array.isArray(v)) {
+          return (v as any[]).map(item => cloneValue(item)) as unknown as T
+        }
+        if (v instanceof Date) {
+          return new Date(v.getTime()) as T
+        }
+        if (typeof v === 'object' && v !== null) {
+          return JSON.parse(JSON.stringify(v))
+        }
+        return v
       }
-      return result
+      // 再帰的に配列を生成する関数
+      const full = function (value: any, shape: number | number[]): any {
+        // 1次元：shape が数値
+        if (!Array.isArray(shape)) {
+          return Array.from({ length: shape }, () => cloneValue(value))
+        }
+        // 1次元：shape が数値
+        if (Array.isArray(shape) && shape.length === 1) {
+          return Array.from({ length: shape[0] }, () => cloneValue(value))
+        }
+        // 多次元：shape が配列
+        const [first, ...rest] = shape
+        return Array.from(
+          { length: first },
+          () => full(cloneValue(value), rest)
+        )
+      }
+      return full(a, b)
     }
   },
   '配列関数適用': { // @引数を1つ持つ関数Fを、配列Aの全要素に適用した、新しい配列を返す。 // @はいれつかんすうてきよう
