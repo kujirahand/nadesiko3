@@ -6,9 +6,8 @@ module.exports = {
     },
     "extends": [
         "standard",
-        "standard-with-typescript",
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",

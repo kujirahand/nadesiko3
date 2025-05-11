@@ -1,4 +1,4 @@
-{
+module.exports = {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
       "sourceType": "module",
@@ -13,8 +13,8 @@
     },
     "extends": [
         "standard",
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "rules": {
         "@typescript-eslint/ban-ts-comment": "off",
