@@ -810,9 +810,9 @@ class WeykTurtle3DSystem {
       // never
       throw new Error('レンダラを作成できません。それは作成先に指定できません')
     }
-    renderer!.setPixelRatio(window.devicePixelRatio)
+    renderer.setPixelRatio(window.devicePixelRatio)
     this._renderer = renderer
-    return this._renderer!
+    return this._renderer
   }
 
   clearRenderer () {

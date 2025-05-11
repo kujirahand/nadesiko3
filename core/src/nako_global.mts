@@ -129,7 +129,8 @@ export class NakoGlobal {
         text += `${NakoColors.color.green}✔${NakoColors.color.reset} ${t.name}\n`
         pass++
       } catch (err: any) {
-        text += `${NakoColors.color.red}☓${NakoColors.color.reset} ${t.name}: ${err.message}\n`
+        const errorMessage = (err instanceof Error) ? err.message : String(err)
+        text += `${NakoColors.color.red}☓${NakoColors.color.reset} ${t.name}: ${errorMessage}\n`
         numFailures++
       }
     }
@@ -155,7 +156,7 @@ export class NakoGlobal {
         try {
           po[clearName].fn(this)
         } catch (e: any) {
-          this.logger.error(`プラグイン『${pname}』のクリア関数でエラーが発生しました:` + e.message)
+          this.logger.error(`プラグイン『${pname}』のクリア関数でエラーが発生しました:` + String(e.message))
         }
       }
     }

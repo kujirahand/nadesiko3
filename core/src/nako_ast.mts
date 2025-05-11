@@ -57,7 +57,6 @@ export type NodeType = 'nop'
   | 'speed_mode'
   | 'run_mode'
 
-
 /** 基本的なASTの構造 */
 export interface Ast {
   type: NodeType;
@@ -156,8 +155,8 @@ export interface AstFor extends AstBlocks {
   // blocks[1] ... valueTo
   // blocks[2] ... valueInc
   // blocks[3] ... loop block
-  flagDown: boolean; // 
-  flagUp: boolean; // 
+  flagDown: boolean; //
+  flagUp: boolean; //
   loopDirection: null | 'up' | 'down'; // ループの方向
 }
 

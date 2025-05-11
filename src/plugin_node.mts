@@ -683,7 +683,7 @@ export default {
       const cmd = `${tpath} x ${a} -o${b} -y`
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       exec(cmd, (err, stdout, stderr) => {
-        if (err) { throw new Error('[エラー]『解凍時』' + err) }
+        if (err) { throw new Error('[エラー]『解凍時』' + (err as unknown as string)) }
         callback(stdout)
       })
     },
@@ -713,7 +713,7 @@ export default {
       const cmd = `${tpath} a -r ${b} ${a} -y`
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       exec(cmd, (err, stdout, stderr) => {
-        if (err) { throw new Error('[エラー]『圧縮時』' + err) }
+        if (err) { throw new Error('[エラー]『圧縮時』' + (err.message || JSON.stringify(err))) }
         callback(stdout)
       })
     },
@@ -942,6 +942,7 @@ export default {
     pure: true,
     fn: function (callback: any, url: string, params: [key: string], sys: NakoSystem) {
       const flist: Array<string> = []
+      // eslint-disable-next-line @typescript-eslint/no-for-in-array
       for (const key in params) {
         const v: string = params[key]
         const kv: string = encodeURIComponent(key) + '=' + encodeURIComponent(v)
@@ -1044,6 +1045,7 @@ export default {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (url: string, params: [key: string], sys: NakoSystem) {
       const flist: Array<string> = []
+      // eslint-disable-next-line @typescript-eslint/no-for-in-array
       for (const key in params) {
         const v: string = params[key]
         const kv: string = encodeURIComponent(key) + '=' + encodeURIComponent(v)
@@ -1161,7 +1163,7 @@ export default {
         }).then(text => {
           resolve(text)
         }).catch(err => {
-          reject(err.message)
+          reject(new Error(err.message))
         })
       })
     }
@@ -1185,7 +1187,7 @@ export default {
         }).then(text => {
           resolve(text)
         }).catch(err => {
-          reject(err.message)
+          reject(new Error(err.message))
         })
       })
     }

@@ -350,7 +350,7 @@ export class NakoParserBase {
     switch (node.type) {
       case 'not':
         if (depth >= 0) {
-          const subNode: Ast = (node as AstBlocks).blocks[0] as Ast
+          const subNode: Ast = (node as AstBlocks).blocks[0]
           return `${typeName('')}『${this.nodeToStr(subNode, { depth }, debugMode)}に演算子『not』を適用した式${debug}』`
         } else {
           return `${typeName('演算子')}『not』`
@@ -363,8 +363,8 @@ export class NakoParserBase {
           operator = table[operator]
         }
         if (depth >= 0) {
-          const left: string = this.nodeToStr(node2.blocks[0] as Ast, { depth }, debugMode)
-          const right: string = this.nodeToStr(node2.blocks[1] as Ast, { depth }, debugMode)
+          const left: string = this.nodeToStr(node2.blocks[0], { depth }, debugMode)
+          const right: string = this.nodeToStr(node2.blocks[1], { depth }, debugMode)
           if (node2.operator === 'eq') {
             return `${typeName('')}『${left}と${right}が等しいかどうかの比較${debug}』`
           }

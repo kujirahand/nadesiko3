@@ -182,7 +182,7 @@ export function convertDNCL (tokens: Token[]): Token[] {
   // 最後に単純な置換を行う
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i]
-    const a = DNCL_SIMPLES[t.type + ':' + t.value]
+    const a = DNCL_SIMPLES[String(t.type) + ':' + String(t.value)]
     if (a !== undefined) {
       t.type = a[0] as TokenType
       t.value = a[1]

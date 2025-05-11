@@ -6,7 +6,7 @@ import { opPriority, RenbunJosi, operatorList } from './nako_parser_const.mjs'
 import { NakoParserBase } from './nako_parser_base.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
-import { FuncListItem, FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
+import { FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
 import { NodeType, Ast, AstEol, AstBlocks, AstOperator, AstConst, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstStrValue, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
 
@@ -61,7 +61,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** 複数文を返す */
-  ySentenceList(): AstBlocks {
+  ySentenceList (): AstBlocks {
     const blocks = []
     let line = -1
     const map = this.peekSourceMap()
@@ -76,7 +76,7 @@ export class NakoParser extends NakoParserBase {
       this.logger.debug('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, true), token)
       throw NakoSyntaxError.fromNode('構文解析に失敗:' + this.nodeToStr(this.peek(), { depth: 1 }, false), token)
     }
-    return { type: 'block', blocks: blocks, josi: '', ...map, end: this.peekSourceMap() }
+    return { type: 'block', blocks, josi: '', ...map, end: this.peekSourceMap() }
   }
 
   /** 余剰スタックのレポートを作る */
@@ -94,7 +94,7 @@ export class NakoParser extends NakoParserBase {
     for (const f of this.recentlyCalledFunc) {
       descFunc += ' - '
       let no = 0
-      const josiA: FuncArgs | undefined = (f as FuncListItem).josi
+      const josiA: FuncArgs | undefined = (f).josi
       if (josiA) {
         for (const arg of josiA) {
           const ch = String.fromCharCode(chA + no)
@@ -103,13 +103,13 @@ export class NakoParser extends NakoParserBase {
           no++
         }
       }
-      descFunc += f.name + '\n'
+      descFunc += String(f.name) + '\n'
     }
     this.recentlyCalledFunc = []
     return `未解決の単語があります: [${desc}]\n次の命令の可能性があります:\n${descFunc}`
   }
 
-  yEOL(): AstEol | null {
+  yEOL (): AstEol | null {
     // 行末のチェック #1009
     const eol = this.get()
     if (!eol) { return null }
@@ -124,7 +124,7 @@ export class NakoParser extends NakoParserBase {
       comment: eol.value,
       line: eol.line,
       column: eol.column,
-      file: eol.file,
+      file: eol.file
     }
   }
 
@@ -145,7 +145,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['DNCL2モード'])) { return this.yDNCLMode(2) }
     if (this.accept(['not', 'string', 'モード設定'])) { return this.ySetGenMode(this.y[1].value) }
     if (this.accept(['not', 'モジュール公開既定値', 'eq', 'string'])) { return this.yExportDefault(this.y[3].value) }
-    if (this.accept(['not', '厳チェック'])) { return this.ySetMode('厳しくチェック') } // (#1698) 
+    if (this.accept(['not', '厳チェック'])) { return this.ySetMode('厳しくチェック') } // (#1698)
     // (memo) 現状「取込」はプリプロセス段階(NakoCompiler.listRequireStatements)で処理される
     // if (this.accept(['require', 'string', '取込'])) { return this.yRequire() }
     // <廃止された構文>
@@ -241,7 +241,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** @returns {AstBlocks} */
-  yBlock(): AstBlocks {
+  yBlock (): AstBlocks {
     const map = this.peekSourceMap()
     const blocks = []
     if (this.check('ここから')) { this.get() }
@@ -250,7 +250,7 @@ export class NakoParser extends NakoParserBase {
       if (!this.accept([this.ySentence])) { break }
       blocks.push(this.y[0])
     }
-    return { type: 'block', blocks: blocks, josi: '', ...map, end: this.peekSourceMap() }
+    return { type: 'block', blocks, josi: '', ...map, end: this.peekSourceMap() }
   }
 
   yDefFuncReadArgs (): Ast[]|null {
@@ -280,7 +280,7 @@ export class NakoParser extends NakoParserBase {
   /** ユーザー関数の定義
    * @returns {AstDefFunc | null}
   */
-  yDefFuncCommon(type: NodeType): AstDefFunc | null {
+  yDefFuncCommon (type: NodeType): AstDefFunc | null {
     if (!this.check(type)) { // yDefFuncから呼ばれれば def_func なのかをチェックする
       return null
     }
@@ -365,9 +365,9 @@ export class NakoParser extends NakoParserBase {
       this.localvars = backupLocalvars
     } catch (err: any) {
       this.logger.debug(this.nodeToStr(funcName, { depth: 0, typeName: '関数' }, true) +
-        'の定義で以下のエラーがありました。\n' + err.message, def)
+        'の定義で以下のエラーがありました。\n' + String(err.message), def)
       throw NakoSyntaxError.fromNode(this.nodeToStr(funcName, { depth: 0, typeName: '関数' }, false) +
-        'の定義で以下のエラーがありました。\n' + err.message, def)
+        'の定義で以下のエラーがありました。\n' + String(err.message), def)
     }
     const func = this.funclist.get(funcName.value)
     if (func && !func.asyncFn && asyncFn) {
@@ -399,7 +399,7 @@ export class NakoParser extends NakoParserBase {
     // チェック : Aならば
     if (a.josi === 'ならば') { return a }
     if (a.josi === 'でなければ') {
-      a = { type: 'not', operator: 'not', blocks:[a], josi: '', ...map, end: this.peekSourceMap() } as AstOperator
+      a = { type: 'not', operator: 'not', blocks: [a], josi: '', ...map, end: this.peekSourceMap() } as AstOperator
       return a
     }
     // チェック : AがBならば --- 「関数B(A)」のとき
@@ -479,7 +479,7 @@ export class NakoParser extends NakoParserBase {
     try {
       expr = this.yIFCond()
     } catch (err: any) {
-      throw NakoSyntaxError.fromNode('『もし』文の条件で次のエラーがあります。\n' + err.message, mosi)
+      throw NakoSyntaxError.fromNode('『もし』文の条件で次のエラーがあります。\n' + String(err.message), mosi)
     }
     return this.yIfThen(expr, map)
   }
@@ -512,7 +512,7 @@ export class NakoParser extends NakoParserBase {
       if (this.check('eol')) {
         falseBlock = this.yBlock()
       } else {
-        const block: Ast|null = this.ySentence() 
+        const block: Ast|null = this.ySentence()
         if (block) { falseBlock = block }
         tanbun = true
       }
@@ -680,7 +680,7 @@ export class NakoParser extends NakoParserBase {
 
   /**
    * 範囲(関数)を返す
-   * @param kara 
+   * @param kara
    * @returns {AstCallFunc | null}
    */
   yRange (kara: Ast): AstCallFunc | null {
@@ -841,7 +841,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** @returns {AstRepeatTimes | null} */
-  yRepeatTime(): AstRepeatTimes | null {
+  yRepeatTime (): AstRepeatTimes | null {
     const map = this.peekSourceMap()
     if (!this.check('回')) { return null }
     this.get() // skip '回'
@@ -875,7 +875,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** @returns {AstWhile | null} */
-  yWhile(): AstWhile | null { // 「＊の間」文
+  yWhile (): AstWhile | null { // 「＊の間」文
     const map = this.peekSourceMap()
     if (!this.check('間')) { return null }
     this.get() // skip '間'
@@ -905,7 +905,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** @returns {AstAtohantei | null} */
-  yAtohantei(): AstAtohantei |null {
+  yAtohantei (): AstAtohantei |null {
     const map = this.peekSourceMap()
     if (this.check('後判定')) { this.get() } // skip 後判定
     if (this.check('繰返')) { this.get() } // skip 繰り返す
@@ -931,7 +931,7 @@ export class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       } as AstOperator
     }
-    if (!cond) { cond = {type: 'number', value: 1, josi: '', ...map, end: this.peekSourceMap()} as AstConst }
+    if (!cond) { cond = { type: 'number', value: 1, josi: '', ...map, end: this.peekSourceMap() } as AstConst }
     return {
       type: 'atohantei',
       blocks: [cond, block],
@@ -959,10 +959,10 @@ export class NakoParser extends NakoParserBase {
     if (incdec) {
       if (incdec.type === 'word' && (incdec.value === '増' || incdec.value === '減')) {
         if (incdec.value === '増') { flagDown = false } else { flagUp = false }
-        const w = incdec.value + kurikaesu.type
-        if (w == '増繰返') {
-          kurikaesu.type =  '増繰返'
-        } else if (w == '減繰返') {
+        const w = String(incdec.value) + kurikaesu.type
+        if (w === '増繰返') {
+          kurikaesu.type = '増繰返'
+        } else if (w === '減繰返') {
           kurikaesu.type = '減繰返'
         } else {
           throw Error('[System Error] 増繰り返し | 減繰り返しのエラー。')
@@ -981,7 +981,7 @@ export class NakoParser extends NakoParserBase {
     const vTo = this.popStack(['まで', 'を']) // 範囲オブジェクトの場合もあり
     const vFrom = this.popStack(['から']) || this.yNop()
     const vWord: Ast|null = this.popStack(['を', 'で'])
-    let wordStr: string = ''
+    let wordStr = ''
     if (vWord !== null) { // 変数
       if (vWord.type !== 'word') {
         throw NakoSyntaxError.fromNode('『(変数名)をAからBまで繰り返す』で指定してください。', vWord)
@@ -1017,7 +1017,7 @@ export class NakoParser extends NakoParserBase {
       const b = this.ySentence()
       if (b) { block = b }
     }
-    
+
     if (!block) { block = this.yNop() }
 
     return {
@@ -1034,7 +1034,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** @returns {AstBlocks | null} */
-  yReturn(): AstBlocks | null {
+  yReturn (): AstBlocks | null {
     const map = this.peekSourceMap()
     if (!this.check('戻る')) { return null }
     this.get() // skip '戻る'
@@ -1052,7 +1052,7 @@ export class NakoParser extends NakoParserBase {
   }
 
   /** @returns {AstForeach | null} */
-  yForEach(): AstForeach |null {
+  yForEach (): AstForeach |null {
     const map = this.peekSourceMap()
     if (!this.check('反復')) { return null }
     this.get() // skip '反復'
@@ -1060,7 +1060,7 @@ export class NakoParser extends NakoParserBase {
     const target = this.popStack(['を']) || this.yNop()
     // target == null なら「それ」の値が使われる
     const name = this.popStack(['で'])
-    let wordStr: string = ''
+    let wordStr = ''
     if (name !== null) {
       if (name.type !== 'word') {
         throw NakoSyntaxError.fromNode('『(変数名)で(配列)を反復』で指定してください。', map)
@@ -1163,7 +1163,7 @@ export class NakoParser extends NakoParserBase {
       blocks.push(cond)
       blocks.push(condBlock)
     }
-    
+
     const ast: AstSwitch = {
       type: 'switch',
       blocks,
@@ -1225,13 +1225,13 @@ export class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     const dainyu = this.get() // 代入
     if (dainyu === null) { return null }
-    const value = this.popStack(['を']) || {type: 'word', value: 'それ', josi: 'を', ...map} as AstStrValue
+    const value = this.popStack(['を']) || { type: 'word', value: 'それ', josi: 'を', ...map } as AstStrValue
     const word: Ast|null = this.popStack(['へ', 'に'])
     if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
       throw NakoSyntaxError.fromNode('代入文で代入先の変数が見当たりません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
     if (word.type === 'func') {
-      throw NakoSyntaxError.fromNode('関数『' + word.name + '』に代入できません。『(変数名)に(値)を代入』のように使います。', dainyu)
+      throw NakoSyntaxError.fromNode('関数『' + String(word.name) + '』に代入できません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
     // 配列への代入
     if (word.type === 'ref_array') {
@@ -1323,8 +1323,8 @@ export class NakoParser extends NakoParserBase {
 
     // 減らすなら-1かける
     if (action.value === '減') {
-      const minus_one = { type: 'number', value: -1, line: action.line } as AstConst
-      value = { type: 'op', operator: '*', blocks: [value, minus_one], josi: '', ...map } as AstOperator
+      const minusOne = { type: 'number', value: -1, line: action.line } as AstConst
+      value = { type: 'op', operator: '*', blocks: [value, minusOne], josi: '', ...map } as AstOperator
     }
 
     return {
@@ -1498,7 +1498,7 @@ export class NakoParser extends NakoParserBase {
       blocks: args,
       meta: f,
       josi: t.josi,
-      asyncFn: f.asyncFn ? true : false,
+      asyncFn: !!f.asyncFn,
       ...map,
       end: this.peekSourceMap()
     }
@@ -1506,8 +1506,8 @@ export class NakoParser extends NakoParserBase {
     // 「プラグイン名設定」ならば、そこでスコープを変更することを意味する (#1112)
     if (funcNode.name === 'プラグイン名設定') {
       if (args.length > 0 && args[0]) {
-        let fname: string = '' + args[0].value
-        if (fname === 'メイン') { fname = '' + args[0].file }
+        let fname = String(args[0].value)
+        if (fname === 'メイン') { fname = String(args[0].file) }
         this.namespaceStack.push(this.modName)
         this.isExportStack.push(this.isExportDefault)
         this.modName = NakoLexer.filenameToModName(fname)
@@ -1620,7 +1620,7 @@ export class NakoParser extends NakoParserBase {
     if (this.accept(['word', 'とは'])) {
       const wordToken = this.y[0]
       if (!this.checkTypes(['変数', '定数'])) {
-        throw NakoSyntaxError.fromNode('ローカル変数『' + wordToken.value + '』の定義エラー', wordToken)
+        throw NakoSyntaxError.fromNode('ローカル変数『' + String(wordToken.value) + '』の定義エラー', wordToken)
       }
       const vtype = this.getCur() // 変数 or 定数
       let isExport : boolean = this.isExportDefault
@@ -1628,7 +1628,7 @@ export class NakoParser extends NakoParserBase {
         this.get()
         const attrNode = this.get()
         if (attrNode === null) {
-          throw NakoSyntaxError.fromNode('ローカル変数『' + wordToken.value + '』の定義エラー', wordToken)
+          throw NakoSyntaxError.fromNode('ローカル変数『' + String(wordToken.value) + '』の定義エラー', wordToken)
         }
         const attr = attrNode.value
         if (attr === '公開') { isExport = true } else if (attr === '非公開') { isExport = false } else if (attr === 'エクスポート') { isExport = true } else { this.logger.warn(`不明な変数属性『${attr}』が指定されています。`) }
@@ -1741,7 +1741,7 @@ export class NakoParser extends NakoParserBase {
       if (names && names.blocks instanceof Array) {
         for (const i in names.blocks) {
           if (names.blocks[i].type !== 'word') {
-            throw NakoSyntaxError.fromNode(`複数定数の代入文${i + 1}番目でエラー。『定数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
+            throw NakoSyntaxError.fromNode(`複数定数の代入文${Number(i) + 1}番目でエラー。『定数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
           }
         }
       } else {
@@ -1763,11 +1763,11 @@ export class NakoParser extends NakoParserBase {
       const names: AstBlocks = this.y[1]
       // check array
       if (names && names.blocks instanceof Array) {
-        for (const i in names.blocks) {
-          if (names.blocks[i].type !== 'word') {
-            throw NakoSyntaxError.fromNode(`複数変数の代入文${i + 1}番目でエラー。『変数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
+        names.blocks.forEach((block, index) => {
+          if (block.type !== 'word') {
+            throw NakoSyntaxError.fromNode(`複数変数の代入文${String(index + 1)}番目でエラー『変数[A,B,C]=[1,2,3]』の書式で記述してください。`, this.y[0])
           }
-        }
+        })
       } else {
         throw NakoSyntaxError.fromNode('複数変数の代入文でエラー。『変数[A,B,C]=[1,2,3]』の書式で記述してください。', this.y[0])
       }
@@ -1854,16 +1854,16 @@ export class NakoParser extends NakoParserBase {
     // 配列が0から始まるのであればそのまま返す
     if (this.arrayIndexFrom === 0) { return node }
     // 配列が1から始まるのであれば演算を加えて返す
-    const minus_num = {
+    const minusNum = {
       ...node,
       'type': 'number',
       'value': this.arrayIndexFrom
-    } 
+    }
     return {
       ...node,
       type: 'op',
       operator: '-',
-      blocks: [node, minus_num]
+      blocks: [node, minusNum]
     } as AstOperator
   }
 
@@ -2106,7 +2106,7 @@ export class NakoParser extends NakoParserBase {
       ...map
     }
     return astConst
-  } 
+  }
 
   /** @returns {Ast | null} */
   yValue (): Ast | null {
@@ -2182,7 +2182,7 @@ export class NakoParser extends NakoParserBase {
         blocks: args,
         josi: f.josi,
         meta,
-        asyncFn: meta.asyncFn ? true : false,
+        asyncFn: !!meta.asyncFn,
         ...map,
         end: this.peekSourceMap()
       } as AstCallFunc
@@ -2207,7 +2207,7 @@ export class NakoParser extends NakoParserBase {
           } else { // 引数の個数が違う
             throw NakoSyntaxError.fromNode(`関数『${funcToken.value}』で引数${args.length}個が指定されましたが、${meta.josi.length}個の引数を指定してください。`, funcToken)
           }
-          asyncFn = meta.asyncFn ? true : false
+          asyncFn = !!meta.asyncFn
         }
         return {
           type: 'func',
@@ -2352,7 +2352,7 @@ export class NakoParser extends NakoParserBase {
           type: 'ref_prop', // プロパティ参照
           name: word,
           index: propList,
-          josi: josi,
+          josi,
           ...map,
           end: this.peekSourceMap()
         }
@@ -2403,7 +2403,7 @@ export class NakoParser extends NakoParserBase {
     const f = this.findVar(word.value)
     if (!f) { // 変数が見つからない
       if (this.funcLevel === 0 && word.value.indexOf('__') < 0) {
-        word.value = this.modName + '__' + word.value
+        word.value = this.modName + '__' + String(word.value)
       }
     } else if (f && f.scope === 'global') {
       word.value = f.name
@@ -2428,39 +2428,32 @@ export class NakoParser extends NakoParserBase {
     while (!this.isEOF()) {
       while (this.check('eol')) { this.get() }
       if (this.check('}')) { break }
-      
+
       // key : value
       if (this.accept(['word', ':', this.yCalc])) {
         this.y[0].type = 'string' // キー名の文字列記号省略の場合
         a.push(this.y[0])
         a.push(this.y[2])
-      }
-      // 'key' : value
-      else if (this.accept(['string', ':', this.yCalc])) {
+      } else if (this.accept(['string', ':', this.yCalc])) { // 'key' : value
         a.push(this.y[0])
         a.push(this.y[2])
-      }
-      // key
-      else if (this.accept(['word'])) {
+      } else if (this.accept(['word'])) { // key
         const key = this.y[0]
         const val = JSON.parse(JSON.stringify(key)) as Ast
         key.type = 'string' // キー名の文字列記号省略の場合
         a.push(key)
         a.push(val)
-      }
-      // str or num
-      else if (this.checkTypes(['string', 'number'])) {
+      } else if (this.checkTypes(['string', 'number'])) { // str or num
         const w = this.getCur() as Ast // Tokenを強制的にAstに変換している
         a.push(w)
         a.push(w)
-      }
-      else { throw NakoSyntaxError.fromNode('辞書オブジェクトの宣言で末尾の『}』がありません。', firstToken) }
+      } else { throw NakoSyntaxError.fromNode('辞書オブジェクトの宣言で末尾の『}』がありません。', firstToken) }
       if (this.check('comma')) { this.get() }
     }
     return a
   }
 
-  yJSONObject(): AstBlocks | Ast | null {
+  yJSONObject (): AstBlocks | Ast | null {
     const a = this.yJSONObjectRaw()
     if (!a) { return null }
     // 配列の直後に@や[]があるか？助詞がある場合には、別の引数の可能性があるので無視。 (例) [0,1,2]を[3,4,5]に配列＊＊＊
@@ -2531,7 +2524,7 @@ export class NakoParser extends NakoParserBase {
     return a
   }
 
-  yJSONArray(): AstBlocks | Ast | null {
+  yJSONArray (): AstBlocks | Ast | null {
     // 配列を得る
     const a = this.yJSONArrayRaw()
     if (!a) { return null }
@@ -2618,7 +2611,7 @@ export class NakoParser extends NakoParserBase {
   _checkAsyncFn (node: Ast): boolean {
     if (!node) { return false }
     // 関数定義があれば関数
-    if (node.type == 'def_func' || node.type == 'def_test' || node.type == 'func_obj') {
+    if (node.type === 'def_func' || node.type === 'def_test' || node.type === 'func_obj') {
       // 関数定義でasyncFnが指定されているならtrueを返す
       const def: AstDefFunc = node as AstDefFunc
       if (def.asyncFn) { return true } // 既にasyncFnが指定されている
@@ -2635,7 +2628,7 @@ export class NakoParser extends NakoParserBase {
       }
     }
     // 関数呼び出しを調べて非同期処理が必要ならtrueを返す
-    if (node.type == 'func') {
+    if (node.type === 'func') {
       // 関数呼び出し自体が非同期処理ならtrueを返す
       const callNode: AstCallFunc = node as AstCallFunc
       if (callNode.asyncFn) {
@@ -2662,7 +2655,7 @@ export class NakoParser extends NakoParserBase {
       return false
     }
     // 連文 ... 現在、効率は悪いが非同期で実行することになっている
-    if (node.type == 'renbun') {
+    if (node.type === 'renbun') {
       return true
     }
     // その他
@@ -2679,7 +2672,7 @@ export class NakoParser extends NakoParserBase {
   /** TokenをそのままNodeに変換するメソッド(ただし簡単なものだけ対応)
    * @returns {Ast[]}
    */
-  _tokensToNodes(tokens: Token[]): Ast[] {
+  _tokensToNodes (tokens: Token[]): Ast[] {
     const nodes: Ast[] = []
     for (const token of tokens) {
       nodes.push(this._tokenToNode(token))
@@ -2690,9 +2683,9 @@ export class NakoParser extends NakoParserBase {
   /** TokenをそのままNodeに変換するメソッド(ただし簡単なものだけ対応)
    * @returns {Ast}
    */
-  _tokenToNode(token: Token): Ast {
+  _tokenToNode (token: Token): Ast {
     const map = this.peekSourceMap(token)
-    if (token.type === 'string' || token.type == 'number' || token.type == 'bigint') {
+    if (token.type === 'string' || token.type === 'number' || token.type === 'bigint') {
       return this.yConst(token, map)
     }
     if (token.type === 'word') {

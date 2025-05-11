@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /** get enviroment name */
-export function getEnv(name: string): string | undefined {
+export function getEnv (name: string): string | undefined {
   if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env !== undefined) {
     return (globalThis as any).process.env[name]
   }
@@ -12,35 +12,35 @@ export function getEnv(name: string): string | undefined {
 }
 
 /** check is windows */
-export function isWindows(): boolean {
-  if (typeof (globalThis as any).process !== "undefined" && (globalThis as any).process.platform) {
-    return (globalThis as any).process.platform === "win32"
+export function isWindows (): boolean {
+  if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.platform) {
+    return (globalThis as any).process.platform === 'win32'
   }
-  if (typeof (globalThis as any).Deno !== "undefined") {
-    return (globalThis as any).Deno.build.os === "windows"
+  if (typeof (globalThis as any).Deno !== 'undefined') {
+    return (globalThis as any).Deno.build.os === 'windows'
   }
   return false
 }
 
 /** get command line arguments */
-export function getCommandLineArgs(): string[] {
+export function getCommandLineArgs (): string[] {
   // Node.js
-  if (typeof (globalThis as any).process !== "undefined" && (globalThis as any).process.argv) {
+  if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.argv) {
     return (globalThis as any).process.argv
   }
   // Deno
-  if (typeof (globalThis as any).Deno !== "undefined") {
+  if (typeof (globalThis as any).Deno !== 'undefined') {
     const args = (globalThis as any).Deno.args
     args.unshift(new URL((globalThis as any).Deno.mainModule).pathname)
     args.unshift((globalThis as any).Deno.execPath())
     return args
   }
   // Node.js環境の場合
-  return [];
+  return []
 }
 
 /** Exit */
-export function exit(code: number): void {
+export function exit (code: number): void {
   if (typeof (globalThis as any).process !== 'undefined') {
     (globalThis as any).process.exit(code)
   }

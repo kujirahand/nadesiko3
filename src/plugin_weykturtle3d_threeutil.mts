@@ -19,7 +19,7 @@ export class ThreeUtil {
 
       if (obj.material) {
         for (const propKey of Object.keys(obj.material)) {
-          const prop = (obj.material as {[key: string]: any})[propKey] as any
+          const prop = (obj.material as {[key: string]: any})[propKey]
           if (ThreeUtil.isDisporsal(prop)) {
             prop.dispose()
           }

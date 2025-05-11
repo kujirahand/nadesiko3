@@ -97,7 +97,7 @@ export default {
     pure: true,
     fn: function (...args:any): any {
       const sys = args.pop()
-      return (sys as any).__promise.setLastPromise(Promise.all(args))
+      return (sys).__promise.setLastPromise(Promise.all(args))
     },
     return_none: false
   }

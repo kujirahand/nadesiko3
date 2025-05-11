@@ -159,7 +159,7 @@ export class NakoLogger {
         case 'NakoRuntimeError':
         case 'NakoError':
           if (message instanceof NakoError) {
-            const e: NakoError = message as NakoError
+            const e: NakoError = message
             let pos: any = position
             if (pos === null || pos === undefined) {
               pos = { file: e.file, line: e.line || 0, startOffset: 0, endOffset: 0 }
@@ -225,7 +225,7 @@ export class NakoLogger {
       const data = makeData()
       this.logs += data.noColor + '\n'
       if (position && this.position !== null) {
-        this.position = `l${position.line}:${position.file}`
+        this.position = `l${position.line}:${position.file || 'unknown'}`
       }
     }
     // 登録したリスナーに通知する

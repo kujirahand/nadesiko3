@@ -32,7 +32,7 @@ export default {
     fn: function (skin: any, sys: any) {
       sys.__setSysVar('DOMスキン', skin)
     },
-    
+
     return_none: true
   },
   'DOM部品作成': { // @elmの要素を作成して『DOM親要素設定』で指定した要素に追加して、DOMオブジェクトを返す。(elmがDOM要素なら追加する) // @DOMぶひんさくせい
@@ -284,6 +284,7 @@ export default {
         rows = s
       }
       // 入力項目に合わせて行を追加
+      // eslint-disable-next-line @typescript-eslint/no-for-in-array
       for (const rowIndex in rows) {
         const row: Array<string>|string = rows[rowIndex]
         let cols: Array<string>
@@ -338,76 +339,62 @@ export default {
             inp.value = opt1
             inp.placeholder = opt2
             inp.name = key
-          }
-          else if (val === '?password') {
+          } else if (val === '?password') {
             inp.type = 'password'
             inp.value = opt1
             inp.placeholder = opt2
             inp.name = key
-          }
-          else if (val === '?number') {
+          } else if (val === '?number') {
             inp.type = 'number'
             inp.value = opt1
             inp.placeholder = opt2
             inp.name = key
-          }
-          else if (val === '?email') {
+          } else if (val === '?email') {
             inp.type = 'email'
             inp.value = opt1
             inp.placeholder = opt2
             inp.name = key
-          }
-          else if (val === '?tel') {
+          } else if (val === '?tel') {
             inp.type = 'tel'
             inp.value = opt1
             inp.placeholder = opt2
             inp.name = key
-          }
-          else if (val === '?file') {
+          } else if (val === '?file') {
             inp.type = 'file'
             inp.name = key
-          }
-          else if (val === '?date') {
+          } else if (val === '?date') {
             inp.type = 'date'
             inp.value = opt1.replace(/\//g, '-')
             inp.name = key
-          }
-          else if (val === '?month') {
+          } else if (val === '?month') {
             inp.type = 'month'
             inp.value = opt1.replace(/\//g, '-')
             inp.name = key
-          }
-          else if (val === '?time') {
+          } else if (val === '?time') {
             inp.type = 'time'
             inp.value = opt1
             inp.name = key
-          }
-          else if (val === '?color') {
+          } else if (val === '?color') {
             inp.type = 'color'
             inp.value = opt1
             inp.name = key
-          }
-          else if (val === '?hidden') {
+          } else if (val === '?hidden') {
             inp.type = 'hidden'
             inp.value = opt1
             inp.name = key
             isHidden = true
             frm.appendChild(inp)
-          }
-          else if (val === '?checkbox') {
+          } else if (val === '?checkbox') {
             inp.type = 'checkbox'
             inp.value = opt1
             inp.name = key
             lbl2.innerHTML = ' ' + sys.__tohtmlQ(opt2)
             lbl2.htmlFor = inp.id
-          }
-          // v3.2.33での拡張
-          else if (val === '?送信' || val === '?submit') {
+          } else if (val === '?送信' || val === '?submit') { // v3.2.33での拡張
             inp.type = 'submit'
             inp.value = val.substring(1)
             if (key !== '') { inp.name = key }
-          }
-          else if (val.substring(0, 3) === '?c#') {
+          } else if (val.substring(0, 3) === '?c#') {
             inp.type = 'color'
             inp.value = val.substring(2)
             inp.name = key
@@ -491,31 +478,31 @@ export default {
     fn: function (tbl: any, aa: any, sys: any) {
       // 既存のテーブルを取得
       if (typeof tbl === 'string') {
-        tbl = sys.__query(tbl, 'テーブル更新', false);
+        tbl = sys.__query(tbl, 'テーブル更新', false)
       }
-      tbl.innerHTML = ''; // 初期化
+      tbl.innerHTML = '' // 初期化
       // テーブルに差し込むデータを確認
       if (typeof aa === 'string') {
-        const rr = [];
-        const rows = aa.split('\n');
+        const rr = []
+        const rows = aa.split('\n')
         for (const row of rows) {
-          rr.push(row.split(","));
+          rr.push(row.split(','))
         }
-        aa = rr;
+        aa = rr
       }
       const table = tbl
       // テーブル作成/テーブル更新の設定を読み取る
-      const domOption = sys.__getSysVar("DOM部品オプション")
+      const domOption = sys.__getSysVar('DOM部品オプション')
       // 背景色は複製して使う
       const bgColor: Array<string> = JSON.parse(
-        JSON.stringify(domOption["テーブル背景色"]),
-      );
+        JSON.stringify(domOption['テーブル背景色'])
+      )
       for (let i = 0; i < 3; i++) {
-        bgColor.push("");
+        bgColor.push('')
       }
-      const bgHead = bgColor.shift() || "";
-      let hasHeader: boolean = domOption["テーブルヘッダ"]
-      let isNumRight: boolean = domOption["テーブル数値右寄せ"]
+      const bgHead = bgColor.shift() || ''
+      let hasHeader: boolean = domOption['テーブルヘッダ']
+      let isNumRight: boolean = domOption['テーブル数値右寄せ']
       if (table.dataset.nakoTags) {
         // 既存DOMから設定を読む
         hasHeader = table.dataset.nakoTags.hasHeader
@@ -524,36 +511,36 @@ export default {
         // 設定をDOMに保存する
         table.dataset.nakoTags = {
           hasHeader,
-          isNumRight,
+          isNumRight
         }
       }
       // テーブルにデータを追加していく
       for (let i = 0; i < aa.length; i++) {
-        const rowNo = i;
-        const row = aa[rowNo];
-        const tr = document.createElement("tr");
+        const rowNo = i
+        const row = aa[rowNo]
+        const tr = document.createElement('tr')
         // 色指定
-        if (bgHead !== "") {
-          const no = hasHeader ? rowNo : rowNo + 1;
-          tr.style.backgroundColor = no === 0 ? bgHead : bgColor[no % 2];
-          tr.style.color = no === 0 ? "white" : "black";
+        if (bgHead !== '') {
+          const no = hasHeader ? rowNo : rowNo + 1
+          tr.style.backgroundColor = no === 0 ? bgHead : bgColor[no % 2]
+          tr.style.color = no === 0 ? 'white' : 'black'
         }
         for (let col of row) {
-          col = "" + col;
+          col = '' + col
           const td = document.createElement(
-            rowNo === 0 && hasHeader ? "th" : "td",
-          );
-          td.innerHTML = sys.__tohtml(col);
+            rowNo === 0 && hasHeader ? 'th' : 'td'
+          )
+          td.innerHTML = sys.__tohtml(col)
           if (isNumRight && col.match(/^(\+|-)?\d+(\.\d+)?$/)) {
             // number?
-            td.style.textAlign = "right";
+            td.style.textAlign = 'right'
           }
-          tr.appendChild(td);
+          tr.appendChild(td)
         }
-        table.appendChild(tr);
+        table.appendChild(tr)
       }
-      return table;
-    },
+      return table
+    }
   },
   'テーブルセル変更': { // @TABLE要素のセル[行,列]をVへ変更する。Vが二次元配列変数であれば複数のセルを一括変更する // @てーぶるせるへんこう
     type: 'func',
@@ -575,7 +562,7 @@ export default {
       const bgColor = JSON.parse(JSON.stringify(domOption['テーブル背景色'])) // 複製して使う
       const isNumRight: boolean = domOption['テーブル数値右寄せ']
       while (bgColor.length < 3) { // オプションが壊れていた時のための補完
-        bgColor.push("white")
+        bgColor.push('white')
       }
       // 複数の範囲を一気に変更
       for (let y = 0; y < v.length; y++) {

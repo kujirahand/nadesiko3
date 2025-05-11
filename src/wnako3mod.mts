@@ -91,6 +91,7 @@ export class WebNakoCompiler extends NakoCompiler {
 
   /** なでしこ3の『取り込む』命令のための読み込みツール */
   getLoaderTool (): LoaderTool {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const tool = { readJs: this.readJs, readNako3: this.readNako3, resolvePath: this.resolvePath }
     return tool
   }
@@ -99,8 +100,9 @@ export class WebNakoCompiler extends NakoCompiler {
   readJs (filePath: string, token: Token): LoaderToolTask<any> {
     if (this.localFiles && this.localFiles[filePath]) {
       return {
+        // eslint-disable-next-line @typescript-eslint/require-await
         task: (async () => () => {
-          // eslint-disable-next-line no-new-func
+          // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval, @typescript-eslint/no-unsafe-call
           Function(this.localFiles[filePath])()
           return {}
         })()
@@ -144,10 +146,11 @@ export class WebNakoCompiler extends NakoCompiler {
           const globalNako3 = globalNavigator.nako3
           globalNavigator.nako3 = gSelf
           try {
-            // eslint-disable-next-line no-new-func
+            // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
             const f = Function(jstext)
             f.apply(gSelf.__globalObj)
           } catch (err) {
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             throw new NakoImportError(`プラグイン ${filePath} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`, token.file, token.line)
           } finally {
             globalNavigator.nako3 = globalNako3
@@ -202,7 +205,7 @@ export class WebNakoCompiler extends NakoCompiler {
           }
           pathname = resolveURL(baseDir, name)
         } catch (e) {
-          throw new NakoImportError(`取り込み文の引数でパスが解決できません。https:// か http:// で始まるアドレスを指定してください。\n${e}`, token.file, token.line)
+          throw new NakoImportError(`取り込み文の引数でパスが解決できません。https:// か http:// で始まるアドレスを指定してください。\n${e as string}`, token.file, token.line)
         }
       }
     }
