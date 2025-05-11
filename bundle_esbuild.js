@@ -20,7 +20,6 @@ const files = [
   'src/plugin_caniuse.mjs',
   // mts
   'src/plugin_keigo.mts',
-  'src/plugin_three.mts',
   'src/plugin_turtle.mts',
   'src/plugin_weykturtle3d.mts',
   'editor/edit_main.jsx',
