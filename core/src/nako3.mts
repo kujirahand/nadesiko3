@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // deno-lint-ignore-file no-explicit-any
 /**
@@ -67,14 +69,14 @@ export interface NakoResetOption {
 }
 
 /** コンパイラ実行オプションを生成 */
-export function newCompilerOptions (initObj: any = {}): CompilerOptions {
+export function newCompilerOptions (initObj: Partial<CompilerOptions> = {}): CompilerOptions {
   if (typeof initObj !== 'object') { initObj = {} }
   initObj.testOnly = initObj.testOnly || false
   initObj.resetEnv = initObj.resetEnv || false
   initObj.resetAll = initObj.resetAll || false
   initObj.preCode = initObj.preCode || ''
   initObj.nakoGlobal = initObj.nakoGlobal || null
-  return initObj
+  return initObj as CompilerOptions
 }
 
 /** なでしこコンパイラ */
@@ -222,7 +224,7 @@ export class NakoCompiler {
         continue
       }
       // 取り込むライブラリ
-      let filename = tokens[i + 1].value + ''
+      let filename = String(tokens[i + 1].value) + ''
       // 『取り込む』文で「拡張プラグイン:」機構を追加する #139
       // (ex) !『貯蔵庫:ojyo-sama.nako3』を取り込む → https://n3s.nadesi.com/plain/ojyo-sama.nako3
       if (filename.startsWith('貯蔵庫:')) {
@@ -342,7 +344,7 @@ export class NakoCompiler {
         } else if (item.type === 'nako3') {
           loadNako3(item, tasks)
         } else {
-          throw new NakoImportError(`ファイル『${item.value}』を読み込めません。ファイルが存在しないか未対応の拡張子です。`,
+          throw new NakoImportError(`ファイル『${String(item.value)}』を読み込めません。ファイルが存在しないか未対応の拡張子です。`,
             (item.firstToken as Token).file, (item.firstToken as Token).line)
         }
       }
@@ -370,7 +372,7 @@ export class NakoCompiler {
       return result
     } catch (err) {
       // 同期処理では素直に例外を投げる
-      this.logger.error('' + err)
+      this.logger.error(String(err))
       throw err
     }
   }
@@ -562,11 +564,11 @@ export class NakoCompiler {
       }
       const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
       if (filePath === undefined) {
-        if (!r.firstToken) { throw new Error(`ファイル『${r.value}』が読み込まれていません。`) }
-        throw new NakoLexerError(`ファイル『${r.value}』が読み込まれていません。`,
-          (r.firstToken as Token).startOffset || 0,
-          (r.firstToken as Token).endOffset || 0,
-          (r.firstToken as Token).line, (r.firstToken as Token).file)
+        if (!r.firstToken) { throw new Error(`ファイル『${String(r.value)}』が読み込まれていません。`) }
+        throw new NakoLexerError(`ファイル『${String(r.value)}』が読み込まれていません。`,
+          (r.firstToken).startOffset || 0,
+          (r.firstToken).endOffset || 0,
+          (r.firstToken).line, (r.firstToken).file)
       }
       this.dependencies[filePath].addPluginFile()
       const children = cloneAsJSON(this.dependencies[filePath].tokens)
@@ -681,10 +683,9 @@ export class NakoCompiler {
 
   _getUsedFuncs (ast: Ast): void {
     if (!ast) { return }
-    if ((ast.type === 'func' || ast.type === 'func_pointer')&& ast.name) {
+    if ((ast.type === 'func' || ast.type === 'func_pointer') && ast.name) {
       this.usedFuncs.add(ast.name as string)
-    }
-    else if ((ast as AstBlocks).blocks) { // プロパティにblocksを含んでいる？
+    } else if ((ast as AstBlocks).blocks) { // プロパティにblocksを含んでいる？
       for (const a of (ast as AstBlocks).blocks) {
         this._getUsedFuncs(a)
       }
@@ -745,7 +746,7 @@ export class NakoCompiler {
    * @param opt テストかどうか
    * @param mode 一般的に 'sync' を指定
    */
-  generateCode (ast: Ast, opt: NakoGenOptions, mode: string = 'sync'): NakoGenResult {
+  generateCode (ast: Ast, opt: NakoGenOptions, mode = 'sync'): NakoGenResult {
     // Select Code Generator #637
     // normal mode
     if (mode === 'sync') {
@@ -776,6 +777,7 @@ export class NakoCompiler {
    * @param [preCode]
    * @deprecated 代わりにrunAsyncメソッドを使ってください。(core #52)
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async _run (code: string, fname: string, isReset: boolean, isTest: boolean, preCode = ''): Promise<NakoGlobal> {
     const opts: CompilerOptions = newCompilerOptions({
       resetEnv: isReset,
@@ -809,7 +811,7 @@ export class NakoCompiler {
     // 実行前に環境を初期化するイベントを実行(beforeRun)
     this.eventList.filter(o => o.eventName === 'beforeRun').map(e => e.callback(nakoGlobal))
     try {
-      // eslint-disable-next-line no-new-func
+      // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
       const f = new Function(nakoGlobal.lastJSCode)
       f.apply(nakoGlobal)
     } catch (err: any) {
@@ -848,6 +850,7 @@ export class NakoCompiler {
    * @param options オプション
    * @returns 実行に利用したグローバルオブジェクト
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   public async runAsync (code: string, filename: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
     // コンパイル
     options = newCompilerOptions(options)

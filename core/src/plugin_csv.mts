@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CSVOptions, options, parse, stringify } from './nako_csv.mjs'
 
 const PluginCSV = {
@@ -58,7 +59,7 @@ const PluginCSV = {
   },
   'CSVオプション設定': { // @「CSV取得」「表CSV変換」命令のオプションOBJ{delimiter,eol,auto_convert_number}をオブジェクトで指定 // @CSVおぷしょんせってい
     type: 'func',
-    josi: [['を','で']],
+    josi: [['を', 'で']],
     pure: true,
     fn: function (obj: { [key: string]: unknown }): void {
       for (const key in obj) {

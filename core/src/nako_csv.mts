@@ -18,8 +18,9 @@ export function resetEnv (): void {
 }
 
 /// 文字列が数値化どうか判定する関数
-function is_numeric(str: string): boolean {
-  return /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(str);
+// eslint-disable-next-line camelcase
+function is_numeric (str: string): boolean {
+  return /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(str)
 }
 
 export function parse (txt: string, delimiter: string|undefined = undefined): (string|number)[][] {

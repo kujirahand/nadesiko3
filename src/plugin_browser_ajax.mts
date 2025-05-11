@@ -224,7 +224,7 @@ export default {
         }).then(text => {
           resolve(text)
         }).catch(err => {
-          reject(err.message)
+          reject(new Error(err.message))
         })
       })
     }
@@ -247,7 +247,7 @@ export default {
         }).then(text => {
           resolve(text)
         }).catch(err => {
-          reject(err.message)
+          reject(new Error(err.message))
         })
       })
     }

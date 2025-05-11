@@ -25,7 +25,7 @@ export default {
           window.speechSynthesis.speak(msg)
           console.log('#話す:', s)
         } catch (err) {
-          reject(err)
+          reject(err instanceof Error ? err : new Error(String(err)))
         }
       })
     }

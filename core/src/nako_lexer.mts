@@ -251,7 +251,7 @@ export class NakoLexer {
       if (tokens[i] && tokens[i].type === '{') {
         i++
         const attr = tokens[i] && tokens[i].type === 'word' ? tokens[i].value : ''
-        if (attr === '公開') { isExport = true } else if (attr === '非公開') { isExport = false } else if (attr === 'エクスポート') { isExport = true } else { logger.warn(`不明な関数属性『${attr}』が指定されています。`) }
+        if (attr === '公開') { isExport = true } else if (attr === '非公開') { isExport = false } else if (attr === 'エクスポート') { isExport = true } else { logger.warn(`不明な関数属性『${String(attr)}』が指定されています。`) }
         i++
         if (tokens[i] && tokens[i].type === '}') { i++ }
       }
@@ -361,7 +361,7 @@ export class NakoLexer {
       // 関数を強制的に置換( word => func )
       if (t.type === 'word' && t.value !== 'それ') {
         // 関数を変換
-        const funcName = t.value
+        const funcName = String(t.value)
         if (funcName.indexOf('__') < 0) {
           // 自身のモジュール名を検索
           const gname1 = `${modSelf}__${funcName}`
@@ -430,7 +430,7 @@ export class NakoLexer {
             if (tokenType === 'number') {
               tokens[i].value *= -1
             } else {
-              tokens[i].value = '-' + tokens[i].value
+              tokens[i].value = '-' + String(tokens[i].value)
             }
           }
         }

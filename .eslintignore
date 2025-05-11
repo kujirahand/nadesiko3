@@ -1,1 +1,3 @@
 release
+.eslintrc.cjs
+core/.eslintrc.cjs

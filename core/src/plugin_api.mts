@@ -38,7 +38,7 @@ export interface NakoSystem {
   __parseFloatOrBigint(v: NakoValue): number | bigint;
   __evalJS(code: string, sys?: NakoSystem): NakoValue;
   __evalSafe(code: string): NakoValue;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  // eslint-disable-next-line
   __registPropAccessor(f: Function, getProp: (prop: string|string[], sys: NakoSystem) => any, setProp: (prop: string|string[], value: object, sys: NakoSystem) => any):void;
   __checkPropAccessor(mode: 'get'|'set', obj: any):void;
   josiList: string[];

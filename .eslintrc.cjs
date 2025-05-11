@@ -17,6 +17,16 @@ module.exports = {
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "rules": {
+        // anyに関するルールを無効化
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        // promiseに関するルールを無効化
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/require-await": "off",
+        //
         "@typescript-eslint/ban-ts-comment": "off",
         "quote-props": "off",
         "no-unused-vars": "off",

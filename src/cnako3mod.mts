@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // deno-lint-ignore-file no-explicit-any
 /**
@@ -361,7 +362,7 @@ export class CNako3 extends NakoCompiler {
       const s = makeIndent(level) + '{\n'
       const sa = []
       for (const key in ast) {
-        const sv = trim(this.outputJSON((ast as any)[key], level + 1))
+        const sv = trim(this.outputJSON((ast)[key], level + 1))
         const so = makeIndent(level + 1) + '"' + key + '": ' + sv
         sa.push(so)
       }
@@ -509,7 +510,7 @@ export class CNako3 extends NakoCompiler {
                   try {
                     fs.writeFileSync(tmpFile, txt, 'utf-8')
                   } catch (err) {
-                    const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたJSファイルがキャッシュに書き込めません。${err}`, token.file, token.line)
+                    const err2 = new NakoImportError(`URL『${filePath}』からダウンロードしたJSファイルがキャッシュに書き込めません。${String(err)}`, token.file, token.line)
                     reject(err2)
                   }
                 })
@@ -670,11 +671,11 @@ export class CNako3 extends NakoCompiler {
 
     // 環境変数をチェック
     // 環境変数 NAKO_LIB か?
-    const nako_lib = getEnv('NAKO_LIB')
-    if (nako_lib) {
-      const nako_lib_full = path.join(path.resolve(nako_lib), pname)
-      const nako_lib_full2 = fCheckEx(nako_lib_full, 'NAKO_LIB')
-      if (nako_lib_full2) { return nako_lib_full2 }
+    const nakoLib = getEnv('NAKO_LIB')
+    if (nakoLib) {
+      const nakoLibFull = path.join(path.resolve(nakoLib), pname)
+      const nakoLibFull2 = fCheckEx(nakoLibFull, 'NAKO_LIB')
+      if (nakoLibFull2) { return nakoLibFull2 }
     }
 
     // ランタイムパス/node_modules/<plugin>
@@ -694,20 +695,20 @@ export class CNako3 extends NakoCompiler {
     if (fileRuntimeSrc2) { return fileRuntimeSrc2 }
 
     // 環境変数 NAKO_HOMEか?
-    const nako_home = getEnv('NAKO_HOME')
-    if (nako_home) {
-      const nako_home_full = path.join(path.resolve(nako_home), 'node_modules', pname)
-      const nako_home_full2 = fCheckEx(nako_home_full, 'NAKO_HOME')
-      if (nako_home_full2) { return nako_home_full2 }
+    const nakoHome = getEnv('NAKO_HOME')
+    if (nakoHome) {
+      const nakoHomeFull = path.join(path.resolve(nakoHome), 'node_modules', pname)
+      const nakoHomeFull2 = fCheckEx(nakoHomeFull, 'NAKO_HOME')
+      if (nakoHomeFull2) { return nakoHomeFull2 }
       // NAKO_HOME/src ?
-      const pathNakoHomeSrc = path.join(nako_home, 'src', pname)
+      const pathNakoHomeSrc = path.join(nakoHome, 'src', pname)
       const fileNakoHomeSrc = fCheckEx(pathNakoHomeSrc, 'NAKO_HOME/src')
       if (fileNakoHomeSrc) { return fileNakoHomeSrc }
     }
     // 環境変数 NODE_PATH (global) 以下にあるか？
-    const node_path = getEnv('NODE_PATH')
-    if (node_path) {
-      const pathNode = path.join(path.resolve(node_path), pname)
+    const nodePath = getEnv('NODE_PATH')
+    if (nodePath) {
+      const pathNode = path.join(path.resolve(nodePath), pname)
       const fileNode = fCheckEx(pathNode, 'NODE_PATH')
       if (fileNode) { return fileNode }
     }

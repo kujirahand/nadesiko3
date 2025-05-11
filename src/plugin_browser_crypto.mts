@@ -10,10 +10,10 @@ export default {
       const msgUint8 = new TextEncoder().encode(s) // (utf-8 の) Uint8Array にエンコードする
       // メッセージをハッシュする
       crypto.subtle.digest(alg, msgUint8).then(function (hashBuffer: ArrayBuffer) {
-        const hashArray = Array.from(new Uint8Array(hashBuffer)); // バッファーをバイト列に変換する
+        const hashArray = Array.from(new Uint8Array(hashBuffer)) // バッファーをバイト列に変換する
         const hashHex = hashArray
-          .map((b) => b.toString(16).padStart(2, "0"))
-          .join(""); // バイト列を 16 進文字列に変換する
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('') // バイト列を 16 進文字列に変換する
         const res = sys.__setSysVar('対象', hashHex)
         func(res)
       })
@@ -28,12 +28,12 @@ export default {
     fn: async function (s: string, alg: string, sys: any) {
       const msgUint8 = new TextEncoder().encode(s) // (utf-8 の) Uint8Array にエンコードする
       const hashBuffer = await crypto.subtle.digest(alg, msgUint8)
-      const hashArray = Array.from(new Uint8Array(hashBuffer)); // バッファーをバイト列に変換する
+      const hashArray = Array.from(new Uint8Array(hashBuffer)) // バッファーをバイト列に変換する
       const hashHex = hashArray
-          .map((b) => b.toString(16).padStart(2, "0"))
-          .join(""); // バイト列を 16 進文字列に変換する
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('') // バイト列を 16 進文字列に変換する
       return hashHex
-    },
+    }
   },
   'ランダムUUID生成': { // @ランダムに生成された36文字のv4 UUID(文字列)を返す // @ らんだむUUIDせいせい
     type: 'func',
@@ -41,16 +41,16 @@ export default {
     pure: true,
     fn: function (sys: any) {
       return window.crypto.randomUUID()
-    },
+    }
   },
   'ランダム配列生成': { // @暗号強度の強い乱数のバイト配列(Uint8Array)を指定の長さで返す // @ らんだむはいれつせいせい
     type: 'func',
     josi: [['の']],
     pure: true,
     fn: function (cnt: number, sys: any) {
-      const array = new Uint8Array(cnt);
-      window.crypto.getRandomValues(array);
+      const array = new Uint8Array(cnt)
+      window.crypto.getRandomValues(array)
       return array
-    },
-  },
+    }
+  }
 }

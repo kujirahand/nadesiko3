@@ -44,4 +44,3 @@ export interface NakoBrowsesrSystem extends NakoSystem {
   __addPropMethod(obj: any): void // プロパティ構文のために、__setProp / __getProp メソッドを追加する
   __chartjs: object
 }
-

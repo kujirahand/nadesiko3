@@ -31,7 +31,7 @@ export default {
     pure: true,
     fn: function (a: any, b: any): boolean {
       if (a !== b) {
-        throw new Error(`不一致 [実際]${a} [期待]${b}`)
+        throw new Error(`不一致 [実際]${JSON.stringify(a)} [期待]${JSON.stringify(b)}`)
       }
       return true
     }
@@ -41,6 +41,7 @@ export default {
     josi: [['と'], ['で']],
     pure: false,
     fn: function (a: any, b: any, sys: NakoSystem) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       sys.__exec('ASSERT等', [a, b, sys])
     }
   },
@@ -49,6 +50,7 @@ export default {
     josi: [['と'], ['が']],
     pure: false,
     fn: function (a: any, b: any, sys: NakoSystem) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       sys.__exec('ASSERT等', [a, b, sys])
     }
   }

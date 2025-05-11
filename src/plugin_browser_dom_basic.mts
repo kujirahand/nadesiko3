@@ -250,7 +250,7 @@ export default {
       '自動入力': 'autocomplete', // 'on' or 'off'
       '自動フォーカス': 'autofocus',
       '最大文字数': 'maxlength',
-      '最小文字数': 'minlength',
+      '最小文字数': 'minlength'
     }
   },
   'DOM和スタイル': { // 'const' // @DOMわすたいる
@@ -294,7 +294,7 @@ export default {
       '可視': 'hook', // 「DOM可視設定」「DOM可視取得」を呼び出す
       'ポケット': 'hook', // 「DOMポケット設定」「DOMポケット取得」を呼び出す
       'ヒント': 'hook', // 「DOMヒント設定」「DOMヒント取得」を呼び出す
-      'テキスト': 'hook', // 「DOMテキスト設定」「DOMテキスト取得」を呼び出す
+      'テキスト': 'hook' // 「DOMテキスト設定」「DOMテキスト取得」を呼び出す
     }
   },
   'DOMスタイル設定': { // @DOMのスタイルAに値Bを設定 // @DOMすたいるせってい
@@ -419,8 +419,7 @@ export default {
           let propName = prop[i]
           if (waStyle[propName] !== undefined) { // DOM和スタイル
             propName = waStyle[propName]
-          }
-          else if (waAttr[propName] !== undefined) { // dom和スタイル
+          } else if (waAttr[propName] !== undefined) { // dom和スタイル
             propName = waAttr[propName]
             if (waAttr[value] !== undefined) { // 値がDOM和属性の場合
               value = waAttr[value]
@@ -502,8 +501,7 @@ export default {
           let propName = prop[i]
           if (waStyle[propName] !== undefined) { // DOM和スタイル
             propName = waStyle[propName]
-          }
-          else if (waAttr[propName] !== undefined) { // dom和属性
+          } else if (waAttr[propName] !== undefined) { // dom和属性
             propName = waAttr[propName]
           }
           if (i < prop.length - 1) {
@@ -555,7 +553,7 @@ export default {
       dom = sys.__query(dom, 'DOM有効設定', true)
       if (!dom) { return '' }
       dom.dataset['有効'] = value
-      dom.disabled = (value) ? false : true
+      dom.disabled = !(value)
     }
   },
   'DOM有効取得': { // @DOMのdata-有効の値を取得 // @DOMゆうこうしゅとく

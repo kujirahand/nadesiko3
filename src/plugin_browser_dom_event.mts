@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { NakoCallback, NakoCallbackEvent } from '../core/src/plugin_api.mjs'
 import { NakoBrowsesrSystem, NakoDom } from './plugin_browser_api.mjs'
 export default {
@@ -36,7 +37,7 @@ export default {
     pure: true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (event: unknown, sys: NakoBrowsesrSystem) {
-      if (event !== null && typeof event == 'object' && 'preventDefault' in event) {
+      if (event !== null && typeof event === 'object' && 'preventDefault' in event) {
         const objWithFn = event as { preventDefault: () => void }
         if (typeof objWithFn.preventDefault === 'function') {
           objWithFn.preventDefault()

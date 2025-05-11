@@ -61,7 +61,7 @@ const PluginBrowser = {
     pure: true,
     fn: function (sys: NakoBrowsesrSystem) {
       /* eslint no-global-assign: 0 */
-      const doc: IBrowserDocument = (typeof document === 'undefined') ? { 'body': {}, 'querySelector': ()=>null } : document
+      const doc: IBrowserDocument = (typeof document === 'undefined') ? { 'body': {}, 'querySelector': () => null } : document
       const win: IBrowserWindow = (typeof window === 'undefined') ? { 'location': { 'href': 'http://localhost/' } } : window
       const nav: object = (typeof navigator === 'undefined') ? {} : navigator
       const loc: IBrowserLocation = (typeof win.location === 'undefined') ? { 'href': 'http://localhost/' } : win.location
@@ -111,7 +111,7 @@ const PluginBrowser = {
           sys.__setSysVar('対象イベント', e)
           // 追加データが得られる場合
           if (setHandler) { setHandler(e, sys) }
-          if (typeof func == 'function') {
+          if (typeof func === 'function') {
             return func(e, sys)
           }
           return false
@@ -129,7 +129,7 @@ const PluginBrowser = {
       }
       // マウスイベントハンドラ
       sys.__mouseHandler = (e: MouseEvent, sys: NakoBrowsesrSystem) => {
-        const target = e.target as HTMLElement;
+        const target = e.target as HTMLElement
         if (target && target instanceof HTMLElement) {
           const box = target.getBoundingClientRect()
           sys.__setSysVar('マウスX', e.clientX - box.left)
@@ -143,7 +143,7 @@ const PluginBrowser = {
       }
       // タッチイベントハンドラ
       sys.__touchHandler = (e: TouchEvent, sys: NakoBrowsesrSystem) => {
-        const target = e.target as HTMLElement;
+        const target = e.target as HTMLElement
         if (target && target instanceof HTMLElement) {
           const box = target.getBoundingClientRect()
           const touches = e.changedTouches
@@ -248,7 +248,7 @@ const PluginBrowser = {
             console.warn(`[ヒント](${sys.__getSysVar('__line')})『${commandName}』でDOM取得に失敗しています。DOM=`, dom)
           } else {
             // 設定イベントでは実行時エラーにする
-            const desc = (typeof dom === 'string') ? dom : String(dom)
+            const desc = (typeof dom === 'string') ? dom : JSON.stringify(dom, null, 2)
             throw new Error(`『${commandName}』でクエリ『${desc}』でDOM取得に失敗しました。`)
           }
         }

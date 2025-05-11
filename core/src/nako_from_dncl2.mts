@@ -250,7 +250,7 @@ export function convertDNCL2 (tokens: Token[]): Token[] {
   // 最後に単純な置換を行う
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i]
-    const a = DNCL_SIMPLES[t.type + ':' + t.value]
+    const a = DNCL_SIMPLES[String(t.type) + ':' + String(t.value)]
     if (a !== undefined) {
       t.type = a[0] as TokenType
       t.value = a[1]
@@ -273,7 +273,7 @@ export function convertDNCL2 (tokens: Token[]): Token[] {
  * @returns 合致したかどうか
  */
 function tokenEq (typeValues: any[], lines: Token[], fromIndex: number): boolean {
-  const check = (pattern: string|Array<string>, t: Token): boolean => {
+  const check = (pattern: string|Array<string>, t: { type: string, value: string }): boolean => {
     if (pattern instanceof Array) {
       for (let i = 0; i < pattern.length; i++) {
         if (check(pattern[i], t)) { return true }
