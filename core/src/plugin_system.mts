@@ -1288,15 +1288,23 @@ export default {
       return sys.__exec('文字抜出', [s, a, cnt])
     }
   },
-  '文字抜出': { // @文字列SのA文字目からCNT文字を抽出する // @もじぬきだす
+  '文字抜出': { // @文字列SのA文字目からCNT文字を抽出する(Aが0未満の時は後ろからA文字目からCNT文字を抽出) // @もじぬきだす
     type: 'func',
     josi: [['で', 'の'], ['から'], ['を', '']],
     pure: true,
     fn: function (s: any, a: number, cnt: number) {
-      cnt = cnt || 1
-      // return (String(s).substring(a - 1, a + cnt - 1))
-      // サロゲートペアを考慮
+      // 引数の型チェック #1995
+      if (typeof a === 'string') { a = parseInt(a) }
+      if (typeof cnt === 'string') { cnt = parseInt(cnt) }
+      // もし、cntが0以下なら空文字を返す
+      if (cnt <= 0) { return '' }
+      // サロゲートペアを考慮した処理を行う
       const strArray = Array.from(s)
+      // もし、aの値が0未満の時は後ろからa文字目からcnt文字を抽出
+      if (a < 0) {
+        a = strArray.length + a + 1
+        if (a < 0) { a = 1 }
+      }
       return strArray.slice(a - 1, a + cnt - 1).join('')
     }
   },
