@@ -36,4 +36,4 @@ const PluginCaniuse = {
 export default PluginCaniuse
 // scriptタグで取り込んだ時、自動で登録する
 /* istanbul ignore else */
-if (typeof (navigator) === 'object' && typeof (navigator.nako3)) { navigator.nako3.addPluginObject('PluginCaniuse', PluginCaniuse) }
+if (typeof (navigator) === 'object' && typeof (navigator.nako3) === 'object') { navigator.nako3.addPluginObject('PluginCaniuse', PluginCaniuse) }
