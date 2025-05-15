@@ -2098,20 +2098,26 @@ export class NakoParser extends NakoParserBase {
 
     // (...)の後の演算子に対応 #1985
     const cur: Token | null = this.peek()
-    if (cur && (cur.type === '@' || cur.type === '[')) {
+    if (cur && (cur.type === '@' || cur.type === '[' || cur.type === '$')) {
       const op = cur ? cur.type : '@'
-      const ast: AstOperator = {
-        type: 'ref_array_operator',
-        operator: op,
-        blocks: [v],
+      const ast: Ast = {
+        type: 'ref_array_value',
+        name: op,
+        index: [v],
         josi: '',
         ...this.peekSourceMap(),
         end: this.peekSourceMap()
       }
-      while (!this.isEOF()) {
-        if (!this.yValueWordGetIndex(ast)) { break }
+      if (op === '@' || op === '[') {
+        while (!this.isEOF()) {
+          if (!this.yValueWordGetIndex(ast)) { break }
+        }
+      } else if (op === '$') {
+        while (!this.isEOF()) {
+          if (!this.yValueWordGetProp(ast)) { break }
+        }
       }
-      if (ast.index && ast.index.length === 0) { throw NakoSyntaxError.fromNode(`(...)の後の配列アクセス『${op}』で指定ミス`, t) }
+      if (ast.index && ast.index.length <= 1) { throw NakoSyntaxError.fromNode(`(...)の後の配列アクセス『${op}』で指定ミス`, t) }
       return ast
     }
 
@@ -2318,6 +2324,24 @@ export class NakoParser extends NakoParserBase {
     return false
   }
 
+  yValueWordGetProp (ast: Ast): boolean {
+    if (!ast.index) { ast.index = [] }
+    if (this.check('$')) {
+      if (this.accept(['$', 'word'])) {
+        this.y[1].type = 'string'
+        ast.index.push(this.y[1])
+        ast.josi = this.y[1].josi
+        return this.y[1].josi === '' // 助詞があればそこで終了(false)を返す
+      }
+      if (this.accept(['$', this.yValue])) {
+        ast.index.push(this.y[1])
+        ast.josi = this.y[1].josi
+        return this.y[1].josi === '' // 助詞があればそこで終了(false)を返す
+      }
+    }
+    return false
+  }
+
   /** @returns {Ast | null} */
   yValueFuncPointer (): Ast|null {
     const map = this.peekSourceMap()
@@ -2477,19 +2501,40 @@ export class NakoParser extends NakoParserBase {
   yJSONObject (): AstBlocks | Ast | null {
     const a = this.yJSONObjectRaw()
     if (!a) { return null }
-    // 配列の直後に@や[]があるか？助詞がある場合には、別の引数の可能性があるので無視。 (例) [0,1,2]を[3,4,5]に配列＊＊＊
+
+    // 辞書の直後に@や[]があるか？
+    // ただし、助詞がある場合には、別の引数の可能性があるので無視。 (例) [0,1,2]を[3,4,5]に配列＊＊＊
     if (a.josi === '' && this.checkTypes(['@', '['])) {
       const ast: Ast = {
-        type: 'ref_array',
-        name: '__ARRAY__',
+        type: 'ref_array_value',
+        name: '@',
         index: [a],
         josi: '',
         line: a.line,
         end: this.peekSourceMap()
       }
-      this.yValueWordGetIndex(ast)
+      while (!this.isEOF()) {
+        if (!this.yValueWordGetIndex(ast)) { break }
+      }
       return ast
     }
+
+    // 辞書の直の後に$(プロパティ)があるか？
+    if (this.check('$')) {
+      const ast: Ast = {
+        type: 'ref_array_value',
+        name: '$',
+        index: [a],
+        josi: '',
+        line: a.line,
+        end: this.peekSourceMap()
+      }
+      while (!this.isEOF()) {
+        if (!this.yValueWordGetProp(ast)) { break }
+      }
+      return ast
+    }
+
     return a
   }
 
@@ -2549,19 +2594,23 @@ export class NakoParser extends NakoParserBase {
     // 配列を得る
     const a = this.yJSONArrayRaw()
     if (!a) { return null }
+
     // 配列の直後に@や[]があるか？助詞がある場合には、別の引数の可能性があるので無視。 (例) [0,1,2]を[3,4,5]に配列＊＊＊
     if (a.josi === '' && this.checkTypes(['@', '['])) {
       const ast: Ast = {
-        type: 'ref_array',
-        name: '__ARRAY__',
+        type: 'ref_array_value',
+        name: '@',
         index: [a],
         josi: '',
         line: a.line,
         end: this.peekSourceMap()
       }
-      this.yValueWordGetIndex(ast)
+      while (!this.isEOF()) {
+        if (!this.yValueWordGetIndex(ast)) { break }
+      }
       return ast
     }
+
     return a
   }
 
