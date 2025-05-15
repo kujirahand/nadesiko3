@@ -2095,6 +2095,26 @@ export class NakoParser extends NakoParserBase {
     if (closeParent) {
       v.josi = closeParent.josi
     }
+
+    // (...)の後の演算子に対応 #1985
+    const cur: Token | null = this.peek()
+    if (cur && (cur.type === '@' || cur.type === '[')) {
+      const op = cur ? cur.type : '@'
+      const ast: AstOperator = {
+        type: 'ref_array_operator',
+        operator: op,
+        blocks: [v],
+        josi: '',
+        ...this.peekSourceMap(),
+        end: this.peekSourceMap()
+      }
+      while (!this.isEOF()) {
+        if (!this.yValueWordGetIndex(ast)) { break }
+      }
+      if (ast.index && ast.index.length === 0) { throw NakoSyntaxError.fromNode(`(...)の後の配列アクセス『${op}』で指定ミス`, t) }
+      return ast
+    }
+
     return v
   }
 

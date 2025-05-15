@@ -605,6 +605,9 @@ export class NakoGen {
       case 'ref_array':
         code += this.convRefArray(node)
         break
+      case 'ref_array_operator':
+        code += this.convRefArrayOperator(node as AstOperator)
+        break
       case 'json_array':
         code += this.convJsonArray(node as AstBlocks)
         break
@@ -1063,6 +1066,19 @@ export class NakoGen {
     } else {
       code = this._convGen(node.name as Ast, true)
     }
+    const list: Ast[] | undefined = node.index
+    if (!list) { return code }
+    for (let i = 0; i < list.length; i++) {
+      const idx = this._convGen(list[i], true)
+      code += '[' + idx + ']'
+    }
+    return code
+  }
+
+  convRefArrayOperator (node: AstOperator): string {
+    let code = ''
+    const val: Ast = node.blocks[0] // val@index
+    code = this._convGen(val, true)
     const list: Ast[] | undefined = node.index
     if (!list) { return code }
     for (let i = 0; i < list.length; i++) {
