@@ -227,4 +227,13 @@ describe('関数呼び出しテスト', async () => {
     `
     await cmp(code, 'B\nA')
   })
+  it('カッコを用いた関数呼び出しの中で助詞を用いた関数呼び出しを可能にする #2000', async () => {
+    await cmp('(SIN(90をDEG2RAD))を表示', '1')
+    await cmp('SIN(90をDEG2RAD)を表示', '1')
+    await cmp('SIN(90をDEG2RAD);それを表示', '1')
+    await cmp('SIN(DEG2RAD(90))を表示', '1')
+    await cmp('表示(3.14のINT)', '3')
+    await cmp('表示(「123」の「12」を「*」に置換)', '*3')
+    await cmp('表示(「123」の「12」を「*」に置換して「*」を「」に置換)', '3')
+  })
 })

@@ -821,7 +821,8 @@ export class NakoParser extends NakoParserBase {
         isClose = true
         break
       }
-      const v = this.yGetArg()
+      // カッコを用いた関数呼び出しの中で助詞を用いた関数呼び出しを有効にする #2000
+      const v = this.yCalc()
       if (v) {
         this.pushStack(v)
         if (this.check('comma')) { this.get() }
