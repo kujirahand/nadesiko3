@@ -1056,16 +1056,7 @@ export class NakoGen {
 
   convRefArray (node: Ast): string {
     let code = ''
-    if (node.name === '__ARRAY__') { // JSONを参照する場合
-      const a = node.index?.shift()
-      if (a) {
-        code = this._convGen(a, true)
-      } else {
-        code = '[]'
-      }
-    } else {
-      code = this._convGen(node.name as Ast, true)
-    }
+    code = this._convGen(node.name as Ast, true)
     const list: Ast[] | undefined = node.index
     if (!list) { return code }
     for (let i = 0; i < list.length; i++) {
