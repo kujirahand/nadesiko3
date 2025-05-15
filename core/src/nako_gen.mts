@@ -605,6 +605,9 @@ export class NakoGen {
       case 'ref_array':
         code += this.convRefArray(node)
         break
+      case 'ref_array_value':
+        code += this.convRefArrayValue(node as AstOperator)
+        break
       case 'json_array':
         code += this.convJsonArray(node as AstBlocks)
         break
@@ -1053,16 +1056,7 @@ export class NakoGen {
 
   convRefArray (node: Ast): string {
     let code = ''
-    if (node.name === '__ARRAY__') {
-      const a = node.index?.shift()
-      if (a) {
-        code = this._convGen(a, true)
-      } else {
-        code = '[]'
-      }
-    } else {
-      code = this._convGen(node.name as Ast, true)
-    }
+    code = this._convGen(node.name as Ast, true)
     const list: Ast[] | undefined = node.index
     if (!list) { return code }
     for (let i = 0; i < list.length; i++) {
@@ -1070,6 +1064,29 @@ export class NakoGen {
       code += '[' + idx + ']'
     }
     return code
+  }
+
+  convRefArrayValue (node: AstOperator): string {
+    let code = ''
+    const op: string = node.name ? String(node.name) : '???'
+    const val: Ast|undefined = node.index ? node.index.shift() : undefined
+    if (!val) { return '/*[WARNING] convRefArrayOperator::InvalidValue */' }
+    code = this._convGen(val, true)
+    const list: Ast[] | undefined = node.index
+    if (!list) { return code }
+    if (op === '@' || op === '[') {
+      for (let i = 0; i < list.length; i++) {
+        const idx = this._convGen(list[i], true)
+        code += '[' + idx + ']'
+      }
+      return code
+    }
+    if (op === '$') {
+      return this.convRefProp_genCode(code, list as AstStrValue[])
+    }
+    // operator not found
+    const op2 = op.replace('*/', '＊/')
+    return `/* [WARNING] convRefArrayOperator::UnknownOperator [${op2}] */` + code
   }
 
   convLetArray (node: AstLetArray): string {
@@ -1882,8 +1899,12 @@ export class NakoGen {
     if (!list || list.length <= 0) {
       throw NakoSyntaxError.fromNode('プロパティがありません。', node)
     }
+    return this.convRefProp_genCode(name, list as AstStrValue[])
+  }
+
+  // プロパティへの参照のコード生成部分 (#1793)
+  convRefProp_genCode (name: string, propList: AstStrValue[]): string {
     let code
-    const propList = list as AstStrValue[]
     if (propList.length <= 1) {
       const propKey = propList[0].value
       const codeCall = `${name}.__getProp('${propKey}', __self)`

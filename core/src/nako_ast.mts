@@ -52,6 +52,7 @@ export type NodeType = 'nop'
   | 'def_local_varlist'
   | 'ref_array' // 配列参照
   | 'ref_prop' // #1793 (プロパティ参照)
+  | 'ref_array_value' // 配列参照演算子
   | 'require'
   | 'performance_monitor'
   | 'speed_mode'
