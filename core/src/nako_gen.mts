@@ -732,8 +732,15 @@ export class NakoGen {
 
   convComment (node: AstEol): string {
     let commentSrc = String(node.comment)
+    // コメントの改行や空行を無効化
     commentSrc = commentSrc.replace(/\n/g, '¶')
-    const lineNo = this.convLineno(node, false)
+    commentSrc = commentSrc.replace(/\*\//g, '＊／')
+    commentSrc = commentSrc.replace(/(^\s+|\s+$)/g, '')
+    // コメントの行番号を得る
+    let lineNo = this.convLineno(node, false)
+    if (node.line === 0) {
+      lineNo = '' // 0行目なら行番号は更新なし
+    }
     if (commentSrc === '' && lineNo === '') { return ';' }
     if (commentSrc === '') {
       return ';' + lineNo + '\n'
