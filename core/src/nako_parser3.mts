@@ -715,7 +715,7 @@ export class NakoParser extends NakoParserBase {
     if (!t || t.value !== '??') {
       throw NakoSyntaxError.fromNode('『??』で指定してください。', map)
     }
-    const arg: Ast|null = this.yGetArg()
+    const arg: Ast|null = this.yCalc()
     if (!arg) {
       throw NakoSyntaxError.fromNode('『??(計算式)』で指定してください。', map)
     }
