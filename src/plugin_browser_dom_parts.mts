@@ -611,5 +611,14 @@ export default {
       await win.mermaid.run()
       return div
     }
+  },
+  'ビデオ作成': { // @ ビデオ部品を作成して返す // @ びでおさくせいい
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys: any) {
+      const video = sys.__exec('DOM部品作成', ['video', sys])
+      return video
+    }
   }
 }
