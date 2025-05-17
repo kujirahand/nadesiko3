@@ -22,6 +22,7 @@ import PartBrowserAudio from './plugin_browser_audio.mjs'
 import PartBrowserHotkey from './plugin_browser_hotkey.mjs'
 import PartBrowserChart from './plugin_browser_chart.mjs'
 import PartBrowserCrypto from './plugin_browser_crypto.mjs'
+import PartBrowserCamera from './plugin_browser_camera.mjs'
 
 const BrowserParts = [
   PartBrowserColor,
@@ -41,7 +42,8 @@ const BrowserParts = [
   PartBrowserAudio,
   PartBrowserHotkey,
   PartBrowserChart,
-  PartBrowserCrypto
+  PartBrowserCrypto,
+  PartBrowserCamera
 ]
 
 const PluginBrowser = {
