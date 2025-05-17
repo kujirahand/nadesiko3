@@ -1236,54 +1236,65 @@ export default {
     },
     return_none: false
   },
-  // @LINE
-  'LINE送信': { // @ LINEにメッセージを送信する。先にLINE Notifyのページで宛先のトークンを取得する。TOKENへMESSAGEをLINE送信する。 // @LINEそうしん
+  // DISCORD
+  'DISCORD送信': { // @ DISCORDのウェブフックURLにSのメッセージを送信する。宛先のウェブフックを取得しておく必要がある。 // @DISCORDそうしん
     type: 'func',
     josi: [['へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: async function (token: string, message: string, sys: NakoSystem) {
-      const lineNotifyUrl = 'https://notify-api.line.me/api/notify'
-      const bodyData = sys.__exec('POSTデータ生成', [{ message }, sys])
+    fn: async function (url: string, s: string, sys: NakoSystem) {
+      const payload = { content: s }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      if (!res.ok) {
+        throw new Error('『DISCORD送信』に失敗しました。' + res.statusText)
+      }
+    },
+    return_none: true
+  },
+  'DISCORDファイル送信': { // @ DISCORDのウェブフックURLにファイルF(パスを指定)とメッセージSを送信する。// @DISCORDふぁいるそうしん
+    type: 'func',
+    josi: [['へ', 'に'], ['と'], ['を']],
+    pure: true,
+    asyncFn: true,
+    fn: async function (url: string, f: string, s: string, sys: NakoSystem) {
+      const formData = new FormData()
+      formData.append('content', s)
+      const imageData = fs.readFileSync(f)
+      const fname = path.basename(f)
+      formData.append('file', new Blob([imageData]), fname)
       const options = {
         'method': 'POST',
-        'headers': {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${token}`
-        },
-        'body': bodyData
+        'body': formData
       }
-      console.warn('『LINE送信』は2025年3月で使えなくなります。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
-      const res = await fetch(lineNotifyUrl, options)
-      const jsonObj = await res.json()
-      return JSON.stringify(jsonObj)
+      const res = await fetch(url, options)
+      if (!res.ok) {
+        throw new Error('『DISCORDファイル送信』に失敗しました。' + res.statusText)
+      }
     },
-    return_none: false
+    return_none: true
+  },
+  // @LINE
+  'LINE送信': { // @ LINEにメッセージを送信する。現在利用不可能。 // @LINEそうしん
+    type: 'func',
+    josi: [['へ', 'に'], ['を']],
+    pure: true,
+    fn: function (token: string, message: string, sys: NakoSystem) {
+      throw new Error('『LINE送信』は2025年4月で使えなくなりました。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
+    }
   },
   'LINE画像送信': { // @ LINEにメッセージを送信する。先にLINE Notifyのページで宛先のトークンを取得する。TOKENへIMAGE_FILEとMESSAGEをLINE画像送信する。 // @LINEがぞうそうしん
     type: 'func',
     josi: [['へ', 'に'], ['と'], ['を']],
     pure: true,
-    asyncFn: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: async function (token: string, imageFile: string, message: string, sys: NakoSystem) {
-      const lineNotifyUrl = 'https://notify-api.line.me/api/notify'
-      const formData = new FormData()
-      formData.append('message', message)
-      const imageData = fs.readFileSync(imageFile)
-      formData.append('imageFile', new Blob([imageData]))
-      const options = {
-        'method': 'POST',
-        'headers': {
-          'Authorization': `Bearer ${token}`
-        },
-        'body': formData
-      }
-      const res = await fetch(lineNotifyUrl, options)
-      const jsonObj = await res.json()
-      return JSON.stringify(jsonObj)
-    },
-    return_none: false
+    fn: function (token: string, imageFile: string, message: string, sys: NakoSystem) {
+      throw new Error('『LINE画像送信』は2025年4月で使えなくなりました。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
+    }
   },
   // @文字コード
   '文字コード変換サポート判定': { // @文字コードCODEをサポートしているか確認 // @もじこーどへんかんさぽーとはんてい
