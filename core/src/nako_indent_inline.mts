@@ -115,12 +115,18 @@ export function joinTokenLines (lines: Token[][]): Token[] {
   return r
 }
 
+// トークン行の最後のトークンを取得する
 function getLastTokenWithoutEOL (line: Token[]): Token {
   const len: number = line.length
-  if (len === 0) { return NewEmptyToken('?') }
-  let res: Token = line[len - 1]
-  if (res.type === 'eol') {
-    if (len >= 2) { res = line[len - 2] }
+  let res: Token = NewEmptyToken('?')
+  if (len === 0) { return res }
+  // 改行やコメントならば、前のトークンを取得
+  for (let i = 0; i < len; i++) {
+    // 行末のトークンを取得
+    res = line[len - i - 1]
+    if (res.type === 'eol') { continue }
+    if (res.type === 'line_comment' || res.type === 'range_comment') { continue }
+    break
   }
   return res
 }

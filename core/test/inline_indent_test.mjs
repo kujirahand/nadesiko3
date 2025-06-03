@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
 
@@ -174,5 +173,12 @@ describe('inline_indent_test', async () => {
       '●hogeとは:\n' +
       '　　A=3;B=3;\n' +
       'Bを表示。', '0')
+  })
+  it('インラインインデントの記号「：」の後ろにコメントを書けない #2046', async () => {
+    await cmp('' +
+      'B=0;\n' +
+      '2回: //ここ\n' +
+      '　　B=B+1;\n' +
+      'Bを表示。', '2')
   })
 })
