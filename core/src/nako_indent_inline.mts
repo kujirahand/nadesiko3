@@ -262,7 +262,14 @@ export function convertIndentSyntax (tokens: Token[]): Token[] {
     for (let i = lines.length - 1; i >= 0; i--) {
       const line = lines[i]
       if (line.length > 0) {
-        t = line[line.length - 1]
+        // テンプレートとなるトークンを行の後方から順に探す
+        for (let j = 0; j < line.length; j++) {
+          const tt = line[line.length - j - 1]
+          if (tt.line > 0) {
+            t = tt
+            break
+          }
+        }
         break
       }
     }
