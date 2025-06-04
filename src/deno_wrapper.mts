@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-/** get enviroment name */
+/** get environment name */
 export function getEnv (name: string): string | undefined {
   if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env !== undefined) {
     return (globalThis as any).process.env[name]

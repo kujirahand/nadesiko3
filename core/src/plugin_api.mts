@@ -25,7 +25,7 @@ export interface NakoSystem {
   __exec(func: string, params: NakoValue[]): any;
   __setSore(v: any): void;
   __getSore(): any;
-  __loadScript(url: string): Promise<void>; // JSのスクリプトを読み込む (ex) グラフ描画(plguin_browser_chart.mts)
+  __loadScript(url: string): Promise<void>; // JSのスクリプトを読み込む (ex) グラフ描画(plugin_browser_chart.mts)
   __hatena: (s: string, sys: NakoSystem) => void; // 「？？」記法の関数キャッシュ #1852
   logger: any; // Logger
   // 便利なメソッド
