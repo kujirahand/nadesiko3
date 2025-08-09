@@ -20,7 +20,7 @@ const PluginTOML = {
     }
   },
   // @TOML
-  'TOMLデコード': { // @TOML文字列をオブジェクトにデコードして返す // @TOMLでこーど
+  'TOML取得': { // @TOML文字列をオブジェクトにデコードして返す // @TOMLしゅとく
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
@@ -28,7 +28,7 @@ const PluginTOML = {
       return TOML.parse(s)
     }
   },
-  'TOMLエンコード': { // @オブジェクトをTOML文字列にエンコードする // @TOMLえんこーど
+  'TOML変換': { // @オブジェクトをTOML文字列にエンコードする // @TOMLへんかん
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
