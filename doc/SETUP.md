@@ -16,7 +16,7 @@
 
 また、Gitなどのツールをインストールするために、[Chocolatey](https://chocolatey.org/)をインストールしておく。
 
-```bach
+```bash
 # Chocolatey でGitをインストール
 cinst git
 
@@ -89,7 +89,7 @@ apm install linter-js-standard
 
 なでしこ3ではコマンドラインからなでしこを実行できるcnako3(Windowsは、cnako3.bat)というスクリプトを用意。今後、なでしこの各種バッチファイルはなでしこ自身で記述される。
 
-ちなみに、`npm install -g nadeisko3` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、その場合は安定版のなでしこがインストールされることになる。
+ちなみに、`npm install -g nadesiko3` を実行すると、npmコマンドでcnako3コマンドが利用できるようになるが、その場合は安定版のなでしこがインストールされることになる。
 
 環境変数に本ファイルのパスをNAKO_HOMEとして登録し、パスをNAKO_HOME/srcに通す。以下、macOS/Linuxでの `.bashrc` の記述例。(ユーザー名がkujiraの場合)
 

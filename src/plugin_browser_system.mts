@@ -6,7 +6,7 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: any) {
-      // v3.3.74以降 plguin_system.mjsと挙動が同じになった
+      // v3.3.74以降 plugin_system.mjsと挙動が同じになった
       // デバッグモードでなければ例外を投げることでプログラムを終了させる
       if (sys && sys.__v0) {
         sys.__setSysVar('__forceClose', true)
