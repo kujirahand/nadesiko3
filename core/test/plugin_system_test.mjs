@@ -372,7 +372,7 @@ describe('plugin_system_test', async () => {
     await cmp('JSONエンコード(文字列分解("𩸽のひらき"))を表示。', '["𩸽","の","ひ","ら","き"]')
   })
   it('プラグイン一覧取得', async () => {
-    await cmp('プラグイン一覧取得して「:」で配列結合して表示', 'plugin_system:plugin_math:plugin_promise:plugin_test:plugin_csv')
+    await cmp('プラグイン一覧取得して「:」で配列結合して表示', 'plugin_system:plugin_math:plugin_promise:plugin_test:plugin_csv:plugin_toml')
   })
   it('配列切り取り', async () => {
     await cmp('A=[0,1,2,3,4,5];Aの0を配列切り取り;表示', '0')

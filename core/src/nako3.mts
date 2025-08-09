@@ -27,6 +27,7 @@ import PluginSystem from './plugin_system.mjs'
 import PluginMath from './plugin_math.mjs'
 import PluginCSV from './plugin_csv.mjs'
 import PluginPromise from './plugin_promise.mjs'
+import PluginTOML from './plugin_toml.mjs'
 import PluginTest from './plugin_test.mjs'
 
 const cloneAsJSON = (x: any): any => JSON.parse(JSON.stringify(x))
@@ -200,6 +201,7 @@ export class NakoCompiler {
     this.addPlugin(PluginPromise)
     this.addPlugin(PluginTest)
     this.addPlugin(PluginCSV)
+    this.addPlugin(PluginTOML)
   }
 
   /**
