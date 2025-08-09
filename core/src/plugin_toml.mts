@@ -7,9 +7,9 @@ const PluginTOML = {
     value: {
       pluginName: 'plugin_toml', // プラグインの名前
       description: 'TOML形式のデータ読み書きするプラグイン', // プラグインの説明
-      pluginVersion: '3.6.10', // プラグインのバージョン
+      pluginVersion: '3.7.6', // プラグインのバージョン
       nakoRuntime: ['wnako', 'cnako'], // 対象ランタイム
-      nakoVersion: '3.6.9' // 要求なでしこバージョン
+      nakoVersion: '3.7.6' // 要求なでしこバージョン
     }
   },
   '初期化': {
@@ -32,7 +32,7 @@ const PluginTOML = {
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
-    fn: function (s: string, sys: any) {
+    fn: function (s: any, sys: any) {
       return TOML.stringify(s)
     }
   },
