@@ -1,0 +1,41 @@
+// TOMLを読むためのプラグイン
+import TOML from 'smol-toml'
+
+const PluginTOML = {
+  'meta': {
+    type: 'const',
+    value: {
+      pluginName: 'plugin_toml', // プラグインの名前
+      description: 'TOML形式のデータ読み書きするプラグイン', // プラグインの説明
+      pluginVersion: '3.6.10', // プラグインのバージョン
+      nakoRuntime: ['wnako', 'cnako'], // 対象ランタイム
+      nakoVersion: '3.6.9' // 要求なでしこバージョン
+    }
+  },
+  '初期化': {
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys: any) {
+    }
+  },
+  // @TOML
+  'TOMLデコード': { // @TOML文字列をオブジェクトにデコードして返す // @TOMLでこーど
+    type: 'func',
+    josi: [['を', 'の', 'から']],
+    pure: true,
+    fn: function (s: string, sys: any) {
+      return TOML.parse(s)
+    }
+  },
+  'TOMLエンコード': { // @オブジェクトをTOML文字列にエンコードする // @TOMLえんこーど
+    type: 'func',
+    josi: [['を', 'から', 'の']],
+    pure: true,
+    fn: function (s: string, sys: any) {
+      return TOML.stringify(s)
+    }
+  },
+}
+
+export default PluginTOML
