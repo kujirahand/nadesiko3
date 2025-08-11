@@ -14,8 +14,9 @@ CORE="core/src"
 コアプラグイン一覧は[
     ["plugin_system.mts", 'wnako,cnako,phpnako'],
     ["plugin_csv.mts", 'wnako,cnako'],
+    ['plugin_toml.mjs', 'wnako,cnako'],
     ["plugin_math.mts", 'wnako,cnako'],
-    ["plugin_promise.mts", 'wnako']
+    ["plugin_promise.mts", 'wnako,cnako']
 ]
 
 基本プラグイン一覧は[

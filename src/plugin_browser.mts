@@ -3,6 +3,7 @@
  */
 import { NakoValue, NakoCallback, NakoCallbackEvent, NakoSystem } from '../core/src/plugin_api.mjs'
 import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation } from './plugin_browser_api.mjs'
+import { parsePosition } from '../core/src/nako_logger.mjs'
 
 import PartBrowserColor from './plugin_browser_color.mjs'
 import PartBrowserSystem from './plugin_browser_system.mjs'
@@ -23,6 +24,7 @@ import PartBrowserHotkey from './plugin_browser_hotkey.mjs'
 import PartBrowserChart from './plugin_browser_chart.mjs'
 import PartBrowserCrypto from './plugin_browser_crypto.mjs'
 import PartBrowserCamera from './plugin_browser_camera.mjs'
+import { NakoRuntimeError } from '../core/src/nako_errors.mjs'
 
 const BrowserParts = [
   PartBrowserColor,
@@ -114,7 +116,21 @@ const PluginBrowser = {
           // 追加データが得られる場合
           if (setHandler) { setHandler(e, sys) }
           if (typeof func === 'function') {
-            return func(e, sys)
+            try {
+              return func(e, sys)
+            } catch (err) {
+              // event error reporter
+              const sys0: any = sys as any
+              if (sys0 && sys0.__v0) {
+                const line0 = sys0.__v0.get('__line')
+                const pos = parsePosition(line0)
+                sys.logger.error(err, pos)
+                console.error(`[DOMイベントのエラー](${line0}) 対象:`, e.target, 'エラー:', err)
+              } else {
+                console.error('[DOMイベントのエラー] 対象:', e.target, 'エラー:', err)
+              }
+              return false
+            }
           }
           return false
         }
