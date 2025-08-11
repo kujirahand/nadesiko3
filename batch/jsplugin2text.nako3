@@ -85,6 +85,7 @@ LINENO=0
 　　　　LINEを『^import .*\'(.+?\.mjs)\'』で正規表現マッチ。
 　　　　もし、そうならば
 　　　　　　LINEを「plugin_[0-9a-zA-Z_]+.mjs」で正規表現マッチして、F2に代入。
+　　　　　　もし、F2=NULLならば、続ける。
 　　　　　　もし、F2≠「」ならば
 　　　　　　　　FNAME=F2の「.mjs」を「.mts」に置換。
 　　　　　　　　もし、FNAME=「plugin_api.mts」ならば、続ける。
