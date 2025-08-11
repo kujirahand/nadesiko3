@@ -1438,21 +1438,6 @@ export default {
       return s.endsWith(a)
     }
   },
-  '包含': { // @文字列(配列)SがAを包む場合に真を返す // @ほうがん
-    type: 'func',
-    josi: [['が'], ['を']],
-    pure: true,
-    fn: function (s: any, a: string): boolean {
-      if (typeof(s) === 'string') {
-        return s.indexOf(a) >= 0
-      }
-      if (s instanceof Array) {
-        return s.indexOf(a) >= 0
-      }
-      const ss = String(s)
-      return s.indexOf(a) >= 0
-    }
-  },
 
   // @置換・トリム
   '置換': { // @文字列Sのうち文字列AをBに全部置換して返す // @ちかん
