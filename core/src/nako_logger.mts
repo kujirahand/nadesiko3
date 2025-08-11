@@ -67,6 +67,22 @@ function stringifyPosition (p: PositionOrNull): string {
   return `${p.file || ''}${p.line === undefined ? '' : `(${p.line + 1}行目): `}`
 }
 
+export function parsePosition (line: string): Position {
+  const m = line.match(/l(d+)\:(.+?)/)
+  let lineNo = 0
+  let fileName = 'main.nako3'
+  if (m) {
+    lineNo = parseInt(m[1])
+    fileName = m[2]
+  }
+  return {
+    startOffset: 0,
+    endOffset: 0,
+    line: lineNo,
+    file: fileName
+  }
+}
+
 interface NakoLoggerListener {
   level: number;
   callback: LogListener;
