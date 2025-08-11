@@ -74,7 +74,6 @@ export function parsePosition (line: string): Position {
   if (m) {
     lineNo = parseInt(m[1], 10)
     fileName = m[2]
-    console.log(m)
   }
   return {
     startOffset: 0,
