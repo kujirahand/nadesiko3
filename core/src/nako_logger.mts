@@ -68,12 +68,13 @@ function stringifyPosition (p: PositionOrNull): string {
 }
 
 export function parsePosition (line: string): Position {
-  const m = line.match(/l(d+)\:(.+?)/)
+  const m = line.match(/^l(\d+)\:(.+)/)
   let lineNo = 0
   let fileName = 'main.nako3'
   if (m) {
-    lineNo = parseInt(m[1])
+    lineNo = parseInt(m[1], 10)
     fileName = m[2]
+    console.log(m)
   }
   return {
     startOffset: 0,
