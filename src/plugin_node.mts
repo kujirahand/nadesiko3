@@ -134,61 +134,78 @@ export default {
       // nadesiko3-serverを起動した時、ctrl+cでプロセスが止まらない(#1668)を考慮した設計にする
       // 非同期通信を使うと標準入力を占有してしまうため、一時的に全部の標準入力を取得しておいて、残りをバッファに入れておく仕組みにする
       // 加えて、pause/resumeを使わない仕掛けにする
-      sys.tags.readBuffers = []
+      // 標準入力の行読み取りを単一リスナーで処理し、共有キュー/ハンドラーで配信する
+      sys.tags.__stdinSetup = false
+      sys.tags.__stdinQueue = []
+      sys.tags.__stdinWaiters = []
+      sys.tags.__lineHandlers = []
+      sys.tags.__stdinEnded = false
+      sys.tags.__endWaiters = []
+      sys.tags.__stdinRaw = ''
+      sys.tags.__setupStdin = () => {
+        if (sys.tags.__stdinSetup) { return }
+        sys.tags.__stdinSetup = true
+        let partial = ''
+        const emitLine = (line: string) => {
+          // 永続ハンドラーへ通知（『標準入力取得時』など）
+          for (const h of sys.tags.__lineHandlers) {
+            try { h(line) } catch (e) { /* ignore */ }
+          }
+          // 一度きりの待機者（『尋』『文字尋』）へ優先的に配信、なければキュー
+          if (sys.tags.__stdinWaiters.length > 0) {
+            const w = sys.tags.__stdinWaiters.shift()
+            if (w) { w(line) }
+          } else {
+            sys.tags.__stdinQueue.push(line)
+          }
+        }
+        nodeProcess.stdin.on('data', (buf: Buffer) => {
+          // 生データも保持（『標準入力全取得』向け）
+          try { sys.tags.__stdinRaw += buf.toString() } catch (_) {}
+          const bufStr = buf.toString()
+          for (let i = 0; i < bufStr.length; i++) {
+            const c = bufStr.charAt(i)
+            if (c === '\r') { continue }
+            if (c === '\n') {
+              emitLine(partial)
+              partial = ''
+              continue
+            }
+            partial += c
+          }
+        })
+        nodeProcess.stdin.on('end', () => {
+          if (partial !== '') {
+            emitLine(partial)
+            partial = ''
+          }
+          sys.tags.__stdinEnded = true
+          if (sys.tags.__endWaiters && Array.isArray(sys.tags.__endWaiters)) {
+            for (const w of sys.tags.__endWaiters) {
+              try { w() } catch (_) {}
+            }
+            sys.tags.__endWaiters = []
+          }
+        })
+      }
       sys.tags.readline = (question: string, handler?: (line: string) => void) => {
+        sys.tags.__setupStdin()
         if (question) {
           nodeProcess.stdout.write(question)
         }
-        if (sys.tags.readBuffers.length > 0) {
-          const buf = sys.tags.readBuffers.shift()
-          return buf
+        // ハンドラー指定時は永続購読として登録
+        if (handler !== undefined) {
+          sys.tags.__lineHandlers.push(handler)
+          return true
         }
-        let data: string = ''
-        nodeProcess.stdin.on('data', (buf: Buffer) => {
-          const bufStr = buf.toString()
-          let line: string = data
-          for (let i = 0; i < bufStr.length; i++) {
-            const c = bufStr.charAt(i)
-            if (c === '\r') {
-              continue
-            }
-            if (c === '\n') {
-              if (handler) {
-                handler(line)
-              } else {
-                sys.tags.readBuffers.push(line)
-              }
-              line = ''
-              continue
-            }
-            line += c
-          }
-          data = line
-        })
-        nodeProcess.stdin.on('end', () => {
-          if (handler) {
-            handler(data)
-          } else {
-            if (data !== '') {
-              sys.tags.readBuffers.push(data)
-            }
-          }
-          data = ''
-        })
-        if (handler !== undefined) { return true }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        return new Promise((resolve, _reject) => {
-          const timerCallback = () => {
-            if (sys.tags.readBuffers.length > 0) {
-              const buf = sys.tags.readBuffers.shift()
-              nodeProcess.stdin.removeAllListeners()
-              resolve(buf)
-            } else {
-              setTimeout(timerCallback, 100)
-            }
-          }
-          // 100msごとにチェック
-          setTimeout(() => { timerCallback() }, 10)
+        // すでにキューがあれば即返す
+        if (sys.tags.__stdinQueue.length > 0) {
+          const line = sys.tags.__stdinQueue.shift()
+          return line
+        }
+        // 次の1行を待機
+        return new Promise((resolve) => {
+          sys.tags.__stdinWaiters.push(resolve)
         })
       }
     }
@@ -831,15 +848,13 @@ export default {
     asyncFn: true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (sys: NakoSystem): Promise<string> {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      return new Promise((resolve, _reject) => {
-        let dataStr = ''
-        nodeProcess.stdin.on('data', (data: any) => {
-          dataStr += data.toString()
-        })
-        nodeProcess.stdin.on('end', () => {
-          nodeProcess.stdin.removeAllListeners()
-          resolve(dataStr)
+      sys.tags.__setupStdin()
+      return new Promise((resolve) => {
+        if (sys.tags.__stdinEnded) {
+          return resolve(sys.tags.__stdinRaw)
+        }
+        sys.tags.__endWaiters.push(() => {
+          resolve(sys.tags.__stdinRaw)
         })
       })
     }
@@ -1267,7 +1282,8 @@ export default {
       formData.append('content', s)
       const imageData = fs.readFileSync(f)
       const fname = path.basename(f)
-      formData.append('file', new Blob([imageData]), fname)
+      const uint8 = new Uint8Array(imageData)
+      formData.append('file', new Blob([uint8]), fname)
       const options = {
         'method': 'POST',
         'body': formData
