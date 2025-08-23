@@ -1444,13 +1444,13 @@ export default {
     pure: true,
     fn: function (s: any, a: string): boolean {
       if (typeof(s) === 'string') {
-        return s.indexOf(a) >= 0
+        return s.includes(a)
       }
       if (s instanceof Array) {
-        return s.indexOf(a) >= 0
+        return s.includes(a)
       }
       const ss = String(s)
-      return ss.indexOf(a) >= 0
+      return ss.includes(a)
     }
   },
 
