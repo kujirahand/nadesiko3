@@ -148,7 +148,7 @@
     "dayjs": "^1.11.11",
     "fs-extra": "^11.2.0",
     "html": "^1.0.0",
-    "iconv-lite": "^0.6.3",
+    "iconv-lite": "^0.7.0",
     "marked": "^16.0.0",
     "node-fetch": "^3.3.2",
     "opener": "^1.5.2",
