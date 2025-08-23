@@ -1438,6 +1438,21 @@ export default {
       return s.endsWith(a)
     }
   },
+  '出現': { // @文字列(配列)SにAが出現する場合に真を返す // @しゅつげん
+    type: 'func',
+    josi: [['に','で'], ['が']],
+    pure: true,
+    fn: function (s: any, a: string): boolean {
+      if (typeof(s) === 'string') {
+        return s.includes(a)
+      }
+      if (s instanceof Array) {
+        return s.includes(a)
+      }
+      const ss = String(s)
+      return ss.includes(a)
+    }
+  },
 
   // @置換・トリム
   '置換': { // @文字列Sのうち文字列AをBに全部置換して返す // @ちかん
