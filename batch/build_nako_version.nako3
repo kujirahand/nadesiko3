@@ -60,7 +60,7 @@ export default nakoVersion
 　　P@"version" = メインバージョン
 　　PをJSONエンコード整形してSに代入。
 　　CORE_PACKAGEにSを保存。
-　　RES=「cnako3 "{基本パス}/core/batch/build_nako_version.nako3"」を起動待機。
+　　RES=「node "{基本パス}/src/cnako3.mjs" "{基本パス}/core/batch/build_nako_version.nako3"」を起動待機。
 　　RESを表示。
 
 
