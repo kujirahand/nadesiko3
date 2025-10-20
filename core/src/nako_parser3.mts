@@ -2163,32 +2163,35 @@ export class NakoParser extends NakoParserBase {
     const o = this.yJSONObject()
     if (o) { return o }
     // 一語関数
-    const splitType = operatorList.concat(['eol', ')', ']', 'ならば', '回', '間', '反復', '条件分岐'])
-    if (this.check2(['func', splitType])) {
-      const oneWordFuncToken = this.get()
-      if (!oneWordFuncToken) { throw new Error('[System Error] 正しく値が取れませんでした。') }
-      const tt = oneWordFuncToken as TokenCallFunc
-      const f = this.getVarNameRef(tt)
-      this.usedFuncs.add(f.value)
-      // 引数の個数をチェック
-      const meta = tt.meta
-      const args: any = []
-      if (!meta) { throw NakoSyntaxError.fromNode(`一語関数『${f.value}』は存在しません。`, tt) }
-      if (meta.josi && meta.josi.length === 1) {
-        args.push({ type: 'word', value: 'それ' })
-      } else if (meta.josi && meta.josi.length >= 2) {
-        throw NakoSyntaxError.fromNode(`関数『${f.value}』で引数が指定されていません。${meta.josi.length}個の引数を指定してください。`, tt)
+    if (this.check('func')) {
+      const oneWordFuncToken = this.peek()
+      const splitType = operatorList.concat(['eol', ')', ']', 'ならば', '回', '間', '反復', '条件分岐'])
+      if (this.check2(['func', splitType]) || oneWordFuncToken?.josi != '') {
+        this.get() // skip oneWordFuncToken
+        if (!oneWordFuncToken) { throw new Error('[System Error] 正しく値が取れませんでした。') }
+        const tt = oneWordFuncToken as TokenCallFunc
+        const f = this.getVarNameRef(tt)
+        this.usedFuncs.add(f.value)
+        // 引数の個数をチェック
+        const meta = tt.meta
+        const args: any = []
+        if (!meta) { throw NakoSyntaxError.fromNode(`一語関数『${f.value}』は存在しません。`, tt) }
+        if (meta.josi && meta.josi.length === 1) {
+          args.push({ type: 'word', value: 'それ' })
+        } else if (meta.josi && meta.josi.length >= 2) {
+          throw NakoSyntaxError.fromNode(`関数『${f.value}』で引数が指定されていません。${meta.josi.length}個の引数を指定してください。`, tt)
+        }
+        return {
+          type: 'func',
+          name: f.value,
+          blocks: args,
+          josi: f.josi,
+          meta,
+          asyncFn: !!meta.asyncFn,
+          ...map,
+          end: this.peekSourceMap()
+        } as AstCallFunc
       }
-      return {
-        type: 'func',
-        name: f.value,
-        blocks: args,
-        josi: f.josi,
-        meta,
-        asyncFn: !!meta.asyncFn,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstCallFunc
     }
     // C風関数呼び出し FUNC(...)
     if (this.check2([['func', 'word'], '(']) && this.peekDef().josi === '') {
