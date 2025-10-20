@@ -12,6 +12,63 @@ function isSkipWord (t: Token): boolean {
   return false
 }
 
+// 前処理として、JSONオブジェクト内に改行があれば削除する処理を追加
+function removeJsonEol(tokens: Token[]) {
+  let jsonObjLevel = 0
+  let jsonArrayLevel = 0
+  let jsonStartIndent = -1
+  let flagNeedResetIndent = false
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i]
+    // start of JSON
+    if (t.type == '{') {
+      jsonObjLevel++
+      if (jsonStartIndent == -1) {
+        jsonStartIndent = t.indent
+      }
+      continue
+    }
+    if (t.type == '[') {
+      jsonArrayLevel++
+      if (jsonStartIndent == -1) {
+        jsonStartIndent = t.indent
+      }
+      continue
+    }
+    // end of JSON
+    if (t.type == '}') {
+      jsonObjLevel--
+      if (jsonObjLevel == 0 && jsonArrayLevel == 0) {
+        flagNeedResetIndent = true
+      }
+      continue
+    }
+    if (t.type == ']') {
+      jsonArrayLevel--
+      if (jsonObjLevel == 0 && jsonArrayLevel == 0) {
+        flagNeedResetIndent = true
+      }
+      continue
+    }
+    if (jsonObjLevel > 0 || jsonArrayLevel > 0) {
+      t.indent = jsonStartIndent
+      if (t.type == 'eol') {
+        // replace eol to comment
+        t.type = 'range_comment'
+        t.value = 'json::eol'
+      }
+      continue
+    }
+    if (flagNeedResetIndent) {
+      t.indent = jsonStartIndent
+      if (t.type == 'eol') {
+        flagNeedResetIndent = false
+        jsonStartIndent = -1
+      }
+    }
+  }
+}
+
 /** インラインインデント構文 --- 末尾の":"をインデントを考慮して"ここまで"を挿入 (#1215) */
 export function convertInlineIndent (tokens: Token[]): Token[] {
   //
@@ -22,31 +79,19 @@ export function convertInlineIndent (tokens: Token[]): Token[] {
   // 4:    「A=0,B!=0」を表示。
   // 5:違えば:
   // 6:  「A!=0」を表示。
-  //
+
+  // 前処理
+  removeJsonEol(tokens)
+
+  // 一行ずつ処理する
   const lines: Token[][] = splitTokens(tokens, 'eol')
   const blockIndents: number[] = []
   let checkICount = -1
-  let jsonObjLevel = 0
-  let jsonArrayLevel = 0
-  const checkJsonSyntax = (line: Token[]) => {
-    // JSONのオブジェクトがあるか？
-    line.forEach((t: Token) => {
-      if (t.type === '{') { jsonObjLevel++ }
-      if (t.type === '}') { jsonObjLevel-- }
-      if (t.type === '[') { jsonArrayLevel++ }
-      if (t.type === ']') { jsonArrayLevel-- }
-    })
-  }
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     // 空行は飛ばす || コメント行だけの行も飛ばす
     if (IsEmptyLine(line)) { continue }
     const leftToken = GetLeftTokens(line)
-    // JSONの途中であればブロックの変更は行わない
-    if (jsonObjLevel > 0 || jsonArrayLevel > 0) {
-      checkJsonSyntax(line)
-      continue
-    }
     // インデントの終了を確認する必要があるか？
     if (checkICount >= 0) {
       const lineICount: number = leftToken.indent
@@ -69,9 +114,6 @@ export function convertInlineIndent (tokens: Token[]): Token[] {
         }
       }
     }
-    // JSONの途中であればブロックの変更は行わない
-    checkJsonSyntax(line)
-    if (jsonObjLevel > 0 || jsonArrayLevel > 0) { continue }
     // 末尾の「:」をチェック
     const tLast: Token = getLastTokenWithoutEOL(line)
     if (tLast.type === ':') {
@@ -250,7 +292,6 @@ export function convertIndentSyntax (tokens: Token[]): Token[] {
     // ブロックの開始？
     if (curI > lastI) {
       blockIndents.push([curI, lastI])
-      // console.log('@@@push', curI)
       lastI = curI
       continue
     }
@@ -277,7 +318,6 @@ export function convertIndentSyntax (tokens: Token[]): Token[] {
     lines[lines.length - 1].push(newToken('eol', '\n', t))
   }
   const result = joinTokenLines(lines)
-  // console.log('###', debugTokens(result))
   return result
 }
 
