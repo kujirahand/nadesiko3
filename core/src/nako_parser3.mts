@@ -2166,7 +2166,7 @@ export class NakoParser extends NakoParserBase {
     if (this.check('func')) {
       const oneWordFuncToken = this.peek()
       const splitType = operatorList.concat(['eol', ')', ']', 'ならば', '回', '間', '反復', '条件分岐'])
-      if (this.check2(['func', splitType]) || oneWordFuncToken?.josi != '') {
+      if (this.check2(['func', splitType]) || (oneWordFuncToken?.josi && oneWordFuncToken.josi !== '')) {
         this.get() // skip oneWordFuncToken
         if (!oneWordFuncToken) { throw new Error('[System Error] 正しく値が取れませんでした。') }
         const tt = oneWordFuncToken as TokenCallFunc
