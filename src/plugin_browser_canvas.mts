@@ -97,7 +97,6 @@ export default {
     pure: true,
     fn: function (b: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
-      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       sys.__ctx.rect(b[0], b[1], b[2], b[3])
       if (sys.__fillStyle !== '') { sys.__ctx.fill() }
@@ -133,13 +132,22 @@ export default {
     },
     return_none: true
   },
+  '描画クリップ': { // @ 描画命令のあとに使うと以後その範囲のみに描くことができるようになる // @ びょうがくりっぷ
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function (sys: any) {
+      if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
+      sys.__ctx.clip()
+    },
+    return_none: true
+  },
   '円描画': { // @ [x, y]へrの円を描画する // @ えんびょうが
     type: 'func',
     josi: [['へ', 'に'], ['の']],
     pure: true,
     fn: function (xy: any, r: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
-      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       sys.__ctx.arc(xy[0], xy[1], r, 0, 2 * Math.PI, false)
       if (sys.__fillStyle !== '') { sys.__ctx.fill() }
@@ -161,7 +169,6 @@ export default {
         if (!args[6]) { args[6] = Math.PI * 2 }
         if (!args[7]) { args[7] = true }
       }
-      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       sys.__ctx.ellipse(...args)
       if (sys.__fillStyle !== '') { sys.__ctx.fill() }
@@ -175,7 +182,6 @@ export default {
     pure: true,
     fn: function (a: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
-      if (sys.__fillStyle === '' && sys.__strokeStyle === '') { return }
       sys.__ctx.beginPath()
       const p = a[0]
       sys.__ctx.moveTo(p[0], p[1])

@@ -49,12 +49,12 @@ CORE="core/src"
     ['nadesiko3php/src/plugin_php.php', 'phpnako'],
     ['nadesiko3electron/src/plugin_electron_node.mjs', 'enako'],
     ['nadesiko3-toml/src/nadesiko3-toml.js', 'wnako,cnako'],
+    ['nadesiko3-drone/nadesiko3-drone.js', 'cnako'], # ドローン制御
 ]
 # サポートしない
 # 'nadesiko3-firebase/plugin_firebase.js',
 # 'nadesiko3-googlehome/plugin_googlehome.js',
 # 'nadesiko3-sqlite3sync/nadesiko3-sqlite3sync.js', # 利用は非推奨に
-# 'nadesiko3-drone/nadesiko3-drone.js', 'cnako', # ドローン
 
 #------------------------
 結果データ＝「」
