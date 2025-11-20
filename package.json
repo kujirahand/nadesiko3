@@ -120,7 +120,7 @@
     "fetch-mock": "^12.0.2",
     "hotkeys-js": "^3.13.7",
     "markdownlint": "^0.39.0",
-    "markdownlint-cli": "^0.45.0",
+    "markdownlint-cli": "^0.46.0",
     "mocha": "^11.0.1",
     "mocha-css": "^1.0.1",
     "module-alias": "^2.2.3",
