@@ -31,8 +31,10 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function (v: any, sys: NakoSystem) {
-      sys.__exec('メディアストリーム停止', [v, sys])
-      v.srcObject = null
+      if (v) {
+        sys.__exec('メディアストリーム停止', [v, sys])
+        v.srcObject = null
+      }
       sys.tags.usingCamera = false
       sys.tags.video = null
     },
