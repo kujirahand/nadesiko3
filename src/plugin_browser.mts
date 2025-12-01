@@ -302,7 +302,7 @@ const PluginBrowser = {
       }
       // 正しく「カメラ終了」を呼んだかチェック (#2142)
       if (sys.tags.usingCamera) {
-        sys.__exec('カメラ終了', [sys])
+        sys.__exec('カメラ終了', [sys.tags.cameraElement, sys])
       }
       // 全DOMイベントをクリア
       sys.__removeAllDomEvents()
