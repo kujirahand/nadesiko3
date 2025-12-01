@@ -1859,6 +1859,7 @@ export default {
     pure: true,
     fn: function (s: any): boolean {
       const checkerRE = /^[+\-＋－]?([0-9０-９]*)(([.．][0-9０-９]+)?|([.．][0-9０-９]+[eEｅＥ][+\-＋－]?[0-9０-９]+)?)$/
+      if (s === '') { return false } // 空文字列はfalse
       return String(s).match(checkerRE) !== null
     }
   },
