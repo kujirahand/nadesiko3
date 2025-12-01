@@ -10,7 +10,6 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (v: any, sys: NakoSystem) {
-      sys.tags.usingCamera = true
       const options = sys.__getSysVar('カメラオプション')
       const stream = await navigator.mediaDevices.getUserMedia(options)
       v.srcObject = stream
@@ -22,6 +21,8 @@ export default {
       v.onloadedmetadata = function () {
         v.play()
       }
+      sys.tags.usingCamera = true
+      sys.tags.video = v
     },
     return_none: true
   },
@@ -33,6 +34,7 @@ export default {
       sys.__exec('メディアストリーム停止', [v, sys])
       v.srcObject = null
       sys.tags.usingCamera = false
+      sys.tags.video = null
     },
     return_none: true
   },
@@ -82,7 +84,8 @@ export default {
     asyncFn: true,
     fn: async function (sys: NakoSystem) {
       const options = sys.__getSysVar('カメラオプション')
-      return await navigator.mediaDevices.getUserMedia(options)
+      const stream = await navigator.mediaDevices.getUserMedia(options)
+      return stream
     },
     return_none: false
   },
