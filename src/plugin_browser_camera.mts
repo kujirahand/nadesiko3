@@ -10,6 +10,7 @@ export default {
     pure: true,
     asyncFn: true,
     fn: async function (v: any, sys: NakoSystem) {
+      sys.tags.usingCamera = true
       const options = sys.__getSysVar('カメラオプション')
       const stream = await navigator.mediaDevices.getUserMedia(options)
       v.srcObject = stream
@@ -31,6 +32,7 @@ export default {
     fn: function (v: any, sys: NakoSystem) {
       sys.__exec('メディアストリーム停止', [v, sys])
       v.srcObject = null
+      sys.tags.usingCamera = false
     },
     return_none: true
   },

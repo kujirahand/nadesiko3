@@ -300,6 +300,10 @@ const PluginBrowser = {
           chartjs.destroy()
         }
       }
+      // 正しく「カメラ終了」を呼んだかチェック (#2142)
+      if (sys.tags.usingCamera) {
+        sys.__exec('カメラ終了', [sys])
+      }
       // 全DOMイベントをクリア
       sys.__removeAllDomEvents()
     }
