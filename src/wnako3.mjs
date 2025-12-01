@@ -1,0 +1,13 @@
+// wnako3 - nadesiko for web browser
+import { WebNakoCompiler } from './wnako3mod.mjs';
+// ブラウザから取り込まれる時 navigator.nako3 になでしこを登録
+if ((typeof navigator) === 'object' && !navigator.exportWNako3) {
+    const wnako3 = navigator.nako3 = new WebNakoCompiler();
+    window.addEventListener('DOMContentLoaded', (e) => {
+        const isAutoRun = wnako3.checkScriptTagParam();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        if (isAutoRun) {
+            wnako3.runNakoScript();
+        }
+    }, false);
+}
