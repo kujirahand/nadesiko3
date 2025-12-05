@@ -89,4 +89,8 @@ describe('literal_test', async () => {
     await cmp('A=1...5;「{A@"先頭"}:{A@"末尾"}」を表示', '1:5')
     await cmp('A=1;B=5;C=A...B;「{C@"先頭"}:{C@"末尾"}」を表示', '1:5')
   })
+  it('文字列で連続セミコロンが1つになる！まさか、そんな #2153', async () => {
+    await cmp('A=「A;;;Z」;Aを表示。', 'A;;;Z')
+    await cmp('A=『A;;;Z』;Aを表示。', 'A;;;Z')
+  })
 })

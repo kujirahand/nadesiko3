@@ -2271,13 +2271,21 @@ function replaceTemplateCode (template: string, values: any): string {
   }
   return template
 }
+
 // clean generated code
 function cleanGeneratedCode (code: string, indent = 0): string {
-  // 無意味な改行やセミコロンを削除
-  code = code.replace(/;{2,}/g, ';')
-  code = code.replace(/\n{2,}/g, '\n')
+  // 1. 無意味な改行やセミコロンを削除
+  // 2. 行頭の空白やセミコロンを削除
+  // 3. indent分インデントを追加
+  // ただし、文字列リテラル内の改行やセミコロンは削除しない (#2153)
+  
+  // 文字列リテラル外の連続セミコロンと連続改行を削除
+  code = removeDuplicateChars(code)
+  
+  // indent分インデントを追加
   let spc = ''
   for (let i = 0; i < indent; i++) { spc += '  ' }
+  
   // 行頭の";"を削除
   const result = []
   const lines = code.split('\n')
@@ -2287,9 +2295,199 @@ function cleanGeneratedCode (code: string, indent = 0): string {
     if (trim(line) === '') { continue }
     result.push(spc + line)
   }
+
+  // 結果のコードを返す
   code = result.join('\n')
   return code
 }
+
+/**
+ * 文字列リテラル外の連続セミコロンと連続改行を1つに置換する
+ * 文字列リテラル内のセミコロンと改行は保護する (#2153)
+ * JavaScriptの文字列リテラル、正規表現、テンプレートリテラル、コメントを考慮
+ */
+function removeDuplicateChars (code: string): string {
+  const result: string[] = []
+  let i = 0
+  let inString = false
+  let inRegex = false
+  let inTemplate = false
+  let inLineComment = false
+  let inBlockComment = false
+  let stringDelimiter = ''
+  let prevChar = ''
+  let lastSemiPos = -2 // 最後のセミコロンの位置
+  let lastNewlinePos = -2 // 最後の改行の位置
+
+  /**
+   * 直前のバックスラッシュの数をカウント
+   * 偶数個なら次の文字はエスケープされていない
+   */
+  const countBackslashes = (pos: number): number => {
+    let count = 0
+    let p = pos - 1
+    while (p >= 0 && code.charAt(p) === '\\') {
+      count++
+      p--
+    }
+    return count
+  }
+
+  while (i < code.length) {
+    const ch = code.charAt(i)
+    const nextCh = i + 1 < code.length ? code.charAt(i + 1) : ''
+
+    // 行コメントの処理
+    if (inLineComment) {
+      result.push(ch)
+      if (ch === '\n') {
+        inLineComment = false
+      }
+      prevChar = ch
+      i++
+      continue
+    }
+
+    // ブロックコメントの処理
+    if (inBlockComment) {
+      result.push(ch)
+      if (ch === '*' && nextCh === '/') {
+        result.push(nextCh)
+        inBlockComment = false
+        i += 2
+        prevChar = '/'
+        continue
+      }
+      prevChar = ch
+      i++
+      continue
+    }
+
+    // テンプレートリテラルの処理
+    if (inTemplate) {
+      result.push(ch)
+      if (ch === '`') {
+        const backslashCount = countBackslashes(i)
+        if (backslashCount % 2 === 0) {
+          // 偶数個のバックスラッシュ = エスケープされていない
+          inTemplate = false
+        }
+      }
+      prevChar = ch
+      i++
+      continue
+    }
+
+    // 正規表現の処理
+    if (inRegex) {
+      result.push(ch)
+      if (ch === '/') {
+        const backslashCount = countBackslashes(i)
+        if (backslashCount % 2 === 0) {
+          inRegex = false
+        }
+      }
+      prevChar = ch
+      i++
+      continue
+    }
+
+    // 文字列リテラルの処理
+    if (inString) {
+      result.push(ch)
+      if (ch === stringDelimiter) {
+        const backslashCount = countBackslashes(i)
+        if (backslashCount % 2 === 0) {
+          // 偶数個のバックスラッシュ = エスケープされていない
+          inString = false
+          stringDelimiter = ''
+        }
+      }
+      prevChar = ch
+      i++
+      continue
+    }
+
+    // コメント開始チェック
+    if (ch === '/' && nextCh === '/') {
+      result.push(ch)
+      result.push(nextCh)
+      inLineComment = true
+      i += 2
+      prevChar = '/'
+      continue
+    }
+
+    if (ch === '/' && nextCh === '*') {
+      result.push(ch)
+      result.push(nextCh)
+      inBlockComment = true
+      i += 2
+      prevChar = '*'
+      continue
+    }
+
+    // 文字列・正規表現・テンプレートリテラルの開始チェック
+    if (ch === '"' || ch === "'") {
+      inString = true
+      stringDelimiter = ch
+      result.push(ch)
+      prevChar = ch
+      i++
+      continue
+    }
+
+    if (ch === '`') {
+      inTemplate = true
+      result.push(ch)
+      prevChar = ch
+      i++
+      continue
+    }
+
+    // 正規表現リテラルの開始チェック（簡易版）
+    // / の前が演算子や ( や , や = などの場合は正規表現の可能性が高い
+    if (ch === '/' && /[=([,;:!&|?+\-*%^~{]|\breturn\b|\bnew\b/.test(prevChar)) {
+      inRegex = true
+      result.push(ch)
+      prevChar = ch
+      i++
+      continue
+    }
+    // 文字列外の連続セミコロンをスキップ
+    if (ch === ';' && lastSemiPos === i - 1) {
+      // 連続するセミコロンの2番目以降はスキップ
+      lastSemiPos = i
+      i++
+      prevChar = ch
+      continue
+    }
+
+    if (ch === ';') {
+      lastSemiPos = i
+    }
+
+    // 文字列外の連続改行をスキップ
+    if (ch === '\n' && lastNewlinePos === i - 1) {
+      // 連続する改行の2番目以降はスキップ
+      lastNewlinePos = i
+      i++
+      prevChar = ch
+      continue
+    }
+
+    if (ch === '\n') {
+      lastNewlinePos = i
+    }
+
+    result.push(ch)
+    prevChar = ch
+    i++
+  }
+
+  return result.join('')
+}
+
 /**
  * 前後の空白を削除する
  * @param str 対象文字列
