@@ -2274,7 +2274,8 @@ function replaceTemplateCode (template: string, values: any): string {
 // clean generated code
 function cleanGeneratedCode (code: string, indent = 0): string {
   // 無意味な改行やセミコロンを削除
-  code = code.replace(/;{2,}/g, ';')
+  // ただし、文字列リテラル内のセミコロンは保護する (#2153)
+  code = removeDuplicateSemicolons(code)
   code = code.replace(/\n{2,}/g, '\n')
   let spc = ''
   for (let i = 0; i < indent; i++) { spc += '  ' }
@@ -2290,6 +2291,60 @@ function cleanGeneratedCode (code: string, indent = 0): string {
   code = result.join('\n')
   return code
 }
+
+/**
+ * 文字列リテラル外の連続セミコロンを1つに置換する
+ * 文字列リテラル内のセミコロンは保護する (#2153)
+ */
+function removeDuplicateSemicolons (code: string): string {
+  const result: string[] = []
+  let i = 0
+  let inString = false
+  let stringDelimiter = ''
+  let prevChar = ''
+  let lastSemiPos = -2 // 最後のセミコロンの位置
+
+  while (i < code.length) {
+    const ch = code.charAt(i)
+
+    // 文字列の開始・終了をチェック
+    if (!inString) {
+      if (ch === '"' || ch === "'" || ch === '`') {
+        // エスケープされていない引用符
+        if (prevChar !== '\\') {
+          inString = true
+          stringDelimiter = ch
+        }
+      }
+    } else {
+      // 文字列内
+      if (ch === stringDelimiter && prevChar !== '\\') {
+        inString = false
+        stringDelimiter = ''
+      }
+    }
+
+    // 文字列外の連続セミコロンをスキップ
+    if (!inString && ch === ';' && lastSemiPos === i - 1) {
+      // 連続するセミコロンの2番目以降はスキップ
+      lastSemiPos = i
+      i++
+      prevChar = ch
+      continue
+    }
+
+    if (ch === ';') {
+      lastSemiPos = i
+    }
+
+    result.push(ch)
+    prevChar = ch
+    i++
+  }
+
+  return result.join('')
+}
+
 /**
  * 前後の空白を削除する
  * @param str 対象文字列
