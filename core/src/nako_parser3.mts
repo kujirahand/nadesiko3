@@ -1572,7 +1572,7 @@ export class NakoParser extends NakoParserBase {
       }
     }
 
-    // オブジェクトプロパティ構文 代入文 (#1793)
+    // オブジェクトプロパティ構文：代入文：：ここから (#1793)
     if (this.check2(['word', '$', '*', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', 'eq'])) {
       const propList = []
       const word = this.getVarName(this.get() as Token)
@@ -1597,7 +1597,7 @@ export class NakoParser extends NakoParserBase {
         end: this.peekSourceMap()
       } as AstLet
     }
-    // オブジェクトプロパティ構文 ここまで
+    // オブジェクトプロパティ構文：代入文：：ここまで
 
     // let_array ?
     if (this.check2(['word', '@'])) {
@@ -1969,6 +1969,22 @@ export class NakoParser extends NakoParserBase {
       } as AstLetArray
     }
 
+    // 一次元配列 + オブジェクトプロパティ構文 --- word[a]$b = c
+    if (this.accept(['word', '[', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
+      const astValue = this.y[7]
+      const astIndexes = [this.checkArrayIndex(this.y[2])]
+      const astProp = this.y[5]
+      astProp.type = 'string'
+      return {
+        type: 'let_array',
+        name: (this.getVarName(this.y[0]) as AstStrValue).value,
+        blocks: [astValue, ...astIndexes, astProp],
+        checkInit: this.flagCheckArrayInit,
+        ...map,
+        end: this.peekSourceMap()
+      } as AstLetArray
+    }
+
     // 二次元配列 --- word[a][b] = c
     if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc])) {
       const astValue = this.y[8]
@@ -1993,6 +2009,37 @@ export class NakoParser extends NakoParserBase {
         blocks: [astValue, ...astIndexes],
         checkInit: this.flagCheckArrayInit,
         tag: '2',
+        ...map,
+        end: this.peekSourceMap()
+      } as AstLetArray
+    }
+
+    // 二次元配列 + オブジェクトプロパティ構文 --- word[a][b]$c = d
+    if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
+      const astValue = this.y[10]
+      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[5])])
+      const astProp = this.y[8]
+      astProp.type = 'string'
+      return {
+        type: 'let_array',
+        name: (this.getVarName(this.y[0]) as AstStrValue).value,
+        blocks: [astValue, ...astIndexes, astProp],
+        checkInit: this.flagCheckArrayInit,
+        ...map,
+        end: this.peekSourceMap()
+      } as AstLetArray
+    }
+    // 二次元配列 + オブジェクトプロパティ構文 --- word[a, b]$c = d
+    if (this.accept(['word', '[', this.yCalc, ',', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
+      const astValue = this.y[9]
+      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])])
+      const astProp = this.y[7]
+      astProp.type = 'string'
+      return {
+        type: 'let_array',
+        name: (this.getVarName(this.y[0]) as AstStrValue).value,
+        blocks: [astValue, ...astIndexes, astProp],
+        checkInit: this.flagCheckArrayInit,
         ...map,
         end: this.peekSourceMap()
       } as AstLetArray
@@ -2267,6 +2314,14 @@ export class NakoParser extends NakoParserBase {
       throw NakoSyntaxError.fromNode('変数の後ろの『@要素』の指定が不正です。', ast)
     }
     if (this.check('[')) {
+      if (this.accept(['[', this.yCalc, ']', '$', 'word'])) {
+        ast.index.push(this.checkArrayIndex(this.y[1]))
+        const prop = this.y[4]
+        prop.type = 'string'
+        ast.index.push(prop)
+        ast.josi = this.y[4].josi
+        return this.y[4].josi === '' // 助詞があればそこで終了(false)を返す (#1627)
+      }
       if (this.accept(['[', this.yCalc, ']'])) {
         ast.index.push(this.checkArrayIndex(this.y[1]))
         ast.josi = this.y[2].josi
