@@ -133,6 +133,7 @@ npm run nako3edit
 ## Colabでビルドテスト
 
 Google Colabでなでしこのビルドテストできます。
+
 - [ノートブック](https://colab.research.google.com/drive/1a-Choj3tCBCA1R7x7vPdNQN48vGzBd7E?usp=sharing)
 
 ## なでしこの開発履歴
@@ -209,4 +210,3 @@ Google Colabでなでしこのビルドテストできます。
   - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
   - [nadesiko3go - なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
   - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コアのみ取り出したもの
-

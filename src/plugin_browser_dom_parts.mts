@@ -459,15 +459,29 @@ export default {
       return sys.__exec('テーブル更新', [table, aa, sys])
     }
   },
+  'ヘッダ有テーブル作成': { // @二次元配列AA(あるいは文字列の簡易CSVデータ)からヘッダ有りのTABLE要素を作成し、DOMオブジェクトを返す // @へっだありてーぶるさくせい
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (aa: any, sys: any) {
+      const domOption = sys.__getSysVar('DOM部品オプション')
+      const tmpTableHeader = domOption['テーブルヘッダ']
+      domOption['テーブルヘッダ'] = true
+      const obj = sys.__exec('テーブル作成', [aa, sys])
+      domOption['テーブルヘッダ'] = tmpTableHeader
+      return obj
+    }
+  },
   'ヘッダ無テーブル作成': { // @二次元配列AA(あるいは文字列の簡易CSVデータ)からヘッダ無しのTABLE要素を作成し、DOMオブジェクトを返す // @へっだなしてーぶるさくせい
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
     fn: function (aa: any, sys: any) {
       const domOption = sys.__getSysVar('DOM部品オプション')
+      const tmpTableHeader = domOption['テーブルヘッダ']
       domOption['テーブルヘッダ'] = false
       const obj = sys.__exec('テーブル作成', [aa, sys])
-      domOption['テーブルヘッダ'] = true
+      domOption['テーブルヘッダ'] = tmpTableHeader
       return obj
     }
   },
@@ -481,14 +495,9 @@ export default {
         tbl = sys.__query(tbl, 'テーブル更新', false)
       }
       tbl.innerHTML = '' // 初期化
-      // テーブルに差し込むデータを確認
+      // テーブルに差し込むデータを確認 - 文字列ならarray[array[str]]に変換
       if (typeof aa === 'string') {
-        const rr = []
-        const rows = aa.split('\n')
-        for (const row of rows) {
-          rr.push(row.split(','))
-        }
-        aa = rr
+        aa = sys.__exec('CSV取得', [aa, sys])
       }
       const table = tbl
       // テーブル作成/テーブル更新の設定を読み取る
@@ -503,17 +512,17 @@ export default {
       const bgHead = bgColor.shift() || ''
       let hasHeader: boolean = domOption['テーブルヘッダ']
       let isNumRight: boolean = domOption['テーブル数値右寄せ']
-      if (table.dataset.nakoTags) {
-        // 既存DOMから設定を読む
-        hasHeader = table.dataset.nakoTags.hasHeader
-        isNumRight = table.dataset.nakoTags.isNumRight
-      } else {
-        // 設定をDOMに保存する
-        table.dataset.nakoTags = {
-          hasHeader,
-          isNumRight
-        }
+      // 既存のテーブルに設定があれば読み取る
+      if (table.dataset.nakoOptions !== undefined) {
+        const nakoOptions = JSON.parse(table.dataset.nakoOptions)
+        hasHeader = nakoOptions.hasHeader
+        isNumRight = nakoOptions.isNumRight
       }
+      // 設定をDOMに保存
+      table.dataset.nakoOptions = JSON.stringify({
+        hasHeader,
+        isNumRight
+      })
       // テーブルにデータを追加していく
       for (let i = 0; i < aa.length; i++) {
         const rowNo = i
