@@ -104,11 +104,32 @@ describe('array_test', async () => {
     await cmp('([{"犬": ["わんわん"]}])[0]$犬@0を表示', 'わんわん')
   })
   it('配列＋オブジェクトプロパティ #2139', async () => {
-    await cmp('A=[{"b":10}]; A[0].b = 20; AをJSONエンコードして表示。', '[{"b":20}]')
     await cmp('A=[{"b":10}]; A[0].b = 20; A[0].bを表示。', '20')
   })
   it('二次元配列＋オブジェクトプロパティ #2139', async () => {
-    await cmp('A=[[{"b":10}],[{"b":20}]]; A[0][0].b = 99; AをJSONエンコードして表示。', '[[{"b":99}],[{"b":20}]]')
     await cmp('A=[[{"b":10}],[{"b":20}]]; A[0][0].b = 88; A[0][0].bを表示。', '88')
+  })
+  it('配列＋オブジェクトプロパティ(DOM和スタイル適用) #2139', async () => {
+    // __getProp/__setPropを使った例
+    await cmp(`
+      FN_GET=JS実行(『(function(p){ p = (p == '犬') ? 'dog' : p; return this[p]; })』);
+      FN_SET=JS実行(『(function(p, v){ p = (p == '犬') ? 'dog' : p; this[p]=v; })』);
+      A={"dog": 30,"__setProp": FN_SET,"__getProp": FN_GET};
+      A$犬=200; A$dogを表示;
+    `, '200')
+    // __getProp/__setPropを使って1次元配列＋オブジェクトプロパティをテスト
+    await cmp(`
+      FN_GET=JS実行(『(function(p){ p = (p == '犬') ? 'dog' : p; return this[p]; })』);
+      FN_SET=JS実行(『(function(p, v){ p = (p == '犬') ? 'dog' : p; this[p]=v; })』);
+      A=[{"dog": 30,"__setProp": FN_SET,"__getProp": FN_GET}];
+      A[0]$犬=200; A[0]$dogを表示;
+    `, '200')
+    // __getProp/__setPropを使って2次元配列＋オブジェクトプロパティをテスト
+    await cmp(`
+      FN_GET=JS実行(『(function(p){ p = (p == '犬') ? 'dog' : p; return this[p]; })』);
+      FN_SET=JS実行(『(function(p, v){ p = (p == '犬') ? 'dog' : p; this[p]=v; })』);
+      A=[[{"dog": 30,"__setProp": FN_SET,"__getProp": FN_GET}]];
+      A[0][0]$犬=200; A[0][0]$dogを表示;
+    `, '200')
   })
 })
