@@ -1874,13 +1874,21 @@ export class NakoGen {
     // 変数名
     const name: string = node.name
     const res = this.findVar(name, value)
-    let code = '/*[convLetProp]*/'
+    let code = '/*[convLetProp]*/\n'
     // 変数が存在しないとき
     if (res === null) {
       throw NakoSyntaxError.fromNode(`変数『${name}』が見当たりません。`, node)
     }
     // 変数のプロパティ
     let nameJs = res.js
+    // 配列アクセス
+    if (node.blocks.length >= 2) {
+      for (let i = 1; i < node.blocks.length; i++) {
+        const indexNode = node.blocks[i]
+        const indexJs = this._convGen(indexNode, true)
+        nameJs += `[${indexJs}]`
+      }
+    }
     if (propList.length > 0) {
       for (const prop of propList) {
         if (typeof prop.value === 'string') {
@@ -1892,9 +1900,9 @@ export class NakoGen {
       }
     }
     // プロパティへの代入式を作る
-    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else {`
+    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else { `
     code += `__self.__checkPropAccessor('set', ${nameJs});`
-    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else {`
+    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else { `
     code += `${nameJs}['${propTop}'] = ${value} }};`
     return ';' + this.convLineno(node, false) + code + '\n'
   }

@@ -1969,20 +1969,20 @@ export class NakoParser extends NakoParserBase {
       } as AstLetArray
     }
 
-    // 一次元配列 + オブジェクトプロパティ構文 --- word[a]$b = c
+    // 一次元配列 + オブジェクトプロパティ構文 --- word[a]$b = c (#2139)
     if (this.accept(['word', '[', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
       const astValue = this.y[7]
       const astIndexes = [this.checkArrayIndex(this.y[2])]
       const astProp = this.y[5]
       astProp.type = 'string'
       return {
-        type: 'let_array',
+        type: 'let_prop',
         name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes, astProp],
-        checkInit: this.flagCheckArrayInit,
+        blocks: [astValue, ...astIndexes],
+        index: [astProp],
         ...map,
         end: this.peekSourceMap()
-      } as AstLetArray
+      } as AstLet
     }
 
     // 二次元配列 --- word[a][b] = c
@@ -2014,35 +2014,35 @@ export class NakoParser extends NakoParserBase {
       } as AstLetArray
     }
 
-    // 二次元配列 + オブジェクトプロパティ構文 --- word[a][b]$c = d
+    // 二次元配列 + オブジェクトプロパティ構文 --- word[a][b]$c = d (#2139)
     if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
       const astValue = this.y[10]
       const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[5])])
       const astProp = this.y[8]
       astProp.type = 'string'
       return {
-        type: 'let_array',
+        type: 'let_prop',
         name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes, astProp],
-        checkInit: this.flagCheckArrayInit,
+        blocks: [astValue, ...astIndexes],
+        index: [astProp],
         ...map,
         end: this.peekSourceMap()
-      } as AstLetArray
+      } as AstLet
     }
-    // 二次元配列 + オブジェクトプロパティ構文 --- word[a, b]$c = d
+    // 二次元配列 + オブジェクトプロパティ構文 --- word[a, b]$c = d (#2139)
     if (this.accept(['word', '[', this.yCalc, ',', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
       const astValue = this.y[9]
       const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])])
       const astProp = this.y[7]
       astProp.type = 'string'
       return {
-        type: 'let_array',
+        type: 'let_prop',
         name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes, astProp],
-        checkInit: this.flagCheckArrayInit,
+        blocks: [astValue, ...astIndexes],
+        index: [astProp],
         ...map,
         end: this.peekSourceMap()
-      } as AstLetArray
+      } as AstLet
     }
 
     // 三次元配列 --- word[a][b][c] = d
