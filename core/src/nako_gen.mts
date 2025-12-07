@@ -1889,7 +1889,6 @@ export class NakoGen {
         nameJs += `[${indexJs}]`
       }
     }
-    console.log("@@@", nameJs)
     if (propList.length > 0) {
       for (const prop of propList) {
         if (typeof prop.value === 'string') {
