@@ -159,7 +159,7 @@ Google Colabでなでしこのビルドテストできます。
 ## なでしこ3の開発に参加
 
 なでしこ3自身を開発するために、開発環境を整えようという方は、 [doc/SETUP.md](doc/SETUP.md) をご覧ください。
-なでしこユーザーと開発者用のための[Discord](https://discord.com/invite/WkaQAxbDaE)があります。
+なでしこユーザーと開発者用のための[Discord](https://discord.com/invite/FAtjTQr3kk)があります。
 
 ### プルリク大歓迎
 
