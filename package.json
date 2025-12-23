@@ -118,7 +118,7 @@
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
     "fetch-mock": "^12.0.2",
-    "hotkeys-js": "^3.13.7",
+    "hotkeys-js": "^4.0.0",
     "markdownlint": "^0.40.0",
     "markdownlint-cli": "^0.47.0",
     "mocha": "^11.0.1",
