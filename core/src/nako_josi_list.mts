@@ -18,7 +18,7 @@ export const tararebaJosiList: string[] = [
 
 // 意味のない助詞(削除する) #936 #939 #974
 export const removeJosiList: string[] = [
-  'こと', 'である', 'です', 'します', 'でした'
+  'こと', 'である', 'です', 'します', 'でした', 'にゃん'
 ]
 
 /**
