@@ -28,7 +28,7 @@ export default {
     josi: [['を']],
     pure: true,
     fn: function (obj: any, sys: any) {
-      if (!obj) { throw new Error('オーディオ再生する前に、オーディオ開くで音声ファイルを読み込んでください') }
+      if (!obj) { throw new Error('オーディオループ再生する前に、オーディオ開くで音声ファイルを読み込んでください') }
       obj.loop = true
       obj.play()
     },
@@ -64,7 +64,7 @@ export default {
     josi: [['の', 'から']],
     pure: true,
     fn: function (obj: any, sys: any) {
-      if (!obj) { throw new Error('オーディオ長取得する前に、オーディオ開くで音声ファイルを読み込んでください') }
+      if (!obj) { throw new Error('オーディオ音量取得する前に、オーディオ開くで音声ファイルを読み込んでください') }
       return obj.volume
     }
   },
@@ -73,7 +73,7 @@ export default {
     josi: [['を'], ['に', 'へ']],
     pure: true,
     fn: function (obj: any, v: any, sys: any) {
-      if (!obj) { throw new Error('オーディオ長取得する前に、オーディオ開くで音声ファイルを読み込んでください') }
+      if (!obj) { throw new Error('オーディオ音量設定する前に、オーディオ開くで音声ファイルを読み込んでください') }
       obj.volume = v
     },
     return_none: true
@@ -101,7 +101,7 @@ export default {
     josi: [['を'], ['に', 'へ']],
     pure: true,
     fn: function (obj: any, v: any, sys: any) {
-      if (!obj) { throw new Error('オーディオ停止する前に、オーディオ開くで音声ファイルを読み込んでください') }
+      if (!obj) { throw new Error('オーディオ再生位置設定する前に、オーディオ開くで音声ファイルを読み込んでください') }
       obj.currentTime = v
     },
     return_none: true
