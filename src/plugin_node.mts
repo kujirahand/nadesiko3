@@ -14,7 +14,7 @@ import opener from 'opener'
 import assert from 'node:assert'
 // ハッシュ関数で利用
 import crypto from 'node:crypto'
-import os from 'node:os'
+import os, { platform } from 'node:os'
 import url from 'node:url'
 import { NakoSystem } from '../core/src/plugin_api.mjs'
 
@@ -351,6 +351,7 @@ export default {
     josi: [['を', 'で', 'の']],
     pure: true,
     fn: function (fname: string, sys: NakoSystem) {
+      // windows
       if (sys.tags.isWin) {
         if (isDir(fname)) { // ディレクトリを起動
           spawn('explorer', [fname], { detached: true })
@@ -359,6 +360,7 @@ export default {
         }
         return
       }
+      // macOS
       if (sys.tags.isMac) {
         if (isDir(fname)) {
           spawn('open', [fname], { detached: true })
@@ -366,6 +368,11 @@ export default {
           spawn('open', ['-R', fname], { detached: true })
         }
       }
+      // linux
+      if (nodeProcess.platform === 'linux') {
+        spawn('xdg-open', [path.dirname(fname)], { detached: true })
+      }
+      throw new Error('対応していないOSです')
     },
     return_none: true
   },
