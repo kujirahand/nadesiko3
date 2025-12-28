@@ -4,7 +4,7 @@
  * node.js のためのプラグイン
  */
 import fs from 'node:fs'
-import fse, { pathExists } from 'fs-extra'
+import fse from 'fs-extra'
 import fetch, { FormData, Blob } from 'node-fetch'
 import { exec, execSync, spawn } from 'node:child_process'
 import shellQuote from 'shell-quote'
@@ -593,18 +593,22 @@ export default {
     josi: [['に', 'へ']],
     pure: true,
     fn: function (dir: string, sys: NakoSystem) {
-      if (sys.tags.isWin) {
-        if (dir.endsWith('\\')) {
-          return dir
-        } else {
-          return dir + '\\'
-        }
+      if (dir.endsWith(path.sep)) {
+        return dir
       } else {
-        if (dir.endsWith('/')) {
-          return dir
-        } else {
-          return dir + '/'
-        }
+        return dir + path.sep
+      }
+    }
+  },
+  '終端パス除去': { // @フォルダ名DIRの末尾にパス記号を削除する // @しゅうたんぱすじょきょ
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      if (dir.endsWith(path.sep)) {
+        return dir.substring(0, dir.length - 1)
+      } else {
+        return dir
       }
     }
   },

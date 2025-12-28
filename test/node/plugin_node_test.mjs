@@ -209,5 +209,6 @@ describe('plugin_node_test', () => {
   })
   it('ファイル関連の命令を追加 #2181', async () => {
     await cmp('「a」に終端パス追加して表示。', `a${path.sep}`)
+    await cmp(`「a${path.sep}」から終端パス除去して表示。`, `a`)
   })
 })
