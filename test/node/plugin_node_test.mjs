@@ -3,7 +3,6 @@ import os from 'os'
 import fs from 'node:fs'
 import assert from 'assert'
 import path from 'path'
-import { execSync } from 'child_process'
 
 import { NakoCompiler } from '../../core/src/nako3.mjs'
 import PluginNode from '../../src/plugin_node.mjs'
@@ -207,5 +206,9 @@ describe('plugin_node_test', () => {
     await cmp(code1, 'ok', 200)
     await cmp(`${pathSrc}「{TMP}/xxx」が存在。もし,そうならば「OS_INJECTION」と表示。`, '')
     await cmp(`${pathSrc}FILEをファイル削除。ZIPをTMPに解凍。FILEを読む。トリム。それを表示。`, 'abc')
+  })
+  it('ファイル関連の命令を追加 #2181', async () => {
+    await cmp('「a」に終端パス追加して表示。', `a${path.sep}`)
+    await cmp(`「a${path.sep}」から終端パス除去して表示。`, `a`)
   })
 })

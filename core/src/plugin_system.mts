@@ -3428,5 +3428,34 @@ export default {
       }
       throw new Error('『BASE64デコード』は利用できません。')
     }
-  }
+  },
+  // @パス操作
+  '拡張子抽出': { // @ファイル名Sから拡張子を抽出する // @かくちょうしちゅうしゅつ
+    type: 'func',
+    josi: [['から', 'の']],
+    pure: true,
+    fn: function (fname: string, sys: NakoSystem) {
+      if (fname === null || fname === undefined) { return '' }
+      const m = fname.match(/(\.[a-zA-Z0-9_\-.]+)$/)
+      if (m) { return m[1] }
+      return ''
+    }
+  },
+  '拡張子変更': { // @ファイル名Aの拡張子をBに変更して返す // @かくちょうしへんこう
+    type: 'func',
+    josi: [['の', 'を', 'から'], ['に', 'へ']],
+    pure: true,
+    fn: function (fname: string, ext: string, sys: NakoSystem) {
+      if (fname === null || fname === undefined) { return ext }
+      // 拡張子がある？
+      const m = fname.match(/(\.[a-zA-Z0-9_\-.]+)$/)
+      if (m) { // あれば変更
+        fname = fname.substring(0, fname.length - m[1].length) + ext
+        return fname
+      }
+      // なければ追加
+      return fname + ext
+    }
+  },
+
 }

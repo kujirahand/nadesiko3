@@ -6,7 +6,7 @@
 import fs from 'node:fs'
 import fse from 'fs-extra'
 import fetch, { FormData, Blob } from 'node-fetch'
-import { exec, execSync } from 'node:child_process'
+import { exec, execSync, spawn } from 'node:child_process'
 import shellQuote from 'shell-quote'
 import path from 'node:path'
 import iconv from 'iconv-lite'
@@ -14,7 +14,7 @@ import opener from 'opener'
 import assert from 'node:assert'
 // ハッシュ関数で利用
 import crypto from 'node:crypto'
-import os from 'node:os'
+import os, { platform } from 'node:os'
 import url from 'node:url'
 import { NakoSystem } from '../core/src/plugin_api.mjs'
 
@@ -81,6 +81,7 @@ export default {
       // OS判定
       const isWin = isWindows()
       sys.tags.isWin = isWin
+      sys.tags.isMac = (nodeProcess.platform === 'darwin')
       // プラグインの初期化
       sys.tags.__quotePath = (fpath: string) => {
         if (isWin) {
@@ -339,11 +340,41 @@ export default {
   },
   'ブラウザ起動': { // @ブラウザでURLを起動 // @ぶらうざきどう
     type: 'func',
-    josi: [['を']],
+    josi: [['を', 'で', 'の']],
     pure: true,
     fn: function (url: string) {
       opener(url)
     }
+  },
+  'エクスプローラー起動': { // @Windowsでエクスプローラー、macOSでFinderを使って、fnameを起動する // @えくすぷろーらーきどう
+    type: 'func',
+    josi: [['を', 'で', 'の']],
+    pure: true,
+    fn: function (fname: string, sys: NakoSystem) {
+      // windows
+      if (sys.tags.isWin) {
+        if (isDir(fname)) { // ディレクトリを起動
+          spawn('explorer', [fname], { detached: true })
+        } else { // ファイルを選択した状態で起動
+          spawn('explorer', ['/select,', fname], { detached: true })
+        }
+        return
+      }
+      // macOS
+      if (sys.tags.isMac) {
+        if (isDir(fname)) {
+          spawn('open', [fname], { detached: true })
+        } else {
+          spawn('open', ['-R', fname], { detached: true })
+        }
+      }
+      // linux
+      if (nodeProcess.platform === 'linux') {
+        spawn('xdg-open', [path.dirname(fname)], { detached: true })
+      }
+      throw new Error('対応していないOSです')
+    },
+    return_none: true
   },
   'ファイル列挙': { // @パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。 // @ふぁいるれっきょ
     type: 'func',
@@ -438,16 +469,22 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (a: string, b: string, sys: NakoSystem) {
       return fse.copySync(a, b)
+    }
+  },
+  'ファイル上書きコピー': { // @パスAをパスBへファイルコピーする(上書きを許可する) // @ふぁいるうわがきこぴー
+    type: 'func',
+    josi: [['から', 'を'], ['に', 'へ']],
+    pure: true,
+    fn: function (a: string, b: string, sys: NakoSystem) {
+      return fse.copySync(a, b, { overwrite: true })
     }
   },
   'ファイルコピー時': { // @パスAをパスBへファイルコピーしてcallbackを実行 // @ふぁいるこぴーしたとき
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
       return fse.copy(a, b, (err: any) => {
         if (err) { throw new Error('ファイルコピー時:' + err) }
@@ -460,9 +497,16 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (a: string, b: string, sys: NakoSystem) {
       return fse.moveSync(a, b)
+    }
+  },
+  'ファイル上書移動': { // @パスAをパスBへ移動する(上書きも許可する) // @ふぁいるうわがきいどう
+    type: 'func',
+    josi: [['から', 'を'], ['に', 'へ']],
+    pure: true,
+    fn: function (a: string, b: string, sys: NakoSystem) {
+      return fse.moveSync(a, b, { overwrite: true })
     }
   },
   'ファイル移動時': { // @パスAをパスBへ移動してcallbackを実行 // @ふぁいるいどうしたとき
@@ -482,7 +526,6 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (path: string, sys: NakoSystem) {
       return fse.removeSync(path)
     }
@@ -491,7 +534,6 @@ export default {
     type: 'func',
     josi: [['で'], ['の', 'を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fn: function (callback: any, path: string, sys: NakoSystem) {
       return fse.remove(path, (err: any) => {
         if (err) { throw new Error('ファイル削除時:' + err) }
@@ -551,6 +593,30 @@ export default {
     pure: true,
     fn: function (a: string, b: string) {
       return path.resolve(path.join(a, b))
+    }
+  },
+  '終端パス追加': { // @フォルダ名DIRの末尾にパス記号を追加する // @しゅうたんぱすついか
+    type: 'func',
+    josi: [['に', 'へ']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      if (dir.endsWith(path.sep)) {
+        return dir
+      } else {
+        return dir + path.sep
+      }
+    }
+  },
+  '終端パス除去': { // @フォルダ名DIRの末尾にパス記号を削除する // @しゅうたんぱすじょきょ
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      if (dir.endsWith(path.sep)) {
+        return dir.substring(0, dir.length - 1)
+      } else {
+        return dir
+      }
     }
   },
   // @フォルダ取得
