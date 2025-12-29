@@ -257,8 +257,9 @@ const PluginBrowser = {
           if (waStyle) {
             // 和スタイルを適用する
             for (const key in waStyle) {
+              if (waStyle.hasOwnProperty(key)) { continue }
               Object.defineProperty(obj, key, {
-                enumerable: true,
+                enumerable: false,
                 configurable: true,
                 get: function () {
                   return sys.__exec('DOM設定取得', [obj, key, sys])
@@ -272,6 +273,7 @@ const PluginBrowser = {
           if (waAttr) {
             // 和属性を適用する
             for (const key in waAttr) {
+              if (waAttr.hasOwnProperty(key)) { continue }
               Object.defineProperty(obj, key, {
                 enumerable: true,
                 configurable: true,
