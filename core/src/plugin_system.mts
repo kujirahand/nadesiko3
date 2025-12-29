@@ -3478,12 +3478,13 @@ export default {
       return path + sep
     }
   },
-  '終端パス除去': { // @フォルダ名DIRの末尾にパス記号を削除する // @しゅうたんぱすじょきょ
+  '終端パス除去': { // @フォルダ名DIRの末尾にあるパス記号を削除する // @しゅうたんぱすじょきょ
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
     fn: function (dir: string, sys: NakoSystem) {
       const sep = sys.pathSeparator || '/'
+      if (!dir) { return '' }
       if (dir.endsWith(sep)) {
         return dir.substring(0, dir.length - 1)
       } else {
@@ -3501,7 +3502,7 @@ export default {
       return parts[parts.length - 1]
     }
   },
-  'パス抽出': { // @パスPATHからパスを抽出して返す // @ぱすちゅうしゅつ
+  'パス抽出': { // @パスPATHからディレクトリ部分を抽出して返す // @ぱすちゅうしゅつ
     type: 'func',
     josi: [['の', 'から']],
     pure: true,

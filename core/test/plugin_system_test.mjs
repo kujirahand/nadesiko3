@@ -837,9 +837,14 @@ describe('plugin_system_test', async () => {
     await cmp('もし["AAA","BBB","CCC"]で「DDD」が出現したならば\n「A」と表示\n違えば\n「B」と表示\nここまで。', 'B')
   })
   it('「終端パス追加」「終端パス除去」の実装 #2181', async () => {
+    // 終端パス追加のテスト
     await cmp('「」に終端パス追加して表示。', '')
     await cmp('「a」に終端パス追加して表示。', 'a/')
     await cmp('「a/b/」に終端パス追加して表示。', 'a/b/')
+    // 終端パス除去のテスト
+    await cmp('「」から終端パス除去して表示。', '')
+    await cmp('「a」から終端パス除去して表示。', 'a')
+    await cmp('「a/b/」から終端パス除去して表示。', 'a/b')
   })
   it('「拡張子抽出」「拡張子変更」の実装 #2181', async () => {
     await cmp('「a.txt」から拡張子抽出して表示。', '.txt')
