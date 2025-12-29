@@ -13,6 +13,8 @@ export interface NakoSystem {
   version: string;
   coreVersion: string;
   isDebug: boolean;
+  pathSeparator: string; // パス区切り文字（デフォルトは '/' ）
+  engine: string; // エンジン名 (例: 'cnako', 'wnako')
   tags: any; // 何を設定しても良い自由なタグ領域
   __interval: string|number[]; // setIntervalのIDを保持する配列
   __timeout: string|number[]; // setTimeoutのIDを保持する配列
@@ -22,9 +24,9 @@ export interface NakoSystem {
   __setSysVar(name: string, value: NakoValue): void; // システム変数の設定
   __findVar(name: NakoCallback, defaultValue?: NakoValue): any; // 変数を探す
   __findFunc(nameStr: string, parentFunc: string): NakoCallback | any;
-  __exec(func: string, params: NakoValue[]): any;
-  __setSore(v: any): void;
-  __getSore(): any;
+  __exec(func: string, params: NakoValue[]): any; // プラグイン関数の実行
+  __setSore(v: any): void; // Soreに値を設定する
+  __getSore(): any; // Soreから値を取得する
   __loadScript(url: string): Promise<void>; // JSのスクリプトを読み込む (ex) グラフ描画(plugin_browser_chart.mts)
   __hatena: (s: string, sys: NakoSystem) => void; // 「？？」記法の関数キャッシュ #1852
   logger: any; // Logger
