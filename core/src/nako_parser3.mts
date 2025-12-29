@@ -1541,7 +1541,7 @@ export class NakoParser extends NakoParserBase {
     // 通常の変数
     if (this.check2(['word', 'eq'])) {
       const word = this.peek()
-      let threw = false
+      let expectedError = false
       try {
         if (this.accept(['word', 'eq', this.yCalc]) || this.accept(['word', 'eq', this.ySentence])) {
           if (this.y[2].type === 'eol') {
@@ -1559,12 +1559,12 @@ export class NakoParser extends NakoParserBase {
             end: this.peekSourceMap()
           } as AstLet
         } else {
-          threw = true
+          expectedError = true
           this.logger.debug(`${this.nodeToStr(word, { depth: 1 }, true)}への代入文で計算式に書き間違いがあります。`, word)
           throw NakoSyntaxError.fromNode(`${this.nodeToStr(word, { depth: 1 }, false)}への代入文で計算式に書き間違いがあります。`, map)
         }
       } catch (err: any) {
-        if (threw) {
+        if (expectedError) {
           throw err
         }
         this.logger.debug(`${this.nodeToStr(word, { depth: 1 }, true)}への代入文で計算式に以下の書き間違いがあります。\n${err.message}`, word)
