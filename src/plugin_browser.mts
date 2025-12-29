@@ -226,11 +226,63 @@ const PluginBrowser = {
       sys.__addPropMethod = (obj: any) => {
         if (!obj) { return }
         if (obj.__setProp === undefined) {
-          obj.__setProp = (prop: string|string[], value: object, sys: NakoBrowsesrSystem) => {
-            sys.__exec('DOM設定変更', [obj, prop, value, sys])
+          // 列挙不可のプロパティとして追加
+          Object.defineProperty(obj, '__setProp', {
+            enumerable: false,
+            writable: true,
+            configurable: true,
+            value: (prop: string|string[], value: object, sys: NakoBrowsesrSystem) => {
+              sys.__exec('DOM設定変更', [obj, prop, value, sys])
+            }
+          })
+          Object.defineProperty(obj, '__getProp', {
+            enumerable: false,
+            writable: true,
+            configurable: true,
+            value: (prop: string|string[], sys: NakoBrowsesrSystem) => {
+              return sys.__exec('DOM設定取得', [obj, prop, sys])
+            }
+          })
+        }
+        if (!obj.__nako3) {
+          Object.defineProperty(obj, '__nako3', {
+            enumerable: false,
+            writable: false,
+            configurable: false,
+            value: true
+          })
+          // 和スタイル・和属性の適用
+          const waStyle = sys.__getSysVar('DOM和スタイル')
+          const waAttr = sys.__getSysVar('DOM和属性')
+          if (waStyle) {
+            // 和スタイルを適用する
+            for (const key in waStyle) {
+              Object.defineProperty(obj, key, {
+                enumerable: true,
+                configurable: true,
+                get: function () {
+                  return sys.__exec('DOM設定取得', [obj, key, sys])
+                },
+                set: function (value: object) {
+                  sys.__exec('DOM設定変更', [obj, key, value, sys])
+                }
+              })
+            }
           }
-          obj.__getProp = (prop: string|string[], sys: NakoBrowsesrSystem) => {
-            return sys.__exec('DOM設定取得', [obj, prop, sys])
+          if (waAttr) {
+            // 和属性を適用する
+            for (const key in waAttr) {
+              Object.defineProperty(obj, key, {
+                enumerable: true,
+                configurable: true,
+                get: function () {
+                  return sys.__exec('DOM設定取得', [obj, key, sys])
+                },
+                set: function (value: object) {
+                  sys.__exec('DOM設定変更', [obj, key, value, sys])
+                }
+              })
+            }
           }
         }
       }
