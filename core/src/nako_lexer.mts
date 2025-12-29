@@ -592,8 +592,9 @@ export class NakoLexer {
             }
           }
 
+          // ルール取得後の特別な処理
           if (rule.name === 'string_ex') {
-            // 展開あり文字列 → aaa{x}bbb{x}cccc
+            // 展開あり文字列(埋め込み式) → aaa{x}bbb{x}cccc
             const list = this.splitStringEx(rp.res)
             if (list === null) {
               throw new InternalLexerError(
@@ -604,20 +605,32 @@ export class NakoLexer {
                 filename
               )
             }
+            if (list.length === 1) {
+              // 展開なし(埋め込み式なし)の場合
+              result.push({ type: 'string', value: list[0], josi: rp.josi, indent, file: filename, line, column, preprocessedCodeOffset: srcLength - src.length, preprocessedCodeLength: src.length - rp.src.length })
+              line += rp.numEOL
+              column += src.length - rp.src.length
+              src = rp.src
+              if (rp.numEOL > 0) {
+                column = 1
+              }
+              break
+            }
+            // 展開あり(埋め込み式あり)の場合
+            result.push({ type: '(', value: '(', josi: '', indent, file: filename, line, column, preprocessedCodeOffset: srcLength - src.length, preprocessedCodeLength: 0 })
             let offset = 0
             for (let i = 0; i < list.length; i++) {
-              const josi = (i === list.length - 1) ? rp.josi : ''
               if (i % 2 === 0) {
                 result.push({
                   type: 'string',
                   value: list[i],
                   file: filename,
-                  josi,
+                  josi: '',
                   indent,
                   line,
                   column,
                   preprocessedCodeOffset: srcLength - src.length + offset,
-                  preprocessedCodeLength: list[i].length + 2 + josi.length
+                  preprocessedCodeLength: list[i].length + 2
                 })
                 // 先頭なら'"...{'、それ以外なら'}...{'、最後は何でも良い
                 offset += list[i].length + 2
@@ -636,8 +649,11 @@ export class NakoLexer {
             if (rp.numEOL > 0) {
               column = 1
             }
+            result.push({ type: ')', value: ')', josi: rp.josi, indent, file: filename, line, column, preprocessedCodeOffset: srcLength - src.length, preprocessedCodeLength: 0 })
             break
           }
+
+          // 結果を格納
           columnCurrent = column
           column += src.length - rp.src.length
           result.push({ type: rule.name, value: rp.res, josi: rp.josi, indent, line, column: columnCurrent, file: filename, preprocessedCodeOffset: srcLength - src.length, preprocessedCodeLength: src.length - rp.src.length })
