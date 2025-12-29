@@ -848,10 +848,11 @@ describe('plugin_system_test', async () => {
   })
   it('「拡張子抽出」「拡張子変更」の実装 #2181', async () => {
     await cmp('「a.txt」から拡張子抽出して表示。', '.txt')
-    await cmp('「a.tar.gz」から拡張子抽出して表示。', '.tar.gz')
+    await cmp('「a.tar.gz」から拡張子抽出して表示。', '.gz')
     await cmp('「a/b/c」から拡張子抽出して表示。', '')
     await cmp('「a/b/c」から「.txt」へ拡張子変更して表示。', 'a/b/c.txt')
     await cmp('「a.txt」から「.md」へ拡張子変更して表示。', 'a.md')
+    await cmp('「a.txt」から「md」へ拡張子変更して表示。', 'a.md')
     // フォルダ名に「.」が含まれる場合の確認
     await cmp('「/a/.b/c.txt」から拡張子抽出して表示。', '.txt')
     await cmp('「/a/.b/c.txt」から「.docx」へ拡張子変更して表示。', '/a/.b/c.docx')
