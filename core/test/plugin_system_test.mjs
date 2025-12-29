@@ -846,16 +846,25 @@ describe('plugin_system_test', async () => {
     await cmp('「a」から終端パス除去して表示。', 'a')
     await cmp('「a/b/」から終端パス除去して表示。', 'a/b')
   })
-  it('「拡張子抽出」「拡張子変更」の実装 #2181', async () => {
+  it('「拡張子抽出」の実装 #2181', async () => {
     await cmp('「a.txt」から拡張子抽出して表示。', '.txt')
     await cmp('「a.tar.gz」から拡張子抽出して表示。', '.gz')
     await cmp('「a/b/c」から拡張子抽出して表示。', '')
+    // フォルダ名に「.」が含まれる場合の確認
+    await cmp('「/a/.b/c.txt」から拡張子抽出して表示。', '.txt')
+    // 拡張子の「.7z」や「c++」をテスト
+    await cmp('「/a/.b/c.7z」から拡張子抽出して表示。', '.7z')
+    await cmp('「/a/.b/c.c++」から拡張子抽出して表示。', '.c++')
+  })
+  it('「拡張子変更」の実装 #2181', async () => {
     await cmp('「a/b/c」から「.txt」へ拡張子変更して表示。', 'a/b/c.txt')
     await cmp('「a.txt」から「.md」へ拡張子変更して表示。', 'a.md')
     await cmp('「a.txt」から「md」へ拡張子変更して表示。', 'a.md')
     // フォルダ名に「.」が含まれる場合の確認
-    await cmp('「/a/.b/c.txt」から拡張子抽出して表示。', '.txt')
     await cmp('「/a/.b/c.txt」から「.docx」へ拡張子変更して表示。', '/a/.b/c.docx')
+    // 拡張子の「.7z」や「c++」をテスト
+    await cmp('「/a/.b/c.7z」から「.zip」へ拡張子変更して表示。', '/a/.b/c.zip')
+    await cmp('「/a/.b/c.c++」から「.cpp」へ拡張子変更して表示。', '/a/.b/c.cpp')
   })
   it('「ファイル名抽出」の実装 #2181', async () => {
     await cmp('「」からファイル名抽出して表示。', '')

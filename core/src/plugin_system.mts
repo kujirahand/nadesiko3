@@ -3443,7 +3443,7 @@ export default {
         const parts = fname.split(sep)
         fname = parts[parts.length - 1]
       }
-      const m = fname.match(/(\.[a-zA-Z0-9_\-]+)$/)
+      const m = fname.match(/(\.[a-zA-Z0-9_\-+]+)$/)
       if (m) { return m[1] }
       return ''
     }
@@ -3463,10 +3463,10 @@ export default {
         return sys.__exec('終端パス追加', [pathStr, sys]) + filename
       }
       const extWithDot = rawExt.startsWith('.') ? rawExt : `.${rawExt}`
-      if (!/^\.[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*$/.test(extWithDot)) {
+      if (!/^\.[a-zA-Z0-9_\-+]+$/.test(extWithDot)) {
         throw new Error('『拡張子変更』で拡張子は「.txt」の形式で指定してください。')
       }
-      const newFilename = filename.replace(/(\.[a-zA-Z0-9_\-]+)?$/, extWithDot)
+      const newFilename = filename.replace(/(\.[a-zA-Z0-9_\-+]+)?$/, extWithDot)
       return sys.__exec('終端パス追加', [pathStr, sys]) + newFilename
     }
   },
