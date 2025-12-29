@@ -225,25 +225,6 @@ const PluginBrowser = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sys.__addPropMethod = (obj: any) => {
         if (!obj) { return }
-        if (obj.__setProp === undefined) {
-          // 列挙不可のプロパティとして追加
-          Object.defineProperty(obj, '__setProp', {
-            enumerable: false,
-            writable: true,
-            configurable: true,
-            value: (prop: string|string[], value: object, sys: NakoBrowsesrSystem) => {
-              sys.__exec('DOM設定変更', [obj, prop, value, sys])
-            }
-          })
-          Object.defineProperty(obj, '__getProp', {
-            enumerable: false,
-            writable: true,
-            configurable: true,
-            value: (prop: string|string[], sys: NakoBrowsesrSystem) => {
-              return sys.__exec('DOM設定取得', [obj, prop, sys])
-            }
-          })
-        }
         if (!obj.__nako3) {
           Object.defineProperty(obj, '__nako3', {
             enumerable: false,
