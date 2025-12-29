@@ -1,6 +1,6 @@
 {
   "name": "nadesiko3core",
-  "version": "3.7.11",
+  "version": "3.7.12",
   "description": "Japanese Programming Language Nadesiko v3 core",
   "main": "index.mjs",
   "type": "module",
