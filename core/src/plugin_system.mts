@@ -3455,18 +3455,12 @@ export default {
     fn: function (fname: string, ext: string, sys: NakoSystem) {
       if (fname === null || fname === undefined) { return ext }
       const sep = sys.pathSeparator || '/'
-      let pathList = [fname]
-      if (fname.indexOf(sep) >= 0) { // パス記号があればファイル名を抽出
-        pathList = fname.split(sep)
-      }
-      fname = pathList[pathList.length - 1]
-      const pathStr = pathList.slice(0, pathList.length - 1).join(sep)
+      const pathList = fname.split(sep)
+      const filename = pathList[pathList.length - 1]
+      const pathStr = pathList.slice(0, -1).join(sep)
       const extOrg = sys.__exec('拡張子抽出', [ext, sys])
-      if (extOrg === '') {
-        return sys.__exec('終端パス追加', [pathStr, sys]) + fname
-      }
-      fname = fname.replace(/(\.[a-zA-Z0-9_\-.]+)?$/, ext) // 拡張子変更
-      return sys.__exec('終端パス追加', [pathStr, sys]) + fname
+      const newFilename = (extOrg === '') ? filename : filename.replace(/(\.[a-zA-Z0-9_\-.]+)?$/, ext)
+      return sys.__exec('終端パス追加', [pathStr, sys]) + newFilename
     }
   },
   '終端パス追加': { // @パスSの終端にパス区切り文字を追加して返す // @しゅうたんぱすついか
@@ -3475,11 +3469,11 @@ export default {
     pure: true,
     fn: function (path: string, sys: NakoSystem) {
       const sep = sys.pathSeparator || '/'
+      if (path === undefined || path === null || path === '') {
+        return ''
+      }
       if (path.endsWith(sep)) {
         return path
-      }
-      if (path === '') {
-        return sep
       }
       return path + sep
     }
@@ -3495,6 +3489,27 @@ export default {
       } else {
         return dir
       }
+    }
+  },
+  'ファイル名抽出': { // @パスPATHからファイル名を抽出して返す // @ふぁいるめいちゅうしゅつ
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      const sep = sys.pathSeparator || '/'
+      const parts = dir.split(sep)
+      return parts[parts.length - 1]
+    }
+  },
+  'パス抽出': { // @パスPATHからパスを抽出して返す // @ぱすちゅうしゅつ
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      const sep = sys.pathSeparator || '/'
+      const parts = dir.split(sep)
+      parts.pop()
+      return parts.join(sep)
     }
   },
 }
