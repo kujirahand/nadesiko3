@@ -78,6 +78,8 @@ export default {
     josi: [],
     pure: true,
     fn: function (sys: NakoSystem) {
+      sys.engine = 'cnako'
+      sys.pathSeparator = path.sep // パス記号 #2185
       // OS判定
       const isWin = isWindows()
       sys.tags.isWin = isWin
@@ -593,30 +595,6 @@ export default {
     pure: true,
     fn: function (a: string, b: string) {
       return path.resolve(path.join(a, b))
-    }
-  },
-  '終端パス追加': { // @フォルダ名DIRの末尾にパス記号を追加する // @しゅうたんぱすついか
-    type: 'func',
-    josi: [['に', 'へ']],
-    pure: true,
-    fn: function (dir: string, sys: NakoSystem) {
-      if (dir.endsWith(path.sep)) {
-        return dir
-      } else {
-        return dir + path.sep
-      }
-    }
-  },
-  '終端パス除去': { // @フォルダ名DIRの末尾にパス記号を削除する // @しゅうたんぱすじょきょ
-    type: 'func',
-    josi: [['の', 'から']],
-    pure: true,
-    fn: function (dir: string, sys: NakoSystem) {
-      if (dir.endsWith(path.sep)) {
-        return dir.substring(0, dir.length - 1)
-      } else {
-        return dir
-      }
     }
   },
   // @フォルダ取得

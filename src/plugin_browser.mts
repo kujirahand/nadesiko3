@@ -64,6 +64,7 @@ const PluginBrowser = {
     josi: [],
     pure: true,
     fn: function (sys: NakoBrowsesrSystem) {
+      sys.engine = 'wnako'
       /* eslint no-global-assign: 0 */
       const doc: IBrowserDocument = (typeof document === 'undefined') ? { 'body': {}, 'querySelector': () => null } : document
       const win: IBrowserWindow = (typeof window === 'undefined') ? { 'location': { 'href': 'http://localhost/' } } : window

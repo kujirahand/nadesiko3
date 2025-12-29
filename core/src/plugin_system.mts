@@ -20,6 +20,8 @@ export default {
     fn: function (sys: NakoSystem) {
       // システム変数の初期化
       const system: any = sys
+      sys.pathSeparator = '/'  // パス記号 #2185
+      sys.engine = '?'  // エンジン名
       sys.isDebug = false
       // システム変数にアクセスするための関数を定義
       sys.__setSysVar = (name: string, value: any): void => system.__v0.set(name, value)
@@ -3436,6 +3438,11 @@ export default {
     pure: true,
     fn: function (fname: string, sys: NakoSystem) {
       if (fname === null || fname === undefined) { return '' }
+      const sep = sys.pathSeparator || '/'
+      if (fname.indexOf(sep) >= 0) { // パス記号があればファイル名を抽出
+        const parts = fname.split(sep)
+        fname = parts[parts.length - 1]
+      }
       const m = fname.match(/(\.[a-zA-Z0-9_\-.]+)$/)
       if (m) { return m[1] }
       return ''
@@ -3447,15 +3454,62 @@ export default {
     pure: true,
     fn: function (fname: string, ext: string, sys: NakoSystem) {
       if (fname === null || fname === undefined) { return ext }
-      // 拡張子がある？
-      const m = fname.match(/(\.[a-zA-Z0-9_\-.]+)$/)
-      if (m) { // あれば変更
-        fname = fname.substring(0, fname.length - m[1].length) + ext
-        return fname
-      }
-      // なければ追加
-      return fname + ext
+      const sep = sys.pathSeparator || '/'
+      const pathList = fname.split(sep)
+      const filename = pathList[pathList.length - 1]
+      const pathStr = pathList.slice(0, -1).join(sep)
+      const extOrg = sys.__exec('拡張子抽出', [ext, sys])
+      const newFilename = (extOrg === '') ? filename : filename.replace(/(\.[a-zA-Z0-9_\-.]+)?$/, ext)
+      return sys.__exec('終端パス追加', [pathStr, sys]) + newFilename
     }
   },
-
+  '終端パス追加': { // @パスSの終端にパス区切り文字を追加して返す // @しゅうたんぱすついか
+    type: 'func',
+    josi: [['に', 'へ']],
+    pure: true,
+    fn: function (path: string, sys: NakoSystem) {
+      const sep = sys.pathSeparator || '/'
+      if (path === undefined || path === null || path === '') {
+        return ''
+      }
+      if (path.endsWith(sep)) {
+        return path
+      }
+      return path + sep
+    }
+  },
+  '終端パス除去': { // @フォルダ名DIRの末尾にパス記号を削除する // @しゅうたんぱすじょきょ
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      const sep = sys.pathSeparator || '/'
+      if (dir.endsWith(sep)) {
+        return dir.substring(0, dir.length - 1)
+      } else {
+        return dir
+      }
+    }
+  },
+  'ファイル名抽出': { // @パスPATHからファイル名を抽出して返す // @ふぁいるめいちゅうしゅつ
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      const sep = sys.pathSeparator || '/'
+      const parts = dir.split(sep)
+      return parts[parts.length - 1]
+    }
+  },
+  'パス抽出': { // @パスPATHからパスを抽出して返す // @ぱすちゅうしゅつ
+    type: 'func',
+    josi: [['の', 'から']],
+    pure: true,
+    fn: function (dir: string, sys: NakoSystem) {
+      const sep = sys.pathSeparator || '/'
+      const parts = dir.split(sep)
+      parts.pop()
+      return parts.join(sep)
+    }
+  },
 }

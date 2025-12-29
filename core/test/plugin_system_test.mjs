@@ -836,11 +836,31 @@ describe('plugin_system_test', async () => {
     await cmp('もし["AAA","BBB","CCC"]で「BBB」が出現したならば\n「A」と表示\n違えば\n「B」と表示\nここまで。', 'A')
     await cmp('もし["AAA","BBB","CCC"]で「DDD」が出現したならば\n「A」と表示\n違えば\n「B」と表示\nここまで。', 'B')
   })
+  it('「終端パス追加」「終端パス除去」の実装 #2181', async () => {
+    await cmp('「」に終端パス追加して表示。', '')
+    await cmp('「a」に終端パス追加して表示。', 'a/')
+    await cmp('「a/b/」に終端パス追加して表示。', 'a/b/')
+  })
   it('「拡張子抽出」「拡張子変更」の実装 #2181', async () => {
     await cmp('「a.txt」から拡張子抽出して表示。', '.txt')
     await cmp('「a.tar.gz」から拡張子抽出して表示。', '.tar.gz')
     await cmp('「a/b/c」から拡張子抽出して表示。', '')
     await cmp('「a/b/c」から「.txt」へ拡張子変更して表示。', 'a/b/c.txt')
     await cmp('「a.txt」から「.md」へ拡張子変更して表示。', 'a.md')
+    // フォルダ名に「.」が含まれる場合の確認
+    await cmp('「/a/.b/c.txt」から拡張子抽出して表示。', '.txt')
+    await cmp('「/a/.b/c.txt」から「.docx」へ拡張子変更して表示。', '/a/.b/c.docx')
+  })
+  it('「ファイル名抽出」の実装 #2181', async () => {
+    await cmp('「」からファイル名抽出して表示。', '')
+    await cmp('「abc.txt」からファイル名抽出して表示。', 'abc.txt')
+    await cmp('「/a/b/c」からファイル名抽出して表示。', 'c')
+    await cmp('「c:/a/b/c」からファイル名抽出して表示。', 'c')
+  })
+  it('「パス抽出」の実装 #2181', async () => {
+    await cmp('「」からパス抽出して表示。', '')
+    await cmp('「abc.txt」からパス抽出して表示。', '')
+    await cmp('「/a/b/c」からパス抽出して表示。', '/a/b')
+    await cmp('「c:/a/b/c」からパス抽出して表示。', 'c:/a/b')
   })
 })
