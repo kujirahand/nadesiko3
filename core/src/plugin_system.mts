@@ -3443,7 +3443,7 @@ export default {
         const parts = fname.split(sep)
         fname = parts[parts.length - 1]
       }
-      const m = fname.match(/(\.[a-zA-Z0-9_\-.]+)$/)
+      const m = fname.match(/(\.[a-zA-Z0-9_\-+]+)$/)
       if (m) { return m[1] }
       return ''
     }
@@ -3458,8 +3458,15 @@ export default {
       const pathList = fname.split(sep)
       const filename = pathList[pathList.length - 1]
       const pathStr = pathList.slice(0, -1).join(sep)
-      const extOrg = sys.__exec('拡張子抽出', [ext, sys])
-      const newFilename = (extOrg === '') ? filename : filename.replace(/(\.[a-zA-Z0-9_\-.]+)?$/, ext)
+      const rawExt = (ext ?? '').trim()
+      if (rawExt === '') {
+        return sys.__exec('終端パス追加', [pathStr, sys]) + filename
+      }
+      const extWithDot = rawExt.startsWith('.') ? rawExt : `.${rawExt}`
+      if (!/^\.[a-zA-Z0-9_\-+]+$/.test(extWithDot)) {
+        throw new Error('『拡張子変更』で拡張子は「.txt」の形式で指定してください。')
+      }
+      const newFilename = filename.replace(/(\.[a-zA-Z0-9_\-+]+)?$/, extWithDot)
       return sys.__exec('終端パス追加', [pathStr, sys]) + newFilename
     }
   },
@@ -3478,12 +3485,13 @@ export default {
       return path + sep
     }
   },
-  '終端パス除去': { // @フォルダ名DIRの末尾にパス記号を削除する // @しゅうたんぱすじょきょ
+  '終端パス除去': { // @フォルダ名DIRの末尾にあるパス記号を削除する // @しゅうたんぱすじょきょ
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
     fn: function (dir: string, sys: NakoSystem) {
       const sep = sys.pathSeparator || '/'
+      if (!dir) { return '' }
       if (dir.endsWith(sep)) {
         return dir.substring(0, dir.length - 1)
       } else {
@@ -3501,7 +3509,7 @@ export default {
       return parts[parts.length - 1]
     }
   },
-  'パス抽出': { // @パスPATHからパスを抽出して返す // @ぱすちゅうしゅつ
+  'パス抽出': { // @パスPATHからディレクトリ部分を抽出して返す // @ぱすちゅうしゅつ
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
