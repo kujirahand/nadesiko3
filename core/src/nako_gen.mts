@@ -1654,6 +1654,8 @@ export class NakoGen {
       } else {
         code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
       }
+      // 行番号を追加
+      code = this.convLineno(node, false) + code
     } else {
       // ------------------------------------
       // 戻り値のある関数の場合
@@ -1692,7 +1694,10 @@ export class NakoGen {
         }
       }
       // ...して
-      if (node.josi === 'して' || (node.josi === '' && !isExpression)) { code += ';\n' }
+      if (node.josi === 'して' || (node.josi === '' && !isExpression)) {
+        code = this.convLineno(node, false) + code
+        code += ';\n'
+      }
     }
 
     if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
