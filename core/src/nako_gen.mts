@@ -1694,7 +1694,10 @@ export class NakoGen {
         }
       }
       // ...して
-      if (node.josi === 'して' || (node.josi === '' && !isExpression)) { code += ';\n' }
+      if (node.josi === 'して' || (node.josi === '' && !isExpression)) {
+        code = this.convLineno(node, false) + code
+        code += ';\n'
+      }
     }
 
     if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
