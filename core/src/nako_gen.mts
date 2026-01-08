@@ -738,9 +738,6 @@ export class NakoGen {
     commentSrc = commentSrc.replace(/(^\s+|\s+$)/g, '')
     // コメントの行番号を得る
     let lineNo = this.convLineno(node, false)
-    if (node.line === 0) {
-      lineNo = '' // 0行目なら行番号は更新なし
-    }
     if (commentSrc === '' && lineNo === '') { return ';' }
     if (commentSrc === '') {
       return ';' + lineNo + '\n'
