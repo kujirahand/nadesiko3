@@ -250,7 +250,7 @@ const PluginBrowser = {
               })
             }
           }
-          if (!waAttr) {
+          if (waAttr) {
             // 和属性を適用する
             for (const key of Object.keys(waAttr)) {
               Object.defineProperty(obj, key, {
