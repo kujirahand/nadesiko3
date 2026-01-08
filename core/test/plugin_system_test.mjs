@@ -860,6 +860,7 @@ describe('plugin_system_test', async () => {
     await cmp('「a/b/c」から「.txt」へ拡張子変更して表示。', 'a/b/c.txt')
     await cmp('「a.txt」から「.md」へ拡張子変更して表示。', 'a.md')
     await cmp('「a.txt」から「md」へ拡張子変更して表示。', 'a.md')
+    await cmp('「a.txt」から「」へ拡張子変更して表示。', 'a')
     // フォルダ名に「.」が含まれる場合の確認
     await cmp('「/a/.b/c.txt」から「.docx」へ拡張子変更して表示。', '/a/.b/c.docx')
     // 拡張子の「.7z」や「c++」をテスト
