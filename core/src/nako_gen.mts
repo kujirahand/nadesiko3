@@ -1215,7 +1215,7 @@ export class NakoGen {
       '    }\n' +
       '  };\n' +
       '} else { // from == to\n' +
-      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}+= ${inc}) {\n` +
+      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}+= 1) {\n` +
       `    ${sorePrefex};${loopVarSetter}\n` +
       '    // for block begin\n' +
       `    ${block}\n` +
