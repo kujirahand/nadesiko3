@@ -463,6 +463,11 @@ describe('flow_test', async () => {
       '　　A=A&N\n' +
       'ここまで\n' +
       'Aを表示;', '3')
+    await cmp(
+      'A="";Nを4から4まで-1ずつ増やし繰り返す\n' +
+      '　　A=A&N\n' +
+      'ここまで\n' +
+      'Aを表示;', '4')
   })
   it('もしの省略を実装する nadesiko3#1604', async () => {
     await cmp(
