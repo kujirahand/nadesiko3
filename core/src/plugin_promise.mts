@@ -15,10 +15,10 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
-      if ((sys as any).__promise == null) {
+    fn: function(sys: NakoSystem) {
+      if ((sys as any).__promise === null || (sys as any).__promise === undefined) {
         (sys as any).__promise = {
-          setLastPromise: function (promise: any) {
+          setLastPromise: function(promise: any) {
             sys.__setSysVar('そ', promise)
             return promise
           }
@@ -33,7 +33,7 @@ export default {
     type: 'func',
     josi: [['を', 'で']],
     pure: true,
-    fn: function (callback: any, sys: NakoSystem) {
+    fn: function(callback: any, sys: NakoSystem) {
       return (sys as any).__promise.setLastPromise(new Promise((resolve, reject) => {
         return callback(resolve, reject)
       }))
@@ -44,7 +44,7 @@ export default {
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
-    fn: function (callback: any, promise: any, sys: NakoSystem) {
+    fn: function(callback: any, promise: any, sys: NakoSystem) {
       return (sys as any).__promise.setLastPromise(promise.then((result:any) => {
         sys.__setSysVar('対象', result)
         return callback(result)
@@ -56,7 +56,7 @@ export default {
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
-    fn: function (cbFunc: any, promise: any, sys: NakoSystem): any {
+    fn: function(cbFunc: any, promise: any, sys: NakoSystem): any {
       return (sys as any).__promise.setLastPromise(promise.then((result: any) => {
         sys.__setSysVar('対象', result)
         return cbFunc(true, result, sys)
@@ -71,7 +71,7 @@ export default {
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
-    fn: function (callback: any, promise: any, sys: NakoSystem): any {
+    fn: function(callback: any, promise: any, sys: NakoSystem): any {
       return (sys as any).__promise.setLastPromise(promise.catch((err: any) => {
         sys.__setSysVar('対象', err)
         return callback(err)
@@ -83,7 +83,7 @@ export default {
     type: 'func',
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
-    fn: function (callback: any, promise: any, sys: NakoSystem): any {
+    fn: function(callback: any, promise: any, sys: NakoSystem): any {
       return (sys as any).__promise.setLastPromise(promise.finally(() => {
         return callback()
       }))
@@ -95,7 +95,7 @@ export default {
     josi: [['と', 'を']],
     isVariableJosi: true,
     pure: true,
-    fn: function (...args:any): any {
+    fn: function(...args:any): any {
       const sys = args.pop()
       return (sys).__promise.setLastPromise(Promise.all(args))
     },

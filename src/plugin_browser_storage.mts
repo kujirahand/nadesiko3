@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
-    fn: function (v: any, key: any, sys: any) {
+    fn: function(v: any, key: any, sys: any) {
       sys.__exec('ローカルストレージ保存', [v, key, sys])
     },
     return_none: true
@@ -14,7 +14,7 @@ export default {
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
-    fn: function (key: any, sys: any) {
+    fn: function(key: any, sys: any) {
       return sys.__exec('ローカルストレージ読', [key, sys])
     },
     return_none: false
@@ -23,7 +23,7 @@ export default {
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
-    fn: function (key: any, sys: any) {
+    fn: function(key: any, sys: any) {
       return sys.__exec('ローカルストレージ読', [key, sys])
     },
     return_none: false
@@ -32,7 +32,7 @@ export default {
     type: 'func',
     josi: [['が']],
     pure: true,
-    fn: function (key: any) {
+    fn: function(key: any) {
       const s = window.localStorage.getItem(key)
       return (s !== null)
     },
@@ -42,7 +42,7 @@ export default {
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
-    fn: function (v: any, key: any, sys: any) {
+    fn: function(v: any, key: any, sys: any) {
       let body = v
       if (sys.__getSysVar('保存オプション')) {
         if ((sys.__getSysVar('保存オプション').indexOf('json') >= 0)) {
@@ -59,7 +59,7 @@ export default {
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
-    fn: function (key: any, sys: any) {
+    fn: function(key: any, sys: any) {
       const v = window.localStorage[key]
       if (sys.__getSysVar('保存オプション') && (sys.__getSysVar('保存オプション').indexOf('json') >= 0)) {
         try {
@@ -76,7 +76,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const keys = []
       for (const key in window.localStorage) { keys.push(key) }
       return keys
@@ -87,7 +87,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function (key: any) {
+    fn: function(key: any) {
       window.localStorage.removeItem(key)
     },
     return_none: true
@@ -96,7 +96,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       window.localStorage.clear()
     },
     return_none: true
@@ -105,7 +105,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       return (typeof window.localStorage !== 'undefined')
     },
     return_none: false
@@ -115,7 +115,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: any, sys: any) {
+    fn: function(v: any, sys: any) {
       v = v.toUpperCase(v)
       sys.__setSysVar('保存オプション', v)
     },

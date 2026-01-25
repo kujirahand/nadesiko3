@@ -9,7 +9,7 @@ export default {
     josi: [['の', 'に', 'へ', 'で']],
     pure: true,
     asyncFn: true,
-    fn: async function (v: any, sys: NakoSystem) {
+    fn: async function(v: any, sys: NakoSystem) {
       const options = sys.__getSysVar('カメラオプション')
       const stream = await navigator.mediaDevices.getUserMedia(options)
       v.srcObject = stream
@@ -18,7 +18,7 @@ export default {
         v.width = settings.width
         v.height = settings.height
       }
-      v.onloadedmetadata = function () {
+      v.onloadedmetadata = function() {
         v.play()
       }
       sys.tags.usingCamera = true
@@ -30,7 +30,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any, sys: NakoSystem) {
+    fn: function(v: any, sys: NakoSystem) {
       if (v) {
         sys.__exec('メディアストリーム停止', [v, sys])
         v.srcObject = null
@@ -44,7 +44,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any, sys: NakoSystem) {
+    fn: function(v: any, sys: NakoSystem) {
       if (v && v.play) {
         v.play()
       }
@@ -55,7 +55,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any, sys: NakoSystem) {
+    fn: function(v: any, sys: NakoSystem) {
       if (v && v.pause) {
         v.pause()
       }
@@ -66,7 +66,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any, sys: NakoSystem) {
+    fn: function(v: any, sys: NakoSystem) {
       if (v && v.srcObject && v.srcObject.getVideoTracks) {
         const tracks = v.srcObject.getVideoTracks()
         if (tracks.length > 0) {
@@ -84,7 +84,7 @@ export default {
     josi: [],
     pure: true,
     asyncFn: true,
-    fn: async function (sys: NakoSystem) {
+    fn: async function(sys: NakoSystem) {
       const options = sys.__getSysVar('カメラオプション')
       const stream = await navigator.mediaDevices.getUserMedia(options)
       return stream
@@ -95,7 +95,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v:any, sys: NakoSystem) {
+    fn: function(v:any, sys: NakoSystem) {
       if (v && v.srcObject && v.srcObject.getVideoTracks) {
         const tracks = v.srcObject.getVideoTracks()
         for (const track of tracks) {

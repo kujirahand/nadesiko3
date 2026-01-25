@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       window.location.href = url
     }
   },
@@ -13,7 +13,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       window.history.back(-1)
     }
   },

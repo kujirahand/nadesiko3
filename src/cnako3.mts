@@ -5,7 +5,7 @@
 import { CNako3 } from './cnako3mod.mjs'
 
 // メイン
-(async () => {
+(async() => {
   const cnako3: CNako3 = new CNako3()
   try {
     await cnako3.execCommand()

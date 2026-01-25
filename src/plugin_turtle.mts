@@ -26,7 +26,7 @@ class NakoTurtle {
   mlist: any[]
   sys: NakoSystem
 
-  constructor (sys: NakoSystem, id: number) {
+  constructor(sys: NakoSystem, id: number) {
     this.sys = sys
     this.id = id
     this.img = null
@@ -47,12 +47,12 @@ class NakoTurtle {
     this.mlist = []
   }
 
-  clear () {
+  clear() {
     this.mlist = [] // ジョブをクリア
     document.body.removeChild(this.canvas)
   }
 
-  loadImage (url: string, callback: any) {
+  loadImage(url: string, callback: any) {
     this.canvas = document.createElement('canvas')
     this.ctx = this.canvas.getContext('2d')
     this.canvas.id = this.id
@@ -91,9 +91,9 @@ class NakoTurtleSystem {
   sys: NakoSystem
   instanceCount: number
   // Singleton
-  /* eslint-disable no-use-before-define */
+   
   static instance: NakoTurtleSystem
-  static getInstance (sys: NakoSystem) {
+  static getInstance(sys: NakoSystem) {
     if (NakoTurtleSystem.instance === undefined) {
       NakoTurtleSystem.instance = new NakoTurtleSystem(sys)
     }
@@ -102,7 +102,7 @@ class NakoTurtleSystem {
     return NakoTurtleSystem.instance
   }
 
-  constructor (sys: NakoSystem) {
+  constructor(sys: NakoSystem) {
     this.sys = sys
     this.turtles = [] // カメの一覧
     this.target = -1
@@ -114,7 +114,7 @@ class NakoTurtleSystem {
     this.timerId = null
   }
 
-  clearAll () {
+  clearAll() {
     // console.log('カメ全消去 turtles=', this.turtles)
     for (let i = 0; i < this.turtles.length; i++) {
       const tt = this.turtles[i]
@@ -130,7 +130,7 @@ class NakoTurtleSystem {
     this.flagSetTimer = false
   }
 
-  drawTurtle (id: number) {
+  drawTurtle(id: number) {
     const tt = this.turtles[id]
     if (!tt) { return }
     const cr = this.canvas_r
@@ -156,12 +156,12 @@ class NakoTurtleSystem {
     } else { tt.ctx.drawImage(tt.img, 0, 0) }
   }
 
-  getCur () {
+  getCur() {
     if (this.turtles.length === 0) { throw Error('最初に『カメ作成』命令を呼び出してください。') }
     return this.turtles[this.target]
   }
 
-  setTimer () {
+  setTimer() {
     // コマンド設定後、1度だけこの関数を呼び出す
     if (this.flagSetTimer) { return }
     this.flagSetTimer = true
@@ -173,7 +173,7 @@ class NakoTurtleSystem {
     }, 1)
   }
 
-  line (tt: NakoTurtle, x1: number, y1: number, x2: number, y2: number) {
+  line(tt: NakoTurtle, x1: number, y1: number, x2: number, y2: number) {
     /* istanbul ignore else */
     if (tt) { if (!tt.flagDown) { return } }
 
@@ -190,13 +190,13 @@ class NakoTurtleSystem {
     }
   }
 
-  addMacro (args: Array<any>) {
+  addMacro(args: Array<any>) {
     const tt: NakoTurtle = this.getCur()
     tt.mlist.push(args)
     this.setTimer()
   }
 
-  doMacro (tt: NakoTurtle, wait: number) {
+  doMacro(tt: NakoTurtle, wait: number) {
     if (!tt.flagLoaded && wait > 0) {
       // console.log('[TURTLE] waiting ...')
       return true
@@ -205,111 +205,111 @@ class NakoTurtleSystem {
     const cmd = (m !== undefined) ? m[0] : ''
     // console.log('@@@doMacro', cmd, m, tt.x, tt.y, ': dir=', tt.dir)
     switch (cmd) {
-      case 'xy':
-        // 起点を移動する
-        tt.x = m[1]
-        tt.y = m[2]
-        break
-      case 'begin':
-        // 描画を明示的に開始する
-        this.ctx.beginPath()
-        this.ctx.moveTo(tt.x, tt.y)
-        tt.flagBegeinPath = true
-        break
-      case 'close':
-        // パスを閉じる
+    case 'xy':
+      // 起点を移動する
+      tt.x = m[1]
+      tt.y = m[2]
+      break
+    case 'begin':
+      // 描画を明示的に開始する
+      this.ctx.beginPath()
+      this.ctx.moveTo(tt.x, tt.y)
+      tt.flagBegeinPath = true
+      break
+    case 'close':
+      // パスを閉じる
+      this.ctx.closePath()
+      tt.flagBegeinPath = false
+      break
+    case 'fill':
+      if (tt.flagBegeinPath) {
         this.ctx.closePath()
         tt.flagBegeinPath = false
-        break
-      case 'fill':
-        if (tt.flagBegeinPath) {
-          this.ctx.closePath()
-          tt.flagBegeinPath = false
-        }
-        this.ctx.fill()
-        break
-      case 'stroke':
-        if (tt.flagBegeinPath) {
-          this.ctx.closePath()
-          tt.flagBegeinPath = false
-        }
-        this.ctx.stroke()
-        break
-      case 'text':
-        this.ctx.fillText(m[1], tt.x, tt.y)
-        break
-      case 'textset':
-        this.ctx.font = m[1]
-        break
-      case 'fillStyle':
-        this.ctx.fillStyle = m[1]
-        break
-      case 'mv': {
-        // 線を引く
-        this.line(tt, tt.x, tt.y, m[1], m[2])
-        // カメの角度を変更
-        const mvRad = Math.atan2(m[2] - tt.y, m[1] - tt.x)
-        tt.dir = mvRad * 57.29577951308232
-        tt.f_update = true
-        // 実際に位置を移動
-        tt.x = m[1]
-        tt.y = m[2]
-        break
       }
-      case 'fd': {
-        const fdv = m[1] * m[2]
-        const rad = tt.dir * 0.017453292519943295
-        const x2 = tt.x + Math.cos(rad) * fdv
-        const y2 = tt.y + Math.sin(rad) * fdv
-        this.line(tt, tt.x, tt.y, x2, y2)
-        tt.x = x2
-        tt.y = y2
-        // console.log('@@@fd', m, tt.x, tt.y, ': dir=', tt.dir)
-        break
+      this.ctx.fill()
+      break
+    case 'stroke':
+      if (tt.flagBegeinPath) {
+        this.ctx.closePath()
+        tt.flagBegeinPath = false
       }
-      case 'angle': {
-        const angle = m[1]
-        tt.dir = ((angle - 90 + 360) % 360)
-        tt.f_update = true
-        break
-      }
-      case 'rotr': {
-        const rv = m[1]
-        tt.dir = (tt.dir + rv) % 360
-        tt.f_update = true
-        break
-      }
-      case 'rotl': {
-        const lv = m[1]
-        tt.dir = (tt.dir - lv + 360) % 360
-        tt.f_update = true
-        break
-      }
-      case 'color':
-        tt.color = m[1]
-        this.ctx.strokeStyle = tt.color
-        break
-      case 'size':
-        tt.lineWidth = m[1]
-        this.ctx.lineWidth = tt.lineWidth
-        break
-      case 'penOn':
-        tt.flagDown = m[1]
-        break
-      case 'visible':
-        tt.f_visible = m[1]
-        tt.f_update = true
-        break
-      case 'changeImage':
-        tt.flagLoaded = false
-        tt.img.src = m[1]
-        break
+      this.ctx.stroke()
+      break
+    case 'text':
+      this.ctx.fillText(m[1], tt.x, tt.y)
+      break
+    case 'textset':
+      this.ctx.font = m[1]
+      break
+    case 'fillStyle':
+      this.ctx.fillStyle = m[1]
+      break
+    case 'mv': {
+      // 線を引く
+      this.line(tt, tt.x, tt.y, m[1], m[2])
+      // カメの角度を変更
+      const mvRad = Math.atan2(m[2] - tt.y, m[1] - tt.x)
+      tt.dir = mvRad * 57.29577951308232
+      tt.f_update = true
+      // 実際に位置を移動
+      tt.x = m[1]
+      tt.y = m[2]
+      break
+    }
+    case 'fd': {
+      const fdv = m[1] * m[2]
+      const rad = tt.dir * 0.017453292519943295
+      const x2 = tt.x + Math.cos(rad) * fdv
+      const y2 = tt.y + Math.sin(rad) * fdv
+      this.line(tt, tt.x, tt.y, x2, y2)
+      tt.x = x2
+      tt.y = y2
+      // console.log('@@@fd', m, tt.x, tt.y, ': dir=', tt.dir)
+      break
+    }
+    case 'angle': {
+      const angle = m[1]
+      tt.dir = ((angle - 90 + 360) % 360)
+      tt.f_update = true
+      break
+    }
+    case 'rotr': {
+      const rv = m[1]
+      tt.dir = (tt.dir + rv) % 360
+      tt.f_update = true
+      break
+    }
+    case 'rotl': {
+      const lv = m[1]
+      tt.dir = (tt.dir - lv + 360) % 360
+      tt.f_update = true
+      break
+    }
+    case 'color':
+      tt.color = m[1]
+      this.ctx.strokeStyle = tt.color
+      break
+    case 'size':
+      tt.lineWidth = m[1]
+      this.ctx.lineWidth = tt.lineWidth
+      break
+    case 'penOn':
+      tt.flagDown = m[1]
+      break
+    case 'visible':
+      tt.f_visible = m[1]
+      tt.f_update = true
+      break
+    case 'changeImage':
+      tt.flagLoaded = false
+      tt.img.src = m[1]
+      break
     }
     if (tt.flagLoaded) { this.drawTurtle(tt.id) }
     return (tt.mlist.length > 0)
   }
 
-  doMacroAll (wait: number) {
+  doMacroAll(wait: number) {
     let hasNext = false
     for (let i = 0; i < this.turtles.length; i++) {
       const tt = this.turtles[i]
@@ -318,7 +318,7 @@ class NakoTurtleSystem {
     return hasNext
   }
 
-  play () {
+  play() {
     const wait = this.sys.__getSysVar('カメ速度')
     let hasNext = this.doMacroAll(wait)
     if (wait <= 0) {
@@ -334,7 +334,7 @@ class NakoTurtleSystem {
     this.flagSetTimer = false
   }
 
-  setupCanvas () {
+  setupCanvas() {
     // 描画先をセットする
     let canvasId = this.sys.__getSysVar('カメ描画先')
     if (typeof canvasId === 'string') {
@@ -354,7 +354,7 @@ class NakoTurtleSystem {
     this.resizeCanvas()
   }
 
-  resizeCanvas () {
+  resizeCanvas() {
     const cv = this.canvas
     const rect = cv.getBoundingClientRect()
     const rx = rect.left + window.scrollX
@@ -367,7 +367,7 @@ class NakoTurtleSystem {
     }
   }
 
-  createTurtle (imageUrl: string) {
+  createTurtle(imageUrl: string) {
     // キャンバス情報は毎回参照する (#734)
     this.setupCanvas()
     // カメの情報をリストに追加
@@ -403,7 +403,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const turtleSystem: NakoTurtleSystem = NakoTurtleSystem.getInstance(sys)
       sys.tags.turtles = turtleSystem
     }
@@ -413,7 +413,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       // console.log('tutle::!クリア')
       sys.tags.turtles.clearAll()
     }
@@ -424,7 +424,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const imageUrl = sys.__getSysVar('カメ画像URL')
       return sys.tags.turtles.createTurtle(imageUrl)
     }
@@ -433,7 +433,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const imageUrl = elephantImage
       return sys.tags.turtles.createTurtle(imageUrl)
     }
@@ -442,7 +442,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const imageUrl = pandaImage
       return sys.tags.turtles.createTurtle(imageUrl)
     }
@@ -451,7 +451,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
-    fn: function (id: number, sys: NakoSystem) {
+    fn: function(id: number, sys: NakoSystem) {
       sys.tags.turtles.target = id
     },
     return_none: true
@@ -462,7 +462,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (url: string, sys: NakoSystem) {
+    fn: function(url: string, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['changeImage', url])
     },
@@ -473,7 +473,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem) {
+    fn: function(v: number, sys: NakoSystem) {
       sys.__setSysVar('カメ速度', v)
     }
   },
@@ -481,7 +481,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (xy: number[], sys: NakoSystem) {
+    fn: function(xy: number[], sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['mv', xy[0], xy[1]])
     },
@@ -491,7 +491,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (xy: number[], sys: NakoSystem) {
+    fn: function(xy: number[], sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['xy', xy[0], xy[1]])
     },
@@ -501,7 +501,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem) {
+    fn: function(v: number, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['fd', v, 1])
     },
@@ -511,7 +511,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem) {
+    fn: function(v: number, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['fd', v, -1])
     },
@@ -521,7 +521,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem) {
+    fn: function(v: number, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['angle', v])
     },
@@ -531,7 +531,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem) {
+    fn: function(v: number, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['rotr', v])
     },
@@ -541,7 +541,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem) {
+    fn: function(v: number, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['rotl', v])
     },
@@ -551,7 +551,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (c: string, sys: NakoSystem) {
+    fn: function(c: string, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['color', c])
     },
@@ -561,7 +561,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (w: string, sys: NakoSystem) {
+    fn: function(w: string, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['size', w])
     }
@@ -570,7 +570,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (w: string, sys: NakoSystem) {
+    fn: function(w: string, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['penOn', w])
     }
@@ -579,7 +579,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['begin'])
     }
@@ -588,7 +588,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['close'])
     }
@@ -597,7 +597,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['stroke'])
     }
@@ -606,7 +606,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['fill'])
     }
@@ -615,7 +615,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['を', 'と', 'の']],
     pure: true,
-    fn: function (s: string, sys: NakoSystem) {
+    fn: function(s: string, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['text', s])
     }
@@ -624,7 +624,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ', 'で']],
     pure: true,
-    fn: function (s: string, sys: NakoSystem) {
+    fn: function(s: string, sys: NakoSystem) {
       s = '' + s // 文字列に
       if (s.match(/^\d+$/)) {
         s = s + 'px serif'
@@ -639,7 +639,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (c: string, sys: NakoSystem) {
+    fn: function(c: string, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['fillStyle', c])
     },
@@ -649,7 +649,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       sys.tags.turtles.clearAll()
     },
     return_none: true
@@ -658,7 +658,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (cmd: string, sys: NakoSystem) {
+    fn: function(cmd: string, sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       const a = cmd.split(/(\n|;)/)
       for (let i = 0; i < a.length; i++) {
@@ -675,7 +675,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['visible', false])
     },
@@ -685,7 +685,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const turtles: NakoTurtleSystem = sys.tags.turtles
       turtles.addMacro(['visible', true])
     },
@@ -695,7 +695,7 @@ const PluginTurtle = {
     type: 'func',
     josi: [['を']],
     pure: false,
-    fn: function (func: NakoCallback, sys: NakoSystem) {
+    fn: function(func: NakoCallback, sys: NakoSystem) {
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換
       if (typeof func !== 'function') { return }
       const tid = sys.tags.turtles.target

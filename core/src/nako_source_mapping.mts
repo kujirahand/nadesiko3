@@ -14,7 +14,7 @@ export class SourceMappingOfTokenization {
      * @param {number} sourceCodeLength
      * @param {PreprocessItem[]} preprocessed
      */
-  constructor (sourceCodeLength: number, preprocessed: PreprocessItem[]) {
+  constructor(sourceCodeLength: number, preprocessed: PreprocessItem[]) {
     /** @private @readonly */
     this.sourceCodeLength = sourceCodeLength
 
@@ -40,7 +40,7 @@ export class SourceMappingOfTokenization {
      * @param {number} preprocessedCodePosition
      * @returns {number}
      */
-  map (preprocessedCodePosition: number): number {
+  map(preprocessedCodePosition: number): number {
     const i = this.findIndex(preprocessedCodePosition)
     return Math.min(
       this.preprocessed[i].sourcePosition + (preprocessedCodePosition - this.cumulativeSum[i]),
@@ -52,7 +52,7 @@ export class SourceMappingOfTokenization {
      * @param {number} preprocessedCodePosition
      * @returns {number}
      */
-  findIndex (preprocessedCodePosition: number): number {
+  findIndex(preprocessedCodePosition: number): number {
     // 連続アクセスに対する高速化
     if (preprocessedCodePosition < this.lastPreprocessedCodePosition) {
       this.lastIndex = 0
@@ -82,7 +82,7 @@ export class SourceMappingOfIndentSyntax {
      * @param {readonly number[]} linesInsertedByIndentationSyntax
      * @param {readonly { lineNumber: number, len: number }[]} linesDeletedByIndentationSyntax
      */
-  constructor (
+  constructor(
     codeAfterProcessingIndentationSyntax: string,
     linesInsertedByIndentationSyntax: number[],
     linesDeletedByIndentationSyntax: { lineNumber: number, len: number }[]
@@ -113,7 +113,7 @@ export class SourceMappingOfIndentSyntax {
      * @param {number | null} endOffset
      * @returns {{ startOffset: number | null, endOffset: number | null }}
      */
-  map (startOffset: number | null, endOffset:number | null): { startOffset: number | null, endOffset: number | null } {
+  map(startOffset: number | null, endOffset:number | null): { startOffset: number | null, endOffset: number | null } {
     if (startOffset === null) {
       return { startOffset, endOffset }
     }
@@ -159,7 +159,7 @@ export class SourceMappingOfIndentSyntax {
      * @returns {number}
      * @private
      */
-  getLineNumber (offset: number): number {
+  getLineNumber(offset: number): number {
     // 連続アクセスに対する高速化
     if (offset < this.lastOffset) {
       this.lastLineNumber = 0
@@ -186,7 +186,7 @@ export class OffsetToLineColumn {
   /**
      * @param {string} code
      */
-  constructor (code: string) {
+  constructor(code: string) {
     /** @private @type {number[]} */
     this.lineOffsets = []
 
@@ -208,7 +208,7 @@ export class OffsetToLineColumn {
      * @param {boolean} oneBasedLineNumber trueのときlineを1から始める
      * @returns {{ line: number, column: number }}
      */
-  map (offset: number, oneBasedLineNumber: boolean):{ line: number, column: number } {
+  map(offset: number, oneBasedLineNumber: boolean):{ line: number, column: number } {
     // 連続アクセスに対する高速化
     if (offset < this.lastOffset) {
       this.lastLineNumber = 0
@@ -237,7 +237,7 @@ export class OffsetToLineColumn {
  * preCodeの分、ソースマップのoffset、行数、列数を減らす。
  * @type {<T extends {line?: number, column?: number, startOffset: number | null, endOffset: number | null }>(sourceMap: T, preCode: string) => T}
  */
-export function subtractSourceMapByPreCodeLength (sourceMap: any, preCode: string) {
+export function subtractSourceMapByPreCodeLength(sourceMap: any, preCode: string) {
   // offsetは単純に引くだけでよい
   if (typeof sourceMap.startOffset === 'number') {
     sourceMap.startOffset -= preCode.length

@@ -1,7 +1,7 @@
 /**
  * なでしこ3で行頭インデントに使える文字とインデントカウント数
  */
-export function isIndentChars (ch: string): number {
+export function isIndentChars(ch: string): number {
   const code = ch.charCodeAt(0)
   // 特別なコード
   if (ch === '\t') { return 4 }

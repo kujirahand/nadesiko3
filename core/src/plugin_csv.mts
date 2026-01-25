@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 import { CSVOptions, options, parse, stringify } from './nako_csv.mjs'
 
 const PluginCSV = {
@@ -16,7 +16,7 @@ const PluginCSV = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (): void {
+    fn: function(): void {
       // 基本的に初期化不要
     }
   },
@@ -25,7 +25,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
-    fn: function (str: string): (string | number)[][] {
+    fn: function(str: string): (string | number)[][] {
       options.delimiter = ','
       return parse(str)
     }
@@ -34,7 +34,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'の', 'で']],
     pure: true,
-    fn: function (str: string): (string|number)[][] {
+    fn: function(str: string): (string|number)[][] {
       options.delimiter = '\t'
       return parse(str)
     }
@@ -43,7 +43,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (a: string[][]): string {
+    fn: function(a: string[][]): string {
       options.delimiter = ','
       return stringify(a)
     }
@@ -52,7 +52,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (a: string[][]): string {
+    fn: function(a: string[][]): string {
       options.delimiter = '\t'
       return stringify(a)
     }
@@ -61,7 +61,7 @@ const PluginCSV = {
     type: 'func',
     josi: [['を', 'で']],
     pure: true,
-    fn: function (obj: { [key: string]: unknown }): void {
+    fn: function(obj: { [key: string]: unknown }): void {
       for (const key in obj) {
         const value: unknown = obj[key]
         if (key === 'delimiter' || key === '区切文字') {

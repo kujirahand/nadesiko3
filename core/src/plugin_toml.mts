@@ -16,7 +16,7 @@ const PluginTOML = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
     }
   },
   // @TOML
@@ -24,7 +24,7 @@ const PluginTOML = {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function (s: string, sys: any) {
+    fn: function(s: string, sys: any) {
       return TOML.parse(s)
     }
   },
@@ -32,10 +32,10 @@ const PluginTOML = {
     type: 'func',
     josi: [['を', 'から', 'の']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       return TOML.stringify(s)
     }
-  },
+  }
 }
 
 export default PluginTOML

@@ -25,7 +25,7 @@ interface BlockStruct {
 /**
  * インデント構文指定があればコードを変換する
  */
-function convert (code: string, filename = 'main.nako3'): ConvertResult {
+function convert(code: string, filename = 'main.nako3'): ConvertResult {
   // インデント構文の適用が必要か？
   if (checkNakoMode(code, INDENT_MODE_KEYWORDS)) {
     return convertForIndentMode(code, filename)
@@ -36,7 +36,7 @@ function convert (code: string, filename = 'main.nako3'): ConvertResult {
 /**
  * インデント構文指定があるかチェックする
  */
-function isIndentSyntaxEnabled (code: string): boolean {
+function isIndentSyntaxEnabled(code: string): boolean {
   return checkNakoMode(code, INDENT_MODE_KEYWORDS)
 }
 
@@ -45,7 +45,7 @@ const defSpecialRetMark = '🍷🍷改行🍹黐黑鼘鼶齈▨🍺🍺🍶🍶'
 let SpecialRetMark = defSpecialRetMark
 
 /** code中にありえない改行マーク生成しモジュール内の変数SpecialRetMarkに設定 */
-export function checkSpecialRetMark (code: string): string {
+export function checkSpecialRetMark(code: string): string {
   SpecialRetMark = defSpecialRetMark
   while (code.indexOf(SpecialRetMark) >= 0) {
     // 適当な文字を足してユニークにする(一応漢字領域で生成)
@@ -59,7 +59,7 @@ export function checkSpecialRetMark (code: string): string {
  * ソースコードのある1行の中のコメントを全て取り除く。
  * 事前にreplaceRetMarkによって文字列や範囲コメント内の改行文字が置換されている必要がある。
  */
-export function removeCommentsFromLine (src: string): string {
+export function removeCommentsFromLine(src: string): string {
   const prepare = NakoPrepare.getInstance() // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
   const len = src.length
   let result = ''
@@ -92,50 +92,50 @@ export function removeCommentsFromLine (src: string): string {
     }
     // 文字列の改行も無視する
     switch (cPrepared) {
-      case '"':
-      case '\'':
-        eos = c
-        result += c
-        i++
-        continue
-      case '「':
-        eos = '」'
-        result += c
-        i++
-        continue
-      case '『':
-        eos = '』'
-        result += c
-        i++
-        continue
-      case '“':
-        eos = '”'
-        result += c
-        i++
-        continue
-      case '{':
-        eos = '}'
-        result += c
-        i++
-        continue
-      case '[':
-        eos = ']'
-        result += c
-        i++
-        continue
+    case '"':
+    case '\'':
+      eos = c
+      result += c
+      i++
+      continue
+    case '「':
+      eos = '」'
+      result += c
+      i++
+      continue
+    case '『':
+      eos = '』'
+      result += c
+      i++
+      continue
+    case '“':
+      eos = '”'
+      result += c
+      i++
+      continue
+    case '{':
+      eos = '}'
+      result += c
+      i++
+      continue
+    case '[':
+      eos = ']'
+      result += c
+      i++
+      continue
     }
 
     switch (ch2) {
-      case '🌴':
-        eos = '🌴'
-        result += ch2
-        i += 2
-        continue
-      case '🌿':
-        eos = '🌿'
-        result += ch2
-        i += 2
-        continue
+    case '🌴':
+      eos = '🌴'
+      result += ch2
+      i += 2
+      continue
+    case '🌿':
+      eos = '🌿'
+      result += ch2
+      i += 2
+      continue
     }
 
     // 行コメント
@@ -167,7 +167,7 @@ export function removeCommentsFromLine (src: string): string {
 }
 
 /** インデントモードのための変換処理 */
-function convertForIndentMode (code: string, filename: string): any {
+function convertForIndentMode(code: string, filename: string): any {
   // returns => {{ code: string, insertedLines: number[], deletedLines: { lineNumber: number, len: number }[] }}
   const insertedLines: number[] = []
   const deletedLines: DeletedLine[] = []
@@ -279,7 +279,7 @@ function convertForIndentMode (code: string, filename: string): any {
  * count分だけ字下げする
  * @param {number} count
  */
-function makeIndent (count: number): string {
+function makeIndent(count: number): string {
   let s = ''
   for (let i = 0; i < count; i++) {
     s += ' '
@@ -290,7 +290,7 @@ function makeIndent (count: number): string {
 /**
  * インデント部分を取り出す
  */
-export function getIndent (line: string): string {
+export function getIndent(line: string): string {
   // eslint-disable-next-line no-irregular-whitespace
   const m = /^([ 　・\t]*)/.exec(removeCommentsFromLine(line))
   if (!m) { return '' }
@@ -300,7 +300,7 @@ export function getIndent (line: string): string {
 /**
  * インデントの個数を数える
  */
-export function countIndent (line: string): number {
+export function countIndent(line: string): number {
   let cnt = 0
   for (let i = 0; i < line.length; i++) {
     const ch = line.charAt(i)
@@ -325,7 +325,7 @@ export function countIndent (line: string): number {
   return cnt
 }
 
-export function replaceRetMark (src: string): string {
+export function replaceRetMark(src: string): string {
   const prepare = NakoPrepare.getInstance() // `※`, `／/`, `／＊` といったパターン全てに対応するために必要
   const len = src.length
   let result = ''
@@ -356,50 +356,50 @@ export function replaceRetMark (src: string): string {
     }
     // 文字列の改行も無視する
     switch (cPrepared) {
-      case '"':
-      case '\'':
-        eos = c
-        result += c
-        i++
-        continue
-      case '「':
-        eos = '」'
-        result += c
-        i++
-        continue
-      case '『':
-        eos = '』'
-        result += c
-        i++
-        continue
-      case '“':
-        eos = '”'
-        result += c
-        i++
-        continue
-      case '{':
-        eos = '}'
-        result += c
-        i++
-        continue
-      case '[':
-        eos = ']'
-        result += c
-        i++
-        continue
+    case '"':
+    case '\'':
+      eos = c
+      result += c
+      i++
+      continue
+    case '「':
+      eos = '」'
+      result += c
+      i++
+      continue
+    case '『':
+      eos = '』'
+      result += c
+      i++
+      continue
+    case '“':
+      eos = '”'
+      result += c
+      i++
+      continue
+    case '{':
+      eos = '}'
+      result += c
+      i++
+      continue
+    case '[':
+      eos = ']'
+      result += c
+      i++
+      continue
     }
 
     switch (ch2) {
-      case '🌴':
-        eos = '🌴'
-        result += ch2
-        i += 2
-        continue
-      case '🌿':
-        eos = '🌿'
-        result += ch2
-        i += 2
-        continue
+    case '🌴':
+      eos = '🌴'
+      result += ch2
+      i += 2
+      continue
+    case '🌿':
+      eos = '🌿'
+      result += ch2
+      i += 2
+      continue
     }
 
     // 行コメント
@@ -435,7 +435,7 @@ export function replaceRetMark (src: string): string {
  * 空白行や複数行にまたがる構文を考慮する。
  * インデント構文が有効化されていない場合にも使われる。
  */
-export function getBlockStructure (code: string): BlockStruct {
+export function getBlockStructure(code: string): BlockStruct {
   const result: BlockStruct = {
     lines: [], // 各行のインデント量
     pairs: [],

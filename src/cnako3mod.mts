@@ -1,32 +1,32 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
+ 
 // deno-lint-ignore-file no-explicit-any
 /**
  * コマンドライン版のなでしこ3をモジュールとして定義
  * 実際には cnako3.mjs から読み込まれる
  */
 import fs from 'node:fs'
-import fse from 'fs-extra'
 import { exec } from 'node:child_process'
 import path from 'node:path'
+import url from 'node:url'
+import fse from 'fs-extra'
 
+import fetch from 'node-fetch'
 import { NakoCompiler, LoaderTool, newCompilerOptions } from '../core/src/nako3.mjs'
 import { NakoImportError } from '../core/src/nako_errors.mjs'
 
 import { Ast, CompilerOptions } from '../core/src/nako_types.mjs'
 import { NakoGlobal } from '../core/src/nako_global.mjs'
+import { NakoGenOptions } from '../core/src/nako_gen.mjs'
 import nakoVersion from './nako_version.mjs'
 
 import PluginNode from './plugin_node.mjs'
 import app from './commander_ja.mjs'
-import fetch from 'node-fetch'
 
-import { NakoGenOptions } from '../core/src/nako_gen.mjs'
 
 import { getEnv, isWindows, getCommandLineArgs, exit } from './deno_wrapper.mjs'
 
 // __dirname のために
-import url from 'node:url'
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -57,7 +57,7 @@ export class CNako3 extends NakoCompiler {
   debug: boolean
   version: string
 
-  constructor (opts:CNako3Options = { nostd: false }) {
+  constructor(opts:CNako3Options = { nostd: false }) {
     super({ useBasicPlugin: !opts.nostd })
     this.debug = false
     this.filename = 'main.nako3'
@@ -73,7 +73,7 @@ export class CNako3 extends NakoCompiler {
   }
 
   // CNAKO3で使えるコマンドを登録する
-  registerCommands () {
+  registerCommands() {
     // コマンドライン引数を得る
     const args: string[] = getCommandLineArgs()
     // コマンド引数がないならば、ヘルプを表示(-hはcommandarにデフォルト用意されている)
@@ -108,7 +108,7 @@ export class CNako3 extends NakoCompiler {
   }
 
   /** コマンドライン引数を解析 */
-  checkArguments (): CNako3ArgOptions {
+  checkArguments(): CNako3ArgOptions {
     const app: any = this.registerCommands()
 
     let logLevel = 'error'
@@ -166,7 +166,7 @@ export class CNako3 extends NakoCompiler {
   }
 
   // 実行する
-  async execCommand () {
+  async execCommand() {
     // コマンドを解析
     const opt: CNako3ArgOptions = this.checkArguments()
     // 使い方の表示か？
@@ -247,7 +247,7 @@ export class CNako3 extends NakoCompiler {
   /**
    * コンパイルモードの場合
    */
-  async nakoCompile (opt: any, src: string, isTest: boolean) {
+  async nakoCompile(opt: any, src: string, isTest: boolean) {
     // 依存ライブラリなどを読み込む
     await this.loadDependencies(src, this.filename, '')
     // JSにコンパイル
@@ -300,7 +300,7 @@ export class CNako3 extends NakoCompiler {
     }
 
     if (opt.run) {
-      exec(`node ${opt.output}`, function (err, stdout, stderr) {
+      exec(`node ${opt.output}`, function(err, stdout, stderr) {
         if (err) { console.log('[ERROR]', stderr) }
         console.log(stdout)
       })
@@ -308,7 +308,7 @@ export class CNako3 extends NakoCompiler {
   }
 
   // ワンライナーの場合
-  async cnakoOneLiner (opt: any) {
+  async cnakoOneLiner(opt: any) {
     const org = opt.source
     try {
       if (opt.source.indexOf('表示') < 0) {
@@ -336,7 +336,7 @@ export class CNako3 extends NakoCompiler {
   /**
    * JSONを出力
    */
-  outputJSON (ast: any, level: number): string {
+  outputJSON(ast: any, level: number): string {
     const makeIndent = (level: number) => {
       let s = ''
       for (let i = 0; i < level; i++) { s += '  ' }
@@ -374,20 +374,20 @@ export class CNako3 extends NakoCompiler {
   /**
    * ASTを出力
    */
-  outputAST (opt: any, src: string) {
+  outputAST(opt: any, src: string) {
     const ast = this.parse(src, opt.mainfile)
     console.log(this.outputJSON(ast, 0))
   }
 
   // REPL(対話実行環境)の場合
-  async cnakoRepl () {
+  async cnakoRepl() {
     const fname = path.join(__dirname, 'repl.nako3')
     const src = fs.readFileSync(fname, 'utf-8')
     await this.runAsync(src, 'main.nako3')
   }
 
   // マニュアルを表示する
-  cnakoMan (command: string) {
+  cnakoMan(command: string) {
     try {
       const pathCommands = path.join(__dirname, '../release/command_cnako3.json')
       const commands = JSON.parse(fs.readFileSync(pathCommands, 'utf-8'))
@@ -405,13 +405,13 @@ export class CNako3 extends NakoCompiler {
   }
 
   // 対応機器/Webブラウザを表示する
-  cnakoBrowsers () {
+  cnakoBrowsers() {
     const fileMD = path.resolve(__dirname, '../doc', 'browsers.md')
     console.log(fs.readFileSync(fileMD, 'utf-8'))
   }
 
   // (js|nako3) loader
-  getLoaderTools () {
+  getLoaderTools() {
     /** @type {string[]} */
     const log: string[] = []
     const tools: LoaderTool = {
@@ -452,7 +452,7 @@ export class CNako3 extends NakoCompiler {
         // ファイルかHTTPか
         if (name.startsWith('http://') || name.startsWith('https://')) {
           // Webのファイルを非同期で読み込む
-          loader.task = (async () => {
+          loader.task = (async() => {
             const res = await fetch(name)
             if (!res.ok) {
               throw new NakoImportError(`『${name}』からのダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
@@ -561,7 +561,7 @@ export class CNako3 extends NakoCompiler {
   }
 
   /** 『!「xxx」を取込』の処理 */
-  async loadDependencies (code: string, filename: string, preCode: string) {
+  async loadDependencies(code: string, filename: string, preCode: string) {
     const tools = this.getLoaderTools()
     await super._loadDependencies(code, filename, preCode, tools)
   }
@@ -569,7 +569,7 @@ export class CNako3 extends NakoCompiler {
   /**
    * 非同期でなでしこのコードを実行する
    */
-  async runAsync (code: string, fname: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
+  async runAsync(code: string, fname: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
     // オプション
     const opt = newCompilerOptions(options)
     // 取り込む文
@@ -586,7 +586,7 @@ export class CNako3 extends NakoCompiler {
    * @param log
    * @return フルパス、失敗した時は、''を返す
    */
-  static findJSPluginFile (pname: string, filename: string, srcDir: string, log: string[] = []): string {
+  static findJSPluginFile(pname: string, filename: string, srcDir: string, log: string[] = []): string {
     log.length = 0
     const cachePath: {[key: string]: boolean} = {}
     /** キャッシュ付きでファイルがあるか検索 */
@@ -599,7 +599,7 @@ export class CNako3 extends NakoCompiler {
         const b = !!(stat && stat.isFile())
         cachePath[f] = b
         return b
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       } catch (_: any) {
         return false
       }

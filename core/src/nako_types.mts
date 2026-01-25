@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 /**
  * なでしこ3 の TypeScript のための型定義
  */
@@ -26,7 +26,7 @@ export interface FuncListItem {
   funcPointers?: any[];
   asyncFn?: boolean;
   isExport?: null|boolean;
-  // eslint-disable-next-line camelcase
+   
   return_none?: boolean;
   pure?: boolean;
   name?: string;
@@ -46,7 +46,7 @@ export interface TokenMeta {
     funcPointers: any[] | undefined;
 }
 
-export function NewEmptyToken (type: TokenType = '?', value: any = '', indent = -1, line = 0, file = 'main.nako3'): Token {
+export function NewEmptyToken(type: TokenType = '?', value: any = '', indent = -1, line = 0, file = 'main.nako3'): Token {
   return {
     type,
     value,

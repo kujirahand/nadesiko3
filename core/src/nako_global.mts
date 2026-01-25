@@ -33,7 +33,7 @@ export class NakoGlobal {
    * @param compiler
    * @param gen
    */
-  constructor (compiler: NakoCompiler, gen: NakoGen, guid = 0) {
+  constructor(compiler: NakoCompiler, gen: NakoGen, guid = 0) {
     this.guid = guid
     this.lastJSCode = ''
     // ユーザーのプログラムから編集される変数
@@ -70,11 +70,11 @@ export class NakoGlobal {
     this.reservedWords = compiler.reservedWords
   }
 
-  clearLog () {
+  clearLog() {
     this.__varslist[0].set('表示ログ', '')
   }
 
-  get log () {
+  get log() {
     let s = this.__varslist[0].get('表示ログ')
     s = s.replace(/\s+$/, '')
     return s
@@ -85,7 +85,7 @@ export class NakoGlobal {
    * @param name システム変数名
    * @param value 設定したい値
    */
-  __setSysVar (name: string, value: any) {
+  __setSysVar(name: string, value: any) {
     this.__varslist[0].set(name, value)
   }
 
@@ -94,21 +94,21 @@ export class NakoGlobal {
    * @param name システム変数名
    * @returns システム変数の値
    */
-  __getSysVar (name: string): any {
+  __getSysVar(name: string): any {
     return this.__varslist[0].get(name)
   }
 
   /**
    * 「ナデシコ」命令のためのメソッド
    */
-  runEx (code: string, fname: string, opts: CompilerOptions, preCode = ''): NakoGlobal {
+  runEx(code: string, fname: string, opts: CompilerOptions, preCode = ''): NakoGlobal {
     // スコープを共有して実行
     opts.preCode = preCode
     opts.nakoGlobal = this
     return this.compiler.runSync(code, fname, opts)
   }
 
-  async runAsync (code: string, fname: string, opts: CompilerOptions, preCode = ''): Promise<NakoGlobal> {
+  async runAsync(code: string, fname: string, opts: CompilerOptions, preCode = ''): Promise<NakoGlobal> {
     // スコープを共有して実行
     opts.preCode = preCode
     opts.nakoGlobal = this
@@ -119,7 +119,7 @@ export class NakoGlobal {
    * テスト実行のためのメソッド
    * @param {{ name: string, f: () => void }[]} tests
    */
-  _runTests (tests: {name: string, f: () => void }[]): void {
+  _runTests(tests: {name: string, f: () => void }[]): void {
     let text = `${NakoColors.color.bold}テストの実行結果${NakoColors.color.reset}\n`
     let pass = 0
     let numFailures = 0
@@ -146,7 +146,7 @@ export class NakoGlobal {
   /**
    * 毎プラグインの「!クリア」関数を実行
    */
-  clearPlugins () {
+  clearPlugins() {
     // 実行している関数をすべて終了させる
     // プラグインのクリア関数を呼び出す
     const clearName = '!クリア'
@@ -165,11 +165,11 @@ export class NakoGlobal {
   /**
    * 各種リセット処理
    */
-  reset () {
+  reset() {
     this.clearPlugins()
   }
 
-  destroy () {
+  destroy() {
     this.reset()
   }
 }

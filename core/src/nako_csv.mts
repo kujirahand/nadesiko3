@@ -11,19 +11,19 @@ export const options: CSVOptions = {
   auto_convert_number: true
 }
 
-export function resetEnv (): void {
+export function resetEnv(): void {
   options.delimiter = ','
   options.eol = '\r\n'
   options.auto_convert_number = true
 }
 
 /// 文字列が数値化どうか判定する関数
-// eslint-disable-next-line camelcase
-function is_numeric (str: string): boolean {
+ 
+function is_numeric(str: string): boolean {
   return /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(str)
 }
 
-export function parse (txt: string, delimiter: string|undefined = undefined): (string|number)[][] {
+export function parse(txt: string, delimiter: string|undefined = undefined): (string|number)[][] {
   // delimiter
   if (delimiter === undefined) {
     delimiter = options.delimiter
@@ -38,7 +38,7 @@ export function parse (txt: string, delimiter: string|undefined = undefined): (s
   const patToDelim = '^(.*?)([\\' + delimiter + '\\n])'
   const reToDelim = new RegExp(patToDelim)
   // if value is number then convert to float
-  const convType = function (v: string) {
+  const convType = function(v: string) {
     let result: string|number = v
     if (typeof (v) === 'string') {
       if (options.auto_convert_number && is_numeric(v)) {
@@ -150,7 +150,7 @@ export function parse (txt: string, delimiter: string|undefined = undefined): (s
 }
 
 // convert 2D array to CSV string
-export function stringify (ary: string[][], delimiter: string|undefined = undefined, eol: string|undefined = undefined): string {
+export function stringify(ary: string[][], delimiter: string|undefined = undefined, eol: string|undefined = undefined): string {
   // check arguments
   if (delimiter === undefined) {
     delimiter = options.delimiter
@@ -176,15 +176,15 @@ export function stringify (ary: string[][], delimiter: string|undefined = undefi
   return r
 }
 
-export function replaceEolMark (eol: string): string {
+export function replaceEolMark(eol: string): string {
   eol = eol.replace(/\n\r/g, '[CRLF]')
   eol = eol.replace(/\r/g, '[CR]')
   eol = eol.replace(/\n/g, '[LF]')
   return eol
 }
 
-function genValueConverter (delimiter: string) {
-  return function (s: string) {
+function genValueConverter(delimiter: string) {
+  return function(s: string) {
     s = '' + s
     let fQuot = false
     if (s.indexOf('\n') >= 0 || s.indexOf('\r') >= 0) { fQuot = true }

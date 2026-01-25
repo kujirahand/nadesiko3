@@ -16,7 +16,7 @@ class EasyURLItem {
   action: EasyURLActionType
   path: string
   callback: EasyURLCallback
-  constructor (action: EasyURLActionType) {
+  constructor(action: EasyURLActionType) {
     this.action = action
     this.url = ''
     this.path = ''
@@ -32,7 +32,7 @@ class EasyURLDispather {
   isEnd: boolean
   usedHeader: boolean
 
-  constructor (sys: any) {
+  constructor(sys: any) {
     this.server = null
     this.items = []
     this.sys = sys
@@ -42,7 +42,7 @@ class EasyURLDispather {
     this.usedHeader = false
   }
 
-  doRequest (req: any, res: any) {
+  doRequest(req: any, res: any) {
     this.curReq = req
     this.curRes = res
     console.log(`${HTTPSERVER_LOGID} 要求あり URL=` + req.url)
@@ -62,13 +62,13 @@ class EasyURLDispather {
     }
   }
 
-  return404 (res: any) {
+  return404(res: any) {
     console.error(HTTPSERVER_LOGID, 404, '見当たりません。')
     res.statusCode = 404
     res.end('<html><meta charset="utf-8"><body><h1>404 見当たりません。</h1></body></html>')
   }
 
-  doRequestStatic (req: any, res: any, it: EasyURLItem): boolean {
+  doRequestStatic(req: any, res: any, it: EasyURLItem): boolean {
     let url: string = ('' + req.url).replace(/\.\./g, '') // URLの..を許可しない
     url = url.substring(it.url.length)
     let fpath = path.join(it.path, url)
@@ -102,7 +102,7 @@ class EasyURLDispather {
     return true
   }
 
-  doRequestCallback (req: any, res: any, it: EasyURLItem): boolean {
+  doRequestCallback(req: any, res: any, it: EasyURLItem): boolean {
     this.isEnd = false
     this.usedHeader = false
     it.callback(req, res)
@@ -112,11 +112,11 @@ class EasyURLDispather {
     return true
   }
 
-  addItem (it: EasyURLItem) {
+  addItem(it: EasyURLItem) {
     this.items.push(it)
   }
 
-  parseURL (uri: string): any {
+  parseURL(uri: string): any {
     const params: any = {}
     if (uri.indexOf('?') >= 0) {
       const a = uri.split('?')
@@ -143,7 +143,7 @@ const MimeTypes: any = {
   '.gif': 'image/gif',
   '.svg': 'svg+xml'
 }
-function getMIMEType (url: string) {
+function getMIMEType(url: string) {
   let ext = '.txt'
   const m = url.match(/(\.[a-z0-9_]+)$/)
   if (m) { ext = m[1] }
@@ -151,7 +151,7 @@ function getMIMEType (url: string) {
   return 'text/plain'
 }
 // ディレクトリか判定
-function isDir (pathName: string) {
+function isDir(pathName: string) {
   try {
     // node v12以下ではエラーがあると例外を返す
     const stats = fs.statSync(pathName)
@@ -178,7 +178,7 @@ const PluginHttpServer = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       sys.__httpserver = null
     }
   },
@@ -188,7 +188,7 @@ const PluginHttpServer = {
     type: 'func',
     josi: [['を'], ['の', 'で']],
     pure: true,
-    fn: function (callback: EasyHTTPOnStart, port: number, sys: any) {
+    fn: function(callback: EasyHTTPOnStart, port: number, sys: any) {
       // 管理オブジェクトを作成する
       const dp = sys.__httpserver = new EasyURLDispather(sys)
       // サーバオブジェクトを生成
@@ -207,7 +207,7 @@ const PluginHttpServer = {
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
-    fn: function (url: string, path: string, sys: any) {
+    fn: function(url: string, path: string, sys: any) {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
@@ -222,7 +222,7 @@ const PluginHttpServer = {
     type: 'func',
     josi: [['を'], ['に', 'へ', 'で']],
     pure: true,
-    fn: function (callback: EasyURLCallback, url: string, sys: any) {
+    fn: function(callback: EasyURLCallback, url: string, sys: any) {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
@@ -240,7 +240,7 @@ const PluginHttpServer = {
     type: 'func',
     josi: [['を', 'と', 'の']],
     pure: true,
-    fn: function (s: string, sys: any) {
+    fn: function(s: string, sys: any) {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
@@ -260,7 +260,7 @@ const PluginHttpServer = {
     type: 'func',
     josi: [['で'], ['を', 'の', 'と']],
     pure: true,
-    fn: function (no: number, head: string, sys: any) {
+    fn: function(no: number, head: string, sys: any) {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
@@ -277,7 +277,7 @@ const PluginHttpServer = {
     type: 'func',
     josi: [['へ', 'に']],
     pure: true,
-    fn: function (url: string, sys: any) {
+    fn: function(url: string, sys: any) {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }

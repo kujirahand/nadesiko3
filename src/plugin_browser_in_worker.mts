@@ -18,7 +18,7 @@ const PluginBrowserInWorker = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       /* eslint no-global-assign: 0 */
       if (typeof self === 'undefined') { self = {} }
       if (typeof navigator === 'undefined') { navigator = {} }

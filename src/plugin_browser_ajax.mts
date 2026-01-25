@@ -5,7 +5,7 @@ export default {
     josi: [['の', 'から', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: any, sys: any) {
+    fn: async function(url: any, sys: any) {
       return sys.__exec('AJAXテキスト取得', [url, sys])
     }
   },
@@ -14,7 +14,7 @@ export default {
     josi: [['から', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: any, sys: any) {
+    fn: async function(url: any, sys: any) {
       return sys.__exec('AJAXテキスト取得', [url, sys])
     }
   },
@@ -22,7 +22,7 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を']],
     pure: true,
-    fn: function (callback: any, url: any, sys: any) {
+    fn: function(callback: any, url: any, sys: any) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -32,7 +32,7 @@ export default {
     josi: [['まで', 'へ', 'に']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: any, sys: any) {
+    fn: async function(url: any, sys: any) {
       return sys.__exec('AJAXテキスト取得', [url, sys])
     }
   },
@@ -40,7 +40,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
-    fn: function (callback: any, url: any, sys: any) {
+    fn: function(callback: any, url: any, sys: any) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then(res => {
@@ -63,7 +63,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'と']],
     pure: true,
-    fn: function (option: any, sys: any) {
+    fn: function(option: any, sys: any) {
       sys.__setSysVar('AJAXオプション', option)
     },
     return_none: true
@@ -72,7 +72,7 @@ export default {
     type: 'func',
     josi: [['を', 'で']],
     pure: true,
-    fn: function (params: any, sys: any) {
+    fn: function(params: any, sys: any) {
       const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
@@ -89,7 +89,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (callback: any, sys: any) {
+    fn: function(callback: any, sys: any) {
       sys.__setSysVar('AJAX:ONERROR', callback)
     }
   },
@@ -98,7 +98,7 @@ export default {
     josi: [['から', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: any, sys: any) {
+    fn: async function(url: any, sys: any) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
@@ -112,7 +112,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: any, sys: any) {
+    fn: async function(url: any, sys: any) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
@@ -126,7 +126,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: any, sys: any) {
+    fn: async function(url: any, sys: any) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
@@ -140,7 +140,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
-    fn: function (callback: any, url: any, sys: any) {
+    fn: function(callback: any, url: any, sys: any) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -149,7 +149,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (callback: any, url: any, params: any, sys: any) {
+    fn: function(callback: any, url: any, params: any, sys: any) {
       const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
@@ -172,7 +172,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (callback: any, url: any, params: any, sys: any) {
+    fn: function(callback: any, url: any, params: any, sys: any) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -194,7 +194,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (params: any, sys: any) {
+    fn: function(params: any, sys: any) {
       const flist: string[] = []
       for (const key in params) {
         const v = params[key]
@@ -209,7 +209,7 @@ export default {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: function (url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, sys: any) {
       return new Promise((resolve, reject) => {
         const bodyData = sys.__exec('POSTデータ生成', [params, sys])
         const options = {
@@ -234,7 +234,7 @@ export default {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: function (url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, sys: any) {
       return new Promise((resolve, reject) => {
         const fd = new FormData()
         for (const key in params) { fd.set(key, params[key]) }
@@ -257,7 +257,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       return fetch(url, options)
@@ -268,7 +268,7 @@ export default {
     type: 'func',
     josi: [['の', 'から', 'を']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       return sys.__exec('AJAX保障送信', [url, sys])
     },
     return_none: false
@@ -277,7 +277,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, sys: any) {
       const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
@@ -294,7 +294,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, sys: any) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -310,7 +310,7 @@ export default {
     type: 'func',
     josi: [['から'], ['で']],
     pure: true,
-    fn: function (res: any, type: any, sys: any) {
+    fn: function(res: any, type: any, sys: any) {
       type = type.toString().toUpperCase()
       if (type === 'TEXT' || type === 'テキスト') {
         return res.text()
@@ -336,7 +336,7 @@ export default {
     type: 'func',
     josi: [['を', 'から'], ['で']],
     pure: true,
-    fn: function (data: any, options: any) {
+    fn: function(data: any, options: any) {
       if (!(data instanceof Array)) { data = [data] }
       return new Blob(data, options)
     }
@@ -346,7 +346,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       if (!sys.resolve) { throw new Error('『AJAX逐次送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.resolveCount++
       const resolve = sys.resolve
@@ -368,7 +368,7 @@ export default {
     type: 'func',
     josi: [['の', 'から', 'を']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       if (!sys.resolve) { throw new Error('『HTTP逐次取得』は『逐次実行』構文内で利用する必要があります。') }
       sys.__exec('AJAX逐次送信', [url, sys])
     },
@@ -378,7 +378,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, sys: any) {
       if (!sys.resolve) { throw new Error('『POST送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.resolveCount++
       const resolve = sys.resolve
@@ -406,7 +406,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, sys: any) {
       if (!sys.resolve) { throw new Error('『POSTフォーム逐次送信』は『逐次実行』構文内で利用する必要があります。') }
       sys.resolveCount++
       const resolve = sys.resolve

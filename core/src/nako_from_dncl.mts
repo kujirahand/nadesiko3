@@ -23,7 +23,7 @@ const DNCL_SIMPLES: { [key: string]: string[] } = {
 /**
  * DNCLのソースコードをなでしこに変換する
  */
-export function convertDNCL (tokens: Token[]): Token[] {
+export function convertDNCL(tokens: Token[]): Token[] {
   if (!useDNCLmode(tokens)) { return tokens }
 
   // 一行ずつに分ける
@@ -192,7 +192,7 @@ export function convertDNCL (tokens: Token[]): Token[] {
   return tokens
 }
 
-function replaceAllElementV (line: Token[], ni: number): void {
+function replaceAllElementV(line: Token[], ni: number): void {
   //
   // const ni = findTokens(line, ['word:すべて', 'word:要素'])
   //
@@ -210,7 +210,7 @@ function replaceAllElementV (line: Token[], ni: number): void {
   line.splice(ni, 4, eq, begin, val, end, times, mul)
 }
 
-function replaceAtohantei (tokens: Token[], fi: number): void {
+function replaceAtohantei(tokens: Token[], fi: number): void {
   // `ここまで、(${r[1]})になるまでの間`
   const wo = findTokens(tokens, ['word:を'])
   if (wo >= 0) {
@@ -226,7 +226,7 @@ function replaceAtohantei (tokens: Token[], fi: number): void {
   tokens[fi + 1].value = '間'
 }
 
-function findTokens (tokens: Token[], findTypeValue: string[]): number {
+function findTokens(tokens: Token[], findTypeValue: string[]): number {
   const findA = findTypeValue.map(s => s.split(':'))
   for (let i = 0; i < tokens.length; i++) {
     let flag = true
@@ -246,7 +246,7 @@ function findTokens (tokens: Token[], findTypeValue: string[]): number {
   return -1
 }
 
-function useDNCLmode (tokens: Token[]): boolean {
+function useDNCLmode(tokens: Token[]): boolean {
   // 先頭の100語調べる
   for (let i = 0; i < tokens.length; i++) {
     if (i > 100) { break }

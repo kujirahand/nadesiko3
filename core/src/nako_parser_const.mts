@@ -1,6 +1,6 @@
 import { TokenType } from './nako_token.mjs'
 
-/* eslint-disable quote-props */
+ 
 export const opPriority: {[key: string]: number} = {
   // and or
   'and': 1,

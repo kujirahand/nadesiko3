@@ -1,12 +1,12 @@
 /** インデント構文を処理するモジュール */
 
-import { Token, NewEmptyToken } from './nako_types.mjs'
 import { NakoIndentError } from '../src/nako_errors.mjs'
+import { Token, NewEmptyToken } from './nako_types.mjs'
 import { debugTokens, newToken } from './nako_tools.mjs'
 
 const IS_DEBUG = false
 
-function isSkipWord (t: Token): boolean {
+function isSkipWord(t: Token): boolean {
   if (t.type === '違えば') { return true }
   if (t.type === 'word' && t.value === 'エラー' && t.josi === 'ならば') { return true }
   return false
@@ -21,38 +21,38 @@ function removeJsonEol(tokens: Token[]) {
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i]
     // start of JSON
-    if (t.type == '{') {
+    if (t.type === '{') {
       jsonObjLevel++
-      if (jsonStartIndent == -1) {
+      if (jsonStartIndent === -1) {
         jsonStartIndent = t.indent
       }
       continue
     }
-    if (t.type == '[') {
+    if (t.type === '[') {
       jsonArrayLevel++
-      if (jsonStartIndent == -1) {
+      if (jsonStartIndent === -1) {
         jsonStartIndent = t.indent
       }
       continue
     }
     // end of JSON
-    if (t.type == '}') {
+    if (t.type === '}') {
       jsonObjLevel--
-      if (jsonObjLevel == 0 && jsonArrayLevel == 0) {
+      if (jsonObjLevel === 0 && jsonArrayLevel === 0) {
         flagNeedResetIndent = true
       }
       continue
     }
-    if (t.type == ']') {
+    if (t.type === ']') {
       jsonArrayLevel--
-      if (jsonObjLevel == 0 && jsonArrayLevel == 0) {
+      if (jsonObjLevel === 0 && jsonArrayLevel === 0) {
         flagNeedResetIndent = true
       }
       continue
     }
     if (jsonObjLevel > 0 || jsonArrayLevel > 0) {
       t.indent = jsonStartIndent
-      if (t.type == 'eol') {
+      if (t.type === 'eol') {
         // replace eol to comment
         t.type = 'range_comment'
         t.value = 'json::eol'
@@ -61,7 +61,7 @@ function removeJsonEol(tokens: Token[]) {
     }
     if (flagNeedResetIndent) {
       t.indent = jsonStartIndent
-      if (t.type == 'eol') {
+      if (t.type === 'eol') {
         flagNeedResetIndent = false
         jsonStartIndent = -1
       }
@@ -70,7 +70,7 @@ function removeJsonEol(tokens: Token[]) {
 }
 
 /** インラインインデント構文 --- 末尾の":"をインデントを考慮して"ここまで"を挿入 (#1215) */
-export function convertInlineIndent (tokens: Token[]): Token[] {
+export function convertInlineIndent(tokens: Token[]): Token[] {
   //
   // 0:もし、A=0ならば:
   // 2:  もし、B=0ならば:
@@ -147,7 +147,7 @@ export function convertInlineIndent (tokens: Token[]): Token[] {
 }
 
 /** 行ごとに分割していたトークンをくっつける */
-export function joinTokenLines (lines: Token[][]): Token[] {
+export function joinTokenLines(lines: Token[][]): Token[] {
   const r: Token[] = []
   for (const line of lines) {
     for (const t of line) {
@@ -158,7 +158,7 @@ export function joinTokenLines (lines: Token[][]): Token[] {
 }
 
 // トークン行の最後のトークンを取得する
-function getLastTokenWithoutEOL (line: Token[]): Token {
+function getLastTokenWithoutEOL(line: Token[]): Token {
   const len: number = line.length
   let res: Token = NewEmptyToken('?')
   if (len === 0) { return res }
@@ -173,7 +173,7 @@ function getLastTokenWithoutEOL (line: Token[]): Token {
   return res
 }
 
-export function splitTokens (tokens: Token[], delimiter: string): Token[][] {
+export function splitTokens(tokens: Token[], delimiter: string): Token[][] {
   const result: Token[][] = []
   let line: Token[] = []
   let kakko = 0
@@ -195,7 +195,7 @@ export function splitTokens (tokens: Token[], delimiter: string): Token[][] {
 }
 
 /** トークン行が空かどうか調べる */
-function IsEmptyLine (line: Token[]): boolean {
+function IsEmptyLine(line: Token[]): boolean {
   if (line.length === 0) { return true }
   for (let j = 0; j < line.length; j++) {
     const ty = line[j].type
@@ -206,7 +206,7 @@ function IsEmptyLine (line: Token[]): boolean {
 }
 
 /** コメントを除去した最初のトークンを返す */
-function GetLeftTokens (line: Token[]): Token {
+function GetLeftTokens(line: Token[]): Token {
   for (let i = 0; i < line.length; i++) {
     const t = line[i].type
     if (t === 'eol' || t === 'line_comment' || t === 'range_comment') { continue }
@@ -219,7 +219,7 @@ function GetLeftTokens (line: Token[]): Token {
 const INDENT_MODE_KEYWORDS = ['!インデント構文', '!ここまでだるい', '💡インデント構文', '💡ここまでだるい']
 
 /** インデント構文 --- インデントを見て"ここまで"を自動挿入 (#596) */
-export function convertIndentSyntax (tokens: Token[]): Token[] {
+export function convertIndentSyntax(tokens: Token[]): Token[] {
   // インデント構文の変換が必要か?
   if (!useIndentSynax(tokens)) { return tokens }
   // 『ここまで』があったらエラーを出す
@@ -321,7 +321,7 @@ export function convertIndentSyntax (tokens: Token[]): Token[] {
   return result
 }
 
-function useIndentSynax (tokens: Token[]) : boolean {
+function useIndentSynax(tokens: Token[]) : boolean {
   // インデント構文が必要かチェック (最初の100個をチェック)
   for (let i = 0; i < tokens.length; i++) {
     if (i > 100) { break }

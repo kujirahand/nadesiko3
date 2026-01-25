@@ -1,4 +1,4 @@
-/* eslint-disable quote-props */
+ 
 const errMsgCanvasInit = '描画を行うためには、HTML内にcanvasを配置し、idを振って『描画開始』命令に指定します。'
 
 export default {
@@ -7,7 +7,7 @@ export default {
     type: 'func',
     josi: [['の', 'へ', 'で']],
     pure: true,
-    fn: function (cv: any, sys: any) {
+    fn: function(cv: any, sys: any) {
       if (typeof cv === 'string') { cv = document.querySelector(cv) || document.getElementById(cv) }
       if (!cv) { throw new Error('『描画開始』でCanvasを取得できませんでした。') }
       sys.__addPropMethod(cv)
@@ -26,7 +26,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.save()
     },
@@ -36,7 +36,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.restore()
     },
@@ -46,7 +46,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: any, sys: any) {
+    fn: function(v: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__strokeStyle = v
       if (v !== '') {
@@ -59,7 +59,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: any, sys: any) {
+    fn: function(v: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__fillStyle = v
       if (v !== '') {
@@ -72,7 +72,7 @@ export default {
     type: 'func',
     josi: [['から'], ['へ', 'まで']],
     pure: true,
-    fn: function (a: any, b: any, sys: any) {
+    fn: function(a: any, b: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.beginPath()
       sys.__ctx.moveTo(a[0], a[1])
@@ -85,7 +85,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: any, sys: any) {
+    fn: function(v: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.lineWidth = v
     },
@@ -95,7 +95,7 @@ export default {
     type: 'func',
     josi: [['の', 'へ', 'に']],
     pure: true,
-    fn: function (b: any, sys: any) {
+    fn: function(b: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.beginPath()
       sys.__ctx.rect(b[0], b[1], b[2], b[3])
@@ -108,7 +108,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.clearRect(0, 0,
         sys.__canvas.width, sys.__canvas.height)
@@ -119,7 +119,7 @@ export default {
     type: 'func',
     josi: [['の', 'へ', 'に']],
     pure: true,
-    fn: function (b: any, sys: any) {
+    fn: function(b: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       if (!(b instanceof Array)) { b = [] }
       if (b.length === 0) {
@@ -136,7 +136,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.clip()
     },
@@ -146,7 +146,7 @@ export default {
     type: 'func',
     josi: [['へ', 'に'], ['の']],
     pure: true,
-    fn: function (xy: any, r: any, sys: any) {
+    fn: function(xy: any, r: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.beginPath()
       sys.__ctx.arc(xy[0], xy[1], r, 0, 2 * Math.PI, false)
@@ -159,7 +159,7 @@ export default {
     type: 'func',
     josi: [['へ', 'に', 'の']],
     pure: true,
-    fn: function (args: any, sys: any) {
+    fn: function(args: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       if (!args) { throw new Error('楕円描画の引数配列が無効です') }
       if (args.length < 4) { throw new Error('楕円描画の引数配列が不足しています') }
@@ -180,7 +180,7 @@ export default {
     type: 'func',
     josi: [['で', 'の', 'を']],
     pure: true,
-    fn: function (a: any, sys: any) {
+    fn: function(a: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.beginPath()
       const p = a[0]
@@ -199,7 +199,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       const img = new window.Image()
       img.src = url
       img.crossOrigin = 'Anonymous'
@@ -211,7 +211,7 @@ export default {
     josi: [['の', 'を']],
     pure: true,
     asyncFn: true,
-    fn: function (url: any) {
+    fn: function(url: any) {
       return new Promise((resolve, reject) => {
         const img = new window.Image()
         img.src = url
@@ -227,7 +227,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       if (sys.resolve === undefined) { throw new Error('『画像逐次読』は『逐次実行』構文で使ってください。') }
       sys.resolveCount++
       const img = new window.Image()
@@ -248,7 +248,7 @@ export default {
     type: 'func',
     josi: [['で'], ['の', 'を']],
     pure: true,
-    fn: function (f: any, url: any, sys: any) {
+    fn: function(f: any, url: any, sys: any) {
       // 関数オブジェクトを得る
       const func = sys.__findVar(f, null) // 文字列指定なら関数に変換
       // 画像を読む
@@ -270,7 +270,7 @@ export default {
     type: 'func',
     josi: [['の', 'を'], ['へ', 'に']],
     pure: true,
-    fn: function (img: any, xy: any, sys: any) {
+    fn: function(img: any, xy: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       const drawFunc = (im: any, ctx: any) => {
         if (xy.length === 2) {
@@ -302,13 +302,13 @@ export default {
     type: 'func',
     josi: [['の'], ['を', 'から'], ['へ', 'に']],
     pure: true,
-    fn: function (img: any, sxy: any, dxy: any, sys: any) {
+    fn: function(img: any, sxy: any, dxy: any, sys: any) {
       const errArgLen =
         '『画像部分描画』に使える引数は画像と、描画する座標へ2つか、' +
         '描画する座標とその位置の4つか、使用する座標と使用する位置と描画する座標と大きさの8つだけです。'
       if (img && sxy) {
         if (!Array.isArray(sxy) && Array.isArray(img)) { // 逆になっていれば入れ替える
-          // eslint-disable-next-line no-proto
+           
           if (typeof sxy === 'string' || String(sxy.__proto__) === '[object HTMLImageElement]') {
             const sw = img
             img = sxy
@@ -354,7 +354,7 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'で', 'に']],
     pure: true,
-    fn: function (n: any, sys: any) {
+    fn: function(n: any, sys: any) {
       // 数値だけならフォントサイズのみの指定
       if (typeof n === 'number') { n = n + 'px sans-serif' }
       // ピクセル数のみの指定なら適当にフォントを足す
@@ -369,7 +369,7 @@ export default {
     type: 'func',
     josi: [['へ', 'に'], ['の', 'を']],
     pure: true,
-    fn: function (xy: any, s: any, sys: any) {
+    fn: function(xy: any, s: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.fillText(s, xy[0], xy[1])
     },
@@ -379,7 +379,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       return sys.__ctx.measureText(s)
     },
@@ -389,7 +389,7 @@ export default {
     type: 'func',
     josi: [['へ', 'に']],
     pure: true,
-    fn: function (xy: any, sys: any) {
+    fn: function(xy: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.translate(xy[0], xy[1])
     },
@@ -399,7 +399,7 @@ export default {
     type: 'func',
     josi: [['だけ', 'に', 'へ']],
     pure: true,
-    fn: function (a: any, sys: any) {
+    fn: function(a: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.rotate(a * Math.PI / 180)
     },
@@ -409,7 +409,7 @@ export default {
     type: 'func',
     josi: [['だけ', 'に', 'へ']],
     pure: true,
-    fn: function (xy: any, sys: any) {
+    fn: function(xy: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.scale(xy[0], xy[1])
     },
@@ -419,7 +419,7 @@ export default {
     type: 'func',
     josi: [['だけ', 'に', 'へ']],
     pure: true,
-    fn: function (a: any, sys: any) {
+    fn: function(a: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.setTransform(a[0], a[1], a[2], a[3], a[4], a[5], a[6])
     },
@@ -429,7 +429,7 @@ export default {
     type: 'func',
     josi: [['だけ', 'に', 'へ']],
     pure: true,
-    fn: function (a: any, sys: any) {
+    fn: function(a: any, sys: any) {
       if (!sys.__ctx) { throw new Error(errMsgCanvasInit) }
       sys.__ctx.transform(a[0], a[1], a[2], a[3], a[4], a[5], a[6])
     },
@@ -439,7 +439,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const cv = sys.__getSysVar('描画中キャンバス')
       const url = cv.toDataURL('image/png')
       return url
@@ -450,7 +450,7 @@ export default {
     josi: [],
     pure: true,
     asyncFn: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       return new Promise((resolve, reject) => {
         const cv = sys.__getSysVar('描画中キャンバス')
         cv.toBlob((result: any) => { resolve(result) }, 'image/png')
@@ -461,7 +461,7 @@ export default {
     type: 'func',
     josi: [['へ', 'に']],
     pure: true,
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       if (typeof dom === 'string') { dom = document.querySelector(dom) }
       if (!dom) { throw new Error('『描画ダウンロードリンク作成』でDOMが見当たりません。') }
       const cv = sys.__getSysVar('描画中キャンバス')
@@ -475,7 +475,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const cv = sys.__getSysVar('描画中キャンバス')
       if (!cv) { throw new Error('『描画ダウンロード』で描画中キャンバスが設定されていません。') }
       const a = document.createElement('a')

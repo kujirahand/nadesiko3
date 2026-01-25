@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import { FuncListItem, Ast } from './nako_types.mjs'
 
@@ -121,7 +121,7 @@ export interface Token {
   tag?: string;
   preprocessedCodeOffset?: number | undefined;
   preprocessedCodeLength?: number | undefined;
-  // eslint-disable-next-line no-use-before-define
+   
   name?: Token | Ast; // NakoPaserBase.nodeToStrの問題を回避するため
   start?: number;
   end?: number;

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/unbound-method */
+ 
 import { NakoCallback, NakoCallbackEvent } from '../core/src/plugin_api.mjs'
 import { NakoBrowsesrSystem, NakoDom } from './plugin_browser_api.mjs'
 export default {
@@ -8,7 +8,7 @@ export default {
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: NakoDom, event: string, funcStr: string, sys: NakoBrowsesrSystem) {
+    fn: function(dom: NakoDom, event: string, funcStr: string, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, event, funcStr, null)
     },
     return_none: true
@@ -17,7 +17,7 @@ export default {
     type: 'func',
     josi: [['の'], ['から'], ['を']],
     pure: true,
-    fn: function (dom: NakoDom, event: string, funcStr: NakoCallback, sys: NakoBrowsesrSystem) {
+    fn: function(dom: NakoDom, event: string, funcStr: NakoCallback, sys: NakoBrowsesrSystem) {
       sys.__removeEvent(dom, event, funcStr)
     },
     return_none: true
@@ -26,7 +26,7 @@ export default {
     type: 'func',
     josi: [['で'], ['の'], ['が']],
     pure: true,
-    fn: function (callback: NakoCallback, dom: NakoDom, event: string, sys: NakoBrowsesrSystem) {
+    fn: function(callback: NakoCallback, dom: NakoDom, event: string, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, event, callback, null)
     },
     return_none: true
@@ -35,8 +35,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (event: unknown, sys: NakoBrowsesrSystem) {
+    fn: function(event: unknown, sys: NakoBrowsesrSystem) {
       if (event !== null && typeof event === 'object' && 'preventDefault' in event) {
         const objWithFn = event as { preventDefault: () => void }
         if (typeof objWithFn.preventDefault === 'function') {
@@ -50,7 +49,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'click', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -59,7 +58,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'dblclick', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -68,7 +67,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'contextmenu', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -77,7 +76,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'change', func, null)
     },
     return_none: true
@@ -86,7 +85,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'load', func, null)
     },
     return_none: true
@@ -95,7 +94,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'submit', func, null)
     },
     return_none: true
@@ -105,7 +104,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'keydown', func, sys.__keyHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -114,7 +113,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'keyup', func, sys.__keyHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -123,7 +122,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'keypress', func, sys.__keyHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -135,7 +134,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mousedown', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -144,7 +143,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の', 'へ', 'に']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mousemove', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -153,7 +152,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の', 'から']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mouseup', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -162,7 +161,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の', 'に', 'へ']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mouseover', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -171,7 +170,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の', 'から']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'mouseout', func, sys.__mouseHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -181,7 +180,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'wheel', func, ((e: object) => {
         const objWithDeltaY = e as { deltaY: number }
         if (typeof objWithDeltaY.deltaY === 'number') {
@@ -198,7 +197,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (e: TouchEvent, sys: NakoBrowsesrSystem) {
+    fn: function(e: TouchEvent, sys: NakoBrowsesrSystem) {
       return sys.__touchHandler(e, sys)
     }
   },
@@ -206,7 +205,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'touchstart', func, sys.__touchHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -215,7 +214,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'touchmove', func, sys.__touchHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -224,7 +223,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'touchend', func, sys.__touchHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -233,7 +232,7 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'の']],
     pure: true,
-    fn: function (func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
+    fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
       sys.__addEvent(dom, 'touchcancel', func, sys.__touchHandler as NakoCallbackEvent)
     },
     return_none: true
@@ -242,7 +241,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (func: unknown, sys: NakoBrowsesrSystem) {
+    fn: function(func: unknown, sys: NakoBrowsesrSystem) {
       func = sys.__findVar(func as NakoCallback, null) // 文字列指定なら関数に変換
       if (!func) { throw new Error('『画面更新時実行』で関数の取得に失敗しました。') }
       sys.__requestAnimationFrameLastId = window.requestAnimationFrame(func as unknown as FrameRequestCallback)
@@ -253,7 +252,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (id: number, sys: NakoBrowsesrSystem) {
+    fn: function(id: number, sys: NakoBrowsesrSystem) {
       window.cancelAnimationFrame(id)
       if (sys.__requestAnimationFrameLastId === id) { sys.__requestAnimationFrameLastId = 0 }
     },

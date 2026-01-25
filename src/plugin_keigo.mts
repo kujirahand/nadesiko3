@@ -16,7 +16,7 @@ const PluginKeigo = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
     }
   },
   // @丁寧語
@@ -25,7 +25,7 @@ const PluginKeigo = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (a: any, sys: NakoSystem) {
+    fn: function(a: any, sys: NakoSystem) {
       return a
     }
   },
@@ -33,7 +33,7 @@ const PluginKeigo = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
@@ -43,7 +43,7 @@ const PluginKeigo = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },
@@ -53,7 +53,7 @@ const PluginKeigo = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       if (!sys.__reisetu) { sys.__reisetu = 0 }
       sys.__reisetu++
     },

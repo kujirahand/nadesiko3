@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 /**
  * よく使う処理をまとめたもの
  */
@@ -10,7 +10,7 @@ import { TokenType } from './nako_token.mjs'
  * @param tokens トークンの一覧
  * @returns 文字列
  */
-export function debugTokens (tokens: Token[]) {
+export function debugTokens(tokens: Token[]) {
   const result = []
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i]
@@ -30,7 +30,7 @@ export function debugTokens (tokens: Token[]) {
   return result.join('\n')
 }
 
-export function makeIndent (n: number): string {
+export function makeIndent(n: number): string {
   let s = ''
   for (let i = 0; i < n; i++) {
     s += ' '
@@ -39,7 +39,7 @@ export function makeIndent (n: number): string {
 }
 
 let lastTokenInfo = NewEmptyToken()
-export function newToken (type: TokenType, value: any, templateToken: Token|undefined = undefined): Token {
+export function newToken(type: TokenType, value: any, templateToken: Token|undefined = undefined): Token {
   if (templateToken) {
     lastTokenInfo = templateToken
   }

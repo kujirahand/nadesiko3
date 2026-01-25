@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (callback: any, sys: any) {
+    fn: function(callback: any, sys: any) {
       sys.__setSysVar('WS:ONOPEN', callback)
     },
     return_none: true
@@ -14,7 +14,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (callback: any, sys: any) {
+    fn: function(callback: any, sys: any) {
       sys.__setSysVar('WS:ONMESSAGE', callback)
     },
     return_none: true
@@ -23,7 +23,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (callback: any, sys: any) {
+    fn: function(callback: any, sys: any) {
       sys.__setSysVar('WS:ONERROR', callback)
     },
     return_none: true
@@ -32,7 +32,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       const ws = new WebSocket(s)
       ws.onopen = () => {
         const cbOpen = sys.__getSysVar('WS:ONOPEN')
@@ -56,7 +56,7 @@ export default {
     type: 'func',
     josi: [['を', 'と']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       const ws = sys.__getSysVar('WS:SOCKET')
       ws.send(s)
     }
@@ -65,7 +65,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const ws = sys.__getSysVar('WS:SOCKET')
       ws.close()
     }

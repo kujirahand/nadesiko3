@@ -7,7 +7,7 @@ const CommanderJa: {[key: string]: any} = {
   _usage: '',
   _version: '1.0.0',
   _title: '',
-  reset: function () {
+  reset: function() {
     this.args = []
     this._alias = {}
     this._hasarg = {}
@@ -22,7 +22,7 @@ const CommanderJa: {[key: string]: any} = {
      * @param {*} ver version info
      * @param {*} cmd -v, --version
      */
-  version (ver: string, cmd: string) {
+  version(ver: string, cmd: string) {
     this.option(cmd, 'バージョン情報を表示')
     this._version = ver
     return this
@@ -30,14 +30,14 @@ const CommanderJa: {[key: string]: any} = {
   /**
      * @param {string} title
      */
-  title (title: string) {
+  title(title: string) {
     this._title = title
     return this
   },
   /**
      * @param {string} usage
      */
-  usage (usage: string) {
+  usage(usage: string) {
     this._usage = usage
     return this
   },
@@ -45,7 +45,7 @@ const CommanderJa: {[key: string]: any} = {
      * @param {string} cmd
      * @param {string} desc
      */
-  option (cmd: string, desc: string) {
+  option(cmd: string, desc: string) {
     this._help.push([cmd, desc])
     let name1 = ''
     const name2: any = /** @type {string[]} */([])
@@ -80,7 +80,7 @@ const CommanderJa: {[key: string]: any} = {
      * @param {string[]} argv
      * @return {string}
      */
-  parseStr (argv: string[]): string {
+  parseStr(argv: string[]): string {
     this.args = []
     const paramStack: string[] = []
     let lastOpt = ''
@@ -133,7 +133,7 @@ const CommanderJa: {[key: string]: any} = {
      * parse
      * @param {*} argv
      */
-  parse (argv: any) {
+  parse(argv: any) {
     const s = this.parseStr(argv)
     if (s === '') {
       return this
@@ -147,7 +147,7 @@ const CommanderJa: {[key: string]: any} = {
     }
   },
 
-  getHelp () {
+  getHelp() {
     let ss = ''
     if (this._title) {
       ss += this._title + '\n'

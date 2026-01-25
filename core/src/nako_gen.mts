@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
+ 
 /**
  * パーサーが生成した中間オブジェクトを実際のJavaScriptのコードに変換する。
  * なお速度優先で忠実にJavaScriptのコードを生成する。
@@ -45,7 +45,7 @@ export class NakoGenOptions {
   importFiles: string[]
   codeStandalone: string
   codeEnv: string
-  constructor (isTest = false, importFiles: string[] = [], codeStandalone = '', convEnv = '') {
+  constructor(isTest = false, importFiles: string[] = [], codeStandalone = '', convEnv = '') {
     this.isTest = isTest
     this.codeStandalone = codeStandalone
     this.codeEnv = convEnv
@@ -90,7 +90,7 @@ export class NakoGen {
   /** constructor
    * @param com コンパイラのインスタンス
    */
-  constructor (com: NakoCompiler) {
+  constructor(com: NakoCompiler) {
     /**
      * 出力するJavaScriptコードのヘッダー部分で定義する必要のある関数。fnはjsのコード。
      * プラグイン関数は含まれない。
@@ -178,7 +178,7 @@ export class NakoGen {
     this.debugOption = com.debugOption
   }
 
-  static isValidIdentifier (name: string) {
+  static isValidIdentifier(name: string) {
     // TODO: いらなそうな部分は削る
     // https://stackoverflow.com/a/9337047
     // eslint-disable-next-line no-misleading-character-class
@@ -188,7 +188,7 @@ export class NakoGen {
   /**
    * com.__varslistを元に、this.varslistSetを設定
    */
-  setVarslistSet (varslist: Map<string, any>[]): VarsSet[] {
+  setVarslistSet(varslist: Map<string, any>[]): VarsSet[] {
     const vlist: VarsSet[] = []
     // 変数名の一覧をVarsSetに格納 (0: システム変数, 1: グローバル変数, 2: ローカル変数) 0と1のみ移す
     for (let i = 0; i <= 1; i++) {
@@ -203,7 +203,7 @@ export class NakoGen {
   /**
    * 改行を埋め込む
    */
-  convLineno (node: Ast, forceUpdate = false, incLine = 0): string {
+  convLineno(node: Ast, forceUpdate = false, incLine = 0): string {
     // スピードモードでは行番号を埋め込まない
     if (this.speedMode.lineNumbers > 0) { return '' }
 
@@ -254,7 +254,7 @@ export class NakoGen {
    * ローカル変数の取得用JavaScriptコードを生成する。
    * @param {string} name
    */
-  varname_get (name: string): string {
+  varname_get(name: string): string {
     if (this.varslistSet.length === 3) {
       // グローバル
       return `__self.__varslist[${2}].get(${JSON.stringify(name)})`
@@ -269,7 +269,7 @@ export class NakoGen {
    * @param {string} name
    * @param {string} jsvalue
    */
-  varname_set (name: string, jsvalue: string): string {
+  varname_set(name: string, jsvalue: string): string {
     if (this.varslistSet.length === 3) {
       return `__self.__varslist[2].set(${JSON.stringify(name)}, (${jsvalue}))`
     } else {
@@ -282,7 +282,7 @@ export class NakoGen {
    * @param {string} name
    * @param {string} jsvalue
    */
-  varname_set_sys (name: string, jsvalue: string): string {
+  varname_set_sys(name: string, jsvalue: string): string {
     return `__self.__setSysVar(${JSON.stringify(name)}, (${jsvalue}))`
   }
 
@@ -290,7 +290,7 @@ export class NakoGen {
    * @param {string} name
    * @returns {string}
   */
-  static getFuncName (name: string): string {
+  static getFuncName(name: string): string {
     if (name.indexOf('__') >= 0) { // スコープがある場合
       const a = name.split('__')
       const scope = a[0]
@@ -303,13 +303,13 @@ export class NakoGen {
   }
 
   /** @param {Ast} node */
-  static convPrint (node: Ast): string {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  static convPrint(node: Ast): string {
+     
     return `__print(${node});`
   }
 
   /** @param {AstStrValue} node */
-  convRequire (node: AstStrValue): string {
+  convRequire(node: AstStrValue): string {
     const moduleName = node.value
     return this.convLineno(node, false) +
       `__module['${moduleName}'] = require('${moduleName}');\n`
@@ -321,7 +321,7 @@ export class NakoGen {
    * @param com
    * @param opt
    */
-  getDefFuncCode (com: NakoCompiler, opt: NakoGenOptions): string {
+  getDefFuncCode(com: NakoCompiler, opt: NakoGenOptions): string {
     let code = ''
     // よく使う変数のショートカット
     // jsInit の部分に設定するコード
@@ -375,7 +375,7 @@ export class NakoGen {
    * プラグイン・オブジェクトを追加
    * @param po プラグイン・オブジェクト
    */
-  addPlugin (po: FuncList): void {
+  addPlugin(po: FuncList): void {
     return this.__self.addPlugin(po)
   }
 
@@ -384,7 +384,7 @@ export class NakoGen {
    * @param name オブジェクト名
    * @param po 関数リスト
    */
-  addPluginObject (name: string, po: FuncList): void {
+  addPluginObject(name: string, po: FuncList): void {
     this.__self.addPluginObject(name, po)
   }
 
@@ -394,7 +394,7 @@ export class NakoGen {
    * @param path ファイルパス
    * @param po 登録するオブジェクト
    */
-  addPluginFile (objName: string, path: string, po: FuncList): void {
+  addPluginFile(objName: string, path: string, po: FuncList): void {
     this.__self.addPluginFile(objName, path, po)
   }
 
@@ -404,7 +404,7 @@ export class NakoGen {
    * @param josi 助詞
    * @param fn 関数
    */
-  addFunc (key: string, josi: FuncArgs, fn: any) {
+  addFunc(key: string, josi: FuncArgs, fn: any) {
     this.__self.addFunc(key, josi, fn)
   }
 
@@ -413,14 +413,14 @@ export class NakoGen {
    * @param key プラグイン関数の関数名
    * @returns プラグイン・オブジェクト
    */
-  getFunc (key: string) {
+  getFunc(key: string) {
     return this.__self.getFunc(key)
   }
 
   /**
    * 関数を先に登録してしまう
    */
-  registerFunction (ast: Ast) {
+  registerFunction(ast: Ast) {
     if (ast.type !== 'block') { throw NakoSyntaxError.fromNode('構文解析に失敗しています。構文は必ずblockが先頭になります', ast) }
 
     /** 関数一覧 */
@@ -432,14 +432,14 @@ export class NakoGen {
       if (!t.name) { throw new Error('[System Error] 関数の定義で関数名が指定されていません') }
       const name: string = t.name
       this.usedFuncSet.add(name)
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+       
       this.__self.__varslist[1].set(name, () => { }) // 事前に適当な値を設定
       this.varslistSet[1].names.add(name) // global
       const meta = t.meta
       if (!meta) { throw new Error('[System Error] 関数の定義で関数名のメタ情報が指定されていません') }
       this.nakoFuncList.set(name, {
         josi: meta.josi,
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
+         
         fn: () => {},
         type: 'func',
         asyncFn: !!t.asyncFn,
@@ -477,7 +477,7 @@ export class NakoGen {
    * @param node
    * @param opt
    */
-  convGen (node: Ast, opt: NakoGenOptions): string {
+  convGen(node: Ast, opt: NakoGenOptions): string {
     const result = this.convLineno(node, false) + this._convGen(node, true)
     if (opt.isTest) {
       return ''
@@ -490,7 +490,7 @@ export class NakoGen {
    * @param {Ast} node
    * @param {boolean} isExpression
    */
-  _convGen (node: Ast|null, isExpression: boolean): string {
+  _convGen(node: Ast|null, isExpression: boolean): string {
     if (!node) { return '' }
     let code = ''
     if (node instanceof Array) {
@@ -505,147 +505,147 @@ export class NakoGen {
     if (typeof (node) !== 'object') { return '' + String(node) }
     // switch
     switch (node.type) {
-      case 'nop':
-        break
-      case 'block':
-        code += this.convBlock(node as AstBlocks)
-        break
-      case 'comment':
-      case 'eol':
-        code += this.convComment(node as AstEol)
-        break
-      case 'run_mode':
-        code += this.convRunMode(node as AstStrValue)
-        break
-      case 'break':
-        code += this.convCheckLoop(node, 'break')
-        break
-      case 'continue':
-        code += this.convCheckLoop(node, 'continue')
-        break
-      case 'end':
-        code += '__v0.get(\'終\')(__self);'
-        break
-      case 'number':
-        code += (node as AstConst).value
-        break
-      case 'bigint':
-        code += (node as AstConst).value
-        break
-      case 'string':
-        code += this.convString(node as AstConst)
-        break
-      case 'def_local_var':
-        code += this.convDefLocalVar(node as AstDefVar)
-        break
-      case 'def_local_varlist':
-        code += this.convDefLocalVarlist(node as AstDefVarList)
-        break
-      case 'let':
-        code += this.convLet(node as AstLet)
-        break
-      case 'let_prop':
-        code += this.convLetProp(node as AstLet)
-        break
-      case 'ref_prop':
-        code += this.convRefProp(node as AstLet)
-        break
-      case 'inc':
-        code += this.convInc(node as AstBlocks)
-        break
-      case 'word':
-      case 'variable':
-        code += this.convGetVar(node as AstStrValue)
-        break
-      case 'op':
-      case 'calc':
-        code += this.convOp(node as AstOperator)
-        break
-      case 'renbun':
-        code += this.convRenbun(node as AstOperator)
-        break
-      case 'not':
-        code += '((' + this._convGen((node as AstBlocks).blocks[0], true) + ')?false:true)'
-        break
-      case 'func':
-      case 'func_pointer':
-      case 'calc_func':
-        code += this.convCallFunc(node as AstCallFunc, isExpression)
-        break
-      case 'if':
-        code += this.convIf(node as AstIf)
-        break
-      case 'for':
-        code += this.convFor(node as AstFor)
-        break
-      case 'foreach': // 反復
-        code += this.convForeach(node as AstForeach)
-        break
-      case 'repeat_times': // 回
-        code += this.convRepeatTimes(node as AstRepeatTimes)
-        break
-      case 'speed_mode':
-        code += this.convSpeedMode(node as AstBlocks, isExpression)
-        break
-      case 'performance_monitor':
-        code += this.convPerformanceMonitor(node as AstBlocks, isExpression)
-        break
-      case 'while':
-        code += this.convWhile(node as AstWhile)
-        break
-      case 'atohantei':
-        code += this.convAtohantei(node as AstAtohantei)
-        break
-      case 'switch':
-        code += this.convSwitch(node as AstSwitch)
-        break
-      case 'let_array':
-        code += this.convLetArray(node as AstLetArray)
-        break
-      case 'ref_array':
-        code += this.convRefArray(node)
-        break
-      case 'ref_array_value':
-        code += this.convRefArrayValue(node as AstOperator)
-        break
-      case 'json_array':
-        code += this.convJsonArray(node as AstBlocks)
-        break
-      case 'json_obj':
-        code += this.convJsonObj(node as AstBlocks)
-        break
-      case 'bool':
-        code += ((node as AstConst).value) ? 'true' : 'false'
-        break
-      case 'null':
-        code += 'null'
-        break
-      case 'def_test':
-        code += this.convDefTest(node as AstDefFunc)
-        break
-      case 'def_func':
-        code += this.convDefFunc(node as AstDefFunc)
-        break
-      case 'func_obj':
-        code += this.convFuncObj(node as AstDefFunc)
-        break
-      case 'return':
-        code += this.convReturn(node as AstBlocks)
-        break
-      case 'try_except':
-        code += this.convTryExcept(node as AstBlocks)
-        break
-      case 'require':
-        code += this.convRequire(node as AstStrValue)
-        break
-      default:
-        throw new Error('System Error: unknown_type=' + node.type)
+    case 'nop':
+      break
+    case 'block':
+      code += this.convBlock(node as AstBlocks)
+      break
+    case 'comment':
+    case 'eol':
+      code += this.convComment(node as AstEol)
+      break
+    case 'run_mode':
+      code += this.convRunMode(node as AstStrValue)
+      break
+    case 'break':
+      code += this.convCheckLoop(node, 'break')
+      break
+    case 'continue':
+      code += this.convCheckLoop(node, 'continue')
+      break
+    case 'end':
+      code += '__v0.get(\'終\')(__self);'
+      break
+    case 'number':
+      code += (node as AstConst).value
+      break
+    case 'bigint':
+      code += (node as AstConst).value
+      break
+    case 'string':
+      code += this.convString(node as AstConst)
+      break
+    case 'def_local_var':
+      code += this.convDefLocalVar(node as AstDefVar)
+      break
+    case 'def_local_varlist':
+      code += this.convDefLocalVarlist(node as AstDefVarList)
+      break
+    case 'let':
+      code += this.convLet(node as AstLet)
+      break
+    case 'let_prop':
+      code += this.convLetProp(node as AstLet)
+      break
+    case 'ref_prop':
+      code += this.convRefProp(node as AstLet)
+      break
+    case 'inc':
+      code += this.convInc(node as AstBlocks)
+      break
+    case 'word':
+    case 'variable':
+      code += this.convGetVar(node as AstStrValue)
+      break
+    case 'op':
+    case 'calc':
+      code += this.convOp(node as AstOperator)
+      break
+    case 'renbun':
+      code += this.convRenbun(node as AstOperator)
+      break
+    case 'not':
+      code += '((' + this._convGen((node as AstBlocks).blocks[0], true) + ')?false:true)'
+      break
+    case 'func':
+    case 'func_pointer':
+    case 'calc_func':
+      code += this.convCallFunc(node as AstCallFunc, isExpression)
+      break
+    case 'if':
+      code += this.convIf(node as AstIf)
+      break
+    case 'for':
+      code += this.convFor(node as AstFor)
+      break
+    case 'foreach': // 反復
+      code += this.convForeach(node as AstForeach)
+      break
+    case 'repeat_times': // 回
+      code += this.convRepeatTimes(node as AstRepeatTimes)
+      break
+    case 'speed_mode':
+      code += this.convSpeedMode(node as AstBlocks, isExpression)
+      break
+    case 'performance_monitor':
+      code += this.convPerformanceMonitor(node as AstBlocks, isExpression)
+      break
+    case 'while':
+      code += this.convWhile(node as AstWhile)
+      break
+    case 'atohantei':
+      code += this.convAtohantei(node as AstAtohantei)
+      break
+    case 'switch':
+      code += this.convSwitch(node as AstSwitch)
+      break
+    case 'let_array':
+      code += this.convLetArray(node as AstLetArray)
+      break
+    case 'ref_array':
+      code += this.convRefArray(node)
+      break
+    case 'ref_array_value':
+      code += this.convRefArrayValue(node as AstOperator)
+      break
+    case 'json_array':
+      code += this.convJsonArray(node as AstBlocks)
+      break
+    case 'json_obj':
+      code += this.convJsonObj(node as AstBlocks)
+      break
+    case 'bool':
+      code += ((node as AstConst).value) ? 'true' : 'false'
+      break
+    case 'null':
+      code += 'null'
+      break
+    case 'def_test':
+      code += this.convDefTest(node as AstDefFunc)
+      break
+    case 'def_func':
+      code += this.convDefFunc(node as AstDefFunc)
+      break
+    case 'func_obj':
+      code += this.convFuncObj(node as AstDefFunc)
+      break
+    case 'return':
+      code += this.convReturn(node as AstBlocks)
+      break
+    case 'try_except':
+      code += this.convTryExcept(node as AstBlocks)
+      break
+    case 'require':
+      code += this.convRequire(node as AstStrValue)
+      break
+    default:
+      throw new Error('System Error: unknown_type=' + node.type)
     }
     return code
   }
 
   /** 変数を検索 */
-  findVar (name: string, jsvalue: string|null = null): FindVarResult|null {
+  findVar(name: string, jsvalue: string|null = null): FindVarResult|null {
     // __vars ? (ローカル変数)
     if (this.varslistSet.length > 3 && this.varsSet.names.has(name)) {
       return {
@@ -678,7 +678,7 @@ export class NakoGen {
    * @param {string} name
    * @param {Ast} position
    */
-  genVar (name: string, position: Ast): string {
+  genVar(name: string, position: Ast): string {
     const res = this.findVar(name)
     const lno = position.line
     if (res === null) {
@@ -715,14 +715,14 @@ export class NakoGen {
     return res.js
   }
 
-  convGetVar (node: AstStrValue): string {
+  convGetVar(node: AstStrValue): string {
     // 変数名を得る
     const name = node.value
     // 変数を取得するコードを生成
     return this.genVar(name, node)
   }
 
-  convBlock (node: AstBlocks): string {
+  convBlock(node: AstBlocks): string {
     let code = ''
     for (const block of node.blocks) {
       code += this._convGen(block, false)
@@ -730,14 +730,14 @@ export class NakoGen {
     return code
   }
 
-  convComment (node: AstEol): string {
+  convComment(node: AstEol): string {
     let commentSrc = String(node.comment)
     // コメントの改行や空行を無効化
     commentSrc = commentSrc.replace(/\n/g, '¶')
     commentSrc = commentSrc.replace(/\*\//g, '＊／')
     commentSrc = commentSrc.replace(/(^\s+|\s+$)/g, '')
     // コメントの行番号を得る
-    let lineNo = this.convLineno(node, false)
+    const lineNo = this.convLineno(node, false)
     if (commentSrc === '' && lineNo === '') { return ';' }
     if (commentSrc === '') {
       return ';' + lineNo + '\n'
@@ -745,7 +745,7 @@ export class NakoGen {
     return ';' + lineNo + '//' + commentSrc + '\n'
   }
 
-  convRunMode (node: AstStrValue): string {
+  convRunMode(node: AstStrValue): string {
     const mode = node.value
     let isStrict = false
     if (mode === '厳しくチェック') {
@@ -760,7 +760,7 @@ export class NakoGen {
     return `/* 実行モード: ${mode} */`
   }
 
-  convReturn (node: AstBlocks): string {
+  convReturn(node: AstBlocks): string {
     // 関数の中であれば利用可能
     if (this.varsSet.names.has('!関数')) { throw NakoSyntaxError.fromNode('『戻る』がありますが、関数定義内のみで使用可能です。', node) }
 
@@ -790,7 +790,7 @@ export class NakoGen {
     }
   }
 
-  getConstPoolsTemplateId (msg: string): number {
+  getConstPoolsTemplateId(msg: string): number {
     let id = this.constPoolsTemplate.indexOf(msg)
     if (id < 0) {
       id = this.constPoolsTemplate.length
@@ -799,7 +799,7 @@ export class NakoGen {
     return id
   }
 
-  addConstPool (msg: string, args: string[], file: any, line: any): number {
+  addConstPool(msg: string, args: string[], file: any, line: any): number {
     // file
     file = String(file)
     const fileNo = this.getConstPoolsTemplateId(file)
@@ -817,7 +817,7 @@ export class NakoGen {
     return poolIndex
   }
 
-  convCheckLoop (node: Ast, cmd: string): string {
+  convCheckLoop(node: Ast, cmd: string): string {
     // ループの中であれば利用可能
     if (!this.flagLoop) {
       const cmdj = (cmd === 'continue') ? '続ける' : '抜ける'
@@ -826,7 +826,7 @@ export class NakoGen {
     return this.convLineno(node) + cmd + ';'
   }
 
-  convDefFuncCommon (node: AstDefFunc, name: string): string {
+  convDefFuncCommon(node: AstDefFunc, name: string): string {
     // 定義中の関数名を記録
     this.defFuncName = name
     // 変数をJS変数に展開するかどうか (TODO)
@@ -926,7 +926,7 @@ export class NakoGen {
         // 既に generate で作成済みのはず(念のため)
         this.nakoFuncList.set(name, {
           josi: node.meta.josi,
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
+           
           fn: () => {},
           type: 'func',
           asyncFn: false,
@@ -997,7 +997,7 @@ export class NakoGen {
     return code
   }
 
-  convDefTest (node: AstDefFunc): string {
+  convDefTest(node: AstDefFunc): string {
     const name = node.name
     let code = `__tests.push({ name: '${name}', f: () => {\n`
 
@@ -1021,7 +1021,7 @@ export class NakoGen {
     return ''
   }
 
-  convDefFunc (node: AstDefFunc): string {
+  convDefFunc(node: AstDefFunc): string {
     // ※ [関数定義のメモ]
     // ※ 関数の定義はプログラムの冒頭に移される。
     // ※ そのため、生成されたコードはここでは返さない
@@ -1032,11 +1032,11 @@ export class NakoGen {
     return ''
   }
 
-  convFuncObj (node: AstDefFunc): string {
+  convFuncObj(node: AstDefFunc): string {
     return '/*convFuncObj*/' + this.convDefFuncCommon(node, '')
   }
 
-  convJsonObj (node: AstBlocks): string {
+  convJsonObj(node: AstBlocks): string {
     const resultArray = []
     const list = node.blocks
     for (let i = 0; i < list.length / 2; i++) {
@@ -1050,7 +1050,7 @@ export class NakoGen {
     return '{' + resultArray.join(', ') + '}'
   }
 
-  convJsonArray (node: AstBlocks): string {
+  convJsonArray(node: AstBlocks): string {
     const list = node.blocks
     const codelist = list.map((e: Ast) => {
       return this._convGen(e, true)
@@ -1058,7 +1058,7 @@ export class NakoGen {
     return '[' + codelist.join(',') + ']'
   }
 
-  convRefArray (node: Ast): string {
+  convRefArray(node: Ast): string {
     let code = ''
     code = this._convGen(node.name as Ast, true)
     const list: Ast[] | undefined = node.index
@@ -1070,7 +1070,7 @@ export class NakoGen {
     return code
   }
 
-  convRefArrayValue (node: AstOperator): string {
+  convRefArrayValue(node: AstOperator): string {
     let code = ''
     const op: string = node.name ? String(node.name) : '???'
     const val: Ast|undefined = node.index ? node.index.shift() : undefined
@@ -1093,7 +1093,7 @@ export class NakoGen {
     return `/* [WARNING] convRefArrayOperator::UnknownOperator [${op2}] */` + code
   }
 
-  convLetArray (node: AstLetArray): string {
+  convLetArray(node: AstLetArray): string {
     const id = this.loopId++
     const valueNode: Ast = node.blocks[0]
     const indexNodes: Ast[] = node.blocks.slice(1)
@@ -1128,7 +1128,7 @@ export class NakoGen {
     let value = null
     if (this.speedMode.invalidSore === 0) { value = this.varname_get('それ') }
     if (valueNode.type !== 'nop') { value = this._convGen(valueNode, true) }
-    if (value == null) {
+    if (value === null) {
       throw NakoSyntaxError.fromNode('代入する先の変数名がありません。', node)
     }
     code += ' = ' + value + ';\n'
@@ -1137,7 +1137,7 @@ export class NakoGen {
     return src
   }
 
-  convGenLoop (node: Ast): string {
+  convGenLoop(node: Ast): string {
     const tmpflag = this.flagLoop
     this.flagLoop = true
     try {
@@ -1147,7 +1147,7 @@ export class NakoGen {
     }
   }
 
-  convFor (node: AstFor): string {
+  convFor(node: AstFor): string {
     const astFrom = node.blocks[0]
     const astTo = node.blocks[1]
     const astInc = node.blocks[2]
@@ -1226,7 +1226,7 @@ export class NakoGen {
     return code
   }
 
-  convForeach (node: AstForeach): string {
+  convForeach(node: AstForeach): string {
     const exprAst = node.blocks[0]
     const blockAst = node.blocks[1]
     // foreachのIDを取得
@@ -1300,7 +1300,7 @@ export class NakoGen {
     return code
   }
 
-  convRepeatTimes (node: AstRepeatTimes): string {
+  convRepeatTimes(node: AstRepeatTimes): string {
     // ループのIDを取得
     const id = this.loopId++
     const varI = `$nako_i${id}`
@@ -1337,7 +1337,7 @@ export class NakoGen {
    * @param {Ast} node
    * @param {boolean} isExpression
    */
-  convSpeedMode (node: AstBlocks, isExpression: boolean): string {
+  convSpeedMode(node: AstBlocks, isExpression: boolean): string {
     if (!node.options) { return '' }
     const prev = { ...this.speedMode }
     if (node.options['行番号無し']) {
@@ -1363,7 +1363,7 @@ export class NakoGen {
    * @param {Ast} node
    * @param {boolean} isExpression
    */
-  convPerformanceMonitor (node: AstBlocks, isExpression: boolean): string {
+  convPerformanceMonitor(node: AstBlocks, isExpression: boolean): string {
     const prev = { ...this.performanceMonitor }
     if (!node.options) { return '' }
     if (node.options['ユーザ関数']) {
@@ -1382,7 +1382,7 @@ export class NakoGen {
     }
   }
 
-  convWhile (node: AstWhile): string {
+  convWhile(node: AstWhile): string {
     const exprAst = node.blocks[0]
     const blockAst = node.blocks[1]
     const cond = this._convGen(exprAst, true)
@@ -1397,7 +1397,7 @@ export class NakoGen {
     return code
   }
 
-  convAtohantei (node: AstAtohantei): string {
+  convAtohantei(node: AstAtohantei): string {
     const id = this.loopId++
     const varId = `$nako_i${id}`
     const cond = this._convGen(node.blocks[0], true)
@@ -1411,7 +1411,7 @@ export class NakoGen {
     return this.convLineno(node, false) + code
   }
 
-  convSwitch (node: AstSwitch): string {
+  convSwitch(node: AstSwitch): string {
     const expr: string = this._convGen(node.blocks[0], true)
     const defaultStr = this._convGen(node.blocks[1], false)
     let body = ''
@@ -1434,7 +1434,7 @@ export class NakoGen {
     return this.convLineno(node, false) + code
   }
 
-  convIf (node: AstIf): string {
+  convIf(node: AstIf): string {
     const exprAst = node.blocks[0]
     const trueAst = node.blocks[1]
     const falseAst = node.blocks[2]
@@ -1460,7 +1460,7 @@ export class NakoGen {
     return code
   }
 
-  convFuncGetArgsCalcType (_funcName: string, _func: any, node: AstCallFunc): [any, any] {
+  convFuncGetArgsCalcType(_funcName: string, _func: any, node: AstCallFunc): [any, any] {
     const args = []
     const opts: {[key: string]: boolean} = {}
     const nodeArgs = (node.blocks) ? node.blocks : []
@@ -1479,7 +1479,7 @@ export class NakoGen {
     return [args, opts]
   }
 
-  getPluginList () {
+  getPluginList() {
     const r = []
     for (const name in this.__self.__module) { r.push(name) }
     return r
@@ -1491,7 +1491,7 @@ export class NakoGen {
    * @param {boolean} isExpression
    * @returns string コード
    */
-  convCallFunc (node: AstCallFunc, isExpression: boolean): string {
+  convCallFunc(node: AstCallFunc, isExpression: boolean): string {
     const funcName = NakoGen.getFuncName(node.name)
     const res = this.findVar(funcName)
     if (res === null) {
@@ -1727,7 +1727,7 @@ export class NakoGen {
     return code
   }
 
-  convRenbun (node: AstOperator): string {
+  convRenbun(node: AstOperator): string {
     const right = this._convGen(node.blocks[1], true)
     const left = this._convGen(node.blocks[0], false)
     this.numAsyncFn++
@@ -1735,7 +1735,7 @@ export class NakoGen {
     return `/*[連文]*/await (async function(){ ${left}; return ${right} }).call(this)/*[/連文]*/`
   }
 
-  convOp (node: AstOperator): string {
+  convOp(node: AstOperator): string {
     // トークン名からJS演算子への変換 - 単純な変換が可能なものをここで定義
     const OP_TBL: {[key: string]: string} = {
       '&': '+""+',
@@ -1776,7 +1776,7 @@ export class NakoGen {
     return `(${left} ${op} ${right})`
   }
 
-  convInc (node: AstBlocks): string {
+  convInc(node: AstBlocks): string {
     // idを得る
     const id = this.loopId++
     const valueVar = `$nako_v${id}`
@@ -1824,7 +1824,7 @@ export class NakoGen {
     return code
   }
 
-  convLet (node: AstLet): string {
+  convLet(node: AstLet): string {
     const astValue = node.blocks[0]
     // もし値が省略されていたら、変数「それ」に代入する
     let value = null
@@ -1842,7 +1842,7 @@ export class NakoGen {
       value = this._convGen(astValue, true)
     }
     // 戻り値の検証
-    if (value == null) {
+    if (value === null) {
       throw NakoSyntaxError.fromNode('代入する先の変数名がありません。', node)
     }
 
@@ -1865,7 +1865,7 @@ export class NakoGen {
   }
 
   // プロパティへの代入式 (#1793)
-  convLetProp (node: AstLet): string {
+  convLetProp(node: AstLet): string {
     if (!node.index || node.index.length === 0) { throw NakoSyntaxError.fromNode('代入する先のプロパティ名がありません。', node) }
     if (!node.blocks || node.blocks.length === 0) { throw NakoSyntaxError.fromNode('代入する値がありません。', node) }
     const propList = node.index as AstStrValue[]
@@ -1917,7 +1917,7 @@ export class NakoGen {
   }
 
   // プロパティへの参照 (#1793)
-  convRefProp (node: Ast): string {
+  convRefProp(node: Ast): string {
     const name = this._convGen(node.name as Ast, true)
     const list: Ast[] | undefined = node.index
     if (!list || list.length <= 0) {
@@ -1927,7 +1927,7 @@ export class NakoGen {
   }
 
   // プロパティへの参照のコード生成部分 (#1793)
-  convRefProp_genCode (name: string, propList: AstStrValue[]): string {
+  convRefProp_genCode(name: string, propList: AstStrValue[]): string {
     let code
     if (propList.length <= 1) {
       const propKey = propList[0].value
@@ -1959,7 +1959,7 @@ export class NakoGen {
     return code
   }
 
-  convDefLocalVar (node: AstDefVar): string {
+  convDefLocalVar(node: AstDefVar): string {
     const astValue = node.blocks[0]
     let value = '0'
     if (astValue.type !== 'nop') {
@@ -1980,7 +1980,7 @@ export class NakoGen {
   }
 
   // #563 複数変数への代入
-  convDefLocalVarlist (node: AstDefVarList): string {
+  convDefLocalVarlist(node: AstDefVarList): string {
     let code = ''
     const vtype = node.vartype // 変数 or 定数
     // 初期値を取得
@@ -2017,7 +2017,7 @@ export class NakoGen {
       '/*[/convDefLocalVarlist]*/\n'
   }
 
-  convString (node: AstConst): string {
+  convString(node: AstConst): string {
     let value = String(node.value)
     value = value.replace(/\\/g, '\\\\')
     value = value.replace(/"/g, '\\"')
@@ -2026,7 +2026,7 @@ export class NakoGen {
     return '"' + value + '"'
   }
 
-  convTryExcept (node: AstBlocks): string {
+  convTryExcept(node: AstBlocks): string {
     const block = this._convGen(node.blocks[0], false)
     const errBlock = this._convGen(node.blocks[1], false)
     return this.convLineno(node, false) +
@@ -2036,11 +2036,11 @@ export class NakoGen {
       `${errBlock}}\n`
   }
 
-  getUsedFuncSet (): Set<string> {
+  getUsedFuncSet(): Set<string> {
     return this.usedFuncSet
   }
 
-  getPluginInitCode (): string {
+  getPluginInitCode(): string {
     // プラグインの初期化関数を実行する
     let code = ''
     let pluginCode = ''
@@ -2158,7 +2158,7 @@ __codeJS__
  * @param ast
  * @param opt
  */
-export function generateJS (com: NakoCompiler, ast: Ast, opt: NakoGenOptions): NakoGenResult {
+export function generateJS(com: NakoCompiler, ast: Ast, opt: NakoGenOptions): NakoGenResult {
   // NakoGenのインスタンスを作成
   const gen = new NakoGen(com)
 
@@ -2280,7 +2280,7 @@ ${js}
   }
 }
 // template
-function replaceTemplateCode (template: string, values: any): string {
+function replaceTemplateCode(template: string, values: any): string {
   for (const key in values) {
     const pat = `__${key}__`
     const val = values[key]
@@ -2290,7 +2290,7 @@ function replaceTemplateCode (template: string, values: any): string {
 }
 
 // clean generated code
-function cleanGeneratedCode (code: string, indent = 0): string {
+function cleanGeneratedCode(code: string, indent = 0): string {
   // 1. 無意味な改行やセミコロンを削除
   // 2. 行頭の空白やセミコロンを削除
   // 3. indent分インデントを追加
@@ -2323,7 +2323,7 @@ function cleanGeneratedCode (code: string, indent = 0): string {
  * 文字列リテラル内のセミコロンと改行は保護する (#2153)
  * JavaScriptの文字列リテラル、正規表現、テンプレートリテラル、コメントを考慮
  */
-function removeDuplicateChars (code: string): string {
+function removeDuplicateChars(code: string): string {
   const result: string[] = []
   let i = 0
   let inString = false
@@ -2445,7 +2445,7 @@ function removeDuplicateChars (code: string): string {
     }
 
     // 文字列・正規表現・テンプレートリテラルの開始チェック
-    if (ch === '"' || ch === "'") {
+    if (ch === '"' || ch === '\'') {
       inString = true
       stringDelimiter = ch
       result.push(ch)
@@ -2510,7 +2510,7 @@ function removeDuplicateChars (code: string): string {
  * @param str 対象文字列
  * @returns トリムした文字列
  */
-function trim (str: string): string {
+function trim(str: string): string {
   str = String(str)
   return str.replace(/^\s+|\s+$/g, '')
 }
