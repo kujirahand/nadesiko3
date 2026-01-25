@@ -108,7 +108,6 @@
     "constants-browserify": "^1.0.0",
     "core-js": "^3.37.0",
     "cross-env": "^10.0.0",
-    "crypto-browserify": "^3.12.0",
     "css-loader": "^7.1.1",
     "es6-promise": "^4.2.8",
     "esbuild": "0.27.2",
