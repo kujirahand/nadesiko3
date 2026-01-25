@@ -1196,7 +1196,7 @@ export class NakoGen {
       `const ${varTemp} = ${temp};\n` +
       `const ${varFrom} = ${kara};\n` +
       `const ${varTo} = ${made};\n` +
-      `if (${varFrom} <= ${varTo}) { // up\n` +
+      `if (${varFrom} < ${varTo}) { // up\n` +
       `  if (${String(flagUp)}) {` +
       `    for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}+= ${inc}) {\n` +
       `      ${sorePrefex};${loopVarSetter}\n` +
@@ -1205,7 +1205,7 @@ export class NakoGen {
       '      // for block end\n' +
       '    };\n' +
       '  };\n' +
-      '} else { // down\n' +
+      `} else if (${varFrom} > ${varTo}) { // down\n` +
       `  if (${String(flagDown)}) {` +
       `    for (let ${varI} = ${varFrom}; ${varI} >= ${varTo}; ${varI}-= ${inc}) {\n` +
       `      ${sorePrefex};${loopVarSetter}\n` +
@@ -1213,6 +1213,13 @@ export class NakoGen {
       `      ${block}\n` +
       '      // for block end\n' +
       '    }\n' +
+      '  };\n' +
+      '} else { // from == to\n' +
+      `  for (let ${varI} = ${varFrom}; ${varI} <= ${varTo}; ${varI}+= 1) {\n` +
+      `    ${sorePrefex};${loopVarSetter}\n` +
+      '    // for block begin\n' +
+      `    ${block}\n` +
+      '    // for block end\n' +
       '  };\n' +
       '};\n' +
       `//[/convFor id=${idLoop}]\n`
