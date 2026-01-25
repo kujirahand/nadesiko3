@@ -234,7 +234,6 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-     
     fn: function(s: string, sys: NakoSystem) {
       return fs.readFileSync(s)
     }
@@ -266,7 +265,6 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-     
     fn: function(s: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       const buf = fs.readFileSync(s)
@@ -278,7 +276,6 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-     
     fn: function(s: string, f: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       const buf = iconv.encode(s, 'Shift_JIS')
@@ -290,7 +287,6 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-     
     fn: function(s: string, sys: NakoSystem) {
       const buf = fs.readFileSync(s)
       const text = iconv.decode(Buffer.from(buf), 'euc-jp')
@@ -301,7 +297,6 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-     
     fn: function(s: string, f: string, sys: NakoSystem) {
       const buf = iconv.encode(s, 'euc-jp')
       fs.writeFileSync(f, buf)
@@ -333,7 +328,6 @@ export default {
     type: 'func',
     josi: [['で'], ['を']],
     pure: true,
-     
     fn: function(callback: any, s: string, sys: NakoSystem) {
       exec(s, (err, stdout, stderr) => {
         if (err) { throw new Error(stderr) } else { callback(stdout) }
@@ -515,7 +509,6 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-     
     fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
       fse.move(a, b, (err: any) => {
         if (err) { throw new Error('ファイル移動時:' + err) }
@@ -548,7 +541,6 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-     
     fn: function(path: string, sys: NakoSystem) {
       return fs.statSync(path)
     }
@@ -557,7 +549,6 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-     
     fn: function(path: string, sys: NakoSystem) {
       const st = fs.statSync(path)
       if (!st) { return -1 }
@@ -673,7 +664,6 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-     
     fn: function(sys: NakoSystem) {
       // 環境変数からテンポラリフォルダを取得
       return os.tmpdir()
@@ -683,7 +673,6 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-     
     fn: function(dir: string, sys: NakoSystem) {
       if (dir === '' || !dir) {
         dir = os.tmpdir()
@@ -819,7 +808,6 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-     
     fn: function(sys: NakoSystem) {
       return nodeProcess.platform
     }
@@ -828,7 +816,6 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-     
     fn: function(sys: NakoSystem) {
       return nodeProcess.arch
     }
@@ -890,7 +877,6 @@ export default {
     josi: [],
     pure: true,
     asyncFn: true,
-     
     fn: function(sys: NakoSystem): Promise<string> {
       sys.tags.__setupStdin()
       return new Promise((resolve) => {
@@ -908,7 +894,6 @@ export default {
     type: 'func',
     josi: [['と'], ['が']],
     pure: true,
-     
     fn: function(a: any, b: any, sys: NakoSystem) {
       assert.strictEqual(a, b)
     }
@@ -918,7 +903,6 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-     
     fn: function(sys: NakoSystem) {
       const nif = os.networkInterfaces()
       if (!nif) { throw new Error('『自分IPアドレス取得』でネットワークのインターフェイスが種畜できません。') }
@@ -941,7 +925,6 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-     
     fn: function(sys: NakoSystem) {
       const nif = os.networkInterfaces()
       if (!nif) { throw new Error('『自分IPアドレス取得』でネットワークのインターフェイスが種畜できません。') }
@@ -1101,7 +1084,6 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-     
     fn: function(url: string, params: [key: string], sys: NakoSystem) {
       const flist: Array<string> = []
        
@@ -1126,7 +1108,6 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-     
     fn: function(url: string, params: any, sys: NakoSystem) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
@@ -1143,7 +1124,6 @@ export default {
     type: 'func',
     josi: [['から'], ['で']],
     pure: true,
-     
     fn: function(res: any, type: string, sys: NakoSystem) {
       type = type.toString().toUpperCase()
       if (type === 'TEXT' || type === 'テキスト') {
@@ -1191,7 +1171,6 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-     
     fn: function(params: any, sys: NakoSystem) {
       const flist: Array<string> = []
       for (const key in params) {
@@ -1232,7 +1211,6 @@ export default {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-     
     fn: function(url: any, params: any, sys: any) {
       return new Promise((resolve, reject) => {
         const fd = new FormData()
@@ -1361,7 +1339,6 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-     
     fn: function(code: string, sys: NakoSystem) {
       return iconv.encodingExists(code)
     }
@@ -1370,7 +1347,6 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'を']],
     pure: true,
-     
     fn: function(str: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.encode(str, 'Shift_JIS')
@@ -1380,7 +1356,6 @@ export default {
     type: 'func',
     josi: [['から', 'を', 'で']],
     pure: true,
-     
     fn: function(buf: any, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), 'sjis')
@@ -1390,7 +1365,6 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'で']],
     pure: true,
-     
     fn: function(s: string, code: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.encode(s, code)
@@ -1400,7 +1374,6 @@ export default {
     type: 'func',
     josi: [['を'], ['から', 'で']],
     pure: true,
-     
     fn: function(buf: any, code: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), code)
@@ -1411,7 +1384,6 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-     
     fn: function(sys: NakoSystem) {
       return crypto.getHashes()
     }
@@ -1420,7 +1392,6 @@ export default {
     type: 'func',
     josi: [['を'], ['の'], ['で']],
     pure: true,
-     
     fn: function(s: any, alg: string, enc: any, sys: NakoSystem) {
       const hashsum = crypto.createHash(alg)
       hashsum.update(s)
@@ -1431,7 +1402,6 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-     
     fn: function(sys: NakoSystem) {
       const uuid = crypto.randomUUID()
       return uuid
@@ -1441,7 +1411,6 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-     
     fn: function(cnt: number, sys: NakoSystem) {
       const a = new Uint8Array(cnt)
       crypto.getRandomValues(a)

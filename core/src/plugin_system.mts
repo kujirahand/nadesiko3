@@ -2140,7 +2140,6 @@ export default {
     type: 'func',
     josi: [['から', 'の'], ['を']],
     pure: true,
-     
     fn: function(a: any, i: any, sys: any) {
       // 文字列のとき
       if (typeof a === 'string') {

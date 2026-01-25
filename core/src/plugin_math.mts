@@ -131,7 +131,6 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: false,
-     
     fn: function(v: number, sys: NakoSystem): number {
       return sys.__exec('SIGN', [v])
     }
