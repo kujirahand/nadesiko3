@@ -6,7 +6,7 @@ if ((typeof navigator) === 'object' && !(navigator as any).exportWNako3) {
   const wnako3 = (navigator as any).nako3 = new WebNakoCompiler()
   window.addEventListener('DOMContentLoaded', (e) => {
     const isAutoRun = wnako3.checkScriptTagParam()
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+     
     if (isAutoRun) { wnako3.runNakoScript() }
   }, false)
 }

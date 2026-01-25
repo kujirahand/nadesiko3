@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 // なでしこの字句解析を行う
 // 既に全角半角を揃えたコードに対して字句解析を行う
 import { opPriority } from './nako_parser_const.mjs'
@@ -32,7 +32,7 @@ export class NakoLexer {
   /**
    * @param logger
    */
-  constructor (logger: NakoLogger) {
+  constructor(logger: NakoLogger) {
     this.logger = logger // 字句解析した際,確認された関数の一覧
     this.funclist = new Map()
     this.modList = [] // 字句解析した際,取り込むモジュール一覧 --- nako3::lex で更新される
@@ -44,12 +44,12 @@ export class NakoLexer {
   }
 
   /** 関数一覧をセット */
-  setFuncList (listMap: FuncList) {
+  setFuncList(listMap: FuncList) {
     this.funclist = listMap
   }
 
   /** モジュール公開既定値一覧をセット */
-  setModuleExport (exportObj: ExportMap) {
+  setModuleExport(exportObj: ExportMap) {
     this.moduleExport = exportObj
   }
 
@@ -58,7 +58,7 @@ export class NakoLexer {
    * @param {boolean} isFirst
    * @param {string} filename
    */
-  replaceTokens (tokens: Token[], isFirst: boolean, filename: string) {
+  replaceTokens(tokens: Token[], isFirst: boolean, filename: string) {
     this.result = tokens
     this.modName = NakoLexer.filenameToModName(filename)
     // 関数の定義があれば funclist を更新
@@ -126,7 +126,7 @@ export class NakoLexer {
    * ファイル内で定義されている関数名を列挙する。結果はfunclistに書き込む。その他のトークンの置換処理も行う。
    * シンタックスハイライトの処理から呼び出すためにstaticメソッドにしている。
    */
-  static preDefineFunc (tokens: Token[], logger: NakoLogger, funclist: FuncList, moduleexport: ExportMap) {
+  static preDefineFunc(tokens: Token[], logger: NakoLogger, funclist: FuncList, moduleexport: ExportMap) {
     // 関数を先読みして定義
     let i = 0
     let isFuncPointer = false
@@ -300,7 +300,7 @@ export class NakoLexer {
   }
 
   /** 文字列を{と}の部分で分割する。中括弧が対応していない場合nullを返す。 */
-  splitStringEx (code: string): string[] | null {
+  splitStringEx(code: string): string[] | null {
     /** @type {string[]} */
     const list = []
 
@@ -319,7 +319,7 @@ export class NakoLexer {
     return list
   }
 
-  _replaceWord (tokens: Token[]): void {
+  _replaceWord(tokens: Token[]): void {
     let comment = []
     let i = 0
     let isFuncPointer = false
@@ -524,7 +524,7 @@ export class NakoLexer {
    * インデントの個数を数える
    * @returns 戻り値として[インデント数, 読み飛ばすべき文字数]を返す
    */
-  countIndent (src: string): number[] {
+  countIndent(src: string): number[] {
     let indent = 0
     for (let i = 0; i < src.length; i++) {
       const c = src.charAt(i)
@@ -543,7 +543,7 @@ export class NakoLexer {
    * @param line 先頭行の行番号
    * @param filename ファイル名
    */
-  tokenize (src: string, line: number, filename: string): Token[] {
+  tokenize(src: string, line: number, filename: string): Token[] {
     const srcLength: number = src.length
     const result: Token[] = []
     let columnCurrent
@@ -722,17 +722,17 @@ export class NakoLexer {
         }
 
         switch (ruleName) {
-          case 'def_test': {
-            isDefTest = true
-            break
-          }
-          case 'eol': { // eolの処理はほかに↑と↓にある
-            isDefTest = false
-            break
-          }
-          default: {
-            break
-          }
+        case 'def_test': {
+          isDefTest = true
+          break
+        }
+        case 'eol': { // eolの処理はほかに↑と↓にある
+          isDefTest = false
+          break
+        }
+        default: {
+          break
+        }
         }
         // ここまで‰(#682) を処理
         if (ruleName === 'dec_lineno') {
@@ -773,7 +773,7 @@ export class NakoLexer {
   }
 
   // トークン配列をtype文字列に変換
-  static tokensToTypeStr (tokens: Token[], sep: string) {
+  static tokensToTypeStr(tokens: Token[], sep: string) {
     const a = tokens.map((v) => {
       return v.type
     })
@@ -785,7 +785,7 @@ export class NakoLexer {
    * @param {string} filename
    * @returns {string}
    */
-  static filenameToModName (filename: string) {
+  static filenameToModName(filename: string) {
     if (!filename) { return 'main' }
     // パスがあればパスを削除
     filename = filename.replace(/[\\:]/g, '/') // Windowsのpath記号を/に置換

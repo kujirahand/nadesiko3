@@ -51,7 +51,7 @@ class DrawLineEventArgs {
   v2: THREENS.Vector3
   width: number
   color: THREENS.Color
-  constructor (v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color) {
+  constructor(v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color) {
     this.v1 = v1
     this.v2 = v2
     this.width = width
@@ -67,14 +67,14 @@ interface Turtle3DEventMap {
 interface Turtle3DEventTarget extends EventTarget {
   addEventListener<K extends keyof Turtle3DEventMap>(
      type: K,
-     // eslint-disable-next-line no-use-before-define
+      
      listener: ((this: Turtle3D, evt: Turtle3DEventMap[K]) => any) | null,
      options?: boolean | EventListenerOptions,): void
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void
   dispatchEvent<K extends keyof Turtle3DEventMap>(evt: Turtle3DEventMap[K]): boolean
   removeListener<K extends keyof Turtle3DEventMap>(
      type: K,
-     // eslint-disable-next-line no-use-before-define
+      
      listener: (this: Turtle3D, evt: Turtle3DEventMap[K]) => any,
      options?: boolean | EventListenerOptions,): void
   removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void
@@ -87,7 +87,7 @@ class CommandPromise {
   resolve: (result:any) => void
   reject: (err:Error) => void
   command: Command
-  constructor (command: Command, resolve: (result: any) => void, reject: (err: Error) => void) {
+  constructor(command: Command, resolve: (result: any) => void, reject: (err: Error) => void) {
     this.command = command
     this.resolve = resolve
     this.reject = reject
@@ -96,7 +96,7 @@ class CommandPromise {
 class CommandHome extends Command {
   cmd: string = 'home'
   mode: 'set'|'jump'
-  constructor (mode: 'set'|'jump') {
+  constructor(mode: 'set'|'jump') {
     super()
     this.mode = mode
   }
@@ -104,7 +104,7 @@ class CommandHome extends Command {
 class CommandJump extends Command {
   cmd: string = 'jump'
   v: THREENS.Vector3
-  constructor (v: THREENS.Vector3) {
+  constructor(v: THREENS.Vector3) {
     super()
     this.v = v
   }
@@ -112,7 +112,7 @@ class CommandJump extends Command {
 class CommandMoveAbsolute extends Command {
   cmd: string = 'move'
   v: THREENS.Vector3
-  constructor (v: THREENS.Vector3) {
+  constructor(v: THREENS.Vector3) {
     super()
     this.v = v
   }
@@ -120,7 +120,7 @@ class CommandMoveAbsolute extends Command {
 class CommandAngle extends Command {
   cmd: string = 'angle'
   angle: THREENS.EulerArray
-  constructor (angle: THREENS.EulerArray) {
+  constructor(angle: THREENS.EulerArray) {
     super()
     this.angle = angle
   }
@@ -132,7 +132,7 @@ class CommandMoveDirection extends Command {
   cmd: string = 'slide'
   direction: MoveDirection
   length: number
-  constructor (dir: MoveDirection, l: number) {
+  constructor(dir: MoveDirection, l: number) {
     super()
     this.direction = dir
     this.length = l
@@ -142,7 +142,7 @@ class CommandRotate extends Command {
   cmd: string = 'rotate'
   direction: RotateDirection
   angle: number
-  constructor (dir: RotateDirection, a: number) {
+  constructor(dir: RotateDirection, a: number) {
     super()
     this.direction = dir
     this.angle = a
@@ -152,7 +152,7 @@ class CommandRoll extends Command {
   cmd: string = 'roll'
   direction: RollDirection
   angle: number
-  constructor (dir: RollDirection, a: number) {
+  constructor(dir: RollDirection, a: number) {
     super()
     this.direction = dir
     this.angle = a
@@ -162,7 +162,7 @@ class CommandPenEnable extends Command {
   cmd: string = 'pen'
   subcmd: string = 'enable'
   enable: boolean
-  constructor (enable: boolean) {
+  constructor(enable: boolean) {
     super()
     this.enable = enable
   }
@@ -171,7 +171,7 @@ class CommandPenColor extends Command {
   cmd: string = 'pen'
   subcmd: string = 'color'
   color: THREENS.Color
-  constructor (color: THREENS.Color) {
+  constructor(color: THREENS.Color) {
     super()
     this.color = color
   }
@@ -180,7 +180,7 @@ class CommandPenWidth extends Command {
   cmd: string = 'pen'
   subcmd: string = 'width'
   width: number
-  constructor (width: number) {
+  constructor(width: number) {
     super()
     this.width = width
   }
@@ -189,7 +189,7 @@ class CommandVisible extends Command {
   cmd: string = 'attr'
   subcmd: string = 'visible'
   visible: boolean
-  constructor (visible: boolean) {
+  constructor(visible: boolean) {
     super()
     this.visible = visible
   }
@@ -198,7 +198,7 @@ class CommandModel extends Command {
   cmd: string = 'attr'
   subcmd: string = 'model'
   model: any
-  constructor (model: any) {
+  constructor(model: any) {
     super()
     this.model = model
   }
@@ -219,7 +219,7 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
   f_visible: boolean
   macros: CommandPromise[]
 
-  constructor (three: THREENS.THREE, id: number) {
+  constructor(three: THREENS.THREE, id: number) {
     super()
     this.three = three
     this.id = id
@@ -241,7 +241,7 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     this.home.quaternion.copy(modelBase.quaternion)
   }
 
-  clear (): void {
+  clear(): void {
     // 未実行ジョブのPromiseを全て完了にする
     for (const job of this.macros) {
       job.resolve(0)
@@ -253,7 +253,7 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     this.obj.visible = true
   }
 
-  discardModel (): void {
+  discardModel(): void {
     if (this.disposal) {
       ThreeUtil.disposeChildObject(this.obj)
       this.disposal = false
@@ -263,7 +263,7 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     this.flagLoaded = false
   }
 
-  loadTurtle (model: THREENS.Object3D|string) {
+  loadTurtle(model: THREENS.Object3D|string) {
     if (this.isObject3D(model)) {
       this.discardModel()
       this.obj.add(model)
@@ -298,7 +298,7 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     })
   }
 
-  doMacro (noWait: boolean): boolean {
+  doMacro(noWait: boolean): boolean {
     if (!this.flagLoaded && !noWait) {
       return true
     }
@@ -356,14 +356,14 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     } else if (m instanceof CommandHome) {
       const mode = m.mode
       switch (mode) {
-        case 'set':
-          this.home.position.copy(this.obj.position)
-          this.home.quaternion.copy(this.obj.quaternion)
-          break
-        case 'jump':
-          this.obj.position.copy(this.home.position)
-          this.obj.quaternion.copy(this.home.quaternion)
-          break
+      case 'set':
+        this.home.position.copy(this.obj.position)
+        this.home.quaternion.copy(this.obj.quaternion)
+        break
+      case 'jump':
+        this.obj.position.copy(this.home.position)
+        this.obj.quaternion.copy(this.home.quaternion)
+        break
       }
     } else if (m instanceof CommandRotate) {
       const dir = m.direction
@@ -403,7 +403,7 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     } else if (m instanceof CommandAngle) {
       const euler = new this.three.Euler()
       euler.fromArray(m.angle)
-      // eslint-disable-next-line no-unused-vars
+       
       const dir = new this.three.Quaternion()
       this.obj.quaternion.setFromEuler(euler)
     }
@@ -413,7 +413,7 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     return (this.macros.length > 0)
   }
 
-  private createDefaultTurtle (): THREENS.Object3D {
+  private createDefaultTurtle(): THREENS.Object3D {
     const vertices = new Float32Array([
       0.0, 1.0, 0.0,
       -0.6, -1.0, 0.0,
@@ -473,34 +473,34 @@ class Turtle3D extends TypedTurtle3DEventTarget implements Turtle3DEventTarget {
     return obj
   }
 
-  private raiseModelChanged (): void {
+  private raiseModelChanged(): void {
     const evt = new CustomEvent<void>('modelChanged')
     this.dispatchEvent(evt)
   }
 
-  private raiseDrawLine (v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color) : void {
+  private raiseDrawLine(v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color) : void {
     const args = new DrawLineEventArgs(v1, v2, width, color)
     const evt = new CustomEvent<DrawLineEventArgs>('drawLine', { detail: args })
     this.dispatchEvent(evt)
   }
 
-  private line (v1: THREENS.Vector3, v2: THREENS.Vector3) {
+  private line(v1: THREENS.Vector3, v2: THREENS.Vector3) {
     if (!this.flagDown) { return }
     this.raiseDrawLine(v1, v2, this.lineWidth, this.color)
   }
 
-  private isObject3D (obj: any): obj is THREENS.Object3D {
+  private isObject3D(obj: any): obj is THREENS.Object3D {
     return obj instanceof this.three.Object3D
   }
 }
 
 interface NakoSystem extends NakoSystemBase {
-  // eslint-disable-next-line no-use-before-define
+   
   tags: { weykturtle3d?: WeykTurtle3DSystem }
 }
 
 class WeykTurtle3DSystem {
-  // eslint-disable-next-line no-use-before-define
+   
   private static instance: WeykTurtle3DSystem
   private instanceCount: number
   sys: NakoSystem
@@ -519,7 +519,7 @@ class WeykTurtle3DSystem {
   flagSetTimer: boolean
   _prevUpdatedTime: number
 
-  static getInstance (sys: NakoSystem) {
+  static getInstance(sys: NakoSystem) {
     if (WeykTurtle3DSystem.instance === undefined) {
       WeykTurtle3DSystem.instance = new WeykTurtle3DSystem(sys)
     } else if (WeykTurtle3DSystem.instance.sys !== sys) {
@@ -531,7 +531,7 @@ class WeykTurtle3DSystem {
     return WeykTurtle3DSystem.instance
   }
 
-  private constructor (sys: NakoSystem) {
+  private constructor(sys: NakoSystem) {
     this.instanceCount = 0
     this.three = null
     this.sys = sys
@@ -550,7 +550,7 @@ class WeykTurtle3DSystem {
     this._prevUpdatedTime = 0
   }
 
-  clearAll () {
+  clearAll() {
     this.disposeAllTurtle()
     this.disposeAllLine()
     const scene = this._scene
@@ -570,7 +570,7 @@ class WeykTurtle3DSystem {
     }
   }
 
-  disposeAllTurtle () {
+  disposeAllTurtle() {
     // カメをクリア
     for (const tt of this.turtles) {
       tt.clear()
@@ -581,21 +581,21 @@ class WeykTurtle3DSystem {
     this.flagSetTimer = false
   }
 
-  disposeAllLine () {
+  disposeAllLine() {
     // 引いた線を線用のバッファからクリア
     if (this._lines !== null) {
       ThreeUtil.disposeChildObject(this._lines)
     }
   }
 
-  private getThree (): THREENS.THREE {
+  private getThree(): THREENS.THREE {
     if (!this.three) {
       throw new Error('ThreeJSの準備される前に使用しようとしました')
     }
     return this.three
   }
 
-  createTurtle (modelUrl: string): number {
+  createTurtle(modelUrl: string): number {
     // カメの情報を sys._turtle リストに追加
     const three = this.getThree()
     const id = this.turtles.length
@@ -617,7 +617,7 @@ class WeykTurtle3DSystem {
     return id
   }
 
-  initTurtle (): void {
+  initTurtle(): void {
     if (this.turtles.length === 0) {
       if (this._renderer === null) {
         this.initRenderer()
@@ -640,7 +640,7 @@ class WeykTurtle3DSystem {
     }
   }
 
-  getCur (): Turtle3D {
+  getCur(): Turtle3D {
     if (this.turtles.length === 0) {
       throw Error('最初に『T3Dカメ作成』命令を呼び出してください。')
     }
@@ -650,7 +650,7 @@ class WeykTurtle3DSystem {
     return this.turtles[this.target]
   }
 
-  queCurrentTurtle (cmd: Command): Promise<number> {
+  queCurrentTurtle(cmd: Command): Promise<number> {
     const tt = this.getCur()
     const promise = new Promise<number>((resolve, reject) => {
       const que = new CommandPromise(cmd, resolve, reject)
@@ -660,7 +660,7 @@ class WeykTurtle3DSystem {
     return promise
   }
 
-  doDraw (beforeClear: boolean) {
+  doDraw(beforeClear: boolean) {
     if (this.camera === -1) { return }
     if (!this._scene) { return }
     this.getRenderer()
@@ -686,7 +686,7 @@ class WeykTurtle3DSystem {
     this._renderer.render(this._scene, this._camera)
   }
 
-  setCameraHelper (flag: boolean) {
+  setCameraHelper(flag: boolean) {
     const three = this.getThree()
     if (flag) {
       if (this._camerahelper === null) {
@@ -707,7 +707,7 @@ class WeykTurtle3DSystem {
     }
   }
 
-  setAxisHelper (flag: boolean) {
+  setAxisHelper(flag: boolean) {
     const three = this.getThree()
     if (flag) {
       if (this._axishelper === null) {
@@ -728,7 +728,7 @@ class WeykTurtle3DSystem {
     }
   }
 
-  getScene (): THREENS.Scene {
+  getScene(): THREENS.Scene {
     const three = this.getThree()
     if (this._scene === null) {
       this._scene = new three.Scene()
@@ -736,7 +736,7 @@ class WeykTurtle3DSystem {
     return this._scene
   }
 
-  getCamera (): THREENS.Camera {
+  getCamera(): THREENS.Camera {
     const three = this.getThree()
     if (this._camera === null) {
       const camera = new three.PerspectiveCamera(60, 1.0, 1, 65000)
@@ -746,7 +746,7 @@ class WeykTurtle3DSystem {
     return this._camera
   }
 
-  resetCamera (camera: THREENS.Camera):void {
+  resetCamera(camera: THREENS.Camera):void {
     const three = this.getThree()
     camera.position.set(0, 0, 1000)
     if (this._renderer !== null) {
@@ -760,12 +760,12 @@ class WeykTurtle3DSystem {
     camera.lookAt(new three.Vector3(0, 0, 0))
   }
 
-  initTrutle3dEnv (renderer: THREENS.WebGLRenderer) {
+  initTrutle3dEnv(renderer: THREENS.WebGLRenderer) {
     renderer.setClearColor(0x000000, 1.0)
     renderer.autoClear = false
 
     const scene = this.getScene()
-    // eslint-disable-next-line no-unused-vars
+     
     const camera = this.getCamera()
 
     if (scene && this._lines) {
@@ -776,7 +776,7 @@ class WeykTurtle3DSystem {
     }
   }
 
-  initRenderer ():THREENS.WebGLRenderer {
+  initRenderer():THREENS.WebGLRenderer {
     // 描画先をセットする
     let to = this.sys.__getSysVar('T3Dカメ描画先')
     if (typeof to === 'string') { to = document.querySelector(to) || document.getElementById(to) }
@@ -788,7 +788,7 @@ class WeykTurtle3DSystem {
     return renderer
   }
 
-  setRenderer (to: Element|HTMLCanvasElement|THREENS.WebGLRenderer):THREENS.WebGLRenderer {
+  setRenderer(to: Element|HTMLCanvasElement|THREENS.WebGLRenderer):THREENS.WebGLRenderer {
     const three = this.getThree()
     let renderer: null|THREENS.WebGLRenderer = null
     if (to instanceof three.WebGLRenderer) {
@@ -815,7 +815,7 @@ class WeykTurtle3DSystem {
     return this._renderer
   }
 
-  clearRenderer () {
+  clearRenderer() {
     this._renderer = null
     if (this._controls) {
       this._controls.enabled = false
@@ -823,20 +823,20 @@ class WeykTurtle3DSystem {
     }
   }
 
-  setupRenderer () {
+  setupRenderer() {
     if (this._renderer) {
       this.initTrutle3dEnv(this._renderer)
     }
   }
 
-  getRenderer (): THREENS.Renderer {
+  getRenderer(): THREENS.Renderer {
     if (this._renderer === null) {
       this.initRenderer()
     }
     return this._renderer!
   }
 
-  setupControl (controlConstrucor: THREENS.Controls): THREENS.Controls {
+  setupControl(controlConstrucor: THREENS.Controls): THREENS.Controls {
     if (typeof controlConstrucor === 'undefined') {
       throw new Error('指定されたコンコントロールが見当たりません。')
     }
@@ -849,14 +849,14 @@ class WeykTurtle3DSystem {
     }
     const renderer = this.getRenderer()
     const camera = this.getCamera()
-    // eslint-disable-next-line new-cap
+     
     const controls = new controlConstrucor(camera, renderer.domElement)
     controls.enabled = true
     this._controls = controls
     return this._controls
   }
 
-  drawLine (v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color):void {
+  drawLine(v1: THREENS.Vector3, v2: THREENS.Vector3, width: number, color: THREENS.Color):void {
     const three = this.getThree()
     const geometry = new three.BufferGeometry()
     const vertices = new three.Float32BufferAttribute(6, 3)
@@ -869,7 +869,7 @@ class WeykTurtle3DSystem {
     }
   }
 
-  doMacroAllTurtles (): boolean {
+  doMacroAllTurtles(): boolean {
     let hasNext = false
     for (const tt of this.turtles) {
       if (tt.doMacro(this.isNoWait())) { hasNext = true }
@@ -877,7 +877,7 @@ class WeykTurtle3DSystem {
     return hasNext
   }
 
-  animationStart ():void {
+  animationStart():void {
     const wait = this.getWait()
     const macrorun = !!this.sys.__getSysVar('T3D自動実行')
     if (!macrorun) {
@@ -892,15 +892,15 @@ class WeykTurtle3DSystem {
     this.animationFrame(() => this.animation())
   }
 
-  getWait (): number {
+  getWait(): number {
     return this.sys.__getSysVar('T3Dカメ速度')
   }
 
-  isNoWait (): boolean {
+  isNoWait(): boolean {
     return this.sys.__getSysVar('T3Dカメ速度') === 0
   }
 
-  animation () {
+  animation() {
     const redraw = !!this.sys.__getSysVar('T3D自動描画')
     const macrorun = !!this.sys.__getSysVar('T3D自動実行')
     const hasNext = this.animationTick()
@@ -914,7 +914,7 @@ class WeykTurtle3DSystem {
     }
   }
 
-  animationTick () {
+  animationTick() {
     const now = Date.now()
     const noWait = this.isNoWait()
     // ノーウエイトではない場合の時間待ち処理
@@ -938,11 +938,11 @@ class WeykTurtle3DSystem {
     return hasNext
   }
 
-  animationFrame (callback: () => void, element?: Element) {
+  animationFrame(callback: () => void, element?: Element) {
     window.setTimeout(callback, 1000 / 60)
   }
 
-  ck (): THREENS.THREE {
+  ck(): THREENS.THREE {
     if (this.three === null) {
       if (this.sys.__getSysVar('THREE') !== null) {
         this.three = this.sys.__getSysVar('THREE')
@@ -962,14 +962,14 @@ class WeykTurtle3DSystem {
     return this.three
   }
 
-  static getTurtle3D (sys: NakoSystem): WeykTurtle3DSystem {
+  static getTurtle3D(sys: NakoSystem): WeykTurtle3DSystem {
     if (!sys.tags.weykturtle3d) {
       throw new Error('プラグインの初期化が行われていません')
     }
     return sys.tags.weykturtle3d
   }
 
-  static getEnv (sys: NakoSystem):[ WeykTurtle3DSystem, THREENS.THREE ] {
+  static getEnv(sys: NakoSystem):[ WeykTurtle3DSystem, THREENS.THREE ] {
     const turtle3d = WeykTurtle3DSystem.getTurtle3D(sys)
     const three = turtle3d.ck()
     return [turtle3d, three]
@@ -991,7 +991,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       if (sys.tags.weykturtle3d) { return }
       const turtle3dSystem = WeykTurtle3DSystem.getInstance(sys)
       sys.tags.weykturtle3d = turtle3dSystem
@@ -1004,7 +1004,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       if (sys.tags.weykturtle3d) {
         sys.tags.weykturtle3d.clearAll()
         sys.tags.weykturtle3d.clearRenderer()
@@ -1019,7 +1019,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     josi: [],
     asyncFn: true,
     pure: true,
-    fn: async function (sys: NakoSystem): Promise<boolean> {
+    fn: async function(sys: NakoSystem): Promise<boolean> {
       const turtle3d = WeykTurtle3DSystem.getTurtle3D(sys)
       if (turtle3d.three === null && sys.__getSysVar('THREE') === null) {
         const baseUrl = sys.__getSysVar('T3DベースURL')
@@ -1047,7 +1047,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に']],
     pure: true,
-    fn: function (callback: CallbackType<boolean>, sys: NakoSystem):void {
+    fn: function(callback: CallbackType<boolean>, sys: NakoSystem):void {
       const turtle3d = WeykTurtle3DSystem.getTurtle3D(sys)
       if (turtle3d.three === null && sys.__getSysVar('THREE') === null) {
         const baseUrl = sys.__getSysVar('T3DベースURL')
@@ -1075,7 +1075,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     josi: [['を']],
     asyncFn: true,
     pure: true,
-    fn: async function (plugins: string[], sys: NakoSystem):Promise<void> {
+    fn: async function(plugins: string[], sys: NakoSystem):Promise<void> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       const l = plugins.length
       if (l === 0) {
@@ -1083,10 +1083,10 @@ const PluginWeykTurtle3D: NakoPluginObject = {
       }
       const baseUrl = sys.__getSysVar('T3DベースURL')
       const totalPromise = new Promise<void>((resolve, reject) => {
-        const callbacks = (function (total) {
+        const callbacks = (function(total) {
           let countTotal = 0
           let countSuccess = 0
-          return function (success: boolean) {
+          return function(success: boolean) {
             countTotal += 1
             if (success) {
               countSuccess += 1
@@ -1122,7 +1122,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に'], ['を']],
     pure: true,
-    fn: function (callback: CallbackType<void>, plugins: string[], sys: NakoSystem):void {
+    fn: function(callback: CallbackType<void>, plugins: string[], sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       const l = plugins.length
       if (l === 0) {
@@ -1130,9 +1130,9 @@ const PluginWeykTurtle3D: NakoPluginObject = {
         return
       }
       const baseUrl = sys.__getSysVar('T3DベースURL')
-      const callbacks = (function (callback, total) {
+      const callbacks = (function(callback, total) {
         let count = 0
-        return function (success: boolean) {
+        return function(success: boolean) {
           count += 1
           if (count === total) {
             callback()
@@ -1161,7 +1161,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): number {
+    fn: function(sys: NakoSystem): number {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.initTurtle()
       const modelUrl = sys.__getSysVar('T3DカメモデルURL')
@@ -1174,7 +1174,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
-    fn: function (id: number, sys: NakoSystem):void {
+    fn: function(id: number, sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.target = id
     },
@@ -1186,7 +1186,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (url: string, sys: NakoSystem):Promise<number> {
+    fn: function(url: string, sys: NakoSystem):Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandModel(url))
     },
@@ -1197,7 +1197,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: number, sys: NakoSystem):void {
+    fn: function(v: number, sys: NakoSystem):void {
       sys.__setSysVar('T3Dカメ速度', v)
     },
     return_none: true
@@ -1206,7 +1206,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (xyz: NumericArray3, sys: NakoSystem): Promise<number> {
+    fn: function(xyz: NumericArray3, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandMoveAbsolute(new three.Vector3(xyz[0], xyz[1], xyz[2])))
     },
@@ -1216,7 +1216,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): Promise<number> {
+    fn: function(sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandHome('set'))
     },
@@ -1226,7 +1226,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): Promise<number> {
+    fn: function(sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandHome('jump'))
     },
@@ -1236,7 +1236,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (xyz: NumericArray3, sys: NakoSystem): Promise<number> {
+    fn: function(xyz: NumericArray3, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandJump(new three.Vector3(xyz[0], xyz[1], xyz[2])))
     },
@@ -1246,7 +1246,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (l: number, sys: NakoSystem): Promise<number> {
+    fn: function(l: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandMoveDirection('f', l))
     },
@@ -1256,7 +1256,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (l: number, sys: NakoSystem): Promise<number> {
+    fn: function(l: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandMoveDirection('b', l))
     },
@@ -1266,7 +1266,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (l: number, sys: NakoSystem): Promise<number> {
+    fn: function(l: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandMoveDirection('u', l))
     },
@@ -1276,7 +1276,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (l: number, sys: NakoSystem): Promise<number> {
+    fn: function(l: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandMoveDirection('d', l))
     },
@@ -1286,7 +1286,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (l: number, sys: NakoSystem): Promise<number> {
+    fn: function(l: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandMoveDirection('l', l))
     },
@@ -1296,7 +1296,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (l: number, sys: NakoSystem): Promise<number> {
+    fn: function(l: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandMoveDirection('r', l))
     },
@@ -1306,7 +1306,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['へ', 'に'], ['だけ']],
     pure: true,
-    fn: function (dir:string, l: number, sys: NakoSystem): Promise<number> {
+    fn: function(dir:string, l: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       let cmd:MoveDirection
       if (dir === '前' || dir === 'FORWARD' || dir === 'まえ') {
@@ -1332,7 +1332,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ', 'の']],
     pure: true,
-    fn: function (angle: THREENS.EulerArray, sys: NakoSystem): Promise<number> {
+    fn: function(angle: THREENS.EulerArray, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandAngle(angle))
     },
@@ -1342,7 +1342,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (a: number, sys: NakoSystem): Promise<number> {
+    fn: function(a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandRotate('r', a))
     },
@@ -1352,7 +1352,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (a: number, sys: NakoSystem): Promise<number> {
+    fn: function(a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandRotate('l', a))
     },
@@ -1362,7 +1362,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (a: number, sys: NakoSystem): Promise<number> {
+    fn: function(a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandRotate('u', a))
     },
@@ -1372,7 +1372,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (a: number, sys: NakoSystem): Promise<number> {
+    fn: function(a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandRotate('d', a))
     },
@@ -1382,7 +1382,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['へ', 'に'], ['だけ']],
     pure: true,
-    fn: function (dir: string, a: number, sys: NakoSystem): Promise<number> {
+    fn: function(dir: string, a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       let cmd:RotateDirection
       if (dir === '上' || dir === 'UP' || dir === 'うえ') {
@@ -1404,7 +1404,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (a: number, sys: NakoSystem): Promise<number> {
+    fn: function(a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandRoll('r', a))
     },
@@ -1414,7 +1414,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['だけ']],
     pure: true,
-    fn: function (a: number, sys: NakoSystem): Promise<number> {
+    fn: function(a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandRoll('l', a))
     },
@@ -1424,7 +1424,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ'], ['だけ']],
     pure: true,
-    fn: function (dir: string, a: number, sys: NakoSystem): Promise<number> {
+    fn: function(dir: string, a: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       let cmd:RollDirection
       if (dir === '右' || dir === 'RIGHT' || dir === 'みぎ') {
@@ -1442,7 +1442,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (c: number|THREENS.Color, sys: NakoSystem): Promise<number> {
+    fn: function(c: number|THREENS.Color, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       if (typeof c === 'number') { c = new three.Color(c) }
       return turtle3d.queCurrentTurtle(new CommandPenColor(c))
@@ -1453,7 +1453,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (w: number, sys: NakoSystem): Promise<number> {
+    fn: function(w: number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandPenWidth(w))
     },
@@ -1463,7 +1463,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (w: boolean|number, sys: NakoSystem): Promise<number> {
+    fn: function(w: boolean|number, sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandPenEnable(!!w))
     },
@@ -1473,7 +1473,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.clearAll()
     },
@@ -1483,7 +1483,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): Promise<number> {
+    fn: function(sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandVisible(false))
     },
@@ -1493,7 +1493,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): Promise<number> {
+    fn: function(sys: NakoSystem): Promise<number> {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.queCurrentTurtle(new CommandVisible(true))
     },
@@ -1503,7 +1503,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (n: number, sys: NakoSystem):void {
+    fn: function(n: number, sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       if (n < 0 || n >= turtle3d.turtles.length) {
         throw Error('指定された番号のカメはいません。')
@@ -1520,7 +1520,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (to: string|Element|null, sys: NakoSystem):THREENS.WebGLRenderer {
+    fn: function(to: string|Element|null, sys: NakoSystem):THREENS.WebGLRenderer {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
 
       if (typeof to === 'string') { to = document.querySelector(to) || document.getElementById(to) }
@@ -1536,7 +1536,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.doDraw(true)
     },
@@ -1546,7 +1546,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.doDraw(false)
     },
@@ -1556,7 +1556,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.animationTick()
     },
@@ -1566,7 +1566,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (c: number, sys: NakoSystem):void {
+    fn: function(c: number, sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       const renderer = turtle3d.getRenderer()
       renderer.setClearColor(c)
@@ -1578,7 +1578,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (a: number, sys: NakoSystem):void {
+    fn: function(a: number, sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       const renderer = turtle3d.getRenderer()
       renderer.setClearAlpha(a)
@@ -1590,7 +1590,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): null|string {
+    fn: function(sys: NakoSystem): null|string {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       if (!turtle3d._lines) { return null }
       return JSON.stringify(turtle3d._lines.toJSON())
@@ -1601,7 +1601,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.clearRenderer()
     },
@@ -1611,7 +1611,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): THREENS.WebGLRenderer {
+    fn: function(sys: NakoSystem): THREENS.WebGLRenderer {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.getRenderer()
     },
@@ -1621,7 +1621,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): THREENS.Scene {
+    fn: function(sys: NakoSystem): THREENS.Scene {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.getScene()
     },
@@ -1631,7 +1631,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): THREENS.Camera {
+    fn: function(sys: NakoSystem): THREENS.Camera {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d.getCamera()
     },
@@ -1641,7 +1641,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): null|THREENS.Group {
+    fn: function(sys: NakoSystem): null|THREENS.Group {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       return turtle3d._lines
     },
@@ -1651,7 +1651,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): null|THREENS.Group {
+    fn: function(sys: NakoSystem): null|THREENS.Group {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       const lines = turtle3d._lines
       turtle3d._lines = new three.Group()
@@ -1665,7 +1665,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     josi: [['を']],
     asyncFn: true,
     pure: true,
-    fn: function (p: Promise<any>, sys: NakoSystem): Promise<any> {
+    fn: function(p: Promise<any>, sys: NakoSystem): Promise<any> {
       return p
     },
     return_none: false
@@ -1675,7 +1675,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem): null|THREENS.OrbitControls {
+    fn: function(sys: NakoSystem): null|THREENS.OrbitControls {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       if (typeof three.OrbitControls !== 'undefined') {
         return turtle3d.setupControl(three.OrbitControls) as THREENS.OrbitControls
@@ -1688,7 +1688,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       if (turtle3d._controls) {
         turtle3d._controls.enabled = true
@@ -1700,7 +1700,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       if (turtle3d._controls) {
         turtle3d._controls.enabled = false
@@ -1712,7 +1712,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.setCameraHelper(true)
     },
@@ -1722,7 +1722,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.setCameraHelper(false)
     },
@@ -1732,7 +1732,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.setAxisHelper(true)
     },
@@ -1742,7 +1742,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem):void {
+    fn: function(sys: NakoSystem):void {
       const [turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       turtle3d.setAxisHelper(false)
     },

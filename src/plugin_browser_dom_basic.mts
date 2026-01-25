@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { NakoSystem } from '../core/src/plugin_api.mjs'
 export default {
   // @DOM操作
@@ -9,7 +9,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (id: string, sys: any) {
+    fn: function(id: string, sys: any) {
       const dom = document.getElementById(id)
       sys.__addPropMethod(dom)
       return dom
@@ -19,7 +19,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (q: any, sys: any) {
+    fn: function(q: any, sys: any) {
       if (typeof q === 'string') {
         const dom = document.querySelector(q)
         sys.__addPropMethod(dom)
@@ -32,7 +32,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (q: any, sys: NakoSystem) {
+    fn: function(q: any, sys: NakoSystem) {
       const domList = Array.from(document.querySelectorAll(q))
       if (!domList) { return [] }
       for (const dom of domList) {
@@ -45,7 +45,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (tag: any) {
+    fn: function(tag: any) {
       return Array.from(document.getElementsByTagName(tag))
     }
   },
@@ -53,7 +53,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (pa: any, q: any, sys: any) {
+    fn: function(pa: any, q: any, sys: any) {
       pa = sys.__query(pa, 'DOM子要素取得', true)
       if (!pa.querySelector) {
         throw new Error('『DOM子要素取得』で親要素がDOMではありません。')
@@ -67,7 +67,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を']],
     pure: true,
-    fn: function (pa: any, q: any, sys: any) {
+    fn: function(pa: any, q: any, sys: any) {
       pa = sys.__query(pa, 'DOM子要素全取得', true)
       if (!pa.querySelectorAll) {
         throw new Error('『DOM子要素全取得』で親要素がDOMではありません。')
@@ -84,7 +84,7 @@ export default {
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: any, event: any, funcStr: any, sys: any) {
+    fn: function(dom: any, event: any, funcStr: any, sys: any) {
       dom = sys.__query(dom, 'DOMイベント設定', false)
       dom[event] = sys.__findVar(funcStr, null)
     },
@@ -94,7 +94,7 @@ export default {
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: any, text: any, sys: any) {
+    fn: function(dom: any, text: any, sys: any) {
       dom = sys.__query(dom, 'DOMテキスト設定', false)
       const tag = dom.tagName.toUpperCase()
       if (tag === 'INPUT' || tag === 'TEXTAREA') { dom.value = text } else if (tag === 'SELECT') {
@@ -113,7 +113,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       dom = sys.__query(dom, 'DOMテキスト取得', true)
       if (!dom) { return '' }
       const tag = dom.tagName.toUpperCase()
@@ -132,7 +132,7 @@ export default {
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: any, text: any, sys: any) {
+    fn: function(dom: any, text: any, sys: any) {
       dom = sys.__query(dom, 'DOM_HTML設定', false)
       dom.innerHTML = text
     },
@@ -142,7 +142,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       dom = sys.__query(dom, 'DOM_HTML取得', true)
       if (!dom) { return '' }
       return dom.innerHTML
@@ -152,7 +152,7 @@ export default {
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: any, v: any, sys: any) {
+    fn: function(dom: any, v: any, sys: any) {
       return sys.__exec('DOMテキスト設定', [dom, v, sys])
     },
     return_none: true
@@ -161,7 +161,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       return sys.__exec('DOMテキスト取得', [dom, sys])
     }
   },
@@ -169,7 +169,7 @@ export default {
     type: 'func',
     josi: [['に', 'の', 'へ'], ['を']],
     pure: true,
-    fn: function (dom: any, v: any, sys: any) {
+    fn: function(dom: any, v: any, sys: any) {
       return sys.__exec('DOM_HTML設定', [dom, v, sys])
     },
     return_none: true
@@ -178,7 +178,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       return sys.__exec('DOM_HTML取得', [dom, sys])
     }
   },
@@ -187,7 +187,7 @@ export default {
     josi: [['の'], ['に', 'へ'], ['を']],
     uses: ['DOM和属性'],
     pure: true,
-    fn: function (dom: any, s: any, v: any, sys: any) {
+    fn: function(dom: any, s: any, v: any, sys: any) {
       dom = sys.__query(dom, 'DOM属性設定', false)
       const wa = sys.__getSysVar('DOM和属性')
       if (wa[s]) { s = wa[s] }
@@ -205,7 +205,7 @@ export default {
     josi: [['の', 'から'], ['を']],
     uses: ['DOM和属性'],
     pure: true,
-    fn: function (dom: any, s: any, sys: any) {
+    fn: function(dom: any, s: any, sys: any) {
       dom = sys.__query(dom, 'DOM属性取得', true)
       if (!dom) { return '' }
       const wa = sys.__getSysVar('DOM和属性')
@@ -302,7 +302,7 @@ export default {
     josi: [['の'], ['に', 'へ'], ['を']],
     uses: ['DOM和スタイル'],
     pure: true,
-    fn: function (dom: any, s: any, v: any, sys: any) {
+    fn: function(dom: any, s: any, v: any, sys: any) {
       dom = sys.__query(dom, 'DOMスタイル設定', false)
       const wa = sys.__getSysVar('DOM和スタイル')
       if (wa[s] !== undefined) { s = wa[s] }
@@ -316,7 +316,7 @@ export default {
     josi: [['に', 'へ'], ['を']],
     uses: ['DOM和スタイル'],
     pure: true,
-    fn: function (dom: any, values: any, sys: any) {
+    fn: function(dom: any, values: any, sys: any) {
       if (typeof dom === 'string') {
         const domList = document.querySelectorAll(dom)
         if (domList === undefined || domList === null || domList.length === 0) {
@@ -346,7 +346,7 @@ export default {
     josi: [['の'], ['を']],
     uses: ['DOM和スタイル'],
     pure: true,
-    fn: function (dom: any, style: any, sys: any) {
+    fn: function(dom: any, style: any, sys: any) {
       dom = sys.__query(dom, 'DOMスタイル取得', true)
       if (!dom) { return '' }
       const wa = sys.__getSysVar('DOM和スタイル')
@@ -359,7 +359,7 @@ export default {
     josi: [['の'], ['を']],
     uses: ['DOM和スタイル'],
     pure: true,
-    fn: function (dom: any, style: any, sys: any) {
+    fn: function(dom: any, style: any, sys: any) {
       const res: any = {}
       dom = sys.__query(dom, 'DOMスタイル一括取得', true)
       if (!dom) { return res }
@@ -386,7 +386,7 @@ export default {
   'データ属性取得': { // @DOMのdata-PROPの値を取得 // @でーたぞくせいしゅとく
     type: 'func',
     josi: [['の', 'から'], ['を']],
-    fn: function (dom: any, prop: any, sys: any) {
+    fn: function(dom: any, prop: any, sys: any) {
       dom = sys.__query(dom, 'データ属性取得', true)
       if (!dom) { return '' }
       return dom.dataset[prop] // dom.getAttribute('data-' + prop) と同じ
@@ -395,7 +395,7 @@ export default {
   'データ属性設定': { // @DOMのdata-PROPに値Vを設定 // @でーたぞくせいせってい
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
-    fn: function (dom: any, prop: any, val: any, sys: any) {
+    fn: function(dom: any, prop: any, val: any, sys: any) {
       dom = sys.__query(dom, 'データ属性設定', true)
       if (!dom) { return '' }
       dom.dataset[prop] = val // dom.setAttribute('data-' + prop, val) と同じ
@@ -405,7 +405,7 @@ export default {
   'DOM設定変更': { // @DOMの属性とスタイルPROP(配列で指定可能)を適当にVALUEに設定 // @DOMせっていへんこう
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
-    fn: function (dom: any, prop: string|string[], value:any, sys: any) {
+    fn: function(dom: any, prop: string|string[], value:any, sys: any) {
       dom = sys.__query(dom, 'DOM設定変更', false)
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
@@ -490,7 +490,7 @@ export default {
   'DOM設定取得': { // @DOMの属性とスタイルPROP(配列で指定可能)の値を適当に取得 // @DOMせっていしゅとく
     type: 'func',
     josi: [['の', 'から'], ['を']],
-    fn: function (dom: any, prop: string|string[], sys: any) {
+    fn: function(dom: any, prop: string|string[], sys: any) {
       dom = sys.__query(dom, 'DOM設定取得', true)
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
@@ -549,7 +549,7 @@ export default {
   'DOM有効設定': { // @DOMのdata-有効の値を設定 // @DOMゆうこうせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom: any, value: string, sys: any) {
+    fn: function(dom: any, value: string, sys: any) {
       dom = sys.__query(dom, 'DOM有効設定', true)
       if (!dom) { return '' }
       dom.dataset['有効'] = value
@@ -559,7 +559,7 @@ export default {
   'DOM有効取得': { // @DOMのdata-有効の値を取得 // @DOMゆうこうしゅとく
     type: 'func',
     josi: [['の', 'から']],
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       dom = sys.__query(dom, 'DOM有効取得', true)
       if (!dom) { return '' }
       return dom.dataset['有効']
@@ -568,7 +568,7 @@ export default {
   'DOM可視設定': { // @DOMのdata-可視の値を設定 // @DOMかしせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom: any, value: string, sys: any) {
+    fn: function(dom: any, value: string, sys: any) {
       dom = sys.__query(dom, 'DOM可視設定', true)
       if (!dom) { return '' }
       dom.dataset['可視'] = value
@@ -578,7 +578,7 @@ export default {
   'DOM可視取得': { // @DOMのdata-可視の値を取得 // @DOMかししゅとく
     type: 'func',
     josi: [['の', 'から']],
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       dom = sys.__query(dom, 'DOM可視取得', true)
       if (!dom) { return '' }
       return dom.dataset['可視']
@@ -587,7 +587,7 @@ export default {
   'ポケット取得': { // @DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる) // @ぽけっとしゅとく
     type: 'func',
     josi: [['の', 'から']],
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       dom = sys.__query(dom, 'ポケット取得', true)
       if (!dom) { return '' }
       try {
@@ -601,14 +601,14 @@ export default {
   'DOMポケット取得': { // @DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる) // @DOMぽけっとしゅとく
     type: 'func',
     josi: [['の', 'から']],
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       return sys.__exec('ポケット取得', [dom, sys])
     }
   },
   'ポケット設定': { // @DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる) // @ぽけっとせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom: any, val: any, sys: any) {
+    fn: function(dom: any, val: any, sys: any) {
       dom = sys.__query(dom, 'ポケット設定', true)
       if (!dom) { return '' }
       dom.dataset.pocket = JSON.stringify(val)
@@ -618,7 +618,7 @@ export default {
   'DOMポケット設定': { // @DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる) // @DOMぽけっとせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom: any, val: any, sys: any) {
+    fn: function(dom: any, val: any, sys: any) {
       return sys.__exec('ポケット設定', [dom, val, sys])
     },
     return_none: true
@@ -626,7 +626,7 @@ export default {
   'ヒント取得': { // @DOMのヒント(title属性)の値を取得 // @ひんとしゅとく
     type: 'func',
     josi: [['の', 'から']],
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       dom = sys.__query(dom, 'ヒント取得', true)
       if (!dom) { return '' }
       return dom.getAttribute('title')
@@ -635,14 +635,14 @@ export default {
   'DOMヒント取得': { // @DOMのヒント(title属性)の値を取得 // @ひんとしゅとく
     type: 'func',
     josi: [['の', 'から']],
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       return sys.__exec('ヒント取得', [dom, sys])
     }
   },
   'ヒント設定': { // @DOMのヒント(title属性)に値Vを設定 // @ひんとせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom: any, val: string, sys: any) {
+    fn: function(dom: any, val: string, sys: any) {
       dom = sys.__query(dom, 'ヒント設定', true)
       if (!dom) { return '' }
       dom.setAttribute('title', val)
@@ -652,7 +652,7 @@ export default {
   'DOMヒント設定': { // @DOMのヒント(title属性)に値Vを設定 // @ひんとせってい
     type: 'func',
     josi: [['に', 'へ'], ['を']],
-    fn: function (dom: any, val: string, sys: any) {
+    fn: function(dom: any, val: string, sys: any) {
       return sys.__exec('ヒント設定', [dom, val, sys])
     },
     return_none: true
@@ -661,7 +661,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (tag: any) {
+    fn: function(tag: any) {
       return document.createElement(tag)
     }
   },
@@ -669,7 +669,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ'], ['を']],
     pure: true,
-    fn: function (pa: any, el: any, sys: any) {
+    fn: function(pa: any, el: any, sys: any) {
       pa = sys.__query(pa, 'DOM子要素追加', false)
       el = sys.__query(el, 'DOM子要素追加', false)
       pa.appendChild(el)
@@ -679,7 +679,7 @@ export default {
     type: 'func',
     josi: [['から'], ['を']],
     pure: true,
-    fn: function (pa: any, el: any, sys: any) {
+    fn: function(pa: any, el: any, sys: any) {
       pa = sys.__query(pa, 'DOM子要素削除', false)
       el = sys.__query(el, 'DOM子要素削除', false)
       pa.removeChild(el)
@@ -689,7 +689,7 @@ export default {
     type: 'func',
     josi: [['を', 'へ', 'に']],
     pure: true,
-    fn: function (dom: any, sys: any) {
+    fn: function(dom: any, sys: any) {
       dom = sys.__query(dom, '注目', true)
       if (dom && dom.focus) { dom.focus() }
     },

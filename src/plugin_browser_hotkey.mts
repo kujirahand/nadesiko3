@@ -7,8 +7,8 @@ export default {
     type: 'func',
     josi: [['に', 'で'], ['を']],
     pure: true,
-    fn: function (key: any, fname: any, sys: any) {
-      hotkeys(key, function (event: any, handler: any) {
+    fn: function(key: any, fname: any, sys: any) {
+      hotkeys(key, function(event: any, handler: any) {
         event.preventDefault()
         const f = sys.__findFunc(fname)
         f(sys)
@@ -19,7 +19,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function (key: any) {
+    fn: function(key: any) {
       hotkeys.unbind(key)
     }
   }

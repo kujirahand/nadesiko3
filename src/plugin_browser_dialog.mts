@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['と', 'を']],
     pure: true,
-    fn: function (s: any) {
+    fn: function(s: any) {
       window.alert(s)
     },
     return_none: true
@@ -15,7 +15,7 @@ export default {
     type: 'func',
     josi: [['と', 'を']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       const r = window.prompt(s)
       if (r === null) {
         return sys.__getSysVar('ダイアログキャンセル値')
@@ -35,7 +35,7 @@ export default {
     type: 'func',
     josi: [['と', 'を']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       const r = window.prompt(s)
       if (r === null) {
         return sys.__getSysVar('ダイアログキャンセル値')
@@ -47,7 +47,7 @@ export default {
     type: 'func',
     josi: [['で', 'の', 'と', 'を']],
     pure: true,
-    fn: function (s: any) {
+    fn: function(s: any) {
       return window.confirm(s)
     }
   }

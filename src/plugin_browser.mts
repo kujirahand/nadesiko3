@@ -2,8 +2,9 @@
  * @fileOverview ブラウザプラグイン
  */
 import { NakoValue, NakoCallback, NakoCallbackEvent, NakoSystem } from '../core/src/plugin_api.mjs'
-import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation } from './plugin_browser_api.mjs'
 import { parsePosition } from '../core/src/nako_logger.mjs'
+import { NakoRuntimeError } from '../core/src/nako_errors.mjs'
+import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation } from './plugin_browser_api.mjs'
 
 import PartBrowserColor from './plugin_browser_color.mjs'
 import PartBrowserSystem from './plugin_browser_system.mjs'
@@ -24,7 +25,6 @@ import PartBrowserHotkey from './plugin_browser_hotkey.mjs'
 import PartBrowserChart from './plugin_browser_chart.mjs'
 import PartBrowserCrypto from './plugin_browser_crypto.mjs'
 import PartBrowserCamera from './plugin_browser_camera.mjs'
-import { NakoRuntimeError } from '../core/src/nako_errors.mjs'
 
 const BrowserParts = [
   PartBrowserColor,
@@ -63,7 +63,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoBrowsesrSystem) {
+    fn: function(sys: NakoBrowsesrSystem) {
       sys.engine = 'wnako'
       /* eslint no-global-assign: 0 */
       const doc: IBrowserDocument = (typeof document === 'undefined') ? { 'body': {}, 'querySelector': () => null } : document
@@ -222,7 +222,7 @@ const PluginBrowser = {
         }
       }
       // DOMに動的プロパティの取得と設定を追加する
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       sys.__addPropMethod = (obj: any) => {
         if (!obj) { return }
         if (!obj.__nako3) {
@@ -241,10 +241,10 @@ const PluginBrowser = {
               Object.defineProperty(obj, key, {
                 enumerable: false,
                 configurable: true,
-                get: function () {
+                get: function() {
                   return sys.__exec('DOM設定取得', [obj, key, sys])
                 },
-                set: function (value: object) {
+                set: function(value: object) {
                   sys.__exec('DOM設定変更', [obj, key, value, sys])
                 }
               })
@@ -256,10 +256,10 @@ const PluginBrowser = {
               Object.defineProperty(obj, key, {
                 enumerable: false,
                 configurable: true,
-                get: function () {
+                get: function() {
                   return sys.__exec('DOM設定取得', [obj, key, sys])
                 },
-                set: function (value: object) {
+                set: function(value: object) {
                   sys.__exec('DOM設定変更', [obj, key, value, sys])
                 }
               })
@@ -271,11 +271,11 @@ const PluginBrowser = {
       if (sys.__registPropAccessor && globalThis.Element) {
         sys.__registPropAccessor(
           Element,
-          function (prop: string|string[], sys: NakoSystem): unknown {
+          function(prop: string|string[], sys: NakoSystem): unknown {
             // @ts-expect-error: use this
             return sys.__exec('DOM設定取得', [(this as Element), prop, sys as NakoBrowsesrSystem])
           },
-          function (prop: string|string[], value: object, sys: NakoSystem): void {
+          function(prop: string|string[], value: object, sys: NakoSystem): void {
             // @ts-expect-error: use this
             sys.__exec('DOM設定変更', [(this as Element), prop, value, sys as NakoBrowsesrSystem])
           }
@@ -326,7 +326,7 @@ const PluginBrowser = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoBrowsesrSystem) {
+    fn: function(sys: NakoBrowsesrSystem) {
       // chart.jsを破棄
       if (sys.__chartjs) {
         const chartjs = sys.__chartjs as { destroy: () => void }
@@ -345,7 +345,7 @@ const PluginBrowser = {
 }
 
 BrowserParts.forEach((a) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const b: any = {}
   Object.assign(b, a)
   // 各モジュールでの初期化処理は認めない

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 export default {
   // @DOM部品操作
   'DOM親要素': { type: 'const', value: '' }, // @DOMおやようそ
@@ -8,7 +8,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (el: any, sys: any) {
+    fn: function(el: any, sys: any) {
       if (typeof el === 'string') { el = document.querySelector(el) || document.getElementById(el) }
       sys.__setSysVar('DOM親要素', el)
       sys.__addPropMethod(el)
@@ -19,7 +19,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (el: any, sys: any) {
+    fn: function(el: any, sys: any) {
       return sys.__exec('DOM親要素設定', [el, sys])
     }
   },
@@ -29,7 +29,7 @@ export default {
     type: 'func',
     josi: [['を', 'に', 'の']],
     pure: true,
-    fn: function (skin: any, sys: any) {
+    fn: function(skin: any, sys: any) {
       sys.__setSysVar('DOMスキン', skin)
     },
 
@@ -39,7 +39,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (elm: any, sys: any) {
+    fn: function(elm: any, sys: any) {
       const parent = sys.__getSysVar('DOM親要素')
       const btn = (typeof (elm) === 'string') ? document.createElement(elm) : elm
       btn.id = 'nadesi-dom-' + sys.__getSysVar('DOM部品個数')
@@ -64,7 +64,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (elm: any) {
+    fn: function(elm: any) {
       if (typeof elm === 'string') { elm = document.querySelector(elm) }
       if (elm) { elm.parentNode.removeChild(elm) }
     },
@@ -74,7 +74,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (label: any, sys: any) {
+    fn: function(label: any, sys: any) {
       const btn = sys.__exec('DOM部品作成', ['button', sys])
       btn.innerHTML = label
       return btn
@@ -84,7 +84,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (text: any, sys: any) {
+    fn: function(text: any, sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'text'
       inp.value = text
@@ -95,7 +95,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (text: any, sys: any) {
+    fn: function(text: any, sys: any) {
       const te = sys.__exec('DOM部品作成', ['textarea', sys])
       te.value = text
       return te
@@ -105,7 +105,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (text: any, sys: any) {
+    fn: function(text: any, sys: any) {
       const lbl = sys.__exec('DOM部品作成', ['span', sys])
       lbl.innerHTML = text
       return lbl
@@ -115,7 +115,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (size: any, sys: any) {
+    fn: function(size: any, sys: any) {
       const cv = sys.__exec('DOM部品作成', ['canvas', sys])
       cv.width = size[0]
       cv.height = size[1]
@@ -130,7 +130,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (url: any, sys: any) {
+    fn: function(url: any, sys: any) {
       const img = sys.__exec('DOM部品作成', ['img', sys])
       img.src = url
       return img
@@ -140,7 +140,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const br = sys.__exec('DOM部品作成', ['br', sys])
       return br
     }
@@ -149,7 +149,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (text: any, sys: any) {
+    fn: function(text: any, sys: any) {
       // チェックボックスは、<span><input><label></span>で成り立つように構築
       const span = document.createElement('span')
       const inp = document.createElement('input')
@@ -170,7 +170,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (options: any, sys: any) {
+    fn: function(options: any, sys: any) {
       const dom = document.createElement('select')
       for (let i = 0; i < options.length; i++) {
         const item = document.createElement('option')
@@ -187,7 +187,7 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-    fn: function (options: any, dom: any) {
+    fn: function(options: any, dom: any) {
       if (typeof dom === 'string') { dom = document.querySelector(dom) }
       // 既存のoptionsをクリア
       dom.options.length = 0
@@ -205,7 +205,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'color'
       return inp
@@ -215,7 +215,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'date'
       return inp
@@ -225,7 +225,7 @@ export default {
     type: 'func',
     josi: [['の', 'で']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'password'
       inp.value = s
@@ -236,7 +236,7 @@ export default {
     type: 'func',
     josi: [['の', 'で']],
     pure: true,
-    fn: function (range: any, sys: any) {
+    fn: function(range: any, sys: any) {
       if (!(range instanceof Array) || range.length < 2) {
         range = [0, 100, 50]
       }
@@ -255,7 +255,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (label: any, sys: any) {
+    fn: function(label: any, sys: any) {
       const inp = sys.__exec('DOM部品作成', ['input', sys])
       inp.type = 'submit'
       inp.value = label
@@ -266,7 +266,7 @@ export default {
     type: 'func',
     josi: [['で', 'の'], ['を']],
     pure: true,
-    fn: function (obj: any, s: string|Array<string>|Array<Array<string>>, sys: any) {
+    fn: function(obj: any, s: string|Array<string>|Array<Array<string>>, sys: any) {
       const frm = sys.__exec('DOM部品作成', ['form', sys])
       // 可能ならformにobjの値を移し替える
       if (obj instanceof Object) {
@@ -284,7 +284,7 @@ export default {
         rows = s
       }
       // 入力項目に合わせて行を追加
-      // eslint-disable-next-line @typescript-eslint/no-for-in-array
+       
       for (const rowIndex in rows) {
         const row: Array<string>|string = rows[rowIndex]
         let cols: Array<string>
@@ -418,7 +418,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (dom: any) {
+    fn: function(dom: any) {
       if (typeof (dom) === 'string') { dom = document.querySelector(dom) }
       const res: any = {}
       const getChildren = (pa: any) => {
@@ -454,7 +454,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (aa: any, sys: any) {
+    fn: function(aa: any, sys: any) {
       const table = sys.__exec('DOM部品作成', ['table', sys])
       return sys.__exec('テーブル更新', [table, aa, sys])
     }
@@ -463,7 +463,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (aa: any, sys: any) {
+    fn: function(aa: any, sys: any) {
       const domOption = sys.__getSysVar('DOM部品オプション')
       const tmpTableHeader = domOption['テーブルヘッダ']
       domOption['テーブルヘッダ'] = true
@@ -476,7 +476,7 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    fn: function (aa: any, sys: any) {
+    fn: function(aa: any, sys: any) {
       const domOption = sys.__getSysVar('DOM部品オプション')
       const tmpTableHeader = domOption['テーブルヘッダ']
       domOption['テーブルヘッダ'] = false
@@ -489,7 +489,7 @@ export default {
     type: 'func',
     josi: [['を'], ['に', 'へ']],
     pure: true,
-    fn: function (tbl: any, aa: any, sys: any) {
+    fn: function(tbl: any, aa: any, sys: any) {
       // 既存のテーブルを取得
       if (typeof tbl === 'string') {
         tbl = sys.__query(tbl, 'テーブル更新', false)
@@ -555,7 +555,7 @@ export default {
     type: 'func',
     josi: [['の'], ['を'], ['に', 'へ']],
     pure: true,
-    fn: function (t: any, cell: any, v: string|Array<Array<string>>, sys: any) {
+    fn: function(t: any, cell: any, v: string|Array<Array<string>>, sys: any) {
       if (typeof (t) === 'string') { t = document.querySelector(t) }
       if (typeof (cell) === 'string') { cell = cell.split(',') }
       if (cell.length !== 2) {
@@ -606,7 +606,7 @@ export default {
     josi: [['の']],
     pure: true,
     asyncFn: true,
-    fn: async function (src: string, sys: any) {
+    fn: async function(src: string, sys: any) {
       const div = sys.__exec('DOM部品作成', ['div', sys])
       div.classList.add('mermaid')
       div.innerHTML = src
@@ -625,7 +625,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       const video = sys.__exec('DOM部品作成', ['video', sys])
       return video
     }

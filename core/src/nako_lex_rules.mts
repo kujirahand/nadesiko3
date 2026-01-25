@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 /**
  * なでしこ3字句解析のためのルール
  */
@@ -12,7 +12,7 @@ const allHiragana = /^[ぁ-ん]+$/
 const wordHasIjoIka = /^.+(以上|以下|超|未満)$/
 const wordSpecial = /^(かつ|または)/
 const errorRead = (ch: string): any => {
-  return function () { throw new Error('突然の『' + ch + '』があります。') }
+  return function() { throw new Error('突然の『' + ch + '』があります。') }
 }
 
 // 数値の後の単位は自動的に省略されるルール (#994)
@@ -133,7 +133,7 @@ export const rules: NakoLexRule[] = [
   }
 ]
 
-export function trimOkurigana (s: string): string {
+export function trimOkurigana(s: string): string {
   // ひらがなから始まらない場合、送り仮名を削除。(例)置換する
   if (!hira.test(s)) {
     return s.replace(/[ぁ-ん]+/g, '')
@@ -145,7 +145,7 @@ export function trimOkurigana (s: string): string {
 }
 
 // Utility for Rule
-function cbRangeComment (src: string): NakoLexParseResult {
+function cbRangeComment(src: string): NakoLexParseResult {
   let res = ''
   const josi = ''
   let numEOL = 0
@@ -168,7 +168,7 @@ function cbRangeComment (src: string): NakoLexParseResult {
 /**
  * @param {string} src
  */
-function cbWordParser (src: string, isTrimOkurigana = true): NakoLexParseResult {
+function cbWordParser(src: string, isTrimOkurigana = true): NakoLexParseResult {
   /*
     kanji    = [\u3005\u4E00-\u9FCF]
     hiragana = [ぁ-ん]
@@ -246,7 +246,7 @@ function cbWordParser (src: string, isTrimOkurigana = true): NakoLexParseResult 
   return { src, res, josi, numEOL: 0 }
 }
 
-function cbString (beginTag: string, closeTag: string, src: string): NakoLexParseResult {
+function cbString(beginTag: string, closeTag: string, src: string): NakoLexParseResult {
   let res = ''
   let josi = ''
   let numEOL = 0
@@ -289,7 +289,7 @@ function cbString (beginTag: string, closeTag: string, src: string): NakoLexPars
   return { src, res, josi, numEOL }
 }
 
-function cbExtWord (src: string): NakoLexParseResult {
+function cbExtWord(src: string): NakoLexParseResult {
   let res = ''
   let josi = ''
   let numEOL = 0
@@ -318,6 +318,6 @@ function cbExtWord (src: string): NakoLexParseResult {
   return { src, res, josi, numEOL }
 }
 
-function parseNumber (n: string): number {
+function parseNumber(n: string): number {
   return Number(n.replace(/_/g, ''))
 }

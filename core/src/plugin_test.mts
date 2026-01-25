@@ -20,7 +20,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (): void {
+    fn: function(): void {
       // 初期化不要
     }
   },
@@ -29,7 +29,7 @@ export default {
     type: 'func',
     josi: [['と'], ['が']],
     pure: true,
-    fn: function (a: any, b: any): boolean {
+    fn: function(a: any, b: any): boolean {
       if (a !== b) {
         throw new Error(`不一致 [実際]${JSON.stringify(a)} [期待]${JSON.stringify(b)}`)
       }
@@ -40,8 +40,8 @@ export default {
     type: 'func',
     josi: [['と'], ['で']],
     pure: false,
-    fn: function (a: any, b: any, sys: NakoSystem) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    fn: function(a: any, b: any, sys: NakoSystem) {
+       
       sys.__exec('ASSERT等', [a, b, sys])
     }
   },
@@ -49,8 +49,8 @@ export default {
     type: 'func',
     josi: [['と'], ['が']],
     pure: false,
-    fn: function (a: any, b: any, sys: NakoSystem) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    fn: function(a: any, b: any, sys: NakoSystem) {
+       
       sys.__exec('ASSERT等', [a, b, sys])
     }
   }

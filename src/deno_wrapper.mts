@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 /** get environment name */
-export function getEnv (name: string): string | undefined {
+export function getEnv(name: string): string | undefined {
   if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env !== undefined) {
     return (globalThis as any).process.env[name]
   }
@@ -12,7 +12,7 @@ export function getEnv (name: string): string | undefined {
 }
 
 /** check is windows */
-export function isWindows (): boolean {
+export function isWindows(): boolean {
   if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.platform) {
     return (globalThis as any).process.platform === 'win32'
   }
@@ -23,7 +23,7 @@ export function isWindows (): boolean {
 }
 
 /** get command line arguments */
-export function getCommandLineArgs (): string[] {
+export function getCommandLineArgs(): string[] {
   // Node.js
   if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.argv) {
     return (globalThis as any).process.argv
@@ -40,7 +40,7 @@ export function getCommandLineArgs (): string[] {
 }
 
 /** Exit */
-export function exit (code: number): void {
+export function exit(code: number): void {
   if (typeof (globalThis as any).process !== 'undefined') {
     (globalThis as any).process.exit(code)
   }

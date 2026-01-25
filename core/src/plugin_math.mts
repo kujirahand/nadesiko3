@@ -16,7 +16,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (): void {
+    fn: function(): void {
       // 初期化不要
     }
   },
@@ -25,7 +25,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.sin(v)
     }
   },
@@ -33,7 +33,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.cos(v)
     }
   },
@@ -41,7 +41,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.tan(v)
     }
   },
@@ -49,7 +49,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.asin(v)
     }
   },
@@ -57,7 +57,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.acos(v)
     }
   },
@@ -65,7 +65,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.atan(v)
     }
   },
@@ -73,7 +73,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (y: number, x: number): number {
+    fn: function(y: number, x: number): number {
       return Math.atan2(y, x)
     }
   },
@@ -81,7 +81,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (XY: number[]): number {
+    fn: function(XY: number[]): number {
       return Math.atan2(XY[1], XY[0]) / Math.PI * 180
     }
   },
@@ -89,7 +89,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return v / Math.PI * 180
     }
   },
@@ -97,7 +97,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return (v / 180) * Math.PI
     }
   },
@@ -105,7 +105,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return v / Math.PI * 180
     }
   },
@@ -113,7 +113,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return (v / 180) * Math.PI
     }
   },
@@ -123,7 +123,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (v: any): number {
+    fn: function(v: any): number {
       return (parseFloat(v) === 0) ? 0 : (v > 0) ? 1 : -1
     }
   },
@@ -131,8 +131,8 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: false,
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    fn: function (v: number, sys: NakoSystem): number {
+     
+    fn: function(v: number, sys: NakoSystem): number {
       return sys.__exec('SIGN', [v])
     }
   },
@@ -140,7 +140,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.abs(a)
     }
   },
@@ -148,7 +148,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.abs(a)
     }
   },
@@ -156,7 +156,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.exp(a)
     }
   },
@@ -164,7 +164,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a: number, b: number): number {
+    fn: function(a: number, b: number): number {
       return Math.hypot(a, b)
     }
   },
@@ -172,7 +172,7 @@ export default {
     type: 'func',
     josi: [['と'], ['の']],
     pure: true,
-    fn: function (a: number, b: number): number {
+    fn: function(a: number, b: number): number {
       return Math.hypot(a, b)
     }
   },
@@ -180,7 +180,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.log(a)
     }
   },
@@ -188,7 +188,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.log(a)
     }
   },
@@ -196,7 +196,7 @@ export default {
     type: 'func',
     josi: [['で'], ['の']],
     pure: true,
-    fn: function (a: number, b: number): number {
+    fn: function(a: number, b: number): number {
       if (a === 2) { return Math.LOG2E * Math.log(b) }
       if (a === 10) { return Math.LOG10E * Math.log(b) }
       return Math.log(b) / Math.log(a)
@@ -206,7 +206,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return a % 1
     }
   },
@@ -214,7 +214,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return a % 1
     }
   },
@@ -222,7 +222,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.trunc(a)
     }
   },
@@ -230,7 +230,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: any): number | undefined {
+    fn: function(a: any): number | undefined {
       // numberの場合
       if (typeof a === 'number') {
         return Math.floor(Math.random() * a)
@@ -254,7 +254,7 @@ export default {
     type: 'func',
     josi: [['から'], ['までの', 'の']],
     pure: true,
-    fn: function (a: number, b: number): number {
+    fn: function(a: number, b: number): number {
       return (Math.floor(Math.random() * (b - a + 1)) + a)
     }
   },
@@ -262,7 +262,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.sqrt(a)
     }
   },
@@ -270,7 +270,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: number): number {
+    fn: function(a: number): number {
       return Math.sqrt(a)
     }
   },
@@ -280,7 +280,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.round(v)
     }
   },
@@ -288,7 +288,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.round(v)
     }
   },
@@ -296,7 +296,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a: number, b: number): number {
+    fn: function(a: number, b: number): number {
       const base = Math.pow(10, b)
       return Math.ceil(a * base) / base
     }
@@ -305,7 +305,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a: number, b: number): number {
+    fn: function(a: number, b: number): number {
       const base = Math.pow(10, b)
       return Math.floor(a * base) / base
     }
@@ -314,7 +314,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a: number, b: number): number {
+    fn: function(a: number, b: number): number {
       const base = Math.pow(10, b)
       return Math.round(a * base) / base
     }
@@ -323,7 +323,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.ceil(v)
     }
   },
@@ -331,7 +331,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.ceil(v)
     }
   },
@@ -339,7 +339,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.floor(v)
     }
   },
@@ -347,7 +347,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (v: number): number {
+    fn: function(v: number): number {
       return Math.floor(v)
     }
   }

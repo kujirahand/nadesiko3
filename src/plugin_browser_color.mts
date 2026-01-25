@@ -22,7 +22,7 @@ export default {
     type: 'func',
     josi: [['と'], ['と'], ['で', 'の']],
     pure: true,
-    fn: function (r: number, g: number, b: number) {
+    fn: function(r: number, g: number, b: number) {
       const z2 = (v) => {
         const v2 = '00' + v.toString(16)
         return v2.substr(v2.length - 2, 2)
@@ -35,7 +35,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (a: any) {
+    fn: function(a: any) {
       const z2 = (v) => {
         const v2 = '00' + v.toString(16)
         return v2.substr(v2.length - 2, 2)

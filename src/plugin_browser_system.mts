@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       // v3.3.74以降 plugin_system.mjsと挙動が同じになった
       // デバッグモードでなければ例外を投げることでプログラムを終了させる
       if (sys && sys.__v0) {
@@ -21,7 +21,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       const ua = window.navigator.userAgent.toLowerCase()
       if (ua.indexOf('windows') !== -1) { return 'windows' }
       if (ua.indexOf('android') !== -1) { return 'android' }

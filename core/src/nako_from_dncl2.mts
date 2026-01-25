@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 /**
  * DNCL ver2 に対応する構文
  */
@@ -31,7 +31,7 @@ const DNCL_SIMPLES: { [key: string]: string[] } = {
 /**
  * DNCLのソースコードをなでしこに変換する
  */
-export function convertDNCL2 (tokens: Token[]): Token[] {
+export function convertDNCL2(tokens: Token[]): Token[] {
   if (!useDNCL2mode(tokens)) { return tokens }
 
   // 一行ずつに分ける
@@ -272,7 +272,7 @@ export function convertDNCL2 (tokens: Token[]): Token[] {
  * @param fromIndex 検索場所
  * @returns 合致したかどうか
  */
-function tokenEq (typeValues: any[], lines: Token[], fromIndex: number): boolean {
+function tokenEq(typeValues: any[], lines: Token[], fromIndex: number): boolean {
   const check = (pattern: string|Array<string>, t: { type: string, value: string }): boolean => {
     if (pattern instanceof Array) {
       for (let i = 0; i < pattern.length; i++) {
@@ -298,7 +298,7 @@ function tokenEq (typeValues: any[], lines: Token[], fromIndex: number): boolean
   return true
 }
 
-function findTokens (tokens: Token[], findTypeValue: string[]): number {
+function findTokens(tokens: Token[], findTypeValue: string[]): number {
   const findA = findTypeValue.map(s => s.split(':'))
   for (let i = 0; i < tokens.length; i++) {
     let flag = true
@@ -318,7 +318,7 @@ function findTokens (tokens: Token[], findTypeValue: string[]): number {
   return -1
 }
 
-function useDNCL2mode (tokens: Token[]): boolean {
+function useDNCL2mode(tokens: Token[]): boolean {
   // 先頭の100語調べる
   for (let i = 0; i < tokens.length; i++) {
     if (i > 100) { break }

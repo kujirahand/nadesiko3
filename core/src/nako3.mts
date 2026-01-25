@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
+ 
+ 
 // deno-lint-ignore-file no-explicit-any
 /**
  * nadesiko v3
@@ -70,7 +70,7 @@ export interface NakoResetOption {
 }
 
 /** コンパイラ実行オプションを生成 */
-export function newCompilerOptions (initObj: Partial<CompilerOptions> = {}): CompilerOptions {
+export function newCompilerOptions(initObj: Partial<CompilerOptions> = {}): CompilerOptions {
   if (typeof initObj !== 'object') { initObj = {} }
   initObj.testOnly = initObj.testOnly || false
   initObj.resetEnv = initObj.resetEnv || false
@@ -99,7 +99,7 @@ export class NakoCompiler {
   // global objects
   __varslist: NakoVars[]
   __locals: NakoVars
-  // eslint-disable-next-line no-use-before-define
+   
   __self: NakoCompiler
   __vars: NakoVars
   __v0: NakoVars
@@ -117,7 +117,7 @@ export class NakoCompiler {
   /**
    * @param {undefined | {'useBasicPlugin':true|false}} options
    */
-  constructor (options: NakoCompilerOption | undefined = undefined) {
+  constructor(options: NakoCompilerOption | undefined = undefined) {
     if (options === undefined) {
       options = { useBasicPlugin: true }
     }
@@ -172,30 +172,30 @@ export class NakoCompiler {
   }
 
   /** モジュール(名前空間)の一覧を取得する */
-  getModList (): string[] {
+  getModList(): string[] {
     return this.lexer.modList
   }
 
-  getLogger (): NakoLogger {
+  getLogger(): NakoLogger {
     return this.logger
   }
 
-  getNakoFuncList (): FuncList {
+  getNakoFuncList(): FuncList {
     return this.nakoFuncList
   }
 
-  getNakoFunc (name: string): FuncListItem|undefined {
+  getNakoFunc(name: string): FuncListItem|undefined {
     return this.nakoFuncList.get(name)
   }
 
-  getPluginfiles (): Record<string, any> {
+  getPluginfiles(): Record<string, any> {
     return this.pluginfiles
   }
 
   /**
    * 基本的なプラグインを追加する
    */
-  addBasicPlugins () {
+  addBasicPlugins() {
     this.addPlugin(PluginSystem)
     this.addPlugin(PluginMath)
     this.addPlugin(PluginPromise)
@@ -207,7 +207,7 @@ export class NakoCompiler {
   /**
    * loggerを新しいインスタンスで置き換える。
    */
-  replaceLogger () {
+  replaceLogger() {
     const logger = this.lexer.logger = this.parser.logger = this.logger = new NakoLogger()
     return logger
   }
@@ -216,7 +216,7 @@ export class NakoCompiler {
    * ファイル内のrequire文の位置を列挙する。出力の配列はstartでソートされている。
    * @param {Token[]} tokens rawtokenizeの出力
    */
-  static listRequireStatements (tokens: Token[]): Token[] {
+  static listRequireStatements(tokens: Token[]): Token[] {
     const requireStatements: Token[] = []
     for (let i = 0; i + 2 < tokens.length; i++) {
       // not (string|string_ex) '取り込み'
@@ -283,7 +283,7 @@ export class NakoCompiler {
    * @returns {Promise<unknown> | void}
    * @protected
    */
-  _loadDependencies (code: string, filename: string, preCode: string, tools: LoaderTool) {
+  _loadDependencies(code: string, filename: string, preCode: string, tools: LoaderTool) {
     const dependencies: Dependencies = {}
     const compiler = new NakoCompiler({ useBasicPlugin: true })
     /**
@@ -339,7 +339,7 @@ export class NakoCompiler {
         }
 
         // 初回の読み込み
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
+         
         dependencies[item.filePath] = { tokens: [], alias: new Set([item.value]), addPluginFile: ():void => {}, funclist: {}, moduleExport: {} }
         if (item.type === 'js' || item.type === 'mjs') {
           loadJS(item, tasks)
@@ -387,7 +387,7 @@ export class NakoCompiler {
    * @param preCode
    * @returns トークンのリスト
    */
-  rawtokenize (code: string, line: number, filename: string, preCode = ''): Token[] {
+  rawtokenize(code: string, line: number, filename: string, preCode = ''): Token[] {
     if (!code.startsWith(preCode)) {
       throw new Error('codeの先頭にはpreCodeを含める必要があります。')
     }
@@ -458,7 +458,7 @@ export class NakoCompiler {
    * @param {string} filename
    * @returns コード (なでしこ)
    */
-  converttoken (tokens: Token[], isFirst: boolean, filename: string): Token[] {
+  converttoken(tokens: Token[], isFirst: boolean, filename: string): Token[] {
     const tok = this.lexer.replaceTokens(tokens, isFirst, filename)
     return tok
   }
@@ -467,7 +467,7 @@ export class NakoCompiler {
    * 環境のリセット
    * {NakoResetOption|undefined}
    */
-  reset (options: NakoResetOption|undefined = undefined) {
+  reset(options: NakoResetOption|undefined = undefined) {
     if (!options || options.needToClearPlugin) {
       // (メモ) #1245
       // 通常、リセット処理では、プラグインの!クリアを呼ぶ。
@@ -518,7 +518,7 @@ export class NakoCompiler {
    * @returns
    * @private
    */
-  lexCodeToken (code: string, line: number, filename: string, startOffset: number|null): {commentTokens: Token[], tokens: Token[]} {
+  lexCodeToken(code: string, line: number, filename: string, startOffset: number|null): {commentTokens: Token[], tokens: Token[]} {
     // 単語に分割
     let tokens = this.rawtokenize(code, line, filename, '')
 
@@ -555,7 +555,7 @@ export class NakoCompiler {
    * @param {Set<string>} [includeGuard]
    * @returns {Token[]} 削除された取り込み文のトークン
    */
-  replaceRequireStatements (tokens: Token[], includeGuard:Set<string> = new Set()): Token[] {
+  replaceRequireStatements(tokens: Token[], includeGuard:Set<string> = new Set()): Token[] {
     /** @type {TokenWithSourceMap[]} */
     const deletedTokens = []
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
@@ -586,7 +586,7 @@ export class NakoCompiler {
    * @param {TokenWithSourceMap[]} tokens
    * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
    */
-  removeRequireStatements (tokens: Token[]): Token[] {
+  removeRequireStatements(tokens: Token[]): Token[] {
     /** @type {TokenWithSourceMap[]} */
     const deletedTokens = []
     for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
@@ -603,7 +603,7 @@ export class NakoCompiler {
   }
 
   /** 字句解析を行う */
-  lex (code: string, filename = 'main.nako3', preCode = '', syntaxHighlighting = false): LexResult {
+  lex(code: string, filename = 'main.nako3', preCode = '', syntaxHighlighting = false): LexResult {
     // 単語に分割
     let tokens = this.rawtokenize(code, 0, filename, preCode)
 
@@ -649,7 +649,7 @@ export class NakoCompiler {
   /**
    * コードをパースしてASTにする
    */
-  parse (code: string, filename: string, preCode = ''): Ast {
+  parse(code: string, filename: string, preCode = ''): Ast {
     // 関数リストを字句解析と構文解析に登録
     this.lexer.setFuncList(this.funclist)
     this.parser.setFuncList(this.funclist)
@@ -677,13 +677,13 @@ export class NakoCompiler {
     return ast
   }
 
-  getUsedFuncs (ast: Ast): Set<string> {
+  getUsedFuncs(ast: Ast): Set<string> {
     this.usedFuncs = new Set()
     this._getUsedFuncs(ast)
     return this.deleteUnNakoFuncs()
   }
 
-  _getUsedFuncs (ast: Ast): void {
+  _getUsedFuncs(ast: Ast): void {
     if (!ast) { return }
     if ((ast.type === 'func' || ast.type === 'func_pointer') && ast.name) {
       this.usedFuncs.add(ast.name as string)
@@ -694,7 +694,7 @@ export class NakoCompiler {
     }
   }
 
-  deleteUnNakoFuncs (): Set<string> {
+  deleteUnNakoFuncs(): Set<string> {
     for (const func of this.usedFuncs) {
       if (!this.commandlist.has(func)) {
         this.usedFuncs.delete(func)
@@ -710,7 +710,7 @@ export class NakoCompiler {
    * @param isTest テストかどうか
    * @param preCode
    */
-  compile (code: string, filename: string, isTest = false, preCode = ''): string {
+  compile(code: string, filename: string, isTest = false, preCode = ''): string {
     const opt = newCompilerOptions()
     opt.testOnly = isTest
     opt.preCode = preCode
@@ -719,7 +719,7 @@ export class NakoCompiler {
   }
 
   /** parse & generate  */
-  compileFromCode (code: string, filename: string, options: CompilerOptions|undefined = undefined): NakoGenResult {
+  compileFromCode(code: string, filename: string, options: CompilerOptions|undefined = undefined): NakoGenResult {
     if (filename === '') { filename = 'main.nako3' }
     if (options === undefined) { options = newCompilerOptions() }
     try {
@@ -748,7 +748,7 @@ export class NakoCompiler {
    * @param opt テストかどうか
    * @param mode 一般的に 'sync' を指定
    */
-  generateCode (ast: Ast, opt: NakoGenOptions, mode = 'sync'): NakoGenResult {
+  generateCode(ast: Ast, opt: NakoGenOptions, mode = 'sync'): NakoGenResult {
     // Select Code Generator #637
     // normal mode
     if (mode === 'sync') {
@@ -767,7 +767,7 @@ export class NakoCompiler {
   }
 
   /** コードジェネレータを追加する */
-  addCodeGenerator (mode: string, obj: any) {
+  addCodeGenerator(mode: string, obj: any) {
     this.codeGenerateor[mode] = obj
   }
 
@@ -779,8 +779,8 @@ export class NakoCompiler {
    * @param [preCode]
    * @deprecated 代わりにrunAsyncメソッドを使ってください。(core #52)
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async _run (code: string, fname: string, isReset: boolean, isTest: boolean, preCode = ''): Promise<NakoGlobal> {
+   
+  async _run(code: string, fname: string, isReset: boolean, isTest: boolean, preCode = ''): Promise<NakoGlobal> {
     const opts: CompilerOptions = newCompilerOptions({
       resetEnv: isReset,
       resetAll: isReset,
@@ -791,7 +791,7 @@ export class NakoCompiler {
   }
 
   /** 各プラグインをリセットする */
-  clearPlugins () {
+  clearPlugins() {
     // 他に実行している「なでしこ」があればクリアする
     this.__globals.forEach((sys: NakoGlobal) => {
       if (!sys) { return }
@@ -807,13 +807,13 @@ export class NakoCompiler {
    * @param code JavaScriptのコード
    * @param nakoGlobal 実行環境
    */
-  private evalJS (code: string, nakoGlobal: NakoGlobal): void {
+  private evalJS(code: string, nakoGlobal: NakoGlobal): void {
     this.__globalObj = nakoGlobal // 現在のnakoGlobalを記録
     this.__globalObj.lastJSCode = code
     // 実行前に環境を初期化するイベントを実行(beforeRun)
     this.eventList.filter(o => o.eventName === 'beforeRun').map(e => e.callback(nakoGlobal))
     try {
-      // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
+       
       const f = new Function(nakoGlobal.lastJSCode)
       f.apply(nakoGlobal)
     } catch (err: any) {
@@ -834,7 +834,7 @@ export class NakoCompiler {
    * @returns 実行に利用したグローバルオブジェクト
    * @deprecated 代わりにrunAsyncメソッドを使ってください。(core #52)
    */
-  public runSync (code: string, filename: string, options: CompilerOptions|undefined = undefined): NakoGlobal {
+  public runSync(code: string, filename: string, options: CompilerOptions|undefined = undefined): NakoGlobal {
     // コンパイル
     options = newCompilerOptions(options)
     const out = this.compileFromCode(code, filename, options)
@@ -852,8 +852,8 @@ export class NakoCompiler {
    * @param options オプション
    * @returns 実行に利用したグローバルオブジェクト
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
-  public async runAsync (code: string, filename: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
+   
+  public async runAsync(code: string, filename: string, options: CompilerOptions|undefined = undefined): Promise<NakoGlobal> {
     // コンパイル
     options = newCompilerOptions(options)
     const compiledCode = this.compileFromCode(code, filename, options)
@@ -864,7 +864,7 @@ export class NakoCompiler {
     return nakoGlobal
   }
 
-  private getNakoGlobal (options: CompilerOptions, gen: NakoGen, filename: string): NakoGlobal {
+  private getNakoGlobal(options: CompilerOptions, gen: NakoGen, filename: string): NakoGlobal {
     // オプションを参照
     let g: NakoGlobal|null = options.nakoGlobal
     if (!g) {
@@ -886,7 +886,7 @@ export class NakoCompiler {
    * @param eventName イベント名
    * @param callback コールバック関数
    */
-  addListener (eventName: NakoComEventName, callback: (event:any) => void) {
+  addListener(eventName: NakoComEventName, callback: (event:any) => void) {
     this.eventList.push({ eventName, callback })
   }
 
@@ -897,7 +897,7 @@ export class NakoCompiler {
    * @param preCode
    * @param testOnly
    */
-  test (code: string, fname: string, preCode = '', testOnly = false) {
+  test(code: string, fname: string, preCode = '', testOnly = false) {
     const options = newCompilerOptions()
     options.preCode = preCode
     options.testOnly = testOnly
@@ -911,7 +911,7 @@ export class NakoCompiler {
    * @param [preCode]
    * @deprecated 代わりに runAsync を使ってください。
    */
-  run (code: string, fname = 'main.nako3', preCode = ''): NakoGlobal {
+  run(code: string, fname = 'main.nako3', preCode = ''): NakoGlobal {
     const options = newCompilerOptions()
     options.preCode = preCode
     return this.runSync(code, fname, options)
@@ -923,7 +923,7 @@ export class NakoCompiler {
    * @param filename
    * @param opt? オプション
    */
-  compileStandalone (code: string, filename: string, options?: NakoGenOptions): string {
+  compileStandalone(code: string, filename: string, options?: NakoGenOptions): string {
     if (options === undefined) { options = new NakoGenOptions() }
     const ast = this.parse(code, filename)
     return this.generateCode(ast, options).standalone
@@ -935,7 +935,7 @@ export class NakoCompiler {
    * @param persistent falseのとき、次以降の実行では使えない
    * @param fpath ファイルパス
    */
-  addPlugin (po: {[key: string]: any}, persistent = true, fpath = ''): void {
+  addPlugin(po: {[key: string]: any}, persistent = true, fpath = ''): void {
     // __v0を取得
     const __v0 = this.__varslist[0]
     // プラグインのメタ情報をチェック (#1034) (#1647)
@@ -1035,7 +1035,7 @@ export class NakoCompiler {
    * @param po 関数リスト
    * @param persistent falseのとき、次以降の実行では使えない
    */
-  addPluginObject (objName: string, po: {[key: string]: any}, persistent = true): void {
+  addPluginObject(objName: string, po: {[key: string]: any}, persistent = true): void {
     // metaプロパティがなければ互換性のため適当に追加
     if (po.meta === undefined) {
       po.meta = { type: 'const', value: { pluginName: objName, nakoVersion: '0.0.0' } }
@@ -1051,7 +1051,7 @@ export class NakoCompiler {
    * @param persistent falseのとき、次以降の実行では使えない
    * @deprecated 利用は非推奨
    */
-  addPluginFile (_objName: string, fpath: string, po: {[key: string]: any}, persistent = true): void {
+  addPluginFile(_objName: string, fpath: string, po: {[key: string]: any}, persistent = true): void {
     this.addPluginFromFile(fpath, po, persistent)
   }
 
@@ -1061,7 +1061,7 @@ export class NakoCompiler {
  * @param po 登録するオブジェクト
  * @param persistent falseのとき、次以降の実行では使えない
  */
-  addPluginFromFile (fpath: string, po: { [key: string]: any }, persistent = true): void {
+  addPluginFromFile(fpath: string, po: { [key: string]: any }, persistent = true): void {
     this.addPlugin(po, persistent, fpath)
   }
 
@@ -1073,7 +1073,7 @@ export class NakoCompiler {
    * @param {boolean} returnNone 値を返す関数の場合はfalseを指定
    * @param {boolean} asyncFn Promiseを返す関数かを指定
    */
-  addFunc (key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
+  addFunc(key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
     const funcObj: FuncListItem = { josi, fn, type: 'func', return_none: returnNone, asyncFn, pure: true }
     this.funclist.set(key, funcObj)
     this.pluginFunclist[key] = cloneAsJSON(funcObj)
@@ -1083,7 +1083,7 @@ export class NakoCompiler {
   /** (非推奨) 互換性のため ... 関数を追加する
    * @deprecated 代わりにaddFuncを使ってください
   */
-  public setFunc (key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
+  public setFunc(key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
     this.addFunc(key, josi, fn, returnNone, asyncFn)
   }
 
@@ -1092,14 +1092,14 @@ export class NakoCompiler {
    * @param key プラグイン関数の関数名
    * @returns プラグイン・オブジェクト
    */
-  getFunc (key: string): FuncListItem|undefined {
+  getFunc(key: string): FuncListItem|undefined {
     return this.funclist.get(key)
   }
 
   /** 同期的になでしこのプログラムcodeを実行する
    * @deprecated 代わりにrunAsyncメソッドを使ってください。(core #52)
    */
-  private _runEx (code: string, filename: string, opts: CompilerOptions, preCode = '', nakoGlobal: NakoGlobal|undefined = undefined): NakoGlobal {
+  private _runEx(code: string, filename: string, opts: CompilerOptions, preCode = '', nakoGlobal: NakoGlobal|undefined = undefined): NakoGlobal {
     // コンパイル
     opts.preCode = preCode
     if (nakoGlobal) { opts.nakoGlobal = nakoGlobal }
@@ -1113,7 +1113,7 @@ export class NakoCompiler {
    * @param [preCode]
    * @deprecated 代わりにrunAsyncメソッドを使ってください。(core #52)
    */
-  public runEx (code: string, fname: string, opts: CompilerOptions, preCode = '') {
+  public runEx(code: string, fname: string, opts: CompilerOptions, preCode = '') {
     return this._runEx(code, fname, opts, preCode)
   }
 
@@ -1123,7 +1123,7 @@ export class NakoCompiler {
    * @param fname
    * @param [preCode]
    */
-  async runReset (code: string, fname = 'main.nako3', preCode = ''): Promise<NakoGlobal> {
+  async runReset(code: string, fname = 'main.nako3', preCode = ''): Promise<NakoGlobal> {
     const opts = newCompilerOptions({ resetAll: true, resetEnv: true, preCode })
     return this.runAsync(code, fname, opts)
   }
@@ -1132,7 +1132,7 @@ export class NakoCompiler {
    * 新規のなでしこ変数管理オブジェクトを生成
    * @returns 変数管理オブジェクト
    */
-  newVaiables (initVars?: Map<string, any>): Map<string, any> {
+  newVaiables(initVars?: Map<string, any>): Map<string, any> {
     return new Map(initVars)
   }
 }

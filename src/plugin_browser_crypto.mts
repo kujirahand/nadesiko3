@@ -4,12 +4,12 @@ export default {
     type: 'func',
     josi: [['へ'], ['を'], ['で']],
     pure: true,
-    fn: function (func: any, s: string, alg: string, sys: any) {
+    fn: function(func: any, s: string, alg: string, sys: any) {
       func = sys.__findVar(func, null) // 文字列指定なら関数に変換(コールバック関数)
       // (ref) https://developer.mozilla.org/ja/docs/Web/API/SubtleCrypto/digest
       const msgUint8 = new TextEncoder().encode(s) // (utf-8 の) Uint8Array にエンコードする
       // メッセージをハッシュする
-      crypto.subtle.digest(alg, msgUint8).then(function (hashBuffer: ArrayBuffer) {
+      crypto.subtle.digest(alg, msgUint8).then(function(hashBuffer: ArrayBuffer) {
         const hashArray = Array.from(new Uint8Array(hashBuffer)) // バッファーをバイト列に変換する
         const hashHex = hashArray
           .map((b) => b.toString(16).padStart(2, '0'))
@@ -25,7 +25,7 @@ export default {
     josi: [['を'], ['で']],
     pure: true,
     asyncFn: true,
-    fn: async function (s: string, alg: string, sys: any) {
+    fn: async function(s: string, alg: string, sys: any) {
       const msgUint8 = new TextEncoder().encode(s) // (utf-8 の) Uint8Array にエンコードする
       const hashBuffer = await crypto.subtle.digest(alg, msgUint8)
       const hashArray = Array.from(new Uint8Array(hashBuffer)) // バッファーをバイト列に変換する
@@ -39,7 +39,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       return window.crypto.randomUUID()
     }
   },
@@ -47,7 +47,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (cnt: number, sys: any) {
+    fn: function(cnt: number, sys: any) {
       const array = new Uint8Array(cnt)
       window.crypto.getRandomValues(array)
       return array

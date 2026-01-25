@@ -1,45 +1,45 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 /**
  * file: plugin_node.mjs
  * node.js のためのプラグイン
  */
 import fs from 'node:fs'
-import fse from 'fs-extra'
-import fetch, { FormData, Blob } from 'node-fetch'
 import { exec, execSync, spawn } from 'node:child_process'
-import shellQuote from 'shell-quote'
 import path from 'node:path'
-import iconv from 'iconv-lite'
-import opener from 'opener'
 import assert from 'node:assert'
 // ハッシュ関数で利用
 import crypto from 'node:crypto'
 import os, { platform } from 'node:os'
 import url from 'node:url'
+import opener from 'opener'
+import iconv from 'iconv-lite'
+import shellQuote from 'shell-quote'
+import fetch, { FormData, Blob } from 'node-fetch'
+import fse from 'fs-extra'
 import { NakoSystem } from '../core/src/plugin_api.mjs'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 import { getEnv, isWindows, getCommandLineArgs, exit } from './deno_wrapper.mjs'
 
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // ローカル関数
-function fileExists (f: string): boolean {
+function fileExists(f: string): boolean {
   try {
     fs.statSync(f)
     return true
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   } catch (err) {
     return false
   }
 }
 
-function isDir (f: string): boolean {
+function isDir(f: string): boolean {
   try {
     const st = fs.statSync(f)
     return st.isDirectory()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   } catch (err) {
     return false
   }
@@ -77,7 +77,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       sys.engine = 'cnako'
       sys.pathSeparator = path.sep // パス記号 #2185
       // OS判定
@@ -164,7 +164,7 @@ export default {
         }
         nodeProcess.stdin.on('data', (buf: Buffer) => {
           // 生データも保持（『標準入力全取得』向け）
-          try { sys.tags.__stdinRaw += buf.toString() } catch (_) {}
+          try { sys.tags.__stdinRaw += buf.toString() } catch (_err) { /* ignore */ }
           const bufStr = buf.toString()
           for (let i = 0; i < bufStr.length; i++) {
             const c = bufStr.charAt(i)
@@ -185,7 +185,7 @@ export default {
           sys.tags.__stdinEnded = true
           if (sys.tags.__endWaiters && Array.isArray(sys.tags.__endWaiters)) {
             for (const w of sys.tags.__endWaiters) {
-              try { w() } catch (_) {}
+              try { w() } catch (_err) { /* ignore */ }
             }
             sys.tags.__endWaiters = []
           }
@@ -218,7 +218,7 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (f: string) {
+    fn: function(f: string) {
       return fs.readFileSync(f, 'utf-8')
     }
   },
@@ -226,7 +226,7 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    fn: function (f: string) {
+    fn: function(f: string) {
       return fs.readFileSync(f, 'utf-8')
     }
   },
@@ -234,8 +234,8 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (s: string, sys: NakoSystem) {
+     
+    fn: function(s: string, sys: NakoSystem) {
       return fs.readFileSync(s)
     }
   },
@@ -244,7 +244,7 @@ export default {
     josi: [['を'], ['へ', 'に']],
     pure: true,
     asyncFn: true,
-    fn: function (s: any, f: string) {
+    fn: function(s: any, f: string) {
       return new Promise((resolve, reject) => {
         // 引数sの型によって書き込みオプションを変更する
         const options: any = {}
@@ -266,8 +266,8 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (s: string, sys: NakoSystem) {
+     
+    fn: function(s: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       const buf = fs.readFileSync(s)
       const text = iconv.decode(Buffer.from(buf), 'sjis')
@@ -278,8 +278,8 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (s: string, f: string, sys: NakoSystem) {
+     
+    fn: function(s: string, f: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       const buf = iconv.encode(s, 'Shift_JIS')
       fs.writeFileSync(f, buf)
@@ -290,8 +290,8 @@ export default {
     type: 'func',
     josi: [['を', 'から']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (s: string, sys: NakoSystem) {
+     
+    fn: function(s: string, sys: NakoSystem) {
       const buf = fs.readFileSync(s)
       const text = iconv.decode(Buffer.from(buf), 'euc-jp')
       return text
@@ -301,8 +301,8 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'に']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (s: string, f: string, sys: NakoSystem) {
+     
+    fn: function(s: string, f: string, sys: NakoSystem) {
       const buf = iconv.encode(s, 'euc-jp')
       fs.writeFileSync(f, buf)
     },
@@ -312,7 +312,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (s: string) {
+    fn: function(s: string) {
       const r = execSync(s)
       return r.toString()
     }
@@ -321,7 +321,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (s: string) {
+    fn: function(s: string) {
       exec(s, (err, stdout, stderr) => {
         if (err) { console.error(stderr) } else {
           if (stdout) { console.log(stdout) }
@@ -333,8 +333,8 @@ export default {
     type: 'func',
     josi: [['で'], ['を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (callback: any, s: string, sys: NakoSystem) {
+     
+    fn: function(callback: any, s: string, sys: NakoSystem) {
       exec(s, (err, stdout, stderr) => {
         if (err) { throw new Error(stderr) } else { callback(stdout) }
       })
@@ -344,7 +344,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: true,
-    fn: function (url: string) {
+    fn: function(url: string) {
       opener(url)
     }
   },
@@ -352,7 +352,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: true,
-    fn: function (fname: string, sys: NakoSystem) {
+    fn: function(fname: string, sys: NakoSystem) {
       // windows
       if (sys.tags.isWin) {
         if (isDir(fname)) { // ディレクトリを起動
@@ -382,7 +382,7 @@ export default {
     type: 'func',
     josi: [['の', 'を', 'で']],
     pure: true,
-    fn: function (s: string) {
+    fn: function(s: string) {
       if (s.indexOf('*') >= 0) { // ワイルドカードがある場合
         const searchPath = path.dirname(s)
         const mask1 = path.basename(s)
@@ -401,7 +401,7 @@ export default {
     type: 'func',
     josi: [['の', 'を', 'で']],
     pure: true,
-    fn: function (s: string) {
+    fn: function(s: string) {
       /** @type {string[]} */
       const result: string[] = []
       // ワイルドカードの有無を確認
@@ -427,7 +427,7 @@ export default {
           let st: fs.Stats
           try {
             st = fs.statSync(fullpath)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+           
           } catch (e) {
             continue
           }
@@ -447,7 +447,7 @@ export default {
     type: 'func',
     josi: [['が', 'の']],
     pure: true,
-    fn: function (path: string) {
+    fn: function(path: string) {
       return fileExists(path)
     }
   },
@@ -455,7 +455,7 @@ export default {
     type: 'func',
     josi: [['が', 'の']],
     pure: true,
-    fn: function (path: string) {
+    fn: function(path: string) {
       return isDir(path)
     }
   },
@@ -463,7 +463,7 @@ export default {
     type: 'func',
     josi: [['の', 'を', 'に', 'へ']],
     pure: true,
-    fn: function (path: string) {
+    fn: function(path: string) {
       return fse.mkdirpSync(path)
     }
   },
@@ -471,7 +471,7 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: NakoSystem) {
+    fn: function(a: string, b: string, sys: NakoSystem) {
       return fse.copySync(a, b)
     }
   },
@@ -479,7 +479,7 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: NakoSystem) {
+    fn: function(a: string, b: string, sys: NakoSystem) {
       return fse.copySync(a, b, { overwrite: true })
     }
   },
@@ -487,7 +487,7 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
+    fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
       return fse.copy(a, b, (err: any) => {
         if (err) { throw new Error('ファイルコピー時:' + err) }
         callback()
@@ -499,7 +499,7 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: NakoSystem) {
+    fn: function(a: string, b: string, sys: NakoSystem) {
       return fse.moveSync(a, b)
     }
   },
@@ -507,7 +507,7 @@ export default {
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: NakoSystem) {
+    fn: function(a: string, b: string, sys: NakoSystem) {
       return fse.moveSync(a, b, { overwrite: true })
     }
   },
@@ -515,8 +515,8 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
+     
+    fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
       fse.move(a, b, (err: any) => {
         if (err) { throw new Error('ファイル移動時:' + err) }
         callback()
@@ -528,7 +528,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function (path: string, sys: NakoSystem) {
+    fn: function(path: string, sys: NakoSystem) {
       return fse.removeSync(path)
     }
   },
@@ -536,7 +536,7 @@ export default {
     type: 'func',
     josi: [['で'], ['の', 'を']],
     pure: true,
-    fn: function (callback: any, path: string, sys: NakoSystem) {
+    fn: function(callback: any, path: string, sys: NakoSystem) {
       return fse.remove(path, (err: any) => {
         if (err) { throw new Error('ファイル削除時:' + err) }
         callback()
@@ -548,8 +548,8 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (path: string, sys: NakoSystem) {
+     
+    fn: function(path: string, sys: NakoSystem) {
       return fs.statSync(path)
     }
   },
@@ -557,8 +557,8 @@ export default {
     type: 'func',
     josi: [['の', 'から']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (path: string, sys: NakoSystem) {
+     
+    fn: function(path: string, sys: NakoSystem) {
       const st = fs.statSync(path)
       if (!st) { return -1 }
       return st.size
@@ -569,7 +569,7 @@ export default {
     type: 'func',
     josi: [['から', 'の']],
     pure: true,
-    fn: function (s: string) {
+    fn: function(s: string) {
       return path.basename(s)
     }
   },
@@ -577,7 +577,7 @@ export default {
     type: 'func',
     josi: [['から', 'の']],
     pure: true,
-    fn: function (s: string) {
+    fn: function(s: string) {
       return path.dirname(s)
     }
   },
@@ -585,7 +585,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function (a: string) {
+    fn: function(a: string) {
       return path.resolve(a)
     }
   },
@@ -593,7 +593,7 @@ export default {
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
-    fn: function (a: string, b: string) {
+    fn: function(a: string, b: string) {
       return path.resolve(path.join(a, b))
     }
   },
@@ -602,7 +602,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       const cwd = nodeProcess.cwd()
       return path.resolve(cwd)
     }
@@ -611,7 +611,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (dir: string) {
+    fn: function(dir: string) {
       nodeProcess.chdir(dir)
     },
     return_none: true
@@ -620,7 +620,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       const cwd = nodeProcess.cwd()
       return path.resolve(cwd)
     }
@@ -629,7 +629,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (dir: string) {
+    fn: function(dir: string) {
       nodeProcess.chdir(dir)
     },
     return_none: true
@@ -638,7 +638,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       return nodeProcess.env[sys.tags.isWin ? 'USERPROFILE' : 'HOME']
     }
   },
@@ -646,7 +646,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const home = sys.__exec('ホームディレクトリ取得', [sys])
       return path.join(home, 'Desktop')
     }
@@ -655,7 +655,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       const home = sys.__exec('ホームディレクトリ取得', [sys])
       return path.join(home, 'Documents')
     }
@@ -665,7 +665,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       return sys.tags.__getBokanPath()
     }
   },
@@ -673,8 +673,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem) {
+     
+    fn: function(sys: NakoSystem) {
       // 環境変数からテンポラリフォルダを取得
       return os.tmpdir()
     }
@@ -683,8 +683,8 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (dir: string, sys: NakoSystem) {
+     
+    fn: function(dir: string, sys: NakoSystem) {
       if (dir === '' || !dir) {
         dir = os.tmpdir()
       }
@@ -697,7 +697,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (s: string) {
+    fn: function(s: string) {
       return nodeProcess.env[s]
     }
   },
@@ -705,7 +705,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       return nodeProcess.env
     }
   },
@@ -715,7 +715,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: string, sys: NakoSystem) {
+    fn: function(v: string, sys: NakoSystem) {
       sys.__setSysVar('圧縮解凍ツールパス', v)
     },
     return_none: true
@@ -724,7 +724,7 @@ export default {
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: NakoSystem) {
+    fn: function(a: string, b: string, sys: NakoSystem) {
       const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.tags.__quotePath(a)
       b = sys.tags.__quotePath(b)
@@ -737,12 +737,12 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
+    fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
       const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.tags.__quotePath(a)
       b = sys.tags.__quotePath(b)
       const cmd = `${tpath} x ${a} -o${b} -y`
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       exec(cmd, (err, stdout, stderr) => {
         if (err) { throw new Error('[エラー]『解凍時』' + (err as unknown as string)) }
         callback(stdout)
@@ -754,7 +754,7 @@ export default {
     type: 'func',
     josi: [['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (a: string, b: string, sys: NakoSystem) {
+    fn: function(a: string, b: string, sys: NakoSystem) {
       const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.tags.__quotePath(a)
       b = sys.tags.__quotePath(b)
@@ -767,12 +767,12 @@ export default {
     type: 'func',
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
-    fn: function (callback: any, a: string, b: string, sys: NakoSystem) {
+    fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
       const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.tags.__quotePath(a)
       b = sys.tags.__quotePath(b)
       const cmd = `${tpath} a -r ${b} ${a} -y`
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       exec(cmd, (err, stdout, stderr) => {
         if (err) { throw new Error('[エラー]『圧縮時』' + (err.message || JSON.stringify(err))) }
         callback(stdout)
@@ -785,7 +785,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function () {
+    fn: function() {
       nodeProcess.exit()
     },
     return_none: true
@@ -794,11 +794,11 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (func: any, sys: NakoSystem) {
+    fn: function(func: any, sys: NakoSystem) {
       if (typeof (func) === 'string') {
         func = sys.__findFunc(func, '強制終了時')
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       nodeProcess.on('SIGINT', (signal: any) => {
         const flag = func(sys)
         if (flag) { nodeProcess.exit() }
@@ -810,7 +810,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: NakoSystem) {
+    fn: function(sys: NakoSystem) {
       sys.__exec('終', [])
     },
     return_none: true
@@ -819,8 +819,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem) {
+     
+    fn: function(sys: NakoSystem) {
       return nodeProcess.platform
     }
   },
@@ -828,8 +828,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem) {
+     
+    fn: function(sys: NakoSystem) {
       return nodeProcess.arch
     }
   },
@@ -841,7 +841,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (callback: (f: string)=>void, sys: NakoSystem) {
+    fn: function(callback: (f: string)=>void, sys: NakoSystem) {
       if (!sys.tags.readline) {
         throw new Error('『標準入力取得時』命令で標準入力が取得できません')
       }
@@ -859,7 +859,7 @@ export default {
     josi: [['と', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (msg: string, sys: NakoSystem) {
+    fn: async function(msg: string, sys: NakoSystem) {
       if (!sys.tags.readline) {
         throw new Error('『尋』命令で標準入力が取得できません')
       }
@@ -877,7 +877,7 @@ export default {
     josi: [['と', 'を']],
     pure: true,
     asyncFn: true,
-    fn: async function (msg: string, sys: NakoSystem) {
+    fn: async function(msg: string, sys: NakoSystem) {
       if (!sys.tags.readline) {
         throw new Error('『尋』命令で標準入力が取得できません')
       }
@@ -890,8 +890,8 @@ export default {
     josi: [],
     pure: true,
     asyncFn: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem): Promise<string> {
+     
+    fn: function(sys: NakoSystem): Promise<string> {
       sys.tags.__setupStdin()
       return new Promise((resolve) => {
         if (sys.tags.__stdinEnded) {
@@ -908,8 +908,8 @@ export default {
     type: 'func',
     josi: [['と'], ['が']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (a: any, b: any, sys: NakoSystem) {
+     
+    fn: function(a: any, b: any, sys: NakoSystem) {
       assert.strictEqual(a, b)
     }
   },
@@ -918,8 +918,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem) {
+     
+    fn: function(sys: NakoSystem) {
       const nif = os.networkInterfaces()
       if (!nif) { throw new Error('『自分IPアドレス取得』でネットワークのインターフェイスが種畜できません。') }
       /**
@@ -941,8 +941,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem) {
+     
+    fn: function(sys: NakoSystem) {
       const nif = os.networkInterfaces()
       if (!nif) { throw new Error('『自分IPアドレス取得』でネットワークのインターフェイスが種畜できません。') }
       const result: string[] = []
@@ -962,7 +962,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
-    fn: function (callback: any, url: string, sys: NakoSystem) {
+    fn: function(callback: any, url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then((res: any) => {
@@ -981,7 +981,7 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を']],
     pure: true,
-    fn: function (callback: any, url: string, sys: NakoSystem) {
+    fn: function(callback: any, url: string, sys: NakoSystem) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -990,7 +990,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
-    fn: function (callback: any, url: string, sys: NakoSystem) {
+    fn: function(callback: any, url: string, sys: NakoSystem) {
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -999,9 +999,9 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (callback: any, url: string, params: [key: string], sys: NakoSystem) {
+    fn: function(callback: any, url: string, params: [key: string], sys: NakoSystem) {
       const flist: Array<string> = []
-      // eslint-disable-next-line @typescript-eslint/no-for-in-array
+       
       for (const key in params) {
         const v: string = params[key]
         const kv: string = encodeURIComponent(key) + '=' + encodeURIComponent(v)
@@ -1029,7 +1029,7 @@ export default {
     type: 'func',
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function (callback: any, url: string, params: any, sys: NakoSystem) {
+    fn: function(callback: any, url: string, params: any, sys: NakoSystem) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -1054,7 +1054,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (callback: any, sys: NakoSystem) {
+    fn: function(callback: any, sys: NakoSystem) {
       sys.__setSysVar('AJAX:ONERROR', callback)
     }
   },
@@ -1063,7 +1063,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'と']],
     pure: true,
-    fn: function (option: any, sys: NakoSystem) {
+    fn: function(option: any, sys: NakoSystem) {
       sys.__setSysVar('AJAXオプション', option)
     },
     return_none: true
@@ -1072,7 +1072,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
-    fn: function (url: string, sys: NakoSystem) {
+    fn: function(url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       return fetch(url, options)
@@ -1083,7 +1083,7 @@ export default {
     type: 'func',
     josi: [['の', 'から', 'を']],
     pure: true,
-    fn: function (url: string, sys: NakoSystem) {
+    fn: function(url: string, sys: NakoSystem) {
       return sys.__exec('AJAX保障送信', [url, sys])
     },
     return_none: false
@@ -1092,7 +1092,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に']],
     pure: true,
-    fn: function (url: string, sys: NakoSystem) {
+    fn: function(url: string, sys: NakoSystem) {
       return sys.__exec('AJAX保障送信', [url, sys])
     },
     return_none: false
@@ -1101,10 +1101,10 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (url: string, params: [key: string], sys: NakoSystem) {
+     
+    fn: function(url: string, params: [key: string], sys: NakoSystem) {
       const flist: Array<string> = []
-      // eslint-disable-next-line @typescript-eslint/no-for-in-array
+       
       for (const key in params) {
         const v: string = params[key]
         const kv: string = encodeURIComponent(key) + '=' + encodeURIComponent(v)
@@ -1126,8 +1126,8 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (url: string, params: any, sys: NakoSystem) {
+     
+    fn: function(url: string, params: any, sys: NakoSystem) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -1143,8 +1143,8 @@ export default {
     type: 'func',
     josi: [['から'], ['で']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (res: any, type: string, sys: NakoSystem) {
+     
+    fn: function(res: any, type: string, sys: NakoSystem) {
       type = type.toString().toUpperCase()
       if (type === 'TEXT' || type === 'テキスト') {
         return res.text()
@@ -1169,7 +1169,7 @@ export default {
     type: 'func',
     josi: [['から', 'を']],
     pure: true,
-    fn: function (url: string, sys: NakoSystem) {
+    fn: function(url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       // fetch 実行
@@ -1191,8 +1191,8 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (params: any, sys: NakoSystem) {
+     
+    fn: function(params: any, sys: NakoSystem) {
       const flist: Array<string> = []
       for (const key in params) {
         const v = params[key]
@@ -1207,7 +1207,7 @@ export default {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: function (url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, sys: any) {
       return new Promise((resolve, reject) => {
         const bodyData = sys.__exec('POSTデータ生成', [params, sys])
         const options = {
@@ -1232,8 +1232,8 @@ export default {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (url: any, params: any, sys: any) {
+     
+    fn: function(url: any, params: any, sys: any) {
       return new Promise((resolve, reject) => {
         const fd = new FormData()
         for (const key in params) { fd.set(key, params[key]) }
@@ -1257,7 +1257,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, sys: NakoSystem) {
+    fn: async function(url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       // console.log(url, options)
@@ -1272,7 +1272,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, sys: NakoSystem) {
+    fn: async function(url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
@@ -1286,7 +1286,7 @@ export default {
     josi: [['から']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, sys: NakoSystem) {
+    fn: async function(url: string, sys: NakoSystem) {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
@@ -1301,7 +1301,7 @@ export default {
     josi: [['へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, s: string, sys: NakoSystem) {
+    fn: async function(url: string, s: string, sys: NakoSystem) {
       const payload = { content: s }
       const res = await fetch(url, {
         method: 'POST',
@@ -1321,7 +1321,7 @@ export default {
     josi: [['へ', 'に'], ['と'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: async function (url: string, f: string, s: string, sys: NakoSystem) {
+    fn: async function(url: string, f: string, s: string, sys: NakoSystem) {
       const formData = new FormData()
       formData.append('content', s)
       const imageData = fs.readFileSync(f)
@@ -1344,7 +1344,7 @@ export default {
     type: 'func',
     josi: [['へ', 'に'], ['を']],
     pure: true,
-    fn: function (token: string, message: string, sys: NakoSystem) {
+    fn: function(token: string, message: string, sys: NakoSystem) {
       throw new Error('『LINE送信』は2025年4月で使えなくなりました。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
     }
   },
@@ -1352,7 +1352,7 @@ export default {
     type: 'func',
     josi: [['へ', 'に'], ['と'], ['を']],
     pure: true,
-    fn: function (token: string, imageFile: string, message: string, sys: NakoSystem) {
+    fn: function(token: string, imageFile: string, message: string, sys: NakoSystem) {
       throw new Error('『LINE画像送信』は2025年4月で使えなくなりました。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
     }
   },
@@ -1361,8 +1361,8 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (code: string, sys: NakoSystem) {
+     
+    fn: function(code: string, sys: NakoSystem) {
       return iconv.encodingExists(code)
     }
   },
@@ -1370,8 +1370,8 @@ export default {
     type: 'func',
     josi: [['に', 'へ', 'を']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (str: string, sys: NakoSystem) {
+     
+    fn: function(str: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.encode(str, 'Shift_JIS')
     }
@@ -1380,8 +1380,8 @@ export default {
     type: 'func',
     josi: [['から', 'を', 'で']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (buf: any, sys: NakoSystem) {
+     
+    fn: function(buf: any, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), 'sjis')
     }
@@ -1390,8 +1390,8 @@ export default {
     type: 'func',
     josi: [['を'], ['へ', 'で']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (s: string, code: string, sys: NakoSystem) {
+     
+    fn: function(s: string, code: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.encode(s, code)
     }
@@ -1400,8 +1400,8 @@ export default {
     type: 'func',
     josi: [['を'], ['から', 'で']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (buf: any, code: string, sys: NakoSystem) {
+     
+    fn: function(buf: any, code: string, sys: NakoSystem) {
       // iconv.skipDecodeWarning = true
       return iconv.decode(Buffer.from(buf), code)
     }
@@ -1411,8 +1411,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem) {
+     
+    fn: function(sys: NakoSystem) {
       return crypto.getHashes()
     }
   },
@@ -1420,8 +1420,8 @@ export default {
     type: 'func',
     josi: [['を'], ['の'], ['で']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (s: any, alg: string, enc: any, sys: NakoSystem) {
+     
+    fn: function(s: any, alg: string, enc: any, sys: NakoSystem) {
       const hashsum = crypto.createHash(alg)
       hashsum.update(s)
       return hashsum.digest(enc)
@@ -1431,8 +1431,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (sys: NakoSystem) {
+     
+    fn: function(sys: NakoSystem) {
       const uuid = crypto.randomUUID()
       return uuid
     }
@@ -1441,8 +1441,8 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fn: function (cnt: number, sys: NakoSystem) {
+     
+    fn: function(cnt: number, sys: NakoSystem) {
       const a = new Uint8Array(cnt)
       crypto.getRandomValues(a)
       return a

@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['の', 'に', 'へ']],
     pure: true,
-    fn: function (func: any, sys: any) {
+    fn: function(func: any, sys: any) {
       let cb = func
       if (typeof cb === 'string') { cb = sys.__findVar(cb) }
       if (!('geolocation' in navigator)) { throw new Error('関数『位置情報取得時』は使えません。') }
@@ -24,7 +24,7 @@ export default {
     type: 'func',
     josi: [['の', 'に', 'へ']],
     pure: true,
-    fn: function (func: any, sys: any) {
+    fn: function(func: any, sys: any) {
       let cb = func
       if (typeof cb === 'string') { cb = sys.__findVar(cb) }
       if (!('geolocation' in navigator)) { throw new Error('関数『位置情報監視時』は使えません。') }
@@ -43,7 +43,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function (wid: any, sys: any) {
+    fn: function(wid: any, sys: any) {
       navigator.geolocation.clearWatch(wid)
     },
     return_none: true

@@ -7,7 +7,7 @@ class ReplaceHistory {
   from: number
   to: number
   index: number
-  constructor (from: number, to: number, index: number) {
+  constructor(from: number, to: number, index: number) {
     this.from = from
     this.to = to
     this.index = index
@@ -17,7 +17,7 @@ class ReplaceHistory {
 export class ConvertResult {
   public text: string
   public sourcePosition: number
-  constructor (text: string, sourcePosition: number) {
+  constructor(text: string, sourcePosition: number) {
     this.text = text
     this.sourcePosition = sourcePosition
   }
@@ -29,16 +29,16 @@ export class ConvertResult {
 export class Replace {
   history: ReplaceHistory[]
   private code: string
-  constructor (code: string) {
+  constructor(code: string) {
     this.history = []
     this.code = code
   }
 
-  getText (): string {
+  getText(): string {
     return this.code
   }
 
-  replaceAll (from: string, to: string) {
+  replaceAll(from: string, to: string) {
     while (true) {
       const index = this.getText().indexOf(from)
       if (index === -1) {
@@ -51,7 +51,7 @@ export class Replace {
     }
   }
 
-  getSourcePosition (i: number): number {
+  getSourcePosition(i: number): number {
     // 少し遅い。パース時間1.4秒に対して0.15秒かかる。iが単調増加することを利用して高速化できるはず。
     for (const item of this.history) {
       if (i >= item.index + item.to) { // 置換範囲より後ろ
@@ -77,10 +77,10 @@ export class Replace {
  */
 export class NakoPrepare {
   // 唯一のインスタンス
-  // eslint-disable-next-line no-use-before-define
+   
   private static _instance: NakoPrepare
   /** 唯一のインスタンスを返す */
-  public static getInstance (): NakoPrepare {
+  public static getInstance(): NakoPrepare {
     if (!NakoPrepare._instance) {
       NakoPrepare._instance = new NakoPrepare()
     }
@@ -88,7 +88,7 @@ export class NakoPrepare {
   }
 
   private convertTable: Map<number, string>
-  private constructor () {
+  private constructor() {
     // 単純な変換テーブル
     this.convertTable = new Map([
       // ハイフンへの変換
@@ -150,7 +150,7 @@ export class NakoPrepare {
   /**
    * @param {string} ch
    */
-  public convert1ch (ch: string): string {
+  public convert1ch(ch: string): string {
     if (!ch) { return '' }
     const c: number = ch.codePointAt(0) || 0
     // テーブルによる変換
@@ -167,7 +167,7 @@ export class NakoPrepare {
   }
 
   /** convert code */
-  convert (code: string): ConvertResult[] {
+  convert(code: string): ConvertResult[] {
     if (!code) { return [] }
     const src = new Replace(code)
 
@@ -321,7 +321,7 @@ export class NakoPrepare {
 }
 
 /** なでしこのソースコードのモード(!インデント構文など)が設定されているか調べる */
-export function checkNakoMode (code: string, modeNames: string[]): boolean {
+export function checkNakoMode(code: string, modeNames: string[]): boolean {
   // 先頭の256文字について調べる
   code = code.substring(0, 256)
   // 全角半角の揺れを吸収

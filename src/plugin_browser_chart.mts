@@ -4,7 +4,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       // Chart.jsが使えるかチェック
       const win: any = sys.__getSysVar('WINDOW')
       if (typeof win === 'undefined') {
@@ -31,7 +31,7 @@ export default {
       if (sys.__chartjs) {
         sys.__chartjs.destroy()
       }
-      // eslint-disable-next-line no-undef
+       
       const chart = new Chart(sys.__canvas, data)
       sys.__chartjs = chart
       return chart
@@ -42,7 +42,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['line', data, sys])
       const d = {
         type: 'line',
@@ -56,7 +56,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__getSysVar('グラフオプション'),
@@ -75,7 +75,7 @@ export default {
     josi: [['を', 'で', 'の']],
     pure: true,
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__getSysVar('グラフオプション'),
@@ -93,7 +93,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__getSysVar('グラフオプション'),
@@ -117,7 +117,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__getSysVar('グラフオプション'),
@@ -141,7 +141,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       // グラフオプションの差分作成
       const gopt = Object.assign({},
         sys.__getSysVar('グラフオプション'),
@@ -159,7 +159,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
         type: 'pie',
@@ -173,7 +173,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
         type: 'doughnut',
@@ -187,7 +187,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['pie', data, sys])
       const d = {
         type: 'polarArea',
@@ -201,7 +201,7 @@ export default {
     type: 'func',
     josi: [['を', 'で', 'の']],
     asyncFn: true,
-    fn: async function (data: any, sys: any) {
+    fn: async function(data: any, sys: any) {
       data = sys.__exec('二次元グラフデータ変形', ['bar', data, sys])
       const d = {
         type: 'radar',
@@ -214,7 +214,7 @@ export default {
   '二次元グラフデータ変形': { // @ 二次元配列をXXグラフ描画の形式に整形する。種類TとDATAを指定。 // @にじげんぐらふでーたへんけい
     type: 'func',
     josi: [['の'], ['を']],
-    fn: function (t: any, dataOrg: any, sys: any) {
+    fn: function(t: any, dataOrg: any, sys: any) {
       // データを破壊的に変更してしまうので最初にデータをコピー (#1416)
       const data = JSON.parse(JSON.stringify(dataOrg))
       const bgcolorList: string[] = [

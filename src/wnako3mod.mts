@@ -15,7 +15,7 @@ export class WebNakoCompiler extends NakoCompiler {
   version: string
   wnakoVersion: NakoVersion
   localFiles: Record<string, string>
-  constructor () {
+  constructor() {
     super({ useBasicPlugin: true })
     this.version = nakoVersion.version
     this.wnakoVersion = nakoVersion
@@ -34,7 +34,7 @@ export class WebNakoCompiler extends NakoCompiler {
   /**
    * ブラウザでtype="なでしこ"というスクリプトを得て実行する
    */
-  async runNakoScript () {
+  async runNakoScript() {
     // スクリプトタグの中身を得る
     let nakoScriptCount = 0
     const scripts = document.querySelectorAll('script')
@@ -58,7 +58,7 @@ export class WebNakoCompiler extends NakoCompiler {
   }
 
   /** 取り込む文を実行する */
-  async loadDependencies (code: string, filename: string, preCode = '', localFiles: any = {}): Promise<unknown> {
+  async loadDependencies(code: string, filename: string, preCode = '', localFiles: any = {}): Promise<unknown> {
     this.localFiles = localFiles || {}
     return this._loadDependencies(code, filename, preCode, this.getLoaderTool())
   }
@@ -67,7 +67,7 @@ export class WebNakoCompiler extends NakoCompiler {
    * type=なでしこ のスクリプトを自動実行するべきかどうかを返す
    * @returns type=なでしこ のスクリプトを自動実行するべきかどうか
    */
-  checkScriptTagParam (): boolean {
+  checkScriptTagParam(): boolean {
     const scripts = document.querySelectorAll('script')
     for (let i = 0; i < scripts.length; i++) {
       const script = scripts[i]
@@ -85,31 +85,31 @@ export class WebNakoCompiler extends NakoCompiler {
    * @param {string | Element} idOrElement HTML要素
    * @see {setupEditor}
    */
-  setupEditor (idOrElement: any) {
+  setupEditor(idOrElement: any) {
     return setupEditor(idOrElement, this, (window as any).ace)
   }
 
   /** なでしこ3の『取り込む』命令のための読み込みツール */
-  getLoaderTool (): LoaderTool {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+  getLoaderTool(): LoaderTool {
+     
     const tool = { readJs: this.readJs, readNako3: this.readNako3, resolvePath: this.resolvePath }
     return tool
   }
 
   /** JSプラグインの読み込み */
-  readJs (filePath: string, token: Token): LoaderToolTask<any> {
+  readJs(filePath: string, token: Token): LoaderToolTask<any> {
     if (this.localFiles && this.localFiles[filePath]) {
       return {
-        // eslint-disable-next-line @typescript-eslint/require-await
-        task: (async () => () => {
-          // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval, @typescript-eslint/no-unsafe-call
+         
+        task: (async() => () => {
+           
           Function(this.localFiles[filePath])()
           return {}
         })()
       }
     }
     return {
-      task: (async () => {
+      task: (async() => {
         // もし動的インポートに対応していれば動的インポートを試す
         const basename = ('/' + filePath).split('/').pop() || '?'
         /*
@@ -146,11 +146,11 @@ export class WebNakoCompiler extends NakoCompiler {
           const globalNako3 = globalNavigator.nako3
           globalNavigator.nako3 = gSelf
           try {
-            // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
+             
             const f = Function(jstext)
             f.apply(gSelf.__globalObj)
           } catch (err) {
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+             
             throw new NakoImportError(`プラグイン ${filePath} の取り込みに失敗: ${err instanceof Error ? err.message : err + ''}`, token.file, token.line)
           } finally {
             globalNavigator.nako3 = globalNako3
@@ -162,7 +162,7 @@ export class WebNakoCompiler extends NakoCompiler {
   }
 
   /** NAKO3プラグインの読み込み */
-  readNako3 (filePath: string, token: Token): LoaderToolTask<string> {
+  readNako3(filePath: string, token: Token): LoaderToolTask<string> {
     if (this.localFiles && this.localFiles[filePath]) { // ローカルファイルを使う場合
       return {
         task: (() => {
@@ -174,7 +174,7 @@ export class WebNakoCompiler extends NakoCompiler {
       }
     }
     return {
-      task: (async () => {
+      task: (async() => {
         const res = await fetch(filePath)
         if (!res.ok) {
           throw new NakoImportError(`ファイル ${filePath} のダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
@@ -185,7 +185,7 @@ export class WebNakoCompiler extends NakoCompiler {
   }
 
   /** 読み込みでパスを解決する */
-  resolvePath (name: string, token: Token, fromFile: string) {
+  resolvePath(name: string, token: Token, fromFile: string) {
     let pathname = name
     // http から始まっていれば解決は不要
     if (pathname.match(/^https?:\/\//)) { // フルパスなら解決不要
@@ -230,7 +230,7 @@ export class WebNakoCompiler extends NakoCompiler {
   }
 }
 
-function dirname (s: string) {
+function dirname(s: string) {
   const a = s.split('/')
   if (a && a.length > 1) {
     return a.slice(0, a.length - 1).join('/')
@@ -238,7 +238,7 @@ function dirname (s: string) {
   return ''
 }
 
-function resolveURL (base: string, s: string) {
+function resolveURL(base: string, s: string) {
   const baseA = base.split('/')
   const sA = s.split('/')
   for (const p of sA) {

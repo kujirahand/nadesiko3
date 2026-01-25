@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['と', 'を', 'の']],
     pure: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys])
       window.speechSynthesis.speak(msg)
       console.log('#話す:', s)
@@ -17,7 +17,7 @@ export default {
     josi: [['と', 'を', 'の']],
     pure: true,
     asyncFn: true,
-    fn: function (s: any, sys: any) {
+    fn: function(s: any, sys: any) {
       return new Promise((resolve, reject) => {
         try {
           const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys])
@@ -34,7 +34,7 @@ export default {
     type: 'func',
     josi: [['で'], ['と', 'を', 'の']],
     pure: true,
-    fn: function (callback: any, s: any, sys: any) {
+    fn: function(callback: any, s: any, sys: any) {
       const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys])
       msg.onend = (e) => {
         console.log('#話終時')
@@ -50,7 +50,7 @@ export default {
     type: 'func',
     josi: [['の', 'で']],
     pure: true,
-    fn: function (s: string, sys: any) {
+    fn: function(s: string, sys: any) {
       // 話者の特定
       let voice = sys.__getSysVar('話:話者')
       if (!voice) { voice = sys.__exec('話者設定', ['ja', sys]) }
@@ -68,7 +68,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function (sys: any) {
+    fn: function(sys: any) {
       // 対応している？
       if (!('SpeechSynthesisUtterance' in window)) { throw new Error('音声合成APIに対応していません') }
       return window.speechSynthesis.getVoices()
@@ -78,7 +78,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function (v: any, sys: any) {
+    fn: function(v: any, sys: any) {
       // 対応している？
       if (!('SpeechSynthesisUtterance' in window)) { throw new Error('音声合成APIに対応していません') }
       // 文字列で値を指定
@@ -111,7 +111,7 @@ export default {
     type: 'func',
     josi: [['で', 'に', 'へ']],
     pure: true,
-    fn: function (obj: any, sys: any) {
+    fn: function(obj: any, sys: any) {
       const changeFunc = (key, v) => {
         if (key === '速度') { sys.__setSysVar('話者速度', v) }
         if (key === '声高' || key === 'ピッチ') { sys.__setSysVar('話者声高', v) }

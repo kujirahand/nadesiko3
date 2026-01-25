@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (text: any) {
+    fn: function(text: any) {
       return String(text)
         .replace(/&/g, '&amp;')
         .replace(/>/g, '&gt;')
@@ -18,7 +18,7 @@ export default {
     josi: [['を']],
     pure: true,
     asyncFn: true,
-    fn: async function (text: any) {
+    fn: async function(text: any) {
       // Clipboard APIをサポートしているか
       if (navigator.clipboard) {
         await navigator.clipboard.writeText(text)
@@ -44,7 +44,7 @@ export default {
     type: 'func',
     josi: [['を']],
     pure: true,
-    fn: function (f: any, sys: any) {
+    fn: function(f: any, sys: any) {
       // Clipboard APIをサポートしているか
       if (navigator.clipboard) {
         if (typeof (f) === 'string') { f = sys.__findFunc(f, 'クリップボード取得時') }
@@ -63,7 +63,7 @@ export default {
     josi: [],
     pure: true,
     asyncFn: true,
-    fn: async function (sys: any) {
+    fn: async function(sys: any) {
       // Clipboard APIをサポートしているか
       if (navigator.clipboard) {
         const result = await navigator.clipboard.readText()

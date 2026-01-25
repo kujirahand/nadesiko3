@@ -11,7 +11,7 @@ export class NakoError extends Error {
   public line: number | undefined
   public positionJa: string
 
-  constructor (tag: string, msg: string, file: string | undefined = undefined, line: number | undefined = undefined) {
+  constructor(tag: string, msg: string, file: string | undefined = undefined, line: number | undefined = undefined) {
     // エラー位置を分かりやすく日本語に変換
     const positionJa = `${file || ''}${line === undefined ? '' : `(${line + 1}行目): `}`
     // #1223 エラーメッセージに「main__関数名」と表示されるので、main__は省略して表示
@@ -33,7 +33,7 @@ export class NakoIndentError extends NakoError {
    * @param {number} line
    * @param {string} file
    */
-  constructor (msg: string, line: number, file: string) {
+  constructor(msg: string, line: number, file: string) {
     super('インデントエラー', msg, file, line)
     this.type = 'NakoIndentError'
     this.line = line
@@ -52,7 +52,7 @@ export class InternalLexerError extends NakoError {
    * @param {number | undefined} [line]
    * @param {string | undefined} [file]
    */
-  constructor (msg: string, preprocessedCodeStartOffset: number, preprocessedCodeEndOffset: number, line: number | undefined, file: string | undefined) {
+  constructor(msg: string, preprocessedCodeStartOffset: number, preprocessedCodeEndOffset: number, line: number | undefined, file: string | undefined) {
     super('字句解析エラー（内部エラー）', msg, file, line)
     this.type = 'InternalLexerError'
     this.preprocessedCodeStartOffset = preprocessedCodeStartOffset
@@ -72,7 +72,7 @@ export class NakoLexerError extends NakoError {
    * @param {number | undefined} line
    * @param {string | undefined} file
    */
-  constructor (
+  constructor(
     msg: string,
     startOffset: number,
     endOffset: number,
@@ -96,7 +96,7 @@ export class NakoSyntaxError extends NakoError {
    * @param {Ast} first
    * @param {Ast} [last]
    */
-  public static fromNode (msg: string, first: Ast | Token | SourceMap, last: Ast|undefined = undefined) {
+  public static fromNode(msg: string, first: Ast | Token | SourceMap, last: Ast|undefined = undefined) {
     if (!first) {
       return new NakoSyntaxError(msg, undefined, undefined, undefined, undefined)
     }
@@ -115,7 +115,7 @@ export class NakoSyntaxError extends NakoError {
    * @param {number | undefined} endOffset
    * @param {string | undefined} file
    */
-  constructor (msg: string, line: number | undefined, startOffset: number | undefined, endOffset: number | undefined, file: string | undefined) {
+  constructor(msg: string, line: number | undefined, startOffset: number | undefined, endOffset: number | undefined, file: string | undefined) {
     super('文法エラー', msg, file, line)
     this.type = 'NakoSyntaxError'
     this.file = file
@@ -131,7 +131,7 @@ export class NakoRuntimeError extends NakoError {
    * @param error エラー
    * @param lineNo 発生行
    */
-  constructor (error: Error | string, lineNo: string | undefined) {
+  constructor(error: Error | string, lineNo: string | undefined) {
     let msg = 'unknown'
     if (typeof error === 'string') {
       msg = error
@@ -183,7 +183,7 @@ export class NakoImportError extends NakoError {
    * @param {string} file
    * @param {number} line
    */
-  constructor (msg: string, file: string, line: number) {
+  constructor(msg: string, file: string, line: number) {
     super('取り込みエラー', msg, file, line)
     this.file = file
     this.line = line
