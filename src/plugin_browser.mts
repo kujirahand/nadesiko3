@@ -3,7 +3,6 @@
  */
 import { NakoValue, NakoCallback, NakoCallbackEvent, NakoSystem } from '../core/src/plugin_api.mjs'
 import { parsePosition } from '../core/src/nako_logger.mjs'
-import { NakoRuntimeError } from '../core/src/nako_errors.mjs'
 import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation } from './plugin_browser_api.mjs'
 
 import PartBrowserColor from './plugin_browser_color.mjs'
@@ -235,6 +234,23 @@ const PluginBrowser = {
           // 和スタイル・和属性の適用
           const waStyle = sys.__getSysVar('DOM和スタイル')
           const waAttr = sys.__getSysVar('DOM和属性')
+          const waPriority = sys.__getSysVar('DOMプロパティ情報')
+          // 優先ルールに従って適用する (#1822)
+          if (waPriority) {
+            // 和スタイルを適用する
+            for (const key of Object.keys(waPriority)) {
+              Object.defineProperty(obj, key, {
+                enumerable: false,
+                configurable: true,
+                get: function() {
+                  return sys.__exec('DOM設定取得', [obj, key, sys])
+                },
+                set: function(value: object) {
+                  sys.__exec('DOM設定変更', [obj, key, value, sys])
+                }
+              })
+            }
+          }
           if (waStyle) {
             // 和スタイルを適用する
             for (const key of Object.keys(waStyle)) {
