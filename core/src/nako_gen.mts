@@ -2047,8 +2047,9 @@ export class NakoGen {
     for (const name in this.__self.__module) {
       const initkey = `!${name}:初期化`
       if (this.varslistSet[0].names.has(initkey)) {
-        this.usedFuncSet.add(`!${name}:初期化`)
-        pluginCode += `if (!__v0.has('${name}:初期化済')) { __v0.get('!${name}:初期化')(__self); __v0.set('${name}:初期化済', true) }\n`
+        const initkeyDone = `!${name}:初期化済`
+        this.usedFuncSet.add(initkey)
+        pluginCode += `if (!__v0.has('${initkeyDone}')) { __v0.get('${initkey}')(__self); __v0.set('${initkeyDone}', true) }\n`
       }
     }
     if (pluginCode !== '') {
