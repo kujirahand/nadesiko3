@@ -64,7 +64,7 @@ const PluginBrowser = {
     pure: true,
     fn: function(sys: NakoBrowsesrSystem) {
       // 既に初期化されている場合は何もしない ( #2209)
-      if (sys.engine === 'wnako') {
+      if (sys.__getSysVar('DOM親要素') !== '') {
         return
       }
       sys.engine = 'wnako'
