@@ -732,7 +732,8 @@ export class NakoCompiler {
       // onBeforeGenerate
       this.eventList.filter(o => o.eventName === 'beforeGenerate').map(e => e.callback(ast))
       // generate
-      const outCode = this.generateCode(ast, new NakoGenOptions(options.testOnly))
+      const genOptions = new NakoGenOptions(options.testOnly)
+      const outCode = this.generateCode(ast, genOptions)
       // onAfterGenerate
       this.eventList.filter(o => o.eventName === 'afterGenerate').map(e => e.callback(outCode))
       return outCode

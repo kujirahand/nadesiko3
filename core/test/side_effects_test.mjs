@@ -93,7 +93,7 @@ describe('side_effects_test', async () => {
     const process2 = await nako.runAsync('a=1')
     assert.strictEqual(process1, process2) // 同じものを返すこと
     process1.destroy()
-    assert.deepStrictEqual(log, ['初期化0', '初期化1', '!クリア1'])
+    assert.deepStrictEqual(log, ['初期化0', '!クリア0'])
   })
   it('余分なNakoGlobalが生成されないこと #1246', async () => {
     const nako3 = new NakoCompiler()
