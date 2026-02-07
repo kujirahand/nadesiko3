@@ -44,7 +44,11 @@ describe('plugin_system_test', async () => {
   it('掛けるの拡張', async () => {
     await cmp('2に3を掛けて表示', '6')
     await cmp('"z"に3を掛けて表示', 'zzz')
-    await cmp('[0]に3を掛けてJSONエンコードして表示', '[0,0,0]')
+    await cmp('[0]に3を掛けてJSON変換して表示', '[0,0,0]')
+  })
+  it('JSON', async () => {
+    await cmp('[0,0,0]からJSON変換して表示', '[0,0,0]')
+    await cmp('"[0,0,0]"からJSON取得してJSON変換して表示', '[0,0,0]')
   })
   it('JS実行', async () => {
     await cmp('「3+6」をJS実行して表示', '9')
