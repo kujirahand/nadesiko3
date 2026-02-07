@@ -6,7 +6,7 @@
  */
 
 import { NakoSyntaxError } from './nako_errors.mjs'
-import { FuncList, FuncArgs, FuncListItem, NakoDebugOption, CompilerOptions } from './nako_types.mjs'
+import { FuncList, FuncArgs, FuncListItem, NakoDebugOption } from './nako_types.mjs'
 import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 

@@ -1,5 +1,6 @@
  
 import { NakoRuntimeError } from './nako_errors.mjs'
+import { NakoGlobal } from './nako_global.mjs'
 import { NakoSystem } from './plugin_api.mjs'
 
 export default {
@@ -815,26 +816,39 @@ export default {
     pure: false,
     asyncFn: true,
     fn: async function(code: string, sys: any) {
-      sys.__setSysVar('表示ログ', '')
-      await sys.__self.runAsync(code, sys.__modName, { resetEnv: false, resetLog: true })
-      const outLog = String(sys.__getSysVar('表示ログ'))
-      if (outLog) {
-        sys.logger.trace(outLog)
+      const options = {
+        resetEnv: false,
+        resetAll: true,
+        nakoGlobal: sys
       }
+      const tmpLog = String(sys.__getSysVar('表示ログ', ''))
+      sys.__setSysVar('表示ログ', '')
+      await sys.__self.runAsync(code, sys.__modName, options)
+      const outLog = String(sys.__getSysVar('表示ログ'))
+      sys.__setSysVar('表示ログ', tmpLog + outLog)
       return outLog
     }
   },
   'ナデシコ続': { // @なでしこのコードCODEを実行する // @なでしこつづける
     type: 'func',
     josi: [['を', 'で']],
+    pure: false,
     asyncFn: true,
     fn: async function(code: string, sys: any) {
-      await sys.__self.runAsync(code, sys.__modName, { resetEnv: false, resetAll: false })
-      const out = String(sys.__getSysVar('表示ログ'))
-      if (out) {
-        sys.logger.trace(out)
+      const options = {
+        resetEnv: false,
+        resetAll: false,
+        nakoGlobal: sys.__self
       }
-      return out
+      const tmpLog = sys.__getSysVar('表示ログ', '')
+      sys.__setSysVar('表示ログ', '')
+      await sys.__self.runAsync(code, sys.__modName, options)
+      const outLog = String(sys.__getSysVar('表示ログ'))
+      if (outLog) {
+        sys.logger.trace(outLog)
+      }
+      sys.__setSysVar('表示ログ', tmpLog + outLog)
+      return outLog
     }
   },
   '実行': { // @ 無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する) // @じっこう
