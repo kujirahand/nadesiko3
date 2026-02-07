@@ -6,7 +6,7 @@
  */
 
 import { NakoSyntaxError } from './nako_errors.mjs'
-import { FuncList, FuncArgs, FuncListItem, NakoDebugOption } from './nako_types.mjs'
+import { FuncList, FuncArgs, FuncListItem, NakoDebugOption, CompilerOptions } from './nako_types.mjs'
 import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 
@@ -2048,10 +2048,12 @@ export class NakoGen {
       const initkey = `!${name}:初期化`
       if (this.varslistSet[0].names.has(initkey)) {
         this.usedFuncSet.add(`!${name}:初期化`)
-        pluginCode += `__v0.get('!${name}:初期化')(__self);\n`
+        pluginCode += `if (!__v0.has('${name}:初期化済')) { __v0.get('!${name}:初期化')(__self); __v0.set('${name}:初期化済', true) }\n`
       }
     }
-    if (pluginCode !== '') { code += '__v0.set(\'__line\', \'l0:プラグインの初期化\');\n' + pluginCode }
+    if (pluginCode !== '') {
+      code += '__v0.set(\'__line\', \'l0:プラグインの初期化\');\n' + pluginCode
+    }
     return code
   }
 }

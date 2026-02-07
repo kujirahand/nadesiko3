@@ -813,9 +813,10 @@ export default {
     type: 'func',
     josi: [['を', 'で']],
     pure: false,
-    fn: function(code: string, sys: any) {
+    asyncFn: true,
+    fn: async function(code: string, sys: any) {
       sys.__setSysVar('表示ログ', '')
-      sys.__self.runEx(code, sys.__modName, { resetEnv: false, resetLog: true })
+      await sys.__self.runAsync(code, sys.__modName, { resetEnv: false, resetLog: true })
       const outLog = String(sys.__getSysVar('表示ログ'))
       if (outLog) {
         sys.logger.trace(outLog)
@@ -826,8 +827,9 @@ export default {
   'ナデシコ続': { // @なでしこのコードCODEを実行する // @なでしこつづける
     type: 'func',
     josi: [['を', 'で']],
-    fn: function(code: string, sys: any) {
-      sys.__self.runEx(code, sys.__modName, { resetEnv: false, resetAll: false })
+    asyncFn: true,
+    fn: async function(code: string, sys: any) {
+      await sys.__self.runAsync(code, sys.__modName, { resetEnv: false, resetAll: false })
       const out = String(sys.__getSysVar('表示ログ'))
       if (out) {
         sys.logger.trace(out)
