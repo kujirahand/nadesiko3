@@ -63,6 +63,10 @@ const PluginBrowser = {
     josi: [],
     pure: true,
     fn: function(sys: NakoBrowsesrSystem) {
+      // 既に初期化されている場合は何もしない ( #2209)
+      if (sys.__getSysVar('DOM親要素') !== '') {
+        return
+      }
       sys.engine = 'wnako'
       /* eslint no-global-assign: 0 */
       const doc: IBrowserDocument = (typeof document === 'undefined') ? { 'body': {}, 'querySelector': () => null } : document
