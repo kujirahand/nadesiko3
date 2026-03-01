@@ -48,7 +48,25 @@ const PluginCSV = {
       return stringify(a)
     }
   },
+  'CSV変換': { // @二次元配列AをCSV形式に変換して返す // @CSVへんかん
+    type: 'func',
+    josi: [['を']],
+    pure: true,
+    fn: function(a: string[][]): string {
+      options.delimiter = ','
+      return stringify(a)
+    }
+  },
   '表TSV変換': { // @二次元配列AをTSV形式に変換して返す // @ひょうTSVへんかん
+    type: 'func',
+    josi: [['を']],
+    pure: true,
+    fn: function(a: string[][]): string {
+      options.delimiter = '\t'
+      return stringify(a)
+    }
+  },
+  'TSV変換': { // @二次元配列AをTSV形式に変換して返す // @TSVへんかん
     type: 'func',
     josi: [['を']],
     pure: true,
