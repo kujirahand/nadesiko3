@@ -775,7 +775,7 @@ export default {
     },
     return_none: true
   },
-  'AWAIT実行': { // @JavaScriptの非同期関数(Promise/async関数)のFを引数ARGSでawait実行する // @JSかんすうAWAIT
+  'AWAIT実行': { // @JavaScriptの非同期関数(Promise/async関数)のFを引数ARGSでawait実行する // @AWAITじっこう
     type: 'func',
     josi: [['を'], ['で']],
     pure: true,
