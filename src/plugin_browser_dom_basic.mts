@@ -276,10 +276,7 @@ export default {
       'ブロック': 'block',
       '表示位置': 'float',
       '重なり': 'z-index',
-      '重': 'z-index',
-      '読取専用': 'readOnly',
-      '読み取り専用': 'readOnly',
-      'readonly': 'readOnly'
+      '重': 'z-index'
     }
   },
   'DOMプロパティ情報': { // 'const' // @DOMぷろぱてぃじょうほう
