@@ -219,10 +219,26 @@ function cbWordParser(src: string, isTrimOkurigana = true): NakoLexParseResult {
     src = res.charAt(res.length - 1) + src
     res = res.slice(0, -1)
   }
-  // 変数名に「秒」が含まれると「秒待機」等の命令と連結されるバグ修正 (#NE-016)
-  if (/[ぁ-んァ-ヶ\u4E00-\u9FCF]秒$/.test(res)) {
-    src = '秒' + src
-    res = res.slice(0, -1)
+  // 変数名末尾の「秒」が「秒待機」等の命令と誤結合するバグ修正 (#NE-016)
+  // 例: 「間隔秒秒待機」→ res=「間隔秒秒待機」の末尾が「秒待機」なら src に戻す
+  // 「間隔秒=5」のような通常の変数名は分割しない
+  {
+    const secondCmdSuffixes = [
+      '秒タイマー開始時', // 長い順に並べて最長一致させる
+      '秒逐次待機',
+      '秒待機',
+      '秒後',
+      '秒毎',
+      '秒差',
+      '秒待',
+    ]
+    for (const suffix of secondCmdSuffixes) {
+      if (res.endsWith(suffix) && res.length > suffix.length) {
+        src = suffix + src
+        res = res.slice(0, -suffix.length)
+        break
+      }
+    }
   }
   // 「以上」「以下」「超」「未満」 #918
   const ii = wordHasIjoIka.exec(res)
