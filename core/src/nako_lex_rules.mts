@@ -219,6 +219,11 @@ function cbWordParser(src: string, isTrimOkurigana = true): NakoLexParseResult {
     src = res.charAt(res.length - 1) + src
     res = res.slice(0, -1)
   }
+  // 変数名に「秒」が含まれると「秒待機」等の命令と連結されるバグ修正 (#NE-016)
+  if (/[ぁ-んァ-ヶ\u4E00-\u9FCF]秒$/.test(res)) {
+    src = '秒' + src
+    res = res.slice(0, -1)
+  }
   // 「以上」「以下」「超」「未満」 #918
   const ii = wordHasIjoIka.exec(res)
   if (ii) {
