@@ -116,8 +116,9 @@ export default {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
-      const txt = await res.json()
-      return txt
+      const text = await res.text()
+      if (!text || text.trim() === '') { return null }
+      return JSON.parse(text)
     },
     return_none: false
   },
