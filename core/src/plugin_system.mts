@@ -175,11 +175,16 @@ export default {
        
       sys.__evalJS = (src: string, sys?: NakoSystem) => {
         try {
-           
-          return eval(src)
+          // IIFEでラップしてreturn文とawaitを使えるようにする (#NE-006)
+          return (new Function('sys', `return (function(sys){ ${src} })(sys)`))(sys)
         } catch (e) {
-          console.warn('[eval]', e)
-          return null
+          // IIFEが失敗した場合は従来のevalにフォールバック
+          try {
+            return eval(src)
+          } catch (e2) {
+            console.warn('[eval]', e2)
+            return null
+          }
         }
       }
       // Propアクセス支援
