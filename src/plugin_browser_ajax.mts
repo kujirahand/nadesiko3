@@ -116,8 +116,14 @@ export default {
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       const res = await fetch(url, options)
-      const txt = await res.json()
-      return txt
+      const text = await res.text()
+      const status = res.status
+      const contentLength = res.headers.get('Content-Length')
+      if ((!text || text.trim() === '') &&
+        ((status === 204 || status === 205) || contentLength === '0')) {
+        return null
+      }
+      return JSON.parse(text)
     },
     return_none: false
   },
