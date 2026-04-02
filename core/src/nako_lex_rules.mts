@@ -41,8 +41,8 @@ export const rules: NakoLexRule[] = [
   { name: 'ここまで', pattern: /^;;;/ }, // #925
   { name: 'eol', pattern: /^\n/ },
   { name: 'eol', pattern: /^;/ },
-  // eslint-disable-next-line no-control-regex
-  { name: 'space', pattern: /^(\x20|\x09|・|⎿ |└|｜)+/ }, // #877,#1015
+  // eslint-disable-next-line no-irregular-whitespace
+  { name: 'space', pattern: /^(\x20|\x09|　|・|⎿ |└|｜)+/ }, // #877,#1015
   { name: 'comma', pattern: /^,/ },
   { name: 'line_comment', pattern: /^#[^\n]*/ },
   { name: 'line_comment', pattern: /^\/\/[^\n]*/ },

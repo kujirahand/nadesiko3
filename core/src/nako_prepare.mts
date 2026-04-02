@@ -123,7 +123,7 @@ export class NakoPrepare {
       [0x200B, ' '], // ZERO WIDTH SPACE
       [0x202F, ' '], // NARROW NO-BREAK SPACE
       [0x205F, ' '], // MEDIUM MATHEMATICAL SPACE
-      [0x3000, ' '], // 全角スペース
+      // [0x3000, ' '], // 全角スペース --- インデント量2として扱うためにコメントアウト (#issue)
       [0x3164, ' '], // HANGUL FILLER
       // その他の変換
       // [0x09, ' '], // TAB --> SPC
