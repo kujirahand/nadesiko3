@@ -1797,6 +1797,17 @@ export class NakoGen {
       varGetter = this.convRefArray(nodeName)
       varSetter = `${varGetter} = ${valueVar}`
       varInitter = `${varGetter} = 0`
+    } else if (nodeName.type === 'ref_prop') {
+      // プロパティアクセス(A$a)の場合 (#1793)
+      const baseName = this._convGen(nodeName.name as Ast, true)
+      const propList = nodeName.index as AstStrValue[]
+      let propAccess = baseName
+      for (const prop of propList) {
+        propAccess += `['${prop.value}']`
+      }
+      varGetter = propAccess
+      varSetter = `${propAccess} = ${valueVar}`
+      varInitter = `${propAccess} = 0`
     } else {
       // 変数名
       const name: string = (nodeName as AstStrValue).value

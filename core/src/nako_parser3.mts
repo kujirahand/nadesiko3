@@ -1312,7 +1312,7 @@ export class NakoParser extends NakoParserBase {
 
     // スタックから引数をポップ
     const word = this.popStack(['を'])
-    if (!word || (word.type !== 'word' && word.type !== 'ref_array')) {
+    if (!word || (word.type !== 'word' && word.type !== 'ref_array' && word.type !== 'ref_prop')) {
       throw NakoSyntaxError.fromNode(
         `『${action.type}』文で定数が見当たりません。『(変数名)を(値)だけ${action.type}』のように使います。`,
         action)
