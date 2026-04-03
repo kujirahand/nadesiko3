@@ -1797,6 +1797,36 @@ export class NakoGen {
       varGetter = this.convRefArray(nodeName)
       varSetter = `${varGetter} = ${valueVar}`
       varInitter = `${varGetter} = 0`
+    } else if (nodeName.type === 'ref_prop') {
+      // プロパティアクセス(A$a)の場合 (#1793)
+      const baseName = this._convGen(nodeName.name as Ast, true)
+      const propList = nodeName.index as AstStrValue[]
+      // __getProp/__setPropを持つオブジェクトにも対応するgetter/setter生成
+      const buildPropGetter = (targetExpr: string, propKey: string): string =>
+        `(()=>{const __nako_obj=${targetExpr};` +
+        `return (__nako_obj!=null&&typeof __nako_obj.__getProp==='function')` +
+        `?__nako_obj.__getProp(${propKey}, __self)` +
+        `:__nako_obj[${propKey}]})()`
+      const buildPropSetter = (targetExpr: string, propKey: string, valueExpr: string): string =>
+        `(()=>{const __nako_obj=${targetExpr};` +
+        `return (__nako_obj!=null&&typeof __nako_obj.__setProp==='function')` +
+        `?__nako_obj.__setProp(${propKey}, ${valueExpr}, __self)` +
+        `:(__nako_obj[${propKey}]=${valueExpr})})()`
+      const propKeys = propList.map((prop) => JSON.stringify(prop.value))
+      // getter: 全プロパティを順にたどる
+      let currentExpr = baseName
+      for (const propKey of propKeys) {
+        currentExpr = buildPropGetter(currentExpr, propKey)
+      }
+      varGetter = currentExpr
+      // setter/initter: 最後のプロパティだけsetterで、残りはgetterでたどる
+      let parentExpr = baseName
+      for (const propKey of propKeys.slice(0, -1)) {
+        parentExpr = buildPropGetter(parentExpr, propKey)
+      }
+      const lastPropKey = propKeys[propKeys.length - 1]
+      varSetter = buildPropSetter(parentExpr, lastPropKey, valueVar)
+      varInitter = buildPropSetter(parentExpr, lastPropKey, '0')
     } else {
       // 変数名
       const name: string = (nodeName as AstStrValue).value

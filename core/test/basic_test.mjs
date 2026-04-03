@@ -368,6 +368,28 @@ describe('basic', async () => {
     await cmp('A=[5,5,5];A[0]を1減らす。A[0]と表示;', '4')
     await cmp('A={"R":15};A["R"]を1減らす。A["R"]と表示;', '14')
   })
+  it('オブジェクトプロパティ構文に増減文を使う', async () => {
+    // $記法で増やす
+    await cmp('A＝{"a":0};A$aを1増やす。A$aを表示。', '1')
+    await cmp('A＝{"a":5};A$aを3だけ増やす。A$aを表示。', '8')
+    // $記法で減らす
+    await cmp('A＝{"a":10};A$aを1減らす。A$aを表示。', '9')
+    await cmp('A＝{"a":10};A$aを5だけ減らす。A$aを表示。', '5')
+    // ネスト$記法で増やす・減らす
+    await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を5増やす。A$猫$日本猫を表示。', '15')
+    await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を3減らす。A$猫$日本猫を表示。', '7')
+    // __getProp/__setPropを持つオブジェクトでの増減
+    await cmp(
+      '『 (function(prop, sys){ return this[prop] })』をJS実行してF_GETに代入。\n' +
+      '『 (function(prop, val, sys){ this[prop] = val })』をJS実行してF_SETに代入。\n' +
+      'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
+      'A$幅を2増やす。A$幅を表示。', '5')
+    await cmp(
+      '『 (function(prop, sys){ return this[prop] })』をJS実行してF_GETに代入。\n' +
+      '『 (function(prop, val, sys){ this[prop] = val })』をJS実行してF_SETに代入。\n' +
+      'A={"幅": 10, "__setProp": F_SET, "__getProp": F_GET};\n' +
+      'A$幅を3減らす。A$幅を表示。', '7')
+  })
   it('文字列記号と全角コメント閉じ記号の組み合わせがある時うまく動いていない(core #45)', async () => {
     await cmp(
       'もし1ならば\n' +
