@@ -1803,7 +1803,7 @@ export class NakoGen {
       const propList = nodeName.index as AstStrValue[]
       let propAccess = baseName
       for (const prop of propList) {
-        propAccess += `['${prop.value}']`
+        propAccess += `[${JSON.stringify(prop.value)}]`
       }
       varGetter = propAccess
       varSetter = `${propAccess} = ${valueVar}`
