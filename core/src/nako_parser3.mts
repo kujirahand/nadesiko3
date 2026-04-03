@@ -1193,6 +1193,8 @@ export class NakoParser extends NakoParserBase {
     // 「,」を飛ばす
     if (this.check('comma')) { this.get() }
     // ブロックを読む
+    let block: Ast = this.yNop()
+    let isAsyncFn = false
     this.funcLevel++
     this.saveStack()
     const backupAsyncFn = this.usedAsyncFn
@@ -1207,17 +1209,20 @@ export class NakoParser extends NakoParserBase {
       const fnName: string = (arg as AstStrValue).value
       this.localvars.set(fnName, { 'type': 'var', 'value': '' })
     }
-    const block = this.yBlock()
-    const isAsyncFn = this.usedAsyncFn
-    // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
-    if (!this.check('ここまで')) {
-      throw NakoSyntaxError.fromNode('『ここまで』がありません。『には』構文か無名関数の末尾に『ここまで』が必要です。', map)
+    try {
+      block = this.yBlock()
+      isAsyncFn = this.usedAsyncFn
+      // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
+      if (!this.check('ここまで')) {
+        throw NakoSyntaxError.fromNode('『ここまで』がありません。『には』構文か無名関数の末尾に『ここまで』が必要です。', map)
+      }
+      this.get() // skip ここまで
+    } finally {
+      this.loadStack()
+      this.usedAsyncFn = backupAsyncFn
+      this.localvars = backupLocalvars
+      this.funcLevel--
     }
-    this.get() // skip ここまで
-    this.loadStack()
-    this.usedAsyncFn = backupAsyncFn
-    this.localvars = backupLocalvars
-    this.funcLevel--
     return {
       type: 'func_obj',
       name: '',
