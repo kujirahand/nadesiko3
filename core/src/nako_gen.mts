@@ -1801,13 +1801,24 @@ export class NakoGen {
       // プロパティアクセス(A$a)の場合 (#1793)
       const baseName = this._convGen(nodeName.name as Ast, true)
       const propList = nodeName.index as AstStrValue[]
-      let propAccess = baseName
-      for (const prop of propList) {
-        propAccess += `[${JSON.stringify(prop.value)}]`
+      const buildPropGetter = (): string => {
+        let getter = baseName
+        for (const prop of propList) {
+          getter = `__getProp(${getter}, ${JSON.stringify(prop.value)})`
+        }
+        return getter
       }
-      varGetter = propAccess
-      varSetter = `${propAccess} = ${valueVar}`
-      varInitter = `${propAccess} = 0`
+      const buildPropSetter = (rhs: string): string => {
+        let parent = baseName
+        for (let i = 0; i < propList.length - 1; i++) {
+          parent = `__getProp(${parent}, ${JSON.stringify(propList[i].value)})`
+        }
+        const lastProp = JSON.stringify(propList[propList.length - 1].value)
+        return `__setProp(__checkPropAccessor(${parent}, ${lastProp}), ${lastProp}, ${rhs})`
+      }
+      varGetter = buildPropGetter()
+      varSetter = buildPropSetter(valueVar)
+      varInitter = buildPropSetter('0')
     } else {
       // 変数名
       const name: string = (nodeName as AstStrValue).value
