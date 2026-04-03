@@ -175,9 +175,18 @@ export default {
        
       sys.__evalJS = (src: string, sys?: NakoSystem) => {
         try {
-           
+          // まず従来通りevalで評価（式の値を返す互換性を維持）
           return eval(src)
         } catch (e) {
+          // return文によるSyntaxErrorの場合のみIIFEで再試行 (#NE-006)
+          if (e instanceof SyntaxError && e.message.includes('return')) {
+            try {
+              return (new Function('sys', `return (function(sys){\n${src}\n})(sys)`))(sys)
+            } catch (e2) {
+              console.warn('[eval]', e2)
+              return null
+            }
+          }
           console.warn('[eval]', e)
           return null
         }
