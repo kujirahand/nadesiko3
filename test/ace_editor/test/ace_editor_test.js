@@ -14,6 +14,7 @@ const findDOMElement = (node, f) => {
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const runtimeErrorPattern = /^\[実行時エラー\]main\.nako3\(2行目\): (エラー『1』が発生しました。|1)$/
 
 describe('ace editor test', () => {
   before(function (done) {
@@ -139,7 +140,8 @@ describe('ace editor test', () => {
   })
   describe('出力のボックス', () => {
     it('コンパイルエラーを表示する', () => {
-      assert.match(document.querySelector('#editor7-output').innerText.trim(), /^\[実行時エラー\]main\.nako3\(2行目\): (エラー『1』が発生しました。|1)$/)
+      // 実行時エラーの文言はランタイムの整形差分を受けるため、旧文言と現行文言の両方を許容する。
+      assert.match(document.querySelector('#editor7-output').innerText.trim(), runtimeErrorPattern)
       assert.strictEqual(document.querySelector('#editor8-output').innerText.trim(), '')
       // assert.strictEqual(document.querySelector('#editor9-output').innerText.trim(), '[警告]main.nako3(1行目): 変数『a』は定義されていません。\nundefined')
       assert.strictEqual(document.querySelector('#editor9-output').innerText.trim(), '[警告]main.nako3(1行目): 変数『a』は定義されていません。\n[警告]main.nako3(1行目): 命令『表示』の引数にundefinedを渡しています。\nundefined')

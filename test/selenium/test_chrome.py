@@ -3,6 +3,7 @@ Seleniumを使ってChromeを操作してテストを実行する。
 '''
 import os
 import glob
+import shutil
 import time
 import sys
 import urllib.parse
@@ -25,8 +26,8 @@ def create_driver():
         options.add_argument('--headless=new')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-    chromedriver = os.environ.get('CHROMEDRIVER') or '/usr/bin/chromedriver'
-    if os.path.exists(chromedriver):
+    chromedriver = os.environ.get('CHROMEDRIVER') or shutil.which('chromedriver')
+    if chromedriver and os.path.exists(chromedriver):
         return webdriver.Chrome(service=Service(chromedriver), options=options)
     return webdriver.Chrome(options=options)
 

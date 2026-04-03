@@ -1,6 +1,8 @@
 // @ts-nocheck
 const path = require('path')
 
+process.env.CHROME_BIN = process.env.CHROME_BIN || 'google-chrome'
+
 module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'webpack'],
