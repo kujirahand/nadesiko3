@@ -453,8 +453,10 @@ export default {
     pure: true,
     fn: function() {
       console.clear()
-      if (process.stdout && (process.stdout as any).isTTY) {
-        process.stdout.write('\u001b[2J\u001b[0;0H')
+      // process が存在しない実行環境でも落ちないように安全に参照する
+      const stdout = (globalThis as any).process?.stdout
+      if (stdout && (stdout as any).isTTY) {
+        stdout.write('\u001b[2J\u001b[0;0H')
       }
     },
     return_none: true
