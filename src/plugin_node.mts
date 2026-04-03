@@ -4,7 +4,7 @@
  * node.js のためのプラグイン
  */
 import fs from 'node:fs'
-import { exec, execSync, spawn } from 'node:child_process'
+import { exec, execSync, spawn, spawnSync } from 'node:child_process'
 import path from 'node:path'
 import assert from 'node:assert'
 // ハッシュ関数で利用
@@ -43,6 +43,119 @@ function isDir(f: string): boolean {
   } catch (err) {
     return false
   }
+}
+
+function commandExists(command: string): boolean {
+  try {
+    const r = spawnSync('which', [command], { stdio: 'ignore' })
+    return r.status === 0
+  } catch (_err) {
+    return false
+  }
+}
+
+function pickLinuxTerminal(): { cmd: string, args: string[] } | null {
+  const candidates = [
+    { cmd: 'x-terminal-emulator', args: ['-e', 'bash', '-c'] },
+    { cmd: 'gnome-terminal', args: ['--', 'bash', '-c'] },
+    { cmd: 'konsole', args: ['-e', 'bash', '-c'] },
+    { cmd: 'xfce4-terminal', args: ['-e', 'bash', '-c'] },
+    { cmd: 'xterm', args: ['-e', 'bash', '-c'] }
+  ]
+  for (const cand of candidates) {
+    if (commandExists(cand.cmd)) { return cand }
+  }
+  return null
+}
+
+function escapeAppleScriptCommand(command: string): string {
+  return command.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+}
+
+function runCommandInNewConsole(command: string, sys: NakoSystem): void {
+  if (getEnv('NAKO3_DISABLE_NEW_CONSOLE') === '1') {
+    exec(command, (err, stdout, stderr) => {
+      if (err) { console.error(stderr) } else if (stdout) { console.log(stdout) }
+    })
+    return
+  }
+  if (sys.tags.isWin) {
+    const child = spawn('cmd.exe', ['/c', 'start', '""', 'cmd.exe', '/k', command], { detached: true, windowsHide: false, stdio: 'ignore' })
+    child.unref()
+    return
+  }
+  if (sys.tags.isMac) {
+    const osaScript = `tell application "Terminal" to do script "${escapeAppleScriptCommand(command)}"`
+    const child = spawn('osascript', ['-e', osaScript], { detached: true, stdio: 'ignore' })
+    child.unref()
+    return
+  }
+  if (nodeProcess.platform === 'linux') {
+    const term = pickLinuxTerminal()
+    if (term) {
+      const child = spawn(term.cmd, [...term.args, command], { detached: true, stdio: 'ignore' })
+      child.unref()
+      return
+    }
+  }
+  exec(command, (err, stdout, stderr) => {
+    if (err) { console.error(stderr) } else if (stdout) { console.log(stdout) }
+  })
+}
+
+function runCommandInNewConsoleWait(command: string, sys: NakoSystem): Promise<number> {
+  if (getEnv('NAKO3_DISABLE_NEW_CONSOLE') === '1') {
+    return new Promise((resolve) => {
+      try {
+        execSync(command, { stdio: 'inherit' })
+        resolve(0)
+      } catch (err) {
+        // 非0終了の場合でも終了コードを返す（rejectせず）
+        resolve((err as any).status ?? 1)
+      }
+    })
+  }
+  if (sys.tags.isWin) {
+    return new Promise((resolve, reject) => {
+      const child = spawn('cmd.exe', ['/c', 'start', '""', '/wait', 'cmd.exe', '/c', command], { stdio: 'ignore' })
+      child.on('error', (err) => reject(err))
+      child.on('exit', (code) => resolve(code ?? 0))
+    })
+  }
+  if (sys.tags.isMac) {
+    // macOS の Terminal + do script は、osascript の終了しか待てず、
+    // 実際のコマンド完了待機にはならない。
+    // runCommandInNewConsoleWait の「待機」契約を守るため、
+    // macOS では新規コンソール起動を諦めて同期実行にフォールバックする。
+    return new Promise((resolve) => {
+      try {
+        execSync(command, { stdio: 'inherit' })
+        resolve(0)
+      } catch (err) {
+        // 非0終了の場合でも終了コードを返す（rejectせず）
+        resolve((err as any).status ?? 1)
+      }
+    })
+  }
+  if (nodeProcess.platform === 'linux') {
+    const term = pickLinuxTerminal()
+    if (term) {
+      return new Promise((resolve, reject) => {
+        const child = spawn(term.cmd, [...term.args, command], { stdio: 'ignore' })
+        child.on('error', (err) => reject(err))
+        child.on('exit', (code) => resolve(code ?? 0))
+      })
+    }
+  }
+  return new Promise((resolve) => {
+    try {
+      execSync(command, { stdio: 'inherit' })
+      resolve(0)
+    } catch (err) {
+      // 非0終了の場合でも終了コードを返す（rejectせず）
+      resolve((err as any).status ?? 1)
+    }
+  })
 }
 
 let nodeProcess: any = globalThis.process
@@ -312,6 +425,25 @@ export default {
       return r.toString()
     }
   },
+  'コマンド実行': { // @シェルコマンドSを新しいコンソールで実行する(利用できない場合は通常の起動) // @こまんどじっこう
+    type: 'func',
+    josi: [['を']],
+    pure: true,
+    fn: function(s: string, sys: NakoSystem) {
+      runCommandInNewConsole(s, sys)
+    },
+    return_none: true
+  },
+  'コマンド実行待機': { // @シェルコマンドSを新しいコンソールで実行し終了を待機する(戻り値は終了コード、利用できない場合は通常の待機) // @こまんどじっこうたいき
+    type: 'func',
+    josi: [['を']],
+    pure: true,
+    asyncFn: true,
+    fn: async function(s: string, sys: NakoSystem) {
+      const exitCode = await runCommandInNewConsoleWait(s, sys)
+      return exitCode
+    }
+  },
   '起動': { // @シェルコマンドSを起動 // @きどう
     type: 'func',
     josi: [['を']],
@@ -323,6 +455,20 @@ export default {
         }
       })
     }
+  },
+  'コンソールクリア': { // @コンソール画面をクリアする // @こんそーるくりあ
+    type: 'func',
+    josi: [],
+    pure: true,
+    fn: function() {
+      console.clear()
+      // process が存在しない実行環境でも落ちないように安全に参照する
+      const stdout = (globalThis as any).process?.stdout
+      if (stdout && (stdout as any).isTTY) {
+        stdout.write('\u001b[2J\u001b[0;0H')
+      }
+    },
+    return_none: true
   },
   '起動時': { // @シェルコマンドSを起動 // @きどうしたとき
     type: 'func',
