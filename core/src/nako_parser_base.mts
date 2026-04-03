@@ -95,6 +95,22 @@ export class NakoParserBase {
     this.stack = [] // 計算用のスタック ... 直接は操作せず、pushStack() popStack() を介して使う
     this.y = [] // accept()で解析済みのトークンを配列で得るときに使う
     this.genMode = 'sync' // #637, #1056
+    // 次回実行時に持ち越されないように初期化する (#1746)
+    this.localvars = new Map([['それ', { type: 'var', value: '' }]])
+    this.usedFuncs = new Set()
+    this.funcLevel = 0
+    this.usedAsyncFn = false
+    this.isReadingCalc = false
+    this.isExportDefault = true
+    this.isExportStack = []
+    this.namespaceStack = []
+    this.modList = []
+    this.stackList = []
+    this.recentlyCalledFunc = []
+    this.arrayIndexFrom = 0
+    this.flagReverseArrayIndex = false
+    this.flagCheckArrayInit = false
+    this.isModifiedNodes = false
   }
 
   setFuncList(funclist: FuncList) {

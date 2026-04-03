@@ -1193,20 +1193,36 @@ export class NakoParser extends NakoParserBase {
     // 「,」を飛ばす
     if (this.check('comma')) { this.get() }
     // ブロックを読む
+    let block: Ast = this.yNop()
+    let isAsyncFn = false
     this.funcLevel++
     this.saveStack()
     const backupAsyncFn = this.usedAsyncFn
     this.usedAsyncFn = false
-    const block = this.yBlock()
-    const isAsyncFn = this.usedAsyncFn
-    // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
-    if (!this.check('ここまで')) {
-      throw NakoSyntaxError.fromNode('『ここまで』がありません。『には』構文か無名関数の末尾に『ここまで』が必要です。', map)
+    // ローカル変数を生成 (#1746)
+    const backupLocalvars = this.localvars
+    this.localvars = new Map([['それ', { type: 'var', value: '' }]])
+    // 関数の引数をローカル変数として登録する
+    for (const arg of args) {
+      if (!arg) { continue }
+      if (!(arg as AstStrValue).value) { continue }
+      const fnName: string = (arg as AstStrValue).value
+      this.localvars.set(fnName, { 'type': 'var', 'value': '' })
     }
-    this.get() // skip ここまで
-    this.loadStack()
-    this.usedAsyncFn = backupAsyncFn
-    this.funcLevel--
+    try {
+      block = this.yBlock()
+      isAsyncFn = this.usedAsyncFn
+      // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
+      if (!this.check('ここまで')) {
+        throw NakoSyntaxError.fromNode('『ここまで』がありません。『には』構文か無名関数の末尾に『ここまで』が必要です。', map)
+      }
+      this.get() // skip ここまで
+    } finally {
+      this.loadStack()
+      this.usedAsyncFn = backupAsyncFn
+      this.localvars = backupLocalvars
+      this.funcLevel--
+    }
     return {
       type: 'func_obj',
       name: '',
