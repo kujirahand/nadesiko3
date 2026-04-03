@@ -1801,24 +1801,32 @@ export class NakoGen {
       // プロパティアクセス(A$a)の場合 (#1793)
       const baseName = this._convGen(nodeName.name as Ast, true)
       const propList = nodeName.index as AstStrValue[]
-      const buildPropGetter = (): string => {
-        let getter = baseName
-        for (const prop of propList) {
-          getter = `__getProp(${getter}, ${JSON.stringify(prop.value)})`
-        }
-        return getter
+      // __getProp/__setPropを持つオブジェクトにも対応するgetter/setter生成
+      const buildPropGetter = (targetExpr: string, propKey: string): string =>
+        `(()=>{const __nako_obj=${targetExpr};` +
+        `return (__nako_obj!=null&&typeof __nako_obj.__getProp==='function')` +
+        `?__nako_obj.__getProp(${propKey}, __self)` +
+        `:__nako_obj[${propKey}]})()`
+      const buildPropSetter = (targetExpr: string, propKey: string, valueExpr: string): string =>
+        `(()=>{const __nako_obj=${targetExpr};` +
+        `return (__nako_obj!=null&&typeof __nako_obj.__setProp==='function')` +
+        `?__nako_obj.__setProp(${propKey}, ${valueExpr}, __self)` +
+        `:(__nako_obj[${propKey}]=${valueExpr})})()`
+      const propKeys = propList.map((prop) => JSON.stringify(prop.value))
+      // getter: 全プロパティを順にたどる
+      let currentExpr = baseName
+      for (const propKey of propKeys) {
+        currentExpr = buildPropGetter(currentExpr, propKey)
       }
-      const buildPropSetter = (rhs: string): string => {
-        let parent = baseName
-        for (let i = 0; i < propList.length - 1; i++) {
-          parent = `__getProp(${parent}, ${JSON.stringify(propList[i].value)})`
-        }
-        const lastProp = JSON.stringify(propList[propList.length - 1].value)
-        return `__setProp(__checkPropAccessor(${parent}, ${lastProp}), ${lastProp}, ${rhs})`
+      varGetter = currentExpr
+      // setter/initter: 最後のプロパティだけsetterで、残りはgetterでたどる
+      let parentExpr = baseName
+      for (const propKey of propKeys.slice(0, -1)) {
+        parentExpr = buildPropGetter(parentExpr, propKey)
       }
-      varGetter = buildPropGetter()
-      varSetter = buildPropSetter(valueVar)
-      varInitter = buildPropSetter('0')
+      const lastPropKey = propKeys[propKeys.length - 1]
+      varSetter = buildPropSetter(parentExpr, lastPropKey, valueVar)
+      varInitter = buildPropSetter(parentExpr, lastPropKey, '0')
     } else {
       // 変数名
       const name: string = (nodeName as AstStrValue).value
