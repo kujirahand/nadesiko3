@@ -13,6 +13,13 @@ module.exports = function (config) {
         nocache: true
       },
       {
+        pattern: '../../node_modules/ace-builds/src-noconflict/*.js',
+        included: false,
+        served: true,
+        watched: false,
+        nocache: true
+      },
+      {
         pattern: '../../src/*.css',
         included: false,
         served: true,
@@ -23,31 +30,24 @@ module.exports = function (config) {
     customContextFile: 'test/html/custom_context.html',
     customDebugFile: 'test/html/custom_debug.html',
     proxies: {
+       '/ace/': '/absolute' + path.resolve('./node_modules/ace-builds/src-noconflict') + '/',
        '/release/': '/absolute' + path.resolve('./release') + '/',
        '/src/': '/absolute' + path.resolve('./src') + '/'
     },
     plugins: [
-      'karma-firefox-launcher',
+      'karma-chrome-launcher',
       'karma-mocha',
       'karma-mocha-reporter',
       'karma-webpack'
     ],
     customLaunchers: {
-      FirefoxCustom: {
-        base: 'Firefox',
-        prefs: {
-          'dom.w3c_touch_events.enabled': 1,
-          'dom.w3c_touch_events.legacy_apis.enabled': true
-        },
-        flags: ['-width', 400, '-height', 400]
+      ChromeCustom: {
+        base: 'Chrome',
+        flags: ['--window-size=400,400']
       },
-      FirefoxCustomHeadless: {
-        base: 'FirefoxHeadless',
-        prefs: {
-          'dom.w3c_touch_events.enabled': 1,
-          'dom.w3c_touch_events.legacy_apis.enabled': true
-        },
-        flags: ['-width', 400, '-height', 400]
+      ChromeCustomHeadless: {
+        base: 'ChromeHeadless',
+        flags: ['--window-size=400,400', '--no-sandbox', '--disable-dev-shm-usage']
       }
     },
     preprocessors: {
@@ -58,7 +58,10 @@ module.exports = function (config) {
       mode: 'development',
       target: ["web", "es5"],
       resolve: {
-        mainFields: ['browser', 'main', 'module']
+        mainFields: ['browser', 'main', 'module'],
+        fallback: {
+          module: false
+        }
       },
       module: {
         rules: [
@@ -78,7 +81,7 @@ module.exports = function (config) {
     port: 9876, // karma web server port
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ['Firefox', 'FirefoxHeadless', 'FirefoxCustom', 'FirefoxCustomHeadless'],
+    browsers: ['Chrome', 'ChromeHeadless', 'ChromeCustom', 'ChromeCustomHeadless'],
     autoWatch: false,
     // singleRun: false, // Karma captures browsers, runs the tests and exits
     concurrency: Infinity

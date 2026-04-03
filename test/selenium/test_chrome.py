@@ -8,21 +8,35 @@ import sys
 import urllib.parse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 SERVER_SCRIPT = 'http://localhost:8887/index.php'
 SCRIPT = os.path.abspath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT)
 TEST_TARGET = os.path.join(SCRIPT_DIR, 'test_target')
+SMOKE_SKIP_FILES = {'canvas.nako3'}
 
 error_log = []
-# chrome
-driver = webdriver.Chrome()
+
+def create_driver():
+    '''create chrome driver'''
+    options = webdriver.ChromeOptions()
+    if os.environ.get('HEADLESS') == '1' or os.environ.get('CI') or not os.environ.get('DISPLAY'):
+        options.add_argument('--headless=new')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+    chromedriver = os.environ.get('CHROMEDRIVER') or '/usr/bin/chromedriver'
+    if os.path.exists(chromedriver):
+        return webdriver.Chrome(service=Service(chromedriver), options=options)
+    return webdriver.Chrome(options=options)
+
+driver = create_driver()
 
 def run_test_all():
     '''test all'''
     for fname in glob.glob(os.path.join(TEST_TARGET, '*.nako3')):
+        if os.environ.get('NAKO_SELENIUM_MODE') == 'smoke' and os.path.basename(fname) in SMOKE_SKIP_FILES:
+            continue
         run_test(fname)
 
 def run_test(fname):
@@ -54,6 +68,7 @@ def report_test():
     driver.close()
     if len(error_log) == 0:
         print('⭐⭐⭐ 全てのテストが成功しました ⭐⭐⭐')
+        return 0
     else:
         print('😭😭😭 いくつかのテストが失敗 😭😭😭')
         for log in error_log:
@@ -61,10 +76,11 @@ def report_test():
             print('- expect:', log['expect'].replace('\n', '\\n'))
             print('- real  :', log['real'].replace('\n', '\\n'))
         print('エラー数:', len(error_log))
+        return 1
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
         run_test_all()
     else:
         run_test(os.path.join(TEST_TARGET, sys.argv[1]))
-    report_test()
+    sys.exit(report_test())

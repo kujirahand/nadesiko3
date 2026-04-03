@@ -112,6 +112,8 @@ sudo apt install xdotool
 npm test
 ```
 
+ブラウザ系テストについては、[doc/browser-tests.md](doc/browser-tests.md) を参照してください。
+
 ## コマンドライン版なでしこをインストールして使えるコマンド
 
 ローカルPCになでしこをインストールしたら、次のコマンドを実行して、ブラウザで動作するエディタを起動できます。
