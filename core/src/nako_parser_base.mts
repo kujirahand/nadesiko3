@@ -97,6 +97,7 @@ export class NakoParserBase {
     this.genMode = 'sync' // #637, #1056
     // 次回実行時に持ち越されないように初期化する (#1746)
     this.localvars = new Map([['それ', { type: 'var', value: '' }]])
+    this.usedFuncs = new Set()
     this.funcLevel = 0
     this.usedAsyncFn = false
     this.isReadingCalc = false
