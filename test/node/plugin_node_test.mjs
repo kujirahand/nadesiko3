@@ -211,4 +211,32 @@ describe('plugin_node_test', () => {
     await cmp('「a」に終端パス追加して表示。', `a${path.sep}`)
     await cmp(`「a${path.sep}」から終端パス除去して表示。`, `a`)
   })
+  it('コマンド実行/待機 #2181', async () => {
+    const tmpFile = path.join(os.tmpdir(), 'nako3_command_test.txt')
+    const prevEnv = process.env.NAKO3_DISABLE_NEW_CONSOLE
+    process.env.NAKO3_DISABLE_NEW_CONSOLE = '1'
+    try {
+      await cmp(
+        `FILE="${tmpFile}";もし、「{FILE}」が存在ならば、FILEをファイル削除。「echo async-ok > {FILE}」をコマンド実行。0を表示。`,
+        '0',
+        300
+      )
+      const content = fs.readFileSync(tmpFile, 'utf-8').trim()
+      assert.strictEqual(content, 'async-ok')
+      await cmp(
+        `FILE="${tmpFile}";「echo wait-ok > {FILE}」をコマンド実行待機。FILEを読む。トリムして表示。`,
+        'wait-ok'
+      )
+    } finally {
+      if (prevEnv === undefined) {
+        delete process.env.NAKO3_DISABLE_NEW_CONSOLE
+      } else {
+        process.env.NAKO3_DISABLE_NEW_CONSOLE = prevEnv
+      }
+      if (fs.existsSync(tmpFile)) { fs.unlinkSync(tmpFile) }
+    }
+  })
+  it('コンソールクリア #2181', async () => {
+    await cmp('コンソールクリア。123を表示。', '123')
+  })
 })
