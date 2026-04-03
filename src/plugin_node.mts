@@ -105,12 +105,13 @@ function runCommandInNewConsole(command: string, sys: NakoSystem): void {
 
 function runCommandInNewConsoleWait(command: string, sys: NakoSystem): Promise<number> {
   if (process.env.NAKO3_DISABLE_NEW_CONSOLE === '1') {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       try {
         execSync(command, { stdio: 'inherit' })
         resolve(0)
       } catch (err) {
-        reject(err)
+        // 非0終了の場合でも終了コードを返す（rejectせず）
+        resolve((err as any).status ?? 1)
       }
     })
   }
@@ -139,12 +140,13 @@ function runCommandInNewConsoleWait(command: string, sys: NakoSystem): Promise<n
       })
     }
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     try {
       execSync(command, { stdio: 'inherit' })
       resolve(0)
     } catch (err) {
-      reject(err)
+      // 非0終了の場合でも終了コードを返す（rejectせず）
+      resolve((err as any).status ?? 1)
     }
   })
 }
