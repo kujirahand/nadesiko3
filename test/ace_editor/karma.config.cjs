@@ -1,16 +1,22 @@
 // @ts-nocheck
-import path from 'path'
-export default function (config) {
+const path = require('path')
+
+process.env.CHROME_BIN = process.env.CHROME_BIN || 'google-chrome'
+
+module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'webpack'],
     files: [
-      {
-        pattern: 'test/*_test.js',
-        type: 'module',
-        included: false
-      },
+      'test/*_test.js',
       {
         pattern: '../../release/*.js',
+        included: false,
+        served: true,
+        watched: false,
+        nocache: true
+      },
+      {
+        pattern: '../../node_modules/ace-builds/src-noconflict/*.js',
         included: false,
         served: true,
         watched: false,
@@ -33,32 +39,25 @@ export default function (config) {
     ],
     customContextFile: 'test/html/custom_context.html',
     proxies: {
+      '/ace/': '/absolute' + path.resolve('./node_modules/ace-builds/src-noconflict') + '/',
       '/src/': '/absolute' + path.resolve('./src') + '/',
       '/release/': '/absolute' + path.resolve('./release') + '/',
       '/test/': '/absolute' + path.resolve('./test/node') + '/'
     },
     plugins: [
-      'karma-firefox-launcher',
+      'karma-chrome-launcher',
       'karma-mocha',
       'karma-mocha-reporter',
       'karma-webpack'
     ],
     customLaunchers: {
-      FirefoxCustom: {
-        base: 'Firefox',
-        prefs: {
-          'dom.w3c_touch_events.enabled': 1,
-          'dom.w3c_touch_events.legacy_apis.enabled': true
-        },
-        flags: ['-width', 400, '-height', 400]
+      ChromeCustom: {
+        base: 'Chrome',
+        flags: ['--window-size=400,400']
       },
-      FirefoxCustomHeadless: {
-        base: 'FirefoxHeadless',
-        prefs: {
-          'dom.w3c_touch_events.enabled': 1,
-          'dom.w3c_touch_events.legacy_apis.enabled': true
-        },
-        flags: ['-width', 400, '-height', 400]
+      ChromeCustomHeadless: {
+        base: 'ChromeHeadless',
+        flags: ['--window-size=400,400', '--no-sandbox', '--disable-dev-shm-usage']
       }
     },
     preprocessors: {
@@ -69,7 +68,10 @@ export default function (config) {
       mode: 'development',
       target: ['web', 'es5'],
       resolve: {
-        mainFields: ['browser', 'main', 'module']
+        mainFields: ['browser', 'main', 'module'],
+        fallback: {
+          module: false
+        }
       },
       module: {
         rules: [
@@ -89,7 +91,7 @@ export default function (config) {
     port: 9876, // karma web server port
     colors: true,
     logLevel: config.LOG_INFO,
-    browsers: ['Firefox', 'FirefoxHeadless', 'FirefoxCustom', 'FirefoxCustomHeadless'],
+    browsers: ['Chrome', 'ChromeHeadless', 'ChromeCustom', 'ChromeCustomHeadless'],
     autoWatch: false,
     // singleRun: false, // Karma captures browsers, runs the tests and exits
     concurrency: Infinity

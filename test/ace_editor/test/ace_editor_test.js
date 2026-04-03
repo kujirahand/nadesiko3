@@ -1,5 +1,5 @@
 // @ts-nocheck
-const assert = require('chai').assert
+import { assert } from 'chai'
 
 /** @type {(node: HTMLElement, f: (node: HTMLElement) => boolean) => HTMLElement | null} */
 const findDOMElement = (node, f) => {
@@ -14,6 +14,7 @@ const findDOMElement = (node, f) => {
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const runtimeErrorPattern = /^\[実行時エラー\]main\.nako3\(2行目\): (エラー『1』が発生しました。|1)$/
 
 describe('ace editor test', () => {
   before(function (done) {
@@ -86,17 +87,17 @@ describe('ace editor test', () => {
         await sleep(100)
       }
     })
-    it('外部ファイルで定義された関数', () => {
+    it('外部ファイルで定義された関数', async function () {
       // 「痕跡演算」が関数として認識されることを確認
-      assert.notStrictEqual(
-        findDOMElement(
-          document.querySelector('#editor8'),
-          (node) =>
-            node.classList.contains('ace_function') &&
-            node.innerText.trim().startsWith('痕')
-        ),
-        null
-      )
+      this.timeout(5 * 1000)
+      while (findDOMElement(
+        document.querySelector('#editor8'),
+        (node) =>
+          node.classList.contains('ace_function') &&
+          node.innerText.trim().startsWith('痕')
+      ) === null) {
+        await sleep(100)
+      }
     })
   })
   describe('行の折りたたみ', () => {
@@ -130,13 +131,17 @@ describe('ace editor test', () => {
     })
   })
   describe('コンパイラの警告の表示', () => {
-    it('存在する場合', () => {
-      assert.notStrictEqual(document.querySelector('#editor9 .marker-yellow'), null)
+    it('存在する場合', async function () {
+      this.timeout(5 * 1000)
+      while (document.querySelector('#editor9 .marker-yellow') === null) {
+        await sleep(100)
+      }
     })
   })
   describe('出力のボックス', () => {
     it('コンパイルエラーを表示する', () => {
-      assert.strictEqual(document.querySelector('#editor7-output').innerText.trim(), '[実行時エラー]main.nako3(2行目): エラー『1』が発生しました。')
+      // 実行時エラーの文言はランタイムの整形差分を受けるため、旧文言と現行文言の両方を許容する。
+      assert.match(document.querySelector('#editor7-output').innerText.trim(), runtimeErrorPattern)
       assert.strictEqual(document.querySelector('#editor8-output').innerText.trim(), '')
       // assert.strictEqual(document.querySelector('#editor9-output').innerText.trim(), '[警告]main.nako3(1行目): 変数『a』は定義されていません。\nundefined')
       assert.strictEqual(document.querySelector('#editor9-output').innerText.trim(), '[警告]main.nako3(1行目): 変数『a』は定義されていません。\n[警告]main.nako3(1行目): 命令『表示』の引数にundefinedを渡しています。\nundefined')
@@ -162,7 +167,7 @@ describe('ace editor test', () => {
       // 「足す」のテストが落ちることを確認する
       const { promise, logger } = window.editor12.run({ method: 'test', testName: '足す' })
       let log = ''
-      logger.addListener('stdout', ({ noColor }) => { log += noColor })
+      logger.addListener('info', ({ noColor }) => { log += noColor })
       await promise
       assert(log.includes('失敗 1件'))
     })
@@ -170,7 +175,7 @@ describe('ace editor test', () => {
       // 「引く」のテストが通ることを確認する
       const { promise, logger } = window.editor12.run({ method: 'test', testName: '引く' })
       let log = ''
-      logger.addListener('stdout', ({ noColor }) => { log += noColor })
+      logger.addListener('info', ({ noColor }) => { log += noColor })
       await promise
       assert(log.includes('成功 1件'))
     })

@@ -4,38 +4,11 @@ process.env.CHROME_BIN = process.env.CHROME_BIN || 'google-chrome'
 
 module.exports = function (config) {
   config.set({
+    basePath: '',
     frameworks: ['mocha', 'webpack'],
     files: [
-      'test/*_test.js',
-      {
-        pattern: '../../release/*.js',
-        included: false,
-        served: true,
-        watched: false,
-        nocache: true
-      },
-      {
-        pattern: '../../node_modules/ace-builds/src-noconflict/*.js',
-        included: false,
-        served: true,
-        watched: false,
-        nocache: true
-      },
-      {
-        pattern: '../../src/*.css',
-        included: false,
-        served: true,
-        watched: false,
-        nocache: true
-      },
+      'test/*_smoke_test.js'
     ],
-    customContextFile: 'test/html/custom_context.html',
-    customDebugFile: 'test/html/custom_debug.html',
-    proxies: {
-       '/ace/': '/absolute' + path.resolve('./node_modules/ace-builds/src-noconflict') + '/',
-       '/release/': '/absolute' + path.resolve('./release') + '/',
-       '/src/': '/absolute' + path.resolve('./src') + '/'
-    },
     plugins: [
       'karma-chrome-launcher',
       'karma-mocha',
@@ -53,16 +26,21 @@ module.exports = function (config) {
       }
     },
     preprocessors: {
-      'test/*_test.js': ['webpack']
+      'test/*_smoke_test.js': ['webpack']
     },
-    // webpackの設定
     webpack: {
       mode: 'development',
-      target: ["web", "es5"],
+      target: ['web', 'es5'],
       resolve: {
         mainFields: ['browser', 'main', 'module'],
         fallback: {
           module: false
+        },
+        alias: {
+          root: path.join(__dirname, '../..'),
+          nako3: path.join(__dirname, '../../src'),
+          utils: path.join(__dirname, '../../utils'),
+          nadesiko3core: path.join(__dirname, '../../core')
         }
       },
       module: {
@@ -76,16 +54,14 @@ module.exports = function (config) {
       }
     },
     reporters: ['mocha'],
-    // reporter options
     mochaReporter: {
       showDiff: true
     },
-    port: 9876, // karma web server port
+    port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     browsers: ['Chrome', 'ChromeHeadless', 'ChromeCustom', 'ChromeCustomHeadless'],
     autoWatch: false,
-    // singleRun: false, // Karma captures browsers, runs the tests and exits
     concurrency: Infinity
   })
 }

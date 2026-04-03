@@ -5,11 +5,14 @@ test_target以下になでしこ3のプログラムを配置する。
 
 ## Setup
 
-実行には、PHP8/Python3/Chromeが必要です。
+実行には、PHP8/Python3/ChromeとChromeDriverが必要です。
 
 ```bash
 python3 -m pip install -r requirements.txt
 ```
+
+`/usr/bin/chromedriver` がある環境では、それを優先して利用します。
+別のパスを使う場合は `CHROMEDRIVER=/path/to/chromedriver` を指定してください。
 
 ## テストの実行
 
@@ -41,5 +44,4 @@ python3 test_chrome.py スクリプト名
 ./server-start.sh
 python3 test_chrome.py ajax.nako3
 ```
-
 

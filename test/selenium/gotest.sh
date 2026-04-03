@@ -1,11 +1,19 @@
 #!/bin/bash
-SCRIPT_DIR=$(cd $(dirname $0); pwd)
-cd $SCRIPT_DIR
-# start server
-bash $SCRIPT_DIR/server-start.sh &
-# test with selenium
-python3 $SCRIPT_DIR/test_chrome.py
-# stop server
-bash $SCRIPT_DIR/server-stop.sh
+set -eu
 
+SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
+cd "$SCRIPT_DIR"
 
+php -S localhost:8887 >/dev/null 2>&1 &
+SERVER_PID=$!
+trap 'kill "$SERVER_PID" 2>/dev/null || true; wait "$SERVER_PID" 2>/dev/null || true' EXIT
+
+for _ in 1 2 3 4 5; do
+  if curl -fsS http://localhost:8887 >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+curl -fsS http://localhost:8887 >/dev/null
+
+python3 "$SCRIPT_DIR/test_chrome.py" "$@"

@@ -6,7 +6,7 @@ module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'webpack'],
     files: [
-      'test/*_test.js',
+      'test/*_smoke_test.js',
       {
         pattern: '../../release/*.js',
         included: false,
@@ -27,14 +27,13 @@ module.exports = function (config) {
         served: true,
         watched: false,
         nocache: true
-      },
+      }
     ],
     customContextFile: 'test/html/custom_context.html',
-    customDebugFile: 'test/html/custom_debug.html',
     proxies: {
-       '/ace/': '/absolute' + path.resolve('./node_modules/ace-builds/src-noconflict') + '/',
-       '/release/': '/absolute' + path.resolve('./release') + '/',
-       '/src/': '/absolute' + path.resolve('./src') + '/'
+      '/ace/': '/absolute' + path.resolve('./node_modules/ace-builds/src-noconflict') + '/',
+      '/src/': '/absolute' + path.resolve('./src') + '/',
+      '/release/': '/absolute' + path.resolve('./release') + '/'
     },
     plugins: [
       'karma-chrome-launcher',
@@ -53,12 +52,11 @@ module.exports = function (config) {
       }
     },
     preprocessors: {
-      'test/*_test.js': ['webpack']
+      'test/*_smoke_test.js': ['webpack']
     },
-    // webpackの設定
     webpack: {
       mode: 'development',
-      target: ["web", "es5"],
+      target: ['web', 'es5'],
       resolve: {
         mainFields: ['browser', 'main', 'module'],
         fallback: {
@@ -76,16 +74,14 @@ module.exports = function (config) {
       }
     },
     reporters: ['mocha'],
-    // reporter options
     mochaReporter: {
       showDiff: true
     },
-    port: 9876, // karma web server port
+    port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     browsers: ['Chrome', 'ChromeHeadless', 'ChromeCustom', 'ChromeCustomHeadless'],
     autoWatch: false,
-    // singleRun: false, // Karma captures browsers, runs the tests and exits
     concurrency: Infinity
   })
 }
