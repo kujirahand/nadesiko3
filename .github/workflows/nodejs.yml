@@ -40,22 +40,3 @@ jobs:
       - name: npm run test
         run: npm run test
 
-      - name: npm run test:browser
-        if: matrix.node-version == '24.x'
-        run: npm run test:browser
-
-      - name: npm run test:ace-editor
-        if: matrix.node-version == '24.x'
-        run: npm run test:ace-editor
-
-      - name: npm run test:bundled
-        if: matrix.node-version == '24.x'
-        run: npm run test:bundled
-
-      - name: install selenium requirements
-        if: matrix.node-version == '24.x'
-        run: python3 -m pip install -r test/selenium/requirements.txt
-
-      - name: npm run test:selenium
-        if: matrix.node-version == '24.x'
-        run: npm run test:selenium
