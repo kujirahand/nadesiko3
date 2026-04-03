@@ -155,7 +155,13 @@ Aを10に定める。
   // #1746 貯蔵庫で2回実行すると変数がundefinedになる
   it('2回実行しても変数がundefinedにならない', async () => {
     const nako = new NakoCompiler()
-    const code = `変数 hoge=10\nhogeを表示\nそれは関数\n    変数 hoge=20\nここまで\n`
+    const code = `
+変数 hoge=10
+hogeを表示
+それは関数
+    変数 hoge=20
+ここまで
+`
     const opt = { resetEnv: true, resetAll: false, preCode: '' }
     const r1 = await nako.runAsync(code, 'main.nako3', opt)
     assert.strictEqual(r1.log, '10')
@@ -164,6 +170,12 @@ Aを10に定める。
   })
   // #1746 無名関数でローカル変数を宣言した後にトップレベルで同名の変数宣言するとundefinedになる
   it('無名関数のローカル変数が外側のスコープに漏れない', async () => {
-    await cmp(`それは関数\n    変数 hoge=20\nここまで\n変数 hoge=10\nhogeを表示\n`, '10')
+    await cmp(`
+それは関数
+    変数 hoge=20
+ここまで
+変数 hoge=10
+hogeを表示
+`, '10')
   })
 })
