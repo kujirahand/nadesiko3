@@ -1197,6 +1197,16 @@ export class NakoParser extends NakoParserBase {
     this.saveStack()
     const backupAsyncFn = this.usedAsyncFn
     this.usedAsyncFn = false
+    // ローカル変数を生成 (#1746)
+    const backupLocalvars = this.localvars
+    this.localvars = new Map([['それ', { type: 'var', value: '' }]])
+    // 関数の引数をローカル変数として登録する
+    for (const arg of args) {
+      if (!arg) { continue }
+      if (!(arg as AstStrValue).value) { continue }
+      const fnName: string = (arg as AstStrValue).value
+      this.localvars.set(fnName, { 'type': 'var', 'value': '' })
+    }
     const block = this.yBlock()
     const isAsyncFn = this.usedAsyncFn
     // 末尾の「ここまで」をチェック - もしなければエラーにする #1045
@@ -1206,6 +1216,7 @@ export class NakoParser extends NakoParserBase {
     this.get() // skip ここまで
     this.loadStack()
     this.usedAsyncFn = backupAsyncFn
+    this.localvars = backupLocalvars
     this.funcLevel--
     return {
       type: 'func_obj',
