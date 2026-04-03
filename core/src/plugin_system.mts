@@ -172,7 +172,6 @@ export default {
         }
       }
       // eval function #1733 - 互換性を優先するため、direct evalを使うことに
-       
       sys.__evalJS = (src: string, sys?: NakoSystem) => {
         try {
            
