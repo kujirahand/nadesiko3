@@ -1802,6 +1802,46 @@ export default {
       return result
     }
   },
+  '正規表現抽出': { // @文字列Aを正規表現パターンBで全てマッチして配列で返す(パターンBは「/pat/opt」の形式で指定。キャプチャがある場合はキャプチャ部分を返す。optにgが無くても全件抽出する)。変数『抽出文字列』は更新しない。 // @せいきひょうげんちゅうしゅつ
+    type: 'func',
+    josi: [['を', 'が'], ['で', 'に']],
+    pure: true,
+    fn: function(a: string, b: string, sys: any): any[] {
+      let pattern = '' + b
+      let flags = 'g'
+      const f = pattern.match(/^\/(.+)\/([a-zA-Z]*)$/)
+      if (f !== null) {
+        pattern = f[1]
+        flags = f[2] || ''
+      }
+      if (!flags.includes('g')) { flags += 'g' }
+      const re = new RegExp(pattern, flags)
+      const sa: any[] = sys.__getSysVar('抽出文字列')
+      sa.splice(0, sa.length) // clear
+      const result: any[] = []
+      const s = String(a)
+      let m: RegExpExecArray | null
+      while ((m = re.exec(s)) !== null) {
+        if (m.length <= 1) {
+          result.push(m[0])
+        } else if (m.length === 2) {
+          result.push(m[1])
+        } else {
+          result.push(m.slice(1))
+        }
+        if (m[0] === '') { re.lastIndex++ } // avoid infinite loop
+      }
+      if (result.length > 0) {
+        const first = result[0]
+        if (Array.isArray(first)) {
+          sa.push(...first)
+        } else {
+          sa.push(first)
+        }
+      }
+      return result
+    }
+  },
   '抽出文字列': { type: 'const', value: [] }, // @ちゅうしゅつもじれつ
   '正規表現置換': { // @文字列Sの正規表現パターンAをBに置換して結果を返す(パターンAは/pat/optで指定) // @せいきひょうげんちかん
     type: 'func',
