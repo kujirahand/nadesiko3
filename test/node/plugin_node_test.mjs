@@ -230,10 +230,13 @@ describe('plugin_node_test', () => {
       }
       assert.fail(`タイムアウト: ${timeoutMs}ms 以内に ${filePath} の内容が "${expected}" になりませんでした`)
     }
+    try {
+      await cmp(
         `FILE="${tmpFile}";もし、「{FILE}」が存在ならば、FILEをファイル削除。「echo async-ok > "{FILE}"」をコマンド実行。0を表示。`,
         '0',
         300
       )
+      await waitForFileContent(tmpFile, 'async-ok')
       const content = fs.readFileSync(tmpFile, 'utf-8').trim()
       assert.strictEqual(content, 'async-ok')
       await cmp(
