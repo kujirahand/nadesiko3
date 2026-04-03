@@ -407,9 +407,6 @@ export default {
       const waStyle = sys.__getSysVar('DOM和スタイル')
       const waAttr = sys.__getSysVar('DOM和属性')
       const waPriority = sys.__getSysVar('DOMプロパティ情報')
-      if (waStyle[value] !== undefined) { // 値がDOM和スタイルの場合
-        value = waStyle[value]
-      }
       // check prop is array --- 配列で指定された場合、曖昧ルールは適用しない
       if (prop instanceof Array) {
         for (let i = 0; i < prop.length; i++) {
