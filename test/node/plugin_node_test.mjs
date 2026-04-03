@@ -215,14 +215,27 @@ describe('plugin_node_test', () => {
     const tmpFile = path.join(os.tmpdir(), 'nako3_command_test.txt')
     const prevEnv = process.env.NAKO3_DISABLE_NEW_CONSOLE
     process.env.NAKO3_DISABLE_NEW_CONSOLE = '1'
+    // 非同期の「コマンド実行」は固定待機だと環境差でフレークし得るため、
+    // ファイル出現と内容反映を一定時間ポーリングして待つ。
+    const waitForFileContent = async (filePath, expected, timeoutMs = 5000, intervalMs = 50) => {
+      const start = Date.now()
+      while (Date.now() - start < timeoutMs) {
+        if (fs.existsSync(filePath)) {
+          const content = fs.readFileSync(filePath, 'utf-8').trim()
+          if (content === expected) {
+            return
+          }
+        }
+        await new Promise(resolve => setTimeout(resolve, intervalMs))
+      }
+      assert.fail(`タイムアウト: ${timeoutMs}ms 以内に ${filePath} の内容が "${expected}" になりませんでした`)
+    }
     try {
       await cmp(
         `FILE="${tmpFile}";もし、「{FILE}」が存在ならば、FILEをファイル削除。「echo async-ok > {FILE}」をコマンド実行。0を表示。`,
-        '0',
-        300
+        '0'
       )
-      const content = fs.readFileSync(tmpFile, 'utf-8').trim()
-      assert.strictEqual(content, 'async-ok')
+      await waitForFileContent(tmpFile, 'async-ok')
       await cmp(
         `FILE="${tmpFile}";「echo wait-ok > {FILE}」をコマンド実行待機。FILEを読む。トリムして表示。`,
         'wait-ok'
