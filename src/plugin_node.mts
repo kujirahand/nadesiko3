@@ -123,11 +123,17 @@ function runCommandInNewConsoleWait(command: string, sys: NakoSystem): Promise<n
     })
   }
   if (sys.tags.isMac) {
-    const osaScript = `tell application "Terminal" to do script "${escapeAppleScriptCommand(command)}"`
+    // macOS の Terminal + do script は、osascript の終了しか待てず、
+    // 実際のコマンド完了待機にはならない。
+    // runCommandInNewConsoleWait の「待機」契約を守るため、
+    // macOS では新規コンソール起動を諦めて同期実行にフォールバックする。
     return new Promise((resolve, reject) => {
-      const child = spawn('osascript', ['-e', osaScript], { stdio: 'ignore' })
-      child.on('error', (err) => reject(err))
-      child.on('exit', () => resolve(0))
+      try {
+        execSync(command, { stdio: 'inherit' })
+        resolve(0)
+      } catch (err) {
+        reject(err)
+      }
     })
   }
   if (nodeProcess.platform === 'linux') {
