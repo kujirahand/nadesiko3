@@ -255,6 +255,29 @@ const withoutLogger = (nako3, f) => {
 }
 
 /**
+ * dependencies[*].funclist は Map または Object の場合があるため、両対応で扱う。
+ */
+const getFunclistItem = (funclist, name) => {
+  if (funclist instanceof Map) {
+    return funclist.get(name)
+  }
+  if (funclist && typeof funclist === 'object') {
+    return funclist[name]
+  }
+  return undefined
+}
+
+const getFunclistEntries = (funclist) => {
+  if (funclist instanceof Map) {
+    return Array.from(funclist.entries())
+  }
+  if (funclist && typeof funclist === 'object') {
+    return Object.entries(funclist)
+  }
+  return []
+}
+
+/**
  * プログラムをlexerでtokenizeした後、ace editor 用のトークン列に変換する。
  * @param lines
  * @param nako3
@@ -275,13 +298,13 @@ export function tokenize(lines: string[], nako3: NakoCompiler, underlineJosi: bo
   // 取り込んでいないファイルも参照される問題や、関数名の重複がある場合に正しくない情報を表示する問題がある。
    
   {
-    /** @type {Record<string, object>} */
     for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {
       for (const token of lexerOutput.tokens) {
-        if (token.type === 'word' && token.value !== 'それ' && funclist[token.value]) {
+        const f = getFunclistItem(funclist, token.value + '')
+        if (token.type === 'word' && token.value !== 'それ' && f) {
           token.type = 'func'
           // meta.file に定義元のファイル名を持たせる。
-          token.meta = { ...funclist[token.value + ''], file }
+          token.meta = { ...f, file }
         }
       }
     }
@@ -878,7 +901,7 @@ export class LanguageFeatures {
 
     // 依存ファイルが定義した関数名
     for (const [file, { funclist }] of Object.entries(nako3.dependencies)) {
-      for (const [name, f] of Object.entries(funclist)) {
+      for (const [name, f] of getFunclistEntries(funclist)) {
         const josi = (f && f.type === 'func') ? createParameterDeclaration(f.josi) : ''
         addItem(josi + name, name, file)
       }

@@ -19,6 +19,80 @@ SMOKE_SKIP_FILES = {'canvas.nako3'}
 
 error_log = []
 
+def to_png_data_url(text):
+    '''normalize png base64/dataurl string'''
+    line = text.strip()
+    if line.startswith('data:image/png;base64,'):
+        return line
+    if line.startswith('iVBORw0KGgo'):
+        return 'data:image/png;base64,' + line
+    return None
+
+def compare_png_semantic(expect_line, real_line):
+    '''compare png lines by image pixels in browser'''
+    expect_url = to_png_data_url(expect_line)
+    real_url = to_png_data_url(real_line)
+    if not expect_url or not real_url:
+        return False
+    script = """
+const expectUrl = arguments[0]
+const realUrl = arguments[1]
+const done = arguments[2]
+function loadImageData(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const cv = document.createElement('canvas')
+      cv.width = img.width
+      cv.height = img.height
+      const ctx = cv.getContext('2d')
+      ctx.drawImage(img, 0, 0)
+      let imgData = null
+      try {
+        imgData = ctx.getImageData(0, 0, cv.width, cv.height).data
+      } catch (e) {
+        reject(e)
+        return
+      }
+      resolve({ w: cv.width, h: cv.height, data: imgData })
+    }
+    img.onerror = () => reject(new Error('image load error'))
+    img.src = url
+  })
+}
+Promise.all([loadImageData(expectUrl), loadImageData(realUrl)])
+  .then(([a, b]) => {
+    if (a.w !== b.w || a.h !== b.h || a.data.length !== b.data.length) {
+      done(false)
+      return
+    }
+    for (let i = 0; i < a.data.length; i++) {
+      if (a.data[i] !== b.data[i]) {
+        done(false)
+        return
+      }
+    }
+    done(true)
+  })
+  .catch(() => done(false))
+"""
+    return bool(driver.execute_async_script(script, expect_url, real_url))
+
+def compare_result(expect_text, real_text):
+    '''compare multiline expected/real result with png semantic fallback'''
+    if expect_text == real_text:
+        return True
+    expect_lines = expect_text.split('\n')
+    real_lines = real_text.split('\n')
+    if len(expect_lines) != len(real_lines):
+        return False
+    for expect_line, real_line in zip(expect_lines, real_lines):
+        if expect_line == real_line:
+            continue
+        if not compare_png_semantic(expect_line, real_line):
+            return False
+    return True
+
 def create_driver():
     '''create chrome driver'''
     options = webdriver.ChromeOptions()
@@ -57,7 +131,7 @@ def run_test(fname):
     # get result
     result_elem = driver.find_element(By.CSS_SELECTOR, '#result')
     result = result_elem.get_attribute('value').strip()
-    if result == code_result:
+    if compare_result(code_result, result):
         print('[ok]', os.path.basename(fname))
     else:
         print('[ERROR]', os.path.basename(fname))
