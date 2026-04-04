@@ -262,7 +262,10 @@ const getFunclistItem = (funclist, name) => {
     return funclist.get(name)
   }
   if (funclist && typeof funclist === 'object') {
-    return funclist[name]
+    // プロトタイプ由来のプロパティを除外し、own property のみ参照する。
+    if (Object.prototype.hasOwnProperty.call(funclist, name)) {
+      return funclist[name]
+    }
   }
   return undefined
 }
