@@ -1802,43 +1802,64 @@ export default {
       return result
     }
   },
-  '正規表現抽出': { // @文字列Aを正規表現パターンBで全てマッチして配列で返す(パターンBは「/pat/opt」の形式で指定。キャプチャがある場合はキャプチャ部分を返す。optにgが無くても全件抽出する)。変数『抽出文字列』は更新しない。 // @せいきひょうげんちゅうしゅつ
+  '正規表現抽出': { // @文字列Sを正規表現パターンREで正規表現マッチし、すべてのキャプチャグループ( )を一次元配列として返す。抽出文字列には二次元配列を返す// @せいきひょうげんちゅうしゅつ
     type: 'func',
-    josi: [['を', 'が'], ['で', 'に']],
+    josi: [['から','を'], ['で']],
     pure: true,
     fn: function(a: string, b: string, sys: any): any[] {
       let pattern = '' + b
       let flags = 'g'
       const f = pattern.match(/^\/(.+)\/([a-zA-Z]*)$/)
-      if (f !== null) {
+      if (f) {
         pattern = f[1]
         flags = f[2] || ''
       }
-      if (!flags.includes('g')) { flags += 'g' }
+      if (!flags.includes('g')) flags += 'g'
+
       const re = new RegExp(pattern, flags)
+
       const sa: any[] = sys.__getSysVar('抽出文字列')
       sa.splice(0, sa.length) // clear
-      const result: any[] = []
-      const s = String(a)
-      let m: RegExpExecArray | null
-      while ((m = re.exec(s)) !== null) {
-        if (m.length <= 1) {
-          result.push(m[0])
-        } else if (m.length === 2) {
-          result.push(m[1])
-        } else {
-          result.push(m.slice(1))
+
+      const result: any[] = []   // 一次元配列
+      const caps2d: any[] = []   // 二次元配列（sa に入れる）
+
+      for (const m of String(a).matchAll(re)) {
+
+        // ★ 名前付きキャプチャがある場合
+        if (m.groups && Object.keys(m.groups).length > 0) {
+          const row: Record<string, string> = {}
+
+          for (const [key, val] of Object.entries(m.groups)) {
+            row[key] = val
+            result.push(val) // result は平坦化
+          }
+
+          caps2d.push(row)
+          continue
         }
-        if (m[0] === '') { re.lastIndex++ } // avoid infinite loop
-      }
-      if (result.length > 0) {
-        const first = result[0]
-        if (Array.isArray(first)) {
-          sa.push(...first)
-        } else {
-          sa.push(first)
+
+        // ★ 通常キャプチャ（従来どおり）
+        let caps = [...m].slice(1)
+
+        if (caps.length === 0) {
+          caps = [m[0]] //キャプチャがない場合
         }
+
+        caps2d.push(caps)
+        result.push(...caps)
       }
+
+      // マッチなし → 両方空のまま
+      if (caps2d.length === 0) {
+        return result
+      }
+
+      // sa に二次元配列をコピー
+      for (const row of caps2d) {
+        sa.push(row)
+      }
+
       return result
     }
   },
