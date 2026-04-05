@@ -14,6 +14,11 @@ function main(): void {
     header('Location: ' . $url, true, 301);
     return;
   }
+  if ($m == '404') {
+    http_response_code(404);
+    echo "not found\n";
+    return;
+  }
   if ($m == 'echo') { echo empty($_GET['p']) ? '' : $_GET['p']; return; }
   if ($m == 'echopost') { echo empty($_POST['p']) ? '' : $_POST['p']; return; }
   if ($m == 'upload') {

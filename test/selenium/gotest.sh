@@ -16,4 +16,4 @@ for _ in 1 2 3 4 5; do
 done
 curl -fsS http://localhost:8887 >/dev/null
 
-python3 "$SCRIPT_DIR/test_chrome.py" "$@"
+python "$SCRIPT_DIR/test_chrome.py" "$@"
