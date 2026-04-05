@@ -1824,7 +1824,7 @@ export default {
       const result: any[] = []   // 一次元配列
       const caps2d: any[] = []   // 二次元配列（sa に入れる）
 
-      for (const m of a.matchAll(re)) {
+      for (const m of String(a).matchAll(re)) {
 
         // ★ 名前付きキャプチャがある場合
         if (m.groups && Object.keys(m.groups).length > 0) {
