@@ -227,6 +227,8 @@ export class NakoCompiler {
       }
       // 取り込むライブラリ
       let filename = String(tokens[i + 1].value) + ''
+      // 全角コロン「：」を半角コロン「:」に正規化（「貯蔵庫：」「拡張プラグイン：」の記法に対応）
+      filename = filename.replace(/^(貯蔵庫|拡張プラグイン)：/, '$1:')
       // 『取り込む』文で「拡張プラグイン:」機構を追加する #139
       // (ex) !『貯蔵庫:ojyo-sama.nako3』を取り込む → https://n3s.nadesi.com/plain/ojyo-sama.nako3
       if (filename.startsWith('貯蔵庫:')) {
