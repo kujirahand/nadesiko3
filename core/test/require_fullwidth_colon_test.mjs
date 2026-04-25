@@ -4,7 +4,7 @@ import { NakoCompiler } from '../src/nako3.mjs'
 
 /**
  * 取り込む文で全角コロン「：」が半角コロン「:」と同等に動作するかテストする
- * issue: 取り込むのコロンを全角に対応
+ * issue: #2282 取り込むのコロンを全角に対応
  */
 describe('require_fullwidth_colon_test', () => {
   /**
