@@ -160,6 +160,79 @@ function runCommandInNewConsoleWait(command: string, sys: NakoSystem): Promise<n
 
 let nodeProcess: any = globalThis.process
 
+// ファイル操作のヘルパー関数
+
+/**
+ * ディレクトリを再帰的に走査してファイルのリストを取得する
+ * @param baseDir - 基底ディレクトリ（相対パス計算の基準）
+ * @param curPath - 現在のパス
+ * @returns ファイルの絶対パスと相対パスのリスト
+ */
+async function listFilesRecursive(baseDir: string, curPath: string): Promise<Array<{src: string, rel: string}>> {
+  let stat: any
+  try {
+    stat = await fs.promises.stat(curPath)
+  } catch (_e) {
+    return []
+  }
+  if (stat.isFile()) {
+    return [{ src: curPath, rel: path.relative(baseDir, curPath) }]
+  }
+  const result: Array<{src: string, rel: string}> = []
+  const entries = await fs.promises.readdir(curPath, { withFileTypes: true })
+  for (const entry of entries) {
+    const sub = await listFilesRecursive(baseDir, path.join(curPath, entry.name))
+    result.push(...sub)
+  }
+  return result
+}
+
+/**
+ * 進捗コールバック付きでマージコピーを実行する
+ * ・コールバックが設定されていない場合は単純なfse.copyを使用
+ * ・ファイルを一つずつコピーし、各ファイル処理後にコールバックを呼び出す
+ * ・sys.tags.__fileProcessStopがtrueになったら途中で停止する
+ */
+async function copyMergeWithProgress(src: string, dest: string, overwrite: boolean, sys: any): Promise<void> {
+  const callback = sys.tags.__fileProcessCallback
+  // 強制停止フラグをリセット
+  sys.tags.__fileProcessStop = false
+
+  if (!callback) {
+    // コールバックなし：単純なコピー（fs-extraのcopyは { overwrite: true } でマージ）
+    await fse.copy(src, dest, { overwrite })
+    return
+  }
+
+  // ファイル一覧を取得（ディレクトリの場合は再帰的に）
+  const files = await listFilesRecursive(src, src)
+  const total = files.length
+
+  for (let i = 0; i < files.length; i++) {
+    // 強制停止チェック
+    if (sys.tags.__fileProcessStop) { break }
+
+    const file = files[i]
+    // コピー先のパスを計算（relが空の場合はdest自身）
+    const destFile = file.rel === '' ? dest : path.join(dest, file.rel)
+
+    // コピー先のディレクトリを作成
+    await fse.mkdirp(path.dirname(destFile))
+    // ファイルをコピー
+    await fse.copy(file.src, destFile, { overwrite })
+
+    // 進捗情報を『対象』に設定してコールバックを呼び出す
+    const progress = { 件数: total, 現在: i + 1 }
+    sys.__setSysVar('対象', progress)
+    try {
+      callback(progress, sys)
+    } catch (cbErr: any) {
+      // コールバック内のエラーはログに記録してコピー処理を継続
+      if (sys.logger) { sys.logger.error(cbErr) }
+    }
+  }
+}
+
 // Denoのためのラッパー
 if (typeof (globalThis as any).Deno !== 'undefined') {
   nodeProcess = {
@@ -304,6 +377,9 @@ export default {
           }
         })
       }
+      // ファイル処理コールバック・強制停止フラグの初期化
+      sys.tags.__fileProcessCallback = null
+      sys.tags.__fileProcessStop = false
       sys.tags.readline = (question: string, handler?: (line: string) => void) => {
         sys.tags.__setupStdin()
         if (question) {
@@ -607,21 +683,31 @@ export default {
       return fse.mkdirpSync(path)
     }
   },
-  'ファイルコピー': { // @パスAをパスBへファイルコピーする // @ふぁいるこぴー
+  'ファイルコピー': { // @パスAをパスBへファイルコピーする(コピー先が存在するなら失敗) // @ふぁいるこぴー
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function(a: string, b: string, sys: NakoSystem) {
-      return fse.copySync(a, b)
-    }
+    asyncFn: true,
+    fn: async function(a: string, b: string, sys: NakoSystem) {
+      // コピー先が既に存在する場合はエラー
+      if (await fse.pathExists(b)) {
+        throw new Error(`ファイルコピー先に同名のファイルまたはフォルダが存在します: ${b}`)
+      }
+      // 進捗コールバック付きでコピーを実行（overwrite: false で衝突時はエラー）
+      await copyMergeWithProgress(a, b, false, sys)
+    },
+    return_none: true
   },
-  'ファイル上書コピー': { // @パスAをパスBへファイルコピーする(上書きを許可する) // @ふぁいるうわがきこぴー
+  'ファイル上書コピー': { // @パスAをパスBへファイルコピーする(相手先に内容をマージしてコピー) // @ふぁいるうわがきこぴー
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function(a: string, b: string, sys: NakoSystem) {
-      return fse.copySync(a, b, { overwrite: true })
-    }
+    asyncFn: true,
+    fn: async function(a: string, b: string, sys: NakoSystem) {
+      // 進捗コールバック付きでマージコピーを実行
+      await copyMergeWithProgress(a, b, true, sys)
+    },
+    return_none: true
   },
   'ファイルコピー時': { // @パスAをパスBへファイルコピーしてcallbackを実行 // @ふぁいるこぴーしたとき
     type: 'func',
@@ -635,21 +721,58 @@ export default {
     },
     return_none: false
   },
-  'ファイル移動': { // @パスAをパスBへ移動する // @ふぁいるいどう
+  'ファイル移動': { // @パスAをパスBへ移動する(移動先が存在するなら失敗) // @ふぁいるいどう
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function(a: string, b: string, sys: NakoSystem) {
-      return fse.moveSync(a, b)
-    }
+    asyncFn: true,
+    fn: async function(a: string, b: string, sys: NakoSystem) {
+      // 移動先が既に存在する場合はエラー
+      if (await fse.pathExists(b)) {
+        throw new Error(`ファイル移動先に同名のファイルまたはフォルダが存在します: ${b}`)
+      }
+      // 進捗コールバック付きでコピーを実行し、その後ソースを削除（overwrite: false で衝突時はエラー）
+      await copyMergeWithProgress(a, b, false, sys)
+      if (!sys.tags.__fileProcessStop) {
+        await fse.remove(a)
+      }
+    },
+    return_none: true
   },
-  'ファイル上書移動': { // @パスAをパスBへ移動する(上書きも許可する) // @ふぁいるうわがきいどう
+  'ファイル上書移動': { // @パスAをパスBへ移動する(相手先に内容をマージしてコピー後、元を削除) // @ふぁいるうわがきいどう
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function(a: string, b: string, sys: NakoSystem) {
-      return fse.moveSync(a, b, { overwrite: true })
-    }
+    asyncFn: true,
+    fn: async function(a: string, b: string, sys: NakoSystem) {
+      // 進捗コールバック付きでマージコピーを実行し、その後ソースを削除
+      await copyMergeWithProgress(a, b, true, sys)
+      if (!sys.tags.__fileProcessStop) {
+        await fse.remove(a)
+      }
+    },
+    return_none: true
+  },
+  'ファイル処理時': { // @ファイルコピー・移動の処理状況をコールバックFで報告する(変数『対象』に{"件数":N,"現在":M}をセット) // @ふぁいるしょりじ
+    type: 'func',
+    josi: [['を', 'で']],
+    pure: false,
+    fn: function(f: any, sys: NakoSystem) {
+      // 文字列で指定された関数名をオブジェクトに変換
+      if (typeof f === 'string') { f = (sys as any).__findFunc(f, 'ファイル処理時') }
+      sys.tags.__fileProcessCallback = f
+      sys.tags.__fileProcessStop = false
+    },
+    return_none: true
+  },
+  'ファイル処理強制停止': { // @『ファイルコピー』『ファイル移動』などの処理を強制停止する // @ふぁいるしょりきょうせいていし
+    type: 'func',
+    josi: [],
+    pure: false,
+    fn: function(sys: NakoSystem) {
+      sys.tags.__fileProcessStop = true
+    },
+    return_none: true
   },
   'ファイル移動時': { // @パスAをパスBへ移動してcallbackを実行 // @ふぁいるいどうしたとき
     type: 'func',
