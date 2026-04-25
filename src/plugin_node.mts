@@ -224,7 +224,12 @@ async function copyMergeWithProgress(src: string, dest: string, overwrite: boole
     // 進捗情報を『対象』に設定してコールバックを呼び出す
     const progress = { 件数: total, 現在: i + 1 }
     sys.__setSysVar('対象', progress)
-    callback(progress, sys)
+    try {
+      callback(progress, sys)
+    } catch (cbErr: any) {
+      // コールバック内のエラーはログに記録してコピー処理を継続
+      if (sys.logger) { sys.logger.error(cbErr) }
+    }
   }
 }
 
