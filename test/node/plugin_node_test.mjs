@@ -255,4 +255,153 @@ describe('plugin_node_test', () => {
   it('コンソールクリア #2181', async () => {
     await cmp('コンソールクリア。123を表示。', '123')
   })
+  it('ファイルコピー - コピー先が存在しない場合は成功', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-cp-test-'))
+    try {
+      const src = path.join(tmp, 'src.txt')
+      const dest = path.join(tmp, 'dest.txt')
+      fs.writeFileSync(src, 'hello')
+      await cmp(`「${src}」を「${dest}」へファイルコピー。「${dest}」を読む。トリムして表示。`, 'hello', 200)
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
+  it('ファイルコピー - コピー先が存在する場合はエラー', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-cp-err-'))
+    try {
+      const src = path.join(tmp, 'src.txt')
+      const dest = path.join(tmp, 'dest.txt')
+      fs.writeFileSync(src, 'hello')
+      fs.writeFileSync(dest, 'existing')
+      const nako2 = new NakoCompiler()
+      nako2.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+      const g = await nako2.runAsync(`「${src}」を「${dest}」へファイルコピー。`, 'main')
+      await new Promise(resolve => setTimeout(resolve, 200))
+      assert.strictEqual(g.numFailures > 0, true, 'コピー先が存在する場合はエラーになるべき')
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
+  it('ファイル上書コピー - ディレクトリのマージコピー', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-merge-cp-'))
+    try {
+      const srcDir = path.join(tmp, 'src')
+      const destDir = path.join(tmp, 'dest')
+      fs.mkdirSync(srcDir)
+      fs.mkdirSync(destDir)
+      fs.writeFileSync(path.join(srcDir, 'a.txt'), 'aaa')
+      fs.writeFileSync(path.join(srcDir, 'b.txt'), 'bbb')
+      fs.writeFileSync(path.join(destDir, 'c.txt'), 'ccc')
+      await cmp(`「${srcDir}」を「${destDir}」へファイル上書コピー。「${path.join(destDir, 'c.txt')}」を読む。トリムして表示。`, 'ccc', 200)
+      // srcのファイルがdestにマージされている
+      assert.strictEqual(fs.existsSync(path.join(destDir, 'a.txt')), true, 'a.txtがマージされるべき')
+      assert.strictEqual(fs.existsSync(path.join(destDir, 'b.txt')), true, 'b.txtがマージされるべき')
+      assert.strictEqual(fs.existsSync(path.join(destDir, 'c.txt')), true, 'c.txtは残るべき')
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
+  it('ファイル移動 - 移動先が存在しない場合は成功', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-mv-test-'))
+    try {
+      const src = path.join(tmp, 'src.txt')
+      const dest = path.join(tmp, 'dest.txt')
+      fs.writeFileSync(src, 'move-test')
+      await cmp(`「${src}」を「${dest}」へファイル移動。「${dest}」を読む。トリムして表示。`, 'move-test', 200)
+      assert.strictEqual(fs.existsSync(src), false, '移動後はソースファイルが消えるべき')
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
+  it('ファイル移動 - 移動先が存在する場合はエラー', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-mv-err-'))
+    try {
+      const src = path.join(tmp, 'src.txt')
+      const dest = path.join(tmp, 'dest.txt')
+      fs.writeFileSync(src, 'hello')
+      fs.writeFileSync(dest, 'existing')
+      const nako2 = new NakoCompiler()
+      nako2.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+      const g = await nako2.runAsync(`「${src}」を「${dest}」へファイル移動。`, 'main')
+      await new Promise(resolve => setTimeout(resolve, 200))
+      assert.strictEqual(g.numFailures > 0, true, '移動先が存在する場合はエラーになるべき')
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
+  it('ファイル上書移動 - ディレクトリのマージ移動', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-merge-mv-'))
+    try {
+      const srcDir = path.join(tmp, 'src')
+      const destDir = path.join(tmp, 'dest')
+      fs.mkdirSync(srcDir)
+      fs.mkdirSync(destDir)
+      fs.writeFileSync(path.join(srcDir, 'a.txt'), 'aaa')
+      fs.writeFileSync(path.join(srcDir, 'b.txt'), 'bbb')
+      fs.writeFileSync(path.join(destDir, 'c.txt'), 'ccc')
+      await cmp(`「${srcDir}」を「${destDir}」へファイル上書移動。「${path.join(destDir, 'a.txt')}」を読む。トリムして表示。`, 'aaa', 300)
+      // srcのファイルがdestにマージされ、srcディレクトリは削除される
+      assert.strictEqual(fs.existsSync(srcDir), false, '移動後はソースディレクトリが消えるべき')
+      assert.strictEqual(fs.existsSync(path.join(destDir, 'a.txt')), true, 'a.txtがマージされるべき')
+      assert.strictEqual(fs.existsSync(path.join(destDir, 'b.txt')), true, 'b.txtがマージされるべき')
+      assert.strictEqual(fs.existsSync(path.join(destDir, 'c.txt')), true, 'c.txtは残るべき')
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true })
+    }
+  })
+  it('ファイル処理時 - 進捗コールバックが呼ばれる', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-progress-'))
+    try {
+      const srcDir = path.join(tmp, 'src')
+      const destDir = path.join(tmp, 'dest')
+      fs.mkdirSync(srcDir)
+      fs.writeFileSync(path.join(srcDir, 'a.txt'), 'aaa')
+      fs.writeFileSync(path.join(srcDir, 'b.txt'), 'bbb')
+      fs.writeFileSync(path.join(srcDir, 'c.txt'), 'ccc')
+      // なでしこ関数でコールバックを定義してカウントし最終的にログに出力
+      const nako2 = new NakoCompiler()
+      nako2.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+      const g = await nako2.runAsync(`
+CNT = 0
+●進捗CB
+  CNT = CNT + 1
+ここまで
+「進捗CB」をファイル処理時
+「${srcDir}」を「${destDir}」へファイル上書コピー
+CNTを表示
+`, 'main')
+      await new Promise(resolve => setTimeout(resolve, 500))
+      assert.strictEqual(g.log, '3', `コールバックが3回呼ばれるべき(実際:${g.log})`)
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
+  it('ファイル処理強制停止 - 途中で停止できる', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-stop-test-'))
+    try {
+      const srcDir = path.join(tmp, 'src')
+      const destDir = path.join(tmp, 'dest')
+      fs.mkdirSync(srcDir)
+      // 5つのファイルを作成
+      for (let i = 0; i < 5; i++) {
+        fs.writeFileSync(path.join(srcDir, `file${i}.txt`), `content${i}`)
+      }
+      // コールバック内でファイル処理強制停止を呼び出して途中停止するテスト
+      const nako2 = new NakoCompiler()
+      nako2.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+      const g = await nako2.runAsync(`
+●停止CB
+  ファイル処理強制停止
+ここまで
+「停止CB」をファイル処理時
+「${srcDir}」を「${destDir}」へファイル上書コピー
+`, 'main')
+      await new Promise(resolve => setTimeout(resolve, 500))
+      // 1ファイルだけコピーされて停止していること（強制停止のため残りはスキップ）
+      const copiedFiles = fs.existsSync(destDir) ? fs.readdirSync(destDir).length : 0
+      assert.strictEqual(copiedFiles, 1, `強制停止後のファイル数は1のはず(実際:${copiedFiles})`)
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
 })
