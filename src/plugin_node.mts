@@ -693,7 +693,8 @@ export default {
       if (await fse.pathExists(b)) {
         throw new Error(`ファイルコピー先に同名のファイルまたはフォルダが存在します: ${b}`)
       }
-      await fse.copy(a, b)
+      // 進捗コールバック付きでコピーを実行（overwrite: false で衝突時はエラー）
+      await copyMergeWithProgress(a, b, false, sys)
     },
     return_none: true
   },
@@ -730,7 +731,11 @@ export default {
       if (await fse.pathExists(b)) {
         throw new Error(`ファイル移動先に同名のファイルまたはフォルダが存在します: ${b}`)
       }
-      await fse.move(a, b)
+      // 進捗コールバック付きでコピーを実行し、その後ソースを削除（overwrite: false で衝突時はエラー）
+      await copyMergeWithProgress(a, b, false, sys)
+      if (!sys.tags.__fileProcessStop) {
+        await fse.remove(a)
+      }
     },
     return_none: true
   },
