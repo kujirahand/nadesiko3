@@ -75,9 +75,10 @@ npm run build
 ```sh
 sudo apt update
 # nvm で Node.js をインストール
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 source ~/.bashrc
-nvm install v18.12.1
+nvm install v24
+nvm use v24
 # リポジトリのセットアップ
 git clone https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
