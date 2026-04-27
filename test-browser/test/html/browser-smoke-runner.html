@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Smoke Tests</title>
+  <link rel="stylesheet" href="/mocha/mocha.css">
+</head>
+<body>
+  <div id="mocha"></div>
+  <!-- mochaブラウザバンドル（UMD形式）をscriptタグで読み込んでグローバルに設定する -->
+  <script src="/mocha/mocha.js"></script>
+  <script type="module">
+    // mochaをbddモードで初期化する（describe/itなどのグローバル関数を設定する）
+    mocha.setup({ ui: 'bdd', reporter: 'html', timeout: 10000 })
+
+    // 失敗したテストの詳細を収集する
+    window.__playwrightFailures__ = []
+
+    // テストファイルを動的インポートする（mochaのsetup後に実行することで
+    // describeがグローバルに登録されるタイミングを正しく制御する）
+    await import('/test-browser/test/browser/test/plugin_browser_smoke_test.js')
+
+    // mochaを実行してPlaywrightに結果を通知する
+    const runner = mocha.run()
+    runner.on('fail', (testCase, err) => {
+      window.__playwrightFailures__.push({
+        title: testCase.fullTitle(),
+        error: err.message
+      })
+    })
+    runner.on('end', () => {
+      window.__playwright_done__ = {
+        failures: runner.stats.failures,
+        passes: runner.stats.passes,
+        total: runner.stats.tests,
+        failures_detail: window.__playwrightFailures__
+      }
+    })
+  </script>
+</body>
+</html>

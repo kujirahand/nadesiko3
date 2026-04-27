@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ace Editor Tests</title>
+  <!-- なでしこ3エディタのCSS -->
+  <link rel="stylesheet" href="/src/wnako3_editor.css">
+  <!-- Ace Editor -->
+  <script src="/ace/ace.js"></script>
+  <script src="/ace/ext-language_tools.js"></script>
+  <script src="/ace/ext-options.js"></script>
+  <script src="/ace/ext-code_lens.js"></script>
+  <!-- なでしこ3バンドル版スクリプト -->
+  <script src="/release/wnako3.js"></script>
+  <script src="/release/version.js"></script>
+  <script src="/release/plugin_markup.js"></script>
+  <script src="/release/plugin_kansuji.js"></script>
+  <script src="/release/plugin_datetime.js"></script>
+  <script src="/release/plugin_turtle.js"></script>
+  <script src="/release/plugin_caniuse.js"></script>
+  <script src="/release/plugin_webworker.js"></script>
+  <link rel="stylesheet" href="/mocha/mocha.css">
+</head>
+<body>
+単純な例
+<div id="editor1" data-nako3-force-syntax-highlighting="true">もしはいならば
+    「こんにちは」を表示
+ここまで
+</div>
+<div id="editor1-output"></div>
+インデント構文
+<div id="editor2" data-nako3-force-syntax-highlighting="true">！インデント構文
+Nを1から3まで繰り返す
+    Nを表示
+
+    「1行目
+2行目」を表示
+
+/*
+範囲コメント
+*/
+</div>
+平らなプログラム
+<div id="editor3" data-nako3-force-syntax-highlighting="true">
+A=1
+Aを表示
+</div>
+コンパイルエラーの表示
+<div id="editor4" data-nako3-force-syntax-highlighting="true">
+「{」を表示
+</div>
+readonly
+<div id="editor5" data-nako3-readonly="true" data-nako3-force-syntax-highlighting="true">1+2を表示</div>
+コンパイルエラーの表示の無効化
+<div id="editor6" data-nako3-disable-marker="true" data-nako3-force-syntax-highlighting="true">
+「{」を表示
+</div>
+実行時エラーの表示
+<div id="editor7" data-nako3-force-syntax-highlighting="true">「」を表示
+1のエラー発生
+</div>
+<div id="editor7-output"></div>
+ソースコードの取り込み（requiretest.nako3を読み込む）
+<div id="editor8" data-nako3-force-syntax-highlighting="true">！「http://127.0.0.1:5173/test-browser/test/ace_editor/test/requiretest.nako3」を取り込む
+1と2を痕跡演算する
+</div>
+<div id="editor8-output"></div>
+警告の表示
+<div id="editor9" data-nako3-force-syntax-highlighting="true">aを表示</div>
+<div id="editor9-output"></div>
+setTimeoutで起きたエラーの表示
+<div id="editor10" data-nako3-force-syntax-highlighting="true">0.01秒後には
+    1のエラー発生
+ここまで
+</div>
+字句解析エラーの表示
+<div id="editor11" data-nako3-force-syntax-highlighting="true">「{」
+</div>
+<div id="editor11-output"></div>
+文字入力のテスト用
+<div id="editor-input-test"></div>
+<div>
+    プログラムの実行
+</div>
+テストの定義にcode lensを表示する
+<div id="editor12">●テスト:足すとは
+    1のエラー発生
+ここまで
+
+●テスト:引くとは
+ここまで
+</div>
+  <script>
+    const editor1 = navigator.nako3.setupEditor('editor1')
+    navigator.nako3.setupEditor('editor2')
+    // smokeテストでは不要なエディタも初期化してUI構造は維持する
+    navigator.nako3.setupEditor('editor3')
+    navigator.nako3.setupEditor('editor4')
+    navigator.nako3.setupEditor('editor5')
+    navigator.nako3.setupEditor('editor6')
+    navigator.nako3.setupEditor('editor7')
+    navigator.nako3.setupEditor('editor8')
+    navigator.nako3.setupEditor('editor9')
+    const editor10 = navigator.nako3.setupEditor('editor10')
+    navigator.nako3.setupEditor('editor11')
+    const editor12 = navigator.nako3.setupEditor('editor12')
+    window.editor12 = editor12
+    editor12.codeLensListeners.push({ name: 'test', callback: (testName) => { window.codeLensClicked = testName } })
+
+    // smokeテストに必要な最小限の実行のみ行う
+    const main = async () => {
+      await editor1.run({ outputContainer: document.getElementById('editor1-output') }).promise
+      await editor10.run({}).promise
+      // editor10で実行時エラーのマーカー描画が反映されるまで待つ
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      // すべての初期化が完了したことをテストに通知する
+      window.ok = true
+    }
+    main().catch((err) => { console.error(err) })
+  </script>
+
+  <!-- mochaテストランナー -->
+  <div id="mocha"></div>
+  <script src="/mocha/mocha.js"></script>
+  <script type="module">
+    // mochaをbddモードで初期化する
+    mocha.setup({ ui: 'bdd', reporter: 'html', timeout: 120000 })
+
+    // 失敗したテストの詳細を収集する
+    window.__playwrightFailures__ = []
+
+    // ace editorのsmokeテストを動的インポートする
+    await import('/test-browser/test/ace_editor/test/ace_editor_smoke_test.js')
+
+    // mochaを実行してPlaywrightに結果を通知する
+    const runner = mocha.run()
+    runner.on('fail', (testCase, err) => {
+      window.__playwrightFailures__.push({
+        title: testCase.fullTitle(),
+        error: err.message
+      })
+    })
+    runner.on('end', () => {
+      window.__playwright_done__ = {
+        failures: runner.stats.failures,
+        passes: runner.stats.passes,
+        total: runner.stats.tests,
+        failures_detail: window.__playwrightFailures__
+      }
+    })
+  </script>
+</body>
+</html>
