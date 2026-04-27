@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
 import NakoIndent from '../src/nako_indent.mjs'

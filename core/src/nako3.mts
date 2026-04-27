@@ -231,12 +231,12 @@ export class NakoCompiler {
       filename = filename.replace(/^(貯蔵庫|拡張プラグイン)：/, '$1:')
       // 『取り込む』文で「拡張プラグイン:」機構を追加する #139
       // (ex) !『貯蔵庫:ojyo-sama.nako3』を取り込む → https://n3s.nadesi.com/plain/ojyo-sama.nako3
-      if (filename.startsWith('貯蔵庫:')) {
+      if (filename.startsWith('貯蔵庫:') || filename.startsWith('貯蔵庫：')) {
         filename = `https://n3s.nadesi.com/plain/${filename.substring(4)}`
       }
       // (ex) !『拡張プラグイン:music.js@1.0.2』を取り込む → https://cdn.jsdelivr.net/npm/nadesiko3-music@1.0.2/nadesiko3-music.js
-      if (filename.startsWith('拡張プラグイン:')) {
-        const name = filename.split(':')[1]
+      if (filename.startsWith('拡張プラグイン:') || filename.startsWith('拡張プラグイン：')) {
+        const name = filename.substring('拡張プラグイン:'.length)
         const m = name.match(/^([a-zA-Z0-9_-]+)\.(js|mjs|nako3)(@[0-9.]+)?$/)
         if (m) {
           let basename = m[1]

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
+import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoColors } from '../src/nako_colors.mjs'
 import { NakoLogger } from '../src/nako_logger.mjs'
@@ -16,11 +17,10 @@ describe('nako_logger_test', () => {
       'color: inherit; font-weight: inherit;'
     ])
   })
-  it('ログの取得のテスト', (done) => {
+  it('ログの取得のテスト', () => {
     const logger = new NakoLogger()
     logger.addListener('info', (data) => {
       assert.strictEqual(data.noColor, '[情報]main.nako3(2行目): foo')
-      done()
     })
     logger.info('foo', {
       startOffset: 0,
