@@ -14,7 +14,7 @@
     // mochaをbddモードで初期化する
     mocha.setup({ ui: 'bdd', reporter: 'html', timeout: 30000 })
 
-    // karmaのhtml2jsプリプロセッサが提供していた __html__ グローバルを再現する
+    // 旧Karmaのhtml2jsプリプロセッサ由来の __html__ グローバルを再現する
     // テストファイルが document.body.innerHTML = __html__['...'] のように使用する
     window.__html__ = {}
     const htmlFixtures = [

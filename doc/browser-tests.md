@@ -10,17 +10,9 @@
 - `npm --prefix ./test-browser run test:ace-editor` … Ace Editor の smoke test
 - `npm --prefix ./test-browser run test:ace-editor:full` … 旧来の ace editor 総合テスト
 - `npm --prefix ./test-browser run test:bundled` … release 済みエディタの bundled test
-- `npm --prefix ./test-browser run test:config` … `test-browser/obscura.suites.json` と script 定義のチェック
+- `npm --prefix ./test-browser run test:config` … Playwright/Vite 設定とテスト構成の整合性チェック
 - `npm --prefix ./test-browser run test:selenium` … Selenium の smoke test
 - `npm --prefix ./test-browser run test:selenium:full` … 旧来の Selenium 総合テスト
-
-## Obscura 実行メモ
-
-`test-browser/scripts/run-obscura.mjs` は、`test-browser/obscura.suites.json` に定義したスイートを読んで Obscura を実行します。
-
-- 既定コマンド: `obscura`
-- 変更する場合: `OBSCURA_BIN` 環境変数で上書き
-- 追加オプション: `OBSCURA_EXTRA_ARGS` 環境変数で指定
 
 ## 旧来テストがそのままでは動かなかった理由
 
