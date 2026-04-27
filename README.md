@@ -22,7 +22,7 @@
 2. コマンドライン(cnako) - JavaScriptの実行エンジン「Node.js」上で動作
 3. 配付パッケージ - Electronを利用してローカルPC上で動作
 
-具体的な対応ブラウザについて詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。
+具体的な対応ブラウザについて詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。Node.jsの対応バージョンは、v20以上です。
 
 ## ブラウザで利用する方法
 
@@ -55,8 +55,6 @@ cnako3 -e "「こんにちは」と表示。"
 cnako3 hello.nako3
 ```
 
-> Node.jsの推奨バージョンは、v18 以上です。
-
 ## GitHubからインストール
 
 Gitコマンドをインストールした上で、次のコマンドを実行すると、なでしこの開発環境をセットアップできます。
@@ -75,9 +73,10 @@ npm run build
 ```sh
 sudo apt update
 # nvm で Node.js をインストール
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 source ~/.bashrc
-nvm install v18.12.1
+nvm install v24
+nvm use v24
 # リポジトリのセットアップ
 git clone https://github.com/kujirahand/nadesiko3.git
 cd nadesiko3
