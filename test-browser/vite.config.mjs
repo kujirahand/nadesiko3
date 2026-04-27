@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, '..')
 
 /**
  * 指定URLプレフィックスを静的ディレクトリから配信するViteプラグインを作成する
- * karmaの静的ファイル配信を再現するために使用する
+ * 旧Karma環境の静的配信パスを、Playwright実行でも互換維持するために使用する
  */
 function serveStaticDir (urlPrefix, dirPath) {
   const mimeMap = {
@@ -51,7 +51,7 @@ export default defineConfig({
   root: rootDir,
   resolve: {
     alias: {
-      // karmaのwebpack aliasと同じパス解決を再現する
+      // 旧Karma + webpack aliasと同じパス解決を再現する
       nadesiko3core: path.resolve(rootDir, 'core'),
       nako3: path.resolve(rootDir, 'src'),
       root: rootDir,
@@ -72,7 +72,7 @@ export default defineConfig({
     // /mocha/* → node_modules/mocha/*
     // HTMLランナーがmocha.js/mocha.cssを /mocha/ パスで参照するため
     serveStaticDir('/mocha/', path.resolve(rootDir, 'node_modules/mocha')),
-    // karma互換プロキシ: karmaが設定していたURLリダイレクトを再現する
+    // 旧Karma互換プロキシ: 旧テスト資産が期待するURLをPlaywright実行で再現する
     {
       name: 'karma-compat-proxies',
       configureServer (server) {
@@ -83,7 +83,7 @@ export default defineConfig({
             req.url = '/release/wnako3webworker.js'
             return next()
           }
-          // タートル画像のプロキシ（karmaのプロキシ設定を再現する）
+          // タートル画像のプロキシ（旧Karma設定由来の参照先を再現する）
           const imageProxies = {
             '/turtle.png': '/test-browser/test/browser/test/image/turtle_kana.png',
             '/turtle-elephant.png': '/test-browser/test/browser/test/image/elephant_kana.png',
