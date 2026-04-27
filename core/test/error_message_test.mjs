@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { describe, it } from 'node:test'
 import { NakoCompiler } from '../src/nako3.mjs'
 import { NakoSyntaxError, NakoRuntimeError, NakoIndentError, NakoLexerError } from '../src/nako_errors.mjs'
 import assert from 'assert'
@@ -9,8 +10,8 @@ describe('error_message', () => {
   const cmp = (/** @type {string} */ code, /** @type {string[]} */ resArr, /** @type {typeof NakoLexerError} */ ErrorClass, _nako = nako) => {
     _nako.reset()
     _nako.logger.debug('code=' + code)
-    assert.rejects(
-      () => _nako.runSync(code, path.join(__dirname, 'main.nako3')),
+    assert.throws(
+      () => _nako.runSync(code, 'main.nako3'),
       (err) => {
         assert(err instanceof ErrorClass)
         for (const res of resArr) {

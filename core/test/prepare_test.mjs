@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoPrepare } from '../src/nako_prepare.mjs'
 

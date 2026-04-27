@@ -56,6 +56,10 @@ function get7zPath() {
   return '' // なし
 }
 
+function makeTmpDir(/** @type {string} */prefix) {
+  return fs.mkdtempSync(path.join(os.tmpdir(), prefix))
+}
+
 describe('plugin_node_test', () => {
   // --- test ---
   it('表示', async () => {
@@ -121,7 +125,7 @@ describe('plugin_node_test', () => {
     if (process.platform === 'linux') {
       tmp = path.join(os.tmpdir(), 'nadesiko3test')
     } else {
-      tmp = fs.mkdtempSync(os.tmpdir())
+      tmp = makeTmpDir('nadesiko3test-')
     }
     const code = 'FIN=「' + testFileMe + '」;' +
       `TMP=「${tmp}」へ一時フォルダ作成。` +
@@ -145,7 +149,7 @@ describe('plugin_node_test', () => {
     if (process.platform === 'linux') {
       tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nadesiko3zip-test'))
     } else {
-      tmp = fs.mkdtempSync(os.tmpdir())
+      tmp = makeTmpDir('nadesiko3zip-test-')
     }
     const pathSrc = `TMP="${tmp}";FILE=「{TMP}/test.txt」;ZIP=「{TMP}/test.zip」;`
     await cmp(`${pathSrc}FILEへ「abc」を保存。FILEをZIPに圧縮。ZIPが存在。もし,そうならば「ok」と表示。`, 'ok')
@@ -162,7 +166,7 @@ describe('plugin_node_test', () => {
     if (process.platform === 'linux') {
       tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'test_nako3zip'))
     } else {
-      tmp = fs.mkdtempSync(os.tmpdir())
+      tmp = makeTmpDir('test_nako3zip-')
     }
     // (1) 元ファイルへのインジェクション
     const pathSrc = '' +
@@ -194,7 +198,7 @@ describe('plugin_node_test', () => {
     if (process.platform === 'linux') {
       tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'test_nako3zip'))
     } else {
-      tmp = fs.mkdtempSync(os.tmpdir())
+      tmp = makeTmpDir('test_nako3zip-')
     }
     // (1) 元ファイルへのインジェクション
     const pathSrc = '' +

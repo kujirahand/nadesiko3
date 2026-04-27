@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoLexer } from '../src/nako_lexer.mjs'
 import { NakoLogger } from '../src/nako_logger.mjs'

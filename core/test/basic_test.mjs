@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
+import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
-import { expect } from 'chai'
 
 describe('basic', async () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
@@ -159,12 +159,12 @@ describe('basic', async () => {
     const naraba = out.tokens.find((t) => t.type === 'ならば')
 
     // 「存在する」
-    expect(sonzai).to.have.property('startOffset').and.to.equal(2)
-    expect(sonzai).to.have.property('endOffset').and.to.equal(6)
+    assert.strictEqual(sonzai.startOffset, 2)
+    assert.strictEqual(sonzai.endOffset, 6)
 
     // ならば
-    expect(naraba).to.have.property('startOffset').and.to.equal(6)
-    expect(naraba).to.have.property('endOffset').and.to.equal(9)
+    assert.strictEqual(naraba.startOffset, 6)
+    assert.strictEqual(naraba.endOffset, 9)
   })
   it('preCodeを考慮したソースマップ', async () => {
     const nako = new NakoCompiler()

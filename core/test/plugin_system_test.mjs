@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
+import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
 
@@ -15,12 +16,13 @@ describe('plugin_system_test', async () => {
     const nako = new NakoCompiler()
     nako.getLogger().debug('code=' + code)
     try {
-      const g = nako.runAsync(code, 'main.nako3')
+      await nako.runAsync(code, 'main.nako3')
     } catch (err) {
-      console.log(err.message)
       assert.strictEqual(err.name, exinfo.name)
       assert.notStrictEqual(err.message.indexOf(exinfo.message), -1)
+      return
     }
+    assert.fail(`${exinfo.name} が発生しませんでした`)
   }
 
   // --- test ---
@@ -496,7 +498,7 @@ describe('plugin_system_test', async () => {
     await cmp('1と2を足す\n「それを表示」をナデシコする', '3')
   })
   it('ナデシコする2/2', async () => {
-    cmpex('「●Fとは\n2を戻す\nここまで\nF()を表示する。」をナデシコする。7+F()を表示する。', { name: 'NakoError', message: '関数『F』が見当たりません' })
+    await cmpex('「●Fとは\n2を戻す\nここまで\nF()を表示する。」をナデシコする。7+F()を表示する。', { name: 'NakoError', message: '関数『F』が見当たりません' })
   })
   it('敬語 #728', async () => {
     await cmp('32を表示してください', '32')

@@ -1,7 +1,0 @@
-{
-    "$schema": "https://json.schemastore.org/mocharc",
-    "exit": true,
-    "timeout": 15000,
-    "require": "module-alias/register",
-    "spec": "./test/+(common|node)/*.mjs"
-}
