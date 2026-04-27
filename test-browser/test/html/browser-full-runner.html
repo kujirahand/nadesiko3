@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Full Tests</title>
+  <link rel="stylesheet" href="/mocha/mocha.css">
+</head>
+<body>
+  <div id="mocha"></div>
+  <!-- mochaブラウザバンドル（UMD形式）をscriptタグで読み込んでグローバルに設定する -->
+  <script src="/mocha/mocha.js"></script>
+  <script type="module">
+    // mochaをbddモードで初期化する
+    mocha.setup({ ui: 'bdd', reporter: 'html', timeout: 30000 })
+
+    // karmaのhtml2jsプリプロセッサが提供していた __html__ グローバルを再現する
+    // テストファイルが document.body.innerHTML = __html__['...'] のように使用する
+    window.__html__ = {}
+    const htmlFixtures = [
+      'div_basic.html',
+      'canvas_basic.html',
+      'event_dom_form.html',
+      'event_dom_scrolldiv.html'
+    ]
+    await Promise.all(htmlFixtures.map(async (file) => {
+      const res = await fetch(`/test-browser/test/browser/test/html/${file}`)
+      if (res.ok) {
+        window.__html__[`test/html/${file}`] = await res.text()
+      }
+    }))
+
+    // 失敗したテストの詳細を収集する
+    window.__playwrightFailures__ = []
+
+    // すべてのブラウザテストファイルを動的インポートする（smoke + full）
+    await import('/test-browser/test/browser/test/plugin_browser_smoke_test.js')
+    await import('/test-browser/test/browser/test/plugin_browser_test.js')
+    await import('/test-browser/test/browser/test/plugin_browser_test_ajax.js')
+    await import('/test-browser/test/browser/test/plugin_browser_test_color.js')
+    await import('/test-browser/test/browser/test/plugin_browser_test_dialog.js')
+    await import('/test-browser/test/browser/test/plugin_browser_test_dom_event.js')
+    await import('/test-browser/test/browser/test/plugin_browser_test_dom_parts.js')
+    await import('/test-browser/test/browser/test/plugin_browser_test_system.js')
+    await import('/test-browser/test/browser/test/plugin_turtle_test.js')
+    await import('/test-browser/test/browser/test/plugin_webworker_test.js')
+
+    // mochaを実行してPlaywrightに結果を通知する
+    const runner = mocha.run()
+    runner.on('fail', (testCase, err) => {
+      window.__playwrightFailures__.push({
+        title: testCase.fullTitle(),
+        error: err.message
+      })
+    })
+    runner.on('end', () => {
+      window.__playwright_done__ = {
+        failures: runner.stats.failures,
+        passes: runner.stats.passes,
+        total: runner.stats.tests,
+        failures_detail: window.__playwrightFailures__
+      }
+    })
+  </script>
+</body>
+</html>

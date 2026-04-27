@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bundled Tests</title>
+  <!-- なでしこ3エディタのCSS -->
+  <link rel="stylesheet" href="/src/wnako3_editor.css">
+  <!-- Ace Editor -->
+  <script src="/ace/ace.js"></script>
+  <script src="/ace/ext-language_tools.js"></script>
+  <script src="/ace/ext-options.js"></script>
+  <script src="/ace/ext-code_lens.js"></script>
+  <link rel="stylesheet" href="/mocha/mocha.css">
+</head>
+<body>
+  <!-- エディタコンポーネント（bundled_test.jsがこのDOM構造を検証する） -->
+  <div id="editor" class="edit_div">
+    <div class="editor-component">
+      <script type="application/json">
+        {
+          "title": "簡易エディタ",
+          "code": "「こんにちは！」と表示。\n(1 + 2)×3を表示。",
+          "autoLoad": true
+        }
+      </script>
+    </div>
+  </div>
+  <!-- バージョン情報（bundled_test.jsがこのDOM構造を検証する） -->
+  <div class="about-group">
+    <div class="version-component"></div>
+  </div>
+  <!-- なでしこ3バンドル版スクリプト -->
+  <script src="/release/wnako3.js"></script>
+  <script src="/release/editor.js"></script>
+  <script src="/release/version.js"></script>
+  <script src="/release/plugin_markup.js"></script>
+  <script src="/release/plugin_turtle.js"></script>
+
+  <!-- mochaテストランナー -->
+  <div id="mocha"></div>
+  <script src="/mocha/mocha.js"></script>
+  <script type="module">
+    // mochaをbddモードで初期化する
+    mocha.setup({ ui: 'bdd', reporter: 'html', timeout: 10000 })
+
+    // 失敗したテストの詳細を収集する
+    window.__playwrightFailures__ = []
+
+    // バンドルテストファイルを動的インポートする
+    await import('/test-browser/test/bundled/test/bundled_test.js')
+
+    // mochaを実行してPlaywrightに結果を通知する
+    const runner = mocha.run()
+    runner.on('fail', (testCase, err) => {
+      window.__playwrightFailures__.push({
+        title: testCase.fullTitle(),
+        error: err.message
+      })
+    })
+    runner.on('end', () => {
+      window.__playwright_done__ = {
+        failures: runner.stats.failures,
+        passes: runner.stats.passes,
+        total: runner.stats.tests,
+        failures_detail: window.__playwrightFailures__
+      }
+    })
+  </script>
+</body>
+</html>

@@ -43,7 +43,7 @@ if "%TARGET_BASIC%%TARGET_TURTLE%"=="" (
 
 @echo on
 if "%TARGET_BASIC%"=="YES" (
-  call node_modules\.bin\cross-env TZ=Asia/Tokyo NODE_ENV=development node_modules\.bin\karma start %SINGLEWATCH% --browsers %BROWSER%%HEADLESS% --reporters=mocha test/bundled/karma.config.base.js
+  call node_modules\.bin\cross-env TZ=Asia/Tokyo NODE_ENV=development node_modules\.bin\karma start %SINGLEWATCH% --browsers %BROWSER%%HEADLESS% --reporters=mocha test-browser/bundled/karma.config.base.js
 )
 @echo on
 if "%TARGET_TURTLE%"=="YES" (

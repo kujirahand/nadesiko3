@@ -1,0 +1,25 @@
+{
+  "name": "nadesiko3-test-browser",
+  "private": true,
+  "type": "module",
+  "description": "Playwrightで実行するブラウザテストの集約パッケージ",
+  "scripts": {
+    "test": "npm run test:all",
+    "test:all": "npm run test:browser && npm run test:bundled && npm run test:ace-editor",
+    "test:browser": "npm run test:browser:smoke",
+    "test:browser:smoke": "playwright test --config playwright.config.mjs test/browser.spec.mjs --grep 'smoke'",
+    "test:browser:full": "playwright test --config playwright.config.mjs test/browser.spec.mjs",
+    "test:ace-editor": "playwright test --config playwright.config.mjs test/ace_editor.spec.mjs",
+    "test:ace-editor:smoke": "playwright test --config playwright.config.mjs test/ace_editor.spec.mjs --grep 'smoke'",
+    "test:ace-editor:full": "playwright test --config playwright.config.mjs test/ace_editor.spec.mjs",
+    "test:bundled": "playwright test --config playwright.config.mjs test/bundled.spec.mjs",
+    "test:selenium": "cross-env NAKO_SELENIUM_MODE=smoke ./test/selenium/gotest.sh",
+    "test:selenium:full": "./test/selenium/gotest.sh",
+    "test:config": "node --test ./test/config_test.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "cross-env": "^10.1.0",
+    "vite": "^6.3.4"
+  }
+}
