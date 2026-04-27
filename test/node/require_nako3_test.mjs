@@ -42,17 +42,18 @@ describe('require_nako3_test', async () => {
   })
   it('.jsファイルの投げたエラーを表示', async () => {
     const nako = new CNako3()
-    const code = `!「${__dirname}/plugin_broken.js.txt」を取り込む`
+    const code = `!「${__dirname}/fixtures/plugin_broken.mjs」を取り込む`
     // await nako.loadDependencies(code, 'main.nako3', '')
-    assert.rejects(
+    await assert.rejects(
       async () => {
-        await nako.run(code, 'main.nako3')
+        await nako.runAsync(code, 'main.nako3')
       },
       (err) => {
         assert(err instanceof NakoImportError)
         assert(err.message.includes('テスト'))
         assert.strictEqual(err.line, 0) // 1行目
         assert.strictEqual(err.file, 'main.nako3')
+        return true
       }
     )
   })
