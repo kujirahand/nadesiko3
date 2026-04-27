@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [24.x, 22.x, 18.x]
+        # ドキュメント上の最低サポートに合わせて 20.x も CI 対象に含めます
+        node-version: [24.x, 22.x, 20.x]
 
     steps:
       - name: Checkout submodule
