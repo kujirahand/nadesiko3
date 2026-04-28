@@ -683,18 +683,19 @@ export default {
       return fse.mkdirpSync(path)
     }
   },
-  'ファイルコピー': { // @パスAをパスBへファイルコピーする(コピー先が存在するなら失敗) // @ふぁいるこぴー
+  'ファイルコピーデフォルト動作': { type: 'var', value: '上書禁止' }, // @ふぁいるこぴーでふぉるとどうさ
+  'ファイルコピー': { // @パスAをパスBへファイルコピーする(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書きコピー、それ以外はコピー先が存在するなら失敗) // @ふぁいるこぴー
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
     asyncFn: true,
     fn: async function(a: string, b: string, sys: NakoSystem) {
-      // コピー先が既に存在する場合はエラー
-      if (await fse.pathExists(b)) {
+      const mode: string = sys.__getSysVar('ファイルコピーデフォルト動作')
+      const overwrite = (mode === '上書き' || mode === '上書' || mode === 'overwrite')
+      if (!overwrite && await fse.pathExists(b)) {
         throw new Error(`ファイルコピー先に同名のファイルまたはフォルダが存在します: ${b}`)
       }
-      // 進捗コールバック付きでコピーを実行（overwrite: false で衝突時はエラー）
-      await copyMergeWithProgress(a, b, false, sys)
+      await copyMergeWithProgress(a, b, overwrite, sys)
     },
     return_none: true
   },
@@ -721,18 +722,18 @@ export default {
     },
     return_none: false
   },
-  'ファイル移動': { // @パスAをパスBへ移動する(移動先が存在するなら失敗) // @ふぁいるいどう
+  'ファイル移動': { // @パスAをパスBへ移動する(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書き移動、それ以外は移動先が存在するなら失敗) // @ふぁいるいどう
     type: 'func',
     josi: [['から', 'を'], ['に', 'へ']],
     pure: true,
     asyncFn: true,
     fn: async function(a: string, b: string, sys: NakoSystem) {
-      // 移動先が既に存在する場合はエラー
-      if (await fse.pathExists(b)) {
+      const mode: string = sys.__getSysVar('ファイルコピーデフォルト動作')
+      const overwrite = (mode === '上書き' || mode === '上書' || mode === 'overwrite')
+      if (!overwrite && await fse.pathExists(b)) {
         throw new Error(`ファイル移動先に同名のファイルまたはフォルダが存在します: ${b}`)
       }
-      // 進捗コールバック付きでコピーを実行し、その後ソースを削除（overwrite: false で衝突時はエラー）
-      await copyMergeWithProgress(a, b, false, sys)
+      await copyMergeWithProgress(a, b, overwrite, sys)
       if (!sys.tags.__fileProcessStop) {
         await fse.remove(a)
       }
