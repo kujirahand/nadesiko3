@@ -12,7 +12,8 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // CONST
-const SERVER_PORT = 3000
+const SERVER_PORT = Number.parseInt(process.env.PORT || process.argv[2] || '3000', 10)
+const SERVER_HOST = process.env.NAKO3SERVER_HOST || undefined
 const rootDir = path.resolve(__dirname, '../../')
 
 // ライブラリがあるかチェック
@@ -84,12 +85,14 @@ const server = http.createServer(function (req, res) {
   })
 })
 // サーバを起動
-server.listen(SERVER_PORT, function () {
+server.listen(SERVER_PORT, SERVER_HOST, function () {
   const url = 'http://localhost:' + SERVER_PORT
   console.log('### 超簡易Webサーバが起動しました')
   console.log('### script: /src/nako3server.mjs')
   console.log('[URL]', url)
-  opener(url)
+  if (process.env.NAKO3SERVER_OPEN !== '0') {
+    opener(url)
+  }
 })
 
 // MIMEタイプ
