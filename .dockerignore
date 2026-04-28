@@ -1,0 +1,10 @@
+node_modules
+core/node_modules
+npm-debug.log*
+*.log
+.git
+.gitignore
+.DS_Store
+tmp
+coverage
+.nyc_output

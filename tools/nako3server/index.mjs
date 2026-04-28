@@ -12,8 +12,8 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // CONST
-const SERVER_PORT = Number.parseInt(process.env.PORT || process.argv[2] || '3000', 10)
-const SERVER_HOST = process.env.NAKO3SERVER_HOST || undefined
+const SERVER_PORT = resolveServerPort(3000)
+const SERVER_HOST = process.env.NAKO3SERVER_HOST || 'localhost'
 const rootDir = path.resolve(__dirname, '../../')
 
 // ライブラリがあるかチェック
@@ -86,9 +86,8 @@ const server = http.createServer(function (req, res) {
 })
 // サーバを起動
 server.listen(SERVER_PORT, SERVER_HOST, function () {
-  const url = 'http://localhost:' + SERVER_PORT
+  const url = 'http://' + SERVER_HOST + ':' + SERVER_PORT
   console.log('### 超簡易Webサーバが起動しました')
-  console.log('### script: /src/nako3server.mjs')
   console.log('[URL]', url)
   if (process.env.NAKO3SERVER_OPEN !== '0') {
     opener(url)
@@ -123,4 +122,16 @@ function isDir (pathName) {
     return false
   }
   return false
+}
+
+// ポート番号を検証して、安全な値のみを利用する
+function resolveServerPort (defaultPort) {
+  const rawPort = process.env.PORT || process.argv[2] || defaultPort
+  const port = Number.parseInt(rawPort, 10)
+  if (Number.isNaN(port) || port < 0 || port > 65535) {
+    console.error(`[ERROR] 無効なポート番号です: ${rawPort}`)
+    console.error('[ERROR] 環境変数 PORT またはコマンドライン引数には 0 から 65535 の整数を指定してください。')
+    process.exit(1)
+  }
+  return port
 }
