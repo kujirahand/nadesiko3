@@ -4,39 +4,91 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Browser Smoke Tests</title>
-  <link rel="stylesheet" href="/mocha/mocha.css">
 </head>
 <body>
-  <div id="mocha"></div>
-  <!-- mochaブラウザバンドル（UMD形式）をscriptタグで読み込んでグローバルに設定する -->
-  <script src="/mocha/mocha.js"></script>
   <script type="module">
-    // mochaをbddモードで初期化する（describe/itなどのグローバル関数を設定する）
-    mocha.setup({ ui: 'bdd', reporter: 'html', timeout: 10000 })
+    import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
+    import PluginBrowser from 'nako3/plugin_browser.mjs'
 
-    // 失敗したテストの詳細を収集する
-    window.__playwrightFailures__ = []
+    function createCompiler () {
+      const nako = new NakoCompiler()
+      nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
+      return nako
+    }
 
-    // テストファイルを動的インポートする（mochaのsetup後に実行することで
-    // describeがグローバルに登録されるタイミングを正しく制御する）
-    await import('/test-browser/test/browser/test/plugin_browser_smoke_test.js')
+    function assertEqual (actual, expected, message) {
+      if (actual !== expected) {
+        throw new Error(`${message} (actual=${actual}, expected=${expected})`)
+      }
+    }
 
-    // mochaを実行してPlaywrightに結果を通知する
-    const runner = mocha.run()
-    runner.on('fail', (testCase, err) => {
-      window.__playwrightFailures__.push({
-        title: testCase.fullTitle(),
-        error: err.message
-      })
-    })
-    runner.on('end', () => {
-      window.__playwright_done__ = {
-        failures: runner.stats.failures,
-        passes: runner.stats.passes,
-        total: runner.stats.tests,
-        failures_detail: window.__playwrightFailures__
+    const failures = []
+    async function runCase (title, fn) {
+      try {
+        await fn()
+      } catch (error) {
+        failures.push({
+          title,
+          error: error?.message || String(error)
+        })
+      }
+    }
+
+    await runCase('言う', () => {
+      const nako = createCompiler()
+      const originalAlert = window.alert
+      let count = 0
+      window.alert = (msg) => {
+        if (msg === 'あいうえお') count++
+      }
+      try {
+        nako.run('「あいうえお」を言う')
+        assertEqual(count, 1, 'alert呼び出し回数')
+      } finally {
+        window.alert = originalAlert
       }
     })
+
+    await runCase('尋ねる', () => {
+      const nako = createCompiler()
+      const originalPrompt = window.prompt
+      let count = 0
+      window.prompt = (msg) => {
+        if (msg === 'かきくけこ') count++
+        return 'abc'
+      }
+      try {
+        const result = nako.run('A=「かきくけこ」を尋ねる;AをJSONエンコードして表示')
+        assertEqual(result.log, '"abc"', 'prompt戻り値')
+        assertEqual(count, 1, 'prompt呼び出し回数')
+      } finally {
+        window.prompt = originalPrompt
+      }
+    })
+
+    await runCase('二択', () => {
+      const nako = createCompiler()
+      const originalConfirm = window.confirm
+      let count = 0
+      window.confirm = (msg) => {
+        if (msg === 'これ') count++
+        return true
+      }
+      try {
+        const result = nako.run('A=「これ」で二択;AをJSONエンコードして表示')
+        assertEqual(result.log, 'true', 'confirm戻り値')
+        assertEqual(count, 1, 'confirm呼び出し回数')
+      } finally {
+        window.confirm = originalConfirm
+      }
+    })
+
+    window.__playwright_done__ = {
+      failures: failures.length,
+      passes: 3 - failures.length,
+      total: 3,
+      failures_detail: failures
+    }
   </script>
 </body>
 </html>

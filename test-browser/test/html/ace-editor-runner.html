@@ -21,7 +21,6 @@
   <script src="/release/plugin_turtle.js"></script>
   <script src="/release/plugin_caniuse.js"></script>
   <script src="/release/plugin_webworker.js"></script>
-  <link rel="stylesheet" href="/mocha/mocha.css">
 </head>
 <body>
 単純な例
@@ -118,37 +117,9 @@ setTimeoutで起きたエラーの表示
       // すべての初期化が完了したことをテストに通知する
       window.ok = true
     }
-    main().catch((err) => { console.error(err) })
-  </script>
-
-  <!-- mochaテストランナー -->
-  <div id="mocha"></div>
-  <script src="/mocha/mocha.js"></script>
-  <script type="module">
-    // mochaをbddモードで初期化する
-    mocha.setup({ ui: 'bdd', reporter: 'html', timeout: 120000 })
-
-    // 失敗したテストの詳細を収集する
-    window.__playwrightFailures__ = []
-
-    // ace editorのsmokeテストを動的インポートする
-    await import('/test-browser/test/ace_editor/test/ace_editor_smoke_test.js')
-
-    // mochaを実行してPlaywrightに結果を通知する
-    const runner = mocha.run()
-    runner.on('fail', (testCase, err) => {
-      window.__playwrightFailures__.push({
-        title: testCase.fullTitle(),
-        error: err.message
-      })
-    })
-    runner.on('end', () => {
-      window.__playwright_done__ = {
-        failures: runner.stats.failures,
-        passes: runner.stats.passes,
-        total: runner.stats.tests,
-        failures_detail: window.__playwrightFailures__
-      }
+    main().catch((err) => {
+      console.error(err)
+      window.ok = false
     })
   </script>
 </body>

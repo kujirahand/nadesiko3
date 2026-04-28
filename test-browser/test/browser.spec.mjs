@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test'
 
 /**
- * mochaを使ったHTMLページを開いて実行結果を取得するヘルパー関数
+ * テストランナーHTMLページを開いて実行結果を取得するヘルパー関数
  * @param {import('@playwright/test').Page} page
  * @param {string} url - テストランナーHTMLのURL
- * @param {number} timeout - mochaテスト完了待機タイムアウト（ms）
+ * @param {number} timeout - テスト完了待機タイムアウト（ms）
  */
-async function runMochaPage (page, url, timeout = 60000) {
+async function runRunnerPage (page, url, timeout = 60000) {
   await page.goto(url)
-  // mochaが完了するまで待つ（window.__playwright_done__が設定されるまで）
+  // ランナーが完了するまで待つ（window.__playwright_done__が設定されるまで）
   await page.waitForFunction(() => window.__playwright_done__ !== undefined, { timeout })
   return page.evaluate(() => window.__playwright_done__)
 }
@@ -28,12 +28,12 @@ function assertNoFailures (result) {
 }
 
 test('browser smoke test', async ({ page }) => {
-  const result = await runMochaPage(page, '/test-browser/test/html/browser-smoke-runner.html')
+  const result = await runRunnerPage(page, '/test-browser/test/html/browser-smoke-runner.html')
   assertNoFailures(result)
 })
 
 test('browser full test', async ({ page }) => {
   // フルテストはより長いタイムアウトを使用する
-  const result = await runMochaPage(page, '/test-browser/test/html/browser-full-runner.html', 90000)
+  const result = await runRunnerPage(page, '/test-browser/test/html/browser-full-runner.html', 90000)
   assertNoFailures(result)
 })
