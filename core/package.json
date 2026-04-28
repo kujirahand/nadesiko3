@@ -13,8 +13,6 @@
     "clean": "cnako3 batch/clean.nako3",
     "tsc": "tsc --watch",
     "build": "tsc && node command/snako.mjs batch/build_nako_version.nako3 && tsc",
-    "eslint": "eslint ./src/*.mts",
-    "eslint:fix": "eslint ./src/*.mts --fix",
     "hello": "node command/snako.mjs -e \"「hello」を表示\""
   },
   "bin": {
@@ -38,13 +36,8 @@
     "sample"
   ],
   "devDependencies": {
-    "@types/node": "^24.2.1",
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "eslint": "^9.33.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^7.2.1",
-    "typescript": "^5.9.2"
+    "@types/node": "^25.6.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "cross-env": "^10.0.0",
