@@ -26,6 +26,7 @@
     "module": "ESNext",                                  /* Specify what module code is generated. */
     // "rootDir": "./",                                  /* Specify the root folder within your source files. */
     "moduleResolution": "node",                          /* Specify how TypeScript looks up a file from a given module specifier. */
+    "ignoreDeprecations": "6.0",                         /* TypeScript 6.0 の非推奨警告を抑制する */
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     "paths": {
     },
