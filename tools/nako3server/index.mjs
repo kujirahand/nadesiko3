@@ -86,7 +86,7 @@ const server = http.createServer(function (req, res) {
 })
 // サーバを起動
 server.listen(SERVER_PORT, SERVER_HOST, function () {
-  const url = 'http://localhost:' + SERVER_PORT
+  const url = 'http://' + SERVER_HOST + ':' + SERVER_PORT
   console.log('### 超簡易Webサーバが起動しました')
   console.log('[URL]', url)
   if (process.env.NAKO3SERVER_OPEN !== '0') {

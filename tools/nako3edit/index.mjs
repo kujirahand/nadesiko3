@@ -132,9 +132,8 @@ const server = http.createServer(function (req, res) {
 })
 // サーバを起動
 server.listen(SERVER_PORT, SERVER_HOST, function () {
-  const url = 'http://localhost:' + SERVER_PORT
+  const url = 'http://' + SERVER_HOST + ':' + SERVER_PORT
   console.log('### 超簡易Webサーバが起動しました')
-  console.log('### script: /tools/nako3edit/index.mjs')
   console.log('[URL]', url)
   if (process.env.NAKO3EDIT_OPEN !== '0') {
     opener(url)
@@ -358,7 +357,7 @@ function apiAddPlugins(res, params) {
 
 // ポート番号の解決
 function resolveServerPort (defaultPort) {
-  const rawPort = process.env.PORT || process.argv[2] || defaultPort
+  const rawPort = process.env.NAKO3EDIT_PORT || process.argv[2] || defaultPort
   const port = Number.parseInt(rawPort, 10)
   if (Number.isNaN(port) || port < 0 || port > 65535) {
     console.error(`[ERROR] 無効なポート番号です: ${rawPort}`)

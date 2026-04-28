@@ -12,13 +12,10 @@ ENV NAKO3SERVER_OPEN=0 \
 
 # 依存関係のキャッシュが効くように package.json を先にコピーする
 COPY package*.json ./
-COPY core/package*.json ./core/
+RUN npm install
 
-RUN npm install && \
-    cd core && npm install
-
+# ソースコードをコピー
 COPY . .
-
 # なでしこ3をビルドして、cnako3/nako3server/nako3edit をコンテナ内コマンドとして使えるようにする
 RUN npm run build && \
     chmod +x src/cnako3.mjs tools/nako3server/index.mjs tools/nako3edit/index.mjs && \
