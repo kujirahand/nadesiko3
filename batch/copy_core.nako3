@@ -11,7 +11,9 @@ NAKO3CORE_DIR=REPOS_DIR&「/nadesiko3core」
 「{NAKO3_DIR}/core/src/*.mts」を「{NAKO3CORE_DIR}/src」へ列挙コピー。
 「{NAKO3_DIR}/core/*.mts」を「{NAKO3CORE_DIR}」へ列挙コピー。
 「{NAKO3_DIR}/core/test/*」を「{NAKO3CORE_DIR}/test」へ列挙コピー。
-「{NAKO3_DIR}/core/package.json」を「{NAKO3CORE_DIR}/package.json」へファイル上書きコピー。
+「{NAKO3_DIR}/core/batch/*」を「{NAKO3CORE_DIR}/batch」へ列挙コピー。
+「{NAKO3_DIR}/core/package.json」を「{NAKO3CORE_DIR}/package.json」へファイル上書コピー。
+「{NAKO3_DIR}/core/tsconfig.json」を「{NAKO3CORE_DIR}/tsconfig.json」へファイル上書コピー。
 「[OK] COPY」と表示。
 ＃＃＃
 MSG="auto commit ver{ナデシコバージョン}"
