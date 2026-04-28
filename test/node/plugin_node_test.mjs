@@ -286,6 +286,18 @@ describe('plugin_node_test', () => {
       fs.rmSync(tmp, { recursive: true })
     }
   })
+  it('ファイルコピー - デフォルト動作をoverwriteにすると上書き成功', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-cp-overwrite-'))
+    try {
+      const src = path.join(tmp, 'src.txt')
+      const dest = path.join(tmp, 'dest.txt')
+      fs.writeFileSync(src, 'new-data')
+      fs.writeFileSync(dest, 'old-data')
+      await cmp(`ファイルコピーデフォルト動作="overwrite"。「${src}」を「${dest}」へファイルコピー。「${dest}」を読む。トリムして表示。`, 'new-data', 200)
+    } finally {
+      fs.rmSync(tmp, { recursive: true })
+    }
+  })
   it('ファイル上書コピー - ディレクトリのマージコピー', async () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-merge-cp-'))
     try {
@@ -331,6 +343,19 @@ describe('plugin_node_test', () => {
       assert.strictEqual(g.numFailures > 0, true, '移動先が存在する場合はエラーになるべき')
     } finally {
       fs.rmSync(tmp, { recursive: true })
+    }
+  })
+  it('ファイル移動 - デフォルト動作を上書きにすると上書き成功', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-mv-overwrite-'))
+    try {
+      const src = path.join(tmp, 'src.txt')
+      const dest = path.join(tmp, 'dest.txt')
+      fs.writeFileSync(src, 'moved-data')
+      fs.writeFileSync(dest, 'old-data')
+      await cmp(`ファイルコピーデフォルト動作="上書き"。「${src}」を「${dest}」へファイル移動。「${dest}」を読む。トリムして表示。`, 'moved-data', 200)
+      assert.strictEqual(fs.existsSync(src), false, '上書き移動後はソースファイルが消えるべき')
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true })
     }
   })
   it('ファイル上書移動 - ディレクトリのマージ移動', async () => {
