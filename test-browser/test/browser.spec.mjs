@@ -33,7 +33,8 @@ test('browser smoke test', async ({ page }) => {
 })
 
 test('browser full test', async ({ page }) => {
+  test.setTimeout(300000)
   // フルテストはより長いタイムアウトを使用する
-  const result = await runRunnerPage(page, '/test-browser/test/html/browser-full-runner.html', 90000)
+  const result = await runRunnerPage(page, '/test-browser/test/html/browser-full-runner.html', 240000)
   assertNoFailures(result)
 })

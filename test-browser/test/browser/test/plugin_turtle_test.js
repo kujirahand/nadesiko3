@@ -247,23 +247,28 @@ describe('plugin_turtle_test', () => {
     // const pluginClone = Object.assign({}, PluginTurtle)
     // nako.addPluginFile('PluginTurtle', 'plugin_turtle.js', pluginClone)
     nako.addPluginFile('PluginTurtle', 'plugin_turtle.js', PluginTurtle)
+    // 代入で利用するため戻り値あり(returnNone=false)で登録する
     nako.addFunc('getElementyID', [['の']], (id, sys) => {
       return document.getElementById(id)
-    })
+    }, false)
     nako.addFunc('smoothオフ', [['の']], (id, sys) => {
       let ctx = null
+      const turtles = sys?.tags?.turtles
+      if (!turtles) {
+        return null
+      }
       if (id >= 0) {
-        if (id < sys._turtle.list.length) {
-          ctx = sys._turtle.list[id].ctx
+        if (id < turtles.turtles.length) {
+          ctx = turtles.turtles[id].ctx
         }
       } else {
-        ctx = sys._turtle.ctx
+        ctx = turtles.ctx
       }
       if (ctx) {
         setImageSmoothingEnabledToCtx(ctx, false)
       }
       return id
-    })
+    }, false)
   })
 
   // --- test ---

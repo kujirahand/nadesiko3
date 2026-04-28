@@ -1,38 +1,87 @@
-import * as td from 'testdouble'
-import { assert } from 'chai'
 import { NakoCompiler } from 'nadesiko3core/src/nako3.mjs'
 import PluginBrowser from 'nako3/plugin_browser.mjs'
 
-describe('plugin_browser_smoke_test', () => {
-  let nako = null
+function createCompiler () {
+  const nako = new NakoCompiler()
+  nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
+  return nako
+}
 
-  beforeEach(() => {
-    nako = new NakoCompiler()
-    nako.addPluginFile('PluginBrowser', 'plugin_browser.js', PluginBrowser)
+function assertEqual (actual, expected, message) {
+  if (actual !== expected) {
+    throw new Error(`${message} (actual=${actual}, expected=${expected})`)
+  }
+}
+
+async function runCase (title, fn, failures) {
+  try {
+    await fn()
+  } catch (error) {
+    failures.push({
+      title,
+      error: error?.stack || error?.message || String(error)
+    })
+  }
+}
+
+/**
+ * 旧plugin_browser_smoke_test.jsの内容をMocha非依存で実行する
+ */
+export async function runBrowserSmokeCases () {
+  const failures = []
+
+  await runCase('言う', () => {
+    const nako = createCompiler()
+    const originalAlert = window.alert
+    let count = 0
+    window.alert = (msg) => {
+      if (msg === 'あいうえお') count++
+    }
+    try {
+      nako.run('「あいうえお」を言う')
+      assertEqual(count, 1, 'alert呼び出し回数')
+    } finally {
+      window.alert = originalAlert
+    }
   })
 
-  afterEach(() => {
-    td.reset()
+  await runCase('尋ねる', () => {
+    const nako = createCompiler()
+    const originalPrompt = window.prompt
+    let count = 0
+    window.prompt = (msg) => {
+      if (msg === 'かきくけこ') count++
+      return 'abc'
+    }
+    try {
+      const result = nako.run('A=「かきくけこ」を尋ねる;AをJSONエンコードして表示')
+      assertEqual(result.log, '"abc"', 'prompt戻り値')
+      assertEqual(count, 1, 'prompt呼び出し回数')
+    } finally {
+      window.prompt = originalPrompt
+    }
   })
 
-  it('言う', () => {
-    const windowalert = td.replace(window, 'alert')
-    td.when(windowalert('あいうえお')).thenReturn(undefined)
-    nako.run('「あいうえお」を言う')
-    td.verify(windowalert(td.matchers.anything()), { times: 1 })
+  await runCase('二択', () => {
+    const nako = createCompiler()
+    const originalConfirm = window.confirm
+    let count = 0
+    window.confirm = (msg) => {
+      if (msg === 'これ') count++
+      return true
+    }
+    try {
+      const result = nako.run('A=「これ」で二択;AをJSONエンコードして表示')
+      assertEqual(result.log, 'true', 'confirm戻り値')
+      assertEqual(count, 1, 'confirm呼び出し回数')
+    } finally {
+      window.confirm = originalConfirm
+    }
   })
 
-  it('尋ねる', () => {
-    const windowprompt = td.replace(window, 'prompt')
-    td.when(windowprompt('かきくけこ')).thenReturn('abc')
-    assert.strictEqual(nako.run('A=「かきくけこ」を尋ねる;AをJSONエンコードして表示').log, '"abc"')
-    td.verify(windowprompt(td.matchers.anything()), { times: 1 })
-  })
-
-  it('二択', () => {
-    const windowconfirm = td.replace(window, 'confirm')
-    td.when(windowconfirm('これ')).thenReturn(true)
-    assert.strictEqual(nako.run('A=「これ」で二択;AをJSONエンコードして表示').log, 'true')
-    td.verify(windowconfirm(td.matchers.anything()), { times: 1 })
-  })
-})
+  return {
+    total: 3,
+    failures,
+    passes: 3 - failures.length
+  }
+}

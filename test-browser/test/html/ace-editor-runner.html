@@ -92,35 +92,40 @@ setTimeoutで起きたエラーの表示
 ここまで
 </div>
   <script>
-    const editor1 = navigator.nako3.setupEditor('editor1')
-    navigator.nako3.setupEditor('editor2')
-    // smokeテストでは不要なエディタも初期化してUI構造は維持する
-    navigator.nako3.setupEditor('editor3')
-    navigator.nako3.setupEditor('editor4')
-    navigator.nako3.setupEditor('editor5')
-    navigator.nako3.setupEditor('editor6')
-    navigator.nako3.setupEditor('editor7')
-    navigator.nako3.setupEditor('editor8')
-    navigator.nako3.setupEditor('editor9')
-    const editor10 = navigator.nako3.setupEditor('editor10')
-    navigator.nako3.setupEditor('editor11')
-    const editor12 = navigator.nako3.setupEditor('editor12')
-    window.editor12 = editor12
-    editor12.codeLensListeners.push({ name: 'test', callback: (testName) => { window.codeLensClicked = testName } })
+    ;(async () => {
+      try {
+        const editor1 = navigator.nako3.setupEditor('editor1')
+        navigator.nako3.setupEditor('editor2')
+        navigator.nako3.setupEditor('editor3')
+        navigator.nako3.setupEditor('editor4')
+        navigator.nako3.setupEditor('editor5')
+        navigator.nako3.setupEditor('editor6')
+        navigator.nako3.setupEditor('editor7')
+        navigator.nako3.setupEditor('editor8')
+        navigator.nako3.setupEditor('editor9')
+        const editor10 = navigator.nako3.setupEditor('editor10')
+        navigator.nako3.setupEditor('editor11')
+        const editor12 = navigator.nako3.setupEditor('editor12')
+        window.editor12 = editor12
+        editor12.codeLensListeners.push({ name: 'test', callback: (testName) => { window.codeLensClicked = testName } })
 
-    // smokeテストに必要な最小限の実行のみ行う
-    const main = async () => {
-      await editor1.run({ outputContainer: document.getElementById('editor1-output') }).promise
-      await editor10.run({}).promise
-      // editor10で実行時エラーのマーカー描画が反映されるまで待つ
-      await new Promise((resolve) => setTimeout(resolve, 500))
-      // すべての初期化が完了したことをテストに通知する
-      window.ok = true
-    }
-    main().catch((err) => {
-      console.error(err)
-      window.ok = false
-    })
+        // smokeテストに必要な最小限の実行のみ行う
+        await editor1.run({ outputContainer: document.getElementById('editor1-output') }).promise
+        await editor10.run({}).promise
+        // editor10で実行時エラーのマーカー描画が反映されるまで待つ
+        await new Promise((resolve) => setTimeout(resolve, 500))
+        window.ok = true
+      } catch (err) {
+        console.error(err)
+        window.__ace_runner_error__ = err?.stack || err?.message || String(err)
+        window.ok = false
+      } finally {
+        // 予期しない経路でも待機条件(window.ok)を必ず満たす
+        if (window.ok === undefined) {
+          window.ok = false
+        }
+      }
+    })()
   </script>
 </body>
 </html>
