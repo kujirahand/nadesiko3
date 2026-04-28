@@ -5,14 +5,22 @@ class CompareUtil {
     this._nako = nako
   }
 
+  _runAndGetLog (code) {
+    // 旧ブラウザテストは各ケースで単一ログ出力を期待するため、毎回ログを初期化する
+    if (this.nako && this.nako.logger && typeof this.nako.logger.clear === 'function') {
+      this.nako.logger.clear()
+    }
+    return this.nako.runSync(code, 'main.nako3', { resetAll: true, resetEnv: true }).log
+  }
+
   cmp (code, res) {
     this.nako.logger.debug('code=' + code)
-    assert.strictEqual(this.nako.run(code).log, res)
+    assert.strictEqual(this._runAndGetLog(code), res)
   }
 
   cmpex (code, err, res) {
     this.nako.logger.debug('code=' + code)
-    assert.throws(() => { this.nako.run(code) }, err, res)
+    assert.throws(() => { this._runAndGetLog(code) }, err, res)
   }
 
   get nako () {
