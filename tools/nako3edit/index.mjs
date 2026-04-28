@@ -12,8 +12,8 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // CONST
-const SERVER_PORT = Number.parseInt(process.env.NAKO3EDIT_PORT || process.argv[2] || '8888', 10)
-const SERVER_HOST = process.env.NAKO3EDIT_HOST || undefined
+const SERVER_PORT = resolveServerPort(8888)
+const SERVER_HOST = process.env.NAKO3EDIT_HOST || 'localhost'
 const rootDir = path.resolve(__dirname)
 const releaseDir = path.resolve(path.join(__dirname, '../../release'))
 const isWin = process.platform === 'win32'
@@ -354,4 +354,16 @@ function apiAddPlugins(res, params) {
   } catch (err) {
     res.end('"[ERROR] プラグインの取得に失敗しました。"')
   }
+}
+
+// ポート番号の解決
+function resolveServerPort (defaultPort) {
+  const rawPort = process.env.PORT || process.argv[2] || defaultPort
+  const port = Number.parseInt(rawPort, 10)
+  if (Number.isNaN(port) || port < 0 || port > 65535) {
+    console.error(`[ERROR] 無効なポート番号です: ${rawPort}`)
+    console.error('[ERROR] 環境変数 PORT またはコマンドライン引数には 0 から 65535 の整数を指定してください。')
+    process.exit(1)
+  }
+  return port
 }
