@@ -99,7 +99,7 @@
     "chai": "^6.2.2",
     "cross-env": "^10.1.0",
     "esbuild": "0.28.0",
-    "eslint": "^9.39.3",
+    "eslint": "^10.4.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-n": "^17.24.0",
     "eslint-plugin-promise": "^7.2.1",
