@@ -181,7 +181,9 @@ function copyError() {
   navigator.clipboard.writeText(errorText).then(() => {
     alert('エラー内容をコピーしました');
   }).catch(err => {
-    alert('エラー内容のコピーに失敗しました: ' + err);
+    const errorMessage = (err && err.message) ? err.message : String(err);
+    console.error('エラー内容のコピーに失敗しました', err);
+    alert('エラー内容のコピーに失敗しました。ブラウザの権限設定や HTTPS 接続を確認してください。\n詳細: ' + errorMessage);
   });
 }
 
