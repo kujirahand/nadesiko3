@@ -2514,7 +2514,7 @@ export class NakoParser extends NakoParserBase {
       }
 
       // オブジェクトプロパティ構文(参照) word$prop (#1793)
-      if (word.josi === '' && (this.check2(['$', 'word']) || this.check2(['$', 'string']))) {
+      if (this.check2(['$', 'word']) || this.check2(['$', 'string'])) {
         const propList: Ast[] = []
         let josi = ''
         while (this.check('$')) {
