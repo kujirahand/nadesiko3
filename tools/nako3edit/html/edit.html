@@ -64,6 +64,12 @@ FNAME="無題.nako3"
       Hの「(\[\d+m)」を「」に正規表現置換してHに代入。
       Hの「(\[.*?\])」を「<span style='color:red;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
       Hの「(『.*?』)」を「<span style='color:blue;font-weight:bold;'>$1</span>」に正規表現置換してHに代入。
+      H = 「
+        <div class="error">{H}</div>
+        <div style="text-align: right; margin-top: 8px;">
+          <button class="btn btn-sm" onclick="copyError()">エラーをコピー</button>
+        </div>
+      」
     ここまで。
     「#result」にHをDOMテキスト設定。
   ここまで。
@@ -167,5 +173,18 @@ FNAME="無題.nako3"
     <p class="py-4">なでしこ3のNode.jsランタイムを実行するためのエディタです。</p>
   </div>
 </div>
+
+<!-- 補助スクリプト -->
+<script>
+function copyError() {
+  const errorText = document.querySelector('.error').innerText;
+  navigator.clipboard.writeText(errorText).then(() => {
+    alert('エラー内容をコピーしました');
+  }).catch(err => {
+    alert('エラー内容のコピーに失敗しました: ' + err);
+  });
+}
+
+</script>
 
 </html>

@@ -91,3 +91,13 @@ h1 {
   text-align: left;
   border-radius: 0.4em;
 }
+
+.error {
+  background-color: #fff0f0;
+  border: 1px solid #ff8080;
+  padding: 8px;
+  margin: 4px;
+  font-size: 1em;
+  text-align: left;
+  border-radius: 0.4em;
+}
