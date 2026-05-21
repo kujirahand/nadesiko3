@@ -1542,7 +1542,7 @@ export class NakoParser extends NakoParserBase {
 
     // 「**して、**」の場合も一度切る
     if (RenbunJosi.indexOf(t.josi) >= 0) {
-      funcNode.josi = 'して'
+      funcNode.josi = (this.isReadingCalc && t.josi === 'には') ? '' : 'して'
       return funcNode
     }
     // 続き
@@ -2139,7 +2139,7 @@ export class NakoParser extends NakoParserBase {
     const t = this.yGetArg()
     if (!t) { return null }
     // 助詞がある？ つまり、関数呼び出しがある？
-    if (t.josi === '') { return t } // 値だけの場合
+    if (t.josi === '' && !this.canNextFuncTakeNoJosiArg()) { return t } // 値だけの場合
     // 関数の呼び出しがあるなら、スタックに載せて関数読み出しを呼ぶ
     const tmpReadingCalc = this.isReadingCalc
     this.isReadingCalc = true
@@ -2174,6 +2174,15 @@ export class NakoParser extends NakoParserBase {
       return this.yGetArgOperator(fCalc)
     }
     return fCalc
+  }
+
+  /** 次の関数が空助詞の値を引数として受け取れるか */
+  canNextFuncTakeNoJosiArg(): boolean {
+    if (!this.check('func')) { return false }
+    const func = this.peek() as TokenCallFunc | null
+    const josiList = func?.meta?.josi
+    if (!josiList) { return false }
+    return josiList.some((josi) => josi.indexOf('') >= 0)
   }
 
   /** @returns {Ast | null} */
