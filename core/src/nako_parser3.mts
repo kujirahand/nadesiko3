@@ -2497,7 +2497,7 @@ export class NakoParser extends NakoParserBase {
       const word = this.getVarNameRef(t)
 
       // word[n] || word@n
-      if (word.josi === '' && this.checkTypes(['[', '@'])) {
+      if ((word.josi === '' && this.checkTypes(['[', '@'])) || (word.josi !== '' && this.check('@'))) {
         const ast: Ast = {
           type: 'ref_array', // 配列参照
           name: word,
