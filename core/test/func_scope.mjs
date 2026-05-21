@@ -76,4 +76,37 @@ add11 = make_add(1)
 add11(2)を表示
 `, '13')
   })
+
+  it('戻り値のローカル関数を文として呼んだとき「それ無効」を反映する #2268', async () => {
+    await cmp(`
+curry_add = 関数(あ)
+  inner = 関数(い)
+    それはあ + い
+  ここまで
+  innerを戻す
+ここまで
+inc = curry_add(1)
+それは99
+「それ無効」で実行速度優先
+  inc(2)
+ここまで
+それを表示
+`, '99')
+  })
+
+  it('関数呼び出しの結果のカッコ未閉じエラーで関数名がundefinedにならない #2268', async () => {
+    const nako = new NakoCompiler()
+    await assert.rejects(
+      () => nako.runAsync(`
+curry_add = 関数(あ)
+  inner = 関数(い)
+    それはあ + い
+  ここまで
+  innerを戻す
+ここまで
+curry_add(1)(2を表示
+`, 'main.nako3'),
+      /C風関数『関数呼び出しの結果』でカッコが閉じていません/
+    )
+  })
 })

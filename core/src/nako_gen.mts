@@ -1783,7 +1783,9 @@ export class NakoGen {
     if (isExpression) {
       return funcCall
     }
-    return `__self.__setSore(${funcCall});\n`
+    const sorePrefex = (this.speedMode.invalidSore === 0) ? '__self.__setSore(' : ''
+    const sorePostfix = (this.speedMode.invalidSore === 0) ? ')' : ''
+    return this.convLineno(node, false) + `${sorePrefex}${funcCall}${sorePostfix};\n`
   }
 
   convRenbun(node: AstOperator): string {

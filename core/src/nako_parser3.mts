@@ -813,7 +813,7 @@ export class NakoParser extends NakoParserBase {
     return ans
   }
 
-  yGetArgParen(y: Ast[]): Ast[] { // C言語風呼び出しでカッコの中を取得
+  yGetArgParen(y: Ast[], funcName?: string): Ast[] { // C言語風呼び出しでカッコの中を取得
     let isClose = false
     const si = this.stack.length
     while (!this.isEOF()) {
@@ -831,7 +831,8 @@ export class NakoParser extends NakoParserBase {
       break
     }
     if (!isClose) {
-      throw NakoSyntaxError.fromNode(`C風関数『${(y[0] as AstStrValue).value}』でカッコが閉じていません`, y[0])
+      const name = funcName || (y[0] as AstStrValue).value || this.nodeToStr(y[0], { depth: 0, typeName: '関数' }, false)
+      throw NakoSyntaxError.fromNode(`C風関数『${name}』でカッコが閉じていません`, y[0])
     }
     const a: Ast[] = []
     while (si < this.stack.length) {
@@ -846,7 +847,7 @@ export class NakoParser extends NakoParserBase {
     let node = callee
     while (this.check('(')) {
       this.get() // skip '('
-      const args = this.yGetArgParen([node])
+      const args = this.yGetArgParen([node], '関数呼び出しの結果')
       if (!this.check(')')) {
         throw NakoSyntaxError.fromNode('C風関数呼び出しのエラー', node)
       }
