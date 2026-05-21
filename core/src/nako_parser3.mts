@@ -813,7 +813,7 @@ export class NakoParser extends NakoParserBase {
     return ans
   }
 
-  yGetArgParen(y: Ast[]): Ast[] { // C言語風呼び出しでカッコの中を取得
+  yGetArgParen(y: Ast[], funcName?: string): Ast[] { // C言語風呼び出しでカッコの中を取得
     let isClose = false
     const si = this.stack.length
     while (!this.isEOF()) {
@@ -831,7 +831,8 @@ export class NakoParser extends NakoParserBase {
       break
     }
     if (!isClose) {
-      throw NakoSyntaxError.fromNode(`C風関数『${(y[0] as AstStrValue).value}』でカッコが閉じていません`, y[0])
+      const name = funcName || (y[0] as AstStrValue).value || this.nodeToStr(y[0], { depth: 0, typeName: '関数' }, false)
+      throw NakoSyntaxError.fromNode(`C風関数『${name}』でカッコが閉じていません`, y[0])
     }
     const a: Ast[] = []
     while (si < this.stack.length) {
@@ -839,6 +840,31 @@ export class NakoParser extends NakoParserBase {
       if (v) { a.unshift(v) }
     }
     return a
+  }
+
+  /** 関数の戻り値を続けてC風呼び出しする */
+  yApplyCallValue(callee: Ast): Ast {
+    let node = callee
+    while (this.check('(')) {
+      this.get() // skip '('
+      const args = this.yGetArgParen([node], '関数呼び出しの結果')
+      if (!this.check(')')) {
+        throw NakoSyntaxError.fromNode('C風関数呼び出しのエラー', node)
+      }
+      const close = this.get()
+      node = {
+        type: 'call_value',
+        blocks: [node, ...args],
+        josi: close?.josi || '',
+        startOffset: node.startOffset,
+        endOffset: close?.endOffset,
+        line: node.line,
+        column: node.column,
+        file: node.file,
+        end: this.peekSourceMap()
+      } as AstBlocks
+    }
+    return node
   }
 
   /** @returns {AstRepeatTimes | null} */
@@ -2318,7 +2344,7 @@ export class NakoParser extends NakoParserBase {
           }
           asyncFn = !!meta.asyncFn
         }
-        return {
+        const funcNode = {
           type: 'func',
           name: funcName,
           blocks: args,
@@ -2328,6 +2354,7 @@ export class NakoParser extends NakoParserBase {
           ...map,
           end: this.peekSourceMap()
         } as AstCallFunc
+        return this.yApplyCallValue(funcNode)
       }
       throw NakoSyntaxError.fromNode('C風関数呼び出しのエラー', funcNameToken || NewEmptyToken())
     }
