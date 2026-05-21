@@ -841,6 +841,31 @@ export class NakoParser extends NakoParserBase {
     return a
   }
 
+  /** 関数の戻り値を続けてC風呼び出しする */
+  yApplyCallValue(callee: Ast): Ast {
+    let node = callee
+    while (this.check('(')) {
+      this.get() // skip '('
+      const args = this.yGetArgParen([node])
+      if (!this.check(')')) {
+        throw NakoSyntaxError.fromNode('C風関数呼び出しのエラー', node)
+      }
+      const close = this.get()
+      node = {
+        type: 'call_value',
+        blocks: [node, ...args],
+        josi: close?.josi || '',
+        startOffset: node.startOffset,
+        endOffset: close?.endOffset,
+        line: node.line,
+        column: node.column,
+        file: node.file,
+        end: this.peekSourceMap()
+      } as AstBlocks
+    }
+    return node
+  }
+
   /** @returns {AstRepeatTimes | null} */
   yRepeatTime(): AstRepeatTimes | null {
     const map = this.peekSourceMap()
@@ -2318,7 +2343,7 @@ export class NakoParser extends NakoParserBase {
           }
           asyncFn = !!meta.asyncFn
         }
-        return {
+        const funcNode = {
           type: 'func',
           name: funcName,
           blocks: args,
@@ -2328,6 +2353,7 @@ export class NakoParser extends NakoParserBase {
           ...map,
           end: this.peekSourceMap()
         } as AstCallFunc
+        return this.yApplyCallValue(funcNode)
       }
       throw NakoSyntaxError.fromNode('C風関数呼び出しのエラー', funcNameToken || NewEmptyToken())
     }
