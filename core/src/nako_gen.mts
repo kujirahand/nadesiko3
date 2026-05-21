@@ -32,6 +32,11 @@ interface PerformanceMonitor {
   systemFunctionBody: number; // システム関数(呼び出しコードを除く)
   mumeiId: number;
 }
+interface FunctionContext {
+  isAnonymous: boolean;
+  varsIndex: number;
+  usesClosure: boolean;
+}
 interface FindVarResult {
   i: number;
   name: string;
@@ -80,6 +85,7 @@ export class NakoGen {
   // 変数管理
   private varslistSet: VarsSet[] // [システム変数一覧, グローバル変数一覧, ローカル変数一覧]で変数セットを記録
   private varsSet: VarsSet // ローカルな変数を記録
+  private functionContextStack: FunctionContext[] // 関数生成時のレキシカルスコープ情報
   public debugOption: NakoDebugOption
   // public
   numAsyncFn: number
@@ -140,6 +146,7 @@ export class NakoGen {
     /** スタックトップ */
     this.varsSet = { isFunction: false, names: new Set(), readonly: new Set() }
     this.varslistSet[2] = this.varsSet
+    this.functionContextStack = []
 
     // 現在定義中の関数名
     this.defFuncName = ''
@@ -333,6 +340,11 @@ export class NakoGen {
     code += 'const __v0 = __self.__v0 = __self.__varslist[0];\n'
     code += 'const __v1 = __self.__v1 = __self.__varslist[1];\n'
     code += 'const __vars = __self.__vars = __self.__varslist[2];\n'
+    code += 'const __nako_make_closure = (local, parent) => ({\n' +
+      '  has: (key) => local.has(key) || (parent !== null && parent.has(key)),\n' +
+      '  get: (key) => local.has(key) ? local.get(key) : (parent !== null ? parent.get(key) : undefined),\n' +
+      '  set: (key, value) => { if (local.has(key) || parent === null || !parent.has(key)) { local.set(key, value); } else { parent.set(key, value); } return value; }\n' +
+      '});\n'
     code += `const __modList = __self.__modList = ${JSON.stringify(com.getModList())}\n`
     code += 'const __line = (lineno) => { __self.__v0.set(\'__line\', lineno); }\n'
     code += '__v0.set(\'__line\', \'l0:__getDefFuncCode\');\n'
@@ -572,6 +584,9 @@ export class NakoGen {
     case 'calc_func':
       code += this.convCallFunc(node as AstCallFunc, isExpression)
       break
+    case 'call_value':
+      code += this.convCallValue(node as AstBlocks, isExpression)
+      break
     case 'if':
       code += this.convIf(node as AstIf)
       break
@@ -654,6 +669,28 @@ export class NakoGen {
         isTop: true,
         js: this.varname_get(name),
         js_set: this.varname_set(name, String(jsvalue))
+      }
+    }
+    // 外側の無名関数のローカル変数をクロージャとして参照する #2268
+    const currentFunc = this.functionContextStack[this.functionContextStack.length - 1]
+    if (this.varslistSet.length > 4 && currentFunc?.isAnonymous) {
+      const currentIndex = this.varslistSet.length - 1
+      for (let i = currentIndex - 1; i >= 3; i--) {
+        if (this.varslistSet[i].names.has(name)) {
+          for (const context of this.functionContextStack) {
+            if (context.isAnonymous && context.varsIndex > i) {
+              context.usesClosure = true
+            }
+          }
+          const nameJson = JSON.stringify(name)
+          return {
+            i,
+            name,
+            isTop: false,
+            js: `__nako_closure.get(${nameJson})`,
+            js_set: `__nako_closure.set(${nameJson}, ${jsvalue ?? 'undefined'})`
+          }
+        }
       }
     }
     // __varslist ?
@@ -872,6 +909,12 @@ export class NakoGen {
     this.varsSet = { isFunction: true, names: initialNames, readonly: new Set() }
     // ローカル変数をPUSHする
     this.varslistSet.push(this.varsSet)
+    const funcContext: FunctionContext = {
+      isAnonymous: name === '',
+      varsIndex: this.varslistSet.length - 1,
+      usesClosure: false
+    }
+    this.functionContextStack.push(funcContext)
     // JSの引数と引数をバインド
     if (isExtractJS) {
       variableDeclarations += indent + 'var 引数 = arguments;\n'
@@ -978,6 +1021,10 @@ export class NakoGen {
     const lineInfo = '  ' + this.convLineno(node, true, 1) + '\n'
     code = tof + performanceMonitorInjectAtStart + pushStack + variableDeclarations + lineInfo + code + popStack
     code += endOfFunction
+    if (funcContext.isAnonymous && funcContext.usesClosure) {
+      const parentClosure = `(typeof __nako_closure === 'undefined' ? null : __nako_closure)`
+      code = `(function(__nako_closure) {\n  return ${code}\n})(__nako_make_closure(__self.__vars, ${parentClosure}))`
+    }
 
     // 名前があれば、関数を登録する
     if (name) {
@@ -991,6 +1038,7 @@ export class NakoGen {
     this.usedAsyncFn = oldUsedAsyncFn // 以前の値を戻す
 
     this.varslistSet.pop()
+    this.functionContextStack.pop()
     this.varsSet = this.varslistSet[this.varslistSet.length - 1]
     if (name) { this.__self.__varslist[1].set(name, code) }
     this.defFuncName = '' // 関数名をクリア
@@ -1725,6 +1773,19 @@ export class NakoGen {
     }
 
     return code
+  }
+
+  convCallValue(node: AstBlocks, isExpression: boolean): string {
+    const callee = this._convGen(node.blocks[0], true)
+    const args = node.blocks.slice(1).map((arg) => this._convGen(arg, true))
+    args.push('__self')
+    const funcCall = `${callee}(${args.join(',')})`
+    if (isExpression) {
+      return funcCall
+    }
+    const sorePrefex = (this.speedMode.invalidSore === 0) ? '__self.__setSore(' : ''
+    const sorePostfix = (this.speedMode.invalidSore === 0) ? ')' : ''
+    return this.convLineno(node, false) + `${sorePrefex}${funcCall}${sorePostfix};\n`
   }
 
   convRenbun(node: AstOperator): string {
