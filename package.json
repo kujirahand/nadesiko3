@@ -95,7 +95,7 @@
     "buffer": "^6.0.3",
     "chai": "^6.2.2",
     "cross-env": "^10.1.0",
-    "esbuild": "^0.28.1",
+    "esbuild": "0.28.1",
     "eslint": "^9.39.3",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-n": "^18.1.0",
@@ -112,7 +112,6 @@
     "testdouble": "^3.20.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
-    "url-loader": "^4.1.1",
     "util": "^0.12.5"
   },
   "dependencies": {
