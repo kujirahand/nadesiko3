@@ -11,7 +11,6 @@ import path from 'node:path'
 import url from 'node:url'
 import fse from 'fs-extra'
 
-import fetch from 'node-fetch'
 import { NakoCompiler, LoaderTool, newCompilerOptions } from '../core/src/nako3.mjs'
 import { NakoImportError } from '../core/src/nako_errors.mjs'
 
@@ -278,7 +277,7 @@ export class CNako3 extends NakoCompiler {
     // or 以下のコピーだと依存ファイルがコピーされない package.jsonを見てコピーする必要がある
     const orgModule = path.join(__dirname, '..', 'node_modules')
     const dirNodeModules = path.join(path.dirname(opt.output), 'node_modules')
-    const modlist = ['fs-extra', 'iconv-lite', 'opener', 'node-fetch', 'shell-quote']
+    const modlist = ['fs-extra', 'iconv-lite', 'opener', 'shell-quote']
     const copied: { [key: string]: boolean } = {}
     // 再帰的に必要なモジュールをコピーする
     const copyModule = (mod: string) => {

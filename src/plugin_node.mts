@@ -14,7 +14,6 @@ import url from 'node:url'
 import opener from 'opener'
 import iconv from 'iconv-lite'
 import shellQuote from 'shell-quote'
-import fetch, { FormData, Blob } from 'node-fetch'
 import fse from 'fs-extra'
 import { NakoSystem } from '../core/src/plugin_api.mjs'
 
