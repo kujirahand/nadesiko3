@@ -77,7 +77,7 @@ describe('plugin_httpserver_test', () => {
   })
 
   it('POSTメソッドで送信されたJSONデータを取得できること', async () => {
-    const port = 9997
+    let port = 0
     const code = `
 ●ダミー起動
   戻る。
@@ -91,6 +91,7 @@ describe('plugin_httpserver_test', () => {
     const g = await nako.runAsync(code, 'main')
     serverDp = g.__httpserver
     await wait(100)
+    port = serverDp.server.address().port
 
     const postData = JSON.stringify({ message: 'hello post json' })
     const resText = await new Promise((resolve, reject) => {
