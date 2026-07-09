@@ -118,7 +118,7 @@ describe('plugin_httpserver_test', () => {
   })
 
   it('POSTメソッドで送信されたurlencodedデータを取得できること', async () => {
-    const port = 9996
+    let port = 0
     const code = `
 ●ダミー起動
   戻る。
@@ -132,6 +132,7 @@ describe('plugin_httpserver_test', () => {
     const g = await nako.runAsync(code, 'main')
     serverDp = g.__httpserver
     await wait(100)
+    port = serverDp.server.address().port
 
     const postData = 'message=hello+post+urlencoded'
     const resText = await new Promise((resolve, reject) => {
