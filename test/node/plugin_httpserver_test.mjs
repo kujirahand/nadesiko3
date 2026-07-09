@@ -44,7 +44,7 @@ describe('plugin_httpserver_test', () => {
     const tempFile = path.join(tempDir, 'test.txt')
     fs.writeFileSync(tempFile, 'hello world')
 
-    const port = 9998
+    let port = 0
     // `簡易HTTPサーバ起動時`を呼ぶ
     const code = `
 ●ダミー起動
@@ -56,6 +56,7 @@ describe('plugin_httpserver_test', () => {
     const g = await nako.runAsync(code, 'main')
     serverDp = g.__httpserver
     await wait(100)
+    port = serverDp.server.address().port
 
     // クエリパラメータ付きでリクエストを送る
     const resText = await new Promise((resolve, reject) => {
