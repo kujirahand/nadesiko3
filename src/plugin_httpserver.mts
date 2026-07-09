@@ -67,8 +67,17 @@ class EasyURLDispather {
     }
 
     if (req.method === 'POST') {
-      const chunks: any[] = []
-      req.on('data', (chunk: any) => {
+      const MAX_BODY_SIZE = 10 * 1024 * 1024 // 10MB
+      let bodySize = 0
+      const chunks: Buffer[] = []
+      req.on('data', (chunk: Buffer) => {
+        bodySize += chunk.length
+        if (bodySize > MAX_BODY_SIZE) {
+          res.statusCode = 413
+          res.end('Request entity too large.')
+          req.destroy()
+          return
+        }
         chunks.push(chunk)
       })
       req.on('end', () => {
