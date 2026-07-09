@@ -259,13 +259,14 @@ function parseMultipart(body: Buffer, boundary: string): { files: any[], fields:
       const name = nameMatch[1]
       if (filenameMatch) {
         const filename = filenameMatch[1]
+        const safeFilename = path.basename(filename).replace(/[\\/]/g, '_')
         const contentType = headers['content-type'] || 'application/octet-stream'
-        
+
         const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
         if (!fs.existsSync(uploadDir)) {
           fs.mkdirSync(uploadDir, { recursive: true })
         }
-        const uniqueName = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '_' + filename
+        const uniqueName = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '_' + safeFilename
         const filepath = path.join(uploadDir, uniqueName)
         fs.writeFileSync(filepath, partBody)
 
