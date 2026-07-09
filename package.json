@@ -122,6 +122,6 @@
     "marked": "^18.0.5",
     "opener": "^1.5.2",
     "shell-quote": "^1.8.4",
-    "smol-toml": "1.6.1"
+    "smol-toml": "1.7.0"
   }
 }
