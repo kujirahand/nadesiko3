@@ -77,9 +77,9 @@ class EasyURLDispather {
         let filesData: any[] = []
         const contentType = req.headers['content-type'] || ''
         if (contentType.indexOf('multipart/form-data') >= 0) {
-          const boundaryMatch = contentType.match(/boundary=([^;]+)/)
+          const boundaryMatch = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/)
           if (boundaryMatch) {
-            const boundary = boundaryMatch[1]
+            const boundary = (boundaryMatch[1] || boundaryMatch[2] || '').trim()
             const parsed = parseMultipart(bodyBuffer, boundary)
             postData = parsed.fields
             filesData = parsed.files
