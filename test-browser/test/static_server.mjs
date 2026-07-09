@@ -21,8 +21,8 @@ const mimeTypes = {
 
 function safeJoin (baseDir, urlPath) {
   const cleanPath = normalize(decodeURIComponent(urlPath.split('?')[0])).replace(/^\/+/, '')
-  const filePath = join(baseDir, cleanPath)
-  if (!filePath.startsWith(baseDir)) {
+  const filePath = resolve(baseDir, cleanPath)
+  if (filePath !== baseDir && !filePath.startsWith(baseDir + '/')) {
     return null
   }
   return filePath
