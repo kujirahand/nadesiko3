@@ -240,6 +240,9 @@ function dirname(s: string) {
 
 function resolveURL(base: string, s: string) {
   const baseA = base.split('/')
+  if (baseA.length > 0 && baseA[baseA.length - 1] === '') {
+    baseA.pop()
+  }
   const sA = s.split('/')
   for (const p of sA) {
     if (p === '') { continue }
