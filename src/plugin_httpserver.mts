@@ -7,6 +7,8 @@ import os from 'os'
 // 定数
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
 const ERR_NOHTTPSERVER = '最初に『簡易HTTPサーバ起動時』を実行してサーバを起動する必要があります。'
+const MAX_BODY_SIZE_POST = 10 * 1024 * 1024 // 10MB
+      
 // オブジェクト
 type EasyURLActionType = 'static' | 'callback'
 type EasyURLCallback = (req: any, res: any) => void
@@ -67,12 +69,11 @@ class EasyURLDispather {
     }
 
     if (req.method === 'POST') {
-      const MAX_BODY_SIZE = 10 * 1024 * 1024 // 10MB
       let bodySize = 0
       const chunks: Buffer[] = []
       req.on('data', (chunk: Buffer) => {
         bodySize += chunk.length
-        if (bodySize > MAX_BODY_SIZE) {
+        if (bodySize > MAX_BODY_SIZE_POST) {
           res.statusCode = 413
           res.end('Request entity too large.')
           req.destroy()
@@ -80,36 +81,43 @@ class EasyURLDispather {
         }
         chunks.push(chunk)
       })
-      req.on('end', () => {
+      req.on('end', async() => {
         const bodyBuffer = Buffer.concat(chunks)
         let postData: any = {}
         let filesData: any[] = []
         const contentType = req.headers['content-type'] || ''
-        if (contentType.indexOf('multipart/form-data') >= 0) {
-          const boundaryMatch = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/)
-          if (boundaryMatch) {
-            const boundary = (boundaryMatch[1] || boundaryMatch[2] || '').trim()
-            const parsed = parseMultipart(bodyBuffer, boundary)
-            postData = parsed.fields
-            filesData = parsed.files
+        try {
+          if (contentType.indexOf('multipart/form-data') >= 0) {
+            const boundaryMatch = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/)
+            if (boundaryMatch) {
+              const boundary = (boundaryMatch[1] || boundaryMatch[2] || '').trim()
+              const parsed = await parseMultipart(bodyBuffer, boundary)
+              postData = parsed.fields
+              filesData = parsed.files
+            }
+          } else if (contentType.indexOf('application/json') >= 0) {
+            const bodyStr = bodyBuffer.toString('utf-8')
+            try {
+              postData = JSON.parse(bodyStr)
+            } catch (e) {
+              postData = bodyStr
+            }
+          } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
+            const bodyStr = bodyBuffer.toString('utf-8')
+            const searchParams = new URLSearchParams(bodyStr)
+            const obj: any = {}
+            for (const [key, val] of searchParams.entries()) {
+              obj[key] = val
+            }
+            postData = obj
+          } else {
+            postData = bodyBuffer.toString('utf-8')
           }
-        } else if (contentType.indexOf('application/json') >= 0) {
-          const bodyStr = bodyBuffer.toString('utf-8')
-          try {
-            postData = JSON.parse(bodyStr)
-          } catch (e) {
-            postData = bodyStr
-          }
-        } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
-          const bodyStr = bodyBuffer.toString('utf-8')
-          const searchParams = new URLSearchParams(bodyStr)
-          const obj: any = {}
-          for (const [key, val] of searchParams.entries()) {
-            obj[key] = val
-          }
-          postData = obj
-        } else {
-          postData = bodyBuffer.toString('utf-8')
+        } catch (err: any) {
+          console.error(`${HTTPSERVER_LOGID} アップロード保存エラー: ${err.message}`)
+          res.statusCode = 500
+          res.end('Failed to save upload file.')
+          return
         }
         this.sys.__setSysVar('FILESデータ', filesData)
         runDispatcher(postData)
@@ -194,7 +202,7 @@ class EasyURLDispather {
     return params
   }
 }
-function parseMultipart(body: Buffer, boundary: string): { files: any[], fields: any } {
+async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: any[], fields: any }> {
   const fields: any = {}
   const files: any[] = []
 
@@ -264,11 +272,11 @@ function parseMultipart(body: Buffer, boundary: string): { files: any[], fields:
 
         const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
         if (!fs.existsSync(uploadDir)) {
-          fs.mkdirSync(uploadDir, { recursive: true })
+          await fs.promises.mkdir(uploadDir, { recursive: true })
         }
         const uniqueName = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '_' + safeFilename
         const filepath = path.join(uploadDir, uniqueName)
-        fs.writeFileSync(filepath, partBody)
+        await fs.promises.writeFile(filepath, partBody)
 
         files.push({
           fieldName: name,

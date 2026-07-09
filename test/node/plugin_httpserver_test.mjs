@@ -159,6 +159,11 @@ describe('plugin_httpserver_test', () => {
   })
 
   it('POSTメソッドでファイルをアップロードしてFILESデータを取得できること', async () => {
+    const originalWriteFileSync = fs.writeFileSync
+    fs.writeFileSync = () => {
+      throw new Error('writeFileSync should not be used during upload handling')
+    }
+
     let port = 0
     const code = `
 ●ダミー起動
@@ -212,9 +217,9 @@ describe('plugin_httpserver_test', () => {
       req.end()
     })
 
-    assert.strictEqual(resText, 'OK:hello.txt:24')
-
     try {
+      assert.strictEqual(resText, 'OK:hello.txt:24')
+
       const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
       if (fs.existsSync(uploadDir)) {
         const files = fs.readdirSync(uploadDir)
@@ -227,6 +232,8 @@ describe('plugin_httpserver_test', () => {
           fs.rmdirSync(uploadDir)
         } catch (e) {}
       }
-    } catch (e) {}
+    } finally {
+      fs.writeFileSync = originalWriteFileSync
+    }
   })
 })
