@@ -159,7 +159,7 @@ describe('plugin_httpserver_test', () => {
   })
 
   it('POSTメソッドでファイルをアップロードしてFILESデータを取得できること', async () => {
-    const port = 9995
+    let port = 0
     const code = `
 ●ダミー起動
   戻る。
@@ -180,6 +180,7 @@ describe('plugin_httpserver_test', () => {
     const g = await nako.runAsync(code, 'main')
     serverDp = g.__httpserver
     await wait(100)
+    port = serverDp.server.address().port
 
     const boundary = '----TestBoundary'
     const parts = [
