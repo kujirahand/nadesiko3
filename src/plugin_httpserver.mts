@@ -2,6 +2,7 @@
 import fs from 'fs'
 import http from 'http'
 import path from 'path'
+import os from 'os'
 
 // 定数
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
@@ -49,16 +50,64 @@ class EasyURLDispather {
     const params = this.parseURL(req.url)
     const url = params['?URL']
     this.sys.__setSysVar('GETデータ', params)
-    // URLの一致を調べてアクションを実行
-    const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
-    for (const it of filtered) {
-      let isBreak = false
-      if (it.action === 'static') {
-        isBreak = this.doRequestStatic(req, res, it)
-      } else if (it.action === 'callback') {
-        isBreak = this.doRequestCallback(req, res, it)
+
+    const runDispatcher = (postData: any) => {
+      this.sys.__setSysVar('POSTデータ', postData)
+      // URLの一致を調べてアクションを実行
+      const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
+      for (const it of filtered) {
+        let isBreak = false
+        if (it.action === 'static') {
+          isBreak = this.doRequestStatic(req, res, it)
+        } else if (it.action === 'callback') {
+          isBreak = this.doRequestCallback(req, res, it)
+        }
+        if (isBreak) { break }
       }
-      if (isBreak) { break }
+    }
+
+    if (req.method === 'POST') {
+      const chunks: any[] = []
+      req.on('data', (chunk: any) => {
+        chunks.push(chunk)
+      })
+      req.on('end', () => {
+        const bodyBuffer = Buffer.concat(chunks)
+        let postData: any = {}
+        let filesData: any[] = []
+        const contentType = req.headers['content-type'] || ''
+        if (contentType.indexOf('multipart/form-data') >= 0) {
+          const boundaryMatch = contentType.match(/boundary=([^;]+)/)
+          if (boundaryMatch) {
+            const boundary = boundaryMatch[1]
+            const parsed = parseMultipart(bodyBuffer, boundary)
+            postData = parsed.fields
+            filesData = parsed.files
+          }
+        } else if (contentType.indexOf('application/json') >= 0) {
+          const bodyStr = bodyBuffer.toString('utf-8')
+          try {
+            postData = JSON.parse(bodyStr)
+          } catch (e) {
+            postData = bodyStr
+          }
+        } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
+          const bodyStr = bodyBuffer.toString('utf-8')
+          const searchParams = new URLSearchParams(bodyStr)
+          const obj: any = {}
+          for (const [key, val] of searchParams.entries()) {
+            obj[key] = val
+          }
+          postData = obj
+        } else {
+          postData = bodyBuffer.toString('utf-8')
+        }
+        this.sys.__setSysVar('FILESデータ', filesData)
+        runDispatcher(postData)
+      })
+    } else {
+      this.sys.__setSysVar('FILESデータ', [])
+      runDispatcher({})
     }
   }
 
@@ -69,7 +118,9 @@ class EasyURLDispather {
   }
 
   doRequestStatic(req: any, res: any, it: EasyURLItem): boolean {
-    let url: string = ('' + req.url).replace(/\.\./g, '') // URLの..を許可しない
+    const params = this.parseURL(req.url)
+    const rawUrl = params['?URL'] || ''
+    let url: string = ('' + rawUrl).replace(/\.\./g, '') // URLの..を許可しない
     url = url.substring(it.url.length)
     let fpath = path.join(it.path, url)
     console.log('FILE=', fpath)
@@ -134,11 +185,103 @@ class EasyURLDispather {
     return params
   }
 }
+function parseMultipart(body: Buffer, boundary: string): { files: any[], fields: any } {
+  const fields: any = {}
+  const files: any[] = []
+
+  const boundaryBuffer = Buffer.from('--' + boundary)
+  let pos = 0
+  const parts: Buffer[] = []
+
+  while (true) {
+    const nextIdx = body.indexOf(boundaryBuffer, pos)
+    if (nextIdx === -1) { break }
+    if (pos > 0) {
+      let endPos = nextIdx
+      if (body[nextIdx - 2] === 13 && body[nextIdx - 1] === 10) {
+        endPos -= 2
+      } else if (body[nextIdx - 1] === 10) {
+        endPos -= 1
+      }
+      parts.push(body.subarray(pos, endPos))
+    }
+    pos = nextIdx + boundaryBuffer.length
+  }
+
+  for (const part of parts) {
+    if (part.length === 0) { continue }
+    let start = 0
+    if (part[0] === 13 && part[1] === 10) { start = 2 }
+    else if (part[0] === 10) { start = 1 }
+
+    const headerEnd = part.indexOf(Buffer.from('\r\n\r\n'), start)
+    let bodyStart = 0
+    let headerStr = ''
+    if (headerEnd !== -1) {
+      headerStr = part.toString('utf-8', start, headerEnd)
+      bodyStart = headerEnd + 4
+    } else {
+      const headerEndLf = part.indexOf(Buffer.from('\n\n'), start)
+      if (headerEndLf !== -1) {
+        headerStr = part.toString('utf-8', start, headerEndLf)
+        bodyStart = headerEndLf + 2
+      }
+    }
+
+    if (bodyStart === 0) { continue }
+
+    const partBody = part.subarray(bodyStart)
+    const headers: any = {}
+    const lines = headerStr.split(/\r?\n/)
+    for (const line of lines) {
+      const idx = line.indexOf(':')
+      if (idx !== -1) {
+        const key = line.substring(0, idx).trim().toLowerCase()
+        const val = line.substring(idx + 1).trim()
+        headers[key] = val
+      }
+    }
+
+    const contentDisposition = headers['content-disposition'] || ''
+    const nameMatch = contentDisposition.match(/name="([^"]+)"/)
+    const filenameMatch = contentDisposition.match(/filename="([^"]+)"/)
+
+    if (nameMatch) {
+      const name = nameMatch[1]
+      if (filenameMatch) {
+        const filename = filenameMatch[1]
+        const contentType = headers['content-type'] || 'application/octet-stream'
+        
+        const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true })
+        }
+        const uniqueName = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '_' + filename
+        const filepath = path.join(uploadDir, uniqueName)
+        fs.writeFileSync(filepath, partBody)
+
+        files.push({
+          fieldName: name,
+          name: filename,
+          path: filepath,
+          size: partBody.length,
+          type: contentType
+        })
+      } else {
+        fields[name] = partBody.toString('utf-8')
+      }
+    }
+  }
+
+  return { files, fields }
+}
 // MIMEタイプ
 const MimeTypes: any = {
   '.html': 'text/html',
   '.css': 'text/css',
   '.js': 'text/javascript',
+  '.mjs': 'text/javascript',
+  '.nako3': 'text/nadesiko3',
   '.png': 'image/png',
   '.gif': 'image/gif',
   '.svg': 'svg+xml'
@@ -184,6 +327,8 @@ const PluginHttpServer = {
   },
   // @簡易HTTPサーバ
   'GETデータ': { type: 'const', value: '' }, // @GETでーた
+  'POSTデータ': { type: 'const', value: '' }, // @POSTでーた
+  'FILESデータ': { type: 'const', value: '' }, // @FILESでーた
   '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。 // @かんいHTTPさーばきどうしたとき
     type: 'func',
     josi: [['を'], ['の', 'で']],
@@ -194,6 +339,9 @@ const PluginHttpServer = {
       // サーバオブジェクトを生成
       dp.server = http.createServer((req: any, res: any) => {
         dp.doRequest(req, res)
+      })
+      dp.server.on('error', (err: any) => {
+        console.error(`${HTTPSERVER_LOGID} エラー: ${err.message}`)
       })
       // サーバ起動
       dp.server.listen(port, () => {
