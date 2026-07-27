@@ -105,7 +105,7 @@
     "hotkeys-js": "^4.0.4",
     "module-alias": "^2.3.4",
     "multer": "^2.2.0",
-    "npm-check-updates": "^22.2.3",
+    "npm-check-updates": "^23.0.0",
     "prop-types": "^15.8.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
