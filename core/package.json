@@ -36,11 +36,11 @@
     "sample"
   ],
   "devDependencies": {
-    "@types/node": "^26.0.0",
-    "typescript": "^6.0.3"
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "cross-env": "^10.0.0",
-    "smol-toml": "1.6.1"
+    "smol-toml": "1.7.1"
   }
 }
