@@ -221,7 +221,7 @@ const INDENT_MODE_KEYWORDS = ['!インデント構文', '!ここまでだるい'
 /** インデント構文 --- インデントを見て"ここまで"を自動挿入 (#596) */
 export function convertIndentSyntax(tokens: Token[]): Token[] {
   // インデント構文の変換が必要か?
-  if (!useIndentSynax(tokens)) { return tokens }
+  if (!useIndentSyntax(tokens)) { return tokens }
   // 『ここまで』があったらエラーを出す
   for (const t of tokens) {
     if (t.type === 'ここまで') {
@@ -321,7 +321,7 @@ export function convertIndentSyntax(tokens: Token[]): Token[] {
   return result
 }
 
-function useIndentSynax(tokens: Token[]) : boolean {
+function useIndentSyntax(tokens: Token[]) : boolean {
   // インデント構文が必要かチェック (最初の100個をチェック)
   for (let i = 0; i < tokens.length; i++) {
     if (i > 100) { break }
