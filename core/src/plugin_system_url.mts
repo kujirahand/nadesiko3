@@ -39,10 +39,20 @@ export default {
       }
       const params = p[1].split('&')
       for (const line of params) {
-        const line2 = line + '='
-        const kv = line2.split('=')
-        const k = sys.__exec('URLデコード', [kv[0]])
-        res[k] = sys.__exec('URLデコード', [kv[1]])
+        if (line === '') { continue }
+        const eqIdx = line.indexOf('=')
+        let k: string
+        let v: string
+        if (eqIdx < 0) {
+          k = line
+          v = ''
+        } else {
+          k = line.substring(0, eqIdx)
+          v = line.substring(eqIdx + 1)
+        }
+        const decodedKey = sys.__exec('URLデコード', [k])
+        const decodedVal = sys.__exec('URLデコード', [v])
+        res[decodedKey] = decodedVal
       }
       return res
     }

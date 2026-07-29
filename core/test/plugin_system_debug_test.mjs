@@ -65,6 +65,13 @@ describe('plugin_system_debug_test', async () => {
     await new Promise((resolve) => setTimeout(resolve, 10))
     assert.strictEqual(g.log, '42')
   })
+  it('特殊命令 - AWAIT実行（配列以外の引数）', async () => {
+    const nako = new NakoCompiler()
+    const code = 'F=「a=>a*2」をJS実行\nFを21でAWAIT実行して表示'
+    const g = await nako.runAsync(code, 'main.nako3')
+    await new Promise((resolve) => setTimeout(resolve, 10))
+    assert.strictEqual(g.log, '42')
+  })
   it('特殊命令 - ナデシコ', async () => {
     await cmp('『「なでしこ」を表示』をナデシコ', 'なでしこ')
   })

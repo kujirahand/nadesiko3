@@ -49,8 +49,11 @@ export default {
       // 配列のとき
       const res: string[] = []
       for (const s of v) {
-        if (!String.fromCodePoint) { res.push(String.fromCharCode(s)) }
-        res.push(String.fromCodePoint(s))
+        if (!String.fromCodePoint) {
+          res.push(String.fromCharCode(s))
+        } else {
+          res.push(String.fromCodePoint(s))
+        }
       }
       return res
     }
@@ -66,8 +69,11 @@ export default {
       }
       const res: number[] = []
       for (const s of v) {
-        if (!String.prototype.codePointAt) { res.push(String(s).charCodeAt(0)) }
-        res.push(String(s).codePointAt(0) || 0)
+        if (!String.prototype.codePointAt) {
+          res.push(String(s).charCodeAt(0))
+        } else {
+          res.push(String(s).codePointAt(0) || 0)
+        }
       }
       return res
     }
