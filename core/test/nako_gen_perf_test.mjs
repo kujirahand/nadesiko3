@@ -91,6 +91,63 @@ describe('nako_gen_perf_test', async () => {
     })
   })
 
+  describe('ユーザ関数の計測', async () => {
+    it('キーは関数名、typeは『user』 (#2333)', async () => {
+      const { log, pm } = await run(
+        '「ユーザ関数」にパフォーマンスモニタ適用ここから\n' +
+        '　●(AとBを)テスト足すとは\n' +
+        '　　AにBを足して戻す\n' +
+        '　ここまで\n' +
+        '　1と2をテスト足して表示\n' +
+        '　3と4をテスト足して表示\n' +
+        'ここまで\n')
+      assert.strictEqual(log, '3\n7')
+      assert.strictEqual(pm.main__テスト足.type, 'user')
+      assert.strictEqual(pm.main__テスト足.called, 2)
+    })
+  })
+
+  describe('非同期命令の計測 (#2333)', async () => {
+    it('システム関数本体: 構文エラーにならず、実行も完了する', async () => {
+      const { log, pm } = await run(
+        '「システム関数本体」にパフォーマンスモニタ適用ここから\n' +
+        '　0.01秒待つ\n' +
+        '　「おわり」と表示\n' +
+        'ここまで\n')
+      assert.strictEqual(log, 'おわり')
+      assert.strictEqual(pm.秒待_body.type, 'sysbody')
+      assert.strictEqual(pm.秒待_body.called, 1)
+    })
+
+    it('システム関数: 構文エラーにならず、実行も完了する', async () => {
+      const { log, pm } = await run(
+        '「システム関数」にパフォーマンスモニタ適用ここから\n' +
+        '　0.01秒待つ\n' +
+        '　「おわり」と表示\n' +
+        'ここまで\n')
+      assert.strictEqual(log, 'おわり')
+      assert.strictEqual(pm.秒待_sys.type, 'system')
+      assert.strictEqual(pm.秒待_sys.called, 1)
+    })
+  })
+
+  describe('全てのオプションを同時に適用 (#2333)', async () => {
+    it('ユーザ関数・システム関数本体・システム関数を同時に計測できる', async () => {
+      const { log, pm } = await run(
+        '「全て」にパフォーマンスモニタ適用ここから\n' +
+        '　●(Aを)テスト表示とは\n' +
+        '　　Aを表示\n' +
+        '　ここまで\n' +
+        '　「あ」をテスト表示\n' +
+        '　1に2を足して表示\n' +
+        'ここまで\n')
+      assert.strictEqual(log, 'あ\n3')
+      assert.strictEqual(pm.main__テスト表示.type, 'user')
+      assert.strictEqual(pm.足_body.type, 'sysbody')
+      assert.strictEqual(pm.足_sys.type, 'system')
+    })
+  })
+
   describe('関数呼び出しコード生成の回帰チェック', async () => {
     it('戻り値のある命令と『それ』', async () => {
       const { log } = await run('1に2を足す\nそれを表示')
