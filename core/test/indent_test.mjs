@@ -292,4 +292,10 @@ describe('indent', async () => {
         '\t\t続ける\n' +
         '\tcを表示\n', '1\n0')
   })
+  it('useIndentSyntaxが正しく動作し、インデント構文が解釈されること (#2333)', async () => {
+    await cmp('!インデント構文\n' +
+        'もし1=1ならば\n' +
+        '　　「OK」と表示。\n', 'OK')
+  })
 })
+
