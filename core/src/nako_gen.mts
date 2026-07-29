@@ -2346,7 +2346,13 @@ ${syncMain}(__self)
     'plugin_system_string.mjs',
     'plugin_system_array.mjs',
     'plugin_system_datetime.mjs',
-    'plugin_system_url.mjs'
+    'plugin_system_url.mjs',
+    'plugin_system_types.mjs',
+    'plugin_system_json.mjs',
+    'plugin_system_regexp.mjs',
+    'plugin_system_dict.mjs',
+    'plugin_system_stdio.mjs',
+    'plugin_system_timer.mjs'
   ]
   for (const f of opt.importFiles) {
     if (noRegisterFiles.includes(f)) { continue }

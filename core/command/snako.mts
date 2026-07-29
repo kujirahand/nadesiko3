@@ -94,7 +94,9 @@ function convert (nako: NakoCompiler, code: string, opt: CommandOptions): void {
     false,
     ['nako_errors.mjs', 'nako_core_version.mjs', 'plugin_system.mjs',
       'plugin_system_debug.mjs', 'plugin_system_math.mjs', 'plugin_system_string.mjs',
-      'plugin_system_array.mjs', 'plugin_system_datetime.mjs', 'plugin_system_url.mjs'],
+      'plugin_system_array.mjs', 'plugin_system_datetime.mjs', 'plugin_system_url.mjs',
+      'plugin_system_types.mjs', 'plugin_system_json.mjs', 'plugin_system_regexp.mjs', 'plugin_system_dict.mjs',
+      'plugin_system_stdio.mjs', 'plugin_system_timer.mjs'],
     '__self.__varslist[0].set(\'ナデシコ種類\', \'snako\')')
   // スタンドアロンコードを生成
   const js = nako.compileStandalone(code, opt.filename, genOpt)
