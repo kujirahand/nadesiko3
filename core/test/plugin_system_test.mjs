@@ -776,6 +776,10 @@ describe('plugin_system_test', async () => {
     await cmp('S=「💧🔥🍵」;Sの2から1文字削除して表示', '💧🍵')
     await cmp('S=「1💧3🔥5🍵」;Sの3から2文字削除して表示', '1💧5🍵')
   })
+  it('数字の文字数が0になる不具合 #2342', async () => {
+    await cmp('30の文字数を表示', '2')
+    await cmp('12345の文字数を表示', '5')
+  })
   it('左トリム', async () => {
     await cmp('S=「 \t💧🔥🍵」;Sを左トリムして表示', '💧🔥🍵')
     await cmp('S=「 ABC 」;Sを左トリムして「|」を追加して表示', 'ABC |')

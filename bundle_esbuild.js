@@ -45,6 +45,9 @@ if (!watchMode) {
       outfile,
       minify: true,
       sourcemap: true,
+      logOverride: {
+        'direct-eval': 'silent',
+      },
     }
     console.log('[esbuild]', f)
     await esbuild.build(options)
