@@ -72,7 +72,6 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
 
     // no data
     if (c === delimiter) {
-      console.log('delimiter')
       cells.push('')
       txt = txt.substring(delimiter.length)
       continue
