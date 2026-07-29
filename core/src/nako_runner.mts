@@ -14,7 +14,7 @@ import { NakoGen, NakoGenResult } from './nako_gen.mjs'
 
 /** コンパイラ実行オプションを生成 */
 export function newCompilerOptions (initObj: Partial<CompilerOptions> = {}): CompilerOptions {
-  if (typeof initObj !== 'object') { initObj = {} }
+  if (initObj === null || typeof initObj !== 'object') { initObj = {} }
   initObj.testOnly = initObj.testOnly || false
   initObj.resetEnv = initObj.resetEnv || false
   initObj.resetAll = initObj.resetAll || false
