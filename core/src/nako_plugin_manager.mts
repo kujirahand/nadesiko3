@@ -186,7 +186,7 @@ export class NakoPluginManager {
    * Windowsのパスやファイル名に使えない文字列があると、JSファイル書き出しでエラーになるので置換する
    */
   static removeInvalidFilenameChars (str: string): string {
-    return str.replace(/[^a-zA-z0-9\-_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3400-\u4DBF\uF900-\uFAFF]/g, '_')
+    return str.replace(/[^A-Za-z0-9\-_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3400-\u4DBF\uF900-\uFAFF]/g, '_')
   }
 
   /**
