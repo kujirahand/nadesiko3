@@ -37,6 +37,37 @@ interface FunctionContext {
   varsIndex: number;
   usesClosure: boolean;
 }
+
+/** 生成したコードの各行を n段だけインデントする (空行は捨てる) */
+function indentLines (text: string, n: number): string {
+  let result = ''
+  for (const line of text.split('\n')) {
+    if (line !== '') {
+      result += '  '.repeat(n) + line + '\n'
+    }
+  }
+  return result
+}
+
+/**
+ * パフォーマンスモニタの計測結果を `__self.__performance_monitor[key]` に記録するコードを生成する。
+ * ユーザ関数・システム関数本体・システム関数の3箇所で共通して使う。(#2333)
+ * @param timeVar 経過時間(マイクロ秒)が入っているJS変数名
+ */
+function genPerfMonitorUpdate (timeVar: string): string {
+  const rec = `{ called:1, totel_usec: ${timeVar}, min_usec: ${timeVar}, max_usec: ${timeVar}, type: type }`
+  return 'if (!__self.__performance_monitor) {\n' +
+    '__self.__performance_monitor={};\n' +
+    `__self.__performance_monitor[key] = ${rec};\n` +
+    '} else if (!__self.__performance_monitor[key]) {\n' +
+    `__self.__performance_monitor[key] = ${rec};\n` +
+    '} else {\n' +
+    '__self.__performance_monitor[key].called++;\n' +
+    `__self.__performance_monitor[key].totel_usec+=${timeVar};\n` +
+    `if(__self.__performance_monitor[key].min_usec>${timeVar}){__self.__performance_monitor[key].min_usec=${timeVar};}\n` +
+    `if(__self.__performance_monitor[key].max_usec<${timeVar}){__self.__performance_monitor[key].max_usec=${timeVar};}\n` +
+    '}'
+}
 interface FindVarResult {
   i: number;
   name: string;
@@ -880,23 +911,9 @@ export class NakoGen {
         this.performanceMonitor.mumeiId++
         key = `anous_${this.performanceMonitor.mumeiId}`
       }
-      performanceMonitorInjectAtStart = 'const performanceMonitorEnd = (function (key, type) {\n' +
-        'const uf_start = performance.now() * 1000;\n' +
-        'return function () {\n' +
-        'const el_time = performance.now() * 1000 - uf_start;\n' +
-        'if (!__self.__performance_monitor) {\n' +
-        '__self.__performance_monitor={};\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n' +
-        '} else if (!__self.__performance_monitor[key]) {\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n' +
-        '} else {\n' +
-        '__self.__performance_monitor[key].called++;\n' +
-        '__self.__performance_monitor[key].totel_usec+=el_time;\n' +
-        'if(__self.__performance_monitor[key].min_usec>el_time){__self.__performance_monitor[key].min_usec=el_time;}\n' +
-        'if(__self.__performance_monitor[key].max_usec<el_time){__self.__performance_monitor[key].max_usec=el_time;}\n' +
-        `}};})('${key}', 'user');` +
-        'try {\n'
-      performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n'
+      const inject = this.genPerfMonitorInject(key)
+      performanceMonitorInjectAtStart = inject[0]
+      performanceMonitorInjectAtEnd = inject[1]
     }
     let variableDeclarations = ''
     const indent = '    '
@@ -1430,6 +1447,44 @@ export class NakoGen {
     }
   }
 
+  /**
+   * 式exprを、実行時間を計測する即時実行関数で包む。(#2333)
+   * システム関数本体・システム関数の計測で使う。
+   * @param expr 計測対象の式
+   * @param key 計測結果を記録するキー
+   * @param type 計測の種別
+   * @param funcDef 'function' または 'async function'
+   * @param startVar 開始時刻を保持するJS変数名
+   * @param timeVar 経過時間を保持するJS変数名
+   */
+  private wrapPerfMonitor (expr: string, key: string, type: string, funcDef: string, startVar: string, timeVar: string): string {
+    return `(${funcDef} (key, type) {\n` +
+      `const ${startVar} = performance.now() * 1000;\n` +
+      'try {\n' +
+      'return ' + expr + ';\n' +
+      '} finally {\n' +
+      `const ${timeVar} = performance.now() * 1000 - ${startVar};\n` +
+      genPerfMonitorUpdate(timeVar) +
+      `}})('${key}', '${type}')\n`
+  }
+
+  /**
+   * ユーザ関数の実行時間を計測するために、関数の本体の前後へ挿入するコードを返す。(#2333)
+   * @param key 計測結果を記録するキー
+   * @returns [関数本体の直前に挿入するコード, 関数本体の直後に挿入するコード]
+   */
+  private genPerfMonitorInject (key: string): [string, string] {
+    const injectAtStart = 'const performanceMonitorEnd = (function (key, type) {\n' +
+      'const uf_start = performance.now() * 1000;\n' +
+      'return function () {\n' +
+      'const el_time = performance.now() * 1000 - uf_start;\n' +
+      genPerfMonitorUpdate('el_time') +
+      `};})('${key}', 'user');` +
+      'try {\n'
+    const injectAtEnd = '} finally { performanceMonitorEnd(); }\n'
+    return [injectAtStart, injectAtEnd]
+  }
+
   convWhile(node: AstWhile): string {
     const exprAst = node.blocks[0]
     const blockAst = node.blocks[1]
@@ -1623,16 +1678,6 @@ export class NakoGen {
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts.sore) { funcBegin += '/*[sore]*/' }
 
-    const indent = (text: string, n: number) => {
-      let result = ''
-      for (const line of text.split('\n')) {
-        if (line !== '') {
-          result += '  '.repeat(n) + line + '\n'
-        }
-      }
-      return result
-    }
-
     // 引数チェックの例外 #1260
     const noCheckFuncs: {[key: string]: boolean} = { 'TYPEOF': true, '変数型確認': true }
     // 関数呼び出しコードの構築
@@ -1677,23 +1722,7 @@ export class NakoGen {
         this.performanceMonitor.mumeiId++
         key = `anous_${this.performanceMonitor.mumeiId}`
       }
-      funcCall = `(${funcDef} (key, type) {\n` +
-        'const sbf_start = performance.now() * 1000;\n' +
-        'try {\n' +
-        'return ' + funcCall + ';\n' +
-        '} finally {\n' +
-        'const sbl_time = performance.now() * 1000 - sbf_start;\n' +
-        'if (!__self.__performance_monitor) {\n' +
-        '__self.__performance_monitor={};\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n' +
-        '} else if (!__self.__performance_monitor[key]) {\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n' +
-        '} else {\n' +
-        '__self.__performance_monitor[key].called++;\n' +
-        '__self.__performance_monitor[key].totel_usec+=sbl_time;\n' +
-        'if(__self.__performance_monitor[key].min_usec>sbl_time){__self.__performance_monitor[key].min_usec=sbl_time;}\n' +
-        'if(__self.__performance_monitor[key].max_usec<sbl_time){__self.__performance_monitor[key].max_usec=sbl_time;}\n' +
-        `}}})('${funcName}_body', 'sysbody')\n`
+      funcCall = this.wrapPerfMonitor(funcCall, `${funcName}_body`, 'sysbody', funcDef, 'sbf_start', 'sbl_time')
     }
 
     let code = ''
@@ -1704,7 +1733,7 @@ export class NakoGen {
       if (funcEnd === '') {
         code = `/*VOID関数呼出*/${funcBegin}${funcCall}\n`
       } else {
-        code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
+        code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indentLines(funcCall, 1)};\n} finally {\n${indentLines(funcEnd, 1)}}\n`
       }
       // 行番号を追加
       code = this.convLineno(node, false) + code
@@ -1731,13 +1760,13 @@ export class NakoGen {
           const varI = `$nako_i${this.loopId}`
           this.loopId++
           code = `/* funcCallThis2 */(${funcDef}(){\n` +
-            indent(funcBegin, 1) + '\n' +
-            indent('try {', 1) + '\n' +
-            indent(`let ${varI} = ${funcCall};`, 2) + '\n' +
-            indent(`return ${varI};`, 2) + '\n' +
-            indent('} finally {', 2) + '\n' +
-            indent(funcEnd, 1) + '\n' +
-            indent('}', 1) + '\n' +
+            indentLines(funcBegin, 1) + '\n' +
+            indentLines('try {', 1) + '\n' +
+            indentLines(`let ${varI} = ${funcCall};`, 2) + '\n' +
+            indentLines(`return ${varI};`, 2) + '\n' +
+            indentLines('} finally {', 2) + '\n' +
+            indentLines(funcEnd, 1) + '\n' +
+            indentLines('}', 1) + '\n' +
             '}).call(this)'
           if (func.asyncFn) {
             code = `await (${code})`
@@ -1753,23 +1782,7 @@ export class NakoGen {
     }
 
     if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
-      code = '(function (key, type) {\n' +
-        'const sf_start = performance.now() * 1000;\n' +
-        'try {\n' +
-        'return ' + code + ';\n' +
-        '} finally {\n' +
-        'const sl_time = performance.now() * 1000 - sf_start;\n' +
-        'if (!__self.__performance_monitor) {\n' +
-        '__self.__performance_monitor={};\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n' +
-        '} else if (!__self.__performance_monitor[key]) {\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n' +
-        '} else {\n' +
-        '__self.__performance_monitor[key].called++;\n' +
-        '__self.__performance_monitor[key].totel_usec+=sl_time;\n' +
-        'if(__self.__performance_monitor[key].min_usec>sl_time){__self.__performance_monitor[key].min_usec=sl_time;}\n' +
-        'if(__self.__performance_monitor[key].max_usec<sl_time){__self.__performance_monitor[key].max_usec=sl_time;}\n' +
-        `}}})('${funcName}_sys', 'system')\n`
+      code = this.wrapPerfMonitor(code, `${funcName}_sys`, 'system', 'function', 'sf_start', 'sl_time')
     }
 
     return code
