@@ -31,7 +31,8 @@ export class NakoEventEmitter {
    * @param event コールバックに渡す値
    */
   fire (eventName: NakoComEventName, event: any): void {
-    for (const e of this.eventList) {
+    const list = this.eventList.slice()
+    for (const e of list) {
       if (e.eventName === eventName) { e.callback(event) }
     }
   }
