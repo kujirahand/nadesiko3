@@ -63,8 +63,8 @@ export function nodeToStr (node: Ast|Token|null, opts: {depth: number, typeName?
   case 'eof':
     return 'ファイルの末尾'
   default: {
-    let name:any = node.name
-    if (name) { name = (node as AstStrValue).value }
+    let name: any = (node as any).name
+    if (name && typeof name !== 'string') { name = (node as any).value }
     if (typeof name !== 'string') { name = node.type }
     return `${typeName('')}『${name}${debug}』`
   }
