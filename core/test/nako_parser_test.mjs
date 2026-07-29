@@ -128,6 +128,7 @@ describe('nako_parser_test', () => {
     it('非同期関数を呼ぶ関数には asyncFn が伝播する', () => {
       const ast = parseToPlainAst('●Fとは\n1秒待つ\nここまで\nF\n')
       const def = ast.blocks.find((n) => n.type === 'def_func')
+      assert.ok(def, 'def_func が見つかりません')
       assert.strictEqual(def.asyncFn, true, '『待つ』を呼ぶ関数Fは非同期になる')
     })
 
