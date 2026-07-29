@@ -61,8 +61,7 @@ export function infixToAST (list: Ast[], logger: NakoLogger): Ast | null {
   const josi = list[list.length - 1].josi
   const node = list[list.length - 1]
   const polish = infixToPolish(list, logger)
-  /** @type {Ast[]} */
-  const stack = []
+  const stack: Ast[] = []
   for (const t of polish) {
     if (!opPriority[t.type]) { // 演算子ではない
       stack.push(t)
