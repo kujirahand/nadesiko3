@@ -1,9 +1,9 @@
 # .gitignore
 
 # Runtime data
-core/command/plugin_snako.mjs
-core/command/snako.mjs
-core/src/*.mjs
+command/plugin_snako.mjs
+command/snako.mjs
+src/*.mjs
 
 
 # Logs
