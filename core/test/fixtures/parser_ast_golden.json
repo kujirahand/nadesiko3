@@ -1,0 +1,8027 @@
+{
+ "文-空行とコメント": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "eol",
+    "comment": "# コメント",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 10,
+      "endOffset": 11,
+      "file": "main.nako3",
+      "line": 2,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 8,
+    "endOffset": 9,
+    "file": "main.nako3",
+    "line": 2,
+    "column": 0,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 6,
+  "endOffset": 7,
+  "file": "main.nako3",
+  "line": 1,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "文-複数文": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 3,
+     "endOffset": 4,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let",
+    "name": "main__B",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 2,
+      "josi": "",
+      "startOffset": 6,
+      "endOffset": 7,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 4,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 7,
+     "endOffset": 8,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "func",
+    "name": "表示",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "+",
+      "blocks": [
+       {
+        "type": "word",
+        "value": "main__A",
+        "josi": "",
+        "indent": 0,
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 8,
+        "preprocessedCodeLength": 1,
+        "startOffset": 8,
+        "endOffset": 9,
+        "rawJosi": ""
+       },
+       {
+        "type": "word",
+        "value": "main__B",
+        "josi": "を",
+        "indent": 0,
+        "line": 2,
+        "column": 2,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 10,
+        "preprocessedCodeLength": 2,
+        "startOffset": 10,
+        "endOffset": 12,
+        "rawJosi": "を"
+       }
+      ],
+      "josi": "を",
+      "startOffset": 8,
+      "endOffset": 9,
+      "line": 2,
+      "column": 0,
+      "file": "main.nako3"
+     }
+    ],
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "を",
+       "と"
+      ]
+     ],
+     "pure": true,
+     "fn": "[fn]",
+     "return_none": true
+    },
+    "josi": "",
+    "asyncFn": false,
+    "startOffset": 12,
+    "endOffset": 14,
+    "file": "main.nako3",
+    "line": 2,
+    "column": 4,
+    "end": {
+     "startOffset": 14,
+     "endOffset": 15,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 14,
+   "endOffset": 15,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "文-連文": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "block",
+    "blocks": [
+     {
+      "type": "func",
+      "name": "足",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "に",
+        "startOffset": 0,
+        "endOffset": 2,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 0
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "を",
+        "startOffset": 2,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2
+       }
+      ],
+      "meta": {
+       "type": "func",
+       "josi": [
+        [
+         "に",
+         "と"
+        ],
+        [
+         "を"
+        ]
+       ],
+       "isVariableJosi": false,
+       "pure": true,
+       "fn": "[fn]"
+      },
+      "josi": "して",
+      "asyncFn": false,
+      "startOffset": 4,
+      "endOffset": 7,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 4,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 9,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 7
+      }
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "func",
+        "name": "掛",
+        "blocks": [
+         {
+          "type": "word",
+          "value": "それ",
+          "josi": "",
+          "startOffset": 9,
+          "endOffset": 12,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 9,
+          "end": {
+           "startOffset": 9,
+           "endOffset": 12,
+           "file": "main.nako3",
+           "line": 0,
+           "column": 9
+          }
+         },
+         {
+          "type": "number",
+          "value": 3,
+          "josi": "を",
+          "startOffset": 7,
+          "endOffset": 9,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 7
+         }
+        ],
+        "meta": {
+         "type": "func",
+         "josi": [
+          [
+           "に",
+           "と"
+          ],
+          [
+           "を"
+          ]
+         ],
+         "pure": true,
+         "fn": "[fn]"
+        },
+        "josi": "して",
+        "asyncFn": false,
+        "startOffset": 9,
+        "endOffset": 12,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 9,
+        "end": {
+         "startOffset": 12,
+         "endOffset": 14,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 12
+        }
+       },
+       {
+        "type": "func",
+        "name": "表示",
+        "blocks": [
+         {
+          "type": "word",
+          "value": "それ",
+          "josi": "",
+          "startOffset": 12,
+          "endOffset": 14,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 12,
+          "end": {
+           "startOffset": 12,
+           "endOffset": 14,
+           "file": "main.nako3",
+           "line": 0,
+           "column": 12
+          }
+         }
+        ],
+        "meta": {
+         "type": "func",
+         "josi": [
+          [
+           "を",
+           "と"
+          ]
+         ],
+         "pure": true,
+         "fn": "[fn]",
+         "return_none": true
+        },
+        "josi": "",
+        "asyncFn": false,
+        "startOffset": 12,
+        "endOffset": 14,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 12,
+        "end": {
+         "startOffset": 14,
+         "endOffset": 15,
+         "file": "main.nako3",
+         "line": 1,
+         "column": 0
+        }
+       }
+      ],
+      "josi": "",
+      "startOffset": 7,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 7,
+      "end": {
+       "startOffset": 14,
+       "endOffset": 15,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 14,
+     "endOffset": 15,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 14,
+   "endOffset": 15,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "文-抜ける": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "repeat_times",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 3,
+      "josi": "",
+      "startOffset": 0,
+      "endOffset": 1,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "break",
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 6,
+         "endOffset": 7,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 11,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 1,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 1,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "文-続ける": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "repeat_times",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 3,
+      "josi": "",
+      "startOffset": 0,
+      "endOffset": 1,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "continue",
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 6,
+         "endOffset": 7,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 11,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 1,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 1,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "文-ここから": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "repeat_times",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 3,
+      "josi": "",
+      "startOffset": 0,
+      "endOffset": 1,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__A",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 9,
+          "endOffset": 10,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 7,
+        "endOffset": 8,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 10,
+         "endOffset": 11,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 6,
+      "endOffset": 7,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 11,
+       "endOffset": 15,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 1,
+    "endOffset": 6,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 1,
+    "end": {
+     "startOffset": 15,
+     "endOffset": 16,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 15,
+   "endOffset": 16,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "文-ハテナ表示": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "func",
+    "name": "ハテナ関数実行",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "+",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 2,
+        "endOffset": 3,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "",
+        "startOffset": 4,
+        "endOffset": 5,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 4
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "line": 0,
+      "column": 2,
+      "file": "main.nako3"
+     }
+    ],
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "の",
+       "を",
+       "と"
+      ]
+     ],
+     "pure": true,
+     "fn": "[fn]",
+     "return_none": true
+    },
+    "asyncFn": false,
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 5,
+     "endOffset": 6,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 5,
+   "endOffset": 6,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "モード-DNCL": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "eol",
+    "startOffset": 8,
+    "endOffset": 9,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 8,
+     "endOffset": 9,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 11,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 9,
+    "endOffset": 10,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 12,
+     "endOffset": 13,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 8,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 12,
+   "endOffset": 13,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "モード-速度優先": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "speed_mode",
+    "options": {
+     "行番号無し": true,
+     "暗黙の型変換無し": true,
+     "強制ピュア": true,
+     "それ無効": true
+    },
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__A",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 14,
+          "endOffset": 15,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 12,
+        "endOffset": 13,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 15,
+         "endOffset": 16,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 11,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 16,
+       "endOffset": 20,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 5,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 20,
+   "endOffset": 21,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "モード-モニタ": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "performance_monitor",
+    "options": {
+     "ユーザ関数": true,
+     "システム関数本体": true,
+     "システム関数": true
+    },
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__A",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 20,
+          "endOffset": 21,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 18,
+        "endOffset": 19,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 21,
+         "endOffset": 22,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 17,
+      "endOffset": 18,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 22,
+       "endOffset": 26,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 5,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 26,
+   "endOffset": 27,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "モード-厳チェック": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "run_mode",
+    "value": "厳しくチェック",
+    "startOffset": 6,
+    "endOffset": 7,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 6,
+     "endOffset": 7,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 9,
+      "endOffset": 10,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 7,
+    "endOffset": 8,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 10,
+     "endOffset": 11,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 10,
+   "endOffset": 11,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "モード-公開既定値": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "eol",
+    "startOffset": 17,
+    "endOffset": 18,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 17,
+     "endOffset": 18,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 20,
+      "endOffset": 21,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 18,
+    "endOffset": 19,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 21,
+     "endOffset": 22,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 21,
+   "endOffset": 22,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "定義-関数": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_func",
+    "name": "main__足",
+    "args": [
+     {
+      "type": "word",
+      "value": "A",
+      "josi": "と",
+      "indent": 0,
+      "line": 0,
+      "column": 2,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 2,
+      "preprocessedCodeLength": 2,
+      "startOffset": 2,
+      "endOffset": 4,
+      "rawJosi": "と"
+     },
+     {
+      "type": "word",
+      "value": "B",
+      "josi": "を",
+      "indent": 0,
+      "line": 0,
+      "column": 4,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 4,
+      "preprocessedCodeLength": 2,
+      "startOffset": 4,
+      "endOffset": 6,
+      "rawJosi": "を"
+     }
+    ],
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "return",
+        "blocks": [
+         {
+          "type": "op",
+          "operator": "+",
+          "blocks": [
+           {
+            "type": "word",
+            "value": "A",
+            "josi": "",
+            "indent": 0,
+            "line": 1,
+            "column": 0,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 12,
+            "preprocessedCodeLength": 1,
+            "startOffset": 12,
+            "endOffset": 13,
+            "rawJosi": ""
+           },
+           {
+            "type": "word",
+            "value": "B",
+            "josi": "で",
+            "indent": 0,
+            "line": 1,
+            "column": 2,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 14,
+            "preprocessedCodeLength": 2,
+            "startOffset": 14,
+            "endOffset": 16,
+            "rawJosi": "で"
+           }
+          ],
+          "josi": "で",
+          "startOffset": 12,
+          "endOffset": 13,
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3"
+         }
+        ],
+        "josi": "",
+        "startOffset": 16,
+        "endOffset": 18,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 4,
+        "end": {
+         "startOffset": 18,
+         "endOffset": 19,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 11,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 19,
+       "endOffset": 23,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "asyncFn": false,
+    "isExport": true,
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "と"
+      ],
+      [
+       "を"
+      ]
+     ],
+     "varnames": [
+      "A",
+      "B"
+     ],
+     "funcPointers": [
+      null,
+      null
+     ]
+    },
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 23,
+     "endOffset": 24,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 23,
+   "endOffset": 24,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "定義-関数公開": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_func",
+    "name": "main__倍",
+    "args": [
+     {
+      "type": "word",
+      "value": "A",
+      "josi": "を",
+      "indent": 0,
+      "line": 0,
+      "column": 6,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 6,
+      "preprocessedCodeLength": 2,
+      "startOffset": 6,
+      "endOffset": 8,
+      "rawJosi": "を"
+     }
+    ],
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "return",
+        "blocks": [
+         {
+          "type": "op",
+          "operator": "*",
+          "blocks": [
+           {
+            "type": "word",
+            "value": "A",
+            "josi": "",
+            "indent": 0,
+            "line": 1,
+            "column": 0,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 13,
+            "preprocessedCodeLength": 1,
+            "startOffset": 13,
+            "endOffset": 14,
+            "rawJosi": ""
+           },
+           {
+            "type": "number",
+            "value": 2,
+            "josi": "で",
+            "startOffset": 15,
+            "endOffset": 17,
+            "file": "main.nako3",
+            "line": 1,
+            "column": 2
+           }
+          ],
+          "josi": "で",
+          "startOffset": 13,
+          "endOffset": 14,
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3"
+         }
+        ],
+        "josi": "",
+        "startOffset": 17,
+        "endOffset": 19,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 4,
+        "end": {
+         "startOffset": 19,
+         "endOffset": 20,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 12,
+      "endOffset": 13,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 20,
+       "endOffset": 24,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "asyncFn": false,
+    "isExport": true,
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "を"
+      ]
+     ],
+     "varnames": [
+      "A"
+     ],
+     "funcPointers": [
+      null
+     ]
+    },
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 24,
+     "endOffset": 25,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 24,
+   "endOffset": 25,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "定義-カッコ引数": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_func",
+    "name": "main__足",
+    "args": [
+     {
+      "type": "word",
+      "value": "A",
+      "josi": "と",
+      "indent": 0,
+      "line": 0,
+      "column": 4,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 4,
+      "preprocessedCodeLength": 2,
+      "startOffset": 4,
+      "endOffset": 6,
+      "rawJosi": "と"
+     },
+     {
+      "type": "word",
+      "value": "B",
+      "josi": "を",
+      "indent": 0,
+      "line": 0,
+      "column": 6,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 6,
+      "preprocessedCodeLength": 2,
+      "startOffset": 6,
+      "endOffset": 8,
+      "rawJosi": "を"
+     }
+    ],
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "return",
+        "blocks": [
+         {
+          "type": "op",
+          "operator": "+",
+          "blocks": [
+           {
+            "type": "word",
+            "value": "A",
+            "josi": "",
+            "indent": 0,
+            "line": 1,
+            "column": 0,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 12,
+            "preprocessedCodeLength": 1,
+            "startOffset": 12,
+            "endOffset": 13,
+            "rawJosi": ""
+           },
+           {
+            "type": "word",
+            "value": "B",
+            "josi": "で",
+            "indent": 0,
+            "line": 1,
+            "column": 2,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 14,
+            "preprocessedCodeLength": 2,
+            "startOffset": 14,
+            "endOffset": 16,
+            "rawJosi": "で"
+           }
+          ],
+          "josi": "で",
+          "startOffset": 12,
+          "endOffset": 13,
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3"
+         }
+        ],
+        "josi": "",
+        "startOffset": 16,
+        "endOffset": 18,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 4,
+        "end": {
+         "startOffset": 18,
+         "endOffset": 19,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 11,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 19,
+       "endOffset": 23,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "asyncFn": false,
+    "isExport": true,
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "と"
+      ],
+      [
+       "を"
+      ]
+     ],
+     "varnames": [
+      "A",
+      "B"
+     ],
+     "funcPointers": [
+      null,
+      null
+     ]
+    },
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 23,
+     "endOffset": 24,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 23,
+   "endOffset": 24,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "定義-ここから": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_func",
+    "name": "main__F",
+    "args": [],
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "A",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 12,
+          "endOffset": 13,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 10,
+        "endOffset": 11,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 13,
+         "endOffset": 14,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 5,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 5,
+      "end": {
+       "startOffset": 14,
+       "endOffset": 18,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "asyncFn": false,
+    "isExport": true,
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [],
+     "varnames": [],
+     "funcPointers": []
+    },
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 18,
+     "endOffset": 19,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 18,
+   "endOffset": 19,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "定義-無名関数": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__F",
+    "blocks": [
+     {
+      "type": "func_obj",
+      "name": "",
+      "args": [
+       {
+        "type": "word",
+        "value": "A",
+        "josi": "を",
+        "indent": 0,
+        "line": 0,
+        "column": 5,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 5,
+        "preprocessedCodeLength": 2,
+        "startOffset": 5,
+        "endOffset": 7,
+        "rawJosi": "を"
+       }
+      ],
+      "blocks": [
+       {
+        "type": "block",
+        "blocks": [
+         {
+          "type": "eol",
+          "comment": "",
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3"
+         },
+         {
+          "type": "func",
+          "name": "表示",
+          "blocks": [
+           {
+            "type": "word",
+            "value": "A",
+            "josi": "を",
+            "indent": 0,
+            "line": 1,
+            "column": 0,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 9,
+            "preprocessedCodeLength": 2,
+            "startOffset": 9,
+            "endOffset": 11,
+            "rawJosi": "を"
+           }
+          ],
+          "meta": {
+           "type": "func",
+           "josi": [
+            [
+             "を",
+             "と"
+            ]
+           ],
+           "pure": true,
+           "fn": "[fn]",
+           "return_none": true
+          },
+          "josi": "",
+          "asyncFn": false,
+          "startOffset": 11,
+          "endOffset": 13,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2,
+          "end": {
+           "startOffset": 13,
+           "endOffset": 14,
+           "file": "main.nako3",
+           "line": 2,
+           "column": 0
+          }
+         },
+         {
+          "type": "eol",
+          "comment": "",
+          "line": 2,
+          "column": 0,
+          "file": "main.nako3"
+         }
+        ],
+        "josi": "",
+        "startOffset": 8,
+        "endOffset": 9,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 14,
+         "endOffset": 18,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       }
+      ],
+      "meta": {
+       "type": "func",
+       "josi": [
+        [
+         "を"
+        ]
+       ],
+       "varnames": [
+        "A"
+       ],
+       "funcPointers": [
+        null
+       ]
+      },
+      "josi": "",
+      "isExport": false,
+      "asyncFn": false,
+      "startOffset": 2,
+      "endOffset": 4,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 18,
+       "endOffset": 19,
+       "file": "main.nako3",
+       "line": 3,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 18,
+     "endOffset": 19,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 18,
+   "endOffset": 19,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "定義-テスト": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_test",
+    "name": "main__足す",
+    "args": [],
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "A",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 12,
+          "endOffset": 13,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 10,
+        "endOffset": 11,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 13,
+         "endOffset": 14,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 9,
+      "endOffset": 10,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 14,
+       "endOffset": 18,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "asyncFn": false,
+    "isExport": true,
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [],
+     "varnames": [],
+     "funcPointers": []
+    },
+    "startOffset": 0,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 18,
+     "endOffset": 19,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 5,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 18,
+   "endOffset": 19,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-もし": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "if",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "eq",
+      "blocks": [
+       {
+        "type": "word",
+        "value": "main__A",
+        "josi": "",
+        "indent": 0,
+        "line": 0,
+        "column": 2,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 2,
+        "preprocessedCodeLength": 1,
+        "startOffset": 2,
+        "endOffset": 3,
+        "rawJosi": ""
+       },
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 4,
+        "endOffset": 5,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 4
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "line": 0,
+      "column": 2,
+      "file": "main.nako3"
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__B",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 11,
+          "endOffset": 12,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 9,
+        "endOffset": 10,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 12,
+         "endOffset": 13,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 8,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 13,
+       "endOffset": 16,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 3,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__B",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 19,
+          "endOffset": 20,
+          "file": "main.nako3",
+          "line": 3,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 17,
+        "endOffset": 18,
+        "file": "main.nako3",
+        "line": 3,
+        "column": 0,
+        "end": {
+         "startOffset": 20,
+         "endOffset": 21,
+         "file": "main.nako3",
+         "line": 4,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 4,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 16,
+      "endOffset": 17,
+      "file": "main.nako3",
+      "line": 3,
+      "column": 0,
+      "end": {
+       "startOffset": 21,
+       "endOffset": 25,
+       "file": "main.nako3",
+       "line": 4,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 25,
+     "endOffset": 26,
+     "file": "main.nako3",
+     "line": 5,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 5,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 5,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 25,
+   "endOffset": 26,
+   "file": "main.nako3",
+   "line": 5,
+   "column": 0
+  }
+ },
+ "制御-もし単文": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "if",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "eq",
+      "blocks": [
+       {
+        "type": "word",
+        "value": "main__A",
+        "josi": "",
+        "indent": 0,
+        "line": 0,
+        "column": 2,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 2,
+        "preprocessedCodeLength": 1,
+        "startOffset": 2,
+        "endOffset": 3,
+        "rawJosi": ""
+       },
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 4,
+        "endOffset": 5,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 4
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "line": 0,
+      "column": 2,
+      "file": "main.nako3"
+     },
+     {
+      "type": "let",
+      "name": "main__B",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 10,
+        "endOffset": 11,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 10
+       }
+      ],
+      "josi": "",
+      "startOffset": 8,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 8,
+      "end": {
+       "startOffset": 11,
+       "endOffset": 12,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     },
+     {
+      "type": "nop",
+      "josi": "",
+      "startOffset": 8,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 8,
+      "end": {
+       "startOffset": 8,
+       "endOffset": 9,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 8
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "制御-回": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "repeat_times",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 3,
+      "josi": "",
+      "startOffset": 0,
+      "endOffset": 1,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__A",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 5,
+          "endOffset": 6,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 6,
+         "endOffset": 7,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 11,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 1,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 1,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-間": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "while",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "lt",
+      "blocks": [
+       {
+        "type": "word",
+        "value": "main__A",
+        "josi": "",
+        "indent": 0,
+        "line": 0,
+        "column": 0,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 0,
+        "preprocessedCodeLength": 1,
+        "startOffset": 0,
+        "endOffset": 1,
+        "rawJosi": ""
+       },
+       {
+        "type": "number",
+        "value": 3,
+        "josi": "の",
+        "startOffset": 2,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2
+       }
+      ],
+      "josi": "の",
+      "startOffset": 0,
+      "endOffset": 1,
+      "line": 0,
+      "column": 0,
+      "file": "main.nako3"
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__A",
+        "blocks": [
+         {
+          "type": "op",
+          "operator": "+",
+          "blocks": [
+           {
+            "type": "word",
+            "value": "main__A",
+            "josi": "",
+            "indent": 0,
+            "line": 1,
+            "column": 2,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 8,
+            "preprocessedCodeLength": 1,
+            "startOffset": 8,
+            "endOffset": 9,
+            "rawJosi": ""
+           },
+           {
+            "type": "number",
+            "value": 1,
+            "josi": "",
+            "startOffset": 10,
+            "endOffset": 11,
+            "file": "main.nako3",
+            "line": 1,
+            "column": 4
+           }
+          ],
+          "josi": "",
+          "startOffset": 8,
+          "endOffset": 9,
+          "line": 1,
+          "column": 2,
+          "file": "main.nako3"
+         }
+        ],
+        "josi": "",
+        "startOffset": 6,
+        "endOffset": 7,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 11,
+         "endOffset": 12,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 5,
+      "endOffset": 6,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 12,
+       "endOffset": 16,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 4,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 4,
+    "end": {
+     "startOffset": 16,
+     "endOffset": 17,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 16,
+   "endOffset": 17,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-後判定": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "atohantei",
+    "blocks": [
+     {
+      "type": "not",
+      "operator": "not",
+      "blocks": [
+       {
+        "type": "op",
+        "operator": "gt",
+        "blocks": [
+         {
+          "type": "word",
+          "value": "main__A",
+          "josi": "",
+          "indent": 0,
+          "line": 2,
+          "column": 4,
+          "file": "main.nako3",
+          "preprocessedCodeOffset": 14,
+          "preprocessedCodeLength": 1,
+          "startOffset": 14,
+          "endOffset": 15,
+          "rawJosi": ""
+         },
+         {
+          "type": "number",
+          "value": 3,
+          "josi": "に",
+          "startOffset": 16,
+          "endOffset": 18,
+          "file": "main.nako3",
+          "line": 2,
+          "column": 6
+         }
+        ],
+        "josi": "に",
+        "startOffset": 14,
+        "endOffset": 15,
+        "line": 2,
+        "column": 4,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 0,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0,
+      "end": {
+       "startOffset": 22,
+       "endOffset": 23,
+       "file": "main.nako3",
+       "line": 3,
+       "column": 0
+      }
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__A",
+        "blocks": [
+         {
+          "type": "op",
+          "operator": "+",
+          "blocks": [
+           {
+            "type": "word",
+            "value": "main__A",
+            "josi": "",
+            "indent": 0,
+            "line": 1,
+            "column": 2,
+            "file": "main.nako3",
+            "preprocessedCodeOffset": 6,
+            "preprocessedCodeLength": 1,
+            "startOffset": 6,
+            "endOffset": 7,
+            "rawJosi": ""
+           },
+           {
+            "type": "number",
+            "value": 1,
+            "josi": "",
+            "startOffset": 8,
+            "endOffset": 9,
+            "file": "main.nako3",
+            "line": 1,
+            "column": 4
+           }
+          ],
+          "josi": "",
+          "startOffset": 6,
+          "endOffset": 7,
+          "line": 1,
+          "column": 2,
+          "file": "main.nako3"
+         }
+        ],
+        "josi": "",
+        "startOffset": 4,
+        "endOffset": 5,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 9,
+         "endOffset": 10,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 3,
+      "endOffset": 4,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 10,
+       "endOffset": 14,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 3,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 22,
+     "endOffset": 23,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 3,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 22,
+   "endOffset": 23,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-繰返": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "for",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "から",
+      "startOffset": 2,
+      "endOffset": 5,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     },
+     {
+      "type": "number",
+      "value": 10,
+      "josi": "まで",
+      "startOffset": 5,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 5
+     },
+     {
+      "type": "nop",
+      "josi": "",
+      "startOffset": 13,
+      "endOffset": 14,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 13,
+       "endOffset": 14,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "func",
+        "name": "表示",
+        "blocks": [
+         {
+          "type": "word",
+          "value": "main__N",
+          "josi": "を",
+          "indent": 0,
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3",
+          "preprocessedCodeOffset": 14,
+          "preprocessedCodeLength": 2,
+          "startOffset": 14,
+          "endOffset": 16,
+          "rawJosi": "を"
+         }
+        ],
+        "meta": {
+         "type": "func",
+         "josi": [
+          [
+           "を",
+           "と"
+          ]
+         ],
+         "pure": true,
+         "fn": "[fn]",
+         "return_none": true
+        },
+        "josi": "",
+        "asyncFn": false,
+        "startOffset": 16,
+        "endOffset": 18,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 2,
+        "end": {
+         "startOffset": 18,
+         "endOffset": 19,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 14,
+      "endOffset": 16,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 19,
+       "endOffset": 23,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "flagDown": true,
+    "flagUp": true,
+    "loopDirection": null,
+    "word": "main__N",
+    "josi": "",
+    "startOffset": 9,
+    "endOffset": 13,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 9,
+    "end": {
+     "startOffset": 23,
+     "endOffset": 24,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 23,
+   "endOffset": 24,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-増繰返": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "for",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "から",
+      "startOffset": 2,
+      "endOffset": 5,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     },
+     {
+      "type": "number",
+      "value": 10,
+      "josi": "まで",
+      "startOffset": 5,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 5
+     },
+     {
+      "type": "number",
+      "value": 2,
+      "josi": "ずつ",
+      "startOffset": 9,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 9
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "func",
+        "name": "表示",
+        "blocks": [
+         {
+          "type": "word",
+          "value": "main__N",
+          "josi": "を",
+          "indent": 0,
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3",
+          "preprocessedCodeOffset": 21,
+          "preprocessedCodeLength": 2,
+          "startOffset": 21,
+          "endOffset": 23,
+          "rawJosi": "を"
+         }
+        ],
+        "meta": {
+         "type": "func",
+         "josi": [
+          [
+           "を",
+           "と"
+          ]
+         ],
+         "pure": true,
+         "fn": "[fn]",
+         "return_none": true
+        },
+        "josi": "",
+        "asyncFn": false,
+        "startOffset": 23,
+        "endOffset": 25,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 2,
+        "end": {
+         "startOffset": 25,
+         "endOffset": 26,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 21,
+      "endOffset": 23,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 26,
+       "endOffset": 30,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "flagDown": false,
+    "flagUp": true,
+    "loopDirection": "up",
+    "word": "main__N",
+    "josi": "",
+    "startOffset": 16,
+    "endOffset": 20,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 16,
+    "end": {
+     "startOffset": 30,
+     "endOffset": 31,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 30,
+   "endOffset": 31,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-減繰返": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "for",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 10,
+      "josi": "から",
+      "startOffset": 2,
+      "endOffset": 6,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     },
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "まで",
+      "startOffset": 6,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 6
+     },
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "ずつ",
+      "startOffset": 9,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 9
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "func",
+        "name": "表示",
+        "blocks": [
+         {
+          "type": "word",
+          "value": "main__N",
+          "josi": "を",
+          "indent": 0,
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3",
+          "preprocessedCodeOffset": 21,
+          "preprocessedCodeLength": 2,
+          "startOffset": 21,
+          "endOffset": 23,
+          "rawJosi": "を"
+         }
+        ],
+        "meta": {
+         "type": "func",
+         "josi": [
+          [
+           "を",
+           "と"
+          ]
+         ],
+         "pure": true,
+         "fn": "[fn]",
+         "return_none": true
+        },
+        "josi": "",
+        "asyncFn": false,
+        "startOffset": 23,
+        "endOffset": 25,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 2,
+        "end": {
+         "startOffset": 25,
+         "endOffset": 26,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 21,
+      "endOffset": 23,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 26,
+       "endOffset": 30,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "flagDown": true,
+    "flagUp": false,
+    "loopDirection": "down",
+    "word": "main__N",
+    "josi": "",
+    "startOffset": 16,
+    "endOffset": 20,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 16,
+    "end": {
+     "startOffset": 30,
+     "endOffset": 31,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 30,
+   "endOffset": 31,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-反復": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "foreach",
+    "word": "",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 1,
+        "endOffset": 2,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 1
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3
+       },
+       {
+        "type": "number",
+        "value": 3,
+        "josi": "",
+        "startOffset": 5,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 5
+       }
+      ],
+      "josi": "を",
+      "startOffset": 0,
+      "endOffset": 1,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0,
+      "end": {
+       "startOffset": 8,
+       "endOffset": 10,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 8
+      }
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "func",
+        "name": "表示",
+        "blocks": [
+         {
+          "type": "word",
+          "value": "対象",
+          "josi": "を",
+          "indent": 0,
+          "line": 1,
+          "column": 0,
+          "file": "main.nako3",
+          "preprocessedCodeOffset": 11,
+          "preprocessedCodeLength": 3,
+          "startOffset": 11,
+          "endOffset": 14,
+          "rawJosi": "を"
+         }
+        ],
+        "meta": {
+         "type": "func",
+         "josi": [
+          [
+           "を",
+           "と"
+          ]
+         ],
+         "pure": true,
+         "fn": "[fn]",
+         "return_none": true
+        },
+        "josi": "",
+        "asyncFn": false,
+        "startOffset": 14,
+        "endOffset": 16,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 3,
+        "end": {
+         "startOffset": 16,
+         "endOffset": 17,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 10,
+      "endOffset": 11,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 17,
+       "endOffset": 21,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 8,
+    "endOffset": 10,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 8,
+    "end": {
+     "startOffset": 21,
+     "endOffset": 22,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 21,
+   "endOffset": 22,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-条件分岐": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "switch",
+    "blocks": [
+     {
+      "type": "word",
+      "value": "main__A",
+      "josi": "で",
+      "indent": 0,
+      "line": 0,
+      "column": 0,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 0,
+      "preprocessedCodeLength": 2,
+      "startOffset": 0,
+      "endOffset": 2,
+      "rawJosi": "で"
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 5,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__B",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 27,
+          "endOffset": 28,
+          "file": "main.nako3",
+          "line": 5,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 25,
+        "endOffset": 26,
+        "file": "main.nako3",
+        "line": 5,
+        "column": 0,
+        "end": {
+         "startOffset": 28,
+         "endOffset": 29,
+         "file": "main.nako3",
+         "line": 6,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 6,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 24,
+      "endOffset": 25,
+      "file": "main.nako3",
+      "line": 5,
+      "column": 0,
+      "end": {
+       "startOffset": 29,
+       "endOffset": 33,
+       "file": "main.nako3",
+       "line": 6,
+       "column": 0
+      }
+     },
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 7,
+      "endOffset": 8,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__B",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 14,
+          "endOffset": 15,
+          "file": "main.nako3",
+          "line": 2,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 12,
+        "endOffset": 13,
+        "file": "main.nako3",
+        "line": 2,
+        "column": 0,
+        "end": {
+         "startOffset": 15,
+         "endOffset": 16,
+         "file": "main.nako3",
+         "line": 3,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 3,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 11,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 2,
+      "column": 0,
+      "end": {
+       "startOffset": 16,
+       "endOffset": 20,
+       "file": "main.nako3",
+       "line": 3,
+       "column": 0
+      }
+     }
+    ],
+    "case_count": 1,
+    "josi": "",
+    "startOffset": 2,
+    "endOffset": 6,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 2,
+    "end": {
+     "startOffset": 38,
+     "endOffset": 39,
+     "file": "main.nako3",
+     "line": 8,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 8,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 8,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 38,
+   "endOffset": 39,
+   "file": "main.nako3",
+   "line": 8,
+   "column": 0
+  }
+ },
+ "制御-戻る": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_func",
+    "name": "main__F",
+    "args": [],
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "return",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "で",
+          "startOffset": 5,
+          "endOffset": 7,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 0
+         }
+        ],
+        "josi": "",
+        "startOffset": 7,
+        "endOffset": 9,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 2,
+        "end": {
+         "startOffset": 9,
+         "endOffset": 10,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 4,
+      "endOffset": 5,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 10,
+       "endOffset": 14,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "asyncFn": false,
+    "isExport": true,
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [],
+     "varnames": [],
+     "funcPointers": []
+    },
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 14,
+     "endOffset": 15,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 14,
+   "endOffset": 15,
+   "file": "main.nako3",
+   "line": 3,
+   "column": 0
+  }
+ },
+ "制御-エラー監視": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "try_except",
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__A",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 8,
+          "endOffset": 9,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 6,
+        "endOffset": 7,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 0,
+        "end": {
+         "startOffset": 9,
+         "endOffset": 10,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 5,
+      "endOffset": 6,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 10,
+       "endOffset": 13,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     },
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 3,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "let",
+        "name": "main__B",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 19,
+          "endOffset": 20,
+          "file": "main.nako3",
+          "line": 3,
+          "column": 2
+         }
+        ],
+        "josi": "",
+        "startOffset": 17,
+        "endOffset": 18,
+        "file": "main.nako3",
+        "line": 3,
+        "column": 0,
+        "end": {
+         "startOffset": 20,
+         "endOffset": 21,
+         "file": "main.nako3",
+         "line": 4,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 4,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 16,
+      "endOffset": 17,
+      "file": "main.nako3",
+      "line": 3,
+      "column": 0,
+      "end": {
+       "startOffset": 21,
+       "endOffset": 25,
+       "file": "main.nako3",
+       "line": 4,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 25,
+     "endOffset": 26,
+     "file": "main.nako3",
+     "line": 5,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 5,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 5,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 5,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 25,
+   "endOffset": 26,
+   "file": "main.nako3",
+   "line": 5,
+   "column": 0
+  }
+ },
+ "代入-単純": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 3,
+     "endOffset": 4,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 3,
+   "endOffset": 4,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-代入文": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "を",
+      "startOffset": 2,
+      "endOffset": 4,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 4,
+    "endOffset": 6,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 4,
+    "end": {
+     "startOffset": 6,
+     "endOffset": 7,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 6,
+   "endOffset": 7,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-定める": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_local_var",
+    "name": "main__A",
+    "vartype": "定数",
+    "isExport": true,
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "に",
+      "startOffset": 2,
+      "endOffset": 4,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 4,
+    "endOffset": 7,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 4,
+    "end": {
+     "startOffset": 7,
+     "endOffset": 8,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 7,
+   "endOffset": 8,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-変数宣言": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_local_var",
+    "name": "main__A",
+    "vartype": "変数",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 5,
+      "endOffset": 6,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 5
+     }
+    ],
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 6,
+     "endOffset": 7,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 6,
+   "endOffset": 7,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-定数宣言": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_local_var",
+    "name": "main__A",
+    "vartype": "定数",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 5,
+      "endOffset": 6,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 5
+     }
+    ],
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 6,
+     "endOffset": 7,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 6,
+   "endOffset": 7,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-とは変数": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_local_var",
+    "name": "main__A",
+    "vartype": "変数",
+    "isExport": true,
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 6,
+      "endOffset": 7,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 6
+     }
+    ],
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 7,
+     "endOffset": 8,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 7,
+   "endOffset": 8,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-複数変数": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_local_varlist",
+    "names": [
+     {
+      "type": "word",
+      "value": "main__A",
+      "josi": "",
+      "startOffset": 4,
+      "endOffset": 5,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 4
+     },
+     {
+      "type": "word",
+      "value": "main__B",
+      "josi": "",
+      "startOffset": 6,
+      "endOffset": 7,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 6
+     }
+    ],
+    "vartype": "変数",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 10,
+        "endOffset": 11,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 10
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "",
+        "startOffset": 12,
+        "endOffset": 13,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 12
+       }
+      ],
+      "josi": "",
+      "startOffset": 9,
+      "endOffset": 10,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 9,
+      "end": {
+       "startOffset": 14,
+       "endOffset": 15,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 14,
+     "endOffset": 15,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 14,
+   "endOffset": 15,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-複数代入": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_local_varlist",
+    "names": [
+     {
+      "type": "word",
+      "value": "main__A",
+      "josi": "",
+      "indent": 0,
+      "line": 0,
+      "column": 0,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 0,
+      "preprocessedCodeLength": 1,
+      "startOffset": 0,
+      "endOffset": 1,
+      "rawJosi": ""
+     },
+     {
+      "type": "word",
+      "value": "main__B",
+      "josi": "",
+      "indent": 0,
+      "line": 0,
+      "column": 2,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 2,
+      "preprocessedCodeLength": 1,
+      "startOffset": 2,
+      "endOffset": 3,
+      "rawJosi": ""
+     }
+    ],
+    "vartype": "変数",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 5,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 5
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "",
+        "startOffset": 7,
+        "endOffset": 8,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 7
+       }
+      ],
+      "josi": "",
+      "startOffset": 4,
+      "endOffset": 5,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 4,
+      "end": {
+       "startOffset": 9,
+       "endOffset": 10,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 9,
+     "endOffset": 10,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 9,
+   "endOffset": 10,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-増やす": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "inc",
+    "name": {
+     "type": "word",
+     "value": "main__A",
+     "josi": "を",
+     "indent": 0,
+     "line": 0,
+     "column": 0,
+     "file": "main.nako3",
+     "preprocessedCodeOffset": 0,
+     "preprocessedCodeLength": 2,
+     "startOffset": 0,
+     "endOffset": 2,
+     "rawJosi": "を"
+    },
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "だけ",
+      "startOffset": 2,
+      "endOffset": 5,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 5,
+    "endOffset": 8,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 5,
+    "end": {
+     "startOffset": 8,
+     "endOffset": 9,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 8,
+   "endOffset": 9,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-減らす": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "inc",
+    "name": {
+     "type": "word",
+     "value": "main__A",
+     "josi": "を",
+     "indent": 0,
+     "line": 0,
+     "column": 0,
+     "file": "main.nako3",
+     "preprocessedCodeOffset": 0,
+     "preprocessedCodeLength": 2,
+     "startOffset": 0,
+     "endOffset": 2,
+     "rawJosi": "を"
+    },
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "*",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "だけ",
+        "startOffset": 2,
+        "endOffset": 5,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2
+       },
+       {
+        "type": "number",
+        "value": -1,
+        "line": 0
+       }
+      ],
+      "josi": "",
+      "startOffset": 5,
+      "endOffset": 8,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 5
+     }
+    ],
+    "josi": "",
+    "startOffset": 5,
+    "endOffset": 8,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 5,
+    "end": {
+     "startOffset": 8,
+     "endOffset": 9,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 8,
+   "endOffset": 9,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "代入-プロパティ": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_obj",
+      "blocks": [],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 4,
+       "endOffset": 5,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 4,
+     "endOffset": 5,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_prop",
+    "name": "main__A",
+    "index": [
+     {
+      "type": "string",
+      "value": "b",
+      "josi": "",
+      "indent": 0,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2,
+      "preprocessedCodeOffset": 7,
+      "preprocessedCodeLength": 3,
+      "startOffset": 7,
+      "endOffset": 10,
+      "rawJosi": ""
+     }
+    ],
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 11,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 6
+     }
+    ],
+    "josi": "",
+    "startOffset": 5,
+    "endOffset": 6,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 12,
+     "endOffset": 13,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 12,
+   "endOffset": 13,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "配列-角括弧": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 0,
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 5,
+       "endOffset": 6,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 5,
+     "endOffset": 6,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_array",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 11,
+      "endOffset": 12,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 5
+     },
+     {
+      "type": "number",
+      "value": 0,
+      "josi": "",
+      "startOffset": 8,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     }
+    ],
+    "checkInit": false,
+    "startOffset": 6,
+    "endOffset": 7,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 12,
+     "endOffset": 13,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 12,
+   "endOffset": 13,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "配列-アット": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 0,
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 5,
+       "endOffset": 6,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 5,
+     "endOffset": 6,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_array",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 10,
+      "endOffset": 11,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 4
+     },
+     {
+      "type": "number",
+      "value": 0,
+      "josi": "",
+      "startOffset": 8,
+      "endOffset": 9,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     }
+    ],
+    "checkInit": false,
+    "startOffset": 6,
+    "endOffset": 7,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "配列-二次元": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 0,
+          "josi": "",
+          "startOffset": 4,
+          "endOffset": 5,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 4
+         }
+        ],
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3,
+        "end": {
+         "startOffset": 6,
+         "endOffset": 7,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 6
+        }
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 8,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 7,
+     "endOffset": 8,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_array",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 16,
+      "endOffset": 17,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 8
+     },
+     {
+      "type": "number",
+      "value": 0,
+      "josi": "",
+      "startOffset": 10,
+      "endOffset": 11,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     },
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 13,
+      "endOffset": 14,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 5
+     }
+    ],
+    "tag": "2",
+    "checkInit": false,
+    "startOffset": 8,
+    "endOffset": 9,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 17,
+     "endOffset": 18,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 17,
+   "endOffset": 18,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "配列-カンマ": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 0,
+          "josi": "",
+          "startOffset": 4,
+          "endOffset": 5,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 4
+         }
+        ],
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3,
+        "end": {
+         "startOffset": 6,
+         "endOffset": 7,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 6
+        }
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 8,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 7,
+     "endOffset": 8,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_array",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 15,
+      "endOffset": 16,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 7
+     },
+     {
+      "type": "number",
+      "value": 0,
+      "josi": "",
+      "startOffset": 10,
+      "endOffset": 11,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     },
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 12,
+      "endOffset": 13,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 4
+     }
+    ],
+    "checkInit": false,
+    "tag": "2",
+    "startOffset": 8,
+    "endOffset": 9,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 16,
+     "endOffset": 17,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 16,
+   "endOffset": 17,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "呼出-単純": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "func",
+    "name": "表示",
+    "blocks": [
+     {
+      "type": "string",
+      "value": "あ",
+      "josi": "を",
+      "startOffset": 0,
+      "endOffset": 4,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0
+     }
+    ],
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "を",
+       "と"
+      ]
+     ],
+     "pure": true,
+     "fn": "[fn]",
+     "return_none": true
+    },
+    "josi": "",
+    "asyncFn": false,
+    "startOffset": 4,
+    "endOffset": 6,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 4,
+    "end": {
+     "startOffset": 6,
+     "endOffset": 7,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 4,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 6,
+   "endOffset": 7,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "呼出-C風": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "func",
+    "name": "表示",
+    "blocks": [
+     {
+      "type": "func",
+      "name": "足",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "",
+        "startOffset": 5,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 5
+       }
+      ],
+      "josi": "を",
+      "meta": {
+       "type": "func",
+       "josi": [
+        [
+         "に",
+         "と"
+        ],
+        [
+         "を"
+        ]
+       ],
+       "isVariableJosi": false,
+       "pure": true,
+       "fn": "[fn]"
+      },
+      "asyncFn": false,
+      "startOffset": 0,
+      "endOffset": 2,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 0,
+      "end": {
+       "startOffset": 8,
+       "endOffset": 10,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 8
+      }
+     }
+    ],
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "を",
+       "と"
+      ]
+     ],
+     "pure": true,
+     "fn": "[fn]",
+     "return_none": true
+    },
+    "josi": "",
+    "asyncFn": false,
+    "startOffset": 8,
+    "endOffset": 10,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 8,
+    "end": {
+     "startOffset": 10,
+     "endOffset": 11,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 10,
+   "endOffset": 11,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "呼出-一語関数": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 3,
+     "endOffset": 4,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "func",
+    "name": "表示",
+    "blocks": [
+     {
+      "type": "word",
+      "value": "main__A",
+      "josi": "を",
+      "indent": 0,
+      "line": 1,
+      "column": 0,
+      "file": "main.nako3",
+      "preprocessedCodeOffset": 4,
+      "preprocessedCodeLength": 2,
+      "startOffset": 4,
+      "endOffset": 6,
+      "rawJosi": "を"
+     }
+    ],
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "を",
+       "と"
+      ]
+     ],
+     "pure": true,
+     "fn": "[fn]",
+     "return_none": true
+    },
+    "josi": "",
+    "asyncFn": false,
+    "startOffset": 6,
+    "endOffset": 8,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 2,
+    "end": {
+     "startOffset": 8,
+     "endOffset": 9,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 8,
+   "endOffset": 9,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "式-カッコ": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "func",
+    "name": "表示",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "*",
+      "blocks": [
+       {
+        "type": "op",
+        "operator": "+",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 1,
+          "endOffset": 2,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 1
+         },
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 3,
+          "endOffset": 4,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 3
+         }
+        ],
+        "josi": "",
+        "startOffset": 1,
+        "endOffset": 2,
+        "line": 0,
+        "column": 1,
+        "file": "main.nako3"
+       },
+       {
+        "type": "number",
+        "value": 3,
+        "josi": "を",
+        "startOffset": 6,
+        "endOffset": 8,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 6
+       }
+      ],
+      "josi": "を",
+      "startOffset": 1,
+      "endOffset": 2,
+      "line": 0,
+      "column": 1,
+      "file": "main.nako3"
+     }
+    ],
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "を",
+       "と"
+      ]
+     ],
+     "pure": true,
+     "fn": "[fn]",
+     "return_none": true
+    },
+    "josi": "",
+    "asyncFn": false,
+    "startOffset": 8,
+    "endOffset": 10,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 8,
+    "end": {
+     "startOffset": 10,
+     "endOffset": 11,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 10,
+   "endOffset": 11,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "式-演算子": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "func",
+    "name": "表示",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "-",
+      "blocks": [
+       {
+        "type": "op",
+        "operator": "+",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 0,
+          "endOffset": 1,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 0
+         },
+         {
+          "type": "op",
+          "operator": "*",
+          "blocks": [
+           {
+            "type": "number",
+            "value": 2,
+            "josi": "",
+            "startOffset": 2,
+            "endOffset": 3,
+            "file": "main.nako3",
+            "line": 0,
+            "column": 2
+           },
+           {
+            "type": "number",
+            "value": 3,
+            "josi": "",
+            "startOffset": 4,
+            "endOffset": 5,
+            "file": "main.nako3",
+            "line": 0,
+            "column": 4
+           }
+          ],
+          "josi": "を",
+          "startOffset": 2,
+          "endOffset": 3,
+          "line": 0,
+          "column": 2,
+          "file": "main.nako3"
+         }
+        ],
+        "josi": "を",
+        "startOffset": 0,
+        "endOffset": 1,
+        "line": 0,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "op",
+        "operator": "÷",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 4,
+          "josi": "",
+          "startOffset": 6,
+          "endOffset": 7,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 6
+         },
+         {
+          "type": "number",
+          "value": 5,
+          "josi": "を",
+          "startOffset": 8,
+          "endOffset": 10,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 8
+         }
+        ],
+        "josi": "を",
+        "startOffset": 6,
+        "endOffset": 7,
+        "line": 0,
+        "column": 6,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "を",
+      "startOffset": 0,
+      "endOffset": 1,
+      "line": 0,
+      "column": 0,
+      "file": "main.nako3"
+     }
+    ],
+    "meta": {
+     "type": "func",
+     "josi": [
+      [
+       "を",
+       "と"
+      ]
+     ],
+     "pure": true,
+     "fn": "[fn]",
+     "return_none": true
+    },
+    "josi": "",
+    "asyncFn": false,
+    "startOffset": 10,
+    "endOffset": 12,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 10,
+    "end": {
+     "startOffset": 12,
+     "endOffset": 13,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 12,
+   "endOffset": 13,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "式-比較": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "if",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "and",
+      "blocks": [
+       {
+        "type": "op",
+        "operator": "lt",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 2,
+          "endOffset": 3,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 2
+         },
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 4,
+          "endOffset": 5,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 4
+         }
+        ],
+        "josi": "",
+        "startOffset": 2,
+        "endOffset": 3,
+        "line": 0,
+        "column": 2,
+        "file": "main.nako3"
+       },
+       {
+        "type": "op",
+        "operator": "gt",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 3,
+          "josi": "",
+          "startOffset": 7,
+          "endOffset": 8,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 7
+         },
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 9,
+          "endOffset": 10,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 9
+         }
+        ],
+        "josi": "",
+        "startOffset": 7,
+        "endOffset": 8,
+        "line": 0,
+        "column": 7,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "line": 0,
+      "column": 2,
+      "file": "main.nako3"
+     },
+     {
+      "type": "let",
+      "name": "main__A",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 15,
+        "endOffset": 16,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 15
+       }
+      ],
+      "josi": "",
+      "startOffset": 13,
+      "endOffset": 14,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 13,
+      "end": {
+       "startOffset": 16,
+       "endOffset": 17,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     },
+     {
+      "type": "nop",
+      "josi": "",
+      "startOffset": 13,
+      "endOffset": 14,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 13,
+      "end": {
+       "startOffset": 13,
+       "endOffset": 14,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 13
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 2,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 16,
+     "endOffset": 17,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 2,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 16,
+   "endOffset": 17,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "式-範囲": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "func",
+      "name": "範囲",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 2,
+        "endOffset": 3,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2
+       },
+       {
+        "type": "number",
+        "value": 10,
+        "josi": "",
+        "startOffset": 4,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 4
+       }
+      ],
+      "josi": "",
+      "meta": {
+       "type": "func",
+       "josi": [
+        [
+         "から"
+        ],
+        [
+         "の",
+         "までの"
+        ]
+       ],
+       "pure": true,
+       "fn": "[fn]"
+      },
+      "asyncFn": false,
+      "startOffset": 3,
+      "endOffset": 4,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 3,
+      "end": {
+       "startOffset": 6,
+       "endOffset": 7,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 6,
+     "endOffset": 7,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 6,
+   "endOffset": 7,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "式-単項マイナス": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 3,
+     "endOffset": 4,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let",
+    "name": "main__B",
+    "blocks": [
+     {
+      "type": "op",
+      "operator": "*",
+      "blocks": [
+       {
+        "type": "number",
+        "value": -1,
+        "line": 1
+       },
+       {
+        "type": "word",
+        "value": "main__A",
+        "josi": "",
+        "indent": 0,
+        "line": 1,
+        "column": 3,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 7,
+        "preprocessedCodeLength": 1,
+        "startOffset": 7,
+        "endOffset": 8,
+        "rawJosi": ""
+       }
+      ],
+      "josi": "",
+      "startOffset": 6,
+      "endOffset": 7,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2,
+      "end": {
+       "startOffset": 8,
+       "endOffset": 9,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 4,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 8,
+     "endOffset": 9,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 8,
+   "endOffset": 9,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "式-NOT": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 3,
+     "endOffset": 4,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let",
+    "name": "main__B",
+    "blocks": [
+     {
+      "type": "not",
+      "operator": "not",
+      "blocks": [
+       {
+        "type": "word",
+        "value": "main__A",
+        "josi": "",
+        "indent": 0,
+        "line": 1,
+        "column": 3,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 7,
+        "preprocessedCodeLength": 1,
+        "startOffset": 7,
+        "endOffset": 8,
+        "rawJosi": ""
+       }
+      ],
+      "josi": "",
+      "startOffset": 6,
+      "endOffset": 7,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2,
+      "end": {
+       "startOffset": 8,
+       "endOffset": 9,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 4,
+    "endOffset": 5,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 8,
+     "endOffset": 9,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 8,
+   "endOffset": 9,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "リテラル-配列": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "",
+        "startOffset": 5,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 5
+       },
+       {
+        "type": "number",
+        "value": 3,
+        "josi": "",
+        "startOffset": 7,
+        "endOffset": 8,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 7
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 9,
+       "endOffset": 10,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 9,
+     "endOffset": 10,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 9,
+   "endOffset": 10,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-辞書": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_obj",
+      "blocks": [
+       {
+        "type": "string",
+        "value": "a",
+        "josi": "",
+        "indent": 0,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3,
+        "preprocessedCodeOffset": 3,
+        "preprocessedCodeLength": 3,
+        "startOffset": 3,
+        "endOffset": 6,
+        "rawJosi": ""
+       },
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 7,
+        "endOffset": 8,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 7
+       },
+       {
+        "type": "string",
+        "value": "b",
+        "josi": "",
+        "indent": 0,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 9,
+        "preprocessedCodeOffset": 9,
+        "preprocessedCodeLength": 3,
+        "startOffset": 9,
+        "endOffset": 12,
+        "rawJosi": ""
+       },
+       {
+        "type": "number",
+        "value": 2,
+        "josi": "",
+        "startOffset": 13,
+        "endOffset": 14,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 13
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 15,
+       "endOffset": 16,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 15,
+     "endOffset": 16,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 15,
+   "endOffset": 16,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-辞書省略": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_obj",
+      "blocks": [
+       {
+        "type": "string",
+        "value": "a",
+        "josi": "",
+        "indent": 0,
+        "line": 0,
+        "column": 3,
+        "file": "main.nako3",
+        "preprocessedCodeOffset": 3,
+        "preprocessedCodeLength": 1,
+        "startOffset": 3,
+        "endOffset": 4,
+        "rawJosi": ""
+       },
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 5,
+        "endOffset": 6,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 5
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 8,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 7,
+     "endOffset": 8,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 7,
+   "endOffset": 8,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-空配列": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 4,
+       "endOffset": 5,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 4,
+     "endOffset": 5,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 4,
+   "endOffset": 5,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-空辞書": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_obj",
+      "blocks": [],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 4,
+       "endOffset": 5,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 4,
+     "endOffset": 5,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 4,
+   "endOffset": 5,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-入れ子": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 4,
+          "endOffset": 5,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 4
+         },
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 6,
+          "endOffset": 7,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 6
+         }
+        ],
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3,
+        "end": {
+         "startOffset": 8,
+         "endOffset": 9,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 8
+        }
+       },
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 3,
+          "josi": "",
+          "startOffset": 10,
+          "endOffset": 11,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 10
+         },
+         {
+          "type": "number",
+          "value": 4,
+          "josi": "",
+          "startOffset": 12,
+          "endOffset": 13,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 12
+         }
+        ],
+        "josi": "",
+        "startOffset": 9,
+        "endOffset": 10,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 9,
+        "end": {
+         "startOffset": 14,
+         "endOffset": 15,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 14
+        }
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 15,
+       "endOffset": 16,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 15,
+     "endOffset": 16,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 15,
+   "endOffset": 16,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-添字直接": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "ref_array_value",
+      "name": "@",
+      "index": [
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "json_array",
+          "blocks": [
+           {
+            "type": "number",
+            "value": 1,
+            "josi": "",
+            "startOffset": 4,
+            "endOffset": 5,
+            "file": "main.nako3",
+            "line": 0,
+            "column": 4
+           },
+           {
+            "type": "number",
+            "value": 2,
+            "josi": "",
+            "startOffset": 6,
+            "endOffset": 7,
+            "file": "main.nako3",
+            "line": 0,
+            "column": 6
+           }
+          ],
+          "josi": "",
+          "startOffset": 3,
+          "endOffset": 4,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 3,
+          "end": {
+           "startOffset": 8,
+           "endOffset": 9,
+           "file": "main.nako3",
+           "line": 0,
+           "column": 8
+          }
+         },
+         {
+          "type": "json_array",
+          "blocks": [
+           {
+            "type": "number",
+            "value": 3,
+            "josi": "",
+            "startOffset": 10,
+            "endOffset": 11,
+            "file": "main.nako3",
+            "line": 0,
+            "column": 10
+           },
+           {
+            "type": "number",
+            "value": 4,
+            "josi": "",
+            "startOffset": 12,
+            "endOffset": 13,
+            "file": "main.nako3",
+            "line": 0,
+            "column": 12
+           }
+          ],
+          "josi": "",
+          "startOffset": 9,
+          "endOffset": 10,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 9,
+          "end": {
+           "startOffset": 14,
+           "endOffset": 15,
+           "file": "main.nako3",
+           "line": 0,
+           "column": 14
+          }
+         }
+        ],
+        "josi": "",
+        "startOffset": 2,
+        "endOffset": 3,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2,
+        "end": {
+         "startOffset": 15,
+         "endOffset": 16,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 15
+        }
+       },
+       {
+        "type": "number",
+        "value": 0,
+        "josi": "",
+        "startOffset": 16,
+        "endOffset": 17,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 16
+       },
+       {
+        "type": "number",
+        "value": 1,
+        "josi": "",
+        "startOffset": 19,
+        "endOffset": 20,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 19
+       }
+      ],
+      "josi": "",
+      "line": 0,
+      "end": {
+       "startOffset": 15,
+       "endOffset": 16,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 15
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 21,
+     "endOffset": 22,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 21,
+   "endOffset": 22,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-アット直接": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "ref_array_value",
+      "name": "@",
+      "index": [
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 3,
+          "endOffset": 4,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 3
+         },
+         {
+          "type": "number",
+          "value": 2,
+          "josi": "",
+          "startOffset": 5,
+          "endOffset": 6,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 5
+         },
+         {
+          "type": "number",
+          "value": 3,
+          "josi": "",
+          "startOffset": 7,
+          "endOffset": 8,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 7
+         }
+        ],
+        "josi": "",
+        "startOffset": 2,
+        "endOffset": 3,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2,
+        "end": {
+         "startOffset": 9,
+         "endOffset": 10,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 9
+        }
+       },
+       {
+        "type": "number",
+        "value": 0,
+        "josi": "",
+        "startOffset": 10,
+        "endOffset": 11,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 10
+       }
+      ],
+      "josi": "",
+      "line": 0,
+      "end": {
+       "startOffset": 9,
+       "endOffset": 10,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 9
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "リテラル-プロパティ直接": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "ref_array_value",
+      "name": "$",
+      "index": [
+       {
+        "type": "json_obj",
+        "blocks": [
+         {
+          "type": "string",
+          "value": "a",
+          "josi": "",
+          "indent": 0,
+          "line": 0,
+          "column": 3,
+          "file": "main.nako3",
+          "preprocessedCodeOffset": 3,
+          "preprocessedCodeLength": 1,
+          "startOffset": 3,
+          "endOffset": 4,
+          "rawJosi": ""
+         },
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 5,
+          "endOffset": 6,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 5
+         }
+        ],
+        "josi": "",
+        "startOffset": 2,
+        "endOffset": 3,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 2,
+        "end": {
+         "startOffset": 7,
+         "endOffset": 8,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 7
+        }
+       },
+       {
+        "type": "string",
+        "value": "a",
+        "josi": "",
+        "startOffset": 8,
+        "endOffset": 11,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 8
+       }
+      ],
+      "josi": "",
+      "line": 0,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 8,
+       "file": "main.nako3",
+       "line": 0,
+       "column": 7
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 11,
+     "endOffset": 12,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 11,
+   "endOffset": 12,
+   "file": "main.nako3",
+   "line": 1,
+   "column": 0
+  }
+ },
+ "非同期-async関数": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "def_func",
+    "name": "main__F",
+    "args": [],
+    "blocks": [
+     {
+      "type": "block",
+      "blocks": [
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 1,
+        "column": 0,
+        "file": "main.nako3"
+       },
+       {
+        "type": "func",
+        "name": "秒待",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 1,
+          "josi": "",
+          "startOffset": 5,
+          "endOffset": 6,
+          "file": "main.nako3",
+          "line": 1,
+          "column": 0
+         }
+        ],
+        "meta": {
+         "type": "func",
+         "josi": [
+          [
+           ""
+          ]
+         ],
+         "pure": true,
+         "asyncFn": true,
+         "fn": "[fn]",
+         "return_none": true
+        },
+        "josi": "",
+        "asyncFn": true,
+        "startOffset": 6,
+        "endOffset": 9,
+        "file": "main.nako3",
+        "line": 1,
+        "column": 1,
+        "end": {
+         "startOffset": 9,
+         "endOffset": 10,
+         "file": "main.nako3",
+         "line": 2,
+         "column": 0
+        }
+       },
+       {
+        "type": "eol",
+        "comment": "",
+        "line": 2,
+        "column": 0,
+        "file": "main.nako3"
+       }
+      ],
+      "josi": "",
+      "startOffset": 4,
+      "endOffset": 5,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 0,
+      "end": {
+       "startOffset": 10,
+       "endOffset": 14,
+       "file": "main.nako3",
+       "line": 2,
+       "column": 0
+      }
+     }
+    ],
+    "asyncFn": true,
+    "isExport": true,
+    "josi": "",
+    "meta": {
+     "type": "func",
+     "josi": [],
+     "varnames": [],
+     "funcPointers": []
+    },
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 14,
+     "endOffset": 15,
+     "file": "main.nako3",
+     "line": 3,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 3,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "func",
+    "name": "main__F",
+    "blocks": [],
+    "meta": {
+     "type": "func",
+     "josi": [],
+     "fn": null,
+     "asyncFn": true,
+     "isExport": null,
+     "varnames": [],
+     "funcPointers": []
+    },
+    "josi": "",
+    "asyncFn": true,
+    "startOffset": 15,
+    "endOffset": 16,
+    "file": "main.nako3",
+    "line": 3,
+    "column": 0,
+    "end": {
+     "startOffset": 16,
+     "endOffset": 17,
+     "file": "main.nako3",
+     "line": 4,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 4,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 4,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 16,
+   "endOffset": 17,
+   "file": "main.nako3",
+   "line": 4,
+   "column": 0
+  }
+ }
+}
