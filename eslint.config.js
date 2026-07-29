@@ -1,8 +1,6 @@
 import js from '@eslint/js'
-import importPlugin from 'eslint-plugin-import'
 import nPlugin from 'eslint-plugin-n'
 import promisePlugin from 'eslint-plugin-promise'
-import tseslint from 'typescript-eslint'
 
 export default [
   {
@@ -18,15 +16,12 @@ export default [
 
   // ESLint 標準ルール
   js.configs.recommended,
-  // TypeScript ESLintルール
-  ...tseslint.configs.recommended,
 
   // standard 相当ルール
   {
     files: ['**/*.js', '**/*.mjs', '**/*.cjs', '**/*.ts', '**/*.mts'],
 
     plugins: {
-      import: importPlugin,
       n: nPlugin,
       promise: promisePlugin,
     },
@@ -49,7 +44,6 @@ export default [
       'no-unused-vars': ['warn'],
 
       // standard系プラグイン
-      'import/order': 'warn',
       'n/no-deprecated-api': 'warn',
       'promise/always-return': 'off',
     },
