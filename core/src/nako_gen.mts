@@ -75,6 +75,13 @@ interface FindVarResult {
   js: string,
   js_set: string
 }
+/** 関数呼び出しコードを組み立てるための部品 (convCallFunc) */
+interface CallCodeParts {
+  funcDef: string; // 'function' または 'async function'
+  funcCall: string; // 関数を呼び出す式
+  funcBegin: string; // 呼び出しの直前に実行するコード
+  funcEnd: string; // 呼び出しの後に必ず実行するコード
+}
 /** コード生成オプション */
 export class NakoGenOptions {
   isTest: boolean
@@ -1589,18 +1596,14 @@ export class NakoGen {
   }
 
   /**
-   * 関数の呼び出し
-   * @param {Ast} node
-   * @param {boolean} isExpression
-   * @returns string コード
+   * どの関数を呼び出すのか関数を特定する (convCallFunc用)
+   * @returns 変数の検索結果 res と、関数の定義 func
    */
-  convCallFunc(node: AstCallFunc, isExpression: boolean): string {
-    const funcName = NakoGen.getFuncName(node.name)
+  private resolveCallTarget (funcName: string, node: AstCallFunc): { res: FindVarResult, func: any } {
     const res = this.findVar(funcName)
     if (res === null) {
       throw NakoSyntaxError.fromNode(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node)
     }
-    // どの関数を呼び出すのか関数を特定する
     let func
     if (res.i === 0) { // plugin function
       func = this.__self.getFunc(funcName)
@@ -1613,6 +1616,145 @@ export class NakoGen {
       // 無名関数の可能性
       if (func === undefined) { func = { return_none: false, asyncFn: !!node.asyncFn } }
     }
+    return { res, func }
+  }
+
+  /**
+   * 関数内からpureでないプラグイン関数を呼び出すとき、呼び出しの前後で
+   * ローカル変数を __self.__locals と同期するコードを生成する。
+   * @returns 呼び出し前に実行するコード begin と、呼び出し後に実行するコード end
+   */
+  private genLocalVarsSyncCode (): { begin: string, end: string } {
+    let begin = ''
+    let end = ''
+    // 展開されたローカル変数の列挙
+    const localVars = []
+    for (const name of Array.from(this.varsSet.names.values())) {
+      if (NakoGen.isValidIdentifier(name)) {
+        localVars.push({ str: JSON.stringify(name), js: this.varname_get(name) })
+      }
+    }
+
+    // --- 実行前 ---
+    // 全ての展開されていないローカル変数を __self.__locals にコピーする
+    begin += '__self.__locals = __vars;\n'
+    // 全ての展開されたローカル変数を __self.__locals に保存する
+    if (localVars.length > 0) {
+      begin += '/* 全ての展開されたローカル変数を __self.__locals に保存 */\n'
+      for (const v of localVars) {
+        begin += `__self.__locals.set(${v.str}, ${v.js});\n`
+      }
+    }
+
+    // --- 実行後 ---
+    // 全ての展開されたローカル変数を __self.__locals から受け取る
+    // 「それ」は関数の実行結果を受け取るために使うためスキップ。
+    if (localVars.length > 0) {
+      end += '/* 全ての展開されたローカル変数を __self.__locals から受け取る */\n'
+      for (const v of localVars) {
+        if (v.js !== 'それ') {
+          end += `__self.__varslist[2].set(${v.str}, __self.__locals[${v.str}]);\n`
+        }
+      }
+    }
+    return { begin, end }
+  }
+
+  /**
+   * 引数のリストを連結してJSの実引数のコードにする。
+   * 必要に応じて、引数のundefinedチェックのコードを挟む。
+   */
+  private genCallArgsCode (funcName: string, res: FindVarResult, args: string[], node: AstCallFunc): string {
+    if ((!this.warnUndefinedCallingUserFunc && res.i !== 0) || (!this.warnUndefinedCallingSystemFunc && res.i === 0)) {
+      return args.join(',')
+    }
+    // 引数チェックの例外 #1260
+    const noCheckFuncs: {[key: string]: boolean} = { 'TYPEOF': true, '変数型確認': true }
+    const argsA: string[] = []
+    args.forEach((arg: string) => {
+      if (arg === '__self' || noCheckFuncs[funcName] === true) { // #1260
+        argsA.push(`${arg}`)
+      } else {
+        // 引数のundefinedチェックのコードを入れる
+        const msg = (res.i === 0) ? '命令『$0』の引数にundefinedを渡しています。' : 'ユーザ命令『$0』の引数にundefinedを渡しています。'
+        const poolIndex = this.addConstPool(msg, [funcName], node.file, node.line)
+        // argが空になる対策 #1315
+        const argStr = (arg === '') ? '""' : arg
+        argsA.push(`(__self.chk(${argStr}, ${poolIndex}))`)
+      }
+    })
+    return argsA.join(', ')
+  }
+
+  /**
+   * 関数の戻り値を変数「それ」に代入するためのラッパを返す。
+   * @returns [前置するコード, 後置するコード]
+   */
+  private getSoreWrap (): [string, string] {
+    if (this.speedMode.invalidSore !== 0) { return ['', ''] }
+    return ['__self.__setSore(', ')']
+  }
+
+  /** 戻り値のない関数呼び出しのコードを組み立てる */
+  private genVoidCallCode (node: AstCallFunc, parts: CallCodeParts): string {
+    const { funcCall, funcBegin, funcEnd } = parts
+    let code: string
+    if (funcEnd === '') {
+      code = `/*VOID関数呼出*/${funcBegin}${funcCall}\n`
+    } else {
+      code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indentLines(funcCall, 1)};\n} finally {\n${indentLines(funcEnd, 1)}}\n`
+    }
+    // 行番号を追加
+    return this.convLineno(node, false) + code
+  }
+
+  /** 戻り値のある関数呼び出しのコードを組み立てる */
+  private genValueCallCode (node: AstCallFunc, isExpression: boolean, isAsync: boolean, parts: CallCodeParts): string {
+    const { funcDef, funcCall, funcBegin, funcEnd } = parts
+    // 関数の戻り値を「それ」に記録する
+    const [sorePrefix, sorePostfix] = this.getSoreWrap()
+    let code: string
+    if (funcBegin === '' && funcEnd === '') {
+      code = `${sorePrefix}${funcCall}${sorePostfix}`
+    } else if (funcEnd === '') {
+      const funcBody = `${sorePrefix}${funcCall}${sorePostfix}`
+      const funcObj = `${funcDef}(){ return ${funcBody} }`
+      const funcCallThis = `(${funcObj}).call(this)`
+      code = `/* funcCallThis1 */${funcCallThis}`
+    } else { // つまり、pure=falseの場合
+      const varI = `$nako_i${this.loopId}`
+      this.loopId++
+      code = `/* funcCallThis2 */(${funcDef}(){\n` +
+        indentLines(funcBegin, 1) + '\n' +
+        indentLines('try {', 1) + '\n' +
+        indentLines(`let ${varI} = ${funcCall};`, 2) + '\n' +
+        indentLines(`return ${varI};`, 2) + '\n' +
+        indentLines('} finally {', 2) + '\n' +
+        indentLines(funcEnd, 1) + '\n' +
+        indentLines('}', 1) + '\n' +
+        '}).call(this)'
+      if (isAsync) {
+        code = `await (${code})`
+      }
+      code = `${sorePrefix}${code}${sorePostfix}`
+    }
+    // ...して
+    if (node.josi === 'して' || (node.josi === '' && !isExpression)) {
+      code = this.convLineno(node, false) + code
+      code += ';\n'
+    }
+    return code
+  }
+
+  /**
+   * 関数の呼び出し
+   * @param {Ast} node
+   * @param {boolean} isExpression
+   * @returns string コード
+   */
+  convCallFunc(node: AstCallFunc, isExpression: boolean): string {
+    const funcName = NakoGen.getFuncName(node.name)
+    const { res, func } = this.resolveCallTarget(funcName, node)
     // 関数の参照渡しか？
     if (node.type === 'func_pointer') {
       return res.js
@@ -1644,63 +1786,15 @@ export class NakoGen {
     // 関数内 (__varslist.length > 3) からプラグイン関数 (res.i === 0) を呼び出すとき、 そのプラグイン関数がpureでなければ
     // 呼び出しの直前に全てのローカル変数をthis.__localsに入れる。
     if (res.i === 0 && this.varslistSet.length > 3 && func.pure !== true && this.speedMode.forcePure === 0) { // undefinedはfalseとみなす
-      // 展開されたローカル変数の列挙
-      const localVars = []
-      for (const name of Array.from(this.varsSet.names.values())) {
-        if (NakoGen.isValidIdentifier(name)) {
-          localVars.push({ str: JSON.stringify(name), js: this.varname_get(name) })
-        }
-      }
-
-      // --- 実行前 ---
-      // 全ての展開されていないローカル変数を __self.__locals にコピーする
-      funcBegin += '__self.__locals = __vars;\n'
-      // 全ての展開されたローカル変数を __self.__locals に保存する
-      if (localVars.length > 0) {
-        funcBegin += '/* 全ての展開されたローカル変数を __self.__locals に保存 */\n'
-        for (const v of localVars) {
-          funcBegin += `__self.__locals.set(${v.str}, ${v.js});\n`
-        }
-      }
-
-      // --- 実行後 ---
-      // 全ての展開されたローカル変数を __self.__locals から受け取る
-      // 「それ」は関数の実行結果を受け取るために使うためスキップ。
-      if (localVars.length > 0) {
-        funcEnd += '/* 全ての展開されたローカル変数を __self.__locals から受け取る */\n'
-        for (const v of localVars) {
-          if (v.js !== 'それ') {
-            funcEnd += `__self.__varslist[2].set(${v.str}, __self.__locals[${v.str}]);\n`
-          }
-        }
-      }
+      const sync = this.genLocalVarsSyncCode()
+      funcBegin += sync.begin
+      funcEnd += sync.end
     }
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts.sore) { funcBegin += '/*[sore]*/' }
 
-    // 引数チェックの例外 #1260
-    const noCheckFuncs: {[key: string]: boolean} = { 'TYPEOF': true, '変数型確認': true }
     // 関数呼び出しコードの構築
-    let argsCode: string
-    if ((!this.warnUndefinedCallingUserFunc && res.i !== 0) || (!this.warnUndefinedCallingSystemFunc && res.i === 0)) {
-      argsCode = args.join(',')
-    } else {
-      const argsA: string[] = []
-      args.forEach((arg: string) => {
-        if (arg === '__self' || noCheckFuncs[funcName] === true) { // #1260
-          argsA.push(`${arg}`)
-        } else {
-          // 引数のundefinedチェックのコードを入れる
-          const msg = (res.i === 0) ? '命令『$0』の引数にundefinedを渡しています。' : 'ユーザ命令『$0』の引数にundefinedを渡しています。'
-          const poolIndex = this.addConstPool(msg, [funcName], node.file, node.line)
-          // argが空になる対策 #1315
-          const argStr = (arg === '') ? '""' : arg
-          argsA.push(`(__self.chk(${argStr}, ${poolIndex}))`)
-        }
-      })
-      argsCode = argsA.join(', ')
-    }
-
+    const argsCode = this.genCallArgsCode(funcName, res, args, node)
     let funcCall = `${res.js}(${argsCode})`
     if (func.asyncFn) {
       funcDef = `async ${funcDef}`
@@ -1725,61 +1819,10 @@ export class NakoGen {
       funcCall = this.wrapPerfMonitor(funcCall, `${funcName}_body`, 'sysbody', funcDef, 'sbf_start', 'sbl_time')
     }
 
-    let code = ''
-    if (func.return_none) {
-      // ------------------------------------
-      // 戻り値のない関数の場合
-      // ------------------------------------
-      if (funcEnd === '') {
-        code = `/*VOID関数呼出*/${funcBegin}${funcCall}\n`
-      } else {
-        code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indentLines(funcCall, 1)};\n} finally {\n${indentLines(funcEnd, 1)}}\n`
-      }
-      // 行番号を追加
-      code = this.convLineno(node, false) + code
-    } else {
-      // ------------------------------------
-      // 戻り値のある関数の場合
-      // ------------------------------------
-      let sorePrefex = ''
-      let sorePostfix = ''
-      if (this.speedMode.invalidSore === 0) {
-        // 関数の戻り値を記録
-        sorePrefex = '__self.__setSore('
-        sorePostfix = ')'
-      }
-      if (funcBegin === '' && funcEnd === '') {
-        code = `${sorePrefex}${funcCall}${sorePostfix}`
-      } else {
-        if (funcEnd === '') {
-          const funcBody = `${sorePrefex}${funcCall}${sorePostfix}`
-          const funcObj = `${funcDef}(){ return ${funcBody} }`
-          const funcCallThis = `(${funcObj}).call(this)`
-          code = `/* funcCallThis1 */${funcCallThis}`
-        } else { // つまり、pure=falseの場合
-          const varI = `$nako_i${this.loopId}`
-          this.loopId++
-          code = `/* funcCallThis2 */(${funcDef}(){\n` +
-            indentLines(funcBegin, 1) + '\n' +
-            indentLines('try {', 1) + '\n' +
-            indentLines(`let ${varI} = ${funcCall};`, 2) + '\n' +
-            indentLines(`return ${varI};`, 2) + '\n' +
-            indentLines('} finally {', 2) + '\n' +
-            indentLines(funcEnd, 1) + '\n' +
-            indentLines('}', 1) + '\n' +
-            '}).call(this)'
-          if (func.asyncFn) {
-            code = `await (${code})`
-          }
-          code = `${sorePrefex}${code}${sorePostfix}`
-        }
-      }
-      // ...して
-      if (node.josi === 'して' || (node.josi === '' && !isExpression)) {
-        code = this.convLineno(node, false) + code
-        code += ';\n'
-      }
-    }
+    const parts: CallCodeParts = { funcDef, funcCall, funcBegin, funcEnd }
+    let code = (func.return_none)
+      ? this.genVoidCallCode(node, parts)
+      : this.genValueCallCode(node, isExpression, !!func.asyncFn, parts)
 
     if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
       code = this.wrapPerfMonitor(code, `${funcName}_sys`, 'system', 'function', 'sf_start', 'sl_time')
@@ -1796,9 +1839,8 @@ export class NakoGen {
     if (isExpression) {
       return funcCall
     }
-    const sorePrefex = (this.speedMode.invalidSore === 0) ? '__self.__setSore(' : ''
-    const sorePostfix = (this.speedMode.invalidSore === 0) ? ')' : ''
-    return this.convLineno(node, false) + `${sorePrefex}${funcCall}${sorePostfix};\n`
+    const [sorePrefix, sorePostfix] = this.getSoreWrap()
+    return this.convLineno(node, false) + `${sorePrefix}${funcCall}${sorePostfix};\n`
   }
 
   convRenbun(node: AstOperator): string {
