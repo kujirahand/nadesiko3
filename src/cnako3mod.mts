@@ -269,8 +269,13 @@ export class CNako3 extends NakoCompiler {
     }
     // from nadesiko3core/src
     const srcDir = path.join(__dirname, '..', 'core', 'src')
+    // plugin_system_*.mjs は plugin_system.mjs から読み込まれるためコピーが必要 #2351
     const baseFiles = ['nako_errors.mjs', 'nako_core_version.mjs',
-      'plugin_system.mjs', 'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs']
+      'plugin_system.mjs', 'plugin_system_debug.mjs', 'plugin_system_math.mjs', 'plugin_system_string.mjs',
+      'plugin_system_array.mjs', 'plugin_system_datetime.mjs', 'plugin_system_url.mjs',
+      'plugin_system_types.mjs', 'plugin_system_json.mjs', 'plugin_system_regexp.mjs', 'plugin_system_dict.mjs',
+      'plugin_system_stdio.mjs', 'plugin_system_timer.mjs',
+      'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs']
     for (const mod of baseFiles) {
       fs.copyFileSync(path.join(srcDir, mod), path.join(outRuntime, mod))
     }
