@@ -1143,6 +1143,7 @@ export default {
     pure: true,
     fn: function(v: any): number {
       if (!Array.from) { return String(v).length }
+      if (typeof v !== 'string') { v = String(v) }
       // Unicodeのサロゲートペアを考慮して文字数をカウント #1954 を参照
       return Array.from(v).length
     }
