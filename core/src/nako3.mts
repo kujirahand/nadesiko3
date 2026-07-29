@@ -17,9 +17,12 @@ import { convertInlineIndent, convertIndentSyntax } from './nako_indent_inline.m
 import { convertDNCL } from './nako_from_dncl.mjs'
 import { convertDNCL2 } from './nako_from_dncl2.mjs'
 import { SourceMappingOfTokenization, SourceMappingOfIndentSyntax, OffsetToLineColumn, subtractSourceMapByPreCodeLength } from './nako_source_mapping.mjs'
-import { NakoLexerError, NakoImportError, NakoSyntaxError, InternalLexerError } from './nako_errors.mjs'
+import { NakoLexerError, NakoSyntaxError, InternalLexerError } from './nako_errors.mjs'
 import { NakoLogger } from './nako_logger.mjs'
 import { NakoGlobal } from './nako_global.mjs'
+// 取り込み文(require)の処理 / プラグイン管理 (#2360)
+import { Dependencies, LoaderTool, listRequireStatements, NakoRequireHost, NakoRequireLoader, NakoRequireScanner } from './nako_require.mjs'
+import { NakoPluginHost, NakoPluginManager } from './nako_plugin_manager.mjs'
 // version info
 import coreVersion from './nako_core_version.mjs'
 // basic plugins
@@ -30,32 +33,13 @@ import PluginPromise from './plugin_promise.mjs'
 import PluginTOML from './plugin_toml.mjs'
 import PluginTest from './plugin_test.mjs'
 
-const cloneAsJSON = (x: any): any => JSON.parse(JSON.stringify(x))
-const PLUGIN_MIN_VERSION_INT = 600 // = minor * 100 + patch
-
 export interface NakoCompilerOption {
   useBasicPlugin: boolean;
 }
 
-/** インタプリタに「取り込み」文を追加するために用意するオブジェクト */
-export interface LoaderToolTask<T> {
-  task: Promise<T>;
-}
-export interface LoaderTool {
-  // type: 'nako3' | 'js' | 'invalid' | 'mjs'
-  resolvePath: (name: string, token: Token, fromFile: string) => { type: string, filePath: string };
-  readNako3: (filePath: string, token: Token) => LoaderToolTask<string>;
-  readJs: (filePath: string, token: Token) => LoaderToolTask<any>;
-}
-
-interface DependenciesItem {
-  tokens: Token[];
-  alias: Set<string>;
-  addPluginFile: () => void;
-  funclist: any;
-  moduleExport: any;
-}
-type Dependencies = { [key:string]:DependenciesItem }
+// 取り込み文に関する型は nako_require.mts へ移動したが、
+// 外部から `nako3.mjs` 経由で参照されているため再エクスポートする (#2360)
+export type { LoaderTool, LoaderToolTask, Dependencies, DependenciesItem } from './nako_require.mjs'
 
 interface LexResult {
   commentTokens: Token[];
@@ -85,13 +69,13 @@ export class NakoCompiler {
   private nakoFuncList: FuncList
   private funclist: FuncList
   private moduleExport: ExportMap
-  private pluginFunclist: Record<string, FuncListItem>
-  private pluginfiles: Record<string, any>
-  private commandlist: Set<string>
   private prepare: NakoPrepare
   private parser: NakoParser
   private lexer: NakoLexer
-  private dependencies: Dependencies
+  /** プラグイン管理 (#2360) */
+  private pluginManager: NakoPluginManager
+  /** 取り込み文の処理 (#2360) */
+  private requireLoader: NakoRequireLoader
   private usedFuncs: Set<string>
   private codeGenerateor: {[key: string]: any}
   protected logger: NakoLogger
@@ -133,12 +117,8 @@ export class NakoCompiler {
     this.coreVersion = coreVersion.version
     this.__globals = [] // 生成した NakoGlobal のインスタンスを保持
     this.__globalObj = null
-    this.__module = {} // requireなどで取り込んだモジュールの一覧
-    this.pluginFunclist = {} // プラグインで定義された関数
     this.funclist = this.newVaiables() // プラグインで定義された関数 + ユーザーが定義した関数
     this.moduleExport = this.newVaiables()
-    this.pluginfiles = {} // 取り込んだファイル一覧
-    this.commandlist = new Set() // プラグインで定義された定数・変数・関数の名前
     this.nakoFuncList = this.newVaiables() // __v1に配置するJavaScriptのコードで定義された関数
     this.eventList = [] // 実行前に環境を変更するためのイベント
     this.codeGenerateor = {} // コードジェネレータ
@@ -147,13 +127,27 @@ export class NakoCompiler {
     this.logger = new NakoLogger()
     this.filename = 'main.nako3'
 
-    /**
-     * 取り込み文を置換するためのオブジェクト。
-     * 正規化されたファイル名がキーになり、取り込み文の引数に指定された正規化されていないファイル名はaliasに入れられる。
-     * JavaScriptファイルによるプラグインの場合、contentは空文字列。
-     * funclistはシンタックスハイライトの高速化のために事前に取り出した、ファイルが定義する関数名のリスト。
-     */
-    this.dependencies = {}
+    // プラグイン管理を生成する (#2360)
+    const pluginHost: NakoPluginHost = {
+      getFuncList: () => this.funclist, // reset() で差し替わるため、その都度参照する
+      getSysVars: () => this.__varslist[0],
+      getLogger: () => this.logger
+    }
+    this.pluginManager = new NakoPluginManager(pluginHost)
+    // requireなどで取り込んだモジュールの一覧(プラグイン管理と同じオブジェクトを共有する)
+    this.__module = this.pluginManager.modules
+
+    // 取り込み文の処理を生成する (#2360)
+    const requireHost: NakoRequireHost = {
+      rawtokenize: (code, line, filename, preCode) => this.rawtokenize(code, line, filename, preCode),
+      addPluginFromFile: (fpath, po, persistent) => this.addPluginFromFile(fpath, po, persistent),
+      getLogger: () => this.logger,
+      // 名前空間(modList)を汚さないように、取り込み文の検出には別のコンパイラを使う
+      createScanner: (): NakoRequireScanner => new NakoCompiler({ useBasicPlugin: true }),
+      countFailure: () => { this.numFailures++ }
+    }
+    this.requireLoader = new NakoRequireLoader(requireHost)
+
     this.usedFuncs = new Set()
     this.numFailures = 0
 
@@ -189,7 +183,18 @@ export class NakoCompiler {
   }
 
   getPluginfiles(): Record<string, any> {
-    return this.pluginfiles
+    return this.pluginManager.pluginfiles
+  }
+
+  /**
+   * 取り込み文を置換するためのオブジェクト。
+   * 正規化されたファイル名がキーになり、取り込み文の引数に指定された正規化されていないファイル名はaliasに入れられる。
+   * JavaScriptファイルによるプラグインの場合、contentは空文字列。
+   * funclistはシンタックスハイライトの高速化のために事前に取り出した、ファイルが定義する関数名のリスト。
+   * (エディタのシンタックスハイライトから参照される)
+   */
+  get dependencies (): Dependencies {
+    return this.requireLoader.dependencies
   }
 
   /**
@@ -214,171 +219,26 @@ export class NakoCompiler {
 
   /**
    * ファイル内のrequire文の位置を列挙する。出力の配列はstartでソートされている。
+   * (実体は nako_require.mts の listRequireStatements)
    * @param {Token[]} tokens rawtokenizeの出力
    */
-  static listRequireStatements(tokens: Token[]): Token[] {
-    const requireStatements: Token[] = []
-    for (let i = 0; i + 2 < tokens.length; i++) {
-      // not (string|string_ex) '取り込み'
-      if (!(tokens[i].type === 'not' &&
-        (tokens[i + 1].type === 'string' || tokens[i + 1].type === 'string_ex') &&
-        tokens[i + 2].value === '取込')) {
-        continue
-      }
-      // 取り込むライブラリ
-      let filename = String(tokens[i + 1].value) + ''
-      // 全角コロン「：」を半角コロン「:」に正規化する（「貯蔵庫：」「拡張プラグイン：」の記法に対応 #2282）
-      filename = filename.replace(/^(貯蔵庫|拡張プラグイン)：/, '$1:')
-      // 『取り込む』文で「拡張プラグイン:」機構を追加する #139
-      // (ex) !『貯蔵庫:ojyo-sama.nako3』を取り込む → https://n3s.nadesi.com/plain/ojyo-sama.nako3
-      if (filename.startsWith('貯蔵庫:') || filename.startsWith('貯蔵庫：')) {
-        filename = `https://n3s.nadesi.com/plain/${filename.substring(4)}`
-      }
-      // (ex) !『拡張プラグイン:music.js@1.0.2』を取り込む → https://cdn.jsdelivr.net/npm/nadesiko3-music@1.0.2/nadesiko3-music.js
-      if (filename.startsWith('拡張プラグイン:') || filename.startsWith('拡張プラグイン：')) {
-        const name = filename.substring('拡張プラグイン:'.length)
-        const m = name.match(/^([a-zA-Z0-9_-]+)\.(js|mjs|nako3)(@[0-9.]+)?$/)
-        if (m) {
-          let basename = m[1]
-          const ext = m[2]
-          const version = m[3] || '@latest'
-          if (ext === 'js' || ext === 'mjs') {
-            // JSプラグイン
-            if (!basename.startsWith('nadesiko3-')) {
-              basename = `nadesiko3-${basename}`
-            }
-            filename = `https://cdn.jsdelivr.net/npm/${basename}${version}/${basename}.${ext}`
-          } else {
-            // なでしこ3プラグイン
-            filename = `https://n3s.nadesi.com/plain/${basename}.${ext}`
-          }
-        } else {
-          throw new NakoImportError('『取込』の指定エラー。『拡張プラグイン:(ファイル名).(js|nako3)(@ver)』の書式で指定してください。', tokens[i].file, tokens[i].line)
-        }
-      }
-      // push
-      requireStatements.push({
-        ...tokens[i],
-        start: i,
-        end: i + 3,
-        value: filename,
-        firstToken: tokens[i],
-        lastToken: tokens[i + 2]
-      })
-      i += 2
-    }
-    return requireStatements
+  static listRequireStatements (tokens: Token[]): Token[] {
+    return listRequireStatements(tokens)
   }
 
   /**
    * プログラムが依存するファイルを再帰的に取得する。
-   * - 依存するファイルがJavaScriptファイルの場合、そのファイルを実行して評価結果をthis.addPluginFileに渡す。
-   * - 依存するファイルがなでしこ言語の場合、ファイルの中身を取得して変数に保存し、再帰する。
+   * (実体は nako_require.mts の NakoRequireLoader.load)
    *
    * @param {string} code
    * @param {string} filename
    * @param {string} preCode
    * @param {LoaderTool} tools 実行環境 (ブラウザ or Node.js) によって外部ファイルの取得・実行方法は異なるため、引数でそれらを行う関数を受け取る。
-   *  - resolvePath は指定した名前をもつファイルを検索し、正規化されたファイル名を返す関数。返されたファイル名はreadNako3かreadJsの引数になる。
-   *  - readNako3は指定されたファイルの中身を返す関数。
-   *  - readJsは指定したファイルをJavaScriptのプログラムとして実行し、`export default` でエクスポートされた値を返す関数。
    * @returns {Promise<unknown> | void}
    * @protected
    */
-  _loadDependencies(code: string, filename: string, preCode: string, tools: LoaderTool) {
-    const dependencies: Dependencies = {}
-    const compiler = new NakoCompiler({ useBasicPlugin: true })
-    /**
-     * @param {any} item
-     * @param {any} tasks
-     */
-    const loadJS = (item: any, tasks: any) => {
-      // jsならプラグインとして読み込む。(ESMでは必ず動的に読む)
-      const obj = tools.readJs(item.filePath, item.firstToken)
-      tasks.push(obj.task.then((res: any) => {
-        const pluginFuncs = res()
-        this.addPluginFromFile(item.filePath, pluginFuncs)
-        dependencies[item.filePath].funclist = pluginFuncs
-        dependencies[item.filePath].moduleExport = {}
-        dependencies[item.filePath].addPluginFile = () => { this.addPluginFromFile(item.filePath, pluginFuncs) }
-      }))
-    }
-    const loadNako3 = (item: any, tasks: any) => {
-      // nako3ならファイルを読んでdependenciesに保存する。
-      const content = tools.readNako3(item.filePath, item.firstToken)
-      const registerFile = (code: string) => {
-        // シンタックスハイライトの高速化のために、事前にファイルが定義する関数名のリストを取り出しておく。
-        // preDefineFuncはトークン列に変更を加えるため、事前にクローンしておく。
-        // 「プラグイン名設定」を行う (#956)
-        const modName = NakoLexer.filenameToModName(item.filePath)
-        code = `『${modName}』に名前空間設定;『${modName}』にプラグイン名設定;` + code + ';名前空間ポップ;'
-        const tokens = this.rawtokenize(code, 0, item.filePath)
-        dependencies[item.filePath].tokens = tokens
-        const funclist = new Map()
-        const moduleexport = new Map()
-        NakoLexer.preDefineFunc(cloneAsJSON(tokens), this.logger, funclist, moduleexport)
-        dependencies[item.filePath].funclist = funclist
-        dependencies[item.filePath].moduleExport = moduleexport
-        // 再帰
-        return loadRec(code, item.filePath, '')
-      }
-      // 取り込み構文における問題を減らすため、必ず非同期でプログラムを読み込む仕様とした #1219
-      tasks.push(content.task.then((res) => registerFile(res)))
-    }
-    const loadRec = (code: string, filename: string, preCode: string): Promise<unknown>|void => {
-      const tasks: Promise<unknown>[] = []
-      // 取り込みが必要な情報一覧を調べる(トークン分割して、取り込みタグを得る)
-      const tags = NakoCompiler.listRequireStatements(compiler.rawtokenize(code, 0, filename, preCode))
-      // パスを解決する
-      const tagsResolvePath = tags.map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken as Token, filename) }))
-      // 取り込み開始
-      for (const item of tagsResolvePath) {
-        // 2回目以降の読み込み
-        // eslint-disable-next-line no-prototype-builtins
-        if (dependencies.hasOwnProperty(item.filePath)) {
-          dependencies[item.filePath].alias.add(item.value)
-          continue
-        }
-
-        // 初回の読み込み
-         
-        dependencies[item.filePath] = { tokens: [], alias: new Set([item.value]), addPluginFile: ():void => {}, funclist: {}, moduleExport: {} }
-        if (item.type === 'js' || item.type === 'mjs') {
-          loadJS(item, tasks)
-        } else if (item.type === 'nako3') {
-          loadNako3(item, tasks)
-        } else {
-          throw new NakoImportError(`ファイル『${String(item.value)}』を読み込めません。ファイルが存在しないか未対応の拡張子です。`,
-            (item.firstToken as Token).file, (item.firstToken as Token).line)
-        }
-      }
-      if (tasks.length > 0) {
-        return Promise.all(tasks)
-      }
-      return undefined
-    }
-
-    try {
-      const result = loadRec(code, filename, preCode)
-
-      // 非同期な場合のエラーハンドリング
-      if (result !== undefined) {
-        result.catch((err) => {
-          // 読み込みに失敗したら処理を中断する
-          this.logger.error(err.msg)
-          this.numFailures++
-        })
-      }
-
-      // すべてが終わってからthis.dependenciesに代入する。そうしないと、「実行」ボタンを連打した場合など、
-      // loadDependencies() が並列実行されるときに正しく動作しない。
-      this.dependencies = dependencies
-      return result
-    } catch (err) {
-      // 同期処理では素直に例外を投げる
-      this.logger.error(String(err))
-      throw err
-    }
+  _loadDependencies (code: string, filename: string, preCode: string, tools: LoaderTool): Promise<unknown>|void {
+    return this.requireLoader.load(code, filename, preCode, tools)
   }
 
   /**
@@ -494,14 +354,7 @@ export class NakoCompiler {
     this.__locals = this.newVaiables()
 
     // プラグイン命令以外を削除する。
-    this.funclist = new Map()
-    for (const name of this.__v0.keys()) {
-      const original = this.pluginFunclist[name] // record
-      if (!original) {
-        continue
-      }
-      this.funclist.set(name, JSON.parse(JSON.stringify(original)))
-    }
+    this.funclist = this.pluginManager.createFuncListFromPlugins(this.__v0)
 
     this.lexer.setFuncList(this.funclist)
 
@@ -553,55 +406,23 @@ export class NakoCompiler {
   /**
    * 再帰的にrequire文を置換する。
    * .jsであれば削除し、.nako3であればそのファイルのトークン列で置換する。
-   * @param {TokenWithSourceMap[]} tokens
+   * (実体は nako_require.mts の NakoRequireLoader.replaceRequireStatements)
+   * @param {Token[]} tokens
    * @param {Set<string>} [includeGuard]
    * @returns {Token[]} 削除された取り込み文のトークン
    */
-  replaceRequireStatements(tokens: Token[], includeGuard:Set<string> = new Set()): Token[] {
-    /** @type {TokenWithSourceMap[]} */
-    const deletedTokens = []
-    for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
-      // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。
-      if (includeGuard.has(r.value)) {
-        deletedTokens.push(...tokens.splice((r.start || 0), (r.end || 0) - (r.start || 0)))
-        continue
-      }
-      const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
-      if (filePath === undefined) {
-        if (!r.firstToken) { throw new Error(`ファイル『${String(r.value)}』が読み込まれていません。`) }
-        throw new NakoLexerError(`ファイル『${String(r.value)}』が読み込まれていません。`,
-          (r.firstToken).startOffset || 0,
-          (r.firstToken).endOffset || 0,
-          (r.firstToken).line, (r.firstToken).file)
-      }
-      this.dependencies[filePath].addPluginFile()
-      const children = cloneAsJSON(this.dependencies[filePath].tokens)
-      includeGuard.add(r.value)
-      deletedTokens.push(...this.replaceRequireStatements(children, includeGuard))
-      deletedTokens.push(...tokens.splice(r.start || 0, (r.end || 0) - (r.start || 0), ...children))
-    }
-    return deletedTokens
+  replaceRequireStatements (tokens: Token[], includeGuard: Set<string> = new Set()): Token[] {
+    return this.requireLoader.replaceRequireStatements(tokens, includeGuard)
   }
 
   /**
    * replaceRequireStatementsのシンタックスハイライト用の実装。
-   * @param {TokenWithSourceMap[]} tokens
-   * @returns {TokenWithSourceMap[]} 削除された取り込み文のトークン
+   * (実体は nako_require.mts の NakoRequireLoader.removeRequireStatements)
+   * @param {Token[]} tokens
+   * @returns {Token[]} 削除された取り込み文のトークン
    */
-  removeRequireStatements(tokens: Token[]): Token[] {
-    /** @type {TokenWithSourceMap[]} */
-    const deletedTokens = []
-    for (const r of NakoCompiler.listRequireStatements(tokens).reverse()) {
-      // プラグイン命令のシンタックスハイライトのために、addPluginFileを呼んで関数のリストをthis.dependencies[filePath].funclistに保存させる。
-      const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
-      if (filePath !== undefined) {
-        this.dependencies[filePath].addPluginFile()
-      }
-
-      // 全ての取り込み文を削除する。そうしないとトークン化に時間がかかりすぎる。
-      deletedTokens.push(...tokens.splice(r.start || 0, (r.end || 0) - (r.start || 0)))
-    }
-    return deletedTokens
+  removeRequireStatements (tokens: Token[]): Token[] {
+    return this.requireLoader.removeRequireStatements(tokens)
   }
 
   /** 字句解析を行う */
@@ -698,7 +519,7 @@ export class NakoCompiler {
 
   deleteUnNakoFuncs(): Set<string> {
     for (const func of this.usedFuncs) {
-      if (!this.commandlist.has(func)) {
+      if (!this.pluginManager.hasCommand(func)) {
         this.usedFuncs.delete(func)
       }
     }
@@ -934,102 +755,13 @@ export class NakoCompiler {
 
   /**
    * プラグイン・オブジェクトを追加
+   * (実体は nako_plugin_manager.mts の NakoPluginManager.addPlugin)
    * @param po プラグイン・オブジェクト
    * @param persistent falseのとき、次以降の実行では使えない
    * @param fpath ファイルパス
    */
-  addPlugin(po: {[key: string]: any}, persistent = true, fpath = ''): void {
-    // __v0を取得
-    const __v0 = this.__varslist[0]
-    // プラグインのメタ情報をチェック (#1034) (#1647)
-    let __pluginInfo = __v0.get('__pluginInfo')
-    if (!__pluginInfo) {
-      __pluginInfo = {}
-      __v0.set('__pluginInfo', __pluginInfo)
-    }
-    // バージョンチェック
-    let intVersion = 0
-    let pluginName = 'unknown'
-    let metaValue = { pluginName: 'unknown', nakoVersionResult: true, nakoVersion: '0.0.0', path: '' }
-    if (po.meta) {
-      if (po.meta.value && typeof (po.meta) === 'object') {
-        const meta = po.meta
-        metaValue = meta.value || { pluginName: 'unknown', nakoVersion: '0.0.0' }
-        pluginName = metaValue.pluginName || 'unknown'
-        // version check
-        const nakoVersion = (metaValue.nakoVersion || '0.0.0') + '.0.0'
-        const versions = nakoVersion.split('.').map((v) => parseInt(v))
-        intVersion = versions[1] * 100 + versions[2]
-        // fpath
-        metaValue.path = fpath
-      }
-    }
-    // unknown の場合は、関数名からプラグイン名を自動生成する
-    if (pluginName === 'unknown') {
-      pluginName = Object.keys(po).join('-')
-    }
-    // プラグイン名の重複を確認
-    if (__pluginInfo[pluginName] !== undefined) {
-      // プラグイン名が重複した場合はプラグインとして登録しない
-      return
-    }
-    // Windowsのパスやファイル名に使えない文字列があると、JSファイル書き出しでエラーになるので置換
-    const removeInvalidFilenameChars = (str: string): string => {
-      return str.replace(/[^a-zA-z0-9\-_\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3400-\u4DBF\uF900-\uFAFF]/g, '_')
-    }
-    pluginName = removeInvalidFilenameChars(pluginName)
-    // プラグイン情報を記録
-    __pluginInfo[pluginName] = metaValue
-    // バージョンチェック
-    if (PLUGIN_MIN_VERSION_INT > intVersion) {
-      const keyStr: string = Object.keys(po).join(',')
-      if (pluginName === 'unknown') {
-        pluginName = keyStr.substring(0, 30) + '...'
-      }
-      if (pluginName !== '') {
-        const errMsg = `なでしこプラグイン『${pluginName}』は古い形式なので正しく動作しない可能性があります。` +
-          `(ランタイムの要求: ${PLUGIN_MIN_VERSION_INT}/プラグイン: ${intVersion})`
-        console.warn(errMsg, 'see', 'https://github.com/kujirahand/nadesiko3/issues/1647')
-        this.logger.warn(errMsg)
-        metaValue.nakoVersionResult = false
-      }
-    }
-    // 初期化とクリアを変換する
-    this.__module[pluginName] = po
-    this.pluginfiles[pluginName] = '*'
-    // `初期化`と`クリア`をチェック
-    if (typeof (po['初期化']) === 'object') {
-      const def = po['初期化']
-      delete po['初期化']
-      const initKey = `!${pluginName}:初期化`
-      po[initKey] = def
-    }
-    // プラグインの値を、なでしこシステム変数(Map)にコピー
-    for (const key in po) {
-      const v = po[key]
-      this.funclist.set(key, v)
-      if (persistent) {
-        this.pluginFunclist[key] = JSON.parse(JSON.stringify(v))
-      }
-      if (v.type === 'func') {
-        __v0.set(key, v.fn)
-        if (v.asyncFn) { // asyncFn を正しく実行するために pure に変更する (core#142)
-          v.pure = true
-        }
-      } else if (v.type === 'const' || v.type === 'var') {
-        // メタ情報としての const | var は現在利用していない
-        // meta[key] = { readonly: v.type === 'const' }
-        __v0.set(key, v.value)
-      } else {
-        console.error('[プラグイン追加エラー]', v)
-        throw new Error('プラグインの追加でエラー。')
-      }
-      // コマンドを登録するか?
-      if (key === '初期化' || key.substring(0, 1) === '!') { // 登録しない関数名
-        continue
-      }
-      this.commandlist.add(key)
-    }
+  addPlugin (po: {[key: string]: any}, persistent = true, fpath = ''): void {
+    this.pluginManager.addPlugin(po, persistent, fpath)
   }
 
   /**
@@ -1038,12 +770,8 @@ export class NakoCompiler {
    * @param po 関数リスト
    * @param persistent falseのとき、次以降の実行では使えない
    */
-  addPluginObject(objName: string, po: {[key: string]: any}, persistent = true): void {
-    // metaプロパティがなければ互換性のため適当に追加
-    if (po.meta === undefined) {
-      po.meta = { type: 'const', value: { pluginName: objName, nakoVersion: '0.0.0' } }
-    }
-    this.addPlugin(po, persistent)
+  addPluginObject (objName: string, po: {[key: string]: any}, persistent = true): void {
+    this.pluginManager.addPluginObject(objName, po, persistent)
   }
 
   /**
@@ -1054,18 +782,18 @@ export class NakoCompiler {
    * @param persistent falseのとき、次以降の実行では使えない
    * @deprecated 利用は非推奨
    */
-  addPluginFile(_objName: string, fpath: string, po: {[key: string]: any}, persistent = true): void {
+  addPluginFile (_objName: string, fpath: string, po: {[key: string]: any}, persistent = true): void {
     this.addPluginFromFile(fpath, po, persistent)
   }
 
   /**
- * プラグイン・ファイルを追加(Node.js向け)
- * @param fpath ファイルパス
- * @param po 登録するオブジェクト
- * @param persistent falseのとき、次以降の実行では使えない
- */
-  addPluginFromFile(fpath: string, po: { [key: string]: any }, persistent = true): void {
-    this.addPlugin(po, persistent, fpath)
+   * プラグイン・ファイルを追加(Node.js向け)
+   * @param fpath ファイルパス
+   * @param po 登録するオブジェクト
+   * @param persistent falseのとき、次以降の実行では使えない
+   */
+  addPluginFromFile (fpath: string, po: { [key: string]: any }, persistent = true): void {
+    this.pluginManager.addPluginFromFile(fpath, po, persistent)
   }
 
   /**
@@ -1076,17 +804,14 @@ export class NakoCompiler {
    * @param {boolean} returnNone 値を返す関数の場合はfalseを指定
    * @param {boolean} asyncFn Promiseを返す関数かを指定
    */
-  addFunc(key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
-    const funcObj: FuncListItem = { josi, fn, type: 'func', return_none: returnNone, asyncFn, pure: true }
-    this.funclist.set(key, funcObj)
-    this.pluginFunclist[key] = cloneAsJSON(funcObj)
-    this.__varslist[0].set(key, fn)
+  addFunc (key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
+    this.pluginManager.addFunc(key, josi, fn, returnNone, asyncFn)
   }
 
   /** (非推奨) 互換性のため ... 関数を追加する
    * @deprecated 代わりにaddFuncを使ってください
   */
-  public setFunc(key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
+  public setFunc (key: string, josi: FuncArgs, fn: any, returnNone = true, asyncFn = false): void {
     this.addFunc(key, josi, fn, returnNone, asyncFn)
   }
 
@@ -1095,8 +820,8 @@ export class NakoCompiler {
    * @param key プラグイン関数の関数名
    * @returns プラグイン・オブジェクト
    */
-  getFunc(key: string): FuncListItem|undefined {
-    return this.funclist.get(key)
+  getFunc (key: string): FuncListItem|undefined {
+    return this.pluginManager.getFunc(key)
   }
 
   /** 同期的になでしこのプログラムcodeを実行する
