@@ -1,8 +1,9 @@
  
 import { NakoLogger } from './nako_logger.mjs'
 import { FuncList, FuncListItem, SourceMap, NewEmptyToken, ExportMap } from './nako_types.mjs'
-import { Ast, AstBlocks, AstOperator, AstConst, AstStrValue } from './nako_ast.mjs'
+import { Ast } from './nako_ast.mjs'
 import { Token, TokenType } from './nako_token.mjs'
+import { nodeToStr } from './nako_parser_message.mjs'
 
 /**
  * なでしこの構文解析のためのユーティリティクラス
@@ -31,7 +32,6 @@ export class NakoParserBase {
   protected isReadingCalc: boolean
   protected isExportDefault: boolean
   protected isExportStack: boolean[]
-  protected isModifiedNodes: boolean
 
   constructor(logger: NakoLogger) {
     this.logger = logger
@@ -78,7 +78,6 @@ export class NakoParserBase {
     this.isExportDefault = true
     this.isExportStack = []
     this.moduleExport = new Map()
-    this.isModifiedNodes = false
 
     this.init()
   }
@@ -110,7 +109,6 @@ export class NakoParserBase {
     this.arrayIndexFrom = 0
     this.flagReverseArrayIndex = false
     this.flagCheckArrayInit = false
-    this.isModifiedNodes = false
   }
 
   setFuncList(funclist: FuncList) {
@@ -359,56 +357,7 @@ export class NakoParserBase {
    * @param {boolean} debugMode
    */
   nodeToStr(node: Ast|Token|null, opts: {depth: number, typeName?: string}, debugMode: boolean): string {
-    const depth = opts.depth - 1
-    const typeName = (name: string) => (opts.typeName !== undefined) ? opts.typeName : name
-    const debug = debugMode ? (' debug: ' + JSON.stringify(node, null, 2)) : ''
-    if (!node) { return '(NULL)' }
-    switch (node.type) {
-    case 'not':
-      if (depth >= 0) {
-        const subNode: Ast = (node as AstBlocks).blocks[0]
-        return `${typeName('')}『${this.nodeToStr(subNode, { depth }, debugMode)}に演算子『not』を適用した式${debug}』`
-      } else {
-        return `${typeName('演算子')}『not』`
-      }
-    case 'op': {
-      const node2: AstOperator = node as AstOperator
-      let operator: string = node2.operator || ''
-      const table:{[key: string]: string} = { eq: '＝', not: '!', gt: '>', lt: '<', and: 'かつ', or: 'または' }
-      if (operator in table) {
-        operator = table[operator]
-      }
-      if (depth >= 0) {
-        const left: string = this.nodeToStr(node2.blocks[0], { depth }, debugMode)
-        const right: string = this.nodeToStr(node2.blocks[1], { depth }, debugMode)
-        if (node2.operator === 'eq') {
-          return `${typeName('')}『${left}と${right}が等しいかどうかの比較${debug}』`
-        }
-        return `${typeName('')}『${left}と${right}に演算子『${operator}』を適用した式${debug}』`
-      } else {
-        return `${typeName('演算子')}『${operator}${debug}』`
-      }
-    }
-    case 'number':
-      return `${typeName('数値')}${(node as AstConst).value}`
-    case 'bigint':
-      return `${typeName('巨大整数')}${(node as AstConst).value}`
-    case 'string':
-      return `${typeName('文字列')}『${(node as AstConst).value}${debug}』`
-    case 'word':
-      return `${typeName('単語')}『${(node as AstStrValue).value}${debug}』`
-    case 'func':
-      return `${typeName('関数')}『${node.name || (node as AstStrValue).value}${debug}』`
-    case 'eol':
-      return '行の末尾'
-    case 'eof':
-      return 'ファイルの末尾'
-    default: {
-      let name:any = node.name
-      if (name) { name = (node as AstStrValue).value }
-      if (typeof name !== 'string') { name = node.type }
-      return `${typeName('')}『${name}${debug}』`
-    }
-    }
+    // (実体は nako_parser_message.mts の nodeToStr) #2364
+    return nodeToStr(node, opts, debugMode)
   }
 }

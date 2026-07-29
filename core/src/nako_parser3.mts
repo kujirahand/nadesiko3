@@ -4,9 +4,12 @@
  */
 import { opPriority, RenbunJosi, operatorList } from './nako_parser_const.mjs'
 import { NakoParserBase } from './nako_parser_base.mjs'
+import { infixToAST } from './nako_parser_operator.mjs'
+import { checkAsyncFn } from './nako_parser_async.mjs'
+import { makeStackBalanceReport } from './nako_parser_message.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
-import { FuncListItemType, FuncArgs, NewEmptyToken, SourceMap } from './nako_types.mjs'
+import { FuncListItemType, NewEmptyToken, SourceMap } from './nako_types.mjs'
 import { NodeType, Ast, AstEol, AstBlocks, AstOperator, AstConst, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstStrValue, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
 
@@ -27,12 +30,8 @@ export class NakoParser extends NakoParserBase {
     const result = this.startParser()
 
     // 関数毎に非同期処理が必要かどうかを判定する
-    this.isModifiedNodes = false
-    this._checkAsyncFn(result)
-    while (this.isModifiedNodes) {
-      this.isModifiedNodes = false
-      this._checkAsyncFn(result)
-    }
+    // 「非同期関数を呼ぶ関数もまた非同期」と伝播していくので、変化が無くなるまで繰り返す
+    while (checkAsyncFn(result, this.funclist)) { /* 変化が無くなるまで繰り返す */ }
 
     return result
   }
@@ -79,34 +78,13 @@ export class NakoParser extends NakoParserBase {
     return { type: 'block', blocks, josi: '', ...map, end: this.peekSourceMap() }
   }
 
-  /** 余剰スタックのレポートを作る */
+  /** 余剰スタックのレポートを作る
+   * (レポートの組み立ては nako_parser_message.mts の makeStackBalanceReport) #2364
+   */
   makeStackBalanceReport(): string {
-    const words: string[] = []
-    this.stack.forEach((t) => {
-      let w = this.nodeToStr(t, { depth: 1 }, false)
-      if (t.josi) { w += t.josi }
-      words.push(w)
-    })
-    const desc = words.join(',')
-    // 最近使った関数の使い方レポートを作る #1093
-    let descFunc = ''
-    const chA = 'A'.charCodeAt(0)
-    for (const f of this.recentlyCalledFunc) {
-      descFunc += ' - '
-      let no = 0
-      const josiA: FuncArgs | undefined = (f).josi
-      if (josiA) {
-        for (const arg of josiA) {
-          const ch = String.fromCharCode(chA + no)
-          descFunc += ch
-          if (arg.length === 1) { descFunc += arg[0] } else { descFunc += `(${arg.join('|')})` }
-          no++
-        }
-      }
-      descFunc += String(f.name) + '\n'
-    }
+    const report = makeStackBalanceReport(this.stack, this.recentlyCalledFunc)
     this.recentlyCalledFunc = []
-    return `未解決の単語があります: [${desc}]\n次の命令の可能性があります:\n${descFunc}`
+    return report
   }
 
   yEOL(): AstEol | null {
@@ -675,7 +653,7 @@ export class NakoParser extends NakoParserBase {
     }
     if (args.length === 0) { return null }
     if (args.length === 1) { return args[0] }
-    return this.infixToAST(args)
+    return infixToAST(args, this.logger)
   }
 
   /**
@@ -741,76 +719,6 @@ export class NakoParser extends NakoParserBase {
     if (this.check('…')) { return this.yRange(value1) }
     // 計算式がある場合を考慮
     return this.yGetArgOperator(value1)
-  }
-
-  infixToPolish(list: Ast[]): Ast[] {
-    // 中間記法から逆ポーランドに変換
-    const priority = (t: Ast) => {
-      if (opPriority[t.type]) { return opPriority[t.type] }
-      return 10
-    }
-    const stack: Ast[] = []
-    const polish: Ast[] = []
-    while (list.length > 0) {
-      const t = list.shift()
-      if (!t) { break }
-      while (stack.length > 0) { // 優先順位を見て移動する
-        const sTop = stack[stack.length - 1]
-        if (priority(t) > priority(sTop)) { break }
-        const tpop = stack.pop()
-        if (!tpop) {
-          this.logger.error('計算式に間違いがあります。', t)
-          break
-        }
-        polish.push(tpop)
-      }
-      stack.push(t)
-    }
-    // 残った要素を積み替える
-    while (stack.length > 0) {
-      const t = stack.pop()
-      if (t) { polish.push(t) }
-    }
-    return polish
-  }
-
-  /** @returns {Ast | null} */
-  infixToAST(list: Ast[]): Ast | null {
-    if (list.length === 0) { return null }
-    // 逆ポーランドを構文木に
-    const josi = list[list.length - 1].josi
-    const node = list[list.length - 1]
-    const polish = this.infixToPolish(list)
-    /** @type {Ast[]} */
-    const stack = []
-    for (const t of polish) {
-      if (!opPriority[t.type]) { // 演算子ではない
-        stack.push(t)
-        continue
-      }
-      const b:Ast|undefined = stack.pop()
-      const a:Ast|undefined = stack.pop()
-      if (a === undefined || b === undefined) {
-        this.logger.debug('--- 計算式(逆ポーランド) ---\n' + JSON.stringify(polish))
-        throw NakoSyntaxError.fromNode('計算式でエラー', node)
-      }
-      /** @type {AstOperator} */
-      const op: AstOperator = {
-        type: 'op',
-        operator: t.type,
-        blocks: [a, b],
-        josi,
-        startOffset: a.startOffset,
-        endOffset: a.endOffset,
-        line: a.line,
-        column: a.column,
-        file: a.file
-      }
-      stack.push(op)
-    }
-    const ans = stack.pop()
-    if (!ans) { return null }
-    return ans
   }
 
   yGetArgParen(y: Ast[], funcName?: string): Ast[] { // C言語風呼び出しでカッコの中を取得
@@ -2832,68 +2740,6 @@ export class NakoParser extends NakoParserBase {
       ...map,
       end: this.peekSourceMap()
     }
-  }
-
-  /** 関数ごとにasyncFnが必要か確認する */
-  _checkAsyncFn(node: Ast): boolean {
-    if (!node) { return false }
-    // 関数定義があれば関数
-    if (node.type === 'def_func' || node.type === 'def_test' || node.type === 'func_obj') {
-      // 関数定義でasyncFnが指定されているならtrueを返す
-      const def: AstDefFunc = node as AstDefFunc
-      if (def.asyncFn) { return true } // 既にasyncFnが指定されている
-      // 関数定義の中身を調べてasyncFnであるならtrueに変更する
-      let isAsyncFn = false
-      for (const n of def.blocks) {
-        if (this._checkAsyncFn(n)) {
-          isAsyncFn = true
-          def.asyncFn = isAsyncFn
-          def.meta.asyncFn = isAsyncFn
-          this.isModifiedNodes = true
-          return true
-        }
-      }
-    }
-    // 関数呼び出しを調べて非同期処理が必要ならtrueを返す
-    if (node.type === 'func') {
-      // 関数呼び出し自体が非同期処理ならtrueを返す
-      const callNode: AstCallFunc = node as AstCallFunc
-      if (callNode.asyncFn) {
-        return true
-      }
-      // 続けて、以下の関数呼び出しの引数などに非同期処理があるかどうか調べる
-      // 関数の引数は、node.blocksに格納されている
-      if (callNode.blocks) {
-        for (const n of callNode.blocks) {
-          if (this._checkAsyncFn(n)) {
-            callNode.asyncFn = true
-            this.isModifiedNodes = true
-            return true
-          }
-        }
-      }
-      // さらに、関数のリンクを調べる
-      const func = this.funclist.get(callNode.name)
-      if (func && func.asyncFn) {
-        callNode.asyncFn = true
-        this.isModifiedNodes = true
-        return true
-      }
-      return false
-    }
-    // 連文 ... 現在、効率は悪いが非同期で実行することになっている
-    if (node.type === 'renbun') {
-      return true
-    }
-    // その他
-    if ((node as AstBlocks).blocks) {
-      for (const n of (node as AstBlocks).blocks) {
-        if (this._checkAsyncFn(n)) {
-          return true
-        }
-      }
-    }
-    return false
   }
 
   /** TokenをそのままNodeに変換するメソッド(ただし簡単なものだけ対応)
