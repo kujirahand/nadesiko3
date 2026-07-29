@@ -44,7 +44,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function(v: any, sys: NakoSystem) {
+    fn: function(v: any, _sys: NakoSystem) {
       if (v && v.play) {
         v.play()
       }
@@ -55,7 +55,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function(v: any, sys: NakoSystem) {
+    fn: function(v: any, _sys: NakoSystem) {
       if (v && v.pause) {
         v.pause()
       }
@@ -66,7 +66,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function(v: any, sys: NakoSystem) {
+    fn: function(v: any, _sys: NakoSystem) {
       if (v && v.srcObject && v.srcObject.getVideoTracks) {
         const tracks = v.srcObject.getVideoTracks()
         if (tracks.length > 0) {
@@ -95,7 +95,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function(v:any, sys: NakoSystem) {
+    fn: function(v:any, _sys: NakoSystem) {
       if (v && v.srcObject && v.srcObject.getVideoTracks) {
         const tracks = v.srcObject.getVideoTracks()
         for (const track of tracks) {

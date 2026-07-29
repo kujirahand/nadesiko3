@@ -25,7 +25,7 @@ export default {
     josi: [['を'], ['で']],
     pure: true,
     asyncFn: true,
-    fn: async function(s: string, alg: string, sys: any) {
+    fn: async function(s: string, alg: string, _sys: any) {
       const msgUint8 = new TextEncoder().encode(s) // (utf-8 の) Uint8Array にエンコードする
       const hashBuffer = await crypto.subtle.digest(alg, msgUint8)
       const hashArray = Array.from(new Uint8Array(hashBuffer)) // バッファーをバイト列に変換する
@@ -39,7 +39,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function(sys: any) {
+    fn: function(_sys: any) {
       return window.crypto.randomUUID()
     }
   },
@@ -47,7 +47,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function(cnt: number, sys: any) {
+    fn: function(cnt: number, _sys: any) {
       const array = new Uint8Array(cnt)
       window.crypto.getRandomValues(array)
       return array

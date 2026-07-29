@@ -477,7 +477,7 @@ export class NakoCompiler {
       // そのため、例外的にオプションを指定すると、プラグインのクリアイベントを呼ばない
       try {
         this.clearPlugins()
-      } catch (_) {
+      } catch {
         // pass
       }
     }

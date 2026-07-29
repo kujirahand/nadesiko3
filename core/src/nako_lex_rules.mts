@@ -42,7 +42,7 @@ export const rules: NakoLexRule[] = [
   { name: 'eol', pattern: /^\n/ },
   { name: 'eol', pattern: /^;/ },
   // eslint-disable-next-line no-irregular-whitespace
-  { name: 'space', pattern: /^(\x20|\x09|　|・|⎿ |└|｜)+/ }, // #877,#1015
+  { name: 'space', pattern: /^(\x20|\t|　|・|⎿ |└|｜)+/ }, // #877,#1015
   { name: 'comma', pattern: /^,/ },
   { name: 'line_comment', pattern: /^#[^\n]*/ },
   { name: 'line_comment', pattern: /^\/\/[^\n]*/ },

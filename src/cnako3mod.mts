@@ -599,7 +599,7 @@ export class CNako3 extends NakoCompiler {
         cachePath[f] = b
         return b
        
-      } catch (_: any) {
+      } catch {
         return false
       }
     }

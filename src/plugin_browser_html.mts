@@ -63,7 +63,7 @@ export default {
     josi: [],
     pure: true,
     asyncFn: true,
-    fn: async function(sys: any) {
+    fn: async function(_sys: any) {
       // Clipboard APIをサポートしているか
       if (navigator.clipboard) {
         const result = await navigator.clipboard.readText()

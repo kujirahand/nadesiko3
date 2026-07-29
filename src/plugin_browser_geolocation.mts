@@ -43,7 +43,7 @@ export default {
     type: 'func',
     josi: [['の']],
     pure: true,
-    fn: function(wid: any, sys: any) {
+    fn: function(wid: any, _sys: any) {
       navigator.geolocation.clearWatch(wid)
     },
     return_none: true

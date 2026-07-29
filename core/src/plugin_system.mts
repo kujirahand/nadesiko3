@@ -1,6 +1,5 @@
  
 import { NakoRuntimeError } from './nako_errors.mjs'
-import { NakoGlobal } from './nako_global.mjs'
 import { NakoSystem } from './plugin_api.mjs'
 
 export default {
@@ -175,7 +174,7 @@ export default {
       sys.__evalJS = (src: string, sys?: NakoSystem) => {
         try {
           // まず従来通りevalで評価（式の値を返す互換性を維持）
-          return eval(src)
+          return eval(src) // oxlint-disable-line no-eval
         } catch (e) {
           // return文によるSyntaxErrorの場合のみIIFEで再試行 (#NE-006)
           if (e instanceof SyntaxError && e.message.includes('return')) {
@@ -2241,7 +2240,7 @@ export default {
     type: 'func',
     josi: [['から', 'の'], ['を']],
     pure: true,
-    fn: function(a: any, i: any, sys: any) {
+    fn: function(a: any, i: any, _sys: any) {
       // 文字列のとき
       if (typeof a === 'string') {
         if (typeof i === 'number') {

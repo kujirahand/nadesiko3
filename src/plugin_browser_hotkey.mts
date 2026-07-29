@@ -8,7 +8,7 @@ export default {
     josi: [['に', 'で'], ['を']],
     pure: true,
     fn: function(key: any, fname: any, sys: any) {
-      hotkeys(key, function(event: any, handler: any) {
+      hotkeys(key, function(event: any, _handler: any) {
         event.preventDefault()
         const f = sys.__findFunc(fname)
         f(sys)

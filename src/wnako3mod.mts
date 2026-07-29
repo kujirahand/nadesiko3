@@ -166,7 +166,7 @@ export class WebNakoCompiler extends NakoCompiler {
     if (this.localFiles && this.localFiles[filePath]) { // ローカルファイルを使う場合
       return {
         task: (() => {
-          return (new Promise((resolve, reject) => {
+          return (new Promise((resolve, _reject) => {
             const s: string = this.localFiles[filePath]
             resolve(s)
           }))
@@ -194,7 +194,7 @@ export class WebNakoCompiler extends NakoCompiler {
     } else {
       try {
         pathname = new URL(name).pathname
-      } catch (e) {
+      } catch {
         // 単純にパスに変換できなければ、location.hrefを参考にパスを組み立てる
         try {
           let baseDir = dirname(fromFile)

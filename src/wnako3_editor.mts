@@ -692,17 +692,17 @@ export class BackgroundTokenizer {
 
   // ace側から呼ばれるが無視するメソッド
   // @ts-ignore
-  start(startRow) { /* pass */ }
+  start(_startRow) { /* pass */ }
   // @ts-ignore
-  fireUpdateEvent(firstRow, lastRow) { /* pass */ }
+  fireUpdateEvent(_firstRow, _lastRow) { /* pass */ }
   // @ts-ignore
-  setDocument(doc) { /* pass */ }
+  setDocument(_doc) { /* pass */ }
   scheduleStart() { /* pass */ }
   // @ts-ignore
-  setTokenizer(tokenizer) { /* pass */ }
+  setTokenizer(_tokenizer) { /* pass */ }
   stop() { /* pass */ }
   // @ts-ignore
-  getState(row) { return 'start' }
+  getState(_row) { return 'start' }
 }
 
 /**

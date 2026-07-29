@@ -64,7 +64,7 @@ export default {
       if (sys.__getSysVar('保存オプション') && (sys.__getSysVar('保存オプション').indexOf('json') >= 0)) {
         try {
           return JSON.parse(v)
-        } catch (e) {
+        } catch {
           console.log('ローカルストレージ『' + key + '』の読み込みに失敗')
         }
       }
@@ -76,7 +76,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function(sys: any) {
+    fn: function(_sys: any) {
       const keys = []
       for (const key in window.localStorage) { keys.push(key) }
       return keys

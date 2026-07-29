@@ -200,7 +200,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function(params: any, sys: any) {
+    fn: function(params: any, _sys: any) {
       const flist: string[] = []
       for (const key in params) {
         const v = params[key]
@@ -240,7 +240,7 @@ export default {
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
     asyncFn: true,
-    fn: function(url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, _sys: any) {
       return new Promise((resolve, reject) => {
         const fd = new FormData()
         for (const key in params) { fd.set(key, params[key]) }
@@ -300,7 +300,7 @@ export default {
     type: 'func',
     josi: [['まで', 'へ', 'に'], ['を']],
     pure: true,
-    fn: function(url: any, params: any, sys: any) {
+    fn: function(url: any, params: any, _sys: any) {
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -316,7 +316,7 @@ export default {
     type: 'func',
     josi: [['から'], ['で']],
     pure: true,
-    fn: function(res: any, type: any, sys: any) {
+    fn: function(res: any, type: any, _sys: any) {
       type = type.toString().toUpperCase()
       if (type === 'TEXT' || type === 'テキスト') {
         return res.text()
