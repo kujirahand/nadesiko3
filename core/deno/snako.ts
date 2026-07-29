@@ -89,7 +89,9 @@ function convert (nako: NakoCompiler, code: string, opt: CommandOptions): void {
   // オプションを指定
   const genOpt: NakoGenOptions = new NakoGenOptions(
     false,
-    ['nako_errors.mjs', 'nako_core_version.mjs', 'plugin_system.mjs'],
+    ['nako_errors.mjs', 'nako_core_version.mjs', 'plugin_system.mjs',
+      'plugin_system_debug.mjs', 'plugin_system_math.mjs', 'plugin_system_string.mjs',
+      'plugin_system_array.mjs', 'plugin_system_datetime.mjs', 'plugin_system_url.mjs'],
     '__self.__setSysVar(\'ナデシコ種類\', \'snako\')')
   // スタンドアロンコードを生成
   const js = nako.compileStandalone(code, opt.filename, genOpt)

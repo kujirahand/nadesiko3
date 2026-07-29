@@ -13,6 +13,12 @@ CORE="core/src"
 
 コアプラグイン一覧は[
     ["plugin_system.mts", 'wnako,cnako,phpnako'],
+    ["plugin_system_debug.mts", 'wnako,cnako,phpnako'],
+    ["plugin_system_math.mts", 'wnako,cnako,phpnako'],
+    ["plugin_system_string.mts", 'wnako,cnako,phpnako'],
+    ["plugin_system_array.mts", 'wnako,cnako,phpnako'],
+    ["plugin_system_datetime.mts", 'wnako,cnako,phpnako'],
+    ["plugin_system_url.mts", 'wnako,cnako,phpnako'],
     ["plugin_csv.mts", 'wnako,cnako'],
     ["plugin_toml.mts", 'wnako,cnako'],
     ["plugin_math.mts", 'wnako,cnako'],

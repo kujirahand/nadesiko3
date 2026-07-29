@@ -2337,8 +2337,19 @@ ${syncMain}(__self)
   // デバッグメッセージ
   let codeImportFiles = ''
   const importNames = []
+  // プラグインとして登録せず、コピーだけが必要なファイル
+  // (plugin_system_*.mjs は plugin_system.mjs 側でマージ済みのため二重登録しない) #2351
+  const noRegisterFiles = [
+    'nako_errors.mjs',
+    'plugin_system_debug.mjs',
+    'plugin_system_math.mjs',
+    'plugin_system_string.mjs',
+    'plugin_system_array.mjs',
+    'plugin_system_datetime.mjs',
+    'plugin_system_url.mjs'
+  ]
   for (const f of opt.importFiles) {
-    if (f === 'nako_errors.mjs') { continue }
+    if (noRegisterFiles.includes(f)) { continue }
     const ff = 'nako3runtime_' + f.replace(/\.(js|mjs)$/, '').replace(/[^a-zA-Z0-9_]/g, '_')
     importNames.push(ff)
     codeImportFiles += `import ${ff} from './nako3runtime/${f}'\n`
