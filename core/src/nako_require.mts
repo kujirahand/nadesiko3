@@ -248,11 +248,6 @@ export class NakoRequireLoader {
   replaceRequireStatements (tokens: Token[], includeGuard: Set<string> = new Set()): Token[] {
     const deletedTokens: Token[] = []
     for (const r of listRequireStatements(tokens).reverse()) {
-      // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。
-      if (includeGuard.has(r.value)) {
-        deletedTokens.push(...tokens.splice((r.start || 0), (r.end || 0) - (r.start || 0)))
-        continue
-      }
       const filePath = Object.keys(this.dependencies).find((key) => this.dependencies[key].alias.has(r.value))
       if (filePath === undefined) {
         if (!r.firstToken) { throw new Error(`ファイル『${String(r.value)}』が読み込まれていません。`) }
@@ -261,9 +256,14 @@ export class NakoRequireLoader {
           (r.firstToken).endOffset || 0,
           (r.firstToken).line, (r.firstToken).file)
       }
+      // C言語のinclude guardと同じ仕組みで無限ループを防ぐ。(同一ファイルを別名で取り込むケースがあるため filePath を使う)
+      if (includeGuard.has(filePath)) {
+        deletedTokens.push(...tokens.splice((r.start || 0), (r.end || 0) - (r.start || 0)))
+        continue
+      }
       this.dependencies[filePath].addPluginFile()
       const children = cloneAsJSON(this.dependencies[filePath].tokens)
-      includeGuard.add(r.value)
+      includeGuard.add(filePath)
       deletedTokens.push(...this.replaceRequireStatements(children, includeGuard))
       deletedTokens.push(...tokens.splice(r.start || 0, (r.end || 0) - (r.start || 0), ...children))
     }
