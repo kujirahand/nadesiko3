@@ -37,12 +37,52 @@ interface FunctionContext {
   varsIndex: number;
   usesClosure: boolean;
 }
+
+/** 生成したコードの各行を n段だけインデントする (空行は捨てる) */
+function indentLines (text: string, n: number): string {
+  let result = ''
+  for (const line of text.split('\n')) {
+    if (line !== '') {
+      result += '  '.repeat(n) + line + '\n'
+    }
+  }
+  return result
+}
+
+/**
+ * パフォーマンスモニタの計測結果を `__self.__performance_monitor[key]` に記録するコードを生成する。
+ * ユーザ関数・システム関数本体・システム関数の3箇所で共通して使う。(#2333)
+ * @param timeVar 経過時間(マイクロ秒)が入っているJS変数名
+ */
+function genPerfMonitorUpdate (timeVar: string): string {
+  const rec = `{ called:1, totel_usec: ${timeVar}, min_usec: ${timeVar}, max_usec: ${timeVar}, type: type }`
+  return 'if (!__self.__performance_monitor) {\n' +
+    '__self.__performance_monitor={};\n' +
+    `__self.__performance_monitor[key] = ${rec};\n` +
+    '} else if (!__self.__performance_monitor[key]) {\n' +
+    `__self.__performance_monitor[key] = ${rec};\n` +
+    '} else {\n' +
+    '__self.__performance_monitor[key].called++;\n' +
+    `__self.__performance_monitor[key].totel_usec+=${timeVar};\n` +
+    `if(__self.__performance_monitor[key].min_usec>${timeVar}){__self.__performance_monitor[key].min_usec=${timeVar};}\n` +
+    `if(__self.__performance_monitor[key].max_usec<${timeVar}){__self.__performance_monitor[key].max_usec=${timeVar};}\n` +
+    '}'
+}
 interface FindVarResult {
   i: number;
   name: string;
   isTop: boolean;
   js: string,
   js_set: string
+}
+/** 関数呼び出しコードを組み立てるための部品 (convCallFunc) */
+interface CallCodeParts {
+  funcDef: string; // 'function' または 'async function'
+  funcCall: string; // 関数を呼び出す式
+  funcBegin: string; // 呼び出しの直前に実行するコード
+  funcEnd: string; // 呼び出しの後に必ず実行するコード
+  isAsync: boolean; // 非同期関数の呼び出しか
+  sysPerfKey: string | null; // システム関数の計測キー。計測しないときはnull
 }
 /** コード生成オプション */
 export class NakoGenOptions {
@@ -872,31 +912,9 @@ export class NakoGen {
     let performanceMonitorInjectAtStart = ''
     let performanceMonitorInjectAtEnd = ''
     if (this.performanceMonitor.userFunction !== 0) {
-      let key = name
-      if (!key) {
-        if (typeof this.performanceMonitor.mumeiId === 'undefined') {
-          this.performanceMonitor.mumeiId = 0
-        }
-        this.performanceMonitor.mumeiId++
-        key = `anous_${this.performanceMonitor.mumeiId}`
-      }
-      performanceMonitorInjectAtStart = 'const performanceMonitorEnd = (function (key, type) {\n' +
-        'const uf_start = performance.now() * 1000;\n' +
-        'return function () {\n' +
-        'const el_time = performance.now() * 1000 - uf_start;\n' +
-        'if (!__self.__performance_monitor) {\n' +
-        '__self.__performance_monitor={};\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n' +
-        '} else if (!__self.__performance_monitor[key]) {\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: el_time, min_usec: el_time, max_usec: el_time, type: type };\n' +
-        '} else {\n' +
-        '__self.__performance_monitor[key].called++;\n' +
-        '__self.__performance_monitor[key].totel_usec+=el_time;\n' +
-        'if(__self.__performance_monitor[key].min_usec>el_time){__self.__performance_monitor[key].min_usec=el_time;}\n' +
-        'if(__self.__performance_monitor[key].max_usec<el_time){__self.__performance_monitor[key].max_usec=el_time;}\n' +
-        `}};})('${key}', 'user');` +
-        'try {\n'
-      performanceMonitorInjectAtEnd = '} finally { performanceMonitorEnd(); }\n'
+      const inject = this.genPerfMonitorInject(this.getPerfMonitorKey(name))
+      performanceMonitorInjectAtStart = inject[0]
+      performanceMonitorInjectAtEnd = inject[1]
     }
     let variableDeclarations = ''
     const indent = '    '
@@ -1019,7 +1037,9 @@ export class NakoGen {
     const tof = (this.usedAsyncFn) ? topOfFunctionAsync : topOfFunction
     // 関数コード全体を構築
     const lineInfo = '  ' + this.convLineno(node, true, 1) + '\n'
-    code = tof + performanceMonitorInjectAtStart + pushStack + variableDeclarations + lineInfo + code + popStack
+    // パフォーマンスモニタのinjectは、PUSH STACKのtry/finallyの内側に入れる。
+    // 外側に置くと __localvars の宣言をまたいでしまい ReferenceError になる (#2333)
+    code = tof + pushStack + performanceMonitorInjectAtStart + variableDeclarations + lineInfo + code + popStack
     code += endOfFunction
     if (funcContext.isAnonymous && funcContext.usesClosure) {
       const parentClosure = `(typeof __nako_closure === 'undefined' ? null : __nako_closure)`
@@ -1412,8 +1432,8 @@ export class NakoGen {
    * @param {boolean} isExpression
    */
   convPerformanceMonitor(node: AstBlocks, isExpression: boolean): string {
-    const prev = { ...this.performanceMonitor }
     if (!node.options) { return '' }
+    const prev = { ...this.performanceMonitor }
     if (node.options['ユーザ関数']) {
       this.performanceMonitor.userFunction++
     }
@@ -1428,6 +1448,63 @@ export class NakoGen {
     } finally {
       this.performanceMonitor = prev
     }
+  }
+
+  /**
+   * パフォーマンスモニタの計測キーを決める。名前が無ければ無名関数用のIDを採番する。(#2333)
+   * @param name 関数名
+   * @param suffix キーに付ける接尾辞 ('_body' / '_sys' など)
+   */
+  private getPerfMonitorKey (name: string, suffix = ''): string {
+    if (name) { return `${name}${suffix}` }
+    this.performanceMonitor.mumeiId++
+    return `anous_${this.performanceMonitor.mumeiId}${suffix}`
+  }
+
+  /**
+   * コードを、実行時間を計測する即時実行関数で包む。(#2333)
+   * システム関数本体・システム関数の計測で使う。
+   * @param body 計測対象。isExprなら式、そうでなければ文の並び
+   * @param key 計測結果を記録するキー
+   * @param type 計測の種別
+   * @param opts isExpr:bodyが式か / isAsync:非同期か / startVar,timeVar:使用するJS変数名
+   */
+  private wrapPerfMonitor (body: string, key: string, type: string,
+    opts: { isExpr: boolean, isAsync: boolean, startVar: string, timeVar: string }): string {
+    const funcDef = opts.isAsync ? 'async function' : 'function'
+    // 式なら値を返す必要がある。文ならそのまま実行する。
+    const inner = opts.isExpr ? `return ${body};\n` : `${body}\n`
+    // 末尾に改行を置かないこと。行頭のセミコロンは cleanGeneratedCode で消えてしまい、
+    // 直後の文が `(` で始まると関数呼び出しとして繋がってしまう (#2333)
+    let code = `(${funcDef} (key, type) {\n` +
+      `const ${opts.startVar} = performance.now() * 1000;\n` +
+      'try {\n' +
+      inner +
+      '} finally {\n' +
+      `const ${opts.timeVar} = performance.now() * 1000 - ${opts.startVar};\n` +
+      genPerfMonitorUpdate(opts.timeVar) +
+      `}})('${key}', '${type}')`
+    // 非同期関数を包んだ場合、待たないと計測対象が完了しない (#2333)
+    if (opts.isAsync) { code = `await ${code}` }
+    // 文として包んだ場合は、ここで文を閉じる
+    return opts.isExpr ? code : code + ';\n'
+  }
+
+  /**
+   * ユーザ関数の実行時間を計測するために、関数の本体の前後へ挿入するコードを返す。(#2333)
+   * @param key 計測結果を記録するキー
+   * @returns [関数本体の直前に挿入するコード, 関数本体の直後に挿入するコード]
+   */
+  private genPerfMonitorInject (key: string): [string, string] {
+    const injectAtStart = 'const performanceMonitorEnd = (function (key, type) {\n' +
+      'const uf_start = performance.now() * 1000;\n' +
+      'return function () {\n' +
+      'const el_time = performance.now() * 1000 - uf_start;\n' +
+      genPerfMonitorUpdate('el_time') +
+      `};})('${key}', 'user');` +
+      'try {\n'
+    const injectAtEnd = '} finally { performanceMonitorEnd(); }\n'
+    return [injectAtStart, injectAtEnd]
   }
 
   convWhile(node: AstWhile): string {
@@ -1534,18 +1611,14 @@ export class NakoGen {
   }
 
   /**
-   * 関数の呼び出し
-   * @param {Ast} node
-   * @param {boolean} isExpression
-   * @returns string コード
+   * どの関数を呼び出すのか関数を特定する (convCallFunc用)
+   * @returns 変数の検索結果 res と、関数の定義 func
    */
-  convCallFunc(node: AstCallFunc, isExpression: boolean): string {
-    const funcName = NakoGen.getFuncName(node.name)
+  private resolveCallTarget (funcName: string, node: AstCallFunc): { res: FindVarResult, func: any } {
     const res = this.findVar(funcName)
     if (res === null) {
       throw NakoSyntaxError.fromNode(`関数『${funcName}』が見当たりません。有効プラグイン=[` + this.getPluginList().join(', ') + ']', node)
     }
-    // どの関数を呼び出すのか関数を特定する
     let func
     if (res.i === 0) { // plugin function
       func = this.__self.getFunc(funcName)
@@ -1558,6 +1631,155 @@ export class NakoGen {
       // 無名関数の可能性
       if (func === undefined) { func = { return_none: false, asyncFn: !!node.asyncFn } }
     }
+    return { res, func }
+  }
+
+  /**
+   * 関数内からpureでないプラグイン関数を呼び出すとき、呼び出しの前後で
+   * ローカル変数を __self.__locals と同期するコードを生成する。
+   * @returns 呼び出し前に実行するコード begin と、呼び出し後に実行するコード end
+   */
+  private genLocalVarsSyncCode (): { begin: string, end: string } {
+    let begin = ''
+    let end = ''
+    // 展開されたローカル変数の列挙
+    const localVars = []
+    for (const name of Array.from(this.varsSet.names.values())) {
+      if (NakoGen.isValidIdentifier(name)) {
+        localVars.push({ str: JSON.stringify(name), js: this.varname_get(name) })
+      }
+    }
+
+    // --- 実行前 ---
+    // 全ての展開されていないローカル変数を __self.__locals にコピーする
+    begin += '__self.__locals = __vars;\n'
+    // 全ての展開されたローカル変数を __self.__locals に保存する
+    if (localVars.length > 0) {
+      begin += '/* 全ての展開されたローカル変数を __self.__locals に保存 */\n'
+      for (const v of localVars) {
+        begin += `__self.__locals.set(${v.str}, ${v.js});\n`
+      }
+    }
+
+    // --- 実行後 ---
+    // 全ての展開されたローカル変数を __self.__locals から受け取る
+    // 「それ」は関数の実行結果を受け取るために使うためスキップ。
+    if (localVars.length > 0) {
+      end += '/* 全ての展開されたローカル変数を __self.__locals から受け取る */\n'
+      for (const v of localVars) {
+        if (v.js !== 'それ') {
+          end += `__self.__varslist[2].set(${v.str}, __self.__locals.get(${v.str}));\n`
+        }
+      }
+    }
+    return { begin, end }
+  }
+
+  /**
+   * 引数のリストを連結してJSの実引数のコードにする。
+   * 必要に応じて、引数のundefinedチェックのコードを挟む。
+   */
+  private genCallArgsCode (funcName: string, res: FindVarResult, args: string[], node: AstCallFunc): string {
+    if ((!this.warnUndefinedCallingUserFunc && res.i !== 0) || (!this.warnUndefinedCallingSystemFunc && res.i === 0)) {
+      return args.join(',')
+    }
+    // 引数チェックの例外 #1260
+    const noCheckFuncs: {[key: string]: boolean} = { 'TYPEOF': true, '変数型確認': true }
+    const argsA: string[] = []
+    args.forEach((arg: string) => {
+      if (arg === '__self' || noCheckFuncs[funcName] === true) { // #1260
+        argsA.push(`${arg}`)
+      } else {
+        // 引数のundefinedチェックのコードを入れる
+        const msg = (res.i === 0) ? '命令『$0』の引数にundefinedを渡しています。' : 'ユーザ命令『$0』の引数にundefinedを渡しています。'
+        const poolIndex = this.addConstPool(msg, [funcName], node.file, node.line)
+        // argが空になる対策 #1315
+        const argStr = (arg === '') ? '""' : arg
+        argsA.push(`(__self.chk(${argStr}, ${poolIndex}))`)
+      }
+    })
+    return argsA.join(', ')
+  }
+
+  /**
+   * 関数の戻り値を変数「それ」に代入するためのラッパを返す。
+   * @returns [前置するコード, 後置するコード]
+   */
+  private getSoreWrap (): [string, string] {
+    if (this.speedMode.invalidSore !== 0) { return ['', ''] }
+    return ['__self.__setSore(', ')']
+  }
+
+  /** 戻り値のない関数呼び出しのコードを組み立てる */
+  private genVoidCallCode (node: AstCallFunc, parts: CallCodeParts): string {
+    const { funcCall, funcBegin, funcEnd } = parts
+    let code: string
+    if (funcEnd === '') {
+      code = `/*VOID関数呼出*/${funcBegin}${funcCall}\n`
+    } else {
+      code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indentLines(funcCall, 1)};\n} finally {\n${indentLines(funcEnd, 1)}}\n`
+    }
+    // パフォーマンスモニタ:システム関数。ここでのcodeは式ではなく文なので、文として包む (#2333)
+    if (parts.sysPerfKey) {
+      code = this.wrapPerfMonitor(code, parts.sysPerfKey, 'system',
+        { isExpr: false, isAsync: parts.isAsync, startVar: 'sf_start', timeVar: 'sl_time' })
+    }
+    // 行番号を追加
+    return this.convLineno(node, false) + code
+  }
+
+  /** 戻り値のある関数呼び出しのコードを組み立てる */
+  private genValueCallCode (node: AstCallFunc, isExpression: boolean, parts: CallCodeParts): string {
+    const { funcDef, funcCall, funcBegin, funcEnd, isAsync } = parts
+    // 関数の戻り値を「それ」に記録する
+    const [sorePrefix, sorePostfix] = this.getSoreWrap()
+    let code: string
+    if (funcBegin === '' && funcEnd === '') {
+      code = `${sorePrefix}${funcCall}${sorePostfix}`
+    } else if (funcEnd === '') {
+      const funcBody = `${sorePrefix}${funcCall}${sorePostfix}`
+      const funcObj = `${funcDef}(){ return ${funcBody} }`
+      const funcCallThis = `(${funcObj}).call(this)`
+      code = `/* funcCallThis1 */${funcCallThis}`
+    } else { // つまり、pure=falseの場合
+      const varI = `$nako_i${this.loopId}`
+      this.loopId++
+      code = `/* funcCallThis2 */(${funcDef}(){\n` +
+        indentLines(funcBegin, 1) + '\n' +
+        indentLines('try {', 1) + '\n' +
+        indentLines(`let ${varI} = ${funcCall};`, 2) + '\n' +
+        indentLines(`return ${varI};`, 2) + '\n' +
+        indentLines('} finally {', 2) + '\n' +
+        indentLines(funcEnd, 1) + '\n' +
+        indentLines('}', 1) + '\n' +
+        '}).call(this)'
+      if (isAsync) {
+        code = `await (${code})`
+      }
+      code = `${sorePrefix}${code}${sorePostfix}`
+    }
+    // パフォーマンスモニタ:システム関数。ここでのcodeは式なので、値を返す形で包む (#2333)
+    if (parts.sysPerfKey) {
+      code = this.wrapPerfMonitor(code, parts.sysPerfKey, 'system',
+        { isExpr: true, isAsync, startVar: 'sf_start', timeVar: 'sl_time' })
+    }
+    // ...して
+    if (node.josi === 'して' || (node.josi === '' && !isExpression)) {
+      code = this.convLineno(node, false) + code
+      code += ';\n'
+    }
+    return code
+  }
+
+  /**
+   * 関数の呼び出し
+   * @param {Ast} node
+   * @param {boolean} isExpression
+   * @returns string コード
+   */
+  convCallFunc(node: AstCallFunc, isExpression: boolean): string {
+    const funcName = NakoGen.getFuncName(node.name)
+    const { res, func } = this.resolveCallTarget(funcName, node)
     // 関数の参照渡しか？
     if (node.type === 'func_pointer') {
       return res.js
@@ -1589,73 +1811,15 @@ export class NakoGen {
     // 関数内 (__varslist.length > 3) からプラグイン関数 (res.i === 0) を呼び出すとき、 そのプラグイン関数がpureでなければ
     // 呼び出しの直前に全てのローカル変数をthis.__localsに入れる。
     if (res.i === 0 && this.varslistSet.length > 3 && func.pure !== true && this.speedMode.forcePure === 0) { // undefinedはfalseとみなす
-      // 展開されたローカル変数の列挙
-      const localVars = []
-      for (const name of Array.from(this.varsSet.names.values())) {
-        if (NakoGen.isValidIdentifier(name)) {
-          localVars.push({ str: JSON.stringify(name), js: this.varname_get(name) })
-        }
-      }
-
-      // --- 実行前 ---
-      // 全ての展開されていないローカル変数を __self.__locals にコピーする
-      funcBegin += '__self.__locals = __vars;\n'
-      // 全ての展開されたローカル変数を __self.__locals に保存する
-      if (localVars.length > 0) {
-        funcBegin += '/* 全ての展開されたローカル変数を __self.__locals に保存 */\n'
-        for (const v of localVars) {
-          funcBegin += `__self.__locals.set(${v.str}, ${v.js});\n`
-        }
-      }
-
-      // --- 実行後 ---
-      // 全ての展開されたローカル変数を __self.__locals から受け取る
-      // 「それ」は関数の実行結果を受け取るために使うためスキップ。
-      if (localVars.length > 0) {
-        funcEnd += '/* 全ての展開されたローカル変数を __self.__locals から受け取る */\n'
-        for (const v of localVars) {
-          if (v.js !== 'それ') {
-            funcEnd += `__self.__varslist[2].set(${v.str}, __self.__locals[${v.str}]);\n`
-          }
-        }
-      }
+      const sync = this.genLocalVarsSyncCode()
+      funcBegin += sync.begin
+      funcEnd += sync.end
     }
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts.sore) { funcBegin += '/*[sore]*/' }
 
-    const indent = (text: string, n: number) => {
-      let result = ''
-      for (const line of text.split('\n')) {
-        if (line !== '') {
-          result += '  '.repeat(n) + line + '\n'
-        }
-      }
-      return result
-    }
-
-    // 引数チェックの例外 #1260
-    const noCheckFuncs: {[key: string]: boolean} = { 'TYPEOF': true, '変数型確認': true }
     // 関数呼び出しコードの構築
-    let argsCode: string
-    if ((!this.warnUndefinedCallingUserFunc && res.i !== 0) || (!this.warnUndefinedCallingSystemFunc && res.i === 0)) {
-      argsCode = args.join(',')
-    } else {
-      const argsA: string[] = []
-      args.forEach((arg: string) => {
-        if (arg === '__self' || noCheckFuncs[funcName] === true) { // #1260
-          argsA.push(`${arg}`)
-        } else {
-          // 引数のundefinedチェックのコードを入れる
-          const msg = (res.i === 0) ? '命令『$0』の引数にundefinedを渡しています。' : 'ユーザ命令『$0』の引数にundefinedを渡しています。'
-          const poolIndex = this.addConstPool(msg, [funcName], node.file, node.line)
-          // argが空になる対策 #1315
-          const argStr = (arg === '') ? '""' : arg
-          argsA.push(`(__self.chk(${argStr}, ${poolIndex}))`)
-        }
-      })
-      argsCode = argsA.join(', ')
-    }
-
+    const argsCode = this.genCallArgsCode(funcName, res, args, node)
     let funcCall = `${res.js}(${argsCode})`
     if (func.asyncFn) {
       funcDef = `async ${funcDef}`
@@ -1668,111 +1832,20 @@ export class NakoGen {
       funcBegin += `const __local_async${varI} = __self.__vars;\n`
       funcEnd += `__self.__vars = __local_async${varI};\n`
     }
+    // パフォーマンスモニタ:システム関数本体 (呼び出しコードを除く)
     if (res.i === 0 && this.performanceMonitor.systemFunctionBody !== 0) {
-      let key = funcName
-      if (!key) {
-        if (typeof this.performanceMonitor.mumeiId === 'undefined') {
-          this.performanceMonitor.mumeiId = 0
-        }
-        this.performanceMonitor.mumeiId++
-        key = `anous_${this.performanceMonitor.mumeiId}`
-      }
-      funcCall = `(${funcDef} (key, type) {\n` +
-        'const sbf_start = performance.now() * 1000;\n' +
-        'try {\n' +
-        'return ' + funcCall + ';\n' +
-        '} finally {\n' +
-        'const sbl_time = performance.now() * 1000 - sbf_start;\n' +
-        'if (!__self.__performance_monitor) {\n' +
-        '__self.__performance_monitor={};\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n' +
-        '} else if (!__self.__performance_monitor[key]) {\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sbl_time, min_usec: sbl_time, max_usec: sbl_time, type: type };\n' +
-        '} else {\n' +
-        '__self.__performance_monitor[key].called++;\n' +
-        '__self.__performance_monitor[key].totel_usec+=sbl_time;\n' +
-        'if(__self.__performance_monitor[key].min_usec>sbl_time){__self.__performance_monitor[key].min_usec=sbl_time;}\n' +
-        'if(__self.__performance_monitor[key].max_usec<sbl_time){__self.__performance_monitor[key].max_usec=sbl_time;}\n' +
-        `}}})('${funcName}_body', 'sysbody')\n`
+      funcCall = this.wrapPerfMonitor(funcCall, this.getPerfMonitorKey(funcName, '_body'), 'sysbody',
+        { isExpr: true, isAsync: !!func.asyncFn, startVar: 'sbf_start', timeVar: 'sbl_time' })
     }
+    // パフォーマンスモニタ:システム関数 (呼び出しコードを含む) はコードの組み立て中に適用する
+    const sysPerfKey = (res.i === 0 && this.performanceMonitor.systemFunction !== 0)
+      ? this.getPerfMonitorKey(funcName, '_sys')
+      : null
 
-    let code = ''
-    if (func.return_none) {
-      // ------------------------------------
-      // 戻り値のない関数の場合
-      // ------------------------------------
-      if (funcEnd === '') {
-        code = `/*VOID関数呼出*/${funcBegin}${funcCall}\n`
-      } else {
-        code = `/*VOID関数呼出(前後処理付)*/${funcBegin}try {\n${indent(funcCall, 1)};\n} finally {\n${indent(funcEnd, 1)}}\n`
-      }
-      // 行番号を追加
-      code = this.convLineno(node, false) + code
-    } else {
-      // ------------------------------------
-      // 戻り値のある関数の場合
-      // ------------------------------------
-      let sorePrefex = ''
-      let sorePostfix = ''
-      if (this.speedMode.invalidSore === 0) {
-        // 関数の戻り値を記録
-        sorePrefex = '__self.__setSore('
-        sorePostfix = ')'
-      }
-      if (funcBegin === '' && funcEnd === '') {
-        code = `${sorePrefex}${funcCall}${sorePostfix}`
-      } else {
-        if (funcEnd === '') {
-          const funcBody = `${sorePrefex}${funcCall}${sorePostfix}`
-          const funcObj = `${funcDef}(){ return ${funcBody} }`
-          const funcCallThis = `(${funcObj}).call(this)`
-          code = `/* funcCallThis1 */${funcCallThis}`
-        } else { // つまり、pure=falseの場合
-          const varI = `$nako_i${this.loopId}`
-          this.loopId++
-          code = `/* funcCallThis2 */(${funcDef}(){\n` +
-            indent(funcBegin, 1) + '\n' +
-            indent('try {', 1) + '\n' +
-            indent(`let ${varI} = ${funcCall};`, 2) + '\n' +
-            indent(`return ${varI};`, 2) + '\n' +
-            indent('} finally {', 2) + '\n' +
-            indent(funcEnd, 1) + '\n' +
-            indent('}', 1) + '\n' +
-            '}).call(this)'
-          if (func.asyncFn) {
-            code = `await (${code})`
-          }
-          code = `${sorePrefex}${code}${sorePostfix}`
-        }
-      }
-      // ...して
-      if (node.josi === 'して' || (node.josi === '' && !isExpression)) {
-        code = this.convLineno(node, false) + code
-        code += ';\n'
-      }
-    }
-
-    if (res.i === 0 && this.performanceMonitor.systemFunction !== 0) {
-      code = '(function (key, type) {\n' +
-        'const sf_start = performance.now() * 1000;\n' +
-        'try {\n' +
-        'return ' + code + ';\n' +
-        '} finally {\n' +
-        'const sl_time = performance.now() * 1000 - sf_start;\n' +
-        'if (!__self.__performance_monitor) {\n' +
-        '__self.__performance_monitor={};\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n' +
-        '} else if (!__self.__performance_monitor[key]) {\n' +
-        '__self.__performance_monitor[key] = { called:1, totel_usec: sl_time, min_usec: sl_time, max_usec: sl_time, type: type };\n' +
-        '} else {\n' +
-        '__self.__performance_monitor[key].called++;\n' +
-        '__self.__performance_monitor[key].totel_usec+=sl_time;\n' +
-        'if(__self.__performance_monitor[key].min_usec>sl_time){__self.__performance_monitor[key].min_usec=sl_time;}\n' +
-        'if(__self.__performance_monitor[key].max_usec<sl_time){__self.__performance_monitor[key].max_usec=sl_time;}\n' +
-        `}}})('${funcName}_sys', 'system')\n`
-    }
-
-    return code
+    const parts: CallCodeParts = { funcDef, funcCall, funcBegin, funcEnd, isAsync: !!func.asyncFn, sysPerfKey }
+    return (func.return_none)
+      ? this.genVoidCallCode(node, parts)
+      : this.genValueCallCode(node, isExpression, parts)
   }
 
   convCallValue(node: AstBlocks, isExpression: boolean): string {
@@ -1783,9 +1856,8 @@ export class NakoGen {
     if (isExpression) {
       return funcCall
     }
-    const sorePrefex = (this.speedMode.invalidSore === 0) ? '__self.__setSore(' : ''
-    const sorePostfix = (this.speedMode.invalidSore === 0) ? ')' : ''
-    return this.convLineno(node, false) + `${sorePrefex}${funcCall}${sorePostfix};\n`
+    const [sorePrefix, sorePostfix] = this.getSoreWrap()
+    return this.convLineno(node, false) + `${sorePrefix}${funcCall}${sorePostfix};\n`
   }
 
   convRenbun(node: AstOperator): string {
