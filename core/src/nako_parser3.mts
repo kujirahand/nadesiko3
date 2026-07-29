@@ -1,6 +1,41 @@
  
 /**
  * nadesiko v3 parser
+ *
+ * 再帰下降パーサ。トークン列を読み進めながら構文木(Ast)を組み立てる。
+ * 各構文規則は `yXxx` という名前のメソッドで、カーソル(this.index)と
+ * 計算用スタック(this.stack)を共有しながら相互に呼び合う。
+ * カーソル操作・スタック操作・変数検索は基底クラス NakoParserBase にある。
+ *
+ * ## 構文規則の呼び出し関係 (#2364)
+ *
+ * ```
+ * parse
+ *  └ startParser → ySentenceList → ySentence ─┬ yIF / yAtohantei / yTryExcept / yDebugPrint
+ *                                             ├ yDNCLMode / ySetGenMode / ySpeedMode ...
+ *                                             ├ yLet ── yLetArrayAt / yLetArrayBracket
+ *                                             ├ yDefFunc / yDefTest → yDefFuncCommon
+ *                                             └ yCall ─┬ yDainyu / ySadameru / yIncDec
+ *                                                      ├ yRepeatTime / yWhile / yFor /
+ *                                                      │ yForEach / ySwitch / yReturn
+ *                                                      └ yCallFunc → yMumeiFunc
+ *
+ * yCalc → yGetArg ─┬ yRange
+ *                  ├ yGetArgOperator → infixToAST()      … nako_parser_operator.mts
+ *                  └ yValue ─┬ yValueKakko / yValueWord / yMumeiFunc
+ *                            └ yJSONArray / yJSONObject → yJSONArrayValue /
+ *                              yJSONObjectValue → yCalc
+ * ```
+ *
+ * 上の図は主要な流れだけを示したもので、実際には
+ * `ySentence ↔ yBlock ↔ yCall ↔ yCalc ↔ yValue ↔ yJSON*` が
+ * 大きな相互再帰を成している。この相互再帰があるため、構文規則そのものは
+ * ファイルを分けても結合が下がらない。分離してあるのは、
+ * 相互再帰の外側にあってカーソルにもスタックにも触れないものだけ。
+ *
+ * - `nako_parser_operator.mts` … 演算子の優先順位による構文木の組み立て
+ * - `nako_parser_async.mts`    … 解析後に asyncFn を伝播させる後処理パス
+ * - `nako_parser_message.mts`  … エラーメッセージの組み立て
  */
 import { opPriority, RenbunJosi, operatorList } from './nako_parser_const.mjs'
 import { NakoParserBase } from './nako_parser_base.mjs'
@@ -174,6 +209,10 @@ export class NakoParser extends NakoParserBase {
     return null
   }
 
+  // ---------------------------------------------------------------------------
+  // 実行モードの指定と廃止された構文
+  // ---------------------------------------------------------------------------
+
   /** [廃止] 非同期モード #11 @returns {Ast} */
   yASyncMode(): Ast {
     this.logger.error('『非同期モード』構文は廃止されました(https://nadesi.com/v3/doc/go.php?1028)。', this.peek())
@@ -217,6 +256,10 @@ export class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     return { type: 'run_mode', value: mode, ...map, end: this.peekSourceMap() }
   }
+
+  // ---------------------------------------------------------------------------
+  // ブロックと関数定義
+  // ---------------------------------------------------------------------------
 
   /** @returns {AstBlocks} */
   yBlock(): AstBlocks {
@@ -365,6 +408,10 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // 条件分岐(もし文)
+  // ---------------------------------------------------------------------------
+
   /** 「もし」文の条件を取得 */
   yIFCond(): Ast {
     const map = this.peekSourceMap()
@@ -512,6 +559,10 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // 実行速度・パフォーマンスの指定
+  // ---------------------------------------------------------------------------
+
   ySpeedMode(): AstBlocks | null {
     const map: SourceMap = this.peekSourceMap()
     if (!this.check2(['string', '実行速度優先'])) {
@@ -626,6 +677,10 @@ export class NakoParser extends NakoParserBase {
     this.logger.error('『逐次実行』構文は廃止されました(https://nadesi.com/v3/doc/go.php?944)。', tikuji)
     return { type: 'eol', ...this.peekSourceMap(), end: this.peekSourceMap() }
   }
+
+  // ---------------------------------------------------------------------------
+  // 引数の取得と演算子
+  // ---------------------------------------------------------------------------
 
   /**
    * 1つ目の値を与え、その後に続く計算式を取得し、優先規則に沿って並び替えして戻す
@@ -774,6 +829,10 @@ export class NakoParser extends NakoParserBase {
     }
     return node
   }
+
+  // ---------------------------------------------------------------------------
+  // 繰り返しと条件分岐の各構文
+  // ---------------------------------------------------------------------------
 
   /** @returns {AstRepeatTimes | null} */
   yRepeatTime(): AstRepeatTimes | null {
@@ -1110,6 +1169,10 @@ export class NakoParser extends NakoParserBase {
     return ast
   }
 
+  // ---------------------------------------------------------------------------
+  // 無名関数
+  // ---------------------------------------------------------------------------
+
   /** 無名関数
    * @returns {AstDefFunc|null}
   */
@@ -1170,6 +1233,10 @@ export class NakoParser extends NakoParserBase {
       end: this.peekSourceMap()
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // 代入文と増減
+  // ---------------------------------------------------------------------------
 
   /** 代入構文 */
   yDainyu(): AstBlocks | null {
@@ -1287,6 +1354,10 @@ export class NakoParser extends NakoParserBase {
       end: this.peekSourceMap()
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // 関数呼び出し
+  // ---------------------------------------------------------------------------
 
   yCall(): Ast | null {
     if (this.isEOF()) { return null }
@@ -1484,6 +1555,10 @@ export class NakoParser extends NakoParserBase {
     this.pushStack(funcNode)
     return null
   }
+
+  // ---------------------------------------------------------------------------
+  // 代入・変数定義と配列要素への代入
+  // ---------------------------------------------------------------------------
 
   /** @returns {Ast | null} */
   yLet(): AstBlocks | null {
@@ -2065,6 +2140,10 @@ export class NakoParser extends NakoParserBase {
     return null
   }
 
+  // ---------------------------------------------------------------------------
+  // 計算式と値
+  // ---------------------------------------------------------------------------
+
   /** @returns {Ast | null} */
   yCalc(): Ast|null {
     const map = this.peekSourceMap()
@@ -2481,6 +2560,10 @@ export class NakoParser extends NakoParserBase {
     return null
   }
 
+  // ---------------------------------------------------------------------------
+  // 変数名の解決と登録
+  // ---------------------------------------------------------------------------
+
   /** 変数を生成 */
   createVar(word: Token|Ast, isConst: boolean, isExport: boolean): Token|Ast {
     let gname: string = (word as AstStrValue).value
@@ -2537,6 +2620,10 @@ export class NakoParser extends NakoParserBase {
     }
     return words
   }
+
+  // ---------------------------------------------------------------------------
+  // JSON/配列リテラル
+  // ---------------------------------------------------------------------------
 
   yJSONObjectValue(): Ast[] {
     // 戻り値の形式
@@ -2712,6 +2799,10 @@ export class NakoParser extends NakoParserBase {
     return null
   }
 
+  // ---------------------------------------------------------------------------
+  // エラー監視
+  // ---------------------------------------------------------------------------
+
   /** エラー監視構文 */
   yTryExcept(): AstBlocks | null {
     const map = this.peekSourceMap()
@@ -2741,6 +2832,10 @@ export class NakoParser extends NakoParserBase {
       end: this.peekSourceMap()
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // TokenからAstへの変換
+  // ---------------------------------------------------------------------------
 
   /** TokenをそのままNodeに変換するメソッド(ただし簡単なものだけ対応)
    * @returns {Ast[]}
