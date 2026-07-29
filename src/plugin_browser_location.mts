@@ -5,7 +5,7 @@ export default {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function(url: any, sys: any) {
+    fn: function(url: any, _sys: any) {
       window.location.href = url
     }
   },

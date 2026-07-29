@@ -16,7 +16,7 @@ const PluginKeigo = {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function(sys: NakoSystem) {
+    fn: function(_sys: NakoSystem) {
     }
   },
   // @丁寧語
@@ -25,7 +25,7 @@ const PluginKeigo = {
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
-    fn: function(a: any, sys: NakoSystem) {
+    fn: function(a: any, _sys: NakoSystem) {
       return a
     }
   },

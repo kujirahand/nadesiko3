@@ -35,7 +35,7 @@ export default {
     type: 'func',
     josi: [['を', 'の']],
     pure: true,
-    fn: function(event: unknown, sys: NakoBrowsesrSystem) {
+    fn: function(event: unknown, _sys: NakoBrowsesrSystem) {
       if (event !== null && typeof event === 'object' && 'preventDefault' in event) {
         const objWithFn = event as { preventDefault: () => void }
         if (typeof objWithFn.preventDefault === 'function') {

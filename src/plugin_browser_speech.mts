@@ -68,7 +68,7 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function(sys: any) {
+    fn: function(_sys: any) {
       // 対応している？
       if (!('SpeechSynthesisUtterance' in window)) { throw new Error('音声合成APIに対応していません') }
       return window.speechSynthesis.getVoices()

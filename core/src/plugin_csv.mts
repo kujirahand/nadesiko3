@@ -1,5 +1,5 @@
  
-import { CSVOptions, options, parse, stringify } from './nako_csv.mjs'
+import { options, parse, stringify } from './nako_csv.mjs'
 
 const PluginCSV = {
   'meta': {

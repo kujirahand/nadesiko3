@@ -199,7 +199,7 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function(url: any, sys: any) {
+    fn: function(url: any, _sys: any) {
       const img = new window.Image()
       img.src = url
       img.crossOrigin = 'Anonymous'
@@ -451,7 +451,7 @@ export default {
     pure: true,
     asyncFn: true,
     fn: function(sys: any) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, _reject) => {
         const cv = sys.__getSysVar('描画中キャンバス')
         cv.toBlob((result: any) => { resolve(result) }, 'image/png')
       })

@@ -23,7 +23,7 @@ class EasyURLItem {
     this.action = action
     this.url = ''
     this.path = ''
-    this.callback = (req, res) => {}
+    this.callback = (_req, _res) => {}
   }
 }
 class EasyURLDispather {
@@ -99,7 +99,7 @@ class EasyURLDispather {
             const bodyStr = bodyBuffer.toString('utf-8')
             try {
               postData = JSON.parse(bodyStr)
-            } catch (e) {
+            } catch {
               postData = bodyStr
             }
           } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
@@ -319,7 +319,7 @@ function isDir(pathName: string) {
     if (stats && stats.isDirectory()) {
       return true
     }
-  } catch (err: any) {
+  } catch {
     return false
   }
 }
