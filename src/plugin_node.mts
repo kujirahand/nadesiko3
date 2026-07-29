@@ -48,7 +48,7 @@ function commandExists(command: string): boolean {
   try {
     const r = spawnSync('which', [command], { stdio: 'ignore' })
     return r.status === 0
-  } catch (_err) {
+  } catch {
     return false
   }
 }

@@ -1,6 +1,5 @@
  
 import { NakoRuntimeError } from './nako_errors.mjs'
-import { NakoGlobal } from './nako_global.mjs'
 import { NakoSystem } from './plugin_api.mjs'
 
 export default {

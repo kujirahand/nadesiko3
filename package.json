@@ -84,7 +84,6 @@
     "utils": "/utils"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^26.1.2",
     "@types/opener": "^1.4.3",
