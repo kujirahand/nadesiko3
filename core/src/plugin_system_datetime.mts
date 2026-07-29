@@ -355,7 +355,7 @@ export default {
     josi: [],
     pure: true,
     fn: function() {
-      if (performance && performance.now) {
+      if (typeof performance !== 'undefined' && performance.now) {
         return performance.now()
       } else if (Date.now) {
         return Date.now()

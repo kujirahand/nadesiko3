@@ -60,6 +60,8 @@ export default {
       // nameが文字列ならevalして関数を得る
       if (typeof f === 'string') { f = sys.__findFunc(f, 'AWAIT実行') }
       if (!(f instanceof Function)) { throw new Error('『AWAIT実行』の第一引数はなでしこ関数名かFunction型で指定してください。') }
+      // argsがArrayでなければArrayに変換する
+      if (!(args instanceof Array)) { args = [args] }
       // 実行
       return await f(...args)
     }
@@ -153,7 +155,7 @@ export default {
     fn: function(f: any, sys: any) {
       if (typeof f === 'string') { f = sys.__findFunc(f, '実行時間計測') }
       //
-      if (performance && performance.now) {
+      if (typeof performance !== 'undefined' && performance.now) {
         const t1 = performance.now()
         f(sys)
         const t2 = performance.now()
