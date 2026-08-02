@@ -9,5 +9,8 @@
 実際は「ABCDEFG」から「XYZ」をKMP検索処理
 実際と-1がASSERT等
 
+実際は「😀A😀B」から「😀B」をKMP検索処理
+実際と2がASSERT等
+
 実際は「ABC」から「」をKMP検索処理
 実際と0がASSERT等
