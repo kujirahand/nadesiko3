@@ -197,7 +197,7 @@ describe('nako3edit/index.nako3', () => {
   it('未使用の新規ファイル名をJSON文字列で返すこと', async () => {
     fs.writeFileSync(path.join(userDir, 'file1.nako3'), '')
     const res = await httpGet(port, '/get_new_filename')
-    assert.strictEqual(res.headers['content-type'], 'text/plaing; charset=utf-8')
+    assert.strictEqual(res.headers['content-type'], 'text/plain; charset=utf-8')
     assert.strictEqual(JSON.parse(res.body.toString('utf-8')), 'file2.nako3')
   })
 
@@ -276,6 +276,7 @@ describe('nako3edit/index.nako3 - ポート番号の指定', () => {
       child.stderr.on('data', (chunk) => { out += chunk.toString() })
       await new Promise((resolve) => { child.on('exit', resolve) })
       assert.ok(out.includes(`[ERROR] 無効なポート番号です: ${invalidPort}`), `出力=${out}`)
+      assert.ok(out.includes('環境変数 NAKO3EDIT_PORT'), `出力=${out}`)
     })
   }
 })
