@@ -1,0 +1,16 @@
+# KMP法のテスト
+
+実際は「ABC ABCDAB ABCDABCDABDE」から「ABCDABD」をKMP検索処理
+実際と15がASSERT等
+
+実際は「なでしこ3」から「なでしこ」をKMP検索処理
+実際と0がASSERT等
+
+実際は「ABCDEFG」から「XYZ」をKMP検索処理
+実際と-1がASSERT等
+
+実際は「😀A😀B」から「😀B」をKMP検索処理
+実際と2がASSERT等
+
+実際は「ABC」から「」をKMP検索処理
+実際と0がASSERT等
