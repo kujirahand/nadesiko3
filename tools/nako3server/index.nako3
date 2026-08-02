@@ -75,7 +75,7 @@
 ●外部ライブラリ確認とは
     テストファイル＝「{デモパス}/extlib/pure-min.css」
     もし、(テストファイルが存在)ならば、戻る。
-    「try to downlod extlib」と表示。
+    「try to download extlib」と表示。
     エラー監視
         「npm run extlib:install」を起動待機。
     エラーならば
