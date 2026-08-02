@@ -17,7 +17,7 @@
     ".js": "text/javascript",
     ".png": "image/png",
     ".gif": "image/gif",
-    ".svg": "svg+xml"
+    ".svg": "image/svg+xml"
 }
 
 # --- 小さな便利関数 ---
