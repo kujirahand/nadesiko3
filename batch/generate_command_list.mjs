@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename)
 
 const projectRoot = path.resolve(__dirname, '..')
 const inputPath = path.join(projectRoot, 'batch', 'command.txt')
-const outputDir = path.join(projectRoot, 'docs')
+const outputDir = path.join(projectRoot, 'doc')
 const outputPath = path.join(outputDir, 'command_list.json')
 
 function main () {
