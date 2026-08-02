@@ -312,7 +312,7 @@ N回:
 
 なでしこで使える命令の一覧が、`batch/command.txt`にあります。
 
-なお、、システム命令が、`core/src/plugin_system.mts`に定義されています。
+なお、システム命令が、`core/src/plugin_system.mts`に定義されています。
 
 Node.jsで使える命令が、`src/plugin_node.mts`に定義されています。
 
