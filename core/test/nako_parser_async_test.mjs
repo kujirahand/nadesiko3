@@ -69,18 +69,11 @@ describe('nako_parser_async_test', () => {
       assert.strictEqual(def.asyncFn, true)
     })
 
-    it('[現状の挙動] block の走査は最初の非同期ノードで打ち切られる', () => {
-      // ブロックの走査は子が非同期だと分かった時点で return するため、
-      // それより後ろの兄弟はそのパスでは訪問されない。
-      // したがって G は、この走査だけでは非同期と判定されない。
-      //
-      // 実際のパーサでは yDefFuncCommon が解析中に usedAsyncFn を追跡して
-      // 関数定義に asyncFn を付けるので、この走査に頼らなくても G は非同期になる
-      // (下の「NakoParser 経由での結合確認」を参照)。
-      // 分離前からの挙動なので、そのまま固定しておく。
+    it('block 内の複数の非同期関数をすべて走査する', () => {
       const funclist = new Map([
         ['待つ', { type: 'func', asyncFn: true }],
-        ['F', { type: 'func', asyncFn: true }]
+        ['F', { type: 'func', asyncFn: false }],
+        ['G', { type: 'func', asyncFn: false }]
       ])
       const defF = defFuncNode('F', [funcNode('待つ')])
       const defG = defFuncNode('G', [funcNode('F')])
@@ -92,7 +85,9 @@ describe('nako_parser_async_test', () => {
         assert.ok(count < 10, '不動点に収束しない')
       }
       assert.strictEqual(defF.asyncFn, true)
-      assert.strictEqual(defG.asyncFn, false, 'F の後ろにある G は訪問されない')
+      assert.strictEqual(defG.asyncFn, true, 'F の後ろにある G も訪問される')
+      assert.strictEqual(funclist.get('F').asyncFn, true)
+      assert.strictEqual(funclist.get('G').asyncFn, true)
     })
   })
 
@@ -107,6 +102,27 @@ describe('nako_parser_async_test', () => {
       const ast = new NakoCompiler().parse('●Fとは\n1を表示\nここまで\nF\n', 'main.nako3')
       const def = ast.blocks.find((n) => n.type === 'def_func')
       assert.strictEqual(def.asyncFn, false)
+    })
+
+    it('連文を代入する関数が複数続いてもすべてawaitされる (#2170)', async () => {
+      const code = `Aを表示。
+Bを表示。
+
+●A
+    a=30に5を足して2を掛ける。
+    「A関数内：」&aを表示。
+    aを戻す。
+ここまで。
+
+●B
+    b=30に5を足して2を掛ける。
+    「B関数内：」&bを表示。
+    bを戻す。
+ここまで。`
+      const result = await new NakoCompiler().runAsync(code, 'main.nako3')
+      // runAsyncは生成コードの非同期IIFEを開始した時点で戻るため、完了まで1tick待つ
+      await new Promise((resolve) => setTimeout(resolve, 10))
+      assert.strictEqual(result.log, 'A関数内：70\n70\nB関数内：70\n70')
     })
   })
 })

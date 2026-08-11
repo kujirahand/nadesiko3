@@ -41,7 +41,15 @@ function checkNode (node: Ast, funclist: FuncList, ctx: CheckContext): boolean {
   if (node.type === 'def_func' || node.type === 'def_test' || node.type === 'func_obj') {
     // 関数定義でasyncFnが指定されているならtrueを返す
     const def: AstDefFunc = node as AstDefFunc
-    if (def.asyncFn) { return true } // 既にasyncFnが指定されている
+    if (def.asyncFn) {
+      // 後から判明した非同期情報を、呼び出し側の判定に使う関数一覧にも反映する
+      const func = funclist.get(def.name)
+      if (func && !func.asyncFn) {
+        func.asyncFn = true
+        ctx.modified = true
+      }
+      return true
+    }
     // 関数定義の中身を調べてasyncFnであるならtrueに変更する
     let isAsyncFn = false
     for (const n of def.blocks) {
@@ -49,6 +57,8 @@ function checkNode (node: Ast, funclist: FuncList, ctx: CheckContext): boolean {
         isAsyncFn = true
         def.asyncFn = isAsyncFn
         def.meta.asyncFn = isAsyncFn
+        const func = funclist.get(def.name)
+        if (func) { func.asyncFn = true }
         ctx.modified = true
         return true
       }
@@ -87,11 +97,13 @@ function checkNode (node: Ast, funclist: FuncList, ctx: CheckContext): boolean {
   }
   // その他
   if ((node as AstBlocks).blocks) {
+    let containsAsync = false
     for (const n of (node as AstBlocks).blocks) {
       if (checkNode(n, funclist, ctx)) {
-        return true
+        containsAsync = true
       }
     }
+    return containsAsync
   }
   return false
 }
