@@ -59,11 +59,16 @@ describe('search_command(命令検索CLI)', () => {
   })
 
   it('--groupは日本語でも指定できる', () => {
-    const r = runCLI(['ファイル', '--group', '拡張プラグイン', '--json'])
-    assert.strictEqual(r.code, 0, r.stdout + r.stderr)
-    const list = JSON.parse(r.stdout)
-    assert.ok(list.length > 0)
-    for (const c of list) {
+    // 拡張プラグインの命令は環境によって有無が変わるため、英語指定と日本語指定の
+    // 結果が一致することで、日本語の指定が使えることを確認する。
+    const r1 = runCLI(['表示', '--group', 'basic', '--json'])
+    const r2 = runCLI(['表示', '--group', '基本プラグイン', '--json'])
+    assert.strictEqual(r1.code, 0, r1.stdout + r1.stderr)
+    assert.strictEqual(r2.code, r1.code)
+    assert.deepStrictEqual(JSON.parse(r2.stdout), JSON.parse(r1.stdout))
+    const r3 = runCLI(['ファイル', '--group', '拡張プラグイン', '--json'])
+    assert.ok(r3.code === 0 || r3.code === 1, `exit=${r3.code}`)
+    for (const c of JSON.parse(r3.stdout)) {
       assert.strictEqual(c.group, '拡張プラグイン')
     }
   })
