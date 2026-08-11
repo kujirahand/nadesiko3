@@ -31,6 +31,7 @@
     "tsc": "tsc --watch",
     "build:esbuild": "tsc && node bundle_esbuild.js",
     "check:command": "node src/cnako3.mjs batch/pickup_command.nako3",
+    "search:command": "node batch/search_command.mjs",
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && node src/cnako3.mjs batch/build_command.nako3 && node batch/generate_command_list.mjs",
     "build:browsers": "browserslist > src/browsers.txt && node src/cnako3.mjs batch/build_browsers.nako3",
     "publish:desc": "node -e \"console.log('Please exec => npm run build && npm run test:all && npm publish && npm run publish:version')",
@@ -78,8 +79,12 @@
     "Firefox ESR",
     "maintained node versions",
     "not dead",
-    "not IE 11"
+    "not IE 11",
+    "not node < 22"
   ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "_moduleAliases": {
     "root": ".",

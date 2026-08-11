@@ -23,7 +23,7 @@
 2. コマンドライン(cnako) - JavaScriptの実行エンジン「Node.js」上で動作
 3. 配付パッケージ - Electronを利用してローカルPC上で動作
 
-具体的な対応ブラウザについて詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。Node.jsの対応バージョンは、v20以上です。
+具体的な対応ブラウザについて詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。Node.jsの対応バージョンは、v22以上です。
 
 ## ブラウザで利用する方法
 
@@ -124,6 +124,24 @@ npm start
 # なでしこエディタ(PC版)を起動
 npm run nako3edit
 ```
+
+## 命令を検索するコマンド
+
+なでしこ3の命令一覧（`doc/command_list.json`）を、ターミナルから検索できます。
+検索処理は、なでしこ3自身（`batch/search_command.nako3`）で書かれています。
+
+```sh
+# 命令名・読み方・説明から部分一致検索
+npm run search:command -- ファイル
+# Node.js版で使える命令だけを検索
+npm run search:command -- ファイル --target cnako
+# JSON形式で出力(AIエージェントや別ツール向け)
+npm run search:command -- CSV --json
+# 使い方を表示
+npm run search:command -- --help
+```
+
+詳しくは、[doc/search_command.md](doc/search_command.md) をご覧ください。
 
 ## Colabでなでしこを使って作業をする場合
 
