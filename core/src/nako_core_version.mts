@@ -11,9 +11,9 @@ export interface NakoCoreVersion {
 }
 // 実際のバージョン定義 (自動生成されるので以下を編集しない)
 const coreVersion: NakoCoreVersion = {
-  version: '3.7.22',
+  version: '3.7.23',
   major: 3,
   minor: 7,
-  patch: 22
+  patch: 23
 }
 export default coreVersion
