@@ -78,8 +78,12 @@
     "Firefox ESR",
     "maintained node versions",
     "not dead",
-    "not IE 11"
+    "not IE 11",
+    "not node < 22"
   ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "homepage": "https://github.com/kujirahand/nadesiko3#readme",
   "_moduleAliases": {
     "root": ".",
