@@ -69,14 +69,15 @@ export class NakoRunner {
    * @param code JavaScriptのコード
    * @param nakoGlobal 実行環境
    */
-  evalJS (code: string, nakoGlobal: NakoGlobal): void {
+  evalJS (code: string, nakoGlobal: NakoGlobal): unknown {
     this.currentGlobal = nakoGlobal // 現在のnakoGlobalを記録
     this.currentGlobal.lastJSCode = code
     // 実行前に環境を初期化するイベントを実行(beforeRun)
     this.host.fireEvent('beforeRun', nakoGlobal)
+    let result: unknown
     try {
       const f = new Function(nakoGlobal.lastJSCode)
-      f.apply(nakoGlobal)
+      result = f.apply(nakoGlobal)
     } catch (err: any) {
       // なでしこコードのエラーは抑止してログにのみ記録
       nakoGlobal.numFailures++
@@ -85,6 +86,7 @@ export class NakoRunner {
     }
     // 実行後に終了イベントを実行(finish)
     this.host.fireEvent('finish', nakoGlobal)
+    return result
   }
 
   /**
@@ -120,7 +122,7 @@ export class NakoRunner {
     // 実行前に環境を生成
     const nakoGlobal = this.getNakoGlobal(options, compiledCode.gen, filename)
     // 実行
-    this.evalJS(compiledCode.runtimeEnv, nakoGlobal)
+    await this.evalJS(compiledCode.runtimeEnv, nakoGlobal)
     return nakoGlobal
   }
 
