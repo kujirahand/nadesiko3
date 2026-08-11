@@ -17,13 +17,16 @@ import { FuncList } from './nako_types.mjs'
 interface CheckContext {
   modified: boolean
   /**
-   * 非同期の無名関数を保持している変数名
+   * 無名関数を保持している変数名 → その無名関数が非同期かどうか
    *
    * `F=●()...ここまで` のように変数へ代入された無名関数は funclist に載らないため、
    * 代入を覚えておかないと `F()` の呼び出しに asyncFn を付けられない。
    * 変数のシャドーイングを考慮して、関数定義ごとにスコープを積む。
+   *
+   * 同期な無名関数の代入も記録する。記録しないと、内側のスコープで同名の変数へ
+   * 同期な無名関数を代入しても外側の非同期な代入が見えてしまう。
    */
-  asyncVarScopes: Set<string>[]
+  funcObjVarScopes: Map<string, boolean>[]
 }
 
 /**
@@ -34,30 +37,37 @@ interface CheckContext {
  * @returns AST を書き換えたら true。呼び出し側は false になるまで繰り返すこと
  */
 export function checkAsyncFn (node: Ast, funclist: FuncList): boolean {
-  const ctx: CheckContext = { modified: false, asyncVarScopes: [new Set()] }
+  const ctx: CheckContext = { modified: false, funcObjVarScopes: [new Map()] }
   checkNode(node, funclist, ctx)
   return ctx.modified
 }
 
-/** 変数名が非同期の無名関数を指しているかどうかを、内側のスコープから順に調べる */
+/**
+ * 変数名が非同期の無名関数を指しているかどうかを、内側のスコープから順に調べる。
+ * 見つかった時点で打ち切るので、内側の代入が外側の代入をシャドーイングする。
+ */
 function isAsyncVar (ctx: CheckContext, name: string): boolean {
-  for (let i = ctx.asyncVarScopes.length - 1; i >= 0; i--) {
-    if (ctx.asyncVarScopes[i].has(name)) { return true }
+  for (let i = ctx.funcObjVarScopes.length - 1; i >= 0; i--) {
+    const asyncFn = ctx.funcObjVarScopes[i].get(name)
+    if (asyncFn !== undefined) { return asyncFn }
   }
   return false
 }
 
 /**
- * 変数への代入が非同期の無名関数なら、現在のスコープに覚えておく
+ * 変数へ無名関数を代入していたら、現在のスコープに覚えておく
  * (`let` と `def_local_var` はどちらも blocks[0] が代入する値)
+ *
+ * 無名関数以外の代入は記録しない。`F=Gの参照` のような代入まで同期扱いにすると、
+ * 逆に await の付け漏れという、より悪い誤りになるため。
  */
-function checkAsyncVarAssign (node: Ast, ctx: CheckContext): void {
+function checkFuncObjVarAssign (node: Ast, ctx: CheckContext): void {
   const letNode = node as AstLet
   if (!letNode.name) { return }
   const value = (letNode.blocks || [])[0]
   if (!value || value.type !== 'func_obj') { return }
-  if (!(value as AstDefFunc).asyncFn) { return }
-  ctx.asyncVarScopes[ctx.asyncVarScopes.length - 1].add(letNode.name)
+  const scope = ctx.funcObjVarScopes[ctx.funcObjVarScopes.length - 1]
+  scope.set(letNode.name, !!(value as AstDefFunc).asyncFn)
 }
 
 /**
@@ -71,12 +81,12 @@ function checkNode (node: Ast, funclist: FuncList, ctx: CheckContext): boolean {
     const def: AstDefFunc = node as AstDefFunc
     // 既に非同期と分かっていても中身の走査は省略しない。
     // 途中で打ち切ると、それより後ろにある呼び出しに asyncFn が付かなくなる
-    ctx.asyncVarScopes.push(new Set())
+    ctx.funcObjVarScopes.push(new Map())
     let isAsyncFn = false
     for (const n of def.blocks) {
       if (checkNode(n, funclist, ctx)) { isAsyncFn = true }
     }
-    ctx.asyncVarScopes.pop()
+    ctx.funcObjVarScopes.pop()
     // 関数定義の中身が非同期であるならasyncFnをtrueに変更する
     if (isAsyncFn && !def.asyncFn) {
       def.asyncFn = true
@@ -98,7 +108,7 @@ function checkNode (node: Ast, funclist: FuncList, ctx: CheckContext): boolean {
     for (const n of (node as AstBlocks).blocks) {
       if (checkNode(n, funclist, ctx)) { containsAsync = true }
     }
-    checkAsyncVarAssign(node, ctx)
+    checkFuncObjVarAssign(node, ctx)
     return containsAsync
   }
   // 関数呼び出しを調べて非同期処理が必要ならtrueを返す

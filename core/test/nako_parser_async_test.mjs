@@ -190,6 +190,63 @@ describe('nako_parser_async_test', () => {
       assert.strictEqual(innerAnon.asyncFn, true)
       assert.strictEqual(outerCallX.asyncFn, false, '関数の外の X は非同期にならない')
     })
+
+    it('内側で同名の同期な無名関数を代入すると外側の非同期をシャドーイングする', () => {
+      // 外側の X は非同期だが、内側の関数で同名の同期な無名関数を代入しているので、
+      // 内側の X() は非同期にならない
+      const funclist = new Map([['待つ', { type: 'func', asyncFn: true }]])
+      const outerAnon = funcObjNode([funcNode('待つ')])
+      const innerAnon = funcObjNode([funcNode('表示')])
+      const innerCallX = funcNode('X')
+      const defG = defFuncNode('G', [letNode('X', innerAnon), innerCallX])
+      const ast = blockNode([letNode('X', outerAnon), defG])
+
+      let count = 0
+      while (checkAsyncFn(ast, funclist)) {
+        count++
+        assert.ok(count < 10, '不動点に収束しない')
+      }
+      assert.strictEqual(outerAnon.asyncFn, true)
+      assert.strictEqual(innerAnon.asyncFn, false)
+      assert.strictEqual(innerCallX.asyncFn, false, '内側の同期な X が優先される')
+      assert.strictEqual(defG.asyncFn, false, 'G も非同期にならない')
+    })
+
+    it('内側で同名の変数を使っていなければ外側の非同期が見える', () => {
+      // 上のシャドーイングと対になる確認。内側に代入が無ければ外側の X を参照する
+      const funclist = new Map([['待つ', { type: 'func', asyncFn: true }]])
+      const outerAnon = funcObjNode([funcNode('待つ')])
+      const innerCallX = funcNode('X')
+      const defG = defFuncNode('G', [innerCallX])
+      const ast = blockNode([letNode('X', outerAnon), defG])
+
+      let count = 0
+      while (checkAsyncFn(ast, funclist)) {
+        count++
+        assert.ok(count < 10, '不動点に収束しない')
+      }
+      assert.strictEqual(innerCallX.asyncFn, true, '外側の非同期な X が見える')
+    })
+
+    it('同じスコープで同期な無名関数へ代入し直すと非同期でなくなる', () => {
+      const funclist = new Map([['待つ', { type: 'func', asyncFn: true }]])
+      const callBefore = funcNode('X')
+      const callAfter = funcNode('X')
+      const ast = blockNode([
+        letNode('X', funcObjNode([funcNode('待つ')])),
+        callBefore,
+        letNode('X', funcObjNode([funcNode('表示')])),
+        callAfter
+      ])
+
+      let count = 0
+      while (checkAsyncFn(ast, funclist)) {
+        count++
+        assert.ok(count < 10, '不動点に収束しない')
+      }
+      assert.strictEqual(callBefore.asyncFn, true, '代入し直す前は非同期')
+      assert.strictEqual(callAfter.asyncFn, false, '代入し直した後は同期')
+    })
   })
 
   describe('NakoParser 経由での結合確認', () => {
@@ -294,6 +351,28 @@ G=●()
 ここまで。
 F()とG()を足して表示。`
       assert.strictEqual(await runAndGetLog(code), '17')
+    })
+
+    it('内側で同名の同期な無名関数を代入しても実行結果が変わらない', async () => {
+      // 外側の F は非同期、内側の F は同期。取り違えると値が壊れる
+      const code = `●A
+    Fとは変数
+    F=●()
+        b=1に2を足して3を掛ける。
+        bを戻す。
+    ここまで。
+    G=●()
+        Fとは変数
+        F=●()
+            5を戻す。
+        ここまで。
+        F()を戻す。
+    ここまで。
+    G()を表示。
+    F()を表示。
+ここまで。
+Aを実行。`
+      assert.strictEqual(await runAndGetLog(code), '5\n9')
     })
 
     it('非同期処理を含まない無名関数はawaitされない', async () => {
