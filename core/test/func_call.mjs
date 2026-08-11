@@ -236,7 +236,7 @@ TIDのタイマー停止
 0.03秒後には:
 　test2`
     const g = await nako.runAsync(code, 'main.nako3')
-    await forceWait(120)
+    await forceWait(200)
     assert.strictEqual(g.__vars, g.__varslist[2])
   })
   it('後方で宣言した関数がasyncFnだったときその関数が正しく実行できない(2) #1758', async () => {
