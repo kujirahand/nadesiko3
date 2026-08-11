@@ -38,12 +38,10 @@ function letNode (name, value) {
 /**
  * なでしこのプログラムを実行してログを得る
  *
- * runAsync は生成コードの非同期IIFEを開始した時点で戻るため、
- * 実行完了までイベントループを進める必要がある (課題は #2381 を参照)
+ * runAsync は生成コードの実行完了を待ってから戻る。
  */
 async function runAndGetLog (code) {
   const g = await new NakoCompiler().runAsync(code, 'main.nako3')
-  await new Promise((resolve) => setTimeout(resolve, 10))
   return g.log
 }
 

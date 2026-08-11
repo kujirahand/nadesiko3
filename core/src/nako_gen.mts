@@ -2361,6 +2361,7 @@ export function generateJS(com: NakoCompiler, ast: Ast, opt: NakoGenOptions): Na
 
   // ランダムな関数名を生成
   const funcID = String((new Date()).getTime()) + '_' + Math.floor(0xFFFFFFFF * Math.random()).toString()
+  let runtimeResult = ''
   // テストの実行
   if (js && opt.isTest) {
     js += '\n__self._runTests(__tests);\n'
@@ -2368,6 +2369,8 @@ export function generateJS(com: NakoCompiler, ast: Ast, opt: NakoGenOptions): Na
   // async method
   if (gen.numAsyncFn > 0 || gen.debugOption.useDebug) {
     const asyncMain = '__eval_nako3async_' + funcID + '__'
+    const asyncMainPromise = '__eval_nako3async_promise_' + funcID + '__'
+    runtimeResult = `return ${asyncMainPromise}`
     js = `
 // ------------------------------------------------------------------
 // <nadesiko3::gen::async id="${funcID}" times="${gen.numAsyncFn}">
@@ -2380,12 +2383,11 @@ async function ${asyncMain}(__self) {
 } // end of ${asyncMain}
 // ------------------------------------------------------------------
 // call ${asyncMain}
-(async () => {
+const ${asyncMainPromise} = (async () => {
   if (__self.__v0.get('__standalone')) {
     await ${asyncMain}(self);
   } else {
-    ${asyncMain}.call(self, self)
-    .then(() => { /* __async_ok__ */ })
+    await ${asyncMain}.call(self, self)
     .catch(err => {
       if (err.message === '__終わる__') { return }
       __self.numFailures++
@@ -2451,6 +2453,7 @@ ${syncMain}(__self)
   }
   // ---
   const initCode = gen.getPluginInitCode()
+  // runtimeEnvはnew Functionの関数本体として実行するコードで、非同期時はトップレベルのreturnを含む。
   const runtimeEnvCode = `
 // <runtimeEnvCode>
 const self = this
@@ -2458,6 +2461,7 @@ ${opt.codeEnv}
 ${jsInit}
 ${initCode}
 ${js}
+${runtimeResult}
 // </runtimeEnvCode>
 `
   com.getLogger().trace('--- generate::jsInit ---\n' + jsInit)

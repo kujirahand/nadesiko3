@@ -38,6 +38,18 @@ describe('nako_runner_test', () => {
     assert.strictEqual(nako.__globals[0], g)
   })
 
+  it('runAsyncは非同期プログラムの実行完了を待つ (#2381)', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('0.02秒待つ\n「完了」を表示', 'main.nako3')
+    assert.strictEqual(g.log, '完了')
+  })
+
+  it('非同期処理中のエラーがrunAsync完了時に反映される (#2381)', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('0.01秒待つ\n「ぐぬ」のエラー発生', 'main.nako3')
+    assert.strictEqual(g.numFailures, 1)
+  })
+
   it('__globalObjは代入もできる(後方互換)', () => {
     const nako = new NakoCompiler()
     assert.strictEqual(nako.__globalObj, null)
