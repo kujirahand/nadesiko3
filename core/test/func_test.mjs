@@ -19,7 +19,7 @@ describe('func_test', async () => {
       async () => { await nako.runAsync(code, 'main.nako3') },
       (err) => {
         assert(err instanceof NakoSyntaxError, `NakoSyntaxErrorではありません: ${err}`)
-        assert(err.message.includes('式の中で『戻る』文は使えません'), `想定外のエラーです: ${err.message}`)
+        assert(err.message.includes('式の中で『戻す(戻る)』文は使えません'), `想定外のエラーです: ${err.message}`)
         return true
       }
     )
@@ -165,6 +165,8 @@ describe('func_test', async () => {
     await cmpError('●テストとは\n定数の結果は「あ」を真偽判定して戻す。\nここまで\nテストを表示。')
     await cmpError('●テストとは\n変数の結果は「あ」を真偽判定して戻す。\nここまで\nテストを表示。')
     await cmpError('●テストとは\n結果は「あ」を真偽判定して戻す。\nここまで\nテストを表示。')
+    // 『戻る』の書き方でも同じエラーになる
+    await cmpError('●テストとは\n定数の結果は1に2を足して戻る。\nここまで\nテストを表示。')
   })
   it('『戻す』の正しい書き方は動く #2064', async () => {
     await cmp('●テストとは\n「あ」を真偽判定して戻す。\nここまで\nテストを表示。', '真')
