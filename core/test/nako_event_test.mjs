@@ -4,6 +4,7 @@ import assert from 'assert'
 
 import { NakoCompiler } from '../src/nako3.mjs'
 import { NakoEventEmitter } from '../src/nako_event.mjs'
+import { NakoRunner } from '../src/nako_runner.mjs'
 
 /**
  * イベント機構を NakoCompiler から分離したモジュールのテスト (#2360)
@@ -73,13 +74,36 @@ describe('nako_event_test', () => {
     assert.strictEqual(g.log, '完了')
   })
 
-  it('runSyncでは同期的にfinishが発火する (#2384)', () => {
+  it('runSyncでは非同期プログラムでも同期的にfinishが発火する (#2384)', async () => {
     const nako = new NakoCompiler()
-    let logAtFinish = null
-    nako.addListener('finish', (g) => { logAtFinish = g.log })
-    const g = nako.runSync('「同期」を表示', 'main.nako3')
-    assert.strictEqual(logAtFinish, '同期')
-    assert.strictEqual(g.log, '同期')
+    const logsAtFinish = []
+    nako.addListener('finish', (g) => { logsAtFinish.push(g.log) })
+    const g = nako.runSync('0.02秒待つ\n「完了」を表示', 'main.nako3')
+    assert.deepStrictEqual(logsAtFinish, [''])
+    assert.strictEqual(g.log, '')
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.strictEqual(g.log, '完了')
+    assert.deepStrictEqual(logsAtFinish, [''])
+  })
+
+  it('thenableがrejectした後にもfinishが発火する (#2384)', async () => {
+    const events = []
+    const runner = new NakoRunner({
+      fireEvent: (name, g) => { events.push([name, g.completed]) },
+      getLogger: () => ({ error: () => {} })
+    })
+    const g = { lastJSCode: '', numFailures: 0, completed: false }
+    const result = runner.evalJS(`
+      return {
+        then: (_resolve, reject) => setTimeout(() => {
+          this.completed = true
+          reject(new Error('非同期失敗'))
+        }, 1)
+      }
+    `, g, true)
+    assert.deepStrictEqual(events, [['beforeRun', false]])
+    await assert.rejects(Promise.resolve(result), /非同期失敗/)
+    assert.deepStrictEqual(events, [['beforeRun', false], ['finish', true]])
   })
 
   it('beforeParseにはソースコードが渡される', async () => {
