@@ -1950,8 +1950,7 @@ export class NakoGen {
       // プロパティアクセス(A$a)の場合 (#1793)
       const baseName = this._convGen(nodeName.name as Ast, true)
       const propList = nodeName.index as AstStrValue[]
-      const propKeys = propList.map((prop) => `[${JSON.stringify(prop.value)}]`).join('')
-      varGetter = `${baseName}${propKeys}`
+      varGetter = this.convRefProp_genCode(baseName, propList)
       varSetter = `${varGetter} = ${valueVar}`
       varInitter = `${varGetter} = 0`
     } else {
@@ -2057,13 +2056,12 @@ export class NakoGen {
     }
     if (propList.length > 0) {
       for (const prop of propList) {
-        if (typeof prop.value === 'string') {
-          nameJs += `[${JSON.stringify(prop.value)}]`
-        } else {
+        if (typeof prop.value !== 'string') {
           throw NakoSyntaxError.fromNode(
             `変数『${nameJs}』以下のプロパティにアクセスできません。`, node)
         }
       }
+      nameJs = this.convRefProp_genCode(nameJs, propList)
     }
     // プロパティへの代入式を作る
     code += `${nameJs}[${JSON.stringify(propTop)}] = ${value};`

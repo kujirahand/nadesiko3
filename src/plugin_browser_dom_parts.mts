@@ -163,6 +163,8 @@ export default {
       span.appendChild(label)
       // 親部品に追加
       sys.__exec('DOM部品作成', [span, sys])
+      // 戻り値のinpにも日本語プロパティを追加する (#2194)
+      sys.__addPropMethod(inp)
       return inp
     }
   },

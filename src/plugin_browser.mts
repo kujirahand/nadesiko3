@@ -111,6 +111,8 @@ const PluginBrowser = {
         }
         // make wrapper func
         const wrapperFunc = (e: Event) => {
+          // イベントで得た要素にも日本語プロパティを追加する (#2194)
+          sys.__addPropMethod(e.target)
           sys.__setSysVar('対象', e.target)
           sys.__setSysVar('対象イベント', e)
           // 追加データが得られる場合
@@ -260,6 +262,36 @@ const PluginBrowser = {
               }
             })
           }
+          // 「DOM$スタイル$色」のようなネストしたアクセスのため、styleにも和スタイルを適用する (#2194)
+          sys.__addStylePropMethod(obj.style)
+        }
+      }
+      // styleオブジェクトに「DOM和スタイル」の日本語プロパティを追加する (#2194)
+
+      sys.__addStylePropMethod = (style: any) => {
+        if (!style || typeof style !== 'object') { return }
+        if (style.__nako3) { return }
+        const waStyle = sys.__getSysVar('DOM和スタイル')
+        if (!waStyle) { return }
+        Object.defineProperty(style, '__nako3', {
+          enumerable: false,
+          writable: false,
+          configurable: false,
+          value: true
+        })
+        for (const key of Object.keys(waStyle)) {
+          const cssName = waStyle[key]
+          if (key === cssName) { continue }
+          Object.defineProperty(style, key, {
+            enumerable: false,
+            configurable: true,
+            get: function() {
+              return style[cssName]
+            },
+            set: function(value: unknown) {
+              style[cssName] = value
+            }
+          })
         }
       }
       // DOM取得のために使う
