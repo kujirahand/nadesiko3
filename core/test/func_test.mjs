@@ -2,6 +2,7 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
+import { NakoSyntaxError } from '../src/nako_errors.mjs'
 
 describe('func_test', async () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
@@ -9,6 +10,19 @@ describe('func_test', async () => {
     const nako = new NakoCompiler()
     nako.getLogger().debug('code=' + code)
     assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
+  }
+  /** 文法エラー(NakoSyntaxError)になることを確認する */
+  const cmpError = async (/** @type {string} */ code) => {
+    const nako = new NakoCompiler()
+    nako.getLogger().debug('code=' + code)
+    await assert.rejects(
+      async () => { await nako.runAsync(code, 'main.nako3') },
+      (err) => {
+        assert(err instanceof NakoSyntaxError, `NakoSyntaxErrorではありません: ${err}`)
+        assert(err.message.includes('式の中で『戻る』文は使えません'), `想定外のエラーです: ${err.message}`)
+        return true
+      }
+    )
   }
   // --- test ---
 
@@ -145,5 +159,17 @@ describe('func_test', async () => {
   it('関数で使える「引数」が使えなくなっている #1741', async () => {
     await cmp('●(AとBを)加算処理とは\n引数[0]と引数[1]を足すこと。。。3と5を加算処理して表示。', '8')
     await cmp('●(AとBをCで)加算処理とは\nそれ=引数[0]+引数[1]+引数[2]。。。3と5を2で加算処理して表示。', '10')
+  })
+  it('代入文の値の中に『戻す』は書けない #2064', async () => {
+    // 『(式)して戻す』を代入文の値に書くと不正なJavaScriptが生成されていた
+    await cmpError('●テストとは\n定数の結果は「あ」を真偽判定して戻す。\nここまで\nテストを表示。')
+    await cmpError('●テストとは\n変数の結果は「あ」を真偽判定して戻す。\nここまで\nテストを表示。')
+    await cmpError('●テストとは\n結果は「あ」を真偽判定して戻す。\nここまで\nテストを表示。')
+  })
+  it('『戻す』の正しい書き方は動く #2064', async () => {
+    await cmp('●テストとは\n「あ」を真偽判定して戻す。\nここまで\nテストを表示。', '真')
+    await cmp('●テストとは\n定数の結果は「あ」を真偽判定。\n結果で戻す。\nここまで\nテストを表示。', '真')
+    // 『戻す』以外の連文は今まで通り動く
+    await cmp('1に2を足して3を掛けて表示。', '9')
   })
 })

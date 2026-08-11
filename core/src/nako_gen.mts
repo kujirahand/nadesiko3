@@ -1781,7 +1781,8 @@ export class NakoGen {
         { isExpr: true, isAsync, startVar: 'sf_start', timeVar: 'sl_time' })
     }
     // ...して
-    if (node.josi === 'して' || (node.josi === '' && !isExpression)) {
+    // (メモ) 式の中では文末の『;』を付けてはいけない。付けると不正なJSになる (#2064)
+    if (!isExpression && (node.josi === 'して' || node.josi === '')) {
       code = this.convLineno(node, false) + code
       code += ';\n'
     }
