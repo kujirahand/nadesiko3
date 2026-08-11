@@ -84,7 +84,13 @@ export class NakoRunner {
       this.host.getLogger().error(err)
       throw err
     }
-    // 実行後に終了イベントを実行(finish)
+    // 非同期処理では実行完了後に終了イベントを実行(finish)
+    if (result instanceof Promise) {
+      return result.then(() => {
+        this.host.fireEvent('finish', nakoGlobal)
+      })
+    }
+    // 同期処理では従来通り、この場で終了イベントを実行(finish)
     this.host.fireEvent('finish', nakoGlobal)
     return result
   }

@@ -64,6 +64,24 @@ describe('nako_event_test', () => {
     assert.deepStrictEqual(log, ['beforeParse', 'beforeGenerate', 'afterGenerate', 'beforeRun', 'finish'])
   })
 
+  it('非同期プログラムの完了後にfinishが発火する (#2384)', async () => {
+    const nako = new NakoCompiler()
+    let logAtFinish = null
+    nako.addListener('finish', (g) => { logAtFinish = g.log })
+    const g = await nako.runAsync('0.02秒待つ\n「完了」を表示', 'main.nako3')
+    assert.strictEqual(logAtFinish, '完了')
+    assert.strictEqual(g.log, '完了')
+  })
+
+  it('runSyncでは同期的にfinishが発火する (#2384)', () => {
+    const nako = new NakoCompiler()
+    let logAtFinish = null
+    nako.addListener('finish', (g) => { logAtFinish = g.log })
+    const g = nako.runSync('「同期」を表示', 'main.nako3')
+    assert.strictEqual(logAtFinish, '同期')
+    assert.strictEqual(g.log, '同期')
+  })
+
   it('beforeParseにはソースコードが渡される', async () => {
     const nako = new NakoCompiler()
     let received = null
