@@ -1,7 +1,7 @@
 /**
  * @fileOverview ブラウザプラグイン
  */
-import { NakoValue, NakoCallback, NakoCallbackEvent, NakoSystem } from '../core/src/plugin_api.mjs'
+import { NakoValue, NakoCallback, NakoCallbackEvent } from '../core/src/plugin_api.mjs'
 import { parsePosition } from '../core/src/nako_logger.mjs'
 import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation } from './plugin_browser_api.mjs'
 
@@ -261,20 +261,6 @@ const PluginBrowser = {
             })
           }
         }
-      }
-      // Elementのクラスに対してDOMに動的プロパティの取得と設定を適用するよう登録する #1863
-      if (sys.__registPropAccessor && globalThis.Element) {
-        sys.__registPropAccessor(
-          Element,
-          function(prop: string|string[], sys: NakoSystem): unknown {
-            // @ts-expect-error: use this
-            return sys.__exec('DOM設定取得', [(this as Element), prop, sys as NakoBrowsesrSystem])
-          },
-          function(prop: string|string[], value: object, sys: NakoSystem): void {
-            // @ts-expect-error: use this
-            sys.__exec('DOM設定変更', [(this as Element), prop, value, sys as NakoBrowsesrSystem])
-          }
-        )
       }
       // DOM取得のために使う
       sys.__query = (dom: object|string, commandName: string, isGetFunc: boolean) => {

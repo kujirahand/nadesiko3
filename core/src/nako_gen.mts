@@ -410,8 +410,6 @@ export class NakoGen {
     // 定数を埋め込む
     code += '__self.constPools = ' + JSON.stringify(this.constPools) + ';\n'
     code += '__self.constPoolsTemplate = ' + JSON.stringify(this.constPoolsTemplate) + ';\n'
-    //
-    code += '__self.__propAccessor = [];\n'
     // なでしこの関数定義を行う
     let nakoFuncCode = ''
     this.nakoFuncList.forEach((value, key) => {
@@ -1952,32 +1950,10 @@ export class NakoGen {
       // プロパティアクセス(A$a)の場合 (#1793)
       const baseName = this._convGen(nodeName.name as Ast, true)
       const propList = nodeName.index as AstStrValue[]
-      // __getProp/__setPropを持つオブジェクトにも対応するgetter/setter生成
-      const buildPropGetter = (targetExpr: string, propKey: string): string =>
-        `(()=>{const __nako_obj=${targetExpr};` +
-        `return (__nako_obj!=null&&typeof __nako_obj.__getProp==='function')` +
-        `?__nako_obj.__getProp(${propKey}, __self)` +
-        `:__nako_obj[${propKey}]})()`
-      const buildPropSetter = (targetExpr: string, propKey: string, valueExpr: string): string =>
-        `(()=>{const __nako_obj=${targetExpr};` +
-        `return (__nako_obj!=null&&typeof __nako_obj.__setProp==='function')` +
-        `?__nako_obj.__setProp(${propKey}, ${valueExpr}, __self)` +
-        `:(__nako_obj[${propKey}]=${valueExpr})})()`
-      const propKeys = propList.map((prop) => JSON.stringify(prop.value))
-      // getter: 全プロパティを順にたどる
-      let currentExpr = baseName
-      for (const propKey of propKeys) {
-        currentExpr = buildPropGetter(currentExpr, propKey)
-      }
-      varGetter = currentExpr
-      // setter/initter: 最後のプロパティだけsetterで、残りはgetterでたどる
-      let parentExpr = baseName
-      for (const propKey of propKeys.slice(0, -1)) {
-        parentExpr = buildPropGetter(parentExpr, propKey)
-      }
-      const lastPropKey = propKeys[propKeys.length - 1]
-      varSetter = buildPropSetter(parentExpr, lastPropKey, valueVar)
-      varInitter = buildPropSetter(parentExpr, lastPropKey, '0')
+      const propKeys = propList.map((prop) => `[${JSON.stringify(prop.value)}]`).join('')
+      varGetter = `${baseName}${propKeys}`
+      varSetter = `${varGetter} = ${valueVar}`
+      varInitter = `${varGetter} = 0`
     } else {
       // 変数名
       const name: string = (nodeName as AstStrValue).value
@@ -2082,7 +2058,7 @@ export class NakoGen {
     if (propList.length > 0) {
       for (const prop of propList) {
         if (typeof prop.value === 'string') {
-          nameJs += `['${prop.value}']`
+          nameJs += `[${JSON.stringify(prop.value)}]`
         } else {
           throw NakoSyntaxError.fromNode(
             `変数『${nameJs}』以下のプロパティにアクセスできません。`, node)
@@ -2090,10 +2066,7 @@ export class NakoGen {
       }
     }
     // プロパティへの代入式を作る
-    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else { `
-    code += `__self.__checkPropAccessor('set', ${nameJs});`
-    code += `if (typeof ${nameJs}.__setProp === 'function') { ${nameJs}.__setProp('${propTop}', ${value}, __self); } else { `
-    code += `${nameJs}['${propTop}'] = ${value} }};`
+    code += `${nameJs}[${JSON.stringify(propTop)}] = ${value};`
     return ';' + this.convLineno(node, false) + code + '\n'
   }
 
@@ -2109,35 +2082,7 @@ export class NakoGen {
 
   // プロパティへの参照のコード生成部分 (#1793)
   convRefProp_genCode(name: string, propList: AstStrValue[]): string {
-    let code
-    if (propList.length <= 1) {
-      const propKey = propList[0].value
-      const codeCall = `${name}.__getProp('${propKey}', __self)`
-      const codeProp = `${name}['${propKey}']`
-      const codeCheckAccessor = `__self.__checkPropAccessor('get', ${name});\n` +
-      `if (typeof ${name}.__getProp === 'function') { return ${codeCall} }\n` +
-      `return ${codeProp}\n`
-      const codeIf = `if (${name}.__getProp) { return ${codeCall} } else { ${codeCheckAccessor} }`
-      code = `( (()=>{ ${codeIf} })() )`
-    } else {
-      const arrs = []
-      const keys = []
-      for (let i = 0; i < propList.length; i++) {
-        const propKey = propList[i].value
-        keys.push(`['${propKey}']`)
-        arrs.push(`'${propKey}'`)
-      }
-      const keyStr = keys.join('')
-      const arrStr = '[' + arrs.join(',') + ']'
-      const codeCall = `${name}.__getProp(${arrStr}, __self)`
-      const codeProp = `${name}${keyStr}`
-      const codeCheckAccessor = `__self.__checkPropAccessor('get', ${name});\n` +
-      `if (${name}.__getProp) { return ${codeCall} }\n` +
-      `return ${codeProp}\n`
-      const codeIf = `if (${name}.__getProp) { return ${codeCall} } else { ${codeCheckAccessor} }`
-      code = `( (()=>{ ${codeIf} })() )`
-    }
-    return code
+    return name + propList.map((prop) => `[${JSON.stringify(prop.value)}]`).join('')
   }
 
   convDefLocalVar(node: AstDefVar): string {
@@ -2278,7 +2223,6 @@ self.__varslist = [self.newVariables(), self.newVariables(), self.newVariables()
 self.__v0 = self.__varslist[0]
 self.initFuncList = []
 self.clearFuncList = []
-self.__propAccessor = []
 // --- jsInit ---
 __jsInit__
 // --- Copy module functions ---
