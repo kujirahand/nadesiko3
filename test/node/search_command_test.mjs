@@ -16,9 +16,14 @@ function runCLI (args) {
   const r = spawnSync(process.execPath, [cliPath, ...args], {
     cwd: rootDir,
     encoding: 'utf-8',
-    timeout: 60000
+    // npm test は --test-timeout=15000 で実行されるので、それより短くして
+    // ハング時にテスト側のタイムアウトより先に原因が分かるようにする
+    timeout: 10000
   })
   if (r.error) { throw r.error }
+  if (r.signal) {
+    throw new Error(`検索CLIがシグナル${r.signal}で終了しました(タイムアウトの可能性)。\n出力=${r.stdout}${r.stderr}`)
+  }
   return { code: r.status, stdout: r.stdout || '', stderr: r.stderr || '' }
 }
 

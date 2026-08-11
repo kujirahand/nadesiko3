@@ -5,6 +5,7 @@
 // 「--help」などを直接渡すとcnako3自身のヘルプが表示されてしまう。
 // そこで利用者の指定した引数は環境変数に入れて渡し、cnako3には渡さないようにする。
 // 検索処理の本体は batch/search_command.nako3 (なでしこ3) にある。
+import os from 'node:os'
 import path from 'node:path'
 import url from 'node:url'
 import { spawn } from 'node:child_process'
@@ -23,5 +24,11 @@ child.on('error', (err) => {
   process.exit(3)
 })
 child.on('exit', (code, signal) => {
-  process.exit(signal ? 1 : (code === null ? 1 : code))
+  if (signal) {
+    // シグナルで終了した場合は、検索結果の終了コード(1=一致なし)と混ざらないように
+    // シェルの慣習にならって 128+シグナル番号 を返す。
+    const signo = os.constants.signals[signal] || 0
+    process.exit(128 + signo)
+  }
+  process.exit(code === null ? 3 : code)
 })
