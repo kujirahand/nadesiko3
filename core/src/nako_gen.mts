@@ -2436,6 +2436,7 @@ ${syncMain}(__self)
   }
   // ---
   const initCode = gen.getPluginInitCode()
+  // runtimeEnvはnew Functionの関数本体として実行するコードで、非同期時はトップレベルのreturnを含む。
   const runtimeEnvCode = `
 // <runtimeEnvCode>
 const self = this
