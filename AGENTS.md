@@ -54,6 +54,7 @@
 - 言語仕様やパーサー変更時: `core/test` を優先して実行し、あわせて `test/node` で回帰確認
 - Nodeプラグイン変更時: `test/node` と `test/common` を実行
 - コマンド生成や定義更新時: `npm run build:command` を実行
+- 命令の検索: `npm run search:command -- <検索語> [--target cnako] [--json]`（詳細は `doc/search_command.md`）
 
 ## 補足ドキュメント
 
