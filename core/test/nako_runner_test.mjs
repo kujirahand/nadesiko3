@@ -123,4 +123,52 @@ describe('nako_runner_test', () => {
       await nako.runAsync('『存在しない関数』のエラー発生', 'main.nako3')
     })
   })
+
+  it('初期化に失敗したプラグインのクリア関数は呼ばれない #2064', async () => {
+    // プラグインの初期化は生成されたJavaScriptの中で実行されるため、
+    // 実行に失敗すると初期化されないまま実行環境が残ってしまう。
+    // その状態で次の実行を行うと「!クリア」でエラーが出ていた。
+    let failInit = true
+    let clearCount = 0
+    const plugin = {
+      meta: { type: 'const', value: { pluginName: 'plugin_dummy2064', nakoVersion: '3.6.0' } },
+      初期化: {
+        type: 'func',
+        josi: [],
+        pure: true,
+        fn: (sys) => {
+          if (failInit) { throw new Error('初期化に失敗') }
+          sys.__dummyClear2064 = () => { clearCount++ }
+        }
+      },
+      '!クリア': {
+        type: 'func',
+        josi: [],
+        pure: true,
+        // 初期化されていなければ、ここで TypeError になる
+        fn: (sys) => { sys.__dummyClear2064() }
+      }
+    }
+    const errors = []
+    const nako = new NakoCompiler()
+    nako.getLogger().addListener('error', (data) => { errors.push(data.noColor) })
+    nako.addPluginObject('plugin_dummy2064', plugin)
+
+    // 1回目 … 初期化に失敗して実行環境だけが残る
+    await assert.rejects(async () => { await nako.runReset('「NG」を表示', 'main.nako3') })
+
+    // 2回目 … 初期化されていないのでクリア関数は呼ばれない
+    failInit = false
+    const g2 = await nako.runReset('「OK」を表示', 'main.nako3')
+    assert.strictEqual(g2.log, 'OK')
+    assert.strictEqual(clearCount, 0, 'クリア関数が呼ばれないこと')
+    assert.strictEqual(
+      errors.filter((e) => e.includes('クリア関数でエラーが発生しました')).length, 0,
+      'クリア関数のエラーが出ないこと')
+
+    // 3回目 … 2回目で初期化が成功しているのでクリア関数が呼ばれる
+    const g3 = await nako.runReset('「OK2」を表示', 'main.nako3')
+    assert.strictEqual(g3.log, 'OK2')
+    assert.strictEqual(clearCount, 1, '初期化済みならクリア関数が呼ばれること')
+  })
 })

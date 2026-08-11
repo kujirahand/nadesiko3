@@ -2167,6 +2167,10 @@ export class NakoParser extends NakoParserBase {
     let fCalc:Ast = t1
     // それが連文か助詞を読んで確認
     if (RenbunJosi.indexOf(t1.josi || '') >= 0) {
+      // 『(式)して戻す』のように、式の途中に『戻す』文は書けない (#2064)
+      if (this.check('戻る')) {
+        throw NakoSyntaxError.fromNode('式の中で『戻す(戻る)』文は使えません。『(値)を(変数)に代入』などで一度値を受け取ってから『(変数)を戻す』と書いてください。', map)
+      }
       // 連文なら右側を読んで左側とくっつける
       const t2 = this.yCalc()
       if (t2) {

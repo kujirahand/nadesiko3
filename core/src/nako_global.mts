@@ -144,6 +144,19 @@ export class NakoGlobal {
   }
 
   /**
+   * プラグインの初期化が完了しているかどうかを調べる (#2064)
+   * @param pname プラグイン名
+   * @param po プラグイン・オブジェクト
+   */
+  private isPluginInitialized(pname: string, po: {[key: string]: any}): boolean {
+    const initKey = `!${pname}:初期化`
+    // 初期化関数を持たないプラグインは、常に初期化済みとみなす
+    if (!po[initKey]) { return true }
+    // 初期化関数は生成されたJavaScriptの中で実行され、完了すると「初期化済」が設定される
+    return this.__varslist[0].has(`${initKey}済`)
+  }
+
+  /**
    * 毎プラグインの「!クリア」関数を実行
    */
   clearPlugins() {
@@ -152,6 +165,11 @@ export class NakoGlobal {
     const clearName = '!クリア'
     for (const pname in this.pluginfiles) {
       const po = this.__module[pname]
+      if (!po) { continue }
+      // 初期化されていないプラグインのクリア関数は呼ばない (#2064)
+      // (メモ) プラグインの初期化は生成されたJavaScriptの中で行われるため、
+      // コンパイルや実行に失敗すると初期化されないまま実行環境が残ることがある。
+      if (!this.isPluginInitialized(pname, po)) { continue }
       if (po[clearName] && po[clearName].fn) {
         try {
           po[clearName].fn(this)
