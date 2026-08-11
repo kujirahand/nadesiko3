@@ -25,6 +25,28 @@ function blockNode (blocks) {
   return { type: 'block', blocks, josi: '' }
 }
 
+/** テスト用に func_obj(無名関数) ノードを作る */
+function funcObjNode (blocks = [], asyncFn = false) {
+  return { type: 'func_obj', name: '', blocks, meta: {}, asyncFn, josi: '' }
+}
+
+/** テスト用に let(代入) ノードを作る */
+function letNode (name, value) {
+  return { type: 'let', name, blocks: [value], josi: '' }
+}
+
+/**
+ * なでしこのプログラムを実行してログを得る
+ *
+ * runAsync は生成コードの非同期IIFEを開始した時点で戻るため、
+ * 実行完了までイベントループを進める必要がある (課題は #2381 を参照)
+ */
+async function runAndGetLog (code) {
+  const g = await new NakoCompiler().runAsync(code, 'main.nako3')
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  return g.log
+}
+
 describe('nako_parser_async_test', () => {
   describe('checkAsyncFn', () => {
     it('非同期処理が無ければ書き換えない', () => {
@@ -63,24 +85,34 @@ describe('nako_parser_async_test', () => {
       assert.strictEqual(outer.asyncFn, true)
     })
 
+    it('引数の走査も最初の非同期ノードで打ち切らない', () => {
+      const funclist = new Map([['待つ', { type: 'func', asyncFn: true }]])
+      const arg1 = funcNode('待つ')
+      const arg2 = funcNode('待つ')
+      const outer = funcNode('足', [arg1, arg2])
+      const ast = blockNode([outer])
+
+      let count = 0
+      while (checkAsyncFn(ast, funclist)) {
+        count++
+        assert.ok(count < 10, '不動点に収束しない')
+      }
+      assert.strictEqual(outer.asyncFn, true)
+      assert.strictEqual(arg1.asyncFn, true)
+      assert.strictEqual(arg2.asyncFn, true, '2つ目の引数も訪問される')
+    })
+
     it('連文は常に非同期として扱う', () => {
       const def = defFuncNode('F', [{ type: 'renbun', blocks: [], josi: '' }])
       assert.strictEqual(checkAsyncFn(blockNode([def]), new Map()), true)
       assert.strictEqual(def.asyncFn, true)
     })
 
-    it('[現状の挙動] block の走査は最初の非同期ノードで打ち切られる', () => {
-      // ブロックの走査は子が非同期だと分かった時点で return するため、
-      // それより後ろの兄弟はそのパスでは訪問されない。
-      // したがって G は、この走査だけでは非同期と判定されない。
-      //
-      // 実際のパーサでは yDefFuncCommon が解析中に usedAsyncFn を追跡して
-      // 関数定義に asyncFn を付けるので、この走査に頼らなくても G は非同期になる
-      // (下の「NakoParser 経由での結合確認」を参照)。
-      // 分離前からの挙動なので、そのまま固定しておく。
+    it('block 内の複数の非同期関数をすべて走査する', () => {
       const funclist = new Map([
         ['待つ', { type: 'func', asyncFn: true }],
-        ['F', { type: 'func', asyncFn: true }]
+        ['F', { type: 'func', asyncFn: false }],
+        ['G', { type: 'func', asyncFn: false }]
       ])
       const defF = defFuncNode('F', [funcNode('待つ')])
       const defG = defFuncNode('G', [funcNode('F')])
@@ -92,7 +124,71 @@ describe('nako_parser_async_test', () => {
         assert.ok(count < 10, '不動点に収束しない')
       }
       assert.strictEqual(defF.asyncFn, true)
-      assert.strictEqual(defG.asyncFn, false, 'F の後ろにある G は訪問されない')
+      assert.strictEqual(defG.asyncFn, true, 'F の後ろにある G も訪問される')
+      assert.strictEqual(funclist.get('F').asyncFn, true)
+      assert.strictEqual(funclist.get('G').asyncFn, true)
+    })
+
+    it('関数定義の本体も最初の非同期ノードで打ち切らない', () => {
+      // 本体の1文目が非同期でも、2文目以降を走査しないと
+      // そこにある呼び出しに asyncFn が付かない
+      const funclist = new Map([
+        ['待つ', { type: 'func', asyncFn: true }],
+        ['G', { type: 'func', asyncFn: true }],
+        ['F', { type: 'func', asyncFn: false }]
+      ])
+      const callG = funcNode('G')
+      const def = defFuncNode('F', [funcNode('待つ'), callG])
+
+      let count = 0
+      while (checkAsyncFn(blockNode([def]), funclist)) {
+        count++
+        assert.ok(count < 10, '不動点に収束しない')
+      }
+      assert.strictEqual(def.asyncFn, true)
+      assert.strictEqual(callG.asyncFn, true, '1文目より後ろの呼び出しも訪問される')
+    })
+
+    it('非同期な無名関数を保持する変数の呼び出しも非同期になる', () => {
+      // F=●()...ここまで のように変数へ代入された無名関数は funclist に載らないため、
+      // 代入を追跡しないと呼び出し側に asyncFn が付かない
+      const funclist = new Map([['待つ', { type: 'func', asyncFn: true }]])
+      const anon = funcObjNode([funcNode('待つ')])
+      const callF = funcNode('F')
+      const ast = blockNode([letNode('F', anon), callF])
+
+      let count = 0
+      while (checkAsyncFn(ast, funclist)) {
+        count++
+        assert.ok(count < 10, '不動点に収束しない')
+      }
+      assert.strictEqual(anon.asyncFn, true)
+      assert.strictEqual(callF.asyncFn, true, '変数経由の呼び出しにも asyncFn が付く')
+    })
+
+    it('同期な無名関数を保持する変数は非同期にならない', () => {
+      const anon = funcObjNode([funcNode('表示')])
+      const callF = funcNode('F')
+      const ast = blockNode([letNode('F', anon), callF])
+      assert.strictEqual(checkAsyncFn(ast, new Map()), false)
+      assert.strictEqual(callF.asyncFn, false)
+    })
+
+    it('無名関数の変数はその関数スコープの外へ漏れない', () => {
+      // 関数 F の中のローカル変数 X と、外側の変数 X は別物として扱う
+      const funclist = new Map([['待つ', { type: 'func', asyncFn: true }]])
+      const innerAnon = funcObjNode([funcNode('待つ')])
+      const defF = defFuncNode('F', [letNode('X', innerAnon)])
+      const outerCallX = funcNode('X')
+      const ast = blockNode([defF, outerCallX])
+
+      let count = 0
+      while (checkAsyncFn(ast, funclist)) {
+        count++
+        assert.ok(count < 10, '不動点に収束しない')
+      }
+      assert.strictEqual(innerAnon.asyncFn, true)
+      assert.strictEqual(outerCallX.asyncFn, false, '関数の外の X は非同期にならない')
     })
   })
 
@@ -107,6 +203,106 @@ describe('nako_parser_async_test', () => {
       const ast = new NakoCompiler().parse('●Fとは\n1を表示\nここまで\nF\n', 'main.nako3')
       const def = ast.blocks.find((n) => n.type === 'def_func')
       assert.strictEqual(def.asyncFn, false)
+    })
+
+    it('連文を代入する関数が複数続いてもすべてawaitされる (#2170)', async () => {
+      const code = `Aを表示。
+Bを表示。
+
+●A
+    a=30に5を足して2を掛ける。
+    「A関数内：」&aを表示。
+    aを戻す。
+ここまで。
+
+●B
+    b=30に5を足して2を掛ける。
+    「B関数内：」&bを表示。
+    bを戻す。
+ここまで。`
+      assert.strictEqual(await runAndGetLog(code), 'A関数内：70\n70\nB関数内：70\n70')
+    })
+  })
+
+  describe('無名関数(関数オブジェクト)の非同期判定', () => {
+    it('連文を含む無名関数の呼び出しがawaitされる', async () => {
+      const code = `F=●()
+    b=1に2を足して3を掛ける。
+    bを戻す。
+ここまで。
+F()を表示。`
+      assert.strictEqual(await runAndGetLog(code), '9')
+    })
+
+    it('「変数」で宣言した無名関数の呼び出しもawaitされる', async () => {
+      const code = `変数 F=●()
+    b=1に2を足して3を掛ける。
+    bを戻す。
+ここまで。
+F()を表示。`
+      assert.strictEqual(await runAndGetLog(code), '9')
+    })
+
+    it('非同期のユーザー関数を呼ぶ無名関数もawaitされる', async () => {
+      const code = `●B
+    b=1に2を足して3を掛ける。
+    bを戻す。
+ここまで。
+F=●()
+    Bを戻す。
+ここまで。
+F()を表示。`
+      assert.strictEqual(await runAndGetLog(code), '9')
+    })
+
+    it('関数の中で定義した無名関数の呼び出しもawaitされる', async () => {
+      const code = `Aを実行。
+●A
+    F=●()
+        b=1に2を足して3を掛ける。
+        bを戻す。
+    ここまで。
+    F()を表示。
+ここまで。`
+      assert.strictEqual(await runAndGetLog(code), '9')
+    })
+
+    it('非同期の文より後ろで定義した無名関数の呼び出しもawaitされる', async () => {
+      // 関数本体の走査が1文目で打ち切られていると F() に asyncFn が付かない
+      const code = `Aを実行。
+●A
+    a=30に5を足して2を掛ける。
+    aを表示。
+    F=●()
+        b=1に2を足して3を掛ける。
+        bを戻す。
+    ここまで。
+    F()を表示。
+ここまで。`
+      assert.strictEqual(await runAndGetLog(code), '70\n9')
+    })
+
+    it('引数が2つとも非同期の無名関数でもすべてawaitされる', async () => {
+      // 引数の走査が1つ目で打ち切られていると G() に asyncFn が付かない
+      const code = `F=●()
+    b=1に2を足して3を掛ける。
+    bを戻す。
+ここまで。
+G=●()
+    c=2に2を足して2を掛ける。
+    cを戻す。
+ここまで。
+F()とG()を足して表示。`
+      assert.strictEqual(await runAndGetLog(code), '17')
+    })
+
+    it('非同期処理を含まない無名関数はawaitされない', async () => {
+      const code = `F=●()
+    b=1に2を足す。
+    bを戻す。
+ここまで。
+F()を表示。`
+      assert.strictEqual(await runAndGetLog(code), '3')
     })
   })
 })
