@@ -380,6 +380,23 @@ export class NakoGen {
     code += 'const __v0 = __self.__v0 = __self.__varslist[0];\n'
     code += 'const __v1 = __self.__v1 = __self.__varslist[1];\n'
     code += 'const __vars = __self.__vars = __self.__varslist[2];\n'
+    code += 'const __nako_scope_parents = new WeakMap();\n' +
+      'const __nako_active_scopes = new WeakSet();\n' +
+      'const __nako_scope_enter = () => {\n' +
+      '  const local = new Map();\n' +
+      '  __nako_scope_parents.set(local, __self.__vars);\n' +
+      '  __nako_active_scopes.add(local);\n' +
+      '  __self.__vars = local;\n' +
+      '  return local;\n' +
+      '};\n' +
+      'const __nako_scope_leave = (local) => {\n' +
+      '  __nako_active_scopes.delete(local);\n' +
+      '  let parent = __nako_scope_parents.get(local) || __vars;\n' +
+      '  while (parent !== __vars && !__nako_active_scopes.has(parent)) {\n' +
+      '    parent = __nako_scope_parents.get(parent) || __vars;\n' +
+      '  }\n' +
+      '  __self.__vars = parent;\n' +
+      '};\n'
     code += 'const __nako_make_closure = (local, parent) => ({\n' +
       '  has: (key) => local.has(key) || (parent !== null && parent.has(key)),\n' +
       '  get: (key) => local.has(key) ? local.get(key) : (parent !== null ? parent.get(key) : undefined),\n' +
@@ -941,16 +958,16 @@ export class NakoGen {
     }
 
     // ローカル変数を生成 (再帰関数呼び出しで引数の値が壊れる問題があるので修正 #1663 / タイミングによって壊れるので修理 #1758)
-    // 暫定変数__localVarsに現在のローカル変数の値をPUSHし、変数を抜ける時にPOPする)
+    // 呼び出しごとのローカル変数を登録し、関数を抜ける時に有効な呼び出し元へ戻す。
+    // 非同期関数が開始順と異なる順番で終了しても、終了済みのスコープは復元しない。
     // 関数として宣言しているが、JS関数となでしこ関数では変数管理の方法が異なるため、完全なローカル変数としては使えない
     // 必ず、pushStack/popStack する必要がある
     pushStack += '\n// PUSH STACK\n'
-    pushStack += 'const __localvars = __self.__vars;\n'
-    pushStack += '__self.__vars = new Map();\n'
+    pushStack += 'const __localvars = __nako_scope_enter();\n'
     pushStack += 'try {\n'
     popStack += '} finally {\n'
     popStack += indent + '// POP STACK\n'
-    popStack += indent + 'self.__vars = __localvars;\n'
+    popStack += indent + '__nako_scope_leave(__localvars);\n'
     popStack += '}\n'
 
     // 宣言済みの名前を保存

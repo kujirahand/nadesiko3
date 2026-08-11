@@ -221,6 +221,24 @@ TIDのタイマー停止
 　test2`
     await cmp(code, '1\n2')
   })
+  it('並行した非同期関数の終了後にローカル変数領域を残さない #1758', async () => {
+    const nako = new NakoCompiler()
+    const code = `
+●test1():
+　xとは変数= 1
+　0.05秒待つ
+●test2():
+　xとは変数= 2
+　0.05秒待つ
+
+0.01秒後には:
+　test1
+0.03秒後には:
+　test2`
+    const g = await nako.runAsync(code, 'main.nako3')
+    await forceWait(120)
+    assert.strictEqual(g.__vars, g.__varslist[2])
+  })
   it('後方で宣言した関数がasyncFnだったときその関数が正しく実行できない(2) #1758', async () => {
     const code = `
 0.1秒後には:
