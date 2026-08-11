@@ -2100,7 +2100,7 @@ export class NakoParser extends NakoParserBase {
       } as AstLet
     }
     // 二次元配列 + オブジェクトプロパティ構文 --- word[a, b]$c = d
-    if (this.accept(['word', '[', this.yCalc, ',', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
+    if (this.accept(['word', '[', this.yCalc, 'comma', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
       const astValue = this.y[9]
       const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])])
       const astProp = this.y[7]
