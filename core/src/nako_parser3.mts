@@ -13,7 +13,7 @@
  * parse
  *  └ startParser → ySentenceList → ySentence ─┬ yIF / yAtohantei / yTryExcept / yDebugPrint
  *                                             ├ yDNCLMode / ySetGenMode / ySpeedMode ...
- *                                             ├ yLet ── yLetArrayAt / yLetArrayBracket
+ *                                             ├ yLet ── yLetArrayChain
  *                                             ├ yDefFunc / yDefTest → yDefFuncCommon
  *                                             └ yCall ─┬ yDainyu / ySadameru / yIncDec
  *                                                      ├ yRepeatTime / yWhile / yFor /
@@ -1624,21 +1624,13 @@ export class NakoParser extends NakoParserBase {
     }
     // オブジェクトプロパティ構文：代入文：：ここまで
 
-    // let_array ?
-    if (this.check2(['word', '@'])) {
-      const la = this.yLetArrayAt(map)
+    // let_array ? (『A@1=値』『A[1][2]=値』『A@1[2]$名前=値』など) (#2396)
+    if (this.check2(['word', '@']) || this.check2(['word', '['])) {
+      const la = this.yLetArrayChain(map) as AstLetArray
       if (this.check('comma')) { this.get() } // skip comma (ex) name1=val1, name2=val2
       if (la) {
         la.checkInit = this.flagCheckArrayInit
         return la
-      }
-    }
-    if (this.check2(['word', '['])) {
-      const lb = this.yLetArrayBracket(map) as AstLetArray
-      if (this.check('comma')) { this.get() } // skip comma (ex) name1=val1, name2=val2
-      if (lb) {
-        lb.checkInit = this.flagCheckArrayInit
-        return lb
       }
     }
 
@@ -1906,198 +1898,81 @@ export class NakoParser extends NakoParserBase {
   }
 
   /**
-   * 『A@1=値』『A@1@2=値』のような配列代入を読む。(#2396)
-   * 『@』一つにつき一次元で、左から順にアクセスする。
+   * 『A@1=値』『A[1]=値』のような配列代入を読む。(#2396)
+   * 『@』と『[]』は任意の順序で何個でも並べることができ、左から順にアクセスする。
+   * 末尾に『$名前』が続く場合はプロパティへの代入になる。(#2139)
    * 廃止したカンマ指定『A@1,2=値』は構文エラーとする。
-   * @returns {AstLetArray | null}
+   * (例) A@1=値 / A[1][2]=値 / A[1,2]=値 / A@1[2]@3=値 / A@0$名前=値
+   * @returns {AstLet | AstLetArray | null}
    */
-  yLetArrayAt(map: SourceMap): AstLetArray | null {
+  yLetArrayChain(map: SourceMap): AstLet | AstLetArray | null {
     const tmpIndex = this.index
-    if (!this.check2(['word', '@'])) { return null }
+    const rollback = (): null => { this.index = tmpIndex; return null }
+    if (!this.check2(['word', '@']) && !this.check2(['word', '['])) { return null }
     const wordToken = this.get() as Token
+    // 配列アクセス『@i』『[i]』『[i,j]』の連なりを読む
     const astIndexes: Ast[] = []
-    while (this.check('@')) {
-      this.get() // skip '@'
-      const idx = this.yValueArrayIndex()
-      if (idx === null) { this.index = tmpIndex; return null }
-      astIndexes.push(this.checkArrayIndex(idx))
-      // 廃止した『A@1,2=値』形式の書き方をチェックする (#2396)
-      this.checkRefArrayComma(idx)
+    for (;;) {
+      if (this.check('@')) {
+        this.get() // skip '@'
+        const idx = this.yValueArrayIndex()
+        if (idx === null) { return rollback() }
+        astIndexes.push(this.checkArrayIndex(idx))
+        // 廃止した『A@1,2=値』形式の書き方をチェックする (#2396)
+        this.checkRefArrayComma(idx)
+        continue
+      }
+      if (this.check('[')) {
+        this.get() // skip '['
+        // 『[i,j]』のようにカンマ区切りで複数指定できる
+        const idxes: Ast[] = []
+        for (;;) {
+          const idx = this.yCalc()
+          if (idx === null) { return rollback() }
+          idxes.push(this.checkArrayIndex(idx))
+          if (!this.check('comma')) { break }
+          this.get() // skip ','
+        }
+        if (!this.check(']')) { return rollback() }
+        this.get() // skip ']'
+        // カンマ区切りの指定はDNCLモードで順序が反転する(#1140)
+        astIndexes.push(...this.checkArrayReverse(idxes))
+        continue
+      }
+      break
     }
-    if (!this.check('eq')) { this.index = tmpIndex; return null }
+    if (astIndexes.length === 0) { return rollback() }
+    // 続けてプロパティアクセス『$名前』を読む (#2139)
+    const astProps: Ast[] = []
+    while (this.check2(['$', 'word']) || this.check2(['$', 'string'])) {
+      this.get() // skip '$'
+      const prop = this.get() as Ast
+      prop.type = 'string'
+      astProps.push(prop)
+    }
+    if (!this.check('eq')) { return rollback() }
     this.get() // skip 'eq'
     const astValue = this.yCalc()
-    if (astValue === null) { this.index = tmpIndex; return null }
+    if (astValue === null) { return rollback() }
+    const name = (this.getVarName(wordToken) as AstStrValue).value
+    if (astProps.length > 0) {
+      return {
+        type: 'let_prop',
+        name,
+        blocks: [astValue, ...astIndexes],
+        index: astProps,
+        ...map,
+        end: this.peekSourceMap()
+      } as AstLet
+    }
     return {
       type: 'let_array',
-      name: (this.getVarName(wordToken) as AstStrValue).value,
+      name,
       blocks: [astValue, ...astIndexes],
       checkInit: this.flagCheckArrayInit,
       ...map,
       end: this.peekSourceMap()
     } as AstLetArray
-  }
-
-  /** @returns {Ast | null} */
-  yLetArrayBracket(map: SourceMap): AstBlocks|null {
-    // 一次元配列
-    if (this.accept(['word', '[', this.yCalc, ']', 'eq', this.yCalc])) {
-      const astValue = this.y[5]
-      const astIndexes = [this.checkArrayIndex(this.y[2])]
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-    // 二次元配列 --- word[a][b] = c
-    if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc])) {
-      const astValue = this.y[8]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[5])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        tag: '2',
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-    // 二次元配列 --- word[a, b] = c
-    if (this.accept(['word', '[', this.yCalc, 'comma', this.yCalc, ']', 'eq', this.yCalc])) {
-      const astValue = this.y[7]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        tag: '2',
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-    // 三次元配列 --- word[a][b][c] = d
-    if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '[', this.yCalc, ']', 'eq', this.yCalc])) {
-      const astValue = this.y[11]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[5]), this.checkArrayIndex(this.y[8])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-    // 三次元配列 --- word[a, b, c] = d
-    if (this.accept(['word', '[', this.yCalc, 'comma', this.yCalc, 'comma', this.yCalc, ']', 'eq', this.yCalc])) {
-      const astValue = this.y[9]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4]), this.checkArrayIndex(this.y[6])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        index: this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4]), this.checkArrayIndex(this.y[6])]),
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-    // --- --- --- --- --- --- --- --- --- --- --- --- ---
-    // 配列 + オブジェクトプロパティ構文 (#2139)
-    // --- --- --- --- --- --- --- --- --- --- --- --- ---
-    // 一次元配列 + オブジェクトプロパティ構文 --- word[a]$b = c
-    if (this.accept(['word', '[', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
-      const astValue = this.y[7]
-      const astIndexes = [this.checkArrayIndex(this.y[2])]
-      const astProp = this.y[5]
-      astProp.type = 'string'
-      return {
-        type: 'let_prop',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        index: [astProp],
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLet
-    }
-    // 一次元配列 + 二次元オブジェクトプロパティ構文 --- word[a]$b$c = d
-    if (this.accept(['word', '[', this.yCalc, ']', '$', 'word', '$', 'word', 'eq', this.yCalc])) {
-      const astVarName = this.y[0]
-      const astIndex = this.y[2]
-      const astProp1 = this.y[5]
-      const astProp2 = this.y[7]
-      const astValue = this.y[9]
-      astProp1.type = 'string'
-      astProp2.type = 'string'
-      return {
-        type: 'let_prop',
-        name: (this.getVarName(astVarName) as AstStrValue).value,
-        blocks: [astValue, astIndex],
-        index: [astProp1, astProp2],
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLet
-    }
-    // 二次元配列 + オブジェクトプロパティ構文 --- word[a][b]$c = d
-    if (this.accept(['word', '[', this.yCalc, ']', '[', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
-      const astValue = this.y[10]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[5])])
-      const astProp = this.y[8]
-      astProp.type = 'string'
-      return {
-        type: 'let_prop',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        index: [astProp],
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLet
-    }
-    // 二次元配列 + オブジェクトプロパティ構文 --- word[a, b]$c = d
-    if (this.accept(['word', '[', this.yCalc, 'comma', this.yCalc, ']', '$', 'word', 'eq', this.yCalc])) {
-      const astValue = this.y[9]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])])
-      const astProp = this.y[7]
-      astProp.type = 'string'
-      return {
-        type: 'let_prop',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        index: [astProp],
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLet
-    }
-    // 二次元配列 + 二次元オブジェクトプロパティ構文 --- word[a][b]$c$d = e
-    if (this.accept([
-      'word', '[', this.yCalc, ']', '[', this.yCalc, ']', // 0...6
-      '$', 'word', '$', 'word', 'eq', this.yCalc          // 7...12
-    ])) {
-      const astVarName = this.y[0]
-      const astIndex1 = this.y[2]
-      const astIndex2 = this.y[5]
-      const astProp1 = this.y[8]
-      const astProp2 = this.y[10]
-      const astValue = this.y[12]
-      astProp1.type = 'string'
-      astProp2.type = 'string'
-      return {
-        type: 'let_prop',
-        name: (this.getVarName(astVarName) as AstStrValue).value,
-        blocks: [astValue, astIndex1, astIndex2],
-        index: [astProp1, astProp2],
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLet
-    }
-
-    return null
   }
 
   // ---------------------------------------------------------------------------
