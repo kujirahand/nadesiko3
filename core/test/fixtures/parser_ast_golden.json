@@ -5551,7 +5551,6 @@
       "column": 5
      }
     ],
-    "tag": "2",
     "checkInit": false,
     "startOffset": 8,
     "endOffset": 9,
@@ -5706,7 +5705,6 @@
      }
     ],
     "checkInit": false,
-    "tag": "2",
     "startOffset": 8,
     "endOffset": 9,
     "file": "main.nako3",
@@ -5719,6 +5717,488 @@
      "line": 2,
      "column": 0
     }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 16,
+   "endOffset": 17,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "配列-アット二次元": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "number",
+          "value": 0,
+          "josi": "",
+          "startOffset": 4,
+          "endOffset": 5,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 4
+         }
+        ],
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3,
+        "end": {
+         "startOffset": 6,
+         "endOffset": 7,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 6
+        }
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 7,
+       "endOffset": 8,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 7,
+     "endOffset": 8,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_array",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 14,
+      "endOffset": 15,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 6
+     },
+     {
+      "type": "number",
+      "value": 0,
+      "josi": "",
+      "startOffset": 10,
+      "endOffset": 11,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     },
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 12,
+      "endOffset": 13,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 4
+     }
+    ],
+    "checkInit": false,
+    "startOffset": 8,
+    "endOffset": 9,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 15,
+     "endOffset": 16,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 15,
+   "endOffset": 16,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "配列-アットと角括弧の混在": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "json_array",
+        "blocks": [
+         {
+          "type": "json_array",
+          "blocks": [
+           {
+            "type": "number",
+            "value": 0,
+            "josi": "",
+            "startOffset": 5,
+            "endOffset": 6,
+            "file": "main.nako3",
+            "line": 0,
+            "column": 5
+           }
+          ],
+          "josi": "",
+          "startOffset": 4,
+          "endOffset": 5,
+          "file": "main.nako3",
+          "line": 0,
+          "column": 4,
+          "end": {
+           "startOffset": 7,
+           "endOffset": 8,
+           "file": "main.nako3",
+           "line": 0,
+           "column": 7
+          }
+         }
+        ],
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3,
+        "end": {
+         "startOffset": 8,
+         "endOffset": 9,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 8
+        }
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 9,
+       "endOffset": 10,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 9,
+     "endOffset": 10,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_array",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 19,
+      "endOffset": 20,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 9
+     },
+     {
+      "type": "number",
+      "value": 0,
+      "josi": "",
+      "startOffset": 12,
+      "endOffset": 13,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     },
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 14,
+      "endOffset": 15,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 4
+     },
+     {
+      "type": "number",
+      "value": 2,
+      "josi": "",
+      "startOffset": 17,
+      "endOffset": 18,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 7
+     }
+    ],
+    "checkInit": false,
+    "startOffset": 10,
+    "endOffset": 11,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 20,
+     "endOffset": 21,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "eol",
+    "comment": "---",
+    "line": 2,
+    "column": 0,
+    "file": "main.nako3"
+   }
+  ],
+  "josi": "",
+  "startOffset": 0,
+  "endOffset": 1,
+  "file": "main.nako3",
+  "line": 0,
+  "column": 0,
+  "end": {
+   "startOffset": 20,
+   "endOffset": 21,
+   "file": "main.nako3",
+   "line": 2,
+   "column": 0
+  }
+ },
+ "配列-アットとプロパティ": {
+  "type": "block",
+  "blocks": [
+   {
+    "type": "let",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "json_array",
+      "blocks": [
+       {
+        "type": "json_obj",
+        "blocks": [],
+        "josi": "",
+        "startOffset": 3,
+        "endOffset": 4,
+        "file": "main.nako3",
+        "line": 0,
+        "column": 3,
+        "end": {
+         "startOffset": 5,
+         "endOffset": 6,
+         "file": "main.nako3",
+         "line": 0,
+         "column": 5
+        }
+       }
+      ],
+      "josi": "",
+      "startOffset": 2,
+      "endOffset": 3,
+      "file": "main.nako3",
+      "line": 0,
+      "column": 2,
+      "end": {
+       "startOffset": 6,
+       "endOffset": 7,
+       "file": "main.nako3",
+       "line": 1,
+       "column": 0
+      }
+     }
+    ],
+    "josi": "",
+    "startOffset": 0,
+    "endOffset": 1,
+    "file": "main.nako3",
+    "line": 0,
+    "column": 0,
+    "end": {
+     "startOffset": 6,
+     "endOffset": 7,
+     "file": "main.nako3",
+     "line": 1,
+     "column": 0
+    }
+   },
+   {
+    "type": "eol",
+    "comment": "",
+    "line": 1,
+    "column": 0,
+    "file": "main.nako3"
+   },
+   {
+    "type": "let_prop",
+    "name": "main__A",
+    "blocks": [
+     {
+      "type": "number",
+      "value": 1,
+      "josi": "",
+      "startOffset": 15,
+      "endOffset": 16,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 8
+     },
+     {
+      "type": "number",
+      "value": 0,
+      "josi": "",
+      "startOffset": 9,
+      "endOffset": 10,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 2
+     }
+    ],
+    "index": [
+     {
+      "type": "string",
+      "value": "b",
+      "josi": "",
+      "indent": 0,
+      "file": "main.nako3",
+      "line": 1,
+      "column": 4,
+      "preprocessedCodeOffset": 11,
+      "preprocessedCodeLength": 3,
+      "startOffset": 11,
+      "endOffset": 14,
+      "rawJosi": ""
+     }
+    ],
+    "startOffset": 7,
+    "endOffset": 8,
+    "file": "main.nako3",
+    "line": 1,
+    "column": 0,
+    "end": {
+     "startOffset": 16,
+     "endOffset": 17,
+     "file": "main.nako3",
+     "line": 2,
+     "column": 0
+    },
+    "checkInit": false
    },
    {
     "type": "eol",

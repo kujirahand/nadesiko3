@@ -28,6 +28,7 @@ export class NakoParserBase {
   protected arrayIndexFrom: number
   protected flagReverseArrayIndex: boolean
   protected flagCheckArrayInit: boolean
+  protected flagNoPostfixIndex: boolean
   protected recentlyCalledFunc: FuncListItem[]
   protected isReadingCalc: boolean
   protected isExportDefault: boolean
@@ -70,6 +71,11 @@ export class NakoParserBase {
     this.flagReverseArrayIndex = false
     /** 配列を自動的に初期化するか(#1140) @type {boolean} */
     this.flagCheckArrayInit = false
+    /** 配列アクセス『@』のインデックスを読んでいる最中か(#2396)
+     * trueの間は、値の後ろに続く『@』『[』『$』を、その値自身のアクセスとして読まない。
+     * これにより『A@B@C』が『A[B[C]]』ではなく『A[B][C]』と解釈される。
+     * @type {boolean} */
+    this.flagNoPostfixIndex = false
     /** 最近呼び出した関数(余剰エラーの報告に使う) */
     this.recentlyCalledFunc = []
     // 構文解析に利用する - 現在計算式を読んでいるかどうか
@@ -109,6 +115,7 @@ export class NakoParserBase {
     this.arrayIndexFrom = 0
     this.flagReverseArrayIndex = false
     this.flagCheckArrayInit = false
+    this.flagNoPostfixIndex = false
   }
 
   setFuncList(funclist: FuncList) {
