@@ -2322,9 +2322,8 @@ export class NakoParser extends NakoParserBase {
           this.checkArrayIndex(this.y[1]),
           this.checkArrayIndex(this.y[3])
         ]
-        const aa = ast.index.pop()
-        ast.index = this.checkArrayReverse(index)
-        if (aa) { ast.index.unshift(aa) }
+        // それまでに読んだ添字はそのまま残し、この括弧の中だけを反転して追加する (#2396)
+        ast.index.push(...this.checkArrayReverse(index))
         ast.josi = this.y[4].josi
         return this.y[4].josi === '' // 助詞があればそこで終了(false)を返す
       }
@@ -2336,9 +2335,8 @@ export class NakoParser extends NakoParserBase {
           this.checkArrayIndex(this.y[3]),
           this.checkArrayIndex(this.y[5])
         ]
-        const aa = ast.index.pop()
-        ast.index = this.checkArrayReverse(index)
-        if (aa) { ast.index.unshift(aa) }
+        // それまでに読んだ添字はそのまま残し、この括弧の中だけを反転して追加する (#2396)
+        ast.index.push(...this.checkArrayReverse(index))
         ast.josi = this.y[6].josi
         return this.y[6].josi === '' // 助詞があればそこで終了(false)を返す
       }
