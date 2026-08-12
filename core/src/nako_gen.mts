@@ -1938,19 +1938,34 @@ export class NakoGen {
 
     // 配列への代入か(core#86)
     let code = ''
+    let preCode = '' // 対象オブジェクトを一時変数に取り出すコード
     let varGetter = ''
     let varSetter = ''
     let varInitter = ''
     const nodeName = node.name as Ast
     if (nodeName.type === 'ref_array') {
-      varGetter = this.convRefArray(nodeName)
+      // 対象オブジェクトと添字を一時変数へ取り出して、取得と代入で式を二重に評価しないようにする (#2194)
+      const objVar = `$nako_o${id}`
+      const baseName = this._convGen(nodeName.name as Ast, true)
+      const indexList: Ast[] = nodeName.index || []
+      preCode = `const ${objVar} = ${baseName};\n`
+      let indexCode = ''
+      for (let i = 0; i < indexList.length; i++) {
+        const idxVar = `$nako_i${id}_${i}`
+        preCode += `const ${idxVar} = ${this._convGen(indexList[i], true)};\n`
+        indexCode += `[${idxVar}]`
+      }
+      varGetter = `${objVar}${indexCode}`
       varSetter = `${varGetter} = ${valueVar}`
       varInitter = `${varGetter} = 0`
     } else if (nodeName.type === 'ref_prop') {
       // プロパティアクセス(A$a)の場合 (#1793)
+      // 対象オブジェクトを一時変数へ取り出して、取得と代入で式を二重に評価しないようにする (#2194)
+      const objVar = `$nako_o${id}`
       const baseName = this._convGen(nodeName.name as Ast, true)
       const propList = nodeName.index as AstStrValue[]
-      varGetter = this.convRefProp_genCode(baseName, propList)
+      preCode = `const ${objVar} = ${baseName};\n`
+      varGetter = this.convRefProp_genCode(objVar, propList)
       varSetter = `${varGetter} = ${valueVar}`
       varInitter = `${varGetter} = 0`
     } else {
@@ -1972,9 +1987,11 @@ export class NakoGen {
     // 自動初期化するか
     code += '\n/*[convInc]*/\n'
     code += this.convLineno(node, false) + '\n'
+    code += preCode
     code += `let ${valueVar} = ${varGetter}\n`
-    code += `if (typeof ${valueVar} === 'undefined') { ${varInitter}; }\n`
-    code += `${valueVar} = Number(${varGetter}) + Number(${incValue});\n`
+    // 値の再取得をせず、取り出した値をそのまま使う (#2194)
+    code += `if (typeof ${valueVar} === 'undefined') { ${varInitter}; ${valueVar} = 0; }\n`
+    code += `${valueVar} = Number(${valueVar}) + Number(${incValue});\n`
     code += `${varSetter}\n`
     code += '/*[/convInc]*/\n'
     return code

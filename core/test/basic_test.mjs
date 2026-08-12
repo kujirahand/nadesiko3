@@ -390,6 +390,24 @@ describe('basic', async () => {
       'A={"幅": 10, "__setProp": F_SET, "__getProp": F_GET};\n' +
       'A$幅を3減らす。A$幅を表示。', '7')
   })
+  it('増減文で対象オブジェクトと添字を二重に評価しない (#2194)', async () => {
+    // 副作用のある式を添字に使い、評価回数が1回であることを確認する
+    const defCounter =
+      'CNT=0\n' +
+      '●(Aの)IDX取得とは\n' +
+      '　　CNT=CNT+1\n' +
+      '　　それ=A\n' +
+      'ここまで\n'
+    // プロパティ+配列の場合
+    await cmp(defCounter + 'OBJ=[{"b":1}];OBJ[0のIDX取得]$bを1増やす。CNTを表示。', '1')
+    await cmp(defCounter + 'OBJ=[{"b":1}];OBJ[0のIDX取得]$bを1増やす。OBJ[0]$bを表示。', '2')
+    // 配列だけの場合
+    await cmp(defCounter + 'A=[10];A[0のIDX取得]を5増やす。CNTを表示。', '1')
+    await cmp(defCounter + 'A=[10];A[0のIDX取得]を5増やす。A[0]を表示。', '15')
+    // 値が未定義のときは0から数える
+    await cmp('A={};A$bを5増やす。A$bを表示。', '5')
+    await cmp('A=[];A[0]を5増やす。A[0]を表示。', '5')
+  })
   it('文字列記号と全角コメント閉じ記号の組み合わせがある時うまく動いていない(core #45)', async () => {
     await cmp(
       'もし1ならば\n' +
@@ -437,6 +455,7 @@ describe('basic', async () => {
     await cmp('A={};A$『it\'s』=50;A$『it\'s』を表示', '50')
     await cmp('A={};A$『a\\b』=50;A$『a\\b』を表示', '50')
     await cmp('A={};A$『a"b』=50;A$『a"b』を表示', '50')
+    await cmp('A={};A$『a\nb』=50;A$『a\nb』を表示', '50')
     // ネストしたプロパティと増減でも同様
     await cmp('A={};A$『it\'s』={};A$『it\'s』$『a\\b』=50;A$『it\'s』$『a\\b』を表示', '50')
     await cmp('A={};A$『it\'s』=10;A$『it\'s』を5増やす。A$『it\'s』を表示', '15')
