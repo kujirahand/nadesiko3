@@ -103,7 +103,7 @@
     "buffer": "^6.0.3",
     "chai": "^6.2.2",
     "cross-env": "^10.1.0",
-    "esbuild": "0.28.1",
+    "esbuild": "0.28.2",
     "fetch-mock": "^12.6.0",
     "hotkeys-js": "^4.0.4",
     "module-alias": "^2.3.4",
