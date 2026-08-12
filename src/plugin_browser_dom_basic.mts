@@ -45,8 +45,12 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function(tag: any) {
-      return Array.from(document.getElementsByTagName(tag))
+    fn: function(tag: any, sys: any) {
+      const domList = Array.from(document.getElementsByTagName(tag))
+      for (const dom of domList) {
+        sys.__addPropMethod(dom)
+      }
+      return domList
     }
   },
   'DOM子要素取得': { // @DOMの要素PAの子要素をクエリqを指定して結果を一つ取得して返す // @DOMこようそしゅとく
@@ -655,8 +659,10 @@ export default {
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
-    fn: function(tag: any) {
-      return document.createElement(tag)
+    fn: function(tag: any, sys: any) {
+      const dom = document.createElement(tag)
+      sys.__addPropMethod(dom)
+      return dom
     }
   },
   'DOM子要素追加': { // @DOMの要素PAの子へ要素ELを追加してPAを返す // @DOMこようそついか

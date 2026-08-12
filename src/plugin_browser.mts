@@ -1,7 +1,7 @@
 /**
  * @fileOverview ブラウザプラグイン
  */
-import { NakoValue, NakoCallback, NakoCallbackEvent, NakoSystem } from '../core/src/plugin_api.mjs'
+import { NakoValue, NakoCallback, NakoCallbackEvent } from '../core/src/plugin_api.mjs'
 import { parsePosition } from '../core/src/nako_logger.mjs'
 import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation } from './plugin_browser_api.mjs'
 
@@ -111,6 +111,8 @@ const PluginBrowser = {
         }
         // make wrapper func
         const wrapperFunc = (e: Event) => {
+          // イベントで得た要素にも日本語プロパティを追加する (#2194)
+          sys.__addPropMethod(e.target)
           sys.__setSysVar('対象', e.target)
           sys.__setSysVar('対象イベント', e)
           // 追加データが得られる場合
@@ -260,21 +262,37 @@ const PluginBrowser = {
               }
             })
           }
+          // 「DOM$スタイル$色」のようなネストしたアクセスのため、styleにも和スタイルを適用する (#2194)
+          sys.__addStylePropMethod(obj.style)
         }
       }
-      // Elementのクラスに対してDOMに動的プロパティの取得と設定を適用するよう登録する #1863
-      if (sys.__registPropAccessor && globalThis.Element) {
-        sys.__registPropAccessor(
-          Element,
-          function(prop: string|string[], sys: NakoSystem): unknown {
-            // @ts-expect-error: use this
-            return sys.__exec('DOM設定取得', [(this as Element), prop, sys as NakoBrowsesrSystem])
-          },
-          function(prop: string|string[], value: object, sys: NakoSystem): void {
-            // @ts-expect-error: use this
-            sys.__exec('DOM設定変更', [(this as Element), prop, value, sys as NakoBrowsesrSystem])
-          }
-        )
+      // styleオブジェクトに「DOM和スタイル」の日本語プロパティを追加する (#2194)
+
+      sys.__addStylePropMethod = (style: any) => {
+        if (!style || typeof style !== 'object') { return }
+        if (style.__nako3) { return }
+        const waStyle = sys.__getSysVar('DOM和スタイル')
+        if (!waStyle) { return }
+        Object.defineProperty(style, '__nako3', {
+          enumerable: false,
+          writable: false,
+          configurable: false,
+          value: true
+        })
+        for (const key of Object.keys(waStyle)) {
+          const cssName = waStyle[key]
+          if (key === cssName) { continue }
+          Object.defineProperty(style, key, {
+            enumerable: false,
+            configurable: true,
+            get: function() {
+              return style[cssName]
+            },
+            set: function(value: unknown) {
+              style[cssName] = value
+            }
+          })
+        }
       }
       // DOM取得のために使う
       sys.__query = (dom: object|string, commandName: string, isGetFunc: boolean) => {

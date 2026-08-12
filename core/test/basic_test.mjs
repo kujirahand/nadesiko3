@@ -378,17 +378,35 @@ describe('basic', async () => {
     // ネスト$記法で増やす・減らす
     await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を5増やす。A$猫$日本猫を表示。', '15')
     await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を3減らす。A$猫$日本猫を表示。', '7')
-    // __getProp/__setPropを持つオブジェクトでの増減
+    // __getProp/__setPropは特別扱いせず、通常のプロパティを増減する (#2194)
     await cmp(
-      '『 (function(prop, sys){ return this[prop] })』をJS実行してF_GETに代入。\n' +
-      '『 (function(prop, val, sys){ this[prop] = val })』をJS実行してF_SETに代入。\n' +
+      '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
+      '『 (function(prop, val, sys){ this[prop] = val * 10 })』をJS実行してF_SETに代入。\n' +
       'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
       'A$幅を2増やす。A$幅を表示。', '5')
     await cmp(
-      '『 (function(prop, sys){ return this[prop] })』をJS実行してF_GETに代入。\n' +
-      '『 (function(prop, val, sys){ this[prop] = val })』をJS実行してF_SETに代入。\n' +
+      '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
+      '『 (function(prop, val, sys){ this[prop] = val * 10 })』をJS実行してF_SETに代入。\n' +
       'A={"幅": 10, "__setProp": F_SET, "__getProp": F_GET};\n' +
       'A$幅を3減らす。A$幅を表示。', '7')
+  })
+  it('増減文で対象オブジェクトと添字を二重に評価しない (#2194)', async () => {
+    // 副作用のある式を添字に使い、評価回数が1回であることを確認する
+    const defCounter =
+      'CNT=0\n' +
+      '●(Aの)IDX取得とは\n' +
+      '　　CNT=CNT+1\n' +
+      '　　それ=A\n' +
+      'ここまで\n'
+    // プロパティ+配列の場合
+    await cmp(defCounter + 'OBJ=[{"b":1}];OBJ[0のIDX取得]$bを1増やす。CNTを表示。', '1')
+    await cmp(defCounter + 'OBJ=[{"b":1}];OBJ[0のIDX取得]$bを1増やす。OBJ[0]$bを表示。', '2')
+    // 配列だけの場合
+    await cmp(defCounter + 'A=[10];A[0のIDX取得]を5増やす。CNTを表示。', '1')
+    await cmp(defCounter + 'A=[10];A[0のIDX取得]を5増やす。A[0]を表示。', '15')
+    // 値が未定義のときは0から数える
+    await cmp('A={};A$bを5増やす。A$bを表示。', '5')
+    await cmp('A=[];A[0]を5増やす。A[0]を表示。', '5')
   })
   it('文字列記号と全角コメント閉じ記号の組み合わせがある時うまく動いていない(core #45)', async () => {
     await cmp(
@@ -414,23 +432,33 @@ describe('basic', async () => {
     await cmp('A={"高":30};A.高=50;A.高を表示', '50') // 
     await cmp('A={"A":30,"B":50};A.A=500;A.Aを表示', '500') // 
   })
-  it('オブジェクトを手軽に設定する-プロパティ関数(#1793)', async () => {
-    // プロパティの値を取得して10倍にして返す
+  it('__getProp/__setPropを通常のプロパティとして扱う(#2194)', async () => {
+    // __getPropを呼び出さず、通常のプロパティ値を取得する
     await cmp(
       '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
       '『 (function(prop, val, sys){ this[prop] = val })』をJS実行してF_SETに代入。\n' +
       'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
-      'A$幅=5; A$幅を表示', '50')
-    // 値を10倍にして格納
+      'A$幅=5; A$幅を表示', '5')
+    // __setPropを呼び出さず、通常のプロパティへ値を格納する
     await cmp(
       '『 (function(prop, sys){ return this[prop] })』をJS実行してF_GETに代入。\n' +
       '『 (function(prop, val, sys){ this[prop] = val*10 })』をJS実行してF_SETに代入。\n' +
       'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
-      'A$幅=5; A$幅を表示', '50')
+      'A$幅=5; A$幅を表示', '5')
   })
   it('オブジェクトを手軽に設定する-文字列 (#1793)', async () => {
     await cmp('A={"幅":30};A$"幅"=50;A$"幅"を表示', '50')
     await cmp('A={"高":30};A$"高"=50;A$"高"を表示', '50') // 送り仮名の省略
+  })
+  it('プロパティ名にJavaScriptの特殊文字を含む場合 (#2194)', async () => {
+    // 生成コードが壊れないことを確認する(シングルクォート・バックスラッシュ・改行)
+    await cmp('A={};A$『it\'s』=50;A$『it\'s』を表示', '50')
+    await cmp('A={};A$『a\\b』=50;A$『a\\b』を表示', '50')
+    await cmp('A={};A$『a"b』=50;A$『a"b』を表示', '50')
+    await cmp('A={};A$『a\nb』=50;A$『a\nb』を表示', '50')
+    // ネストしたプロパティと増減でも同様
+    await cmp('A={};A$『it\'s』={};A$『it\'s』$『a\\b』=50;A$『it\'s』$『a\\b』を表示', '50')
+    await cmp('A={};A$『it\'s』=10;A$『it\'s』を5増やす。A$『it\'s』を表示', '15')
   })
   it('オブジェクトプロパティ構文$でネスト可能にする #1805', async () => {
     await cmp('A={"スタイル":{"幅":300}};A$スタイル$幅=1;A$スタイル$幅を表示', '1')
