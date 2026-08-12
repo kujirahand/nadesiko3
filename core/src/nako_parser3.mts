@@ -1905,77 +1905,37 @@ export class NakoParser extends NakoParserBase {
     return ary.reverse()
   }
 
-  /** @returns {AstLetArray | null} */
+  /**
+   * 『A@1=値』『A@1@2=値』のような配列代入を読む。(#2396)
+   * 『@』一つにつき一次元で、左から順にアクセスする。
+   * 廃止したカンマ指定『A@1,2=値』は構文エラーとする。
+   * @returns {AstLetArray | null}
+   */
   yLetArrayAt(map: SourceMap): AstLetArray | null {
-    // 一次元配列
-    if (this.accept(['word', '@', this.yValue, 'eq', this.yCalc])) {
-      const astValue = this.y[4]
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, this.checkArrayIndex(this.y[2])],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
+    const tmpIndex = this.index
+    if (!this.check2(['word', '@'])) { return null }
+    const wordToken = this.get() as Token
+    const astIndexes: Ast[] = []
+    while (this.check('@')) {
+      this.get() // skip '@'
+      const idx = this.yValueArrayIndex()
+      if (idx === null) { this.index = tmpIndex; return null }
+      astIndexes.push(this.checkArrayIndex(idx))
+      // 廃止した『A@1,2=値』形式の書き方をチェックする (#2396)
+      this.checkRefArrayComma(idx)
     }
-
-    // 二次元配列
-    if (this.accept(['word', '@', this.yValue, '@', this.yValue, 'eq', this.yCalc])) {
-      const astValue = this.y[6]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-
-    // 三次元配列
-    if (this.accept(['word', '@', this.yValue, '@', this.yValue, '@', this.yValue, 'eq', this.yCalc])) {
-      const astValue = this.y[8]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4]), this.checkArrayIndex(this.y[6])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-
-    // 二次元配列(カンマ指定)
-    if (this.accept(['word', '@', this.yValue, 'comma', this.yValue, 'eq', this.yCalc])) {
-      const astValue = this.y[6]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-
-    // 三次元配列(カンマ指定)
-    if (this.accept(['word', '@', this.yValue, 'comma', this.yValue, 'comma', this.yValue, 'eq', this.yCalc])) {
-      const astValue = this.y[8]
-      const astIndexes = this.checkArrayReverse([this.checkArrayIndex(this.y[2]), this.checkArrayIndex(this.y[4]), this.checkArrayIndex(this.y[6])])
-      return {
-        type: 'let_array',
-        name: (this.getVarName(this.y[0]) as AstStrValue).value,
-        blocks: [astValue, ...astIndexes],
-        checkInit: this.flagCheckArrayInit,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstLetArray
-    }
-    return null
+    if (!this.check('eq')) { this.index = tmpIndex; return null }
+    this.get() // skip 'eq'
+    const astValue = this.yCalc()
+    if (astValue === null) { this.index = tmpIndex; return null }
+    return {
+      type: 'let_array',
+      name: (this.getVarName(wordToken) as AstStrValue).value,
+      blocks: [astValue, ...astIndexes],
+      checkInit: this.flagCheckArrayInit,
+      ...map,
+      end: this.peekSourceMap()
+    } as AstLetArray
   }
 
   /** @returns {Ast | null} */
@@ -2144,8 +2104,23 @@ export class NakoParser extends NakoParserBase {
   // 計算式と値
   // ---------------------------------------------------------------------------
 
-  /** @returns {Ast | null} */
+  /**
+   * 計算式を読む。
+   * 配列アクセス『@』のインデックスを読んでいる最中でも、括弧や角括弧の内側は
+   * 独立した式なので、後置アクセスの抑制フラグを一旦解除する。(#2396)
+   * (例)『A@(B@1)』の『B@1』は、通常どおり B[1] と解釈される。
+   */
   yCalc(): Ast|null {
+    const tmpNoPostfixIndex = this.flagNoPostfixIndex
+    this.flagNoPostfixIndex = false
+    try {
+      return this.yCalcMain()
+    } finally {
+      this.flagNoPostfixIndex = tmpNoPostfixIndex
+    }
+  }
+
+  yCalcMain(): Ast|null {
     const map = this.peekSourceMap()
     if (this.check('eol')) { return null }
     // 値を一つ読む
@@ -2370,28 +2345,57 @@ export class NakoParser extends NakoParserBase {
     return null
   }
 
+  /**
+   * 配列アクセス『@』の直後のインデックスを一つ読む。(#2396)
+   * 後置アクセスを抑制した状態で読むので、『A@B@C』のインデックスは『B』だけになり、
+   * 続く『@C』は A に対する二番目のインデックスとして読まれる。
+   */
+  yValueArrayIndex(): Ast|null {
+    const tmpNoPostfixIndex = this.flagNoPostfixIndex
+    this.flagNoPostfixIndex = true
+    try {
+      return this.yValue()
+    } finally {
+      this.flagNoPostfixIndex = tmpNoPostfixIndex
+    }
+  }
+
+  /**
+   * 現在の読み取り位置が、括弧・JSON配列・JSON辞書の内側かどうかを調べる。(#2396)
+   * 内側であれば、カンマは要素や引数の区切りとして使われている可能性がある。
+   */
+  isInsideGroup(): boolean {
+    let depth = 0
+    for (let i = 0; i < this.index; i++) {
+      const type = this.tokens[i].type
+      if (type === '(' || type === '[' || type === '{') { depth++ } else if (type === ')' || type === ']' || type === '}') { depth-- }
+    }
+    return depth > 0
+  }
+
+  /**
+   * 廃止した『A@1,2』形式の多次元アクセスが書かれていないか調べる。(#2396)
+   * ただし『[A@1, 2]』や『F(A@1, 2)』のように、カンマが区切り文字として
+   * 使われている可能性がある場所では判定しない。
+   */
+  checkRefArrayComma(ast: Ast): void {
+    if (ast.josi !== '') { return }
+    if (!this.check('comma')) { return }
+    if (this.isInsideGroup()) { return }
+    throw NakoSyntaxError.fromNode(
+      '配列アクセス『@』でカンマ区切りの多次元指定は使えません。' +
+      '『A[1,2]』または『A@1@2』のように書いてください。', ast)
+  }
+
   yValueWordGetIndex(ast: Ast): boolean {
     if (!ast.index) { ast.index = [] }
-    // word @ a, b, c
+    // word @ a  ... 『@』は一つにつき一次元。多次元は『A@1@2』のように『@』を並べる。(#2396)
     if (this.check('@')) {
-      if (this.accept(['@', this.yValue, 'comma', this.yValue, 'comma', this.yValue])) {
-        ast.index.push(this.checkArrayIndex(this.y[1]))
-        ast.index.push(this.checkArrayIndex(this.y[3]))
-        ast.index.push(this.checkArrayIndex(this.y[5]))
-        ast.index = this.checkArrayReverse(ast.index)
-        ast.josi = this.y[5].josi
-        return true
-      }
-      if (this.accept(['@', this.yValue, 'comma', this.yValue])) {
-        ast.index.push(this.checkArrayIndex(this.y[1]))
-        ast.index.push(this.checkArrayIndex(this.y[3]))
-        ast.index = this.checkArrayReverse(ast.index)
-        ast.josi = this.y[3].josi
-        return true
-      }
-      if (this.accept(['@', this.yValue])) {
+      if (this.accept(['@', this.yValueArrayIndex])) {
         ast.index.push(this.checkArrayIndex(this.y[1]))
         ast.josi = this.y[1].josi
+        // 廃止した『A@1,2』形式の書き方をチェックする (#2396)
+        this.checkRefArrayComma(ast)
         return true
       }
       throw NakoSyntaxError.fromNode('変数の後ろの『@要素』の指定が不正です。', ast)
@@ -2523,6 +2527,10 @@ export class NakoParser extends NakoParserBase {
       const t = this.getCur()
       const word = this.getVarNameRef(t)
 
+      // 『@』のインデックスを読んでいる最中は、後置アクセスを読まない (#2396)
+      // (例)『A@B@C』の『B』は B[C] ではなく、単なる変数 B として読む
+      if (this.flagNoPostfixIndex) { return word as any }
+
       // word[n] || word@n
       if ((word.josi === '' && this.checkTypes(['[', '@'])) || (word.josi !== '' && this.check('@'))) {
         const ast: Ast = {
@@ -2537,7 +2545,8 @@ export class NakoParser extends NakoParserBase {
           if (!this.yValueWordGetIndex(ast)) { break }
         }
         if (ast.index && ast.index.length === 0) { throw NakoSyntaxError.fromNode(`配列『${word.value}』アクセスで指定ミス`, word) }
-        return ast
+        // 『A@1$名前』のように、後ろに続くプロパティアクセスも読む (#2396)
+        return this.yRefArrayValue(ast) as Ast
       }
 
       // オブジェクトプロパティ構文(参照) word$prop (#1793)
@@ -2723,6 +2732,8 @@ export class NakoParser extends NakoParserBase {
 
   // 配列や(値)の直後にある配列アクセスやプロパティアクセスを調べる
   yRefArrayValue(value: Ast): Ast | AstBlocks | null {
+    // 『@』のインデックスを読んでいる最中は、後置アクセスを読まない (#2396)
+    if (this.flagNoPostfixIndex) { return value }
     let val: Ast = value
     for (;;) {
       // 配列の直後に@や[]があるか？
