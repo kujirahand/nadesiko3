@@ -1946,9 +1946,7 @@ export class NakoParser extends NakoParserBase {
     const astProps: Ast[] = []
     while (this.check2(['$', 'word']) || this.check2(['$', 'string'])) {
       this.get() // skip '$'
-      const prop = this.get() as Ast
-      prop.type = 'string'
-      astProps.push(prop)
+      astProps.push(this.get() as Ast)
     }
     if (!this.check('eq')) { return rollback() }
     this.get() // skip 'eq'
@@ -1956,6 +1954,9 @@ export class NakoParser extends NakoParserBase {
     if (astValue === null) { return rollback() }
     const name = (this.getVarName(wordToken) as AstStrValue).value
     if (astProps.length > 0) {
+      // ここまで来て初めてトークンを書き換える。
+      // 途中でrollback()するとトークンの書き換えだけが残ってしまうため。(#2396)
+      for (const prop of astProps) { prop.type = 'string' }
       return {
         type: 'let_prop',
         name,
@@ -2271,6 +2272,11 @@ export class NakoParser extends NakoParserBase {
         ast.josi = this.y[1].josi
         // 廃止した『A@1,2』形式の書き方をチェックする (#2396)
         this.checkRefArrayComma(ast)
+        // 『A@0$名前』のように続くプロパティも同じref_arrayに取り込む。
+        // 『A[0]$名前』と同じ形にすることで、増減文などの代入先としても使える。(#2396)
+        while (ast.josi === '' && (this.check2(['$', 'word']) || this.check2(['$', 'string']))) {
+          if (!this.yValueWordGetProp(ast)) { return false } // 助詞があればそこで終了
+        }
         return true
       }
       throw NakoSyntaxError.fromNode('変数の後ろの『@要素』の指定が不正です。', ast)
