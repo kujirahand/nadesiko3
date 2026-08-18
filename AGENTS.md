@@ -16,6 +16,14 @@
 - `demo/`: ブラウザ実行サンプル
 - `release/`: ビルド成果物
 - `doc/`, `docs/`: 開発・利用ドキュメント
+- `manual/`: ユーザー向けマニュアル --- リポジトリ `nadesiko3doc` のdataディレクトリのシンボリックリンク
+
+```sh
+# なでしこのマニュアルWikiをリンクして`manual`ディレクトリに配置する
+cd ..
+git clone git@github.com:kujirahand/nadesiko3doc.git
+ln -s ../nadesiko3doc/data manual
+```
 
 ## 実行形態とエントリポイント
 
