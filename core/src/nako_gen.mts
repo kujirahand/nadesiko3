@@ -765,6 +765,25 @@ export class NakoGen {
     return null
   }
 
+  /** エラーメッセージ用に変数名を分かりやすく整形する #2400 */
+  static getDispVarName (name: string): string {
+    // main__は省略して表示するように。 #1223
+    return name.replace(/^main__(.+)$/, '$1')
+  }
+
+  /**
+   * 定数への代入(書き換え)であればエラーを投げる #2400
+   * @param name 変数名
+   * @param node エラー位置を示すノード
+   * @param reason 「〜できません。」に続く理由の説明
+   */
+  checkVarWritable (name: string, node: Ast, reason: string): void {
+    const res = this.findVar(name)
+    if (res === null) { return }
+    if (!this.varslistSet[res.i].readonly.has(name)) { return }
+    throw NakoSyntaxError.fromNode(`定数『${NakoGen.getDispVarName(name)}』${reason}`, node)
+  }
+
   /**
    * 定義済みの変数の参照
    * @param {string} name
@@ -783,7 +802,7 @@ export class NakoGen {
       } else {
         if (this.warnUndefinedVar) {
           // main__は省略して表示するように。 #1223
-          const dispName = name.replace(/^main__(.+)$/, '$1')
+          const dispName = NakoGen.getDispVarName(name)
           this.__self.getLogger().warn(`変数『${dispName}』は定義されていません。`, position)
         }
       }
@@ -1242,6 +1261,8 @@ export class NakoGen {
     let loopVarSetter = ''
     if (node.word !== '') { // ループ変数を使う時
       const varName = node.word
+      // 定数はループ変数に指定できない #2400
+      this.checkVarWritable(varName, node, 'はループ変数に指定できません。別の変数名を指定してください。')
       this.varsSet.names.add(varName)
       loopVarSetter = this.varname_set(varName, varI)
     }
@@ -1325,6 +1346,8 @@ export class NakoGen {
     let taisyoPrefex = this.varname_set_sys('対象', loopValueVar)
     if (node.word !== '') { // 対象変数がある場合、対象は設定されない
       const valueVar = node.word
+      // 定数は『反復』のループ変数に指定できない #2400
+      this.checkVarWritable(valueVar, node, 'は『反復』のループ変数に指定できません。別の変数名を指定してください。')
       this.varsSet.names.add(valueVar)
       taisyoPrefex = this.varname_set(valueVar, loopValueVar)
     }
@@ -1971,6 +1994,8 @@ export class NakoGen {
     } else {
       // 変数名
       const name: string = (nodeName as AstStrValue).value
+      // 定数は増減できない #2400
+      this.checkVarWritable(name, node, 'は既に定義済みなので、値を増減することはできません。')
       let res = this.findVar(name, valueVar)
       if (res === null) {
         this.varsSet.names.add(name)
@@ -2028,10 +2053,7 @@ export class NakoGen {
       code = `${this.varname_set(name, value)};`
     } else {
       // 定数ならエラーを出す
-      if (this.varslistSet[res.i].readonly.has(name)) {
-        throw NakoSyntaxError.fromNode(
-          `定数『${name}』は既に定義済みなので、値を代入することはできません。`, node)
-      }
+      this.checkVarWritable(name, node, 'は既に定義済みなので、値を代入することはできません。')
       code = `${res.js_set};`
     }
     return ';' + this.convLineno(node, false) + code + '\n'
