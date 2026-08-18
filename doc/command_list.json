@@ -11922,6 +11922,20 @@
   },
   {
     "type": "定数",
+    "name": "HTTPメソッド",
+    "args": "",
+    "yomi": "HTTPめそっど",
+    "plugin": "plugin_httpserver",
+    "group": "基本プラグイン",
+    "target": [
+      "cnako"
+    ],
+    "category": "簡易HTTPサーバ",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L350",
+    "value": "''"
+  },
+  {
+    "type": "定数",
     "name": "GETデータ",
     "args": "",
     "yomi": "GETでーた",
@@ -11931,7 +11945,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L347",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L351",
     "value": "''"
   },
   {
@@ -11945,7 +11959,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L348",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L352",
     "value": "''"
   },
   {
@@ -11959,7 +11973,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L349",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L353",
     "value": "''"
   },
   {
@@ -11973,7 +11987,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L354",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L358",
     "description": "ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。"
   },
   {
@@ -11987,7 +12001,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L376",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L380",
     "description": "静的コンテンツのパスを指定。URLをPATHへマップする。"
   },
   {
@@ -12001,7 +12015,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L391",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L395",
     "description": "URLを指定して合致するリクエストが来たら処理を実行する。"
   },
   {
@@ -12015,7 +12029,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L409",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L413",
     "description": "受信時に、データSを出力する。"
   },
   {
@@ -12029,7 +12043,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L429",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L433",
     "description": "受信時にステータスコードNOで、ヘッダHEAD(辞書形式)を出力する。"
   },
   {
@@ -12043,7 +12057,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L446",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L450",
     "description": "受信時にヘッダ302(リダイレクト)を出力してURLへページを移動力する。"
   },
   {
