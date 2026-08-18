@@ -98,20 +98,22 @@ export default {
       return (new Date()).getMonth() + 1
     }
   },
-  '来月': { // @来月が何月かを返す // @らいげつ
+  '来月': { // @来月が何月かを返す(12月の場合は1を返す) // @らいげつ
     type: 'func',
     josi: [],
     pure: true,
     fn: function() {
-      return (new Date()).getMonth() + 2
+      // 12月の翌月は1月になるように調整する (#2412)
+      return ((new Date()).getMonth() + 1) % 12 + 1
     }
   },
-  '先月': { // @先月が何月かを返す // @せんげつ
+  '先月': { // @先月が何月かを返す(1月の場合は12を返す) // @せんげつ
     type: 'func',
     josi: [],
     pure: true,
     fn: function() {
-      return (new Date()).getMonth()
+      // 1月の前月は12月になるように調整する (#2412)
+      return ((new Date()).getMonth() + 11) % 12 + 1
     }
   },
   '曜日': { // @Sに指定した日付の曜日を返す。不正な日付の場合は今日の曜日を返す。 // @ようび
