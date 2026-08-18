@@ -130,6 +130,13 @@ manualディレクトリのマニュアル(`manual/{プラグイン名}/{命令�
 }}}
 ```
 
+DocTestは、次のコマンドで実行できます（詳しい仕様は`doc/doctest.md`を参照）。
+
+```sh
+npm run doctest          # manual以下のDocTestをまとめて実行
+npm run test:doctest     # テストとして実行(npm run test:node にも含まれる)
+```
+
 ## 関連リポジトリ
 
 - Issuesの中で`貯蔵庫`や`簡易エディタ`に言及することがあります。
