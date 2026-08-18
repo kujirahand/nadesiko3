@@ -3820,7 +3820,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L113",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L114",
     "description": "先月が何月かを返す(1月の場合は12を返す)"
   },
   {
@@ -3836,7 +3836,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L121",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L123",
     "description": "Sに指定した日付の曜日を返す。不正な日付の場合は今日の曜日を返す。"
   },
   {
@@ -3852,7 +3852,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L130",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L132",
     "description": "Sに指定した日付の曜日番号を番号で返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土)"
   },
   {
@@ -3868,7 +3868,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L140",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L142",
     "description": "日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換)"
   },
   {
@@ -3884,7 +3884,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L149",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L151",
     "description": "日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換)"
   },
   {
@@ -3900,7 +3900,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L158",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L160",
     "description": "UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換"
   },
   {
@@ -3916,7 +3916,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L167",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L169",
     "description": "UNIX時間TM(または日付文字列)を「YYYY/MM/DD HH:mm:ss」または「YY-M-D H:m:s」その他、W:曜日、WWW:曜日英、MMM:月英、ccc:ミリ秒の書式に変換"
   },
   {
@@ -3932,7 +3932,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L197",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L199",
     "description": "Sを和暦に変換する。Sは明治以降の日付が有効。"
   },
   {
@@ -3948,7 +3948,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L217",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L219",
     "description": "日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -3964,7 +3964,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L227",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L229",
     "description": "日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -3980,7 +3980,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L238",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L240",
     "description": "日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -3996,7 +3996,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L249",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L251",
     "description": "時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -4012,7 +4012,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L260",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L262",
     "description": "時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -4028,7 +4028,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L271",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L273",
     "description": "時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -4044,7 +4044,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L282",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L284",
     "description": "日時AとBの差を種類unitで返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -4060,7 +4060,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L298",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L300",
     "description": "時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。"
   },
   {
@@ -4076,7 +4076,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L317",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L319",
     "description": "日付SにAを加えて返す。Aには「(+｜-)yyyy/mm/dd」で指定する。"
   },
   {
@@ -4092,7 +4092,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L339",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L341",
     "description": "日時SにAを加えて返す。Aは「(+｜-)1(年/ヶ月/日/週/時間/分/秒)」のように指定する (v1非互換)。"
   },
   {
@@ -4108,7 +4108,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L357",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L359",
     "description": "ミリ秒単位の時間を数値で返す。結果は実装に依存する。"
   },
   {
