@@ -2168,6 +2168,8 @@ export class NakoGen {
         // 複数変数文では、二重定義も許容する #1027
         // throw NakoSyntaxError.fromNode(`${vtype}『${name}』の二重定義はできません。`, node)
       }
+      // ただし定数の上書きはできない #2406
+      this.checkVarWritable(name, node, 'は既に定義済みなので、値を代入することはできません。')
       this.varsSet.names.add(name)
       if (vtype === '定数') {
         this.varsSet.readonly.add(name)
