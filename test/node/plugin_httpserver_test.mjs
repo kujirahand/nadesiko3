@@ -236,4 +236,42 @@ describe('plugin_httpserver_test', () => {
       fs.writeFileSync = originalWriteFileSync
     }
   })
+
+  it('HTTPメソッドにGET/POST/PUT/DELETEが設定されること', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  「M={HTTPメソッド}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理」を「/method」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const request = (method) => new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/method',
+        method: method
+      }, (res) => {
+        let data = ''
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve(data) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+
+    assert.strictEqual(await request('GET'), 'M=GET')
+    assert.strictEqual(await request('POST'), 'M=POST')
+    assert.strictEqual(await request('PUT'), 'M=PUT')
+    assert.strictEqual(await request('DELETE'), 'M=DELETE')
+  })
 })
