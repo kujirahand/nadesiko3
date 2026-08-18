@@ -49,7 +49,7 @@ LINENO=0
 　　　　FをPHPプラグイン変換。
 　　　　結果を戻す。
 　　ここまで。
-　　もし、プラグイン名＝「plugin_browser」ならば
+　　もし、(プラグイン名＝「plugin_system」)または(プラグイン名＝「plugin_browser」)ならば
 　　　　FをプラグインREQUIRE読み込み。
 　　　　結果を戻す。
 　　違えば
