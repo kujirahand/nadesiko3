@@ -48,7 +48,10 @@ class EasyURLDispather {
   doRequest(req: any, res: any) {
     this.curReq = req
     this.curRes = res
-    console.log(`${HTTPSERVER_LOGID} 要求あり URL=` + req.url)
+    // HTTPメソッド(GET/POST/PUT/DELETEなど)を設定
+    const method = String(req.method || '').toUpperCase()
+    this.sys.__setSysVar('HTTPメソッド', method)
+    console.log(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
     const params = this.parseURL(req.url)
     const url = params['?URL']
     this.sys.__setSysVar('GETデータ', params)
@@ -68,7 +71,7 @@ class EasyURLDispather {
       }
     }
 
-    if (req.method === 'POST') {
+    if (method === 'POST') {
       let bodySize = 0
       const chunks: Buffer[] = []
       req.on('data', (chunk: Buffer) => {
@@ -344,6 +347,7 @@ const PluginHttpServer = {
     }
   },
   // @簡易HTTPサーバ
+  'HTTPメソッド': { type: 'const', value: '' }, // @HTTPめそっど
   'GETデータ': { type: 'const', value: '' }, // @GETでーた
   'POSTデータ': { type: 'const', value: '' }, // @POSTでーた
   'FILESデータ': { type: 'const', value: '' }, // @FILESでーた
