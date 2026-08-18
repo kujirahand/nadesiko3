@@ -3,6 +3,7 @@ import os from 'os'
 import fs from 'node:fs'
 import assert from 'assert'
 import path from 'path'
+import { spawnSync } from 'node:child_process'
 
 import { NakoCompiler } from '../../core/src/nako3.mjs'
 import PluginNode from '../../src/plugin_node.mjs'
@@ -432,5 +433,20 @@ CNTを表示
     } finally {
       fs.rmSync(tmp, { recursive: true })
     }
+  })
+  // --- プロセス終 (#2401) ---
+  // プロセスごと終了する命令なので、子プロセスを起動して終了コードを確認する
+  it('プロセス終', () => {
+    const cnako3Path = path.join(__dirname, '../../src/cnako3.mjs')
+    const run = (/** @type {string} */code) => spawnSync(
+      process.execPath, [cnako3Path, '-e', code], { encoding: 'utf8' })
+    // 任意の終了コードを指定できる
+    const r1 = run('「A」を表示。3でプロセス終わる。「B」を表示。')
+    assert.strictEqual(r1.status, 3)
+    assert.strictEqual(r1.stdout.trim(), 'A')
+    // 0を指定すれば正常終了になる
+    const r2 = run('「A」を表示。0でプロセス終わる。')
+    assert.strictEqual(r2.status, 0)
+    assert.strictEqual(r2.stdout.trim(), 'A')
   })
 })
