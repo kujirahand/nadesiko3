@@ -804,7 +804,7 @@
     "name": "JS実行",
     "args": "SRCを/SRCで",
     "yomi": "JSじっこう",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -820,7 +820,7 @@
     "name": "JSオブジェクト取得",
     "args": "NAMEの",
     "yomi": "JSおぶじぇくとしゅとく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -836,7 +836,7 @@
     "name": "JS関数実行",
     "args": "NAMEをARGSで",
     "yomi": "JSかんすうじっこう",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -852,7 +852,7 @@
     "name": "ASYNC",
     "args": "",
     "yomi": "ASYNC",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -868,7 +868,7 @@
     "name": "AWAIT実行",
     "args": "FをARGSで",
     "yomi": "AWAITじっこう",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -884,7 +884,7 @@
     "name": "JSメソッド実行",
     "args": "OBJのMをARGSで",
     "yomi": "JSめそっどじっこう",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -900,7 +900,7 @@
     "name": "ナデシコ",
     "args": "CODEを/CODEで",
     "yomi": "なでしこする",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -916,7 +916,7 @@
     "name": "ナデシコ続",
     "args": "CODEを/CODEで",
     "yomi": "なでしこつづける",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -932,7 +932,7 @@
     "name": "実行",
     "args": "Fを/Fに/Fで",
     "yomi": "じっこう",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -948,7 +948,7 @@
     "name": "実行時間計測",
     "args": "Fの",
     "yomi": "じっこうじかんけいそく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -964,7 +964,7 @@
     "name": "終",
     "args": "",
     "yomi": "おわる",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -980,7 +980,7 @@
     "name": "デバッグ表示",
     "args": "Sと/Sを/Sの",
     "yomi": "でばっぐひょうじ",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -996,7 +996,7 @@
     "name": "ハテナ関数設定",
     "args": "Sを/Sの",
     "yomi": "はてなかんすうせってい",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1012,7 +1012,7 @@
     "name": "ハテナ関数実行",
     "args": "Sの/Sを/Sと",
     "yomi": "はてなかんすうじっこう",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1028,7 +1028,7 @@
     "name": "エラー発生",
     "args": "Sの/Sで",
     "yomi": "えらーはっせい",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1044,7 +1044,7 @@
     "name": "__DEBUG",
     "args": "",
     "yomi": "__DEBUG",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1060,7 +1060,7 @@
     "name": "__DEBUG強制待機",
     "args": "",
     "yomi": "__DEBUGきょうせいたいき",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1076,7 +1076,7 @@
     "name": "__DEBUGブレイクポイント一覧",
     "args": "",
     "yomi": "__DEBUGぶれいくぽいんといちらん",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1092,7 +1092,7 @@
     "name": "__DEBUG待機フラグ",
     "args": "",
     "yomi": "__DEBUGたいきふらぐ",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1108,7 +1108,7 @@
     "name": "__DEBUG_BP_WAIT",
     "args": "CURLINEで",
     "yomi": "__DEBUG_BP_WAIT",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1124,7 +1124,7 @@
     "name": "グローバル関数一覧取得",
     "args": "",
     "yomi": "ぐろーばるかんすういちらんしゅとく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1140,7 +1140,7 @@
     "name": "システム関数一覧取得",
     "args": "",
     "yomi": "しすてむかんすういちらんしゅとく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1156,7 +1156,7 @@
     "name": "システム関数存在",
     "args": "FNAMEが/FNAMEの",
     "yomi": "しすてむかんすうそんざい",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1172,7 +1172,7 @@
     "name": "プラグイン一覧取得",
     "args": "",
     "yomi": "ぷらぐいんいちらんしゅとく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1188,7 +1188,7 @@
     "name": "モジュール一覧取得",
     "args": "",
     "yomi": "もじゅーるいちらんしゅとく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1204,7 +1204,7 @@
     "name": "助詞一覧取得",
     "args": "",
     "yomi": "じょしいちらんしゅとく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1220,7 +1220,7 @@
     "name": "予約語一覧取得",
     "args": "",
     "yomi": "よやくごいちらんしゅとく",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1236,7 +1236,7 @@
     "name": "プラグイン名",
     "args": "",
     "yomi": "ぷらぐいんめい",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1252,7 +1252,7 @@
     "name": "プラグイン名設定",
     "args": "Sに/Sへ",
     "yomi": "ぷらぐいんめいせってい",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1268,7 +1268,7 @@
     "name": "名前空間",
     "args": "",
     "yomi": "なまえくうかん",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1284,7 +1284,7 @@
     "name": "名前空間設定",
     "args": "Sに/Sへ",
     "yomi": "なまえくうかんせってい",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1300,7 +1300,7 @@
     "name": "名前空間ポップ",
     "args": "",
     "yomi": "なまえくうかんぽっぷ",
-    "plugin": "plugin_system_debug",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1316,7 +1316,7 @@
     "name": "足",
     "args": "AにBを/Aと",
     "yomi": "たす",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1332,7 +1332,7 @@
     "name": "合計",
     "args": "...Aと/...Aを/...Aの",
     "yomi": "ごうけい",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1348,7 +1348,7 @@
     "name": "引",
     "args": "AからBを",
     "yomi": "ひく",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1364,7 +1364,7 @@
     "name": "掛",
     "args": "AにBを/Aと",
     "yomi": "かける",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1380,7 +1380,7 @@
     "name": "倍",
     "args": "AのB/Aを",
     "yomi": "ばい",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1396,7 +1396,7 @@
     "name": "割",
     "args": "AをBで",
     "yomi": "わる",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1412,7 +1412,7 @@
     "name": "割余",
     "args": "AをBで",
     "yomi": "わったあまり",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1428,7 +1428,7 @@
     "name": "偶数",
     "args": "Aが",
     "yomi": "ぐうすう",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1444,7 +1444,7 @@
     "name": "奇数",
     "args": "Aが",
     "yomi": "きすう",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1460,7 +1460,7 @@
     "name": "二乗",
     "args": "Aの/Aを",
     "yomi": "にじょう",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1476,7 +1476,7 @@
     "name": "べき乗",
     "args": "AのBの",
     "yomi": "べきじょう",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1492,7 +1492,7 @@
     "name": "以上",
     "args": "AがB",
     "yomi": "いじょう",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1508,7 +1508,7 @@
     "name": "以下",
     "args": "AがB",
     "yomi": "いか",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1524,7 +1524,7 @@
     "name": "未満",
     "args": "AがB",
     "yomi": "みまん",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1540,7 +1540,7 @@
     "name": "超",
     "args": "AがB",
     "yomi": "ちょう",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1556,7 +1556,7 @@
     "name": "等",
     "args": "AがBと",
     "yomi": "ひとしい",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1572,7 +1572,7 @@
     "name": "等無",
     "args": "AがBと",
     "yomi": "ひとしくない",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1588,7 +1588,7 @@
     "name": "一致",
     "args": "AがBと",
     "yomi": "いっち",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1604,7 +1604,7 @@
     "name": "不一致",
     "args": "AがBと",
     "yomi": "ふいっち",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1620,7 +1620,7 @@
     "name": "範囲内",
     "args": "VがAからBの/Bまでの",
     "yomi": "はんいない",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1636,7 +1636,7 @@
     "name": "範囲",
     "args": "AからBの/Bまでの",
     "yomi": "はんい",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1652,7 +1652,7 @@
     "name": "連続加算",
     "args": "Bを...Aに/...Aと",
     "yomi": "れんぞくかさん",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1668,7 +1668,7 @@
     "name": "MAX",
     "args": "Bの...Aと",
     "yomi": "MAX",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1684,7 +1684,7 @@
     "name": "最大値",
     "args": "Bの...Aと",
     "yomi": "さいだいち",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1700,7 +1700,7 @@
     "name": "MIN",
     "args": "Bの...Aと",
     "yomi": "MIN",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1716,7 +1716,7 @@
     "name": "最小値",
     "args": "Bの...Aと",
     "yomi": "さいしょうち",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1732,7 +1732,7 @@
     "name": "CLAMP",
     "args": "XのAからBまでの/XをBで",
     "yomi": "CLAMP",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1748,7 +1748,7 @@
     "name": "論理OR",
     "args": "AとBの",
     "yomi": "ろんりOR",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1764,7 +1764,7 @@
     "name": "論理AND",
     "args": "AとBの",
     "yomi": "ろんりAND",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1780,7 +1780,7 @@
     "name": "論理NOT",
     "args": "Vの",
     "yomi": "ろんりNOT",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1796,7 +1796,7 @@
     "name": "OR",
     "args": "AとBの",
     "yomi": "OR",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1812,7 +1812,7 @@
     "name": "AND",
     "args": "AとBの",
     "yomi": "AND",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1828,7 +1828,7 @@
     "name": "XOR",
     "args": "AとBの",
     "yomi": "XOR",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1844,7 +1844,7 @@
     "name": "NOT",
     "args": "Vの",
     "yomi": "NOT",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1860,7 +1860,7 @@
     "name": "SHIFT_L",
     "args": "VをAで",
     "yomi": "SHIFT_L",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1876,7 +1876,7 @@
     "name": "SHIFT_R",
     "args": "VをAで",
     "yomi": "SHIFT_R",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1892,7 +1892,7 @@
     "name": "SHIFT_UR",
     "args": "VをAで",
     "yomi": "SHIFT_UR",
-    "plugin": "plugin_system_math",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1908,7 +1908,7 @@
     "name": "文字数",
     "args": "Vの",
     "yomi": "もじすう",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1924,7 +1924,7 @@
     "name": "何文字目",
     "args": "SでAが/Sの",
     "yomi": "なんもじめ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1940,7 +1940,7 @@
     "name": "CHR",
     "args": "Vの",
     "yomi": "CHR",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1956,7 +1956,7 @@
     "name": "ASC",
     "args": "Vの",
     "yomi": "ASC",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1972,7 +1972,7 @@
     "name": "文字挿入",
     "args": "SでIにAを/SのIへ",
     "yomi": "もじそうにゅう",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -1988,7 +1988,7 @@
     "name": "文字検索",
     "args": "SでAからBを/Sの",
     "yomi": "もじけんさく",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2004,7 +2004,7 @@
     "name": "追加",
     "args": "SでAを/Sに/Sへ",
     "yomi": "ついか",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2020,7 +2020,7 @@
     "name": "一行追加",
     "args": "SでAを/Sに/Sへ",
     "yomi": "いちぎょうついか",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2036,7 +2036,7 @@
     "name": "連結",
     "args": "...Aと/...Aを",
     "yomi": "れんけつ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2052,7 +2052,7 @@
     "name": "文字列連結",
     "args": "...Aと/...Aを",
     "yomi": "もじれつれんけつ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2068,7 +2068,7 @@
     "name": "文字列分解",
     "args": "Vを/Vの/Vで",
     "yomi": "もじれつぶんかい",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2084,7 +2084,7 @@
     "name": "リフレイン",
     "args": "VをCNTで/Vの",
     "yomi": "りふれいん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2100,7 +2100,7 @@
     "name": "出現回数",
     "args": "SでAの",
     "yomi": "しゅつげんかいすう",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2116,7 +2116,7 @@
     "name": "MID",
     "args": "SでAからCNTを/Sの",
     "yomi": "MID",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2132,7 +2132,7 @@
     "name": "文字抜出",
     "args": "SでAからCNTを/SのCNT",
     "yomi": "もじぬきだす",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2148,7 +2148,7 @@
     "name": "LEFT",
     "args": "SのCNTだけ/Sで",
     "yomi": "LEFT",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2164,7 +2164,7 @@
     "name": "文字左部分",
     "args": "SのCNTだけ/SでCNT",
     "yomi": "もじひだりぶぶん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2180,7 +2180,7 @@
     "name": "RIGHT",
     "args": "SのCNTだけ/Sで",
     "yomi": "RIGHT",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2196,7 +2196,7 @@
     "name": "文字右部分",
     "args": "SのCNTだけ/SでCNT",
     "yomi": "もじみぎぶぶん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2212,7 +2212,7 @@
     "name": "区切",
     "args": "SのAで/Sを",
     "yomi": "くぎる",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2228,7 +2228,7 @@
     "name": "文字列分割",
     "args": "SをAで",
     "yomi": "もじれつぶんかつ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2244,7 +2244,7 @@
     "name": "切取",
     "args": "SからAまで/SのAを",
     "yomi": "きりとる",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2260,7 +2260,7 @@
     "name": "範囲切取",
     "args": "SでAからBまで/SのBを",
     "yomi": "はんいきりとる",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2276,7 +2276,7 @@
     "name": "文字削除",
     "args": "SのAからBだけ/Bを/B",
     "yomi": "もじさくじょ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2292,7 +2292,7 @@
     "name": "文字始",
     "args": "SがAで/Aから",
     "yomi": "もじはじまる",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2308,7 +2308,7 @@
     "name": "文字終",
     "args": "SがAで",
     "yomi": "もじおわる",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2324,7 +2324,7 @@
     "name": "出現",
     "args": "SにAが/Sで",
     "yomi": "しゅつげん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2340,7 +2340,7 @@
     "name": "置換",
     "args": "SのAをBに/SでAからBへ",
     "yomi": "ちかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2356,7 +2356,7 @@
     "name": "単置換",
     "args": "SのAをBに/SでBへ",
     "yomi": "たんちかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2372,7 +2372,7 @@
     "name": "トリム",
     "args": "Sの/Sを",
     "yomi": "とりむ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2388,7 +2388,7 @@
     "name": "空白除去",
     "args": "Sの/Sを",
     "yomi": "くうはくじょきょ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2404,7 +2404,7 @@
     "name": "右トリム",
     "args": "Sの/Sを",
     "yomi": "みぎとりむ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2420,7 +2420,7 @@
     "name": "左トリム",
     "args": "Sの/Sを",
     "yomi": "ひだりとりむ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2436,7 +2436,7 @@
     "name": "末尾空白除去",
     "args": "Sの/Sを",
     "yomi": "まつびくうはくじょきょ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2452,7 +2452,7 @@
     "name": "大文字変換",
     "args": "Sの/Sを",
     "yomi": "おおもじへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2468,7 +2468,7 @@
     "name": "小文字変換",
     "args": "Sの/Sを",
     "yomi": "こもじへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2484,7 +2484,7 @@
     "name": "平仮名変換",
     "args": "Sの/Sを",
     "yomi": "ひらがなへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2500,7 +2500,7 @@
     "name": "カタカナ変換",
     "args": "Sの/Sを",
     "yomi": "かたかなへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2516,7 +2516,7 @@
     "name": "英数全角変換",
     "args": "Sの/Sを",
     "yomi": "えいすうぜんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2532,7 +2532,7 @@
     "name": "英数半角変換",
     "args": "Sの/Sを",
     "yomi": "えいすうはんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2548,7 +2548,7 @@
     "name": "英数記号全角変換",
     "args": "Sの/Sを",
     "yomi": "えいすうきごうぜんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2564,7 +2564,7 @@
     "name": "英数記号半角変換",
     "args": "Sの/Sを",
     "yomi": "えいすうきごうはんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2580,7 +2580,7 @@
     "name": "カタカナ全角変換",
     "args": "Sの/Sを",
     "yomi": "かたかなぜんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2596,7 +2596,7 @@
     "name": "カタカナ半角変換",
     "args": "Sの/Sを",
     "yomi": "かたかなはんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2612,7 +2612,7 @@
     "name": "全角変換",
     "args": "Sの/Sを",
     "yomi": "ぜんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2628,7 +2628,7 @@
     "name": "半角変換",
     "args": "Sの/Sを",
     "yomi": "はんかくへんかん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2644,7 +2644,7 @@
     "name": "全角カナ一覧",
     "args": "",
     "yomi": "ぜんかくかないちらん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2660,7 +2660,7 @@
     "name": "全角カナ濁音一覧",
     "args": "",
     "yomi": "ぜんかくかなだくおんいちらん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2676,7 +2676,7 @@
     "name": "半角カナ一覧",
     "args": "",
     "yomi": "はんかくかないちらん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2692,7 +2692,7 @@
     "name": "半角カナ濁音一覧",
     "args": "",
     "yomi": "はんかくかなだくおんいちらん",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2708,7 +2708,7 @@
     "name": "通貨形式",
     "args": "Vを/Vの",
     "yomi": "つうかけいしき",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2724,7 +2724,7 @@
     "name": "ゼロ埋",
     "args": "VをAで",
     "yomi": "ぜろうめ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2740,7 +2740,7 @@
     "name": "空白埋",
     "args": "VをAで",
     "yomi": "くうはくうめ",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2756,7 +2756,7 @@
     "name": "かなか判定",
     "args": "Sを/Sの/Sが",
     "yomi": "かなかはんてい",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2772,7 +2772,7 @@
     "name": "カタカナ判定",
     "args": "Sを/Sの/Sが",
     "yomi": "かたかなかはんてい",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2788,7 +2788,7 @@
     "name": "数字判定",
     "args": "Sを/Sが",
     "yomi": "すうじかはんてい",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2804,7 +2804,7 @@
     "name": "数列判定",
     "args": "Sを/Sが",
     "yomi": "すうれつかはんてい",
-    "plugin": "plugin_system_string",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2820,7 +2820,7 @@
     "name": "配列結合",
     "args": "AをSで",
     "yomi": "はいれつけつごう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2836,7 +2836,7 @@
     "name": "配列只結合",
     "args": "Aを",
     "yomi": "はいれつただけつごう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2852,7 +2852,7 @@
     "name": "配列検索",
     "args": "AのSを/Aから",
     "yomi": "はいれつけんさく",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2868,7 +2868,7 @@
     "name": "配列要素数",
     "args": "Aの",
     "yomi": "はいれつようそすう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2884,7 +2884,7 @@
     "name": "要素数",
     "args": "Aの",
     "yomi": "ようそすう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2900,7 +2900,7 @@
     "name": "LEN",
     "args": "Aの",
     "yomi": "LEN",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2916,7 +2916,7 @@
     "name": "配列挿入",
     "args": "AのIにSを/Iへ",
     "yomi": "はいれつそうにゅう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2932,7 +2932,7 @@
     "name": "配列一括挿入",
     "args": "AのIにBを/Iへ",
     "yomi": "はいれついっかつそうにゅう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2948,7 +2948,7 @@
     "name": "配列ソート",
     "args": "Aの/Aを",
     "yomi": "はいれつそーと",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2964,7 +2964,7 @@
     "name": "配列数値変換",
     "args": "Aの/Aを",
     "yomi": "はいれつすうちへんかん",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2980,7 +2980,7 @@
     "name": "配列数値ソート",
     "args": "Aの/Aを",
     "yomi": "はいれつすうちそーと",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -2996,7 +2996,7 @@
     "name": "配列カスタムソート",
     "args": "FでAの/Aを",
     "yomi": "はいれつかすたむそーと",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3012,7 +3012,7 @@
     "name": "配列逆順",
     "args": "Aの/Aを",
     "yomi": "はいれつぎゃくじゅん",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3028,7 +3028,7 @@
     "name": "配列シャッフル",
     "args": "Aの/Aを",
     "yomi": "はいれつしゃっふる",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3044,7 +3044,7 @@
     "name": "配列削除",
     "args": "AのIを/Aから",
     "yomi": "はいれつさくじょ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3060,7 +3060,7 @@
     "name": "配列切取",
     "args": "AのIを/Aから",
     "yomi": "はいれつきりとる",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3076,7 +3076,7 @@
     "name": "配列取出",
     "args": "AのIからCNTを",
     "yomi": "はいれつとりだし",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3092,7 +3092,7 @@
     "name": "配列ポップ",
     "args": "Aの/Aから",
     "yomi": "はいれつぽっぷ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3108,7 +3108,7 @@
     "name": "配列プッシュ",
     "args": "AにBを/Aへ",
     "yomi": "はいれつぷっしゅ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3124,7 +3124,7 @@
     "name": "配列追加",
     "args": "AにBを/Aへ",
     "yomi": "はいれつついか",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3140,7 +3140,7 @@
     "name": "配列複製",
     "args": "Aを",
     "yomi": "はいれつふくせい",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3156,7 +3156,7 @@
     "name": "配列範囲コピー",
     "args": "AのIを/Aから",
     "yomi": "はいれつはんいこぴー",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3172,7 +3172,7 @@
     "name": "参照",
     "args": "AからIを/Aの",
     "yomi": "さんしょう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3188,7 +3188,7 @@
     "name": "配列参照",
     "args": "AのIを/Aから",
     "yomi": "はいれつはんいさんしょう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3204,7 +3204,7 @@
     "name": "配列足",
     "args": "AにBを/Aへ/Aと",
     "yomi": "はいれつたす",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3220,7 +3220,7 @@
     "name": "配列最大値",
     "args": "Aの",
     "yomi": "はいれつさいだいち",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3236,7 +3236,7 @@
     "name": "配列最小値",
     "args": "Aの",
     "yomi": "はいれつさいしょうち",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3252,7 +3252,7 @@
     "name": "配列合計",
     "args": "Aの",
     "yomi": "はいれつごうけい",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3268,7 +3268,7 @@
     "name": "配列入替",
     "args": "AのIとJを",
     "yomi": "はいれついれかえ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3284,7 +3284,7 @@
     "name": "配列連番作成",
     "args": "AからBまでの/Bまで/Bの",
     "yomi": "はいれつれんばんさくせい",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3300,7 +3300,7 @@
     "name": "配列要素作成",
     "args": "AをBだけ/Bで",
     "yomi": "はいれつようそさくせい",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3316,7 +3316,7 @@
     "name": "配列関数適用",
     "args": "FをAへ/Aに",
     "yomi": "はいれつかんすうてきよう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3332,7 +3332,7 @@
     "name": "配列マップ",
     "args": "FをAへ/Aに",
     "yomi": "はいれつまっぷ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3348,7 +3348,7 @@
     "name": "配列フィルタ",
     "args": "FでAを/FのAについて",
     "yomi": "はいれつふぃるた",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3364,7 +3364,7 @@
     "name": "表ソート",
     "args": "AのNOを",
     "yomi": "ひょうそーと",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3380,7 +3380,7 @@
     "name": "表数値ソート",
     "args": "AのNOを",
     "yomi": "ひょうすうちそーと",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3396,7 +3396,7 @@
     "name": "表ピックアップ",
     "args": "AのNOからSを/Sで",
     "yomi": "ひょうぴっくあっぷ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3412,7 +3412,7 @@
     "name": "表完全一致ピックアップ",
     "args": "AのNOからSを/Sで",
     "yomi": "ひょうかんぜんいっちぴっくあっぷ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3428,7 +3428,7 @@
     "name": "表検索",
     "args": "AのCOLでROWからSを/COLに",
     "yomi": "ひょうけんさく",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3444,7 +3444,7 @@
     "name": "表列数",
     "args": "Aの",
     "yomi": "ひょうれつすう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3460,7 +3460,7 @@
     "name": "表行数",
     "args": "Aの",
     "yomi": "ひょうぎょうすう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3476,7 +3476,7 @@
     "name": "表行列交換",
     "args": "Aの/Aを",
     "yomi": "ひょうぎょうれつこうかん",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3492,7 +3492,7 @@
     "name": "表右回転",
     "args": "Aの/Aを",
     "yomi": "ひょうみぎかいてん",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3508,7 +3508,7 @@
     "name": "表重複削除",
     "args": "AのIを/Iで",
     "yomi": "ひょうじゅうふくさくじょ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3524,7 +3524,7 @@
     "name": "表列取得",
     "args": "AのIを",
     "yomi": "ひょうれつしゅとく",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3540,7 +3540,7 @@
     "name": "表列挿入",
     "args": "AのIにSを/Iへ",
     "yomi": "ひょうれつそうにゅう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3556,7 +3556,7 @@
     "name": "表列削除",
     "args": "AのIを",
     "yomi": "ひょうれつそうにゅう",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3572,7 +3572,7 @@
     "name": "表列合計",
     "args": "AのIを/Iで",
     "yomi": "ひょうれつごうけい",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3588,7 +3588,7 @@
     "name": "表曖昧検索",
     "args": "AのROWからCOLでSを",
     "yomi": "ひょうあいまいけんさく",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3604,7 +3604,7 @@
     "name": "表正規表現ピックアップ",
     "args": "AのCOLからSを/Aで",
     "yomi": "ひょうせいきひょうげんぴっくあっぷ",
-    "plugin": "plugin_system_array",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3620,7 +3620,7 @@
     "name": "元号データ",
     "args": "",
     "yomi": "げんごうでーた",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3636,7 +3636,7 @@
     "name": "今",
     "args": "",
     "yomi": "いま",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3652,7 +3652,7 @@
     "name": "システム時間",
     "args": "",
     "yomi": "しすてむじかん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3668,7 +3668,7 @@
     "name": "システム時間ミリ秒",
     "args": "",
     "yomi": "しすてむじかんみりびょう",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3684,7 +3684,7 @@
     "name": "今日",
     "args": "",
     "yomi": "きょう",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3700,7 +3700,7 @@
     "name": "明日",
     "args": "",
     "yomi": "あした",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3716,7 +3716,7 @@
     "name": "昨日",
     "args": "",
     "yomi": "きのう",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3732,7 +3732,7 @@
     "name": "今年",
     "args": "",
     "yomi": "ことし",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3748,7 +3748,7 @@
     "name": "来年",
     "args": "",
     "yomi": "らいねん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3764,7 +3764,7 @@
     "name": "去年",
     "args": "",
     "yomi": "きょねん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3780,7 +3780,7 @@
     "name": "今月",
     "args": "",
     "yomi": "こんげつ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3796,7 +3796,7 @@
     "name": "来月",
     "args": "",
     "yomi": "らいげつ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3812,7 +3812,7 @@
     "name": "先月",
     "args": "",
     "yomi": "せんげつ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3828,7 +3828,7 @@
     "name": "曜日",
     "args": "Sの",
     "yomi": "ようび",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3844,7 +3844,7 @@
     "name": "曜日番号取得",
     "args": "Sの",
     "yomi": "ようびばんごうしゅとく",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3860,7 +3860,7 @@
     "name": "UNIXTIME変換",
     "args": "Sの/Sを/Sから",
     "yomi": "UNIXTIMEへんかん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3876,7 +3876,7 @@
     "name": "UNIX時間変換",
     "args": "Sの/Sを/Sから",
     "yomi": "UNIXじかんへんかん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3892,7 +3892,7 @@
     "name": "日時変換",
     "args": "TMを/TMから",
     "yomi": "にちじへんかん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3908,7 +3908,7 @@
     "name": "日時書式変換",
     "args": "TMをFMTで",
     "yomi": "にちじしょしきへんかん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3924,7 +3924,7 @@
     "name": "和暦変換",
     "args": "Sを",
     "yomi": "われきへんかん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3940,7 +3940,7 @@
     "name": "年数差",
     "args": "AとBの/AからBまでの",
     "yomi": "ねんすうさ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3956,7 +3956,7 @@
     "name": "月数差",
     "args": "AとBの/AからBまでの",
     "yomi": "げっすうさ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3972,7 +3972,7 @@
     "name": "日数差",
     "args": "AとBの/AからBまでの",
     "yomi": "にっすうさ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -3988,7 +3988,7 @@
     "name": "時間差",
     "args": "AとBの/AからBまでの",
     "yomi": "じかんさ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4004,7 +4004,7 @@
     "name": "分差",
     "args": "AとBの/AからBまでの",
     "yomi": "ふんさ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4020,7 +4020,7 @@
     "name": "秒差",
     "args": "AとBの/AからBまでの",
     "yomi": "びょうさ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4036,7 +4036,7 @@
     "name": "日時差",
     "args": "AとBのUNITによる/AからBまでの",
     "yomi": "にちじさ",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4052,7 +4052,7 @@
     "name": "時間加算",
     "args": "SにAを",
     "yomi": "じかんかさん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4068,7 +4068,7 @@
     "name": "日付加算",
     "args": "SにAを",
     "yomi": "ひづけかさん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4084,7 +4084,7 @@
     "name": "日時加算",
     "args": "SにAを",
     "yomi": "にちじかさん",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4100,7 +4100,7 @@
     "name": "時間ミリ秒取得",
     "args": "",
     "yomi": "じかんみりびょうしゅとく",
-    "plugin": "plugin_system_datetime",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4116,7 +4116,7 @@
     "name": "URLエンコード",
     "args": "TEXTを/TEXTから",
     "yomi": "URLえんこーど",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4132,7 +4132,7 @@
     "name": "URLデコード",
     "args": "TEXTを/TEXTへ/TEXTに",
     "yomi": "URLでこーど",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4148,7 +4148,7 @@
     "name": "URLパラメータ解析",
     "args": "URLを/URLの/URLから",
     "yomi": "URLぱらめーたかいせき",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4164,7 +4164,7 @@
     "name": "BASE64エンコード",
     "args": "TEXTを/TEXTから",
     "yomi": "BASE64えんこーど",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4180,7 +4180,7 @@
     "name": "BASE64デコード",
     "args": "TEXTを/TEXTへ/TEXTに",
     "yomi": "BASE64でこーど",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4196,7 +4196,7 @@
     "name": "拡張子抽出",
     "args": "FNAMEから/FNAMEの",
     "yomi": "かくちょうしちゅうしゅつ",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4212,7 +4212,7 @@
     "name": "拡張子変更",
     "args": "FNAMEのEXTに/FNAMEをEXTへ/FNAMEから",
     "yomi": "かくちょうしへんこう",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4228,7 +4228,7 @@
     "name": "終端パス追加",
     "args": "PATHに/PATHへ",
     "yomi": "しゅうたんぱすついか",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4244,7 +4244,7 @@
     "name": "終端パス除去",
     "args": "DIRの/DIRから",
     "yomi": "しゅうたんぱすじょきょ",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4260,7 +4260,7 @@
     "name": "終端パス削除",
     "args": "DIRの/DIRから",
     "yomi": "しゅうたんぱすさくじょ",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4276,7 +4276,7 @@
     "name": "ファイル名抽出",
     "args": "DIRの/DIRから",
     "yomi": "ふぁいるめいちゅうしゅつ",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4292,7 +4292,7 @@
     "name": "パス抽出",
     "args": "DIRの/DIRから",
     "yomi": "ぱすちゅうしゅつ",
-    "plugin": "plugin_system_url",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4308,7 +4308,7 @@
     "name": "変数型確認",
     "args": "Vの",
     "yomi": "へんすうかたかくにん",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4324,7 +4324,7 @@
     "name": "TYPEOF",
     "args": "Vの",
     "yomi": "TYPEOF",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4340,7 +4340,7 @@
     "name": "文字列変換",
     "args": "Vを",
     "yomi": "もじれつへんかん",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4356,7 +4356,7 @@
     "name": "TOSTR",
     "args": "Vを",
     "yomi": "TOSTR",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4372,7 +4372,7 @@
     "name": "整数変換",
     "args": "Vを",
     "yomi": "せいすうへんかん",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4388,7 +4388,7 @@
     "name": "TOINT",
     "args": "Vを",
     "yomi": "TOINT",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4404,7 +4404,7 @@
     "name": "実数変換",
     "args": "Vを",
     "yomi": "じっすうへんかん",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4420,7 +4420,7 @@
     "name": "TOFLOAT",
     "args": "Vを",
     "yomi": "TOFLOAT",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4436,7 +4436,7 @@
     "name": "INT",
     "args": "Vの",
     "yomi": "INT",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4452,7 +4452,7 @@
     "name": "FLOAT",
     "args": "Vの",
     "yomi": "FLOAT",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4468,7 +4468,7 @@
     "name": "NAN判定",
     "args": "Vを",
     "yomi": "NANはんてい",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4484,7 +4484,7 @@
     "name": "非数判定",
     "args": "Vを",
     "yomi": "ひすうはんてい",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4500,7 +4500,7 @@
     "name": "HEX",
     "args": "Aの",
     "yomi": "HEX",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4516,7 +4516,7 @@
     "name": "進数変換",
     "args": "VをN/Vの",
     "yomi": "しんすうへんかん",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4532,7 +4532,7 @@
     "name": "二進",
     "args": "Vを/Vの/Vから",
     "yomi": "にしん",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4548,7 +4548,7 @@
     "name": "二進表示",
     "args": "Vを/Vの/Vから",
     "yomi": "にしんひょうじ",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4564,7 +4564,7 @@
     "name": "RGB",
     "args": "RとGのBで",
     "yomi": "RGB",
-    "plugin": "plugin_system_types",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4580,7 +4580,7 @@
     "name": "JSON変換",
     "args": "Vを/Vの/Vから",
     "yomi": "JSONへんかん",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4596,7 +4596,7 @@
     "name": "JSON取得",
     "args": "Vを/Vの/Vから",
     "yomi": "JSONしゅとく",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4612,7 +4612,7 @@
     "name": "JSONエンコード",
     "args": "Vを/Vの",
     "yomi": "JSONえんこーど",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4628,7 +4628,7 @@
     "name": "JSONエンコード整形",
     "args": "Vを/Vの",
     "yomi": "JSONえんこーどせいけい",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4644,7 +4644,7 @@
     "name": "JSONデコード",
     "args": "Sを/Sの/Sから",
     "yomi": "JSONでこーど",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4660,7 +4660,7 @@
     "name": "JSON_E",
     "args": "Vを/Vの",
     "yomi": "JSON_E",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4676,7 +4676,7 @@
     "name": "JSON_ES",
     "args": "Vを/Vの",
     "yomi": "JSON_ES",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4692,7 +4692,7 @@
     "name": "JSON_D",
     "args": "Sを/Sの/Sから",
     "yomi": "JSON_D",
-    "plugin": "plugin_system_json",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4708,7 +4708,7 @@
     "name": "正規表現マッチ",
     "args": "AをBで/AがBに",
     "yomi": "せいきひょうげんまっち",
-    "plugin": "plugin_system_regexp",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4724,7 +4724,7 @@
     "name": "正規表現抽出",
     "args": "AからBで/Aを",
     "yomi": "せいきひょうげんちゅうしゅつ",
-    "plugin": "plugin_system_regexp",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4740,7 +4740,7 @@
     "name": "抽出文字列",
     "args": "",
     "yomi": "ちゅうしゅつもじれつ",
-    "plugin": "plugin_system_regexp",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4756,7 +4756,7 @@
     "name": "正規表現置換",
     "args": "SのAをBで/AからBに/Bへ",
     "yomi": "せいきひょうげんちかん",
-    "plugin": "plugin_system_regexp",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4772,7 +4772,7 @@
     "name": "正規表現区切",
     "args": "SをAで",
     "yomi": "せいきひょうげんくぎる",
-    "plugin": "plugin_system_regexp",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4788,7 +4788,7 @@
     "name": "辞書キー列挙",
     "args": "Aの",
     "yomi": "じしょきーれっきょ",
-    "plugin": "plugin_system_dict",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4804,7 +4804,7 @@
     "name": "辞書キー削除",
     "args": "AからKEYを/Aの",
     "yomi": "じしょきーさくじょ",
-    "plugin": "plugin_system_dict",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4820,7 +4820,7 @@
     "name": "辞書キー存在",
     "args": "AのKEYが/Aに",
     "yomi": "じしょきーそんざい",
-    "plugin": "plugin_system_dict",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4836,7 +4836,7 @@
     "name": "ハッシュキー列挙",
     "args": "Aの",
     "yomi": "はっしゅきーれっきょ",
-    "plugin": "plugin_system_dict",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4852,7 +4852,7 @@
     "name": "ハッシュ内容列挙",
     "args": "Aの",
     "yomi": "はっしゅないようれっきょ",
-    "plugin": "plugin_system_dict",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4868,7 +4868,7 @@
     "name": "ハッシュキー削除",
     "args": "AからKEYを/Aの",
     "yomi": "はっしゅきーさくじょ",
-    "plugin": "plugin_system_dict",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4884,7 +4884,7 @@
     "name": "ハッシュキー存在",
     "args": "AのKEYが/Aに",
     "yomi": "はっしゅきーそんざい",
-    "plugin": "plugin_system_dict",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4900,7 +4900,7 @@
     "name": "表示",
     "args": "Sを/Sと",
     "yomi": "ひょうじ",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4916,7 +4916,7 @@
     "name": "継続表示",
     "args": "Sを/Sと",
     "yomi": "けいぞくひょうじ",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4932,7 +4932,7 @@
     "name": "連続表示",
     "args": "...Aと/...Aを",
     "yomi": "れんぞくひょうじ",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4948,7 +4948,7 @@
     "name": "連続無改行表示",
     "args": "...Aと/...Aを",
     "yomi": "れんぞくむかいぎょうひょうじ",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4964,7 +4964,7 @@
     "name": "表示ログ",
     "args": "",
     "yomi": "ひょうじろぐ",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4980,7 +4980,7 @@
     "name": "表示ログクリア",
     "args": "",
     "yomi": "ひょうじろぐくりあ",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -4996,7 +4996,7 @@
     "name": "言",
     "args": "Sを/Sと",
     "yomi": "いう",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5012,7 +5012,7 @@
     "name": "コンソール表示",
     "args": "Sを/Sと",
     "yomi": "こんそーるひょうじ",
-    "plugin": "plugin_system_stdio",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5028,7 +5028,7 @@
     "name": "秒待",
     "args": "N",
     "yomi": "びょうまつ",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5044,7 +5044,7 @@
     "name": "秒待機",
     "args": "N",
     "yomi": "びょうたいき",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5060,7 +5060,7 @@
     "name": "秒逐次待機",
     "args": "N",
     "yomi": "びょうちくじたいき",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5076,7 +5076,7 @@
     "name": "秒後",
     "args": "FをN",
     "yomi": "びょうご",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5092,7 +5092,7 @@
     "name": "秒毎",
     "args": "FをN",
     "yomi": "びょうごと",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5108,7 +5108,7 @@
     "name": "秒タイマー開始時",
     "args": "FをN",
     "yomi": "びょうたいまーかいししたとき",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5124,7 +5124,7 @@
     "name": "タイマー停止",
     "args": "TIMERIDの/TIMERIDで",
     "yomi": "たいまーていし",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -5140,7 +5140,7 @@
     "name": "全タイマー停止",
     "args": "",
     "yomi": "ぜんたいまーていし",
-    "plugin": "plugin_system_timer",
+    "plugin": "plugin_system",
     "group": "基本プラグイン",
     "target": [
       "wnako",
@@ -11187,6 +11187,21 @@
   },
   {
     "type": "関数",
+    "name": "プロセス終",
+    "args": "CODEで",
+    "yomi": "ぷろせすおわる",
+    "plugin": "plugin_node",
+    "group": "基本プラグイン",
+    "target": [
+      "cnako",
+      "phpnako"
+    ],
+    "category": "Nodeプロセス",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1055",
+    "description": "Nodeで終了コードを付けてプログラム実行を強制終了する"
+  },
+  {
+    "type": "関数",
     "name": "強制終了時",
     "args": "FUNCを",
     "yomi": "きょうせいしゅうりょうしたとき",
@@ -11197,7 +11212,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1055",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1064",
     "description": "Nodeでctrl+cでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010)"
   },
   {
@@ -11212,7 +11227,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1071",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1080",
     "description": "Nodeでプログラム実行を強制終了する"
   },
   {
@@ -11227,7 +11242,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1080",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1089",
     "description": "OSプラットフォームを返す(darwin/win32/linux)"
   },
   {
@@ -11242,7 +11257,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1088",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1097",
     "description": "OSアーキテクチャを返す"
   },
   {
@@ -11257,7 +11272,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1093",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1102",
     "value": "''"
   },
   {
@@ -11272,7 +11287,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1094",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1103",
     "value": "''"
   },
   {
@@ -11287,7 +11302,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1095",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1104",
     "value": "''"
   },
   {
@@ -11302,7 +11317,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1100",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1109",
     "description": "標準入力を一行取得した時に、変数『対象』に取得した文字列を代入し、無名関数（あるいは、文字列で関数名を指定）F(s: string)を実行する"
   },
   {
@@ -11317,7 +11332,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1118",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1127",
     "description": "標準入力を一行取得する(非同期関数)"
   },
   {
@@ -11332,7 +11347,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1136",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1145",
     "description": "標準入力を一行取得する。ただし自動で数値に変換しない(非同期関数)"
   },
   {
@@ -11347,7 +11362,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1149",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1158",
     "description": "標準入力を全部取得して返す(非同期関数)"
   },
   {
@@ -11362,7 +11377,7 @@
       "phpnako"
     ],
     "category": "テスト",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1166",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1175",
     "description": "mochaによるテストで、ASSERTでAとBが正しいことを報告する"
   },
   {
@@ -11377,7 +11392,7 @@
       "phpnako"
     ],
     "category": "ネットワーク",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1175",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1184",
     "description": "ネットワークアダプターからIPアドレス(IPv4)を取得して配列で返す"
   },
   {
@@ -11392,7 +11407,7 @@
       "phpnako"
     ],
     "category": "ネットワーク",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1197",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1206",
     "description": "ネットワークアダプターからIPアドレス(IPv6)を取得して配列で返す"
   },
   {
@@ -11407,7 +11422,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1217",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1226",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -11422,7 +11437,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1236",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1245",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -11437,7 +11452,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1245",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1254",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -11452,7 +11467,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1254",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1263",
     "description": "AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定"
   },
   {
@@ -11467,7 +11482,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1284",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1293",
     "description": "AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定"
   },
   {
@@ -11482,7 +11497,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1309",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1318",
     "description": "Ajax命令でエラーが起きたとき"
   },
   {
@@ -11497,7 +11512,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1313",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1322",
     "value": "''"
   },
   {
@@ -11512,7 +11527,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1318",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1327",
     "description": "Ajax命令でオプションを設定"
   },
   {
@@ -11527,7 +11542,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1327",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1336",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11542,7 +11557,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1338",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1347",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11557,7 +11572,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1347",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1356",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11572,7 +11587,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1356",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1365",
     "description": "非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11587,7 +11602,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1380",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1389",
     "description": "非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11602,7 +11617,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1396",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1405",
     "description": "非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。"
   },
   {
@@ -11617,7 +11632,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1421",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1430",
     "description": "「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る"
   },
   {
@@ -11632,7 +11647,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1443",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1452",
     "description": "辞書形式のデータPARAMSをkey=value&key=value...の形式に変換する"
   },
   {
@@ -11647,7 +11662,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1458",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1467",
     "description": "非同期通信(AJAX)でPOSTメソッドにてURLへPARAMS(辞書型)を送信して応答を戻す。(非同期関数)"
   },
   {
@@ -11662,7 +11677,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1483",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1492",
     "description": "非同期通信(AJAX)でURLにPARAMS(辞書型)をフォームとしてPOSTメソッドにてURLへ送信し応答を返す。(非同期関数)"
   },
   {
@@ -11677,7 +11692,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1507",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1516",
     "description": "AJAXでURLにアクセスしテキスト形式で結果を得る。送信時AJAXオプションの値を参照。(非同期関数)"
   },
   {
@@ -11692,7 +11707,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1521",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1530",
     "description": "AJAXでURLにアクセスしJSONの結果を得て、送信時AJAXオプションの値を参照。(非同期関数)"
   },
   {
@@ -11707,7 +11722,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1541",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1550",
     "description": "AJAXでURLにアクセスしバイナリ(arrayBuffer)形式で結果を得る。送信時AJAXオプションの値を参照。(非同期関数)"
   },
   {
@@ -11722,7 +11737,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1556",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1565",
     "description": "DISCORDのウェブフックURLにSのメッセージを送信する。宛先のウェブフックを取得しておく必要がある。(非同期関数)"
   },
   {
@@ -11737,7 +11752,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1576",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1585",
     "description": "DISCORDのウェブフックURLにファイルF(パスを指定)とメッセージSを送信する。(非同期関数)"
   },
   {
@@ -11752,7 +11767,7 @@
       "phpnako"
     ],
     "category": "LINE",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1599",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1608",
     "description": "LINEにメッセージを送信する。現在利用不可能。"
   },
   {
@@ -11767,7 +11782,7 @@
       "phpnako"
     ],
     "category": "LINE",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1607",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1616",
     "description": "LINEにメッセージを送信する。先にLINE Notifyのページで宛先のトークンを取得する。TOKENへIMAGE_FILEとMESSAGEをLINE画像送信する。"
   },
   {
@@ -11782,7 +11797,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1616",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1625",
     "description": "文字コードCODEをサポートしているか確認"
   },
   {
@@ -11797,7 +11812,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1624",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1633",
     "description": "(v1非互換)文字列をShift_JISのバイナリバッファに変換"
   },
   {
@@ -11812,7 +11827,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1633",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1642",
     "description": "Shift_JISのバイナリバッファを文字列に変換"
   },
   {
@@ -11827,7 +11842,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1642",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1651",
     "description": "文字列SをCODEへ変換してバイナリバッファを返す"
   },
   {
@@ -11842,7 +11857,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1651",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1660",
     "description": "バイナリバッファBUFをCODEから変換して返す"
   },
   {
@@ -11857,7 +11872,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1661",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1670",
     "description": "利用可能なハッシュ関数の一覧を返す"
   },
   {
@@ -11872,7 +11887,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1669",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1678",
     "description": "データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す"
   },
   {
@@ -11887,7 +11902,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1679",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1688",
     "description": "ランダムに生成された36文字のv4 UUID(文字列)を返す"
   },
   {
@@ -11902,7 +11917,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1688",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1697",
     "description": "暗号強度の強い乱数のバイト配列(Uint8Array)を指定個数返す"
   },
   {

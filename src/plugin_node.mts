@@ -1048,6 +1048,15 @@ export default {
     },
     return_none: true
   },
+  'プロセス終': { // @Nodeで終了コードを付けてプログラム実行を強制終了する // @ぷろせすおわる
+    type: 'func',
+    josi: [['で']],
+    pure: true,
+    fn: function(code: number) {
+      nodeProcess.exit(code)
+    },
+    return_none: true
+  },
   '強制終了時': { // @Nodeでctrl+cでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010) // @きょうせいしゅうりょうしたとき
     type: 'func',
     josi: [['を']],

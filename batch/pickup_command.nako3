@@ -13,18 +13,6 @@ CORE="core/src"
 
 コアプラグイン一覧は[
     ["plugin_system.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_debug.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_math.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_string.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_array.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_datetime.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_url.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_types.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_json.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_regexp.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_dict.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_stdio.mts", 'wnako,cnako,phpnako'],
-    ["plugin_system_timer.mts", 'wnako,cnako,phpnako'],
     ["plugin_csv.mts", 'wnako,cnako'],
     ["plugin_toml.mts", 'wnako,cnako'],
     ["plugin_math.mts", 'wnako,cnako'],
@@ -94,8 +82,8 @@ FILE_PATH=""
 　　パスは「{基本パス}/{カレントプラグイン}」
 　　RRR=パスを「(基本プラグイン,{ナコタイプ})」でプラグイン要約作成
 　　もし、文字数(RRR)<50ならば:
-　　　　「[ERROR] 基本プラグインの『{PNAME}』の結果が空です!!!」のエラー発生。
-　　　　終わる。
+　　　　「[ERROR] 基本プラグインの『{PNAME}』の結果が空です!!!」を表示。
+　　　　1でプロセス終わる。
 　　結果データ＝結果データ＆RRR＆改行＆改行。
 ここまで
 #------------------------
@@ -123,7 +111,7 @@ FILE_PATH=""
 　　　　　　OS=OS取得
 　　　　　　もし、OS="darwin"ならば
 　　　　　　　　「[エラー]ファイルが存在しない: {パス}」を表示。
-　　　　　　　　「ファイルが存在しない:{パス}」のエラー発生。
+　　　　　　　　1でプロセス終わる。
 　　　　　　ここまで。
 　　　　ここまで。
 　　ここまで。
