@@ -12,7 +12,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L246",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L219",
     "value": "'?'"
   },
   {
@@ -28,7 +28,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L247",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L220",
     "value": "'?'"
   },
   {
@@ -44,7 +44,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L248",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L221",
     "value": "'nadesi.com/v3'"
   },
   {
@@ -60,7 +60,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L249",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L222",
     "value": "'?'"
   },
   {
@@ -76,7 +76,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L250",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L223",
     "value": "true"
   },
   {
@@ -92,7 +92,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L251",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L224",
     "value": "false"
   },
   {
@@ -108,7 +108,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L252",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L225",
     "value": "true"
   },
   {
@@ -124,7 +124,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L253",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L226",
     "value": "false"
   },
   {
@@ -140,7 +140,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L254",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L227",
     "value": "true"
   },
   {
@@ -156,7 +156,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L255",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L228",
     "value": "true"
   },
   {
@@ -172,7 +172,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L256",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L229",
     "value": "false"
   },
   {
@@ -188,7 +188,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L257",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L230",
     "value": "'\\n'"
   },
   {
@@ -204,7 +204,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L258",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L231",
     "value": "'\\t'"
   },
   {
@@ -220,7 +220,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L259",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L232",
     "value": "'「'"
   },
   {
@@ -236,7 +236,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L260",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L233",
     "value": "'」'"
   },
   {
@@ -252,7 +252,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L261",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L234",
     "value": "'{'"
   },
   {
@@ -268,7 +268,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L262",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L235",
     "value": "'}'"
   },
   {
@@ -284,7 +284,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L263",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L236",
     "value": "true"
   },
   {
@@ -300,7 +300,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L264",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L237",
     "value": "false"
   },
   {
@@ -316,7 +316,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L265",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L238",
     "value": "0"
   },
   {
@@ -332,7 +332,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L266",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L239",
     "value": "true"
   },
   {
@@ -348,7 +348,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L267",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L240",
     "value": "false"
   },
   {
@@ -364,7 +364,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L268",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L241",
     "value": "true"
   },
   {
@@ -380,7 +380,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L269",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L242",
     "value": "false"
   },
   {
@@ -396,7 +396,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L270",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L243",
     "value": "Math.PI"
   },
   {
@@ -412,7 +412,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L271",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L244",
     "value": "''"
   },
   {
@@ -428,7 +428,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L272",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L245",
     "value": "null"
   },
   {
@@ -444,7 +444,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L273",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L246",
     "value": "undefined"
   },
   {
@@ -460,7 +460,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L274",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L247",
     "value": "undefined"
   },
   {
@@ -476,7 +476,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L275",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L248",
     "value": "''"
   },
   {
@@ -492,7 +492,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L276",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L249",
     "value": "''"
   },
   {
@@ -508,7 +508,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L277",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L250",
     "value": "''"
   },
   {
@@ -524,7 +524,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L278",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L251",
     "value": "''"
   },
   {
@@ -540,7 +540,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L279",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L252",
     "value": "'\\r'"
   },
   {
@@ -556,7 +556,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L280",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L253",
     "value": "'\\n'"
   },
   {
@@ -572,7 +572,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L281",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L254",
     "value": "NaN"
   },
   {
@@ -588,7 +588,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L282",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L255",
     "value": "Infinity"
   },
   {
@@ -604,7 +604,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L283",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L256",
     "value": "0"
   },
   {
@@ -620,7 +620,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L284",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L257",
     "value": "1"
   },
   {
@@ -636,7 +636,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L289",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L262",
     "description": "空の配列を返す。『[]』と同義。"
   },
   {
@@ -652,7 +652,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L297",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L270",
     "description": "空の辞書型を返す。『{}』と同義。"
   },
   {
@@ -668,7 +668,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L305",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L278",
     "description": "空のハッシュを返す(v3.2以降非推奨)"
   },
   {
@@ -684,7 +684,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L313",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L286",
     "description": "空のオブジェクトを返す(v3.2以降非推奨)"
   },
   {
@@ -700,7 +700,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L321",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L294",
     "description": "引数bが真(true)ならば「真」を偽(false)ならば「偽」を返す"
   },
   {
@@ -716,7 +716,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L331",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L304",
     "description": "敬語対応のため"
   },
   {
@@ -732,7 +732,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L341",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L314",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -748,7 +748,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L351",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L324",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -764,7 +764,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L361",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L334",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -780,7 +780,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L370",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L343",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -796,7 +796,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L379",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L352",
     "description": "(お遊び)敬語を何度使ったか返す"
   },
   {
@@ -6882,7 +6882,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L56",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L60",
     "description": "DOMの要素PAの子要素をクエリqを指定して結果を一つ取得して返す"
   },
   {
@@ -6896,7 +6896,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L70",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L74",
     "description": "DOMの要素PAの子要素をクエリqを指定して結果を複数取得して返す"
   },
   {
@@ -6910,7 +6910,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L87",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L91",
     "description": "DOMのEVENTになでしこ関数名funcStrのイベントを設定"
   },
   {
@@ -6924,7 +6924,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L97",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L101",
     "description": "DOMにテキストを設定"
   },
   {
@@ -6938,7 +6938,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L116",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L120",
     "description": "DOMのテキストを取得"
   },
   {
@@ -6952,7 +6952,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L135",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L139",
     "description": "DOMにHTML文字列を設定"
   },
   {
@@ -6966,7 +6966,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L145",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L149",
     "description": "DOMのHTML文字列を取得"
   },
   {
@@ -6980,7 +6980,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L155",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L159",
     "description": "DOMのテキストにVを設定"
   },
   {
@@ -6994,7 +6994,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L164",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L168",
     "description": "DOMのテキストを取得"
   },
   {
@@ -7008,7 +7008,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L172",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L176",
     "description": "DOMのHTMLにVを設定"
   },
   {
@@ -7022,7 +7022,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L181",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L185",
     "description": "DOMのテキストを取得"
   },
   {
@@ -7036,7 +7036,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L190",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L194",
     "description": "DOMの属性Sに値Vを設定(属性Sには『DOM和属性』も適用される)"
   },
   {
@@ -7050,7 +7050,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L208",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L212",
     "description": "DOMの属性Sを取得(属性Sには『DOM和属性』も適用される)"
   },
   {
@@ -7064,7 +7064,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L220",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L224",
     "value": "undefined"
   },
   {
@@ -7078,7 +7078,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L256",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L260",
     "value": "undefined"
   },
   {
@@ -7092,7 +7092,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L282",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L286",
     "value": "undefined"
   },
   {
@@ -7106,7 +7106,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L302",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L306",
     "description": "DOMのスタイルAに値Bを設定"
   },
   {
@@ -7120,7 +7120,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L316",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L320",
     "description": "DOMに(オブジェクト型で)スタイル情報を一括設定"
   },
   {
@@ -7134,7 +7134,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L346",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L350",
     "description": "DOMのSTYLEの値を取得"
   },
   {
@@ -7148,7 +7148,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L359",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L363",
     "description": "DOMのSTYLE(配列で複数指定)の値を取得"
   },
   {
@@ -7162,7 +7162,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L386",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L390",
     "description": "DOMのdata-PROPの値を取得"
   },
   {
@@ -7176,7 +7176,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L395",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L399",
     "description": "DOMのdata-PROPに値Vを設定"
   },
   {
@@ -7190,7 +7190,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L405",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L409",
     "description": "DOMの属性とスタイルPROP(配列で指定可能)を適当にVALUEに設定"
   },
   {
@@ -7204,7 +7204,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L487",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L491",
     "description": "DOMの属性とスタイルPROP(配列で指定可能)の値を適当に取得"
   },
   {
@@ -7218,7 +7218,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L546",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L550",
     "description": "DOMのdata-有効の値を設定"
   },
   {
@@ -7232,7 +7232,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L556",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L560",
     "description": "DOMのdata-有効の値を取得"
   },
   {
@@ -7246,7 +7246,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L565",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L569",
     "description": "DOMのdata-可視の値を設定"
   },
   {
@@ -7260,7 +7260,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L575",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L579",
     "description": "DOMのdata-可視の値を取得"
   },
   {
@@ -7274,7 +7274,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L584",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L588",
     "description": "DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる)"
   },
   {
@@ -7288,7 +7288,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L598",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L602",
     "description": "DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる)"
   },
   {
@@ -7302,7 +7302,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L605",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L609",
     "description": "DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる)"
   },
   {
@@ -7316,7 +7316,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L615",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L619",
     "description": "DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる)"
   },
   {
@@ -7330,7 +7330,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L623",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L627",
     "description": "DOMのヒント(title属性)の値を取得"
   },
   {
@@ -7344,7 +7344,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L632",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L636",
     "description": "DOMのヒント(title属性)の値を取得"
   },
   {
@@ -7358,7 +7358,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L639",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L643",
     "description": "DOMのヒント(title属性)に値Vを設定"
   },
   {
@@ -7372,7 +7372,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L649",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L653",
     "description": "DOMのヒント(title属性)に値Vを設定"
   },
   {
@@ -7386,7 +7386,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L658",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L662",
     "description": "DOMにTAGの新規要素を作成"
   },
   {
@@ -7400,7 +7400,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L666",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L672",
     "description": "DOMの要素PAの子へ要素ELを追加してPAを返す"
   },
   {
@@ -7414,7 +7414,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L676",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L682",
     "description": "DOMの要素PAの子から要素ELを削除してPAを返す"
   },
   {
@@ -7428,7 +7428,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L686",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L692",
     "description": "要素DOMにフォーカスする(カーソルを移動する)"
   },
   {
@@ -8184,7 +8184,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L173",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L175",
     "description": "配列optionsの選択肢を持つselect要素を追加しDOMオブジェクトを返す"
   },
   {
@@ -8198,7 +8198,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L190",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L192",
     "description": "配列データをセレクトボックスdomのアイテムに差し替える"
   },
   {
@@ -8212,7 +8212,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L208",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L210",
     "description": "色選択ボックス(input[type='color'])を作成しDOMオブジェクトを返す"
   },
   {
@@ -8226,7 +8226,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L218",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L220",
     "description": "日付選択ボックス(input[type='date'])を作成しDOMオブジェクトを返す"
   },
   {
@@ -8240,7 +8240,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L228",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L230",
     "description": "パスワード入力エディタ(input[type='password'])を作成し初期値Sを設定し、DOMオブジェクトを返す"
   },
   {
@@ -8254,7 +8254,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L239",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L241",
     "description": "範囲RANGE(配列で[最小,最大[,値]])を指定するバー(input[type='range'])を作成しDOMオブジェクトを返す"
   },
   {
@@ -8268,7 +8268,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L258",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L260",
     "description": "ラベルSの送信ボタン(input[type='submit'])を作成しDOMオブジェクトを返す"
   },
   {
@@ -8282,7 +8282,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L269",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L271",
     "description": "属性OBJ{method:\"GET\",action:\"...\"}で項目一覧S「項目1=初期値1{改行}項目2=初期値2{改行}…」を送信フォームを作成しDOMオブジェクトを返す。「=?」でオプションの指定が可能"
   },
   {
@@ -8296,7 +8296,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L421",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L423",
     "description": "DOMのフォームを取得し、そのフォーム以下にある入力項目のnameとvalueを辞書形式で返す"
   },
   {
@@ -8310,7 +8310,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L457",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L459",
     "description": "二次元配列AA(あるいは文字列の簡易CSVデータ)からTABLE要素を作成し、DOMオブジェクトを返す"
   },
   {
@@ -8324,7 +8324,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L466",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L468",
     "description": "二次元配列AA(あるいは文字列の簡易CSVデータ)からヘッダ有りのTABLE要素を作成し、DOMオブジェクトを返す"
   },
   {
@@ -8338,7 +8338,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L479",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L481",
     "description": "二次元配列AA(あるいは文字列の簡易CSVデータ)からヘッダ無しのTABLE要素を作成し、DOMオブジェクトを返す"
   },
   {
@@ -8352,7 +8352,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L492",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L494",
     "description": "既に作成したテーブルTBLを二次元配列AA(あるいは文字列の簡易CSVデータ)で更新する"
   },
   {
@@ -8366,7 +8366,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L558",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L560",
     "description": "TABLE要素のセル[行,列]をVへ変更する。Vが二次元配列変数であれば複数のセルを一括変更する"
   },
   {
@@ -8380,7 +8380,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L609",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L611",
     "description": "Mermaid記法を使ってSRCのチャートを作成する(非同期関数)"
   },
   {
@@ -8394,7 +8394,7 @@
       "wnako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L628",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_parts.mts#L630",
     "description": "ビデオ部品を作成して返す"
   },
   {

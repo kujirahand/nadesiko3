@@ -126,5 +126,8 @@
     "opener": "^1.5.2",
     "shell-quote": "^1.10.0",
     "smol-toml": "1.7.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }
