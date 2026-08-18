@@ -3805,7 +3805,7 @@
     ],
     "category": "日時処理(簡易)",
     "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L105",
-    "description": "来月が何月かを返す"
+    "description": "来月が何月かを返す(12月の場合は1を返す)"
   },
   {
     "type": "関数",
@@ -3821,7 +3821,7 @@
     ],
     "category": "日時処理(簡易)",
     "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L113",
-    "description": "先月が何月かを返す"
+    "description": "先月が何月かを返す(1月の場合は12を返す)"
   },
   {
     "type": "関数",

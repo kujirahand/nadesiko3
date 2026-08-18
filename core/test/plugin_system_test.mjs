@@ -574,6 +574,34 @@ describe('plugin_system_test', async () => {
     await cmp('1488726000を日時変換して表示', '2017/03/06 00:00:00')
     await cmp('1504191600を日時変換して表示', '2017/09/01 00:00:00')
   })
+  it('今月・先月・来月 #2412', async () => {
+    const now = new Date()
+    const m = now.getMonth() + 1 // 1-12
+    await cmp('今月を表示', String(m))
+    await cmp('先月を表示', String(m === 1 ? 12 : m - 1))
+    await cmp('来月を表示', String(m === 12 ? 1 : m + 1))
+    // 月をずらして境界(1月と12月)を確認する
+    const RealDate = globalThis.Date
+    const withMonth = async (/** @type {number} */ month, /** @type {() => Promise<void>} */ body) => {
+      class FakeDate extends RealDate {
+        constructor (/** @type {any[]} */ ...args) {
+          if (args.length === 0) { super(2024, month, 15) } else { super(...args) }
+        }
+      }
+      globalThis.Date = FakeDate
+      try { await body() } finally { globalThis.Date = RealDate }
+    }
+    await withMonth(0, async () => { // 2024年1月
+      await cmp('今月を表示', '1')
+      await cmp('先月を表示', '12')
+      await cmp('来月を表示', '2')
+    })
+    await withMonth(11, async () => { // 2024年12月
+      await cmp('今月を表示', '12')
+      await cmp('先月を表示', '11')
+      await cmp('来月を表示', '1')
+    })
+  })
   it('日時差 #1117', async () => {
     await cmp('「2017/03/06」から「2018/03/06」までの年数差。それを表示', '1')
     await cmp('「2017/03/06」と「2018/03/06」の年数差。それを表示', '1')
