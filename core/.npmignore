@@ -1,0 +1,3 @@
+# `src/`と`command/`の`.mjs`は実行時に必要なファイル。
+# `core/.gitignore`によって生成済みJavaScriptがnpm配布物から除外されないよう、
+# npm専用の除外設定を用意する。
