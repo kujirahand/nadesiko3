@@ -104,7 +104,7 @@
   },
   /* "extends": "./core/tsconfig.json", */
   "exclude": ["core/deno/*", "deno/*", "utils/*", "core/sample/*"],
-  "include": ["core/*", "core/src/*", "src/*"],
+  "include": ["core/*", "core/src/*", "core/command/*", "src/*"],
   "ts-node": {
     "esm": true
   }
