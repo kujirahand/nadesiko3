@@ -35,10 +35,15 @@ describe('plugin_test', () => {
     await cmp(`!「${scope2}」を取り込む。\n朝食値段を表示。`, '2000')
     await cmp(`!「${scope2}」を取り込む。\nscope2__スコープ取得して表示。`, 'scope2')
   })
-  // #1332: 同名グローバル変数を参照する取り込み先関数の名前空間分離が未解決
-  it.skip('NAKO3スコープテスト1+2__関数', async () => {
+  it('NAKO3スコープテスト1+2__関数', async () => {
     const scope = `!「${scope1}」を取り込む。\n!「${scope2}」を取り込む。\n`
     await cmp(`${scope};scope1__朝食取得して表示。`, '1000')
     await cmp(`${scope};scope2__朝食取得して表示。`, '2000')
+  })
+  it('NAKO3スコープテスト1+2__変数', async () => {
+    const scope = `!「${scope1}」を取り込む。\n!「${scope2}」を取り込む。\n`
+    await cmp(`${scope};朝食値段を表示。`, '1000')
+    await cmp(`${scope};scope2__朝食値段=2500;scope2__朝食取得して表示。`, '2500')
+    await cmp(`${scope};朝食値段=3000;朝食値段を表示;scope1__朝食取得して表示;scope2__朝食取得して表示。`, '3000\n1000\n2000')
   })
 })

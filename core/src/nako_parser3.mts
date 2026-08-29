@@ -2481,8 +2481,14 @@ export class NakoParser extends NakoParserBase {
    */
   getVarName(word: Token|Ast): Token|Ast {
     // check word name
-    const f = this.findVar((word as AstStrValue).value)
+    const name = (word as AstStrValue).value
+    const f = this.findVar(name)
     if (f) {
+      // ファイル直下の無修飾な代入は、取り込み先ではなく自身の変数にする (#1332)
+      if (this.funcLevel === 0 && name.indexOf('__') < 0 &&
+        f.scope === 'global' && f.name !== `${this.modName}__${name}`) {
+        return this.createVar(word, false, this.isExportDefault)
+      }
       if (f && f.scope === 'global') { (word as AstStrValue).value = f.name }
       return word
     }
