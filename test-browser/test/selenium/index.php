@@ -1,7 +1,7 @@
 <?php
 function main(): void {
   $dir = __DIR__;
-  $release = dirname(dirname($dir)).'/release';
+  $release = dirname($dir, 3).'/release';
   $m = empty($_GET['m']) ? '' : $_GET['m'];
   if ($m == 'kill') {
     echo "kill";

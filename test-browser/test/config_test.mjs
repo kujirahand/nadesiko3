@@ -103,6 +103,13 @@ test('GitHub Actionsがブラウザテストを実行する', () => {
   assert.match(workflowText, /working-directory: test-browser\n\s+run: npm run test:selenium/, 'CIでSeleniumのsmoke testを実行していません')
 })
 
+test('Seleniumランナーがルートのreleaseを参照する', () => {
+  const seleniumServerPath = join(testBrowserDir, 'test/selenium/index.php')
+  const seleniumServerText = readFileSync(seleniumServerPath, 'utf8')
+
+  assert.ok(seleniumServerText.includes("dirname($dir, 3).'/release'"), 'Seleniumランナーのrelease参照先が不正です')
+})
+
 test('Playwright設定がheadless Chromium実行になっている', async () => {
   const testBrowserPackagePath = join(testBrowserDir, 'package.json')
   const testBrowserPackage = JSON.parse(readFileSync(testBrowserPackagePath, 'utf8'))
