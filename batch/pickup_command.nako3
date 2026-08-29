@@ -58,15 +58,15 @@ CORE="core/src"
 
 #------------------------
 結果データ＝「」
-SRC_URL=""
+jsplugin2text__SRC_URL=""
 FILE_PATH=""
 #------------------------
 コアプラグイン一覧を反復
 　　PNAME=対象@0
-　　カレントプラグイン＝"{CORE}/{PNAME}"
+　　jsplugin2text__カレントプラグイン＝"{CORE}/{PNAME}"
 　　FILE_PATH="{基本パス}/{CORE}/{PNAME}"
 　　# (ex) https://github.com/kujirahand/nadesiko3/blob/master/core/src/nako3.mts#L81
-　　SRC_URL="https://github.com/kujirahand/nadesiko3/blob/master/core/src/{PNAME}"
+　　jsplugin2text__SRC_URL="https://github.com/kujirahand/nadesiko3/blob/master/core/src/{PNAME}"
 　　ナコタイプ＝対象＠1
 　　パスは「{基本パス}/{カレントプラグイン}」
 　　パスを「(基本プラグイン,{ナコタイプ})」でプラグイン要約作成
@@ -75,10 +75,10 @@ FILE_PATH=""
 #------------------------
 基本プラグイン一覧を反復
 　　PNAME=対象@0
-　　カレントプラグイン＝対象@0
+　　jsplugin2text__カレントプラグイン＝対象@0
 　　ナコタイプ＝対象＠1
 　　FILE_PATH="{基本パス}/{PNAME}"
-　　SRC_URL="https://github.com/kujirahand/nadesiko3/tree/master/{PNAME}"
+　　jsplugin2text__SRC_URL="https://github.com/kujirahand/nadesiko3/tree/master/{PNAME}"
 　　パスは「{基本パス}/{カレントプラグイン}」
 　　RRR=パスを「(基本プラグイン,{ナコタイプ})」でプラグイン要約作成
 　　もし、文字数(RRR)<50ならば:
@@ -88,14 +88,14 @@ FILE_PATH=""
 ここまで
 #------------------------
 拡張プラグイン一覧を反復
-　　カレントプラグイン＝それ@0
+　　jsplugin2text__カレントプラグイン＝それ@0
 　　ナコタイプ＝それ＠1
 　　パスは「{REPOSパス}/{カレントプラグイン}」
 　　FILE_PATH="{REPOSパス}/{カレントプラグイン}"
 　　カレントプラグインを「/」で区切ってAに代入。
 　　P0＝Aの0を配列切取。
 　　P1=Aを「/」で配列結合。
-　　SRC_URL="https://github.com/kujirahand/{P0}/blob/master/{P1}"
+　　jsplugin2text__SRC_URL="https://github.com/kujirahand/{P0}/blob/master/{P1}"
 　　パスが存在
 　　もし、そうならば
 　　　　 # パスを表示。
@@ -120,4 +120,3 @@ FILE_PATH=""
 B=「REPORT_ERR」の環境変数取得
 もし、Bならば、結果データを表示。
 結果データを「{基本パス}/batch/command.txt」に保存。
-
