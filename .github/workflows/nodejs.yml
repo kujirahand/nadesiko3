@@ -41,3 +41,30 @@ jobs:
       - name: npm run test
         run: npm run test
 
+      # ブラウザテストはNode.jsの最新対象バージョンで実行
+      - name: Install browser test dependencies
+        if: matrix.node-version == '24.x'
+        working-directory: test-browser
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: npm run test (browser)
+        if: matrix.node-version == '24.x'
+        working-directory: test-browser
+        run: npm test
+
+      - name: Use Python
+        if: matrix.node-version == '24.x'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Selenium test dependencies
+        if: matrix.node-version == '24.x'
+        run: python -m pip install -r test-browser/test/selenium/requirements.txt
+
+      - name: npm run test:selenium
+        if: matrix.node-version == '24.x'
+        working-directory: test-browser
+        run: npm run test:selenium

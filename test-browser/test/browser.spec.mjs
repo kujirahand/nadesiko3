@@ -24,12 +24,19 @@ function assertNoFailures (result) {
       .join('\n')
     throw new Error(`${result.failures}件のテストが失敗しました:\n${details}`)
   }
+  expect(result.total, 'ブラウザ内のテストが1件も実行されていません').toBeGreaterThan(0)
+  expect(result.passes + result.failures, 'ブラウザ内のテスト件数が一致しません').toBe(result.total)
   expect(result.failures).toBe(0)
 }
 
 test('browser smoke test', async ({ page }) => {
   const result = await runRunnerPage(page, '/test-browser/test/html/browser-smoke-runner.html')
   assertNoFailures(result)
+})
+
+test('browser smoke rejects zero completed tests', () => {
+  expect(() => assertNoFailures({ failures: 0, passes: 0, total: 0, failures_detail: [] }))
+    .toThrow('ブラウザ内のテストが1件も実行されていません')
 })
 
 test('browser full test', async ({ page }) => {
