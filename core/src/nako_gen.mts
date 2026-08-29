@@ -2256,7 +2256,7 @@ self.logger = {
   error: (message) => { console.error(message) },
   warn: (message) => { console.warn(message) },
   send: (level, message) => { console.log(message) },
-  runtimeError: (message, lineInfo) => { console.error(message, lineInfo) }
+  runtimeError: (error, lineInfo) => new NakoRuntimeError(error, lineInfo)
 };
 self.__varslist = [self.newVariables(), self.newVariables(), self.newVariables()]
 self.__v0 = self.__varslist[0]

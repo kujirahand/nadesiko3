@@ -80,7 +80,7 @@ describe('plugin_node_test', () => {
     await cmp('「' + dir + '/xxx」が存在;もしそうならば;「OK」と表示。違えば「NG」と表示。', 'NG')
   })
   it('ASSERT', async () => {
-    cmd('3と3がASSERT等')
+    await cmd('3と3がASSERT等')
   })
   it('環境変数取得', async () => {
     const path = process.env.PATH
