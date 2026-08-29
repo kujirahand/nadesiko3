@@ -37,13 +37,18 @@ describe('plugin_test', () => {
   })
   it('NAKO3スコープテスト1+2__関数', async () => {
     const scope = `!「${scope1}」を取り込む。\n!「${scope2}」を取り込む。\n`
+    const reverse = `!「${scope2}」を取り込む。\n!「${scope1}」を取り込む。\n`
     await cmp(`${scope};scope1__朝食取得して表示。`, '1000')
     await cmp(`${scope};scope2__朝食取得して表示。`, '2000')
+    await cmp(`${reverse};scope1__朝食取得して表示;scope2__朝食取得して表示。`, '1000\n2000')
   })
   it('NAKO3スコープテスト1+2__変数', async () => {
     const scope = `!「${scope1}」を取り込む。\n!「${scope2}」を取り込む。\n`
     await cmp(`${scope};朝食値段を表示。`, '1000')
     await cmp(`${scope};scope2__朝食値段=2500;scope2__朝食取得して表示。`, '2500')
     await cmp(`${scope};朝食値段=3000;朝食値段を表示;scope1__朝食取得して表示;scope2__朝食取得して表示。`, '3000\n1000\n2000')
+    await cmp(`${scope};3000を朝食値段に代入;朝食値段を表示;scope1__朝食取得して表示;scope2__朝食取得して表示。`, '3000\n1000\n2000')
+    await cmp(`${scope};2500をscope2__朝食値段に代入;scope2__朝食取得して表示。`, '2500')
+    await cmp(`${scope};朝食値段を100だけ増やす;朝食値段を表示;scope1__朝食取得して表示;scope2__朝食取得して表示。`, '100\n1000\n2000')
   })
 })

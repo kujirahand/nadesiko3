@@ -52,11 +52,14 @@ import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
  * 構文解析を行うクラス
  */
 export class NakoParser extends NakoParserBase {
+  private originalVarNames = new WeakMap<object, string>()
+
   /**
    * 構文解析を実行する
    */
   parse(tokens: Token[], filename: string): Ast {
     this.reset()
+    this.originalVarNames = new WeakMap<object, string>()
     this.tokens = tokens
     this.modName = NakoLexer.filenameToModName(filename)
     this.modList.push(this.modName)
@@ -1251,14 +1254,15 @@ export class NakoParser extends NakoParserBase {
     if (word.type === 'func') {
       throw NakoSyntaxError.fromNode('関数『' + String(word.name) + '』に代入できません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
+    const target = this.getAssignmentVarName(word)
     // 配列への代入
-    if (word.type === 'ref_array') {
-      const indexArray = word.index || []
+    if (target.type === 'ref_array') {
+      const indexArray = target.index || []
       const blocks = [value, ...indexArray]
       return {
         type: 'let_array',
-        name: (word.name as AstStrValue).value,
-        indexes: word.index,
+        name: (target.name as AstStrValue).value,
+        indexes: target.index,
         blocks,
         josi: '',
         checkInit: this.flagCheckArrayInit,
@@ -1267,10 +1271,9 @@ export class NakoParser extends NakoParserBase {
       } as AstLetArray
     }
     // 一般的な変数への代入
-    const word2 = this.getVarName(word)
     return {
       type: 'let',
-      name: (word2 as AstStrValue).value,
+      name: (target as AstStrValue).value,
       blocks: [value],
       josi: '',
       ...map,
@@ -1347,7 +1350,7 @@ export class NakoParser extends NakoParserBase {
 
     return {
       type: 'inc',
-      name: word,
+      name: this.getAssignmentVarName(word),
       blocks: [value],
       josi: action.josi,
       ...map,
@@ -2481,18 +2484,21 @@ export class NakoParser extends NakoParserBase {
    */
   getVarName(word: Token|Ast): Token|Ast {
     // check word name
-    const name = (word as AstStrValue).value
+    const originalName = this.originalVarNames.get(word)
+    const name = originalName || (word as AstStrValue).value
     const f = this.findVar(name)
     if (f) {
       // ファイル直下の無修飾な代入は、取り込み先ではなく自身の変数にする (#1332)
       if (this.funcLevel === 0 && name.indexOf('__') < 0 &&
         f.scope === 'global' && f.name !== `${this.modName}__${name}`) {
+        (word as AstStrValue).value = name
         return this.createVar(word, false, this.isExportDefault)
       }
       if (f && f.scope === 'global') { (word as AstStrValue).value = f.name }
       return word
     }
     // 変数が見つからない
+    if (originalName) { (word as AstStrValue).value = name }
     this.createVar(word, false, this.isExportDefault)
     return word
   }
@@ -2500,13 +2506,28 @@ export class NakoParser extends NakoParserBase {
   /** 変数名を検索して解決する */
   getVarNameRef(word: Token): Token {
     // check word name
+    const originalName = word.value
     const f = this.findVar(word.value)
     if (!f) { // 変数が見つからない
       if (this.funcLevel === 0 && word.value.indexOf('__') < 0) {
+        this.originalVarNames.set(word, originalName)
         word.value = this.modName + '__' + String(word.value)
       }
     } else if (f && f.scope === 'global') {
+      if (word.value !== f.name) { this.originalVarNames.set(word, originalName) }
       word.value = f.name
+    }
+    return word
+  }
+
+  /** 代入・増減対象の変数名を、元の無修飾名を考慮して解決する */
+  getAssignmentVarName(word: Ast): Ast {
+    if (word.type === 'word') {
+      return this.getVarName(word) as Ast
+    }
+    if ((word.type === 'ref_array' || word.type === 'ref_prop') &&
+      word.name && typeof word.name !== 'string') {
+      word.name = this.getVarName(word.name)
     }
     return word
   }
