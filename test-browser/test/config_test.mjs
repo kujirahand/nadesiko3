@@ -98,7 +98,7 @@ test('GitHub Actionsがブラウザテストを実行する', () => {
   assert.ok(workflowText.includes('playwright install --with-deps chromium'), 'CIでChromiumをインストールしていません')
   assert.ok(workflowText.includes("if: matrix.node-version == '24.x'"), 'ブラウザテストのNode.jsバージョンが固定されていません')
   assert.match(workflowText, /working-directory: test-browser\n\s+run: npm test/, 'CIでtest-browserのnpm testを実行していません')
-  assert.ok(workflowText.includes('actions/setup-python@v5'), 'CIでSelenium用のPythonを準備していません')
+  assert.ok(workflowText.includes('actions/setup-python@v7'), 'CIでSelenium用のPythonを準備していません')
   assert.ok(workflowText.includes('test-browser/test/selenium/requirements.txt'), 'CIでSeleniumの依存関係をインストールしていません')
   assert.match(workflowText, /working-directory: test-browser\n\s+run: npm run test:selenium/, 'CIでSeleniumのsmoke testを実行していません')
 })
