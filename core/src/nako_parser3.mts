@@ -1603,7 +1603,7 @@ export class NakoParser extends NakoParserBase {
     // オブジェクトプロパティ構文：代入文：：ここから (#1793)
     if (this.check2(['word', '$', '*', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', 'eq'])) {
       const propList = []
-      const word = this.getVarName(this.get() as Token)
+      const word = this.getContainerVarName(this.get() as Token)
       for (;;) {
         const flag = this.peek()
         if (flag === null || flag.type !== '$') { break }
@@ -1955,7 +1955,7 @@ export class NakoParser extends NakoParserBase {
     this.get() // skip 'eq'
     const astValue = this.yCalc()
     if (astValue === null) { return rollback() }
-    const name = (this.getVarName(wordToken) as AstStrValue).value
+    const name = (this.getContainerVarName(wordToken) as AstStrValue).value
     if (astProps.length > 0) {
       // ここまで来て初めてトークンを書き換える。
       // 途中でrollback()するとトークンの書き換えだけが残ってしまうため。(#2396)
@@ -2488,6 +2488,12 @@ export class NakoParser extends NakoParserBase {
     const name = originalName || (word as AstStrValue).value
     const f = this.findVar(name)
     if (f) {
+      // 取り込んだ定数は、代入時にも元の定数として解決して書き込み検査へ渡す。
+      // ここで同名の変数を作ると、定数への代入が暗黙のシャドーイングになる。
+      if (f.info.type === 'const') {
+        if (f.scope === 'global') { (word as AstStrValue).value = f.name }
+        return word
+      }
       // ファイル直下の無修飾な代入は、取り込み先ではなく自身の変数にする (#1332)
       if (this.funcLevel === 0 && name.indexOf('__') < 0 &&
         f.scope === 'global' && f.name !== `${this.modName}__${name}`) {
@@ -2501,6 +2507,21 @@ export class NakoParser extends NakoParserBase {
     if (originalName) { (word as AstStrValue).value = name }
     this.createVar(word, false, this.isExportDefault)
     return word
+  }
+
+  /** 配列・オブジェクトの代入先を解決する。
+   * 既存のコンテナは取り込み元の実体を更新し、未定義の場合だけ現在のスコープに生成する。
+   */
+  getContainerVarName(word: Token|Ast): Token|Ast {
+    const originalName = this.originalVarNames.get(word)
+    const name = originalName || (word as AstStrValue).value
+    const f = this.findVar(name)
+    if (f) {
+      if (f.scope === 'global') { (word as AstStrValue).value = f.name }
+      return word
+    }
+    if (originalName) { (word as AstStrValue).value = name }
+    return this.createVar(word, false, this.isExportDefault)
   }
 
   /** 変数名を検索して解決する */
@@ -2527,7 +2548,7 @@ export class NakoParser extends NakoParserBase {
     }
     if ((word.type === 'ref_array' || word.type === 'ref_prop') &&
       word.name && typeof word.name !== 'string') {
-      word.name = this.getVarName(word.name)
+      word.name = this.getContainerVarName(word.name)
     }
     return word
   }
