@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { parse } from 'yaml'
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
 const testBrowserDir = resolve(currentDir, '..')
@@ -92,15 +93,31 @@ test('test-browser package.jsonにブラウザ系テストスクリプトを集�
 
 test('GitHub Actionsがブラウザテストを実行する', () => {
   const workflowPath = join(rootDir, '.github/workflows/nodejs.yml')
-  const workflowText = readFileSync(workflowPath, 'utf8')
+  const workflow = parse(readFileSync(workflowPath, 'utf8'))
+  const browserJob = workflow.jobs?.['browser-test']
+  assert.ok(browserJob, 'browser-testジョブが定義されていません')
+  assert.equal(browserJob['timeout-minutes'], 20, 'browser-testジョブにタイムアウトが設定されていません')
 
-  assert.ok(workflowText.includes('working-directory: test-browser'), 'CIの実行ディレクトリにtest-browserがありません')
-  assert.ok(workflowText.includes('playwright install --with-deps chromium'), 'CIでChromiumをインストールしていません')
-  assert.ok(workflowText.includes("if: matrix.node-version == '24.x'"), 'ブラウザテストのNode.jsバージョンが固定されていません')
-  assert.match(workflowText, /working-directory: test-browser\n\s+run: npm test/, 'CIでtest-browserのnpm testを実行していません')
-  assert.ok(workflowText.includes('actions/setup-python@v7'), 'CIでSelenium用のPythonを準備していません')
-  assert.ok(workflowText.includes('test-browser/test/selenium/requirements.txt'), 'CIでSeleniumの依存関係をインストールしていません')
-  assert.match(workflowText, /working-directory: test-browser\n\s+run: npm run test:selenium/, 'CIでSeleniumのsmoke testを実行していません')
+  const steps = browserJob.steps || []
+  const findStep = (predicate, message) => {
+    const step = steps.find(predicate)
+    assert.ok(step, message)
+    return step
+  }
+  assert.equal(findStep((step) => step.uses === 'actions/checkout@v4', 'browser-testでcheckout@v4を使用していません').uses, 'actions/checkout@v4')
+  assert.equal(findStep((step) => step.uses === 'actions/setup-node@v4', 'browser-testでsetup-node@v4を使用していません').with['node-version'], '24.x')
+  assert.equal(findStep((step) => step.run === 'npm ci' && !step['working-directory'], 'ルート依存関係をnpm ciでインストールしていません').run, 'npm ci')
+  assert.equal(findStep((step) => step.run === 'npm ci' && step['working-directory'] === 'test-browser', 'test-browser依存関係をnpm ciでインストールしていません').run, 'npm ci')
+  assert.equal(findStep((step) => step.run === 'npx playwright install --with-deps chromium' && step['working-directory'] === 'test-browser', 'CIでChromiumをインストールしていません').run, 'npx playwright install --with-deps chromium')
+  assert.equal(findStep((step) => step.run === 'npm test' && step['working-directory'] === 'test-browser', 'CIでtest-browserのnpm testを実行していません').run, 'npm test')
+  assert.equal(findStep((step) => step.uses === 'actions/setup-python@v7', 'CIでSelenium用のPythonを準備していません').uses, 'actions/setup-python@v7')
+  assert.equal(findStep((step) => step.run === "python -m pip install -r test-browser/test/selenium/requirements.txt", 'CIでSeleniumの依存関係をインストールしていません').run, "python -m pip install -r test-browser/test/selenium/requirements.txt")
+  assert.equal(findStep((step) => typeof step.run === 'string' && step.run.includes('test_chrome_unit.py'), 'CIでSeleniumランナーの単体テストを実行していません').run.includes('test_chrome_unit.py'), true)
+  assert.equal(findStep((step) => step.run === 'npm run test:selenium' && step['working-directory'] === 'test-browser', 'CIでSeleniumのsmoke testを実行していません').run, 'npm run test:selenium')
+})
+
+test('ブラウザテスト用のlockfileが存在する', () => {
+  assert.equal(existsSync(join(testBrowserDir, 'package-lock.json')), true)
 })
 
 test('Seleniumランナーがルートのreleaseを参照する', () => {

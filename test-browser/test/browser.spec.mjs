@@ -39,6 +39,20 @@ test('browser smoke rejects zero completed tests', () => {
     .toThrow('ブラウザ内のテストが1件も実行されていません')
 })
 
+test('browser smoke case counting follows the executed cases', async ({ page }) => {
+  await page.goto('/test-browser/test/html/browser-smoke-runner.html')
+  const result = await page.evaluate(async () => {
+    const { runBrowserSmokeCases } = await import('/test-browser/test/browser/test/plugin_browser_smoke_test.js')
+    return runBrowserSmokeCases([
+      { title: '成功', fn: () => {} },
+      { title: '失敗', fn: () => { throw new Error('expected failure') } }
+    ])
+  })
+  expect(result.total).toBe(2)
+  expect(result.passes).toBe(1)
+  expect(result.failures).toHaveLength(1)
+})
+
 test('browser full test', async ({ page }) => {
   test.setTimeout(300000)
   // フルテストはより長いタイムアウトを使用する

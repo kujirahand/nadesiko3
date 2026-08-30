@@ -7,9 +7,6 @@ import shutil
 import time
 import sys
 import urllib.parse
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 
 SERVER_SCRIPT = 'http://localhost:8887/index.php'
 SCRIPT = os.path.abspath(__file__)
@@ -95,6 +92,9 @@ def compare_result(expect_text, real_text):
 
 def create_driver():
     '''create chrome driver'''
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+
     options = webdriver.ChromeOptions()
     if os.environ.get('HEADLESS') == '1' or os.environ.get('CI') or not os.environ.get('DISPLAY'):
         options.add_argument('--headless=new')
@@ -105,17 +105,35 @@ def create_driver():
         return webdriver.Chrome(service=Service(chromedriver), options=options)
     return webdriver.Chrome(options=options)
 
-driver = create_driver()
+driver = None
+
+def get_driver():
+    '''create the browser only when a test is actually executed'''
+    global driver
+    if driver is None:
+        driver = create_driver()
+    return driver
+
+def collect_test_files(test_target=TEST_TARGET, smoke_mode=None):
+    '''return the Selenium test files that will be executed'''
+    if smoke_mode is None:
+        smoke_mode = os.environ.get('NAKO_SELENIUM_MODE') == 'smoke'
+    files = glob.glob(os.path.join(test_target, '*.nako3'))
+    if smoke_mode:
+        files = [fname for fname in files if os.path.basename(fname) not in SMOKE_SKIP_FILES]
+    return sorted(files)
 
 def run_test_all():
     '''test all'''
-    for fname in glob.glob(os.path.join(TEST_TARGET, '*.nako3')):
-        if os.environ.get('NAKO_SELENIUM_MODE') == 'smoke' and os.path.basename(fname) in SMOKE_SKIP_FILES:
-            continue
+    files = collect_test_files()
+    for fname in files:
         run_test(fname)
+    return len(files)
 
 def run_test(fname):
     '''test one file'''
+    from selenium.webdriver.common.by import By
+
     with open(fname, 'r', encoding='utf-8') as file:
         code = file.read()
     code_u = urllib.parse.quote(code)
@@ -126,10 +144,11 @@ def run_test(fname):
             code_result += line[3:].strip() + '\n'
     code_result = code_result.strip()
     # drive server
-    driver.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
+    browser = get_driver()
+    browser.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
     time.sleep(1)
     # get result
-    result_elem = driver.find_element(By.CSS_SELECTOR, '#result')
+    result_elem = browser.find_element(By.CSS_SELECTOR, '#result')
     result = result_elem.get_attribute('value').strip()
     if compare_result(code_result, result):
         print('[ok]', os.path.basename(fname))
@@ -138,9 +157,13 @@ def run_test(fname):
         print('>>>', code_result, '!=', result)
         error_log.append({'file': fname, 'expect': code_result, 'real': result})
 
-def report_test():
+def report_test(executed_count):
     '''report file'''
-    driver.close()
+    if driver is not None:
+        driver.quit()
+    if executed_count == 0:
+        print('😭😭😭 実行されたSeleniumテストがありません 😭😭😭')
+        return 1
     if len(error_log) == 0:
         print('⭐⭐⭐ 全てのテストが成功しました ⭐⭐⭐')
         return 0
@@ -155,7 +178,8 @@ def report_test():
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
-        run_test_all()
+        executed_count = run_test_all()
     else:
         run_test(os.path.join(TEST_TARGET, sys.argv[1]))
-    sys.exit(report_test())
+        executed_count = 1
+    sys.exit(report_test(executed_count))
