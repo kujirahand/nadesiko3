@@ -201,7 +201,14 @@ def run_test(fname):
 def report_test(executed_count):
     '''report file'''
     if driver is not None:
-        driver.quit()
+        try:
+            driver.quit()
+        except Exception as error:
+            error_log.append({
+                'file': 'WebDriver終了処理',
+                'expect': '正常終了',
+                'real': f'{type(error).__name__}: {error}'
+            })
     if executed_count == 0:
         print('😭😭😭 実行されたSeleniumテストがありません 😭😭😭')
         return 1

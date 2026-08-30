@@ -50,6 +50,24 @@ class SeleniumRunnerTest(unittest.TestCase):
         self.assertTrue(test_chrome.result_shape_ready(f'ok\n{png_a}', f'ok\n{png_b}'))
         self.assertFalse(test_chrome.result_shape_ready(f'ok\n{png_a}', 'ok\n'))
 
+    def test_driver_quit_failure_is_reported(self):
+        class BrokenDriver:
+            def quit(self):
+                raise RuntimeError('quit failed')
+
+        original_driver = test_chrome.driver
+        original_errors = list(test_chrome.error_log)
+        try:
+            test_chrome.driver = BrokenDriver()
+            test_chrome.error_log.clear()
+            with contextlib.redirect_stdout(io.StringIO()):
+                status = test_chrome.report_test(1)
+            self.assertEqual(1, status)
+            self.assertIn('quit failed', test_chrome.error_log[0]['real'])
+        finally:
+            test_chrome.driver = original_driver
+            test_chrome.error_log[:] = original_errors
+
 
 if __name__ == '__main__':
     unittest.main()
