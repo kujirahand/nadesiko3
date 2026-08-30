@@ -144,20 +144,28 @@ def run_test(fname):
         error_log.append({'file': fname, 'expect': '### 期待値', 'real': '期待値行なし'})
         return
     code_result = '\n'.join(expected_lines).strip()
-    from selenium.common.exceptions import TimeoutException
+    from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
 
     # drive server
     browser = get_driver()
     browser.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
-    result_elem = browser.find_element(By.CSS_SELECTOR, '#result')
+
+    def result_matches(_driver):
+        current = _driver.find_element(By.CSS_SELECTOR, '#result').get_attribute('value').strip()
+        return compare_result(code_result, current)
+
     try:
-        WebDriverWait(browser, 15).until(
-            lambda _driver: result_elem.get_attribute('value').strip() == code_result)
+        WebDriverWait(
+            browser,
+            15,
+            ignored_exceptions=(StaleElementReferenceException,)
+        ).until(result_matches)
     except TimeoutException:
         # 不一致時の実値を下の比較処理で報告する。
         pass
+    result_elem = browser.find_element(By.CSS_SELECTOR, '#result')
     result = result_elem.get_attribute('value').strip()
     if compare_result(code_result, result):
         print('[ok]', os.path.basename(fname))
