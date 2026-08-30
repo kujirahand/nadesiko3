@@ -4,7 +4,6 @@ Seleniumを使ってChromeを操作してテストを実行する。
 import os
 import glob
 import shutil
-import time
 import sys
 import urllib.parse
 
@@ -132,23 +131,33 @@ def run_test_all():
 
 def run_test(fname):
     '''test one file'''
-    from selenium.webdriver.common.by import By
-
     with open(fname, 'r', encoding='utf-8') as file:
         code = file.read()
     code_u = urllib.parse.quote(code)
-    code_result = ''
+    expected_lines = []
     for line in code.split('\n'):
         line = line.strip()
         if line[0:3] == '###':
-            code_result += line[3:].strip() + '\n'
-    code_result = code_result.strip()
+            expected_lines.append(line[3:].strip())
+    if len(expected_lines) == 0:
+        print('[ERROR]', os.path.basename(fname), 'に期待値行がありません')
+        error_log.append({'file': fname, 'expect': '### 期待値', 'real': '期待値行なし'})
+        return
+    code_result = '\n'.join(expected_lines).strip()
+    from selenium.common.exceptions import TimeoutException
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+
     # drive server
     browser = get_driver()
     browser.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
-    time.sleep(1)
-    # get result
     result_elem = browser.find_element(By.CSS_SELECTOR, '#result')
+    try:
+        WebDriverWait(browser, 15).until(
+            lambda _driver: result_elem.get_attribute('value').strip() == code_result)
+    except TimeoutException:
+        # 不一致時の実値を下の比較処理で報告する。
+        pass
     result = result_elem.get_attribute('value').strip()
     if compare_result(code_result, result):
         print('[ok]', os.path.basename(fname))

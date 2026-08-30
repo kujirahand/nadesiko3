@@ -94,9 +94,12 @@ test('test-browser package.jsonにブラウザ系テストスクリプトを集�
 test('GitHub Actionsがブラウザテストを実行する', () => {
   const workflowPath = join(rootDir, '.github/workflows/nodejs.yml')
   const workflow = parse(readFileSync(workflowPath, 'utf8'))
+  assert.equal(workflow.permissions?.contents, 'read', 'workflowの権限が読み取り専用ではありません')
+  assert.equal(workflow.jobs?.build?.['timeout-minutes'], 20, 'buildジョブにタイムアウトが設定されていません')
   const browserJob = workflow.jobs?.['browser-test']
   assert.ok(browserJob, 'browser-testジョブが定義されていません')
   assert.equal(browserJob['timeout-minutes'], 20, 'browser-testジョブにタイムアウトが設定されていません')
+  assert.equal(browserJob.needs, undefined, 'browser-testジョブが他ジョブに依存しています')
 
   const steps = browserJob.steps || []
   const findStep = (predicate, message) => {
@@ -104,8 +107,8 @@ test('GitHub Actionsがブラウザテストを実行する', () => {
     assert.ok(step, message)
     return step
   }
-  assert.equal(findStep((step) => step.uses === 'actions/checkout@v4', 'browser-testでcheckout@v4を使用していません').uses, 'actions/checkout@v4')
-  assert.equal(findStep((step) => step.uses === 'actions/setup-node@v4', 'browser-testでsetup-node@v4を使用していません').with['node-version'], '24.x')
+  assert.equal(findStep((step) => step.uses === 'actions/checkout@v7', 'browser-testでcheckout@v7を使用していません').uses, 'actions/checkout@v7')
+  assert.equal(findStep((step) => step.uses === 'actions/setup-node@v7', 'browser-testでsetup-node@v7を使用していません').with['node-version'], '24.x')
   assert.equal(findStep((step) => step.run === 'npm ci' && !step['working-directory'], 'ルート依存関係をnpm ciでインストールしていません').run, 'npm ci')
   assert.equal(findStep((step) => step.run === 'npm ci' && step['working-directory'] === 'test-browser', 'test-browser依存関係をnpm ciでインストールしていません').run, 'npm ci')
   assert.equal(findStep((step) => step.run === 'npx playwright install --with-deps chromium' && step['working-directory'] === 'test-browser', 'CIでChromiumをインストールしていません').run, 'npx playwright install --with-deps chromium')

@@ -18,15 +18,21 @@ async function runRunnerPage (page, url, timeout = 60000) {
  * @param {object} result - runMochaPageの戻り値
  */
 function assertNoFailures (result) {
-  if (result.failures > 0) {
-    const details = result.failures_detail
+  const failureDetails = Array.isArray(result.failures)
+    ? result.failures
+    : (result.failures_detail || [])
+  const failureCount = Array.isArray(result.failures)
+    ? result.failures.length
+    : result.failures
+  if (failureCount > 0) {
+    const details = failureDetails
       .map((f) => `  - ${f.title}: ${f.error}`)
       .join('\n')
-    throw new Error(`${result.failures}件のテストが失敗しました:\n${details}`)
+    throw new Error(`${failureCount}件のテストが失敗しました:\n${details}`)
   }
   expect(result.total, 'ブラウザ内のテストが1件も実行されていません').toBeGreaterThan(0)
-  expect(result.passes + result.failures, 'ブラウザ内のテスト件数が一致しません').toBe(result.total)
-  expect(result.failures).toBe(0)
+  expect(result.passes + failureCount, 'ブラウザ内のテスト件数が一致しません').toBe(result.total)
+  expect(failureCount).toBe(0)
 }
 
 test('browser smoke test', async ({ page }) => {
@@ -37,6 +43,14 @@ test('browser smoke test', async ({ page }) => {
 test('browser smoke rejects zero completed tests', () => {
   expect(() => assertNoFailures({ failures: 0, passes: 0, total: 0, failures_detail: [] }))
     .toThrow('ブラウザ内のテストが1件も実行されていません')
+})
+
+test('browser smoke accepts raw failure arrays', () => {
+  expect(() => assertNoFailures({
+    failures: [{ title: '失敗', error: 'expected failure' }],
+    passes: 0,
+    total: 1
+  })).toThrow('1件のテストが失敗しました')
 })
 
 test('browser smoke case counting follows the executed cases', async ({ page }) => {

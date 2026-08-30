@@ -29,6 +29,21 @@ class SeleniumRunnerTest(unittest.TestCase):
         self.assertEqual(1, status)
         self.assertIn('実行されたSeleniumテストがありません', output.getvalue())
 
+    def test_file_without_expected_result_is_reported_as_failure(self):
+        with tempfile.TemporaryDirectory() as test_target:
+            filename = os.path.join(test_target, 'no_expectation.nako3')
+            with open(filename, 'w', encoding='utf-8') as test_file:
+                test_file.write('「表示だけ」と表示')
+
+            original_errors = list(test_chrome.error_log)
+            try:
+                test_chrome.error_log.clear()
+                test_chrome.run_test(filename)
+                self.assertEqual(1, len(test_chrome.error_log))
+                self.assertEqual('期待値行なし', test_chrome.error_log[0]['real'])
+            finally:
+                test_chrome.error_log[:] = original_errors
+
 
 if __name__ == '__main__':
     unittest.main()
