@@ -1,11 +1,7 @@
 import assert from 'assert'
-import path from 'path'
-import { fileURLToPath } from 'url'
 import { NakoCompiler } from '../../core/src/nako3.mjs'
 import PluginMarkup from '../../src/plugin_markup.mjs'
 import { CNako3 } from '../../src/cnako3mod.mjs'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // eslint-disable-next-line no-undef
 describe('plugin_markup_test', () => {
@@ -19,8 +15,7 @@ describe('plugin_markup_test', () => {
       let c = code
 
       if (nako === cnako) {
-        const pluginPath = path.join(__dirname, '../../src/plugin_markup.mjs')
-        c = `!「${pluginPath}」を取り込む。\n` + c
+        c = '!「plugin_markup.mjs」を取り込む。\n' + c
       }
 
       nako.logger.debug('code=' + code)

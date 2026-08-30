@@ -179,7 +179,7 @@ describe('error_message', () => {
       if (process.env.NODE_ENV === 'test') { return this.skip() }
       const nako = new NakoCompiler()
       const code = nako.compileStandalone('10のエラー発生')
-      const silent = 'const console = { error: () => {} };\n'
+      const silent = 'const console = { error: () => {}, warn: () => {}, log: () => {} };\n'
       const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'nadesiko3-standalone-'))
       try {
         await fs.cp(path.join(__dirname, '../../core/src'), path.join(tempDir, 'nako3runtime'), { recursive: true })
