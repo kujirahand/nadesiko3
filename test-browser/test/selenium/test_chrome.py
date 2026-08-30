@@ -89,6 +89,22 @@ def compare_result(expect_text, real_text):
             return False
     return True
 
+def result_shape_ready(expect_text, real_text):
+    '''return true once text lines or PNG data URLs are ready for final comparison'''
+    if expect_text == real_text:
+        return True
+    expect_lines = expect_text.split('\n')
+    real_lines = real_text.split('\n')
+    if len(expect_lines) != len(real_lines):
+        return False
+    for expect_line, real_line in zip(expect_lines, real_lines):
+        if expect_line == real_line:
+            continue
+        if to_png_data_url(expect_line) and to_png_data_url(real_line):
+            continue
+        return False
+    return True
+
 def create_driver():
     '''create chrome driver'''
     from selenium import webdriver
@@ -101,8 +117,11 @@ def create_driver():
         options.add_argument('--disable-dev-shm-usage')
     chromedriver = os.environ.get('CHROMEDRIVER') or shutil.which('chromedriver')
     if chromedriver and os.path.exists(chromedriver):
-        return webdriver.Chrome(service=Service(chromedriver), options=options)
-    return webdriver.Chrome(options=options)
+        browser = webdriver.Chrome(service=Service(chromedriver), options=options)
+    else:
+        browser = webdriver.Chrome(options=options)
+    browser.set_script_timeout(5)
+    return browser
 
 driver = None
 
@@ -144,34 +163,39 @@ def run_test(fname):
         error_log.append({'file': fname, 'expect': '### 期待値', 'real': '期待値行なし'})
         return
     code_result = '\n'.join(expected_lines).strip()
-    from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+    from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, WebDriverException
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
 
     # drive server
-    browser = get_driver()
-    browser.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
-
-    def result_matches(_driver):
-        current = _driver.find_element(By.CSS_SELECTOR, '#result').get_attribute('value').strip()
-        return compare_result(code_result, current)
-
     try:
-        WebDriverWait(
-            browser,
-            15,
-            ignored_exceptions=(StaleElementReferenceException,)
-        ).until(result_matches)
-    except TimeoutException:
-        # 不一致時の実値を下の比較処理で報告する。
-        pass
-    result_elem = browser.find_element(By.CSS_SELECTOR, '#result')
-    result = result_elem.get_attribute('value').strip()
-    if compare_result(code_result, result):
-        print('[ok]', os.path.basename(fname))
-    else:
-        print('[ERROR]', os.path.basename(fname))
-        print('>>>', code_result, '!=', result)
+        browser = get_driver()
+        browser.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
+
+        def result_matches(_driver):
+            current = _driver.find_element(By.CSS_SELECTOR, '#result').get_attribute('value').strip()
+            return result_shape_ready(code_result, current)
+
+        try:
+            WebDriverWait(
+                browser,
+                15,
+                ignored_exceptions=(StaleElementReferenceException,)
+            ).until(result_matches)
+        except TimeoutException:
+            # 不一致時の実値を下の比較処理で報告する。
+            pass
+        result_elem = browser.find_element(By.CSS_SELECTOR, '#result')
+        result = result_elem.get_attribute('value').strip()
+        if compare_result(code_result, result):
+            print('[ok]', os.path.basename(fname))
+        else:
+            print('[ERROR]', os.path.basename(fname))
+            print('>>>', code_result, '!=', result)
+            error_log.append({'file': fname, 'expect': code_result, 'real': result})
+    except WebDriverException as error:
+        result = f'{type(error).__name__}: {error}'
+        print('[ERROR]', os.path.basename(fname), result)
         error_log.append({'file': fname, 'expect': code_result, 'real': result})
 
 def report_test(executed_count):

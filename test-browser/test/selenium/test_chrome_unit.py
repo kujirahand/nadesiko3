@@ -44,6 +44,12 @@ class SeleniumRunnerTest(unittest.TestCase):
             finally:
                 test_chrome.error_log[:] = original_errors
 
+    def test_result_shape_accepts_png_data_after_it_is_ready(self):
+        png_a = 'data:image/png;base64,iVBORw0KGgoAAA'
+        png_b = 'data:image/png;base64,iVBORw0KGgoBBB'
+        self.assertTrue(test_chrome.result_shape_ready(f'ok\n{png_a}', f'ok\n{png_b}'))
+        self.assertFalse(test_chrome.result_shape_ready(f'ok\n{png_a}', 'ok\n'))
+
 
 if __name__ == '__main__':
     unittest.main()
