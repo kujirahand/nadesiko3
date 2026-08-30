@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Playwrightで実行するブラウザテストの集約パッケージ",
   "scripts": {
-    "test": "npm run test:all",
+    "test": "npm run test:config && npm run test:all",
     "test:all": "npm run test:browser && npm run test:bundled && npm run test:ace-editor",
     "test:browser": "npm run test:browser:smoke",
     "test:browser:smoke": "playwright test test/browser.spec.mjs --config playwright.config.mjs --project chromium --grep 'smoke'",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "cross-env": "^10.1.0",
-    "vite": "^6.3.4"
+    "vite": "^6.3.4",
+    "yaml": "^2.8.1"
   }
 }

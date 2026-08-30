@@ -18,18 +18,53 @@ async function runRunnerPage (page, url, timeout = 60000) {
  * @param {object} result - runMochaPageの戻り値
  */
 function assertNoFailures (result) {
-  if (result.failures > 0) {
-    const details = result.failures_detail
+  const failureDetails = Array.isArray(result.failures)
+    ? result.failures
+    : (result.failures_detail || [])
+  const failureCount = Array.isArray(result.failures)
+    ? result.failures.length
+    : result.failures
+  if (failureCount > 0) {
+    const details = failureDetails
       .map((f) => `  - ${f.title}: ${f.error}`)
       .join('\n')
-    throw new Error(`${result.failures}件のテストが失敗しました:\n${details}`)
+    throw new Error(`${failureCount}件のテストが失敗しました:\n${details}`)
   }
-  expect(result.failures).toBe(0)
+  expect(result.total, 'ブラウザ内のテストが1件も実行されていません').toBeGreaterThan(0)
+  expect(result.passes + failureCount, 'ブラウザ内のテスト件数が一致しません').toBe(result.total)
+  expect(failureCount).toBe(0)
 }
 
 test('browser smoke test', async ({ page }) => {
   const result = await runRunnerPage(page, '/test-browser/test/html/browser-smoke-runner.html')
   assertNoFailures(result)
+})
+
+test('browser smoke rejects zero completed tests', () => {
+  expect(() => assertNoFailures({ failures: 0, passes: 0, total: 0, failures_detail: [] }))
+    .toThrow('ブラウザ内のテストが1件も実行されていません')
+})
+
+test('browser smoke accepts raw failure arrays', () => {
+  expect(() => assertNoFailures({
+    failures: [{ title: '失敗', error: 'expected failure' }],
+    passes: 0,
+    total: 1
+  })).toThrow('1件のテストが失敗しました')
+})
+
+test('browser smoke case counting follows the executed cases', async ({ page }) => {
+  await page.goto('/test-browser/test/html/browser-smoke-runner.html')
+  const result = await page.evaluate(async () => {
+    const { runBrowserSmokeCases } = await import('/test-browser/test/browser/test/plugin_browser_smoke_test.js')
+    return runBrowserSmokeCases([
+      { title: '成功', fn: () => {} },
+      { title: '失敗', fn: () => { throw new Error('expected failure') } }
+    ])
+  })
+  expect(result.total).toBe(2)
+  expect(result.passes).toBe(1)
+  expect(result.failures).toHaveLength(1)
 })
 
 test('browser full test', async ({ page }) => {

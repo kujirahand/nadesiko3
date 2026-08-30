@@ -3,6 +3,9 @@
 
 name: Node.js CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ master ]
@@ -12,6 +15,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         # Node.js v20はEOLのため対象外。ドキュメント上の最低サポートに合わせて 22.x を含めます
@@ -19,15 +23,15 @@ jobs:
 
     steps:
       - name: Checkout submodule
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
     
       # 各種ライブラリをインストール
-      - name: npm install
-        run: npm install
+      - name: npm ci
+        run: npm ci
       
       # 各種ビルド
       - name: npm run build
@@ -41,3 +45,42 @@ jobs:
       - name: npm run test
         run: npm run test
 
+  browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            test-browser/package-lock.json
+      - name: Install root dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Install browser test dependencies
+        working-directory: test-browser
+        run: npm ci
+      - name: Install Chromium
+        working-directory: test-browser
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright browser tests
+        working-directory: test-browser
+        run: npm test
+      - name: Use Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.x'
+      - name: Install Selenium test dependencies
+        run: python -m pip install -r test-browser/test/selenium/requirements.txt
+      - name: Test Selenium runner
+        run: python -m unittest discover -s test-browser/test/selenium -p 'test_chrome_unit.py'
+      - name: Run Selenium smoke tests
+        working-directory: test-browser
+        run: npm run test:selenium
