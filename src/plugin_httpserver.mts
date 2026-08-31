@@ -57,17 +57,22 @@ class EasyURLDispather {
     this.sys.__setSysVar('GETデータ', params)
 
     const runDispatcher = (postData: any) => {
-      this.sys.__setSysVar('POSTデータ', postData)
-      // URLの一致を調べてアクションを実行
-      const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
-      for (const it of filtered) {
-        let isBreak = false
-        if (it.action === 'static') {
-          isBreak = this.doRequestStatic(req, res, it)
-        } else if (it.action === 'callback') {
-          isBreak = this.doRequestCallback(req, res, it)
+      try {
+        this.sys.__setSysVar('POSTデータ', postData)
+        // URLの一致を調べてアクションを実行
+        const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
+        for (const it of filtered) {
+          let isBreak = false
+          if (it.action === 'static') {
+            isBreak = this.doRequestStatic(req, res, it)
+          } else if (it.action === 'callback') {
+            isBreak = this.doRequestCallback(req, res, it)
+          }
+          if (isBreak) { break }
         }
-        if (isBreak) { break }
+      } catch (err: any) {
+        // ここで捕まえないとサーバのプロセスごと落ちてしまう
+        this.returnError(res, err)
       }
     }
 
@@ -122,12 +127,32 @@ class EasyURLDispather {
           res.end('Failed to save upload file.')
           return
         }
-        this.sys.__setSysVar('FILESデータ', filesData)
+        try {
+          this.sys.__setSysVar('FILESデータ', filesData)
+        } catch (err: any) {
+          this.returnError(res, err)
+          return
+        }
         runDispatcher(postData)
       })
     } else {
       this.sys.__setSysVar('FILESデータ', [])
       runDispatcher({})
+    }
+  }
+
+  /** リクエスト処理中に発生した例外を500として返す。
+   * 非同期のイベントハンドラ内で例外を投げるとプロセスごと停止してしまうため、必ずここで捕まえる。 */
+  returnError(res: any, err: any) {
+    const msg = (err && err.message) ? err.message : String(err)
+    console.error(`${HTTPSERVER_LOGID} 実行エラー: ${msg}`)
+    try {
+      if (!res.writableEnded) {
+        res.statusCode = 500
+        res.end('Internal Server Error.')
+      }
+    } catch {
+      // 応答済みなどで書き込めない場合は何もしない
     }
   }
 
@@ -176,7 +201,11 @@ class EasyURLDispather {
   doRequestCallback(req: any, res: any, it: EasyURLItem): boolean {
     this.isEnd = false
     this.usedHeader = false
-    it.callback(req, res)
+    const ret: any = it.callback(req, res)
+    // コールバックが非同期関数だった場合、拒否をここで捕まえる
+    if (ret && typeof ret.then === 'function') {
+      ret.then(undefined, (err: any) => { this.returnError(res, err) })
+    }
     if (!this.isEnd) {
       return true
     }
@@ -360,7 +389,12 @@ const PluginHttpServer = {
       const dp = sys.__httpserver = new EasyURLDispather(sys)
       // サーバオブジェクトを生成
       dp.server = http.createServer((req: any, res: any) => {
-        dp.doRequest(req, res)
+        try {
+          dp.doRequest(req, res)
+        } catch (err: any) {
+          // ここで捕まえないとサーバのプロセスごと落ちてしまう
+          dp.returnError(res, err)
+        }
       })
       dp.server.on('error', (err: any) => {
         console.error(`${HTTPSERVER_LOGID} エラー: ${err.message}`)
