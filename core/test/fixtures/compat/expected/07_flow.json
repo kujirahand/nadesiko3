@@ -1,0 +1,125 @@
+{
+ "group": "07_flow",
+ "description": "制御構文。ループ変数・回数・打ち切りの挙動を固定する。",
+ "generatedBy": "nadesiko3 (TypeScript)",
+ "results": {
+  "もし-真": {
+   "name": "もし-真",
+   "status": "ok",
+   "log": "T"
+  },
+  "もし-偽": {
+   "name": "もし-偽",
+   "status": "ok",
+   "log": "F"
+  },
+  "もし-一行": {
+   "name": "もし-一行",
+   "status": "ok",
+   "log": "T"
+  },
+  "もし-入れ子": {
+   "name": "もし-入れ子",
+   "status": "ok",
+   "log": "大",
+   "vars": {
+    "A": {
+     "t": "num",
+     "v": 5,
+     "int": true
+    }
+   }
+  },
+  "回": {
+   "name": "回",
+   "status": "ok",
+   "log": "x\nx\nx"
+  },
+  "回-回数変数": {
+   "name": "回-回数変数",
+   "status": "ok",
+   "log": "1\n2\n3"
+  },
+  "繰り返す": {
+   "name": "繰り返す",
+   "status": "ok",
+   "log": "1\n2\n3"
+  },
+  "繰り返す-対象": {
+   "name": "繰り返す-対象",
+   "status": "ok",
+   "log": ""
+  },
+  "反復-配列": {
+   "name": "反復-配列",
+   "status": "ok",
+   "log": "10\n20"
+  },
+  "反復-対象キー": {
+   "name": "反復-対象キー",
+   "status": "ok",
+   "log": "x\ny"
+  },
+  "間": {
+   "name": "間",
+   "status": "ok",
+   "log": "1\n2\n3",
+   "vars": {
+    "A": {
+     "t": "num",
+     "v": 3,
+     "int": true
+    }
+   }
+  },
+  "抜ける": {
+   "name": "抜ける",
+   "status": "ok",
+   "log": "1\n2"
+  },
+  "続ける": {
+   "name": "続ける",
+   "status": "ok",
+   "log": "1\n3"
+  },
+  "条件分岐": {
+   "name": "条件分岐",
+   "status": "ok",
+   "log": "二",
+   "vars": {
+    "A": {
+     "t": "num",
+     "v": 2,
+     "int": true
+    }
+   }
+  },
+  "条件分岐-違えば": {
+   "name": "条件分岐-違えば",
+   "status": "ok",
+   "log": "他",
+   "vars": {
+    "A": {
+     "t": "num",
+     "v": 9,
+     "int": true
+    }
+   }
+  },
+  "ループ-入れ子": {
+   "name": "ループ-入れ子",
+   "status": "ok",
+   "log": "1-1\n1-2\n2-1\n2-2"
+  },
+  "戻る-ループ内": {
+   "name": "戻る-ループ内",
+   "status": "ok",
+   "log": "2"
+  },
+  "インデント構文": {
+   "name": "インデント構文",
+   "status": "ok",
+   "log": "T"
+  }
+ }
+}

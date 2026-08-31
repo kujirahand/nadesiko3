@@ -2,6 +2,7 @@
 import assert from 'assert'
 import path from 'path'
 import fs from 'fs'
+import os from 'os'
 import { execSync, spawnSync } from 'child_process'
 import nakoVersion from '../../src/nako_version.mjs'
 
@@ -37,24 +38,56 @@ describe('node_test(cnako)', () => {
     cmp('A=30;「--{A}--」を表示', '--30--')
   }).timeout(15000)
 
-  it('単独で実行できるプログラムの出力(macの時のみ) - Node.js', function () {
-    // [memo] なでしこが生成するコードも ESM ("".mjs") です
-    // testフォルダはmjsがデフォルト
-    // /tmp を使うので、windowsならテストしない macの時だけテスト
-    if (process.platform !== 'darwin') { return this.skip() }
-    const nakofileOrg = path.join(__dirname, 'add_test.nako3')
-    const nakofile = path.join('/tmp', 'add_test.nako3')
-    const jsfile = path.join('/tmp', 'add_test.mjs')
-    fs.copyFileSync(nakofileOrg, nakofile)
-    if (process.env.NODE_ENV === 'test') { return this.skip() }
-    const stderr = spawnSync('node', [cnako3, '-c', nakofile]).stderr
+  const compileAndRun = (tempDir, code) => {
+    const nakoFile = path.join(tempDir, 'main.nako3')
+    const jsFile = path.join(tempDir, 'main.mjs')
+    fs.writeFileSync(nakoFile, code)
+    const compileResult = spawnSync(process.execPath, [cnako3, '-c', nakoFile], {
+      cwd: tempDir,
+      encoding: 'utf8',
+      timeout: 30000
+    })
+    assert.ifError(compileResult.error)
+    assert.strictEqual(compileResult.signal, null, `コンパイルがシグナルで終了しました: ${compileResult.signal}`)
+    assert.strictEqual(compileResult.status, 0, compileResult.stderr)
+    assert.strictEqual(fs.existsSync(jsFile), true, 'main.mjsが生成されるべき')
+    const runResult = spawnSync(process.execPath, [jsFile], {
+      cwd: tempDir,
+      encoding: 'utf8',
+      timeout: 30000
+    })
+    assert.ifError(runResult.error)
+    assert.strictEqual(runResult.signal, null, `生成したJSがシグナルで終了しました: ${runResult.signal}`)
+    assert.strictEqual(runResult.status, 0, runResult.stderr)
+    return runResult.stdout.trim()
+  }
+
+  it('cnako3 -cで生成した単純なJSコードをNode.jsで実行できる #1865', function () {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-compile-simple-'))
     try {
-      if (stderr) { console.error(stderr.toString()) }
-      const p = spawnSync('node', [jsfile])
-      if (p.stderr) { console.error(p.stderr.toString()) }
-      assert.strictEqual(p.stdout.toString(), '3\n')
+      assert.strictEqual(compileAndRun(tempDir, '1+2を表示。'), '3')
     } finally {
-      if (fs.existsSync(jsfile)) { fs.unlinkSync(jsfile) }
+      fs.rmSync(tempDir, { recursive: true, force: true })
     }
-  })
+  }).timeout(30000)
+
+  it('cnako3 -cでNode用プラグインをコピーしてファイルコピーを実行できる #1865', function () {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-compile-file-copy-'))
+    try {
+      fs.writeFileSync(path.join(tempDir, 'source.txt'), 'plugin-node-ok')
+      const output = compileAndRun(
+        tempDir,
+        '「source.txt」を「copied.txt」へファイルコピー。\n「copied.txt」を読んでトリムして表示。'
+      )
+      assert.strictEqual(output, 'plugin-node-ok')
+      assert.strictEqual(
+        fs.existsSync(path.join(tempDir, 'nako3runtime', 'plugin_node.mjs')),
+        true,
+        'Node用プラグインがnako3runtimeへコピーされるべき'
+      )
+      assert.strictEqual(fs.readFileSync(path.join(tempDir, 'copied.txt'), 'utf8'), 'plugin-node-ok')
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true })
+    }
+  }).timeout(30000)
 })

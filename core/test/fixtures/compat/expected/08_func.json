@@ -1,0 +1,146 @@
+{
+ "group": "08_func",
+ "description": "関数定義と呼び出し。スコープ・それ・戻り値・無名関数を固定する。",
+ "generatedBy": "nadesiko3 (TypeScript)",
+ "results": {
+  "関数定義-基本": {
+   "name": "関数定義-基本",
+   "status": "ok",
+   "log": "3"
+  },
+  "関数定義-戻り値なし": {
+   "name": "関数定義-戻り値なし",
+   "status": "ok",
+   "log": "x"
+  },
+  "関数定義-それ": {
+   "name": "関数定義-それ",
+   "status": "ok",
+   "log": "6"
+  },
+  "関数定義-再帰": {
+   "name": "関数定義-再帰",
+   "status": "ok",
+   "log": "120"
+  },
+  "関数-ローカル変数": {
+   "name": "関数-ローカル変数",
+   "status": "ok",
+   "log": "99",
+   "vars": {
+    "A": {
+     "t": "num",
+     "v": 99,
+     "int": true
+    }
+   }
+  },
+  "関数-引数の助詞違い": {
+   "name": "関数-引数の助詞違い",
+   "status": "ok",
+   "log": "1-3"
+  },
+  "無名関数-変数に代入": {
+   "name": "無名関数-変数に代入",
+   "status": "ok",
+   "log": "function(){\n  // PUSH STACK\n  const __localvars = __nako_scope_enter();\n  try {\n      __self.__vars.set('引数', arguments);\n    __line(\"l1:main.nako3\");\n      __self.__vars.set(\"A\", (arguments[0]));\n    __line(\"l1:main.nako3\");\n    return (__self.__vars.get(\"A\") * 2);__line(\"l2:main.nako3\");\n    return (__self.__vars.get(\"それ\"));\n  } finally {\n      // POP STACK\n      __nako_scope_leave(__localvars);\n  }\n  }"
+  },
+  "関数-引数の既定値なし呼び出し": {
+   "name": "関数-引数の既定値なし呼び出し",
+   "status": "ok",
+   "log": "0"
+  },
+  "変数-代入と参照": {
+   "name": "変数-代入と参照",
+   "status": "ok",
+   "log": "1",
+   "vars": {
+    "A": {
+     "t": "num",
+     "v": 2,
+     "int": true
+    },
+    "B": {
+     "t": "num",
+     "v": 1,
+     "int": true
+    }
+   }
+  },
+  "変数-定数": {
+   "name": "変数-定数",
+   "status": "ok",
+   "log": "undefined",
+   "vars": {
+    "A": {
+     "t": "undefined"
+    }
+   }
+  },
+  "変数-とは変数": {
+   "name": "変数-とは変数",
+   "status": "ok",
+   "log": "3",
+   "vars": {
+    "A": {
+     "t": "num",
+     "v": 3,
+     "int": true
+    }
+   }
+  },
+  "関数-引数を配列で受ける": {
+   "name": "関数-引数を配列で受ける",
+   "status": "ok",
+   "log": "6"
+  },
+  "関数-戻り値に配列": {
+   "name": "関数-戻り値に配列",
+   "status": "ok",
+   "log": "1,2",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "関数-戻り値に辞書": {
+   "name": "関数-戻り値に辞書",
+   "status": "ok",
+   "log": "1",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "x"
+     ],
+     "v": {
+      "x": {
+       "t": "num",
+       "v": 1,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "関数-クロージャ": {
+   "name": "関数-クロージャ",
+   "status": "ok",
+   "log": "11\n12"
+  }
+ }
+}

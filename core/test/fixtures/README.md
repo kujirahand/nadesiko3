@@ -37,3 +37,12 @@ AST がゴールデンになってしまいます。
 ゴールデンを再生成して通す前に、差分が意図したものか必ず確認してください。
 `assert.deepStrictEqual` は差分箇所を表示するので、
 どのノードのどのキーが変わったかを追えます。
+
+## 差分fixture (#2448)
+
+`compat/` は、なでしこ3のGo言語版など**別実装との挙動の突き合わせ**に使う
+fixture一式です。現行のTypeScript版を正解(oracle)として、
+標準出力・変数の値と型・例外の種類と位置を固定しています。
+
+詳しくは `compat/README.md` と `compat/SPEC.md` を参照してください。
+検証は `core/test/compat_fixture_test.mjs` が行います。

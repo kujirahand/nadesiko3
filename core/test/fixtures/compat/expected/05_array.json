@@ -1,0 +1,665 @@
+{
+ "group": "05_array",
+ "description": "配列命令。添字・破壊的操作の有無・戻り値を固定する。",
+ "generatedBy": "nadesiko3 (TypeScript)",
+ "results": {
+  "要素数": {
+   "name": "要素数",
+   "status": "ok",
+   "log": "3"
+  },
+  "添字参照": {
+   "name": "添字参照",
+   "status": "ok",
+   "log": "20",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 10,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 20,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 30,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "添字代入": {
+   "name": "添字代入",
+   "status": "ok",
+   "log": "9,2,3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 9,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "添字代入-範囲外": {
+   "name": "添字代入-範囲外",
+   "status": "ok",
+   "log": "1,,,9",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 4,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "undefined"
+      },
+      {
+       "t": "undefined"
+      },
+      {
+       "t": "num",
+       "v": 9,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "二次元配列": {
+   "name": "二次元配列",
+   "status": "ok",
+   "log": "3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "arr",
+       "len": 2,
+       "v": [
+        {
+         "t": "num",
+         "v": 1,
+         "int": true
+        },
+        {
+         "t": "num",
+         "v": 2,
+         "int": true
+        }
+       ]
+      },
+      {
+       "t": "arr",
+       "len": 2,
+       "v": [
+        {
+         "t": "num",
+         "v": 3,
+         "int": true
+        },
+        {
+         "t": "num",
+         "v": 4,
+         "int": true
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "配列追加": {
+   "name": "配列追加",
+   "status": "ok",
+   "log": "1,2,3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列プッシュ": {
+   "name": "配列プッシュ",
+   "status": "ok",
+   "log": "1,2,3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列ポップ": {
+   "name": "配列ポップ",
+   "status": "ok",
+   "log": "1,2\n3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     ]
+    },
+    "B": {
+     "t": "num",
+     "v": 3,
+     "int": true
+    }
+   }
+  },
+  "配列取出": {
+   "name": "配列取出",
+   "status": "ok",
+   "log": "1,4\n2,3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 4,
+       "int": true
+      }
+     ]
+    },
+    "B": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列削除": {
+   "name": "配列削除",
+   "status": "ok",
+   "log": "1,3\n2",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     ]
+    },
+    "B": {
+     "t": "num",
+     "v": 2,
+     "int": true
+    }
+   }
+  },
+  "配列挿入": {
+   "name": "配列挿入",
+   "status": "ok",
+   "log": "1,2,3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列結合": {
+   "name": "配列結合",
+   "status": "ok",
+   "log": "1-2-3",
+   "vars": {
+    "A": {
+     "t": "str",
+     "v": "1-2-3",
+     "len": 5
+    }
+   }
+  },
+  "配列検索": {
+   "name": "配列検索",
+   "status": "ok",
+   "log": "1"
+  },
+  "配列検索-見つからない": {
+   "name": "配列検索-見つからない",
+   "status": "ok",
+   "log": "-1"
+  },
+  "配列ソート": {
+   "name": "配列ソート",
+   "status": "ok",
+   "log": "1,2,3",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列ソート-文字列": {
+   "name": "配列ソート-文字列",
+   "status": "ok",
+   "log": "a,b,c",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "str",
+       "v": "a",
+       "len": 1
+      },
+      {
+       "t": "str",
+       "v": "b",
+       "len": 1
+      },
+      {
+       "t": "str",
+       "v": "c",
+       "len": 1
+      }
+     ]
+    }
+   }
+  },
+  "配列数値ソート": {
+   "name": "配列数値ソート",
+   "status": "ok",
+   "log": "9,10,100",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 9,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 10,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 100,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列逆順": {
+   "name": "配列逆順",
+   "status": "ok",
+   "log": "3,2,1",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列合計": {
+   "name": "配列合計",
+   "status": "ok",
+   "log": "6"
+  },
+  "配列最大値": {
+   "name": "配列最大値",
+   "status": "ok",
+   "log": "5"
+  },
+  "配列最小値": {
+   "name": "配列最小値",
+   "status": "ok",
+   "log": "1"
+  },
+  "配列複製": {
+   "name": "配列複製",
+   "status": "ok",
+   "log": "1,2\n9,2",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     ]
+    },
+    "B": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 9,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列連番作成": {
+   "name": "配列連番作成",
+   "status": "ok",
+   "log": "1,2,3,4,5",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 5,
+     "v": [
+      {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 3,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 4,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 5,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列要素作成": {
+   "name": "配列要素作成",
+   "status": "ok",
+   "log": "x,x,x",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "str",
+       "v": "x",
+       "len": 1
+      },
+      {
+       "t": "str",
+       "v": "x",
+       "len": 1
+      },
+      {
+       "t": "str",
+       "v": "x",
+       "len": 1
+      }
+     ]
+    }
+   }
+  },
+  "配列マップ": {
+   "name": "配列マップ",
+   "status": "ok",
+   "log": "2,4,6",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 3,
+     "v": [
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 4,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 6,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列フィルタ": {
+   "name": "配列フィルタ",
+   "status": "ok",
+   "log": "2,4",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 4,
+       "int": true
+      }
+     ]
+    }
+   }
+  },
+  "配列参照-代入は参照渡し": {
+   "name": "配列参照-代入は参照渡し",
+   "status": "ok",
+   "log": "9,2",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 9,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     ]
+    },
+    "B": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "num",
+       "v": 9,
+       "int": true
+      },
+      {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     ]
+    }
+   }
+  }
+ }
+}

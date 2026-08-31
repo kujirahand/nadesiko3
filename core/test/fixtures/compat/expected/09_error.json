@@ -1,0 +1,87 @@
+{
+ "group": "09_error",
+ "description": "エラーの型・行番号・文面。Go版でも同じ位置で同じ種類のエラーになることを確認する。",
+ "generatedBy": "nadesiko3 (TypeScript)",
+ "results": {
+  "文法エラー-未解決の単語": {
+   "name": "文法エラー-未解決の単語",
+   "status": "error",
+   "log": "",
+   "error": {
+    "type": "NakoSyntaxError",
+    "line": 0,
+    "message": "[文法エラー]main.nako3(1行目): 不完全な文です。単語『未定義関数呼』が解決していません。"
+   }
+  },
+  "文法エラー-閉じ括弧なし": {
+   "name": "文法エラー-閉じ括弧なし",
+   "status": "error",
+   "log": "",
+   "error": {
+    "type": "NakoSyntaxError",
+    "line": 0,
+    "message": "[文法エラー]main.nako3(1行目): 単語『A』への代入文で計算式に以下の書き間違いがあります。\n[文法エラー]main.nako3(1行目): (...)の解析エラー。『数値1と数値2に演算子『+』を適用した式』の近く"
+   }
+  },
+  "字句解析エラー-文字列の入れ子": {
+   "name": "字句解析エラー-文字列の入れ子",
+   "status": "error",
+   "log": "",
+   "error": {
+    "type": "NakoLexerError",
+    "line": 0,
+    "message": "[字句解析エラー]main.nako3(1行目): 『「』で始めた文字列の中に『「』を含めることはできません。"
+   }
+  },
+  "実行時エラー-エラー発生": {
+   "name": "実行時エラー-エラー発生",
+   "status": "error",
+   "log": "",
+   "error": {
+    "type": "NakoRuntimeError",
+    "line": 0,
+    "message": "[実行時エラー]main.nako3(1行目): わざとエラー"
+   }
+  },
+  "実行時エラー-2行目": {
+   "name": "実行時エラー-2行目",
+   "status": "error",
+   "log": "",
+   "error": {
+    "type": "NakoRuntimeError",
+    "line": 1,
+    "message": "[実行時エラー]main.nako3(2行目): 2行目のエラー"
+   }
+  },
+  "エラー監視-捕捉する": {
+   "name": "エラー監視-捕捉する",
+   "status": "ok",
+   "log": "捕捉"
+  },
+  "エラー監視-エラーメッセージ": {
+   "name": "エラー監視-エラーメッセージ",
+   "status": "ok",
+   "log": "Eの中身"
+  },
+  "エラー監視-エラーなし": {
+   "name": "エラー監視-エラーなし",
+   "status": "ok",
+   "log": "OK"
+  },
+  "実行時エラー-未定義変数の参照": {
+   "name": "実行時エラー-未定義変数の参照",
+   "status": "ok",
+   "log": "undefined"
+  },
+  "文法エラー-ここまでの不足": {
+   "name": "文法エラー-ここまでの不足",
+   "status": "error",
+   "log": "",
+   "error": {
+    "type": "NakoSyntaxError",
+    "line": 0,
+    "message": "[文法エラー]main.nako3(1行目): 『もし』文で『ここまで』がありません。"
+   }
+  }
+ }
+}
