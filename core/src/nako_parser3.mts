@@ -2266,7 +2266,10 @@ export class NakoParser extends NakoParserBase {
       '『A[1,2]』または『A@1@2』のように書いてください。', ast)
   }
 
-  // 変数などの後ろに続く『[添字]』『@添字』を読む。
+  /**
+   * 変数や配列リテラルなどの後ろに続く『[添字]』『@添字』を読む。
+   * @returns {boolean} 添字を読めたらtrue、読めなければfalseを返す。
+   */
   yValueWordGetIndex(ast: Ast): boolean {
     if (!ast.index) { ast.index = [] }
     // word @ a  ... 『@』は一つにつき一次元。多次元は『A@1@2』のように『@』を並べる。(#2396)
