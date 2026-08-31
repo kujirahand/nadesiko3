@@ -2266,11 +2266,8 @@ export class NakoParser extends NakoParserBase {
       '『A[1,2]』または『A@1@2』のように書いてください。', ast)
   }
 
-  /**
-   * 変数などの後ろに続く『[添字]』『@添字』を読む。
-   * @param allowCommaIndex 『[1,2]』のようなカンマ区切りの多次元添字を許可するか (#2436)
-   */
-  yValueWordGetIndex(ast: Ast, allowCommaIndex = true): boolean {
+  // 変数などの後ろに続く『[添字]』『@添字』を読む。
+  yValueWordGetIndex(ast: Ast): boolean {
     if (!ast.index) { ast.index = [] }
     // word @ a  ... 『@』は一つにつき一次元。多次元は『A@1@2』のように『@』を並べる。(#2396)
     if (this.check('@')) {
@@ -2330,7 +2327,7 @@ export class NakoParser extends NakoParserBase {
         ast.josi = this.y[2].josi
         return this.y[2].josi === '' // 助詞があればそこで終了(false)を返す (#1627)
       }
-      if (allowCommaIndex && this.accept(['[', this.yCalc, 'comma', this.yCalc, ']'])) {
+      if (this.accept(['[', this.yCalc, 'comma', this.yCalc, ']'])) {
         const index = [
           this.checkArrayIndex(this.y[1]),
           this.checkArrayIndex(this.y[3])
@@ -2342,7 +2339,7 @@ export class NakoParser extends NakoParserBase {
       }
     }
     if (this.check('[')) {
-      if (allowCommaIndex && this.accept(['[', this.yCalc, 'comma', this.yCalc, 'comma', this.yCalc, ']'])) {
+      if (this.accept(['[', this.yCalc, 'comma', this.yCalc, 'comma', this.yCalc, ']'])) {
         const index = [
           this.checkArrayIndex(this.y[1]),
           this.checkArrayIndex(this.y[3]),
@@ -2677,12 +2674,8 @@ export class NakoParser extends NakoParserBase {
           line: val.line,
           end: this.peekSourceMap()
         }
-        // 配列や辞書の内側にある配列リテラルの直後の『[1,2]』は、カンマを書き忘れた
-        // ネスト配列(例)『[[1,2][3,4]]』と区別できないため、多次元添字としては読まない。(#2436)
-        // 外側では『[[0,1,2],[3,4,5]][1,0]』を多次元添字として読む従来仕様を維持する。(#1858)
-        const allowCommaIndex = !(val.type === 'json_array' && this.isInsideGroup())
         while (!this.isEOF()) {
-          if (!this.yValueWordGetIndex(ast, allowCommaIndex)) { break }
+          if (!this.yValueWordGetIndex(ast)) { break }
         }
         // 後置添字として1つも解析できず、トークン位置も進まない場合はエラーにする。(#2436)
         // (例)『[[0,0,0,0][0,0,0,0]]』のように要素の区切りのカンマを書き忘れた場合
