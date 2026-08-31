@@ -605,9 +605,11 @@ export default {
       let z = '0'
       for (let i = 0; i < a; i++) { z += '0' }
       a = parseInt(a)
-      if (a < v.length) { a = v.length }
+      const vLength = Array.from(v).length
+      if (a < vLength) { a = vLength }
       const s = z + String(v)
-      return s.substring(s.length - a, s.length)
+      const chars = Array.from(s)
+      return chars.slice(chars.length - a).join('')
     }
   },
   '空白埋': { // @文字列VをA桁の空白で埋める // @くうはくうめ
@@ -619,9 +621,11 @@ export default {
       let z = ' '
       for (let i = 0; i < a; i++) { z += ' ' }
       a = parseInt(a)
-      if (a < v.length) { a = v.length }
+      const vLength = Array.from(v).length
+      if (a < vLength) { a = vLength }
       const s = z + String(v)
-      return s.substring(s.length - a, s.length)
+      const chars = Array.from(s)
+      return chars.slice(chars.length - a).join('')
     }
   },
 

@@ -45,7 +45,7 @@ export default {
     fn: function(a: any) {
       if (a instanceof Array) { return a.length }// 配列ならOK
       if (a instanceof Object) { return Object.keys(a).length } // オブジェクト
-      if (typeof a === 'string') { return String(a).length } // 文字列
+      if (typeof a === 'string') { return Array.from(a).length } // 文字列（サロゲートペアを考慮）
       return 1
     }
   },
