@@ -44,11 +44,10 @@ export default nakoVersion
 　　VSを保存先へ保存。
 　　「
 # ---------------------------------------------
-# ● なでしこのバージョン情報(src/nako_version.mts)を更新しました。
+# ● なでしこのバージョン情報を更新しました。
 # version {VER}
 # file: {保存先}
-# ---------------------------------------------
-」を表示。
+」をトリムして表示。
 
 ●コアバージョン更新とは：
 　　もし、メインバージョン＝空ならば：
@@ -56,7 +55,6 @@ export default nakoVersion
 　　CORE_PACKAGE=「{基本パス}/core/package.json」
 　　CORE_PACKAGEを読んでJSONデコードして、Pに代入。
 　　VER=P@"version"
-　　「★★コアバージョンを勝手に書き換えます！！」と表示。
 　　P@"version" = メインバージョン
 　　PをJSONエンコード整形してSに代入。
 　　CORE_PACKAGEにSを保存。

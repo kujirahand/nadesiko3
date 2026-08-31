@@ -21,4 +21,8 @@ describe('core_module_test', () => {
   it('ナデシコバージョン', async () => {
     await cmp('ナデシコバージョンを表示', core.version.version)
   })
+
+  it('ナデシコ言語バージョンはナデシコバージョンと同じ', async () => {
+    await cmp('（ナデシコ言語バージョン＝ナデシコバージョン）を表示', 'true')
+  })
 })

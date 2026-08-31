@@ -56,6 +56,21 @@ describe('命令一覧の生成 (#2401)', () => {
     assert.ok(target, '『足』が見つかりません')
     assert.match(target.url, /\/master\/core\/src\/plugin_system_math\.mts#L\d+$/)
   })
+
+  it('廃止した命令と定数を含まない (#2234)', () => {
+    const systemNames = new Set(summarizePlugin('core/src/plugin_system.mts').map((c) => c.name))
+    const browserNames = new Set(summarizePlugin('src/plugin_browser.mts').map((c) => c.name))
+    const nodeNames = new Set(summarizePlugin('src/plugin_node.mts').map((c) => c.name))
+    for (const name of ['JSON_D', 'JSON_E', 'JSON_ES', '秒逐次待機']) {
+      assert.ok(!systemNames.has(name), `廃止した『${name}』が命令一覧に残っています`)
+    }
+    for (const name of ['AJAX逐次送信', 'HTTP逐次取得', 'POST逐次送信', 'POSTフォーム逐次送信']) {
+      assert.ok(!browserNames.has(name), `廃止した『${name}』が命令一覧に残っています`)
+    }
+    for (const name of ['LINE送信', 'LINE画像送信']) {
+      assert.ok(!nodeNames.has(name), `廃止した『${name}』が命令一覧に残っています`)
+    }
+  })
 })
 
 describe('release/command_cnako3.json', () => {
@@ -100,6 +115,18 @@ describe('doc/command_list.json', () => {
     for (const name of ['改行', 'タブ', '空', 'はい']) {
       const item = commandList.find((c) => c.name === name && c.plugin === 'plugin_system')
       assert.ok(item, `command_list.json に『${name}』がありません`)
+    }
+  })
+
+  it('廃止した命令と定数を含まない (#2234)', () => {
+    const names = new Set(commandList.map((c) => c.name))
+    const removedNames = [
+      'JSON_D', 'JSON_E', 'JSON_ES',
+      'AJAX逐次送信', 'HTTP逐次取得', 'POST逐次送信', 'POSTフォーム逐次送信', '秒逐次待機',
+      'LINE送信', 'LINE画像送信'
+    ]
+    for (const name of removedNames) {
+      assert.ok(!names.has(name), `廃止した『${name}』が command_list.json に残っています`)
     }
   })
 })

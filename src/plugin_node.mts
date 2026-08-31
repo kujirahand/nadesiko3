@@ -1600,23 +1600,6 @@ export default {
     },
     return_none: true
   },
-  // @LINE
-  'LINE送信': { // @ LINEにメッセージを送信する。現在利用不可能。 // @LINEそうしん
-    type: 'func',
-    josi: [['へ', 'に'], ['を']],
-    pure: true,
-    fn: function(_token: string, _message: string, _sys: NakoSystem) {
-      throw new Error('『LINE送信』は2025年4月で使えなくなりました。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
-    }
-  },
-  'LINE画像送信': { // @ LINEにメッセージを送信する。先にLINE Notifyのページで宛先のトークンを取得する。TOKENへIMAGE_FILEとMESSAGEをLINE画像送信する。 // @LINEがぞうそうしん
-    type: 'func',
-    josi: [['へ', 'に'], ['と'], ['を']],
-    pure: true,
-    fn: function(_token: string, _imageFile: string, _message: string, _sys: NakoSystem) {
-      throw new Error('『LINE画像送信』は2025年4月で使えなくなりました。[詳細URL] https://nadesi.com/v3/doc/go.php?4670')
-    }
-  },
   // @文字コード
   '文字コード変換サポート判定': { // @文字コードCODEをサポートしているか確認 // @もじこーどへんかんさぽーとはんてい
     type: 'func',
