@@ -1,0 +1,14 @@
+●wnako版DOM DocTestの固定サンプル
+
+{{{#nako3
+L＝「こんにちは」のラベル作成。
+Lのテキスト取得して表示。
+### WEB表示結果: こんにちは
+}}}
+
+{{{#nako3
+DOM親要素に「<div id="message">DOMテスト</div>」をHTML設定。
+D＝「#message」のDOM要素取得。
+Dのテキスト取得して表示。
+### WEB表示結果: DOMテスト
+}}}

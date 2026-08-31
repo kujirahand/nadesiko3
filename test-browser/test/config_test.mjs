@@ -20,6 +20,7 @@ test('HTMLテストランナーが存在する', () => {
   const requiredHtmlRunners = [
     'test/html/browser-smoke-runner.html',
     'test/html/browser-full-runner.html',
+    'test/html/browser-doctest-runner.html',
     'test/html/ace-editor-runner.html'
   ]
   for (const runner of requiredHtmlRunners) {
@@ -31,6 +32,7 @@ test('Playwright specファイルが存在する', () => {
   // 各テストスイートのPlaywright specが必要
   const requiredSpecs = [
     'test/browser.spec.mjs',
+    'test/browser_doctest.spec.mjs',
     'test/bundled.spec.mjs',
     'test/ace_editor.spec.mjs'
   ]
@@ -79,6 +81,7 @@ test('test-browser package.jsonにブラウザ系テストスクリプトを集�
     'test:ace-editor:smoke',
     'test:ace-editor:full',
     'test:bundled',
+    'test:doctest',
     'test:selenium'
   ]
 
@@ -89,6 +92,7 @@ test('test-browser package.jsonにブラウザ系テストスクリプトを集�
 
   assert.ok(scripts.test.includes('test:config'), 'npm testから設定テストが実行されません')
   assert.ok(scripts.test.includes('test:all'), 'npm testからブラウザテスト群が実行されません')
+  assert.ok(scripts['test:all'].includes('test:doctest'), 'test:allからブラウザDocTestが実行されません')
 })
 
 test('GitHub Actionsがブラウザテストを実行する', () => {
@@ -141,7 +145,8 @@ test('Playwright設定がheadless Chromium実行になっている', async () =>
     'test:ace-editor': 'test/ace_editor.spec.mjs',
     'test:ace-editor:smoke': 'test/ace_editor.spec.mjs',
     'test:ace-editor:full': 'test/ace_editor.spec.mjs',
-    'test:bundled': 'test/bundled.spec.mjs'
+    'test:bundled': 'test/bundled.spec.mjs',
+    'test:doctest': 'test/browser_doctest.spec.mjs'
   }
   for (const [scriptName, specPath] of Object.entries(playwrightScriptMap)) {
     const script = scripts[scriptName] || ''
