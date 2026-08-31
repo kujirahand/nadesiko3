@@ -2266,6 +2266,10 @@ export class NakoParser extends NakoParserBase {
       '『A[1,2]』または『A@1@2』のように書いてください。', ast)
   }
 
+  /**
+   * 変数や配列リテラルなどの後ろに続く『[添字]』『@添字』を読む。
+   * @returns {boolean} 添字を読めたらtrue、読めなければfalseを返す。
+   */
   yValueWordGetIndex(ast: Ast): boolean {
     if (!ast.index) { ast.index = [] }
     // word @ a  ... 『@』は一つにつき一次元。多次元は『A@1@2』のように『@』を並べる。(#2396)
@@ -2664,6 +2668,7 @@ export class NakoParser extends NakoParserBase {
       // 配列の直後に@や[]があるか？
       // ただし、助詞がある場合には、別の引数の可能性があるので無視。 (例) [0,1,2]を[3,4,5]に配列＊＊＊
       if (val.josi === '' && this.checkTypes(['@', '['])) {
+        const startIndex = this.index
         const ast: Ast = {
           type: 'ref_array_value',
           name: '@',
@@ -2675,11 +2680,19 @@ export class NakoParser extends NakoParserBase {
         while (!this.isEOF()) {
           if (!this.yValueWordGetIndex(ast)) { break }
         }
+        // 後置添字として1つも解析できず、トークン位置も進まない場合はエラーにする。(#2436)
+        // (例)『[[0,0,0,0][0,0,0,0]]』のように要素の区切りのカンマを書き忘れた場合
+        if (this.index === startIndex) {
+          throw NakoSyntaxError.fromNode(
+            '配列の直後にある『[...]』を配列アクセスとして解析できません。' +
+            '配列の要素を区切る『,』(カンマ)を忘れていませんか。', val)
+        }
         val = ast
         continue
       }
       // 配列の直の後に$(プロパティ)があるか？
       if (this.check('$')) {
+        const startIndex = this.index
         const ast: Ast = {
           type: 'ref_array_value',
           name: '$',
@@ -2690,6 +2703,10 @@ export class NakoParser extends NakoParserBase {
         }
         while (!this.isEOF()) {
           if (!this.yValueWordGetProp(ast)) { break }
+        }
+        // プロパティを1つも解析できず、トークン位置も進まない場合はエラーにする。(#2436)
+        if (this.index === startIndex) {
+          throw NakoSyntaxError.fromNode('配列の直後にある『$プロパティ』の指定が不正です。', val)
         }
         val = ast
         continue
