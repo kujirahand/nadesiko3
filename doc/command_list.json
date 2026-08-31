@@ -4657,54 +4657,6 @@
   },
   {
     "type": "関数",
-    "name": "JSON_E",
-    "args": "Vを/Vの",
-    "yomi": "JSON_E",
-    "plugin": "plugin_system",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako",
-      "cnako",
-      "phpnako"
-    ],
-    "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_json.mts#L53",
-    "description": "オブジェクトVをJSON形式の文字列に変換して返す(『JSON変換』と同じ)"
-  },
-  {
-    "type": "関数",
-    "name": "JSON_ES",
-    "args": "Vを/Vの",
-    "yomi": "JSON_ES",
-    "plugin": "plugin_system",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako",
-      "cnako",
-      "phpnako"
-    ],
-    "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_json.mts#L61",
-    "description": "オブジェクトVをJSON形式の文字列(整形済み)に変換して返す(『JSONエンコード整形』と同じ)"
-  },
-  {
-    "type": "関数",
-    "name": "JSON_D",
-    "args": "Sを/Sの/Sから",
-    "yomi": "JSON_D",
-    "plugin": "plugin_system",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako",
-      "cnako",
-      "phpnako"
-    ],
-    "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_json.mts#L69",
-    "description": "JSON文字列Sをオブジェクトにして返す(『JSON取得』と同じ)"
-  },
-  {
-    "type": "関数",
     "name": "正規表現マッチ",
     "args": "AをBで/AがBに",
     "yomi": "せいきひょうげんまっち",
@@ -5057,22 +5009,6 @@
   },
   {
     "type": "関数",
-    "name": "秒逐次待機",
-    "args": "N",
-    "yomi": "びょうちくじたいき",
-    "plugin": "plugin_system",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako",
-      "cnako",
-      "phpnako"
-    ],
-    "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L53",
-    "description": "(非推奨) 逐次実行構文にて、N秒の間待機する (廃止予定)(非同期関数)"
-  },
-  {
-    "type": "関数",
     "name": "秒後",
     "args": "FをN",
     "yomi": "びょうご",
@@ -5084,7 +5020,7 @@
       "phpnako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L63",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L52",
     "description": "無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する。変数『対象』にタイマーIDを代入する。"
   },
   {
@@ -5100,7 +5036,7 @@
       "phpnako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L90",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L79",
     "description": "無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『タイマー停止』で停止できる)。変数『対象』にタイマーIDを代入する。"
   },
   {
@@ -5116,7 +5052,7 @@
       "phpnako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L107",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L96",
     "description": "無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『秒毎』と同じ)"
   },
   {
@@ -5132,7 +5068,7 @@
       "phpnako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L115",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L104",
     "description": "『秒毎』『秒後』や『秒タイマー開始』で開始したタイマーを停止する"
   },
   {
@@ -5148,7 +5084,7 @@
       "phpnako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L136",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_timer.mts#L125",
     "description": "『秒毎』『秒後』や『秒タイマー開始』で開始したタイマーを全部停止する"
   },
   {
@@ -6716,62 +6652,6 @@
     "category": "Blob",
     "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L345",
     "description": "DATA(配列型)をOPTIONS(辞書型)でBlobオブジェクトを作成する。"
-  },
-  {
-    "type": "関数",
-    "name": "AJAX逐次送信",
-    "args": "URLまで/URLへ/URLに",
-    "yomi": "AJAXちくじそうしん",
-    "plugin": "plugin_browser",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako"
-    ],
-    "category": "HTTPとAJAX(非推奨)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L355",
-    "description": "(非推奨)『AJAXテキスト取得』をご利用ください。- 逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。"
-  },
-  {
-    "type": "関数",
-    "name": "HTTP逐次取得",
-    "args": "URLの/URLから/URLを",
-    "yomi": "HTTPちくじしゅとく",
-    "plugin": "plugin_browser",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako"
-    ],
-    "category": "HTTPとAJAX(非推奨)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L377",
-    "description": "(非推奨)『AJAXテキスト取得』をご利用ください。- 逐次実行構文にて、非同期通信(Ajax)でURLにデータを送信する。成功すると『対象』にデータが代入される。失敗すると『AJAX失敗時』を実行。"
-  },
-  {
-    "type": "関数",
-    "name": "POST逐次送信",
-    "args": "URLまでPARAMSを/URLへ/URLに",
-    "yomi": "POSTちくじそうしん",
-    "plugin": "plugin_browser",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako"
-    ],
-    "category": "HTTPとAJAX(非推奨)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L387",
-    "description": "(非推奨)逐次実行構文にて、AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。"
-  },
-  {
-    "type": "関数",
-    "name": "POSTフォーム逐次送信",
-    "args": "URLまでPARAMSを/URLへ/URLに",
-    "yomi": "POSTふぉーむちくじそうしん",
-    "plugin": "plugin_browser",
-    "group": "基本プラグイン",
-    "target": [
-      "wnako"
-    ],
-    "category": "HTTPとAJAX(非推奨)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L415",
-    "description": "(非推奨)逐次実行構文にて、AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定。失敗すると『AJAX失敗時』を実行。"
   },
   {
     "type": "定数",
@@ -11757,36 +11637,6 @@
   },
   {
     "type": "関数",
-    "name": "LINE送信",
-    "args": "_TOKENへ_MESSAGEを/_TOKENに",
-    "yomi": "LINEそうしん",
-    "plugin": "plugin_node",
-    "group": "基本プラグイン",
-    "target": [
-      "cnako",
-      "phpnako"
-    ],
-    "category": "LINE",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1608",
-    "description": "LINEにメッセージを送信する。現在利用不可能。"
-  },
-  {
-    "type": "関数",
-    "name": "LINE画像送信",
-    "args": "_TOKENへ_IMAGEFILEと_MESSAGEを/_TOKENに",
-    "yomi": "LINEがぞうそうしん",
-    "plugin": "plugin_node",
-    "group": "基本プラグイン",
-    "target": [
-      "cnako",
-      "phpnako"
-    ],
-    "category": "LINE",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1616",
-    "description": "LINEにメッセージを送信する。先にLINE Notifyのページで宛先のトークンを取得する。TOKENへIMAGE_FILEとMESSAGEをLINE画像送信する。"
-  },
-  {
-    "type": "関数",
     "name": "文字コード変換サポート判定",
     "args": "CODEの/CODEを",
     "yomi": "もじこーどへんかんさぽーとはんてい",
@@ -11797,7 +11647,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1625",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1608",
     "description": "文字コードCODEをサポートしているか確認"
   },
   {
@@ -11812,7 +11662,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1633",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1616",
     "description": "(v1非互換)文字列をShift_JISのバイナリバッファに変換"
   },
   {
@@ -11827,7 +11677,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1642",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1625",
     "description": "Shift_JISのバイナリバッファを文字列に変換"
   },
   {
@@ -11842,7 +11692,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1651",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1634",
     "description": "文字列SをCODEへ変換してバイナリバッファを返す"
   },
   {
@@ -11857,7 +11707,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1660",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1643",
     "description": "バイナリバッファBUFをCODEから変換して返す"
   },
   {
@@ -11872,7 +11722,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1670",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1653",
     "description": "利用可能なハッシュ関数の一覧を返す"
   },
   {
@@ -11887,7 +11737,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1678",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1661",
     "description": "データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す"
   },
   {
@@ -11902,7 +11752,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1688",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1671",
     "description": "ランダムに生成された36文字のv4 UUID(文字列)を返す"
   },
   {
@@ -11917,7 +11767,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1697",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1680",
     "description": "暗号強度の強い乱数のバイト配列(Uint8Array)を指定個数返す"
   },
   {
@@ -11931,7 +11781,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L350",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L379",
     "value": "''"
   },
   {
@@ -11945,7 +11795,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L351",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L380",
     "value": "''"
   },
   {
@@ -11959,7 +11809,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L352",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L381",
     "value": "''"
   },
   {
@@ -11973,7 +11823,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L353",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L382",
     "value": "''"
   },
   {
@@ -11987,7 +11837,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L358",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L387",
     "description": "ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。"
   },
   {
@@ -12001,7 +11851,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L380",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L414",
     "description": "静的コンテンツのパスを指定。URLをPATHへマップする。"
   },
   {
@@ -12015,7 +11865,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L395",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L429",
     "description": "URLを指定して合致するリクエストが来たら処理を実行する。"
   },
   {
@@ -12029,7 +11879,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L413",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L447",
     "description": "受信時に、データSを出力する。"
   },
   {
@@ -12043,7 +11893,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L433",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L467",
     "description": "受信時にステータスコードNOで、ヘッダHEAD(辞書形式)を出力する。"
   },
   {
@@ -12057,7 +11907,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L450",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L484",
     "description": "受信時にヘッダ302(リダイレクト)を出力してURLへページを移動力する。"
   },
   {

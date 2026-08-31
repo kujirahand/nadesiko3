@@ -46,28 +46,4 @@ export default {
       return JSON.parse(s)
     }
   },
-  'JSON_E': { // @オブジェクトVをJSON形式の文字列に変換して返す(『JSON変換』と同じ) // @JSON_E
-    type: 'func',
-    josi: [['を', 'の']],
-    pure: true,
-    fn: function(v: any) {
-      return JSON.stringify(v)
-    }
-  },
-  'JSON_ES': { // @オブジェクトVをJSON形式の文字列(整形済み)に変換して返す(『JSONエンコード整形』と同じ) // @JSON_ES
-    type: 'func',
-    josi: [['を', 'の']],
-    pure: true,
-    fn: function(v: any) {
-      return JSON.stringify(v, null, 2)
-    }
-  },
-  'JSON_D': { // @JSON文字列Sをオブジェクトにして返す(『JSON取得』と同じ) // @JSON_D
-    type: 'func',
-    josi: [['を', 'の', 'から']],
-    pure: true,
-    fn: function(s: string): string {
-      return JSON.parse(s)
-    }
-  },
 }

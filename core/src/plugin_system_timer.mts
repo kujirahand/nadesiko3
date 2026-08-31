@@ -45,17 +45,6 @@ export default {
     },
     return_none: true
   },
-  '秒逐次待機': { // @ (非推奨) 逐次実行構文にて、N秒の間待機する (廃止予定) // @びょうちくじたいき
-    type: 'func',
-    josi: [['']],
-    pure: true,
-    asyncFn: true,
-    fn: async function(n: any, sys: any) {
-      const p = sys.__exec('秒待', [n, sys])
-      return await p
-    },
-    return_none: true
-  },
   '秒後': { // @無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する。変数『対象』にタイマーIDを代入する。 // @びょうご
     type: 'func',
     josi: [['を'], ['']],
