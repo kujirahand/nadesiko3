@@ -4,12 +4,8 @@ Seleniumを使ってChromeを操作してテストを実行する。
 import os
 import glob
 import shutil
-import time
 import sys
 import urllib.parse
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 
 SERVER_SCRIPT = 'http://localhost:8887/index.php'
 SCRIPT = os.path.abspath(__file__)
@@ -93,8 +89,27 @@ def compare_result(expect_text, real_text):
             return False
     return True
 
+def result_shape_ready(expect_text, real_text):
+    '''return true once text lines or PNG data URLs are ready for final comparison'''
+    if expect_text == real_text:
+        return True
+    expect_lines = expect_text.split('\n')
+    real_lines = real_text.split('\n')
+    if len(expect_lines) != len(real_lines):
+        return False
+    for expect_line, real_line in zip(expect_lines, real_lines):
+        if expect_line == real_line:
+            continue
+        if to_png_data_url(expect_line) and to_png_data_url(real_line):
+            continue
+        return False
+    return True
+
 def create_driver():
     '''create chrome driver'''
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+
     options = webdriver.ChromeOptions()
     if os.environ.get('HEADLESS') == '1' or os.environ.get('CI') or not os.environ.get('DISPLAY'):
         options.add_argument('--headless=new')
@@ -102,45 +117,101 @@ def create_driver():
         options.add_argument('--disable-dev-shm-usage')
     chromedriver = os.environ.get('CHROMEDRIVER') or shutil.which('chromedriver')
     if chromedriver and os.path.exists(chromedriver):
-        return webdriver.Chrome(service=Service(chromedriver), options=options)
-    return webdriver.Chrome(options=options)
+        browser = webdriver.Chrome(service=Service(chromedriver), options=options)
+    else:
+        browser = webdriver.Chrome(options=options)
+    browser.set_script_timeout(5)
+    return browser
 
-driver = create_driver()
+driver = None
+
+def get_driver():
+    '''create the browser only when a test is actually executed'''
+    global driver
+    if driver is None:
+        driver = create_driver()
+    return driver
+
+def collect_test_files(test_target=TEST_TARGET, smoke_mode=None):
+    '''return the Selenium test files that will be executed'''
+    if smoke_mode is None:
+        smoke_mode = os.environ.get('NAKO_SELENIUM_MODE') == 'smoke'
+    files = glob.glob(os.path.join(test_target, '*.nako3'))
+    if smoke_mode:
+        files = [fname for fname in files if os.path.basename(fname) not in SMOKE_SKIP_FILES]
+    return sorted(files)
 
 def run_test_all():
     '''test all'''
-    for fname in glob.glob(os.path.join(TEST_TARGET, '*.nako3')):
-        if os.environ.get('NAKO_SELENIUM_MODE') == 'smoke' and os.path.basename(fname) in SMOKE_SKIP_FILES:
-            continue
+    files = collect_test_files()
+    for fname in files:
         run_test(fname)
+    return len(files)
 
 def run_test(fname):
     '''test one file'''
     with open(fname, 'r', encoding='utf-8') as file:
         code = file.read()
     code_u = urllib.parse.quote(code)
-    code_result = ''
+    expected_lines = []
     for line in code.split('\n'):
         line = line.strip()
         if line[0:3] == '###':
-            code_result += line[3:].strip() + '\n'
-    code_result = code_result.strip()
+            expected_lines.append(line[3:].strip())
+    if len(expected_lines) == 0:
+        print('[ERROR]', os.path.basename(fname), 'に期待値行がありません')
+        error_log.append({'file': fname, 'expect': '### 期待値', 'real': '期待値行なし'})
+        return
+    code_result = '\n'.join(expected_lines).strip()
+    from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, WebDriverException
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+
     # drive server
-    driver.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
-    time.sleep(1)
-    # get result
-    result_elem = driver.find_element(By.CSS_SELECTOR, '#result')
-    result = result_elem.get_attribute('value').strip()
-    if compare_result(code_result, result):
-        print('[ok]', os.path.basename(fname))
-    else:
-        print('[ERROR]', os.path.basename(fname))
-        print('>>>', code_result, '!=', result)
+    try:
+        browser = get_driver()
+        browser.get(SERVER_SCRIPT + '?m=code&code=' + code_u)
+
+        def result_matches(_driver):
+            current = _driver.find_element(By.CSS_SELECTOR, '#result').get_attribute('value').strip()
+            return result_shape_ready(code_result, current)
+
+        try:
+            WebDriverWait(
+                browser,
+                15,
+                ignored_exceptions=(StaleElementReferenceException,)
+            ).until(result_matches)
+        except TimeoutException:
+            # 不一致時の実値を下の比較処理で報告する。
+            pass
+        result_elem = browser.find_element(By.CSS_SELECTOR, '#result')
+        result = result_elem.get_attribute('value').strip()
+        if compare_result(code_result, result):
+            print('[ok]', os.path.basename(fname))
+        else:
+            print('[ERROR]', os.path.basename(fname))
+            print('>>>', code_result, '!=', result)
+            error_log.append({'file': fname, 'expect': code_result, 'real': result})
+    except WebDriverException as error:
+        result = f'{type(error).__name__}: {error}'
+        print('[ERROR]', os.path.basename(fname), result)
         error_log.append({'file': fname, 'expect': code_result, 'real': result})
 
-def report_test():
+def report_test(executed_count):
     '''report file'''
-    driver.close()
+    if driver is not None:
+        try:
+            driver.quit()
+        except Exception as error:
+            error_log.append({
+                'file': 'WebDriver終了処理',
+                'expect': '正常終了',
+                'real': f'{type(error).__name__}: {error}'
+            })
+    if executed_count == 0:
+        print('😭😭😭 実行されたSeleniumテストがありません 😭😭😭')
+        return 1
     if len(error_log) == 0:
         print('⭐⭐⭐ 全てのテストが成功しました ⭐⭐⭐')
         return 0
@@ -155,7 +226,8 @@ def report_test():
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
-        run_test_all()
+        executed_count = run_test_all()
     else:
         run_test(os.path.join(TEST_TARGET, sys.argv[1]))
-    sys.exit(report_test())
+        executed_count = 1
+    sys.exit(report_test(executed_count))

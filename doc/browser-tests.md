@@ -30,11 +30,9 @@ GitHub Actions では、安定して動く smoke test を既定で実行しま�
 
 `.github/workflows/nodejs.yml` では Node.js の通常テストに加えて、`24.x` で以下を実行します。
 
-- `npm run test:browser`
-- `npm run test:ace-editor`
-- `npm run test:bundled`
-- `python3 -m pip install -r test-browser/test/selenium/requirements.txt`
-- `npm run test:selenium`
+- `test-browser/` の `npm test`（設定、Browser、Ace Editor、bundledの各テスト）
+- `python -m pip install -r test-browser/test/selenium/requirements.txt`
+- `test-browser/` の `npm run test:selenium`
 
 ## 今後の改善案
 

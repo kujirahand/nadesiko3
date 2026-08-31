@@ -8,12 +8,15 @@
 <body>
   <script type="module">
     const failures = []
-    const total = 3
+    let total = 0
+    let passes = 0
 
     try {
       const { runBrowserSmokeCases } = await import('/test-browser/test/browser/test/plugin_browser_smoke_test.js')
       const result = await runBrowserSmokeCases()
       failures.push(...result.failures)
+      total = result.total
+      passes = result.passes
     } catch (error) {
       failures.push({
         title: 'browser-smoke-runner bootstrap',
@@ -22,7 +25,7 @@
     } finally {
       window.__playwright_done__ = {
         failures: failures.length,
-        passes: Math.max(0, total - failures.length),
+        passes,
         total,
         failures_detail: failures
       }
