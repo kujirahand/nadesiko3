@@ -52,11 +52,14 @@ import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
  * 構文解析を行うクラス
  */
 export class NakoParser extends NakoParserBase {
+  private originalVarNames = new WeakMap<object, string>()
+
   /**
    * 構文解析を実行する
    */
   parse(tokens: Token[], filename: string): Ast {
     this.reset()
+    this.originalVarNames = new WeakMap<object, string>()
     this.tokens = tokens
     this.modName = NakoLexer.filenameToModName(filename)
     this.modList.push(this.modName)
@@ -1251,14 +1254,15 @@ export class NakoParser extends NakoParserBase {
     if (word.type === 'func') {
       throw NakoSyntaxError.fromNode('関数『' + String(word.name) + '』に代入できません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
+    const target = this.getAssignmentVarName(word)
     // 配列への代入
-    if (word.type === 'ref_array') {
-      const indexArray = word.index || []
+    if (target.type === 'ref_array') {
+      const indexArray = target.index || []
       const blocks = [value, ...indexArray]
       return {
         type: 'let_array',
-        name: (word.name as AstStrValue).value,
-        indexes: word.index,
+        name: (target.name as AstStrValue).value,
+        indexes: target.index,
         blocks,
         josi: '',
         checkInit: this.flagCheckArrayInit,
@@ -1267,10 +1271,9 @@ export class NakoParser extends NakoParserBase {
       } as AstLetArray
     }
     // 一般的な変数への代入
-    const word2 = this.getVarName(word)
     return {
       type: 'let',
-      name: (word2 as AstStrValue).value,
+      name: (target as AstStrValue).value,
       blocks: [value],
       josi: '',
       ...map,
@@ -1347,7 +1350,7 @@ export class NakoParser extends NakoParserBase {
 
     return {
       type: 'inc',
-      name: word,
+      name: this.getAssignmentVarName(word),
       blocks: [value],
       josi: action.josi,
       ...map,
@@ -1600,7 +1603,7 @@ export class NakoParser extends NakoParserBase {
     // オブジェクトプロパティ構文：代入文：：ここから (#1793)
     if (this.check2(['word', '$', '*', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', '$', '*', 'eq']) || this.check2(['word', '$', '*', 'eq'])) {
       const propList = []
-      const word = this.getVarName(this.get() as Token)
+      const word = this.getContainerVarName(this.get() as Token)
       for (;;) {
         const flag = this.peek()
         if (flag === null || flag.type !== '$') { break }
@@ -1952,7 +1955,7 @@ export class NakoParser extends NakoParserBase {
     this.get() // skip 'eq'
     const astValue = this.yCalc()
     if (astValue === null) { return rollback() }
-    const name = (this.getVarName(wordToken) as AstStrValue).value
+    const name = (this.getContainerVarName(wordToken) as AstStrValue).value
     if (astProps.length > 0) {
       // ここまで来て初めてトークンを書き換える。
       // 途中でrollback()するとトークンの書き換えだけが残ってしまうため。(#2396)
@@ -2475,32 +2478,75 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
+  /** 代入先の変数名を解決する。getVarName と getContainerVarName の共通処理。
+   * @param word 解決したいトークン
+   * @param separateFileScope ファイルスコープの分離 (#1332) を適用するか
+   * @return {Ast|Token}
+   */
+  private resolveAssignVarName(word: Token|Ast, separateFileScope: boolean): Token|Ast {
+    // 名前空間の解決前に記録した元の名前があれば、そちらを優先して検索する
+    const originalName = this.originalVarNames.get(word)
+    const name = originalName || (word as AstStrValue).value
+    const f = this.findVar(name)
+    // 変数が見つからないので現在のスコープに生成する
+    if (!f) {
+      if (originalName) { (word as AstStrValue).value = name }
+      return this.createVar(word, false, this.isExportDefault)
+    }
+    // ファイル直下の無修飾な代入は、取り込み先ではなく自身の変数にする (#1332)
+    // ただし、次の場合は取り込み先の実体をそのまま使う。
+    // - 要素やプロパティへの代入 … 変数全体を作り直す操作ではないため
+    // - 取り込んだ定数 … 新たな変数を作ると、定数への代入が暗黙のシャドーイングになるため
+    if (separateFileScope && this.funcLevel === 0 && f.scope === 'global' &&
+      f.info?.type !== 'const' && name.indexOf('__') < 0 &&
+      f.name !== `${this.modName}__${name}`) {
+      (word as AstStrValue).value = name
+      return this.createVar(word, false, this.isExportDefault)
+    }
+    if (f.scope === 'global') { (word as AstStrValue).value = f.name }
+    return word
+  }
+
   /** 変数名を検索して解決する
    * @param {Ast|Token} word
    * @return {Ast|Token}
    */
   getVarName(word: Token|Ast): Token|Ast {
-    // check word name
-    const f = this.findVar((word as AstStrValue).value)
-    if (f) {
-      if (f && f.scope === 'global') { (word as AstStrValue).value = f.name }
-      return word
-    }
-    // 変数が見つからない
-    this.createVar(word, false, this.isExportDefault)
-    return word
+    return this.resolveAssignVarName(word, true)
+  }
+
+  /** 配列・オブジェクトの代入先を解決する。
+   * 既存のコンテナは取り込み元の実体を更新し、未定義の場合だけ現在のスコープに生成する。
+   */
+  getContainerVarName(word: Token|Ast): Token|Ast {
+    return this.resolveAssignVarName(word, false)
   }
 
   /** 変数名を検索して解決する */
   getVarNameRef(word: Token): Token {
     // check word name
+    const originalName = word.value
     const f = this.findVar(word.value)
     if (!f) { // 変数が見つからない
       if (this.funcLevel === 0 && word.value.indexOf('__') < 0) {
+        this.originalVarNames.set(word, originalName)
         word.value = this.modName + '__' + String(word.value)
       }
     } else if (f && f.scope === 'global') {
+      if (word.value !== f.name) { this.originalVarNames.set(word, originalName) }
       word.value = f.name
+    }
+    return word
+  }
+
+  /** 代入・増減対象の変数名を、元の無修飾名を考慮して解決する */
+  getAssignmentVarName(word: Ast): Ast {
+    if (word.type === 'word') {
+      return this.getVarName(word) as Ast
+    }
+    if ((word.type === 'ref_array' || word.type === 'ref_prop') &&
+      word.name && typeof word.name !== 'string') {
+      word.name = this.getContainerVarName(word.name)
     }
     return word
   }
