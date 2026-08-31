@@ -70,7 +70,7 @@ jobs:
       - name: Install Chromium
         working-directory: test-browser
         run: npx playwright install --with-deps chromium
-      - name: Run Playwright browser tests
+      - name: Run Playwright browser tests and DocTest
         working-directory: test-browser
         run: npm test
       - name: Use Python

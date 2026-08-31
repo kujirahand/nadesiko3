@@ -24,6 +24,7 @@ import PluginCSV from '../core/src/plugin_csv.mjs'
 const thisDir = path.dirname(url.fileURLToPath(import.meta.url))
 export const rootDir = path.resolve(thisDir, '..')
 export const manualDir = path.join(rootDir, 'manual')
+export const doctestDir = path.join(rootDir, 'test', 'doctest')
 
 /** 表示結果の開始行にマッチする正規表現 */
 const RE_EXPECT_HEAD = /^###\s*(WEB表示結果|表示結果)\s*[:：]?[ \t]?(.*)$/i
@@ -191,7 +192,8 @@ export function formatFailure (test, result) {
   lines.push(indent(result.actual))
   lines.push('--- 違いのある行 ---')
   lines.push(indent(diffLines(test.expect, result.actual)))
-  lines.push('マニュアルの「### 表示結果:」の記述か、サンプルコードのどちらかを修正してください。')
+  const marker = test.runtime === 'wnako' ? '### WEB表示結果:' : '### 表示結果:'
+  lines.push(`マニュアルの「${marker}」の記述か、サンプルコードのどちらかを修正してください。`)
   return lines.join('\n')
 }
 
@@ -233,12 +235,12 @@ function indent (s) {
 
 /**
  * 指定したパス以下のDocTestをすべて集める
- * @param {string[]} [targets] 対象のファイルまたはディレクトリ(省略時はmanualディレクトリ)
+ * @param {string[]} [targets] 対象のファイルまたはディレクトリ(省略時はmanualとtest/doctest)
  * @param {'cnako'|'wnako'} [runtime] 対象ランタイム
  * @returns {DocTest[]}
  */
 export function collectDocTests (targets, runtime = 'cnako') {
-  const dirs = (targets && targets.length > 0) ? targets : [manualDir]
+  const dirs = (targets && targets.length > 0) ? targets : [manualDir, doctestDir]
   const tests = []
   for (const target of dirs) {
     for (const file of findManualFiles(path.resolve(rootDir, target))) {
@@ -253,10 +255,6 @@ export function collectDocTests (targets, runtime = 'cnako') {
 /** CLIとして実行された時の処理 */
 async function main () {
   const targets = process.argv.slice(2)
-  if (targets.length === 0 && !fs.existsSync(manualDir)) {
-    console.error('[DocTest] manualディレクトリがありません。AGENTS.mdの手順でリンクを作成してください。')
-    process.exit(0)
-  }
   const tests = collectDocTests(targets)
   console.log(`[DocTest] ${tests.length}件のサンプルコードを実行します。`)
   let failed = 0

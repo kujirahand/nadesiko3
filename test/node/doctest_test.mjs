@@ -6,6 +6,7 @@ import path from 'node:path'
 
 import {
   collectDocTests,
+  doctestDir,
   extractDocTests,
   formatFailure,
   manualDir,
@@ -85,7 +86,33 @@ describe('DocTest(マニュアルのサンプルコード)', () => {
     assert.ok(result.error !== null)
     assert.ok(formatFailure(test, result).includes('実行エラー'))
   })
+
+  it('ブラウザDocTestの失敗時にWEB表示結果を案内する', () => {
+    const [test] = extractDocTests(['{{{#nako3', '「誤り」と表示。', '### WEB表示結果: 正しい', '}}}'].join('\n'))
+    const message = formatFailure(test, { ok: false, actual: '誤り', error: null })
+    assert.match(message, /### WEB表示結果:/)
+  })
 })
+
+function registerDocTests (suiteName, tests) {
+  describe(suiteName, () => {
+    for (const test of tests) {
+      const name = path.relative(rootDir, test.file)
+      it(`${name}(${test.line}行目)のサンプルコード`, async () => {
+        const result = await runDocTest(test)
+        assert.ok(result.ok, '\n' + formatFailure(test, result))
+      })
+    }
+  })
+}
+
+const fixtureTests = collectDocTests([doctestDir], 'cnako')
+describe('DocTest(test/doctestディレクトリ)', () => {
+  it('cnako用の固定サンプルが存在する', () => {
+    assert.ok(fixtureTests.length > 0)
+  })
+})
+registerDocTests('DocTest(test/doctestディレクトリ)', fixtureTests)
 
 // --- manualディレクトリのサンプルコードを実際に実行する ---
 // manualは別リポジトリ(nadesiko3doc)へのシンボリックリンクなので、無い場合はスキップする
@@ -96,18 +123,5 @@ if (!fs.existsSync(manualDir)) {
     })
   })
 } else {
-  const tests = collectDocTests()
-  // ファイルごとにまとめてテストする
-  const files = [...new Set(tests.map((t) => t.file))]
-  describe('DocTest(manualディレクトリ)', () => {
-    for (const file of files) {
-      const name = path.relative(rootDir, file)
-      for (const test of tests.filter((t) => t.file === file)) {
-        it(`${name}(${test.line}行目)のサンプルコード`, async () => {
-          const result = await runDocTest(test)
-          assert.ok(result.ok, '\n' + formatFailure(test, result))
-        })
-      }
-    }
-  })
+  registerDocTests('DocTest(manualディレクトリ)', collectDocTests([manualDir], 'cnako'))
 }

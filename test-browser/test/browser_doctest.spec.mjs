@@ -1,17 +1,14 @@
 import { test, expect } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 import {
   collectDocTests,
+  doctestDir,
   formatFailure,
   manualDir,
   rootDir
 } from '../../batch/doctest.mjs'
-
-const currentDir = path.dirname(fileURLToPath(import.meta.url))
-const fixtureDir = path.join(currentDir, 'fixtures/doctest')
 
 async function runOnBrowser (page, docTest) {
   await page.goto('/test-browser/test/html/browser-doctest-runner.html')
@@ -37,16 +34,16 @@ function registerDocTests (suiteName, tests) {
   })
 }
 
-const fixtureTests = collectDocTests([fixtureDir], 'wnako')
-test('ブラウザDocTestの固定フィクスチャが存在する', () => {
+const fixtureTests = collectDocTests([doctestDir], 'wnako')
+test('test/doctestにwnako用の固定サンプルが存在する', () => {
   expect(fixtureTests.length).toBeGreaterThan(0)
 })
-registerDocTests('ブラウザDocTest(固定フィクスチャ)', fixtureTests)
+registerDocTests('ブラウザDocTest(test/doctestディレクトリ)', fixtureTests)
 
 if (!fs.existsSync(manualDir)) {
   test.skip('manualディレクトリがないためブラウザDocTestをスキップする', () => {})
 } else {
-  const manualTests = collectDocTests(undefined, 'wnako')
+  const manualTests = collectDocTests([manualDir], 'wnako')
   if (manualTests.length === 0) {
     test.skip('manualにWEB表示結果のDocTestがないためスキップする', () => {})
   } else {

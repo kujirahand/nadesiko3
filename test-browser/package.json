@@ -5,7 +5,7 @@
   "description": "Playwrightで実行するブラウザテストの集約パッケージ",
   "scripts": {
     "test": "npm run test:config && npm run test:all",
-    "test:all": "npm run test:browser && npm run test:bundled && npm run test:ace-editor",
+    "test:all": "npm run test:browser && npm run test:bundled && npm run test:ace-editor && npm run test:doctest",
     "test:browser": "npm run test:browser:smoke",
     "test:browser:smoke": "playwright test test/browser.spec.mjs --config playwright.config.mjs --project chromium --grep 'smoke'",
     "test:browser:full": "playwright test test/browser.spec.mjs --config playwright.config.mjs --project chromium",

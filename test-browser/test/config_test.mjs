@@ -92,6 +92,7 @@ test('test-browser package.jsonにブラウザ系テストスクリプトを集�
 
   assert.ok(scripts.test.includes('test:config'), 'npm testから設定テストが実行されません')
   assert.ok(scripts.test.includes('test:all'), 'npm testからブラウザテスト群が実行されません')
+  assert.ok(scripts['test:all'].includes('test:doctest'), 'test:allからブラウザDocTestが実行されません')
 })
 
 test('GitHub Actionsがブラウザテストを実行する', () => {

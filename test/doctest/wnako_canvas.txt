@@ -1,0 +1,8 @@
+●wnako版Canvas DocTestの固定サンプル
+
+{{{#nako3(canvas,size=40x30)
+描画中キャンバス["width"]を表示。
+描画中キャンバス["height"]を表示。
+### WEB表示結果: 40
+### 30
+}}}
