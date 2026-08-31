@@ -2478,50 +2478,48 @@ export class NakoParser extends NakoParserBase {
     }
   }
 
+  /** 代入先の変数名を解決する。getVarName と getContainerVarName の共通処理。
+   * @param word 解決したいトークン
+   * @param separateFileScope ファイルスコープの分離 (#1332) を適用するか
+   * @return {Ast|Token}
+   */
+  private resolveAssignVarName(word: Token|Ast, separateFileScope: boolean): Token|Ast {
+    // 名前空間の解決前に記録した元の名前があれば、そちらを優先して検索する
+    const originalName = this.originalVarNames.get(word)
+    const name = originalName || (word as AstStrValue).value
+    const f = this.findVar(name)
+    // 変数が見つからないので現在のスコープに生成する
+    if (!f) {
+      if (originalName) { (word as AstStrValue).value = name }
+      return this.createVar(word, false, this.isExportDefault)
+    }
+    // ファイル直下の無修飾な代入は、取り込み先ではなく自身の変数にする (#1332)
+    // ただし、次の場合は取り込み先の実体をそのまま使う。
+    // - 要素やプロパティへの代入 … 変数全体を作り直す操作ではないため
+    // - 取り込んだ定数 … 新たな変数を作ると、定数への代入が暗黙のシャドーイングになるため
+    if (separateFileScope && this.funcLevel === 0 && f.scope === 'global' &&
+      f.info?.type !== 'const' && name.indexOf('__') < 0 &&
+      f.name !== `${this.modName}__${name}`) {
+      (word as AstStrValue).value = name
+      return this.createVar(word, false, this.isExportDefault)
+    }
+    if (f.scope === 'global') { (word as AstStrValue).value = f.name }
+    return word
+  }
+
   /** 変数名を検索して解決する
    * @param {Ast|Token} word
    * @return {Ast|Token}
    */
   getVarName(word: Token|Ast): Token|Ast {
-    // check word name
-    const originalName = this.originalVarNames.get(word)
-    const name = originalName || (word as AstStrValue).value
-    const f = this.findVar(name)
-    if (f) {
-      // 取り込んだ定数は、代入時にも元の定数として解決して書き込み検査へ渡す。
-      // ここで同名の変数を作ると、定数への代入が暗黙のシャドーイングになる。
-      if (f.info.type === 'const') {
-        if (f.scope === 'global') { (word as AstStrValue).value = f.name }
-        return word
-      }
-      // ファイル直下の無修飾な代入は、取り込み先ではなく自身の変数にする (#1332)
-      if (this.funcLevel === 0 && name.indexOf('__') < 0 &&
-        f.scope === 'global' && f.name !== `${this.modName}__${name}`) {
-        (word as AstStrValue).value = name
-        return this.createVar(word, false, this.isExportDefault)
-      }
-      if (f && f.scope === 'global') { (word as AstStrValue).value = f.name }
-      return word
-    }
-    // 変数が見つからない
-    if (originalName) { (word as AstStrValue).value = name }
-    this.createVar(word, false, this.isExportDefault)
-    return word
+    return this.resolveAssignVarName(word, true)
   }
 
   /** 配列・オブジェクトの代入先を解決する。
    * 既存のコンテナは取り込み元の実体を更新し、未定義の場合だけ現在のスコープに生成する。
    */
   getContainerVarName(word: Token|Ast): Token|Ast {
-    const originalName = this.originalVarNames.get(word)
-    const name = originalName || (word as AstStrValue).value
-    const f = this.findVar(name)
-    if (f) {
-      if (f.scope === 'global') { (word as AstStrValue).value = f.name }
-      return word
-    }
-    if (originalName) { (word as AstStrValue).value = name }
-    return this.createVar(word, false, this.isExportDefault)
+    return this.resolveAssignVarName(word, false)
   }
 
   /** 変数名を検索して解決する */
