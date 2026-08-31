@@ -1,0 +1,39 @@
+{
+ "group": "10_async",
+ "description": "非同期処理の観測可能な実行順。goroutineの実行順に依存しない決定的な順序を保証する対象。",
+ "generatedBy": "nadesiko3 (TypeScript)",
+ "results": {
+  "秒後-コールバックは後で動く": {
+   "name": "秒後-コールバックは後で動く",
+   "status": "ok",
+   "log": "A\nB\nC"
+  },
+  "秒後-待ち時間の短い順": {
+   "name": "秒後-待ち時間の短い順",
+   "status": "ok",
+   "log": "先\n後"
+  },
+  "秒待つ-同期的に待つ": {
+   "name": "秒待つ-同期的に待つ",
+   "status": "ok",
+   "log": "A\nB"
+  },
+  "秒毎-タイマー停止": {
+   "name": "秒毎-タイマー停止",
+   "status": "ok",
+   "log": "1\n2\n3",
+   "vars": {
+    "N": {
+     "t": "num",
+     "v": 3,
+     "int": true
+    }
+   }
+  },
+  "並列的な逐次実行": {
+   "name": "並列的な逐次実行",
+   "status": "ok",
+   "log": "1\n2\n3"
+  }
+ }
+}

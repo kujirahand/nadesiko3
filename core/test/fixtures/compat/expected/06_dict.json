@@ -1,0 +1,279 @@
+{
+ "group": "06_dict",
+ "description": "辞書型。キーの並び順・存在判定・入れ子アクセスを固定する。",
+ "generatedBy": "nadesiko3 (TypeScript)",
+ "results": {
+  "辞書参照-角括弧": {
+   "name": "辞書参照-角括弧",
+   "status": "ok",
+   "log": "1",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "x",
+      "y"
+     ],
+     "v": {
+      "x": {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      "y": {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "辞書参照-の": {
+   "name": "辞書参照-の",
+   "status": "ok",
+   "log": "x",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "x"
+     ],
+     "v": {
+      "x": {
+       "t": "num",
+       "v": 1,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "辞書代入": {
+   "name": "辞書代入",
+   "status": "ok",
+   "log": "[object Object]",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "x",
+      "y"
+     ],
+     "v": {
+      "x": {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      "y": {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "辞書-キーの並び順": {
+   "name": "辞書-キーの並び順",
+   "status": "ok",
+   "log": "[object Object]",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "z",
+      "a",
+      "m"
+     ],
+     "v": {
+      "z": {
+       "t": "num",
+       "v": 1,
+       "int": true
+      },
+      "a": {
+       "t": "num",
+       "v": 2,
+       "int": true
+      },
+      "m": {
+       "t": "num",
+       "v": 3,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "辞書-存在しないキー": {
+   "name": "辞書-存在しないキー",
+   "status": "ok",
+   "log": "undefined",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "x"
+     ],
+     "v": {
+      "x": {
+       "t": "num",
+       "v": 1,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "辞書キー列挙": {
+   "name": "辞書キー列挙",
+   "status": "ok",
+   "log": "x,y",
+   "vars": {
+    "A": {
+     "t": "arr",
+     "len": 2,
+     "v": [
+      {
+       "t": "str",
+       "v": "x",
+       "len": 1
+      },
+      {
+       "t": "str",
+       "v": "y",
+       "len": 1
+      }
+     ]
+    }
+   }
+  },
+  "辞書キー存在": {
+   "name": "辞書キー存在",
+   "status": "ok",
+   "log": "true",
+   "vars": {
+    "A": {
+     "t": "bool",
+     "v": true
+    }
+   }
+  },
+  "辞書キー削除": {
+   "name": "辞書キー削除",
+   "status": "ok",
+   "log": "[object Object]",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "y"
+     ],
+     "v": {
+      "y": {
+       "t": "num",
+       "v": 2,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "辞書-入れ子": {
+   "name": "辞書-入れ子",
+   "status": "ok",
+   "log": "7",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "p"
+     ],
+     "v": {
+      "p": {
+       "t": "obj",
+       "keys": [
+        "q"
+       ],
+       "v": {
+        "q": {
+         "t": "num",
+         "v": 7,
+         "int": true
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "辞書-配列を値に持つ": {
+   "name": "辞書-配列を値に持つ",
+   "status": "ok",
+   "log": "3",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "list"
+     ],
+     "v": {
+      "list": {
+       "t": "arr",
+       "len": 3,
+       "v": [
+        {
+         "t": "num",
+         "v": 1,
+         "int": true
+        },
+        {
+         "t": "num",
+         "v": 2,
+         "int": true
+        },
+        {
+         "t": "num",
+         "v": 3,
+         "int": true
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  "JSONエンコード": {
+   "name": "JSONエンコード",
+   "status": "ok",
+   "log": "{\"x\":1,\"y\":[1,2]}"
+  },
+  "JSONデコード": {
+   "name": "JSONデコード",
+   "status": "ok",
+   "log": "1",
+   "vars": {
+    "A": {
+     "t": "obj",
+     "keys": [
+      "x"
+     ],
+     "v": {
+      "x": {
+       "t": "num",
+       "v": 1,
+       "int": true
+      }
+     }
+    }
+   }
+  },
+  "JSONエンコード-日本語": {
+   "name": "JSONエンコード-日本語",
+   "status": "ok",
+   "log": "{\"名\":\"太郎\"}"
+  }
+ }
+}
