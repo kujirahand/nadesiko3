@@ -752,8 +752,8 @@ describe('plugin_system_test', async () => {
     await cmp('A=[0,1,2,3];Aから5...9を参照してJSONエンコードして表示', '[]') // 範囲を超えて指定もエラーにならない
   })
   it('ASC/CHRの配列 #1853', async () => {
-    await cmp('["a","b","c"]のASCをJSON_Eして表示', '[97,98,99]') // 配列なら全ての文字のASC
-    await cmp('「abc」のASCをJSON_Eして表示', '97') // 文字列なら最初の文字のみ
+    await cmp('["a","b","c"]のASCをJSONエンコードして表示', '[97,98,99]') // 配列なら全ての文字のASC
+    await cmp('「abc」のASCをJSONエンコードして表示', '97') // 文字列なら最初の文字のみ
     await cmp('[97,98,99]のCHRを「」で配列結合して表示', 'abc') // 配列なら全てのCHR
     await cmp('97のCHRを表示', 'a') // 数値
   })
@@ -769,8 +769,8 @@ describe('plugin_system_test', async () => {
     await cmp('「表示」をハテナ関数設定; ?? (1+2)*3', '9')
   })
   it('「??」のカスタマイズ機能を追加 #1852', async () => {
-    await cmp('["JSON_E","表示"]をハテナ関数設定; ?? [1,2,3]', '[1,2,3]')
-    await cmp('["文字列分解", "ASC", "JSON_E","表示"]をハテナ関数設定; ?? "abc"', '[97,98,99]')
+    await cmp('["JSONエンコード","表示"]をハテナ関数設定; ?? [1,2,3]', '[1,2,3]')
+    await cmp('["文字列分解", "ASC", "JSONエンコード","表示"]をハテナ関数設定; ?? "abc"', '[97,98,99]')
     await cmp('["JS:Math.ceil","表示"]をハテナ関数設定; ?? 3.2', '4')
     await cmp('[『JS:(function(v,sys){return Math.ceil(v);})』,"表示"]をハテナ関数設定; ?? 3.2', '4')
   })

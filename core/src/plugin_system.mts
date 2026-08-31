@@ -48,7 +48,7 @@ const PluginSystem = {
       sys.tags = {} // タグ - プラグイン側で自由に使えるオブジェクト
       // 言語バージョンを設定
       sys.__setSysVar('ナデシコバージョン', sys.version)
-      sys.__setSysVar('ナデシコ言語バージョン', sys.coreVersion)
+      sys.__setSysVar('ナデシコ言語バージョン', sys.version)
       if (!system.__namespaceList) { system.__namespaceList = [] }
       // なでしこの関数や変数を探して返す
       sys.__findVar = function(nameStr: any, def: any): any {

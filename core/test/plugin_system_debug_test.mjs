@@ -83,7 +83,7 @@ describe('plugin_system_debug_test', async () => {
   })
   it('デバッグ支援 - ハテナ関数設定と実行', async () => {
     await cmp('「表示」をハテナ関数設定; ?? 2*5', '10')
-    await cmp('["JSON_E","表示"]をハテナ関数設定; ?? [1,2]', '[1,2]')
+    await cmp('["JSONエンコード","表示"]をハテナ関数設定; ?? [1,2]', '[1,2]')
   })
   it('デバッグ支援 - エラー発生', async () => {
     const nako = new NakoCompiler()
