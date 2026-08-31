@@ -274,4 +274,55 @@ describe('plugin_httpserver_test', () => {
     assert.strictEqual(await request('PUT'), 'M=PUT')
     assert.strictEqual(await request('DELETE'), 'M=DELETE')
   })
+  it('受信時コールバックで例外が発生してもプロセスが落ちず500を返すこと', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  情報＝FILESデータ[0]
+  情報["path"]を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理」を「/boom」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const status = await new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/boom',
+        method: 'GET'
+      }, (res) => {
+        res.on('data', () => {})
+        res.on('end', () => { resolve(res.statusCode) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+
+    // 例外がプロセスを停止させず、500として返ること
+    assert.strictEqual(status, 500)
+
+    // サーバが生きていて次のリクエストも処理できること
+    const status2 = await new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/boom',
+        method: 'GET'
+      }, (res) => {
+        res.on('data', () => {})
+        res.on('end', () => { resolve(res.statusCode) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+    assert.strictEqual(status2, 500)
+  })
 })
