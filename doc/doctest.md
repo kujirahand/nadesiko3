@@ -26,7 +26,19 @@
 ```
 
 `### 表示結果:` の記述がないブロックは、DocTestの対象になりません。
-（ブラウザ専用の命令など、Node.js版で実行できないサンプルには書かないでください。）
+
+ブラウザ専用の命令を確認する場合は、`### WEB表示結果:` と書きます。
+
+```text
+{{{#nako3
+L＝「こんにちは」のラベル作成。
+Lのテキスト取得して表示。
+### WEB表示結果: こんにちは
+}}}
+```
+
+`{{{#nako3(canvas,size=40x30)` のようにCanvasを指定したサンプルでは、
+ブラウザDocTestにも指定した大きさのCanvasが用意されます。
 
 ## 実行方法
 
@@ -39,22 +51,30 @@ npm run doctest -- manual/plugin_system/表示.txt
 
 # テストとして実行する(npm run test:node にも含まれます)
 npm run test:doctest
+
+# WEB表示結果のDocTestをPlaywright + Chromiumで実行する
+cd test-browser
+npm run test:doctest
 ```
 
 `manual` は別リポジトリ `nadesiko3doc` の `data` ディレクトリへのシンボリックリンクです。
 リンクがない環境では、テストはスキップされます（作り方は `AGENTS.md` を参照）。
+ブラウザDocTestもローカルの`manual`だけを参照し、リンクがない場合や
+`### WEB表示結果:`が1件もない場合はマニュアル部分をスキップします。
+実行器自体は、リポジトリ内の固定フィクスチャで常に検証されます。
 
 ## しくみ
 
 - 本体: `batch/doctest.mjs`
 - テスト: `test/node/doctest_test.mjs`
+- ブラウザテスト: `test-browser/test/browser_doctest.spec.mjs`
 
 処理の流れは次の通りです。
 
 1. `manual` 以下の `*.txt` を再帰的に列挙する
-2. `### 表示結果:` を含むファイルだけに絞り込む
+2. `### 表示結果:`または`### WEB表示結果:`を含むファイルだけに絞り込む
 3. `{{{#nako3 ... }}}` のブロックを抽出し、コードと期待する表示結果に分ける
-4. `NakoCompiler` + `plugin_node` でコードを実行し、表示ログと期待値を比べる
+4. 通常のDocTestは`NakoCompiler` + `plugin_node`、wnako用は`WebNakoCompiler`で実行する
 5. 一致しない場合は、ファイル名・行番号・コード・期待値・実際の値・違いのある行を表示する
 
 失敗時の出力例:

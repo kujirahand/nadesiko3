@@ -33,6 +33,33 @@ describe('DocTest(マニュアルのサンプルコード)', () => {
     assert.strictEqual(tests[0].line, 3)
     assert.strictEqual(tests[0].code, '「こんにちは」と表示。')
     assert.strictEqual(tests[0].expect, 'こんにちは')
+    assert.strictEqual(tests[0].runtime, 'cnako')
+    assert.deepStrictEqual(tests[0].options, { canvas: false, width: 300, height: 300 })
+  })
+
+  it('WEB表示結果とCanvasオプションを抽出する', () => {
+    const text = [
+      '{{{#nako3(canvas,size=40x30,rows=5)',
+      '描画中キャンバス["width"]を表示。',
+      '### WEB表示結果: 40',
+      '}}}'
+    ].join('\n')
+    const [test] = extractDocTests(text, 'browser.txt')
+    assert.strictEqual(test.runtime, 'wnako')
+    assert.strictEqual(test.expect, '40')
+    assert.deepStrictEqual(test.options, { canvas: true, width: 40, height: 30 })
+  })
+
+  it('WEB表示結果のDocTestをNode.jsでは実行しない', async () => {
+    const [test] = extractDocTests([
+      '{{{#nako3',
+      'ブラウザURLを表示。',
+      '### WEB表示結果: http://localhost/',
+      '}}}'
+    ].join('\n'))
+    const result = await runDocTest(test)
+    assert.strictEqual(result.ok, false)
+    assert.match(result.error.message, /ブラウザ版の実行コマンド/)
   })
 
   it('複数行の表示結果を抽出する', () => {
