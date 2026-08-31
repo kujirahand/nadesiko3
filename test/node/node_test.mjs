@@ -44,14 +44,20 @@ describe('node_test(cnako)', () => {
     fs.writeFileSync(nakoFile, code)
     const compileResult = spawnSync(process.execPath, [cnako3, '-c', nakoFile], {
       cwd: tempDir,
-      encoding: 'utf8'
+      encoding: 'utf8',
+      timeout: 30000
     })
+    assert.ifError(compileResult.error)
+    assert.strictEqual(compileResult.signal, null, `コンパイルがシグナルで終了しました: ${compileResult.signal}`)
     assert.strictEqual(compileResult.status, 0, compileResult.stderr)
     assert.strictEqual(fs.existsSync(jsFile), true, 'main.mjsが生成されるべき')
     const runResult = spawnSync(process.execPath, [jsFile], {
       cwd: tempDir,
-      encoding: 'utf8'
+      encoding: 'utf8',
+      timeout: 30000
     })
+    assert.ifError(runResult.error)
+    assert.strictEqual(runResult.signal, null, `生成したJSがシグナルで終了しました: ${runResult.signal}`)
     assert.strictEqual(runResult.status, 0, runResult.stderr)
     return runResult.stdout.trim()
   }
