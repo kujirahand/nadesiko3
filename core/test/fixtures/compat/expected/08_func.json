@@ -43,7 +43,7 @@
   "無名関数-変数に代入": {
    "name": "無名関数-変数に代入",
    "status": "ok",
-   "log": "function(){\n  // PUSH STACK\n  const __localvars = __nako_scope_enter();\n  try {\n      __self.__vars.set('引数', arguments);\n    __line(\"l1:main.nako3\");\n      __self.__vars.set(\"A\", (arguments[0]));\n    __line(\"l1:main.nako3\");\n    return (__self.__vars.get(\"A\") * 2);__line(\"l2:main.nako3\");\n    return (__self.__vars.get(\"それ\"));\n  } finally {\n      // POP STACK\n      __nako_scope_leave(__localvars);\n  }\n  }"
+   "log": "6"
   },
   "関数-引数の既定値なし呼び出し": {
    "name": "関数-引数の既定値なし呼び出し",
