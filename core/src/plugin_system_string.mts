@@ -517,7 +517,7 @@ export default {
       while (i < s.length) {
         // 濁点の変換
         const c2 = s.substring(i, i + 2)
-        const n2 = han2.indexOf(c2)
+        const n2 = (c2.length === 2) ? han2.indexOf(c2) : -1
         if (n2 >= 0) {
           str += zen2.charAt(n2 / 2)
           i += 2
