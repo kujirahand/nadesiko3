@@ -40,6 +40,22 @@ removeJosiList.forEach(josi => {
 })
 
 // 「もの」構文 (#1614)
+/**
+ * 助詞を正規化する
+ * 「もの」構文の除去 (#1614) を行ってから、意味のない助詞の削除 (#936 #939 #974) を行う (#2453)。
+ */
+export function normalizeJosi (josi: string): string {
+  // 「もの」構文 (#1614)
+  if (josi.substring(0, 2) === 'もの') {
+    josi = josi.substring(2)
+  }
+  // 助詞「こと」「である」「です」などは「＊＊すること」のように使うので削除 #936 #939 #974
+  if (removeJosiMap[josi]) {
+    josi = ''
+  }
+  return josi
+}
+
 const josiListMono = []
 for (const jo of josiList) {
   josiListMono.push('もの' + jo)

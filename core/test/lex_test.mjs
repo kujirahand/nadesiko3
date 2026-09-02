@@ -175,4 +175,34 @@ describe('lex_test', async () => {
   it('絵文字の四則演算を認識する #1183', async () => {
     await cmp('リンゴ🟰3✖5;ミカン🟰9➗3;リンゴ+ミカンを表示', '18')
   })
+  it('助詞「もの〜」の正規化順序テスト #2453', () => {
+    const nako = new NakoCompiler()
+    // 単語
+    const tWord = nako.lex('Aものである').tokens
+    assert.strictEqual(tWord[0].type, 'word')
+    assert.strictEqual(tWord[0].josi, '')
+
+    // 文字列
+    const tStr = nako.lex('「あ」ものである').tokens
+    assert.strictEqual(tStr[0].type, 'string')
+    assert.strictEqual(tStr[0].josi, '')
+
+    // 数値
+    const tNum = nako.lex('100ものである').tokens
+    assert.strictEqual(tNum[0].type, 'number')
+    assert.strictEqual(tNum[0].josi, '')
+
+    // 意味のない助詞（こと、である、です、します、でした、にゃん）との組み合わせで全て空文字になること
+    const meaninglessJosiList = ['こと', 'である', 'です', 'します', 'でした', 'にゃん']
+    for (const j of meaninglessJosiList) {
+      assert.strictEqual(nako.lex(`Aもの${j}`).tokens[0].josi, '')
+      assert.strictEqual(nako.lex(`「あ」もの${j}`).tokens[0].josi, '')
+      assert.strictEqual(nako.lex(`100もの${j}`).tokens[0].josi, '')
+    }
+
+    // 「もの」＋通常の助詞の場合は「もの」が除去され助詞が残ること
+    assert.strictEqual(nako.lex('Aものから').tokens[0].josi, 'から')
+    assert.strictEqual(nako.lex('「あ」ものから').tokens[0].josi, 'から')
+    assert.strictEqual(nako.lex('100ものから').tokens[0].josi, 'から')
+  })
 })

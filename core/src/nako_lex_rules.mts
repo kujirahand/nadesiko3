@@ -3,7 +3,7 @@
  * なでしこ3字句解析のためのルール
  */
 
-import { josiRE, removeJosiMap } from './nako_josi_list.mjs'
+import { josiRE, normalizeJosi } from './nako_josi_list.mjs'
 import { TokenType } from './nako_token.mjs'
 
 const kanakanji = /^[\u3005\u4E00-\u9FCF_a-zA-Z0-9ァ-ヶー\u2460-\u24FF\u2776-\u277F\u3251-\u32BF]+/
@@ -226,12 +226,8 @@ function cbWordParser(src: string, isTrimOkurigana = true): NakoLexParseResult {
     josi = ''
     res = res.substring(0, res.length - ii[1].length)
   }
-  // 「もの」構文 #1614
-  if (josi.substring(0, 2) === 'もの') {
-    josi = josi.substring(2)
-  }
-  // 助詞「こと」「である」「です」などは「＊＊すること」のように使うので削除 #936 #939 #974
-  if (removeJosiMap[josi]) { josi = '' }
+  // 助詞の正規化 #1614 #936 #939 #974 #2453
+  josi = normalizeJosi(josi)
 
   // 送り仮名の省略ルール
   // 漢字カタカナ英語から始まる語句 --- 送り仮名を省略
@@ -276,12 +272,8 @@ function cbString(beginTag: string, closeTag: string, src: string): NakoLexParse
     // 助詞の後のカンマ #877
     if (src.charAt(0) === ',') { src = src.substring(1) }
   }
-  // 助詞「こと」「である」「です」などは「＊＊すること」のように使うので削除 #936 #939 #974
-  if (removeJosiMap[josi]) { josi = '' }
-  // 「もの」構文 (#1614)
-  if (josi.substring(0, 2) === 'もの') {
-    josi = josi.substring(2)
-  }
+  // 助詞の正規化 #1614 #936 #939 #974 #2453
+  josi = normalizeJosi(josi)
 
   // 改行を数える
   for (let i = 0; i < res.length; i++) { if (res.charAt(i) === '\n') { numEOL++ } }

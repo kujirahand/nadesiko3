@@ -11,7 +11,7 @@ import { NakoLogger } from './nako_logger.mjs'
 import { isIndentChars } from './nako_indent_chars.mjs'
 
 // 助詞の一覧
-import { josiRE, removeJosiMap, tararebaMap, josiListExport } from './nako_josi_list.mjs'
+import { josiRE, normalizeJosi, tararebaMap, josiListExport } from './nako_josi_list.mjs'
 
 // 字句解析ルールの一覧
 import { rules, unitRE, cssUnitRE, NakoLexParseResult } from './nako_lex_rules.mjs'
@@ -712,12 +712,8 @@ export class NakoLexer {
             if (src.charAt(0) === ',') {
               src = src.substring(1)
             }
-            // 「＊＊である」なら削除 #939 #974
-            if (removeJosiMap[josi]) { josi = '' }
-            // 「もの」構文 (#1614)
-            if (josi.substring(0, 2) === 'もの') {
-              josi = josi.substring(2)
-            }
+            // 助詞の正規化 #1614 #936 #939 #974 #2453
+            josi = normalizeJosi(josi)
           }
         }
 
