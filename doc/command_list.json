@@ -2748,7 +2748,7 @@
       "phpnako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L617",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L619",
     "description": "文字列VをA桁の空白で埋める"
   },
   {
@@ -2764,7 +2764,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L633",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L637",
     "description": "文字列Sの1文字目がひらがなか判定"
   },
   {
@@ -2780,7 +2780,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L642",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L646",
     "description": "文字列Sの1文字目がカタカナか判定"
   },
   {
@@ -2796,7 +2796,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L651",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L655",
     "description": "文字列Sの1文字目が数字か判定"
   },
   {
@@ -2812,7 +2812,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L660",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L664",
     "description": "文字列S全部が数字か判定"
   },
   {
