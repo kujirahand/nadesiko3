@@ -1387,6 +1387,10 @@ export class NakoParser extends NakoParserBase {
           if (t) {
             const josi = t.josi || ''
             if (t.type === 'func' && (t.josi === '' || RenbunJosi.indexOf(josi) >= 0)) {
+              if (this.canNextFuncTakeNoJosiArg()) {
+                this.pushStack(t)
+                continue
+              }
               t.josi = ''
               return t // 関数なら値とする
             }
@@ -1546,7 +1550,14 @@ export class NakoParser extends NakoParserBase {
     }
 
     // 言い切りならそこで一度切る
-    if (t.josi === '') { return funcNode }
+    if (t.josi === '') {
+      if (this.canNextFuncTakeNoJosiArg()) {
+        funcNode.meta = f
+        this.pushStack(funcNode)
+        return null
+      }
+      return funcNode
+    }
 
     // 「**して、**」の場合も一度切る
     if (RenbunJosi.indexOf(t.josi) >= 0) {
