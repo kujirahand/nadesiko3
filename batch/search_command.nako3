@@ -111,7 +111,7 @@
 ●オプション検査(OPTを)
     T＝OPT['target']
     もし、T≠「」ならば
-        TLIST＝「cnako,wnako,phpnako,enako」
+        TLIST＝「cnako,wnako,phpnako,enako,gonako」
         IDX＝「,{TLIST},」で「,{T},」が何文字目か。
         もし、IDX=0ならば
             「オプション『--target』には {TLIST} のいずれかを指定してください。指定値=『{T}』」で戻る。
@@ -276,7 +276,7 @@
     「検索語は命令名・読み方・説明から部分一致で検索します(複数指定するとAND条件)。」を表示。
     「」を表示。
     「オプション:」を表示。
-    「  --target <名前>   実行環境で絞り込む (cnako/wnako/phpnako/enako)」を表示。
+    「  --target <名前>   実行環境で絞り込む (cnako/wnako/phpnako/enako/gonako)」を表示。
     「  --group <名前>    種別で絞り込む (basic=基本プラグイン, extra=拡張プラグイン)」を表示。
     「  --plugin <名前>   プラグイン名で絞り込む (部分一致) 例: plugin_node」を表示。
     「  --type <種類>     命令の種類で絞り込む (関数/変数/定数)」を表示。
