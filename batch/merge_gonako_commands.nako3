@@ -1,0 +1,94 @@
+#-------------------------------------------------
+# gonako(なでしこ3go)の命令一覧をcommand.txtにマージする (#2465)
+#-------------------------------------------------
+# 入力: ../nadesiko3go/cmd/gonako-gui/ui/command-list.json
+#       (gonako側の`just gen-command-list`で生成・管理されるファイル)
+# 出力: 呼び出し元から渡された「命令一覧テキスト」に、
+#       ■gonako セクションを追記して返す
+#
+# gonakoのファイルが手元に無い環境(CIなど)では、何もせずに
+# 渡されたテキストをそのまま返す。
+#-------------------------------------------------
+
+●(Sを)gonakoコマンド一覧マージ
+    母艦パス取得してパス抽出して基本パスに代入。
+    REPOSパス＝基本パスを「../」で相対パス展開。
+    GONAKOFILE＝「{REPOSパス}/nadesiko3go/cmd/gonako-gui/ui/command-list.json」
+    もし、(GONAKOFILEが存在)=偽ならば
+        「[INFO] gonakoの命令一覧が見つからないためスキップします: {GONAKOFILE}」を表示。
+        Sで戻る。
+    ここまで。
+    SRC_URL＝「https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json」
+    OUT＝「」
+    エラー監視
+        RAW＝GONAKOFILEを開いてJSONデコード。
+        OUT＝「■gonako(拡張プラグイン,gonako){改行}」
+        現在カテゴリ＝「」
+        RAWを反復
+            C＝対象。
+            もし、C['type']≠「func」ならば、続ける。
+            NAME＝「{C['name']}」
+            もし、NAME=「」ならば、続ける。
+            CAT＝「{C['category']}」
+            もし、CAT=「」ならば、CAT＝「gonako」。
+            もし、CAT≠現在カテゴリならば
+                OUT＝OUT&「●{CAT}{改行}」
+                現在カテゴリ＝CAT
+            ここまで。
+            ARGS＝(C['josi'])のgonako助詞展開。
+            DESC＝「{C['desc']}」
+            DESCの「|」を「/」へ置換してDESCに代入。
+            YOMI＝「」
+            もし、(C['yomi']の変数型確認)≠「undefined」ならば
+                YOMI＝「{C['yomi']}」
+            ここまで。
+            OUT＝OUT&「| 関数 | {NAME} | {ARGS} | {DESC} | {YOMI} | {SRC_URL}」&改行。
+        ここまで。
+    エラーならば
+        「[エラー] gonakoの命令一覧を読み込めません: {エラーメッセージ} ({GONAKOFILE})」を表示。
+        Sで戻る。
+    ここまで。
+    (S&OUT)で戻る。
+ここまで。
+
+# gonakoのjosi([["から","の"],["を"]]のような配列、または引数無しならNULL)を、
+# command.txtの引数欄で使う「Aから/Aの」形式の文字列に変換する
+●(JOSIの)gonako助詞展開
+    もし、JOSI=NULLならば、「」で戻る。
+    N＝JOSIの要素数。
+    もし、N=0ならば、「」で戻る。
+    もし、N=1ならば
+        NAMES＝["S"]
+    違えば
+        NAMES＝["A","B","C","D","E","F","G","H"]
+    ここまで。
+    # 各引数の助詞候補のうち、もっとも多い候補数を求める
+    MAXLEN＝0
+    JOSIを反復
+        GRP＝対象。
+        もし、GRP≠NULLならば
+            もし、(GRPの要素数)>MAXLENならば、MAXLEN＝GRPの要素数。
+        ここまで。
+    ここまで。
+    PHRASES＝[]
+    もし、MAXLEN>0ならば
+        Iを0からMAXLEN-1まで繰り返す
+            SS＝「」
+            NOを0からN-1まで繰り返す
+                GRP＝JOSI[NO]
+                もし、GRP=NULLならば、続ける。
+                もし、I>=(GRPの要素数)ならば、続ける。
+                もし、NO<(NAMESの要素数)ならば
+                    PNAME＝NAMES[NO]
+                違えば
+                    PNAME＝「P{NO}」
+                ここまで。
+                SS＝SS&PNAME&(GRP[I])
+            ここまで。
+            もし、SS≠「」ならば
+                PHRASESにSSを配列追加。
+            ここまで。
+        ここまで。
+    ここまで。
+    (PHRASESを「/」で配列結合)で戻る。
+ここまで。

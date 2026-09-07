@@ -23,6 +23,9 @@ npm run search:command -- ファイル --target cnako
 # ブラウザ版の基本プラグインだけを検索
 npm run search:command -- DOM --target wnako --group basic
 
+# gonako(なでしこ3go)で使える命令だけを検索
+npm run search:command -- ファイル --target gonako
+
 # JSON形式で出力(AIや別ツール向け)
 npm run search:command -- CSV --json
 
@@ -52,7 +55,7 @@ search_command [検索語...] [オプション]
 
 | オプション | 説明 |
 |---|---|
-| `--target <名前>` | 実行環境で絞り込む。`cnako` / `wnako` / `phpnako` / `enako` |
+| `--target <名前>` | 実行環境で絞り込む。`cnako` / `wnako` / `phpnako` / `enako` / `gonako` |
 | `--group <名前>` | プラグイン種別で絞り込む。`basic`(基本プラグイン) / `extra`(拡張プラグイン)。日本語の`基本プラグイン`/`拡張プラグイン`も指定可 |
 | `--plugin <名前>` | プラグイン名で絞り込む（部分一致）。例: `plugin_node` |
 | `--type <種類>` | 命令の種類で絞り込む。`関数` / `変数` / `定数` |
@@ -192,6 +195,17 @@ Ctrl+Cなどのシグナルで中断された場合は、シェルの慣習に�
 
 `doc/command_list.json`は`npm run build:command`で生成される成果物であり、
 検索用に別のデータを持つことはしません（データの二重管理をしない）。
+
+### gonako(なでしこ3go)の命令
+
+`npm run build:command`（実体は`batch/pickup_command.nako3`）は、末尾で
+`batch/merge_gonako_commands.nako3`を呼び出し、`../nadesiko3go/cmd/gonako-gui/ui/command-list.json`
+（gonako側の`just gen-command-list`で生成・管理されるファイル）を`command.txt`にマージします。
+このため`doc/command_list.json`にも`target`が`["gonako"]`の命令が含まれ、`--target gonako`で
+絞り込めます（[Issue #2465](https://github.com/kujirahand/nadesiko3/issues/2465)）。
+
+`../nadesiko3go`が手元に無い環境（CIなど）では、このマージ処理は警告を表示して
+何もせずスキップします。ビルド自体は失敗しません。
 
 ## テスト
 
