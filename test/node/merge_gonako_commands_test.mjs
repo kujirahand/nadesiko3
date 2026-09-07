@@ -110,6 +110,39 @@ describe('merge_gonako_commands.nako3 (#2465)', () => {
     assert.strictEqual(cols2[5], '', 'yomiが無い場合にundefinedという文字列が出力されています')
   })
 
+  it('urlが指定されていればその値を使い、無ければ既定のURLにフォールバックする', () => {
+    const gonako = [
+      {
+        name: 'URL指定命令',
+        type: 'func',
+        josi: [['を']],
+        category: 'テスト用命令',
+        desc: 'urlフィールドを持つ命令',
+        template: '【S】をURL指定命令',
+        url: 'https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/example.go#L1'
+      },
+      {
+        name: 'URL未指定命令',
+        type: 'func',
+        josi: [['を']],
+        category: 'テスト用命令',
+        desc: 'urlフィールドを持たない命令',
+        template: '【S】をURL未指定命令'
+      }
+    ]
+    const out = runMerge(gonako)
+
+    const line1 = out.split('\n').find((l) => l.includes('URL指定命令'))
+    assert.ok(line1, 'URL指定命令の行が見つかりません')
+    const cols1 = line1.split('|').map((s) => s.trim())
+    assert.strictEqual(cols1[6], 'https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/example.go#L1')
+
+    const line2 = out.split('\n').find((l) => l.includes('URL未指定命令'))
+    assert.ok(line2, 'URL未指定命令の行が見つかりません')
+    const cols2 = line2.split('|').map((s) => s.trim())
+    assert.strictEqual(cols2[6], 'https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json')
+  })
+
   it('type=funcでない命令は無視する', () => {
     const gonako = [
       { name: '無視される定数', type: 'const', category: 'その他', desc: '無視されるはず' }

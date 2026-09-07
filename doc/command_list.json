@@ -15819,7 +15819,7 @@
       "enako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L196",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L206",
     "value": "app"
   },
   {
@@ -15833,7 +15833,7 @@
       "enako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L197",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L207",
     "value": "ipcMain"
   },
   {
@@ -15847,7 +15847,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L203",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L213",
     "description": "アプリIDを設定する"
   },
   {
@@ -15861,7 +15861,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L212",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L222",
     "description": "Electronのアプリを終了する"
   },
   {
@@ -15875,7 +15875,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L221",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L231",
     "description": "Electronのアプリを終了する"
   },
   {
@@ -15889,7 +15889,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L230",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L240",
     "description": "Electronのアプリを強制終了する"
   },
   {
@@ -15903,7 +15903,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L239",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L249",
     "description": "アプリが終了した際に自動的に起動する"
   },
   {
@@ -15917,7 +15917,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L251",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L261",
     "description": "アプリの準備が完了していれば真を返す"
   },
   {
@@ -15931,7 +15931,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L259",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L269",
     "description": "アプリの準備が完了した際に呼び去られる処理を登録する"
   },
   {
@@ -15945,7 +15945,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L270",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L280",
     "description": "アプリがフォーカスの獲得を試みる"
   },
   {
@@ -15959,7 +15959,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L279",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L289",
     "description": "package.jsonで設定しているアプリのバージョンを返す"
   },
   {
@@ -15973,7 +15973,7 @@
       "enako"
     ],
     "category": "Electronアプリ",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L287",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L297",
     "description": "package.jsonで設定しているアプリの名前(name,productName)を返す"
   },
   {
@@ -15987,7 +15987,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L296",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L306",
     "description": "オプションに従いブラウザウインドウを作成して返す"
   },
   {
@@ -16001,7 +16001,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L325",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L335",
     "description": "ウインドウに指定のURLから読み込みを行う"
   },
   {
@@ -16015,7 +16015,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L340",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L350",
     "description": "アプリに存在する全てのWindowの数を返す"
   },
   {
@@ -16029,7 +16029,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L348",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L358",
     "description": "フォーカスを獲得しているWindowを返す"
   },
   {
@@ -16043,7 +16043,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L356",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L366",
     "description": "指定したウインドウの再読み込みを行う"
   },
   {
@@ -16057,7 +16057,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L365",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L375",
     "description": "指定したウインドウを表示状態にする"
   },
   {
@@ -16071,7 +16071,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L374",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L384",
     "description": "指定したウインドウの開発者ツールの表示状態をトグルする"
   },
   {
@@ -16085,7 +16085,7 @@
       "enako"
     ],
     "category": "ElectronのBrowserWindow",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L383",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L393",
     "description": "menuをウインドウのメニューに設定する"
   },
   {
@@ -16099,7 +16099,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L393",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L403",
     "description": "menuをアプリのメインメニューに設定する"
   },
   {
@@ -16113,7 +16113,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L411",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L421",
     "description": "アプリのメインメニューに取得して返す"
   },
   {
@@ -16127,7 +16127,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L427",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L437",
     "description": "メニューをテンプレートから一括作成し作成したメニューを返す"
   },
   {
@@ -16141,7 +16141,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L450",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L460",
     "description": "メニューをポップアップメニューとして開く"
   },
   {
@@ -16155,7 +16155,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L462",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L472",
     "description": "ポップアップメニューとして開かれたこのメニューを閉じる"
   },
   {
@@ -16169,7 +16169,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L472",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L482",
     "description": "メニューにメニュー項目を追加する"
   },
   {
@@ -16183,7 +16183,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L481",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L491",
     "description": "メニューにメニュー項目を追加する"
   },
   {
@@ -16197,7 +16197,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L490",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L500",
     "description": "メニューの指定位置にメニュー項目を挿入する"
   },
   {
@@ -16211,7 +16211,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L499",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L509",
     "description": "メニューの指定位置にメニュー項目を挿入する"
   },
   {
@@ -16225,7 +16225,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L508",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L518",
     "description": "メニューから指定したIDを持つメニューアイテムを返す"
   },
   {
@@ -16239,7 +16239,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L516",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L526",
     "description": "メニューから指定したIDを持つ項目をクリックした時の処理を登録する"
   },
   {
@@ -16253,7 +16253,7 @@
       "enako"
     ],
     "category": "Electronのメニュー",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L526",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L536",
     "description": "メニュー項目を作成して返す"
   },
   {
@@ -16267,7 +16267,7 @@
       "enako"
     ],
     "category": "Electronのイベント処理",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L550",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L560",
     "description": "対象にて指定のイベントが発生した時の処理を登録する"
   },
   {
@@ -16281,7 +16281,7 @@
       "enako"
     ],
     "category": "Electronのイベント処理",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L563",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L573",
     "description": "対象にて指定のイベントが発生した時の処理を登録する。イベント発生時に自動削除される"
   },
   {
@@ -16295,7 +16295,7 @@
       "enako"
     ],
     "category": "Electronのイベント処理",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L572",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L582",
     "description": "対象にて指定のInvoke呼び出しを受けた時の処理を登録する(evt, ...args)"
   },
   {
@@ -16309,7 +16309,7 @@
       "enako"
     ],
     "category": "Electronのイベント処理",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L581",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L591",
     "description": "対象のInvokeを呼び出す"
   },
   {
@@ -16323,7 +16323,7 @@
       "enako"
     ],
     "category": "Electronのdialog",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L601",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L611",
     "description": "ファイルを選択するダイアログを表示して結果を返す(非同期関数)"
   },
   {
@@ -16337,7 +16337,7 @@
       "enako"
     ],
     "category": "Electronのdialog",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L612",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L622",
     "description": "フォルダを選択するダイアログを表示して結果を返す(非同期関数)"
   },
   {
@@ -16351,7 +16351,7 @@
       "enako"
     ],
     "category": "Electronのdialog",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L623",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L633",
     "description": "ファイルを保存するためのダイアログを表示して結果を返す(非同期関数)"
   },
   {
@@ -16365,7 +16365,7 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L632",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L642",
     "description": "マウスポインタの絶対位置をDIPポイント単位で返す"
   },
   {
@@ -16379,7 +16379,7 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L640",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L650",
     "description": "主画面に指定されているモニターのDisplayを返す"
   },
   {
@@ -16393,7 +16393,7 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L648",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L658",
     "description": "全てのモニターをDisplayの配列で返す"
   },
   {
@@ -16407,7 +16407,7 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L656",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L666",
     "description": "指定した点に最も近いモニターのDisplayを返す"
   },
   {
@@ -16421,7 +16421,7 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L665",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L675",
     "description": "指定した矩形に最も近いモニターのDisplayを返す"
   },
   {
@@ -16435,7 +16435,7 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L674",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L684",
     "description": "Pointを物理的な単位からDIP単位に変換して返す"
   },
   {
@@ -16449,7 +16449,7 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L683",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L693",
     "description": "PointをDIP単位から物理的な単位に変換して返す"
   },
   {
@@ -16463,12 +16463,12 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L692",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L702",
     "description": "Rectangleを物理的な単位からDIP単位に変換して返す。DPIは指定したウインドウと相対的に計算する"
   },
   {
     "type": "関数",
-    "name": "DIP2PXP矩形変換",
+    "name": "DIP2PX矩形変換",
     "args": "RのWINで/Rから",
     "yomi": "DIP2PXくけいへんかん",
     "plugin": "plugin_electron_node",
@@ -16477,8 +16477,22 @@
       "enako"
     ],
     "category": "Electronのscreen",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L701",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L711",
     "description": "RectangleをDIP単位から物理的な単位に変換して返す。DPIは指定したウインドウと相対的に計算する"
+  },
+  {
+    "type": "関数",
+    "name": "DIP2PXP矩形変換",
+    "args": "RのWINで/Rから",
+    "yomi": "DIP2PXPくけいへんかん",
+    "plugin": "plugin_electron_node",
+    "group": "拡張プラグイン",
+    "target": [
+      "enako"
+    ],
+    "category": "Electronのscreen",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L720",
+    "description": "『DIP2PX矩形変換』命令の誤字。互換性のために存在する。"
   },
   {
     "type": "関数",
@@ -16491,7 +16505,7 @@
       "enako"
     ],
     "category": "Electronのユーザ用IPC通信",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L711",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L729",
     "description": "レンダラからのデータ送信を受けた時の処理を登録する(evt, key, msg)"
   },
   {
@@ -16505,7 +16519,7 @@
       "enako"
     ],
     "category": "Electronのユーザ用IPC通信",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L720",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L738",
     "description": "レンダラからの呼び出しを受けた時の処理を登録する(evt, key, msg)"
   },
   {
@@ -16519,7 +16533,7 @@
       "enako"
     ],
     "category": "Electronのユーザ用IPC通信",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L729",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L747",
     "description": "レンダラにデータを送信する(webContent, key, data)"
   },
   {
@@ -16533,7 +16547,7 @@
       "enako"
     ],
     "category": "Electronのユーザ用IPC通信",
-    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L738",
+    "url": "https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L756",
     "description": "レンダラにデータを呼び出す(webContent, key, data)"
   },
   {
@@ -16715,7 +16729,7 @@
       "gonako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L91",
     "description": "AJAXでURLにアクセスしJSONの結果を得て、送信時AJAXオプションの値を参照。"
   },
   {
@@ -16729,7 +16743,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L189",
     "description": "Ajax命令でオプションを設定"
   },
   {
@@ -16743,7 +16757,7 @@
       "gonako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L72",
     "description": "AJAXでURLにアクセスしテキスト形式で結果を得る。送信時AJAXオプションの値を参照。"
   },
   {
@@ -16757,7 +16771,7 @@
       "gonako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L108",
     "description": "AJAXでURLにアクセスしバイナリ(arrayBuffer)形式で結果を得る。送信時AJAXオプションの値を参照。"
   },
   {
@@ -16771,7 +16785,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L320",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -16785,7 +16799,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L88",
     "description": "非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。"
   },
   {
@@ -16799,7 +16813,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L89",
     "description": "「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る"
   },
   {
@@ -16813,7 +16827,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L233",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -16827,7 +16841,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L198",
     "description": "Ajax命令でエラーが起きたとき"
   },
   {
@@ -16841,7 +16855,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L232",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -16855,7 +16869,7 @@
       "gonako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L75",
     "description": "(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する"
   },
   {
@@ -16869,7 +16883,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L289",
     "description": "文字列V(あるいは文字列配列)の最初の文字の文字コードを返す"
   },
   {
@@ -16883,7 +16897,7 @@
       "gonako"
     ],
     "category": "テスト",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L196",
     "description": "mochaによるテストで、ASSERTでAとBが正しいことを報告する"
   },
   {
@@ -16897,22 +16911,22 @@
       "gonako"
     ],
     "category": "特殊命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L185",
     "description": "なでしこのユーザー関数定義でASYNC(非同期関数である)ことを宣言する"
   },
   {
     "type": "関数",
     "name": "AWAIT実行",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "AWAITじっこう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "特殊命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "JavaScriptの非同期関数(Promise"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L188",
+    "description": "JavaScriptの非同期関数(Promise/async関数)のFを引数ARGSでawait実行する"
   },
   {
     "type": "関数",
@@ -16925,7 +16939,7 @@
       "gonako"
     ],
     "category": "BASE64",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L47",
     "description": "BASE64エンコードして返す"
   },
   {
@@ -16939,7 +16953,7 @@
       "gonako"
     ],
     "category": "BASE64",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L50",
     "description": "BASE64デコードして返す"
   },
   {
@@ -16953,7 +16967,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L309",
     "description": "文字コードV(あるいは文字列配列)から文字を返す"
   },
   {
@@ -16967,7 +16981,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L67",
     "description": "数値を下限から上限の範囲内に収めた値を返す。"
   },
   {
@@ -16981,7 +16995,7 @@
       "gonako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L399",
     "description": "DISCORDのウェブフックURLにファイルF(パスを指定)とメッセージSを送信する。"
   },
   {
@@ -16995,7 +17009,7 @@
       "gonako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L377",
     "description": "DISCORDのウェブフックURLにSのメッセージを送信する。宛先のウェブフックを取得しておく必要がある。"
   },
   {
@@ -17009,7 +17023,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L107",
     "description": "DOMに(オブジェクト型で)スタイル情報を一括設定"
   },
   {
@@ -17023,21 +17037,21 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L137",
     "description": "DOMのテキストを取得"
   },
   {
     "type": "関数",
     "name": "DOMテキスト変更",
     "args": "AにBを/Aの/Aへ",
-    "yomi": "",
+    "yomi": "DOMてきすとへんこう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "GUI",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L142",
     "description": "画面部品のテキストを変更する"
   },
   {
@@ -17051,21 +17065,21 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L147",
     "description": "DOMにテキストを設定"
   },
   {
     "type": "関数",
     "name": "DOM属性一括設定",
     "args": "AにBを/Aへ",
-    "yomi": "",
+    "yomi": "DOMぞくせいいっかつせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L117",
     "description": "画面部品に辞書で指定した属性を一括設定する"
   },
   {
@@ -17079,21 +17093,21 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L112",
     "description": "DOMの属性Sに値Vを設定(属性Sには『DOM和属性』も適用される)"
   },
   {
     "type": "関数",
     "name": "DOM注目",
     "args": "Sを/Sへ/Sに",
-    "yomi": "",
+    "yomi": "DOMちゅうもく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "GUI",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L167",
     "description": "画面部品にフォーカスしてカーソルを移動する"
   },
   {
@@ -17107,7 +17121,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L122",
     "description": "DOMの要素をIDを指定して取得"
   },
   {
@@ -17121,7 +17135,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L132",
     "description": "DOMの要素をクエリqで全部取得して返す"
   },
   {
@@ -17135,7 +17149,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L127",
     "description": "DOMの要素をクエリqで取得して返す"
   },
   {
@@ -17149,7 +17163,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L111",
     "description": "Sをeuc-jp形式でファイルFへ書き込む"
   },
   {
@@ -17163,7 +17177,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L90",
     "description": "euc-jp形式のファイルSを読み込む"
   },
   {
@@ -17177,7 +17191,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L305",
     "description": "値Vを実数に変換"
   },
   {
@@ -17191,7 +17205,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L340",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -17205,7 +17219,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L234",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -17219,7 +17233,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L122",
     "description": "値Vを16進数に変換"
   },
   {
@@ -17233,35 +17247,35 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L152",
     "description": "DOMのテキストを取得"
   },
   {
     "type": "関数",
     "name": "HTML変更",
     "args": "AにBを/Aの/Aへ",
-    "yomi": "",
-    "plugin": "gonako",
-    "group": "拡張プラグイン",
-    "target": [
-      "gonako"
-    ],
-    "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "画面部品のHTMLを変更する"
-  },
-  {
-    "type": "関数",
-    "name": "HTML表示",
-    "args": "Sを/Sと",
-    "yomi": "",
+    "yomi": "HTMLへんこう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L157",
+    "description": "画面部品のHTMLを変更する"
+  },
+  {
+    "type": "関数",
+    "name": "HTML表示",
+    "args": "Sを/Sと",
+    "yomi": "HTMLひょうじ",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "GUI",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L69",
     "description": "HTML文字列をウィンドウ画面に追加する"
   },
   {
@@ -17275,7 +17289,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L162",
     "description": "DOMのHTMLにVを設定"
   },
   {
@@ -17289,7 +17303,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L336",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -17303,7 +17317,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L304",
     "description": "値Vを整数に変換"
   },
   {
@@ -17317,7 +17331,7 @@
       "gonako"
     ],
     "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L61",
     "description": "オブジェクトVをJSON形式に変換して返す(『JSON変換』と同じ)"
   },
   {
@@ -17331,7 +17345,7 @@
       "gonako"
     ],
     "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L74",
     "description": "オブジェクトVをJSON形式の文字列(整形済み)に変換して整形して返す"
   },
   {
@@ -17345,7 +17359,7 @@
       "gonako"
     ],
     "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L69",
     "description": "JSON文字列Sをオブジェクトにして返す(『JSON取得』と同じ)"
   },
   {
@@ -17359,7 +17373,7 @@
       "gonako"
     ],
     "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L73",
     "description": "JSON文字列をパースして、なでしこのオブジェクトとして返す"
   },
   {
@@ -17373,7 +17387,7 @@
       "gonako"
     ],
     "category": "JSON",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L72",
     "description": "オブジェクトVをJSON形式の文字列に変換して返す"
   },
   {
@@ -17387,7 +17401,7 @@
       "gonako"
     ],
     "category": "特殊命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L204",
     "description": "なでしこで定義した関数や変数nameのJavaScriptオブジェクトを取得する"
   },
   {
@@ -17401,22 +17415,22 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L86",
     "description": "文字列Sの左端からCNT文字を抽出する"
   },
   {
     "type": "関数",
     "name": "LEN",
     "args": "Sの",
-    "yomi": "",
+    "yomi": "LEN",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "Aの要素数を返す。Aには配列"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L21",
+    "description": "Aの要素数を返す。Aには配列/辞書型/文字列を指定する。"
   },
   {
     "type": "関数",
@@ -17429,7 +17443,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L63",
     "description": "2個以上の数値のうち最大値を返す。"
   },
   {
@@ -17443,7 +17457,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L81",
     "description": "文字列SのA文字目からCNT文字を抽出する(『文字抜出』と同じ)"
   },
   {
@@ -17457,7 +17471,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L65",
     "description": "2個以上の数値のうち最小値を返す。"
   },
   {
@@ -17471,7 +17485,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L121",
     "description": "値VがNaNかどうかを判定(命令『非数判定』を使う事を推奨)"
   },
   {
@@ -17485,7 +17499,7 @@
       "gonako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L86",
     "description": "(ビット演算で)Vの各ビットを反転して返す。"
   },
   {
@@ -17499,7 +17513,7 @@
       "gonako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L76",
     "description": "(ビット演算で)AとBの論理和を返す。"
   },
   {
@@ -17513,190 +17527,190 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L168",
     "description": "OSアーキテクチャを返す"
   },
   {
     "type": "関数",
     "name": "OS取得",
     "args": "",
-    "yomi": "",
+    "yomi": "OSしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "OSプラットフォームを返す(darwin"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L165",
+    "description": "OSプラットフォームを返す(darwin/win32/linux)"
   },
   {
     "type": "関数",
     "name": "PDFタイトル設定",
     "args": "Sに/Sへ/Sを",
-    "yomi": "",
+    "yomi": "PDFたいとるせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDFタイトル設定』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L85",
+    "description": "PDFドキュメントのタイトル(文書プロパティ)を設定する"
   },
   {
     "type": "関数",
     "name": "PDFフォント設定",
     "args": "AをBで/Bに",
-    "yomi": "",
+    "yomi": "PDFふぉんとせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDFフォント設定』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L67",
+    "description": "PDFドキュメントで使うフォント名とサイズを設定する"
   },
   {
     "type": "関数",
     "name": "PDFページ追加",
     "args": "",
-    "yomi": "",
+    "yomi": "PDFぺーじついか",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDFページ追加』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L64",
+    "description": "現在のPDFドキュメントに新しいページを追加する"
   },
   {
     "type": "関数",
     "name": "PDF保存",
     "args": "Sへ/Sに",
-    "yomi": "",
+    "yomi": "PDFほぞん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L88",
     "description": "PDFドキュメントを指定ファイルパスへ出力保存する"
   },
   {
     "type": "関数",
     "name": "PDF切替",
     "args": "Sに/Sへ",
-    "yomi": "",
+    "yomi": "PDFきりかえ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDF切替』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L61",
+    "description": "操作対象のPDFドキュメントをハンドルで切り替える"
   },
   {
     "type": "関数",
     "name": "PDF文字描画",
     "args": "AをBへ/Bに",
-    "yomi": "",
+    "yomi": "PDFもじびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDF文字描画』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L70",
+    "description": "PDFドキュメントの現在位置に文字列を描画する"
   },
   {
     "type": "関数",
     "name": "PDF新規作成",
     "args": "",
-    "yomi": "",
+    "yomi": "PDFしんきさくせい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L58",
     "description": "新規PDFドキュメントを作成してハンドルを返す"
   },
   {
     "type": "関数",
     "name": "PDF画像描画",
     "args": "AをBへ/AのBに",
-    "yomi": "",
+    "yomi": "PDFがぞうびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDF画像描画』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L82",
+    "description": "PDFドキュメントの指定位置に画像ファイルを描画する"
   },
   {
     "type": "関数",
     "name": "PDF矩形描画",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "PDFくけいびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDF矩形描画』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L79",
+    "description": "PDFドキュメントの指定矩形[X, Y, 幅, 高さ]を描画する"
   },
   {
     "type": "関数",
     "name": "PDF線描画",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "PDFせんびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDF線描画』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L76",
+    "description": "PDFドキュメントの現在位置から指定位置まで直線を描画する"
   },
   {
     "type": "関数",
     "name": "PDF複数行文字描画",
     "args": "AをBへ/Bに",
-    "yomi": "",
+    "yomi": "PDFふくすうぎょうもじびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDF複数行文字描画』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L73",
+    "description": "PDFドキュメントの現在位置に複数行の文字列を折り返して描画する"
   },
   {
     "type": "関数",
     "name": "PDF閉",
     "args": "",
-    "yomi": "",
+    "yomi": "PDFとじる",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『PDF閉』を実行します"
+    "category": "PDF",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/pdflib/pdflib.go#L91",
+    "description": "現在のPDFドキュメントのハンドルを閉じる"
   },
   {
     "type": "関数",
@@ -17709,7 +17723,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L55",
     "description": "辞書形式のデータPARAMSをkey=value&key=value...の形式に変換する"
   },
   {
@@ -17723,7 +17737,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L349",
     "description": "非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -17737,7 +17751,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L159",
     "description": "非同期通信(AJAX)でURLにPARAMS(辞書型)をフォームとしてPOSTメソッドにてURLへ送信し応答を返す。"
   },
   {
@@ -17751,7 +17765,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L279",
     "description": "AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定"
   },
   {
@@ -17765,7 +17779,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L342",
     "description": "非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -17779,7 +17793,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L129",
     "description": "非同期通信(AJAX)でPOSTメソッドにてURLへPARAMS(辞書型)を送信して応答を戻す。"
   },
   {
@@ -17793,7 +17807,7 @@
       "gonako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L236",
     "description": "AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定"
   },
   {
@@ -17807,7 +17821,7 @@
       "gonako"
     ],
     "category": "色定数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L140",
     "description": "赤緑青を256段階でそれぞれ指定して、#RRGGBB形式の値を返す"
   },
   {
@@ -17821,7 +17835,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L95",
     "description": "文字列Sの右端からCNT文字を抽出する(『文字右部分』と同じ)"
   },
   {
@@ -17835,7 +17849,7 @@
       "gonako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L89",
     "description": "VをAビット左へシフトして返す"
   },
   {
@@ -17849,7 +17863,7 @@
       "gonako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L90",
     "description": "VをAビット右へシフトして返す(符号を維持する)"
   },
   {
@@ -17863,7 +17877,7 @@
       "gonako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L91",
     "description": "VをAビット右へシフトして返す(符号を維持しない、0で埋める)"
   },
   {
@@ -17877,7 +17891,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L73",
     "description": "SをSJIS形式でファイルFへ書き込む"
   },
   {
@@ -17891,7 +17905,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L52",
     "description": "SJIS形式のファイルSを読み込む"
   },
   {
@@ -17905,7 +17919,7 @@
       "gonako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L40",
     "description": "Shift_JISのバイナリバッファを文字列に変換"
   },
   {
@@ -17919,134 +17933,134 @@
       "gonako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L28",
     "description": "(v1非互換)文字列をShift_JISのバイナリバッファに変換"
   },
   {
     "type": "関数",
     "name": "SQLITE3全取得",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "SQLITE3ぜんしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3全取得』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L76",
+    "description": "SQL文Aをパラメータ配列Bとともに実行し全件を辞書の配列で返す"
   },
   {
     "type": "関数",
     "name": "SQLITE3切替",
     "args": "Sに/Sへ",
-    "yomi": "",
+    "yomi": "SQLITE3きりかえ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3切替』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L67",
+    "description": "操作対象のデータベースをハンドルで切り替える"
   },
   {
     "type": "関数",
     "name": "SQLITE3取得",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "SQLITE3しゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3取得』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L73",
+    "description": "SQL文Aをパラメータ配列Bとともに実行し先頭の1件を辞書で返す"
   },
   {
     "type": "関数",
     "name": "SQLITE3取得時",
     "args": "AにBをCで",
-    "yomi": "",
+    "yomi": "SQLITE3しゅとくじ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3取得時』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L85",
+    "description": "SQL文Bをパラメータ配列Cとともに実行し全件を辞書の配列で関数Aに渡す"
   },
   {
     "type": "関数",
     "name": "SQLITE3実行",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "SQLITE3じっこう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3実行』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L70",
+    "description": "SQL文Aをパラメータ配列Bとともに実行する(INSERT/UPDATE/DELETEなど)"
   },
   {
     "type": "関数",
     "name": "SQLITE3実行後",
     "args": "AにBをCで",
-    "yomi": "",
+    "yomi": "SQLITE3じっこうご",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3実行後』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L82",
+    "description": "SQL文Bをパラメータ配列Cとともに実行し完了後に関数Aを呼び出す(『SQLITE3実行時』の別名)"
   },
   {
     "type": "関数",
     "name": "SQLITE3実行時",
     "args": "AにBをCで",
-    "yomi": "",
+    "yomi": "SQLITE3じっこうじ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3実行時』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L79",
+    "description": "SQL文Bをパラメータ配列Cとともに実行し完了後に関数Aを呼び出す"
   },
   {
     "type": "関数",
     "name": "SQLITE3閉",
     "args": "",
-    "yomi": "",
+    "yomi": "SQLITE3とじる",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3閉』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L64",
+    "description": "現在のデータベースを閉じる"
   },
   {
     "type": "関数",
     "name": "SQLITE3開",
     "args": "Sを/Sの",
-    "yomi": "",
+    "yomi": "SQLITE3ひらく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『SQLITE3開』を実行します"
+    "category": "SQLite",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/sqlitelib/sqlitelib.go#L61",
+    "description": "指定したファイルパスのSQLite3データベースを開いてハンドルを返す"
   },
   {
     "type": "関数",
@@ -18059,7 +18073,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L303",
     "description": "値Vを実数に変換"
   },
   {
@@ -18073,7 +18087,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L302",
     "description": "値Vを整数に変換"
   },
   {
@@ -18087,7 +18101,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L301",
     "description": "値Vを文字列に変換"
   },
   {
@@ -18101,36 +18115,36 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L306",
     "description": "変数Vの型を返す"
   },
   {
     "type": "関数",
     "name": "UNIXTIME変換",
     "args": "Sの/Sを/Sから",
-    "yomi": "",
+    "yomi": "UNIXTIMEへんかん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "日時SをUNIX時間 (UTC(1970"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L57",
+    "description": "日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換)"
   },
   {
     "type": "関数",
     "name": "UNIX時間変換",
     "args": "Sの/Sを/Sから",
-    "yomi": "",
+    "yomi": "UNIXじかんへんかん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "日時SをUNIX時間 (UTC(1970"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L58",
+    "description": "日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換)"
   },
   {
     "type": "関数",
@@ -18143,7 +18157,7 @@
       "gonako"
     ],
     "category": "基本",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L13",
     "description": "URLエンコードして返す"
   },
   {
@@ -18157,7 +18171,7 @@
       "gonako"
     ],
     "category": "基本",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L17",
     "description": "URLデコードして返す"
   },
   {
@@ -18171,7 +18185,7 @@
       "gonako"
     ],
     "category": "基本",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L24",
     "description": "URLパラメータを解析してハッシュで返す"
   },
   {
@@ -18185,7 +18199,7 @@
       "gonako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L77",
     "description": "(ビット演算で)AとBの排他的論理和を返す。"
   },
   {
@@ -18199,7 +18213,7 @@
       "gonako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L167",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -18213,7 +18227,7 @@
       "gonako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L208",
     "description": "文字列Sの1文字目がひらがなか判定"
   },
   {
@@ -18227,7 +18241,7 @@
       "gonako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L167",
     "description": "敬語対応のため"
   },
   {
@@ -18241,7 +18255,7 @@
       "gonako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L167",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -18255,21 +18269,21 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L45",
     "description": "AのB乗を求める"
   },
   {
     "type": "関数",
     "name": "ウィンドウ作成",
     "args": "AでBの/AによるBを/Bから",
-    "yomi": "",
+    "yomi": "うぃんどうさくせい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L204",
     "description": "オプション設定（タイトル・サイズ等）とURLまたはHTMLコードからWebViewウィンドウを作成して表示する"
   },
   {
@@ -18283,287 +18297,287 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L192",
     "description": "Windowsでエクスプローラー、macOSでFinderを使って、fnameを起動する"
   },
   {
     "type": "関数",
     "name": "エクセルCSV保存",
     "args": "Sへ/Sに",
-    "yomi": "",
+    "yomi": "えくせるCSVほぞん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセルCSV保存』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L77",
+    "description": "現在のアクティブシートをCSV形式で指定パスへ保存する"
   },
   {
     "type": "関数",
     "name": "エクセルシート列挙",
     "args": "",
-    "yomi": "",
+    "yomi": "えくせるしーとれっきょ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L113",
     "description": "Excelブック内のシート名一覧を配列で返す"
   },
   {
     "type": "関数",
     "name": "エクセルシート削除",
     "args": "Sの/Sを",
-    "yomi": "",
+    "yomi": "えくせるしーとさくじょ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセルシート削除』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L116",
+    "description": "現在のExcelブックから指定名シートを削除する"
   },
   {
     "type": "関数",
     "name": "エクセルシート取得",
     "args": "Sの",
-    "yomi": "",
+    "yomi": "えくせるしーとしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセルシート取得』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L89",
+    "description": "現在のExcelブックの指定名シートを操作対象として取得する"
   },
   {
     "type": "関数",
     "name": "エクセルシート注目",
     "args": "Sの/Sに/Sを",
-    "yomi": "",
+    "yomi": "えくせるしーとちゅうもく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセルシート注目』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L92",
+    "description": "現在のExcelブックの指定名シートをアクティブシートに切り替える"
   },
   {
     "type": "関数",
     "name": "エクセルセル取得",
     "args": "Sから/Sを/Sの",
-    "yomi": "",
+    "yomi": "えくせるせるしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L104",
     "description": "指定セル位置（例: 'A1'）の値を取得して返す"
   },
   {
     "type": "関数",
     "name": "エクセルセル幅設定",
     "args": "AをBに/Bへ",
-    "yomi": "",
+    "yomi": "えくせるせるはばせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセルセル幅設定』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L119",
+    "description": "指定列の幅を設定する"
   },
   {
     "type": "関数",
     "name": "エクセルセル設定",
     "args": "AへBを/Aに",
-    "yomi": "",
+    "yomi": "えくせるせるせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L95",
     "description": "指定シートのセル位置（例: 'A1'）に値を書き込む"
   },
   {
     "type": "関数",
     "name": "エクセルブック切替",
     "args": "Sに/Sへ",
-    "yomi": "",
+    "yomi": "えくせるぶっくきりかえ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセルブック切替』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L83",
+    "description": "操作対象のExcelブックをハンドルで切り替える"
   },
   {
     "type": "関数",
     "name": "エクセル一括取得",
     "args": "AからBまでの/Bまで/Bの",
-    "yomi": "",
+    "yomi": "えくせるいっかつしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L110",
     "description": "指定範囲（例: 'A1' から 'C10'）の値を2次元配列として一括取得する"
   },
   {
     "type": "関数",
     "name": "エクセル一括設定",
     "args": "AへBを/Aに",
-    "yomi": "",
+    "yomi": "えくせるいっかつせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル一括設定』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L101",
+    "description": "指定範囲（例: 'A1' から 'C10'）に2次元配列の値を一括設定する"
   },
   {
     "type": "関数",
     "name": "エクセル保存",
     "args": "Sへ/Sに",
-    "yomi": "",
+    "yomi": "えくせるほぞん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L74",
     "description": "現在のアクティブExcelブックを指定パスへ保存する"
   },
   {
     "type": "関数",
     "name": "エクセル取得",
     "args": "Sから/Sを/Sの",
-    "yomi": "",
+    "yomi": "えくせるしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル取得』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L107",
+    "description": "指定セル位置（例: 'A1'）の値を取得して返す(『エクセルセル取得』の別名)"
   },
   {
     "type": "関数",
     "name": "エクセル文字色設定",
     "args": "AをBに/Bへ",
-    "yomi": "",
+    "yomi": "えくせるもじしょくせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル文字色設定』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L125",
+    "description": "指定セル位置の文字色を16進カラーコードで設定する"
   },
   {
     "type": "関数",
     "name": "エクセル新規シート",
     "args": "Sの/Sで",
-    "yomi": "",
+    "yomi": "えくせるしんきしーと",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル新規シート』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L86",
+    "description": "現在のExcelブックに新しいシートを追加する"
   },
   {
     "type": "関数",
     "name": "エクセル新規ブック",
     "args": "",
-    "yomi": "",
+    "yomi": "えくせるしんきぶっく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル新規ブック』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L68",
+    "description": "新規Excelブックオブジェクトを作成してハンドルを返す"
   },
   {
     "type": "関数",
     "name": "エクセル背景色設定",
     "args": "AをBに/Bへ",
-    "yomi": "",
+    "yomi": "えくせるはいけいしょくせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル背景色設定』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L122",
+    "description": "指定セル位置の背景色を16進カラーコードで設定する"
   },
   {
     "type": "関数",
     "name": "エクセル設定",
     "args": "AへBを/Aに",
-    "yomi": "",
+    "yomi": "えくせるせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル設定』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L98",
+    "description": "指定シートのセル位置（例: 'A1'）に値を書き込む(『エクセルセル設定』の別名)"
   },
   {
     "type": "関数",
     "name": "エクセル閉",
     "args": "",
-    "yomi": "",
+    "yomi": "えくせるとじる",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『エクセル閉』を実行します"
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L80",
+    "description": "現在のアクティブExcelブックのハンドルを閉じる"
   },
   {
     "type": "関数",
     "name": "エクセル開",
     "args": "Sを/Sの/Sから",
-    "yomi": "",
+    "yomi": "えくせるひらく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "オフィス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "Excel",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/officelib/officelib.go#L71",
     "description": "指定パスのExcelブックを開いてハンドルを返す"
   },
   {
@@ -18577,7 +18591,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L82",
     "description": "textの値を持つテキストボックス(input[type='text'])の要素を追加しDOMオブジェクトを返す"
   },
   {
@@ -18591,7 +18605,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L156",
     "description": "故意にエラーSを発生させる"
   },
   {
@@ -18605,7 +18619,7 @@
       "gonako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L145",
     "description": "バイナリバッファBUFをCODEから変換して返す"
   },
   {
@@ -18619,7 +18633,7 @@
       "gonako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L128",
     "description": "文字列SをCODEへ変換してバイナリバッファを返す"
   },
   {
@@ -18633,7 +18647,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L267",
     "description": "文字列Sの半角カタカナを全角に変換"
   },
   {
@@ -18647,7 +18661,7 @@
       "gonako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L209",
     "description": "文字列Sの1文字目がカタカナか判定"
   },
   {
@@ -18661,7 +18675,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L270",
     "description": "文字列Sの全角カタカナを半角に変換"
   },
   {
@@ -18675,7 +18689,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L236",
     "description": "文字列Sのひらがなをカタカナに変換"
   },
   {
@@ -18689,7 +18703,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L204",
     "description": "カレントディレクトリを返す"
   },
   {
@@ -18703,7 +18717,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L213",
     "description": "カレントディレクトリをDIRに変更する"
   },
   {
@@ -18717,7 +18731,7 @@
       "gonako"
     ],
     "category": "DOM操作とイベント",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L177",
     "description": "無名関数FでDOMをクリックした時に実行するイベントを設定"
   },
   {
@@ -18731,22 +18745,22 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L274",
     "description": "グローバル変数にある関数一覧を取得"
   },
   {
     "type": "関数",
     "name": "コマンドライン",
     "args": "",
-    "yomi": "",
+    "yomi": "こまんどらいん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『コマンドライン』を実行します"
+    "category": "Nodeプロセス",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L142",
+    "description": "コマンドライン引数を配列で返す"
   },
   {
     "type": "関数",
@@ -18759,7 +18773,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L178",
     "description": "シェルコマンドSを新しいコンソールで実行する(利用できない場合は通常の起動)"
   },
   {
@@ -18773,7 +18787,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L174",
     "description": "シェルコマンドSを新しいコンソールで実行し終了を待機する(戻り値は終了コード、利用できない場合は通常の待機)"
   },
   {
@@ -18787,7 +18801,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L104",
     "description": "コンソール画面をクリアする"
   },
   {
@@ -18801,36 +18815,36 @@
       "gonako"
     ],
     "category": "標準出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L64",
     "description": "Sをコンソール表示する(console.log)"
   },
   {
     "type": "関数",
     "name": "システム時間",
     "args": "",
-    "yomi": "",
+    "yomi": "しすてむじかん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "現在のUNIX時間 (UTC(1970"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L35",
+    "description": "現在のUNIX時間 (UTC(1970/1/1)からの経過秒数) を返す"
   },
   {
     "type": "関数",
     "name": "システム時間ミリ秒",
     "args": "",
-    "yomi": "",
+    "yomi": "しすてむじかんみりびょう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "現在のUNIX時間 (UTC(1970"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L38",
+    "description": "現在のUNIX時間 (UTC(1970/1/1)からの経過秒数) をミリ秒で返す"
   },
   {
     "type": "関数",
@@ -18843,7 +18857,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L159",
     "description": "システム関数の一覧を取得"
   },
   {
@@ -18857,7 +18871,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L169",
     "description": "文字列で関数名を指定してシステム関数が存在するかを調べる"
   },
   {
@@ -18871,7 +18885,7 @@
       "gonako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L284",
     "description": "数値VをA桁の0で埋める"
   },
   {
@@ -18885,7 +18899,7 @@
       "gonako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/timer.go#L23",
     "description": "『秒毎』『秒後』や『秒タイマー開始』で開始したタイマーを停止する"
   },
   {
@@ -18899,7 +18913,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L103",
     "description": "DOMのテキストを取得"
   },
   {
@@ -18913,7 +18927,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L98",
     "description": "DOMのテキストにVを設定"
   },
   {
@@ -18927,7 +18941,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L220",
     "description": "テンポラリフォルダのパスを取得して返す"
   },
   {
@@ -18941,7 +18955,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L237",
     "description": "デスクトップパスを取得して返す"
   },
   {
@@ -18955,7 +18969,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L230",
     "description": "デバッグ用にSを表示する"
   },
   {
@@ -18969,7 +18983,7 @@
       "gonako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L197",
     "description": "文字列Sの前後にある空白を削除する"
   },
   {
@@ -18983,7 +18997,7 @@
       "gonako"
     ],
     "category": "ハッシュ",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L27",
     "description": "ハッシュAのキー一覧を配列で返す。"
   },
   {
@@ -18997,7 +19011,7 @@
       "gonako"
     ],
     "category": "ハッシュ",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L59",
     "description": "ハッシュAからキーKEYを削除して返す。"
   },
   {
@@ -19011,22 +19025,22 @@
       "gonako"
     ],
     "category": "ハッシュ",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L49",
     "description": "ハッシュAのキーKEYが存在するか確認"
   },
   {
     "type": "関数",
     "name": "ハッシュ値計算",
     "args": "AをBで/AのBの",
-    "yomi": "",
+    "yomi": "はっしゅちけいさん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "データSをアルゴリズムALG(sha256"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/crypto.go#L29",
+    "description": "データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す"
   },
   {
     "type": "関数",
@@ -19039,7 +19053,7 @@
       "gonako"
     ],
     "category": "ハッシュ",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L28",
     "description": "ハッシュAの内容一覧を配列で返す。"
   },
   {
@@ -19053,7 +19067,7 @@
       "gonako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/crypto.go#L20",
     "description": "利用可能なハッシュ関数の一覧を返す"
   },
   {
@@ -19067,7 +19081,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L49",
     "description": "『ハテナ関数設定』で設定した関数を実行する"
   },
   {
@@ -19081,7 +19095,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L252",
     "description": "ハテナ関数「?? (計算式)」の動作をカスタマイズする。文字列の配列を指定可能で、システム関数名か「js:code」を指定可能。"
   },
   {
@@ -19095,7 +19109,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L38",
     "description": "ファイルSをバイナリ(Buffer)として開く"
   },
   {
@@ -19109,22 +19123,22 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L173",
     "description": "ファイル名Sからパス部分を抽出して返す"
   },
   {
     "type": "関数",
     "name": "パス結合",
     "args": "Sと/Sを",
-    "yomi": "",
+    "yomi": "ぱすけつごう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『パス結合』を実行します"
+    "category": "ファイル入出力",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L193",
+    "description": "複数のパス断片をOS標準の区切り文字で結合して返す"
   },
   {
     "type": "関数",
@@ -19137,7 +19151,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L111",
     "description": "パスAをパスBへファイルコピーする(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書きコピー、それ以外はコピー先が存在するなら失敗)"
   },
   {
@@ -19151,7 +19165,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L119",
     "description": "パスAをパスBへファイルコピーしてcallbackを実行"
   },
   {
@@ -19165,7 +19179,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L141",
     "description": "パスPATHのファイルサイズを調べて返す"
   },
   {
@@ -19179,7 +19193,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L115",
     "description": "パスAをパスBへファイルコピーする(コピー先に内容をマージしてコピー)"
   },
   {
@@ -19193,7 +19207,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L84",
     "description": "パスAをパスBへ移動する(移動先に内容をマージしてコピー後、元を削除)"
   },
   {
@@ -19207,7 +19221,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L135",
     "description": "『ファイルコピー』『ファイル移動』などの処理を強制停止する"
   },
   {
@@ -19221,7 +19235,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L129",
     "description": "ファイルコピー・移動の処理状況をコールバックFで報告する(変数『対象』に{\"件数\":N,\"現在\":M}をセット)"
   },
   {
@@ -19235,7 +19249,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L167",
     "description": "パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。"
   },
   {
@@ -19249,7 +19263,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L58",
     "description": "パスPATHを削除する"
   },
   {
@@ -19263,7 +19277,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L62",
     "description": "パスPATHを削除してcallbackを実行"
   },
   {
@@ -19277,7 +19291,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L172",
     "description": "フルパスのファイル名Sからファイル名部分を抽出して返す"
   },
   {
@@ -19291,7 +19305,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L150",
     "description": "パスPATHの情報を調べてオブジェクトで返す"
   },
   {
@@ -19305,7 +19319,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L72",
     "description": "パスAをパスBへ移動する(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書き移動、それ以外は移動先が存在するなら失敗)"
   },
   {
@@ -19319,21 +19333,21 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L96",
     "description": "パスAをパスBへ移動してcallbackを実行"
   },
   {
     "type": "関数",
     "name": "ファイル選択",
     "args": "Sの",
-    "yomi": "",
+    "yomi": "ふぁいるせんたく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L192",
     "description": "指定した拡張子のファイルをOS標準ダイアログで選択してパスを返す"
   },
   {
@@ -19347,7 +19361,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L54",
     "description": "ディレクトリPATHを作成して返す(再帰的に作成)"
   },
   {
@@ -19361,21 +19375,21 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L50",
     "description": "ディレクトリPATHが存在するか確認して返す"
   },
   {
     "type": "関数",
     "name": "フォルダ選択",
     "args": "Sで/Sから/Sの",
-    "yomi": "",
+    "yomi": "ふぉるだせんたく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L200",
     "description": "指定したフォルダを開始位置としてOS標準ダイアログでフォルダを選択しパスを返す"
   },
   {
@@ -19389,7 +19403,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L94",
     "description": "属性OBJ{method:\"GET\",action:\"...\"}で項目一覧S「項目1=初期値1{改行}項目2=初期値2{改行}…」を送信フォームを作成しDOMオブジェクトを返す。「=?」でオプションの指定が可能"
   },
   {
@@ -19403,7 +19417,7 @@
       "gonako"
     ],
     "category": "DOM操作とイベント",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L187",
     "description": "無名関数Fでフォームを送信した時に実行するイベントを設定"
   },
   {
@@ -19417,7 +19431,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L191",
     "description": "ブラウザでURLを起動"
   },
   {
@@ -19431,7 +19445,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L322",
     "description": "利用中のプラグイン一覧を得る"
   },
   {
@@ -19445,7 +19459,7 @@
       "gonako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L277",
     "description": "プラグイン名をSに変更する(システムにより自動的に「メイン」あるいはプラグインのファイル名が呼ばれる)"
   },
   {
@@ -19459,7 +19473,7 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L122",
     "description": "Nodeで終了コードを付けてプログラム実行を強制終了する"
   },
   {
@@ -19473,7 +19487,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L230",
     "description": "ホームディレクトリを取得して返す"
   },
   {
@@ -19487,7 +19501,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L86",
     "description": "ラベルlabelを持つbutton要素を追加しDOMオブジェクトを返す"
   },
   {
@@ -19501,7 +19515,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L241",
     "description": "マイドキュメントのパスを取得して返す"
   },
   {
@@ -19515,7 +19529,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L325",
     "description": "取り込んだモジュール一覧を得る"
   },
   {
@@ -19529,7 +19543,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L78",
     "description": "textの値を持つラベル(span要素)を追加しDOMオブジェクトを返す"
   },
   {
@@ -19543,7 +19557,7 @@
       "gonako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/crypto.go#L58",
     "description": "ランダムに生成された36文字のv4 UUID(文字列)を返す"
   },
   {
@@ -19557,7 +19571,7 @@
       "gonako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/crypto.go#L71",
     "description": "暗号強度の強い乱数のバイト配列(Uint8Array)を指定個数返す"
   },
   {
@@ -19571,7 +19585,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L187",
     "description": "文字列VをCNT回繰り返す(v1非互換)"
   },
   {
@@ -19585,7 +19599,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L223",
     "description": "指定のフォルダに作業用の一時フォルダを作成して取得して返す"
   },
   {
@@ -19599,7 +19613,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L53",
     "description": "AがBと一致するか(配列や辞書も比較可能)"
   },
   {
@@ -19613,7 +19627,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L42",
     "description": "文字列または配列SにAと改行を追加して返す(v1非互換)"
   },
   {
@@ -19627,7 +19641,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L55",
     "description": "AがBと不一致か(配列や辞書も比較可能)"
   },
   {
@@ -19641,7 +19655,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L326",
     "description": "文法として定義されている予約語の一覧を取得する"
   },
   {
@@ -19655,7 +19669,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L41",
     "description": "Aを二乗する"
   },
   {
@@ -19669,7 +19683,7 @@
       "gonako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L74",
     "description": "メッセージSと[OK][キャンセル]のダイアログを出して尋ねる。戻り値はtrueかfalseのどちらかになる。"
   },
   {
@@ -19683,7 +19697,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L132",
     "description": "値Vを2進数に変換"
   },
   {
@@ -19697,7 +19711,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L135",
     "description": "値Vを2進数に変換して表示"
   },
   {
@@ -19711,7 +19725,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L23",
     "description": "現在時刻を「HH:mm:ss」の形式で返す"
   },
   {
@@ -19725,22 +19739,22 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L29",
     "description": "今年が何年かを西暦で返す"
   },
   {
     "type": "関数",
     "name": "今日",
     "args": "",
-    "yomi": "",
+    "yomi": "きょう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "今日の日付を「YYYY"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L26",
+    "description": "今日の日付を「YYYY/MM/DD」の形式で返す"
   },
   {
     "type": "関数",
@@ -19753,7 +19767,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L32",
     "description": "今月が何月かを返す"
   },
   {
@@ -19767,7 +19781,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L48",
     "description": "AがB以上か"
   },
   {
@@ -19781,7 +19795,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L49",
     "description": "AがB以下か"
   },
   {
@@ -19795,7 +19809,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L51",
     "description": "文字列SでAが何文字目にあるか調べて返す。見つからなければ0を返す。"
   },
   {
@@ -19809,7 +19823,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L211",
     "description": "カレントディレクトリを返す"
   },
   {
@@ -19823,7 +19837,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L218",
     "description": "カレントディレクトリをDIRに変更する"
   },
   {
@@ -19837,21 +19851,21 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L39",
     "description": "データSをファイルFヘ書き込む(文字コードはUTF-8)"
   },
   {
     "type": "関数",
     "name": "保存ファイル選択",
     "args": "Sの",
-    "yomi": "",
+    "yomi": "ほぞんふぁいるせんたく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L196",
     "description": "指定した拡張子の保存先をOS標準ダイアログで選択してパスを返す"
   },
   {
@@ -19865,7 +19879,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L16",
     "description": "AのB倍を求める"
   },
   {
@@ -19879,7 +19893,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L35",
     "description": "Aが偶数なら真を返す"
   },
   {
@@ -19893,7 +19907,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L34",
     "description": "先月が何月かを返す(1月の場合は12を返す)"
   },
   {
@@ -19907,7 +19921,7 @@
       "gonako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/timer.go#L26",
     "description": "『秒毎』『秒後』や『秒タイマー開始』で開始したタイマーを全部停止する"
   },
   {
@@ -19921,7 +19935,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L168",
     "description": "パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。"
   },
   {
@@ -19935,7 +19949,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L273",
     "description": "文字列Sの半角文字を全角に変換"
   },
   {
@@ -19949,7 +19963,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L175",
     "description": "文字列(配列)SにAが出現する場合に真を返す"
   },
   {
@@ -19963,7 +19977,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L122",
     "description": "文字列SにAが何回出現するか数える"
   },
   {
@@ -19977,7 +19991,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L69",
     "description": "時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -19991,7 +20005,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L150",
     "description": "文字列Sから文字列Aまでの部分を抽出する。切り取った残りは特殊変数『対象』に代入される。(v1非互換)"
   },
   {
@@ -20005,7 +20019,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L14",
     "description": "AをBで割る"
   },
   {
@@ -20019,7 +20033,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L15",
     "description": "AをBで割った余りを求める"
   },
   {
@@ -20033,7 +20047,7 @@
       "gonako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L329",
     "description": "文法として定義されている助詞の一覧を取得する"
   },
   {
@@ -20047,7 +20061,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L133",
     "description": "文字列Sを区切り文字Aで区切って配列で返す"
   },
   {
@@ -20061,7 +20075,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L277",
     "description": "文字列Sの全角文字を半角に変換"
   },
   {
@@ -20075,7 +20089,7 @@
       "gonako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L130",
     "description": "文字列Sのうち、最初に出現するAだけをBに置換して返す"
   },
   {
@@ -20089,22 +20103,22 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L31",
     "description": "去年が何年かを西暦で返す"
   },
   {
     "type": "関数",
     "name": "参照",
     "args": "AからBを/Aの",
-    "yomi": "",
+    "yomi": "さんしょう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "値A(配列"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L213",
+    "description": "値A(配列/文字列/辞書型)の範囲I(キーまたは範囲オブジェクト)を参照して(コピーせず)返す"
   },
   {
     "type": "関数",
@@ -20117,7 +20131,7 @@
       "gonako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L204",
     "description": "文字列Sの末尾にある空白を削除する"
   },
   {
@@ -20131,7 +20145,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L61",
     "description": "引数(可変)に指定した値を全て合計して返す"
   },
   {
@@ -20145,7 +20159,7 @@
       "gonako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L292",
     "description": "システム利用のため呼ぶべからず。(名前空間を一つ前の値に戻す)"
   },
   {
@@ -20159,7 +20173,7 @@
       "gonako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L281",
     "description": "名前空間をSに設定する(システムにより自動的に変更される。ファイル名から拡張子を削ったもの)"
   },
   {
@@ -20173,22 +20187,22 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L64",
     "description": "Sを和暦に変換する。Sは明治以降の日付が有効。"
   },
   {
     "type": "関数",
     "name": "圧縮",
     "args": "AをBへ/AからBに/Bで",
-    "yomi": "",
+    "yomi": "あっしゅく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "(v1非互換)ファイルAをBにZIP圧縮(実行には7-Zipが必要-https:"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/zip.go#L15",
+    "description": "(v1非互換)ファイルAをBにZIP圧縮(実行には7-Zipが必要-https://7-zip.opensource.jp/ )"
   },
   {
     "type": "関数",
@@ -20201,7 +20215,7 @@
       "gonako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/zip.go#L54",
     "description": "圧縮処理を行い完了したときにcallback処理を指定"
   },
   {
@@ -20215,7 +20229,7 @@
       "gonako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/zip.go#L45",
     "description": "圧縮解凍に使うツールを取得変更する"
   },
   {
@@ -20229,7 +20243,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L105",
     "description": "変数Vの型を返す"
   },
   {
@@ -20243,7 +20257,7 @@
       "gonako"
     ],
     "category": "DOM操作とイベント",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L182",
     "description": "無名関数FでDOMを変更した時に実行するイベントを設定"
   },
   {
@@ -20257,7 +20271,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L229",
     "description": "アルファベットの文字列Sを大文字に変換"
   },
   {
@@ -20271,7 +20285,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L38",
     "description": "Aが奇数なら真を返す"
   },
   {
@@ -20285,7 +20299,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L42",
     "description": "ファイルPATHが存在するか確認して返す"
   },
   {
@@ -20299,7 +20313,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L99",
     "description": "値Vを実数に変換"
   },
   {
@@ -20313,7 +20327,7 @@
       "gonako"
     ],
     "category": "特殊命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L173",
     "description": "無名関数（あるいは、文字列で関数名を指定）Fを実行する(Fが関数でなければ無視する)"
   },
   {
@@ -20327,7 +20341,7 @@
       "gonako"
     ],
     "category": "特殊命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L214",
     "description": "関数Fを実行して要した時間をミリ秒で返す"
   },
   {
@@ -20341,7 +20355,7 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L25",
     "description": "標準入力を一行取得する"
   },
   {
@@ -20355,7 +20369,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L232",
     "description": "アルファベットの文字列Sを小文字に変換"
   },
   {
@@ -20369,7 +20383,7 @@
       "gonako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L201",
     "description": "文字列Sの先頭にある空白を削除する"
   },
   {
@@ -20383,7 +20397,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L235",
     "description": "文字列Sのカタカナをひらがなに変換"
   },
   {
@@ -20397,7 +20411,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L65",
     "description": "日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -20411,22 +20425,22 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L13",
     "description": "AからBを引く"
   },
   {
     "type": "関数",
     "name": "強制終了",
     "args": "Sで/Sの",
-    "yomi": "",
+    "yomi": "きょうせいしゅうりょう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『強制終了』を実行します"
+    "category": "Nodeプロセス",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L117",
+    "description": "指定した終了コードで即座にプロセスを終了する"
   },
   {
     "type": "関数",
@@ -20439,7 +20453,7 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L124",
     "description": "Nodeでctrl+cでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010)"
   },
   {
@@ -20453,7 +20467,7 @@
       "gonako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L303",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -20467,7 +20481,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L90",
     "description": "ファイル名Aの拡張子をBに変更して返す"
   },
   {
@@ -20481,7 +20495,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L174",
     "description": "ファイル名Sから拡張子を抽出する"
   },
   {
@@ -20495,7 +20509,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L17",
     "description": "AにBを掛ける"
   },
   {
@@ -20509,7 +20523,7 @@
       "gonako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L314",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -20523,7 +20537,7 @@
       "gonako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L115",
     "description": "文字列S全部が数字か判定"
   },
   {
@@ -20537,7 +20551,7 @@
       "gonako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L210",
     "description": "文字列Sの1文字目が数字か判定"
   },
   {
@@ -20551,7 +20565,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L96",
     "description": "値Vを整数に変換"
   },
   {
@@ -20565,7 +20579,7 @@
       "gonako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/encoding.go#L20",
     "description": "文字コードCODEをサポートしているか確認"
   },
   {
@@ -20579,7 +20593,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L141",
     "description": "文字列Sを区切り文字Aで分割して配列で返す"
   },
   {
@@ -20593,7 +20607,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L19",
     "description": "文字列Vを一文字ずつに分解して返す"
   },
   {
@@ -20607,7 +20621,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L102",
     "description": "値Vを文字列に変換"
   },
   {
@@ -20621,7 +20635,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L27",
     "description": "引数(可変)に指定した文字列を連結して文字列を返す"
   },
   {
@@ -20635,7 +20649,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L107",
     "description": "文字列SのA文字目からB文字分を削除して返す"
   },
   {
@@ -20649,7 +20663,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L87",
     "description": "文字列Sの右端からCNT文字を抽出する"
   },
   {
@@ -20663,7 +20677,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L116",
     "description": "文字列SがAから始まるならば真を返す"
   },
   {
@@ -20677,7 +20691,7 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L53",
     "description": "標準入力を一行取得する。ただし自動で数値に変換しない"
   },
   {
@@ -20691,22 +20705,22 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L82",
     "description": "文字列Sの左端からCNT文字を抽出する"
   },
   {
     "type": "関数",
     "name": "文字抜き出",
     "args": "AでBからCを/AのC",
-    "yomi": "",
+    "yomi": "もじぬきだし",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『文字抜き出』を実行します"
+    "category": "文字列処理",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L80",
+    "description": "文字列SのA文字目からCNT文字を抽出する(Aが0未満の時は後ろからA文字目からCNT文字を抽出)(『文字抜出』の別名)"
   },
   {
     "type": "関数",
@@ -20719,7 +20733,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L64",
     "description": "文字列SのA文字目からCNT文字を抽出する(Aが0未満の時は後ろからA文字目からCNT文字を抽出)"
   },
   {
@@ -20733,7 +20747,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L96",
     "description": "文字列SのI文字目に文字列Aを挿入する"
   },
   {
@@ -20747,7 +20761,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L16",
     "description": "文字列Vの文字数を返す"
   },
   {
@@ -20761,7 +20775,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L54",
     "description": "文字列SでA文字目から文字列Bを検索。見つからなければ0を返す。(類似命令に『何文字目』がある)(v1非互換)"
   },
   {
@@ -20775,22 +20789,22 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L119",
     "description": "文字列SがAで終わるならば真を返す"
   },
   {
     "type": "関数",
     "name": "日付加算",
     "args": "AにBを",
-    "yomi": "",
+    "yomi": "ひづけかさん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "日付SにAを加えて返す。Aには「(+｜-)yyyy"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L75",
+    "description": "日付SにAを加えて返す。Aには「(+｜-)yyyy/mm/dd」で指定する。"
   },
   {
     "type": "関数",
@@ -20803,7 +20817,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L67",
     "description": "日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -20817,22 +20831,22 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L76",
     "description": "日時SにAを加えて返す。Aは「(+｜-)1(年/ヶ月/日/週/時間/分/秒)」のように指定する (v1非互換)。"
   },
   {
     "type": "関数",
     "name": "日時変換",
     "args": "Sを/Sから",
-    "yomi": "",
+    "yomi": "にちじへんかん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "UNIX時間 (UTC(1970"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L59",
+    "description": "UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換"
   },
   {
     "type": "関数",
@@ -20845,50 +20859,50 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L71",
     "description": "日時AとBの差を種類unitで返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
     "type": "関数",
     "name": "日時書式変換",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "にちじしょしきへんかん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "UNIX時間TM(または日付文字列)を「YYYY"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L63",
+    "description": "UNIX時間TM(または日付文字列)を「YYYY/MM/DD HH:mm:ss」または「YY-M-D H:m:s」その他、W:曜日、WWW:曜日英、MMM:月英、ccc:ミリ秒の書式に変換"
   },
   {
     "type": "関数",
     "name": "明日",
     "args": "",
-    "yomi": "",
+    "yomi": "あした",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "明日の日付を「YYYY"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L27",
+    "description": "明日の日付を「YYYY/MM/DD」の形式で返す"
   },
   {
     "type": "関数",
     "name": "昨日",
     "args": "",
-    "yomi": "",
+    "yomi": "きのう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "昨日の日付を「YYYY"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L28",
+    "description": "昨日の日付を「YYYY/MM/DD」の形式で返す"
   },
   {
     "type": "関数",
@@ -20901,7 +20915,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L41",
     "description": "ミリ秒単位の時間を数値で返す。結果は実装に依存する。"
   },
   {
@@ -20915,7 +20929,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L74",
     "description": "時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。"
   },
   {
@@ -20929,7 +20943,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L68",
     "description": "時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -20943,22 +20957,22 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L42",
     "description": "Sに指定した日付の曜日を返す。不正な日付の場合は今日の曜日を返す。"
   },
   {
     "type": "関数",
     "name": "曜日番号取得",
     "args": "Sの",
-    "yomi": "",
+    "yomi": "ようびばんごうしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "Sに指定した日付の曜日番号を番号で返す。不正な日付の場合は今日の曜日番号を返す。(0=日"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L50",
+    "description": "Sに指定した日付の曜日番号を番号で返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土)"
   },
   {
     "type": "関数",
@@ -20971,7 +20985,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L64",
     "description": "2個以上の数値のうち最大値を返す。"
   },
   {
@@ -20985,7 +20999,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L66",
     "description": "2個以上の数値のうち最小値を返す。"
   },
   {
@@ -20999,7 +21013,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L66",
     "description": "日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -21013,7 +21027,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L50",
     "description": "AがB未満か"
   },
   {
@@ -21027,7 +21041,7 @@
       "gonako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L207",
     "description": "文字列Sの末尾にある空白を削除する"
   },
   {
@@ -21041,7 +21055,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L30",
     "description": "来年が何年かを西暦で返す"
   },
   {
@@ -21055,7 +21069,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L33",
     "description": "来月が何月かを返す(12月の場合は1を返す)"
   },
   {
@@ -21069,7 +21083,7 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L76",
     "description": "標準入力を全部取得して返す"
   },
   {
@@ -21083,36 +21097,36 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L92",
     "description": "標準入力を一行取得した時に、変数『対象』に取得した文字列を代入し、無名関数（あるいは、文字列で関数名を指定）F(s: string)を実行する"
   },
   {
     "type": "関数",
     "name": "正規表現マッチ",
     "args": "AをBで/AがBに",
-    "yomi": "",
+    "yomi": "せいきひょうげんまっち",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "正規表現",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/regexp.go#L20",
+    "description": "文字列Aを正規表現パターンBでマッチして結果を返す(パターンBは「/pat/opt」の形式で指定。optにgの指定がなければ部分マッチが『抽出文字列』に入る)"
   },
   {
     "type": "関数",
     "name": "正規表現区切",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "せいきひょうげんくぎる",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "正規表現",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "文字列Sを正規表現パターンAで区切って配列で返す(パターンAは"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/regexp.go#L98",
+    "description": "文字列Sを正規表現パターンAで区切って配列で返す(パターンAは/pat/optで指定)"
   },
   {
     "type": "関数",
@@ -21125,22 +21139,22 @@
       "gonako"
     ],
     "category": "正規表現",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/regexp.go#L45",
     "description": "文字列Sを正規表現パターンREで正規表現マッチし、すべてのキャプチャグループ( )を一次元配列として返す。抽出文字列には二次元配列を返す"
   },
   {
     "type": "関数",
     "name": "正規表現置換",
     "args": "AのBをCで/BからCに/Cへ",
-    "yomi": "",
+    "yomi": "せいきひょうげんちかん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "正規表現",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "文字列Sの正規表現パターンAをBに置換して結果を返す(パターンAは"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/regexp.go#L90",
+    "description": "文字列Sの正規表現パターンAをBに置換して結果を返す(パターンAは/pat/optで指定)"
   },
   {
     "type": "関数",
@@ -21153,7 +21167,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L245",
     "description": "スクリプトのあるディレクトリを返す"
   },
   {
@@ -21167,7 +21181,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L172",
     "description": "要素DOMにフォーカスする(カーソルを移動する)"
   },
   {
@@ -21181,7 +21195,7 @@
       "gonako"
     ],
     "category": "環境変数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L155",
     "description": "環境変数の一覧を返す"
   },
   {
@@ -21195,232 +21209,232 @@
       "gonako"
     ],
     "category": "環境変数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L151",
     "description": "環境変数Sを返す"
   },
   {
     "type": "関数",
     "name": "画像リサイズ",
     "args": "Sに/Sへ",
-    "yomi": "",
+    "yomi": "がぞうりさいず",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像リサイズ』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L99",
+    "description": "現在の画像を指定サイズ [幅, 高さ] に拡大縮小する"
   },
   {
     "type": "関数",
     "name": "画像保存",
     "args": "Sへ/Sに",
-    "yomi": "",
+    "yomi": "がぞうほぞん",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "グラフィック",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L75",
     "description": "現在の画像をPNG/JPEGファイルへ保存する"
   },
   {
     "type": "関数",
     "name": "画像円描画",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "がぞうえんびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像円描画』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L93",
+    "description": "画像上の指定中心座標と半径で円を指定色で描画する"
   },
   {
     "type": "関数",
     "name": "画像切替",
     "args": "Sに/Sへ",
-    "yomi": "",
+    "yomi": "がぞうきりかえ",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像切替』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L72",
+    "description": "操作対象の画像をハンドルで切り替える"
   },
   {
     "type": "関数",
     "name": "画像幅取得",
     "args": "",
-    "yomi": "",
+    "yomi": "がぞうはばしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像幅取得』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L102",
+    "description": "現在の画像の幅をピクセル単位で返す"
   },
   {
     "type": "関数",
     "name": "画像文字描画",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "がぞうもじびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "グラフィック",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L96",
     "description": "画像上の指定位置にテキストを描画する"
   },
   {
     "type": "関数",
     "name": "画像新規作成",
     "args": "Sの/Sで",
-    "yomi": "",
+    "yomi": "がぞうしんきさくせい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "グラフィック",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L66",
     "description": "指定サイズ [幅, 高さ] の新しいRGBA画像キャンバスを作成する"
   },
   {
     "type": "関数",
     "name": "画像点取得",
     "args": "Sの/Sから",
-    "yomi": "",
+    "yomi": "がぞうてんしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像点取得』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L84",
+    "description": "画像上の指定座標 [X, Y] の色を取得して返す"
   },
   {
     "type": "関数",
     "name": "画像点設定",
     "args": "AをBに/Bへ",
-    "yomi": "",
+    "yomi": "がぞうてんせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像点設定』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L81",
+    "description": "画像上の指定座標 [X, Y] に指定色でドットを打つ"
   },
   {
     "type": "関数",
     "name": "画像矩形描画",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "がぞうくけいびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "グラフィック",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L90",
     "description": "画像上の指定矩形 [X, Y, 幅, 高さ] を指定色で塗りつぶす"
   },
   {
     "type": "関数",
     "name": "画像線描画",
     "args": "AをBで",
-    "yomi": "",
+    "yomi": "がぞうせんびょうが",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像線描画』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L87",
+    "description": "画像上に開始座標から終了座標まで直線を指定色で描画する"
   },
   {
     "type": "関数",
     "name": "画像背景色設定",
     "args": "Sに/Sへ/Sで",
-    "yomi": "",
+    "yomi": "がぞうはいけいしょくせってい",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像背景色設定』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L78",
+    "description": "現在の画像全体を指定色で塗りつぶす"
   },
   {
     "type": "関数",
     "name": "画像閉",
     "args": "",
-    "yomi": "",
+    "yomi": "がぞうとじる",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像閉』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L111",
+    "description": "現在の画像のハンドルを閉じる"
   },
   {
     "type": "関数",
     "name": "画像開",
     "args": "Sを/Sの/Sから",
-    "yomi": "",
+    "yomi": "がぞうひらく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "グラフィック",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L69",
     "description": "画像ファイル (PNG/JPEG/GIF) を読み込んでキャンバスを作成する"
   },
   {
     "type": "関数",
     "name": "画像高さ取得",
     "args": "",
-    "yomi": "",
+    "yomi": "がぞうたかさしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像高さ取得』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L108",
+    "description": "現在の画像の高さをピクセル単位で返す(『画像高取得』の別名)"
   },
   {
     "type": "関数",
     "name": "画像高取得",
     "args": "",
-    "yomi": "",
+    "yomi": "がぞうたかしゅとく",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『画像高取得』を実行します"
+    "category": "画像",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L105",
+    "description": "現在の画像の高さをピクセル単位で返す"
   },
   {
     "type": "関数",
@@ -21433,7 +21447,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L183",
     "description": "ファイル名AからパスBを展開して返す"
   },
   {
@@ -21447,7 +21461,7 @@
       "gonako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L108",
     "description": "引数bが真(true)ならば「真」を偽(false)ならば「偽」を返す"
   },
   {
@@ -21461,7 +21475,7 @@
       "gonako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L319",
     "description": "(お遊び)敬語を何度使ったか返す"
   },
   {
@@ -21475,7 +21489,7 @@
       "gonako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/timer.go#L21",
     "description": "無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『秒毎』と同じ)"
   },
   {
@@ -21489,7 +21503,7 @@
       "gonako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L70",
     "description": "時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -21503,7 +21517,7 @@
       "gonako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/timer.go#L14",
     "description": "N秒の間待機する"
   },
   {
@@ -21517,7 +21531,7 @@
       "gonako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/timer.go#L17",
     "description": "N秒の間待機する(『秒待』と同じ)"
   },
   {
@@ -21531,7 +21545,7 @@
       "gonako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/timer.go#L19",
     "description": "無名関数（あるいは、文字列で関数名を指定）FをN秒後に実行する。変数『対象』にタイマーIDを代入する。"
   },
   {
@@ -21545,7 +21559,7 @@
       "gonako"
     ],
     "category": "タイマー",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/timer.go#L20",
     "description": "無名関数（あるいは、文字列で関数名を指定）FをN秒ごとに実行する(『タイマー停止』で停止できる)。変数『対象』にタイマーIDを代入する。"
   },
   {
@@ -21559,7 +21573,7 @@
       "gonako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L93",
     "description": "空のオブジェクトを返す(v3.2以降非推奨)"
   },
   {
@@ -21573,7 +21587,7 @@
       "gonako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L92",
     "description": "空のハッシュを返す(v3.2以降非推奨)"
   },
   {
@@ -21587,7 +21601,7 @@
       "gonako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L285",
     "description": "文字列VをA桁の空白で埋める"
   },
   {
@@ -21601,7 +21615,7 @@
       "gonako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L200",
     "description": "文字列Sの前後にある空白を削除する"
   },
   {
@@ -21615,7 +21629,7 @@
       "gonako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L89",
     "description": "空の辞書型を返す。『{}』と同義。"
   },
   {
@@ -21629,7 +21643,7 @@
       "gonako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L86",
     "description": "空の配列を返す。『[]』と同義。"
   },
   {
@@ -21643,7 +21657,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L52",
     "description": "AがBと等しいか"
   },
   {
@@ -21657,7 +21671,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L54",
     "description": "AがBと等しくないか"
   },
   {
@@ -21671,7 +21685,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L80",
     "description": "AからBの範囲を表現する範囲オブジェクトを返す"
   },
   {
@@ -21685,7 +21699,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L56",
     "description": "VがAからBの範囲内か"
   },
   {
@@ -21699,7 +21713,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L160",
     "description": "文字列Sで文字列AからBまでの部分を抽出して返す。切り取った残りは特殊変数『対象』に代入される。(v1非互換)"
   },
   {
@@ -21713,7 +21727,7 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L115",
     "description": "Nodeでプログラム実行を強制終了する"
   },
   {
@@ -21727,7 +21741,7 @@
       "gonako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L111",
     "description": "Nodeでプログラム実行を強制終了する"
   },
   {
@@ -21741,7 +21755,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L75",
     "description": "フォルダ名DIRの末尾にあるパス記号を削除する"
   },
   {
@@ -21755,7 +21769,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L57",
     "description": "パスSの終端にパス区切り文字を追加して返す"
   },
   {
@@ -21769,7 +21783,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/url.go#L68",
     "description": "フォルダ名DIRの末尾にあるパス記号を削除する"
   },
   {
@@ -21783,7 +21797,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L175",
     "description": "相対パスから絶対パスに変換して返す"
   },
   {
@@ -21797,7 +21811,7 @@
       "gonako"
     ],
     "category": "標準出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L29",
     "description": "Sを改行なしで表示(ただし「表示」命令を使うことで画面出力される)"
   },
   {
@@ -21811,7 +21825,7 @@
       "gonako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L126",
     "description": "文字列Sのうち文字列AをBに全部置換して返す"
   },
   {
@@ -21825,7 +21839,7 @@
       "gonako"
     ],
     "category": "ネットワーク",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L40",
     "description": "ネットワークアダプターからIPアドレス(IPv6)を取得して配列で返す"
   },
   {
@@ -21839,7 +21853,7 @@
       "gonako"
     ],
     "category": "ネットワーク",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L25",
     "description": "ネットワークアダプターからIPアドレス(IPv4)を取得して配列で返す"
   },
   {
@@ -21853,7 +21867,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L237",
     "description": "文字列Sの半角英数文字を全角に変換"
   },
   {
@@ -21867,7 +21881,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L243",
     "description": "文字列Sの全角英数文字を半角に変換"
   },
   {
@@ -21881,7 +21895,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L249",
     "description": "文字列Sの半角英数記号文字を全角に変換"
   },
   {
@@ -21895,7 +21909,7 @@
       "gonako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L258",
     "description": "文字列Sの記号文字を半角に変換"
   },
   {
@@ -21909,7 +21923,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L292",
     "description": "二次元配列AでB列目(0起点)(あるいはキー名)をキーに文字列順にソートする。Aの内容を書き換える。"
   },
   {
@@ -21923,7 +21937,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L294",
     "description": "配列Aの列番号B(0起点)(あるいはキー名)で検索文字列Sを含む行を返す"
   },
   {
@@ -21937,7 +21951,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L393",
     "description": "二次元配列Aの(0から数えて)I列目削除して返す"
   },
   {
@@ -21951,7 +21965,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L362",
     "description": "二次元配列AのI列目を返す。"
   },
   {
@@ -21965,7 +21979,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L408",
     "description": "二次元配列Aの(0から数えて)I列目を合計して返す。"
   },
   {
@@ -21979,7 +21993,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L374",
     "description": "二次元配列Aの(0から数えて)I列目に配列Sを挿入して返す"
   },
   {
@@ -21993,7 +22007,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L311",
     "description": "二次元配列Aの列数を調べて返す。"
   },
   {
@@ -22007,7 +22021,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L338",
     "description": "二次元配列Aを90度回転して返す。"
   },
   {
@@ -22021,7 +22035,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L297",
     "description": "配列Aの列番号B(0起点)(あるいはキー名)で検索文字列Sと一致する行を返す"
   },
   {
@@ -22035,7 +22049,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L293",
     "description": "二次元配列AでB列目(0起点)(あるいはキー名)をキーに数値順にソートする。Aの内容を書き換える。"
   },
   {
@@ -22049,7 +22063,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L419",
     "description": "二次元配列AのROW行目からCOL列目(0起点)で正規表現Sにマッチする行を検索して何行目にあるか返す。見つからなければ-1を返す。(v1非互換)"
   },
   {
@@ -22063,7 +22077,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L298",
     "description": "二次元配列AでCOL列目(0起点)からキーSを含む行をROW行目から検索して何行目にあるか返す。見つからなければ-1を返す。"
   },
   {
@@ -22077,7 +22091,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L436",
     "description": "二次元配列AでI列目(0起点)から正規表現パターンSにマッチする行をピックアップして返す。"
   },
   {
@@ -22091,7 +22105,7 @@
       "gonako"
     ],
     "category": "標準出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L25",
     "description": "Sを表示"
   },
   {
@@ -22105,7 +22119,7 @@
       "gonako"
     ],
     "category": "標準出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L65",
     "description": "表示ログを空にする"
   },
   {
@@ -22119,7 +22133,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L331",
     "description": "二次元配列Aの行と列を交換して返す。"
   },
   {
@@ -22133,7 +22147,7 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L324",
     "description": "二次元配列Aの行数を調べて返す。"
   },
   {
@@ -22147,36 +22161,36 @@
       "gonako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L345",
     "description": "二次元配列AのI列目にある重複項目を削除して返す。"
   },
   {
     "type": "関数",
     "name": "要素数",
     "args": "Sの",
-    "yomi": "",
+    "yomi": "ようそすう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "Aの要素数を返す。Aには配列"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L17",
+    "description": "Aの要素数を返す。Aには配列/辞書型/文字列を指定する。"
   },
   {
     "type": "関数",
     "name": "解凍",
     "args": "AをBへ/AからBに/Bで",
-    "yomi": "",
+    "yomi": "かいとう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "(v1非互換)ZIPファイルAをBに解凍(実行には7-Zipが必要-https:"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/zip.go#L30",
+    "description": "(v1非互換)ZIPファイルAをBに解凍(実行には7-Zipが必要-https://7-zip.opensource.jp/ )"
   },
   {
     "type": "関数",
@@ -22189,7 +22203,7 @@
       "gonako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/zip.go#L73",
     "description": "解凍処理を行い、処理が完了したときにcallback処理を実行"
   },
   {
@@ -22203,7 +22217,7 @@
       "gonako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L50",
     "description": "メッセージダイアログにSを表示"
   },
   {
@@ -22217,7 +22231,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L37",
     "description": "ファイFSを開く"
   },
   {
@@ -22231,7 +22245,7 @@
       "gonako"
     ],
     "category": "論理演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L77",
     "description": "AとBの論理積を返す(v1非互換)。日本語の「AかつB」に相当する"
   },
   {
@@ -22245,7 +22259,7 @@
       "gonako"
     ],
     "category": "論理演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L83",
     "description": "値Vが0や空ならばtrue、それ以外ならばfalseを返す(v1非互換)"
   },
   {
@@ -22259,7 +22273,7 @@
       "gonako"
     ],
     "category": "論理演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L71",
     "description": "AとBの論理和を返す(v1非互換)。"
   },
   {
@@ -22273,7 +22287,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L177",
     "description": "シェルコマンドSを起動"
   },
   {
@@ -22287,7 +22301,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L175",
     "description": "シェルコマンドSを起動し実行終了まで待機する"
   },
   {
@@ -22301,7 +22315,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L179",
     "description": "シェルコマンドSを起動"
   },
   {
@@ -22315,7 +22329,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L51",
     "description": "AがB超か"
   },
   {
@@ -22329,7 +22343,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L71",
     "description": "AとBを足す(算術演算を行う)"
   },
   {
@@ -22343,7 +22357,7 @@
       "gonako"
     ],
     "category": "辞書型変数の操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L15",
     "description": "辞書型変数Aのキーの一覧を配列で返す。"
   },
   {
@@ -22357,7 +22371,7 @@
       "gonako"
     ],
     "category": "辞書型変数の操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L51",
     "description": "辞書型変数AからキーKEYを削除して返す（A自体を変更する）。"
   },
   {
@@ -22371,7 +22385,7 @@
       "gonako"
     ],
     "category": "辞書型変数の操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/dict.go#L41",
     "description": "辞書型変数AのキーKEYが存在するか確認"
   },
   {
@@ -22385,22 +22399,22 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L35",
     "description": "文字列または配列SにAを追加して返す(v1非互換)"
   },
   {
     "type": "関数",
     "name": "追記",
     "args": "AをBに/Bへ",
-    "yomi": "",
+    "yomi": "ついき",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
-    "category": "命令",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "命令『追記』を実行します"
+    "category": "ファイル入出力",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L40",
+    "description": "文字列Aをファイルパスの末尾に追記する"
   },
   {
     "type": "関数",
@@ -22413,7 +22427,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L90",
     "description": "ラベルSの送信ボタン(input[type='submit'])を作成しDOMオブジェクトを返す"
   },
   {
@@ -22427,7 +22441,7 @@
       "gonako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L214",
     "description": "数値Vを三桁ごとにカンマで区切る"
   },
   {
@@ -22441,7 +22455,7 @@
       "gonako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L34",
     "description": "引数(可変)に指定した文字列を連結して文字列を返す"
   },
   {
@@ -22455,7 +22469,7 @@
       "gonako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L62",
     "description": "A1+A2+A3...にBを足す"
   },
   {
@@ -22469,7 +22483,7 @@
       "gonako"
     ],
     "category": "標準出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L41",
     "description": "引数に指定した引数を全て表示する（改行しない)"
   },
   {
@@ -22483,7 +22497,7 @@
       "gonako"
     ],
     "category": "標準出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L33",
     "description": "引数に指定した引数を全て表示する"
   },
   {
@@ -22497,7 +22511,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L125",
     "description": "値VをN進数に変換"
   },
   {
@@ -22511,7 +22525,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L263",
     "description": "関数Fで配列Aをソートして返す(引数A自体を変更)"
   },
   {
@@ -22525,7 +22539,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L148",
     "description": "配列Aをシャッフルして返す。Aを書き換える"
   },
   {
@@ -22539,7 +22553,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L116",
     "description": "配列Aをソートして返す(A自体を変更)"
   },
   {
@@ -22553,7 +22567,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L256",
     "description": "引数を1つ持ち真偽を返す関数Fを利用して、配列Aの要素をフィルタして、新しい配列として返す。"
   },
   {
@@ -22567,7 +22581,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L63",
     "description": "配列Aの末尾にNを追加。Aの内容を書き換える。(『配列追加』と同じ)"
   },
   {
@@ -22581,7 +22595,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L65",
     "description": "配列Aの末尾を取り出して返す。Aの内容を書き換える。"
   },
   {
@@ -22595,7 +22609,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L249",
     "description": "引数を1つ持つ関数Fを、配列Aの全要素に適用した、新しい配列を返す。(『配列関数適用』と同じ)"
   },
   {
@@ -22609,7 +22623,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L87",
     "description": "配列AのI番目(0起点)に配列bを追加して返す(v1非互換)"
   },
   {
@@ -22623,7 +22637,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L235",
     "description": "配列Aの(0から数えて)I番目とJ番目の要素を入れ替えて返す。Aの内容を書き換える。"
   },
   {
@@ -22637,7 +22651,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L112",
     "description": "配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。引数Iには範囲オブジェクトを指定できる。その場合戻り値は配列型となる。辞書型変数ならキーIを削除する。"
   },
   {
@@ -22651,22 +22665,22 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L109",
     "description": "配列AのI番目(0起点)の要素を削除して返す。Aの内容を書き換える。辞書型変数ならキーIを削除する。"
   },
   {
     "type": "関数",
     "name": "配列参照",
     "args": "AのBを/Aから",
-    "yomi": "",
+    "yomi": "はいれつはんいさんしょう",
     "plugin": "gonako",
     "group": "拡張プラグイン",
     "target": [
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
-    "description": "値A(配列"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L216",
+    "description": "値A(配列/文字列/辞書型)の範囲I(キーまたは範囲オブジェクト)を参照して(コピーせず)返す(『参照』と同じ)"
   },
   {
     "type": "関数",
@@ -22679,7 +22693,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L100",
     "description": "配列AのI番目(0起点)からCNT個の要素を取り出して返す。Aの内容を書き換える"
   },
   {
@@ -22693,7 +22707,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L35",
     "description": "配列Aの要素をただ結合して文字列で返す。(「」で配列結合と同じ)"
   },
   {
@@ -22707,7 +22721,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L170",
     "description": "配列Aの値を全て足して返す。配列の各要素を数値に変換して計算する。数値に変換できない文字列は0になる。"
   },
   {
@@ -22721,7 +22735,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L78",
     "description": "配列AのI番目(0起点)に要素Sを追加して返す(v1非互換)"
   },
   {
@@ -22735,7 +22749,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L128",
     "description": "配列Aをソートして返す(A自体を変更)"
   },
   {
@@ -22749,7 +22763,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L138",
     "description": "配列Aの各要素を数値に変換して返す(変数A自体を変更)"
   },
   {
@@ -22763,7 +22777,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L184",
     "description": "配列Aの値の最大値を調べて返す。"
   },
   {
@@ -22777,7 +22791,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L185",
     "description": "配列Aの値の最小値を調べて返す。"
   },
   {
@@ -22791,7 +22805,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L39",
     "description": "配列Aから文字列Sを探してインデックス番号(0起点)を返す。見つからなければ-1を返す。"
   },
   {
@@ -22805,7 +22819,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L206",
     "description": "配列Aの範囲I(数値化範囲オブジェクト)を複製して返す。"
   },
   {
@@ -22819,7 +22833,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L23",
     "description": "配列Aを文字列Sでつなげて文字列で返す"
   },
   {
@@ -22833,7 +22847,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L203",
     "description": "配列Aを複製して返す。"
   },
   {
@@ -22847,7 +22861,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L199",
     "description": "値AをB個持つ配列を生成して返す。引数Bに配列を指定すると二次元以上の配列を生成する。"
   },
   {
@@ -22861,7 +22875,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L20",
     "description": "配列Aの要素数を返す"
   },
   {
@@ -22875,7 +22889,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L217",
     "description": "配列Aに配列Bを足し合わせて返す。"
   },
   {
@@ -22889,7 +22903,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L55",
     "description": "配列Aの末尾にBを追加して返す。Aの内容を書き換える。"
   },
   {
@@ -22903,7 +22917,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L159",
     "description": "配列Aを逆にして返す。Aを書き換える(A自体を変更)。"
   },
   {
@@ -22917,7 +22931,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L189",
     "description": "AからBまでの連番配列を生成して返す。"
   },
   {
@@ -22931,7 +22945,7 @@
       "gonako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L254",
     "description": "引数を1つ持つ関数Fを、配列Aの全要素に適用した、新しい配列を返す。"
   },
   {
@@ -22945,7 +22959,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L36",
     "description": "ファイルFを開く"
   },
   {
@@ -22959,7 +22973,7 @@
       "gonako"
     ],
     "category": "型変換",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L118",
     "description": "値Vが非数かどうかを判定(NAN判定より堅牢)"
   }
 ]

@@ -18,7 +18,7 @@
         「[INFO] gonakoの命令一覧が見つからないためスキップします: {GONAKOFILE}」を表示。
         Sで戻る。
     ここまで。
-    SRC_URL＝「https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json」
+    DEFAULT_URL＝「https://github.com/kujirahand/nadesiko3go/blob/master/cmd/gonako-gui/ui/command-list.json」
     OUT＝「」
     エラー監視
         RAW＝GONAKOFILEを開いてJSONデコード。
@@ -42,7 +42,11 @@
             もし、(C['yomi']の変数型確認)≠「undefined」ならば
                 YOMI＝「{C['yomi']}」
             ここまで。
-            OUT＝OUT&「| 関数 | {NAME} | {ARGS} | {DESC} | {YOMI} | {SRC_URL}」&改行。
+            URL＝DEFAULT_URL
+            もし、(C['url']の変数型確認)≠「undefined」かつ(C['url']≠「」)ならば
+                URL＝「{C['url']}」
+            ここまで。
+            OUT＝OUT&「| 関数 | {NAME} | {ARGS} | {DESC} | {YOMI} | {URL}」&改行。
         ここまで。
     エラーならば
         「[エラー] gonakoの命令一覧を読み込めません: {エラーメッセージ} ({GONAKOFILE})」を表示。
