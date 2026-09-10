@@ -171,7 +171,7 @@ class EasyURLDispather {
     let url: string = ('' + rawUrl).replace(/\.\./g, '') // URLの..を許可しない
     url = url.substring(it.url.length)
     let fpath = path.join(it.path, url)
-    console.error('FILE=', fpath)
+    console.error(`${HTTPSERVER_LOGID} FILE=${fpath}`)
     if (!fs.existsSync(fpath)) {
       this.return404(res)
       return true
@@ -179,7 +179,7 @@ class EasyURLDispather {
     // ディレクトリなら index.html を確認
     if (isDir(fpath)) {
       fpath = path.join(fpath, 'index.html')
-      console.error('FILE(DIR)=', fpath)
+      console.error(`${HTTPSERVER_LOGID} FILE(DIR)=${fpath}`)
       if (!fs.existsSync(fpath)) {
         this.return404(res)
         return true
@@ -487,7 +487,7 @@ const PluginHttpServer = {
       if (dp.curRes === null) {
         throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
       }
-      console.error(HTTPSERVER_LOGID, '移動=', url)
+      console.error(`${HTTPSERVER_LOGID} 移動=${url}`)
       dp.curRes.writeHead(302, { 'Location': url })
       dp.curRes.end(`<html><body><a href="${url}">JUMP</a></body></html>`)
       dp.isEnd = true
