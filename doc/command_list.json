@@ -2604,7 +2604,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L544",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L550",
     "description": "文字列Sの全角カタカナを半角に変換"
   },
   {
@@ -2620,7 +2620,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L567",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L573",
     "description": "文字列Sの半角文字を全角に変換"
   },
   {
@@ -2636,7 +2636,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L578",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L584",
     "description": "文字列Sの全角文字を半角に変換"
   },
   {
@@ -2652,7 +2652,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L585",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L591",
     "value": "'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」'"
   },
   {
@@ -2668,8 +2668,8 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L586",
-    "value": "'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ'"
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L592",
+    "value": "'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴ'"
   },
   {
     "type": "定数",
@@ -2684,7 +2684,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L587",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L593",
     "value": "'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ'"
   },
   {
@@ -2700,8 +2700,8 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L588",
-    "value": "'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ'"
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L594",
+    "value": "'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟｳﾞ'"
   },
   {
     "type": "関数",
@@ -2716,7 +2716,7 @@
       "phpnako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L595",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L601",
     "description": "数値Vを三桁ごとにカンマで区切る"
   },
   {
@@ -2732,7 +2732,7 @@
       "phpnako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L603",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L609",
     "description": "数値VをA桁の0で埋める"
   },
   {
@@ -2748,7 +2748,7 @@
       "phpnako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L619",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L625",
     "description": "文字列VをA桁の空白で埋める"
   },
   {
@@ -2764,7 +2764,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L637",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L643",
     "description": "文字列Sの1文字目がひらがなか判定"
   },
   {
@@ -2780,7 +2780,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L646",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L652",
     "description": "文字列Sの1文字目がカタカナか判定"
   },
   {
@@ -2796,7 +2796,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L655",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L661",
     "description": "文字列Sの1文字目が数字か判定"
   },
   {
@@ -2812,7 +2812,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L664",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L670",
     "description": "文字列S全部が数字か判定"
   },
   {
