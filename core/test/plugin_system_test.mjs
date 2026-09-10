@@ -500,6 +500,9 @@ describe('plugin_system_test', async () => {
     await cmp('「https://nadesi.com/p#frag?a=1」のURLパラメータ解析してJSONエンコードして表示', '{}')
     await cmp('「https://nadesi.com/?=x」のURLパラメータ解析;それ[""]を表示。', 'x')
     await cmp('「https://nadesi.com/?&」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    // URLパラメータ解析はクエリ解析のため+を空白に変換する(URLデコードは変換しない)
+    await cmp('「+」をURLデコードして表示', '+')
+    await cmp('「?x=+」のURLパラメータ解析;それ["x"]をVに代入;「A{V}B」を表示。', 'A B')
     await cmp('「https://nadesi.com/?__proto__=x」のURLパラメータ解析してJSONエンコードして表示', '{"__proto__":"x"}')
   })
   it('助詞省略形のコマンド', async () => {
