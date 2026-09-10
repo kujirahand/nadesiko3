@@ -2573,7 +2573,7 @@
     ],
     "category": "文字変換",
     "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L498",
-    "description": "文字列Sの記号文字を半角に変換"
+    "description": "文字列Sの全角英数記号文字を半角に変換"
   },
   {
     "type": "関数",
