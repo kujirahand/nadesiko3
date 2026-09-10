@@ -45,8 +45,12 @@ const PluginKansuji = {
         if (Number.isNaN(Number(input))) { throw new Error('『漢数字』命令の中に無効な文字が含まれています。') }
         const output = if_number_is_exponent(input)
         // 符号を除いた整数部で大きさを判定する
-        const intDigits = output.replace(/^[-+]/, '').match(/^[0-9]+/)
+        const abs = output.replace(/^[-+]/, '')
+        const intDigits = abs.match(/^[0-9]+/)
         if (intDigits && BigInt(intDigits[0]) > 漢数字最大値) { throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。') }
+        // 小数部も同じ桁数制限を適用する (指数表記と小数リテラルで挙動を揃える)
+        const fracDigits = abs.split('.')[1]
+        if (fracDigits !== undefined && fracDigits.replace(/0+$/, '').length > 漢数字最大桁数) { throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。') }
         return output
       }
       input = preprocesser(String(input))
