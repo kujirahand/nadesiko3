@@ -504,6 +504,10 @@ describe('plugin_system_test', async () => {
     await cmp('「+」をURLデコードして表示', '+')
     await cmp('「?x=+」のURLパラメータ解析;それ["x"]をVに代入;「A{V}B」を表示。', 'A B')
     await cmp('「https://nadesi.com/?__proto__=x」のURLパラメータ解析してJSONエンコードして表示', '{"__proto__":"x"}')
+    await cmp('「https://nadesi.com/?hasOwnProperty=x」のURLパラメータ解析;それ["hasOwnProperty"]を表示。', 'x')
+    await cmp('「https://nadesi.com/?constructor=x」のURLパラメータ解析;それ["constructor"]を表示。', 'x')
+    // hasOwnPropertyキーを含む辞書でも反復処理が動作する
+    await cmp('「https://nadesi.com/?hasOwnProperty=x&a=1」のURLパラメータ解析してAに代入。Aを反復\n対象キーを表示\nここまで', 'hasOwnProperty\na')
   })
   it('助詞省略形のコマンド', async () => {
     await cmp('3が1以上。もし、そうなら「OK」と表示。', 'OK')

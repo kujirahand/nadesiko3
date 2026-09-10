@@ -214,6 +214,8 @@ describe('plugin_httpserver_test', () => {
     // __proto__でObject.prototypeが汚染されないこと
     assert.strictEqual(({}).x, undefined)
     assert.strictEqual(Object.prototype.x, undefined)
+    // hasOwnProperty等のObject.prototype由来のキーでもクラッシュしない
+    assert.strictEqual(await request('/hello?hasOwnProperty=x&constructor=y&token=a'), 'a|undefined|undefined|/hello')
   })
 
   it('POSTメソッドでファイルをアップロードしてFILESデータを取得できること', async () => {
