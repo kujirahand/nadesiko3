@@ -52,7 +52,7 @@ class EasyURLDispather {
     // HTTPメソッド(GET/POST/PUT/DELETEなど)を設定
     const method = String(req.method || '').toUpperCase()
     this.sys.__setSysVar('HTTPメソッド', method)
-    console.log(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
+    console.error(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
     const params = this.parseURL(req.url)
     const url = params['?URL']
     this.sys.__setSysVar('GETデータ', params)
@@ -169,7 +169,7 @@ class EasyURLDispather {
     let url: string = ('' + rawUrl).replace(/\.\./g, '') // URLの..を許可しない
     url = url.substring(it.url.length)
     let fpath = path.join(it.path, url)
-    console.log('FILE=', fpath)
+    console.error('FILE=', fpath)
     if (!fs.existsSync(fpath)) {
       this.return404(res)
       return true
@@ -177,7 +177,7 @@ class EasyURLDispather {
     // ディレクトリなら index.html を確認
     if (isDir(fpath)) {
       fpath = path.join(fpath, 'index.html')
-      console.log('FILE(DIR)=', fpath)
+      console.error('FILE(DIR)=', fpath)
       if (!fs.existsSync(fpath)) {
         this.return404(res)
         return true
@@ -397,7 +397,7 @@ const PluginHttpServer = {
       })
       // サーバ起動
       dp.server.listen(port, () => {
-        console.log(`${HTTPSERVER_LOGID} ポート番号(${port})で監視開始`)
+        console.error(`${HTTPSERVER_LOGID} ポート番号(${port})で監視開始`)
         if (typeof callback === 'string') { callback = sys.__findFunc(callback) }
         callback(sys)
       })
@@ -485,7 +485,7 @@ const PluginHttpServer = {
       if (dp.curRes === null) {
         throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
       }
-      console.log(HTTPSERVER_LOGID, '移動=', url)
+      console.error(HTTPSERVER_LOGID, '移動=', url)
       dp.curRes.writeHead(302, { 'Location': url })
       dp.curRes.end(`<html><body><a href="${url}">JUMP</a></body></html>`)
       dp.isEnd = true
