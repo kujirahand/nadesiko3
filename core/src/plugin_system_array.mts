@@ -79,13 +79,21 @@ export default {
     type: 'func',
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: true,
-    fn: function(a: any, i: number, b: any) {
+    fn: function(a: any, i: any, b: any) {
       if (a instanceof Array && b instanceof Array) { // 配列ならOK
-        for (let j = 0; j < b.length; j++) { a.splice(i + j, 0, b[j]) }
+        let pos = Number(i) // i が数値文字列でも i + j が文字列連結にならないようにする
+        if (Number.isNaN(pos)) { pos = 0 } // 数値に変換できない場合(「abc」等)は先頭に挿入する
+        // 自己挿入・別名参照でも無限ループしないよう、挿入元の要素列を先に固定する (#2470)
+        const n = b.length
+        const src = Array.from({ length: n })
+        for (let k = 0; k < n; k++) { src[k] = b[k] }
+        // i+j を splice ごとに再評価する既存仕様(負インデックスで結果が変わる)と
+        // 引数個数制限回避のため、要素ごとの splice を維持する
+        for (let j = 0; j < src.length; j++) { a.splice(pos + j, 0, src[j]) }
 
         return a
       }
-      throw new Error('『配列一括挿入』で配列以外の要素への挿入。')
+      throw new Error('『配列一括挿入』の引数が配列ではありません。')
     }
   },
   '配列ソート': { // @配列Aをソートして返す(A自体を変更) // @はいれつそーと
