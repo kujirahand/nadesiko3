@@ -10928,7 +10928,7 @@
     ],
     "category": "フォルダ取得",
     "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L945",
-    "description": "指定のフォルダに作業用の一時フォルダを作成して取得して返す"
+    "description": "指定のフォルダ(省略または空白時はOSのテンポラリフォルダ)の配下に作業用の一時フォルダを作成して取得して返す"
   },
   {
     "type": "関数",
