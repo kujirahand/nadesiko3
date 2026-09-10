@@ -102,11 +102,16 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
       txt = txt.substring(m[0].length)
       continue
     }
-    // "" ... blank data
-    if (txt.substring(0, 2) === '""') {
-      cells.push('')
-      txt = txt.substring(2)
-      continue
+    // "" ... 空引用符フィールドか、Excel方言の空セルかを判定する (#2476)
+    if (txt.length >= 3 && txt.charAt(1) === '"') {
+      const next = txt.charAt(2)
+      // 直後が区切り・改行・引用符のいずれでもなければ、Excel方言の空セルとして扱う
+      if (next !== delimiter && next !== '\n' && next !== '"') {
+        cells.push('')
+        txt = txt.substring(2)
+        continue
+      }
+      // それ以外は空引用符フィールドとして、通常の引用フィールド解析に任せる
     }
     // "..."
     let i = 1; let s = ''

@@ -21,6 +21,30 @@ describe('plugin_csv_test', () => {
     await cmp('a=「1,,3\n4,5,6」のCSV取得。a[0][2]を表示', '3')
     await cmp('a=「1,2,3,\n4,5,6」のCSV取得。a[1][0]を表示', '4') // #353
   })
+  it('引用符付き空セルが余分な列を作らない #2476', async () => {
+    // "" は空セル1列のみ
+    await cmp('a=「""」のCSV取得。aをJSONエンコードして表示', '[[""]]')
+    await cmp('a=「""」のCSV取得。要素数(a[0])を表示', '1')
+    // "",x は2列(空,x)
+    await cmp('a=「"",x」のCSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「"",x」のCSV取得。a[0][1]を表示', 'x')
+    // "","" は2列(空,空)
+    await cmp('a=「"",""」のCSV取得。aをJSONエンコードして表示', '[["",""]]')
+    await cmp('a=「"",""」のCSV取得。要素数(a[0])を表示', '2')
+    // """",x は2列(エスケープされた引用符1文字,x)
+    await cmp('a=「"""",x」のCSV取得。aをJSONエンコードして表示', '[["\\"","x"]]')
+    await cmp('a=「"""",x」のCSV取得。a[0][0]を表示', '"')
+    // TSVでも同様
+    await cmp('a=「""\t"x"」のTSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「""\t""」のTSV取得。要素数(a[0])を表示', '2')
+    // 行中・行末の空引用符フィールド
+    await cmp('a=「a,"",b」のCSV取得。aをJSONエンコードして表示', '[["a","","b"]]')
+    await cmp('a=「x,""」のCSV取得。aをJSONエンコードして表示', '[["x",""]]')
+    // Excel方言の空セルが従来どおり維持されること
+    await cmp('a=「""a,b,c」のCSV取得。aをJSONエンコードして表示', '[["","a","b","c"]]')
+    await cmp('a=「a,""b,c」のCSV取得。aをJSONエンコードして表示', '[["a","","b","c"]]')
+    await cmp('a=「a,b,c""」のCSV取得。aをJSONエンコードして表示', '[["a","b","c\\"\\""]]')
+  })
   it('TSV取得', async () => {
     await cmp('a=「1\t2\t3\n4\t5\t6」のTSV取得。a[1][2]を表示', '6')
     await cmp('a=「"a"\tb\tc\n""a\tb\tc\na\t""b\tc\na\tb\tc""\n"a\t\nb"\tc\td\na\t"b\t\nc"\td\na\tb\t"c\t\nd"」のTSV取得。a[5][1]を表示', 'b\t\nc')
@@ -46,7 +70,7 @@ describe('plugin_csv_test', () => {
     await cmp('a=「3.14,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'number')
     await cmp('a=「2010.1.5,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'string')
   })
-  it('「2024.01.01」のような日付形式が実数として誤判定する #1910', async () => {
+  it('「2024.01.01」のような日付形式が実数として誤判定する #1910（auto_convert_numberをOFF）', async () => {
     await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'string')
     await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。a[0][0]を表示', '2024.01')
   })
