@@ -16,17 +16,6 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const testFileMe = path.join(__dirname, 'plugin_node_test.mjs')
 
-async function cmp(/** @type {string} */code, /** @type {string} */res, /** @type {number} */ms=10) {
-  // (原則) EvalやFunctionの中で行う非同期処理は、その中で行うこと！
-  // @see https://qiita.com/kujirahand/items/880917172bb0de8d30b9
-  const nako = new NakoCompiler()
-  nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
-  nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-  const g = await nako.runAsync(code, 'main')
-  await forceWait(ms)
-  assert.strictEqual(g.log, res) // 強制的に指定ミリ秒待つ
-  return g
-}
 // 強制的にミリ秒待機
 function forceWait(/** @type {number} */ms) {
   return /** @type {Promise<void>} */(new Promise((resolve, reject) => {
@@ -34,11 +23,26 @@ function forceWait(/** @type {number} */ms) {
   }));
 }
 
-const cmd = async (/** @type {string} */ code) => {
+// コードを実行して実行結果(g)を返す
+async function run(/** @type {string} */code, /** @type {number} */ms=10) {
+  // (原則) EvalやFunctionの中で行う非同期処理は、その中で行うこと！
+  // @see https://qiita.com/kujirahand/items/880917172bb0de8d30b9
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-  await nako.runAsync(code, 'main')
+  const g = await nako.runAsync(code, 'main')
+  await forceWait(ms)
+  return g
+}
+
+async function cmp(/** @type {string} */code, /** @type {string} */res, /** @type {number} */ms=10) {
+  const g = await run(code, ms)
+  assert.strictEqual(g.log, res)
+  return g
+}
+
+const cmd = async (/** @type {string} */ code) => {
+  await run(code)
 }
 function get7zPath() {
   if (process.platform === 'linux') { // Linuxならパスを調べる
@@ -59,16 +63,6 @@ function get7zPath() {
 
 function makeTmpDir(/** @type {string} */prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix))
-}
-
-// コードを実行して表示結果(文字列)を返す
-async function run(/** @type {string} */code, /** @type {number} */ms=10) {
-  const nako = new NakoCompiler()
-  nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
-  nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-  const g = await nako.runAsync(code, 'main')
-  await forceWait(ms)
-  return g.log
 }
 
 describe('plugin_node_test', () => {
@@ -135,29 +129,29 @@ describe('plugin_node_test', () => {
       // 指定したフォルダの配下に作成されること (#2490)
       const base = makeTmpDir('nako3-ichiji-')
       created.push(base)
-      let result = await run(`「${base}」へ一時フォルダ作成して表示。`)
+      let result = (await run(`「${base}」へ一時フォルダ作成して表示。`)).log
       created.push(result)
       assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
       assert.ok(fs.statSync(result).isDirectory(), `作成されたのはフォルダ: ${result}`)
       assert.ok(path.basename(result).startsWith('nako-'), `作成名のprefixはnako-: ${result}`)
       assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(base))
       // 末尾に区切り文字があっても同じフォルダの配下に作成されること
-      result = await run(`「${base}${path.sep}」へ一時フォルダ作成して表示。`)
+      result = (await run(`「${base}${path.sep}」へ一時フォルダ作成して表示。`)).log
       created.push(result)
       assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
       assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(base))
       // 引数を省略した場合はOSのテンポラリフォルダの配下に作成されること
-      result = await run('一時フォルダ作成して表示。')
+      result = (await run('一時フォルダ作成して表示。')).log
       created.push(result)
       assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
       assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(os.tmpdir()))
       // 空白だけのパスは既定(OSのテンポラリフォルダ)として扱うこと
-      result = await run('「   」へ一時フォルダ作成して表示。')
+      result = (await run('「   」へ一時フォルダ作成して表示。')).log
       created.push(result)
       assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
       assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(os.tmpdir()))
       // 前後に空白があるパスは空白を除いて扱うこと
-      result = await run(`「  ${base}  」へ一時フォルダ作成して表示。`)
+      result = (await run(`「  ${base}  」へ一時フォルダ作成して表示。`)).log
       created.push(result)
       assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
       assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(base))
