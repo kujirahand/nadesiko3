@@ -54,8 +54,6 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    // 先頭の?より前の部分は破棄し、?以降をクエリ文字列として解析する。値の中の?や=は保持し、
-    // #以降はフラグメントとして切り捨てる。+は空白に、不正なpercentは生の文字列のまま返す。
     fn: function(url: string) {
       if (typeof url !== 'string') {
         return {}
