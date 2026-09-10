@@ -6,6 +6,32 @@
  */
 import { NakoSystem } from './plugin_api.mjs'
 
+/** クエリ文字列を解析して辞書を返す。
+ * URLSearchParams により、`&`区切り・最初の`=`で分割し、`+`は空白に変換する。
+ * 非16進のpercentエンコーディングは生の文字列のまま保持する。
+ * 無効なUTF-8シーケンスは環境によりU+FFFD(置換文字)に置換される場合がある。
+ * 重複するキーは最後の値で上書きする。
+ * `__proto__`はsetter経由でprototypeが変更されるのを防ぎ、他のキーは通常通り格納する。
+ */
+export function parseQueryString(query: string): { [key: string]: string } {
+  const res: { [key: string]: string } = {}
+  const sp = new URLSearchParams(query)
+  for (const [key, val] of sp.entries()) {
+    if (key === '__proto__') {
+      // __proto__はsetterが働くためdefinePropertyで安全に設定する
+      Object.defineProperty(res, key, {
+        value: val,
+        enumerable: true,
+        writable: true,
+        configurable: true
+      })
+    } else {
+      res[key] = val
+    }
+  }
+  return res
+}
+
 export default {
   // @URLエンコードとパラメータ
   'URLエンコード': { // @URLエンコードして返す // @URLえんこーど
@@ -28,33 +54,20 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function(url: string, sys: any) {
-      const res: any = {}
+    // 先頭の?より前の部分は破棄し、?以降をクエリ文字列として解析する。値の中の?や=は保持し、
+    // #以降はフラグメントとして切り捨てる。+は空白に、不正なpercentは生の文字列のまま返す。
+    fn: function(url: string) {
       if (typeof url !== 'string') {
-        return res
+        return {}
       }
-      const p = url.split('?')
-      if (p.length <= 1) {
-        return res
+      // #以降はフラグメントとして扱うため、#より前に?がある場合のみクエリとして解析する
+      const hashIdx = url.indexOf('#')
+      const base = hashIdx >= 0 ? url.substring(0, hashIdx) : url
+      const qi = base.indexOf('?')
+      if (qi < 0) {
+        return {}
       }
-      const params = p[1].split('&')
-      for (const line of params) {
-        if (line === '') { continue }
-        const eqIdx = line.indexOf('=')
-        let k: string
-        let v: string
-        if (eqIdx < 0) {
-          k = line
-          v = ''
-        } else {
-          k = line.substring(0, eqIdx)
-          v = line.substring(eqIdx + 1)
-        }
-        const decodedKey = sys.__exec('URLデコード', [k])
-        const decodedVal = sys.__exec('URLデコード', [v])
-        res[decodedKey] = decodedVal
-      }
-      return res
+      return parseQueryString(base.substring(qi + 1))
     }
   },
 

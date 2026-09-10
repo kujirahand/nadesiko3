@@ -3,6 +3,7 @@ import fs from 'fs'
 import http from 'http'
 import path from 'path'
 import os from 'os'
+import { parseQueryString } from '../core/src/plugin_system_url.mjs'
 
 // 定数
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
@@ -217,20 +218,15 @@ class EasyURLDispather {
   }
 
   parseURL(uri: string): any {
-    const params: any = {}
-    if (uri.indexOf('?') >= 0) {
-      const a = uri.split('?')
-      params['?URL'] = a[0]
-      const q = String(a[1]).split('&')
-      for (const kv of q) {
-        const qq = kv.split('=')
-        const key = decodeURIComponent(qq[0])
-        const val = decodeURIComponent(qq[1])
-        params[key] = val
-      }
-    } else {
-      params['?URL'] = uri
-    }
+    // #以降はフラグメントとして扱うため、#より前に?がある場合のみクエリとして解析する
+    const hashIdx = uri.indexOf('#')
+    const base = hashIdx >= 0 ? uri.substring(0, hashIdx) : uri
+    const qi = base.indexOf('?')
+    const rawPath = qi >= 0 ? base.substring(0, qi) : base
+    const query = qi >= 0 ? base.substring(qi + 1) : ''
+    const params = parseQueryString(query)
+    // ?URL はクエリパラメータで上書きされないよう最後に設定する
+    params['?URL'] = rawPath
     return params
   }
 }
