@@ -275,7 +275,8 @@ export class CNako3 extends NakoCompiler {
       'plugin_system_array.mjs', 'plugin_system_datetime.mjs', 'plugin_system_url.mjs',
       'plugin_system_types.mjs', 'plugin_system_json.mjs', 'plugin_system_regexp.mjs', 'plugin_system_dict.mjs',
       'plugin_system_stdio.mjs', 'plugin_system_timer.mjs',
-      'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs']
+      'plugin_math.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_csv.mjs', 'nako_csv.mjs',
+      'url_util.mjs']
     for (const mod of baseFiles) {
       fs.copyFileSync(path.join(srcDir, mod), path.join(outRuntime, mod))
     }

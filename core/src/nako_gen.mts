@@ -1389,7 +1389,7 @@ export class NakoGen {
       `  ${loopDataVar} = tmp;\n` +
       '}\n' +
       `for (let ${loopKeyVar} in ${loopDataVar}) {\n` +
-      `  if (!${loopDataVar}.hasOwnProperty(${loopKeyVar})) { continue }\n` +
+      `  if (!Object.prototype.hasOwnProperty.call(${loopDataVar}, ${loopKeyVar})) { continue }\n` +
       '  // 対象キーの設定\n' +
       `  ${keySetter}\n` +
       '  // 対象の設定\n' +
