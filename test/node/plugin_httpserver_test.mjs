@@ -168,8 +168,13 @@ describe('plugin_httpserver_test', () => {
   G=GETデータ
   「{G["token"]}|{G["flag"]}|{G["next"]}|{G["?URL"]}」を簡易HTTPサーバ出力。
 ここまで。
+●プロト確認
+  G=GETデータ
+  「{G["__proto__"]}|{G["?URL"]}」を簡易HTTPサーバ出力。
+ここまで。
 「ダミー起動」を${port}で簡易HTTPサーバ起動時。
 「受信処理」を「/hello」に簡易HTTPサーバ受信時。
+「プロト確認」を「/proto」に簡易HTTPサーバ受信時。
 `
     const g = await nako.runAsync(code, 'main')
     serverDp = g.__httpserver
@@ -204,6 +209,8 @@ describe('plugin_httpserver_test', () => {
     assert.strictEqual(await request('/hello?token=%ZZ&flag&next=x'), '%ZZ||x|/hello')
     // 特殊キー__proto__でもクラッシュせず、?URLはパスで上書きされる
     assert.strictEqual(await request('/hello?__proto__=x&%3FURL=/evil&token=a'), 'a|undefined|undefined|/hello')
+    // __proto__は値として取得でき、?URLはリクエストのパスが維持されること
+    assert.strictEqual(await request('/proto?__proto__=x&%3FURL=/evil&token=a'), 'x|/proto')
     // __proto__でObject.prototypeが汚染されないこと
     assert.strictEqual(({}).x, undefined)
     assert.strictEqual(Object.prototype.x, undefined)

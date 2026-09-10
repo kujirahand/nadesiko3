@@ -3,7 +3,7 @@ import fs from 'fs'
 import http from 'http'
 import path from 'path'
 import os from 'os'
-import { parseQueryString } from '../core/src/plugin_system_url.mjs'
+import { parseQueryString } from '../core/src/url_util.mjs'
 
 // 定数
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
@@ -52,6 +52,8 @@ class EasyURLDispather {
     // HTTPメソッド(GET/POST/PUT/DELETEなど)を設定
     const method = String(req.method || '').toUpperCase()
     this.sys.__setSysVar('HTTPメソッド', method)
+    // 診断ログはstdoutではなくstderrへ出力する(Node.js test runner #64061 で
+    // 子プロセスのstdoutがIPCメッセージ枠組みと競合する問題があるため)
     console.error(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
     const params = this.parseURL(req.url)
     const url = params['?URL']
