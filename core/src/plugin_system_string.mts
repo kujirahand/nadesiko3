@@ -512,21 +512,27 @@ export default {
       const han1 = sys.__getSysVar('半角カナ一覧')
       const zen2 = sys.__getSysVar('全角カナ濁音一覧')
       const han2 = sys.__getSysVar('半角カナ濁音一覧')
+      // 濁音・半濁音は、変換表に含まれる2文字ペアでのみ全角1文字に変換する
+      const zen2Map = new Map<string, string>()
+      for (let k = 0; k + 1 < han2.length; k += 2) {
+        const zen = zen2.charAt(k / 2)
+        if (zen !== '') { zen2Map.set(han2.substring(k, k + 2), zen) }
+      }
       let str = ''
       let i = 0
       while (i < s.length) {
-        // 濁点の変換
-        const c2 = s.substring(i, i + 2)
-        const n2 = (c2.length === 2) ? han2.indexOf(c2) : -1
-        if (n2 >= 0) {
-          str += zen2.charAt(n2 / 2)
+        // 濁点の変換(有効な2文字ペアのみ)
+        const z2 = zen2Map.get(s.substring(i, i + 2))
+        if (z2 !== undefined) {
+          str += z2
           i += 2
           continue
         }
         // 濁点以外の変換
         const c = s.charAt(i)
         const n = han1.indexOf(c)
-        if (n >= 0) {
+        // 対応する全角文字がない単独の濁点・半濁点などは、そのまま残す
+        if (n >= 0 && n < zen1.length) {
           str += zen1.charAt(n)
           i++
           continue
@@ -583,9 +589,9 @@ export default {
     }
   },
   '全角カナ一覧': { type: 'const', value: 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」' }, // @ぜんかくかないちらん
-  '全角カナ濁音一覧': { type: 'const', value: 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ' }, // @ぜんかくかなだくおんいちらん
+  '全角カナ濁音一覧': { type: 'const', value: 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴ' }, // @ぜんかくかなだくおんいちらん
   '半角カナ一覧': { type: 'const', value: 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ' }, // @はんかくかないちらん
-  '半角カナ濁音一覧': { type: 'const', value: 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ' }, // @はんかくかなだくおんいちらん
+  '半角カナ濁音一覧': { type: 'const', value: 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟｳﾞ' }, // @はんかくかなだくおんいちらん
 
   // @指定形式
   '通貨形式': { // @数値Vを三桁ごとにカンマで区切る // @つうかけいしき
