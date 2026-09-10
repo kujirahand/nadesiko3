@@ -17,8 +17,8 @@ export function resetEnv(): void {
   options.auto_convert_number = true
 }
 
-/// 文字列が数値化どうか判定する関数
- 
+/** 文字列が数値かどうか判定する関数 */
+
 function is_numeric(str: string): boolean {
   return /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(str)
 }
@@ -149,7 +149,8 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
 }
 
 // convert 2D array to CSV string
-export function stringify(ary: string[][], delimiter: string|undefined = undefined, eol: string|undefined = undefined): string {
+export function stringify(ary: (string|number)[][]|undefined, delimiter: string|undefined = undefined, eol: string|undefined = undefined): string {
+  if (ary === undefined) return ''
   // check arguments
   if (delimiter === undefined) {
     delimiter = options.delimiter
@@ -158,17 +159,15 @@ export function stringify(ary: string[][], delimiter: string|undefined = undefin
     eol = options.eol
   }
   const valueConv = genValueConverter(delimiter)
-  if (ary === undefined) return ''
   let r = ''
   for (let i = 0; i < ary.length; i++) {
     const cells = ary[i]
     if (cells === undefined) {
       r += eol; continue
     }
-    for (let j = 0; j < cells.length; j++) {
-      cells[j] = valueConv(cells[j])
-    }
-    r += cells.join(delimiter) + eol
+    // map では疎配列の穴がスキップされるため Array.from を使用する（元配列は書き換えない）
+    const converted = Array.from(cells, valueConv)
+    r += converted.join(delimiter) + eol
   }
   // replace return code
   r = r.replace(/(\r\n|\r|\n)/g, eol)
@@ -182,17 +181,17 @@ export function replaceEolMark(eol: string): string {
   return eol
 }
 
-function genValueConverter(delimiter: string) {
-  return function(s: string) {
-    s = '' + s
-    let fQuot = false
-    if (s.indexOf('\n') >= 0 || s.indexOf('\r') >= 0) { fQuot = true }
-    if (s.indexOf(delimiter) >= 0) { fQuot = true }
-    if (s.indexOf('"') >= 0) {
-      fQuot = true
-      s = s.replace(/"/g, '""')
+function genValueConverter(delimiter: string): (s: string|number|undefined) => string {
+  return function(s: string|number|undefined) {
+    let v = '' + s
+    let needsQuote = false
+    if (v.indexOf('\n') >= 0 || v.indexOf('\r') >= 0) { needsQuote = true }
+    if (v.indexOf(delimiter) >= 0) { needsQuote = true }
+    if (v.indexOf('"') >= 0) {
+      needsQuote = true
+      v = v.replace(/"/g, '""')
     }
-    if (fQuot) s = '"' + s + '"'
-    return s
+    if (needsQuote) v = '"' + v + '"'
+    return v
   }
 }
