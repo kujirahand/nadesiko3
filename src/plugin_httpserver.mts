@@ -219,7 +219,7 @@ class EasyURLDispather {
     this.items.push(it)
   }
 
-  parseURL(uri: string): any {
+  parseURL(uri: string): { [key: string]: string } {
     // #以降はフラグメントとして扱うため、#より前に?がある場合のみクエリとして解析する
     const hashIdx = uri.indexOf('#')
     const base = hashIdx >= 0 ? uri.substring(0, hashIdx) : uri

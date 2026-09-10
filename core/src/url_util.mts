@@ -14,7 +14,8 @@
  */
 export function parseQueryString(query: string): { [key: string]: string } {
   // Object.create(null)ではなく通常のObjectを使う理由:
-  // なでしこ3の反復構文(各〜で)はObject.prototype.hasOwnPropertyを呼ぶため、nullプロトタイプでは動かない。
+  // なでしこ3の内部処理や命令(JSONエンコード等)がObject.prototypeのメソッドを
+  // 呼ぶ可能性があるため、nullプロトタイプだと予期しない失敗が起こりうる。
   const res: { [key: string]: string } = {}
   const sp = new URLSearchParams(query)
   for (const [key, val] of sp.entries()) {
