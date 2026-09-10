@@ -38,6 +38,7 @@ export interface NakoSystem {
   __formatTime (t: Date): string;
   __str2date(s: string): Date;
   __parseFloatOrBigint(v: NakoValue): number | bigint;
+  __incValue(a: NakoValue, b: NakoValue, isDec: boolean): number | bigint; // 増減文の加算/減算 (増減対象がbigintなら精度を保ち、isDecなら減算) (#2488)
   __evalJS(code: string, sys?: NakoSystem): NakoValue;
   __evalSafe(code: string): NakoValue;
   josiList: string[];

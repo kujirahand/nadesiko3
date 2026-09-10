@@ -14,8 +14,10 @@ describe('calc_test.js', async () => {
       await nako.runAsync(code, 'main.nako3')
     } catch (err) {
       assert.strictEqual(errorType, err.type)
-      assert.strictEqual(err.msg.indexOf(partOfErrorStr) >= 0, true)
+      assert.ok(err.msg.includes(partOfErrorStr), '実際のメッセージ: ' + err.msg)
+      return
     }
+    assert.fail('エラーが発生しませんでした: ' + code)
   }
   it('basic', async () => {
     await cmp('3を表示', '3')
@@ -255,6 +257,62 @@ describe('calc_test.js', async () => {
     await cmp('-1234567890123456789n*-9876543219876543210nを表示', '12193263124676116323609205901126352690')
 
     await cmp('a=1234567890123456789n;a*-9876543219876543210nを表示', '-12193263124676116323609205901126352690')
+  })
+
+  it('bigint単項マイナスと増減文(#2488)', async () => {
+    // 単項マイナスはBigIntでも型混在エラーにならず、BigIntを保つ
+    await cmp('A=123456789012345678901234567890n;(-A)を表示', '-123456789012345678901234567890')
+    await cmp('A=1n;(-A)の変数型確認して表示', 'bigint')
+    await cmp('(-3n)の変数型確認して表示', 'bigint')
+    await cmp('-(1n)の変数型確認して表示', 'bigint')
+    await cmp('A=-5n;(-A)を表示', '5')
+    // 通常の数値の単項マイナスは従来どおり動作する
+    await cmp('A=5;(-A)を表示', '-5')
+    await cmp('(-5)を表示', '-5')
+    await cmp('-(5)を表示', '-5')
+    await cmp('A=5;-(A)を表示', '-5')
+    await cmp('(-"5")を表示', '-5')
+    // 単項マイナスの 0 は負のゼロ(-0)として評価される
+    await cmp('A=0;(1/(-A))を表示', '-Infinity')
+    await cmp('A=-0;(1/A)を表示', '-Infinity')
+    // 増減文は増減対象がBigIntならBigIntのまま演算して精度を失わない
+    await cmp('A=123456789012345678901234567890n;Aを1だけ減らす;Aを表示', '123456789012345678901234567889')
+    await cmp('A=1n;Aを1だけ減らす;Aの変数型確認して表示', 'bigint')
+    await cmp('A=1n;Aを1だけ増やす;Aの変数型確認して表示', 'bigint')
+    await cmp('A=1n;Aを1nだけ減らす;Aの変数型確認して表示', 'bigint')
+    await cmp('A=1n;Aを「1」だけ減らす;Aの変数型確認して表示', 'bigint')
+    await cmp('A=1n;B=1n;AをBだけ減らす;Aの変数型確認して表示', 'bigint')
+    // 増減量を事前に否定しないため、文字列の大きな増減量も精度を失わない (#2488)
+    await cmp('A=9007199254740993n;Aを「9007199254740993」だけ減らす;Aを表示', '0')
+    await cmp('A=9007199254740993n;B=「9007199254740993」;AをBだけ減らす;Aを表示', '0')
+    await cmp('A=1n;Aを-1だけ増やす;Aの変数型確認して表示', 'bigint')
+    await cmp('A=1n;Aを-1だけ増やす;Aを表示', '0')
+    await cmp('A=1n;Aを-1nだけ減らす;Aの変数型確認して表示', 'bigint')
+    await cmp('A=1n;Aを-1nだけ減らす;Aを表示', '2')
+    await cmp('A=1n;Aを-1nだけ増やす;Aを表示', '0')
+    await cmp('A=1n;Aを「-1」だけ増やす;Aを表示', '0')
+    // 文字列の末尾 n 付きの増減量も BigInt として扱える (#2488)
+    await cmp('A=1n;Aを「5n」だけ増やす;Aを表示', '6')
+    // 増減対象がNumberなら従来どおりNumberのまま(BigIntに昇格しない)
+    await cmp('A=1;Aを1nだけ増やす;Aの変数型確認して表示', 'number')
+    await cmp('A=1.5;Aを1nだけ増やす;Aを表示', '2.5')
+    await cmp('A=10;Aを1nだけ減らす;A/2を表示', '4.5')
+    // BigIntにnull/未初期化/非数/無限大の増減量を与えても従来どおりTypeErrorにしない
+    await cmp('A=1n;AをNULLだけ減らす;Aを表示', '1')
+    await cmp('A=1n;AをNULLだけ減らす;Aの変数型確認して表示', 'bigint')
+    await cmp('A=1n;AをBだけ減らす;Aを表示', 'NaN')
+    await cmp('A=1n;Aを非数だけ増やす;Aを表示', 'NaN')
+    await cmp('A=1n;Aを無限大だけ増やす;Aを表示', 'Infinity')
+    await cmp('A=1n;Aを無限大だけ減らす;Aを表示', '-Infinity')
+    // 負数の増減文は従来どおり動作する(「--2」のような不正なJSを生成しない)
+    await cmp('A=3;Aを-2だけ減らす;Aを表示', '5')
+    await cmp('A=3;Aを-2だけ増やす;Aを表示', '1')
+    // 小数の増減をBigIntに行うと明示的なエラーになる
+    await errorTest('A=1n;Aを0.5だけ増やす;Aを表示', 'NakoRuntimeError', 'cannot be converted to a BigInt')
+    await errorTest('A=1n;Aを0.5だけ減らす;Aを表示', 'NakoRuntimeError', 'cannot be converted to a BigInt')
+    // 文字列の非整数をBigIntに増減しても増やす/減らすで同じ明示的なエラーになる
+    await errorTest('A=1n;Aを「0.5」だけ増やす;Aを表示', 'NakoRuntimeError', 'Cannot convert 0.5 to a BigInt')
+    await errorTest('A=1n;Aを「0.5」だけ減らす;Aを表示', 'NakoRuntimeError', 'Cannot convert 0.5 to a BigInt')
   })
 
 

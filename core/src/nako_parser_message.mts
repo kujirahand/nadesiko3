@@ -38,6 +38,11 @@ export function nodeToStr (node: Ast|Token|null, opts: {depth: number, typeName?
       operator = table[operator]
     }
     if (depth >= 0) {
+      // 単項演算子(例: -A)はオペランドを1つしか持たない (#2488)
+      if (node2.blocks.length === 1) {
+        const operand: string = nodeToStr(node2.blocks[0], { depth }, debugMode)
+        return `${typeName('')}『${operand}に演算子『${operator}』を適用した式${debug}』`
+      }
       const left: string = nodeToStr(node2.blocks[0], { depth }, debugMode)
       const right: string = nodeToStr(node2.blocks[1], { depth }, debugMode)
       if (node2.operator === 'eq') {

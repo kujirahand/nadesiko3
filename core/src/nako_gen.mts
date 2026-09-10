@@ -7,7 +7,7 @@
 
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { FuncList, FuncArgs, FuncListItem, NakoDebugOption } from './nako_types.mjs'
-import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
+import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstInc, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
@@ -593,9 +593,12 @@ export class NakoGen {
     case 'end':
       code += '__v0.get(\'終\')(__self);'
       break
-    case 'number':
-      code += (node as AstConst).value
+    case 'number': {
+      // 負のゼロ(-0)は符号を保つ (#2488)
+      const value = (node as AstConst).value
+      code += (typeof value === 'number' && Object.is(value, -0)) ? '-0' : String(value)
       break
+    }
     case 'bigint':
       code += (node as AstConst).value
       break
@@ -618,7 +621,7 @@ export class NakoGen {
       code += this.convRefProp(node as AstLet)
       break
     case 'inc':
-      code += this.convInc(node as AstBlocks)
+      code += this.convInc(node as AstInc)
       break
     case 'word':
     case 'variable':
@@ -1927,6 +1930,11 @@ export class NakoGen {
       '÷': '/'
     }
     let op: string = node.operator || '' // 演算子
+    // 単項演算子(例: -A)。JSの単項マイナスはNumberでもBigIntでも正しく動作する (#2488)
+    // オペランドを必ず括弧で囲み、負のリテラルが来ても『--2』のような不正なJSを生成しないようにする
+    if (op === '-' && node.blocks.length === 1) {
+      return `(-(${this._convGen(node.blocks[0], true)}))`
+    }
     let right = this._convGen(node.blocks[1], true)
     let left = this._convGen(node.blocks[0], true)
     if (op === '+' && this.speedMode.implicitTypeCasting === 0) {
@@ -1948,7 +1956,7 @@ export class NakoGen {
     return `(${left} ${op} ${right})`
   }
 
-  convInc(node: AstBlocks): string {
+  convInc(node: AstInc): string {
     // idを得る
     const id = this.loopId++
     const valueVar = `$nako_v${id}`
@@ -2016,7 +2024,9 @@ export class NakoGen {
     code += `let ${valueVar} = ${varGetter}\n`
     // 値の再取得をせず、取り出した値をそのまま使う (#2194)
     code += `if (typeof ${valueVar} === 'undefined') { ${varInitter}; ${valueVar} = 0; }\n`
-    code += `${valueVar} = Number(${valueVar}) + Number(${incValue});\n`
+    // 増減の方向は減算フラグ(isDec)で渡す (#2488)
+    const isDec = node.isDec ? 'true' : 'false'
+    code += `${valueVar} = self.__incValue(${valueVar}, ${incValue}, ${isDec});\n`
     code += `${varSetter}\n`
     code += '/*[/convInc]*/\n'
     return code

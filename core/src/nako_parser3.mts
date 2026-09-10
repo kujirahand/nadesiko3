@@ -45,7 +45,7 @@ import { makeStackBalanceReport } from './nako_parser_message.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import { FuncListItemType, NewEmptyToken, SourceMap } from './nako_types.mjs'
-import { NodeType, Ast, AstEol, AstBlocks, AstOperator, AstConst, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstStrValue, AstDefVar, AstDefVarList } from './nako_ast.mjs'
+import { NodeType, Ast, AstEol, AstBlocks, AstOperator, AstConst, AstInc, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstStrValue, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
 
 /**
@@ -1319,7 +1319,8 @@ export class NakoParser extends NakoParserBase {
     } as AstDefVar
   }
 
-  yIncDec(): AstBlocks | null {
+  // 戻り値は増減文(AstInc)か、『Nずつ増やして繰り返す』の繰返し文(AstFor) (#2488)
+  yIncDec(): AstFor | AstInc | null {
     const map = this.peekSourceMap()
     const action = this.get() // (増やす|減らす)
     if (action === null) { return null }
@@ -1342,20 +1343,20 @@ export class NakoParser extends NakoParserBase {
       value = { type: 'number', value: 1, josi: 'だけ', ...map, end: this.peekSourceMap() } as AstConst
     }
 
-    // 減らすなら-1かける
-    if (action.value === '減') {
-      const minusOne = { type: 'number', value: -1, line: action.line } as AstConst
-      value = { type: 'op', operator: '*', blocks: [value, minusOne], josi: '', ...map } as AstOperator
-    }
+    // 減らすなら減算フラグを立てる (#2488)
+    // 増減量を事前に否定すると、文字列の増減量が一度Numberに変換されて
+    // 安全整数範囲を超える値の精度を失うため、方向はフラグで保持し __incValue で減算する
+    const isDec = (action.value === '減')
 
     return {
       type: 'inc',
       name: this.getAssignmentVarName(word),
       blocks: [value],
+      isDec,
       josi: action.josi,
       ...map,
       end: this.peekSourceMap()
-    }
+    } as AstInc
   }
 
   // ---------------------------------------------------------------------------
@@ -2105,6 +2106,32 @@ export class NakoParser extends NakoParserBase {
     return astConst
   }
 
+  /**
+   * 単項マイナスを適用する。数値/巨大整数リテラルは定数に畳み込み、それ以外は
+   * 単項演算子ノード(op operator: '-' blocks: [value])にする (#2488)。
+   * 畳み込むことで『--2』のような不正なJSの生成を防ぐ。
+   * ただし数値の 0 は畳み込まない。畳み込むと生成時に「0」となり負のゼロ(-0)を
+   * 失うため、単項演算子として生成して JS に評価させる(bigint には負のゼロが
+   * 存在しないので 0n は畳み込んで構わない)。
+   * なお bigint リテラルの value は '5n' / '-5n' のような末尾 n 付き文字列である。
+   * @param value オペランド
+   * @param josi 助詞
+   * @param map 位置情報
+   * @returns {Ast}
+   */
+  yMinus(value: Ast, josi: string, map: SourceMap): Ast {
+    const valueConst = value as AstConst
+    // 数値 0 と負のゼロ(-0)は畳み込まない。畳み込むと生成時に「0」となり負のゼロを失うため
+    if (value.type === 'number' && typeof valueConst.value === 'number' && !Object.is(valueConst.value, 0) && !Object.is(valueConst.value, -0)) {
+      return { ...value, type: 'number', value: -valueConst.value, josi, ...map, end: this.peekSourceMap() } as AstConst
+    }
+    if (value.type === 'bigint' && typeof valueConst.value === 'string') {
+      const s = (valueConst.value.startsWith('-')) ? valueConst.value.slice(1) : '-' + valueConst.value
+      return { ...value, type: 'bigint', value: s, josi, ...map, end: this.peekSourceMap() } as AstConst
+    }
+    return { type: 'op', operator: '-', blocks: [value], josi, ...map, end: this.peekSourceMap() } as AstOperator
+  }
+
   /** @returns {Ast | null} */
   yValue(): Ast | null {
     const map = this.peekSourceMap()
@@ -2120,22 +2147,14 @@ export class NakoParser extends NakoParserBase {
     // 丸括弧
     if (this.check('(')) { return this.yValueKakko() }
 
-    // マイナス記号
-    if (this.check2(['-', 'number']) || this.check2(['-', 'word']) || this.check2(['-', 'func'])) {
-      const m = this.get() // skip '-'
+    // マイナス記号 (#2488)
+    // 単項マイナスは『-1を掛ける』に展開せず、JSの単項演算子『-』として生成する。
+    // BigIntに対して『-1 * A』を行うと型混在でTypeErrorになるため。
+    if (this.check2(['-', 'number']) || this.check2(['-', 'bigint']) || this.check2(['-', 'string']) || this.check2(['-', 'word']) || this.check2(['-', 'func']) || this.check2(['-', '('])) {
+      this.get() // skip '-'
       const v = this.yValue()
       const josi = (v && v.josi) ? v.josi : ''
-      const line = (m && m.line) ? m.line : 0
-      const astLeft = { type: 'number', value: -1, line } as AstConst
-      const astRight = v || this.yNop()
-      return {
-        type: 'op',
-        operator: '*',
-        blocks: [astLeft, astRight],
-        josi,
-        ...map,
-        end: this.peekSourceMap()
-      } as AstOperator
+      return this.yMinus(v || this.yNop(), josi, map)
     }
     // NOT
     if (this.check('not')) {
