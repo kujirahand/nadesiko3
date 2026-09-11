@@ -33,6 +33,47 @@ describe('plugin_csv_test', () => {
     await cmp('a=「1,,3\n4,5,6」のCSV取得。a[0][2]を表示', '3')
     await cmp('a=「1,2,3,\n4,5,6」のCSV取得。a[1][0]を表示', '4') // #353
   })
+  it('引用符付き空セルが余分な列を作らない #2476', async () => {
+    // "" は空セル1列のみ
+    await cmp('a=「""」のCSV取得。aをJSONエンコードして表示', '[[""]]')
+    await cmp('a=「""」のCSV取得。要素数(a[0])を表示', '1')
+    // "",x は2列(空,x)
+    await cmp('a=「"",x」のCSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「"",x」のCSV取得。a[0][1]を表示', 'x')
+    // "","" は2列(空,空)
+    await cmp('a=「"",""」のCSV取得。aをJSONエンコードして表示', '[["",""]]')
+    await cmp('a=「"",""」のCSV取得。要素数(a[0])を表示', '2')
+    // """",x は2列(エスケープされた引用符1文字,x)
+    await cmp('a=「"""",x」のCSV取得。aをJSONエンコードして表示', '[["\\"","x"]]')
+    await cmp('a=「"""",x」のCSV取得。a[0][0]を表示', '"')
+    // 先頭がエスケープ引用符＋空白のケース
+    await cmp('a=「""" x"」のCSV取得。a[0][0]を表示', '" x')
+    // TSVでも同様
+    await cmp('a=「""\t"x"」のTSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「""\t""」のTSV取得。要素数(a[0])を表示', '2')
+    // 行中・行末の空引用符フィールド
+    await cmp('a=「a,"",b」のCSV取得。aをJSONエンコードして表示', '[["a","","b"]]')
+    await cmp('a=「x,""」のCSV取得。aをJSONエンコードして表示', '[["x",""]]')
+    // 空引用符フィールドの前後に空白があるケース
+    await cmp('a=「"" ,x」のCSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「a, "" , b」のCSV取得。aをJSONエンコードして表示', '[["a","","b"]]')
+    await cmp('a=「a, ""」のCSV取得。aをJSONエンコードして表示', '[["a",""]]')
+    await cmp('a=「a\t"" \t"x"」のTSV取得。aをJSONエンコードして表示', '[["a","","x"]]')
+    // 全角スペースなど\s系の空白を含むケース
+    await cmp('a=「""　,x」のCSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「x,"" 」のCSV取得。aをJSONエンコードして表示', '[["x",""]]')
+    // CSVでタブを空白とみなすケース・行中改行前の空白
+    await cmp('a=「""\t,x」のCSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「a, "" \nb」のCSV取得。aをJSONエンコードして表示', '[["a",""],["b"]]')
+    // 空白を挟んだ連続空引用符・TSVでの全角空白
+    await cmp('a=「"" , "",x」のCSV取得。aをJSONエンコードして表示', '[["","","x"]]')
+    await cmp('a=「""　\t"x"」のTSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    // Excel方言の空セルが従来どおり維持されること
+    await cmp('a=「"" "x"」のCSV取得。aをJSONエンコードして表示', '[["","x"]]')
+    await cmp('a=「""a,b,c」のCSV取得。aをJSONエンコードして表示', '[["","a","b","c"]]')
+    await cmp('a=「a,""b,c」のCSV取得。aをJSONエンコードして表示', '[["a","","b","c"]]')
+    await cmp('a=「a,b,c""」のCSV取得。aをJSONエンコードして表示', '[["a","b","c\\"\\""]]')
+  })
   it('TSV取得', async () => {
     await cmp('a=「1\t2\t3\n4\t5\t6」のTSV取得。a[1][2]を表示', '6')
     await cmp('a=「"a"\tb\tc\n""a\tb\tc\na\t""b\tc\na\tb\tc""\n"a\t\nb"\tc\td\na\t"b\t\nc"\td\na\tb\t"c\t\nd"」のTSV取得。a[5][1]を表示', 'b\t\nc')
