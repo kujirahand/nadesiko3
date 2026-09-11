@@ -131,7 +131,7 @@ describe('plugin_httpserver_test', () => {
   戻る。
 ここまで。
 ●受信処理
-  POSTデータ["message"]を簡易HTTPサーバ出力。
+  「{POSTデータ["message"]}|{POSTデータ["__proto__"]}」を簡易HTTPサーバ出力。
 ここまで。
 「ダミー起動」を${port}で簡易HTTPサーバ起動時。
 「受信処理」を「/post-urlencoded」に簡易HTTPサーバ受信時。
@@ -141,7 +141,7 @@ describe('plugin_httpserver_test', () => {
     await wait(100)
     port = serverDp.server.address().port
 
-    const postData = 'message=hello+post+urlencoded'
+    const postData = 'message=hello+post+urlencoded&__proto__=proto_value'
     const resText = await new Promise((resolve, reject) => {
       const req = http.request({
         hostname: 'localhost',
@@ -162,7 +162,7 @@ describe('plugin_httpserver_test', () => {
       req.end()
     })
 
-    assert.strictEqual(resText, 'hello post urlencoded')
+    assert.strictEqual(resText, 'hello post urlencoded|proto_value')
   })
 
   it('GETクエリパラメータが正しく解析されること #2493', async () => {
@@ -353,11 +353,23 @@ describe('plugin_httpserver_test', () => {
     assert.match(await postMultipart('form-data; filename="photo.txt"; name="upload"'), /^OK:upload:photo.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
     // nameが無い場合はファイルとして扱われず、クラッシュもしない
     assert.strictEqual(await postMultipart('form-data; filename="photo.txt"'), 'NG')
+    // nameを解決できないパートはconsole.warnで警告される
+    const warnSpy = []
+    const origWarn = console.warn
+    console.warn = (...args) => { warnSpy.push(args.join(' ')) }
+    try {
+      await postMultipart('form-data; filename="no-name.txt"')
+    } finally {
+      console.warn = origWarn
+    }
+    assert.ok(warnSpy.some((m) => m.includes('name を解決できないパート')), '警告が出力されること')
+    assert.ok(warnSpy.some((m) => m.includes('no-name.txt')), '警告にパートのContent-Dispositionが含まれること')
     // filenameが無い場合はフィールドとして扱われ、POSTデータに保存される
     assert.strictEqual(await postMultipart('form-data; name="upload"'), 'FIELD:hello world')
     // quoted-string内の;と=を正しく扱う(nameとfilenameの値は正しく分離される)
-    assert.match(await postMultipart('form-data; filename="a;b.txt"; name="upload"'), /^OK:upload:a;b\.txt:[0-9]+_[0-9A-Za-z_-]+_a_b\.txt$/)
-    assert.match(await postMultipart('form-data; filename="a;b=c"; name="upload"'), /^OK:upload:a;b=c:[0-9]+_[0-9A-Za-z_-]+_a_b_c$/)
+    // 保存名はWindows禁止文字のみ除去するため;や=は保持される
+    assert.match(await postMultipart('form-data; filename="a;b.txt"; name="upload"'), /^OK:upload:a;b\.txt:[0-9]+_[0-9A-Za-z_-]+_a;b\.txt$/)
+    assert.match(await postMultipart('form-data; filename="a;b=c"; name="upload"'), /^OK:upload:a;b=c:[0-9]+_[0-9A-Za-z_-]+_a;b=c$/)
     // 大文字キーを大文字小文字を区別せず扱う
     assert.match(await postMultipart('form-data; NAME="upload"; FILENAME="photo.txt"'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
     // quoted-stringのエスケープを処理する
@@ -400,8 +412,8 @@ describe('plugin_httpserver_test', () => {
     // バックスラッシュ区切りのパストラバーサルは保存名がbasenameに限定される
     // (quoted-stringでは\がエスケープされるため\\で送る)
     assert.match(await postMultipart('form-data; name="upload"; filename="..\\\\..\\\\etc\\\\passwd"'), /^OK:upload:\.\.\\\.\.\\etc\\passwd:[0-9]+_[0-9A-Za-z_-]+_passwd$/)
-    // シェルメタ文字を含むfilenameは保存名から除去される(nameは元の値を保持)
-    assert.match(await postMultipart('form-data; name="upload"; filename="$(id).txt"'), /^OK:upload:\$\(id\)\.txt:[0-9]+_[0-9A-Za-z_-]+_id_\.txt$/)
+    // シェルメタ文字を含むfilenameも保存名に保持される(表示名と保存名が一致する)
+    assert.match(await postMultipart('form-data; name="upload"; filename="$(id).txt"'), /^OK:upload:\$\(id\)\.txt:[0-9]+_[0-9A-Za-z_-]+_\$\(id\)\.txt$/)
     // __proto__等のprototype由来のnameでも汚染されず値として扱われる
     assert.match(await postMultipart('form-data; name="__proto__"; filename="x.txt"'), /^OK:__proto__:x\.txt:[0-9]+_[0-9A-Za-z_-]+_x\.txt$/)
     // Content-Dispositionのパラメータ名が__proto__でもクラッシュせずname/filenameを取得できる
@@ -414,10 +426,10 @@ describe('plugin_httpserver_test', () => {
     assert.match(await postMultipart('form-data; name="upload"; filename="photo.txt'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
     // RFC 5987デコード後に制御文字(%01)を含む値は除去される
     assert.match(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8''%01photo.txt"), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
-    // 極端に長いfilenameは保存名をUTF-8で200バイトに切り詰める
-    assert.match(await postMultipart('form-data; name="upload"; filename="' + 'a'.repeat(250) + '.txt"'), new RegExp('^OK:upload:' + 'a'.repeat(250) + '\\.txt:[0-9]+_[0-9A-Za-z_-]+_' + 'a'.repeat(200) + '$'))
-    // quoted-stringの先頭・末尾空白は値として保持する
-    assert.match(await postMultipart('form-data; name=" upload "; filename=" photo.txt "'), /^OK: upload : photo\.txt :[0-9]+_[0-9A-Za-z_-]+__photo\.txt_$/)
+    // 極端に長いfilenameは拡張子を残しつつ保存名をUTF-8で200バイトに切り詰める
+    assert.match(await postMultipart('form-data; name="upload"; filename="' + 'a'.repeat(250) + '.txt"'), new RegExp('^OK:upload:' + 'a'.repeat(250) + '\\.txt:[0-9]+_[0-9A-Za-z_-]+_' + 'a'.repeat(196) + '\\.txt$'))
+    // quoted-stringの先頭・末尾空白は表示名では値として保持し、保存名では先頭・末尾空白を除去する
+    assert.match(await postMultipart('form-data; name=" upload "; filename=" photo.txt "'), /^OK: upload : photo\.txt :[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
   })
 
   it('HTTPメソッドにGET/POST/PUT/DELETEが設定されること', async () => {

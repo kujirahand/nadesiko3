@@ -118,7 +118,7 @@ class EasyURLDispather {
             const searchParams = new URLSearchParams(bodyStr)
             const obj: any = {}
             for (const [key, val] of searchParams.entries()) {
-              obj[key] = val
+              setDictValue(obj, key, val)
             }
             postData = obj
           } else {
@@ -283,7 +283,8 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
       i++
     }
   } else {
-    // 非引用値はRFC 7230のtoken。区切り文字・空白・制御文字(0x00-0x1F, 0x7F)・非ASCIIで停止する
+    // 非引用値はRFC 7230のtoken。区切り文字・空白・制御文字(0x00-0x1F, 0x7F)・非ASCIIで停止する。
+    // そのため非引用の非ASCII値(例: filename=画像.txt)は空になり、実ブラウザは非引用値を送らないため実害はない
     const valStart = i
     while (i < headerValue.length && CD_SEPARATORS.indexOf(headerValue[i]) < 0 &&
            headerValue.charCodeAt(i) >= 0x21 && headerValue.charCodeAt(i) <= 0x7e) { i++ }
@@ -295,6 +296,7 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
 function parseContentDisposition(headerValue: string): { [key: string]: string } {
   // obs-fold (CRLF 1*(SP/HTAB)) を単一 SP に正規化してから解析する
   const normalized = headerValue.replace(/\r\n[ \t]+/g, ' ')
+  // Object.create(null)により __proto__ 等のキーでもプロトタイプ汚染せず、自前プロパティとして扱える
   const params: { [key: string]: string } = Object.create(null)
   let i = 0
 
@@ -344,6 +346,7 @@ function parseContentDisposition(headerValue: string): { [key: string]: string }
 
     // RFC 7230 の token 文字のみをキーとして有効にする(空キーや不正な文字は無視)
     if (!CD_KEY_RE.test(key)) { continue }
+    // 重複するキーは最後の値で上書きする(後勝ち)
     params[key] = parsed.value
   }
 
@@ -365,20 +368,24 @@ function decodeRFC5987(value: string): string | null {
     return null
   }
 }
+/** 辞書にキーを安全に設定する。
+ * __proto__等のprototype由来のキーでObject.prototypeを汚染しないようdefinePropertyを使う。
+ * 対象はなでしこ3へ渡す辞書(POSTデータ等)のためObject.create(null)は使わない:
+ * なでしこ3の辞書操作が instanceof Object を前提にしている。内部限りの params 等は
+ * Object.create(null)を使う(parseContentDisposition参照)。(#2494)
+ */
+function setDictValue(obj: any, key: string, value: any) {
+  Object.defineProperty(obj, key, {
+    value,
+    enumerable: true,
+    writable: true,
+    configurable: true
+  })
+}
+
 async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: any[], fields: any }> {
   const fields: any = {}
   const files: any[] = []
-
-  // __proto__等のキーでObject.prototypeを汚染しないようdefinePropertyで安全に設定する。
-  // Object.create(null)は使わない: なでしこ3の辞書操作が instanceof Object を前提にしているため。
-  const setField = (key: string, value: any) => {
-    Object.defineProperty(fields, key, {
-      value,
-      enumerable: true,
-      writable: true,
-      configurable: true
-    })
-  }
 
   const boundaryBuffer = Buffer.from('--' + boundary)
   let pos = 0
@@ -466,20 +473,34 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
 
     if (name !== undefined) {
       if (hasFilename) {
-        // 保存ファイル名は、OS非依存で / と \ の両方を区切りと見なした basename に限定し、
-        // 制御文字・パス区切り・Windows禁止文字・シェル文字・空白・末尾ドットを除去する。(#2494)
+        // 保存ファイル名は、OS非依存で / と \ の両方を区切りと見なした basename に限定する。
+        // さらに Windows 禁止文字( : * ? " < > | )と制御文字を除去する(/ と \ は basename 化で消える)。
+        // シェルメタ文字は fs.promises.writeFile に直接渡すため除去しない(ファイル名中の記号を可能な限り保持する)。(#2494)
         const baseName = filename.replace(/\\/g, '/').split('/').pop() || ''
-        // ! ~ # % はシェル展開・履歴展開・コメント・ジョブ制御を防ぐため除去する
-        // eslint-disable-next-line no-useless-escape -- 文字クラス内の ] にエスケープが必要
-        let safeFilename = baseName.replace(/[\\/:*?"<>|;&=\s$`'(){}\[\]!~#%]+/g, '_')
+        let safeFilename = baseName.replace(/[:*?"<>|]+/g, '_')
         // eslint-disable-next-line no-control-regex -- ファイル名から制御文字を除去するため
         safeFilename = safeFilename.replace(/[\x00-\x1f\x7f]+/g, '')
-        // 末尾のドット・空白はWindowsで扱えないため除去する
-        safeFilename = safeFilename.replace(/[\s.]+$/, '')
-        // ENAMETOOLONGを避けるため保存名はUTF-8で200バイトに制限する
+        // 先頭の空白と末尾の空白・ドットを除去する(先頭のドットは後続の判定で無効化する)
+        safeFilename = safeFilename.replace(/^\s+/, '').replace(/[\s.]+$/, '')
+        // ENAMETOOLONGを避けるためUTF-8で200バイトに制限する。拡張子は残して本体側を詰める
         if (Buffer.byteLength(safeFilename, 'utf8') > 200) {
-          safeFilename = Buffer.from(safeFilename, 'utf8').subarray(0, 200).toString('utf8')
-          safeFilename = safeFilename.replace(/\uFFFD+$/, '').replace(/[\s.]+$/, '')
+          // ENAMETOOLONGを避けるため拡張子は残し、本体側をUTF-8で200バイト以内に詰める
+          const dotIdx = safeFilename.lastIndexOf('.')
+          const hasExt = dotIdx > 0
+          const ext = hasExt ? safeFilename.substring(dotIdx) : ''
+          const stem = hasExt ? safeFilename.substring(0, dotIdx) : safeFilename
+          const maxStemBytes = 200 - Buffer.byteLength(ext, 'utf8')
+          if (maxStemBytes > 0) {
+            let newStem = Buffer.from(stem, 'utf8').subarray(0, maxStemBytes).toString('utf8')
+            newStem = newStem.replace(/\uFFFD+$/, '')
+            safeFilename = newStem + ext
+          } else {
+            // 拡張子だけで200バイトを超える場合は拡張子も含めて切り詰める
+            safeFilename = Buffer.from(safeFilename, 'utf8').subarray(0, 200).toString('utf8')
+            safeFilename = safeFilename.replace(/\uFFFD+$/, '')
+          }
+          // 切り詰めで末尾に空白・ドットが残る場合に備えて再除去する
+          safeFilename = safeFilename.replace(/[\s.]+$/, '')
         }
         // 空・ドット始まり(隠しファイル・'.'・'..')はファイル名として危険なため無効化する
         if (safeFilename === '' || safeFilename.startsWith('.')) {
@@ -505,9 +526,14 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
       } else {
         // nameが空の場合はフィールド登録しない
         if (name !== '') {
-          setField(name, partBody.toString('utf-8'))
+          setDictValue(fields, name, partBody.toString('utf-8'))
         }
       }
+    } else {
+      // name を解決できないパート(name が無い、name* デコード失敗等)は無視するが、利用者に分かるよう警告する
+      // eslint-disable-next-line no-control-regex -- ログを壊さないよう制御文字を除去してから200文字に切り詰める
+      const cdLog = contentDisposition.replace(/[\x00-\x1f\x7f]+/g, '').substring(0, 200)
+      console.warn(`${HTTPSERVER_LOGID} Content-Disposition に name を解決できないパートを無視しました: ${cdLog}`)
     }
   }
 
