@@ -404,7 +404,9 @@ export default {
       if (Math.abs(a) > Number.MAX_SAFE_INTEGER || Math.abs(b) > Number.MAX_SAFE_INTEGER) {
         throw new Error('『配列連番作成』には絶対値が2の53乗-1(9007199254740991)以下の数値を指定してください。')
       }
-      if (b - a + 1 > MAX_RANGE_LENGTH) {
+      // ループは i<=b を満たす間 i++ するため、実際の要素数は Math.floor(b - a) + 1。
+      // 端点の小数部がずれる場合(0.5から1000000までなど)にb-a+1では過大に見積もってしまう
+      if (Math.floor(b - a) + 1 > MAX_RANGE_LENGTH) {
         throw new Error('『配列連番作成』で生成される配列の要素数が多すぎます。')
       }
       const result: number[] = []

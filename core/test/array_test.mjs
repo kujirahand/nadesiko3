@@ -67,6 +67,13 @@ describe('array_test', async () => {
   it('配列連番作成は小数の範囲を従来どおり生成できる #2472', async () => {
     await cmp('1.5から3.5まで配列連番作成してJSONエンコードして表示', '[1.5,2.5,3.5]')
   })
+  it('配列連番作成は端点の小数部がずれていても要素数を過大評価しない #2472', async () => {
+    // 0.5から999999.5まで(1ずつ加算)で要素数はちょうど100万。
+    // b-a+1(=1000000.5)で判定すると誤って上限超過エラーになっていた
+    const nako = new NakoCompiler()
+    const result = await nako.runAsync('0.5から1000000まで配列連番作成して配列要素数を表示', 'main.nako3')
+    assert.strictEqual(result.log, '1000000')
+  })
   it('配列連番作成は要素数が多すぎる場合エラーになる #2472', async () => {
     const nako = new NakoCompiler()
     await assert.rejects(
