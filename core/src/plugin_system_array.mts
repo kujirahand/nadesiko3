@@ -197,7 +197,8 @@ export default {
       }
       // 辞書型変数のとき
       if (a instanceof Object && typeof (i) === 'string') { // 辞書型変数も許容
-        if (a[i]) {
+        // 値が falsy でもキーが存在すれば削除する。継承プロパティは対象外。(#2471)
+        if (Object.hasOwn(a, i)) {
           const old = a[i]
           delete a[i]
           return old
