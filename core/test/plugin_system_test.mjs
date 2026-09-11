@@ -246,6 +246,26 @@ describe('plugin_system_test', async () => {
       'Aから"aaa"を配列削除;' +
       'AをJSONエンコードして表示。', '{"bbb":2}')
   })
+  it('配列切取で辞書型のfalsy値も削除する #2471', async () => {
+    await cmp('A={"key":0};Aから「key」を配列切取。AをJSONエンコードして表示。', '{}')
+    await cmp('A={"key":0};B=Aから「key」を配列切取。Bを表示。', '0')
+    await cmp('A={"key":false};Aから「key」を配列切取。AをJSONエンコードして表示。', '{}')
+    await cmp('A={"key":false};B=Aから「key」を配列切取。Bを表示。', 'false')
+    await cmp('A={"key":""};Aから「key」を配列切取。AをJSONエンコードして表示。', '{}')
+    await cmp('A={"key":""};B=Aから「key」を配列切取。Bを表示。', '')
+    await cmp('A={"key":NULL};Aから「key」を配列切取。AをJSONエンコードして表示。', '{}')
+    await cmp('A={"key":NULL};B=Aから「key」を配列切取。Bを表示。', 'null')
+    await cmp('A={"key":未定義};Aから「key」を配列切取。Aの要素数を表示。', '0')
+    await cmp('A={"key":未定義};B=Aから「key」を配列切取。Bを表示。', 'undefined')
+    await cmp('A={"key":非数};Aから「key」を配列切取。AをJSONエンコードして表示。', '{}')
+    await cmp('A={"key":非数};B=Aから「key」を配列切取。Bを表示。', 'NaN')
+    await cmp('A={"key":1};Aから「key」を配列切取。AをJSONエンコードして表示。', '{}')
+    await cmp('A={"key":0};Aから「key」を配列削除。AをJSONエンコードして表示。', '{}')
+    await cmp('A={"ok":1};Aから「toString」を配列切取。AをJSONエンコードして表示。', '{"ok":1}')
+    await cmp('A={"ok":1};B=Aから「toString」を配列切取。Bを表示。', 'undefined')
+    await cmp('A={"ok":1};B=Aから「missing」を配列切取。Bを表示。AをJSONエンコードして表示。', 'undefined\n{"ok":1}')
+    await cmp('A={"toString":"x","ok":1};B=Aから「toString」を配列切取。Bを表示。AをJSONエンコードして表示。', 'x\n{"ok":1}')
+  })
   it('配列切り取りで範囲を指定 #1704', async () => {
     await cmp('A=[0,1,2,3,4,5]; B=Aの1…3を配列切り取り;' +
       'BをJSONエンコードして表示;AをJSONエンコードして表示。', '[1,2,3]\n[0,4,5]')
