@@ -4,6 +4,9 @@
  * 配列操作・二次元配列処理の命令を定義する。
  * このファイルは単独のプラグインではなく、plugin_system.mts へマージされる。(#2351)
  */
+// 配列連番作成で生成できる要素数の上限(意図しない巨大配列によるメモリ枯渇を防ぐ)
+const MAX_RANGE_LENGTH = 1000000
+
 export default {
   // @配列操作
   '配列結合': { // @配列Aを文字列Sでつなげて文字列で返す // @はいれつけつごう
@@ -392,15 +395,16 @@ export default {
     josi: [['から'], ['までの', 'まで', 'の']],
     pure: true,
     fn: function(a: number, b: number) {
-      // 非有限値や安全整数の範囲外は、ループが進展せず終了しなくなるため先に弾く
+      // 非有限値や、2の53乗-1(安全整数の最大値)を超える値は、i++でループが
+      // 進展しなくなり終了しなくなるため先に弾く。小数の範囲(1.5から3.5までなど)は
+      // 従来どおり許可するため、整数かどうかではなく絶対値の大きさだけを見る。
       if (!Number.isFinite(a) || !Number.isFinite(b)) {
         throw new Error('『配列連番作成』には有限の数値を指定してください。')
       }
-      if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b)) {
-        throw new Error('『配列連番作成』には安全な整数の範囲(±2の53乗以内)の値を指定してください。')
+      if (Math.abs(a) > Number.MAX_SAFE_INTEGER || Math.abs(b) > Number.MAX_SAFE_INTEGER) {
+        throw new Error('『配列連番作成』には絶対値が2の53乗-1(9007199254740991)以下の数値を指定してください。')
       }
-      const MAX_LENGTH = 100000000 // 配列の要素数上限(意図しない巨大配列生成を防ぐ)
-      if (b - a + 1 > MAX_LENGTH) {
+      if (b - a + 1 > MAX_RANGE_LENGTH) {
         throw new Error('『配列連番作成』で生成される配列の要素数が多すぎます。')
       }
       const result: number[] = []
