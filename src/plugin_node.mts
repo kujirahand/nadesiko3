@@ -4,7 +4,7 @@
  * node.js のためのプラグイン
  */
 import fs from 'node:fs'
-import { exec, execSync, spawn, spawnSync } from 'node:child_process'
+import { exec, execSync, spawn } from 'node:child_process'
 import path from 'node:path'
 import assert from 'node:assert'
 // ハッシュ関数で利用
@@ -45,12 +45,24 @@ function isDir(f: string): boolean {
 }
 
 function commandExists(command: string): boolean {
-  try {
-    const r = spawnSync('which', [command], { stdio: 'ignore' })
-    return r.status === 0
-  } catch {
-    return false
+  // PATH上の各ディレクトリに通常ファイルとして実行可能なものが存在するかを確認する
+  // (`which`に依存しないため、minimalなLinux環境でも誤検知しない) (#2491)
+  const dirs = (getEnv('PATH') || '').split(path.delimiter)
+  for (const dir of dirs) {
+    if (dir === '') { continue }
+    // command にパス区切り文字が混入してもPATH外を参照しないようにする
+    const full = path.join(dir, path.basename(command))
+    try {
+      const st = fs.statSync(full)
+      if (st.isFile()) {
+        fs.accessSync(full, fs.constants.X_OK)
+        return true
+      }
+    } catch {
+      // 次のPATHディレクトリを確認する
+    }
   }
+  return false
 }
 
 function pickLinuxTerminal(): { cmd: string, args: string[] } | null {
@@ -563,33 +575,47 @@ export default {
       opener(url)
     }
   },
-  'エクスプローラー起動': { // @Windowsでエクスプローラー、macOSでFinderを使って、fnameを起動する // @えくすぷろーらーきどう
+  'エクスプローラー起動': { // @Windowsでエクスプローラー、macOSでFinder、Linuxでxdg-openを使って、fnameを起動する // @えくすぷろーらーきどう
     type: 'func',
     josi: [['を', 'で', 'の']],
     pure: true,
+    asyncFn: true,
     fn: function(fname: string, sys: NakoSystem) {
-      // windows
-      if (sys.tags.isWin) {
-        if (isDir(fname)) { // ディレクトリを起動
-          spawn('explorer', [fname], { detached: true })
-        } else { // ファイルを選択した状態で起動
-          spawn('explorer', ['/select,', fname], { detached: true })
+      return new Promise<void>((resolve, reject) => {
+        // 起動するコマンドと引数をOSごとに決める (#2491)
+        let command = ''
+        let args: string[] = []
+        if (sys.tags.isWin) {
+          // ディレクトリを起動 / ファイルを選択した状態で起動
+          command = 'explorer'
+          args = isDir(fname) ? [fname] : ['/select,', fname]
+        } else if (sys.tags.isMac) {
+          command = 'open'
+          args = isDir(fname) ? [fname] : ['-R', fname]
+        } else if (nodeProcess.platform === 'linux') {
+          command = 'xdg-open'
+          args = isDir(fname) ? [fname] : [path.dirname(fname)]
         }
-        return
-      }
-      // macOS
-      if (sys.tags.isMac) {
-        if (isDir(fname)) {
-          spawn('open', [fname], { detached: true })
-        } else {
-          spawn('open', ['-R', fname], { detached: true })
+        // 対応していないOS
+        if (command === '') {
+          reject(new Error('対応していないOSです'))
+          return
         }
-      }
-      // linux
-      if (nodeProcess.platform === 'linux') {
-        spawn('xdg-open', [path.dirname(fname)], { detached: true })
-      }
-      throw new Error('対応していないOSです')
+        // 起動コマンドが無い場合はエラーにする (#2491)
+        if (!sys.tags.isWin && !commandExists(command)) {
+          reject(new Error(`エクスプローラー起動に失敗しました: ${command}が見つかりません`))
+          return
+        }
+        // 起動に失敗した場合のみエラーを報告する (#2491)
+        const child = spawn(command, args, { detached: true, stdio: 'ignore' })
+        child.on('error', (err) => {
+          reject(new Error(`エクスプローラー起動に失敗しました: ${err.message}`))
+        })
+        child.on('spawn', () => {
+          child.unref()
+          resolve()
+        })
+      })
     },
     return_none: true
   },

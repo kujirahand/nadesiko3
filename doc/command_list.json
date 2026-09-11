@@ -10432,8 +10432,8 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L570",
-    "description": "Windowsでエクスプローラー、macOSでFinderを使って、fnameを起動する"
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L583",
+    "description": "Windowsでエクスプローラー、macOSでFinder、Linuxでxdg-openを使って、fnameを起動する(非同期関数)"
   },
   {
     "type": "関数",
