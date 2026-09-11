@@ -198,7 +198,8 @@ export default {
       // 辞書型変数のとき
       if (a instanceof Object && typeof (i) === 'string') { // 辞書型変数も許容
         // 値が falsy でもキーが存在すれば削除する。継承プロパティは対象外。(#2471)
-        if (Object.hasOwn(a, i)) {
+        // Object.hasOwn は既定 lib が es2021 系のため型定義がなく、hasOwnProperty を使う
+        if (Object.prototype.hasOwnProperty.call(a, i)) {
           const old = a[i]
           delete a[i]
           return old
