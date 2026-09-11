@@ -74,6 +74,17 @@ describe('array_test', async () => {
     const result = await nako.runAsync('0.5から1000000まで配列連番作成して配列要素数を表示', 'main.nako3')
     assert.strictEqual(result.log, '1000000')
   })
+  it('配列連番作成は2の52乗付近でも要素数上限を厳密に守る #2472', async () => {
+    // 2の52乗付近では浮動小数点の刻み幅が変わり、最初のi++が0.5しか進まないことがある。
+    // 式(Math.floor(b-a)+1)による事前算出では実際の反復回数(100万1件)と食い違い、
+    // 上限(100万)超過を見逃していた。ここでは生成しながら数える実装で確実に検知する。
+    const nako = new NakoCompiler()
+    await assert.rejects(
+      async () => {
+        await nako.runAsync('4503599627370495.5から4503599628370495まで配列連番作成してJSONエンコードして表示', 'main.nako3')
+      },
+      /要素数が多すぎます/)
+  })
   it('配列連番作成は要素数が多すぎる場合エラーになる #2472', async () => {
     const nako = new NakoCompiler()
     await assert.rejects(

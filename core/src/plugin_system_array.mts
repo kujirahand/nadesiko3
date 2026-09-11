@@ -404,13 +404,13 @@ export default {
       if (Math.abs(a) > Number.MAX_SAFE_INTEGER || Math.abs(b) > Number.MAX_SAFE_INTEGER) {
         throw new Error('『配列連番作成』には絶対値が2の53乗-1(9007199254740991)以下の数値を指定してください。')
       }
-      // ループは i<=b を満たす間 i++ するため、実際の要素数は Math.floor(b - a) + 1。
-      // 端点の小数部がずれる場合(0.5から1000000までなど)にb-a+1では過大に見積もってしまう
-      if (Math.floor(b - a) + 1 > MAX_RANGE_LENGTH) {
-        throw new Error('『配列連番作成』で生成される配列の要素数が多すぎます。')
-      }
+      // 要素数は式で事前算出せず、生成しながら数える。2の52乗付近ではi++の刻み幅が
+      // 1にならないことがあり、b-aから求める式では実際の反復回数と食い違うため
       const result: number[] = []
       for (let i = a; i <= b; i++) {
+        if (result.length >= MAX_RANGE_LENGTH) {
+          throw new Error('『配列連番作成』で生成される配列の要素数が多すぎます。')
+        }
         result.push(i)
       }
       return result
