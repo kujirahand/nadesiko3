@@ -392,6 +392,17 @@ export default {
     josi: [['から'], ['までの', 'まで', 'の']],
     pure: true,
     fn: function(a: number, b: number) {
+      // 非有限値や安全整数の範囲外は、ループが進展せず終了しなくなるため先に弾く
+      if (!Number.isFinite(a) || !Number.isFinite(b)) {
+        throw new Error('『配列連番作成』には有限の数値を指定してください。')
+      }
+      if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b)) {
+        throw new Error('『配列連番作成』には安全な整数の範囲(±2の53乗以内)の値を指定してください。')
+      }
+      const MAX_LENGTH = 100000000 // 配列の要素数上限(意図しない巨大配列生成を防ぐ)
+      if (b - a + 1 > MAX_LENGTH) {
+        throw new Error('『配列連番作成』で生成される配列の要素数が多すぎます。')
+      }
       const result: number[] = []
       for (let i = a; i <= b; i++) {
         result.push(i)
