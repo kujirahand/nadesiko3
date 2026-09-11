@@ -394,7 +394,7 @@ export default {
     type: 'func',
     josi: [['から'], ['までの', 'まで', 'の']],
     pure: true,
-    fn: function(a: number, b: number) {
+    fn: function(a: any, b: any) {
       // なでしこは動的型付けのため、DOM値やCSV由来の数値文字列が渡ることがある。
       // 数値へ変換してから検証することで、従来「先頭要素だけ文字列で残りが数値」に
       // なっていた不揃いな挙動も解消し、[1,2,3]のように揃った配列を返す

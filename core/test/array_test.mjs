@@ -48,6 +48,14 @@ describe('array_test', async () => {
   it('配列連番作成は数値文字列も数値として扱う #2472', async () => {
     // DOM値やCSV由来など文字列で渡ってくる場合でも、揃った数値配列になる
     await cmp('「1」から「3」まで配列連番作成してJSONエンコードして表示', '[1,2,3]')
+    // 空文字列や空白文字列は有限数値ではないためエラーになる
+    const nako = new NakoCompiler()
+    await assert.rejects(
+      async () => { await nako.runAsync('「」から「」まで配列連番作成', 'main.nako3') },
+      /有限の数値/)
+    await assert.rejects(
+      async () => { await nako.runAsync('「   」から3まで配列連番作成', 'main.nako3') },
+      /有限の数値/)
   })
   it('配列連番作成は2の53乗付近で無限ループせずエラーになる #2472', async () => {
     const err = async (/** @type {string} */code, /** @type {RegExp} */pattern) => {
