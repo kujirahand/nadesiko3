@@ -174,6 +174,9 @@ describe('plugin_system_test', async () => {
     await cmp('123を5でゼロ埋め。表示。', '00123')
     await cmp('12345を3でゼロ埋め。表示。', '12345')
     await cmp('「𩸽」を4でゼロ埋め。表示。', '000𩸽')
+    await cmpex('「5」を(0/0)でゼロ埋して表示。', { name: 'NakoError', message: '有限の整数' }) // #2480
+    await cmpex('「5」を1000001でゼロ埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
+    await cmpex('「5」を(10の21のべき乗)でゼロ埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480 parseIntでは検出できない指数表記
   })
   it('空白埋め', async () => {
     await cmp('10を3で空白埋め。表示。', ' 10')
@@ -182,6 +185,9 @@ describe('plugin_system_test', async () => {
     await cmp('「123」を5で空白埋め。表示。', '  123')
     await cmp('「12345」を3で空白埋め。表示。', '12345')
     await cmp('「𩸽」を4で空白埋め。表示。', '   𩸽')
+    await cmpex('「5」を(0/0)で空白埋して表示。', { name: 'NakoError', message: '有限の整数' }) // #2480
+    await cmpex('「5」を1000001で空白埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
+    await cmpex('「5」を(10の21のべき乗)で空白埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
   })
   it('配列要素数', async () => {
     await cmp('A=[0,1,2,3];Aの配列要素数。表示。', '4')
