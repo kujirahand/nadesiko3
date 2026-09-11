@@ -4937,6 +4937,7 @@
       "column": 2
      }
     ],
+    "isDec": false,
     "josi": "",
     "startOffset": 5,
     "endOffset": 8,
@@ -5001,33 +5002,17 @@
     },
     "blocks": [
      {
-      "type": "op",
-      "operator": "*",
-      "blocks": [
-       {
-        "type": "number",
-        "value": 1,
-        "josi": "だけ",
-        "startOffset": 2,
-        "endOffset": 5,
-        "file": "main.nako3",
-        "line": 0,
-        "column": 2
-       },
-       {
-        "type": "number",
-        "value": -1,
-        "line": 0
-       }
-      ],
-      "josi": "",
-      "startOffset": 5,
-      "endOffset": 8,
+      "type": "number",
+      "value": 1,
+      "josi": "だけ",
+      "startOffset": 2,
+      "endOffset": 5,
       "file": "main.nako3",
       "line": 0,
-      "column": 5
+      "column": 2
      }
     ],
+    "isDec": true,
     "josi": "",
     "startOffset": 5,
     "endOffset": 8,
@@ -7123,13 +7108,8 @@
     "blocks": [
      {
       "type": "op",
-      "operator": "*",
+      "operator": "-",
       "blocks": [
-       {
-        "type": "number",
-        "value": -1,
-        "line": 1
-       },
        {
         "type": "word",
         "value": "main__A",

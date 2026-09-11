@@ -85,6 +85,11 @@ export interface AstBlocks extends Ast {
   blocks: Ast[];
 }
 
+/** 増減文(『増やす』『減らす』) (#2488) */
+export interface AstInc extends AstBlocks {
+  isDec: boolean; // 減らすなら true (blocks[0] ... 増減量)
+}
+
 /** 改行やコメントなど */
 export interface AstEol extends Ast {
   comment: string;
