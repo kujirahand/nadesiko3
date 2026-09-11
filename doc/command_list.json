@@ -1916,7 +1916,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L28",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L42",
     "description": "文字列Vの文字数を返す"
   },
   {
@@ -1932,7 +1932,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L39",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L53",
     "description": "文字列SでAが何文字目にあるか調べて返す。見つからなければ0を返す。"
   },
   {
@@ -1948,7 +1948,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L56",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L70",
     "description": "文字コードV(あるいは文字列配列)から文字を返す"
   },
   {
@@ -1964,7 +1964,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L78",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L92",
     "description": "文字列V(あるいは文字列配列)の最初の文字の文字コードを返す"
   },
   {
@@ -1980,7 +1980,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L98",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L112",
     "description": "文字列SのI文字目に文字列Aを挿入する"
   },
   {
@@ -1996,7 +1996,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L109",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L123",
     "description": "文字列SでA文字目から文字列Bを検索。見つからなければ0を返す。(類似命令に『何文字目』がある)(v1非互換)"
   },
   {
@@ -2012,7 +2012,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L129",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L143",
     "description": "文字列または配列SにAを追加して返す(v1非互換)"
   },
   {
@@ -2028,7 +2028,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L141",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L155",
     "description": "文字列または配列SにAと改行を追加して返す(v1非互換)"
   },
   {
@@ -2044,7 +2044,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L154",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L168",
     "description": "引数(可変)に指定した文字列を連結して文字列を返す(可変引数)"
   },
   {
@@ -2060,7 +2060,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L164",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L178",
     "description": "引数(可変)に指定した文字列を連結して文字列を返す(可変引数)"
   },
   {
@@ -2076,7 +2076,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L173",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L187",
     "description": "文字列Vを一文字ずつに分解して返す"
   },
   {
@@ -2092,7 +2092,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L182",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L196",
     "description": "文字列VをCNT回繰り返す(v1非互換)"
   },
   {
@@ -2108,7 +2108,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L192",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L212",
     "description": "文字列SにAが何回出現するか数える"
   },
   {
@@ -2124,7 +2124,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L202",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L222",
     "description": "文字列SのA文字目からCNT文字を抽出する(『文字抜出』と同じ)"
   },
   {
@@ -2140,7 +2140,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L210",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L230",
     "description": "文字列SのA文字目からCNT文字を抽出する(Aが0未満の時は後ろからA文字目からCNT文字を抽出)"
   },
   {
@@ -2156,7 +2156,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L230",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L250",
     "description": "文字列Sの左端からCNT文字を抽出する"
   },
   {
@@ -2172,7 +2172,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L238",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L258",
     "description": "文字列Sの左端からCNT文字を抽出する"
   },
   {
@@ -2188,7 +2188,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L249",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L269",
     "description": "文字列Sの右端からCNT文字を抽出する(『文字右部分』と同じ)"
   },
   {
@@ -2204,7 +2204,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L257",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L277",
     "description": "文字列Sの右端からCNT文字を抽出する"
   },
   {
@@ -2220,7 +2220,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L270",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L290",
     "description": "文字列Sを区切り文字Aで区切って配列で返す"
   },
   {
@@ -2236,7 +2236,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L278",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L298",
     "description": "文字列Sを区切り文字Aで分割して配列で返す"
   },
   {
@@ -2252,7 +2252,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L292",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L312",
     "description": "文字列Sから文字列Aまでの部分を抽出する。切り取った残りは特殊変数『対象』に代入される。(v1非互換)"
   },
   {
@@ -2268,7 +2268,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L307",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L327",
     "description": "文字列Sで文字列AからBまでの部分を抽出して返す。切り取った残りは特殊変数『対象』に代入される。(v1非互換)"
   },
   {
@@ -2284,7 +2284,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L333",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L353",
     "description": "文字列SのA文字目からB文字分を削除して返す"
   },
   {
@@ -2300,7 +2300,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L344",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L364",
     "description": "文字列SがAから始まるならば真を返す"
   },
   {
@@ -2316,7 +2316,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L352",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L372",
     "description": "文字列SがAで終わるならば真を返す"
   },
   {
@@ -2332,7 +2332,7 @@
       "phpnako"
     ],
     "category": "文字列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L360",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L380",
     "description": "文字列(配列)SにAが出現する場合に真を返す"
   },
   {
@@ -2348,7 +2348,7 @@
       "phpnako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L377",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L397",
     "description": "文字列Sのうち文字列AをBに全部置換して返す"
   },
   {
@@ -2364,7 +2364,7 @@
       "phpnako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L385",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L405",
     "description": "文字列Sのうち、最初に出現するAだけをBに置換して返す"
   },
   {
@@ -2380,7 +2380,7 @@
       "phpnako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L394",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L414",
     "description": "文字列Sの前後にある空白を削除する"
   },
   {
@@ -2396,7 +2396,7 @@
       "phpnako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L402",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L422",
     "description": "文字列Sの前後にある空白を削除する"
   },
   {
@@ -2412,7 +2412,7 @@
       "phpnako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L410",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L430",
     "description": "文字列Sの末尾にある空白を削除する"
   },
   {
@@ -2428,7 +2428,7 @@
       "phpnako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L418",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L438",
     "description": "文字列Sの先頭にある空白を削除する"
   },
   {
@@ -2444,7 +2444,7 @@
       "phpnako"
     ],
     "category": "置換・トリム",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L426",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L446",
     "description": "文字列Sの末尾にある空白を削除する"
   },
   {
@@ -2460,7 +2460,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L436",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L456",
     "description": "アルファベットの文字列Sを大文字に変換"
   },
   {
@@ -2476,7 +2476,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L444",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L464",
     "description": "アルファベットの文字列Sを小文字に変換"
   },
   {
@@ -2492,7 +2492,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L452",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L472",
     "description": "文字列Sのカタカナをひらがなに変換"
   },
   {
@@ -2508,7 +2508,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L466",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L486",
     "description": "文字列Sのひらがなをカタカナに変換"
   },
   {
@@ -2524,7 +2524,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L480",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L500",
     "description": "文字列Sの半角英数文字を全角に変換"
   },
   {
@@ -2540,7 +2540,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L490",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L510",
     "description": "文字列Sの全角英数文字を半角に変換"
   },
   {
@@ -2556,7 +2556,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L500",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L520",
     "description": "文字列Sの半角英数記号文字を全角に変換"
   },
   {
@@ -2572,7 +2572,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L511",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L531",
     "description": "文字列Sの全角英数記号文字を半角に変換"
   },
   {
@@ -2588,7 +2588,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L522",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L542",
     "description": "文字列Sの半角カタカナを全角に変換"
   },
   {
@@ -2604,7 +2604,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L563",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L583",
     "description": "文字列Sの全角カタカナを半角に変換"
   },
   {
@@ -2620,7 +2620,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L586",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L606",
     "description": "文字列Sの半角文字を全角に変換"
   },
   {
@@ -2636,7 +2636,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L597",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L617",
     "description": "文字列Sの全角文字を半角に変換"
   },
   {
@@ -2652,7 +2652,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L604",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L624",
     "value": "'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」'"
   },
   {
@@ -2668,7 +2668,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L605",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L625",
     "value": "'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴ'"
   },
   {
@@ -2684,7 +2684,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L606",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L626",
     "value": "'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ'"
   },
   {
@@ -2700,7 +2700,7 @@
       "phpnako"
     ],
     "category": "文字変換",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L607",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L627",
     "value": "'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟｳﾞ'"
   },
   {
@@ -2716,7 +2716,7 @@
       "phpnako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L614",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L634",
     "description": "数値Vを三桁ごとにカンマで区切る"
   },
   {
@@ -2732,7 +2732,7 @@
       "phpnako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L622",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L642",
     "description": "数値VをA桁の0で埋める"
   },
   {
@@ -2748,7 +2748,7 @@
       "phpnako"
     ],
     "category": "指定形式",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L634",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L654",
     "description": "文字列VをA桁の空白で埋める"
   },
   {
@@ -2764,7 +2764,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L648",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L668",
     "description": "文字列Sの1文字目がひらがなか判定"
   },
   {
@@ -2780,7 +2780,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L657",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L677",
     "description": "文字列Sの1文字目がカタカナか判定"
   },
   {
@@ -2796,7 +2796,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L666",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L686",
     "description": "文字列Sの1文字目が数字か判定"
   },
   {
@@ -2812,7 +2812,7 @@
       "phpnako"
     ],
     "category": "文字種類",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L675",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_string.mts#L695",
     "description": "文字列S全部が数字か判定"
   },
   {
