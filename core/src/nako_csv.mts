@@ -17,8 +17,10 @@ export function resetEnv(): void {
   options.auto_convert_number = true
 }
 
-/// 文字列が数値化どうか判定する関数
- 
+/** 文字列が数値かどうか判定する関数
+ * @param str 判定する文字列
+ * @returns 数値なら true
+ */
 function is_numeric(str: string): boolean {
   return /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(str)
 }
@@ -37,6 +39,7 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
   // set pattern
   const patToDelim = '^(.*?)([\\' + delimiter + '\\n])'
   const reToDelim = new RegExp(patToDelim)
+  const reSpace = /\s/
   // if value is number then convert to float
   const convType = function(v: string) {
     let result: string|number = v
@@ -48,7 +51,9 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
     return result
   }
   // parse txt
-  const res = []; let cells = []; let c = ''
+  const res: (string|number)[][] = []
+  let cells: (string|number)[] = []
+  let c = ''
   while (txt !== '') {
     // first check delimiter (because /^\s+/ skip delimiter'\t') (#3)
     c = txt.charAt(0)
@@ -103,22 +108,32 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
       continue
     }
     // "" ... 空引用符フィールドか、Excel方言の空セルかを判定する (#2476)
-    if (txt.length >= 3 && txt.charAt(1) === '"') {
-      const next = txt.charAt(2)
-      // 直後が区切り・改行・引用符のいずれでもなければ、Excel方言の空セルとして扱う
-      if (next !== delimiter && next !== '\n' && next !== '"') {
-        cells.push('')
-        txt = txt.substring(2)
+    // """" のように隣接する引用符エスケープは、通常の引用フィールド解析に任せる
+    if (txt.length >= 3 && txt.charAt(1) === '"' && txt.charAt(2) !== '"') {
+      // 区切り文字・改行に達するまで、空白文字(全角空白など \s が空白とみなす文字)をスキップして判定する
+      let idx = 2
+      while (idx < txt.length) {
+        const ch = txt.charAt(idx)
+        if (ch === delimiter || ch === '\n') break
+        if (!reSpace.test(ch)) break
+        idx++
+      }
+      const next = txt.charAt(idx)
+      if (next === delimiter || next === '\n') {
+        // 空引用符フィールドとして扱い、""と後続の空白を捨てて区切り/改行の処理に委ねる
+        txt = txt.substring(idx)
         continue
       }
-      // それ以外は空引用符フィールドとして、通常の引用フィールド解析に任せる
+      // Excel方言の空セルとして扱い、続きを通常のセルとして解析する
+      cells.push('')
+      txt = txt.substring(2)
+      continue
     }
     // "..."
     let i = 1; let s = ''
     while (i < txt.length) {
       const c1 = txt.charAt(i)
       const c2 = txt.charAt(i + 1)
-      // console.log("@" + c1 + c2);
       // 2quote => 1quote char
       if (c1 === '"' && c2 === '"') {
         i += 2
@@ -140,14 +155,13 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
           cells = []
           break
         }
-        // if (c2 === " " || c2 === "\t") {
         i++
         continue
       }
       s += c1
       i++
     }
-    txt = txt.substr(i)
+    txt = txt.substring(i)
   }
   if (cells.length > 0) res.push(cells)
   return res
