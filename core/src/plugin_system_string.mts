@@ -491,12 +491,12 @@ export default {
       })
     }
   },
-  '英数記号半角変換': { // @文字列Sの記号文字を半角に変換 // @えいすうきごうはんかくへんかん
+  '英数記号半角変換': { // @文字列Sの全角英数記号文字を半角に変換 // @えいすうきごうはんかくへんかん
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
     fn: function(s: string): string {
-      return String(s).replace(/[\u3000\uFF00-\uFF5F]/g, function(v: string) {
+      return String(s).replace(/[\u3000\uFF01-\uFF5E]/g, function(v: string) {
         if (v === '　') { return ' ' } // 全角スペース(U+3000)を半角スペース(U+0020)
         return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
       })
