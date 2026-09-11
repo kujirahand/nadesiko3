@@ -30,14 +30,17 @@ export function parse(txt: string, delimiter: string|undefined = undefined): (st
   if (delimiter === undefined) {
     delimiter = options.delimiter
   }
+  // 区切り文字は単一文字（, や \t など）を想定する
   // check txt
   txt = '' + txt + '\n'
   // convert CRLF to LF, and CR to LF
   txt = txt.replace(/(\r\n|\r)/g, '\n')
-  // trim right
-  txt = txt.replace(/\s+$/, '') + '\n'
+  // trim right (末尾の空白は除去する。ただし区切り文字は空セルを表すため残す #2477)
+  // [^\S<区切り文字>] は「\s（空白文字）から区切り文字を除いた集合」。末尾の区切り文字は残し、それ以外の空白を除去する
+  const escDelim = delimiter.replace(/[-.*+?^${}()|[\]\\]/g, '\\$&')
+  txt = txt.replace(new RegExp('[^\\S' + escDelim + ']+$'), '') + '\n'
   // set pattern
-  const patToDelim = '^(.*?)([\\' + delimiter + '\\n])'
+  const patToDelim = '^(.*?)([' + escDelim + '\\n])'
   const reToDelim = new RegExp(patToDelim)
   const reSpace = /\s/
   // if value is number then convert to float

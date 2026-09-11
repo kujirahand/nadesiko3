@@ -2,7 +2,7 @@
 import { beforeEach, describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
-import { stringify, resetEnv } from '../src/nako_csv.mjs'
+import { stringify, resetEnv, parse } from '../src/nako_csv.mjs'
 
 /** 密な2次元配列を stringify し、結果と、入力の表が書き換わらないこと・反復変換の安定性を検証する */
 const assertStringify = (/** @type {(string|number)[][]} */ ary, /** @type {string} */ expected, /** @type {string|undefined} */ delimiter = undefined) => {
@@ -80,6 +80,36 @@ describe('plugin_csv_test', () => {
     await cmp('a=「1\t"a""a"\t2」のTSV取得。a[0][1]を表示', 'a"a')
     await cmp('a=「1\t"2""2"\t3\n4\t5\t6」のTSV取得。a[0][1]を表示', '2"2')
     await cmp('a=「1\t\t3\n4\t5\t6」のTSV取得。a[0][2]を表示', '3')
+  })
+  it('CSV/TSV取得で末尾の空列が失われない #2477', async () => {
+    // 行末の空セル(タブ)が保存される
+    await cmp('a=「1\t\t」のTSV取得。aをJSONエンコードして表示', '[[1,"",""]]')
+    await cmp('a=「1\t2\t」のTSV取得。aをJSONエンコードして表示', '[[1,2,""]]')
+    // 全空セル
+    await cmp('a=「\t\t」のTSV取得。aをJSONエンコードして表示', '[["","",""]]')
+    // 複数行
+    await cmp('a=「1\t\t\n2\t\t」のTSV取得。aをJSONエンコードして表示', '[[1,"",""],[2,"",""]]')
+    // CRLF混在
+    await cmp('a=「1\t2\t\r\n3\t4\t」のTSV取得。aをJSONエンコードして表示', '[[1,2,""],[3,4,""]]')
+    // 末尾の改行の後に空白があっても余分な空行を作らない
+    await cmp('a=「1,2,3\n 」のCSV取得。aをJSONエンコードして表示', '[[1,2,3]]')
+    await cmp('a=「1\t\t\n 」のTSV取得。aをJSONエンコードして表示', '[[1,"",""]]')
+    // 単一の末尾タブ・連続する末尾タブ
+    await cmp('a=「1\t」のTSV取得。aをJSONエンコードして表示', '[[1,""]]')
+    await cmp('a=「1\t\t\t」のTSV取得。aをJSONエンコードして表示', '[[1,"","",""]]')
+    // CSVは末尾の空セル(カンマ)が従来どおり保存される
+    await cmp('a=「1,,」のCSV取得。aをJSONエンコードして表示', '[[1,"",""]]')
+    await cmp('a=「1,2,3,」のCSV取得。aをJSONエンコードして表示', '[[1,2,3,""]]')
+    await cmp('a=「1,2,,」のCSV取得。aをJSONエンコードして表示', '[[1,2,"",""]]')
+    // CSVでは末尾のタブ・スペースは従来どおりトリムされる
+    await cmp('a=「1,2,3\t」のCSV取得。aをJSONエンコードして表示', '[[1,2,3]]')
+  })
+  it('parseは正規表現メタ文字の区切り文字でも末尾の空列を扱える #2477', () => {
+    // 区切り文字の正規表現エスケープと末尾の空列保持を直接検証する
+    assert.deepStrictEqual(parse('1|2|', '|'), [[1, 2, '']])
+    assert.deepStrictEqual(parse('1]2]', ']'), [[1, 2, '']])
+    assert.deepStrictEqual(parse('1\\2\\', '\\'), [[1, 2, '']])
+    assert.deepStrictEqual(parse('1-2-', '-'), [[1, 2, '']])
   })
   it('表CSV変換', async () => {
     await cmp('[[1,2,3],[4,5,6]]を表CSV変換して表示', '1,2,3\r\n4,5,6')
