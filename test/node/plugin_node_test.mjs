@@ -61,14 +61,24 @@ function makeTmpDir(/** @type {string} */prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix))
 }
 
-// 指定したファイルが生成されるまで待つ (detachedな子プロセスの起動を待つため)
+// フェイクコマンド差し替えで検証できるOSか (実装はWindowsも対応するがexplorerは差し替え不能)
+function canTestExplorerLaunch() {
+  return process.platform === 'darwin' || process.platform === 'linux'
+}
+
+// 指定したファイルの書き込み完了(末尾改行)まで待つ (detachedな子プロセスの起動を待つため)
 async function waitForFile(/** @type {string} */p, /** @type {number} */timeoutMs=5000) {
   const start = Date.now()
   while (Date.now() - start < timeoutMs) {
-    if (fs.existsSync(p)) { return }
+    try {
+      const s = fs.readFileSync(p, 'utf8')
+      if (s.endsWith('\n')) { return }
+    } catch {
+      // まだ無い / 書き込み途中
+    }
     await new Promise((resolve) => setTimeout(resolve, 50))
   }
-  throw new Error(`ファイルが生成されませんでした: ${p}`)
+  throw new Error(`ファイルの書き込み完了（末尾改行）を確認できませんでした: ${p}`)
 }
 
 describe('plugin_node_test', () => {
@@ -97,8 +107,8 @@ describe('plugin_node_test', () => {
     await cmp('「PATH」の環境変数取得して表示。', path || '')
   })
   it('エクスプローラー起動', async function () {
-    // Windowsのexplorerは組み込みのため差し替えできないので省略 (#2491)
-    if (process.platform === 'win32') { return this.skip() }
+    // フェイクコマンドをPATHに差し替えて検証できるdarwin/linux以外は対象外 (#2491)
+    if (!canTestExplorerLaunch()) { return this.skip() }
     // 実際のGUIを起動しないよう、フェイクコマンドをPATHに差し替える (#2491)
     const cmdName = process.platform === 'darwin' ? 'open' : 'xdg-open'
     const binDir = makeTmpDir('nako3-explorer-')
@@ -137,8 +147,8 @@ describe('plugin_node_test', () => {
     }
   })
   it('エクスプローラー起動-コマンドが見つからない場合', async function () {
-    // Windowsのexplorerは組み込みのため対象外 (#2491)
-    if (process.platform === 'win32') { return this.skip() }
+    // フェイクコマンドをPATHに差し替えて検証できるdarwin/linux以外は対象外 (#2491)
+    if (!canTestExplorerLaunch()) { return this.skip() }
     const emptyDir = makeTmpDir('nako3-explorer-nocmd-')
     const origPath = process.env.PATH
     process.env.PATH = emptyDir
@@ -160,6 +170,33 @@ describe('plugin_node_test', () => {
     } finally {
       process.env.PATH = origPath
       fs.rmSync(emptyDir, { recursive: true, force: true })
+    }
+  })
+  it('エクスプローラー起動-spawn失敗', async function () {
+    // xdg-open経路のspawn失敗はlinuxでのみ検証する
+    // (macOSではPATH先頭の壊れたopenがあっても実openへフォールバックしうるため #2491)
+    if (process.platform !== 'linux') { return this.skip() }
+    const binDir = makeTmpDir('nako3-explorer-spawnerr-')
+    // 実行ビットはあるが起動できないコマンド (errorイベント経路の回帰テスト #2491)
+    fs.writeFileSync(path.join(binDir, 'xdg-open'), '#!/no/such/interpreter\n', { mode: 0o755 })
+    const origPath = process.env.PATH
+    process.env.PATH = binDir
+    try {
+      const fn = PluginNode['エクスプローラー起動'].fn
+      await assert.rejects(
+        () => fn('/tmp', { tags: { isWin: false, isMac: false } }),
+        (err) => {
+          assert.match(String(err.message), /エクスプローラー起動に失敗しました/)
+          return true
+        }
+      )
+      const nako = new NakoCompiler()
+      nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
+      const g = await nako.runAsync('「/tmp」をエクスプローラー起動。', 'main')
+      assert.strictEqual(g.numFailures > 0, true, 'spawn失敗はエラーになるべき')
+    } finally {
+      process.env.PATH = origPath
+      fs.rmSync(binDir, { recursive: true, force: true })
     }
   })
   it('ファイルサイズ取得', async () => {
