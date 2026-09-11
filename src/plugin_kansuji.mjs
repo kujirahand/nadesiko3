@@ -28,35 +28,13 @@ const PluginKansuji = {
       function preprocesser (input) {
         // eslint-disable-next-line camelcase
         function if_number_is_exponent (input) {
-          const match = input.match(/[0-9]*\.?[0-9]+[eE][-+]?[0-9]+/)
-          if (match && match[0] === input) {
-            const base = input.match(/[0-9]*\.?[0-9]+[eE]/)[0].slice(0, -1)
-            const exponent = input.match(/[eE][-+]?[0-9]+/)[0].slice(1)
-            // eslint-disable-next-line no-inner-declarations
-            function movepoint (base, exponent) {
-              const sign = exponent[0]
-              const curpointidx = base.includes('.') ? base.indexOf('.') : base.length
-              const idx = sign === '-' ? curpointidx - parseInt(exponent.slice(1)) : curpointidx + parseInt(exponent.match(/[0-9]+$/)[0])
-              function strIns (str, idx, val) {
-                return str.slice(0, idx) + val + str.slice(idx)
-              }
-              if (idx > 0) {
-                if (base.length - curpointidx > idx) {
-                  return strIns(base.replace('.', ''), idx, '.')
-                } else {
-                  if (base.includes('.')) {
-                    return base.replace('.', '') + '0'.repeat(idx - base.length + curpointidx)
-                  } else {
-                    return base + '0'.repeat(idx - base.length + curpointidx - 1)
-                  }
-                }
-              } else {
-                return '0.' + '0'.repeat(-idx) + base.replace('.', '')
-              }
-            }
-            input = movepoint(base, exponent)
-          }
-          return input
+          // 符号・仮数・指数を分離して、仮数部を文字列操作で桁移動する
+          const match = input.match(/^([-+]?)([0-9]+\.?[0-9]*|\.[0-9]+)[eE]([-+]?[0-9]+)$/)
+          if (!match) { return input }
+          const sign = match[1]
+          const mantissa = match[2]
+          const exponent = parseInt(match[3], 10)
+          return sign + moveDecimalPoint(mantissa, exponent)
         }
         function asciify (input) { // 全角数字を半角数字に
           return input.replace(/[０-９]/g, s => {
@@ -65,9 +43,14 @@ const PluginKansuji = {
         }
         input = asciify(input)
         if (Number.isNaN(Number(input))) { throw new Error('『漢数字』命令の中に無効な文字が含まれています。') }
-        const output = if_number_is_exponent(input.toString())
-        // eslint-disable-next-line no-loss-of-precision
-        if (output > BigInt(999999999999999999999999999999999999999999999999999999999999999999999999)) { throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。') }
+        const output = if_number_is_exponent(input)
+        // 符号を除いた整数部で大きさを判定する
+        const abs = output.replace(/^[-+]/, '')
+        const intDigits = abs.match(/^[0-9]+/)
+        if (intDigits && BigInt(intDigits[0]) > 漢数字最大値) { throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。') }
+        // 小数部も同じ桁数制限を適用する (指数表記と小数リテラルで挙動を揃える)
+        const fracDigits = abs.split('.')[1]
+        if (fracDigits !== undefined && fracDigits.replace(/0+$/, '').length > 漢数字最大桁数) { throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。') }
         return output
       }
       input = preprocesser(String(input))
@@ -122,10 +105,12 @@ const PluginKansuji = {
       let flag = ''
       if (input.charAt(0) === '+' || input.charAt(0) === '-') {
         flag = input.charAt(0)
-        input = input.substr(1)
+        input = input.slice(1)
       }
       let res = converter(separater(input))
       if (res === '') { res = '零' }
+      // 値が0のときは符号を付けない (-0 や +0.0 も 零 とする)
+      if (input.replace(/[.0]/g, '') === '') { return '零' }
       return flag + res
     }
   },
@@ -227,6 +212,42 @@ const 軸数字 = [
 ]
 const 基本算用数字 = '0123456789'.split('')
 const 基本漢数字 = '〇一二三四五六七八九'.split('')
+
+// 漢数字で扱える整数の最大桁数と最大値 (単位数字 × 軸数字 = 72桁)
+const 漢数字最大桁数 = 単位数字.length * 軸数字.length
+const 漢数字最大値 = BigInt('9'.repeat(漢数字最大桁数))
+
+// 指数表記の仮数部を、文字列操作で桁移動する(巨大整数をNumberへ丸めない)
+function moveDecimalPoint (base, exponent) {
+  const dotIdx = base.indexOf('.')
+  const intPart = dotIdx >= 0 ? base.slice(0, dotIdx) : base
+  const fracPart = dotIdx >= 0 ? base.slice(dotIdx + 1) : ''
+  let digits = intPart + fracPart
+  // 小数点の位置を、先頭の0を除去した個数で補正する
+  let pointPos = intPart.length + exponent
+  let lead = 0
+  while (lead < digits.length - 1 && digits[lead] === '0') { lead++ }
+  digits = digits.slice(lead)
+  pointPos -= lead
+  if (digits === '0') { return '0' }
+  // 末尾の0は結果では省略されるので、桁数カウントから除外する
+  // (位取りの0は pointPos が保持しているので repeat で復元される)
+  digits = digits.replace(/0+$/, '')
+  // 生成後の整数部・小数部が、それぞれ扱える桁数を超えていないか確認する
+  // (repeatで巨大な文字列を組み立てる前に弾く)
+  const intDigitsCount = pointPos > 0 ? pointPos : 0
+  const fracDigitsCount = pointPos < digits.length ? digits.length - pointPos : 0
+  if (intDigitsCount > 漢数字最大桁数 || fracDigitsCount > 漢数字最大桁数) {
+    throw new Error('『漢数字』命令の中に含められる数の大きさを超えています。')
+  }
+  if (pointPos <= 0) {
+    return '0.' + '0'.repeat(-pointPos) + digits
+  }
+  if (pointPos >= digits.length) {
+    return digits + '0'.repeat(pointPos - digits.length)
+  }
+  return digits.slice(0, pointPos) + '.' + digits.slice(pointPos)
+}
 
 export default PluginKansuji
 

@@ -174,6 +174,9 @@ describe('plugin_system_test', async () => {
     await cmp('123を5でゼロ埋め。表示。', '00123')
     await cmp('12345を3でゼロ埋め。表示。', '12345')
     await cmp('「𩸽」を4でゼロ埋め。表示。', '000𩸽')
+    await cmpex('「5」を(0/0)でゼロ埋して表示。', { name: 'NakoError', message: '有限の整数' }) // #2480
+    await cmpex('「5」を1000001でゼロ埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
+    await cmpex('「5」を(10の21のべき乗)でゼロ埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480 parseIntでは検出できない指数表記
   })
   it('空白埋め', async () => {
     await cmp('10を3で空白埋め。表示。', ' 10')
@@ -182,6 +185,9 @@ describe('plugin_system_test', async () => {
     await cmp('「123」を5で空白埋め。表示。', '  123')
     await cmp('「12345」を3で空白埋め。表示。', '12345')
     await cmp('「𩸽」を4で空白埋め。表示。', '   𩸽')
+    await cmpex('「5」を(0/0)で空白埋して表示。', { name: 'NakoError', message: '有限の整数' }) // #2480
+    await cmpex('「5」を1000001で空白埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
+    await cmpex('「5」を(10の21のべき乗)で空白埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
   })
   it('配列要素数', async () => {
     await cmp('A=[0,1,2,3];Aの配列要素数。表示。', '4')
@@ -449,6 +455,13 @@ describe('plugin_system_test', async () => {
     await cmp('「ａｂｃ１２３＃」を英数記号半角変換して表示', 'abc123#')
     await cmp('「abc123」を英数全角変換して表示', 'ａｂｃ１２３')
     await cmp('「ａｂｃ１２３」を英数半角変換して表示', 'abc123')
+    // #2479 対応範囲(FF01-FF5E)の外は変換しない
+    await cmp('S=「｟」を英数記号半角変換。SのASCを表示', '65375') // U+FF5F は保持
+    await cmp('S=「｠」を英数記号半角変換。SのASCを表示', '65376') // U+FF60 は保持
+    await cmp('S=CHR(0xFF00)を英数記号半角変換。SのASCを表示', '65280') // U+FF00 は保持
+    await cmp('S=「～」を英数記号半角変換。SのASCを表示', '126') // U+FF5E は ~ へ
+    await cmp('「｟｠～」を英数記号半角変換して表示', '｟｠~') // #2479 境界
+    await cmp('S=「｟」を半角変換。SのASCを表示', '65375') // #2479 半角変換経由
   })
   it('カタカナ全角半角変換', async () => {
     await cmp('「アガペ123」をカタカナ半角変換して表示', 'ｱｶﾞﾍﾟ123')
@@ -459,6 +472,20 @@ describe('plugin_system_test', async () => {
     await cmp('「ﾁｬｲﾅﾏﾝｺﾞｰ」をカタカナ全角変換して表示', 'チャイナマンゴー')
     await cmp('「ｲﾛﾊﾆﾎﾍﾄ」をカタカナ全角変換して表示', 'イロハニホヘト') // #2457
     await cmp('「ﾄ」をカタカナ全角変換して表示', 'ト') // #2457
+    await cmp('「ｳﾞ」をカタカナ全角変換して表示', 'ヴ') // #2478
+    await cmp('「ﾞｷ」をカタカナ全角変換して表示', 'ﾞキ') // #2478 濁点ペアの境界を誤結合しない
+    await cmp('「ﾟﾋ」をカタカナ全角変換して表示', 'ﾟヒ') // #2478 半濁点ペアの境界を誤結合しない
+    await cmp('「ﾞ」をカタカナ全角変換して表示', 'ﾞ') // #2478 単独濁点を黙って消さない
+    await cmp('「ﾟ」をカタカナ全角変換して表示', 'ﾟ') // #2478 単独半濁点を黙って消さない
+    await cmp('「ｶﾞ」をカタカナ全角変換して表示', 'ガ') // #2478
+    await cmp('「ﾜﾞ」をカタカナ全角変換して表示', 'ワﾞ') // #2478 変換表にないペアは結合しない
+    await cmp('「ｦﾞ」をカタカナ全角変換して表示', 'ヲﾞ') // #2478 変換表にないペアは結合しない
+    await cmp('「ｶﾟ」をカタカナ全角変換して表示', 'カﾟ') // #2478 無効な半濁点ペアは結合しない
+    await cmp('「ヴ」をカタカナ半角変換して表示', 'ｳﾞ') // #2478 逆変換も対応
+    await cmp('「ｳﾞ」を全角変換して表示', 'ヴ') // #2478 全角変換経由
+    await cmp('「ヴ」を半角変換して表示', 'ｳﾞ') // #2478 半角変換経由
+    await cmp('「ｱｶﾞｳﾞ」をカタカナ全角変換して表示', 'アガヴ') // #2478 混在
+    await cmp('「ｳﾞｳﾞ」をカタカナ全角変換して表示', 'ヴヴ') // #2478 連続
   })
   it('JS関数実行', async () => {
     await cmp('"Math.floor"を[3.14]でJS関数実行して表示', '3')
@@ -486,6 +513,28 @@ describe('plugin_system_test', async () => {
     await cmp('「https://nadesi.com/?a=3&b=5」のURLパラメータ解析;それ["a"]を表示;それ["b"]を表示。', '3\n5')
     await cmp('「https://nadesi.com/?a=3=3&b=5」のURLパラメータ解析;それ["a"]を表示;それ["b"]を表示。', '3=3\n5')
     await cmp('「https://nadesi.com/?a&b=5」のURLパラメータ解析;それ["a"]を表示;それ["b"]を表示。', '\n5')
+    await cmp('「https://nadesi.com/?next=a?b」のURLパラメータ解析;それ["next"]を表示。', 'a?b')
+    await cmp('「https://nadesi.com/?token=a=b」のURLパラメータ解析;それ["token"]を表示。', 'a=b')
+    await cmp('「https://nadesi.com/?a=1#frag」のURLパラメータ解析;それ["a"]を表示。', '1')
+    await cmp('「https://nadesi.com/?a=1&a=2」のURLパラメータ解析;それ["a"]を表示。', '2')
+    await cmp('「https://nadesi.com/?a=hello+world」のURLパラメータ解析;それ["a"]を表示。', 'hello world')
+    await cmp('「https://nadesi.com/?a=%ZZ」のURLパラメータ解析;それ["a"]を表示。', '%ZZ')
+    await cmp('「https://nadesi.com/?__proto__=x」のURLパラメータ解析;それ["__proto__"]を表示。', 'x')
+    await cmp('「https://nadesi.com/?a=」のURLパラメータ解析;それ["a"]を表示。', '')
+    await cmp('「https://nadesi.com/?a」のURLパラメータ解析;それ["a"]を表示。', '')
+    await cmp('「https://nadesi.com/?」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    await cmp('「https://nadesi.com/?a=%2B」のURLパラメータ解析;それ["a"]を表示。', '+')
+    await cmp('「https://nadesi.com/p#frag?a=1」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    await cmp('「https://nadesi.com/?=x」のURLパラメータ解析;それ[""]を表示。', 'x')
+    await cmp('「https://nadesi.com/?&」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    // URLパラメータ解析はクエリ解析のため+を空白に変換する(URLデコードは変換しない)
+    await cmp('「+」をURLデコードして表示', '+')
+    await cmp('「?x=+」のURLパラメータ解析;それ["x"]をVに代入;「A{V}B」を表示。', 'A B')
+    await cmp('「https://nadesi.com/?__proto__=x」のURLパラメータ解析してJSONエンコードして表示', '{"__proto__":"x"}')
+    await cmp('「https://nadesi.com/?hasOwnProperty=x」のURLパラメータ解析;それ["hasOwnProperty"]を表示。', 'x')
+    await cmp('「https://nadesi.com/?constructor=x」のURLパラメータ解析;それ["constructor"]を表示。', 'x')
+    // hasOwnPropertyキーを含む辞書でも反復処理が動作する
+    await cmp('「https://nadesi.com/?hasOwnProperty=x&a=1」のURLパラメータ解析してAに代入。Aを反復\n対象キーを表示\nここまで', 'hasOwnProperty\na')
   })
   it('助詞省略形のコマンド', async () => {
     await cmp('3が1以上。もし、そうなら「OK」と表示。', 'OK')

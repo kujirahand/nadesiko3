@@ -1,7 +1,16 @@
 /* eslint-disable no-undef */
-import { describe, it } from 'node:test'
+import { beforeEach, describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
+import { stringify, resetEnv } from '../src/nako_csv.mjs'
+
+/** 密な2次元配列を stringify し、結果と、入力の表が書き換わらないこと・反復変換の安定性を検証する */
+const assertStringify = (/** @type {(string|number)[][]} */ ary, /** @type {string} */ expected, /** @type {string|undefined} */ delimiter = undefined) => {
+  const before = ary.map((row) => [...row])
+  assert.strictEqual(stringify(ary, delimiter), expected)
+  assert.deepStrictEqual(ary, before, '入力の表が書き換えられていない')
+  assert.strictEqual(stringify(ary, delimiter), expected, '反復変換で結果が変わらない')
+}
 
 // eslint-disable-next-line no-undef
 describe('plugin_csv_test', () => {
@@ -11,6 +20,9 @@ describe('plugin_csv_test', () => {
     const g = await nako.runAsync(code)
     assert.strictEqual(g.log, res)
   }
+
+  // グローバルオプション(options)の状態がテスト順序に依存しないよう初期化する
+  beforeEach(() => { resetEnv() })
 
   // --- test ---
   it('CSV取得', async () => {
@@ -90,5 +102,49 @@ describe('plugin_csv_test', () => {
   it('「2024.01.01」のような日付形式が実数として誤判定する #1910（auto_convert_numberをOFF）', async () => {
     await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'string')
     await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。a[0][0]を表示', '2024.01')
+  })
+  it('CSV/TSV変換が入力の表を書き換えない #2475', async () => {
+    // 変換しても元の表が変化しない
+    await cmp('A=[["a,b"]]。AをCSV変換。AをJSONエンコードして表示', '[["a,b"]]')
+    await cmp('A=[["a,b"]]。Aを表CSV変換。AをJSONエンコードして表示', '[["a,b"]]')
+    await cmp('A=[["a\tb"]]。AをTSV変換。AをJSONエンコードして表示', '[["a\\tb"]]')
+    await cmp('A=[["a\tb"]]。Aを表TSV変換。AをJSONエンコードして表示', '[["a\\tb"]]')
+    // 引用符を含むセル
+    await cmp('A=[[「a"b」]]。AをCSV変換。AをJSONエンコードして表示', '[["a\\"b"]]')
+    await cmp('A=[[「a"b」]]。Aを表CSV変換。AをJSONエンコードして表示', '[["a\\"b"]]')
+    await cmp('A=[[「a"b」]]。AをTSV変換。AをJSONエンコードして表示', '[["a\\"b"]]')
+    await cmp('A=[[「a"b」]]。Aを表TSV変換。AをJSONエンコードして表示', '[["a\\"b"]]')
+    // 2回変換しても結果が変わらない
+    await cmp('A=[["a,b"]]。AをCSV変換。AをCSV変換して表示', '"a,b"')
+    await cmp('A=[["a,b"]]。Aを表CSV変換。Aを表CSV変換して表示', '"a,b"')
+    await cmp('A=[[「a"b」]]。AをCSV変換。AをCSV変換して表示', '"a""b"')
+    await cmp('A=[["a\tb"]]。AをTSV変換。AをTSV変換して表示', '"a\tb"')
+    await cmp('A=[["a\tb"]]。Aを表TSV変換。Aを表TSV変換して表示', '"a\tb"')
+  })
+  it('stringifyは入力の表を書き換えず、反復変換しても結果が変わらない #2475', () => {
+    // 引用符を含むセル
+    assertStringify([['a"b']], '"a""b"\r\n')
+    // 区切り文字を含むセル
+    assertStringify([['a,b']], '"a,b"\r\n')
+    // 改行を含むセル
+    assertStringify([['a\nb']], '"a\r\nb"\r\n')
+    // 空セル
+    assertStringify([['', 'a']], ',a\r\n')
+    // 数値セル
+    assertStringify([[1, 2.5]], '1,2.5\r\n')
+    // 引用符・改行・区切り文字が混在するセル
+    assertStringify([['a,"b\nc', 'x']], '"a,""b\r\nc",x\r\n')
+    // TSV区切り
+    assertStringify([['a\tb']], '"a\tb"\r\n', '\t')
+    // 疎配列の穴は従来どおり 'undefined' として変換され、入力は書き換わらない
+    const sparseRow = []
+    sparseRow[1] = 'b'
+    assert.strictEqual(stringify([sparseRow], ','), 'undefined,b\r\n')
+    assert.strictEqual(0 in sparseRow, false, '入力の表が書き換えられていない')
+    assert.strictEqual(stringify([sparseRow], ','), 'undefined,b\r\n', '反復変換で結果が変わらない')
+    // 引数が undefined のときは空文字列を返す
+    assert.strictEqual(stringify(undefined), '')
+    // 空配列
+    assertStringify([], '')
   })
 })

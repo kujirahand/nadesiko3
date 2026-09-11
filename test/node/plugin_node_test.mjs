@@ -16,17 +16,6 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const testFileMe = path.join(__dirname, 'plugin_node_test.mjs')
 
-async function cmp(/** @type {string} */code, /** @type {string} */res, /** @type {number} */ms=10) {
-  // (原則) EvalやFunctionの中で行う非同期処理は、その中で行うこと！
-  // @see https://qiita.com/kujirahand/items/880917172bb0de8d30b9
-  const nako = new NakoCompiler()
-  nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
-  nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-  const g = await nako.runAsync(code, 'main')
-  await forceWait(ms)
-  assert.strictEqual(g.log, res) // 強制的に指定ミリ秒待つ
-  return g
-}
 // 強制的にミリ秒待機
 function forceWait(/** @type {number} */ms) {
   return /** @type {Promise<void>} */(new Promise((resolve, reject) => {
@@ -34,11 +23,26 @@ function forceWait(/** @type {number} */ms) {
   }));
 }
 
-const cmd = async (/** @type {string} */ code) => {
+// コードを実行して実行結果(g)を返す
+async function run(/** @type {string} */code, /** @type {number} */ms=10) {
+  // (原則) EvalやFunctionの中で行う非同期処理は、その中で行うこと！
+  // @see https://qiita.com/kujirahand/items/880917172bb0de8d30b9
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
-  await nako.runAsync(code, 'main')
+  const g = await nako.runAsync(code, 'main')
+  await forceWait(ms)
+  return g
+}
+
+async function cmp(/** @type {string} */code, /** @type {string} */res, /** @type {number} */ms=10) {
+  const g = await run(code, ms)
+  assert.strictEqual(g.log, res)
+  return g
+}
+
+const cmd = async (/** @type {string} */ code) => {
+  await run(code)
 }
 function get7zPath() {
   if (process.platform === 'linux') { // Linuxならパスを調べる
@@ -119,25 +123,71 @@ describe('plugin_node_test', () => {
     await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。S=Fを読む。Sを表示。', 'abc', 100)
     // await cmp('F=「{テンポラリフォルダ}/test.txt」;「abc」をFに保存。Fを読んでトリムして表示。', 'abc')
   })
+  it('一時フォルダ作成', async () => {
+    const created = []
+    try {
+      // 指定したフォルダの配下に作成されること (#2490)
+      const base = makeTmpDir('nako3-ichiji-')
+      created.push(base)
+      let result = (await run(`「${base}」へ一時フォルダ作成して表示。`)).log
+      created.push(result)
+      assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
+      assert.ok(fs.statSync(result).isDirectory(), `作成されたのはフォルダ: ${result}`)
+      assert.ok(path.basename(result).startsWith('nako-'), `作成名のprefixはnako-: ${result}`)
+      assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(base))
+      // 末尾に区切り文字があっても同じフォルダの配下に作成されること
+      result = (await run(`「${base}${path.sep}」へ一時フォルダ作成して表示。`)).log
+      created.push(result)
+      assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
+      assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(base))
+      // 引数を省略した場合はOSのテンポラリフォルダの配下に作成されること
+      result = (await run('一時フォルダ作成して表示。')).log
+      created.push(result)
+      assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
+      assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(os.tmpdir()))
+      // 空白だけのパスは既定(OSのテンポラリフォルダ)として扱うこと
+      result = (await run('「   」へ一時フォルダ作成して表示。')).log
+      created.push(result)
+      assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
+      assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(os.tmpdir()))
+      // 前後に空白があるパスは空白を除いて扱うこと
+      result = (await run(`「  ${base}  」へ一時フォルダ作成して表示。`)).log
+      created.push(result)
+      assert.ok(fs.existsSync(result), `作成されたフォルダが存在する: ${result}`)
+      assert.strictEqual(fs.realpathSync(path.dirname(result)), fs.realpathSync(base))
+      // 指定したフォルダが存在しない場合はエラーになること
+      const missing = path.join(base, 'not-exist')
+      await assert.rejects(
+        async () => { await run(`「${missing}」へ一時フォルダ作成して表示。`) },
+        (err) => {
+          const msg = String(err.message)
+          assert.match(msg, /ENOENT|no such file or directory|mkdtemp/)
+          assert.ok(msg.includes(missing), `エラーメッセージに指定したパスが含まれる: ${msg}`)
+          return true
+        }
+      )
+    } finally {
+      for (const p of created) { fs.rmSync(p, { recursive: true, force: true }) }
+    }
+  })
   it('圧縮解凍', async function () {
     let path7z = get7zPath()
     if (path7z === '') { return this.skip() }
-    let tmp = '/tmp'
-    if (process.platform === 'linux') {
-      tmp = path.join(os.tmpdir(), 'nadesiko3test')
-    } else {
-      tmp = makeTmpDir('nadesiko3test-')
+    // 一時フォルダ作成は指定フォルダの配下に作成するため、予め存在するフォルダを渡す (#2490)
+    const tmp = makeTmpDir('nadesiko3test-')
+    try {
+      const code = 'FIN=「' + testFileMe + '」;' +
+        `TMP=「${tmp}」へ一時フォルダ作成。` +
+        '『' + path7z + '』に圧縮解凍ツールパス変更;' +
+        'FZIP=「{TMP}/test.zip」;\n' +
+        'FINをFZIPへ圧縮。FZIPを「{TMP}/」に解凍。\n' +
+        'S1=「{TMP}/plugin_node_test.mjs」を読む。\n' +
+        'S2=FINを読む。\n' +
+        'もし(S1＝S2)ならば、"OK"と表示。\n'
+      await cmp(code, 'OK', 300)
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true })
     }
-    const code = 'FIN=「' + testFileMe + '」;' +
-      `TMP=「${tmp}」へ一時フォルダ作成。` +
-      '『' + path7z + '』に圧縮解凍ツールパス変更;' +
-      'もし、TMPが存在しないならば、TMPのフォルダ作成。' +
-      'FZIP=「{TMP}/test.zip」;\n' +
-      'FINをFZIPへ圧縮。FZIPを「{TMP}/」に解凍。\n' +
-      'S1=「{TMP}/plugin_node_test.mjs」を読む。\n' +
-      'S2=FINを読む。\n' +
-      'もし(S1＝S2)ならば、"OK"と表示。\n'
-    await cmp(code, 'OK', 300)
   })
   it('圧縮/解凍', async function () {
     // 7zip がない環境ではテストを飛ばす

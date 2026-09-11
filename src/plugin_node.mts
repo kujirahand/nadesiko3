@@ -938,16 +938,20 @@ export default {
       return os.tmpdir()
     }
   },
-  '一時フォルダ作成': { // @指定のフォルダに作業用の一時フォルダを作成して取得して返す // @いちじふぉるださくせい
+  '一時フォルダ作成': { // @指定のフォルダ(省略または空白時はOSのテンポラリフォルダ)の配下に作業用の一時フォルダを作成して取得して返す // @いちじふぉるださくせい
     type: 'func',
     josi: [['に', 'へ']],
     pure: true,
     fn: function(dir: string, _sys: NakoSystem) {
-      if (dir === '' || !dir) {
+      // 空白のみの指定は既定(OSのテンポラリフォルダ)として扱う
+      if (typeof dir !== 'string' || dir.trim() === '') {
         dir = os.tmpdir()
+      } else {
+        dir = dir.trim()
       }
-      // 環境変数からテンポラリフォルダを取得
-      return fs.mkdtempSync(dir)
+      // fs.mkdtempSyncの引数は「親ディレクトリ」ではなく「作成する名前のprefix」であるため、
+      // 指定したフォルダの配下に作成されるようprefixを組み立てる
+      return fs.mkdtempSync(path.join(dir, 'nako-'))
     }
   },
   // @環境変数

@@ -6,6 +6,19 @@
  */
 import { NakoSystem } from './plugin_api.mjs'
 
+const PAD_WIDTH_MAX = 1000000
+
+function normalizePadWidth(a: any, cmd: string): number {
+  const n = Math.trunc(Number(a))
+  if (!Number.isFinite(n)) {
+    throw new Error(`『${cmd}』の桁数には有限の整数を指定してください。`)
+  }
+  if (n > PAD_WIDTH_MAX) {
+    throw new Error(`『${cmd}』の桁数が大きすぎます。`)
+  }
+  return n
+}
+
 export default {
   // @文字列処理
   '文字数': { // @文字列Vの文字数を返す // @もじすう
@@ -491,12 +504,12 @@ export default {
       })
     }
   },
-  '英数記号半角変換': { // @文字列Sの記号文字を半角に変換 // @えいすうきごうはんかくへんかん
+  '英数記号半角変換': { // @文字列Sの全角英数記号文字を半角に変換 // @えいすうきごうはんかくへんかん
     type: 'func',
     josi: [['の', 'を']],
     pure: true,
     fn: function(s: string): string {
-      return String(s).replace(/[\u3000\uFF00-\uFF5F]/g, function(v: string) {
+      return String(s).replace(/[\u3000\uFF01-\uFF5E]/g, function(v: string) {
         if (v === '　') { return ' ' } // 全角スペース(U+3000)を半角スペース(U+0020)
         return String.fromCharCode(v.charCodeAt(0) - 0xFEE0)
       })
@@ -512,21 +525,27 @@ export default {
       const han1 = sys.__getSysVar('半角カナ一覧')
       const zen2 = sys.__getSysVar('全角カナ濁音一覧')
       const han2 = sys.__getSysVar('半角カナ濁音一覧')
+      // 濁音・半濁音は、変換表に含まれる2文字ペアでのみ全角1文字に変換する
+      const zen2Map = new Map<string, string>()
+      for (let k = 0; k + 1 < han2.length; k += 2) {
+        const zen = zen2.charAt(k / 2)
+        if (zen !== '') { zen2Map.set(han2.substring(k, k + 2), zen) }
+      }
       let str = ''
       let i = 0
       while (i < s.length) {
-        // 濁点の変換
-        const c2 = s.substring(i, i + 2)
-        const n2 = (c2.length === 2) ? han2.indexOf(c2) : -1
-        if (n2 >= 0) {
-          str += zen2.charAt(n2 / 2)
+        // 濁点の変換(有効な2文字ペアのみ)
+        const z2 = zen2Map.get(s.substring(i, i + 2))
+        if (z2 !== undefined) {
+          str += z2
           i += 2
           continue
         }
         // 濁点以外の変換
         const c = s.charAt(i)
         const n = han1.indexOf(c)
-        if (n >= 0) {
+        // 対応する全角文字がない単独の濁点・半濁点などは、そのまま残す
+        if (n >= 0 && n < zen1.length) {
           str += zen1.charAt(n)
           i++
           continue
@@ -583,9 +602,9 @@ export default {
     }
   },
   '全角カナ一覧': { type: 'const', value: 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッ、。ー「」' }, // @ぜんかくかないちらん
-  '全角カナ濁音一覧': { type: 'const', value: 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ' }, // @ぜんかくかなだくおんいちらん
+  '全角カナ濁音一覧': { type: 'const', value: 'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴ' }, // @ぜんかくかなだくおんいちらん
   '半角カナ一覧': { type: 'const', value: 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯ､｡ｰ｢｣ﾞﾟ' }, // @はんかくかないちらん
-  '半角カナ濁音一覧': { type: 'const', value: 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ' }, // @はんかくかなだくおんいちらん
+  '半角カナ濁音一覧': { type: 'const', value: 'ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟｳﾞ' }, // @はんかくかなだくおんいちらん
 
   // @指定形式
   '通貨形式': { // @数値Vを三桁ごとにカンマで区切る // @つうかけいしき
@@ -601,15 +620,11 @@ export default {
     josi: [['を'], ['で']],
     pure: true,
     fn: function(v: any, a: any): string {
+      a = normalizePadWidth(a, 'ゼロ埋')
       v = String(v)
-      let z = '0'
-      for (let i = 0; i < a; i++) { z += '0' }
-      a = parseInt(a)
       const vLength = Array.from(v).length
-      if (a < vLength) { a = vLength }
-      const s = z + String(v)
-      const chars = Array.from(s)
-      return chars.slice(chars.length - a).join('')
+      if (a <= vLength) { return v }
+      return '0'.repeat(a - vLength) + v
     }
   },
   '空白埋': { // @文字列VをA桁の空白で埋める // @くうはくうめ
@@ -617,15 +632,11 @@ export default {
     josi: [['を'], ['で']],
     pure: true,
     fn: function(v: any, a: any): string {
+      a = normalizePadWidth(a, '空白埋')
       v = String(v)
-      let z = ' '
-      for (let i = 0; i < a; i++) { z += ' ' }
-      a = parseInt(a)
       const vLength = Array.from(v).length
-      if (a < vLength) { a = vLength }
-      const s = z + String(v)
-      const chars = Array.from(s)
-      return chars.slice(chars.length - a).join('')
+      if (a <= vLength) { return v }
+      return ' '.repeat(a - vLength) + v
     }
   },
 
