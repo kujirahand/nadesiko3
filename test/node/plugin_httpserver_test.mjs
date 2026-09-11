@@ -32,7 +32,14 @@ describe('plugin_httpserver_test', () => {
           resolve()
         })
       })
+      // 次のテストで古いサーバを参照しないよう null に戻す
+      serverDp = null
     }
+    // アップロードの一時ディレクトリを掃除する
+    const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
+    try {
+      fs.rmSync(uploadDir, { recursive: true, force: true })
+    } catch (e) {}
   })
 
   it('クエリパラメータ付きのURLで静的ファイルが取得できること', async () => {
@@ -279,22 +286,136 @@ describe('plugin_httpserver_test', () => {
 
     try {
       assert.strictEqual(resText, 'OK:hello.txt:24')
-
-      const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
-      if (fs.existsSync(uploadDir)) {
-        const files = fs.readdirSync(uploadDir)
-        for (const file of files) {
-          try {
-            fs.unlinkSync(path.join(uploadDir, file))
-          } catch (e) {}
-        }
-        try {
-          fs.rmdirSync(uploadDir)
-        } catch (e) {}
-      }
     } finally {
       fs.writeFileSync = originalWriteFileSync
     }
+  })
+
+  it('Content-Dispositionのname/filenameの順序に依存せずfieldNameを正しく取得できること #2494', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  もし、(FILESデータの配列要素数)=0ならば
+    もし、POSTデータに"upload"が辞書キー存在ならば
+      「FIELD:{POSTデータ["upload"]}」を簡易HTTPサーバ出力。
+    違えば
+      「NG」を簡易HTTPサーバ出力。
+    ここまで。
+  違えば
+    ファイル情報＝FILESデータ[0]
+    保存名＝ファイル情報["path"]からファイル名抽出
+    「OK:{ファイル情報["fieldName"]}:{ファイル情報["name"]}:{保存名}」を簡易HTTPサーバ出力。
+  ここまで。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理」を「/upload」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const postMultipart = (disposition) => new Promise((resolve, reject) => {
+      const boundary = '----TestBoundary'
+      const parts = [
+        `--${boundary}\r\n`,
+        `Content-Disposition: ${disposition}\r\n`,
+        `Content-Type: text/plain\r\n\r\n`,
+        `hello world\r\n`,
+        `--${boundary}--\r\n`
+      ]
+      const postData = Buffer.from(parts.join(''))
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/upload',
+        method: 'POST',
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          'Content-Length': postData.length
+        }
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve(data) })
+      })
+      req.on('error', reject)
+      req.write(postData)
+      req.end()
+    })
+
+    // name先頭でもfilename先頭でもfieldNameは正しく「upload」になる
+    assert.match(await postMultipart('form-data; name="upload"; filename="photo.txt"'), /^OK:upload:photo.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    assert.match(await postMultipart('form-data; filename="photo.txt"; name="upload"'), /^OK:upload:photo.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // nameが無い場合はファイルとして扱われず、クラッシュもしない
+    assert.strictEqual(await postMultipart('form-data; filename="photo.txt"'), 'NG')
+    // filenameが無い場合はフィールドとして扱われ、POSTデータに保存される
+    assert.strictEqual(await postMultipart('form-data; name="upload"'), 'FIELD:hello world')
+    // quoted-string内の;と=を正しく扱う(nameとfilenameの値は正しく分離される)
+    assert.match(await postMultipart('form-data; filename="a;b.txt"; name="upload"'), /^OK:upload:a;b\.txt:[0-9]+_[0-9A-Za-z_-]+_a_b\.txt$/)
+    assert.match(await postMultipart('form-data; filename="a;b=c"; name="upload"'), /^OK:upload:a;b=c:[0-9]+_[0-9A-Za-z_-]+_a_b_c$/)
+    // 大文字キーを大文字小文字を区別せず扱う
+    assert.match(await postMultipart('form-data; NAME="upload"; FILENAME="photo.txt"'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // quoted-stringのエスケープを処理する
+    assert.match(await postMultipart('form-data; name="quo\\"ted"; filename="photo.txt"'), /^OK:quo"ted:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    assert.match(await postMultipart('form-data; name="a\\\\b"; filename="photo.txt"'), /^OK:a\\b:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // 空値・非引用値を扱う
+    assert.match(await postMultipart('form-data; name=""; filename="photo.txt"'), /^OK::photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    assert.match(await postMultipart('form-data; name=upload; filename=photo.txt'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // disposition-typeなしでも解析できる
+    assert.match(await postMultipart('name="upload"; filename="photo.txt"'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // =の前後の空白(OWS)を許容する
+    assert.match(await postMultipart('form-data; name = "upload" ; filename = "photo.txt"'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // 空のfilenameはファイル扱いせず、フィールドとしてPOSTデータに保存される
+    assert.strictEqual(await postMultipart('form-data; name="upload"; filename=""'), 'FIELD:hello world')
+    assert.strictEqual(await postMultipart("form-data; name=\"upload\"; filename*=\"\""), 'FIELD:hello world')
+    // 空のfilename*(RFC 5987の空値)はfilenameへフォールバックせず、フィールドとして扱う
+    assert.strictEqual(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8''"), 'FIELD:hello world')
+    // 空のname*はnameへフォールバックせず、空のnameとして扱う(nameは空のまま)
+    assert.match(await postMultipart("form-data; name*=UTF-8''; filename=\"photo.txt\""), /^OK::photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // filename*の非UTF-8文字セットはfilenameへフォールバックする
+    assert.match(await postMultipart("form-data; name=\"upload\"; filename=\"photo.txt\"; filename*=ISO-8859-1''caf%E9.txt"), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // filename*内のエンコードされたパス区切り(%2F)はbasenameで無害化される
+    assert.match(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8''..%2F..%2Fetc%2Fpasswd"), /^OK:upload:\.\.\/\.\.\/etc\/passwd:[0-9]+_[0-9A-Za-z_-]+_passwd$/)
+    // name*(RFC 5987)もデコードしてfieldNameに使う
+    assert.match(await postMultipart("form-data; name*=UTF-8''%E3%82%A2%E3%83%83%E3%83%97; filename=\"photo.txt\""), /^OK:アップ:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // nameの値に;や=を含む場合も正しくfieldNameに使う
+    assert.match(await postMultipart('form-data; name="a;b=c"; filename="photo.txt"'), /^OK:a;b=c:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // RFC 5987のfilename*を優先してデコードする
+    assert.match(await postMultipart('form-data; name="upload"; filename*="UTF-8\'\'%E7%94%BB%E5%83%8F.txt"'), /^OK:upload:画像\.txt:[0-9]+_[0-9A-Za-z_-]+_画像\.txt$/)
+    // RFC 5987のfilename*未引用形式(token形式)
+    assert.match(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8''%E7%94%BB%E5%83%8F.txt"), /^OK:upload:画像\.txt:[0-9]+_[0-9A-Za-z_-]+_画像\.txt$/)
+    // filenameとfilename*が同時にある場合はfilename*を優先する
+    assert.match(await postMultipart("form-data; name=\"upload\"; filename=\"old.txt\"; filename*=UTF-8''%E6%96%B0%E3%81%97%E3%81%84.txt"), /^OK:upload:新しい\.txt:[0-9]+_[0-9A-Za-z_-]+_新しい\.txt$/)
+    // RFC 5987の言語タグ付きでもデコードする
+    assert.match(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8'ja'%E7%94%BB%E5%83%8F.txt"), /^OK:upload:画像\.txt:[0-9]+_[0-9A-Za-z_-]+_画像\.txt$/)
+    // ドット始まりのファイル名は保存名が無効化され、nameは元の値を保持する
+    assert.match(await postMultipart('form-data; name="upload"; filename=".gitignore"'), /^OK:upload:\.gitignore:[0-9]+_[0-9A-Za-z_-]+_+$/)
+    // ディレクトリ区切りを含むfilenameは保存名がbasenameに限定される(パストラバーサル防止)
+    assert.match(await postMultipart('form-data; name="upload"; filename="../../etc/passwd"'), /^OK:upload:\.\.\/\.\.\/etc\/passwd:[0-9]+_[0-9A-Za-z_-]+_passwd$/)
+    // バックスラッシュ区切りのパストラバーサルは保存名がbasenameに限定される
+    // (quoted-stringでは\がエスケープされるため\\で送る)
+    assert.match(await postMultipart('form-data; name="upload"; filename="..\\\\..\\\\etc\\\\passwd"'), /^OK:upload:\.\.\\\.\.\\etc\\passwd:[0-9]+_[0-9A-Za-z_-]+_passwd$/)
+    // シェルメタ文字を含むfilenameは保存名から除去される(nameは元の値を保持)
+    assert.match(await postMultipart('form-data; name="upload"; filename="$(id).txt"'), /^OK:upload:\$\(id\)\.txt:[0-9]+_[0-9A-Za-z_-]+_id_\.txt$/)
+    // __proto__等のprototype由来のnameでも汚染されず値として扱われる
+    assert.match(await postMultipart('form-data; name="__proto__"; filename="x.txt"'), /^OK:__proto__:x\.txt:[0-9]+_[0-9A-Za-z_-]+_x\.txt$/)
+    // Content-Dispositionのパラメータ名が__proto__でもクラッシュせずname/filenameを取得できる
+    assert.match(await postMultipart('form-data; __proto__="x"; name="upload"; filename="photo.txt"'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // MIMEパートヘッダのobs-fold(CRLF + WSP)も正規化して解析する
+    assert.match(await postMultipart('form-data;\r\n name="upload"; filename="photo.txt"'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // 閉じクォートが途中で切れる不正な値でも無限ループせず応答する
+    assert.strictEqual(await postMultipart('form-data; name="upload; filename="photo.txt"'), 'NG')
+    // malformedなquoted-string(閉じクォートなし)でもクラッシュせず末尾まで読む
+    assert.match(await postMultipart('form-data; name="upload"; filename="photo.txt'), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // RFC 5987デコード後に制御文字(%01)を含む値は除去される
+    assert.match(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8''%01photo.txt"), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
+    // 極端に長いfilenameは保存名をUTF-8で200バイトに切り詰める
+    assert.match(await postMultipart('form-data; name="upload"; filename="' + 'a'.repeat(250) + '.txt"'), new RegExp('^OK:upload:' + 'a'.repeat(250) + '\\.txt:[0-9]+_[0-9A-Za-z_-]+_' + 'a'.repeat(200) + '$'))
   })
 
   it('HTTPメソッドにGET/POST/PUT/DELETEが設定されること', async () => {
