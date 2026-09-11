@@ -45,6 +45,10 @@ describe('array_test', async () => {
     await cmp('1から3まで配列連番作成してJSONエンコードして表示', '[1,2,3]')
     await cmp('5から7まで配列連番作成してJSONエンコードして表示', '[5,6,7]')
   })
+  it('配列連番作成は数値文字列も数値として扱う #2472', async () => {
+    // DOM値やCSV由来など文字列で渡ってくる場合でも、揃った数値配列になる
+    await cmp('「1」から「3」まで配列連番作成してJSONエンコードして表示', '[1,2,3]')
+  })
   it('配列連番作成は2の53乗付近で無限ループせずエラーになる #2472', async () => {
     const err = async (/** @type {string} */code, /** @type {RegExp} */pattern) => {
       const nako = new NakoCompiler()
