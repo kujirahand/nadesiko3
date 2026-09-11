@@ -6,6 +6,19 @@
  */
 import { NakoSystem } from './plugin_api.mjs'
 
+const PAD_WIDTH_MAX = 1000000
+
+function normalizePadWidth(a: any, cmd: string): number {
+  const n = Math.trunc(Number(a))
+  if (!Number.isFinite(n)) {
+    throw new Error(`『${cmd}』の桁数には有限の整数を指定してください。`)
+  }
+  if (n > PAD_WIDTH_MAX) {
+    throw new Error(`『${cmd}』の桁数が大きすぎます。`)
+  }
+  return n
+}
+
 export default {
   // @文字列処理
   '文字数': { // @文字列Vの文字数を返す // @もじすう
@@ -607,15 +620,11 @@ export default {
     josi: [['を'], ['で']],
     pure: true,
     fn: function(v: any, a: any): string {
+      a = normalizePadWidth(a, 'ゼロ埋')
       v = String(v)
-      let z = '0'
-      for (let i = 0; i < a; i++) { z += '0' }
-      a = parseInt(a)
       const vLength = Array.from(v).length
-      if (a < vLength) { a = vLength }
-      const s = z + String(v)
-      const chars = Array.from(s)
-      return chars.slice(chars.length - a).join('')
+      if (a <= vLength) { return v }
+      return '0'.repeat(a - vLength) + v
     }
   },
   '空白埋': { // @文字列VをA桁の空白で埋める // @くうはくうめ
@@ -623,15 +632,11 @@ export default {
     josi: [['を'], ['で']],
     pure: true,
     fn: function(v: any, a: any): string {
+      a = normalizePadWidth(a, '空白埋')
       v = String(v)
-      let z = ' '
-      for (let i = 0; i < a; i++) { z += ' ' }
-      a = parseInt(a)
       const vLength = Array.from(v).length
-      if (a < vLength) { a = vLength }
-      const s = z + String(v)
-      const chars = Array.from(s)
-      return chars.slice(chars.length - a).join('')
+      if (a <= vLength) { return v }
+      return ' '.repeat(a - vLength) + v
     }
   },
 
