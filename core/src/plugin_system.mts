@@ -1,5 +1,5 @@
  
-import { NakoSystem, NakoValue } from './plugin_api.mjs'
+import { NakoSystem } from './plugin_api.mjs'
 // plugin_system.mts は肥大化していたため、内容ごとに複数ファイルへ分割している (#2351)
 // いずれも単独のプラグインではなく、実行時にこの plugin_system へマージされる
 import PluginSystemDebug from './plugin_system_debug.mjs' // 特殊命令・デバッグ支援・プラグイン管理
@@ -154,25 +154,6 @@ const PluginSystem = {
       // 暗黙の型変換で足し算を行うときに使用。bigint はそのまま、その他は number に自動変換
       sys.__parseFloatOrBigint = (v: any): number | bigint => {
         return (typeof v) === 'bigint' ? v : parseFloat(v)
-      }
-      // 『増やす』『減らす』の加算/減算で使用。増減対象がbigintなら精度を保ったままBigInt演算する (#2488)
-      sys.__incValue = (a: NakoValue, b: NakoValue, isDec: boolean): number | bigint => {
-        if (typeof a === 'bigint') {
-          // null は従来どおり 0 として扱い、bigint のまま返す。undefined は従来どおり NaN として扱う (#2488)
-          if (b === null) { return a }
-          if (b === undefined) { return NaN }
-          // 非数/無限大は従来どおり NaN / ±Infinity を Number として返す (#2488)
-          if (typeof b === 'number' && !Number.isFinite(b)) { return isDec ? -b : b }
-          // 文字列は末尾の n を取り除いてから BigInt 化する(『"5n"』のような書き方に対応)。
-          // ただし "n" や " n" のように数値部分が無いものは無効のまま扱う(BigInt('')/BigInt(' ') が 0n になるのを防ぐ) (#2488)
-          // なお Number リテラルは 2^53 を超えると JS の段階で丸められるため、大きな増減量には n 付きリテラルか文字列を使う
-          const bTrim = String(b).trim()
-          const bBig = (typeof b === 'string' && bTrim.length > 1 && bTrim.endsWith('n') && bTrim.slice(0, -1).trim().length > 0)
-            ? BigInt(bTrim.slice(0, -1))
-            : BigInt(b as string | number | bigint | boolean)
-          return isDec ? a - bBig : a + bBig
-        }
-        return isDec ? Number(a) - Number(b) : Number(a) + Number(b)
       }
       // undefinedチェック
       system.chk = (value:any, constId: number): any => {

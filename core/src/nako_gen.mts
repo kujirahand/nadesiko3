@@ -9,6 +9,7 @@ import { NakoSyntaxError } from './nako_errors.mjs'
 import { FuncList, FuncArgs, FuncListItem, NakoDebugOption } from './nako_types.mjs'
 import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstInc, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
+import { incValue } from './nako_inc_value.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
 const topOfFunction = '(function(){\n'
@@ -2262,6 +2263,8 @@ const self = {
 }
 self.coreVersion = '__coreVersion__'
 self.version = '__version__'
+// 増減文の加算/減算。コア実行環境(NakoGlobal)と同じ実装を埋め込む (#2488)
+self.__incValue = __incValueCode__
 self.logger = {
   error: (message) => { console.error(message) },
   warn: (message) => { console.warn(message) },
@@ -2471,7 +2474,8 @@ ${runtimeResult}
       'importNames': ('[' + importNames.join(', ') + ']'),
       'codeStandalone': opt.codeStandalone,
       'codeJS': js,
-      jsInit
+      jsInit,
+      incValueCode: String(incValue)
     }),
     // コード生成に使ったNakoGenのインスタンス
     gen
