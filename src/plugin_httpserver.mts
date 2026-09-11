@@ -3,6 +3,7 @@ import fs from 'fs'
 import http from 'http'
 import path from 'path'
 import os from 'os'
+import { parseQueryString } from '../core/src/url_util.mjs'
 
 // 定数
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
@@ -51,7 +52,9 @@ class EasyURLDispather {
     // HTTPメソッド(GET/POST/PUT/DELETEなど)を設定
     const method = String(req.method || '').toUpperCase()
     this.sys.__setSysVar('HTTPメソッド', method)
-    console.log(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
+    // 診断ログはstdoutではなくstderrへ出力する(Node.js test runner #64061 で
+    // 子プロセスのstdoutがIPCメッセージ枠組みと競合する問題があるため)
+    console.error(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
     const params = this.parseURL(req.url)
     const url = params['?URL']
     this.sys.__setSysVar('GETデータ', params)
@@ -168,7 +171,7 @@ class EasyURLDispather {
     let url: string = ('' + rawUrl).replace(/\.\./g, '') // URLの..を許可しない
     url = url.substring(it.url.length)
     let fpath = path.join(it.path, url)
-    console.log('FILE=', fpath)
+    console.error(`${HTTPSERVER_LOGID} FILE=${fpath}`)
     if (!fs.existsSync(fpath)) {
       this.return404(res)
       return true
@@ -176,7 +179,7 @@ class EasyURLDispather {
     // ディレクトリなら index.html を確認
     if (isDir(fpath)) {
       fpath = path.join(fpath, 'index.html')
-      console.log('FILE(DIR)=', fpath)
+      console.error(`${HTTPSERVER_LOGID} FILE(DIR)=${fpath}`)
       if (!fs.existsSync(fpath)) {
         this.return404(res)
         return true
@@ -216,21 +219,16 @@ class EasyURLDispather {
     this.items.push(it)
   }
 
-  parseURL(uri: string): any {
-    const params: any = {}
-    if (uri.indexOf('?') >= 0) {
-      const a = uri.split('?')
-      params['?URL'] = a[0]
-      const q = String(a[1]).split('&')
-      for (const kv of q) {
-        const qq = kv.split('=')
-        const key = decodeURIComponent(qq[0])
-        const val = decodeURIComponent(qq[1])
-        params[key] = val
-      }
-    } else {
-      params['?URL'] = uri
-    }
+  parseURL(uri: string): { [key: string]: string } {
+    // #以降はフラグメントとして扱うため、#より前に?がある場合のみクエリとして解析する
+    const hashIdx = uri.indexOf('#')
+    const base = hashIdx >= 0 ? uri.substring(0, hashIdx) : uri
+    const qi = base.indexOf('?')
+    const rawPath = qi >= 0 ? base.substring(0, qi) : base
+    const query = qi >= 0 ? base.substring(qi + 1) : ''
+    const params = parseQueryString(query)
+    // ?URL はクエリパラメータで上書きされないよう最後に設定する
+    params['?URL'] = rawPath
     return params
   }
 }
@@ -401,7 +399,7 @@ const PluginHttpServer = {
       })
       // サーバ起動
       dp.server.listen(port, () => {
-        console.log(`${HTTPSERVER_LOGID} ポート番号(${port})で監視開始`)
+        console.error(`${HTTPSERVER_LOGID} ポート番号(${port})で監視開始`)
         if (typeof callback === 'string') { callback = sys.__findFunc(callback) }
         callback(sys)
       })
@@ -489,7 +487,7 @@ const PluginHttpServer = {
       if (dp.curRes === null) {
         throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
       }
-      console.log(HTTPSERVER_LOGID, '移動=', url)
+      console.error(`${HTTPSERVER_LOGID} 移動=${url}`)
       dp.curRes.writeHead(302, { 'Location': url })
       dp.curRes.end(`<html><body><a href="${url}">JUMP</a></body></html>`)
       dp.isEnd = true

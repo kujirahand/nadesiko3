@@ -5,6 +5,7 @@
  * このファイルは単独のプラグインではなく、plugin_system.mts へマージされる。(#2351)
  */
 import { NakoSystem } from './plugin_api.mjs'
+import { parseQueryString } from './url_util.mjs'
 
 export default {
   // @URLエンコードとパラメータ
@@ -28,33 +29,18 @@ export default {
     type: 'func',
     josi: [['を', 'の', 'から']],
     pure: true,
-    fn: function(url: string, sys: any) {
-      const res: any = {}
+    fn: function(url: string) {
       if (typeof url !== 'string') {
-        return res
+        return {}
       }
-      const p = url.split('?')
-      if (p.length <= 1) {
-        return res
+      // #以降はフラグメントとして扱うため、#より前に?がある場合のみクエリとして解析する
+      const hashIdx = url.indexOf('#')
+      const base = hashIdx >= 0 ? url.substring(0, hashIdx) : url
+      const qi = base.indexOf('?')
+      if (qi < 0) {
+        return {}
       }
-      const params = p[1].split('&')
-      for (const line of params) {
-        if (line === '') { continue }
-        const eqIdx = line.indexOf('=')
-        let k: string
-        let v: string
-        if (eqIdx < 0) {
-          k = line
-          v = ''
-        } else {
-          k = line.substring(0, eqIdx)
-          v = line.substring(eqIdx + 1)
-        }
-        const decodedKey = sys.__exec('URLデコード', [k])
-        const decodedVal = sys.__exec('URLデコード', [v])
-        res[decodedKey] = decodedVal
-      }
-      return res
+      return parseQueryString(base.substring(qi + 1))
     }
   },
 

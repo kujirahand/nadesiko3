@@ -455,6 +455,13 @@ describe('plugin_system_test', async () => {
     await cmp('「ａｂｃ１２３＃」を英数記号半角変換して表示', 'abc123#')
     await cmp('「abc123」を英数全角変換して表示', 'ａｂｃ１２３')
     await cmp('「ａｂｃ１２３」を英数半角変換して表示', 'abc123')
+    // #2479 対応範囲(FF01-FF5E)の外は変換しない
+    await cmp('S=「｟」を英数記号半角変換。SのASCを表示', '65375') // U+FF5F は保持
+    await cmp('S=「｠」を英数記号半角変換。SのASCを表示', '65376') // U+FF60 は保持
+    await cmp('S=CHR(0xFF00)を英数記号半角変換。SのASCを表示', '65280') // U+FF00 は保持
+    await cmp('S=「～」を英数記号半角変換。SのASCを表示', '126') // U+FF5E は ~ へ
+    await cmp('「｟｠～」を英数記号半角変換して表示', '｟｠~') // #2479 境界
+    await cmp('S=「｟」を半角変換。SのASCを表示', '65375') // #2479 半角変換経由
   })
   it('カタカナ全角半角変換', async () => {
     await cmp('「アガペ123」をカタカナ半角変換して表示', 'ｱｶﾞﾍﾟ123')
@@ -506,6 +513,28 @@ describe('plugin_system_test', async () => {
     await cmp('「https://nadesi.com/?a=3&b=5」のURLパラメータ解析;それ["a"]を表示;それ["b"]を表示。', '3\n5')
     await cmp('「https://nadesi.com/?a=3=3&b=5」のURLパラメータ解析;それ["a"]を表示;それ["b"]を表示。', '3=3\n5')
     await cmp('「https://nadesi.com/?a&b=5」のURLパラメータ解析;それ["a"]を表示;それ["b"]を表示。', '\n5')
+    await cmp('「https://nadesi.com/?next=a?b」のURLパラメータ解析;それ["next"]を表示。', 'a?b')
+    await cmp('「https://nadesi.com/?token=a=b」のURLパラメータ解析;それ["token"]を表示。', 'a=b')
+    await cmp('「https://nadesi.com/?a=1#frag」のURLパラメータ解析;それ["a"]を表示。', '1')
+    await cmp('「https://nadesi.com/?a=1&a=2」のURLパラメータ解析;それ["a"]を表示。', '2')
+    await cmp('「https://nadesi.com/?a=hello+world」のURLパラメータ解析;それ["a"]を表示。', 'hello world')
+    await cmp('「https://nadesi.com/?a=%ZZ」のURLパラメータ解析;それ["a"]を表示。', '%ZZ')
+    await cmp('「https://nadesi.com/?__proto__=x」のURLパラメータ解析;それ["__proto__"]を表示。', 'x')
+    await cmp('「https://nadesi.com/?a=」のURLパラメータ解析;それ["a"]を表示。', '')
+    await cmp('「https://nadesi.com/?a」のURLパラメータ解析;それ["a"]を表示。', '')
+    await cmp('「https://nadesi.com/?」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    await cmp('「https://nadesi.com/?a=%2B」のURLパラメータ解析;それ["a"]を表示。', '+')
+    await cmp('「https://nadesi.com/p#frag?a=1」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    await cmp('「https://nadesi.com/?=x」のURLパラメータ解析;それ[""]を表示。', 'x')
+    await cmp('「https://nadesi.com/?&」のURLパラメータ解析してJSONエンコードして表示', '{}')
+    // URLパラメータ解析はクエリ解析のため+を空白に変換する(URLデコードは変換しない)
+    await cmp('「+」をURLデコードして表示', '+')
+    await cmp('「?x=+」のURLパラメータ解析;それ["x"]をVに代入;「A{V}B」を表示。', 'A B')
+    await cmp('「https://nadesi.com/?__proto__=x」のURLパラメータ解析してJSONエンコードして表示', '{"__proto__":"x"}')
+    await cmp('「https://nadesi.com/?hasOwnProperty=x」のURLパラメータ解析;それ["hasOwnProperty"]を表示。', 'x')
+    await cmp('「https://nadesi.com/?constructor=x」のURLパラメータ解析;それ["constructor"]を表示。', 'x')
+    // hasOwnPropertyキーを含む辞書でも反復処理が動作する
+    await cmp('「https://nadesi.com/?hasOwnProperty=x&a=1」のURLパラメータ解析してAに代入。Aを反復\n対象キーを表示\nここまで', 'hasOwnProperty\na')
   })
   it('助詞省略形のコマンド', async () => {
     await cmp('3が1以上。もし、そうなら「OK」と表示。', 'OK')

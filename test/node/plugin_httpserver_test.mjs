@@ -158,6 +158,66 @@ describe('plugin_httpserver_test', () => {
     assert.strictEqual(resText, 'hello post urlencoded')
   })
 
+  it('GETクエリパラメータが正しく解析されること #2493', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  G=GETデータ
+  「{G["token"]}|{G["flag"]}|{G["next"]}|{G["?URL"]}」を簡易HTTPサーバ出力。
+ここまで。
+●プロト確認
+  G=GETデータ
+  「{G["__proto__"]}|{G["?URL"]}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理」を「/hello」に簡易HTTPサーバ受信時。
+「プロト確認」を「/proto」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const request = (path) => new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: path,
+        method: 'GET'
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve(data) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+
+    // 値の中の=と?、値なしフラグをまとめて正しく解析する
+    assert.strictEqual(await request('/hello?token=a=b&flag&next=a?b'), 'a=b||a?b|/hello')
+    // #フラグメント以降は切り捨てる
+    assert.strictEqual(await request('/hello?token=a#frag'), 'a|undefined|undefined|/hello')
+    // 重複キーは最後の値で上書きされる
+    assert.strictEqual(await request('/hello?token=1&token=2&flag&next=x'), '2||x|/hello')
+    // +は空白に変換される
+    assert.strictEqual(await request('/hello?token=hello+world&flag&next=x'), 'hello world||x|/hello')
+    // 不正なpercentエンコーディングは生のまま保持される
+    assert.strictEqual(await request('/hello?token=%ZZ&flag&next=x'), '%ZZ||x|/hello')
+    // 特殊キー__proto__でもクラッシュせず、?URLはパスで上書きされる
+    assert.strictEqual(await request('/hello?__proto__=x&%3FURL=/evil&token=a'), 'a|undefined|undefined|/hello')
+    // __proto__は値として取得でき、?URLはリクエストのパスが維持されること
+    assert.strictEqual(await request('/proto?__proto__=x&%3FURL=/evil&token=a'), 'x|/proto')
+    // __proto__でObject.prototypeが汚染されないこと
+    assert.strictEqual(({}).x, undefined)
+    assert.strictEqual(Object.prototype.x, undefined)
+    // hasOwnProperty等のObject.prototype由来のキーでもクラッシュしない
+    assert.strictEqual(await request('/hello?hasOwnProperty=x&constructor=y&token=a'), 'a|undefined|undefined|/hello')
+  })
+
   it('POSTメソッドでファイルをアップロードしてFILESデータを取得できること', async () => {
     const originalWriteFileSync = fs.writeFileSync
     fs.writeFileSync = () => {
