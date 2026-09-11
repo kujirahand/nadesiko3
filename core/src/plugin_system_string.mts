@@ -6,17 +6,31 @@
  */
 import { NakoSystem } from './plugin_api.mjs'
 
-const PAD_WIDTH_MAX = 1000000
+const MAX_COUNT = 1000000
 
-function normalizePadWidth(a: any, cmd: string): number {
-  const n = Math.trunc(Number(a))
-  if (!Number.isFinite(n)) {
-    throw new Error(`『${cmd}』の桁数には有限の整数を指定してください。`)
+// 有限な値を検証して整数に丸める(Math.trunc)。非有限・上限超過はエラーにする。
+function normalizeBoundedCount(v: any, cmd: string, unit: string): number {
+  const raw = Number(v)
+  const n = Math.trunc(raw)
+  if (!Number.isFinite(raw)) {
+    throw new Error(`『${cmd}』の${unit}には有限の整数を指定してください。`)
   }
-  if (n > PAD_WIDTH_MAX) {
-    throw new Error(`『${cmd}』の桁数が大きすぎます。`)
+  if (n > MAX_COUNT) {
+    throw new Error(`『${cmd}』の${unit}が大きすぎます。`)
   }
   return n
+}
+
+function normalizePadWidth(a: any, cmd: string): number {
+  return normalizeBoundedCount(a, cmd, '桁数')
+}
+
+// 繰り返し回数を検証して整数に丸める。負数はエラーにする。
+function normalizeRepeatCount(cnt: any, cmd: string): number {
+  if (Number(cnt) < 0) {
+    throw new Error(`『${cmd}』の回数には0以上の整数を指定してください。`)
+  }
+  return normalizeBoundedCount(cnt, cmd, '回数')
 }
 
 export default {
@@ -180,9 +194,15 @@ export default {
     josi: [['を', 'の'], ['で']],
     pure: true,
     fn: function(v: any, cnt: number): string {
-      let s = ''
-      for (let i = 0; i < cnt; i++) { s += String(v) }
-      return s
+      cnt = normalizeRepeatCount(cnt, 'リフレイン')
+      try {
+        return String(v).repeat(cnt)
+      } catch (e) {
+        if (e instanceof RangeError) {
+          throw new Error('『リフレイン』の結果が大きすぎます。')
+        }
+        throw e
+      }
     }
   },
   '出現回数': { // @文字列SにAが何回出現するか数える // @しゅつげんかいすう

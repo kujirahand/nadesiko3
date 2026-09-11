@@ -189,6 +189,20 @@ describe('plugin_system_test', async () => {
     await cmpex('「5」を1000001で空白埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
     await cmpex('「5」を(10の21のべき乗)で空白埋して表示。', { name: 'NakoError', message: '大きすぎます' }) // #2480
   })
+  it('リフレイン', async () => {
+    await cmp('「ab」を3でリフレインして表示。', 'ababab')
+    await cmp('「x」を0でリフレインして表示。', '')
+    await cmp('「5」を2でリフレインして表示。', '55')
+    await cmp('「x」を0.5でリフレインして表示。', '') // #2481 端数は切り捨て
+    await cmp('「x」を2.5でリフレインして表示。', 'xx') // #2481 端数は切り捨て
+    await cmp('「」を1000000でリフレインして表示。', '') // #2481 上限ちょうどは許可
+    await cmpex('「x」を(0/0)でリフレインして表示。', { name: 'NakoError', message: '有限の整数' }) // #2481
+    await cmpex('「x」を-1でリフレインして表示。', { name: 'NakoError', message: '0以上の整数' }) // #2481
+    await cmpex('「x」を-0.5でリフレインして表示。', { name: 'NakoError', message: '0以上の整数' }) // #2481
+    await cmpex('「x」を1000001でリフレインして表示。', { name: 'NakoError', message: '大きすぎます' }) // #2481
+    await cmpex('「x」を(10の21のべき乗)でリフレインして表示。', { name: 'NakoError', message: '大きすぎます' }) // #2481
+    await cmpex('A=「x」を700でリフレイン。Aを1000000でリフレインして表示。', { name: 'NakoError', message: '結果が大きすぎます' }) // #2481 String.repeatのRangeErrorを実行時エラーに変換
+  })
   it('配列要素数', async () => {
     await cmp('A=[0,1,2,3];Aの配列要素数。表示。', '4')
     await cmp('A={"a":1,"b":2,"c":3};Aの配列要素数。表示。', '3')
