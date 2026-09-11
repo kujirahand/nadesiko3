@@ -4,6 +4,9 @@
  * 配列操作・二次元配列処理の命令を定義する。
  * このファイルは単独のプラグインではなく、plugin_system.mts へマージされる。(#2351)
  */
+// 配列連番作成で生成できる要素数の上限(意図しない巨大配列によるメモリ枯渇を防ぐ)
+const MAX_RANGE_LENGTH = 1000000
+
 export default {
   // @配列操作
   '配列結合': { // @配列Aを文字列Sでつなげて文字列で返す // @はいれつけつごう
@@ -393,9 +396,28 @@ export default {
     type: 'func',
     josi: [['から'], ['までの', 'まで', 'の']],
     pure: true,
-    fn: function(a: number, b: number) {
+    fn: function(a: any, b: any) {
+      // なでしこは動的型付けのため、DOM値やCSV由来の数値文字列が渡ることがある。
+      // 数値へ変換してから検証することで、従来「先頭要素だけ文字列で残りが数値」に
+      // なっていた不揃いな挙動も解消し、[1,2,3]のように揃った配列を返す
+      a = (typeof a === 'number') ? a : (typeof a === 'string' && a.trim() !== '' ? Number(a) : NaN)
+      b = (typeof b === 'number') ? b : (typeof b === 'string' && b.trim() !== '' ? Number(b) : NaN)
+      // 非有限値や、2の53乗-1(安全整数の最大値)を超える値は、i++でループが
+      // 進展しなくなり終了しなくなるため先に弾く。小数の範囲(1.5から3.5までなど)は
+      // 従来どおり許可するため、整数かどうかではなく絶対値の大きさだけを見る。
+      if (!Number.isFinite(a) || !Number.isFinite(b)) {
+        throw new Error('『配列連番作成』には有限の数値を指定してください。')
+      }
+      if (Math.abs(a) > Number.MAX_SAFE_INTEGER || Math.abs(b) > Number.MAX_SAFE_INTEGER) {
+        throw new Error('『配列連番作成』には絶対値が2の53乗-1(9007199254740991)以下の数値を指定してください。')
+      }
+      // 要素数は式で事前算出せず、生成しながら数える。2の52乗付近ではi++の刻み幅が
+      // 1にならないことがあり、b-aから求める式では実際の反復回数と食い違うため
       const result: number[] = []
       for (let i = a; i <= b; i++) {
+        if (result.length >= MAX_RANGE_LENGTH) {
+          throw new Error('『配列連番作成』で生成される配列の要素数が多すぎます。')
+        }
         result.push(i)
       }
       return result

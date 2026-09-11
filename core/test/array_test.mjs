@@ -45,6 +45,64 @@ describe('array_test', async () => {
     await cmp('1から3まで配列連番作成してJSONエンコードして表示', '[1,2,3]')
     await cmp('5から7まで配列連番作成してJSONエンコードして表示', '[5,6,7]')
   })
+  it('配列連番作成は数値文字列も数値として扱う #2472', async () => {
+    // DOM値やCSV由来など文字列で渡ってくる場合でも、揃った数値配列になる
+    await cmp('「1」から「3」まで配列連番作成してJSONエンコードして表示', '[1,2,3]')
+    // 空文字列や空白文字列は有限数値ではないためエラーになる
+    const nako = new NakoCompiler()
+    await assert.rejects(
+      async () => { await nako.runAsync('「」から「」まで配列連番作成', 'main.nako3') },
+      /有限の数値/)
+    await assert.rejects(
+      async () => { await nako.runAsync('「   」から3まで配列連番作成', 'main.nako3') },
+      /有限の数値/)
+  })
+  it('配列連番作成は2の53乗付近で無限ループせずエラーになる #2472', async () => {
+    const err = async (/** @type {string} */code, /** @type {RegExp} */pattern) => {
+      const nako = new NakoCompiler()
+      await assert.rejects(
+        async () => { await nako.runAsync(code, 'main.nako3') },
+        pattern)
+    }
+    // 2**53-1(安全整数の最大値)ちょうどは許可される
+    await cmp('A=9007199254740991;AからAまで配列連番作成してJSONエンコードして表示', '[9007199254740991]')
+    // 2**53(安全整数の範囲外)はエラー。修正前はここで反復変数が進まず終了しなかった
+    await err('A=9007199254740992;AからAまで配列連番作成してJSONエンコードして表示', /絶対値が2の53乗-1/)
+    // 2**53+1も安全整数の範囲外なのでエラー
+    await err('A=9007199254740993;AからAまで配列連番作成してJSONエンコードして表示', /絶対値が2の53乗-1/)
+    // 負の値でも同じ境界が適用される
+    await err('A=-9007199254740992;AからAまで配列連番作成してJSONエンコードして表示', /絶対値が2の53乗-1/)
+    // 非有限値はエラー
+    await err('A=1/0;1からAまで配列連番作成してJSONエンコードして表示', /有限の数値/)
+    await err('A=0-1/0;AからAまで配列連番作成してJSONエンコードして表示', /有限の数値/)
+  })
+  it('配列連番作成は小数の範囲を従来どおり生成できる #2472', async () => {
+    await cmp('1.5から3.5まで配列連番作成してJSONエンコードして表示', '[1.5,2.5,3.5]')
+  })
+  it('配列連番作成は端点の小数部がずれていても要素数を過大評価しない #2472', async () => {
+    // 0.5から999999.5まで(1ずつ加算)で要素数はちょうど100万。
+    // b-a+1(=1000000.5)で判定すると誤って上限超過エラーになっていた
+    const nako = new NakoCompiler()
+    const result = await nako.runAsync('0.5から1000000まで配列連番作成して配列要素数を表示', 'main.nako3')
+    assert.strictEqual(result.log, '1000000')
+  })
+  it('配列連番作成は2の52乗付近でも要素数上限を厳密に守る #2472', async () => {
+    // 2の52乗付近では浮動小数点の刻み幅が変わり、最初のi++が0.5しか進まないことがある。
+    // 式(Math.floor(b-a)+1)による事前算出では実際の反復回数(100万1件)と食い違い、
+    // 上限(100万)超過を見逃していた。ここでは生成しながら数える実装で確実に検知する。
+    const nako = new NakoCompiler()
+    await assert.rejects(
+      async () => {
+        await nako.runAsync('4503599627370495.5から4503599628370495まで配列連番作成してJSONエンコードして表示', 'main.nako3')
+      },
+      /要素数が多すぎます/)
+  })
+  it('配列連番作成は要素数が多すぎる場合エラーになる #2472', async () => {
+    const nako = new NakoCompiler()
+    await assert.rejects(
+      async () => { await nako.runAsync('0から1000000まで配列連番作成してJSONエンコードして表示', 'main.nako3') },
+      /要素数が多すぎます/)
+  })
   it('配列関数適用 #1361 (core #78)', async () => {
     await cmp('●(Nを)二倍処理とは;それはN*2;ここまで;A=[1,2,3];Aに「二倍処理」を配列関数適用してJSONエンコードして表示。', '[2,4,6]')
     await cmp('A=[1,2,3];Aへ配列関数適用には(N)\nそれはN*2;ここまで;それをJSONエンコードして表示。', '[2,4,6]')
