@@ -416,6 +416,8 @@ describe('plugin_httpserver_test', () => {
     assert.match(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8''%01photo.txt"), /^OK:upload:photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
     // 極端に長いfilenameは保存名をUTF-8で200バイトに切り詰める
     assert.match(await postMultipart('form-data; name="upload"; filename="' + 'a'.repeat(250) + '.txt"'), new RegExp('^OK:upload:' + 'a'.repeat(250) + '\\.txt:[0-9]+_[0-9A-Za-z_-]+_' + 'a'.repeat(200) + '$'))
+    // quoted-stringの先頭・末尾空白は値として保持する
+    assert.match(await postMultipart('form-data; name=" upload "; filename=" photo.txt "'), /^OK: upload : photo\.txt :[0-9]+_[0-9A-Za-z_-]+__photo\.txt_$/)
   })
 
   it('HTTPメソッドにGET/POST/PUT/DELETEが設定されること', async () => {

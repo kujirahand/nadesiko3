@@ -370,8 +370,7 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
   const files: any[] = []
 
   // __proto__等のキーでObject.prototypeを汚染しないようdefinePropertyで安全に設定する。
-  // なおObject.create(null)は使わない: なでしこ3の反復構文(各〜で)が
-  // Object.prototype.hasOwnPropertyを呼ぶため、nullプロトタイプでは動かない。
+  // Object.create(null)は使わない: なでしこ3の辞書操作が instanceof Object を前提にしているため。
   const setField = (key: string, value: any) => {
     Object.defineProperty(fields, key, {
       value,
@@ -439,13 +438,13 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
     const contentDisposition = headers['content-disposition'] || ''
     const cdParams = parseContentDisposition(contentDisposition)
     // name* (RFC 5987) があれば優先してUTF-8デコードし、なければ name を使う。
-    // フィールドキーやfieldNameに使うため前後空白は除去する
+    // quoted-string の先頭・末尾空白は値の一部なので trim しない
     let name: string | undefined
     if (cdParams['name*'] !== undefined) {
       const decoded = decodeRFC5987(cdParams['name*'])
-      name = decoded !== null ? decoded.trim() : (cdParams['name'] !== undefined ? cdParams['name'].trim() : undefined)
+      name = decoded !== null ? decoded : cdParams['name']
     } else {
-      name = cdParams['name'] !== undefined ? cdParams['name'].trim() : undefined
+      name = cdParams['name']
     }
     if (name !== undefined) {
       // eslint-disable-next-line no-control-regex -- fieldNameから制御文字を除去するため
@@ -456,9 +455,9 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
     let filename: string
     if (cdParams['filename*'] !== undefined) {
       const decoded = decodeRFC5987(cdParams['filename*'])
-      filename = decoded !== null ? decoded.trim() : (cdParams['filename'] ?? '').trim()
+      filename = decoded !== null ? decoded : (cdParams['filename'] ?? '')
     } else {
-      filename = (cdParams['filename'] ?? '').trim()
+      filename = cdParams['filename'] ?? ''
     }
     // eslint-disable-next-line no-control-regex -- 表示名から制御文字を除去するため
     filename = filename.replace(/[\x00-\x1f\x7f]+/g, '')
