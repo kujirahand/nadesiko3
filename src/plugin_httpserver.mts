@@ -115,12 +115,7 @@ class EasyURLDispather {
             }
           } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
             const bodyStr = bodyBuffer.toString('utf-8')
-            const searchParams = new URLSearchParams(bodyStr)
-            const obj: any = {}
-            for (const [key, val] of searchParams.entries()) {
-              setDictValue(obj, key, val)
-            }
-            postData = obj
+            postData = parseQueryString(bodyStr)
           } else {
             postData = bodyBuffer.toString('utf-8')
           }
@@ -462,7 +457,8 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
     let filename: string
     if (cdParams['filename*'] !== undefined) {
       const decoded = decodeRFC5987(cdParams['filename*'])
-      filename = decoded !== null ? decoded : (cdParams['filename'] ?? '')
+      // RFC 5987として解析できたが空のときは filename へフォールバックする
+      filename = (decoded !== null && decoded !== '') ? decoded : (cdParams['filename'] ?? '')
     } else {
       filename = cdParams['filename'] ?? ''
     }
@@ -502,8 +498,9 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
           // 切り詰めで末尾に空白・ドットが残る場合に備えて再除去する
           safeFilename = safeFilename.replace(/[\s.]+$/, '')
         }
-        // 空・ドット始まり(隠しファイル・'.'・'..')はファイル名として危険なため無効化する
-        if (safeFilename === '' || safeFilename.startsWith('.')) {
+        // 空のときだけプレースホルダにする。ドット始まり(.gitignore等)は
+        // uniqueName の接頭辞があるため '.' / '..' にはならないのでそのまま残す
+        if (safeFilename === '') {
           safeFilename = '_'
         }
         const contentType = headers['content-type'] || 'application/octet-stream'
@@ -527,6 +524,10 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
         // nameが空の場合はフィールド登録しない
         if (name !== '') {
           setDictValue(fields, name, partBody.toString('utf-8'))
+        } else {
+          // eslint-disable-next-line no-control-regex -- ログを壊さないよう制御文字を除去してから200文字に切り詰める
+          const cdLog = contentDisposition.replace(/[\x00-\x1f\x7f]+/g, '').substring(0, 200)
+          console.warn(`${HTTPSERVER_LOGID} Content-Disposition の name が空のためパートを無視しました: ${cdLog}`)
         }
       }
     } else {

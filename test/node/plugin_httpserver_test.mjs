@@ -15,6 +15,8 @@ const __dirname = path.dirname(__filename)
 describe('plugin_httpserver_test', () => {
   let nako
   let serverDp
+  let uploadSnapshot = []
+  const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
 
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -23,6 +25,11 @@ describe('plugin_httpserver_test', () => {
     nako = new NakoCompiler()
     // PluginHttpServerの登録。名前は 'plugin_httpserver.js' とする。
     nako.addPluginFile('PluginHttpServer', 'plugin_httpserver.js', PluginHttpServer)
+    try {
+      uploadSnapshot = fs.existsSync(uploadDir) ? fs.readdirSync(uploadDir) : []
+    } catch (e) {
+      uploadSnapshot = []
+    }
   })
 
   afterEach(async () => {
@@ -35,10 +42,15 @@ describe('plugin_httpserver_test', () => {
       // 次のテストで古いサーバを参照しないよう null に戻す
       serverDp = null
     }
-    // アップロードの一時ディレクトリを掃除する
-    const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
+    // このテストで作ったアップロードファイルだけを消す
     try {
-      fs.rmSync(uploadDir, { recursive: true, force: true })
+      if (fs.existsSync(uploadDir)) {
+        for (const file of fs.readdirSync(uploadDir)) {
+          if (!uploadSnapshot.includes(file)) {
+            try { fs.unlinkSync(path.join(uploadDir, file)) } catch (e) {}
+          }
+        }
+      }
     } catch (e) {}
   })
 
@@ -364,6 +376,15 @@ describe('plugin_httpserver_test', () => {
     }
     assert.ok(warnSpy.some((m) => m.includes('name を解決できないパート')), '警告が出力されること')
     assert.ok(warnSpy.some((m) => m.includes('no-name.txt')), '警告にパートのContent-Dispositionが含まれること')
+    // 空のnameでfilenameが無いパートも警告して無視する
+    const emptyNameWarn = []
+    console.warn = (...args) => { emptyNameWarn.push(args.join(' ')) }
+    try {
+      assert.strictEqual(await postMultipart('form-data; name=""'), 'NG')
+    } finally {
+      console.warn = origWarn
+    }
+    assert.ok(emptyNameWarn.some((m) => m.includes('name が空のためパートを無視しました')))
     // filenameが無い場合はフィールドとして扱われ、POSTデータに保存される
     assert.strictEqual(await postMultipart('form-data; name="upload"'), 'FIELD:hello world')
     // quoted-string内の;と=を正しく扱う(nameとfilenameの値は正しく分離される)
@@ -385,8 +406,10 @@ describe('plugin_httpserver_test', () => {
     // 空のfilenameはファイル扱いせず、フィールドとしてPOSTデータに保存される
     assert.strictEqual(await postMultipart('form-data; name="upload"; filename=""'), 'FIELD:hello world')
     assert.strictEqual(await postMultipart("form-data; name=\"upload\"; filename*=\"\""), 'FIELD:hello world')
-    // 空のfilename*(RFC 5987の空値)はfilenameへフォールバックせず、フィールドとして扱う
+    // 空のfilename*(RFC 5987の空値)はfilenameへフォールバックする。filenameも空ならフィールドとして扱う
     assert.strictEqual(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8''"), 'FIELD:hello world')
+    // filename*が空でもfilenameがあればファイルとして扱う
+    assert.match(await postMultipart("form-data; name=\"upload\"; filename=\"report.pdf\"; filename*=UTF-8''"), /^OK:upload:report\.pdf:[0-9]+_[0-9A-Za-z_-]+_report\.pdf$/)
     // 空のname*はnameへフォールバックせず、空のnameとして扱う(nameは空のまま)
     assert.match(await postMultipart("form-data; name*=UTF-8''; filename=\"photo.txt\""), /^OK::photo\.txt:[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
     // filename*の非UTF-8文字セットはfilenameへフォールバックする
@@ -405,8 +428,8 @@ describe('plugin_httpserver_test', () => {
     assert.match(await postMultipart("form-data; name=\"upload\"; filename=\"old.txt\"; filename*=UTF-8''%E6%96%B0%E3%81%97%E3%81%84.txt"), /^OK:upload:新しい\.txt:[0-9]+_[0-9A-Za-z_-]+_新しい\.txt$/)
     // RFC 5987の言語タグ付きでもデコードする
     assert.match(await postMultipart("form-data; name=\"upload\"; filename*=UTF-8'ja'%E7%94%BB%E5%83%8F.txt"), /^OK:upload:画像\.txt:[0-9]+_[0-9A-Za-z_-]+_画像\.txt$/)
-    // ドット始まりのファイル名は保存名が無効化され、nameは元の値を保持する
-    assert.match(await postMultipart('form-data; name="upload"; filename=".gitignore"'), /^OK:upload:\.gitignore:[0-9]+_[0-9A-Za-z_-]+_+$/)
+    // ドット始まりのファイル名は接頭辞があるため保存名に残す
+    assert.match(await postMultipart('form-data; name="upload"; filename=".gitignore"'), /^OK:upload:\.gitignore:[0-9]+_[0-9A-Za-z_-]+_\.gitignore$/)
     // ディレクトリ区切りを含むfilenameは保存名がbasenameに限定される(パストラバーサル防止)
     assert.match(await postMultipart('form-data; name="upload"; filename="../../etc/passwd"'), /^OK:upload:\.\.\/\.\.\/etc\/passwd:[0-9]+_[0-9A-Za-z_-]+_passwd$/)
     // バックスラッシュ区切りのパストラバーサルは保存名がbasenameに限定される
