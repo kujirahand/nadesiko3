@@ -1326,9 +1326,6 @@ export default {
 
       const options = {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
         body: fd
       }
       fetch(url, options).then((res: any) => {

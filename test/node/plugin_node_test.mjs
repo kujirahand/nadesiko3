@@ -2,6 +2,7 @@
 import os from 'os'
 import fs from 'node:fs'
 import assert from 'assert'
+import http from 'node:http'
 import path from 'path'
 import { spawnSync } from 'node:child_process'
 
@@ -87,6 +88,41 @@ async function waitForFile(/** @type {string} */p, /** @type {number} */timeoutM
 
 describe('plugin_node_test', () => {
   // --- test ---
+  it('POSTフォーム送信時-multipart boundary', async () => {
+    let receivedBody = ''
+    let receivedContentType = ''
+    const server = http.createServer((req, res) => {
+      receivedContentType = req.headers['content-type'] || ''
+      req.setEncoding('utf8')
+      req.on('data', (chunk) => { receivedBody += chunk })
+      req.on('end', () => {
+        res.writeHead(200, { 'Content-Type': 'text/plain' })
+        res.end('OK')
+      })
+    })
+    await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
+    try {
+      const address = server.address()
+      assert.notStrictEqual(address, null)
+      assert.strictEqual(typeof address, 'object')
+      const url = `http://127.0.0.1:${address.port}/`
+      const response = await new Promise((resolve, reject) => {
+        const sys = {
+          __setSysVar: () => {},
+          __getSysVar: () => reject
+        }
+        PluginNode['POSTフォーム送信時'].fn(resolve, url, { name: 'なでしこ' }, sys)
+      })
+      assert.strictEqual(response, 'OK')
+      const boundary = receivedContentType.match(/^multipart\/form-data; boundary=(.+)$/)?.[1]
+      assert.ok(boundary, `Content-Typeにboundaryが必要です: ${receivedContentType}`)
+      assert.ok(receivedBody.includes(`--${boundary}`), '本文とContent-Typeのboundaryが一致する必要があります')
+      assert.ok(receivedBody.includes('name="name"'))
+      assert.ok(receivedBody.includes('なでしこ'))
+    } finally {
+      await new Promise((resolve, reject) => server.close((err) => err ? reject(err) : resolve()))
+    }
+  })
   it('表示', async () => {
     await cmp('3を表示', '3')
     await cmp('1+2*3を表示', '7')
