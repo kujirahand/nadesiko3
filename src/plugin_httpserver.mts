@@ -64,6 +64,7 @@ class EasyURLDispather {
         this.sys.__setSysVar('POSTデータ', postData)
         // URLの一致を調べてアクションを実行
         const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
+        let matched = false
         for (const it of filtered) {
           let isBreak = false
           if (it.action === 'static') {
@@ -71,7 +72,13 @@ class EasyURLDispather {
           } else if (it.action === 'callback') {
             isBreak = this.doRequestCallback(req, res, it)
           }
-          if (isBreak) { break }
+          if (isBreak) {
+            matched = true
+            break
+          }
+        }
+        if (!matched) {
+          this.return404(res)
         }
       } catch (err: any) {
         // ここで捕まえないとサーバのプロセスごと落ちてしまう
@@ -156,8 +163,14 @@ class EasyURLDispather {
 
   return404(res: any) {
     console.error(HTTPSERVER_LOGID, 404, '見当たりません。')
-    res.statusCode = 404
-    res.end('<html><meta charset="utf-8"><body><h1>404 見当たりません。</h1></body></html>')
+    try {
+      if (!res.writableEnded) {
+        res.statusCode = 404
+        res.end('<html><meta charset="utf-8"><body><h1>404 見当たりません。</h1></body></html>')
+      }
+    } catch {
+      // 応答済みなどで書き込めない場合は何もしない
+    }
   }
 
   doRequestStatic(req: any, res: any, it: EasyURLItem): boolean {

@@ -543,4 +543,76 @@ describe('plugin_httpserver_test', () => {
     })
     assert.strictEqual(status2, 500)
   })
+
+  it('未登録経路にリクエストしたときに404が返ること #2496', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  「hello」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理」を「/hello」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    // 登録済み経路 /hello は 200 と hello を返す
+    const helloRes = await new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/hello',
+        method: 'GET'
+      }, (res) => {
+        let data = ''
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve({ statusCode: res.statusCode, body: data }) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+    assert.strictEqual(helloRes.statusCode, 200)
+    assert.strictEqual(helloRes.body, 'hello')
+
+    // 未登録経路 /zzz はハングせず 404 が返ること
+    const notFoundRes = await new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/zzz',
+        method: 'GET'
+      }, (res) => {
+        let data = ''
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve({ statusCode: res.statusCode, body: data }) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+    assert.strictEqual(notFoundRes.statusCode, 404)
+    assert.match(notFoundRes.body, /404/)
+
+    // 未登録経路の後でもサーバが生きていて正常経路にアクセスできること
+    const helloRes2 = await new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/hello',
+        method: 'GET'
+      }, (res) => {
+        let data = ''
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve({ statusCode: res.statusCode, body: data }) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+    assert.strictEqual(helloRes2.statusCode, 200)
+    assert.strictEqual(helloRes2.body, 'hello')
+  })
 })
