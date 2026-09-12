@@ -115,12 +115,7 @@ class EasyURLDispather {
             }
           } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
             const bodyStr = bodyBuffer.toString('utf-8')
-            const searchParams = new URLSearchParams(bodyStr)
-            const obj: any = {}
-            for (const [key, val] of searchParams.entries()) {
-              obj[key] = val
-            }
-            postData = obj
+            postData = parseQueryString(bodyStr)
           } else {
             postData = bodyBuffer.toString('utf-8')
           }
@@ -232,6 +227,157 @@ class EasyURLDispather {
     return params
   }
 }
+/** Content-Disposition ヘッダ値を解析してパラメータ辞書を返す。
+ * `form-data; name="upload"; filename="photo.txt"` のような形式を、
+ * `;`区切りで `キー=値` 形式として取り出す。値がダブルクォート付きの場合は
+ * quoted-string として解析し、値中の `;`・`=`・エスケープ(`\"`, `\\`)も処理する。
+ * キーは大文字小文字を区別しない。`=` 前後の Optional Whitespace は許容する。
+ * パラメータの順序に依存せず `name` と `filename` を正しく分離するためのヘルパー。(#2494)
+ */
+// RFC 7230 の separators を使用。ただし `'` は tchar であると同時に
+// RFC 5987 の `charset'language'value` 区切りにも使うため区切り文字として扱わない。
+const CD_SEPARATORS = '()<>@,;:\\"/[]?={} \t'
+
+// Content-Disposition のキーとして有効な RFC 7230 token 文字
+const CD_KEY_RE = /^[0-9a-zA-Z!#$%&'*+.^_`|~-]+$/
+
+/** Content-Disposition の `キー=値` の値部分を解析して返す。
+ * start には `=` 後の Optional Whitespace をスキップした位置を渡すこと。
+ */
+function parseCDValue(headerValue: string, start: number): { value: string, next: number } {
+  let i = start
+  let val = ''
+  if (i < headerValue.length && headerValue[i] === '"') {
+    i++ // opening DQUOTE
+    while (i < headerValue.length) {
+      if (headerValue[i] === '\\') {
+        if (i + 1 < headerValue.length) {
+          // RFC 2616 / RFC 7230 の quoted-pair では \ に続く1文字がエスケープされる。
+          // 追加するのは HTAB/SP/VCHAR(0x21-0x7E)/obs-text のみに制限する
+          const nc = headerValue.charCodeAt(i + 1)
+          if (nc === 0x09 || (nc >= 0x20 && nc <= 0x7e) || nc >= 0x80) {
+            val += headerValue[i + 1]
+          }
+          i += 2
+          continue
+        }
+        // quoted-pair を形成しない末尾の `\` は無視して終了する
+        i++
+        break
+      }
+      if (headerValue[i] === '"') {
+        i++ // closing DQUOTE
+        break
+      }
+      // quoted-string内の制御文字(HTABとSP以外)はスキップする。
+      // なお `"` は閉じクォートとして扱われるため値には含まれない
+      const c = headerValue.charCodeAt(i)
+      if (c === 0x09 || (c >= 0x20 && c <= 0x7e) || c >= 0x80) {
+        val += headerValue[i]
+      }
+      i++
+    }
+  } else {
+    // 非引用値はRFC 7230のtoken。区切り文字・空白・制御文字(0x00-0x1F, 0x7F)・非ASCIIで停止する。
+    // そのため非引用の非ASCII値(例: filename=画像.txt)は空になり、実ブラウザは非引用値を送らないため実害はない
+    const valStart = i
+    while (i < headerValue.length && CD_SEPARATORS.indexOf(headerValue[i]) < 0 &&
+           headerValue.charCodeAt(i) >= 0x21 && headerValue.charCodeAt(i) <= 0x7e) { i++ }
+    val = headerValue.substring(valStart, i)
+  }
+  return { value: val, next: i }
+}
+
+function parseContentDisposition(headerValue: string): { [key: string]: string } {
+  // obs-fold (CRLF 1*(SP/HTAB)) を単一 SP に正規化してから解析する
+  const normalized = headerValue.replace(/\r\n[ \t]+/g, ' ')
+  // Object.create(null)により __proto__ 等のキーでもプロトタイプ汚染せず、自前プロパティとして扱える
+  const params: { [key: string]: string } = Object.create(null)
+  let i = 0
+
+  // 先頭の disposition-type (form-data/inline/attachment 等) を token として読み、
+  // その後の OWS と `;` を正しくスキップする。
+  // `name="foo"` のように type がない場合(= が先に現れる場合)はスキップせず
+  // その位置からパラメータ解析を始める
+  let j = 0
+  while (j < normalized.length && CD_SEPARATORS.indexOf(normalized[j]) < 0 &&
+         normalized.charCodeAt(j) >= 0x21 && normalized.charCodeAt(j) <= 0x7e) { j++ }
+  while (j < normalized.length && (normalized[j] === ' ' || normalized[j] === '\t')) { j++ }
+  if (j < normalized.length && normalized[j] === ';') {
+    i = j + 1
+  } else if (j < normalized.length && normalized[j] === '=') {
+    // type がなく最初のパラメータから始まる
+    i = 0
+  } else {
+    // disposition-type の後に ; も = もない場合は、その位置からパラメータ解析を再開する
+    i = j
+  }
+
+  while (i < normalized.length) {
+    // セパレータと空白をスキップ
+    while (i < normalized.length && (normalized[i] === ';' || normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
+    if (i >= normalized.length) { break }
+
+    const iterStart = i
+    // キー
+    const keyStart = i
+    while (i < normalized.length && CD_SEPARATORS.indexOf(normalized[i]) < 0 &&
+           normalized.charCodeAt(i) >= 0x21 && normalized.charCodeAt(i) <= 0x7e) { i++ }
+    const key = normalized.substring(keyStart, i).toLowerCase()
+    // = 前の Optional Whitespace をスキップする
+    while (i < normalized.length && (normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
+    if (i >= normalized.length || normalized[i] !== '=') {
+      // 不正な断片で i が進まないと無限ループになるため、最低1文字進める
+      if (i <= iterStart) { i++ }
+      continue
+    }
+    i++ // '='
+
+    // 値(先頭の空白をスキップ)
+    while (i < normalized.length && (normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
+    const parsed = parseCDValue(normalized, i)
+    i = parsed.next
+    if (i <= iterStart) { i++ }
+
+    // RFC 7230 の token 文字のみをキーとして有効にする(空キーや不正な文字は無視)
+    if (!CD_KEY_RE.test(key)) { continue }
+    // 重複するキーは最後の値で上書きする(後勝ち)
+    params[key] = parsed.value
+  }
+
+  return params
+}
+/** RFC 5987 形式(`UTF-8''%E3%81%82...`)の値をデコードして返す。
+ * 対応しているのは UTF-8 のみ。UTF-8以外の文字セットや不正な値の場合は null を返す。
+ * デコード結果から制御文字(0x00-0x1F, 0x7F)を除去する。(#2494)
+ */
+function decodeRFC5987(value: string): string | null {
+  const m = value.match(/^([^']*)'([^']*)'(.*)$/)
+  if (!m) { return null }
+  const charset = m[1].toLowerCase()
+  if (charset !== 'utf-8') { return null }
+  try {
+    // eslint-disable-next-line no-control-regex -- デコード後の制御文字を除去するため
+    return decodeURIComponent(m[3]).replace(/[\x00-\x1f\x7f]+/g, '')
+  } catch {
+    return null
+  }
+}
+/** 辞書にキーを安全に設定する。
+ * __proto__等のprototype由来のキーでObject.prototypeを汚染しないようdefinePropertyを使う。
+ * 対象はなでしこ3へ渡す辞書(POSTデータ等)のためObject.create(null)は使わない:
+ * なでしこ3の辞書操作が instanceof Object を前提にしている。内部限りの params 等は
+ * Object.create(null)を使う(parseContentDisposition参照)。(#2494)
+ */
+function setDictValue(obj: any, key: string, value: any) {
+  Object.defineProperty(obj, key, {
+    value,
+    enumerable: true,
+    writable: true,
+    configurable: true
+  })
+}
+
 async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: any[], fields: any }> {
   const fields: any = {}
   const files: any[] = []
@@ -278,8 +424,10 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
     if (bodyStart === 0) { continue }
 
     const partBody = part.subarray(bodyStart)
-    const headers: any = {}
-    const lines = headerStr.split(/\r?\n/)
+    const headers: any = Object.create(null)
+    // MIMEパートヘッダの obs-fold (CRLF 1*(SP/HTAB)) を単一SPに戻してから行分割する
+    const unfolded = headerStr.replace(/\r\n[ \t]+/g, ' ').replace(/\n[ \t]+/g, ' ')
+    const lines = unfolded.split(/\r?\n/)
     for (const line of lines) {
       const idx = line.indexOf(':')
       if (idx !== -1) {
@@ -290,14 +438,71 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
     }
 
     const contentDisposition = headers['content-disposition'] || ''
-    const nameMatch = contentDisposition.match(/name="([^"]+)"/)
-    const filenameMatch = contentDisposition.match(/filename="([^"]+)"/)
+    const cdParams = parseContentDisposition(contentDisposition)
+    // name* (RFC 5987) があれば優先してUTF-8デコードし、なければ name を使う。
+    // quoted-string の先頭・末尾空白は値の一部なので trim しない
+    let name: string | undefined
+    if (cdParams['name*'] !== undefined) {
+      const decoded = decodeRFC5987(cdParams['name*'])
+      name = decoded !== null ? decoded : cdParams['name']
+    } else {
+      name = cdParams['name']
+    }
+    if (name !== undefined) {
+      // eslint-disable-next-line no-control-regex -- fieldNameから制御文字を除去するため
+      name = name.replace(/[\x00-\x1f\x7f]+/g, '')
+    }
+    // filename* (RFC 5987) があれば優先してUTF-8デコードする。
+    // デコードできない場合は filename にフォールバックし、それもなければ空文字にする
+    let filename: string
+    if (cdParams['filename*'] !== undefined) {
+      const decoded = decodeRFC5987(cdParams['filename*'])
+      // RFC 5987として解析できたが空のときは filename へフォールバックする
+      filename = (decoded !== null && decoded !== '') ? decoded : (cdParams['filename'] ?? '')
+    } else {
+      filename = cdParams['filename'] ?? ''
+    }
+    // eslint-disable-next-line no-control-regex -- 表示名から制御文字を除去するため
+    filename = filename.replace(/[\x00-\x1f\x7f]+/g, '')
+    // 空の filename はファイル扱いにしない(不要な一時ファイルを作らない)
+    const hasFilename = filename !== ''
 
-    if (nameMatch) {
-      const name = nameMatch[1]
-      if (filenameMatch) {
-        const filename = filenameMatch[1]
-        const safeFilename = path.basename(filename).replace(/[\\/]/g, '_')
+    if (name !== undefined) {
+      if (hasFilename) {
+        // 保存ファイル名は、OS非依存で / と \ の両方を区切りと見なした basename に限定する。
+        // さらに Windows 禁止文字( : * ? " < > | )と制御文字を除去する(/ と \ は basename 化で消える)。
+        // シェルメタ文字は fs.promises.writeFile に直接渡すため除去しない(ファイル名中の記号を可能な限り保持する)。(#2494)
+        const baseName = filename.replace(/\\/g, '/').split('/').pop() || ''
+        let safeFilename = baseName.replace(/[:*?"<>|]+/g, '_')
+        // eslint-disable-next-line no-control-regex -- ファイル名から制御文字を除去するため
+        safeFilename = safeFilename.replace(/[\x00-\x1f\x7f]+/g, '')
+        // 先頭の空白と末尾の空白・ドットを除去する(先頭のドットは後続の判定で無効化する)
+        safeFilename = safeFilename.replace(/^\s+/, '').replace(/[\s.]+$/, '')
+        // ENAMETOOLONGを避けるためUTF-8で200バイトに制限する。拡張子は残して本体側を詰める
+        if (Buffer.byteLength(safeFilename, 'utf8') > 200) {
+          // ENAMETOOLONGを避けるため拡張子は残し、本体側をUTF-8で200バイト以内に詰める
+          const dotIdx = safeFilename.lastIndexOf('.')
+          const hasExt = dotIdx > 0
+          const ext = hasExt ? safeFilename.substring(dotIdx) : ''
+          const stem = hasExt ? safeFilename.substring(0, dotIdx) : safeFilename
+          const maxStemBytes = 200 - Buffer.byteLength(ext, 'utf8')
+          if (maxStemBytes > 0) {
+            let newStem = Buffer.from(stem, 'utf8').subarray(0, maxStemBytes).toString('utf8')
+            newStem = newStem.replace(/\uFFFD+$/, '')
+            safeFilename = newStem + ext
+          } else {
+            // 拡張子だけで200バイトを超える場合は拡張子も含めて切り詰める
+            safeFilename = Buffer.from(safeFilename, 'utf8').subarray(0, 200).toString('utf8')
+            safeFilename = safeFilename.replace(/\uFFFD+$/, '')
+          }
+          // 切り詰めで末尾に空白・ドットが残る場合に備えて再除去する
+          safeFilename = safeFilename.replace(/[\s.]+$/, '')
+        }
+        // 空のときだけプレースホルダにする。ドット始まり(.gitignore等)は
+        // uniqueName の接頭辞があるため '.' / '..' にはならないのでそのまま残す
+        if (safeFilename === '') {
+          safeFilename = '_'
+        }
         const contentType = headers['content-type'] || 'application/octet-stream'
 
         const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
@@ -316,8 +521,20 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
           type: contentType
         })
       } else {
-        fields[name] = partBody.toString('utf-8')
+        // nameが空の場合はフィールド登録しない
+        if (name !== '') {
+          setDictValue(fields, name, partBody.toString('utf-8'))
+        } else {
+          // eslint-disable-next-line no-control-regex -- ログを壊さないよう制御文字を除去してから200文字に切り詰める
+          const cdLog = contentDisposition.replace(/[\x00-\x1f\x7f]+/g, '').substring(0, 200)
+          console.warn(`${HTTPSERVER_LOGID} Content-Disposition の name が空のためパートを無視しました: ${cdLog}`)
+        }
       }
+    } else {
+      // name を解決できないパート(name が無い、name* デコード失敗等)は無視するが、利用者に分かるよう警告する
+      // eslint-disable-next-line no-control-regex -- ログを壊さないよう制御文字を除去してから200文字に切り詰める
+      const cdLog = contentDisposition.replace(/[\x00-\x1f\x7f]+/g, '').substring(0, 200)
+      console.warn(`${HTTPSERVER_LOGID} Content-Disposition に name を解決できないパートを無視しました: ${cdLog}`)
     }
   }
 
