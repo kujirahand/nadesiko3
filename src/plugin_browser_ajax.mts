@@ -333,7 +333,7 @@ export default {
               if (type === 'BODY' || type === '本体') {
                 return res.body
               }
-      return res.body()
+      throw new Error(`『AJAX内容取得』で未対応の形式「${type}」が指定されました。TEXT、JSON、BLOB、ARRAY、BODYのいずれかを指定してください。`)
     },
     return_none: false
   },
