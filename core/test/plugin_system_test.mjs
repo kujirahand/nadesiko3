@@ -230,6 +230,7 @@ describe('plugin_system_test', async () => {
   })
   it('配列逆順', async () => {
     await cmp('A=[1,2,3];Aを配列逆順。Aを「:」で配列結合。表示。', '3:2:1')
+    await cmpex('A=1;Aを配列逆順。', { name: 'NakoError', message: '『配列逆順』で配列以外が指定されました。' }) // #2473
   })
   it('配列切取/配列削除', async () => {
     await cmp('A=[0,1,2,3];Aの2を配列切り取る。C=それ。Aを「:」で配列結合。表示。Cを表示', '0:1:3\n2')
