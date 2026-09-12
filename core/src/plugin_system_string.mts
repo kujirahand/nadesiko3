@@ -212,6 +212,8 @@ export default {
     fn: function(s: string, a: string) {
       s = '' + s
       a = '' + a
+      // 検索語が空文字列のときは0回とする(split(a).length - 1では-1や文字数-1を返すため) #2482
+      if (a === '') { return 0 }
       return s.split(a).length - 1
     }
   },
