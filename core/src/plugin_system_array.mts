@@ -160,7 +160,7 @@ export default {
     pure: true,
     fn: function(a: any) {
       if (a instanceof Array) { return a.reverse() } // 配列ならOK
-      throw new Error('『配列ソート』で配列以外が指定されました。')
+      throw new Error('『配列逆順』で配列以外が指定されました。')
     }
   },
   '配列シャッフル': { // @配列Aをシャッフルして返す。Aを書き換える // @はいれつしゃっふる
