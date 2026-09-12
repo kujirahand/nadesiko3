@@ -1,0 +1,39 @@
+ROOT_DIR = 母艦パスを「../」で相対パス展開。
+
+FILES = 「{ROOT_DIR}/*.mts」の全ファイル列挙。
+TOTAL_FILES = 0
+TOTAL_LINES = 0
+TOTAL_CHARS = 0
+
+FILESを反復
+    # node_modules を除外
+    対象を『node_modules』で正規表現マッチ。
+    もし、そうならば、続ける。
+
+    F = 対象
+    S = Fを開く。
+    CHARS = Sの文字数。
+
+    # 行末の改行を取り除いてから改行で区切る
+    S_TRIM = Sの「/\r?\n$/」を「」に正規表現置換。
+    もし、S_TRIM == ""ならば
+        LINES = 0
+    違えば
+        LINES = (S_TRIMを改行で区切る)の要素数
+    ここまで。
+
+    TOTAL_FILES = TOTAL_FILES + 1
+    TOTAL_LINES = TOTAL_LINES + LINES
+    TOTAL_CHARS = TOTAL_CHARS + CHARS
+
+    # 相対パス表示
+    REL_PATH = Fの「{ROOT_DIR}」を「」に置換。
+    REL_PATH = REL_PATHの「/^[\\\/]/」を「」に正規表現置換。
+    「{REL_PATH}: {LINES}行, {CHARS}文字」を表示。
+ここまで。
+
+「----------------------------------------」を表示。
+「対象ファイル数: {TOTAL_FILES}」を表示。
+「総行数: {TOTAL_LINES} 行」を表示。
+「総文字数: {TOTAL_CHARS} 文字」を表示。
+「----------------------------------------」を表示。
