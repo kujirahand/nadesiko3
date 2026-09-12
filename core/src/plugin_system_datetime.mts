@@ -13,13 +13,8 @@ export default {
     type: 'func',
     josi: [],
     pure: true,
-    fn: function() {
-      const z2 = (n: number): string => {
-        const ns = '00' + String(n)
-        return ns.substring(ns.length - 2, ns.length)
-      }
-      const t = new Date()
-      return z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
+    fn: function(sys: NakoSystem) {
+      return sys.__formatTime(new Date())
     }
   },
   'システム時間': { // @現在のUNIX時間 (UTC(1970/1/1)からの経過秒数) を返す // @しすてむじかん
