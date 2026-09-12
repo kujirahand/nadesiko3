@@ -1009,4 +1009,23 @@ describe('plugin_system_test', async () => {
     await cmp('「/a/b/c」からパス抽出して表示。', '/a/b')
     await cmp('「c:/a/b/c」からパス抽出して表示。', 'c:/a/b')
   })
+  it('__formatTime #2489', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('')
+    const t = new Date(2026, 8, 10, 12, 34, 56)
+    assert.strictEqual(g.__formatTime(t), '12:34:56')
+  })
+  it('今 #2489', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('')
+    // sys.__formatTime に委譲されていることを検証するため固定値に差し替える
+    g.__formatTime = () => '11:22:33'
+    const res = await g.runAsync('今を表示', 'main.nako3', {})
+    assert.strictEqual(res.log, '11:22:33')
+
+    // 実環境での出力形式も確認
+    const nako2 = new NakoCompiler()
+    const g2 = await nako2.runAsync('今を表示', 'main.nako3')
+    assert.match(g2.log, /^\d{2}:\d{2}:\d{2}$/)
+  })
 })

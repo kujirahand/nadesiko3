@@ -111,7 +111,7 @@ const PluginSystem = {
         return String(t.getFullYear()) + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate())
       }
       sys.__formatTime = (t: Date): string => {
-        return z2(t.getHours()) + ':' + z2(t.getSeconds()) + ':' + z2(t.getMinutes())
+        return z2(t.getHours()) + ':' + z2(t.getMinutes()) + ':' + z2(t.getSeconds())
       }
       sys.__formatDateTime = (t: Date, fmt: string): string => {
         const dateStr = String(t.getFullYear()) + '/' + z2(t.getMonth() + 1) + '/' + z2(t.getDate())
