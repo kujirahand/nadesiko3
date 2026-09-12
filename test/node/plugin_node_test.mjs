@@ -612,4 +612,81 @@ CNTを表示
     assert.strictEqual(r2.status, 0)
     assert.strictEqual(r2.stdout.trim(), 'A')
   })
+  // --- ファイル列挙 / 全ファイル列挙 (#2492) ---
+  describe('ファイル列挙のワイルドカード #2492', () => {
+    let tmpDir = ''
+    let tmpDirSlash = ''
+    beforeEach(() => {
+      tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-enum-test-'))
+      tmpDirSlash = tmpDir.replace(/\\/g, '/')
+      // テスト用ファイル作成
+      fs.writeFileSync(path.join(tmpDir, 'a.txt'), '')
+      fs.writeFileSync(path.join(tmpDir, 'za.txt'), '')
+      fs.writeFileSync(path.join(tmpDir, 'a+.txt'), '')
+      fs.writeFileSync(path.join(tmpDir, '[file.txt'), '')
+      fs.writeFileSync(path.join(tmpDir, 'test.jpg'), '')
+      fs.writeFileSync(path.join(tmpDir, 'image.png'), '')
+      fs.writeFileSync(path.join(tmpDir, 'data.csv'), '')
+      // サブディレクトリとその中身
+      const subDir = path.join(tmpDir, 'sub')
+      fs.mkdirSync(subDir)
+      fs.writeFileSync(path.join(subDir, 'a.txt'), '')
+      fs.writeFileSync(path.join(subDir, 'za.txt'), '')
+      fs.writeFileSync(path.join(subDir, 'test.jpg'), '')
+    })
+    afterEach(() => {
+      if (tmpDir && fs.existsSync(tmpDir)) {
+        fs.rmSync(tmpDir, { recursive: true, force: true })
+      }
+    })
+
+    it('先頭アンカーにより部分一致しない (a*.txt で za.txt は一致しない)', async () => {
+      const g = await run(`「${tmpDirSlash}/a*.txt」のファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).sort()
+      assert.deepStrictEqual(list, ['a+.txt', 'a.txt'])
+    })
+
+    it('正規表現メタ文字がエスケープされる ([*.txt でSyntaxErrorにならず一致)', async () => {
+      const g = await run(`「${tmpDirSlash}/[*.txt」のファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).sort()
+      assert.deepStrictEqual(list, ['[file.txt'])
+    })
+
+    it('+ 記号が通常文字として扱われる (a+*.txt)', async () => {
+      const g = await run(`「${tmpDirSlash}/a+*.txt」のファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).sort()
+      assert.deepStrictEqual(list, ['a+.txt'])
+    })
+
+    it('*.txt で全てのtxtファイルに一致し、末尾が異なるファイルには一致しない', async () => {
+      fs.writeFileSync(path.join(tmpDir, 'a.txt.bak'), '')
+      const g = await run(`「${tmpDirSlash}/*.txt」のファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).sort()
+      assert.deepStrictEqual(list, ['[file.txt', 'a+.txt', 'a.txt', 'za.txt'])
+    })
+
+    it('ワイルドカードなしの場合は全ファイル・フォルダを列挙する', async () => {
+      const g = await run(`「${tmpDirSlash}」のファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).sort()
+      assert.deepStrictEqual(list, ['[file.txt', 'a+.txt', 'a.txt', 'data.csv', 'image.png', 'sub', 'test.jpg', 'za.txt'])
+    })
+
+    it('複数パターンの指定 (*.jpg;*.png)', async () => {
+      const g = await run(`「${tmpDirSlash}/*.jpg;*.png」のファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).sort()
+      assert.deepStrictEqual(list, ['image.png', 'test.jpg'])
+    })
+
+    it('複数パターンの指定 (空白混じり *.jpg; *.png)', async () => {
+      const g = await run(`「${tmpDirSlash}/*.jpg; *.png」のファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).sort()
+      assert.deepStrictEqual(list, ['image.png', 'test.jpg'])
+    })
+
+    it('全ファイル列挙でも同様にワイルドカード照合される', async () => {
+      const g = await run(`「${tmpDirSlash}/a*.txt」の全ファイル列挙をJSONエンコードして表示。`)
+      const list = JSON.parse(g.log).map((p) => path.relative(tmpDir, p).replace(/\\/g, '/')).sort()
+      assert.deepStrictEqual(list, ['a+.txt', 'a.txt', 'sub/a.txt'])
+    })
+  })
 })
