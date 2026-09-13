@@ -9,7 +9,11 @@ import { parseQueryString } from '../core/src/url_util.mjs'
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
 const ERR_NOHTTPSERVER = '最初に『簡易HTTPサーバ起動時』を実行してサーバを起動する必要があります。'
 const MAX_BODY_SIZE_POST = 10 * 1024 * 1024 // 10MB
-      
+// RFC 2046 の boundary 文法: 0*69<bchars> bcharsnospace
+// bcharsnospace = DIGIT / ALPHA / "'" / "(" / ")" / "+" / "_" / "," / "-" / "." / "/" / ":" / "=" / "?"
+// bchars は bcharsnospace に空白を加えたもので、末尾1文字は空白以外(bcharsnospace)でなければならない
+const MULTIPART_BOUNDARY_RE = /^[0-9A-Za-z'()+_,\-./:=? ]{0,69}[0-9A-Za-z'()+_,\-./:=?]$/
+
 // オブジェクト
 type EasyURLActionType = 'static' | 'callback'
 type EasyURLCallback = (req: any, res: any) => void
@@ -113,11 +117,12 @@ class EasyURLDispather {
             // パラメータ名は大小文字を区別せず、`=`前後の空白・引用符付き値も許容する(非引用値はtokenとして解釈)。
             // 正規表現だと他パラメータの引用値内に現れる '; boundary=' に誤マッチするため。
             // strictモードを有効にし、前のパラメータとの `;` 区切りがないboundaryは採用しない
-            // (区切り欠落の不正要求を400にするため)。重複パラメータは常に最後の値を採用する(後勝ち)
-            const boundary = (parseContentDisposition(contentType, true)['boundary'] ?? '').trim()
-            if (boundary === '') {
-              // boundaryが得られない不正なmultipart要求は、フィールドを静かに消さず400を返す(#2495)
-              console.error(`${HTTPSERVER_LOGID} multipart/form-data 要求に boundary がありません`)
+            // (区切り欠落の不正要求を400にするため)。重複パラメータは常に最後の値を採用する(後勝ち)。
+            // boundaryの値は空白を含み得るためtrimせず、RFC 2046の文法(1〜70文字・許可文字・末尾空白禁止)で検証する
+            const boundary = parseContentDisposition(contentType, true)['boundary'] ?? ''
+            if (!MULTIPART_BOUNDARY_RE.test(boundary)) {
+              // boundaryが得られない・文法上不正なmultipart要求は、フィールドを静かに消さず400を返す(#2495)
+              console.error(`${HTTPSERVER_LOGID} multipart/form-data 要求の boundary が取得できないか文法上不正です`)
               res.statusCode = 400
               res.end('Bad Request.')
               return

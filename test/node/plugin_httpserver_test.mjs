@@ -545,24 +545,56 @@ describe('plugin_httpserver_test', () => {
     assert.deepStrictEqual(await postRequest(`multipart/form-data;boundary=${boundary}`), { statusCode: 200, body: 'hello' })
     // 他パラメータの引用値内にある '; boundary=' には誤マッチしない(quoted-string考慮のパーサで解析)
     assert.deepStrictEqual(await postRequest(`multipart/form-data; note="x; boundary=fake"; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
-    // 引用符内の`;`を含むboundary値も正しく取得できる
-    const semicolonBoundary = 'a;b'
-    const semicolonBody = Buffer.from([
-      `--${semicolonBoundary}\r\n`,
-      `Content-Disposition: form-data; name="a"\r\n\r\n`,
-      `hello\r\n`,
-      `--${semicolonBoundary}--\r\n`
-    ].join(''))
-    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a;b"', semicolonBody), { statusCode: 200, body: 'hello' })
-    // 引用符内のエスケープ(quoted-pair)を解除してboundary値を取得できる
-    const escapedBoundary = 'a\\b'
+    // `;`はboundaryとして許可されない文字(RFC 2046)のため400を返す(quoted-stringとしては正しく抽出される)
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a;b"'), { statusCode: 400, body: 'Bad Request.' })
+    // 引用符内のエスケープ(quoted-pair)を解除してboundary値を取得できる(空白のエスケープ)
+    const escapedBoundary = 'a b'
     const escapedBody = Buffer.from([
       `--${escapedBoundary}\r\n`,
       `Content-Disposition: form-data; name="a"\r\n\r\n`,
       `hello\r\n`,
       `--${escapedBoundary}--\r\n`
     ].join(''))
-    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a\\\\b"', escapedBody), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a\\ b"', escapedBody), { statusCode: 200, body: 'hello' })
+    // エスケープ解除後の値がboundary文字として不正(`\`は不許可文字)なら400を返す
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a\\\\b"'), { statusCode: 400, body: 'Bad Request.' })
+    // 引用符付きboundaryの先頭・途中の空白はRFC 2046で許容されるため正しく解析できる
+    const spaceBoundary = ' XcB1Y'
+    const spaceBody = Buffer.from([
+      `--${spaceBoundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${spaceBoundary}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary=" XcB1Y"', spaceBody), { statusCode: 200, body: 'hello' })
+    // 末尾空白はRFC 2046で許可されないため400を返す
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="X "'), { statusCode: 400, body: 'Bad Request.' })
+    // boundaryは1〜70文字まで有効で、71文字以上は400を返す
+    const boundary70 = 'a'.repeat(70)
+    const body70 = Buffer.from([
+      `--${boundary70}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${boundary70}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary70}`, body70), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${'a'.repeat(71)}`), { statusCode: 400, body: 'Bad Request.' })
+    // 最小長(1文字)や許可記号を含むboundaryも正しく解析できる
+    const specialBoundary = `'()+_,-./:=?`
+    const specialBody = Buffer.from([
+      `--${specialBoundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${specialBoundary}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary="${specialBoundary}"`, specialBody), { statusCode: 200, body: 'hello' })
+    const oneCharBody = Buffer.from([
+      `--X\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--X--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary=X', oneCharBody), { statusCode: 200, body: 'hello' })
     // 前のパラメータとの `;` 区切りがないboundaryは採用せず400を返す(厳格モード)
     assert.deepStrictEqual(await postRequest(`multipart/form-data; note="x"boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
     assert.deepStrictEqual(await postRequest(`multipart/form-data; note="x" boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
