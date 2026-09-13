@@ -1684,12 +1684,12 @@ export class NakoGen {
   private genLocalVarsSyncCode (): { begin: string, end: string } {
     let begin = ''
     let end = ''
-    // 展開されたローカル変数の列挙
+    // 宣言済みのローカル変数名の列挙。
+    // 名前はJSON文字列として生成コードに埋め込むだけなので、
+    // 《今日から明日》のような特殊名や絵文字変数もそのまま扱える
     const localVars = []
     for (const name of Array.from(this.varsSet.names.values())) {
-      if (NakoGen.isValidIdentifier(name)) {
-        localVars.push({ name, str: JSON.stringify(name) })
-      }
+      localVars.push({ name, str: JSON.stringify(name) })
     }
 
     // --- 実行前 ---

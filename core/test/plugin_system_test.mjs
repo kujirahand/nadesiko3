@@ -1334,6 +1334,32 @@ describe('plugin_system_test', async () => {
     assert.strictEqual(g.__locals.has('A'), false)
     assert.strictEqual(g.__locals.has('W'), false)
   })
+  it('特殊名のローカル変数も差し替えMapから書き戻される #2534', async () => {
+    // 《今日から明日》のような特殊名変数も varsSet.names に含まれるため、
+    // プラグインが __locals を別 Map に差し替えた場合の書き戻し対象になる
+    const nako = new NakoCompiler()
+    nako.addPlugin({
+      meta: { type: 'const', value: { pluginName: 'TestPlugin2534', nakoVersion: '3.6.0' } },
+      差替: {
+        type: 'func', josi: [], pure: false, return_none: true,
+        fn: (sys) => { sys.__locals = new Map([['《今日から明日》', 99], ['A', 88]]) }
+      }
+    })
+    const g = await nako.runAsync(
+      '●テストA\n' +
+      '　《今日から明日》=1\n' +
+      '　A=2\n' +
+      '　差替。\n' +
+      '　《今日から明日》を表示。\n' +
+      '　Aを表示。\n' +
+      'ここまで\n' +
+      'テストA()。', 'main.nako3')
+    assert.strictEqual(g.log, '99\n88')
+    assert.strictEqual(g.__varslist[2].has('《今日から明日》'), false)
+    assert.strictEqual(g.__varslist[2].has('A'), false)
+    assert.strictEqual(g.__locals.has('《今日から明日》'), false)
+    assert.strictEqual(g.__locals.has('A'), false)
+  })
   it('reset後もasyncFn命令にはローカル変数同期が生成されず外側スコープが観測されない #2534', async () => {
     // asyncFn のプラグイン命令は登録時に pure=true に強制されるが、スナップショットは
     // pure=true 化前に取られるため reset() で pure=false に戻る
