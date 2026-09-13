@@ -635,7 +635,9 @@ export default {
     fn: function(a: any, i: any) {
       if (!(a instanceof Array)) { throw new Error('『表重複削除』には配列を指定する必要があります。') }
       const res: any[] = []
-      const keys:{[key: string]: boolean} = {}
+      // #2474: toStringや__proto__等の継承プロパティを既出と誤判定しないようnullプロトタイプの辞書を使う。
+      // この辞書は関数内だけで使い、なでしこの内部処理へは渡さない。
+      const keys:{[key: string]: boolean} = Object.create(null)
       for (let n = 0; n < a.length; n++) {
         const k = a[n][i]
         if (undefined === keys[k]) {

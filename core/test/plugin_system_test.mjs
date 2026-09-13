@@ -331,6 +331,15 @@ describe('plugin_system_test', async () => {
   })
   it('表重複削除', async () => {
     await cmp('A=[[1,2,3],[1,1,1],[4,5,6]];Aの0を表重複削除してJSONエンコードして表示。', '[[1,2,3],[4,5,6]]')
+    // #2474: Object.prototypeのプロパティ名と一致するキーが最初から消えないこと
+    await cmp('A=[["toString"],["constructor"],["ok"]];Aの0を表重複削除してJSONエンコードして表示。', '[["toString"],["constructor"],["ok"]]')
+    await cmp('A=[["__proto__"],["hasOwnProperty"],["valueOf"],["__proto__"]];Aの0を表重複削除してJSONエンコードして表示。', '[["__proto__"],["hasOwnProperty"],["valueOf"]]')
+    // 継承プロパティ名のキーでも重複は正しく除去される
+    await cmp('A=[["toString"],["toString"],["ok"]];Aの0を表重複削除してJSONエンコードして表示。', '[["toString"],["ok"]]')
+    // 従来通りキーは文字列化して比較する(数値の1と文字列の"1"は同一視)
+    await cmp('A=[[1],["1"],[2]];Aの0を表重複削除してJSONエンコードして表示。', '[[1],[2]]')
+    // キー列が存在しない行は"undefined"キーとして扱われる(従来契約の固定)
+    await cmp('A=[["a"],["b"]];Aの1を表重複削除してJSONエンコードして表示。', '[["a"]]')
   })
   it('表列取得', async () => {
     await cmp('A=[[1,2,3],[4,5,6]];Aの1を表列取得してJSONエンコードして表示。', '[2,5]')
