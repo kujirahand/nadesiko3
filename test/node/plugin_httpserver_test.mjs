@@ -519,6 +519,9 @@ describe('plugin_httpserver_test', () => {
     // 空のboundaryも400を返す
     assert.deepStrictEqual(await postRequest('multipart/form-data; boundary='), { statusCode: 400, body: 'Bad Request.' })
     assert.deepStrictEqual(await postRequest('multipart/form-data; boundary=""'), { statusCode: 400, body: 'Bad Request.' })
+    // 閉じ引用符のないquoted-stringや未完了のquoted-pairも400を返す
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary="${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary="${boundary}\\`), { statusCode: 400, body: 'Bad Request.' })
     // JSON系メディア型はパラメータ付き・大小文字違い・+json接尾辞(RFC 6839)でもJSONとして解析される
     const jsonBody = Buffer.from('{"a":"hello"}')
     assert.deepStrictEqual(await postRequest('application/json; charset=utf-8', jsonBody), { statusCode: 200, body: 'hello' })

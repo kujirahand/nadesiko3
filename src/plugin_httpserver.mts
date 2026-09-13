@@ -282,11 +282,13 @@ const CD_KEY_RE = /^[0-9a-zA-Z!#$%&'*+.^_`|~-]+$/
 /** Content-Disposition の `キー=値` の値部分を解析して返す。
  * start には `=` 後の Optional Whitespace をスキップした位置を渡すこと。
  */
-function parseCDValue(headerValue: string, start: number): { value: string, next: number } {
+function parseCDValue(headerValue: string, start: number): { value: string, next: number, valid: boolean } {
   let i = start
   let val = ''
+  let valid = true
   if (i < headerValue.length && headerValue[i] === '"') {
     i++ // opening DQUOTE
+    let closed = false
     while (i < headerValue.length) {
       if (headerValue[i] === '\\') {
         if (i + 1 < headerValue.length) {
@@ -299,12 +301,14 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
           i += 2
           continue
         }
-        // quoted-pair を形成しない末尾の `\` は無視して終了する
+        // quoted-pair を形成しない末尾の `\` は不正な quoted-string
+        valid = false
         i++
         break
       }
       if (headerValue[i] === '"') {
         i++ // closing DQUOTE
+        closed = true
         break
       }
       // quoted-string内の制御文字(HTABとSP以外)はスキップする。
@@ -315,6 +319,8 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
       }
       i++
     }
+    // 閉じ引用符なしで末尾へ到達した quoted-string は不正
+    if (!closed) { valid = false }
   } else {
     // 非引用値はRFC 7230のtoken。区切り文字・空白・制御文字(0x00-0x1F, 0x7F)・非ASCIIで停止する。
     // そのため非引用の非ASCII値(例: filename=画像.txt)は空になり、実ブラウザは非引用値を送らないため実害はない
@@ -323,7 +329,7 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
            headerValue.charCodeAt(i) >= 0x21 && headerValue.charCodeAt(i) <= 0x7e) { i++ }
     val = headerValue.substring(valStart, i)
   }
-  return { value: val, next: i }
+  return { value: val, next: i, valid }
 }
 
 function parseContentDisposition(headerValue: string, strict = false): { [key: string]: string } {
@@ -392,6 +398,8 @@ function parseContentDisposition(headerValue: string, strict = false): { [key: s
     if (i <= iterStart) { i++ }
 
     if (strict) {
+      // 閉じ引用符の欠落や未完了の quoted-pair は不正な値として採用しない
+      if (!parsed.valid) { break }
       // strict モードでは値の後が OWS を除いて ';' または末尾でなければならない。
       // 区切り欠落ならこの値自体も採用せず打ち切る
       while (i < normalized.length && (normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
