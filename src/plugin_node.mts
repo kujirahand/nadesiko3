@@ -244,6 +244,27 @@ async function copyMergeWithProgress(src: string, dest: string, overwrite: boole
   }
 }
 
+/**
+ * ワイルドカード文字列を正規表現に変換する (#2492)
+ * 「*」を「.*」に変換し、それ以外の正規表現メタ文字をエスケープして「^...$」で囲む
+ * 「;」で区切られた複数パターンの指定にも対応
+ */
+function wildcardToRegExp(pattern: string): RegExp {
+  const patterns = pattern
+    .split(';')
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0)
+    .map((p) => {
+      // 正規表現メタ文字をエスケープ (ただし * は後で .* に変換)
+      const escaped = p.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+      return escaped.replace(/\\\*/g, '.*')
+    })
+  if (patterns.length === 0) {
+    return /^.*$/i
+  }
+  return new RegExp(`^(?:${patterns.join('|')})$`, 'i')
+}
+
 // Denoのためのラッパー
 if (typeof (globalThis as any).Deno !== 'undefined') {
   nodeProcess = {
@@ -626,13 +647,7 @@ export default {
     fn: function(s: string) {
       if (s.indexOf('*') >= 0) { // ワイルドカードがある場合
         const searchPath = path.dirname(s)
-        const mask1 = path.basename(s)
-          .replace(/\./g, '\\.')
-          .replace(/\*/g, '.*')
-        const mask2 = (mask1.indexOf(';') < 0)
-          ? mask1 + '$'
-          : '(' + mask1.replace(/;/g, '|') + ')$'
-        const maskRE = new RegExp(mask2, 'i')
+        const maskRE = wildcardToRegExp(path.basename(s))
         const list = fs.readdirSync(searchPath)
         return list.filter((n) => maskRE.test(n))
       } else { return fs.readdirSync(s) }
@@ -646,19 +661,13 @@ export default {
       /** @type {string[]} */
       const result: string[] = []
       // ワイルドカードの有無を確認
-      let mask = '.*'
+      let maskRE: RegExp | null = null
       let basepath = s
       if (s.indexOf('*') >= 0) {
         basepath = path.dirname(s)
-        const mask1 = path.basename(s)
-          .replace(/\./g, '\\.')
-          .replace(/\*/g, '.*')
-        mask = (mask1.indexOf(';') < 0)
-          ? mask1 + '$'
-          : '(' + mask1.replace(/;/g, '|') + ')$'
+        maskRE = wildcardToRegExp(path.basename(s))
       }
       basepath = path.resolve(basepath)
-      const maskRE = new RegExp(mask, 'i')
       // 再帰関数を定義
       const enumR = (base: any) => {
         const list = fs.readdirSync(base)
@@ -676,7 +685,7 @@ export default {
             enumR(fullpath)
             continue
           }
-          if (maskRE.test(f)) { result.push(fullpath) }
+          if (!maskRE || maskRE.test(f)) { result.push(fullpath) }
         }
       }
       // 検索実行
