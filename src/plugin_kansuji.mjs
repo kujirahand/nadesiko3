@@ -42,8 +42,12 @@ const PluginKansuji = {
           })
         }
         input = asciify(input)
-        if (Number.isNaN(Number(input))) { throw new Error('『漢数字』命令の中に無効な文字が含まれています。') }
-        const output = if_number_is_exponent(input)
+        // 受理する表記を十進数(指数表記を含む)に限定する。Number() は
+        // 16進数・空白・Infinity なども数値とみなすが、後段の文字単位変換は
+        // 数字・小数点・符号しか扱えず undefined 混じりの文字列になるため (#2486)
+        if (!/^[-+]?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][-+]?[0-9]+)?$/.test(input)) { throw new Error('『漢数字』命令の中に無効な文字が含まれています。') }
+        // 末尾の小数点は指数表記の仮数部と同様に丸める (「5.」→「5」)
+        const output = if_number_is_exponent(input).replace(/\.$/, '')
         // 符号を除いた整数部で大きさを判定する
         const abs = output.replace(/^[-+]/, '')
         const intDigits = abs.match(/^[0-9]+/)

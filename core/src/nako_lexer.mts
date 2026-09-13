@@ -132,7 +132,9 @@ export class NakoLexer {
     let isFuncPointer = false
     const readArgs = () => {
       const args: Token[] = []
-      const keys:{[key:string]: string[]} = {}
+      // #2530: toStringや__proto__等の継承プロパティを引数名として使えるようnullプロトタイプの辞書を使う。
+      // この辞書は関数内だけで使い、なでしこの内部処理へは渡さない。
+      const keys:{[key:string]: string[]} = Object.create(null)
       if (tokens[i].type !== '(') { return [] }
       i++
       while (tokens[i]) {
@@ -153,7 +155,8 @@ export class NakoLexer {
       const varnames: string[] = []
       const funcPointers: any[] = []
       const result: FuncArgs = []
-      const already: {[key: string]: boolean} = {}
+      // #2530: keysと同様に継承プロパティ名の引数を既出と誤判定しないようnullプロトタイプの辞書を使う。
+      const already: {[key: string]: boolean} = Object.create(null)
       for (const arg of args) {
         if (!already[arg.value]) {
           const josi = keys[arg.value]
