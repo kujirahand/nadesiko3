@@ -416,6 +416,7 @@ describe('plugin_system_test', async () => {
     await cmp('「-」を数列判定して表示。', 'false')
     await cmp('「1e3」を数列判定して表示。', 'true')
     await cmp('「1.0e3」を数列判定して表示。', 'true')
+    await cmp('「123.e1」を数列判定して表示。', 'true')
   })
   it('XOR', async () => {
     await cmp('XOR(0xFF, 0xF)を表示。', '240')
