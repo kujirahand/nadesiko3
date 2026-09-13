@@ -1072,4 +1072,91 @@ describe('plugin_system_test', async () => {
     const g2 = await nako2.runAsync('今を表示', 'main.nako3')
     assert.match(g2.log, /^\d{2}:\d{2}:\d{2}$/)
   })
+  it('JSオブジェクト取得がfalsyなローカル変数を見失わない #2500', async () => {
+    // ローカル変数が falsy でもグローバル変数へフォールバックせずローカルの値を返す
+    await cmp('●テスト\n　A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテスト()を表示', '0')
+    await cmp('●テスト\n　A=偽\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテスト()を表示', 'false')
+    await cmp('●テスト\n　A=「」\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテスト()を表示', '')
+    await cmp('●テスト\n　A=NULL\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテスト()を表示', 'null')
+    await cmp('●テスト\n　A=非数\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテスト()を表示', 'NaN')
+    // truthyなローカル変数は従来どおり返す
+    await cmp('●テスト\n　A=5\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテスト()を表示', '5')
+    // ローカル変数が無ければ従来どおりグローバル変数へフォールバックする
+    await cmp('●テスト\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=7\nテスト()を表示', '7')
+    // ローカル変数が undefined(未定義) の場合は「未設定」とみなしグローバル変数へフォールバックする
+    await cmp('●テスト\n　A=未定義\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテスト()を表示', '99')
+    // どこにも存在しなければ null (JSオブジェクト取得のデフォルト値) を返す
+    await cmp('●テスト\n　「A」のJSオブジェクト取得を戻す\nここまで\nテスト()を表示', 'null')
+  })
+  it('JSオブジェクト取得がfalsyな名前空間変数を見失わない #2500', async () => {
+    // 名前空間付き変数が falsy でもその値を返す
+    await cmp('A=0\n「main__A」のJSオブジェクト取得を表示', '0')
+    await cmp('A=偽\n「main__A」のJSオブジェクト取得を表示', 'false')
+    await cmp('A=「」\n「main__A」のJSオブジェクト取得を表示', '')
+    await cmp('A=NULL\n「main__A」のJSオブジェクト取得を表示', 'null')
+    // 存在しない名前空間変数は従来どおり null を返す
+    await cmp('「nosuchmod__A」のJSオブジェクト取得を表示', 'null')
+  })
+  it('__findVarはfalsyな値を見失わない #2500', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('', 'main.nako3')
+    // __locals の falsy な値が最も内側の変数として返る
+    g.__varslist[1].set('main__A', 99)
+    g.__locals.set('A', 0)
+    assert.strictEqual(g.__findVar('A', 'def'), 0)
+    g.__locals.set('A', false)
+    assert.strictEqual(g.__findVar('A', 'def'), false)
+    g.__locals.set('A', '')
+    assert.strictEqual(g.__findVar('A', 'def'), '')
+    g.__locals.set('A', null)
+    assert.strictEqual(g.__findVar('A', 'def'), null)
+    // undefined は「未設定」として扱い、外側のスコープへフォールバックする
+    g.__locals.set('A', undefined)
+    assert.strictEqual(g.__findVar('A', 'def'), 99)
+    // 名前空間指定では __varslist[2]→[1]→[0] の順に探し、内側の falsy な値を返す
+    g.__varslist[2].set('mod__B', 0)
+    assert.strictEqual(g.__findVar('mod__B', 'def'), 0)
+    g.__varslist[1].set('mod__C', 'outer')
+    g.__varslist[2].set('mod__C', false)
+    assert.strictEqual(g.__findVar('mod__C', 'def'), false)
+    // 内側が undefined の場合は外側の値を返す
+    g.__varslist[2].set('mod__C', undefined)
+    assert.strictEqual(g.__findVar('mod__C', 'def'), 'outer')
+    // モジュール名を補完する探索でも falsy な値を返す (__varslist[0] のシステム領域も対象)
+    g.__varslist[0].set('main__D', '')
+    assert.strictEqual(g.__findVar('D', 'def'), '')
+    // 見つからなければデフォルト値を返す
+    assert.strictEqual(g.__findVar('main__E', 'def'), 'def')
+    assert.strictEqual(g.__findVar('E', 'def'), 'def')
+    assert.strictEqual(g.__findVar('E'), undefined)
+  })
+  it('__findFuncはfalsyなローカル変数が同名のグローバル関数を遮蔽する #2500', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('', 'main.nako3')
+    // ローカルに falsy な値があると「最も内側で存在する変数を返す」仕様上、同名のグローバル関数を遮蔽する
+    g.__varslist[1].set('main__F', () => 'global fn')
+    g.__locals.set('F', 0)
+    assert.throws(() => g.__findFunc('F', '実行'), /『実行』に実行できない関数が指定されました/)
+    // ローカルが関数であれば従来どおりその関数を返す
+    const localFn = () => 'local fn'
+    g.__locals.set('F', localFn)
+    assert.strictEqual(g.__findFunc('F', '実行'), localFn)
+    // ローカルが undefined なら遮蔽せずグローバル関数を返す
+    g.__locals.set('F', undefined)
+    assert.strictEqual(typeof g.__findFunc('F', '実行'), 'function')
+  })
+  it('__execはfalsyなローカル変数が同名のグローバル関数を遮蔽するとエラーになる #2500', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('', 'main.nako3')
+    // falsy なローカルがグローバル関数を遮蔽する場合、__exec は関数でないためエラーになる(意図的挙動変更の固定)
+    g.__varslist[1].set('main__F', () => 'global fn')
+    g.__locals.set('F', 0)
+    assert.throws(() => g.__exec('F', []), /システム関数でエイリアスの指定ミス:F/)
+    // 関数以外の truthy な値が見つかった場合も同じエラーになる
+    g.__locals.set('F', 'not a function')
+    assert.throws(() => g.__exec('F', []), /システム関数でエイリアスの指定ミス:F/)
+    // ローカルが undefined なら遮蔽せずグローバル関数を実行する
+    g.__locals.set('F', undefined)
+    assert.strictEqual(g.__exec('F', []), 'global fn')
+  })
 })
