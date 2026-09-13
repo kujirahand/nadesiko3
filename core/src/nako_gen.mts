@@ -1684,36 +1684,51 @@ export class NakoGen {
   private genLocalVarsSyncCode (): { begin: string, end: string } {
     let begin = ''
     let end = ''
-    // 展開されたローカル変数の列挙
+    // 宣言済みのローカル変数名の列挙。
+    // 名前はJSON文字列として生成コードに埋め込むだけなので、
+    // 《今日から明日》のような特殊名や絵文字変数もそのまま扱える
     const localVars = []
     for (const name of Array.from(this.varsSet.names.values())) {
-      if (NakoGen.isValidIdentifier(name)) {
-        localVars.push({ str: JSON.stringify(name), js: this.varname_get(name) })
-      }
+      localVars.push({ name, str: JSON.stringify(name) })
     }
 
     // --- 実行前 ---
-    // 全ての展開されていないローカル変数を __self.__locals にコピーする
-    begin += '__self.__locals = __vars;\n'
-    // 全ての展開されたローカル変数を __self.__locals に保存する
-    if (localVars.length > 0) {
-      begin += '/* 全ての展開されたローカル変数を __self.__locals に保存 */\n'
-      for (const v of localVars) {
-        begin += `__self.__locals.set(${v.str}, ${v.js});\n`
-      }
-    }
+    // __self.__locals を現在のスコープ(__self.__vars)に設定する。
+    // __vars は生成コード先頭で __varslist[2] に固定されたままなので使わない。
+    // __vars を設定するとローカル変数が __varslist[2] に書き込まれ、
+    // 関数終了後や他の関数から観測できてしまう (#2534)
+    const prevLocals = `__nako_prevlocals${this.loopId}`
+    const syncScope = `__nako_syncscope${this.loopId}`
+    this.loopId++
+    begin += `const ${prevLocals} = __self.__locals;\n`
+    begin += `const ${syncScope} = __self.__vars;\n`
+    begin += `__self.__locals = ${syncScope};\n`
+    // __self.__locals が現在スコープと同じMapを指すため、
+    // ローカル変数の個別コピーは不要 (#2534)
 
     // --- 実行後 ---
-    // 全ての展開されたローカル変数を __self.__locals から受け取る
-    // 「それ」は関数の実行結果を受け取るために使うためスキップ。
-    if (localVars.length > 0) {
-      end += '/* 全ての展開されたローカル変数を __self.__locals から受け取る */\n'
-      for (const v of localVars) {
-        if (v.js !== 'それ') {
-          end += `__self.__varslist[2].set(${v.str}, __self.__locals.get(${v.str}));\n`
-        }
+    // 「それ」は関数の実行結果を受け取るために使うため書き戻し対象外。
+    // (「それ無効」モードでは localVars に「それ」自体が含まれない)
+    const syncTargets = localVars.filter((v) => v.name !== 'それ')
+    // 通常は __self.__locals === 現在スコープ であり書き戻しは不要。
+    // プラグインが __self.__locals を別の Map に差し替えた場合のみ、
+    // 差し替え後の Map から呼出時点のスコープへ書き戻す。
+    // 書き戻しが失敗しても呼出元の例外を置換しないよう catch で無視し、
+    // __self.__locals の復元は finally で確実に行う (#2534)
+    end += '/* __self.__locals を復元(必要ならローカル変数を書き戻す) */\n'
+    end += 'try {\n'
+    if (syncTargets.length > 0) {
+      end += `if (__self.__locals !== ${syncScope} && __self.__locals instanceof Map) {\n`
+      for (const v of syncTargets) {
+        // __self.__locals に存在するキーのみ書き戻す (存在しないキーを undefined で実体化しない)
+        end += `if (__self.__locals.has(${v.str})) { ${syncScope}.set(${v.str}, __self.__locals.get(${v.str})); }\n`
       }
+      end += '}\n'
     }
+    end += '} catch (e) {} finally {\n'
+    // __self.__locals を呼び出し前の値に戻す (finally 内で実行される) (#2534)
+    end += `__self.__locals = ${prevLocals};\n`
+    end += '}\n'
     return { begin, end }
   }
 
@@ -1852,17 +1867,32 @@ export class NakoGen {
       funcEnd += ';__self.isSetter = false;\n'
     }
     // 関数内 (__varslist.length > 3) からプラグイン関数 (res.i === 0) を呼び出すとき、 そのプラグイン関数がpureでなければ
-    // 呼び出しの直前に全てのローカル変数をthis.__localsに入れる。
-    if (res.i === 0 && this.varslistSet.length > 3 && func.pure !== true && this.speedMode.forcePure === 0) { // undefinedはfalseとみなす
+    // 呼び出しの間 __self.__locals を呼出元スコープ (__self.__vars) にエイリアスする。
+    // asyncFn の非同期関数は除く。asyncFnは登録時に pure=true に強制される (core#142) が、
+    // スナップショット経由でpure=falseに戻る経路があり、その場合は同期ウィンドウがawaitを跨ぐため (#2534)
+    let hoistedArgs: string|null = null
+    if (res.i === 0 && this.varslistSet.length > 3 && func.pure !== true && !func.asyncFn && this.speedMode.forcePure === 0) { // undefinedはfalseとみなす
       const sync = this.genLocalVarsSyncCode()
+      // 引数式は __self.__locals を差し替える前に評価する。
+      // 文レベル呼出では引数式に await を含みうるため、評価を同期ウィンドウに含めない (#2534)
+      const argArr = `$nako_args${this.loopId}`
+      this.loopId++
+      if (node.setter) {
+        // setter呼出では引数評価の例外時にも isSetter を戻す必要がある (#2534)
+        // (現状 node.setter を立てるコードは無く dead code だが防御的に生成する)
+        funcBegin += `let ${argArr};\ntry { ${argArr} = [${this.genCallArgsCode(funcName, res, args, node)}]; } catch (e) { __self.isSetter = false; throw e; }\n`
+      } else {
+        funcBegin += `const ${argArr} = [${this.genCallArgsCode(funcName, res, args, node)}];\n`
+      }
       funcBegin += sync.begin
       funcEnd += sync.end
+      hoistedArgs = `...${argArr}`
     }
     // 変数「それ」が補完されていることをヒントとして出力
     if (argsOpts.sore) { funcBegin += '/*[sore]*/' }
 
     // 関数呼び出しコードの構築
-    const argsCode = this.genCallArgsCode(funcName, res, args, node)
+    const argsCode = hoistedArgs ?? this.genCallArgsCode(funcName, res, args, node)
     let funcCall = `${res.js}(${argsCode})`
     if (func.asyncFn) {
       funcDef = `async ${funcDef}`
