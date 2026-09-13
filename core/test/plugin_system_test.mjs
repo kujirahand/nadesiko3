@@ -828,6 +828,18 @@ describe('plugin_system_test', async () => {
     await cmp('もし4が偶数ならば「OK」と表示。', 'OK')
     await cmp('もし3が奇数ならば「OK」と表示。', 'OK')
   })
+  it('『偶数』『奇数』負の数 #2484', async () => {
+    await cmp('-3が奇数を表示。', 'true')
+    await cmp('-1が奇数を表示。', 'true')
+    await cmp('0が奇数を表示。', 'false')
+    await cmp('1が奇数を表示。', 'true')
+    await cmp('3が奇数を表示。', 'true')
+    await cmp('-4が偶数を表示。', 'true')
+    await cmp('-3が偶数を表示。', 'false')
+    await cmp('0が偶数を表示。', 'true')
+    await cmp('「abc」が奇数を表示。', 'false')
+    await cmp('「abc」が偶数を表示。', 'false')
+  })
   it('範囲切り取る(core#164)', async () => {
     await cmp('S=「aaa[bbb]ccc」。Sの「[」から「]」まで範囲切り取って表示', 'bbb')
     await cmp('S=「aaa[bbb]ccc」。Sの「[」から「]」まで範囲切り取る。対象を表示', 'aaaccc')

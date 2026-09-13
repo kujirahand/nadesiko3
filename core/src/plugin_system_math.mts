@@ -120,7 +120,7 @@ export default {
     josi: [['が']],
     pure: true,
     fn: function(a: any) {
-      return (parseInt(a) % 2 === 1)
+      return (Math.abs(parseInt(a)) % 2 === 1)
     }
   },
   '二乗': { // @Aを二乗する // @にじょう
