@@ -455,6 +455,105 @@ describe('plugin_httpserver_test', () => {
     assert.match(await postMultipart('form-data; name=" upload "; filename=" photo.txt "'), /^OK: upload : photo\.txt :[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
   })
 
+  it('multipart受信でContent-Typeの大小文字違いでも解析でき、boundary欠落時は400を返すこと #2495', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  「{POSTデータ["a"]}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理」を「/post-multipart」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const boundary = 'XcB1Y'
+    const parts = [
+      `--${boundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${boundary}--\r\n`
+    ]
+    const postData = Buffer.from(parts.join(''))
+
+    const postRequest = (contentType, body = postData) => new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/post-multipart',
+        method: 'POST',
+        headers: {
+          'Content-Type': contentType,
+          'Content-Length': body.length
+        }
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve({ statusCode: res.statusCode, body: data }) })
+      })
+      req.on('error', reject)
+      req.write(body)
+      req.end()
+    })
+
+    // 小文字 → 正しく解析される
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // メディア型の大小文字違いでも解析される(RFC 2045/2046)
+    assert.deepStrictEqual(await postRequest(`Multipart/Form-Data; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`MULTIPART/FORM-DATA; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // boundaryパラメータ名の大小文字違い・`=`前後の空白・引用符付きの値も許容する
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; BOUNDARY=${boundary}`), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary = "${boundary}"`), { statusCode: 200, body: 'hello' })
+    // boundaryが先頭以外のパラメータ位置にあっても正しく取得できる
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; charset=utf-8; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // boundaryが得られない不正なmultipart要求には400を返す(静かにフィールドを消さない)
+    assert.deepStrictEqual(await postRequest('multipart/form-data'), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest('Multipart/Form-Data'), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest('multipart/form-data; charset=utf-8'), { statusCode: 400, body: 'Bad Request.' })
+    // 空のboundaryも400を返す
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary='), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary=""'), { statusCode: 400, body: 'Bad Request.' })
+    // JSON系メディア型はパラメータ付き・大小文字違い・+json接尾辞(RFC 6839)でもJSONとして解析される
+    const jsonBody = Buffer.from('{"a":"hello"}')
+    assert.deepStrictEqual(await postRequest('application/json; charset=utf-8', jsonBody), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest('Application/JSON', jsonBody), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest('application/json-patch+json', jsonBody), { statusCode: 200, body: 'hello' })
+    // application/json- で始まるIANA登録済みメディア型もJSONとして解析される(旧来の部分一致判定との互換)
+    assert.deepStrictEqual(await postRequest('application/json-home', jsonBody), { statusCode: 200, body: 'hello' })
+    // application/以外の +json 接尾辞もJSONとして解析される(RFC 6839)
+    assert.deepStrictEqual(await postRequest('text/foo+json', jsonBody), { statusCode: 200, body: 'hello' })
+    // urlencodedも大小文字を区別しない
+    assert.deepStrictEqual(await postRequest('APPLICATION/X-WWW-FORM-URLENCODED', Buffer.from('a=hello')), { statusCode: 200, body: 'hello' })
+    // 空・空白のみの非引用boundaryが先にあっても、後続の有効なboundaryで解析される(旧来の挙動との互換)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary= ; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // 引用符付きの空boundaryは空値として確定し400になる(非引用の空値とは対称でない点は旧来の先勝ち仕様を継承)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=""; boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    // `=`と値の間の空白は許容される
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary= ${boundary}`), { statusCode: 200, body: 'hello' })
+    // `;`を欠くmalformedなContent-Typeはmultipartとは扱われず生本文として処理される(厳格化)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data boundary=${boundary}`), { statusCode: 200, body: 'undefined' })
+    // `;`直後の空白がなくても解析できる
+    assert.deepStrictEqual(await postRequest(`multipart/form-data;boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // 引用符内の`;`を含むboundary値も正しく取得できる
+    const semicolonBoundary = 'a;b'
+    const semicolonBody = Buffer.from([
+      `--${semicolonBoundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${semicolonBoundary}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a;b"', semicolonBody), { statusCode: 200, body: 'hello' })
+    // 400応答の後もサーバが生きていて正常な要求を処理できる
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+  })
+
   it('HTTPメソッドにGET/POST/PUT/DELETEが設定されること', async () => {
     let port = 0
     const code = `

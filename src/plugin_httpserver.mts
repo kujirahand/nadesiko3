@@ -105,22 +105,37 @@ class EasyURLDispather {
         let filesData: any[] = []
         const contentType = req.headers['content-type'] || ''
         try {
-          if (contentType.indexOf('multipart/form-data') >= 0) {
-            const boundaryMatch = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/)
-            if (boundaryMatch) {
-              const boundary = (boundaryMatch[1] || boundaryMatch[2] || '').trim()
-              const parsed = await parseMultipart(bodyBuffer, boundary)
-              postData = parsed.fields
-              filesData = parsed.files
+          // メディア型は大小文字を区別しない(RFC 2045)ため小文字化して比較する。
+          // パラメータ部(;以降)を除いたメディア型本体で判定する
+          const mediaType = contentType.split(';', 1)[0].trim().toLowerCase()
+          if (mediaType === 'multipart/form-data') {
+            // boundaryパラメータ名も大小文字を区別しない。値は引用符付き/なし両方を許容する。
+            // メディア型がmultipartの場合boundaryは必ず';'以降のパラメータ部にあるため';'にアンカーし、
+            // xboundary=のような別名パラメータへの誤マッチを防ぐ。空・空白のみの非引用値はマッチさせず、
+            // 重複パラメータ時に後続の有効なboundaryを拾えるようにする(旧来の挙動との互換)
+            // 既知の制限: 他パラメータの引用値内に現れる '; boundary=' には誤マッチし得る(旧来と同じ挙動)
+            const boundaryMatch = contentType.match(/;\s*boundary\s*=\s*(?:"([^"]*)"|([^\s;][^;]*))/i)
+            const boundary = boundaryMatch ? (boundaryMatch[1] ?? boundaryMatch[2] ?? '').trim() : ''
+            if (boundary === '') {
+              // boundaryが得られない不正なmultipart要求は、フィールドを静かに消さず400を返す(#2495)
+              console.error(`${HTTPSERVER_LOGID} multipart/form-data 要求に boundary がありません`)
+              res.statusCode = 400
+              res.end('Bad Request.')
+              return
             }
-          } else if (contentType.indexOf('application/json') >= 0) {
+            const parsed = await parseMultipart(bodyBuffer, boundary)
+            postData = parsed.fields
+            filesData = parsed.files
+          } else if (mediaType === 'application/json' || mediaType.startsWith('application/json-') || mediaType.endsWith('+json')) {
+            // application/json-patch+json 等の +json 接尾辞(RFC 6839)や、application/json-home 等の
+            // application/json- で始まるIANA登録済みメディア型も JSON として解析する(旧来の部分一致判定との互換維持)
             const bodyStr = bodyBuffer.toString('utf-8')
             try {
               postData = JSON.parse(bodyStr)
             } catch {
               postData = bodyStr
             }
-          } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
+          } else if (mediaType === 'application/x-www-form-urlencoded') {
             const bodyStr = bodyBuffer.toString('utf-8')
             postData = parseQueryString(bodyStr)
           } else {
