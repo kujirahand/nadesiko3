@@ -51,17 +51,19 @@ const PluginSystem = {
       sys.__setSysVar('ナデシコ言語バージョン', sys.version)
       if (!system.__namespaceList) { system.__namespaceList = [] }
       // なでしこの関数や変数を探して返す
+      // #2500: falsyな値(0/false/''/null等)でも「存在する」とみなして返す。
+      //        ただし undefined は「未設定」として扱い、外側のスコープやデフォルト値へフォールバックする。
       sys.__findVar = function(nameStr: any, def: any): any {
         if (typeof nameStr === 'function') { return nameStr }
         // ローカル変数を探す
         const localVar = system.__locals.get(nameStr)
-        if (localVar) { return localVar }
+        if (localVar !== undefined) { return localVar }
         // 名前空間が指定されている場合
         if (nameStr.indexOf('__') >= 0) {
           for (let i = 2; i >= 0; i--) {
             const varScope = system.__varslist[i]
             const scopeValue = varScope.get(nameStr)
-            if (scopeValue) { return scopeValue }
+            if (scopeValue !== undefined) { return scopeValue }
           }
           return def
         }
@@ -72,14 +74,16 @@ const PluginSystem = {
           for (let i = 2; i >= 0; i--) {
             const scope = system.__varslist[i]
             const scopeValue = scope.get(gname)
-            if (scopeValue) { return scopeValue }
+            if (scopeValue !== undefined) { return scopeValue }
           }
         }
         return def
       }
       // 文字列から関数を探す
       sys.__findFunc = function(nameStr: any, parentFunc: string): any {
-        const f = sys.__findVar(nameStr)
+        // 文字列なら変数名として解決し、それ以外は値そのものを判定対象にする
+        // (関数はそのまま返り、非文字列・非関数は __findVar へ渡さずエラーにする)
+        const f = (typeof nameStr === 'string') ? sys.__findVar(nameStr) : nameStr
         if (typeof f === 'function') { return f }
         throw new Error(`『${parentFunc}』に実行できない関数が指定されました。`)
       }
@@ -90,7 +94,8 @@ const PluginSystem = {
         if (f0) { return f0.apply(this, params) }
         // グローバル・ローカルを探す
         const f = sys.__findVar(func)
-        if (!f) { throw new Error('システム関数でエイリアスの指定ミス:' + func) }
+        // #2500: falsyな値が見つかった場合も含め、関数でなければエラーにする
+        if (typeof f !== 'function') { throw new Error('システム関数でエイリアスの指定ミス:' + func) }
         return f.apply(this, params)
       }
       // タイマーに関する処理(タイマーは「!クリア」で全部停止する)

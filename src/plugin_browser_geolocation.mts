@@ -6,8 +6,7 @@ export default {
     josi: [['の', 'に', 'へ']],
     pure: true,
     fn: function(func: any, sys: any) {
-      let cb = func
-      if (typeof cb === 'string') { cb = sys.__findVar(cb) }
+      const cb = sys.__findFunc(func, '位置情報取得時') // 文字列指定なら関数に変換
       if (!('geolocation' in navigator)) { throw new Error('関数『位置情報取得時』は使えません。') }
 
       navigator.geolocation.getCurrentPosition((position) => {
@@ -25,8 +24,7 @@ export default {
     josi: [['の', 'に', 'へ']],
     pure: true,
     fn: function(func: any, sys: any) {
-      let cb = func
-      if (typeof cb === 'string') { cb = sys.__findVar(cb) }
+      const cb = sys.__findFunc(func, '位置情報監視時') // 文字列指定なら関数に変換
       if (!('geolocation' in navigator)) { throw new Error('関数『位置情報監視時』は使えません。') }
 
       return navigator.geolocation.watchPosition((position) => {

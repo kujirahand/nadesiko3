@@ -140,9 +140,7 @@ export default {
       // 文字列なら関数に変換できるか判定して実行
       if (typeof f === 'string') {
         const tf = sys.__findFunc(f, '実行')
-        if (typeof tf === 'function') {
-          return tf(sys)
-        }
+        return tf(sys)
       }
       // それ以外ならそのまま値を返す
       return f
@@ -153,7 +151,7 @@ export default {
     josi: [['の']],
     pure: false,
     fn: function(f: any, sys: any) {
-      if (typeof f === 'string') { f = sys.__findFunc(f, '実行時間計測') }
+      f = sys.__findFunc(f, '実行時間計測') // 文字列指定なら関数に変換
       //
       if (typeof performance !== 'undefined' && performance.now) {
         const t1 = performance.now()

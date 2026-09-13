@@ -175,7 +175,7 @@ const PluginWebWorker = {
     pure: false,
     fn: function (func, work, sys) {
       if (typeof sys === 'undefined') { sys = work; work = self }
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      func = sys.__findFunc(func, 'NAKOワーカーデータ受信時') // 文字列指定なら関数に変換
       work.ondata = (data, e) => {
         sys.__v0['受信データ'] = data
         sys.__v0['対象イベント'] = e
@@ -189,7 +189,7 @@ const PluginWebWorker = {
     josi: [['で'], ['から']],
     pure: false,
     fn: function (func, work, sys) {
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      func = sys.__findFunc(func, 'NAKOワーカー表示時') // 文字列指定なら関数に変換
       work.onoutput = (data, e) => {
         sys.__v0['受信データ'] = data
         sys.__v0['対象イベント'] = e
@@ -205,7 +205,7 @@ const PluginWebWorker = {
     pure: false,
     fn: function (func, work, sys) {
       if (typeof sys === 'undefined') { sys = work; work = self }
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      func = sys.__findFunc(func, 'ワーカーメッセージ受信時') // 文字列指定なら関数に変換
       work.onmessage = (e) => {
         sys.__v0['受信データ'] = e.data
         sys.__v0['対象イベント'] = e

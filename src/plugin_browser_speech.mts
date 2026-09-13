@@ -35,6 +35,7 @@ export default {
     josi: [['で'], ['と', 'を', 'の']],
     pure: true,
     fn: function(callback: any, s: any, sys: any) {
+      callback = sys.__findFunc(callback, '話終時') // 文字列指定なら関数に変換
       const msg = sys.__exec('音声合成発話オブジェクト取得', [s, sys])
       msg.onend = (e) => {
         console.log('#話終時')

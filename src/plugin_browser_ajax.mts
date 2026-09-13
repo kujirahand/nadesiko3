@@ -23,6 +23,7 @@ export default {
     josi: [['で'], ['から', 'を']],
     pure: true,
     fn: function(callback: any, url: any, sys: any) {
+      callback = sys.__findFunc(callback, 'AJAX受信時') // 文字列指定なら関数に変換
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -41,6 +42,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
     fn: function(callback: any, url: any, sys: any) {
+      callback = sys.__findFunc(callback, 'AJAX送信時') // 文字列指定なら関数に変換
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then(res => {
@@ -90,7 +92,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function(callback: any, sys: any) {
-      sys.__setSysVar('AJAX:ONERROR', callback)
+      sys.__setSysVar('AJAX:ONERROR', sys.__findFunc(callback, 'AJAX失敗時')) // 文字列指定なら関数に変換
     }
   },
   'AJAXテキスト取得': { // @AJAXでURLにアクセスしテキスト形式で結果を得る。送信時『AJAXオプション』の値を参照。 // @AJAXてきすとしゅとく
@@ -147,6 +149,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
     fn: function(callback: any, url: any, sys: any) {
+      callback = sys.__findFunc(callback, 'GET送信時') // 文字列指定なら関数に変換
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -156,6 +159,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function(callback: any, url: any, params: any, sys: any) {
+      callback = sys.__findFunc(callback, 'POST送信時') // 文字列指定なら関数に変換
       const bodyData = sys.__exec('POSTデータ生成', [params, sys])
       const options = {
         method: 'POST',
@@ -179,6 +183,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function(callback: any, url: any, params: any, sys: any) {
+      callback = sys.__findFunc(callback, 'POSTフォーム送信時') // 文字列指定なら関数に変換
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 

@@ -90,7 +90,7 @@ export default {
     pure: true,
     fn: function(dom: any, event: any, funcStr: any, sys: any) {
       dom = sys.__query(dom, 'DOMイベント設定', false)
-      dom[event] = sys.__findVar(funcStr, null)
+      dom[event] = sys.__findFunc(funcStr, 'DOMイベント設定')
     },
     return_none: true
   },

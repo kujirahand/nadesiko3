@@ -775,4 +775,19 @@ describe('plugin_httpserver_test', () => {
     assert.strictEqual(helloRes2.statusCode, 200)
     assert.strictEqual(helloRes2.body, 'hello')
   })
+  it('簡易HTTPサーバ起動時に非関数のコールバックを指定すると登録時エラーになる #2500', async () => {
+    // 非関数値(0)・解決できない関数名はサーバ起動前の登録時にエラーになる(ポートも占有しない)
+    await assert.rejects(
+      nako.runAsync('0を18080で簡易HTTPサーバ起動時。', 'main'),
+      /『簡易HTTPサーバ起動時』に実行できない関数が指定されました/)
+    await assert.rejects(
+      nako.runAsync('「存在しない関数XYZ」を18080で簡易HTTPサーバ起動時。', 'main'),
+      /『簡易HTTPサーバ起動時』に実行できない関数が指定されました/)
+  })
+  it('簡易HTTPサーバ受信時に非関数のコールバックを指定すると登録時エラーになる #2500', async () => {
+    // 受信時ハンドラも同様に登録時検証される(__findFunc が dp.addItem より先に投げるためサーバ不要)
+    await assert.rejects(
+      nako.runAsync('0を「/test」に簡易HTTPサーバ受信時。', 'main'),
+      /『簡易HTTPサーバ受信時』に実行できない関数が指定されました/)
+  })
 })

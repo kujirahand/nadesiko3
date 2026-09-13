@@ -668,6 +668,7 @@ const PluginHttpServer = {
     josi: [['を'], ['の', 'で']],
     pure: true,
     fn: function(callback: EasyHTTPOnStart, port: number, sys: any) {
+      callback = sys.__findFunc(callback, '簡易HTTPサーバ起動時') // 文字列指定なら関数に変換
       // 管理オブジェクトを作成する
       const dp = sys.__httpserver = new EasyURLDispather(sys)
       // サーバオブジェクトを生成
@@ -685,7 +686,6 @@ const PluginHttpServer = {
       // サーバ起動
       dp.server.listen(port, () => {
         console.error(`${HTTPSERVER_LOGID} ポート番号(${port})で監視開始`)
-        if (typeof callback === 'string') { callback = sys.__findFunc(callback) }
         callback(sys)
       })
     }
@@ -710,6 +710,7 @@ const PluginHttpServer = {
     josi: [['を'], ['に', 'へ', 'で']],
     pure: true,
     fn: function(callback: EasyURLCallback, url: string, sys: any) {
+      callback = sys.__findFunc(callback, '簡易HTTPサーバ受信時') // 文字列指定なら関数に変換
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
@@ -718,7 +719,6 @@ const PluginHttpServer = {
       if (url === '') { url = '/' }
       if (url.charAt(0) !== '/') { url = '/' + url }
       it.url = url
-      if (typeof callback === 'string') { callback = sys.__findFunc(callback) }
       it.callback = callback
       dp.addItem(it)
     }

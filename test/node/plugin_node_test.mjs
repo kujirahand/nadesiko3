@@ -109,7 +109,12 @@ describe('plugin_node_test', () => {
       const response = await new Promise((resolve, reject) => {
         const sys = {
           __setSysVar: () => {},
-          __getSysVar: () => reject
+          __getSysVar: () => reject,
+          // __findFunc の最小モック(文字列の変数解決は持たないが、関数はそのまま返し非関数は実装と同じエラーにする)
+          __findFunc: (f, parentFunc) => {
+            if (typeof f === 'function') { return f }
+            throw new Error(`『${parentFunc}』に実行できない関数が指定されました。`)
+          }
         }
         PluginNode['POSTフォーム送信時'].fn(resolve, url, { name: 'なでしこ' }, sys)
       })
@@ -647,6 +652,54 @@ CNTを表示
     const r2 = run('「A」を表示。0でプロセス終わる。')
     assert.strictEqual(r2.status, 0)
     assert.strictEqual(r2.stdout.trim(), 'A')
+  })
+  // --- コールバック引数の検証 (#2500) ---
+  it('起動時に非関数のコールバックを指定すると登録時エラーになる #2500', async () => {
+    // 非関数値(0)を直接指定した場合、コマンド実行前の登録時にエラーになる
+    await assert.rejects(
+      run('0で「echo hi」を起動時。'),
+      /『起動時』に実行できない関数が指定されました/)
+    // 解決できない関数名の文字列を指定した場合も同様
+    await assert.rejects(
+      run('「存在しない関数XYZ」で「echo hi」を起動時。'),
+      /『起動時』に実行できない関数が指定されました/)
+  })
+  it('AJAX失敗時に文字列で関数名を指定できる #2500', async () => {
+    // 関数名の文字列指定は __findFunc で解決され登録される
+    const g = await run(
+      '●エラー処理とは\n「エラー」を戻す\nここまで\n' +
+      '「エラー処理」のAJAX失敗時。')
+    assert.strictEqual(typeof g.__getSysVar('AJAX:ONERROR'), 'function')
+  })
+  it('AJAX失敗時に非関数を指定すると登録時エラーになる #2500', async () => {
+    await assert.rejects(
+      run('0のAJAX失敗時。'),
+      /『AJAX失敗時』に実行できない関数が指定されました/)
+  })
+  it('AJAX送信時のfetch失敗でAJAX失敗時ハンドラが発火する #2500', async () => {
+    // AJAX:ONERROR はデフォルトで console.log の関数が入る(#2500で null→関数に変更)
+    // 登録したハンドラが fetch エラー時に呼ばれることを直接 fn 呼出で検証する
+    const vars = {
+      'AJAXオプション': '',
+      '対象': null,
+      'AJAX:ONERROR': null
+    }
+    const sys = {
+      __getSysVar: (n) => vars[n],
+      __setSysVar: (n, v) => { vars[n] = v },
+      __findFunc: (f, parentFunc) => {
+        if (typeof f === 'function') { return f }
+        throw new Error(`『${parentFunc}』に実行できない関数が指定されました。`)
+      }
+    }
+    // AJAX失敗時 でハンドラを登録してから AJAX送信時 を実行
+    PluginNode['AJAX失敗時'].fn((err) => { vars.called = err }, sys)
+    assert.strictEqual(typeof vars['AJAX:ONERROR'], 'function')
+    PluginNode['AJAX送信時'].fn(() => {}, 'http://127.0.0.1:1/', sys)
+    for (let i = 0; i < 100 && vars.called === undefined; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 20))
+    }
+    assert.notStrictEqual(vars.called, undefined)
   })
   // --- ファイル列挙 / 全ファイル列挙 (#2492) ---
   describe('ファイル列挙のワイルドカード #2492', () => {

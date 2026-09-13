@@ -5,7 +5,7 @@ export default {
     josi: [['へ'], ['を'], ['で']],
     pure: true,
     fn: function(func: any, s: string, alg: string, sys: any) {
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換(コールバック関数)
+      func = sys.__findFunc(func, 'ハッシュ値計算時') // 文字列指定なら関数に変換(コールバック関数)
       // (ref) https://developer.mozilla.org/ja/docs/Web/API/SubtleCrypto/digest
       const msgUint8 = new TextEncoder().encode(s) // (utf-8 の) Uint8Array にエンコードする
       // メッセージをハッシュする

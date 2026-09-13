@@ -250,7 +250,7 @@ export default {
     pure: true,
     fn: function(f: any, url: any, sys: any) {
       // 関数オブジェクトを得る
-      const func = sys.__findVar(f, null) // 文字列指定なら関数に変換
+      const func = sys.__findFunc(f, '画像読時') // 文字列指定なら関数に変換
       // 画像を読む
       const img = new window.Image()
       img.src = url
