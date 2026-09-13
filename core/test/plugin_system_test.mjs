@@ -620,6 +620,10 @@ describe('plugin_system_test', async () => {
     await cmp('[1,2,3]と[2,3]が一致。もしそうなら"NG"を表示。違えば"OK"を表示。', 'OK')
     await cmp('["a",2,3]と["a",2,3]が一致。もしそうなら"OK"を表示。違えば"NG"を表示。', 'OK')
   })
+  it('一致と不一致の比較は左右対称 #2487', async () => {
+    await cmp('NULLと非数が一致を表示。非数とNULLが一致を表示。', 'false\nfalse')
+    await cmp('NULLと非数が不一致を表示。非数とNULLが不一致を表示。', 'true\ntrue')
+  })
   it('「ナデシコ」が空白行を出力してしまう問題の修正', async () => {
     let lineCount = 0
     const nako = new NakoCompiler()

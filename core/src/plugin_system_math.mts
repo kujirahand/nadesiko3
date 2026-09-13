@@ -198,8 +198,8 @@ export default {
     josi: [['が'], ['と']],
     pure: true,
     fn: function(a: any, b: any) {
-      // オブジェクトの場合、JSONに変換して比較
-      if (typeof (a) === 'object') {
+      // 両者がオブジェクトの場合、JSONに変換して比較
+      if (typeof (a) === 'object' && typeof (b) === 'object') {
         const jsonA = JSON.stringify(a)
         const jsonB = JSON.stringify(b)
         return jsonA === jsonB
@@ -212,8 +212,8 @@ export default {
     josi: [['が'], ['と']],
     pure: true,
     fn: function(a: any, b: any) {
-      // オブジェクトの場合、JSONに変換して比較
-      if (typeof (a) === 'object') {
+      // 両者がオブジェクトの場合、JSONに変換して比較
+      if (typeof (a) === 'object' && typeof (b) === 'object') {
         const jsonA = JSON.stringify(a)
         const jsonB = JSON.stringify(b)
         return jsonA !== jsonB
