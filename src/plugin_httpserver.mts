@@ -9,7 +9,11 @@ import { parseQueryString } from '../core/src/url_util.mjs'
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
 const ERR_NOHTTPSERVER = '最初に『簡易HTTPサーバ起動時』を実行してサーバを起動する必要があります。'
 const MAX_BODY_SIZE_POST = 10 * 1024 * 1024 // 10MB
-      
+// RFC 2046 の boundary 文法: 0*69<bchars> bcharsnospace
+// bcharsnospace = DIGIT / ALPHA / "'" / "(" / ")" / "+" / "_" / "," / "-" / "." / "/" / ":" / "=" / "?"
+// bchars は bcharsnospace に空白を加えたもので、末尾1文字は空白以外(bcharsnospace)でなければならない
+const MULTIPART_BOUNDARY_RE = /^[0-9A-Za-z'()+_,\-./:=? ]{0,69}[0-9A-Za-z'()+_,\-./:=?]$/
+
 // オブジェクト
 type EasyURLActionType = 'static' | 'callback'
 type EasyURLCallback = (req: any, res: any) => void
@@ -105,22 +109,37 @@ class EasyURLDispather {
         let filesData: any[] = []
         const contentType = req.headers['content-type'] || ''
         try {
-          if (contentType.indexOf('multipart/form-data') >= 0) {
-            const boundaryMatch = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/)
-            if (boundaryMatch) {
-              const boundary = (boundaryMatch[1] || boundaryMatch[2] || '').trim()
-              const parsed = await parseMultipart(bodyBuffer, boundary)
-              postData = parsed.fields
-              filesData = parsed.files
+          // メディア型は大小文字を区別しない(RFC 2045)ため小文字化して比較する。
+          // パラメータ部(;以降)を除いたメディア型本体で判定する
+          const mediaType = contentType.split(';', 1)[0].trim().toLowerCase()
+          if (mediaType === 'multipart/form-data') {
+            // boundaryパラメータは quoted-string とエスケープを認識するパーサ(parseContentDisposition)で取得する。
+            // パラメータ名は大小文字を区別せず、`=`前後の空白・引用符付き値も許容する(非引用値はtokenとして解釈)。
+            // 正規表現だと他パラメータの引用値内に現れる '; boundary=' に誤マッチするため。
+            // strictモードを有効にし、前のパラメータとの `;` 区切りがないboundaryは採用しない
+            // (区切り欠落の不正要求を400にするため)。重複パラメータは常に最後の値を採用する(後勝ち)。
+            // boundaryの値は空白を含み得るためtrimせず、RFC 2046の文法(1〜70文字・許可文字・末尾空白禁止)で検証する
+            const boundary = parseContentDisposition(contentType, true)['boundary'] ?? ''
+            if (!MULTIPART_BOUNDARY_RE.test(boundary)) {
+              // boundaryが得られない・文法上不正なmultipart要求は、フィールドを静かに消さず400を返す(#2495)
+              console.error(`${HTTPSERVER_LOGID} multipart/form-data 要求の boundary が取得できないか文法上不正です`)
+              res.statusCode = 400
+              res.end('Bad Request.')
+              return
             }
-          } else if (contentType.indexOf('application/json') >= 0) {
+            const parsed = await parseMultipart(bodyBuffer, boundary)
+            postData = parsed.fields
+            filesData = parsed.files
+          } else if (mediaType === 'application/json' || mediaType.startsWith('application/json-') || mediaType.endsWith('+json')) {
+            // application/json-patch+json 等の +json 接尾辞(RFC 6839)や、application/json-home 等の
+            // application/json- で始まるIANA登録済みメディア型も JSON として解析する(旧来の部分一致判定との互換維持)
             const bodyStr = bodyBuffer.toString('utf-8')
             try {
               postData = JSON.parse(bodyStr)
             } catch {
               postData = bodyStr
             }
-          } else if (contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
+          } else if (mediaType === 'application/x-www-form-urlencoded') {
             const bodyStr = bodyBuffer.toString('utf-8')
             postData = parseQueryString(bodyStr)
           } else {
@@ -240,12 +259,18 @@ class EasyURLDispather {
     return params
   }
 }
-/** Content-Disposition ヘッダ値を解析してパラメータ辞書を返す。
- * `form-data; name="upload"; filename="photo.txt"` のような形式を、
- * `;`区切りで `キー=値` 形式として取り出す。値がダブルクォート付きの場合は
- * quoted-string として解析し、値中の `;`・`=`・エスケープ(`\"`, `\\`)も処理する。
- * キーは大文字小文字を区別しない。`=` 前後の Optional Whitespace は許容する。
- * パラメータの順序に依存せず `name` と `filename` を正しく分離するためのヘルパー。(#2494)
+/** `;`区切りの `キー=値` パラメータを持つヘッダ値を解析してパラメータ辞書を返す汎用パーサ。
+ * Content-Disposition(`form-data; name="upload"; filename="photo.txt"`)や
+ * Content-Type(`multipart/form-data; boundary=X`)の解析に使用する。
+ * 値がダブルクォート付きの場合は quoted-string として解析し、値中の `;`・`=`・
+ * エスケープ(`\"`, `\\`)も処理する。非引用値は RFC 7230 の token として解釈する。
+ * キーは大文字小文字を区別しない(小文字化して格納)。`=` 前後の Optional Whitespace は許容する。
+ * パラメータの順序に依存せず `name` と `filename` を正しく分離するためのヘルパーとして導入し、
+ * Content-Type の boundary 取得にも流用する。(#2494)
+ * strict を true にすると、各パラメータが必ず `;` の直後から始まり、値の後が OWS を除いて
+ * `;` または末尾であることを検証する。区切りのない断片に遭遇した時点で解析を打ち切り、
+ * それ以降のパラメータは採用しない(先頭の型部分は最初の `;` まで読み飛ばす)。
+ * Content-Type の boundary 取得のように区切り欠落を受理したくない用途向け。(#2495)
  */
 // RFC 7230 の separators を使用。ただし `'` は tchar であると同時に
 // RFC 5987 の `charset'language'value` 区切りにも使うため区切り文字として扱わない。
@@ -257,11 +282,13 @@ const CD_KEY_RE = /^[0-9a-zA-Z!#$%&'*+.^_`|~-]+$/
 /** Content-Disposition の `キー=値` の値部分を解析して返す。
  * start には `=` 後の Optional Whitespace をスキップした位置を渡すこと。
  */
-function parseCDValue(headerValue: string, start: number): { value: string, next: number } {
+function parseCDValue(headerValue: string, start: number): { value: string, next: number, valid: boolean } {
   let i = start
   let val = ''
+  let valid = true
   if (i < headerValue.length && headerValue[i] === '"') {
     i++ // opening DQUOTE
+    let closed = false
     while (i < headerValue.length) {
       if (headerValue[i] === '\\') {
         if (i + 1 < headerValue.length) {
@@ -274,12 +301,14 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
           i += 2
           continue
         }
-        // quoted-pair を形成しない末尾の `\` は無視して終了する
+        // quoted-pair を形成しない末尾の `\` は不正な quoted-string
+        valid = false
         i++
         break
       }
       if (headerValue[i] === '"') {
         i++ // closing DQUOTE
+        closed = true
         break
       }
       // quoted-string内の制御文字(HTABとSP以外)はスキップする。
@@ -290,6 +319,8 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
       }
       i++
     }
+    // 閉じ引用符なしで末尾へ到達した quoted-string は不正
+    if (!closed) { valid = false }
   } else {
     // 非引用値はRFC 7230のtoken。区切り文字・空白・制御文字(0x00-0x1F, 0x7F)・非ASCIIで停止する。
     // そのため非引用の非ASCII値(例: filename=画像.txt)は空になり、実ブラウザは非引用値を送らないため実害はない
@@ -298,37 +329,49 @@ function parseCDValue(headerValue: string, start: number): { value: string, next
            headerValue.charCodeAt(i) >= 0x21 && headerValue.charCodeAt(i) <= 0x7e) { i++ }
     val = headerValue.substring(valStart, i)
   }
-  return { value: val, next: i }
+  return { value: val, next: i, valid }
 }
 
-function parseContentDisposition(headerValue: string): { [key: string]: string } {
+function parseContentDisposition(headerValue: string, strict = false): { [key: string]: string } {
   // obs-fold (CRLF 1*(SP/HTAB)) を単一 SP に正規化してから解析する
   const normalized = headerValue.replace(/\r\n[ \t]+/g, ' ')
   // Object.create(null)により __proto__ 等のキーでもプロトタイプ汚染せず、自前プロパティとして扱える
   const params: { [key: string]: string } = Object.create(null)
   let i = 0
 
-  // 先頭の disposition-type (form-data/inline/attachment 等) を token として読み、
-  // その後の OWS と `;` を正しくスキップする。
-  // `name="foo"` のように type がない場合(= が先に現れる場合)はスキップせず
-  // その位置からパラメータ解析を始める
-  let j = 0
-  while (j < normalized.length && CD_SEPARATORS.indexOf(normalized[j]) < 0 &&
-         normalized.charCodeAt(j) >= 0x21 && normalized.charCodeAt(j) <= 0x7e) { j++ }
-  while (j < normalized.length && (normalized[j] === ' ' || normalized[j] === '\t')) { j++ }
-  if (j < normalized.length && normalized[j] === ';') {
-    i = j + 1
-  } else if (j < normalized.length && normalized[j] === '=') {
-    // type がなく最初のパラメータから始まる
-    i = 0
+  if (strict) {
+    // strict モードでは先頭の型部分を読み飛ばし、最初の ';' 以降をパラメータ部とする
+    const semiIdx = normalized.indexOf(';')
+    i = semiIdx >= 0 ? semiIdx + 1 : normalized.length
   } else {
-    // disposition-type の後に ; も = もない場合は、その位置からパラメータ解析を再開する
-    i = j
+    // 先頭の disposition-type (form-data/inline/attachment 等) を token として読み、
+    // その後の OWS と `;` を正しくスキップする。
+    // `name="foo"` のように type がない場合(= が先に現れる場合)はスキップせず
+    // その位置からパラメータ解析を始める
+    let j = 0
+    while (j < normalized.length && CD_SEPARATORS.indexOf(normalized[j]) < 0 &&
+           normalized.charCodeAt(j) >= 0x21 && normalized.charCodeAt(j) <= 0x7e) { j++ }
+    while (j < normalized.length && (normalized[j] === ' ' || normalized[j] === '\t')) { j++ }
+    if (j < normalized.length && normalized[j] === ';') {
+      i = j + 1
+    } else if (j < normalized.length && normalized[j] === '=') {
+      // type がなく最初のパラメータから始まる
+      i = 0
+    } else {
+      // disposition-type の後に ; も = もない場合は、その位置からパラメータ解析を再開する
+      i = j
+    }
   }
 
   while (i < normalized.length) {
-    // セパレータと空白をスキップ
-    while (i < normalized.length && (normalized[i] === ';' || normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
+    if (strict) {
+      // strict モードでは ';' は直前の値の後に消費済みなので OWS のみスキップする。
+      // ここで OWS 以外が続く場合は区切りのない断片であり、後続の解析を打ち切る
+      while (i < normalized.length && (normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
+    } else {
+      // セパレータと空白をスキップ
+      while (i < normalized.length && (normalized[i] === ';' || normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
+    }
     if (i >= normalized.length) { break }
 
     const iterStart = i
@@ -340,7 +383,9 @@ function parseContentDisposition(headerValue: string): { [key: string]: string }
     // = 前の Optional Whitespace をスキップする
     while (i < normalized.length && (normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
     if (i >= normalized.length || normalized[i] !== '=') {
-      // 不正な断片で i が進まないと無限ループになるため、最低1文字進める
+      // strict モードでは '=' を伴わない不正な断片(空パラメータやベアトークン等)は打ち切る。
+      // 非 strict では不正な断片で i が進まないと無限ループになるため、最低1文字進める
+      if (strict) { break }
       if (i <= iterStart) { i++ }
       continue
     }
@@ -351,6 +396,16 @@ function parseContentDisposition(headerValue: string): { [key: string]: string }
     const parsed = parseCDValue(normalized, i)
     i = parsed.next
     if (i <= iterStart) { i++ }
+
+    if (strict) {
+      // 閉じ引用符の欠落や未完了の quoted-pair は不正な値として採用しない
+      if (!parsed.valid) { break }
+      // strict モードでは値の後が OWS を除いて ';' または末尾でなければならない。
+      // 区切り欠落ならこの値自体も採用せず打ち切る
+      while (i < normalized.length && (normalized[i] === ' ' || normalized[i] === '\t')) { i++ }
+      if (i < normalized.length && normalized[i] !== ';') { break }
+      if (i < normalized.length) { i++ }
+    }
 
     // RFC 7230 の token 文字のみをキーとして有効にする(空キーや不正な文字は無視)
     if (!CD_KEY_RE.test(key)) { continue }

@@ -455,6 +455,166 @@ describe('plugin_httpserver_test', () => {
     assert.match(await postMultipart('form-data; name=" upload "; filename=" photo.txt "'), /^OK: upload : photo\.txt :[0-9]+_[0-9A-Za-z_-]+_photo\.txt$/)
   })
 
+  it('multipart受信でContent-Typeの大小文字違いでも解析でき、boundary欠落時は400を返すこと #2495', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  「{POSTデータ["a"]}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理」を「/post-multipart」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const boundary = 'XcB1Y'
+    const parts = [
+      `--${boundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${boundary}--\r\n`
+    ]
+    const postData = Buffer.from(parts.join(''))
+
+    const postRequest = (contentType, body = postData) => new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/post-multipart',
+        method: 'POST',
+        headers: {
+          'Content-Type': contentType,
+          'Content-Length': body.length
+        }
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve({ statusCode: res.statusCode, body: data }) })
+      })
+      req.on('error', reject)
+      req.write(body)
+      req.end()
+    })
+
+    // 小文字 → 正しく解析される
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // メディア型の大小文字違いでも解析される(RFC 2045/2046)
+    assert.deepStrictEqual(await postRequest(`Multipart/Form-Data; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`MULTIPART/FORM-DATA; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // boundaryパラメータ名の大小文字違い・`=`前後の空白・引用符付きの値も許容する
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; BOUNDARY=${boundary}`), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary = "${boundary}"`), { statusCode: 200, body: 'hello' })
+    // boundaryが先頭以外のパラメータ位置にあっても正しく取得できる
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; charset=utf-8; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // boundaryが得られない不正なmultipart要求には400を返す(静かにフィールドを消さない)
+    assert.deepStrictEqual(await postRequest('multipart/form-data'), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest('Multipart/Form-Data'), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest('multipart/form-data; charset=utf-8'), { statusCode: 400, body: 'Bad Request.' })
+    // 空のboundaryも400を返す
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary='), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary=""'), { statusCode: 400, body: 'Bad Request.' })
+    // 閉じ引用符のないquoted-stringや未完了のquoted-pairも400を返す
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary="${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary="${boundary}\\`), { statusCode: 400, body: 'Bad Request.' })
+    // JSON系メディア型はパラメータ付き・大小文字違い・+json接尾辞(RFC 6839)でもJSONとして解析される
+    const jsonBody = Buffer.from('{"a":"hello"}')
+    assert.deepStrictEqual(await postRequest('application/json; charset=utf-8', jsonBody), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest('Application/JSON', jsonBody), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest('application/json-patch+json', jsonBody), { statusCode: 200, body: 'hello' })
+    // application/json- で始まるIANA登録済みメディア型もJSONとして解析される(旧来の部分一致判定との互換)
+    assert.deepStrictEqual(await postRequest('application/json-home', jsonBody), { statusCode: 200, body: 'hello' })
+    // application/以外の +json 接尾辞もJSONとして解析される(RFC 6839)
+    assert.deepStrictEqual(await postRequest('text/foo+json', jsonBody), { statusCode: 200, body: 'hello' })
+    // urlencodedも大小文字を区別しない
+    assert.deepStrictEqual(await postRequest('APPLICATION/X-WWW-FORM-URLENCODED', Buffer.from('a=hello')), { statusCode: 200, body: 'hello' })
+    // 空・空白のみの非引用boundaryが先にあっても、後続の有効なboundaryで解析される(重複パラメータは後勝ち)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary= ; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // 引用符付きの空boundaryも後続の有効なboundaryで上書きされる(後勝ち)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=""; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // 末尾が空のboundaryなら後勝ちで空になり400を返す
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary}; boundary=`), { statusCode: 400, body: 'Bad Request.' })
+    // `=`と値の間の空白は許容される
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary= ${boundary}`), { statusCode: 200, body: 'hello' })
+    // `;`を欠くmalformedなContent-Typeはmultipartとは扱われず生本文として処理される(厳格化)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data boundary=${boundary}`), { statusCode: 200, body: 'undefined' })
+    // `;`直後の空白がなくても解析できる
+    assert.deepStrictEqual(await postRequest(`multipart/form-data;boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // 他パラメータの引用値内にある '; boundary=' には誤マッチしない(quoted-string考慮のパーサで解析)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; note="x; boundary=fake"; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // `;`はboundaryとして許可されない文字(RFC 2046)のため400を返す(quoted-stringとしては正しく抽出される)
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a;b"'), { statusCode: 400, body: 'Bad Request.' })
+    // 引用符内のエスケープ(quoted-pair)を解除してboundary値を取得できる(空白のエスケープ)
+    const escapedBoundary = 'a b'
+    const escapedBody = Buffer.from([
+      `--${escapedBoundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${escapedBoundary}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a\\ b"', escapedBody), { statusCode: 200, body: 'hello' })
+    // エスケープ解除後の値がboundary文字として不正(`\`は不許可文字)なら400を返す
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="a\\\\b"'), { statusCode: 400, body: 'Bad Request.' })
+    // 引用符付きboundaryの先頭・途中の空白はRFC 2046で許容されるため正しく解析できる
+    const spaceBoundary = ' XcB1Y'
+    const spaceBody = Buffer.from([
+      `--${spaceBoundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${spaceBoundary}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary=" XcB1Y"', spaceBody), { statusCode: 200, body: 'hello' })
+    // 末尾空白はRFC 2046で許可されないため400を返す
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary="X "'), { statusCode: 400, body: 'Bad Request.' })
+    // boundaryは1〜70文字まで有効で、71文字以上は400を返す
+    const boundary70 = 'a'.repeat(70)
+    const body70 = Buffer.from([
+      `--${boundary70}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${boundary70}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary70}`, body70), { statusCode: 200, body: 'hello' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${'a'.repeat(71)}`), { statusCode: 400, body: 'Bad Request.' })
+    // 最小長(1文字)や許可記号を含むboundaryも正しく解析できる
+    const specialBoundary = `'()+_,-./:=?`
+    const specialBody = Buffer.from([
+      `--${specialBoundary}\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--${specialBoundary}--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary="${specialBoundary}"`, specialBody), { statusCode: 200, body: 'hello' })
+    const oneCharBody = Buffer.from([
+      `--X\r\n`,
+      `Content-Disposition: form-data; name="a"\r\n\r\n`,
+      `hello\r\n`,
+      `--X--\r\n`
+    ].join(''))
+    assert.deepStrictEqual(await postRequest('multipart/form-data; boundary=X', oneCharBody), { statusCode: 200, body: 'hello' })
+    // 前のパラメータとの `;` 区切りがないboundaryは採用せず400を返す(厳格モード)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; note="x"boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; note="x" boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; note=x boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; x boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    // `;;` のように空のパラメータが挟まれた場合も不正な断片とみなし400を返す
+    assert.deepStrictEqual(await postRequest(`multipart/form-data;; boundary=${boundary}`), { statusCode: 400, body: 'Bad Request.' })
+    // 有効なboundaryの直後に区切りのない断片があっても400を返す(そのパラメータ自体が区切り欠落)
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary} note="y"`), { statusCode: 400, body: 'Bad Request.' })
+    // 正しく `;` 区切りのパラメータは引き続き解析できる
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; note="x"; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+    // 末尾の `;` は後続パラメータがないため許容される
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary};`), { statusCode: 200, body: 'hello' })
+    // 400応答の後もサーバが生きていて正常な要求を処理できる
+    assert.deepStrictEqual(await postRequest(`multipart/form-data; boundary=${boundary}`), { statusCode: 200, body: 'hello' })
+  })
+
   it('HTTPメソッドにGET/POST/PUT/DELETEが設定されること', async () => {
     let port = 0
     const code = `
