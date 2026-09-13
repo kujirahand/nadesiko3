@@ -152,6 +152,18 @@ describe('func_test', async () => {
     await cmp('●(fでaを)演算処理とは\nf(a)を表示\nここまで\n' +
       '2を演算処理には(a)\nそれはa*2\nここまで\n', '4')
   })
+  it('Object.prototypeのプロパティ名と一致する引数名を使える #2530', async () => {
+    // 字句解析が TypeError でクラッシュしないこと
+    await cmp('●(toStringを)試すとは\nそれは1。\nここまで\n試す。それを表示。', '1')
+    await cmp('●(constructorと__proto__でhasOwnPropertyを)試すBとは\n「{constructor}/{__proto__}/{hasOwnProperty}」を表示。\nここまで\n「あ」と「い」で「う」を試すB。', 'あ/い/う')
+    await cmp('●(valueOfを)試すC\nそれは3。\nここまで\n試すC。それを表示。', '3')
+    // 同名引数の重複登録抑止も従来通り動くこと
+    await cmp('●(toStringをtoStringと)試すD\nそれはtoString。\nここまで\n5を試すD。それを表示。', '5')
+    // 無名関数でも同様に動くこと
+    await cmp('F=関数(toStringを)それはtoString+1;ここまで。\nF(10)を表示。', '11')
+    // 通常の引数名は引き続き使えること(対照)
+    await cmp('●(名前を)普通関数\n名前を表示。\nここまで\n「殿」を普通関数。', '殿')
+  })
   it('**すること #936', async () => {
     await cmp('●(AとBを)加算処理とは\nAとBを足すこと。。。3と5を加算処理して表示。', '8')
     await cmp('●(Nを)二乗処理とは;A=0；N回,AにNを足してAに代入すること。それはA。。。5を二乗処理して表示。', '25')
