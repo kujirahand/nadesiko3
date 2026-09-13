@@ -1048,6 +1048,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     josi: [['に']],
     pure: true,
     fn: function(callback: CallbackType<boolean>, sys: NakoSystem):void {
+      callback = sys.__findFunc(callback, 'T3Dライブラリ読込後') // 文字列指定なら関数に変換
       const turtle3d = WeykTurtle3DSystem.getTurtle3D(sys)
       if (turtle3d.three === null && sys.__getSysVar('THREE') === null) {
         const baseUrl = sys.__getSysVar('T3DベースURL')
@@ -1123,6 +1124,7 @@ const PluginWeykTurtle3D: NakoPluginObject = {
     josi: [['に'], ['を']],
     pure: true,
     fn: function(callback: CallbackType<void>, plugins: string[], sys: NakoSystem):void {
+      callback = sys.__findFunc(callback, 'T3Dプラグイン読込後') // 文字列指定なら関数に変換
       const [_turtle3d, three] = WeykTurtle3DSystem.getEnv(sys)
       const l = plugins.length
       if (l === 0) {

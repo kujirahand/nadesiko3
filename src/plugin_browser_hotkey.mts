@@ -8,9 +8,9 @@ export default {
     josi: [['に', 'で'], ['を']],
     pure: true,
     fn: function(key: any, fname: any, sys: any) {
+      const f = sys.__findFunc(fname, 'ホットキー登録') // 登録時に解決・検証する
       hotkeys(key, function(event: any, _handler: any) {
         event.preventDefault()
-        const f = sys.__findFunc(fname)
         f(sys)
       })
     }

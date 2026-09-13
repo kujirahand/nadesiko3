@@ -144,10 +144,7 @@ export default {
     josi: [['で'], ['の', 'を']],
     pure: false,
     fn: function(f: any, a: any, sys: any) {
-      let ufunc = f
-      if (typeof f === 'string') {
-        ufunc = sys.__findFunc(f, '配列カスタムソート')
-      }
+      const ufunc = sys.__findFunc(f, '配列カスタムソート') // 文字列指定なら関数に変換
       if (a instanceof Array) {
         return a.sort(ufunc)
       }
@@ -466,8 +463,7 @@ export default {
     josi: [['を'], ['へ', 'に']],
     pure: true,
     fn: function(f: any, a: any, sys: any) {
-      let ufunc: any = f
-      if (typeof f === 'string') { ufunc = sys.__findFunc(f, '配列関数適用') }
+      const ufunc: any = sys.__findFunc(f, '配列関数適用') // 文字列指定なら関数に変換
       const result: any = []
       for (const e of a) {
         result.push(ufunc(e))
@@ -488,8 +484,7 @@ export default {
     josi: [['で', 'の'], ['を', 'について']],
     pure: true,
     fn: function(f: any, a: any, sys: any) {
-      let ufunc: any = f
-      if (typeof f === 'string') { ufunc = sys.__findFunc(f, '配列フィルタ') }
+      const ufunc: any = sys.__findFunc(f, '配列フィルタ') // 文字列指定なら関数に変換
       const result: any = []
       for (const e of a) {
         if (ufunc(e)) { result.push(e) }

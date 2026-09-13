@@ -47,7 +47,7 @@ export default {
     fn: function(f: any, sys: any) {
       // Clipboard APIをサポートしているか
       if (navigator.clipboard) {
-        if (typeof (f) === 'string') { f = sys.__findFunc(f, 'クリップボード取得時') }
+        f = sys.__findFunc(f, 'クリップボード取得時') // 文字列指定なら関数に変換
         const pm = navigator.clipboard.readText()
         pm.then(text => {
           sys.__setSysVar('対象', text)

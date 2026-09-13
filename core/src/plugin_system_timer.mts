@@ -51,7 +51,7 @@ export default {
     pure: true,
     fn: function(f: any, n: any, sys: any) {
       // 文字列で指定された関数をオブジェクトに変換
-      if (typeof f === 'string') { f = sys.__findFunc(f, '秒後') }
+      f = sys.__findFunc(f, '秒後')
       // 1回限りのタイマーをセット
       const timerId = setTimeout(() => {
         // 使用中リストに追加したIDを削除
@@ -78,7 +78,7 @@ export default {
     pure: false,
     fn: function(f: any, n: any, sys: any) {
       // 文字列で指定された関数をオブジェクトに変換
-      if (typeof f === 'string') { f = sys.__findFunc(f, '秒毎') }
+      f = sys.__findFunc(f, '秒毎')
       // タイマーをセット
       const timerId = setInterval(() => {
         f(timerId, sys)

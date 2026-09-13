@@ -20,7 +20,7 @@ const PluginWorker = {
     josi: [['で']],
     pure: false,
     fn: function (func, sys) {
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      func = sys.__findFunc(func, 'NAKOワーカーデータ受信時') // 文字列指定なら関数に変換
       sys.__setSysVar('PluginWorker:ondata', (data, e) => {
         sys.__v0['受信データ'] = data
         sys.__v0['対象イベント'] = e
@@ -34,7 +34,7 @@ const PluginWorker = {
     josi: [['で']],
     pure: false,
     fn: function (func, sys) {
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
+      func = sys.__findFunc(func, 'ワーカーメッセージ受信時') // 文字列指定なら関数に変換
       self.onmessage = (e) => {
         sys.__v0['受信データ'] = e.data
         sys.__v0['対象イベント'] = e

@@ -1102,6 +1102,59 @@ describe('plugin_system_test', async () => {
     g.__locals.set('F', undefined)
     assert.strictEqual(typeof g.__findFunc('F', '実行'), 'function')
   })
+  it('__findFuncは非文字列・非関数の値を受けても命令名入りのエラーになる #2500', async () => {
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('', 'main.nako3')
+    // コールバック引数に数値などが直接渡された場合も TypeError ではなく命令名入りのエラーにする
+    assert.throws(() => g.__findFunc(0, 'ワーカーメッセージ受信時'), /『ワーカーメッセージ受信時』に実行できない関数が指定されました/)
+    assert.throws(() => g.__findFunc(null, 'ワーカーメッセージ受信時'), /『ワーカーメッセージ受信時』に実行できない関数が指定されました/)
+    // 関数はそのまま返す
+    const fn = () => 'ok'
+    assert.strictEqual(g.__findFunc(fn, 'ワーカーメッセージ受信時'), fn)
+  })
+  it('コールバック名の文字列がfalsyなローカルに解決される場合は登録時にエラーになる #2500', async () => {
+    // src/plugin_worker.mjs の NAKOワーカーデータ受信時 と同じ __findFunc 変換を使う
+    // カスタムプラグインで、登録時に非関数へ解決されても遅延クラッシュせずエラーになることを確認する
+    // (なでしこ文法では関数名と同名のローカルに代入できないため、プラグインが __locals.set で
+    //  falsy 値を書き込んだ場合が実際の遮蔽経路となる)
+    const nako = new NakoCompiler()
+    nako.addPlugin({
+      meta: { type: 'const', value: { pluginName: 'TestPlugin2500cb', nakoVersion: '3.6.0' } },
+      汚染実行: {
+        type: 'func', josi: [], pure: false,
+        fn: function (sys) { sys.__locals.set('F', 0) },
+        return_none: true
+      },
+      受信時: {
+        type: 'func', josi: [['で']], pure: false,
+        fn: function (func, sys) {
+          const cb = sys.__findFunc(func, '受信時') // 文字列指定なら関数に変換
+          sys.__setSysVar('TestPlugin2500cb:ondata', cb)
+        },
+        return_none: true
+      }
+    })
+    await assert.rejects(
+      nako.runAsync(
+        '●Fとは\n「グローバルF」を戻す\nここまで\n' +
+        '●テストとは\n' +
+        '　汚染実行。\n' +
+        '　「F」で受信時。\n' +
+        'ここまで\n' +
+        'テスト()。', 'main.nako3'),
+      /『受信時』に実行できない関数が指定されました/)
+  })
+  it('コールバックを取る命令に非関数を渡すと登録時に命令名入りのエラーになる #2500', async () => {
+    const nako = new NakoCompiler()
+    // 非関数値(0)の直接指定・解決できない関数名の文字列指定の双方で登録時エラーになる
+    await assert.rejects(nako.runAsync('0で[1,2]を配列カスタムソート。', 'main.nako3'), /『配列カスタムソート』に実行できない関数が指定されました/)
+    await assert.rejects(nako.runAsync('「存在しない関数XYZ」で[1,2]を配列カスタムソート。', 'main.nako3'), /『配列カスタムソート』に実行できない関数が指定されました/)
+    await assert.rejects(nako.runAsync('0を動時。', 'main.nako3'), /『動時』に実行できない関数が指定されました/)
+    await assert.rejects(nako.runAsync('0を({})の失敗時。', 'main.nako3'), /『失敗時』に実行できない関数が指定されました/)
+    await assert.rejects(nako.runAsync('0を1秒後。', 'main.nako3'), /『秒後』に実行できない関数が指定されました/)
+    await assert.rejects(nako.runAsync('0を1秒毎。', 'main.nako3'), /『秒毎』に実行できない関数が指定されました/)
+    await assert.rejects(nako.runAsync('0を[1]へ配列関数適用。', 'main.nako3'), /『配列関数適用』に実行できない関数が指定されました/)
+  })
   it('__execはfalsyなローカル変数が同名のグローバル関数を遮蔽するとエラーになる #2500', async () => {
     const nako = new NakoCompiler()
     const g = await nako.runAsync('', 'main.nako3')

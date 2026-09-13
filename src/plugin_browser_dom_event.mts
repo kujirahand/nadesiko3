@@ -9,7 +9,7 @@ export default {
     josi: [['の'], ['に', 'へ'], ['を']],
     pure: true,
     fn: function(dom: NakoDom, event: string, funcStr: string, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, event, funcStr, null)
+      sys.__addEvent(dom, event, funcStr, null, 'DOMイベント追加')
     },
     return_none: true
   },
@@ -18,7 +18,7 @@ export default {
     josi: [['の'], ['から'], ['を']],
     pure: true,
     fn: function(dom: NakoDom, event: string, funcStr: NakoCallback, sys: NakoBrowsesrSystem) {
-      sys.__removeEvent(dom, event, funcStr)
+      sys.__removeEvent(dom, event, funcStr, 'DOMイベント削除')
     },
     return_none: true
   },
@@ -27,7 +27,7 @@ export default {
     josi: [['で'], ['の'], ['が']],
     pure: true,
     fn: function(callback: NakoCallback, dom: NakoDom, event: string, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, event, callback, null)
+      sys.__addEvent(dom, event, callback, null, 'DOMイベント発火時')
     },
     return_none: true
   },
@@ -50,7 +50,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'click', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'click', func, sys.__mouseHandler as NakoCallbackEvent, 'クリック時')
     },
     return_none: true
   },
@@ -59,7 +59,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'dblclick', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'dblclick', func, sys.__mouseHandler as NakoCallbackEvent, 'ダブルクリック時')
     },
     return_none: true
   },
@@ -68,7 +68,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'contextmenu', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'contextmenu', func, sys.__mouseHandler as NakoCallbackEvent, '右クリック時')
     },
     return_none: true
   },
@@ -77,7 +77,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'change', func, null)
+      sys.__addEvent(dom, 'change', func, null, '変更時')
     },
     return_none: true
   },
@@ -86,7 +86,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'load', func, null)
+      sys.__addEvent(dom, 'load', func, null, '読込時')
     },
     return_none: true
   },
@@ -95,7 +95,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'submit', func, null)
+      sys.__addEvent(dom, 'submit', func, null, 'フォーム送信時')
     },
     return_none: true
   },
@@ -105,7 +105,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'keydown', func, sys.__keyHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'keydown', func, sys.__keyHandler as NakoCallbackEvent, 'キー押時')
     },
     return_none: true
   },
@@ -114,7 +114,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'keyup', func, sys.__keyHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'keyup', func, sys.__keyHandler as NakoCallbackEvent, 'キー離時')
     },
     return_none: true
   },
@@ -123,7 +123,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'keypress', func, sys.__keyHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'keypress', func, sys.__keyHandler as NakoCallbackEvent, 'キータイピング時')
     },
     return_none: true
   },
@@ -135,7 +135,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'mousedown', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'mousedown', func, sys.__mouseHandler as NakoCallbackEvent, 'マウス押時')
     },
     return_none: true
   },
@@ -144,7 +144,7 @@ export default {
     josi: [['で'], ['を', 'の', 'へ', 'に']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'mousemove', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'mousemove', func, sys.__mouseHandler as NakoCallbackEvent, 'マウス移動時')
     },
     return_none: true
   },
@@ -153,7 +153,7 @@ export default {
     josi: [['で'], ['を', 'の', 'から']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'mouseup', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'mouseup', func, sys.__mouseHandler as NakoCallbackEvent, 'マウス離時')
     },
     return_none: true
   },
@@ -162,7 +162,7 @@ export default {
     josi: [['で'], ['を', 'の', 'に', 'へ']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'mouseover', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'mouseover', func, sys.__mouseHandler as NakoCallbackEvent, 'マウス入時')
     },
     return_none: true
   },
@@ -171,7 +171,7 @@ export default {
     josi: [['で'], ['を', 'の', 'から']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'mouseout', func, sys.__mouseHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'mouseout', func, sys.__mouseHandler as NakoCallbackEvent, 'マウス出時')
     },
     return_none: true
   },
@@ -186,7 +186,7 @@ export default {
         if (typeof objWithDeltaY.deltaY === 'number') {
           sys.__setSysVar('マウスホイール値', objWithDeltaY.deltaY)
         }
-      }) as NakoCallbackEvent)
+      }) as NakoCallbackEvent, 'マウスホイール時')
     },
     return_none: true
   },
@@ -206,7 +206,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'touchstart', func, sys.__touchHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'touchstart', func, sys.__touchHandler as NakoCallbackEvent, 'タッチ開始時')
     },
     return_none: true
   },
@@ -215,7 +215,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'touchmove', func, sys.__touchHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'touchmove', func, sys.__touchHandler as NakoCallbackEvent, 'タッチ時')
     },
     return_none: true
   },
@@ -224,7 +224,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'touchend', func, sys.__touchHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'touchend', func, sys.__touchHandler as NakoCallbackEvent, 'タッチ終了時')
     },
     return_none: true
   },
@@ -233,7 +233,7 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     fn: function(func: NakoCallback, dom: NakoDom, sys: NakoBrowsesrSystem) {
-      sys.__addEvent(dom, 'touchcancel', func, sys.__touchHandler as NakoCallbackEvent)
+      sys.__addEvent(dom, 'touchcancel', func, sys.__touchHandler as NakoCallbackEvent, 'タッチキャンセル時')
     },
     return_none: true
   },
@@ -242,8 +242,7 @@ export default {
     josi: [['を']],
     pure: true,
     fn: function(func: unknown, sys: NakoBrowsesrSystem) {
-      func = sys.__findVar(func as NakoCallback, null) // 文字列指定なら関数に変換
-      if (!func) { throw new Error('『画面更新時実行』で関数の取得に失敗しました。') }
+      func = sys.__findFunc(func as NakoCallback, '画面更新時実行') // 文字列指定なら関数に変換
       sys.__requestAnimationFrameLastId = window.requestAnimationFrame(func as unknown as FrameRequestCallback)
       return sys.__requestAnimationFrameLastId
     }

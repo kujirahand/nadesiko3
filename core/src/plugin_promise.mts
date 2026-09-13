@@ -34,6 +34,7 @@ export default {
     josi: [['を', 'で']],
     pure: true,
     fn: function(callback: any, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, '動時') // 文字列指定なら関数に変換
       return (sys as any).__promise.setLastPromise(new Promise((resolve, reject) => {
         return callback(resolve, reject)
       }))
@@ -45,6 +46,7 @@ export default {
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
     fn: function(callback: any, promise: any, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, '成功時') // 文字列指定なら関数に変換
       return (sys as any).__promise.setLastPromise(promise.then((result:any) => {
         sys.__setSysVar('対象', result)
         return callback(result)
@@ -57,6 +59,7 @@ export default {
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
     fn: function(cbFunc: any, promise: any, sys: NakoSystem): any {
+      cbFunc = sys.__findFunc(cbFunc, '処理時') // 文字列指定なら関数に変換
       return (sys as any).__promise.setLastPromise(promise.then((result: any) => {
         sys.__setSysVar('対象', result)
         return cbFunc(true, result, sys)
@@ -72,6 +75,7 @@ export default {
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
     fn: function(callback: any, promise: any, sys: NakoSystem): any {
+      callback = sys.__findFunc(callback, '失敗時') // 文字列指定なら関数に変換
       return (sys as any).__promise.setLastPromise(promise.catch((err: any) => {
         sys.__setSysVar('対象', err)
         return callback(err)
@@ -84,6 +88,7 @@ export default {
     josi: [['を'], ['の', 'が', 'に']],
     pure: true,
     fn: function(callback: any, promise: any, sys: NakoSystem): any {
+      callback = sys.__findFunc(callback, '終了時') // 文字列指定なら関数に変換
       return (sys as any).__promise.setLastPromise(promise.finally(() => {
         return callback()
       }))

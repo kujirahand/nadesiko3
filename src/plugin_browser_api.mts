@@ -31,11 +31,11 @@ export type NakoDom = HTMLElement|string
 
 export interface NakoBrowsesrSystem extends NakoSystem {
   __query(dom: NakoDom, commandName: string, isGetFunc: boolean): object|null
-  __addEvent(dom: NakoDom, event: string, func: NakoCallback, setHandler: NakoCallbackEvent|null): void
+  __addEvent(dom: NakoDom, event: string, func: NakoCallback, setHandler: NakoCallbackEvent|null, cmdName?: string): void
   __keyHandler(e: KeyboardEvent, sys: NakoBrowsesrSystem): void
   __mouseHandler(e: MouseEvent, sys: NakoBrowsesrSystem): void
   __touchHandler(e: TouchEvent, sys: NakoBrowsesrSystem): void
-  __removeEvent(dom: NakoDom, event: string, funcStr: NakoCallback): void
+  __removeEvent(dom: NakoDom, event: string, funcStr: NakoCallback, cmdName?: string): void
   __removeAllDomEvents(): void
   __tohtml(text: string): string
   __tohtmlQ(text: string): string

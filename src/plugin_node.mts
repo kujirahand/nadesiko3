@@ -328,7 +328,7 @@ export default {
       sys.__setSysVar('ナデシコランタイムパス', nodeProcess.argv[0])
       sys.__setSysVar('ナデシコランタイム', path.basename(nodeProcess.argv[0]))
       sys.__setSysVar('母艦パス', sys.tags.__getBokanPath())
-      sys.__setSysVar('AJAX:ONERROR', null)
+      sys.__setSysVar('AJAX:ONERROR', (err: any) => { console.log(err) })
 
       // 『尋』『文字尋』『標準入力取得時』『標準入力全取得』のための一時変数
       // nadesiko3-serverを起動した時、ctrl+cでプロセスが止まらない(#1668)を考慮した設計にする
@@ -561,7 +561,8 @@ export default {
     type: 'func',
     josi: [['で'], ['を']],
     pure: true,
-    fn: function(callback: any, s: string, _sys: NakoSystem) {
+    fn: function(callback: any, s: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, '起動時') // 文字列指定なら関数に変換
       exec(s, (err, stdout, stderr) => {
         if (err) { throw new Error(stderr) } else { callback(stdout) }
       })
@@ -739,7 +740,8 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function(callback: any, a: string, b: string, _sys: NakoSystem) {
+    fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'ファイルコピー時') // 文字列指定なら関数に変換
       return fse.copy(a, b, (err: any) => {
         if (err) { throw new Error('ファイルコピー時:' + err) }
         callback()
@@ -785,7 +787,7 @@ export default {
     pure: false,
     fn: function(f: any, sys: NakoSystem) {
       // 文字列で指定された関数名をオブジェクトに変換
-      if (typeof f === 'string') { f = (sys as any).__findFunc(f, 'ファイル処理時') }
+      f = sys.__findFunc(f, 'ファイル処理時') // 文字列指定なら関数に変換
       sys.tags.__fileProcessCallback = f
       sys.tags.__fileProcessStop = false
     },
@@ -804,7 +806,8 @@ export default {
     type: 'func',
     josi: [['で'], ['から', 'を'], ['に', 'へ']],
     pure: true,
-    fn: function(callback: any, a: string, b: string, _sys: NakoSystem) {
+    fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'ファイル移動時') // 文字列指定なら関数に変換
       fse.move(a, b, (err: any) => {
         if (err) { throw new Error('ファイル移動時:' + err) }
         callback()
@@ -824,7 +827,8 @@ export default {
     type: 'func',
     josi: [['で'], ['の', 'を']],
     pure: true,
-    fn: function(callback: any, path: string, _sys: NakoSystem) {
+    fn: function(callback: any, path: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'ファイル削除時') // 文字列指定なら関数に変換
       return fse.remove(path, (err: any) => {
         if (err) { throw new Error('ファイル削除時:' + err) }
         callback()
@@ -1026,6 +1030,7 @@ export default {
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, '解凍時') // 文字列指定なら関数に変換
       const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.tags.__quotePath(a)
       b = sys.tags.__quotePath(b)
@@ -1056,6 +1061,7 @@ export default {
     josi: [['で'], ['を', 'から'], ['に', 'へ']],
     pure: true,
     fn: function(callback: any, a: string, b: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, '圧縮時') // 文字列指定なら関数に変換
       const tpath = sys.tags.__quotePath(sys.tags.__getBinPath(sys.__getSysVar('圧縮解凍ツールパス')))
       a = sys.tags.__quotePath(a)
       b = sys.tags.__quotePath(b)
@@ -1092,9 +1098,7 @@ export default {
     josi: [['を']],
     pure: true,
     fn: function(func: any, sys: NakoSystem) {
-      if (typeof (func) === 'string') {
-        func = sys.__findFunc(func, '強制終了時')
-      }
+      func = sys.__findFunc(func, '強制終了時') // 文字列指定なら関数に変換
        
       nodeProcess.on('SIGINT', (_signal: any) => {
         const flag = func(sys)
@@ -1140,9 +1144,7 @@ export default {
       if (!sys.tags.readline) {
         throw new Error('『標準入力取得時』命令で標準入力が取得できません')
       }
-      if (typeof callback === 'string') {
-        callback = sys.__findFunc(callback, '標準入力取得時')
-      }
+      callback = sys.__findFunc(callback, '標準入力取得時') // 文字列指定なら関数に変換
       sys.tags.readline('', (line: string) => {
         sys.__setSysVar('対象', line)
         callback(line)
@@ -1254,6 +1256,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
     fn: function(callback: any, url: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'AJAX送信時') // 文字列指定なら関数に変換
       let options = sys.__getSysVar('AJAXオプション')
       if (options === '') { options = { method: 'GET' } }
       fetch(url, options).then((res: any) => {
@@ -1262,8 +1265,7 @@ export default {
         sys.__setSysVar('対象', text)
         callback(text)
       }).catch((err: any) => {
-        console.log('[fetch.error]', err)
-        throw err
+        sys.__getSysVar('AJAX:ONERROR')(err)
       })
     },
     return_none: true
@@ -1273,6 +1275,7 @@ export default {
     josi: [['で'], ['から', 'を']],
     pure: true,
     fn: function(callback: any, url: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'AJAX受信時') // 文字列指定なら関数に変換
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -1282,6 +1285,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に']],
     pure: true,
     fn: function(callback: any, url: string, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'GET送信時') // 文字列指定なら関数に変換
       sys.__exec('AJAX送信時', [callback, url, sys])
     },
     return_none: true
@@ -1291,6 +1295,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function(callback: any, url: string, params: [key: string], sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'POST送信時') // 文字列指定なら関数に変換
       const flist: Array<string> = []
        
       for (const key in params) {
@@ -1321,6 +1326,7 @@ export default {
     josi: [['の'], ['まで', 'へ', 'に'], ['を']],
     pure: true,
     fn: function(callback: any, url: string, params: any, sys: NakoSystem) {
+      callback = sys.__findFunc(callback, 'POSTフォーム送信時') // 文字列指定なら関数に変換
       const fd = new FormData()
       for (const key in params) { fd.set(key, params[key]) }
 
@@ -1343,7 +1349,7 @@ export default {
     josi: [['の']],
     pure: true,
     fn: function(callback: any, sys: NakoSystem) {
-      sys.__setSysVar('AJAX:ONERROR', callback)
+      sys.__setSysVar('AJAX:ONERROR', sys.__findFunc(callback, 'AJAX失敗時')) // 文字列指定なら関数に変換
     }
   },
   'AJAXオプション': { type: 'const', value: '' }, // @AJAXおぷしょん

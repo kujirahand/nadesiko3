@@ -95,7 +95,7 @@ const PluginBrowser = {
       // 「!クリア」でDOMイベントを削除するため
       sys.__dom_events = [] // [{}, {}, {} ...]
       // DOM追加イベント
-      sys.__addEvent = (dom: HTMLElement|string, event: string, func: NakoCallback, setHandler: NakoCallbackEvent) => {
+      sys.__addEvent = (dom: HTMLElement|string, event: string, func: NakoCallback, setHandler: NakoCallbackEvent, cmdName = 'DOMイベント') => {
         // dom element
         let domElement: HTMLElement|null = null
         if (typeof (dom) === 'string') {
@@ -105,10 +105,7 @@ const PluginBrowser = {
           domElement = dom
         }
         // func
-        if (typeof (func) === 'string') {
-          func = sys.__findVar(func, null) as NakoCallback
-          if (!func) { throw new Error('DOMイベントが追加できません。関数が見当たりません。') }
-        }
+        func = sys.__findFunc(func, cmdName) as NakoCallbackEvent // 文字列指定なら関数に変換
         // make wrapper func
         const wrapperFunc = (e: Event) => {
           // イベントで得た要素にも日本語プロパティを追加する (#2194)
@@ -117,24 +114,21 @@ const PluginBrowser = {
           sys.__setSysVar('対象イベント', e)
           // 追加データが得られる場合
           if (setHandler) { setHandler(e, sys) }
-          if (typeof func === 'function') {
-            try {
-              return func(e, sys)
-            } catch (err) {
-              // event error reporter
-              const sys0: any = sys as any
-              if (sys0 && sys0.__v0) {
-                const line0 = sys0.__v0.get('__line')
-                const pos = parsePosition(line0)
-                sys.logger.error(err, pos)
-                console.error(`[DOMイベントのエラー](${line0}) 対象:`, e.target, 'エラー:', err)
-              } else {
-                console.error('[DOMイベントのエラー] 対象:', e.target, 'エラー:', err)
-              }
-              return false
+          try {
+            return func(e, sys)
+          } catch (err) {
+            // event error reporter
+            const sys0: any = sys as any
+            if (sys0 && sys0.__v0) {
+              const line0 = sys0.__v0.get('__line')
+              const pos = parsePosition(line0)
+              sys.logger.error(err, pos)
+              console.error(`[DOMイベントのエラー](${line0}) 対象:`, e.target, 'エラー:', err)
+            } else {
+              console.error('[DOMイベントのエラー] 対象:', e.target, 'エラー:', err)
             }
+            return false
           }
-          return false
         }
         // add
         sys.__dom_events.push({ dom: domElement, event, func: wrapperFunc, rawFunc: func })
@@ -184,7 +178,7 @@ const PluginBrowser = {
         }
       }
       // DOMイベント削除 (探して削除)
-      sys.__removeEvent = (dom, event, func) => {
+      sys.__removeEvent = (dom, event, func, cmdName = 'DOMイベント') => {
         // dom
         let domElement: HTMLElement|null = null
         if (typeof (dom) === 'string') {
@@ -194,14 +188,11 @@ const PluginBrowser = {
           domElement = dom
         }
         // func
-        if (typeof (func) === 'string') {
-          func = sys.__findVar(func, null)
-          if (!func) { throw new Error('DOMイベントが削除できません。関数が見当たりません。') }
-        }
+        func = sys.__findFunc(func, cmdName) // 文字列指定なら関数に変換
         // find
         for (let i = 0; i < sys.__dom_events.length; i++) {
           const e = sys.__dom_events[i]
-          if (e.dom === dom && e.event === event && e.rawFunc === func) {
+          if (e.dom === domElement && e.event === event && e.rawFunc === func) {
             e.dom.removeEventListener(e.event, e.func)
             sys.__dom_events.splice(i, 1)
             break

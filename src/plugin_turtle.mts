@@ -696,13 +696,11 @@ const PluginTurtle = {
     josi: [['を']],
     pure: false,
     fn: function(func: NakoCallback, sys: NakoSystem) {
-      func = sys.__findVar(func, null) // 文字列指定なら関数に変換
-      if (typeof func !== 'function') { return }
-      const tid = sys.tags.turtles.target
-      const tt = sys.tags.turtles.list[tid]
+      const callback = sys.__findFunc(func, 'カメクリック時') // 文字列指定なら関数に変換
+      const tt: NakoTurtle = sys.tags.turtles.getCur()
       tt.canvas.onclick = (e: Event) => {
         sys.__setSysVar('対象', e.target)
-        return func(e, sys)
+        return callback(e, sys)
       }
     },
     return_none: true

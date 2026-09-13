@@ -6,7 +6,7 @@ export default {
     josi: [['を']],
     pure: true,
     fn: function(callback: any, sys: any) {
-      sys.__setSysVar('WS:ONOPEN', callback)
+      sys.__setSysVar('WS:ONOPEN', sys.__findFunc(callback, 'WS接続完了時')) // 文字列指定なら関数に変換
     },
     return_none: true
   },
@@ -15,7 +15,7 @@ export default {
     josi: [['を']],
     pure: true,
     fn: function(callback: any, sys: any) {
-      sys.__setSysVar('WS:ONMESSAGE', callback)
+      sys.__setSysVar('WS:ONMESSAGE', sys.__findFunc(callback, 'WS受信時')) // 文字列指定なら関数に変換
     },
     return_none: true
   },
@@ -24,7 +24,7 @@ export default {
     josi: [['を']],
     pure: true,
     fn: function(callback: any, sys: any) {
-      sys.__setSysVar('WS:ONERROR', callback)
+      sys.__setSysVar('WS:ONERROR', sys.__findFunc(callback, 'WSエラー発生時')) // 文字列指定なら関数に変換
     },
     return_none: true
   },

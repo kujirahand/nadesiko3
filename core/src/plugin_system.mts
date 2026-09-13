@@ -81,7 +81,9 @@ const PluginSystem = {
       }
       // 文字列から関数を探す
       sys.__findFunc = function(nameStr: any, parentFunc: string): any {
-        const f = sys.__findVar(nameStr)
+        // 文字列なら変数名として解決し、それ以外は値そのものを判定対象にする
+        // (関数はそのまま返り、非文字列・非関数は __findVar へ渡さずエラーにする)
+        const f = (typeof nameStr === 'string') ? sys.__findVar(nameStr) : nameStr
         if (typeof f === 'function') { return f }
         throw new Error(`『${parentFunc}』に実行できない関数が指定されました。`)
       }
