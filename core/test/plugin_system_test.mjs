@@ -411,6 +411,11 @@ describe('plugin_system_test', async () => {
     await cmp('「1.234E-5」が数列か判定して表示。', 'true')
     // #2143 数列判定で空文字列を指定した時の問題
     await cmp('「」を数列判定して表示。', 'false')
+    // #2483 符号だけを受理し、整数仮数の指数表記を拒否する問題の修正
+    await cmp('「+」を数列判定して表示。', 'false')
+    await cmp('「-」を数列判定して表示。', 'false')
+    await cmp('「1e3」を数列判定して表示。', 'true')
+    await cmp('「1.0e3」を数列判定して表示。', 'true')
   })
   it('XOR', async () => {
     await cmp('XOR(0xFF, 0xF)を表示。', '240')
