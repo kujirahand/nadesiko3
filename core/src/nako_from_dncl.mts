@@ -197,7 +197,9 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
       // (「間」などの繰り返し開始が「ならば」より前にあっても、行末の
       //  「を実行する」は繰り返しの終端とみなすため loop が最優先)
       // なお「x<3の間，Fを実行するを繰り返す」のように処理部の関数呼出と
-      // 行末の終端が両方ある場合は、後方の終端候補を優先して判定する(下記)
+      // 行末の終端が両方ある場合は、後方の終端候補を優先して判定する(下記)。
+      // 後方候補が無い場合(「x<3の間，Fを実行する」単独)は区別できず
+      // 従来どおり終端とみなす既知の制限がある
       let block = ''
       let narabaIdx = -1 // 「ならば」助詞を持つトークンの位置
       for (let k = 0; k < j; k++) {
@@ -218,14 +220,29 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
       // この行の後方に別の「を実行」「を繰返」候補がある場合、こちらは
       // 処理部の関数呼出(「Fを実行する」)なので終端とみなさない (#1140)
       // (例:「x<3の間，Fを実行するを繰り返す」では終端は行末の「を繰り返す」)
-      let laterTerm = false
+      let laterTermIdx = -1
       for (let m = j + 1; m < line.length; m++) {
         const u = line[m]
+        // 「ここまで」は確定済みの終端 (例: 「を繰り返す」や
+        //  後判定の「を，」区切りからの変換済みのもの)
+        if (u.type === 'ここまで') { laterTermIdx = m; break }
         if (u.type !== 'word') { continue }
-        if ((u.value === '実行' || u.value === '繰返') && line[m - 1].josi === 'を') { laterTerm = true; break }
-        if (u.value === 'を実行' || u.value === 'を繰り返') { laterTerm = true; break }
+        // 候補条件は直上のループ(194行目付近)の判定と同じ
+        // (「を繰り返」は前方のpassで「ここまで」変換済みのためここには現れない)
+        if ((u.value === '実行' || u.value === '繰返') && line[m - 1].josi === 'を') { laterTermIdx = m; break }
+        if (u.value === 'を実行') { laterTermIdx = m; break }
       }
-      if (laterTerm) { continue }
+      if (laterTermIdx >= 0) {
+        // 「Fを実行する，を繰り返す」のように関数呼出と終端の間にある
+        // カンマは終端の区切りなので除去する (式の後に残るとパーサが
+        // 次の行と連結してしまい「ここまで」が終端と認識されない)
+        // ※「Fを実行する，xを1増やすを繰り返す」のように後続に
+        //   処理がある場合は式の区切りなので残す
+        let m2 = j + 1
+        while (m2 < laterTermIdx && line[m2].type === 'comma') { m2++ }
+        if (m2 === laterTermIdx) { line.splice(j + 1, laterTermIdx - j - 1) }
+        continue
+      }
       if (block === 'ならば') {
         // 「ならばFを実行する」のように処理部が単独の語(関数呼出)の場合は
         // 終端とみなさず関数呼び出し「実行(F)」のまま残す
