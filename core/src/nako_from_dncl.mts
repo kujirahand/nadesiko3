@@ -196,8 +196,8 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
       // 行内にブロック構文があるか調べる
       // (「間」などの繰り返し開始が「ならば」より前にあっても、行末の
       //  「を実行する」は繰り返しの終端とみなすため loop が最優先)
-      // なお「x<3の間，Fを実行するを繰り返す」のように行内の繰り返しで
-      // 処理部が関数呼出1語の場合は区別できず終端と誤判定する既知の制限がある
+      // なお「x<3の間，Fを実行するを繰り返す」のように処理部の関数呼出と
+      // 行末の終端が両方ある場合は、後方の終端候補を優先して判定する(下記)
       let block = ''
       let narabaIdx = -1 // 「ならば」助詞を持つトークンの位置
       for (let k = 0; k < j; k++) {
@@ -215,6 +215,17 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
         }
       }
       if (block === '') { continue }
+      // この行の後方に別の「を実行」「を繰返」候補がある場合、こちらは
+      // 処理部の関数呼出(「Fを実行する」)なので終端とみなさない (#1140)
+      // (例:「x<3の間，Fを実行するを繰り返す」では終端は行末の「を繰り返す」)
+      let laterTerm = false
+      for (let m = j + 1; m < line.length; m++) {
+        const u = line[m]
+        if (u.type !== 'word') { continue }
+        if ((u.value === '実行' || u.value === '繰返') && line[m - 1].josi === 'を') { laterTerm = true; break }
+        if (u.value === 'を実行' || u.value === 'を繰り返') { laterTerm = true; break }
+      }
+      if (laterTerm) { continue }
       if (block === 'ならば') {
         // 「ならばFを実行する」のように処理部が単独の語(関数呼出)の場合は
         // 終端とみなさず関数呼び出し「実行(F)」のまま残す
