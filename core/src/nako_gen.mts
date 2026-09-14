@@ -10,6 +10,7 @@ import { FuncList, FuncArgs, FuncListItem, NakoDebugOption } from './nako_types.
 import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstInc, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
 import { incValue } from './nako_inc_value.mjs'
+import { dnclEnsureArray } from './nako_dncl_ensure_array.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
 const topOfFunction = '(function(){\n'
@@ -1175,13 +1176,9 @@ export class NakoGen {
     // 「厳しくチェック」の未定義警告を抑制する (#1140)
     // (抑制は配列名が単語の場合のみ。「F(X)[1]」のように呼出内の
     //  未定義変数警告まで抑制しないため)
-    const warnBk = this.warnUndefinedVar
-    try {
-      if (node.checkInit === true && nameNode && nameNode.type === 'word') { this.warnUndefinedVar = false }
-      code = this._convGen(nameNode, true)
-    } finally {
-      this.warnUndefinedVar = warnBk
-    }
+    code = this.withSuppressedWarn(
+      node.checkInit === true && nameNode && nameNode.type === 'word',
+      () => this._convGen(nameNode, true))
     // DNCLのための初期化処理 ... 初期化していない配列へ読み取りアクセスした場合に配列を自動初期化する (#1140)
     code = this.genCheckInitArrayCode(nameNode, code, node.checkInit === true)
     const list: Ast[] | undefined = node.index
@@ -1189,18 +1186,50 @@ export class NakoGen {
     for (let i = 0; i < list.length; i++) {
       const idx = this._convGen(list[i], true)
       // DNCLのための初期化処理 ... 多次元配列の途中の要素が未定義なら自動初期化する (#1140)
-      // 配列や添字の式を複数回評価しないよう即時関数で囲む
+      // 配列や添字の式を複数回評価しないようランタイムヘルパーに委譲する
       // (既定配列は0埋めのため数値0は初期化対象に含め、
       //  既存のオブジェクトは上書きしないようオブジェクト以外の場合のみ初期化する。
       //  そのためユーザーが代入した数値・文字列も中間要素として配列に置き換わる点に注意)
       if (node.checkInit === true && i < list.length - 1) {
-        // (bが文字列等のオブジェクトでない場合は添字への代入ができないため初期化しない)
-        code = `(function(b,i){return (typeof b === 'object' && b !== null && (b[i] == null || typeof b[i] !== 'object')) ? (b[i] = ${DNCL_ARRAY_DEF_CODE}) : b[i]})(${code},${idx})`
+        // (bが文字列等のオブジェクトでない場合は添字への代入ができないため初期化しない。
+        //  配列・添字の式を一度だけ評価するようランタイムヘルパーに委譲する)
+        code = `__self.__dncl_ensure_array(${code},${idx})`
       } else {
         code += '[' + idx + ']'
       }
     }
     return code
+  }
+
+  /**
+   * 「厳しくチェック」の未定義変数警告を一時的に抑制してfnを実行する (#1140)
+   * DNCLでは初期化していない配列にアクセスする試験問題があるため、
+   * 配列の自動初期化が有効な参照・代入・増減で警告を抑制するのに使う。
+   * @param suppress 抑制するかどうか
+   * @param fn 警告抑制中に実行する処理
+   */
+  private withSuppressedWarn<T>(suppress: boolean, fn: () => T): T {
+    const bk = this.warnUndefinedVar
+    try {
+      if (suppress) { this.warnUndefinedVar = false }
+      return fn()
+    } finally { this.warnUndefinedVar = bk }
+  }
+
+  /**
+   * DNCLの配列自動初期化のために変数を既定配列で検索する (#1140)
+   * 未定義なら登録してから再検索する。呼び出し側のgenVarで変数は登録済みのため
+   * 通常は登録に至らないが、登録経路が変わった場合に備える。
+   * @param name 変数名
+   * @returns 見つかった変数。登録しても見つからない場合はnull
+   */
+  private ensureVarForDNCL(name: string): FindVarResult | null {
+    let res = this.findVar(name, DNCL_ARRAY_DEF_CODE)
+    if (res === null) {
+      this.varsSet.names.add(name)
+      res = this.findVar(name, DNCL_ARRAY_DEF_CODE)
+    }
+    return res
   }
 
   /**
@@ -1213,14 +1242,8 @@ export class NakoGen {
   genCheckInitArrayCode(nameNode: Ast, getter: string, checkInit: boolean, isWrite = false): string {
     if (!checkInit || !nameNode || nameNode.type !== 'word') { return getter }
     const varName = String((nameNode as AstStrValue).value)
-    let res = this.findVar(varName, DNCL_ARRAY_DEF_CODE)
-    if (res === null) {
-      // 呼び出し側のgenVarで変数は登録済みのため通常は到達しないが、
-      // 登録経路が変わった場合に備えて未定義変数をここで登録する
-      this.varsSet.names.add(varName)
-      res = this.findVar(varName, DNCL_ARRAY_DEF_CODE)
-      if (!res) { return getter }
-    }
+    const res = this.ensureVarForDNCL(varName)
+    if (res === null) { return getter }
     // システム領域(__varslist[0])に解決された場合は初期化しない。
     // 関数名と同名の変数への添字アクセスで関数エントリを配列で上書きしないため
     if (res.i === 0) { return getter }
@@ -1261,14 +1284,7 @@ export class NakoGen {
     const indexNodes: Ast[] = node.blocks.slice(1)
     // DNCLでは初期化していない配列にアクセスする試験問題があるため
     // 「厳しくチェック」の未定義警告を抑制する (#1140)
-    const warnBk = this.warnUndefinedVar
-    let name = ''
-    try {
-      if (node.checkInit === true) { this.warnUndefinedVar = false }
-      name = this.genVar(node.name, node)
-    } finally {
-      this.warnUndefinedVar = warnBk
-    }
+    const name = this.withSuppressedWarn(node.checkInit === true, () => this.genVar(node.name, node))
     let codeInit = ''
     let code = name
     let codeArray = ''
@@ -1282,13 +1298,7 @@ export class NakoGen {
         const tmpVar = `$nako_tmp_a${id}`
         // 関数内でグローバル変数に代入する場合も、代入先と同じスコープへ
         // 初期化できるよう varname_set ではなく findVar の setter を使う
-        let res = this.findVar(word, arrayDefCode)
-        if (res === null) {
-          // 呼び出し側のgenVarで変数は登録済みのため通常は到達しないが、
-          // 登録経路が変わった場合に備えて未定義変数をここで登録する
-          this.varsSet.names.add(word)
-          res = this.findVar(word, arrayDefCode)
-        }
+        const res = this.ensureVarForDNCL(word)
         // システム領域(__varslist[0])に解決された場合は初期化しない。
         // PI等のシステム定数と同名の変数への添字代入で定数を配列で上書きしないため
         if (res === null || res.i !== 0) {
@@ -1302,10 +1312,11 @@ export class NakoGen {
           const idxVar = `$nako_i${id}_${i}`
           indexVars[i] = idxVar
           codeInit += `const ${idxVar} = ${this._convGen(indexNodes[i], true)};\n`
+          const parentAccess = `${tmpVar}${codeArray}` // 現在の添字を含まない親要素の式
           codeArray += `[${idxVar}]`
           // 既定配列は0埋めのため数値0は初期化対象に含め、
           // 既存のオブジェクトは上書きしないようオブジェクト以外の場合のみ初期化する
-          codeInit += `\n/*配列初期化${i}*/if (${tmpVar}${codeArray} == null || typeof ${tmpVar}${codeArray} !== 'object') { ${tmpVar}${codeArray} = ${arrayDefCode}; };`
+          codeInit += `\n/*配列初期化${i}*/__self.__dncl_ensure_array(${parentAccess}, ${idxVar});`
         }
         codeInit += '\n'
       }
@@ -2108,15 +2119,10 @@ export class NakoGen {
       const objVar = `$nako_o${id}`
       // DNCLでは初期化していない配列にアクセスする試験問題があるため
       // 「厳しくチェック」の未定義警告を抑制する (#1140)
-      const warnBk = this.warnUndefinedVar
-      let baseNameRaw = ''
-      try {
-        const nn = nodeName.name as Ast
-        if (nodeName.checkInit === true && nn && nn.type === 'word') { this.warnUndefinedVar = false }
-        baseNameRaw = this._convGen(nodeName.name as Ast, true)
-      } finally {
-        this.warnUndefinedVar = warnBk
-      }
+      const nn = nodeName.name as Ast
+      const baseNameRaw = this.withSuppressedWarn(
+        nodeName.checkInit === true && nn && nn.type === 'word',
+        () => this._convGen(nn, true))
       // DNCLのための初期化処理 ... 初期化していない配列の要素を増減する場合に配列を自動初期化する (#1140)
       // (増減は書き込みなので代入と同じく配列でない値を既定配列で置き換える)
       const baseName = this.genCheckInitArrayCode(nodeName.name as Ast, baseNameRaw, nodeName.checkInit === true, true)
@@ -2133,7 +2139,7 @@ export class NakoGen {
         //  既存のオブジェクトは上書きしないようオブジェクト以外の場合のみ初期化する。
         //  親が文字列等のオブジェクトでない場合は添字への代入ができないため初期化しない)
         if (nodeName.checkInit === true && i < indexList.length - 1) {
-          preCode += `/*配列初期化${i}*/if (typeof ${parentCode} === 'object' && ${parentCode} !== null && (${objVar}${indexCode} == null || typeof ${objVar}${indexCode} !== 'object')) { ${objVar}${indexCode} = ${DNCL_ARRAY_DEF_CODE}; };\n`
+          preCode += `/*配列初期化${i}*/__self.__dncl_ensure_array(${parentCode}, ${idxVar});\n`
         }
         parentCode = `${objVar}${indexCode}`
       }
@@ -2415,6 +2421,8 @@ self.coreVersion = '__coreVersion__'
 self.version = '__version__'
 // 増減文の加算/減算。コア実行環境(NakoGlobal)と同じ実装を埋め込む (#2488)
 self.__incValue = __incValueCode__
+// DNCLモードの多次元配列の中間要素の自動初期化。コア実行環境(NakoGlobal)と同じ実装を埋め込む (#1140)
+self.__dncl_ensure_array = __dnclEnsureArrayCode__
 self.logger = {
   error: (message) => { console.error(message) },
   warn: (message) => { console.warn(message) },
@@ -2625,7 +2633,8 @@ ${runtimeResult}
       'codeStandalone': opt.codeStandalone,
       'codeJS': js,
       jsInit,
-      incValueCode: String(incValue)
+      incValueCode: String(incValue),
+      dnclEnsureArrayCode: String(dnclEnsureArray)
     }),
     // コード生成に使ったNakoGenのインスタンス
     gen

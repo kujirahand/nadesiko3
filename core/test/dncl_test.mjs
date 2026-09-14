@@ -840,4 +840,13 @@ describe('dncl (#1140)', async () => {
       'x<5の間，もしx>2ならばxを1増やすを実行し、そうでなければxを2増やすを実行するを繰り返す\n' +
       'xを表示', '5')
   })
+  it('DNCL - 中間要素の初期化は実行環境のヘルパー関数が担う #2545', async () => {
+    // __dncl_ensure_array は生成コードから呼ばれる実行環境のヘルパー。
+    // 多次元配列の中間要素を既定配列で初期化する (リファクタリングで
+    // 生成コード内のIIFEから分離したもの)
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('!DNCLモード\nA[1,2]←30\nA[1,2]を表示', 'main.nako3')
+    assert.strictEqual(g.log, '30')
+    assert.strictEqual(typeof g.__dncl_ensure_array, 'function')
+  })
 })
