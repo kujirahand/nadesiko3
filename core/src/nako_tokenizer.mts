@@ -74,10 +74,11 @@ export class NakoTokenizer {
     const tokenizationSourceMapping = new SourceMappingOfTokenization(code.length, preprocessed)
     const indentationSyntaxSourceMapping = new SourceMappingOfIndentSyntax(code, [], [])
     const offsetToLineColumn = new OffsetToLineColumn(code)
+    const preprocessedText = preprocessed.map((v) => v.text).join('')
     // トークン分割
     let tokens: Token[]
     try {
-      tokens = this.lexer.tokenize(preprocessed.map((v) => v.text).join(''), line, filename)
+      tokens = this.lexer.tokenize(preprocessedText, line, filename)
     } catch (err) {
       if (!(err instanceof InternalLexerError)) {
         throw err
@@ -91,7 +92,7 @@ export class NakoTokenizer {
     // DNCL ver2 (core #41)
     tokens = convertDNCL2(tokens)
     // DNCL ver1 (#1140)
-    tokens = convertDNCL(tokens)
+    tokens = convertDNCL(tokens, preprocessedText)
     // インデント構文を変換 #596
     tokens = convertIndentSyntax(tokens)
     // インラインインデントを変換 #1215

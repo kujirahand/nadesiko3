@@ -234,7 +234,9 @@ export class NakoParser extends NakoParserBase {
     } else {
       // ver2はPythonに近いとのこと
     }
-    // 配列代入時自動で初期化チェックする
+    // 配列アクセス時(代入・参照・増減)に自動で初期化チェックする。
+    // なおこれらのフラグは以降のファイル全体に適用される
+    // (「!DNCLモード」はファイル先頭に書く前提で、途中で非DNCLへ戻す指令は無い)
     this.flagCheckArrayInit = true
     return { type: 'eol', ...map, end: this.peekSourceMap() }
   }
@@ -2454,6 +2456,8 @@ export class NakoParser extends NakoParserBase {
           name: word,
           index: [],
           josi: '',
+          // DNCLモードのとき、初期化していない配列への読み取りで配列を自動初期化する (#1140)
+          checkInit: this.flagCheckArrayInit,
           ...map,
           end: this.peekSourceMap()
         }
