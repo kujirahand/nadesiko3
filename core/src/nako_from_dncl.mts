@@ -189,50 +189,83 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
     // ただし行中の「実行」「繰返」がブロックの終端である場合のみ。
     // (関数呼び出し「Fを実行する」を壊さないよう、行内にブロック構文が
     //  あるときに限定する)
-    for (let j = 1; j < line.length; j++) {
+    // ブロックは入れ子になりうるため、行内のブロック開始をスタックで管理する。
+    // 終端候補は「後方に終端候補があれば最も内側を、最後なら最も外側を」閉じる。
+    // 呼出名(「を」の直前の語)がブロック開始や区切り(カンマ・eol・「ならば」等)の
+    // 直後の単独の語で、かつ後方に終端候補がある場合は関数呼出「Fを実行する」
+    // とみなす (例:「x<3の間，Fを実行するを繰り返す」では終端は行末の「を繰り返す」)。
+    // 後方候補が無い場合(「x<3の間，Fを実行する」単独)は区別できず
+    // 従来どおり終端とみなす既知の制限がある
+    const openBlocks: { kind: 'loop' | 'moshi' | 'naraba', narabaIdx: number, inline: boolean }[] = []
+    for (let j = 0; j < line.length; j++) {
       const t = line[j]
-      if (t.type !== 'word' || (t.value !== '実行' && t.value !== '繰返')) { continue }
-      if (line[j - 1].josi !== 'を') { continue }
-      // 行内にブロック構文があるか調べる
-      // (「間」などの繰り返し開始が「ならば」より前にあっても、行末の
-      //  「を実行する」は繰り返しの終端とみなすため loop が最優先)
-      // なお「x<3の間，Fを実行するを繰り返す」のように処理部の関数呼出と
-      // 行末の終端が両方ある場合は、後方の終端候補を優先して判定する(下記)。
-      // 後方候補が無い場合(「x<3の間，Fを実行する」単独)は区別できず
-      // 従来どおり終端とみなす既知の制限がある
-      let block = ''
-      let narabaIdx = -1 // 「ならば」助詞を持つトークンの位置
-      for (let k = 0; k < j; k++) {
-        const u = line[k]
-        if (u.type === '間' || (u.type === 'word' &&
-            (u.value === '間' || u.value === '後判定' || u.value === '繰返' ||
-            u.value === '増繰返' || u.value === '減繰返'))) {
-          block = 'loop'
-        } else if (u.type === 'ならば' || u.josi === 'ならば' || u.josi === 'でなければ') {
-          narabaIdx = k
-          if (block !== 'loop') { block = 'ならば' }
-        } else if (u.type === 'もし' || u.type === '違えば' ||
-            (u.type === 'word' && u.value === 'もし')) {
-          if (block === '') { block = 'block' }
+      const prev = j > 0 ? line[j - 1] : undefined
+      // 「を実行」「を繰返」終端候補 (助詞「を」が直前の語に取り込まれた形)
+      const isTerm = t.type === 'word' && (t.value === '実行' || t.value === '繰返') &&
+        prev !== undefined && prev.josi === 'を'
+      if (!isTerm) {
+        // 確定済みの終端で内側のブロックを閉じる
+        // (「を繰り返す」や後判定の「を，」区切り、「を実行する」から変換済みのもの)
+        if (t.type === 'ここまで' ||
+            (t.type === 'word' && (t.value === 'を実行' || t.value === 'を繰り返'))) {
+          openBlocks.pop()
+          continue
         }
+        // ブロック開始
+        const isLoopStart = t.type === '間' || (t.type === 'word' &&
+          (t.value === '間' || t.value === '繰返' || t.value === '増繰返' || t.value === '減繰返'))
+        const isMoshi = t.type === 'もし' || (t.type === 'word' && t.value === 'もし')
+        if (isLoopStart) {
+          openBlocks.push({ kind: 'loop', narabaIdx: -1, inline: false })
+          continue
+        }
+        if (isMoshi) {
+          // 「違えば(、)もし」はelse-ifなので新しいブロックではない
+          const pm = lastMeaningfulToken(line, 0, j - 1)
+          if (!pm || pm.type !== '違えば') { openBlocks.push({ kind: 'moshi', narabaIdx: -1, inline: false }) }
+          continue
+        }
+        if (t.type === '違えば') {
+          // else: 同じ「もし」ブロックの続き (else-ifの条件を引くためnaraba情報を戻す)
+          const top = openBlocks[openBlocks.length - 1]
+          if (top && top.kind !== 'loop') { top.kind = 'moshi'; top.narabaIdx = -1 }
+          continue
+        }
+        // 「ならば」「でなければ」で最も内側の「もし」が条件付きになったと記録する。
+        // 「ならば」の直後がeolならブロック形式(終端は「ここまで」が必要)、
+        // 同行に処理が続くならインライン形式(終端「を実行する」は除去のみ)
+        if (t.type === 'ならば' || t.josi === 'ならば' || t.josi === 'でなければ') {
+          const top = openBlocks[openBlocks.length - 1]
+          if (top && top.kind !== 'loop') {
+            top.kind = 'naraba'
+            top.narabaIdx = j
+            top.inline = !(line[j + 1] && line[j + 1].type === 'eol')
+          }
+        }
+        continue
       }
-      if (block === '') { continue }
-      // この行の後方に別の「を実行」「を繰返」候補がある場合、こちらは
-      // 処理部の関数呼出(「Fを実行する」)なので終端とみなさない (#1140)
-      // (例:「x<3の間，Fを実行するを繰り返す」では終端は行末の「を繰り返す」)
+      if (openBlocks.length === 0) { continue }
+      const top = openBlocks[openBlocks.length - 1]
+      // この行の後方に別の「を実行」「を繰返」候補があるか調べる
       let laterTermIdx = -1
       for (let m = j + 1; m < line.length; m++) {
         const u = line[m]
-        // 「ここまで」は確定済みの終端 (例: 「を繰り返す」や
-        //  後判定の「を，」区切りからの変換済みのもの)
         if (u.type === 'ここまで') { laterTermIdx = m; break }
         if (u.type !== 'word') { continue }
-        // 候補条件は直上のループ(194行目付近)の判定と同じ
+        // 候補条件は直上の判定と同じ
         // (「を繰り返」は前方のpassで「ここまで」変換済みのためここには現れない)
         if ((u.value === '実行' || u.value === '繰返') && line[m - 1].josi === 'を') { laterTermIdx = m; break }
         if (u.value === 'を実行') { laterTermIdx = m; break }
       }
-      if (laterTermIdx >= 0) {
+      // 「Fを実行する」関数呼出とみなす条件:
+      //  「実行」のみ(「繰返」は呼出名になりえない)、呼出名が区切りの直後の
+      //  単独の式(語句・文字列・「F()」「A[i]」等の括弧付き)で、
+      //  後方に終端候補がある (ならば文では「ならば」の直後なら後方候補不要)
+      const calleeStart = dnclCalleeStart(line, j - 1)
+      const isCall = t.value === '実行' && calleeStart >= 0 &&
+        isDNCLBoundary(line[calleeStart - 1]) &&
+        (laterTermIdx >= 0 || (top.kind === 'naraba' && calleeStart - 1 === top.narabaIdx))
+      if (isCall) {
         // 「Fを実行する，を繰り返す」のように関数呼出と終端の間にある
         // カンマは終端の区切りなので除去する (式の後に残るとパーサが
         // 次の行と連結してしまい「ここまで」が終端と認識されない)
@@ -243,29 +276,47 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
         if (m2 === laterTermIdx) { line.splice(j + 1, laterTermIdx - j - 1) }
         continue
       }
-      if (block === 'ならば') {
-        // 「ならばFを実行する」のように処理部が単独の語(関数呼出)の場合は
-        // 終端とみなさず関数呼び出し「実行(F)」のまま残す
-        if (narabaIdx >= 0 && j - 1 === narabaIdx + 1) { continue }
-        line[j - 1].josi = ''
-        // 「ならば」の直後がeolの場合はブロック形式の「もし」なので
-        // 終端は「ここまで」に変換する (insertEolAfterNarabaでブロック化された場合)
-        if (narabaIdx >= 0 && line[narabaIdx + 1] && line[narabaIdx + 1].type === 'eol') {
-          t.type = 'ここまで'
-          t.value = 'ここまで'
-          t.josi = ''
-          continue
+      // 終端: 後方に候補があれば最も内側を閉じる。
+      // 最後の候補は「ここまで」を必要とする最も内側のブロックを閉じる。
+      // (インラインの「ならば」文は終端を必要としないため、内側にループ等が
+      //  あればそちらを閉じる。例:「もしAならばx<3の間，Bを繰り返す」では
+      //  「を繰り返す」は内側のループを閉じる)
+      let target: { kind: 'loop' | 'moshi' | 'naraba', narabaIdx: number, inline: boolean }
+      if (laterTermIdx >= 0) {
+        target = top
+        openBlocks.pop()
+      } else {
+        let ti = -1
+        for (let k = openBlocks.length - 1; k >= 0; k--) {
+          const e = openBlocks[k]
+          if (e.kind === 'loop' || !e.inline) { ti = k; break }
         }
-        // 「もし〜ならば(処理)を実行する」の終端「を実行する」は単に除去する
-        // (インラインの「ならば」文に「ここまで」は使えないため)
+        if (ti >= 0) {
+          target = openBlocks[ti]
+          openBlocks.splice(ti, 1)
+        } else {
+          // 残っているのはインラインの「ならば」のみ → 終端は除去のみ
+          target = openBlocks[openBlocks.length - 1]
+          openBlocks.pop()
+        }
+      }
+      // インライン形式の「もし」(「ならば」の直後がeolでない。else部も同じ
+      // 形式を引き継ぐ)の終端「を実行する」は単に除去する (インライン文に
+      // 「ここまで」は使えないため。終端自身が持つ助詞は直前の語に引き継ぎ、
+      //  後続の終端候補を拾えるようにする)
+      if (target.kind !== 'loop' && target.inline) {
+        prev.josi = String(t.josi || '')
         line.splice(j, 1)
         j--
         continue
       }
-      line[j - 1].josi = ''
+      prev.josi = ''
       t.type = 'ここまで'
       t.value = 'ここまで'
-      t.josi = ''
+      // 後方に終端候補がある場合はこのトークンの助詞「を」を残す
+      // (「を実行するを繰り返す」のように終端が続く場合、直後の候補は
+      //  このトークンの助詞「を」を見て候補と判定するため)
+      if (laterTermIdx < 0) { t.josi = '' }
     }
 
     // 'のすべての要素を0にする' / 'の全ての要素に0を代入する'
@@ -391,17 +442,65 @@ function replaceAtohantei(tokens: Token[], fi: number, src: string): void {
   jikkou.value = '間'
 }
 
-/** 行末(fromで位置指定可)から意味のあるトークン(eol/コメント以外)を探す。末尾のカンマは1つ読み飛ばす */
+/** 行末(fromで位置指定可)から意味のあるトークン(eol/コメント/カンマ以外)を探す */
 function lastMeaningfulToken(line: Token[], skip = 0, from = line.length - 1): Token | null {
-  let skippedComma = false
   for (let i = from; i >= 0; i--) {
     const t = line[i]
-    if (t.type === 'eol' || t.type === 'line_comment' || t.type === 'range_comment') { continue }
-    if (t.type === 'comma' && !skippedComma) { skippedComma = true; continue }
+    if (t.type === 'eol' || t.type === 'line_comment' || t.type === 'range_comment' ||
+        t.type === 'comma') { continue }
     if (skip > 0) { skip--; continue }
     return t
   }
   return null
+}
+
+/**
+ * 「Fを実行する」の関数呼出とブロック終端を区別するための区切り判定 (#1140)
+ * 呼出名の直前のトークンがこれら(ブロック開始・区切り・条件終端)なら
+ * 呼出名は処理部の先頭にある単独の語とみなせる
+ */
+function isDNCLBoundary(t: Token | undefined): boolean {
+  if (!t) { return false }
+  if (t.type === 'eol' || t.type === 'comma' || t.type === '間' || t.type === 'もし' ||
+      t.type === '違えば' || t.type === 'ならば' || t.type === 'ここまで') { return true }
+  if (t.josi === 'ならば' || t.josi === 'でなければ') { return true }
+  return t.type === 'word' && (t.value === '間' || t.value === '繰返' || t.value === '増繰返' ||
+    t.value === '減繰返' || t.value === 'もし' || t.value === '後判定')
+}
+
+/**
+ * 「Fを実行する」の呼出名(「を」助詞を持つ語)の開始位置を返す (#1140)
+ * 呼出名が「F()」「A[i]」「F()[i]」のように閉じ括弧で終わる場合は
+ * 対応する開き括弧(と直前の語句)まで戻る。
+ * 呼出名として成立しない場合(複数の語にまたがる等)は -1 を返す。
+ */
+function dnclCalleeStart(line: Token[], end: number): number {
+  if (end < 0) { return -1 }
+  const t = line[end]
+  const isClose = (u: Token): boolean => u.type === ')' || u.type === ']' || u.type === '}'
+  if (t.type !== 'word' && t.type !== 'string' && !isClose(t)) { return -1 }
+  let start = end
+  // 閉じ括弧で終わる呼出名は対応する開き括弧まで繰り返し戻る
+  while (start >= 0 && isClose(line[start])) {
+    let d = 0
+    let open = -1
+    for (let k = start; k >= 0; k--) {
+      const u = line[k]
+      if (isClose(u)) { d++; continue }
+      if (u.type === '(' || u.type === '[' || u.type === '{') {
+        if (--d === 0) { open = k; break }
+      }
+    }
+    if (open < 0) { return -1 } // 括弧が対応していない
+    start = open
+    // 開き括弧の直前が呼出名の一部(語句やさらに閉じ括弧)ならそれも含める
+    // (「F()」「A[i]」「F()[i]」)
+    const p = start - 1
+    if (p >= 0 && (line[p].type === 'word' || isClose(line[p])) && !isDNCLBoundary(line[p])) {
+      start = p
+    }
+  }
+  return start
 }
 
 /** 行頭から意味のあるトークン(eol/コメント/インデントの「|」以外)を探す */
@@ -428,7 +527,10 @@ function mergeDNCLLines(lines: Token[][], src: string): void {
       // 「(処理)を，」で終わる行は「(条件)になるまで実行する」が次の行に続く
       // (「を，」のカンマは語句に取り込まれるか独立したトークンになる)
       // なお次行の内容は見ずに無条件で連結する (後判定ループ以外で
-      // 「を，」終端の行が現れることは稀なため、連結しても実害はないと判断)
+      // 「を，」終端の行が現れることは稀なため。カンマ自体は文の区切り
+      // として残るので、後判定でない行を連結しても意味は変わらない。
+      // 「が，」終端の行も同様に連結するが、連結しない場合も式として
+      // 不完全なため結果は変わらない)
       const afterLast = line.slice(line.lastIndexOf(last) + 1).filter((t) =>
         t.type !== 'eol' && t.type !== 'line_comment' && t.type !== 'range_comment')
       const trailingComma = afterLast.length === 1 && afterLast[0].type === 'comma'
