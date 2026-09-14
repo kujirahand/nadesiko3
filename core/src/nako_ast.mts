@@ -78,6 +78,7 @@ export interface Ast {
     column?: number;
   }
   options?: { [key: string]: boolean };
+  checkInit?: boolean; // DNCLモードのとき、初期化されていない配列へのアクセスで自動的に配列を初期化する (#1140)
 }
 
 /** 複数ブロックを持つAST */
