@@ -2,6 +2,7 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
+import { dnclEnsureArray } from '../src/nako_dncl_ensure_array.mjs'
 
 describe('dncl (#1140)', async () => {
   const cmpNako = async (/** @type {string} */ code, /** @type {string} */ res) => {
@@ -839,5 +840,37 @@ describe('dncl (#1140)', async () => {
       'x←0\n' +
       'x<5の間，もしx>2ならばxを1増やすを実行し、そうでなければxを2増やすを実行するを繰り返す\n' +
       'xを表示', '5')
+  })
+  it('DNCL - 中間要素の初期化は実行環境のヘルパー関数が担う #2545', async () => {
+    // __dncl_ensure_array は生成コードから呼ばれる実行環境のヘルパー。
+    // 多次元配列の中間要素を既定配列で初期化する (リファクタリングで
+    // 生成コード内のIIFEから分離したもの)
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('!DNCLモード\nA[1,2]←30\nA[1,2]を表示', 'main.nako3')
+    assert.strictEqual(g.log, '30')
+    assert.strictEqual(typeof g.__dncl_ensure_array, 'function')
+  })
+  it('DNCL - __dncl_ensure_array は書き込み不可の要素への代入失敗で止まらない #2545', () => {
+    // ESモジュールの関数は厳格モードで動くため、素の代入だと凍結要素への
+    // 書き込みでTypeErrorを投げる。従来の非厳格IIFEと同じく例外を投げず
+    // 既定配列を返すことをReflect.setで担保する。
+    // 凍結配列の未定義要素: 代入は失敗するが既定配列が返る
+    const frozen = Object.freeze([1, 2])
+    const r1 = dnclEnsureArray(frozen, 5)
+    assert.deepStrictEqual(r1, Array(30).fill(0))
+    // setトラップで代入を拒否するProxyでも同様
+    const deny = new Proxy([1], { set: () => false })
+    const r2 = dnclEnsureArray(deny, 5)
+    assert.deepStrictEqual(r2, Array(30).fill(0))
+    // 通常の配列では要素が実際に既定配列で初期化される
+    const arr = [1, 2]
+    const r3 = dnclEnsureArray(arr, 5)
+    assert.strictEqual(arr[5], r3)
+    assert.deepStrictEqual(r3, Array(30).fill(0))
+    // 既存のオブジェクト要素は上書きしない
+    const obj = { a: 1 }
+    assert.strictEqual(dnclEnsureArray([obj], 0), obj)
+    // baseがオブジェクトでない場合はそのままの添字アクセス結果を返す
+    assert.strictEqual(dnclEnsureArray('abc', 1), 'b')
   })
 })

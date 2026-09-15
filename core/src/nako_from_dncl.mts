@@ -20,6 +20,21 @@ const DNCL_SIMPLES: { [key: string]: string[] } = {
   'word:表示': ['word', '連続表示']
 }
 
+// DNCLの繰り返し構文の開始を示す語句 (#1140)
+// (「間」は条件ループ、「繰返」「増繰返」「減繰返」は繰り返し開始の語。
+//  「後判定」は「繰返」と対になる接頭辞なので含めない)
+const DNCL_LOOP_START_WORDS = ['間', '繰返', '増繰返', '減繰返']
+
+/**
+ * 繰り返し開始のトークンかどうか (#1140)
+ * 「間」は字句解析の段階で独立したトークン型になる場合があるため
+ * トークン型とword値の両方を判定する
+ */
+function isDNCLLoopStart(t: Token): boolean {
+  return t.type === '間' ||
+    (t.type === 'word' && DNCL_LOOP_START_WORDS.indexOf(t.value) >= 0)
+}
+
 /**
  * DNCLのソースコードをなでしこに変換する
  * @param tokens トークンのリスト
@@ -165,9 +180,7 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
     //  「後判定」は「繰返」と対になる接頭辞なので対象外)
     for (let j = 0; j < line.length; j++) {
       const t = line[j]
-      const isLoopStart = (t.type === '間') ||
-        (t.type === 'word' && (t.value === '間' || t.value === '繰返' || t.value === '増繰返' || t.value === '減繰返'))
-      if (!isLoopStart) { continue }
+      if (!isDNCLLoopStart(t)) { continue }
       let k = j + 1
       // 「間」の直後にカンマがあると『間』の直後は改行が必要ですとなるため取り除く
       while (k < line.length && line[k].type === 'comma') { line.splice(k, 1) }
@@ -190,7 +203,8 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
     // (関数呼び出し「Fを実行する」を壊さないよう、行内にブロック構文が
     //  あるときに限定する)
     // ブロックは入れ子になりうるため、行内のブロック開始をスタックで管理する。
-    // 終端候補は「後方に終端候補があれば最も内側を、最後なら最も外側を」閉じる。
+    // 終端候補は「後方に終端候補があれば最も内側を、最後なら「ここまで」を
+    // 要する最も内側のブロック(繰返し or ブロック形式のならば)」を閉じる。
     // 呼出名(「を」の直前の語)がブロック開始や区切り(カンマ・eol・「ならば」等)の
     // 直後の単独の語で、かつ後方に終端候補がある場合は関数呼出「Fを実行する」
     // とみなす (例:「x<3の間，Fを実行するを繰り返す」では終端は行末の「を繰り返す」)。
@@ -212,10 +226,8 @@ export function convertDNCL(tokens: Token[], src = ''): Token[] {
           continue
         }
         // ブロック開始
-        const isLoopStart = t.type === '間' || (t.type === 'word' &&
-          (t.value === '間' || t.value === '繰返' || t.value === '増繰返' || t.value === '減繰返'))
         const isMoshi = t.type === 'もし' || (t.type === 'word' && t.value === 'もし')
-        if (isLoopStart) {
+        if (isDNCLLoopStart(t)) {
           openBlocks.push({ kind: 'loop', narabaIdx: -1, inline: false })
           continue
         }
@@ -464,8 +476,8 @@ function isDNCLBoundary(t: Token | undefined): boolean {
   if (t.type === 'eol' || t.type === 'comma' || t.type === '間' || t.type === 'もし' ||
       t.type === '違えば' || t.type === 'ならば' || t.type === 'ここまで') { return true }
   if (t.josi === 'ならば' || t.josi === 'でなければ') { return true }
-  return t.type === 'word' && (t.value === '間' || t.value === '繰返' || t.value === '増繰返' ||
-    t.value === '減繰返' || t.value === 'もし' || t.value === '後判定')
+  if (isDNCLLoopStart(t)) { return true }
+  return t.type === 'word' && (t.value === 'もし' || t.value === '後判定')
 }
 
 /**
