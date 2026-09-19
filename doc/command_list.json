@@ -12,7 +12,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L219",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L224",
     "value": "'?'"
   },
   {
@@ -28,7 +28,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L220",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L225",
     "value": "'?'"
   },
   {
@@ -44,7 +44,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L221",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L226",
     "value": "'nadesi.com/v3'"
   },
   {
@@ -60,7 +60,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L222",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L227",
     "value": "'?'"
   },
   {
@@ -76,7 +76,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L223",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L228",
     "value": "true"
   },
   {
@@ -92,7 +92,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L224",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L229",
     "value": "false"
   },
   {
@@ -108,7 +108,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L225",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L230",
     "value": "true"
   },
   {
@@ -124,7 +124,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L226",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L231",
     "value": "false"
   },
   {
@@ -140,7 +140,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L227",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L232",
     "value": "true"
   },
   {
@@ -156,7 +156,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L228",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L233",
     "value": "true"
   },
   {
@@ -172,7 +172,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L229",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L234",
     "value": "false"
   },
   {
@@ -188,7 +188,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L230",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L235",
     "value": "'\\n'"
   },
   {
@@ -204,7 +204,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L231",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L236",
     "value": "'\\t'"
   },
   {
@@ -220,7 +220,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L232",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L237",
     "value": "'「'"
   },
   {
@@ -236,7 +236,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L233",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L238",
     "value": "'」'"
   },
   {
@@ -252,7 +252,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L234",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L239",
     "value": "'{'"
   },
   {
@@ -268,7 +268,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L235",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L240",
     "value": "'}'"
   },
   {
@@ -284,7 +284,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L236",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L241",
     "value": "true"
   },
   {
@@ -300,7 +300,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L237",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L242",
     "value": "false"
   },
   {
@@ -316,7 +316,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L238",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L243",
     "value": "0"
   },
   {
@@ -332,7 +332,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L239",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L244",
     "value": "true"
   },
   {
@@ -348,7 +348,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L240",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L245",
     "value": "false"
   },
   {
@@ -364,7 +364,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L241",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L246",
     "value": "true"
   },
   {
@@ -380,7 +380,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L242",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L247",
     "value": "false"
   },
   {
@@ -396,7 +396,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L243",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L248",
     "value": "Math.PI"
   },
   {
@@ -412,7 +412,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L244",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L249",
     "value": "''"
   },
   {
@@ -428,7 +428,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L245",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L250",
     "value": "null"
   },
   {
@@ -444,7 +444,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L246",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L251",
     "value": "undefined"
   },
   {
@@ -460,7 +460,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L247",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L252",
     "value": "undefined"
   },
   {
@@ -476,7 +476,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L248",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L253",
     "value": "''"
   },
   {
@@ -492,7 +492,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L249",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L254",
     "value": "''"
   },
   {
@@ -508,7 +508,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L250",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L255",
     "value": "''"
   },
   {
@@ -524,7 +524,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L251",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L256",
     "value": "''"
   },
   {
@@ -540,7 +540,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L252",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L257",
     "value": "'\\r'"
   },
   {
@@ -556,7 +556,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L253",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L258",
     "value": "'\\n'"
   },
   {
@@ -572,7 +572,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L254",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L259",
     "value": "NaN"
   },
   {
@@ -588,7 +588,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L255",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L260",
     "value": "Infinity"
   },
   {
@@ -604,7 +604,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L256",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L261",
     "value": "0"
   },
   {
@@ -620,7 +620,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L257",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L262",
     "value": "1"
   },
   {
@@ -636,7 +636,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L262",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L267",
     "description": "空の配列を返す。『[]』と同義。"
   },
   {
@@ -652,7 +652,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L270",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L275",
     "description": "空の辞書型を返す。『{}』と同義。"
   },
   {
@@ -668,7 +668,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L278",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L283",
     "description": "空のハッシュを返す(v3.2以降非推奨)"
   },
   {
@@ -684,7 +684,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L286",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L291",
     "description": "空のオブジェクトを返す(v3.2以降非推奨)"
   },
   {
@@ -700,7 +700,7 @@
       "phpnako"
     ],
     "category": "システム定数",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L294",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L299",
     "description": "引数bが真(true)ならば「真」を偽(false)ならば「偽」を返す"
   },
   {
@@ -716,7 +716,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L304",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L309",
     "description": "敬語対応のため"
   },
   {
@@ -732,7 +732,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L314",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L319",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -748,7 +748,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L324",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L329",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -764,7 +764,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L334",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L339",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -780,7 +780,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L343",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L348",
     "description": "ソースコードを読む人を気持ちよくする"
   },
   {
@@ -796,7 +796,7 @@
       "phpnako"
     ],
     "category": "敬語",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L352",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system.mts#L357",
     "description": "(お遊び)敬語を何度使ったか返す"
   },
   {
@@ -956,7 +956,7 @@
       "phpnako"
     ],
     "category": "特殊命令",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L155",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L153",
     "description": "関数Fを実行して要した時間をミリ秒で返す"
   },
   {
@@ -972,7 +972,7 @@
       "phpnako"
     ],
     "category": "特殊命令",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L175",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L173",
     "description": "終わる"
   },
   {
@@ -988,7 +988,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L187",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L185",
     "description": "デバッグ用にSを表示する"
   },
   {
@@ -1004,7 +1004,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L206",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L204",
     "description": "ハテナ関数「?? (計算式)」の動作をカスタマイズする。文字列の配列を指定可能で、システム関数名か「js:code」を指定可能。"
   },
   {
@@ -1020,7 +1020,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L240",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L238",
     "description": "『ハテナ関数設定』で設定した関数を実行する"
   },
   {
@@ -1036,7 +1036,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L249",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L247",
     "description": "故意にエラーSを発生させる"
   },
   {
@@ -1052,7 +1052,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L258",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L256",
     "description": "デバッグモードにする"
   },
   {
@@ -1068,7 +1068,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L263",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L261",
     "value": "0"
   },
   {
@@ -1084,7 +1084,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L264",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L262",
     "value": "[]"
   },
   {
@@ -1100,7 +1100,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L265",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L263",
     "value": "0"
   },
   {
@@ -1116,7 +1116,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L271",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L269",
     "description": "エディタのブレイクポイント機能のための待機(非同期関数)"
   },
   {
@@ -1132,7 +1132,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L297",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L295",
     "description": "グローバル変数にある関数一覧を取得"
   },
   {
@@ -1148,7 +1148,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L310",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L308",
     "description": "システム関数の一覧を取得"
   },
   {
@@ -1164,7 +1164,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L324",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L322",
     "description": "文字列で関数名を指定してシステム関数が存在するかを調べる"
   },
   {
@@ -1180,7 +1180,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L332",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L330",
     "description": "利用中のプラグイン一覧を得る"
   },
   {
@@ -1196,7 +1196,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L342",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L340",
     "description": "取り込んだモジュール一覧を得る"
   },
   {
@@ -1212,7 +1212,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L353",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L351",
     "description": "文法として定義されている助詞の一覧を取得する"
   },
   {
@@ -1228,7 +1228,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L362",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L360",
     "description": "文法として定義されている予約語の一覧を取得する"
   },
   {
@@ -1244,7 +1244,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L367",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L365",
     "value": "'メイン'"
   },
   {
@@ -1260,7 +1260,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L372",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L370",
     "description": "プラグイン名をSに変更する(システムにより自動的に「メイン」あるいはプラグインのファイル名が呼ばれる)"
   },
   {
@@ -1276,7 +1276,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L377",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L375",
     "value": "''"
   },
   {
@@ -1292,7 +1292,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L382",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L380",
     "description": "名前空間をSに設定する(システムにより自動的に変更される。ファイル名から拡張子を削ったもの)"
   },
   {
@@ -1308,7 +1308,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L393",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L391",
     "description": "システム利用のため呼ぶべからず。(名前空間を一つ前の値に戻す)"
   },
   {
@@ -1452,7 +1452,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L122",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L125",
     "description": "Aが奇数なら真を返す"
   },
   {
@@ -1468,7 +1468,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L130",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L136",
     "description": "Aを二乗する"
   },
   {
@@ -1484,7 +1484,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L138",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L144",
     "description": "AのB乗を求める"
   },
   {
@@ -1500,7 +1500,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L146",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L152",
     "description": "AがB以上か"
   },
   {
@@ -1516,7 +1516,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L154",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L160",
     "description": "AがB以下か"
   },
   {
@@ -1532,7 +1532,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L162",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L168",
     "description": "AがB未満か"
   },
   {
@@ -1548,7 +1548,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L170",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L176",
     "description": "AがB超か"
   },
   {
@@ -1564,7 +1564,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L178",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L184",
     "description": "AがBと等しいか"
   },
   {
@@ -1580,7 +1580,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L186",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L192",
     "description": "AがBと等しくないか"
   },
   {
@@ -1596,7 +1596,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L194",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L200",
     "description": "AがBと一致するか(配列や辞書も比較可能)"
   },
   {
@@ -1612,7 +1612,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L208",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L214",
     "description": "AがBと不一致か(配列や辞書も比較可能)"
   },
   {
@@ -1628,7 +1628,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L222",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L228",
     "description": "VがAからBの範囲内か"
   },
   {
@@ -1644,7 +1644,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L230",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L236",
     "description": "AからBの範囲を表現する範囲オブジェクトを返す"
   },
   {
@@ -1660,7 +1660,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L242",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L248",
     "description": "A1+A2+A3...にBを足す(可変引数)"
   },
   {
@@ -1676,7 +1676,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L254",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L260",
     "description": "2個以上の数値のうち最大値を返す。(可変引数)"
   },
   {
@@ -1692,7 +1692,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L264",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L270",
     "description": "2個以上の数値のうち最大値を返す。(可変引数)"
   },
   {
@@ -1708,7 +1708,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L275",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L281",
     "description": "2個以上の数値のうち最小値を返す。(可変引数)"
   },
   {
@@ -1724,7 +1724,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L285",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L291",
     "description": "2個以上の数値のうち最小値を返す。(可変引数)"
   },
   {
@@ -1740,7 +1740,7 @@
       "phpnako"
     ],
     "category": "四則演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L295",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L301",
     "description": "数値を下限から上限の範囲内に収めた値を返す。"
   },
   {
@@ -1756,7 +1756,7 @@
       "phpnako"
     ],
     "category": "論理演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L305",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L311",
     "description": "AとBの論理和を返す(v1非互換)。"
   },
   {
@@ -1772,7 +1772,7 @@
       "phpnako"
     ],
     "category": "論理演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L313",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L319",
     "description": "AとBの論理積を返す(v1非互換)。日本語の「AかつB」に相当する"
   },
   {
@@ -1788,7 +1788,7 @@
       "phpnako"
     ],
     "category": "論理演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L321",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L327",
     "description": "値Vが0や空ならばtrue、それ以外ならばfalseを返す(v1非互換)"
   },
   {
@@ -1804,7 +1804,7 @@
       "phpnako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L331",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L337",
     "description": "(ビット演算で)AとBの論理和を返す。"
   },
   {
@@ -1820,7 +1820,7 @@
       "phpnako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L339",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L345",
     "description": "(ビット演算で)AとBの論理積を返す。日本語の「AかつB」に相当する"
   },
   {
@@ -1836,7 +1836,7 @@
       "phpnako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L347",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L353",
     "description": "(ビット演算で)AとBの排他的論理和を返す。"
   },
   {
@@ -1852,7 +1852,7 @@
       "phpnako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L355",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L361",
     "description": "(ビット演算で)Vの各ビットを反転して返す。"
   },
   {
@@ -1868,7 +1868,7 @@
       "phpnako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L363",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L369",
     "description": "VをAビット左へシフトして返す"
   },
   {
@@ -1884,7 +1884,7 @@
       "phpnako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L371",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L377",
     "description": "VをAビット右へシフトして返す(符号を維持する)"
   },
   {
@@ -1900,7 +1900,7 @@
       "phpnako"
     ],
     "category": "ビット演算",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L379",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_math.mts#L385",
     "description": "VをAビット右へシフトして返す(符号を維持しない、0で埋める)"
   },
   {
@@ -2828,7 +2828,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L13",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L16",
     "description": "配列Aを文字列Sでつなげて文字列で返す"
   },
   {
@@ -2844,7 +2844,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L25",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L28",
     "description": "配列Aの要素をただ結合して文字列で返す。(「」で配列結合と同じ)"
   },
   {
@@ -2860,7 +2860,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L35",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L38",
     "description": "配列Aから文字列Sを探してインデックス番号(0起点)を返す。見つからなければ-1を返す。"
   },
   {
@@ -2876,7 +2876,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L45",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L48",
     "description": "配列Aの要素数を返す"
   },
   {
@@ -2892,7 +2892,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L56",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L59",
     "description": "Aの要素数を返す。Aには配列/辞書型/文字列を指定する。"
   },
   {
@@ -2908,7 +2908,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L64",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L67",
     "description": "Aの要素数を返す。Aには配列/辞書型/文字列を指定する。"
   },
   {
@@ -2924,7 +2924,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L72",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L75",
     "description": "配列AのI番目(0起点)に要素Sを追加して返す(v1非互換)"
   },
   {
@@ -2940,7 +2940,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L82",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L85",
     "description": "配列AのI番目(0起点)に配列bを追加して返す(v1非互換)"
   },
   {
@@ -2956,7 +2956,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L95",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L106",
     "description": "配列Aをソートして返す(A自体を変更)"
   },
   {
@@ -2972,7 +2972,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L105",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L116",
     "description": "配列Aの各要素を数値に変換して返す(変数A自体を変更)"
   },
   {
@@ -2988,7 +2988,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L120",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L131",
     "description": "配列Aをソートして返す(A自体を変更)"
   },
   {
@@ -3004,7 +3004,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L135",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L146",
     "description": "関数Fで配列Aをソートして返す(引数A自体を変更)"
   },
   {
@@ -3020,7 +3020,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L150",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L158",
     "description": "配列Aを逆にして返す。Aを書き換える(A自体を変更)。"
   },
   {
@@ -3036,7 +3036,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L159",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L167",
     "description": "配列Aをシャッフルして返す。Aを書き換える"
   },
   {
@@ -3052,7 +3052,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L176",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L184",
     "description": "配列AのI番目(0起点)の要素を削除して返す。Aの内容を書き換える。辞書型変数ならキーIを削除する。"
   },
   {
@@ -3068,7 +3068,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L184",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L192",
     "description": "配列AのI番目(0起点)の要素を切り取って返す。Aの内容を書き換える。引数Iには範囲オブジェクトを指定できる。その場合戻り値は配列型となる。辞書型変数ならキーIを削除する。"
   },
   {
@@ -3084,7 +3084,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L214",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L224",
     "description": "配列AのI番目(0起点)からCNT個の要素を取り出して返す。Aの内容を書き換える"
   },
   {
@@ -3100,7 +3100,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L223",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L233",
     "description": "配列Aの末尾を取り出して返す。Aの内容を書き換える。"
   },
   {
@@ -3116,7 +3116,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L232",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L242",
     "description": "配列Aの末尾にNを追加。Aの内容を書き換える。(『配列追加』と同じ)"
   },
   {
@@ -3132,7 +3132,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L240",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L250",
     "description": "配列Aの末尾にBを追加して返す。Aの内容を書き換える。"
   },
   {
@@ -3148,7 +3148,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L252",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L262",
     "description": "配列Aを複製して返す。"
   },
   {
@@ -3164,7 +3164,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L260",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L270",
     "description": "配列Aの範囲I(数値化範囲オブジェクト)を複製して返す。"
   },
   {
@@ -3180,7 +3180,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L283",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L293",
     "description": "値A(配列/文字列/辞書型)の範囲I(キーまたは範囲オブジェクト)を参照して(コピーせず)返す"
   },
   {
@@ -3196,7 +3196,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L320",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L330",
     "description": "値A(配列/文字列/辞書型)の範囲I(キーまたは範囲オブジェクト)を参照して(コピーせず)返す(『参照』と同じ)"
   },
   {
@@ -3212,7 +3212,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L328",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L338",
     "description": "配列Aに配列Bを足し合わせて返す。"
   },
   {
@@ -3228,7 +3228,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L339",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L349",
     "description": "配列Aの値の最大値を調べて返す。"
   },
   {
@@ -3244,7 +3244,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L347",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L357",
     "description": "配列Aの値の最小値を調べて返す。"
   },
   {
@@ -3260,7 +3260,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L355",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L365",
     "description": "配列Aの値を全て足して返す。配列の各要素を数値に変換して計算する。数値に変換できない文字列は0になる。"
   },
   {
@@ -3276,7 +3276,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L372",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L382",
     "description": "配列Aの(0から数えて)I番目とJ番目の要素を入れ替えて返す。Aの内容を書き換える。"
   },
   {
@@ -3292,7 +3292,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L386",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L396",
     "description": "AからBまでの連番配列を生成して返す。"
   },
   {
@@ -3308,7 +3308,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L398",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L427",
     "description": "値AをB個持つ配列を生成して返す。引数Bに配列を指定すると二次元以上の配列を生成する。"
   },
   {
@@ -3324,7 +3324,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L436",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L465",
     "description": "引数を1つ持つ関数Fを、配列Aの全要素に適用した、新しい配列を返す。"
   },
   {
@@ -3340,7 +3340,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L450",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L478",
     "description": "引数を1つ持つ関数Fを、配列Aの全要素に適用した、新しい配列を返す。(『配列関数適用』と同じ)"
   },
   {
@@ -3356,7 +3356,7 @@
       "phpnako"
     ],
     "category": "配列操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L458",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L486",
     "description": "引数を1つ持ち真偽を返す関数Fを利用して、配列Aの要素をフィルタして、新しい配列として返す。"
   },
   {
@@ -3372,7 +3372,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L474",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L501",
     "description": "二次元配列AでB列目(0起点)(あるいはキー名)をキーに文字列順にソートする。Aの内容を書き換える。"
   },
   {
@@ -3388,7 +3388,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L497",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L524",
     "description": "二次元配列AでB列目(0起点)(あるいはキー名)をキーに数値順にソートする。Aの内容を書き換える。"
   },
   {
@@ -3404,7 +3404,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L513",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L540",
     "description": "配列Aの列番号B(0起点)(あるいはキー名)で検索文字列Sを含む行を返す"
   },
   {
@@ -3420,7 +3420,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L522",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L549",
     "description": "配列Aの列番号B(0起点)(あるいはキー名)で検索文字列Sと一致する行を返す"
   },
   {
@@ -3436,7 +3436,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L531",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L558",
     "description": "二次元配列AでCOL列目(0起点)からキーSを含む行をROW行目から検索して何行目にあるか返す。見つからなければ-1を返す。"
   },
   {
@@ -3452,7 +3452,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L543",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L570",
     "description": "二次元配列Aの列数を調べて返す。"
   },
   {
@@ -3468,7 +3468,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L556",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L583",
     "description": "二次元配列Aの行数を調べて返す。"
   },
   {
@@ -3484,7 +3484,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L565",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L592",
     "description": "二次元配列Aの行と列を交換して返す。"
   },
   {
@@ -3500,7 +3500,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L584",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L611",
     "description": "二次元配列Aを90度回転して返す。"
   },
   {
@@ -3516,7 +3516,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L603",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L630",
     "description": "二次元配列AのI列目にある重複項目を削除して返す。"
   },
   {
@@ -3532,7 +3532,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L621",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L650",
     "description": "二次元配列AのI列目を返す。"
   },
   {
@@ -3548,7 +3548,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L631",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L660",
     "description": "二次元配列Aの(0から数えて)I列目に配列Sを挿入して返す"
   },
   {
@@ -3564,7 +3564,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L648",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L677",
     "description": "二次元配列Aの(0から数えて)I列目削除して返す"
   },
   {
@@ -3580,7 +3580,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L663",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L692",
     "description": "二次元配列Aの(0から数えて)I列目を合計して返す。"
   },
   {
@@ -3596,7 +3596,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L674",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L703",
     "description": "二次元配列AのROW行目からCOL列目(0起点)で正規表現Sにマッチする行を検索して何行目にあるか返す。見つからなければ-1を返す。(v1非互換)"
   },
   {
@@ -3612,7 +3612,7 @@
       "phpnako"
     ],
     "category": "二次元配列処理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L688",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_array.mts#L717",
     "description": "二次元配列AでI列目(0起点)から正規表現パターンSにマッチする行をピックアップして返す。"
   },
   {
@@ -3660,7 +3660,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L29",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L24",
     "description": "現在のUNIX時間 (UTC(1970/1/1)からの経過秒数) を返す"
   },
   {
@@ -3676,7 +3676,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L38",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L33",
     "description": "現在のUNIX時間 (UTC(1970/1/1)からの経過秒数) をミリ秒で返す"
   },
   {
@@ -3692,7 +3692,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L47",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L42",
     "description": "今日の日付を「YYYY/MM/DD」の形式で返す"
   },
   {
@@ -3708,7 +3708,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L55",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L50",
     "description": "明日の日付を「YYYY/MM/DD」の形式で返す"
   },
   {
@@ -3724,7 +3724,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L64",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L59",
     "description": "昨日の日付を「YYYY/MM/DD」の形式で返す"
   },
   {
@@ -3740,7 +3740,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L73",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L68",
     "description": "今年が何年かを西暦で返す"
   },
   {
@@ -3756,7 +3756,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L81",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L76",
     "description": "来年が何年かを西暦で返す"
   },
   {
@@ -3772,7 +3772,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L89",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L84",
     "description": "去年が何年かを西暦で返す"
   },
   {
@@ -3788,7 +3788,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L97",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L92",
     "description": "今月が何月かを返す"
   },
   {
@@ -3804,7 +3804,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L105",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L100",
     "description": "来月が何月かを返す(12月の場合は1を返す)"
   },
   {
@@ -3820,7 +3820,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L114",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L109",
     "description": "先月が何月かを返す(1月の場合は12を返す)"
   },
   {
@@ -3836,7 +3836,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L123",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L118",
     "description": "Sに指定した日付の曜日を返す。不正な日付の場合は今日の曜日を返す。"
   },
   {
@@ -3852,7 +3852,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L132",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L127",
     "description": "Sに指定した日付の曜日番号を番号で返す。不正な日付の場合は今日の曜日番号を返す。(0=日/1=月/2=火/3=水/4=木/5=金/6=土)"
   },
   {
@@ -3868,7 +3868,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L142",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L137",
     "description": "日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換)"
   },
   {
@@ -3884,7 +3884,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L151",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L146",
     "description": "日時SをUNIX時間 (UTC(1970/1/1)からの経過秒数) に変換して返す(v1非互換)"
   },
   {
@@ -3900,7 +3900,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L160",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L155",
     "description": "UNIX時間 (UTC(1970/1/1)からの経過秒数) を「YYYY/MM/DD HH:mm:ss」の形式に変換"
   },
   {
@@ -3916,7 +3916,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L169",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L164",
     "description": "UNIX時間TM(または日付文字列)を「YYYY/MM/DD HH:mm:ss」または「YY-M-D H:m:s」その他、W:曜日、WWW:曜日英、MMM:月英、ccc:ミリ秒の書式に変換"
   },
   {
@@ -3932,7 +3932,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L199",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L194",
     "description": "Sを和暦に変換する。Sは明治以降の日付が有効。"
   },
   {
@@ -3948,7 +3948,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L219",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L214",
     "description": "日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -3964,7 +3964,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L229",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L224",
     "description": "日付AとBの差を月数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -3980,7 +3980,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L240",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L235",
     "description": "日付AとBの差を日数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -3996,7 +3996,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L251",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L246",
     "description": "時間AとBの時間の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -4012,7 +4012,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L262",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L257",
     "description": "時間AとBの分数の差を求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -4028,7 +4028,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L273",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L268",
     "description": "時間AとBの差を秒差で求めて返す。A<Bなら正の数、そうでないなら負の数を返す。"
   },
   {
@@ -4044,7 +4044,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L284",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L279",
     "description": "日時AとBの差を種類unitで返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
   },
   {
@@ -4060,7 +4060,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L300",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L295",
     "description": "時間SにAを加えて返す。Aには「(+｜-)hh:nn:dd」で指定する。"
   },
   {
@@ -4076,7 +4076,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L319",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L314",
     "description": "日付SにAを加えて返す。Aには「(+｜-)yyyy/mm/dd」で指定する。"
   },
   {
@@ -4092,7 +4092,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L341",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L336",
     "description": "日時SにAを加えて返す。Aは「(+｜-)1(年/ヶ月/日/週/時間/分/秒)」のように指定する (v1非互換)。"
   },
   {
@@ -4108,7 +4108,7 @@
       "phpnako"
     ],
     "category": "日時処理(簡易)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L359",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_datetime.mts#L354",
     "description": "ミリ秒単位の時間を数値で返す。結果は実装に依存する。"
   },
   {
@@ -4124,7 +4124,7 @@
       "phpnako"
     ],
     "category": "URLエンコードとパラメータ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L15",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L16",
     "description": "URLエンコードして返す"
   },
   {
@@ -4140,7 +4140,7 @@
       "phpnako"
     ],
     "category": "URLエンコードとパラメータ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L23",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L24",
     "description": "URLデコードして返す"
   },
   {
@@ -4156,7 +4156,7 @@
       "phpnako"
     ],
     "category": "URLエンコードとパラメータ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L31",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L32",
     "description": "URLパラメータを解析してハッシュで返す"
   },
   {
@@ -4172,7 +4172,7 @@
       "phpnako"
     ],
     "category": "BASE64",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L66",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L52",
     "description": "BASE64エンコードして返す"
   },
   {
@@ -4188,7 +4188,7 @@
       "phpnako"
     ],
     "category": "BASE64",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L84",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L70",
     "description": "BASE64デコードして返す"
   },
   {
@@ -4204,7 +4204,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L104",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L90",
     "description": "ファイル名Sから拡張子を抽出する"
   },
   {
@@ -4220,7 +4220,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L120",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L106",
     "description": "ファイル名Aの拡張子をBに変更して返す"
   },
   {
@@ -4236,7 +4236,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L139",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L125",
     "description": "パスSの終端にパス区切り文字を追加して返す"
   },
   {
@@ -4252,7 +4252,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L154",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L140",
     "description": "フォルダ名DIRの末尾にあるパス記号を削除する"
   },
   {
@@ -4268,7 +4268,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L168",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L154",
     "description": "フォルダ名DIRの末尾にあるパス記号を削除する"
   },
   {
@@ -4284,7 +4284,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L176",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L162",
     "description": "パスPATHからファイル名を抽出して返す"
   },
   {
@@ -4300,7 +4300,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L186",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_url.mts#L172",
     "description": "パスPATHからディレクトリ部分を抽出して返す"
   },
   {
@@ -5834,7 +5834,7 @@
       "cnako"
     ],
     "category": "非同期処理の保証",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L47",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L48",
     "description": "非同期処理で成功したときにcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -5849,7 +5849,7 @@
       "cnako"
     ],
     "category": "非同期処理の保証",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L59",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L61",
     "description": "非同期処理で終了した時にcbFuncが実行される。引数と『対象』は、成功時は真とデータが設定され、失敗時は、偽と理由が設定される。"
   },
   {
@@ -5864,7 +5864,7 @@
       "cnako"
     ],
     "category": "非同期処理の保証",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L74",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L77",
     "description": "非同期処理で失敗したときにcallbackが実行される。その際『対象』に理由が代入される。"
   },
   {
@@ -5879,7 +5879,7 @@
       "cnako"
     ],
     "category": "非同期処理の保証",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L86",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L90",
     "description": "非同期処理で終了したときにcallbackが実行される。成功時・失敗時・処理時とは別に実行される。"
   },
   {
@@ -5894,7 +5894,7 @@
       "cnako"
     ],
     "category": "非同期処理の保証",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L98",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_promise.mts#L103",
     "description": "非同期処理をまとめる。(可変引数)"
   },
   {
@@ -6370,7 +6370,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L35",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L36",
     "description": "「AJAXテキスト取得」と同じ。非同期通信(AJAX)でURLからテキストデータを取得する。(非同期関数)"
   },
   {
@@ -6384,7 +6384,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L43",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L44",
     "description": "非同期通信(AJAX)でURLにアクセスし成功するとCALLBACKを実行。『対象』にデータを代入。『AJAXオプション』が指定可能。エラーなら『AJAX失敗時』を実行。"
   },
   {
@@ -6398,7 +6398,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L61",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L63",
     "value": "''"
   },
   {
@@ -6412,7 +6412,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L66",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L68",
     "description": "AJAX命令でオプションを設定"
   },
   {
@@ -6426,7 +6426,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L75",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L77",
     "description": "AJAXオプションにPOSTメソッドとパラメータPARAMSを設定"
   },
   {
@@ -6440,7 +6440,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L92",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L94",
     "description": "AJAX命令でエラーが起きたとき"
   },
   {
@@ -6454,7 +6454,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L101",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L103",
     "description": "AJAXでURLにアクセスしテキスト形式で結果を得る。送信時『AJAXオプション』の値を参照。(非同期関数)"
   },
   {
@@ -6468,7 +6468,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L115",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L117",
     "description": "AJAXでURLにアクセスしJSONの結果を得て、送信時『AJAXオプション』の値を参照。(非同期関数)"
   },
   {
@@ -6482,7 +6482,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L135",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L137",
     "description": "AJAXでURLにアクセスしバイナリ(blob)形式で結果を得る。送信時『AJAXオプション』の値を参照。(非同期関数)"
   },
   {
@@ -6496,7 +6496,7 @@
       "wnako"
     ],
     "category": "GETとPOST",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L149",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L151",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -6510,7 +6510,7 @@
       "wnako"
     ],
     "category": "GETとPOST",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L158",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L161",
     "description": "AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定"
   },
   {
@@ -6524,7 +6524,7 @@
       "wnako"
     ],
     "category": "GETとPOST",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L181",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L185",
     "description": "AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定"
   },
   {
@@ -6538,7 +6538,7 @@
       "wnako"
     ],
     "category": "GETとPOST",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L203",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L208",
     "description": "辞書形式のデータPARAMSをkey=value&key=value...の形式に変換する"
   },
   {
@@ -6552,7 +6552,7 @@
       "wnako"
     ],
     "category": "GETとPOST",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L218",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L223",
     "description": "非同期通信(AJAX)でPOSTメソッドにてURLへPARAMS(辞書型)を送信して応答を戻す。(非同期関数)"
   },
   {
@@ -6566,7 +6566,7 @@
       "wnako"
     ],
     "category": "GETとPOST",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L243",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L248",
     "description": "非同期通信(AJAX)でURLにPARAMS(辞書型)をフォームとしてPOSTメソッドにてURLへ送信し応答を返す。(非同期関数)"
   },
   {
@@ -6580,7 +6580,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX(保証)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L266",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L271",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -6594,7 +6594,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX(保証)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L277",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L282",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -6608,7 +6608,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX(保証)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L286",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L291",
     "description": "非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -6622,7 +6622,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX(保証)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L303",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L308",
     "description": "非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -6636,7 +6636,7 @@
       "wnako"
     ],
     "category": "HTTPとAJAX(保証)",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L319",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L324",
     "description": "「保証」を使った非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。"
   },
   {
@@ -6650,7 +6650,7 @@
       "wnako"
     ],
     "category": "Blob",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L345",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_ajax.mts#L350",
     "description": "DATA(配列型)をOPTIONS(辞書型)でBlobオブジェクトを作成する。"
   },
   {
@@ -7798,7 +7798,7 @@
       "wnako"
     ],
     "category": "DOM操作とイベント",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_event.mts#L255",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_event.mts#L254",
     "description": "識別IDを指定して『画面更新時実行』を取り消す"
   },
   {
@@ -9002,7 +9002,7 @@
       "wnako"
     ],
     "category": "位置情報",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_geolocation.mts#L27",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_geolocation.mts#L26",
     "description": "位置情報を監視してIDを返す。引数に指定したコールバック関数内で変数「対象」に配列で[緯度,経度]を返す"
   },
   {
@@ -9016,7 +9016,7 @@
       "wnako"
     ],
     "category": "位置情報",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_geolocation.mts#L46",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_geolocation.mts#L44",
     "description": "『位置情報監視時』で開始した監視を停止する"
   },
   {
@@ -9072,7 +9072,7 @@
       "wnako"
     ],
     "category": "音声合成",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L53",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L54",
     "description": "内容Sで音声合成APIのインスタンスを得る"
   },
   {
@@ -9086,7 +9086,7 @@
       "wnako"
     ],
     "category": "音声合成",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L71",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L72",
     "description": "音声合成APIの話者一覧を得る"
   },
   {
@@ -9100,7 +9100,7 @@
       "wnako"
     ],
     "category": "音声合成",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L81",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L82",
     "description": "音声合成APIの話者を指定する"
   },
   {
@@ -9114,7 +9114,7 @@
       "wnako"
     ],
     "category": "音声合成",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L107",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L108",
     "value": "1.0"
   },
   {
@@ -9128,7 +9128,7 @@
       "wnako"
     ],
     "category": "音声合成",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L108",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L109",
     "value": "1.0"
   },
   {
@@ -9142,7 +9142,7 @@
       "wnako"
     ],
     "category": "音声合成",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L109",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L110",
     "value": "1.0"
   },
   {
@@ -9156,7 +9156,7 @@
       "wnako"
     ],
     "category": "音声合成",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L114",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_speech.mts#L115",
     "description": "音声合成APIの話者の設定をオブジェクト形式{速度:1.0,ピッチ:1.0,音量:1.0}のように設定する"
   },
   {
@@ -10207,7 +10207,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L409",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L442",
     "description": "ファイルFを開く"
   },
   {
@@ -10222,7 +10222,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L417",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L450",
     "description": "ファイFSを開く"
   },
   {
@@ -10237,7 +10237,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L425",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L458",
     "description": "ファイルSをバイナリ(Buffer)として開く"
   },
   {
@@ -10252,7 +10252,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L434",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L467",
     "description": "データSをファイルFヘ書き込む(文字コードはUTF-8)(非同期関数)"
   },
   {
@@ -10267,7 +10267,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L456",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L489",
     "description": "SJIS形式のファイルSを読み込む"
   },
   {
@@ -10282,7 +10282,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L467",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L500",
     "description": "SをSJIS形式でファイルFへ書き込む"
   },
   {
@@ -10297,7 +10297,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L478",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L511",
     "description": "euc-jp形式のファイルSを読み込む"
   },
   {
@@ -10312,7 +10312,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L488",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L521",
     "description": "Sをeuc-jp形式でファイルFへ書き込む"
   },
   {
@@ -10327,7 +10327,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L498",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L531",
     "description": "シェルコマンドSを起動し実行終了まで待機する"
   },
   {
@@ -10342,7 +10342,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L507",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L540",
     "description": "シェルコマンドSを新しいコンソールで実行する(利用できない場合は通常の起動)"
   },
   {
@@ -10357,7 +10357,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L517",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L550",
     "description": "シェルコマンドSを新しいコンソールで実行し終了を待機する(戻り値は終了コード、利用できない場合は通常の待機)(非同期関数)"
   },
   {
@@ -10372,7 +10372,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L526",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L559",
     "description": "シェルコマンドSを起動"
   },
   {
@@ -10387,7 +10387,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L538",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L571",
     "description": "コンソール画面をクリアする"
   },
   {
@@ -10402,7 +10402,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L552",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L585",
     "description": "シェルコマンドSを起動"
   },
   {
@@ -10417,7 +10417,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L562",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L596",
     "description": "ブラウザでURLを起動"
   },
   {
@@ -10432,7 +10432,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L583",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L605",
     "description": "Windowsでエクスプローラー、macOSでFinder、Linuxでxdg-openを使って、fnameを起動する(非同期関数)"
   },
   {
@@ -10447,7 +10447,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L600",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L648",
     "description": "パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。"
   },
   {
@@ -10462,7 +10462,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L619",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L661",
     "description": "パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。"
   },
   {
@@ -10477,7 +10477,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L665",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L701",
     "description": "ファイルPATHが存在するか確認して返す"
   },
   {
@@ -10492,7 +10492,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L673",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L709",
     "description": "ディレクトリPATHが存在するか確認して返す"
   },
   {
@@ -10507,7 +10507,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L681",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L717",
     "description": "ディレクトリPATHを作成して返す(再帰的に作成)"
   },
   {
@@ -10522,7 +10522,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L685",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L721",
     "description": "'上書禁止'"
   },
   {
@@ -10537,7 +10537,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L691",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L727",
     "description": "パスAをパスBへファイルコピーする(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書きコピー、それ以外はコピー先が存在するなら失敗)(非同期関数)"
   },
   {
@@ -10552,7 +10552,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L706",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L742",
     "description": "パスAをパスBへファイルコピーする(コピー先に内容をマージしてコピー)(非同期関数)"
   },
   {
@@ -10567,7 +10567,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L716",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L752",
     "description": "パスAをパスBへファイルコピーしてcallbackを実行"
   },
   {
@@ -10582,7 +10582,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L729",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L766",
     "description": "パスAをパスBへ移動する(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書き移動、それ以外は移動先が存在するなら失敗)(非同期関数)"
   },
   {
@@ -10597,7 +10597,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L747",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L784",
     "description": "パスAをパスBへ移動する(移動先に内容をマージしてコピー後、元を削除)(非同期関数)"
   },
   {
@@ -10612,7 +10612,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L760",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L797",
     "description": "ファイルコピー・移動の処理状況をコールバックFで報告する(変数『対象』に{\"件数\":N,\"現在\":M}をセット)"
   },
   {
@@ -10627,7 +10627,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L772",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L809",
     "description": "『ファイルコピー』『ファイル移動』などの処理を強制停止する"
   },
   {
@@ -10642,7 +10642,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L781",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L818",
     "description": "パスAをパスBへ移動してcallbackを実行"
   },
   {
@@ -10657,7 +10657,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L793",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L831",
     "description": "パスPATHを削除する"
   },
   {
@@ -10672,7 +10672,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L801",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L839",
     "description": "パスPATHを削除してcallbackを実行"
   },
   {
@@ -10687,7 +10687,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L813",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L852",
     "description": "パスPATHの情報を調べてオブジェクトで返す"
   },
   {
@@ -10702,7 +10702,7 @@
       "phpnako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L821",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L860",
     "description": "パスPATHのファイルサイズを調べて返す"
   },
   {
@@ -10717,7 +10717,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L832",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L871",
     "description": "フルパスのファイル名Sからファイル名部分を抽出して返す"
   },
   {
@@ -10732,7 +10732,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L840",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L879",
     "description": "ファイル名Sからパス部分を抽出して返す"
   },
   {
@@ -10747,7 +10747,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L848",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L887",
     "description": "相対パスから絶対パスに変換して返す"
   },
   {
@@ -10762,7 +10762,7 @@
       "phpnako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L856",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L895",
     "description": "ファイル名AからパスBを展開して返す"
   },
   {
@@ -10777,7 +10777,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L865",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L904",
     "description": "カレントディレクトリを返す"
   },
   {
@@ -10792,7 +10792,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L874",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L913",
     "description": "カレントディレクトリをDIRに変更する"
   },
   {
@@ -10807,7 +10807,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L883",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L922",
     "description": "カレントディレクトリを返す"
   },
   {
@@ -10822,7 +10822,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L892",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L931",
     "description": "カレントディレクトリをDIRに変更する"
   },
   {
@@ -10837,7 +10837,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L901",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L940",
     "description": "ホームディレクトリを取得して返す"
   },
   {
@@ -10852,7 +10852,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L909",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L948",
     "description": "デスクトップパスを取得して返す"
   },
   {
@@ -10867,7 +10867,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L918",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L957",
     "description": "マイドキュメントのパスを取得して返す"
   },
   {
@@ -10882,7 +10882,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L923",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L962",
     "value": "''"
   },
   {
@@ -10897,7 +10897,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L928",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L967",
     "description": "スクリプトのあるディレクトリを返す"
   },
   {
@@ -10912,7 +10912,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L936",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L975",
     "description": "テンポラリフォルダのパスを取得して返す"
   },
   {
@@ -10927,7 +10927,7 @@
       "phpnako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L945",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L984",
     "description": "指定のフォルダ(省略または空白時はOSのテンポラリフォルダ)の配下に作業用の一時フォルダを作成して取得して返す"
   },
   {
@@ -10942,7 +10942,7 @@
       "phpnako"
     ],
     "category": "環境変数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L958",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1001",
     "description": "環境変数Sを返す"
   },
   {
@@ -10957,7 +10957,7 @@
       "phpnako"
     ],
     "category": "環境変数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L966",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1009",
     "description": "環境変数の一覧を返す"
   },
   {
@@ -10972,7 +10972,7 @@
       "phpnako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L971",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1014",
     "value": "'7z'"
   },
   {
@@ -10987,7 +10987,7 @@
       "phpnako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L976",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1019",
     "description": "圧縮解凍に使うツールを取得変更する"
   },
   {
@@ -11002,7 +11002,7 @@
       "phpnako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L985",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1028",
     "description": "(v1非互換)ZIPファイルAをBに解凍(実行には7-Zipが必要-https://7-zip.opensource.jp/ )"
   },
   {
@@ -11017,7 +11017,7 @@
       "phpnako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L998",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1041",
     "description": "解凍処理を行い、処理が完了したときにcallback処理を実行"
   },
   {
@@ -11032,7 +11032,7 @@
       "phpnako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1015",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1059",
     "description": "(v1非互換)ファイルAをBにZIP圧縮(実行には7-Zipが必要-https://7-zip.opensource.jp/ )"
   },
   {
@@ -11047,7 +11047,7 @@
       "phpnako"
     ],
     "category": "圧縮・解凍",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1028",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1072",
     "description": "圧縮処理を行い完了したときにcallback処理を指定"
   },
   {
@@ -11062,7 +11062,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1046",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1091",
     "description": "Nodeでプログラム実行を強制終了する"
   },
   {
@@ -11077,7 +11077,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1055",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1100",
     "description": "Nodeで終了コードを付けてプログラム実行を強制終了する"
   },
   {
@@ -11092,7 +11092,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1064",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1109",
     "description": "Nodeでctrl+cでプログラムの実行が終了した時FUNCを実行する。もしFUNCが偽を返すと終了しない。非同期処理のとき動作する(#1010)"
   },
   {
@@ -11107,7 +11107,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1080",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1123",
     "description": "Nodeでプログラム実行を強制終了する"
   },
   {
@@ -11122,7 +11122,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1089",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1132",
     "description": "OSプラットフォームを返す(darwin/win32/linux)"
   },
   {
@@ -11137,7 +11137,7 @@
       "phpnako"
     ],
     "category": "Nodeプロセス",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1097",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1140",
     "description": "OSアーキテクチャを返す"
   },
   {
@@ -11152,7 +11152,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1102",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1145",
     "value": "''"
   },
   {
@@ -11167,7 +11167,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1103",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1146",
     "value": "''"
   },
   {
@@ -11182,7 +11182,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1104",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1147",
     "value": "''"
   },
   {
@@ -11197,7 +11197,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1109",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1152",
     "description": "標準入力を一行取得した時に、変数『対象』に取得した文字列を代入し、無名関数（あるいは、文字列で関数名を指定）F(s: string)を実行する"
   },
   {
@@ -11212,7 +11212,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1127",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1168",
     "description": "標準入力を一行取得する(非同期関数)"
   },
   {
@@ -11227,7 +11227,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1145",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1186",
     "description": "標準入力を一行取得する。ただし自動で数値に変換しない(非同期関数)"
   },
   {
@@ -11242,7 +11242,7 @@
       "phpnako"
     ],
     "category": "コマンドラインと標準入出力",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1158",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1199",
     "description": "標準入力を全部取得して返す(非同期関数)"
   },
   {
@@ -11257,7 +11257,7 @@
       "phpnako"
     ],
     "category": "テスト",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1175",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1216",
     "description": "mochaによるテストで、ASSERTでAとBが正しいことを報告する"
   },
   {
@@ -11272,7 +11272,7 @@
       "phpnako"
     ],
     "category": "ネットワーク",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1184",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1225",
     "description": "ネットワークアダプターからIPアドレス(IPv4)を取得して配列で返す"
   },
   {
@@ -11287,7 +11287,7 @@
       "phpnako"
     ],
     "category": "ネットワーク",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1206",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1247",
     "description": "ネットワークアダプターからIPアドレス(IPv6)を取得して配列で返す"
   },
   {
@@ -11302,7 +11302,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1226",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1267",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -11317,7 +11317,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1245",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1286",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -11332,7 +11332,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1254",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1296",
     "description": "非同期通信(Ajax)でURLにデータを送信し、成功するとcallbackが実行される。その際『対象』にデータが代入される。"
   },
   {
@@ -11347,7 +11347,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1263",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1306",
     "description": "AjaxでURLにPARAMSをPOST送信し『対象』にデータを設定"
   },
   {
@@ -11362,7 +11362,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1293",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1337",
     "description": "AjaxでURLにPARAMSをフォームとしてPOST送信し『対象』にデータを設定"
   },
   {
@@ -11377,7 +11377,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1318",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1360",
     "description": "Ajax命令でエラーが起きたとき"
   },
   {
@@ -11392,7 +11392,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1322",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1364",
     "value": "''"
   },
   {
@@ -11407,7 +11407,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1327",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1369",
     "description": "Ajax命令でオプションを設定"
   },
   {
@@ -11422,7 +11422,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1336",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1378",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11437,7 +11437,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1347",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1389",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11452,7 +11452,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1356",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1398",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11467,7 +11467,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1365",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1407",
     "description": "非同期通信(Ajax)でURLにPARAMSをPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11482,7 +11482,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1389",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1431",
     "description": "非同期通信(Ajax)でURLにPARAMSをフォームとしてPOST送信を開始する非同期処理オブジェクト(Promise)を作成する。"
   },
   {
@@ -11497,7 +11497,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1405",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1447",
     "description": "非同期通信(Ajax)の応答から内容を指定した形式で取り出すための非同期処理オブジェクト(Promise)を返す。"
   },
   {
@@ -11512,7 +11512,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1430",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1472",
     "description": "「!非同期モード」で非同期通信(Ajax)でURLからデータを受信する。『AJAXオプション』を指定できる。結果は変数『対象』に入る"
   },
   {
@@ -11527,7 +11527,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1452",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1494",
     "description": "辞書形式のデータPARAMSをkey=value&key=value...の形式に変換する"
   },
   {
@@ -11542,7 +11542,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1467",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1509",
     "description": "非同期通信(AJAX)でPOSTメソッドにてURLへPARAMS(辞書型)を送信して応答を戻す。(非同期関数)"
   },
   {
@@ -11557,7 +11557,7 @@
       "phpnako"
     ],
     "category": "Ajax",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1492",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1534",
     "description": "非同期通信(AJAX)でURLにPARAMS(辞書型)をフォームとしてPOSTメソッドにてURLへ送信し応答を返す。(非同期関数)"
   },
   {
@@ -11572,7 +11572,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1516",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1558",
     "description": "AJAXでURLにアクセスしテキスト形式で結果を得る。送信時AJAXオプションの値を参照。(非同期関数)"
   },
   {
@@ -11587,7 +11587,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1530",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1572",
     "description": "AJAXでURLにアクセスしJSONの結果を得て、送信時AJAXオプションの値を参照。(非同期関数)"
   },
   {
@@ -11602,7 +11602,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1550",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1592",
     "description": "AJAXでURLにアクセスしバイナリ(arrayBuffer)形式で結果を得る。送信時AJAXオプションの値を参照。(非同期関数)"
   },
   {
@@ -11617,7 +11617,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1565",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1607",
     "description": "DISCORDのウェブフックURLにSのメッセージを送信する。宛先のウェブフックを取得しておく必要がある。(非同期関数)"
   },
   {
@@ -11632,7 +11632,7 @@
       "phpnako"
     ],
     "category": "新AJAX",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1585",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1627",
     "description": "DISCORDのウェブフックURLにファイルF(パスを指定)とメッセージSを送信する。(非同期関数)"
   },
   {
@@ -11647,7 +11647,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1608",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1650",
     "description": "文字コードCODEをサポートしているか確認"
   },
   {
@@ -11662,7 +11662,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1616",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1658",
     "description": "(v1非互換)文字列をShift_JISのバイナリバッファに変換"
   },
   {
@@ -11677,7 +11677,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1625",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1667",
     "description": "Shift_JISのバイナリバッファを文字列に変換"
   },
   {
@@ -11692,7 +11692,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1634",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1676",
     "description": "文字列SをCODEへ変換してバイナリバッファを返す"
   },
   {
@@ -11707,7 +11707,7 @@
       "phpnako"
     ],
     "category": "文字コード",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1643",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1685",
     "description": "バイナリバッファBUFをCODEから変換して返す"
   },
   {
@@ -11722,7 +11722,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1653",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1695",
     "description": "利用可能なハッシュ関数の一覧を返す"
   },
   {
@@ -11737,7 +11737,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1661",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1703",
     "description": "データSをアルゴリズムALG(sha256/sha512/md5)のエンコーディングENC(hex/base64)でハッシュ値を計算して返す"
   },
   {
@@ -11752,7 +11752,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1671",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1713",
     "description": "ランダムに生成された36文字のv4 UUID(文字列)を返す"
   },
   {
@@ -11767,7 +11767,7 @@
       "phpnako"
     ],
     "category": "ハッシュ関数",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1680",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_node.mts#L1722",
     "description": "暗号強度の強い乱数のバイト配列(Uint8Array)を指定個数返す"
   },
   {
@@ -11781,7 +11781,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L379",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L662",
     "value": "''"
   },
   {
@@ -11795,7 +11795,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L380",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L663",
     "value": "''"
   },
   {
@@ -11809,7 +11809,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L381",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L664",
     "value": "''"
   },
   {
@@ -11823,7 +11823,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L382",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L665",
     "value": "''"
   },
   {
@@ -11837,7 +11837,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L387",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L670",
     "description": "ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。"
   },
   {
@@ -11851,7 +11851,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L414",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L697",
     "description": "静的コンテンツのパスを指定。URLをPATHへマップする。"
   },
   {
@@ -11865,7 +11865,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L429",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L712",
     "description": "URLを指定して合致するリクエストが来たら処理を実行する。"
   },
   {
@@ -11879,7 +11879,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L447",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L730",
     "description": "受信時に、データSを出力する。"
   },
   {
@@ -11893,7 +11893,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L467",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L750",
     "description": "受信時にステータスコードNOで、ヘッダHEAD(辞書形式)を出力する。"
   },
   {
@@ -11907,7 +11907,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L484",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L767",
     "description": "受信時にヘッダ302(リダイレクト)を出力してURLへページを移動力する。"
   },
   {
@@ -12417,7 +12417,7 @@
       "cnako"
     ],
     "category": "漢数字関連",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_kansuji.mjs#L136",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_kansuji.mjs#L125",
     "description": "引数を漢数字と解釈して数値を返す"
   },
   {
@@ -12487,7 +12487,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ライブラリとプラグイン",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1078",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1079",
     "description": "ThreeJSのプラグインを動的に読み込む(非同期関数)"
   },
   {
@@ -12501,7 +12501,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ライブラリとプラグイン",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1125",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1126",
     "description": "ThreeJSのプラグインを動的に読み込む"
   },
   {
@@ -12515,7 +12515,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1164",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1166",
     "description": "タートルグラフィックスを開始してカメのIDを返す"
   },
   {
@@ -12529,7 +12529,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1177",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1179",
     "description": "IDを指定して操作対象となるカメを変更する"
   },
   {
@@ -12543,7 +12543,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1183",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1185",
     "description": "'turtle3d_div'"
   },
   {
@@ -12557,7 +12557,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1184",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1186",
     "description": "''"
   },
   {
@@ -12571,7 +12571,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1189",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1191",
     "description": "カメのモデルをURLに変更する"
   },
   {
@@ -12585,7 +12585,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1195",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1197",
     "value": "100"
   },
   {
@@ -12599,7 +12599,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1200",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1202",
     "description": "カメの動作速度Vに設定(大きいほど遅い)"
   },
   {
@@ -12613,7 +12613,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1209",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1211",
     "description": "カメの位置を[x,y,z]へ移動する"
   },
   {
@@ -12627,7 +12627,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1219",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1221",
     "description": "カメの原点を現在の位置・向きに設定する"
   },
   {
@@ -12641,7 +12641,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1229",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1231",
     "description": "カメを原点の位置・向きに移動する(描画はしない)"
   },
   {
@@ -12655,7 +12655,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1239",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1241",
     "description": "カメの描画起点位置を[x,y,z]へ移動する"
   },
   {
@@ -12669,7 +12669,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1249",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1251",
     "description": "カメの位置をLだけ進める"
   },
   {
@@ -12683,7 +12683,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1259",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1261",
     "description": "カメの位置をLだけ戻す"
   },
   {
@@ -12697,7 +12697,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1269",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1271",
     "description": "カメの位置を上にLだけ進める"
   },
   {
@@ -12711,7 +12711,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1279",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1281",
     "description": "カメの位置を下にLだけ進める"
   },
   {
@@ -12725,7 +12725,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1289",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1291",
     "description": "カメの位置を左にLだけ進める"
   },
   {
@@ -12739,7 +12739,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1299",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1301",
     "description": "カメの位置を右にLだけ進める"
   },
   {
@@ -12753,7 +12753,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1309",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1311",
     "description": "カメの位置をDIRにLだけ進める"
   },
   {
@@ -12767,7 +12767,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1335",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1337",
     "description": "カメの向きをオイラー([x,y,z,XYZ])にて設定する"
   },
   {
@@ -12781,7 +12781,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1345",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1347",
     "description": "カメの向きをAだけ右に向ける"
   },
   {
@@ -12795,7 +12795,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1355",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1357",
     "description": "カメの向きをAだけ左に向ける"
   },
   {
@@ -12809,7 +12809,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1365",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1367",
     "description": "カメの向きをAだけ上に向ける"
   },
   {
@@ -12823,7 +12823,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1375",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1377",
     "description": "カメの向きをAだけ下に向ける"
   },
   {
@@ -12837,7 +12837,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1385",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1387",
     "description": "カメの向きをAだけDIRに向ける"
   },
   {
@@ -12851,7 +12851,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1407",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1409",
     "description": "カメをAだけ右に傾ける"
   },
   {
@@ -12865,7 +12865,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1417",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1419",
     "description": "カメのAだけ左に傾ける"
   },
   {
@@ -12879,7 +12879,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1427",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1429",
     "description": "カメをAだけDIRに傾ける"
   },
   {
@@ -12893,7 +12893,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1445",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1447",
     "description": "カメのペン描画色をCに設定する"
   },
   {
@@ -12907,7 +12907,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1456",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1458",
     "description": "カメペンのサイズをWに設定する"
   },
   {
@@ -12921,7 +12921,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1466",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1468",
     "description": "カメペンを使うかどうかをV(オン/オフ)に設定する"
   },
   {
@@ -12935,7 +12935,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1476",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1478",
     "description": "表示しているカメと描画内容を全部消去する"
   },
   {
@@ -12949,7 +12949,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1486",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1488",
     "description": "カメのモデルを非表示にする。描画に影響しない。"
   },
   {
@@ -12963,7 +12963,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1496",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1498",
     "description": "非表示にしたカメのモデルを表示する。"
   },
   {
@@ -12977,7 +12977,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・カメ操作",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1506",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1508",
     "description": "指定したカメを視点として使用する"
   },
   {
@@ -12991,7 +12991,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1517",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1519",
     "description": "true"
   },
   {
@@ -13005,7 +13005,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1518",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1520",
     "description": "true"
   },
   {
@@ -13019,7 +13019,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1523",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1525",
     "description": "指定したDOMのIDに対する描画を準備し、描画オブジェクトを返す"
   },
   {
@@ -13033,7 +13033,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1539",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1541",
     "description": "現在の状態を描画する"
   },
   {
@@ -13047,7 +13047,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1549",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1551",
     "description": "現在の状態を元イメージをクリアせずに描画する"
   },
   {
@@ -13061,7 +13061,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1559",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1561",
     "description": "各カメの動きを経過時間等に従い実行する"
   },
   {
@@ -13075,7 +13075,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1569",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1571",
     "description": "canvasをクリアする際の背景色を設定する"
   },
   {
@@ -13089,7 +13089,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1581",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1583",
     "description": "canvasをクリアする際の背景のアルファ値を設定する"
   },
   {
@@ -13103,7 +13103,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1593",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1595",
     "description": "描画した線のJSON形式で取得する"
   },
   {
@@ -13117,7 +13117,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1604",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1606",
     "description": "内部で使用しているレンダラを捨てる"
   },
   {
@@ -13131,7 +13131,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1614",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1616",
     "description": "本プラグイン内部で使用しているレンダラを返す"
   },
   {
@@ -13145,7 +13145,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1624",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1626",
     "description": "本プラグイン内部で使用しているシーンを返す"
   },
   {
@@ -13159,7 +13159,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1634",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1636",
     "description": "本プラグイン内部で使用しているカメラを返す"
   },
   {
@@ -13173,7 +13173,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1644",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1646",
     "description": "本プラグイン内部で保持している描いた線のデータの参照を返す"
   },
   {
@@ -13187,7 +13187,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1654",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1656",
     "description": "本プラグイン内部で保持している描いた線のデータを取り出して返す"
   },
   {
@@ -13201,7 +13201,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・基本機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1668",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1670",
     "description": "Promiseの終了を待って結果を返す(非同期関数)"
   },
   {
@@ -13215,7 +13215,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ヘルパ機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1691",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1693",
     "description": "組み込んだコントロールを有効にする"
   },
   {
@@ -13229,7 +13229,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ヘルパ機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1703",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1705",
     "description": "組み込んだコントロールを無効にする"
   },
   {
@@ -13243,7 +13243,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ヘルパ機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1715",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1717",
     "description": "カメラヘルパーを表示する"
   },
   {
@@ -13257,7 +13257,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ヘルパ機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1725",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1727",
     "description": "カメラヘルパーを非表示にする"
   },
   {
@@ -13271,7 +13271,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ヘルパ機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1735",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1737",
     "description": "座標軸ヘルパーを表示する"
   },
   {
@@ -13285,7 +13285,7 @@
       "wnako"
     ],
     "category": "3Dタートルグラフィックス・ヘルパ機能",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1745",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_weykturtle3d.mts#L1747",
     "description": "座標軸ヘルパーを非表示にする"
   },
   {
@@ -16720,6 +16720,20 @@
   },
   {
     "type": "関数",
+    "name": "ABS",
+    "args": "Sの",
+    "yomi": "ABS",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L53",
+    "description": "Vの絶対値を返す"
+  },
+  {
+    "type": "関数",
     "name": "AJAX_JSON取得",
     "args": "Sから/Sの/Sを",
     "yomi": "AJAX_JSONしゅとく",
@@ -16874,6 +16888,48 @@
   },
   {
     "type": "関数",
+    "name": "ARCCOS",
+    "args": "Sの",
+    "yomi": "ARCCOS",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L51",
+    "description": "ラジアン単位VのARCCOSを求める"
+  },
+  {
+    "type": "関数",
+    "name": "ARCSIN",
+    "args": "Sの",
+    "yomi": "ARCSIN",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L50",
+    "description": "ラジアン単位VのARCSINを求める"
+  },
+  {
+    "type": "関数",
+    "name": "ARCTAN",
+    "args": "Sの",
+    "yomi": "ARCTAN",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L52",
+    "description": "ラジアン単位VのARCTANを求める"
+  },
+  {
+    "type": "関数",
     "name": "ASC",
     "args": "Sの",
     "yomi": "ASC",
@@ -16913,6 +16969,20 @@
     "category": "特殊命令",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L185",
     "description": "なでしこのユーザー関数定義でASYNC(非同期関数である)ことを宣言する"
+  },
+  {
+    "type": "関数",
+    "name": "ATAN2",
+    "args": "AとBの",
+    "yomi": "ATAN2",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L83",
+    "description": "ARCTAN(Y/X)をラジアン単位で返す"
   },
   {
     "type": "関数",
@@ -16958,6 +17028,20 @@
   },
   {
     "type": "関数",
+    "name": "CEIL",
+    "args": "Sを",
+    "yomi": "CEIL",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L79",
+    "description": "数値を正の無限大方向へ切り上げて返す。"
+  },
+  {
+    "type": "関数",
     "name": "CHR",
     "args": "Sの",
     "yomi": "CHR",
@@ -16983,6 +17067,76 @@
     "category": "四則演算",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L67",
     "description": "数値を下限から上限の範囲内に収めた値を返す。"
+  },
+  {
+    "type": "関数",
+    "name": "COS",
+    "args": "Sの",
+    "yomi": "COS",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L48",
+    "description": "ラジアン単位VのCOSを求める"
+  },
+  {
+    "type": "関数",
+    "name": "CSVオプション設定",
+    "args": "Sを/Sで",
+    "yomi": "CSVおぷしょんせってい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "CSV操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/csvlib/csvlib.go#L50",
+    "description": "「CSV取得」「表CSV変換」命令のオプションOBJ{delimiter,eol,auto_convert_number}をオブジェクトで指定"
+  },
+  {
+    "type": "関数",
+    "name": "CSV取得",
+    "args": "Sを/Sの/Sで/Sから",
+    "yomi": "CSVしゅとく",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "CSV操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/csvlib/csvlib.go#L44",
+    "description": "CSV形式のデータstrを強制的に二次元配列に変換して返す"
+  },
+  {
+    "type": "関数",
+    "name": "CSV変換",
+    "args": "Sを/Sの/Sから/Sで",
+    "yomi": "CSVへんかん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "CSV操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/csvlib/csvlib.go#L47",
+    "description": "二次元配列AをCSV形式に変換して返す"
+  },
+  {
+    "type": "関数",
+    "name": "DEG2RAD",
+    "args": "Sを",
+    "yomi": "DEG2RAD",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L62",
+    "description": "度からラジアンに変換"
   },
   {
     "type": "関数",
@@ -17014,6 +17168,20 @@
   },
   {
     "type": "関数",
+    "name": "DOMスキン設定",
+    "args": "Sを/Sに/Sの",
+    "yomi": "DOMすきんせってい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L137",
+    "description": "「ボタン作成」「エディタ作成」などで適用するスキンを指定する"
+  },
+  {
+    "type": "関数",
     "name": "DOMスタイル一括設定",
     "args": "AにBを/Aへ",
     "yomi": "DOMすたいるいっかつせってい",
@@ -17023,7 +17191,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L107",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L225",
     "description": "DOMに(オブジェクト型で)スタイル情報を一括設定"
   },
   {
@@ -17037,7 +17205,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L137",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L255",
     "description": "DOMのテキストを取得"
   },
   {
@@ -17051,7 +17219,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L142",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L260",
     "description": "画面部品のテキストを変更する"
   },
   {
@@ -17065,7 +17233,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L147",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L265",
     "description": "DOMにテキストを設定"
   },
   {
@@ -17079,7 +17247,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L117",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L235",
     "description": "画面部品に辞書で指定した属性を一括設定する"
   },
   {
@@ -17093,7 +17261,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L112",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L230",
     "description": "DOMの属性Sに値Vを設定(属性Sには『DOM和属性』も適用される)"
   },
   {
@@ -17107,7 +17275,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L167",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L285",
     "description": "画面部品にフォーカスしてカーソルを移動する"
   },
   {
@@ -17121,8 +17289,22 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L122",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L240",
     "description": "DOMの要素をIDを指定して取得"
+  },
+  {
+    "type": "関数",
+    "name": "DOM要素作成",
+    "args": "Sの/Sを",
+    "yomi": "DOMようそさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L142",
+    "description": "画面へ未接続のTAG要素を作成してハンドルを返す"
   },
   {
     "type": "関数",
@@ -17135,7 +17317,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L132",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L250",
     "description": "DOMの要素をクエリqで全部取得して返す"
   },
   {
@@ -17149,8 +17331,64 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L127",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L245",
     "description": "DOMの要素をクエリqで取得して返す"
+  },
+  {
+    "type": "関数",
+    "name": "DOM親要素設定",
+    "args": "Sに/Sへ",
+    "yomi": "DOMおやようそせってい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L125",
+    "description": "DOM部品を追加する親要素を指定して、その要素を返す"
+  },
+  {
+    "type": "関数",
+    "name": "DOM親部品設定",
+    "args": "Sに/Sへ",
+    "yomi": "DOMおやぶひんせってい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L129",
+    "description": "DOM親要素設定と同じ"
+  },
+  {
+    "type": "関数",
+    "name": "DOM部品作成",
+    "args": "Sの",
+    "yomi": "DOMぶひんさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L133",
+    "description": "タグ名のDOM部品を現在の親要素へ追加してハンドルを返す"
+  },
+  {
+    "type": "関数",
+    "name": "DOM部品削除",
+    "args": "Sの/Sを",
+    "yomi": "DOMぶひんさくじょ",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L146",
+    "description": "指定したDOM部品と子要素を削除する"
   },
   {
     "type": "関数",
@@ -17182,6 +17420,20 @@
   },
   {
     "type": "関数",
+    "name": "EXP",
+    "args": "Sの",
+    "yomi": "EXP",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L55",
+    "description": "e（自然対数の底）の A 乗の値を返す"
+  },
+  {
+    "type": "関数",
     "name": "FLOAT",
     "args": "Sの",
     "yomi": "FLOAT",
@@ -17193,6 +17445,34 @@
     "category": "型変換",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L305",
     "description": "値Vを実数に変換"
+  },
+  {
+    "type": "関数",
+    "name": "FLOOR",
+    "args": "Sを",
+    "yomi": "FLOOR",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L81",
+    "description": "数値を負の無限大方向へ切り下げて返す。"
+  },
+  {
+    "type": "関数",
+    "name": "FRAC",
+    "args": "Sの",
+    "yomi": "FRAC",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L74",
+    "description": "実数Aの小数部分を返す"
   },
   {
     "type": "関数",
@@ -17247,7 +17527,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L152",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L270",
     "description": "DOMのテキストを取得"
   },
   {
@@ -17261,7 +17541,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L157",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L275",
     "description": "画面部品のHTMLを変更する"
   },
   {
@@ -17275,7 +17555,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L69",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L108",
     "description": "HTML文字列をウィンドウ画面に追加する"
   },
   {
@@ -17289,7 +17569,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L162",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L280",
     "description": "DOMのHTMLにVを設定"
   },
   {
@@ -17305,6 +17585,20 @@
     "category": "Ajax",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/net.go#L336",
     "description": "非同期通信(Ajax)でURLにデータの送信を開始する非同期処理オブジェクト(Promise)を作成する。"
+  },
+  {
+    "type": "関数",
+    "name": "HYPOT",
+    "args": "AとBの",
+    "yomi": "HYPOT",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L84",
+    "description": "直角三角形の二辺の長さA,Bから斜辺を求めて返す。"
   },
   {
     "type": "関数",
@@ -17431,6 +17725,48 @@
     "category": "配列操作",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/array.go#L21",
     "description": "Aの要素数を返す。Aには配列/辞書型/文字列を指定する。"
+  },
+  {
+    "type": "関数",
+    "name": "LN",
+    "args": "Sの",
+    "yomi": "LN",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L56",
+    "description": "実数式 A の自然対数（Ln(e) = 1）を返す"
+  },
+  {
+    "type": "関数",
+    "name": "LOG",
+    "args": "Sの",
+    "yomi": "LOG",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L57",
+    "description": "Aの自然対数（底はE）を返す"
+  },
+  {
+    "type": "関数",
+    "name": "LOGN",
+    "args": "AでBの",
+    "yomi": "LOGN",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L86",
+    "description": "指定された底AでBの対数を計算して返す"
   },
   {
     "type": "関数",
@@ -17812,6 +18148,20 @@
   },
   {
     "type": "関数",
+    "name": "RAD2DEG",
+    "args": "Sを",
+    "yomi": "RAD2DEG",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L60",
+    "description": "ラジアンから度に変換"
+  },
+  {
+    "type": "関数",
     "name": "RGB",
     "args": "AとBのCで",
     "yomi": "RGB",
@@ -17837,6 +18187,20 @@
     "category": "文字列処理",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L95",
     "description": "文字列Sの右端からCNT文字を抽出する(『文字右部分』と同じ)"
+  },
+  {
+    "type": "関数",
+    "name": "ROUND",
+    "args": "Sを",
+    "yomi": "ROUND",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L77",
+    "description": "実数型の値Vを丸めてもっとも近い整数値を返す"
   },
   {
     "type": "関数",
@@ -17879,6 +18243,34 @@
     "category": "ビット演算",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L91",
     "description": "VをAビット右へシフトして返す(符号を維持しない、0で埋める)"
+  },
+  {
+    "type": "関数",
+    "name": "SIGN",
+    "args": "Sの",
+    "yomi": "SIGN",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L64",
+    "description": "Vが0なら0を、0超なら1を、0未満なら-1を返す"
+  },
+  {
+    "type": "関数",
+    "name": "SIN",
+    "args": "Sの",
+    "yomi": "SIN",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L47",
+    "description": "ラジアン単位VのSINを求める"
   },
   {
     "type": "関数",
@@ -18064,6 +18456,34 @@
   },
   {
     "type": "関数",
+    "name": "SQRT",
+    "args": "Sの",
+    "yomi": "SQRT",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L58",
+    "description": "Aの平方根を返す"
+  },
+  {
+    "type": "関数",
+    "name": "TAN",
+    "args": "Sの",
+    "yomi": "TAN",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L49",
+    "description": "ラジアン単位VのTANを求める"
+  },
+  {
+    "type": "関数",
     "name": "TOFLOAT",
     "args": "Sを",
     "yomi": "TOFLOAT",
@@ -18103,6 +18523,34 @@
     "category": "型変換",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/registry.go#L301",
     "description": "値Vを文字列に変換"
+  },
+  {
+    "type": "関数",
+    "name": "TSV取得",
+    "args": "Sを/Sの/Sで/Sから",
+    "yomi": "TSVしゅとく",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "CSV操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/csvlib/csvlib.go#L45",
+    "description": "TSV形式のデータstrを強制的に二次元配列に変換して返す"
+  },
+  {
+    "type": "関数",
+    "name": "TSV変換",
+    "args": "Sを/Sの/Sから/Sで",
+    "yomi": "TSVへんかん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "CSV操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/csvlib/csvlib.go#L49",
+    "description": "二次元配列AをTSV形式に変換して返す"
   },
   {
     "type": "関数",
@@ -18283,8 +18731,36 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L204",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L322",
     "description": "オプション設定（タイトル・サイズ等）とURLまたはHTMLコードからWebViewウィンドウを作成して表示する"
+  },
+  {
+    "type": "関数",
+    "name": "ウィンドウ取得",
+    "args": "Sの/Sを/Sから",
+    "yomi": "うぃんどうしゅとく",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "GUI",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L332",
+    "description": "指定したウィンドウのサイズ・位置・状態などを辞書で返す"
+  },
+  {
+    "type": "関数",
+    "name": "ウィンドウ変更",
+    "args": "AでBの/AにBを",
+    "yomi": "うぃんどうへんこう",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "GUI",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L327",
+    "description": "設定辞書で指定したウィンドウのサイズ・位置・状態などを変更する"
   },
   {
     "type": "関数",
@@ -18298,7 +18774,7 @@
     ],
     "category": "ファイル入出力",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/os.go#L192",
-    "description": "Windowsでエクスプローラー、macOSでFinderを使って、fnameを起動する"
+    "description": "Windowsでエクスプローラー、macOSでFinder、Linuxでxdg-openを使って、fnameを起動する"
   },
   {
     "type": "関数",
@@ -18591,7 +19067,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L82",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L155",
     "description": "textの値を持つテキストボックス(input[type='text'])の要素を追加しDOMオブジェクトを返す"
   },
   {
@@ -18703,7 +19179,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L204",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L205",
     "description": "カレントディレクトリを返す"
   },
   {
@@ -18717,8 +19193,22 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L213",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L214",
     "description": "カレントディレクトリをDIRに変更する"
+  },
+  {
+    "type": "関数",
+    "name": "キャンバス作成",
+    "args": "Sの",
+    "yomi": "きゃんばすさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L175",
+    "description": "大きさ[幅,高さ]のcanvas要素を追加してハンドルを返す"
   },
   {
     "type": "関数",
@@ -18731,8 +19221,36 @@
       "gonako"
     ],
     "category": "DOM操作とイベント",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L177",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L295",
     "description": "無名関数FでDOMをクリックした時に実行するイベントを設定"
+  },
+  {
+    "type": "関数",
+    "name": "クリップボード取得",
+    "args": "",
+    "yomi": "くりっぷぼーどしゅとく",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "クリップボード",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/clipboard.go#L51",
+    "description": "OSのクリップボードの文字列を取得する"
+  },
+  {
+    "type": "関数",
+    "name": "クリップボード変更",
+    "args": "Sへ/Sに",
+    "yomi": "くりっぷぼーどへんこう",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "クリップボード",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/clipboard.go#L37",
+    "description": "文字列でOSのクリップボードを変更する"
   },
   {
     "type": "関数",
@@ -18876,6 +19394,34 @@
   },
   {
     "type": "関数",
+    "name": "セレクトボックスアイテム設定",
+    "args": "AをBへ/Bに",
+    "yomi": "せれくとぼっくすあいてむせってい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L195",
+    "description": "select要素の選択肢を配列の内容へ差し替える"
+  },
+  {
+    "type": "関数",
+    "name": "セレクトボックス作成",
+    "args": "Sの",
+    "yomi": "せれくとぼっくすさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L191",
+    "description": "配列の選択肢を持つselect要素を追加してハンドルを返す"
+  },
+  {
+    "type": "関数",
     "name": "ゼロ埋",
     "args": "AをBで",
     "yomi": "ぜろうめ",
@@ -18904,6 +19450,34 @@
   },
   {
     "type": "関数",
+    "name": "チェックボックス作成",
+    "args": "Sの",
+    "yomi": "ちぇっくぼっくすさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L187",
+    "description": "ラベル付きチェックボックスを追加してinput要素のハンドルを返す"
+  },
+  {
+    "type": "関数",
+    "name": "テキストエリア作成",
+    "args": "Sの",
+    "yomi": "てきすとえりあさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L159",
+    "description": "テキストの値を持つtextarea要素を追加してハンドルを返す"
+  },
+  {
+    "type": "関数",
     "name": "テキスト取得",
     "args": "Sの/Sから",
     "yomi": "てきすとしゅとく",
@@ -18913,7 +19487,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L103",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L221",
     "description": "DOMのテキストを取得"
   },
   {
@@ -18927,7 +19501,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L98",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L216",
     "description": "DOMのテキストにVを設定"
   },
   {
@@ -18941,7 +19515,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L220",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L221",
     "description": "テンポラリフォルダのパスを取得して返す"
   },
   {
@@ -18955,7 +19529,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L237",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L238",
     "description": "デスクトップパスを取得して返す"
   },
   {
@@ -19109,8 +19683,22 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L38",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L39",
     "description": "ファイルSをバイナリ(Buffer)として開く"
+  },
+  {
+    "type": "関数",
+    "name": "パスワード入力エディタ作成",
+    "args": "Sの/Sで",
+    "yomi": "ぱすわーどにゅうりょくえでぃたさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L208",
+    "description": "初期値を持つinput[type=password]要素を追加してハンドルを返す"
   },
   {
     "type": "関数",
@@ -19123,7 +19711,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L173",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L174",
     "description": "ファイル名Sからパス部分を抽出して返す"
   },
   {
@@ -19137,7 +19725,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L193",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L194",
     "description": "複数のパス断片をOS標準の区切り文字で結合して返す"
   },
   {
@@ -19151,7 +19739,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L111",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L112",
     "description": "パスAをパスBへファイルコピーする(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書きコピー、それ以外はコピー先が存在するなら失敗)"
   },
   {
@@ -19165,7 +19753,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L119",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L120",
     "description": "パスAをパスBへファイルコピーしてcallbackを実行"
   },
   {
@@ -19179,7 +19767,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L141",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L142",
     "description": "パスPATHのファイルサイズを調べて返す"
   },
   {
@@ -19193,7 +19781,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L115",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L116",
     "description": "パスAをパスBへファイルコピーする(コピー先に内容をマージしてコピー)"
   },
   {
@@ -19207,7 +19795,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L84",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L85",
     "description": "パスAをパスBへ移動する(移動先に内容をマージしてコピー後、元を削除)"
   },
   {
@@ -19221,7 +19809,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L135",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L136",
     "description": "『ファイルコピー』『ファイル移動』などの処理を強制停止する"
   },
   {
@@ -19235,7 +19823,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L129",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L130",
     "description": "ファイルコピー・移動の処理状況をコールバックFで報告する(変数『対象』に{\"件数\":N,\"現在\":M}をセット)"
   },
   {
@@ -19249,7 +19837,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L167",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L168",
     "description": "パスSのファイル名（フォルダ名）一覧を取得する。ワイルドカード可能。「*.jpg;*.png」など複数の拡張子を指定可能。"
   },
   {
@@ -19263,7 +19851,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L58",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L59",
     "description": "パスPATHを削除する"
   },
   {
@@ -19277,7 +19865,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L62",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L63",
     "description": "パスPATHを削除してcallbackを実行"
   },
   {
@@ -19291,7 +19879,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L172",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L173",
     "description": "フルパスのファイル名Sからファイル名部分を抽出して返す"
   },
   {
@@ -19305,7 +19893,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L150",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L151",
     "description": "パスPATHの情報を調べてオブジェクトで返す"
   },
   {
@@ -19319,7 +19907,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L72",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L73",
     "description": "パスAをパスBへ移動する(『ファイルコピーデフォルト動作』が「上書」「上書き」「overwrite」なら上書き移動、それ以外は移動先が存在するなら失敗)"
   },
   {
@@ -19333,7 +19921,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L96",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L97",
     "description": "パスAをパスBへ移動してcallbackを実行"
   },
   {
@@ -19347,7 +19935,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L192",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L310",
     "description": "指定した拡張子のファイルをOS標準ダイアログで選択してパスを返す"
   },
   {
@@ -19361,7 +19949,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L54",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L55",
     "description": "ディレクトリPATHを作成して返す(再帰的に作成)"
   },
   {
@@ -19375,7 +19963,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L50",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L51",
     "description": "ディレクトリPATHが存在するか確認して返す"
   },
   {
@@ -19389,7 +19977,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L200",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L318",
     "description": "指定したフォルダを開始位置としてOS標準ダイアログでフォルダを選択しパスを返す"
   },
   {
@@ -19403,7 +19991,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L94",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L171",
     "description": "属性OBJ{method:\"GET\",action:\"...\"}で項目一覧S「項目1=初期値1{改行}項目2=初期値2{改行}…」を送信フォームを作成しDOMオブジェクトを返す。「=?」でオプションの指定が可能"
   },
   {
@@ -19417,7 +20005,7 @@
       "gonako"
     ],
     "category": "DOM操作とイベント",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L187",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L305",
     "description": "無名関数Fでフォームを送信した時に実行するイベントを設定"
   },
   {
@@ -19487,7 +20075,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L230",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L231",
     "description": "ホームディレクトリを取得して返す"
   },
   {
@@ -19501,8 +20089,22 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L86",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L163",
     "description": "ラベルlabelを持つbutton要素を追加しDOMオブジェクトを返す"
+  },
+  {
+    "type": "関数",
+    "name": "ボタン選択",
+    "args": "Sの",
+    "yomi": "ぼたんせんたく",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "GUI",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L117",
+    "description": "候補配列からボタンを選ばせて選んだ文字列を返す。[x]で閉じると空文字列を返す"
   },
   {
     "type": "関数",
@@ -19534,6 +20136,20 @@
   },
   {
     "type": "関数",
+    "name": "ラジアン変換",
+    "args": "Sを",
+    "yomi": "らじあんへんかん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L63",
+    "description": "度からラジアンに変換"
+  },
+  {
+    "type": "関数",
     "name": "ラベル作成",
     "args": "Sの",
     "yomi": "らべるさくせい",
@@ -19543,7 +20159,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L78",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L151",
     "description": "textの値を持つラベル(span要素)を追加しDOMオブジェクトを返す"
   },
   {
@@ -19576,6 +20192,20 @@
   },
   {
     "type": "関数",
+    "name": "リスト選択",
+    "args": "Sの",
+    "yomi": "りすとせんたく",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "GUI",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L121",
+    "description": "候補配列からリストで選ばせて選んだ文字列を返す。キャンセルまたは[x]で閉じると空文字列を返す"
+  },
+  {
+    "type": "関数",
     "name": "リフレイン",
     "args": "AをBで/Aの",
     "yomi": "りふれいん",
@@ -19599,8 +20229,8 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L223",
-    "description": "指定のフォルダに作業用の一時フォルダを作成して取得して返す"
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L224",
+    "description": "指定のフォルダ(省略または空白時はOSのテンポラリフォルダ)の配下に作業用の一時フォルダを作成して取得して返す"
   },
   {
     "type": "関数",
@@ -19646,6 +20276,34 @@
   },
   {
     "type": "関数",
+    "name": "乱数",
+    "args": "Sの",
+    "yomi": "らんすう",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L97",
+    "description": "0から(A-1)までの乱数を返す。引数Aには範囲オブジェクトや配列[最小,最大]も指定可能"
+  },
+  {
+    "type": "関数",
+    "name": "乱数範囲",
+    "args": "AからBまでの/Bの",
+    "yomi": "らんすうはんい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L114",
+    "description": "AからBまでの範囲の乱数を返す"
+  },
+  {
+    "type": "関数",
     "name": "予約語一覧取得",
     "args": "",
     "yomi": "よやくごいちらんしゅとく",
@@ -19683,7 +20341,7 @@
       "gonako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L74",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L113",
     "description": "メッセージSと[OK][キャンセル]のダイアログを出して尋ねる。戻り値はtrueかfalseのどちらかになる。"
   },
   {
@@ -19823,7 +20481,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L211",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L212",
     "description": "カレントディレクトリを返す"
   },
   {
@@ -19837,7 +20495,7 @@
       "gonako"
     ],
     "category": "フォルダ取得",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L218",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L219",
     "description": "カレントディレクトリをDIRに変更する"
   },
   {
@@ -19851,7 +20509,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L39",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L40",
     "description": "データSをファイルFヘ書き込む(文字コードはUTF-8)"
   },
   {
@@ -19865,7 +20523,7 @@
       "gonako"
     ],
     "category": "GUI",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L196",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L314",
     "description": "指定した拡張子の保存先をOS標準ダイアログで選択してパスを返す"
   },
   {
@@ -19881,6 +20539,20 @@
     "category": "四則演算",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L16",
     "description": "AのB倍を求める"
+  },
+  {
+    "type": "関数",
+    "name": "値指定バー作成",
+    "args": "Sの/Sで",
+    "yomi": "あたいしていばーさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L212",
+    "description": "範囲[最小,最大,値]のinput[type=range]要素を追加してハンドルを返す"
   },
   {
     "type": "関数",
@@ -19935,7 +20607,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L168",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L169",
     "description": "パスS以下の全ファイル名を取得する。ワイルドカード可能。「*.jpg;*.png」のように複数の拡張子を指定可能。"
   },
   {
@@ -19996,6 +20668,20 @@
   },
   {
     "type": "関数",
+    "name": "切上",
+    "args": "Sを",
+    "yomi": "きりあげ",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L80",
+    "description": "数値を正の無限大方向へ切り上げて返す。"
+  },
+  {
+    "type": "関数",
     "name": "切取",
     "args": "AからBまで/AのBを",
     "yomi": "きりとる",
@@ -20007,6 +20693,20 @@
     "category": "文字列処理",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L150",
     "description": "文字列Sから文字列Aまでの部分を抽出する。切り取った残りは特殊変数『対象』に代入される。(v1非互換)"
+  },
+  {
+    "type": "関数",
+    "name": "切捨",
+    "args": "Sを",
+    "yomi": "きりすて",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L82",
+    "description": "数値を負の無限大方向へ切り下げて返す。"
   },
   {
     "type": "関数",
@@ -20192,6 +20892,20 @@
   },
   {
     "type": "関数",
+    "name": "四捨五入",
+    "args": "Sを/Sの",
+    "yomi": "ししゃごにゅう",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L78",
+    "description": "実数型の値Vを丸めてもっとも近い整数値を返す"
+  },
+  {
+    "type": "関数",
     "name": "圧縮",
     "args": "AをBへ/AからBに/Bで",
     "yomi": "あっしゅく",
@@ -20257,7 +20971,7 @@
       "gonako"
     ],
     "category": "DOM操作とイベント",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L182",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L300",
     "description": "無名関数FでDOMを変更した時に実行するイベントを設定"
   },
   {
@@ -20299,7 +21013,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L42",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L43",
     "description": "ファイルPATHが存在するか確認して返す"
   },
   {
@@ -20360,6 +21074,62 @@
   },
   {
     "type": "関数",
+    "name": "小数点切上",
+    "args": "AをBで",
+    "yomi": "しょうすうてんきりあげ",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L87",
+    "description": "整数Aを小数点第B桁で切り上げして返す"
+  },
+  {
+    "type": "関数",
+    "name": "小数点切下",
+    "args": "AをBで",
+    "yomi": "しょうすうてんきりさげ",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L88",
+    "description": "整数Aを小数点第B桁で切り下げして返す"
+  },
+  {
+    "type": "関数",
+    "name": "小数点四捨五入",
+    "args": "AをBで",
+    "yomi": "しょうすうてんししゃごにゅう",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "数値切上切捨丸め",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L89",
+    "description": "実数Aを小数点第B桁で四捨五入して返す"
+  },
+  {
+    "type": "関数",
+    "name": "小数部分",
+    "args": "Sの",
+    "yomi": "しょうすうぶぶん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L75",
+    "description": "実数Aの小数部分を返す"
+  },
+  {
+    "type": "関数",
     "name": "小文字変換",
     "args": "Sの/Sを",
     "yomi": "こもじへんかん",
@@ -20402,6 +21172,20 @@
   },
   {
     "type": "関数",
+    "name": "平方根",
+    "args": "Sの",
+    "yomi": "へいほうこん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L59",
+    "description": "Aの平方根を返す"
+  },
+  {
+    "type": "関数",
     "name": "年数差",
     "args": "AとBの/AからBまでの",
     "yomi": "ねんすうさ",
@@ -20413,6 +21197,34 @@
     "category": "日時処理(簡易)",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L65",
     "description": "日付AとBの差を年数で求めて返す。A<Bなら正の数、そうでないなら負の数を返す (v1非互換)。"
+  },
+  {
+    "type": "関数",
+    "name": "度変換",
+    "args": "Sを",
+    "yomi": "どへんかん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L61",
+    "description": "ラジアンから度に変換"
+  },
+  {
+    "type": "関数",
+    "name": "座標角度計算",
+    "args": "Sの",
+    "yomi": "ざひょうかくどけいさん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "三角関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L90",
+    "description": "点[0,0]から[x,y]の直線とX軸の角度(度)を返す"
   },
   {
     "type": "関数",
@@ -20495,7 +21307,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L174",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L175",
     "description": "ファイル名Sから拡張子を抽出する"
   },
   {
@@ -20511,6 +21323,20 @@
     "category": "四則演算",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/math.go#L17",
     "description": "AにBを掛ける"
+  },
+  {
+    "type": "関数",
+    "name": "改行作成",
+    "args": "",
+    "yomi": "かいぎょうさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L183",
+    "description": "br要素を追加してハンドルを返す"
   },
   {
     "type": "関数",
@@ -20567,6 +21393,20 @@
     "category": "型変換",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/system.go#L96",
     "description": "値Vを整数に変換"
+  },
+  {
+    "type": "関数",
+    "name": "整数部分",
+    "args": "Sの",
+    "yomi": "せいすうぶぶん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L76",
+    "description": "実数Aの整数部分を返す"
   },
   {
     "type": "関数",
@@ -20794,6 +21634,20 @@
   },
   {
     "type": "関数",
+    "name": "斜辺",
+    "args": "AとBの",
+    "yomi": "しゃへん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L85",
+    "description": "直角三角形の二辺の長さA,Bから斜辺を求めて返す。"
+  },
+  {
+    "type": "関数",
     "name": "日付加算",
     "args": "AにBを",
     "yomi": "ひづけかさん",
@@ -20805,6 +21659,20 @@
     "category": "日時処理(簡易)",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/datetime.go#L75",
     "description": "日付SにAを加えて返す。Aには「(+｜-)yyyy/mm/dd」で指定する。"
+  },
+  {
+    "type": "関数",
+    "name": "日付選択ボックス作成",
+    "args": "",
+    "yomi": "ひづけせんたくぼっくすさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L204",
+    "description": "input[type=date]要素を追加してハンドルを返す"
   },
   {
     "type": "関数",
@@ -21181,7 +22049,7 @@
       "gonako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L172",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L290",
     "description": "要素DOMにフォーカスする(カーソルを移動する)"
   },
   {
@@ -21225,6 +22093,20 @@
     "category": "画像",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/imagelib/imagelib.go#L99",
     "description": "現在の画像を指定サイズ [幅, 高さ] に拡大縮小する"
+  },
+  {
+    "type": "関数",
+    "name": "画像作成",
+    "args": "Sの/Sから",
+    "yomi": "がぞうさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L179",
+    "description": "URLを指定したimg要素を追加してハンドルを返す"
   },
   {
     "type": "関数",
@@ -21447,7 +22329,7 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L183",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L184",
     "description": "ファイル名AからパスBを展開して返す"
   },
   {
@@ -21648,6 +22530,20 @@
   },
   {
     "type": "関数",
+    "name": "符号",
+    "args": "Sの",
+    "yomi": "ふごう",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L73",
+    "description": "Vが0なら0を、0超なら1を、0未満なら-1を返す"
+  },
+  {
+    "type": "関数",
     "name": "等",
     "args": "AがBと",
     "yomi": "ひとしい",
@@ -21797,8 +22693,22 @@
       "gonako"
     ],
     "category": "パス操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L175",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L176",
     "description": "相対パスから絶対パスに変換して返す"
+  },
+  {
+    "type": "関数",
+    "name": "絶対値",
+    "args": "Sの",
+    "yomi": "ぜったいち",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "算術関数",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/mathlib/mathlib.go#L54",
+    "description": "Vの絶対値を返す"
   },
   {
     "type": "関数",
@@ -21858,6 +22768,20 @@
   },
   {
     "type": "関数",
+    "name": "色選択ボックス作成",
+    "args": "",
+    "yomi": "いろせんたくぼっくすさくせい",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "DOM部品操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L200",
+    "description": "input[type=color]要素を追加してハンドルを返す"
+  },
+  {
+    "type": "関数",
     "name": "英数全角変換",
     "args": "Sの/Sを",
     "yomi": "えいすうぜんかくへんかん",
@@ -21910,7 +22834,35 @@
     ],
     "category": "文字変換",
     "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/stdlib/string.go#L258",
-    "description": "文字列Sの記号文字を半角に変換"
+    "description": "文字列Sの全角英数記号文字を半角に変換"
+  },
+  {
+    "type": "関数",
+    "name": "表CSV変換",
+    "args": "Sを/Sの/Sから/Sで",
+    "yomi": "ひょうCSVへんかん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "CSV操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/csvlib/csvlib.go#L46",
+    "description": "二次元配列AをCSV形式に変換して返す"
+  },
+  {
+    "type": "関数",
+    "name": "表TSV変換",
+    "args": "Sを/Sの/Sから/Sで",
+    "yomi": "ひょうTSVへんかん",
+    "plugin": "gonako",
+    "group": "拡張プラグイン",
+    "target": [
+      "gonako"
+    ],
+    "category": "CSV操作",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/csvlib/csvlib.go#L48",
+    "description": "二次元配列AをTSV形式に変換して返す"
   },
   {
     "type": "関数",
@@ -22231,7 +23183,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L37",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L38",
     "description": "ファイFSを開く"
   },
   {
@@ -22413,7 +23365,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L40",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L41",
     "description": "文字列Aをファイルパスの末尾に追記する"
   },
   {
@@ -22427,7 +23379,7 @@
       "gonako"
     ],
     "category": "DOM部品操作",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L90",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/guilib/guilib.go#L167",
     "description": "ラベルSの送信ボタン(input[type='submit'])を作成しDOMオブジェクトを返す"
   },
   {
@@ -22959,7 +23911,7 @@
       "gonako"
     ],
     "category": "ファイル入出力",
-    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L36",
+    "url": "https://github.com/kujirahand/nadesiko3go/blob/master/internal/nodelib/file.go#L37",
     "description": "ファイルFを開く"
   },
   {
