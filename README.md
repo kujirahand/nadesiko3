@@ -5,25 +5,30 @@
 
 ## 「なでしこ3」とは
 
-「なでしこ3」とは、日本語のプログラミング言語です。JavaScript/TypeScriptをベースとしているので、PC/スマホ/タブレットなど、幅広い環境で動きます。日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。また、バッチ処理や定型処理などを手軽に記述できます。
+「なでしこ3」とは、日本語のプログラミング言語です。「誰でも簡単プログラマー」を合い言葉に開発しています。
+日本語プログラミング言語は、読みやすく理解しやすいのが特徴で、初めてでも楽しくプログラミングを覚えることができます。
+日本語話者にとって、母国語で行うプログラミング教育にも最適です！
+また、なでしこは、もともと業務改善のためのツールとして開発されましたので、定型処理やバッチ処理などを手軽に記述するのも得意です。ゲームやツール、さまざまな用途でお使いいただけます。
 
 - [なでしこのWebサイト](https://nadesi.com/)
 - [マニュアル](https://nadesi.com/v3/doc/)
 
 はじめて「なでしこ」に挑戦する方は、次のチュートリアルから始めることをオススメします。日本語プログラミング言語の雰囲気が容易に理解できます。
 
-- [チュートリアル](https://nadesi.com/v3/doc/go.php?997)
-- [生成AIになでしこ3のプログラムを作ってもらう](doc/ai-code-generation.md)
+- [チュートリアル](https://nadesi.com/v3/doc/index.php?%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB)
 
 ## 対応機器/ブラウザ
 
-なでしこ3は、内部的にJavaScriptに変換されて実行されます。そのため、JavaScriptが動作するさまざまな端末で実行できます。
+WEB版なでしこ3は、内部的にJavaScriptに変換されて実行されます。そのため、JavaScriptが動作するさまざまな端末で実行できます。
 
-1. Webブラウザ(wnako) - 主要ブラウザ(Chrome/Safari/Edge/Firefox)に対応し、PC/スマートフォンで動作
-2. コマンドライン(cnako) - JavaScriptの実行エンジン「Node.js」上で動作
-3. 配付パッケージ - Electronを利用してローカルPC上で動作
+- Webブラウザ(wnako3) - 主要ブラウザ(Chrome/Safari/Edge/Firefox)に対応し、PC/スマートフォンで動作
+- コマンドライン(cnako3) - JavaScriptの実行エンジン「Node.js」上で動作
 
 具体的な対応ブラウザについて詳しくは、[対応機器/ブラウザ](doc/browsers.md) をご覧ください。Node.jsの対応バージョンは、v22以上です。
+
+また、本リポジトリとは別に、PC版のなでしこ3(Go言語で実装されたもの)があります。
+
+- [PC版(gonako/gonako-gui)](https://github.com/kujirahand/nadesiko3go/) - デスクトップアプリ(gonako-gui)やコマンドライン(gonako)アプリを開発できます。作成したアプリを実行ファイル1個に梱包でき配布も簡単です。エディタ一体型のツールです。
 
 ## ブラウザで利用する方法
 
@@ -37,6 +42,12 @@
 なでしこ3をインストールして動かす方法は下記にまとめています。
 
 - [なでしこマニュアル > FAQ/なでしこ3をインストールして使うには？](https://nadesi.com/v3/doc/index.php?FAQ%2F%E3%81%AA%E3%81%A7%E3%81%97%E3%81%933%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%97%E3%81%A6%E4%BD%BF%E3%81%86%E3%81%AB%E3%81%AF%EF%BC%9F&show)
+
+## AIと一緒になでしこを使う
+
+AIになでしこの文法を読み込ませることで、なでしこのプログラムをエラーなく動かすことが可能です。
+
+- [生成AIになでしこ3のプログラムを作ってもらう](doc/ai-code-generation.md)
 
 ## Node.jsでなでしこ3コマンドライン版をインストール
 
@@ -66,45 +77,6 @@ npm install
 npm run build
 ```
 
-## Ubuntuへの開発環境のセットアップ
-
-まっさらなUbuntu22.04に、なでしこ3の開発環境を整える場合は次のコマンドを実行します。
-
-```sh
-sudo apt update
-# nvm で Node.js をインストール
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
-source ~/.bashrc
-nvm install v24
-nvm use v24
-# リポジトリのセットアップ
-git clone https://github.com/kujirahand/nadesiko3.git
-cd nadesiko3
-npm install
-# なでしこ3のビルド
-npm run build
-```
-
-## 追加インストール(macOS/Linux)
-
-必要に応じて次のコマンドをインストールします。
-
-macOS:
-
-```sh
-# 『圧縮』『解凍』命令のために
-brew install p7zip
-```
-
-Ubuntu/Debian:
-
-```sh
-# 『圧縮』『解凍』命令のために
-sudo apt install p7zip-full
-# 『キー送信』命令のために
-sudo apt install xdotool
-```
-
 全てのコマンドが正しく動くかを確認するには、次のコマンドを実行します。
 
 ```sh
@@ -120,7 +92,7 @@ npm test
 ```sh
 # なでしこエディタ(WEB版)のサーバーを起動
 npm start
-# なでしこエディタ(PC版)を起動
+# なでしこエディタ(Node.js版)を起動
 npm run nako3edit
 ```
 
@@ -141,19 +113,6 @@ npm run search:command -- --help
 ```
 
 詳しくは、[doc/search_command.md](doc/search_command.md) をご覧ください。
-
-## Colabでなでしこを使って作業をする場合
-
-以下にColabを使ってなでしこを使う場合の作業用テンプレートを用意しました。
-ノートを複製して自分の作業に利用できます。
-
-- [作業用テンプレート](https://colab.research.google.com/drive/1FmOIoJGeFP57C9fgZXCP5pvcVJ6HmvH4?usp=sharing)
-
-## Colabでビルドテスト
-
-Google Colabでなでしこのビルドテストできます。
-
-- [ノートブック](https://colab.research.google.com/drive/1a-Choj3tCBCA1R7x7vPdNQN48vGzBd7E?usp=sharing)
 
 ## なでしこの開発履歴
 
@@ -206,8 +165,9 @@ Google Colabでなでしこのビルドテストできます。
 
 ## なでしこ関連リポジトリへのリンク
 
-- [なでしこ3開発リポジトリ(GitHub)](https://github.com/kujirahand/nadesiko3/)
-- [なでしこ3拡張プラグイン](https://nadesi.com/v3/doc/index.php?FAQ%2F%E6%8B%A1%E5%BC%B5%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&show)
+- [WEB版なでしこ3(Node.js)](https://github.com/kujirahand/nadesiko3/)
+- [PC版なでしこ3(Go)](https://github.com/kujirahand/nadesiko3go)
+- [なでしこ3Node.js版の拡張プラグイン](https://nadesi.com/v3/doc/index.php?FAQ%2F%E6%8B%A1%E5%BC%B5%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&show)
   - [nadesiko3-server](https://github.com/kujirahand/nadesiko3-server) --- Webサーバ(HTTP)
   - [nadesiko3-websocket](https://github.com/kujirahand/nadesiko3-websocket) --- WebSocket
   - [nadesiko3-office](https://github.com/kujirahand/nadesiko3-office) --- Excelなど
@@ -220,15 +180,12 @@ Google Colabでなでしこのビルドテストできます。
   - [nadesiko3-mysql](https://github.com/kujirahand/nadesiko3-mysql) --- データベースMySQL
   - [nadesiko3-postgresql](https://github.com/kujirahand/nadesiko3-postgresql) --- データベースPostgreSQL
   - [nadesiko3-mssql](https://github.com/kujirahand/nadesiko3-mssql) --- データベースmssql
-- 配布用パッケージ
+- 配布用パッケージ (現在は非推奨)
   - [nadesiko3webkit - なでしこ3軽量配布キット(webkit版)](https://github.com/kujirahand/nadesiko3webkit)
   - [nadesiko3electron - なでしこ3フル配布キット(electron版)](https://github.com/kujirahand/nadesiko3electron)
   - [nadesiko3win32 - なでしこ3(コンソール版)のWindows配布パッケージ](https://github.com/kujirahand/nadesiko3win32/releases)
-- サーバーサイドJavaScriptエンジン用の実装
-  - [nadesiko3(Node.js)](https://github.com/kujirahand/nadesiko3)
-  - [nadesiko3(Deno)](https://github.com/kujirahand/nadesiko3deno)
-- 実験的に別言語で実装したなでしこ3
-  - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
-  - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
-  - [nadesiko3go - なでしこ3Go言語](https://github.com/kujirahand/nadesiko3go)
+- 実験/別言語で実装したなでしこ3
   - [nadesiko3core](https://github.com/kujirahand/nadesiko3core/) --- 言語コアのみ取り出したもの
+  - [nadesiko3rust - なでしこ3Rust](https://github.com/kujirahand/nadesiko3rust)
+  - [nadesiko3php - なでしこ3PHP](https://github.com/kujirahand/nadesiko3php)
+  - [nadesiko3(Deno)](https://github.com/kujirahand/nadesiko3deno)
