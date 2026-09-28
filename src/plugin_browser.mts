@@ -7,7 +7,7 @@ import { NakoBrowsesrSystem, IBrowserDocument, IBrowserWindow, IBrowserLocation 
 
 import PartBrowserColor from './plugin_browser_color.mjs'
 import PartBrowserSystem from './plugin_browser_system.mjs'
-import PartBrowserDialog from './plugin_browser_dialog.mjs'
+import PartBrowserDialog, { clearDomDialogs } from './plugin_browser_dialog.mjs'
 import PartBrowserLocation from './plugin_browser_location.mjs'
 import PartBrowserAjax from './plugin_browser_ajax.mjs'
 import PartBrowserDomBasic from './plugin_browser_dom_basic.mjs'
@@ -344,6 +344,8 @@ const PluginBrowser = {
       }
       // 全DOMイベントをクリア
       sys.__removeAllDomEvents()
+      // 表示中のダイアログを破棄 (#2548)
+      clearDomDialogs(sys)
     }
   }
 }

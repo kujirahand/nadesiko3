@@ -96,8 +96,21 @@ function installStyle (doc: any): void {
   parent.appendChild(style)
 }
 
-/** DOMダイアログを表示して、ユーザーが操作するまで待機する */
-export function showDomDialog (doc: any, opt: NakoDialogOptions): Promise<NakoDialogResult> {
+/** 表示中のダイアログを破棄する関数の一覧(実行環境ごとに管理する) */
+export type NakoDialogRegistry = Set<() => void>
+
+/** 表示中のダイアログをすべて破棄する。待機中の命令は再開しない(再実行時に前回の続きが動かないように) */
+export function abortAllDomDialogs (registry: NakoDialogRegistry | undefined): void {
+  if (!registry) { return }
+  for (const abort of Array.from(registry)) { abort() }
+  registry.clear()
+}
+
+/**
+ * DOMダイアログを表示して、ユーザーが操作するまで待機する
+ * @param registry 指定すると、表示中のダイアログを登録し、abortAllDomDialogsで破棄できるようにする
+ */
+export function showDomDialog (doc: any, opt: NakoDialogOptions, registry?: NakoDialogRegistry): Promise<NakoDialogResult> {
   return new Promise((resolve) => {
     installStyle(doc)
     const dlg = doc.createElement('dialog')
@@ -107,16 +120,27 @@ export function showDomDialog (doc: any, opt: NakoDialogOptions): Promise<NakoDi
     let input: any = null
     let list: any = null
     let finished = false
+    // ダイアログを閉じてDOMから取り除く
+    const dispose = () => {
+      finished = true
+      if (registry) { registry.delete(abort) }
+      if (dlg.open && typeof dlg.close === 'function') { dlg.close() }
+      if (dlg.parentNode) { dlg.parentNode.removeChild(dlg) }
+    }
+    // 結果を返さずに破棄する(「!クリア」用)
+    const abort = () => {
+      if (finished) { return }
+      dispose()
+    }
     const finish = (button: string | null) => {
       if (finished) { return }
-      finished = true
       const result: NakoDialogResult = { button }
       if (input) { result.input = String(input.value) }
       if (list) { result.list = String(list.value) }
-      if (typeof dlg.close === 'function') { dlg.close() }
-      if (dlg.parentNode) { dlg.parentNode.removeChild(dlg) }
+      dispose()
       resolve(result)
     }
+    if (registry) { registry.add(abort) }
     const defaultIndex = opt.defaultButton ?? 0
     const pushDefault = () => {
       finish(opt.buttons.length > defaultIndex ? opt.buttons[defaultIndex] : null)
@@ -200,6 +224,8 @@ export function showDomDialog (doc: any, opt: NakoDialogOptions): Promise<NakoDi
       if (e && typeof e.preventDefault === 'function') { e.preventDefault() }
       finish(null)
     })
+    // カスタムHTML内の<form method="dialog">などで閉じられた場合も[x]と同じ扱い
+    dlg.addEventListener('close', () => finish(null))
 
     doc.body.appendChild(dlg)
     if (typeof dlg.showModal === 'function') {

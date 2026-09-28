@@ -1,10 +1,19 @@
 // @ts-nocheck
-import { showDomDialog, canUseDomDialog, parseDialogChoices, convertAnswer } from './plugin_browser_dialog_dom.mjs'
+import { showDomDialog as showDomDialogRaw, abortAllDomDialogs, canUseDomDialog, parseDialogChoices, convertAnswer } from './plugin_browser_dialog_dom.mjs'
 
 // DOMダイアログを使うかどうか (#2548)
 function useDomDialog (sys: any): boolean {
   if (sys.__getSysVar('ダイアログ方式') === 'ブラウザ') { return false }
   return canUseDomDialog(getDocument())
+}
+// ダイアログを表示する。表示中のダイアログは実行環境ごとに管理し、「!クリア」で破棄する
+function showDomDialog (doc: any, opt: any, sys: any) {
+  if (!sys.__nako3dialogs) { sys.__nako3dialogs = new Set() }
+  return showDomDialogRaw(doc, opt, sys.__nako3dialogs)
+}
+// 表示中のダイアログをすべて破棄する (「!クリア」から呼ぶ)
+export function clearDomDialogs (sys: any): void {
+  abortAllDomDialogs(sys.__nako3dialogs)
 }
 function getDocument (): any {
   return (typeof document === 'undefined') ? null : document
@@ -16,7 +25,7 @@ function getWindow (): any {
 // 入力ボックスで文字列を尋ねる。キャンセル時はnullを返す
 async function askText (s: any, sys: any): Promise<string | null> {
   if (useDomDialog(sys)) {
-    const res = await showDomDialog(getDocument(), { label: String(s), input: '', buttons: ['OK', 'キャンセル'] })
+    const res = await showDomDialog(getDocument(), { label: String(s), input: '', buttons: ['OK', 'キャンセル'] }, sys)
     return (res.button === 'OK') ? res.input : null
   }
   const win = getWindow()
@@ -34,7 +43,7 @@ export default {
     asyncFn: true,
     fn: async function(s: any, sys: any) {
       if (useDomDialog(sys)) {
-        await showDomDialog(getDocument(), { label: String(s), buttons: ['OK'] })
+        await showDomDialog(getDocument(), { label: String(s), buttons: ['OK'] }, sys)
         return
       }
       const win = getWindow()
@@ -76,7 +85,7 @@ export default {
     asyncFn: true,
     fn: async function(s: any, sys: any) {
       if (useDomDialog(sys)) {
-        const res = await showDomDialog(getDocument(), { label: String(s), buttons: ['OK', 'キャンセル'] })
+        const res = await showDomDialog(getDocument(), { label: String(s), buttons: ['OK', 'キャンセル'] }, sys)
         return res.button === 'OK'
       }
       const win = getWindow()
@@ -89,11 +98,11 @@ export default {
     josi: [['の']],
     pure: true,
     asyncFn: true,
-    fn: async function(items: any) {
+    fn: async function(items: any, sys: any) {
       const doc = getDocument()
       if (!canUseDomDialog(doc)) { return '' }
       const { label, choices } = parseDialogChoices(items)
-      const res = await showDomDialog(doc, { label, buttons: choices })
+      const res = await showDomDialog(doc, { label, buttons: choices }, sys)
       return res.button === null ? '' : res.button
     }
   },
@@ -102,11 +111,11 @@ export default {
     josi: [['の']],
     pure: true,
     asyncFn: true,
-    fn: async function(items: any) {
+    fn: async function(items: any, sys: any) {
       const doc = getDocument()
       if (!canUseDomDialog(doc)) { return '' }
       const { label, choices } = parseDialogChoices(items)
-      const res = await showDomDialog(doc, { label, list: choices, buttons: ['OK', 'キャンセル'] })
+      const res = await showDomDialog(doc, { label, list: choices, buttons: ['OK', 'キャンセル'] }, sys)
       return (res.button === 'OK' && res.list !== undefined) ? res.list : ''
     }
   },
@@ -115,11 +124,11 @@ export default {
     josi: [['で'], ['を', 'の']],
     pure: true,
     asyncFn: true,
-    fn: async function(html: any, buttons: any) {
+    fn: async function(html: any, buttons: any, sys: any) {
       const doc = getDocument()
       if (!canUseDomDialog(doc)) { return '' }
       const list = Array.isArray(buttons) ? buttons.map(v => String(v)) : [String(buttons)]
-      const res = await showDomDialog(doc, { html: String(html), buttons: list })
+      const res = await showDomDialog(doc, { html: String(html), buttons: list }, sys)
       return res.button === null ? '' : res.button
     }
   }

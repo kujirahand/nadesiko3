@@ -44,7 +44,12 @@ class FakeElement {
   click () { this.dispatch('click') }
   focus () { this.ownerDocument.activeElement = this }
   showModal () { this.open = true }
-  close () { this.open = false }
+  close () {
+    // 実際のブラウザと同じく、閉じたときにcloseイベントを発火する
+    if (!this.open) { return }
+    this.open = false
+    this.dispatch('close')
+  }
 
   // 子孫要素を検索する
   findAll (pred) {
@@ -80,6 +85,9 @@ function getDialog (doc) {
 }
 function getButton (doc, caption) {
   return getDialog(doc).findByClass('nako3dialog-button').find(b => b.textContent === caption)
+}
+function getButtonIn (dlg, caption) {
+  return dlg.findByClass('nako3dialog-button').find(b => b.textContent === caption)
 }
 // ダイアログが表示されるまで待つ
 async function waitDialog (doc) {
@@ -264,5 +272,27 @@ describe('plugin_browser_dialog_test', () => {
       getButton(doc, 'OK').click()
     })
     assert.strictEqual(log, 'なでしこ')
+  })
+
+  it('カスタムダイアログ表示 - <form method="dialog">などで閉じた場合は空文字列を返す', async () => {
+    const code = '選択=「<form method=\'dialog\'><button>閉じる</button></form>」で["OK"]をカスタムダイアログ表示。「[{選択}]」を表示'
+    const log = await run(code, (dlg) => dlg.close())
+    assert.strictEqual(log, '[]')
+  })
+
+  it('!クリアで表示中のダイアログを破棄し、前回の続きは実行しない', async () => {
+    const nako = new NakoCompiler()
+    nako.addPluginObject('PluginBrowser', PluginBrowser)
+    let log = ''
+    nako.getLogger().addListener('stdout', (data) => { log += data.noColor })
+    nako.runAsync('「名前は？」と尋ねる。「続き」を表示', 'main.nako3')
+    const dlg = await waitDialog(doc)
+    nako.clearPlugins()
+    assert.strictEqual(getDialog(doc), undefined)
+    assert.strictEqual(dlg.open, false)
+    // 破棄したダイアログを操作しても前回の続きは動かない
+    getButtonIn(dlg, 'OK').click()
+    await new Promise(resolve => setTimeout(resolve, 10))
+    assert.strictEqual(log, '')
   })
 })
