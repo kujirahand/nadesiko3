@@ -35,6 +35,7 @@
     "compat:golden": "node core/test/fixtures/compat/make_compat_golden.mjs",
     "compat:check": "node core/test/fixtures/compat/check_compat.mjs",
     "doctest": "node batch/doctest.mjs",
+    "doctest:nako3": "node src/cnako3.mjs batch/doctest.nako3",
     "test:doctest": "node --test --test-concurrency=1 --test-timeout=15000 --test-force-exit --test-reporter=spec --import ./test/node-test-globals.mjs test/node/doctest_test.mjs",
     "build:command": "cross-env REPORT_ERR=1 npm run check:command && cross-env REPORT_ERR=1 node src/cnako3.mjs batch/build_command.nako3 && node batch/generate_command_list.mjs",
     "build:browsers": "browserslist > src/browsers.txt && node src/cnako3.mjs batch/build_browsers.nako3",
