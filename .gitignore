@@ -88,6 +88,7 @@ src/plugin_browser_chart.mjs
 src/plugin_browser_color.mjs
 src/plugin_browser_crypto.mjs
 src/plugin_browser_dialog.mjs
+src/plugin_browser_dialog_dom.mjs
 src/plugin_browser_dom_basic.mjs
 src/plugin_browser_dom_event.mjs
 src/plugin_browser_dom_parts.mjs

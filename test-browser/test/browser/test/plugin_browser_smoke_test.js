@@ -32,7 +32,7 @@ async function runCase (title, fn, result) {
 const smokeCases = [
   {
     title: '言う',
-    fn: () => {
+    fn: async () => {
       const nako = createCompiler()
       const originalAlert = window.alert
       let count = 0
@@ -40,7 +40,7 @@ const smokeCases = [
         if (msg === 'あいうえお') count++
       }
       try {
-        nako.run('「あいうえお」を言う')
+        await nako.runAsync('ダイアログ方式=「ブラウザ」。「あいうえお」を言う', 'main.nako3')
         assertEqual(count, 1, 'alert呼び出し回数')
       } finally {
         window.alert = originalAlert
@@ -49,7 +49,7 @@ const smokeCases = [
   },
   {
     title: '尋ねる',
-    fn: () => {
+    fn: async () => {
       const nako = createCompiler()
       const originalPrompt = window.prompt
       let count = 0
@@ -58,7 +58,7 @@ const smokeCases = [
         return 'abc'
       }
       try {
-        const result = nako.run('A=「かきくけこ」を尋ねる;AをJSONエンコードして表示')
+        const result = await nako.runAsync('ダイアログ方式=「ブラウザ」。A=「かきくけこ」を尋ねる;AをJSONエンコードして表示', 'main.nako3')
         assertEqual(result.log, '"abc"', 'prompt戻り値')
         assertEqual(count, 1, 'prompt呼び出し回数')
       } finally {
@@ -68,7 +68,7 @@ const smokeCases = [
   },
   {
     title: '二択',
-    fn: () => {
+    fn: async () => {
       const nako = createCompiler()
       const originalConfirm = window.confirm
       let count = 0
@@ -77,15 +77,50 @@ const smokeCases = [
         return true
       }
       try {
-        const result = nako.run('A=「これ」で二択;AをJSONエンコードして表示')
+        const result = await nako.runAsync('ダイアログ方式=「ブラウザ」。A=「これ」で二択;AをJSONエンコードして表示', 'main.nako3')
         assertEqual(result.log, 'true', 'confirm戻り値')
         assertEqual(count, 1, 'confirm呼び出し回数')
       } finally {
         window.confirm = originalConfirm
       }
     }
+  },
+  {
+    title: 'ボタン選択(DOMダイアログ) #2548',
+    fn: async () => {
+      const nako = createCompiler()
+      const p = nako.runAsync('A=["# 選んで", "寿司", "ラーメン"]のボタン選択;Aを表示', 'main.nako3')
+      const dlg = await waitDialog()
+      assertEqual(dlg.querySelector('.nako3dialog-label').textContent, '選んで', 'ラベル')
+      Array.from(dlg.querySelectorAll('.nako3dialog-button')).find(b => b.textContent === 'ラーメン').click()
+      const result = await p
+      assertEqual(result.log, 'ラーメン', 'ボタン選択の戻り値')
+      assertEqual(document.querySelector('dialog.nako3dialog'), null, 'ダイアログが閉じる')
+    }
+  },
+  {
+    title: '尋ねる(DOMダイアログ) #2548',
+    fn: async () => {
+      const nako = createCompiler()
+      const p = nako.runAsync('A=「年齢は？」と尋ねる;(A+1)を表示', 'main.nako3')
+      const dlg = await waitDialog()
+      dlg.querySelector('.nako3dialog-input').value = '２０'
+      Array.from(dlg.querySelectorAll('.nako3dialog-button')).find(b => b.textContent === 'OK').click()
+      const result = await p
+      assertEqual(result.log, '21', '尋ねるの戻り値')
+    }
   }
 ]
+
+// DOMダイアログが表示されるまで待つ
+async function waitDialog () {
+  for (let i = 0; i < 200; i++) {
+    const dlg = document.querySelector('dialog.nako3dialog')
+    if (dlg) return dlg
+    await new Promise(resolve => setTimeout(resolve, 10))
+  }
+  throw new Error('ダイアログが表示されませんでした')
+}
 
 export async function runBrowserSmokeCases (cases = smokeCases) {
   const result = {
