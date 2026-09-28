@@ -1,6 +1,4 @@
-// @ts-ignore
-import * as td from 'testdouble'
-import { CompareUtil, waitTimer, retry } from './compare_util.js'
+import { CompareUtil, retry, assert } from './compare_util.js'
 
 export default (nako) => {
   const cu = new CompareUtil(nako)
@@ -28,18 +26,27 @@ AJAXオプションをJSONエンコードして表示する。
     })
 
     it('AJAX送信時', async () => {
-      const windowalert = td.replace(window, 'alert')
-      const code = '「/custom/ok」へAJAX送信時には;対象をJSONエンコードして言う;ここまで'
-      nako.logger.debug('code=' + code)
-      nako.run(code)
+      const originalAlert = window.alert
+      const calls = []
+      window.alert = (...a) => { calls.push(a) }
+      try {
+        const code = 'ダイアログ方式=「ブラウザ」\n「/custom/ok」へAJAX送信時には;対象をJSONエンコードして言う;ここまで'
+        nako.logger.debug('code=' + code)
+        nako.run(code)
 
-      await retry(() => td.verify(windowalert('"OK"'), { times: 1 }))
-      td.reset()
+        await retry(() => { assert.deepEqual(calls, [['"OK"']]) })
+      } finally {
+        window.alert = originalAlert
+      }
     }).timeout(10000)
 
     it('POST送信時', async () => {
-      const windowalert = td.replace(window, 'alert')
-      const code = `
+      const originalAlert = window.alert
+      const calls = []
+      window.alert = (...a) => { calls.push(a) }
+      try {
+        const code = `
+ダイアログ方式=「ブラウザ」
 パラメータは空オブジェクト。
 パラメータ["param1"]は、「data1^」。
 パラメータ["param2"]は、「data2^^」。
@@ -47,16 +54,22 @@ AJAXオプションをJSONエンコードして表示する。
 対象を言う
 ここまで
 `
-      nako.logger.debug('code=' + code)
-      nako.run(code)
+        nako.logger.debug('code=' + code)
+        nako.run(code)
 
-      await retry(() => td.verify(windowalert('"param1=data1%5E&param2=data2%5E%5E"'), { times: 1 }))
-      td.reset()
+        await retry(() => { assert.deepEqual(calls, [['"param1=data1%5E&param2=data2%5E%5E"']]) })
+      } finally {
+        window.alert = originalAlert
+      }
     }).timeout(10000)
 
     it('POSTフォーム送信時', async () => {
-      const windowalert = td.replace(window, 'alert')
-      const code = `
+      const originalAlert = window.alert
+      const calls = []
+      window.alert = (...a) => { calls.push(a) }
+      try {
+        const code = `
+ダイアログ方式=「ブラウザ」
 パラメータは空オブジェクト。
 パラメータ["param1"]は、「data1^」。
 パラメータ["param2"]は、「data2^^」。
@@ -64,11 +77,13 @@ AJAXオプションをJSONエンコードして表示する。
 対象を言う
 ここまで
 `
-      nako.logger.debug('code=' + code)
-      nako.run(code)
+        nako.logger.debug('code=' + code)
+        nako.run(code)
 
-      await retry(() => td.verify(windowalert('{"param1":"data1^","param2":"data2^^"}'), { times: 1 }))
-      td.reset()
+        await retry(() => { assert.deepEqual(calls, [['{"param1":"data1^","param2":"data2^^"}']]) })
+      } finally {
+        window.alert = originalAlert
+      }
     }).timeout(10000)
 
     // 「逐次実行/次に」構文は廃止済みのため、同等確認は「〜送信時」系ケースで担保する

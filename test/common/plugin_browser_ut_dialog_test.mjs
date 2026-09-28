@@ -1,4 +1,3 @@
-import * as td from 'testdouble'
 import PluginBrowser from '../../src/plugin_browser.mjs'
 import assert from 'assert'
 
@@ -11,14 +10,12 @@ const makeSys = () => {
 describe('plugin_browser_dialog', () => {
   describe('言う', () => {
     const chkalert = async (args, msg) => {
-      const fakeAlert = td.func('alert')
-      td.when(fakeAlert(msg)).thenReturn(undefined)
+      const calls = []
       global.window = {}
-      global.window.alert = fakeAlert
-      global.alert = fakeAlert
+      global.window.alert = (...a) => { calls.push(a) }
+      global.alert = global.window.alert
       await PluginBrowser['言'].fn(...args, makeSys())
-      td.verify(fakeAlert(td.matchers.anything()), { times: 1 })
-      td.reset()
+      assert.deepEqual(calls, [[msg]])
     }
     it('言', async () => {
       await chkalert(['あいうえお'], 'あいうえお')
@@ -26,14 +23,12 @@ describe('plugin_browser_dialog', () => {
   })
   describe('尋ねる', () => {
     const chkprompt = async (args, rtn, msg, res) => {
-      const fakePrompt = td.func('prompt')
-      td.when(fakePrompt(msg)).thenReturn(rtn)
+      const calls = []
       global.window = {}
-      global.window.prompt = fakePrompt
-      global.prompt = fakePrompt
+      global.window.prompt = (...a) => { calls.push(a); return rtn }
+      global.prompt = global.window.prompt
       assert.equal(await PluginBrowser['尋'].fn(args[0], args[1] || makeSys()), res)
-      td.verify(fakePrompt(td.matchers.anything()), { times: 1 })
-      td.reset()
+      assert.deepEqual(calls, [[msg]])
     }
     it('尋 - 数値', async () => {
       await chkprompt(['あいうえお'], '2000', 'あいうえお', 2000)
@@ -60,14 +55,12 @@ describe('plugin_browser_dialog', () => {
   })
   describe('文字尋ねる', () => {
     const chkprompt = async (args, rtn, msg, res) => {
-      const fakePrompt = td.func('prompt')
-      td.when(fakePrompt(msg)).thenReturn(rtn)
+      const calls = []
       global.window = {}
-      global.window.prompt = fakePrompt
-      global.prompt = fakePrompt
+      global.window.prompt = (...a) => { calls.push(a); return rtn }
+      global.prompt = global.window.prompt
       assert.equal(await PluginBrowser['文字尋'].fn(args[0], args[1] || makeSys()), res)
-      td.verify(fakePrompt(td.matchers.anything()), { times: 1 })
-      td.reset()
+      assert.deepEqual(calls, [[msg]])
     }
     it('文字尋 - 数字', async () => {
       await chkprompt(['あいうえお'], '2000', 'あいうえお', '2000')
@@ -89,14 +82,12 @@ describe('plugin_browser_dialog', () => {
   })
   describe('二択', () => {
     const chkconfirm = async (args, rtn, msg, res) => {
-      const fakeConfirm = td.func('confirm')
-      td.when(fakeConfirm(msg)).thenReturn(rtn)
+      const calls = []
       global.window = {}
-      global.window.confirm = fakeConfirm
-      global.confirm = fakeConfirm
+      global.window.confirm = (...a) => { calls.push(a); return rtn }
+      global.confirm = global.window.confirm
       assert.equal(await PluginBrowser['二択'].fn(...args, makeSys()), res)
-      td.verify(fakeConfirm(td.matchers.anything()), { times: 1 })
-      td.reset()
+      assert.deepEqual(calls, [[msg]])
     }
     it('二択', async () => {
       await chkconfirm(['あいうえお'], true, 'あいうえお', true)

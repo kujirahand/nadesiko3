@@ -1,4 +1,3 @@
-import * as td from 'testdouble'
 import { assert } from './compare_util.js'
 
 export default (nako) => {
@@ -9,12 +8,16 @@ export default (nako) => {
   }
   describe('言う', () => {
     const cmpalert = async (code, msg) => {
-      const windowalert = td.replace(window, 'alert')
-      td.when(windowalert(msg)).thenReturn(undefined)
-      nako.logger.debug('code=' + code)
-      await runBrowserDialog(code)
-      td.verify(windowalert(td.matchers.anything()), { times: 1 })
-      td.reset()
+      const originalAlert = window.alert
+      const calls = []
+      window.alert = (...a) => { calls.push(a) }
+      try {
+        nako.logger.debug('code=' + code)
+        await runBrowserDialog(code)
+        assert.deepEqual(calls, [[msg]])
+      } finally {
+        window.alert = originalAlert
+      }
     }
     it('言う', async () => {
       await cmpalert('「あいうえおか」を言う', 'あいうえおか')
@@ -22,12 +25,16 @@ export default (nako) => {
   })
   describe('尋ねる/文字尋ねる', () => {
     const cmpprompt = async (code, msg, rslt, res) => {
-      const windowprompt = td.replace(window, 'prompt')
-      td.when(windowprompt(msg)).thenReturn(rslt)
-      nako.logger.debug('code=' + code)
-      assert.strictEqual((await runBrowserDialog(code)).log, res)
-      td.verify(windowprompt(td.matchers.anything()), { times: 1 })
-      td.reset()
+      const originalPrompt = window.prompt
+      const calls = []
+      window.prompt = (...a) => { calls.push(a); return rslt }
+      try {
+        nako.logger.debug('code=' + code)
+        assert.strictEqual((await runBrowserDialog(code)).log, res)
+        assert.deepEqual(calls, [[msg]])
+      } finally {
+        window.prompt = originalPrompt
+      }
     }
     it('尋ねる - string', async () => {
       await cmpprompt('A=「から」を尋ねる;AをJSONエンコードして表示', 'から', null, '""')
@@ -62,12 +69,16 @@ export default (nako) => {
   })
   describe('二択', () => {
     const cmpconfirm = async (code, msg, rslt, res) => {
-      const windowconfirm = td.replace(window, 'confirm')
-      td.when(windowconfirm(msg)).thenReturn(rslt)
-      nako.logger.debug('code=' + code)
-      assert.strictEqual((await runBrowserDialog(code)).log, res)
-      td.verify(windowconfirm(td.matchers.anything()), { times: 1 })
-      td.reset()
+      const originalConfirm = window.confirm
+      const calls = []
+      window.confirm = (...a) => { calls.push(a); return rslt }
+      try {
+        nako.logger.debug('code=' + code)
+        assert.strictEqual((await runBrowserDialog(code)).log, res)
+        assert.deepEqual(calls, [[msg]])
+      } finally {
+        window.confirm = originalConfirm
+      }
     }
     it('二択', async () => {
       await cmpconfirm('A=「これ」で二択;AをJSONエンコードして表示', 'これ', true, 'true')
