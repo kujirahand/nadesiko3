@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-import * as td from 'testdouble'
 import assert from 'assert'
 import PluginBrowser from '../../src/plugin_browser.mjs'
 
@@ -23,17 +22,16 @@ describe('plugin_browser_location', () => {
   })
   describe('history-back', () => {
     const chkback = (/** @type {never[]} */ args, /** @type {number} */ msg) => {
-      const fakeBack = td.func('back')
+      const calls = []
       // @ts-ignore
       global.window = {}
       // @ts-ignore
       global.window.history = {}
       // @ts-ignore
-      global.window.history.back = fakeBack
-      td.when(fakeBack(msg)).thenReturn(undefined)
+      global.window.history.back = (...a) => { calls.push(a) }
       // @ts-ignore
       PluginBrowser['ブラウザ戻'].fn.apply(this, args)
-      td.verify(fakeBack(td.matchers.anything()), { times: 1 })
+      assert.deepEqual(calls, [[msg]])
     }
     it('ブラウザ戻', () => {
       chkback([], -1)

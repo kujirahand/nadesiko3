@@ -1,4 +1,3 @@
-import * as td from 'testdouble'
 import assert from 'assert'
 import PluginBrowser from '../../src/plugin_browser.mjs'
 import { PluginUtHelper } from '../../utils/plugin_ut_helper.mjs'
@@ -57,13 +56,13 @@ describe('plugin_browser_audio', () => {
       global.Audio = StubAudio
       // @ts-ignore
       const obj = PluginBrowser['オーディオ開'].fn.apply(this, ['http://url', sys])
-      const fakePlay = td.func('play')
-      obj.play = fakePlay
+      let playCount = 0
+      obj.play = () => { playCount++ }
       obj.currentTime = 234
       // @ts-ignore
       PluginBrowser['オーディオ再生'].fn.apply(this, [obj, sys])
       assert.equal(obj.currentTime, 234)
-      td.verify(fakePlay(), { times: 1 })
+      assert.equal(playCount, 1)
     }
     it('オーディオ再生', () => {
       chkplay()
@@ -84,13 +83,13 @@ describe('plugin_browser_audio', () => {
       global.Audio = StubAudio
       // @ts-ignore
       const obj = PluginBrowser['オーディオ開'].fn.apply(this, ['http://url', sys])
-      const fakePause = td.func('pause')
-      obj.pause = fakePause
+      let pauseCount = 0
+      obj.pause = () => { pauseCount++ }
       obj.currentTime = cur
       // @ts-ignore
       PluginBrowser[fnname].fn.apply(this, [obj, sys])
       assert.equal(obj.currentTime, res)
-      td.verify(fakePause(), { times: 1 })
+      assert.equal(pauseCount, 1)
     }
     it('オーディオ停止', () => {
       chkpause('オーディオ停止', 234, 456, 0)

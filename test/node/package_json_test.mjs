@@ -19,6 +19,20 @@ test('package.json に node-fetch の依存がない', () => {
   }
 })
 
+test('package.json に testdouble の依存がない', () => {
+  const pkgUrl = new URL('../../package.json', import.meta.url)
+  const pkg = JSON.parse(fs.readFileSync(pkgUrl, 'utf-8'))
+  const dependencySections = [
+    'dependencies',
+    'devDependencies',
+    'optionalDependencies',
+    'peerDependencies'
+  ]
+  for (const section of dependencySections) {
+    assert.equal(pkg[section]?.['testdouble'], undefined, `${section} に testdouble が含まれています`)
+  }
+})
+
 test('core/.npmignoreが実行用mjs以外の除外設定を引き継ぐ', () => {
   const gitignoreUrl = new URL('../../core/.gitignore', import.meta.url)
   const npmignoreUrl = new URL('../../core/.npmignore', import.meta.url)
