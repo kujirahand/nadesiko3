@@ -213,4 +213,4 @@ async function main () {
   window.__playwright_done__ = result
 }
 
-void main()
+await main()
