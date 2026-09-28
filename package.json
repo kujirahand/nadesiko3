@@ -113,7 +113,7 @@
     "hotkeys-js": "^4.0.4",
     "module-alias": "^2.3.4",
     "npm-check-updates": "^23.0.0",
-    "oxlint": "1.83.0",
+    "oxlint": "1.85.0",
     "prop-types": "^15.8.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
