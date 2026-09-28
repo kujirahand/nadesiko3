@@ -31,32 +31,32 @@ export interface NakoDialogResult {
 
 const STYLE_ID = 'nako3dialog-style'
 const STYLE_TEXT = `
-.nako3dialog:not(.nako3dialog-skinned), :where(.nako3dialog-skinned) {
+.nako3dialog:not(:where(.nako3dialog-skinned)), :where(.nako3dialog-skinned) {
   box-sizing: border-box; min-width: 280px; max-width: min(90vw, 560px);
   padding: 20px 20px 16px; border: 1px solid #ccc; border-radius: 8px;
   background: #fff; color: #222; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   font-family: system-ui, sans-serif; font-size: 15px; line-height: 1.5;
 }
-.nako3dialog:not(.nako3dialog-skinned)::backdrop, :where(.nako3dialog-skinned)::backdrop { background: rgba(0,0,0,0.35); }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-close, :where(.nako3dialog-skinned .nako3dialog-close) {
+.nako3dialog:not(:where(.nako3dialog-skinned))::backdrop, :where(.nako3dialog-skinned)::backdrop { background: rgba(0,0,0,0.35); }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-close, :where(.nako3dialog-skinned .nako3dialog-close) {
   position: absolute; top: 4px; right: 6px; width: 28px; height: 28px; padding: 0;
   border: none; background: transparent; color: #666; font-size: 20px; line-height: 28px; cursor: pointer;
 }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-close:hover, :where(.nako3dialog-skinned .nako3dialog-close:hover) { color: #000; }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-label, :where(.nako3dialog-skinned .nako3dialog-label) { margin: 0 24px 12px 0; white-space: pre-wrap; word-break: break-word; }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-body, :where(.nako3dialog-skinned .nako3dialog-body) { margin: 0 24px 12px 0; overflow: auto; max-height: 60vh; }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-input, .nako3dialog:not(.nako3dialog-skinned) .nako3dialog-list, :where(.nako3dialog-skinned .nako3dialog-input), :where(.nako3dialog-skinned .nako3dialog-list) {
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-close:hover, :where(.nako3dialog-skinned .nako3dialog-close:hover) { color: #000; }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-label, :where(.nako3dialog-skinned .nako3dialog-label) { margin: 0 24px 12px 0; white-space: pre-wrap; word-break: break-word; }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-body, :where(.nako3dialog-skinned .nako3dialog-body) { margin: 0 24px 12px 0; overflow: auto; max-height: 60vh; }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-input, :where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-list, :where(.nako3dialog-skinned .nako3dialog-input), :where(.nako3dialog-skinned .nako3dialog-list) {
   box-sizing: border-box; width: 100%; margin: 0 0 12px; padding: 6px;
   border: 1px solid #aaa; border-radius: 4px; font-size: 15px;
 }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-buttons, :where(.nako3dialog-skinned .nako3dialog-buttons) { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-button, :where(.nako3dialog-skinned .nako3dialog-button) {
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-buttons, :where(.nako3dialog-skinned .nako3dialog-buttons) { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-button, :where(.nako3dialog-skinned .nako3dialog-button) {
   min-width: 80px; padding: 6px 16px; border: 1px solid #999; border-radius: 4px;
   background: #f4f4f4; color: #222; font-size: 15px; cursor: pointer;
 }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-button:hover, :where(.nako3dialog-skinned .nako3dialog-button:hover) { background: #e8e8e8; }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-button-primary, :where(.nako3dialog-skinned .nako3dialog-button-primary) { border-color: #2563eb; background: #2563eb; color: #fff; }
-.nako3dialog:not(.nako3dialog-skinned) .nako3dialog-button-primary:hover, :where(.nako3dialog-skinned .nako3dialog-button-primary:hover) { background: #1d4ed8; }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-button:hover, :where(.nako3dialog-skinned .nako3dialog-button:hover) { background: #e8e8e8; }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-button-primary, :where(.nako3dialog-skinned .nako3dialog-button-primary) { border-color: #2563eb; background: #2563eb; color: #fff; }
+:where(.nako3dialog:not(.nako3dialog-skinned)) .nako3dialog-button-primary:hover, :where(.nako3dialog-skinned .nako3dialog-button-primary:hover) { background: #1d4ed8; }
 `
 
 /** 候補リストの要素0が「#」で始まる場合、それをラベルとして分離する */

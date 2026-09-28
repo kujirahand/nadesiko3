@@ -111,6 +111,30 @@ const smokeCases = [
     }
   },
   {
+    title: '未スキン時は後から定義したCSSで標準デザインを上書きできる #2552',
+    fn: async () => {
+      const first = createCompiler().runAsync('「準備」と言う', 'main.nako3')
+      const firstDialog = await waitDialog()
+      firstDialog.querySelector('.nako3dialog-button').click()
+      await first
+
+      const style = document.createElement('style')
+      style.textContent = '.nako3dialog { background-color: rgb(12, 34, 56); } .nako3dialog-button-primary { background-color: rgb(65, 43, 21); }'
+      document.head.appendChild(style)
+      try {
+        const p = createCompiler().runAsync('「色を確認」と言う', 'main.nako3')
+        const dlg = await waitDialog()
+        const button = dlg.querySelector('.nako3dialog-button-primary')
+        assertEqual(getComputedStyle(dlg).backgroundColor, 'rgb(12, 34, 56)', '外枠の既存CSS')
+        assertEqual(getComputedStyle(button).backgroundColor, 'rgb(65, 43, 21)', 'ボタンの既存CSS')
+        button.click()
+        await p
+      } finally {
+        style.remove()
+      }
+    }
+  },
+  {
     title: 'DOMスキン設定でダイアログとボタンの色を変更 #2552',
     fn: async () => {
       const nako = createCompiler()
