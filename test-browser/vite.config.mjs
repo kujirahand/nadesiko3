@@ -103,6 +103,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    // manualは別リポジトリへのリンクなので、循環リンクを監視しない
+    watch: { ignored: ['**/manual', '**/manual/**'] },
     // プロジェクトルート以下のファイルへのアクセスを許可する
     fs: {
       allow: [rootDir]

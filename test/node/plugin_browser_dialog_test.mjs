@@ -125,9 +125,10 @@ describe('plugin_browser_dialog_test', () => {
   })
 
   // なでしこのプログラムを実行し、表示されたダイアログを操作する
-  async function run (code, operate) {
+  async function run (code, operate, setup) {
     const nako = new NakoCompiler()
     nako.addPluginObject('PluginBrowser', PluginBrowser)
+    if (setup) { setup(nako) }
     let log = ''
     nako.getLogger().addListener('stdout', (data) => { log += data.noColor })
     const p = nako.runAsync(code, 'main.nako3')
@@ -162,6 +163,86 @@ describe('plugin_browser_dialog_test', () => {
     assert.strictEqual(log, '終わり')
     // スタイルが追加されている
     assert.ok(doc.getElementById('nako3dialog-style'))
+  })
+
+  it('DOMスキン設定をダイアログと各部品に適用し、標準クラスと戻り値を保つ #2552', async () => {
+    const calls = []
+    const setup = (nako) => {
+      nako.__varslist[0].get('DOMスキン辞書').夜空 = (type, element, sys) => {
+        calls.push([type, element.tagName, sys.__getSysVar('DOMスキン') === '夜空'])
+        element.className = 'theme-night'
+      }
+    }
+    const log = await run('「夜空」のDOMスキン設定。A=["# 色は？", "赤", "青"]のリスト選択。Aを表示', (dlg) => {
+      assert.ok(dlg.findByClass('theme-night').length >= 7)
+      assert.ok(dlg.findByClass('nako3dialog-close')[0])
+      assert.ok(dlg.findByClass('nako3dialog-label')[0])
+      assert.ok(dlg.findByClass('nako3dialog-list')[0])
+      assert.ok(dlg.findByClass('nako3dialog-button-primary')[0])
+      dlg.findByClass('nako3dialog-list')[0].value = '青'
+      getButton(doc, 'OK').click()
+    }, setup)
+    assert.strictEqual(log, '青')
+    assert.ok(calls.some(([type, tag]) => type === 'dialog' && tag === 'DIALOG'))
+    assert.ok(calls.some(([type, tag]) => type === 'select' && tag === 'SELECT'))
+    assert.ok(calls.some(([type, tag]) => type === 'option' && tag === 'OPTION'))
+    assert.ok(calls.some(([type, tag]) => type === 'button' && tag === 'BUTTON'))
+    assert.ok(calls.every(([, , sameSys]) => sameSys))
+  })
+
+  it('スキンの切替と未登録名を次のダイアログに反映する #2552', async () => {
+    const setup = (nako) => {
+      const skins = nako.__varslist[0].get('DOMスキン辞書')
+      skins.赤 = (_type, element) => { element.className += ' theme-red' }
+      skins.青 = (_type, element) => { element.className += ' theme-blue' }
+    }
+    await run('「赤」のDOMスキン設定。「一番」と言う', (dlg) => {
+      assert.ok(dlg.findByClass('theme-red').length > 0)
+      assert.strictEqual(dlg.findByClass('theme-blue').length, 0)
+      getButton(doc, 'OK').click()
+    }, setup)
+    await run('「青」のDOMスキン設定。「二番」と言う', (dlg) => {
+      assert.ok(dlg.findByClass('theme-blue').length > 0)
+      assert.strictEqual(dlg.findByClass('theme-red').length, 0)
+      getButton(doc, 'OK').click()
+    }, setup)
+    await run('「未登録」のDOMスキン設定。「三番」と言う', (dlg) => {
+      assert.strictEqual(dlg.findByClass('theme-red').length, 0)
+      assert.strictEqual(dlg.findByClass('theme-blue').length, 0)
+      getButton(doc, 'OK').click()
+    }, setup)
+  })
+
+  it('入力ダイアログでもinputにスキンを適用する #2552', async () => {
+    const setup = (nako) => {
+      nako.__varslist[0].get('DOMスキン辞書').入力 = (type, element) => {
+        if (type === 'input') { element.className += ' theme-input' }
+      }
+    }
+    const log = await run('「入力」のDOMスキン設定。「名前は？」と文字尋ねる。それを表示', (dlg) => {
+      const input = dlg.findByClass('theme-input')[0]
+      assert.ok(input)
+      input.value = 'なでしこ'
+      getButton(doc, 'OK').click()
+    }, setup)
+    assert.strictEqual(log, 'なでしこ')
+  })
+
+  it('なでしこで定義した同じスキンを通常の部品とダイアログに適用する #2552', async () => {
+    const code = `
+DOMスキン辞書@「共通」=関数(TYPE,OBJ)
+　OBJの「className」に「shared-skin」をDOM属性設定。
+ここまで。
+「共通」のDOMスキン設定。
+「通常のボタン」のボタン作成。
+「確認」と言う。
+`
+    await run(code, (dlg) => {
+      const plainButton = doc.body.findByClass('shared-skin').find(el => el.tagName === 'BUTTON' && el.parentNode === doc.body)
+      assert.ok(plainButton)
+      assert.ok(dlg.findByClass('shared-skin').includes(dlg.findByClass('nako3dialog-button')[0]))
+      getButton(doc, 'OK').click()
+    })
   })
 
   it('尋 - 入力値を数値に変換して返す', async () => {
