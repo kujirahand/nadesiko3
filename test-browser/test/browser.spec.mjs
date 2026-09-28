@@ -73,3 +73,13 @@ test('browser full test', async ({ page }) => {
   const result = await runRunnerPage(page, '/test-browser/test/html/browser-full-runner.html', 240000)
   assertNoFailures(result)
 })
+
+test('browser full runner waits for main() completion before signaling done (#2566)', async ({ page }) => {
+  test.setTimeout(300000)
+  const result = await runRunnerPage(page, '/test-browser/test/html/browser-full-runner.html', 240000)
+  // main() 完了前に「未設定のまま終了」フォールバックが結果へ混入しないことを確認する。
+  // main() が返す実結果（import失敗の真のエラーを含む）はすべて許容する
+  const details = Array.isArray(result.failures) ? result.failures : (result.failures_detail || [])
+  const premature = details.filter((f) => String(f.error || '').includes('未設定のまま終了'))
+  expect(premature).toEqual([])
+})
