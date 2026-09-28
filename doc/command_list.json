@@ -6216,7 +6216,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L19",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L43",
     "description": "'DOM'"
   },
   {
@@ -6230,7 +6230,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L25",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L49",
     "description": "メッセージダイアログにSを表示(非同期関数)"
   },
   {
@@ -6244,7 +6244,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L35",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L59",
     "description": "''"
   },
   {
@@ -6258,7 +6258,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L41",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L65",
     "description": "メッセージSと入力ボックスを出して尋ねる(非同期関数)"
   },
   {
@@ -6272,7 +6272,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L54",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L78",
     "description": "メッセージSと入力ボックスを出して尋ねる。返り値は常に入力されたままの文字列となる(非同期関数)"
   },
   {
@@ -6286,7 +6286,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L74",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L91",
     "description": "メッセージSと[OK][キャンセル]のダイアログを出して尋ねる。戻り値はtrueかfalseのどちらかになる。(非同期関数)"
   },
   {
@@ -6300,7 +6300,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L89",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L106",
     "description": "候補リストSからボタンを選ばせて選んだ文字列を返す。要素0が「#」で始まればラベルとして表示。[x]で閉じると空文字列を返す(非同期関数)"
   },
   {
@@ -6314,7 +6314,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L102",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L119",
     "description": "候補リストSからリストで選ばせて選んだ文字列を返す。要素0が「#」で始まればラベルとして表示。[キャンセル]か[x]で閉じると空文字列を返す(非同期関数)"
   },
   {
@@ -6328,7 +6328,7 @@
       "wnako"
     ],
     "category": "ダイアログ",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L115",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dialog.mts#L132",
     "description": "信頼できるHTML文字列Sと、ボタン一覧Bでダイアログを表示し、押したボタンのラベルを返す。[x]で閉じると空文字列を返す(非同期関数)"
   },
   {
