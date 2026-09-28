@@ -109,6 +109,29 @@ const smokeCases = [
       const result = await p
       assertEqual(result.log, '21', '尋ねるの戻り値')
     }
+  },
+  {
+    title: 'DOMスキン設定でダイアログとボタンの色を変更 #2552',
+    fn: async () => {
+      const nako = createCompiler()
+      const style = document.createElement('style')
+      style.textContent = '.nako-skin-check { background-color: rgb(12, 34, 56); }'
+      document.head.appendChild(style)
+      try {
+        nako.__varslist[0].get('DOMスキン辞書').検証 = (_type, element) => {
+          element.className += ' nako-skin-check'
+        }
+        const p = nako.runAsync('「検証」のDOMスキン設定。「色を確認」と言う', 'main.nako3')
+        const dlg = await waitDialog()
+        const button = dlg.querySelector('.nako3dialog-button')
+        assertEqual(getComputedStyle(dlg).backgroundColor, 'rgb(12, 34, 56)', 'ダイアログの背景色')
+        assertEqual(getComputedStyle(button).backgroundColor, 'rgb(12, 34, 56)', 'ボタンの背景色')
+        button.click()
+        await p
+      } finally {
+        style.remove()
+      }
+    }
   }
 ]
 

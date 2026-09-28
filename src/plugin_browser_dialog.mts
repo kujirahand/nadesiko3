@@ -9,7 +9,12 @@ function useDomDialog (sys: any): boolean {
 // ダイアログを表示する。表示中のダイアログは実行環境ごとに管理し、「!クリア」で破棄する
 function showDomDialog (doc: any, opt: any, sys: any) {
   if (!sys.__nako3dialogs) { sys.__nako3dialogs = new Set() }
-  return showDomDialogRaw(doc, opt, sys.__nako3dialogs)
+  const skins = sys.__getSysVar('DOMスキン辞書')
+  const skin = skins?.[sys.__getSysVar('DOMスキン')]
+  const applySkin = typeof skin === 'function'
+    ? (type: string, element: any) => skin(type, element, sys)
+    : undefined
+  return showDomDialogRaw(doc, opt, sys.__nako3dialogs, applySkin)
 }
 // 表示中のダイアログをすべて破棄する (「!クリア」から呼ぶ)
 export function clearDomDialogs (sys: any): void {
