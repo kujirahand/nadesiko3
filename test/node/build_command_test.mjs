@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -10,6 +11,39 @@ const projectRoot = path.resolve(testRoot, '../..')
 const cnako3Path = path.join(projectRoot, 'src/cnako3.mjs')
 const jsplugin2textPath = path.join(projectRoot, 'batch/jsplugin2text.nako3')
 const commandListPath = path.join(projectRoot, 'doc/command_list.json')
+
+describe('命令一覧の生成 (#2575)', () => {
+  it('隣にgonakoの命令一覧があっても取り込まない', () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-command-'))
+    try {
+      const fixtureRoot = path.join(tmpRoot, 'nadesiko3')
+      const batchDir = path.join(fixtureRoot, 'batch')
+      const gonakoDir = path.join(tmpRoot, 'nadesiko3go/cmd/gonako-gui/ui')
+      fs.mkdirSync(batchDir, { recursive: true })
+      fs.mkdirSync(gonakoDir, { recursive: true })
+      fs.symlinkSync(path.join(projectRoot, 'core'), path.join(fixtureRoot, 'core'), 'dir')
+      fs.symlinkSync(path.join(projectRoot, 'src'), path.join(fixtureRoot, 'src'), 'dir')
+      for (const name of ['pickup_command.nako3', 'jsplugin2text.nako3', 'merge_gonako_commands.nako3']) {
+        fs.copyFileSync(path.join(projectRoot, 'batch', name), path.join(batchDir, name))
+      }
+      fs.writeFileSync(path.join(gonakoDir, 'command-list.json'), JSON.stringify([
+        { type: 'func', name: 'gonako専用テスト命令', category: 'テスト', josi: [] }
+      ]))
+
+      const result = spawnSync(process.execPath, [cnako3Path, path.join(batchDir, 'pickup_command.nako3')], {
+        cwd: fixtureRoot,
+        encoding: 'utf8',
+        env: { ...process.env, REPORT_ERR: '' }
+      })
+      assert.strictEqual(result.status, 0, result.stdout + result.stderr)
+      const commands = fs.readFileSync(path.join(batchDir, 'command.txt'), 'utf8')
+      assert.match(commands, /■plugin_system/)
+      assert.doesNotMatch(commands, /■gonako|gonako専用テスト命令/)
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true })
+    }
+  })
+})
 
 /** summarizePlugin の結果を覚えておくキャッシュ(同じプラグインを何度も解析しないため) */
 const summaryCache = new Map()
@@ -139,6 +173,11 @@ describe('release/command_cnako3.json', () => {
 
 describe('doc/command_list.json', () => {
   const commandList = JSON.parse(fs.readFileSync(commandListPath, 'utf8'))
+
+  it('gonakoの命令を含まない (#2575)', () => {
+    assert.ok(commandList.length > 0)
+    assert.deepStrictEqual(commandList.filter((c) => c.plugin === 'gonako' || c.target.includes('gonako')), [])
+  })
 
   it('plugin_system の命令のURLがすべて core/src を指す', () => {
     const invalid = commandList
