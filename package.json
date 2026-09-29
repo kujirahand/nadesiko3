@@ -100,7 +100,7 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "26.6.2",
+    "@types/node": "26.6.3",
     "@types/opener": "^1.4.3",
     "@types/shell-quote": "^1.7.5",
     "ace-builds": "^1.44.0",
