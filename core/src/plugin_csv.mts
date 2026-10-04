@@ -1,5 +1,5 @@
  
-import { options, parse, stringify } from './nako_csv.mjs'
+import { options, parse, stringify, isDelimiterExplicitlySet, setDelimiterExplicitlySet } from './nako_csv.mjs'
 
 const PluginCSV = {
   'meta': {
@@ -26,7 +26,9 @@ const PluginCSV = {
     josi: [['を', 'の', 'で']],
     pure: true,
     fn: function(str: string): (string | number)[][] {
-      options.delimiter = ','
+      if (!isDelimiterExplicitlySet()) {
+        options.delimiter = ','
+      }
       return parse(str)
     }
   },
@@ -44,7 +46,9 @@ const PluginCSV = {
     josi: [['を']],
     pure: true,
     fn: function(a: string[][]): string {
-      options.delimiter = ','
+      if (!isDelimiterExplicitlySet()) {
+        options.delimiter = ','
+      }
       return stringify(a)
     }
   },
@@ -53,7 +57,9 @@ const PluginCSV = {
     josi: [['を']],
     pure: true,
     fn: function(a: string[][]): string {
-      options.delimiter = ','
+      if (!isDelimiterExplicitlySet()) {
+        options.delimiter = ','
+      }
       return stringify(a)
     }
   },
@@ -84,6 +90,7 @@ const PluginCSV = {
         const value: unknown = obj[key]
         if (key === 'delimiter' || key === '区切文字') {
           options.delimiter = value as string
+          setDelimiterExplicitlySet(true)
         } else if (key === 'eol') {
           options.eol = value as string
         } else if (key === 'auto_convert_number') {

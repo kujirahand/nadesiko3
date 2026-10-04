@@ -133,6 +133,20 @@ describe('plugin_csv_test', () => {
     await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。TYPEOF(a[0][0])を表示', 'string')
     await cmp('{"auto_convert_number": FALSE}をCSVオプション設定;a=「2024.01,200,300\n4,5,6」のCSV取得。a[0][0]を表示', '2024.01')
   })
+  it('CSVオプション設定でdelimiterを明示的に指定した場合、CSV取得/CSV変換でそれが使われる #2578', async () => {
+    // 区切り文字を | に設定
+    await cmp('{"delimiter": "|"}をCSVオプション設定;a=「1|2|3\n4|5|6」のCSV取得。a[1][2]を表示', '6')
+    await cmp('{"delimiter": "|"}をCSVオプション設定;a=[[1,2,3],[4,5,6]]をCSV変換して表示', '1|2|3\r\n4|5|6')
+    await cmp('{"delimiter": "|"}をCSVオプション設定;a=[[1,2,3],[4,5,6]]を表CSV変換して表示', '1|2|3\r\n4|5|6')
+    // 区切文字キーでも動作することを確認
+    await cmp('{"区切文字": "|"}をCSVオプション設定;a=「1|2|3\n4|5|6」のCSV取得。a[0][1]を表示', '2')
+  })
+  it('CSVオプション設定でdelimiterを指定してもTSV系命令はタブ区切りのまま #2578', async () => {
+    // delimiter を | に設定しても、TSV系はタブ区切りのまま
+    await cmp('{"delimiter": "|"}をCSVオプション設定;a=「1\t2\t3\n4\t5\t6」のTSV取得。a[1][2]を表示', '6')
+    await cmp('{"delimiter": "|"}をCSVオプション設定;a=[[1,2,3],[4,5,6]]をTSV変換して表示', '1\t2\t3\r\n4\t5\t6')
+    await cmp('{"delimiter": "|"}をCSVオプション設定;a=[[1,2,3],[4,5,6]]を表TSV変換して表示', '1\t2\t3\r\n4\t5\t6')
+  })
   it('CSV/TSV変換が入力の表を書き換えない #2475', async () => {
     // 変換しても元の表が変化しない
     await cmp('A=[["a,b"]]。AをCSV変換。AをJSONエンコードして表示', '[["a,b"]]')
