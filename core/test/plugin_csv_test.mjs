@@ -147,6 +147,12 @@ describe('plugin_csv_test', () => {
     await cmp('{"delimiter": "|"}をCSVオプション設定;a=[[1,2,3],[4,5,6]]をTSV変換して表示', '1\t2\t3\r\n4\t5\t6')
     await cmp('{"delimiter": "|"}をCSVオプション設定;a=[[1,2,3],[4,5,6]]を表TSV変換して表示', '1\t2\t3\r\n4\t5\t6')
   })
+  it('TSV命令の後にCSV命令を使っても明示したdelimiterが維持される #2578', async () => {
+    // delimiter を | に設定 → TSV変換 → CSV変換 の順で呼んでも | が維持される
+    await cmp('{"delimiter": "|"}をCSVオプション設定;[[1,2,3]]をTSV変換;[[1,2,3]]をCSV変換して表示', '1|2|3')
+    // TSV取得 の後でも維持される
+    await cmp('{"delimiter": "|"}をCSVオプション設定;「a\tb」をTSV取得;A=「1|2|3」のCSV取得。A[0][1]を表示', '2')
+  })
   it('CSV/TSV変換が入力の表を書き換えない #2475', async () => {
     // 変換しても元の表が変化しない
     await cmp('A=[["a,b"]]。AをCSV変換。AをJSONエンコードして表示', '[["a,b"]]')
