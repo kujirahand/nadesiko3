@@ -1,5 +1,5 @@
  
-import { options, parse, stringify } from './nako_csv.mjs'
+import { options, parse, stringify, isDelimiterExplicitlySet, setDelimiterExplicitlySet } from './nako_csv.mjs'
 
 const PluginCSV = {
   'meta': {
@@ -26,7 +26,9 @@ const PluginCSV = {
     josi: [['を', 'の', 'で']],
     pure: true,
     fn: function(str: string): (string | number)[][] {
-      options.delimiter = ','
+      if (!isDelimiterExplicitlySet()) {
+        options.delimiter = ','
+      }
       return parse(str)
     }
   },
@@ -35,8 +37,7 @@ const PluginCSV = {
     josi: [['を', 'の', 'で']],
     pure: true,
     fn: function(str: string): (string|number)[][] {
-      options.delimiter = '\t'
-      return parse(str)
+      return parse(str, '\t')
     }
   },
   '表CSV変換': { // @二次元配列AをCSV形式に変換して返す // @ひょうCSVへんかん
@@ -44,7 +45,9 @@ const PluginCSV = {
     josi: [['を']],
     pure: true,
     fn: function(a: string[][]): string {
-      options.delimiter = ','
+      if (!isDelimiterExplicitlySet()) {
+        options.delimiter = ','
+      }
       return stringify(a)
     }
   },
@@ -53,7 +56,9 @@ const PluginCSV = {
     josi: [['を']],
     pure: true,
     fn: function(a: string[][]): string {
-      options.delimiter = ','
+      if (!isDelimiterExplicitlySet()) {
+        options.delimiter = ','
+      }
       return stringify(a)
     }
   },
@@ -62,8 +67,7 @@ const PluginCSV = {
     josi: [['を']],
     pure: true,
     fn: function(a: string[][]): string {
-      options.delimiter = '\t'
-      return stringify(a)
+      return stringify(a, '\t')
     }
   },
   'TSV変換': { // @二次元配列AをTSV形式に変換して返す // @TSVへんかん
@@ -71,8 +75,7 @@ const PluginCSV = {
     josi: [['を']],
     pure: true,
     fn: function(a: string[][]): string {
-      options.delimiter = '\t'
-      return stringify(a)
+      return stringify(a, '\t')
     }
   },
   'CSVオプション設定': { // @「CSV取得」「表CSV変換」命令のオプションOBJ{delimiter,eol,auto_convert_number}をオブジェクトで指定 // @CSVおぷしょんせってい
@@ -84,6 +87,7 @@ const PluginCSV = {
         const value: unknown = obj[key]
         if (key === 'delimiter' || key === '区切文字') {
           options.delimiter = value as string
+          setDelimiterExplicitlySet(true)
         } else if (key === 'eol') {
           options.eol = value as string
         } else if (key === 'auto_convert_number') {

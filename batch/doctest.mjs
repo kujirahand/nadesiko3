@@ -20,6 +20,7 @@ import url from 'node:url'
 import { NakoCompiler } from '../core/src/nako3.mjs'
 import PluginNode from '../src/plugin_node.mjs'
 import PluginCSV from '../core/src/plugin_csv.mjs'
+import { resetEnv as resetCSVEnv } from '../core/src/nako_csv.mjs'
 
 const thisDir = path.dirname(url.fileURLToPath(import.meta.url))
 export const rootDir = path.resolve(thisDir, '..')
@@ -153,6 +154,8 @@ export async function runDocTest (test) {
   if (test.runtime === 'wnako') {
     return { ok: false, actual: '', error: new Error('WEB表示結果のDocTestはブラウザ版の実行コマンドを使用してください。') }
   }
+  // CSVオプションの状態をテストごとにリセットする
+  resetCSVEnv()
   const nako = new NakoCompiler()
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)

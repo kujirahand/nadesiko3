@@ -11,10 +11,22 @@ export const options: CSVOptions = {
   auto_convert_number: true
 }
 
+// delimiter が明示的に設定されたかどうかを追跡するフラグ
+let delimiterExplicitlySet = false
+
 export function resetEnv(): void {
   options.delimiter = ','
   options.eol = '\r\n'
   options.auto_convert_number = true
+  delimiterExplicitlySet = false
+}
+
+export function isDelimiterExplicitlySet(): boolean {
+  return delimiterExplicitlySet
+}
+
+export function setDelimiterExplicitlySet(value: boolean): void {
+  delimiterExplicitlySet = value
 }
 
 /** 文字列が数値かどうか判定する関数
