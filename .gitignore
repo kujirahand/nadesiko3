@@ -73,6 +73,7 @@ core/index.mjs
 core/src/*.mjs
 !core/src/nako_test.mjs
 src/cnako3.mjs
+core/package-lock.json
 src/cnako3mod.mjs
 src/commander_ja.mjs
 src/deno_wrapper.mjs
@@ -112,4 +113,5 @@ src/plugin_weykturtle3d_threeutil.mjs
 src/wnako3.mjs
 src/wnako3_editor.mjs
 src/wnako3mod.mjs
-
+gonako
+.antigravity
