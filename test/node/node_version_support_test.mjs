@@ -43,3 +43,18 @@ test('GitHub ActionsのCI対象にNode.js v20が含まれていない', () => {
     assert.ok(ver >= 22, `EOLのNode.js v${ver} がCI対象に含まれています`)
   }
 })
+
+test('src/browsers.mjs が src/browsers.txt の内容と一致している (#2593)', () => {
+  const txt = readText('../../src/browsers.txt')
+  const expected = {}
+  for (const line of txt.split('\n')) {
+    const s = line.trim()
+    if (s === '') { continue }
+    const [name, ver] = s.split(' ')
+    if (!expected[name]) { expected[name] = [] }
+    expected[name].push(ver)
+  }
+  const browsers = readText('../../src/browsers.mjs')
+  const json = JSON.parse(browsers.replace(/^export default\s*/, ''))
+  assert.deepEqual(json, expected)
+})
