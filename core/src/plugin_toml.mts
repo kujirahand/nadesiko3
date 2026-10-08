@@ -1,5 +1,5 @@
 // TOMLを読むためのプラグイン
-import TOML from 'smol-toml'
+import { parse as tomlParse, stringify as tomlStringify } from 'tomlite'
 
 const PluginTOML = {
   'meta': {
@@ -25,7 +25,7 @@ const PluginTOML = {
     josi: [['を', 'の', 'から']],
     pure: true,
     fn: function(s: string, _sys: any) {
-      return TOML.parse(s)
+      return tomlParse(s)
     }
   },
   'TOML変換': { // @オブジェクトをTOML文字列にエンコードする // @TOMLへんかん
@@ -33,7 +33,7 @@ const PluginTOML = {
     josi: [['を', 'から', 'の']],
     pure: true,
     fn: function(s: any, _sys: any) {
-      return TOML.stringify(s)
+      return tomlStringify(s)
     }
   }
 }
