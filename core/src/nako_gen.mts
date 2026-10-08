@@ -11,7 +11,7 @@ import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstInc, Ast
 import { NakoCompiler } from './nako3.mjs'
 import { incValue } from './nako_inc_value.mjs'
 import { dnclEnsureArray } from './nako_dncl_ensure_array.mjs'
-import { readIndex } from './nako_read_index.mjs'
+import { createReadIndex } from './nako_read_index.mjs'
 
 // なでしこで定義した関数の開始コードと終了コード
 const topOfFunction = '(function(){\n'
@@ -2425,7 +2425,7 @@ self.__incValue = __incValueCode__
 // DNCLモードの多次元配列の中間要素の自動初期化。コア実行環境(NakoGlobal)と同じ実装を埋め込む (#1140)
 self.__dncl_ensure_array = __dnclEnsureArrayCode__
 // 文字列・配列・辞書の添字による読み取り (#2590)
-self.__readIndex = __readIndexCode__
+self.__readIndex = (__readIndexCode__)()
 self.logger = {
   error: (message) => { console.error(message) },
   warn: (message) => { console.warn(message) },
@@ -2638,7 +2638,7 @@ ${runtimeResult}
       jsInit,
       incValueCode: String(incValue),
       dnclEnsureArrayCode: String(dnclEnsureArray),
-      readIndexCode: String(readIndex)
+      readIndexCode: String(createReadIndex)
     }),
     // コード生成に使ったNakoGenのインスタンス
     gen

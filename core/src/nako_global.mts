@@ -6,7 +6,7 @@ import { CompilerOptions, NakoVars } from './nako_types.mjs'
 import { NakoValue } from './plugin_api.mjs'
 import { incValue } from './nako_inc_value.mjs'
 import { dnclEnsureArray } from './nako_dncl_ensure_array.mjs'
-import { readIndex } from './nako_read_index.mjs'
+import { createReadIndex } from './nako_read_index.mjs'
 
 /**
  * コンパイルされたなでしこのプログラムで、グローバル空間のthisが指すオブジェクト
@@ -83,7 +83,7 @@ export class NakoGlobal {
     // DNCLモードの多次元配列の中間要素の自動初期化。
     // 単体JavaScript(standalone)にも同じ実装を埋め込む (#1140)
     this.__dncl_ensure_array = dnclEnsureArray
-    this.__readIndex = readIndex
+    this.__readIndex = createReadIndex()
   }
 
   clearLog() {

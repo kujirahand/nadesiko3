@@ -34,6 +34,34 @@ describe('文字列の添字アクセス #2590', () => {
     await cmp('文章=「あ😀𠮷い」;文章[1]を表示;文章[2]を表示;文章[-2]を表示;文章[1…3]を表示', '😀\n𠮷\n𠮷\n😀𠮷')
   })
 
+  it('繰り返し参照後に文字列を変更しても文字と範囲を正しく取得する', async () => {
+    await cmp('文章=「あ😀い」;文章[1]を表示;文章[-2]を表示;文章[0…2]を表示;文章=「かきく」;文章[1]を表示;文章[0…2]を表示;文章=「😀𠮷」;文章[1]を表示;文章[-2]を表示;文章[0…2]を表示', '😀\n😀\nあ😀\nき\nかき\n𠮷\n😀\n😀𠮷')
+  })
+
+  it('長い文字列の添字ループを全文の配列化を繰り返さず実行できる', () => {
+    // 修正前は10万文字のループに数十秒かかる。通常は数十msで終了するため、
+    // CIの速度差を許容する5秒の上限で大幅な性能退行を検出する。
+    // 子プロセスにすることで同期ループでもタイムアウト時に停止できる。
+    const script = `
+      import { NakoCompiler } from ${JSON.stringify(new URL('../src/nako3.mjs', import.meta.url).href)}
+      for (const unit of ['あ', '😀']) {
+        const code = 'S=「' + unit.repeat(100000) + '」\\nIで0から99999まで繰り返す:\\n    C=S[I]\\nCを表示'
+        console.log((await new NakoCompiler().runAsync(code, 'main.nako3')).log)
+      }
+    `
+    const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], {
+      encoding: 'utf8',
+      timeout: 5000
+    })
+    assert.ifError(result.error)
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(result.stdout.trim(), 'あ\n😀')
+  })
+
+  it('範囲と同じ構造の辞書でも部分文字列を取得する', async () => {
+    await cmp('文章=「あ😀いう」;区間={「先頭」:1,「末尾」:3};文章[区間]を表示', '😀い')
+  })
+
   it('括弧内の値・関数の戻り値・入れ子の要素を参照する', async () => {
     await cmp('(「あいう」)[0…2]を表示;(「あいう」)@-1を表示', 'あい\nう')
     await cmp('A=[「あいう」];A[0][0…2]を表示;A[0,1]を表示;(A@0)[-1]を表示', 'あい\nい\nう')
