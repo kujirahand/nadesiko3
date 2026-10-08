@@ -18,6 +18,12 @@ describe('wnako3mod_test', () => {
     globalThis.window = originalWindow
   })
 
+  it('Web版でも文字列の添字と配列の範囲を参照できる #2590 #2599', async () => {
+    const compiler = new WebNakoCompiler()
+    const g = await compiler.runAsync('文章=「あ😀いう」;文章[1]を表示;文章[0…2]を表示;A=[0,1,2,3];A[0…3]をJSONエンコードして表示', 'main.nako3')
+    assert.strictEqual(g.log, '😀\nあ😀\n[0,1,2]')
+  })
+
   it('resolvePath で baseDir が / のときの // スタートの不具合が修正されていること', () => {
     const compiler = new WebNakoCompiler()
     const token = { file: 'main', line: 1 }
