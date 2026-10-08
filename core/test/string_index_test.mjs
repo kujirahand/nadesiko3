@@ -6,6 +6,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import { NakoCompiler } from '../src/nako3.mjs'
+import { createReadIndex } from '../src/nako_read_index.mjs'
 
 describe('文字列の添字アクセス #2590', () => {
   const cmp = async (code, expected) => {
@@ -60,6 +61,35 @@ describe('文字列の添字アクセス #2590', () => {
 
   it('範囲と同じ構造の辞書でも部分文字列を取得する', async () => {
     await cmp('文章=「あ😀いう」;区間={「先頭」:1,「末尾」:3};文章[区間]を表示', '😀い')
+  })
+
+  it('長い2つの文字列を交互に読む添字ループも高速に実行できる', () => {
+    // 1件だけのキャッシュでは毎回入れ替わるため、2つの異なる文字列で検証する。
+    const script = `
+      import { NakoCompiler } from ${JSON.stringify(new URL('../src/nako3.mjs', import.meta.url).href)}
+      for (const [a, b] of [['あ', 'い'], ['😀', '🚀']]) {
+        const code = 'S=「' + a.repeat(100000) + '」\\nT=「' + b.repeat(100000) + '」\\nIで0から99999まで繰り返す:\\n    C=S[I]&T[I]\\nCを表示'
+        console.log((await new NakoCompiler().runAsync(code, 'main.nako3')).log)
+      }
+    `
+    const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], {
+      encoding: 'utf8',
+      timeout: 5000
+    })
+    assert.ifError(result.error)
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(result.stdout.trim(), 'あい\n😀🚀')
+  })
+
+  it('多数の文字列を読んだ後も負の添字と範囲が正しい', () => {
+    const readIndex = createReadIndex()
+    const strings = ['あ😀い', 'か🚀き', 'さ𠮷し', 'た🐳ち', 'な🌸に', 'はひふ']
+    for (const texts of [strings, strings.toReversed()]) {
+      for (const text of texts) {
+        assert.equal(readIndex(text, -1), text.slice(-1))
+        assert.equal(readIndex(text, { 先頭: 0, 末尾: 3 }), text)
+      }
+    }
   })
 
   it('括弧内の値・関数の戻り値・入れ子の要素を参照する', async () => {

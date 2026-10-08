@@ -4,10 +4,9 @@
  * 単体JavaScriptにも埋め込むため、外部の関数には依存しない。
  */
 export function createReadIndex (): (base: any, index: any) => any {
-  // 実行環境ごとに直前の文字列だけを保持する。繰り返しの添字アクセスで
-  // 全文の走査・配列化を繰り返さず、異なる文字列を無制限に蓄積しない。
-  let lastString: string | undefined
-  let lastChars: string[] | null = null
+  // 実行環境ごとに最近使った文字列を最大4件保持する。複数の文字列を
+  // 交互に読む場合も全文の走査・配列化を繰り返さず、無制限に蓄積しない。
+  const cache = new Map<string, string[] | null>()
   return function readIndex (base: any, index: any): any {
     const isRange = index !== null && typeof index === 'object' &&
       typeof index['先頭'] === 'number' && typeof index['末尾'] === 'number'
@@ -19,16 +18,22 @@ export function createReadIndex (): (base: any, index: any) => any {
       const numberIndex = typeof index === 'string' && /^-?(0|[1-9]\d*)$/.test(index)
         ? Number(index) : index
       if (isRange || (typeof numberIndex === 'number' && Number.isInteger(numberIndex))) {
-        if (base !== lastString) {
+        let cachedChars = cache.get(base)
+        if (cachedChars === undefined) {
           // サロゲートを含まなければ文字列を直接読む。判定も同じ文字列では一度だけ。
-          lastChars = /[\uD800-\uDFFF]/.test(base) ? Array.from(base) : null
-          lastString = base
+          cachedChars = /[\uD800-\uDFFF]/.test(base) ? Array.from(base) : null
+          if (cache.size >= 4) {
+            cache.delete(cache.keys().next().value!)
+          }
         }
-        const chars = lastChars ?? base
+        // ヒットした文字列も末尾へ移し、長く使われていないものから破棄する。
+        cache.delete(base)
+        cache.set(base, cachedChars)
+        const chars = cachedChars ?? base
         if (isRange) {
-          return lastChars === null
+          return cachedChars === null
             ? base.slice(index['先頭'], index['末尾'])
-            : lastChars.slice(index['先頭'], index['末尾']).join('')
+            : cachedChars.slice(index['先頭'], index['末尾']).join('')
         }
         return chars[numberIndex < 0 ? chars.length + numberIndex : numberIndex]
       }
