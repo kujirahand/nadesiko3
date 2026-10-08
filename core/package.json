@@ -44,6 +44,6 @@
   },
   "dependencies": {
     "cross-env": "^10.0.0",
-    "tomlite": "^0.1.0"
+    "tomlite": "^0.1.1"
   }
 }
