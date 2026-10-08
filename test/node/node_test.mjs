@@ -38,6 +38,16 @@ describe('node_test(cnako)', () => {
     cmp('A=30;「--{A}--」を表示', '--30--')
   }).timeout(15000)
 
+  it('cnako3で文字列の添字と配列の範囲を参照できる #2590 #2599', () => {
+    const result = spawnSync(process.execPath, [cnako3, '-e', '文章=「あ😀いう」;文章[1]を表示;文章[0…2]を表示;A=[0,1,2,3];A[0…3]をJSON変換して表示'], {
+      encoding: 'utf8',
+      timeout: 15000
+    })
+    assert.ifError(result.error)
+    assert.strictEqual(result.status, 0, result.stderr)
+    assert.strictEqual(result.stdout.trim(), '😀\nあ😀\n[0,1,2]')
+  })
+
   const compileAndRun = (tempDir, code) => {
     const nakoFile = path.join(tempDir, 'main.nako3')
     const jsFile = path.join(tempDir, 'main.mjs')

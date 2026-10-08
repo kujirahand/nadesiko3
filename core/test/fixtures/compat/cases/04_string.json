@@ -273,10 +273,7 @@
       ],
       "tags": [
         "surrogate"
-      ],
-      "intentionalDiff": {
-        "go": "TS版はUTF-16コードユニット単位でサロゲートの片割れを返す。Go版はrune基準なので「𩸽」を返す"
-      }
+      ]
     }
   ]
 }
