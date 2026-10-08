@@ -1249,7 +1249,8 @@ export class NakoParser extends NakoParserBase {
     const dainyu = this.get() // 代入
     if (dainyu === null) { return null }
     const value = this.popStack(['を']) || { type: 'word', value: 'それ', josi: 'を', ...map } as AstStrValue
-    const word: Ast|null = this.popStack(['へ', 'に'])
+    const dest = this.popStack(['へ', 'に'])
+    const word = dest ? (this.normalizeArrayAssignmentTarget(dest) || dest) : null
     if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
       throw NakoSyntaxError.fromNode('代入文で代入先の変数が見当たりません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
@@ -1580,6 +1581,28 @@ export class NakoParser extends NakoParserBase {
   /** @returns {Ast | null} */
   yLet(): AstBlocks | null {
     const map = this.peekSourceMap()
+    // 括弧付きの配列要素への代入。式の中の比較は従来どおり yCalc で読む。(#2583)
+    if (this.check('(') && this.hasParenthesizedAssignment()) {
+      const value = this.yValue()
+      const target = value ? this.normalizeArrayAssignmentTarget(value) : null
+      if (target?.type === 'ref_array' && this.check('eq')) {
+        this.get() // skip '=' / 'は'
+        const astValue = this.yCalc()
+        if (!astValue) { throw NakoSyntaxError.fromNode('配列への代入文で値がありません。', map) }
+        const resolved = this.getAssignmentVarName(target)
+        if (this.check('comma')) { this.get() }
+        return {
+          type: 'let_array',
+          name: (resolved.name as AstStrValue).value,
+          blocks: [astValue, ...(resolved.index || [])],
+          josi: '',
+          checkInit: target.checkInit,
+          ...map,
+          end: this.peekSourceMap()
+        } as AstLetArray
+      }
+      throw NakoSyntaxError.fromNode('括弧付きの代入先は、変数を起点とする配列要素で指定してください。', map)
+    }
     // 通常の変数
     if (this.check2(['word', 'eq'])) {
       const word = this.peek()
@@ -2575,6 +2598,51 @@ export class NakoParser extends NakoParserBase {
       word.value = f.name
     }
     return word
+  }
+
+  /** 括弧付き代入の候補をトークンだけで確認する。(#2583)
+   * yValue の先読みは変数名や関数の使用記録も更新するため、解析後の巻き戻しはしない。
+   * 括弧内の比較は無視し、外側の助詞・演算子・文末で探索を終了する。
+   */
+  private hasParenthesizedAssignment(): boolean {
+    const closings: string[] = []
+    for (let i = this.index; i < this.tokens.length; i++) {
+      const token = this.tokens[i]
+      if (closings.length === 0) {
+        if (token.type === 'eq') { return true }
+        // @直後の単項演算子は添字の一部。値の後ろの二項演算子とは区別する。
+        const unaryIndex = ['-', 'not'].includes(token.type) && ['@', 'not'].includes(this.tokens[i - 1]?.type)
+        if (!unaryIndex && !['(', '[', '{', '@', 'word', 'func', 'func_pointer', 'number', 'bigint', 'string'].includes(token.type)) { return false }
+      }
+      if (token.type === '(') { closings.push(')') } else if (token.type === '[') { closings.push(']') } else if (token.type === '{') { closings.push('}') } else if ([')', ']', '}'].includes(token.type)) {
+        if (closings.pop() !== token.type) { return false }
+      }
+      if (closings.length === 0 && token.josi !== '') { return false }
+    }
+    return false
+  }
+
+  /** 括弧付きの配列参照を、変数を起点とする代入先へ変換する。(#2583)
+   * 添字は内側から順に連結し、参照用のASTは書き換えない。
+   * 関数の戻り値やリテラルなど、変数を起点としない参照は対象外。
+   */
+  private normalizeArrayAssignmentTarget(node: Ast): Ast | null {
+    if (node.type === 'word') { return node }
+    // ref_array の name は文字列の場合もあるが、ここでは変数トークンを持つ参照だけを扱う。
+    if (node.type === 'ref_array' && typeof node.name !== 'string' && node.name?.type === 'word') {
+      return { ...node, index: [...(node.index || [])] }
+    }
+    if (node.type !== 'ref_array_value' || (node.name !== '@' && node.name !== '[')) { return null }
+    const [base, ...indexes] = node.index || []
+    const target = base ? this.normalizeArrayAssignmentTarget(base) : null
+    if (!target) { return null }
+    return {
+      ...node,
+      type: 'ref_array',
+      name: target.type === 'word' ? target : target.name,
+      index: [...(target.index || []), ...indexes],
+      checkInit: this.flagCheckArrayInit
+    }
   }
 
   /** 代入・増減対象の変数名を、元の無修飾名を考慮して解決する */
