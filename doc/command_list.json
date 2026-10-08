@@ -5114,7 +5114,7 @@
       "cnako"
     ],
     "category": "CSV操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L37",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L39",
     "description": "TSV形式のデータstrを強制的に二次元配列に変換して返す"
   },
   {
@@ -5129,7 +5129,7 @@
       "cnako"
     ],
     "category": "CSV操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L46",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L47",
     "description": "二次元配列AをCSV形式に変換して返す"
   },
   {
@@ -5144,7 +5144,7 @@
       "cnako"
     ],
     "category": "CSV操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L55",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L58",
     "description": "二次元配列AをCSV形式に変換して返す"
   },
   {
@@ -5159,7 +5159,7 @@
       "cnako"
     ],
     "category": "CSV操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L64",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L69",
     "description": "二次元配列AをTSV形式に変換して返す"
   },
   {
@@ -5174,7 +5174,7 @@
       "cnako"
     ],
     "category": "CSV操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L73",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L77",
     "description": "二次元配列AをTSV形式に変換して返す"
   },
   {
@@ -5189,7 +5189,7 @@
       "cnako"
     ],
     "category": "CSV操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L82",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_csv.mts#L85",
     "description": "「CSV取得」「表CSV変換」命令のオプションOBJ{delimiter,eol,auto_convert_number}をオブジェクトで指定"
   },
   {
