@@ -1582,8 +1582,7 @@ export class NakoParser extends NakoParserBase {
   yLet(): AstBlocks | null {
     const map = this.peekSourceMap()
     // 括弧付きの配列要素への代入。式の中の比較は従来どおり yCalc で読む。(#2583)
-    if (this.check('(')) {
-      const startIndex = this.index
+    if (this.check('(') && this.hasParenthesizedAssignment()) {
       const value = this.yValue()
       const target = value ? this.normalizeArrayAssignmentTarget(value) : null
       if (target?.type === 'ref_array' && this.check('eq')) {
@@ -1597,12 +1596,12 @@ export class NakoParser extends NakoParserBase {
           name: (resolved.name as AstStrValue).value,
           blocks: [astValue, ...(resolved.index || [])],
           josi: '',
-          checkInit: this.flagCheckArrayInit,
+          checkInit: target.checkInit,
           ...map,
           end: this.peekSourceMap()
         } as AstLetArray
       }
-      this.index = startIndex
+      throw NakoSyntaxError.fromNode('括弧付きの代入先は、変数を起点とする配列要素で指定してください。', map)
     }
     // 通常の変数
     if (this.check2(['word', 'eq'])) {
@@ -2601,12 +2600,35 @@ export class NakoParser extends NakoParserBase {
     return word
   }
 
+  /** 括弧付き代入の候補をトークンだけで確認する。(#2583)
+   * yValue の先読みは変数名や関数の使用記録も更新するため、解析後の巻き戻しはしない。
+   * 括弧内の比較は無視し、外側の助詞・演算子・文末で探索を終了する。
+   */
+  private hasParenthesizedAssignment(): boolean {
+    const closings: string[] = []
+    for (let i = this.index; i < this.tokens.length; i++) {
+      const token = this.tokens[i]
+      if (closings.length === 0) {
+        if (token.type === 'eq') { return true }
+        // @直後の単項演算子は添字の一部。値の後ろの二項演算子とは区別する。
+        const unaryIndex = ['-', 'not'].includes(token.type) && ['@', 'not'].includes(this.tokens[i - 1]?.type)
+        if (!unaryIndex && !['(', '[', '{', '@', 'word', 'func', 'func_pointer', 'number', 'bigint', 'string'].includes(token.type)) { return false }
+      }
+      if (token.type === '(') { closings.push(')') } else if (token.type === '[') { closings.push(']') } else if (token.type === '{') { closings.push('}') } else if ([')', ']', '}'].includes(token.type)) {
+        if (closings.pop() !== token.type) { return false }
+      }
+      if (closings.length === 0 && token.josi !== '') { return false }
+    }
+    return false
+  }
+
   /** 括弧付きの配列参照を、変数を起点とする代入先へ変換する。(#2583)
    * 添字は内側から順に連結し、参照用のASTは書き換えない。
    * 関数の戻り値やリテラルなど、変数を起点としない参照は対象外。
    */
   private normalizeArrayAssignmentTarget(node: Ast): Ast | null {
     if (node.type === 'word') { return node }
+    // ref_array の name は文字列の場合もあるが、ここでは変数トークンを持つ参照だけを扱う。
     if (node.type === 'ref_array' && typeof node.name !== 'string' && node.name?.type === 'word') {
       return { ...node, index: [...(node.index || [])] }
     }

@@ -2,6 +2,7 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
+import { NakoParser } from '../src/nako_parser3.mjs'
 
 describe('array_test', async () => {
   const cmp = async (/** @type {string} */code, /** @type {string} */res) => {
@@ -37,9 +38,31 @@ describe('array_test', async () => {
   })
   it('括弧付きの配列要素へ代入できる #2583', async () => {
     for (const target of ['(ホゲ@0)@1', '(ホゲ@0)[1]', '(ホゲ[0])@1', '((ホゲ)@0)@1', '(ホゲ@0@1)']) {
-      for (const assignment of [`${target}に72を代入`, `72を${target}に代入`, `${target}は72`, `${target}=72`]) {
+      for (const assignment of [`${target}に72を代入`, `72を${target}に代入`, `${target}へ72を代入`, `${target}は72`, `${target}=72`]) {
         await cmp(`ホゲは[[1,2],[3,4]]。${assignment}。ホゲをJSONエンコードして表示。`, '[[1,72],[3,4]]')
       }
+    }
+  })
+  it('括弧付きの配列代入からカンマで次の代入へ続けられる #2583', async () => {
+    await cmp('A=[[1,2]];(A@0)@1=72,B=3;AをJSONエンコードして表示;Bを表示', '[[1,72]]\n3')
+    await cmp('A=[[1,2]];(A@0)@-1=72;(A@0)@-1を表示', '72')
+  })
+  it('代入でない括弧始まりの文を先読みで再解析しない #2583', async () => {
+    const original = NakoParser.prototype.yValueKakko
+    let count = 0
+    NakoParser.prototype.yValueKakko = function () {
+      count++
+      return original.call(this)
+    }
+    try {
+      await cmp('(1+2)を表示', '3')
+      assert.strictEqual(count, 1)
+      await cmp('(1+2)-2を表示', '1')
+      count = 0
+      await cmp('●(値を)二倍とは\n値*2を戻す\nここまで\n(3を二倍)を表示', '6')
+      assert.strictEqual(count, 1)
+    } finally {
+      NakoParser.prototype.yValueKakko = original
     }
   })
   it('括弧付きの配列代入でも添字を順番に一度だけ評価する #2583', async () => {
