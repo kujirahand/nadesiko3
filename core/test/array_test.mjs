@@ -35,6 +35,37 @@ describe('array_test', async () => {
     await cmp('A=[[[1,2],[3,4]],[[5,6],[7,8]]]; A[1, 1, 1]を表示', '8')
     await cmp('A=[[[1,2],[3,4]],[[5,6],[7,8]]]; A@1@1@1を表示', '8')
   })
+  it('括弧付きの配列要素へ代入できる #2583', async () => {
+    for (const target of ['(ホゲ@0)@1', '(ホゲ@0)[1]', '(ホゲ[0])@1', '((ホゲ)@0)@1', '(ホゲ@0@1)']) {
+      for (const assignment of [`${target}に72を代入`, `72を${target}に代入`, `${target}は72`, `${target}=72`]) {
+        await cmp(`ホゲは[[1,2],[3,4]]。${assignment}。ホゲをJSONエンコードして表示。`, '[[1,72],[3,4]]')
+      }
+    }
+  })
+  it('括弧付きの配列代入でも添字を順番に一度だけ評価する #2583', async () => {
+    const prefix = '履歴="";●(値を)添字とは\n履歴=履歴&値\n値を戻す\nここまで\nA=[[1,2],[3,4]];'
+    for (const assignment of ['(A@(0を添字))@(1を添字)=72', '(A@(0を添字))@(1を添字)に72を代入']) {
+      await cmp(`${prefix}${assignment};履歴を表示;AをJSONエンコードして表示`, '01\n[[1,72],[3,4]]')
+    }
+  })
+  it('括弧付き配列の読み取りと比較を維持する #2583', async () => {
+    await cmp('A=[[1,2],[3,4]];(A@0)@1を表示;結果=((A@0)@1=2);結果を表示', '2\ntrue')
+    await cmp('A=[[1,2]];もし(A@0)@1=2ならば\n「一致」を表示\nここまで', '一致')
+    await cmp('A=[10,20,30];B=[1];(A)@(B@0)=72;AをJSONエンコードして表示', '[10,72,30]')
+  })
+  it('括弧付き配列の代入でもDNCLの自動初期化を維持する #2583', async () => {
+    for (const assignment of ['(A@0)@1=72', '(A@0)@1に72を代入']) {
+      await cmp(`DNCLモード;${assignment};A[0][1]を表示`, '72')
+    }
+  })
+  it('変数を起点としない括弧付き参照への代入は許可しない #2583', async () => {
+    for (const target of ['([1,2])@0', '(1+2)@0']) {
+      for (const assignment of [`${target}=72`, `${target}に72を代入`]) {
+        const nako = new NakoCompiler()
+        await assert.rejects(nako.runAsync(assignment, 'main.nako3'), { type: 'NakoSyntaxError' })
+      }
+    }
+  })
   it('要素から配列を記述する際に明示的な()が必要になる不具合 #1000', async () => {
     await cmp('Aは[0,1,2];Bは[A[1], A[1], A[2]];B[1]を表示', '1')
   })

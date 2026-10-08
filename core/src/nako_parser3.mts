@@ -1249,7 +1249,8 @@ export class NakoParser extends NakoParserBase {
     const dainyu = this.get() // 代入
     if (dainyu === null) { return null }
     const value = this.popStack(['を']) || { type: 'word', value: 'それ', josi: 'を', ...map } as AstStrValue
-    const word: Ast|null = this.popStack(['へ', 'に'])
+    const dest = this.popStack(['へ', 'に'])
+    const word = dest ? (this.normalizeArrayAssignmentTarget(dest) || dest) : null
     if (!word || (word.type !== 'word' && word.type !== 'func' && word.type !== 'ref_array')) {
       throw NakoSyntaxError.fromNode('代入文で代入先の変数が見当たりません。『(変数名)に(値)を代入』のように使います。', dainyu)
     }
@@ -1580,6 +1581,29 @@ export class NakoParser extends NakoParserBase {
   /** @returns {Ast | null} */
   yLet(): AstBlocks | null {
     const map = this.peekSourceMap()
+    // 括弧付きの配列要素への代入。式の中の比較は従来どおり yCalc で読む。(#2583)
+    if (this.check('(')) {
+      const startIndex = this.index
+      const value = this.yValue()
+      const target = value ? this.normalizeArrayAssignmentTarget(value) : null
+      if (target?.type === 'ref_array' && this.check('eq')) {
+        this.get() // skip '=' / 'は'
+        const astValue = this.yCalc()
+        if (!astValue) { throw NakoSyntaxError.fromNode('配列への代入文で値がありません。', map) }
+        const resolved = this.getAssignmentVarName(target)
+        if (this.check('comma')) { this.get() }
+        return {
+          type: 'let_array',
+          name: (resolved.name as AstStrValue).value,
+          blocks: [astValue, ...(resolved.index || [])],
+          josi: '',
+          checkInit: this.flagCheckArrayInit,
+          ...map,
+          end: this.peekSourceMap()
+        } as AstLetArray
+      }
+      this.index = startIndex
+    }
     // 通常の変数
     if (this.check2(['word', 'eq'])) {
       const word = this.peek()
@@ -2575,6 +2599,28 @@ export class NakoParser extends NakoParserBase {
       word.value = f.name
     }
     return word
+  }
+
+  /** 括弧付きの配列参照を、変数を起点とする代入先へ変換する。(#2583)
+   * 添字は内側から順に連結し、参照用のASTは書き換えない。
+   * 関数の戻り値やリテラルなど、変数を起点としない参照は対象外。
+   */
+  private normalizeArrayAssignmentTarget(node: Ast): Ast | null {
+    if (node.type === 'word') { return node }
+    if (node.type === 'ref_array' && typeof node.name !== 'string' && node.name?.type === 'word') {
+      return { ...node, index: [...(node.index || [])] }
+    }
+    if (node.type !== 'ref_array_value' || (node.name !== '@' && node.name !== '[')) { return null }
+    const [base, ...indexes] = node.index || []
+    const target = base ? this.normalizeArrayAssignmentTarget(base) : null
+    if (!target) { return null }
+    return {
+      ...node,
+      type: 'ref_array',
+      name: target.type === 'word' ? target : target.name,
+      index: [...(target.index || []), ...indexes],
+      checkInit: this.flagCheckArrayInit
+    }
   }
 
   /** 代入・増減対象の変数名を、元の無修飾名を考慮して解決する */
