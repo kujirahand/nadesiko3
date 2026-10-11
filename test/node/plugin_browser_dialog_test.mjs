@@ -276,6 +276,32 @@ DOMスキン辞書@「共通」=関数(TYPE,OBJ)
     assert.strictEqual(log, 'CANCEL')
   })
 
+  // 設定値の型を保ち、入力済みでもキャンセル時は入力値を返さない (#2605)
+  for (const command of ['尋ねる', '文字尋ねる']) {
+    for (const [action, operate] of [
+      ['キャンセル', (dlg) => getButtonIn(dlg, 'キャンセル').click()],
+      ['[x]', (dlg) => dlg.findByClass('nako3dialog-close')[0].click()],
+      ['Esc', (dlg) => dlg.dispatch('cancel')]
+    ]) {
+      it(`${command} - ${action}で設定したキャンセル値をそのまま返す #2605`, async () => {
+        for (const [value, expected] of [['「CANCEL」', '"CANCEL"'], ['NULL', 'null'], ['0', '0'], ['偽', 'false'], ['「」', '""'], ['「123」', '"123"']]) {
+          const code = `ダイアログキャンセル値=${value}。「名前は？」と${command}。それをJSONエンコードして表示`
+          const log = await run(code, (dlg) => {
+            dlg.findByClass('nako3dialog-input')[0].value = '入力途中'
+            operate(dlg)
+          })
+          assert.strictEqual(log, expected)
+        }
+      })
+    }
+
+    it(`${command} - 未入力のOKとキャンセルを区別する #2605`, async () => {
+      const code = `ダイアログキャンセル値=NULL。回答=「名前は？」と${command}。回答をJSONエンコードして表示`
+      assert.strictEqual(await run(code, (dlg) => getButtonIn(dlg, 'OK').click()), '""')
+      assert.strictEqual(await run(code, (dlg) => getButtonIn(dlg, 'キャンセル').click()), 'null')
+    })
+  }
+
   it('二択 - OKとキャンセルと[x]', async () => {
     assert.strictEqual(await run('「続けますか」で二択。それを表示', () => getButton(doc, 'OK').click()), 'true')
     assert.strictEqual(await run('「続けますか」で二択。それを表示', () => getButton(doc, 'キャンセル').click()), 'false')
