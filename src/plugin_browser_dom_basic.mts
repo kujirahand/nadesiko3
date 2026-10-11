@@ -234,7 +234,7 @@ export default {
         }
         dom = domList
       }
-      if (dom instanceof window.HTMLElement) { dom = [dom] }
+      if (dom instanceof window.Element) { dom = [dom] }
       const wa = sys.__getSysVar('DOM和属性')
       // 列挙したDOM一覧を全て属性変更する
       for (let i = 0; i < dom.length; i++) {
