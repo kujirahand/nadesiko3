@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { NakoCompiler } from '../src/nako3.mjs'
+import { NakoGen } from '../src/nako_gen.mjs'
 
 const cmp = async (code, expected) => {
   const nako = new NakoCompiler()
@@ -33,6 +34,93 @@ describe('もし式 #2591', () => {
 違えば:
   2
 猫愛嬌を表示`, '5')
+  })
+
+  it('単行と複数行を組み合わせた分岐を閉じる', async () => {
+    for (const [condition, expected] of [[1, '5\n後続'], [0, '2\n後続']]) {
+      await cmp(`A=もし${condition}なら5
+違えば
+  2
+ここまで
+Aを表示
+「後続」を表示`, expected)
+      await cmp(`A=もし${condition}なら
+  5
+違えば2
+ここまで
+Aを表示
+「後続」を表示`, expected)
+    }
+  })
+
+  it('単行式が外側の関数やもし文のここまでを消費しない', async () => {
+    await cmp(`●選択処理
+  A=もし1なら5、違えば2
+  Aを表示
+ここまで
+選択処理
+もし1なら
+  A=もし0なら5、違えば2
+ここまで
+Aを表示
+「後続」を表示`, '5\n2\n後続')
+  })
+
+  it('分岐で初めて代入・宣言した変数を式の外から参照できる', async () => {
+    for (const condition of [1, 0]) {
+      await cmp(`A=もし${condition}なら
+  新代入値=7
+  変数の新宣言値=8
+  5
+違えば
+  新代入値=9
+  変数の偽宣言値=10
+  2
+ここまで
+新代入値を表示
+${condition ? '新宣言値' : '偽宣言値'}を表示`, condition ? '7\n8' : '9\n10')
+    }
+  })
+
+  it('関数内の分岐の変数は関数スコープに属する', async () => {
+    await cmp(`変数の共有値=100
+●選択処理
+  A=もし1なら
+    新局所値=7
+    変数の共有値=8
+    5
+  違えば
+    2
+  ここまで
+  新局所値を表示
+  共有値を表示
+ここまで
+選択処理
+共有値を表示`, '7\n8\n100')
+  })
+
+  it('複数行のもし式を括弧に付けた助詞で関数に渡す', async () => {
+    await cmp(`3に(もし1なら
+  5
+違えば
+  2
+ここまで)を足して表示`, '8')
+    await cmp(`(もし0なら
+  5
+違えば
+  2
+ここまで)を表示`, '2')
+  })
+
+  it('空の分岐ASTをジェネレーターに渡しても構文エラーになる', () => {
+    const gen = new NakoGen(new NakoCompiler())
+    const empty = { type: 'block', blocks: [], josi: '', line: 0, file: 'main.nako3' }
+    for (const blocks of [
+      [{ type: 'number', value: 1, line: 0 }, empty, empty],
+      [{ type: 'number', value: 0, line: 0 }, { ...empty, blocks: [{ type: 'number', value: 5, line: 0 }] }, empty]
+    ]) {
+      assert.throws(() => gen.convIfExpression({ type: 'if_expr', blocks, line: 0 }), /もし.*式.*末尾/)
+    }
   })
 
   it('括弧の中で計算・引数・配列・辞書の値に使える', async () => {
@@ -105,8 +193,12 @@ Aを表示
 ここまで
 非同期選択処理を表示
 A=もし0なら非同期値取得、違えば2
-Aを表示`, 'main.nako3')).log, '7\n2')
-    assert.equal(calls, 1)
+Aを表示
+A=もし非同期値取得なら5、違えば2
+Aを表示
+A=もし0なら5、違えば非同期値取得
+Aを表示`, 'main.nako3')).log, '7\n2\n5\n7')
+    assert.equal(calls, 3)
   })
 
   it('未選択の分岐の例外は発生しない', async () => {
@@ -136,5 +228,17 @@ Aを表示`, 'main.nako3')).log, '7\n2')
   it('従来のもし文を保つ', async () => {
     await cmp('もし1なら「真」を表示。違えば「偽」を表示。', '真')
     await cmp('もし0なら\n「真」を表示\n違えば\n「偽」を表示\nここまで', '偽')
+    await cmp('A=もし1なら5、違えば2。もしA=5なら「真」を表示。', '真')
+  })
+
+  it('分岐の先頭の未対応構文を明示する', () => {
+    const nako = new NakoCompiler()
+    assert.throws(() => nako.compile('A=もし1なら\n抜ける\n5\n違えば\n2\nここまで', 'main.nako3'), /もし.*式の分岐には代入/)
+  })
+
+  it('構文エラー後も同じコンパイラで再実行できる', async () => {
+    const nako = new NakoCompiler()
+    assert.throws(() => nako.compile('A=もし1なら5', 'main.nako3'), /もし.*式/)
+    assert.equal((await nako.runAsync('A=もし0なら5、違えば2。Aを表示', 'main.nako3')).log, '2')
   })
 })

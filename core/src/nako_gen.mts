@@ -1735,6 +1735,9 @@ export class NakoGen {
     const branch = (block: Ast): string => {
       const values = (block as AstBlocks).blocks
       const last = values[values.length - 1]
+      if (!last) {
+        throw NakoSyntaxError.fromNode('「もし」式の分岐の末尾には値を返す式が必要です。', block)
+      }
       if (last.type === 'func' || last.type === 'calc_func') {
         const func = this.__self.getFunc((last as AstCallFunc).name)
         if (func?.return_none) {

@@ -524,16 +524,18 @@ export class NakoParser extends NakoParserBase {
       while (this.check('comma')) { this.get() }
       const cond = this.yIFCond()
       while (this.check('comma')) { this.get() }
-      const multiline = this.check('eol')
-      const trueBlock = this.yIFExpressionBranch(multiline)
+      const trueMultiline = this.check('eol')
+      const trueBlock = this.yIFExpressionBranch(trueMultiline)
       while (this.checkTypes(['comma', 'eol'])) { this.get() }
       if (!this.check('違えば')) {
         throw NakoSyntaxError.fromNode('「もし」式には「違えば」が必要です。', map)
       }
       this.get()
       while (this.check('comma')) { this.get() }
-      const falseBlock = this.yIFExpressionBranch(multiline)
-      if (multiline) {
+      const falseMultiline = this.check('eol')
+      const falseBlock = this.yIFExpressionBranch(falseMultiline)
+      if (trueMultiline || falseMultiline) {
+        while (this.check('eol')) { this.get() }
         if (!this.check('ここまで')) {
           throw NakoSyntaxError.fromNode('「もし」式で「ここまで」がありません。', map)
         }
@@ -561,7 +563,9 @@ export class NakoParser extends NakoParserBase {
       }
       if (this.checkTypes(['違えば', 'ここまで'])) { break }
       const value = this.yLet() || this.yCalc() || (this.check('func') ? this.yCall() : null)
-      if (!value) { break }
+      if (!value) {
+        throw NakoSyntaxError.fromNode('「もし」式の分岐には代入・関数呼び出し・値の式を書いてください。', this.peekSourceMap())
+      }
       if (!expressionTypes.includes(value.type) && !statementTypes.includes(value.type)) {
         throw NakoSyntaxError.fromNode('「もし」式の分岐には代入・関数呼び出し・値の式を書いてください。', value)
       }
