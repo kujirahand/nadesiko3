@@ -2,6 +2,7 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { NakoCompiler } from '../src/nako3.mjs'
 import { NakoGen } from '../src/nako_gen.mjs'
+import { NakoParser } from '../src/nako_parser3.mjs'
 
 const cmp = async (code, expected) => {
   const nako = new NakoCompiler()
@@ -240,5 +241,46 @@ Aを表示`, 'main.nako3')).log, '7\n2\n5\n7')
     const nako = new NakoCompiler()
     assert.throws(() => nako.compile('A=もし1なら5', 'main.nako3'), /もし.*式/)
     assert.equal((await nako.runAsync('A=もし0なら5、違えば2。Aを表示', 'main.nako3')).log, '2')
+  })
+
+  it('文形式の入れ子にはもし式の案内を表示する', () => {
+    for (const body of ['もし1なら「a」を表示', 'もし1なら\n  「a」を表示\nここまで', 'もし1なら5']) {
+      const nako = new NakoCompiler()
+      assert.throws(() => nako.compile(`A=もし1なら\n${body}\n5\n違えば\n2\nここまで`, 'main.nako3'), /入れ子の条件分岐は.*「もし」式で書いてください/)
+    }
+  })
+
+  it('もし式の解析失敗時に開始位置と外側のスタックを戻す', () => {
+    for (const code of ['もし1なら5', '(もし1なら5)', 'もし1なら(もし1なら5)、違えば2']) {
+      const nako = new NakoCompiler()
+      const parser = new NakoParser(nako.logger)
+      parser.setFuncList(nako.funclist)
+      parser.tokens = nako.lex(code, 'main.nako3').tokens
+      const startIndex = code.startsWith('(') ? 1 : 0
+      parser.index = startIndex
+      const stack = [{ type: 'number', value: 3, josi: 'に', line: 0 }]
+      parser.stack = stack
+      parser.isReadingCalc = true
+      assert.throws(() => parser.yIFExpression(), /もし.*式/)
+      assert.equal(parser.getIndex(), startIndex)
+      assert.strictEqual(parser.stack, stack)
+      assert.equal(parser.stackList.length, 0)
+      assert.equal(parser.isReadingCalc, true)
+      assert.equal(parser.ifExpressionDepth, 0)
+    }
+  })
+
+  it('パーサーとジェネレーターで同じ末尾の値の検証を使う', () => {
+    for (const value of ['「結果」を表示', '表示(「結果」)', 'B=5']) {
+      const nako = new NakoCompiler()
+      assert.throws(() => nako.parse(`A=もし1なら\n${value}\n違えば\n2\nここまで`, 'main.nako3'), /もし.*式.*末尾/)
+    }
+    const nako = new NakoCompiler()
+    const ast = nako.parse('A=もし1なら5、違えば2', 'main.nako3')
+    const node = ast.blocks.find(node => node.type === 'let').blocks[0]
+    node.blocks[1].blocks = [{ type: 'func', name: '表示', blocks: [], line: 0 }]
+    assert.throws(() => new NakoGen(nako).convIfExpression(node), /もし.*式.*末尾/)
+    node.blocks[1].blocks = [{ type: 'let', name: 'B', blocks: [], line: 0 }]
+    assert.throws(() => new NakoGen(nako).convIfExpression(node), /もし.*式.*末尾/)
   })
 })

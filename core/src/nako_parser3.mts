@@ -42,6 +42,7 @@ import { NakoParserBase } from './nako_parser_base.mjs'
 import { infixToAST } from './nako_parser_operator.mjs'
 import { checkAsyncFn } from './nako_parser_async.mjs'
 import { makeStackBalanceReport } from './nako_parser_message.mjs'
+import { validateIfExpressionStatement, validateIfExpressionBranch } from './nako_if_expression.mjs'
 import { NakoSyntaxError } from './nako_errors.mjs'
 import { NakoLexer } from './nako_lexer.mjs'
 import { FuncListItemType, NewEmptyToken, SourceMap } from './nako_types.mjs'
@@ -53,6 +54,7 @@ import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
  */
 export class NakoParser extends NakoParserBase {
   private originalVarNames = new WeakMap<object, string>()
+  private ifExpressionDepth = 0
 
   /**
    * 構文解析を実行する
@@ -60,6 +62,7 @@ export class NakoParser extends NakoParserBase {
   parse(tokens: Token[], filename: string): Ast {
     this.reset()
     this.originalVarNames = new WeakMap<object, string>()
+    this.ifExpressionDepth = 0
     this.tokens = tokens
     this.modName = NakoLexer.filenameToModName(filename)
     this.modList.push(this.modName)
@@ -517,7 +520,12 @@ export class NakoParser extends NakoParserBase {
   /** 値として使う条件分岐。各分岐の末尾の式を結果にする。 (#2591) */
   yIFExpression(): AstIf {
     const map = this.peekSourceMap()
+    const startIndex = this.index
+    const outerReadingCalc = this.isReadingCalc
+    const outerStackList = this.stackList.slice()
     const outerStack = this.stack
+    const isNested = this.ifExpressionDepth > 0
+    this.ifExpressionDepth++
     this.stack = []
     try {
       this.get() // skip もし
@@ -528,7 +536,10 @@ export class NakoParser extends NakoParserBase {
       const trueBlock = this.yIFExpressionBranch(trueMultiline)
       while (this.checkTypes(['comma', 'eol'])) { this.get() }
       if (!this.check('違えば')) {
-        throw NakoSyntaxError.fromNode('「もし」式には「違えば」が必要です。', map)
+        const message = isNested
+          ? '入れ子の条件分岐は、両分岐で値を返す「もし」式で書いてください。「違えば」が必要です。'
+          : '「もし」式には「違えば」が必要です。'
+        throw NakoSyntaxError.fromNode(message, map)
       }
       this.get()
       while (this.check('comma')) { this.get() }
@@ -542,21 +553,28 @@ export class NakoParser extends NakoParserBase {
         this.get()
       }
       return { type: 'if_expr', blocks: [cond, trueBlock, falseBlock], josi: '', ...map, end: this.peekSourceMap() }
+    } catch (err) {
+      // エラー位置は例外に保持したまま、呼び出し時の位置へ戻す。
+      // 解析失敗は再送出し、別構文の試行には使わない。
+      this.index = startIndex
+      if (isNested && err instanceof NakoSyntaxError && !err.msg.includes('入れ子')) {
+        throw NakoSyntaxError.fromNode('入れ子の条件分岐は、両分岐で値を返す「もし」式で書いてください。\n' + err.msg, {
+          ...map, line: err.line ?? map.line, file: err.file ?? map.file,
+          startOffset: err.startOffset, endOffset: err.endOffset
+        })
+      }
+      throw err
     } finally {
       this.stack = outerStack
+      this.stackList = outerStackList
+      this.isReadingCalc = outerReadingCalc
+      this.ifExpressionDepth--
     }
   }
 
   yIFExpressionBranch(multiline: boolean): AstBlocks {
     const map = this.peekSourceMap()
     const blocks: Ast[] = []
-    const expressionTypes: NodeType[] = [
-      'number', 'bigint', 'bool', 'null', 'string', 'word', 'variable',
-      'op', 'calc', 'not', 'and', 'or', 'eq', 'func', 'calc_func',
-      'call_value', 'func_pointer', 'func_obj', 'json_array', 'json_obj',
-      'ref_array', 'ref_prop', 'ref_array_value', 'renbun', 'if_expr'
-    ]
-    const statementTypes: NodeType[] = ['let', 'let_array', 'let_prop', 'def_local_var', 'def_local_varlist', 'inc']
     while (!this.isEOF()) {
       if (multiline) {
         while (this.check('eol')) { this.get() }
@@ -566,9 +584,7 @@ export class NakoParser extends NakoParserBase {
       if (!value) {
         throw NakoSyntaxError.fromNode('「もし」式の分岐には代入・関数呼び出し・値の式を書いてください。', this.peekSourceMap())
       }
-      if (!expressionTypes.includes(value.type) && !statementTypes.includes(value.type)) {
-        throw NakoSyntaxError.fromNode('「もし」式の分岐には代入・関数呼び出し・値の式を書いてください。', value)
-      }
+      validateIfExpressionStatement(value)
       if (this.stack.length > 0) {
         throw NakoSyntaxError.fromNode(this.makeStackBalanceReport(), value)
       }
@@ -578,11 +594,9 @@ export class NakoParser extends NakoParserBase {
         throw NakoSyntaxError.fromNode('「もし」式の分岐では文を改行で区切ってください。', this.peekSourceMap())
       }
     }
-    const last = blocks[blocks.length - 1]
-    if (!last || !expressionTypes.includes(last.type)) {
-      throw NakoSyntaxError.fromNode('「もし」式の分岐の末尾には値を返す式が必要です。', map)
-    }
-    return { type: 'block', blocks, josi: '', ...map, end: this.peekSourceMap() }
+    const block: AstBlocks = { type: 'block', blocks, josi: '', ...map, end: this.peekSourceMap() }
+    validateIfExpressionBranch(block, name => this.funclist.get(name))
+    return block
   }
 
   /** 「もし」文の「もし」以降の判定 ... 「もし」がなくても条件分岐は動くようになっている

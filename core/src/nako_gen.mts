@@ -6,6 +6,7 @@
  */
 
 import { NakoSyntaxError } from './nako_errors.mjs'
+import { validateIfExpressionBranch } from './nako_if_expression.mjs'
 import { FuncList, FuncArgs, FuncListItem, NakoDebugOption } from './nako_types.mjs'
 import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstInc, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
@@ -1733,17 +1734,9 @@ export class NakoGen {
     const asyncCount = this.numAsyncFn
     const cond = this._convGen(node.blocks[0], true)
     const branch = (block: Ast): string => {
+      validateIfExpressionBranch(block as AstBlocks, name => this.__self.getFunc(name))
       const values = (block as AstBlocks).blocks
       const last = values[values.length - 1]
-      if (!last) {
-        throw NakoSyntaxError.fromNode('「もし」式の分岐の末尾には値を返す式が必要です。', block)
-      }
-      if (last.type === 'func' || last.type === 'calc_func') {
-        const func = this.__self.getFunc((last as AstCallFunc).name)
-        if (func?.return_none) {
-          throw NakoSyntaxError.fromNode('「もし」式の分岐の末尾には値を返す式が必要です。', last)
-        }
-      }
       const body = values.slice(0, -1).map(value => this._convGen(value, false) + ';\n').join('')
       return body + `return (${this._convGen(last, true)});\n`
     }
