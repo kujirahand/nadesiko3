@@ -61,4 +61,44 @@ describe('plugin_browser_test', () => {
     assert.strictEqual(g.__dom_events.length, 0)
     assert.strictEqual(added.length, 0)
   })
+
+  it('DOM属性一括設定で複数の属性をまとめて設定できる #2606', async () => {
+    class StubElement {
+      constructor () { this.width = 0; this.attrs = {} }
+      setAttribute (k, v) { this.attrs[k] = v }
+    }
+    globalThis.window.Element = StubElement
+    const el = new StubElement()
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('', 'main.nako3')
+    PluginBrowser['初期化'].fn(g)
+    g.__addPropMethod = () => {}
+    const wa = { 幅: 'width', 読取専用: 'readOnly' }
+    g.__getSysVar = (name) => (name === 'DOM和属性' ? wa : undefined)
+    PluginBrowser['DOM属性一括設定'].fn(el, { 幅: 40, 読取専用: 1, 'data-x': 'a' }, g)
+    assert.strictEqual(el.width, 40) // プロパティが存在すればプロパティに設定
+    assert.strictEqual(el.attrs.readOnly, 1) // 存在しなければ setAttribute
+    assert.strictEqual(el.attrs['data-x'], 'a')
+  })
+
+  it('DOM属性一括設定はSVG要素を直接渡しても、セレクタで渡しても設定できる #2606', async () => {
+    // SVGElement は HTMLElement ではなく Element を継承する
+    class StubElement {
+      constructor () { this.attrs = {} }
+      setAttribute (k, v) { this.attrs[k] = v }
+    }
+    class StubSVGElement extends StubElement {}
+    globalThis.window.Element = StubElement
+    const circle = new StubSVGElement()
+    globalThis.document.querySelectorAll = (sel) => (sel === '#c' ? [circle] : [])
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('', 'main.nako3')
+    PluginBrowser['初期化'].fn(g)
+    g.__addPropMethod = () => {}
+    g.__getSysVar = () => ({})
+    PluginBrowser['DOM属性一括設定'].fn(circle, { fill: 'red' }, g)
+    assert.strictEqual(circle.attrs.fill, 'red')
+    PluginBrowser['DOM属性一括設定'].fn('#c', { fill: 'blue' }, g)
+    assert.strictEqual(circle.attrs.fill, 'blue')
+  })
 })
