@@ -221,6 +221,40 @@ export default {
       return dom.getAttribute(s)
     }
   },
+  'DOM属性一括設定': { // @DOMに(オブジェクト型で)属性情報を一括設定(属性名には『DOM和属性』も適用される) // @DOMぞくせいいっかつせってい
+    type: 'func',
+    josi: [['に', 'へ'], ['を']],
+    uses: ['DOM和属性'],
+    pure: true,
+    fn: function(dom: any, values: any, sys: any) {
+      if (typeof dom === 'string') {
+        const domList = document.querySelectorAll(dom)
+        if (domList === undefined || domList === null || domList.length === 0) {
+          throw new Error(`『DOM属性一括設定』で『${dom}』が見つかりません。`)
+        }
+        dom = domList
+      }
+      if (dom instanceof window.HTMLElement) { dom = [dom] }
+      const wa = sys.__getSysVar('DOM和属性')
+      // 列挙したDOM一覧を全て属性変更する
+      for (let i = 0; i < dom.length; i++) {
+        const e = dom[i]
+        sys.__addPropMethod(e)
+        for (const key in values) {
+          let s = key
+          const v = values[key]
+          if (wa[s]) { s = wa[s] }
+          // domのプロパティを確認して存在すればその値を設定する #1392
+          if (s in e) {
+            e[s] = v
+          } else {
+            e.setAttribute(s, v)
+          }
+        }
+      }
+    },
+    return_none: true
+  },
   'DOM和属性': { // 'const' // @DOMわぞくせい
     type: 'const',
     value: { // (ref) https://developer.mozilla.org/ja/docs/Web/API/Element

@@ -6990,6 +6990,20 @@
     "description": "DOMの属性Sを取得(属性Sには『DOM和属性』も適用される)"
   },
   {
+    "type": "関数",
+    "name": "DOM属性一括設定",
+    "args": "DOMにVALUESを/DOMへ",
+    "yomi": "DOMぞくせいいっかつせってい",
+    "plugin": "plugin_browser",
+    "group": "基本プラグイン",
+    "target": [
+      "wnako"
+    ],
+    "category": "DOM操作",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L229",
+    "description": "DOMに(オブジェクト型で)属性情報を一括設定(属性名には『DOM和属性』も適用される)"
+  },
+  {
     "type": "定数",
     "name": "DOM和属性",
     "args": "",
@@ -7000,7 +7014,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L224",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L258",
     "value": "undefined"
   },
   {
@@ -7014,7 +7028,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L260",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L294",
     "value": "undefined"
   },
   {
@@ -7028,7 +7042,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L286",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L320",
     "value": "undefined"
   },
   {
@@ -7042,7 +7056,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L306",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L340",
     "description": "DOMのスタイルAに値Bを設定"
   },
   {
@@ -7056,7 +7070,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L320",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L354",
     "description": "DOMに(オブジェクト型で)スタイル情報を一括設定"
   },
   {
@@ -7070,7 +7084,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L350",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L384",
     "description": "DOMのSTYLEの値を取得"
   },
   {
@@ -7084,7 +7098,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L363",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L397",
     "description": "DOMのSTYLE(配列で複数指定)の値を取得"
   },
   {
@@ -7098,7 +7112,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L390",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L424",
     "description": "DOMのdata-PROPの値を取得"
   },
   {
@@ -7112,7 +7126,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L399",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L433",
     "description": "DOMのdata-PROPに値Vを設定"
   },
   {
@@ -7126,7 +7140,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L409",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L443",
     "description": "DOMの属性とスタイルPROP(配列で指定可能)を適当にVALUEに設定"
   },
   {
@@ -7140,7 +7154,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L491",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L525",
     "description": "DOMの属性とスタイルPROP(配列で指定可能)の値を適当に取得"
   },
   {
@@ -7154,7 +7168,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L550",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L584",
     "description": "DOMのdata-有効の値を設定"
   },
   {
@@ -7168,7 +7182,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L560",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L594",
     "description": "DOMのdata-有効の値を取得"
   },
   {
@@ -7182,7 +7196,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L569",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L603",
     "description": "DOMのdata-可視の値を設定"
   },
   {
@@ -7196,7 +7210,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L579",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L613",
     "description": "DOMのdata-可視の値を取得"
   },
   {
@@ -7210,7 +7224,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L588",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L622",
     "description": "DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる)"
   },
   {
@@ -7224,7 +7238,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L602",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L636",
     "description": "DOMのポケット(data-pocket属性)の値を取得(エンコードされるので辞書型や配列も取得できる)"
   },
   {
@@ -7238,7 +7252,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L609",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L643",
     "description": "DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる)"
   },
   {
@@ -7252,7 +7266,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L619",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L653",
     "description": "DOMのポケット(data-pocket属性)に値Vを設定(エンコードされるので辞書型や配列も設定できる)"
   },
   {
@@ -7266,7 +7280,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L627",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L661",
     "description": "DOMのヒント(title属性)の値を取得"
   },
   {
@@ -7280,7 +7294,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L636",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L670",
     "description": "DOMのヒント(title属性)の値を取得"
   },
   {
@@ -7294,7 +7308,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L643",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L677",
     "description": "DOMのヒント(title属性)に値Vを設定"
   },
   {
@@ -7308,7 +7322,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L653",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L687",
     "description": "DOMのヒント(title属性)に値Vを設定"
   },
   {
@@ -7322,7 +7336,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L662",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L696",
     "description": "DOMにTAGの新規要素を作成"
   },
   {
@@ -7336,7 +7350,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L672",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L706",
     "description": "DOMの要素PAの子へ要素ELを追加してPAを返す"
   },
   {
@@ -7350,7 +7364,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L682",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L716",
     "description": "DOMの要素PAの子から要素ELを削除してPAを返す"
   },
   {
@@ -7364,7 +7378,7 @@
       "wnako"
     ],
     "category": "DOM操作",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L692",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/src/plugin_browser_dom_basic.mts#L726",
     "description": "要素DOMにフォーカスする(カーソルを移動する)"
   },
   {
