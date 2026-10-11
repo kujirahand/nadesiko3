@@ -514,6 +514,73 @@ export class NakoParser extends NakoParserBase {
     return this.yIfThen(expr, map)
   }
 
+  /** 値として使う条件分岐。各分岐の末尾の式を結果にする。 (#2591) */
+  yIFExpression(): AstIf {
+    const map = this.peekSourceMap()
+    const outerStack = this.stack
+    this.stack = []
+    try {
+      this.get() // skip もし
+      while (this.check('comma')) { this.get() }
+      const cond = this.yIFCond()
+      while (this.check('comma')) { this.get() }
+      const multiline = this.check('eol')
+      const trueBlock = this.yIFExpressionBranch(multiline)
+      while (this.checkTypes(['comma', 'eol'])) { this.get() }
+      if (!this.check('違えば')) {
+        throw NakoSyntaxError.fromNode('「もし」式には「違えば」が必要です。', map)
+      }
+      this.get()
+      while (this.check('comma')) { this.get() }
+      const falseBlock = this.yIFExpressionBranch(multiline)
+      if (multiline) {
+        if (!this.check('ここまで')) {
+          throw NakoSyntaxError.fromNode('「もし」式で「ここまで」がありません。', map)
+        }
+        this.get()
+      }
+      return { type: 'if_expr', blocks: [cond, trueBlock, falseBlock], josi: '', ...map, end: this.peekSourceMap() }
+    } finally {
+      this.stack = outerStack
+    }
+  }
+
+  yIFExpressionBranch(multiline: boolean): AstBlocks {
+    const map = this.peekSourceMap()
+    const blocks: Ast[] = []
+    const expressionTypes: NodeType[] = [
+      'number', 'bigint', 'bool', 'null', 'string', 'word', 'variable',
+      'op', 'calc', 'not', 'and', 'or', 'eq', 'func', 'calc_func',
+      'call_value', 'func_pointer', 'func_obj', 'json_array', 'json_obj',
+      'ref_array', 'ref_prop', 'ref_array_value', 'renbun', 'if_expr'
+    ]
+    const statementTypes: NodeType[] = ['let', 'let_array', 'let_prop', 'def_local_var', 'def_local_varlist', 'inc']
+    while (!this.isEOF()) {
+      if (multiline) {
+        while (this.check('eol')) { this.get() }
+      }
+      if (this.checkTypes(['違えば', 'ここまで'])) { break }
+      const value = this.yLet() || this.yCalc() || (this.check('func') ? this.yCall() : null)
+      if (!value) { break }
+      if (!expressionTypes.includes(value.type) && !statementTypes.includes(value.type)) {
+        throw NakoSyntaxError.fromNode('「もし」式の分岐には代入・関数呼び出し・値の式を書いてください。', value)
+      }
+      if (this.stack.length > 0) {
+        throw NakoSyntaxError.fromNode(this.makeStackBalanceReport(), value)
+      }
+      blocks.push(value)
+      if (!multiline) { break }
+      if (!this.check('eol')) {
+        throw NakoSyntaxError.fromNode('「もし」式の分岐では文を改行で区切ってください。', this.peekSourceMap())
+      }
+    }
+    const last = blocks[blocks.length - 1]
+    if (!last || !expressionTypes.includes(last.type)) {
+      throw NakoSyntaxError.fromNode('「もし」式の分岐の末尾には値を返す式が必要です。', map)
+    }
+    return { type: 'block', blocks, josi: '', ...map, end: this.peekSourceMap() }
+  }
+
   /** 「もし」文の「もし」以降の判定 ... 「もし」がなくても条件分岐は動くようになっている
    * @returns {AstIf | null}
   */
@@ -2163,6 +2230,8 @@ export class NakoParser extends NakoParserBase {
 
     // カンマなら飛ばす #877
     if (this.check('comma')) { this.get() }
+
+    if (this.check('もし')) { return this.yIFExpression() }
 
     // プリミティブな値
     if (this.checkTypes(['number', 'bigint', 'string'])) {
