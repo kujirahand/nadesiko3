@@ -9,13 +9,14 @@ import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
 import PluginJS from '../../src/plugin_js.mjs'
+import { registerJSForTest } from './helpers/js_plugin.mjs'
 import PluginSystem from '../src/plugin_system.mjs'
 import PluginSystemDebug from '../src/plugin_system_debug.mjs'
 
 describe('plugin_system_debug_test', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    if (/JS実行|JS関数実行|JSメソッド実行|JSオブジェクト取得|AWAIT実行|JS:/.test(code)) { nako.addPlugin(PluginJS) }
+    registerJSForTest(nako, code)
     nako.getLogger().debug('code=' + code)
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)

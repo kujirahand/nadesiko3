@@ -940,7 +940,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L168",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L171",
     "description": "『ハテナ関数設定』で設定した関数を実行する"
   },
   {
@@ -956,7 +956,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L177",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L180",
     "description": "故意にエラーSを発生させる"
   },
   {
@@ -972,7 +972,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L186",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L189",
     "description": "デバッグモードにする"
   },
   {
@@ -988,7 +988,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L191",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L194",
     "value": "0"
   },
   {
@@ -1004,7 +1004,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L192",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L195",
     "value": "[]"
   },
   {
@@ -1020,7 +1020,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L193",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L196",
     "value": "0"
   },
   {
@@ -1036,7 +1036,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L199",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L202",
     "description": "エディタのブレイクポイント機能のための待機(非同期関数)"
   },
   {
@@ -1052,7 +1052,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L225",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L228",
     "description": "グローバル変数にある関数一覧を取得"
   },
   {
@@ -1068,7 +1068,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L238",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L241",
     "description": "システム関数の一覧を取得"
   },
   {
@@ -1084,7 +1084,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L252",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L255",
     "description": "文字列で関数名を指定してシステム関数が存在するかを調べる"
   },
   {
@@ -1100,7 +1100,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L260",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L263",
     "description": "利用中のプラグイン一覧を得る"
   },
   {
@@ -1116,7 +1116,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L270",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L273",
     "description": "取り込んだモジュール一覧を得る"
   },
   {
@@ -1132,7 +1132,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L281",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L284",
     "description": "文法として定義されている助詞の一覧を取得する"
   },
   {
@@ -1148,7 +1148,7 @@
       "phpnako"
     ],
     "category": "デバッグ支援",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L290",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L293",
     "description": "文法として定義されている予約語の一覧を取得する"
   },
   {
@@ -1164,7 +1164,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L295",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L298",
     "value": "'メイン'"
   },
   {
@@ -1180,7 +1180,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L300",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L303",
     "description": "プラグイン名をSに変更する(システムにより自動的に「メイン」あるいはプラグインのファイル名が呼ばれる)"
   },
   {
@@ -1196,7 +1196,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L305",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L308",
     "value": "''"
   },
   {
@@ -1212,7 +1212,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L310",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L313",
     "description": "名前空間をSに設定する(システムにより自動的に変更される。ファイル名から拡張子を削ったもの)"
   },
   {
@@ -1228,7 +1228,7 @@
       "phpnako"
     ],
     "category": "プラグイン管理",
-    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L321",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_system_debug.mts#L324",
     "description": "システム利用のため呼ぶべからず。(名前空間を一つ前の値に戻す)"
   },
   {
@@ -5829,7 +5829,7 @@
       "cnako"
     ],
     "category": "JavaScript連携",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L60",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L59",
     "description": "JavaScriptのコードSRCを実行する(変数sysでなでしこシステムを参照できる)"
   },
   {
@@ -5844,7 +5844,7 @@
       "cnako"
     ],
     "category": "JavaScript連携",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L68",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L67",
     "description": "なでしこで定義した関数や変数nameのJavaScriptオブジェクトを取得する"
   },
   {
@@ -5859,7 +5859,7 @@
       "cnako"
     ],
     "category": "JavaScript連携",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L75",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L74",
     "description": "JavaScriptの関数NAMEを引数ARGS(配列)で実行する"
   },
   {
@@ -5874,7 +5874,7 @@
       "cnako"
     ],
     "category": "JavaScript連携",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L94",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L92",
     "description": "JavaScriptの非同期関数(Promise/async関数)のFを引数ARGSでawait実行する(非同期関数)"
   },
   {
@@ -5889,7 +5889,7 @@
       "cnako"
     ],
     "category": "JavaScript連携",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L107",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_js.mts#L105",
     "description": "JavaScriptのオブジェクトOBJのメソッドMを引数ARGS(配列)で実行する"
   },
   {

@@ -2,13 +2,13 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
-import PluginJS from '../../src/plugin_js.mjs'
+import { registerJSForTest } from './helpers/js_plugin.mjs'
 import { NakoParser } from '../src/nako_parser3.mjs'
 
 describe('array_test', async () => {
   const cmp = async (/** @type {string} */code, /** @type {string} */res) => {
     const nako = new NakoCompiler()
-    if (/JS実行|JS関数実行|JSメソッド実行|JSオブジェクト取得|AWAIT実行|JS:/.test(code)) { nako.addPlugin(PluginJS) }
+    registerJSForTest(nako, code)
     nako.getLogger().debug('code=' + code)
     assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }

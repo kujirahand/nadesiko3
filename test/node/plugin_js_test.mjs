@@ -31,6 +31,15 @@ describe('JavaScript連携プラグインの分離 (#2577)', () => {
     assert.equal((await nako.runAsync('「3*7」をJS実行して表示', 'main.nako3')).log, '21')
   })
 
+  it('コア単体のハテナ関数設定ではJS:指定に必要なプラグインを案内する', async () => {
+    const nako = new NakoCompiler()
+    await assert.rejects(
+      nako.runAsync('[「表示」,「JS:(s)=>s*2」]をハテナ関数設定', 'main.nako3'),
+      /『ハテナ関数設定』のJS:指定にはplugin_jsの登録が必要です/
+    )
+    assert.equal((await nako.runAsync('[「表示」]をハテナ関数設定; ?? 7', 'main.nako3')).log, '7')
+  })
+
   it('cnakoのnostdではJSプラグインも登録しない', () => {
     const nako = new CNako3({ nostd: true })
     for (const name of movedNames) { assert.equal(nako.__varslist[0].has(name), false, name) }

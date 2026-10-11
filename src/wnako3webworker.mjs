@@ -9,6 +9,7 @@ class WebWorkerNakoCompiler extends NakoCompiler {
   constructor () {
     super()
     this.addPluginObject('PluginJS', PluginJS)
+    // __setSysVarはプラグイン初期化時に設定されるため、コンストラクタではシステム変数Mapを使う。
     this.__varslist[0].set('ナデシコ種類', 'wwnako3')
     this.__varslist[0].set('PluginWorker:ondata', (data, event) => {
       throw new Error('『NAKOワーカーデータ受信時』が呼ばれていません。')

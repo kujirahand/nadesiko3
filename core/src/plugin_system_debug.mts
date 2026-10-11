@@ -143,6 +143,9 @@ export default {
       if (s instanceof Array) {
         const fa: ((s: string, sys: NakoSystem)=>string)[] = (s as Array<string>).map((fstr: string) => {
           if (fstr.substring(0, 3) === 'JS:') {
+            if (typeof sys.__getSysVar('JS実行') !== 'function') {
+              throw new Error('『ハテナ関数設定』のJS:指定にはplugin_jsの登録が必要です。')
+            }
             const code = fstr.substring(3)
             return sys.__exec('JS実行', [code, sys])
           } else {

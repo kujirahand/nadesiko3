@@ -21,7 +21,6 @@ const PluginJS = {
       sys.__evalSafe = (src: string) => {
         // evalのスコープを変えるためのテクニック
         // https://esbuild.github.io/content-types/#direct-eval
-
         const _eval = eval // oxlint-disable-line no-eval
         try {
           return _eval(src)
@@ -74,7 +73,6 @@ const PluginJS = {
     josi: [['を'], ['で']],
     fn: function(name: any, args: any, sys: NakoSystem) {
       // nameが文字列ならevalして関数を得る
-
       if (typeof name === 'string') { name = sys.__evalJS(name, sys) }
       if (typeof name !== 'function') { throw new Error('JS関数取得で実行できません。') }
 
@@ -106,7 +104,6 @@ const PluginJS = {
     josi: [['の'], ['を'], ['で']],
     fn: function(obj: any, m: any, args: any, sys: NakoSystem) {
       // objが文字列ならevalして関数を得る
-
       if (typeof obj === 'string') { obj = sys.__evalJS(obj, sys) }
       if (typeof obj !== 'object') { throw new Error('JSオブジェクトを取得できませんでした。') }
 
@@ -121,8 +118,7 @@ const PluginJS = {
       // 実行
       return m.apply(obj, args)
     }
-  },
-
+  }
 }
 
 export default PluginJS
