@@ -19,6 +19,7 @@ import url from 'node:url'
 
 import { NakoCompiler } from '../core/src/nako3.mjs'
 import PluginNode from '../src/plugin_node.mjs'
+import PluginJS from '../src/plugin_js.mjs'
 import PluginCSV from '../core/src/plugin_csv.mjs'
 import { resetEnv as resetCSVEnv } from '../core/src/nako_csv.mjs'
 
@@ -157,6 +158,7 @@ export async function runDocTest (test) {
   // CSVオプションの状態をテストごとにリセットする
   resetCSVEnv()
   const nako = new NakoCompiler()
+  nako.addPlugin(PluginJS)
   nako.addPluginFile('PluginNode', 'plugin_node.js', PluginNode)
   nako.addPluginFile('PluginCSV', 'plugin_csv.js', PluginCSV)
   try {

@@ -19,6 +19,7 @@ import { NakoGlobal } from '../core/src/nako_global.mjs'
 import { NakoGenOptions } from '../core/src/nako_gen.mjs'
 import nakoVersion from './nako_version.mjs'
 
+import PluginJS from './plugin_js.mjs'
 import PluginNode from './plugin_node.mjs'
 import app from './commander_ja.mjs'
 
@@ -62,6 +63,7 @@ export class CNako3 extends NakoCompiler {
     this.filename = 'main.nako3'
     this.version = nakoVersion.version
     if (!opts.nostd) {
+      this.addPluginFromFile('PluginJS', PluginJS, true)
       this.addPluginFromFile('PluginNode', PluginNode, true)
     }
     // 必要な定数を設定
@@ -252,7 +254,7 @@ export class CNako3 extends NakoCompiler {
     // JSにコンパイル
     const genOpt = new NakoGenOptions(
       isTest,
-      ['plugin_node.mjs'],
+      ['plugin_js.mjs', 'plugin_node.mjs'],
       'self.__setSysVar(\'ナデシコ種類\', \'cnako3\');'
     )
     const jscode = this.compileStandalone(src, this.filename, genOpt)
@@ -264,7 +266,7 @@ export class CNako3 extends NakoCompiler {
     const outRuntime = path.join(path.dirname(opt.output), 'nako3runtime')
     if (!fs.existsSync(outRuntime)) { fs.mkdirSync(outRuntime) }
     // from ./src
-    for (const mod of ['nako_version.mjs', 'plugin_node.mjs', 'deno_wrapper.mjs']) {
+    for (const mod of ['nako_version.mjs', 'plugin_js.mjs', 'plugin_node.mjs', 'deno_wrapper.mjs']) {
       fs.copyFileSync(path.join(nakoRuntime, mod), path.join(outRuntime, mod))
     }
     // from nadesiko3core/src

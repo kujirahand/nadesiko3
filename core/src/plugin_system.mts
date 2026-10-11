@@ -175,38 +175,6 @@ const PluginSystem = {
         }
         return value
       }
-      // eval function #1733
-      sys.__evalSafe = (src: string) => {
-        // evalのスコープを変えるためのテクニック
-        // https://esbuild.github.io/content-types/#direct-eval
-         
-        const _eval = eval
-        try {
-          return _eval(src)
-        } catch (e) {
-          console.warn('[eval]', e)
-          return null
-        }
-      }
-      // eval function #1733 - 互換性を優先するため、direct evalを使うことに
-      sys.__evalJS = (src: string, sys?: NakoSystem) => {
-        try {
-          // まず従来通りevalで評価（式の値を返す互換性を維持）
-          return eval(src) // oxlint-disable-line no-eval
-        } catch (e) {
-          // return文によるSyntaxErrorの場合のみIIFEで再試行 (#NE-006)
-          if (e instanceof SyntaxError && e.message.includes('return')) {
-            try {
-              return (new Function('sys', `return (function(sys){\n${src}\n})(sys)`))(sys)
-            } catch (e2) {
-              console.warn('[eval]', e2)
-              return null
-            }
-          }
-          console.warn('[eval]', e)
-          return null
-        }
-      }
       // 「??」ハテナ関数の設定
       sys.__hatena = sys.__getSysVar('デバッグ表示')
     }

@@ -104,6 +104,7 @@ src/plugin_browser_system.mjs
 src/plugin_browser_websocket.mjs
 src/plugin_httpserver.mjs
 src/plugin_keigo.mjs
+src/plugin_js.mjs
 src/plugin_node.mjs
 src/plugin_turtle.mjs
 src/plugin_turtle_images.mjs

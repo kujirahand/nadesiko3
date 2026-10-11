@@ -3,11 +3,13 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
+import PluginJS from '../../src/plugin_js.mjs'
 
 // eslint-disable-next-line no-undef
 describe('plugin_system_test', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
+    if (/JS実行|JS関数実行|JSメソッド実行|JSオブジェクト取得|AWAIT実行|JS:/.test(code)) { nako.addPlugin(PluginJS) }
     nako.getLogger().debug('code=' + code)
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
@@ -1239,6 +1241,7 @@ describe('plugin_system_test', async () => {
     // falsyな値でもプレフィックス無しキーが __varslist[2] へ書き込まれないことを
     // Map.has で構造的に検証する (falsy値の__findVar経由の遮蔽確認は #2500 の修正後に実効性を持つ)
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     const g = await nako.runAsync('●テストA\n　A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nテストA()。', 'main.nako3')
     // 関数のローカル変数がトップレベルのスコープ __varslist[2] に書き込まれない
     assert.strictEqual(g.__varslist[2].has('A'), false)
@@ -1249,6 +1252,7 @@ describe('plugin_system_test', async () => {
   it('VOID型(return_none)のpureでない命令でもローカル変数が漏洩しない #2534', async () => {
     // 値を返さない命令は genVoidCallCode(文レベルのtry/finally)を通るため、そちらの経路も固定する
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     nako.addPlugin({
       meta: { type: 'const', value: { pluginName: 'TestPlugin2534', nakoVersion: '3.6.0' } },
       ローカル書込: {
@@ -1279,6 +1283,7 @@ describe('plugin_system_test', async () => {
   it('pureでない命令による__localsへのdeleteが呼出元のローカル変数に直接作用する #2534', async () => {
     // エイリアス経路では sys.__locals の破壊的操作が呼出元スコープへ直接作用する(仕様)
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     nako.addPlugin({
       meta: { type: 'const', value: { pluginName: 'TestPlugin2534', nakoVersion: '3.6.0' } },
       ローカル削除: {
@@ -1294,6 +1299,7 @@ describe('plugin_system_test', async () => {
   })
   it('pureでない命令が例外を投げても__localsが復元され変数が残留しない #2534', async () => {
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     try {
       await nako.runAsync('●テストA\n　A=0\n　「XXX」を[]でJS関数実行\nここまで\nテストA()。', 'main.nako3')
       assert.fail('実行時エラーになるはずです')
@@ -1310,6 +1316,7 @@ describe('plugin_system_test', async () => {
     // loopId による一意採番で const の重複宣言(SyntaxError)が起きないことの回帰保護
     // VOID型と値返し型の呼出を混在させる
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     nako.addPlugin({
       meta: { type: 'const', value: { pluginName: 'TestPlugin2534', nakoVersion: '3.6.0' } },
       ローカル書込: {
@@ -1482,6 +1489,7 @@ describe('plugin_system_test', async () => {
     // さらにpureでない命令を呼ぶ入れ子ケース。内側の同期が外側の __locals を
     // 正しく保存・復元し、どちらのローカル変数も漏洩しないことを確認する。
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     const g = await nako.runAsync(
       '●内側\n' +
       '　B=0\n' +
@@ -1505,6 +1513,7 @@ describe('plugin_system_test', async () => {
     // 外側のローカル変数を参照する無名関数(varslistSet.length > 4 でusesClosure)の中で
     // pureでない命令を呼んでも、無名関数のローカル変数は __varslist[2] / __locals に残留しない
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     const g = await nako.runAsync(
       '●外側\n' +
       '　X=1\n' +
@@ -1556,6 +1565,7 @@ describe('plugin_system_test', async () => {
     // 引数式内の pure でない命令は自身の同期ウィンドウを持つ。
     // 引数ホイスト後もネストした呼出から見えるスコープが変わらないことを固定する
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     nako.addPlugin({
       meta: { type: 'const', value: { pluginName: 'TestPlugin2534', nakoVersion: '3.6.0' } },
       ローカル書込: {

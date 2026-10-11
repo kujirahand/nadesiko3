@@ -20,6 +20,7 @@ CORE="core/src"
 ]
 
 基本プラグイン一覧は[
+    ['src/plugin_js.mts','wnako,cnako'],
     ['src/plugin_browser.mts','wnako'],
     ['src/plugin_turtle.mts', 'wnako'],
     ['src/plugin_node.mts', 'cnako,phpnako'],

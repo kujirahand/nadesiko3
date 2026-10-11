@@ -8,39 +8,6 @@ import { NakoSystem } from './plugin_api.mjs'
 
 export default {
   // @特殊命令
-  'JS実行': { // @JavaScriptのコードSRCを実行する(変数sysでなでしこシステムを参照できる) // @JSじっこう
-    type: 'func',
-    josi: [['を', 'で']],
-    pure: true,
-    fn: function(src: string, sys: NakoSystem) {
-      return sys.__evalJS(src, sys) // #1733
-    }
-  },
-  'JSオブジェクト取得': { // @なでしこで定義した関数や変数nameのJavaScriptオブジェクトを取得する // @JSおぶじぇくとしゅとく
-    type: 'func',
-    josi: [['の']],
-    pure: false,
-    fn: function(name: string, sys: any) {
-      return sys.__findVar(name, null)
-    }
-  },
-  'JS関数実行': { // @JavaScriptの関数NAMEを引数ARGS(配列)で実行する // @JSかんすうじっこう
-    type: 'func',
-    josi: [['を'], ['で']],
-    fn: function(name: any, args: any, sys: NakoSystem) {
-      // nameが文字列ならevalして関数を得る
-       
-      if (typeof name === 'string') { name = sys.__evalJS(name, sys) }
-      if (typeof name !== 'function') { throw new Error('JS関数取得で実行できません。') }
-
-      // argsがArrayでなければArrayに変換する
-      if (!(args instanceof Array)) { args = [args] }
-
-      // 実行
-      // eslint-disable-next-line prefer-spread
-      return name.apply(null, args)
-    }
-  },
   'ASYNC': { // @なでしこのユーザー関数定義でASYNC(非同期関数である)ことを宣言する // @ASYNC
     type: 'func',
     josi: [],
@@ -51,43 +18,6 @@ export default {
     },
     return_none: true
   },
-  'AWAIT実行': { // @JavaScriptの非同期関数(Promise/async関数)のFを引数ARGSでawait実行する // @AWAITじっこう
-    type: 'func',
-    josi: [['を'], ['で']],
-    pure: true,
-    asyncFn: true,
-    fn: async function(f: any, args: any, sys: any) {
-      // nameが文字列ならevalして関数を得る
-      if (typeof f === 'string') { f = sys.__findFunc(f, 'AWAIT実行') }
-      if (!(f instanceof Function)) { throw new Error('『AWAIT実行』の第一引数はなでしこ関数名かFunction型で指定してください。') }
-      // argsがArrayでなければArrayに変換する
-      if (!(args instanceof Array)) { args = [args] }
-      // 実行
-      return await f(...args)
-    }
-  },
-  'JSメソッド実行': { // @JavaScriptのオブジェクトOBJのメソッドMを引数ARGS(配列)で実行する // @JSめそっどじっこう
-    type: 'func',
-    josi: [['の'], ['を'], ['で']],
-    fn: function(obj: any, m: any, args: any, sys: NakoSystem) {
-      // objが文字列ならevalして関数を得る
-       
-      if (typeof obj === 'string') { obj = sys.__evalJS(obj, sys) }
-      if (typeof obj !== 'object') { throw new Error('JSオブジェクトを取得できませんでした。') }
-
-      // method を求める
-      if (typeof m !== 'function') {
-        m = obj[m]
-      }
-
-      // argsがArrayでなければArrayに変換する
-      if (!(args instanceof Array)) { args = [args] }
-
-      // 実行
-      return m.apply(obj, args)
-    }
-  },
-
   'ナデシコ': { // @なでしこのコードCODEを実行する // @なでしこする
     type: 'func',
     josi: [['を', 'で']],
@@ -214,7 +144,7 @@ export default {
         const fa: ((s: string, sys: NakoSystem)=>string)[] = (s as Array<string>).map((fstr: string) => {
           if (fstr.substring(0, 3) === 'JS:') {
             const code = fstr.substring(3)
-            return sys.__evalJS(code, sys)
+            return sys.__exec('JS実行', [code, sys])
           } else {
             return sys.__getSysVar(fstr, 'デバッグ表示')
           }

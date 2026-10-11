@@ -1,14 +1,16 @@
 // nadesiko for web browser worker
 // wwnako3.js
 import { NakoCompiler } from '../core/src/nako3.mjs'
+import PluginJS from './plugin_js.mjs'
 import PluginBrowserInWorker from './plugin_browser_in_worker.mjs'
 import PluginWorker from './plugin_worker.mjs'
 
 class WebWorkerNakoCompiler extends NakoCompiler {
   constructor () {
     super()
-    this.__setSysVar('ナデシコ種類', 'wwnako3')
-    this.__setSysVar('PluginWorker:ondata', (data, event) => {
+    this.addPluginObject('PluginJS', PluginJS)
+    this.__varslist[0].set('ナデシコ種類', 'wwnako3')
+    this.__varslist[0].set('PluginWorker:ondata', (data, event) => {
       throw new Error('『NAKOワーカーデータ受信時』が呼ばれていません。')
     })
   }

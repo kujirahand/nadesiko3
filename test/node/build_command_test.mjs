@@ -94,7 +94,7 @@ describe('命令一覧の生成 (#2401)', () => {
     const commands = summarizePlugin('core/src/plugin_system.mts')
     const names = new Set(commands.map((c) => c.name))
     // 足=math, 文字数=string, 配列切取=array, 今日=datetime, JS実行=debug, URLエンコード=url
-    for (const name of ['足', '文字数', '配列切取', '今日', 'JS実行', 'URLエンコード']) {
+    for (const name of ['足', '文字数', '配列切取', '今日', 'デバッグ表示', 'URLエンコード']) {
       assert.ok(names.has(name), `分割ファイルの『${name}』が命令一覧にありません`)
     }
   })
@@ -104,6 +104,21 @@ describe('命令一覧の生成 (#2401)', () => {
     const target = commands.find((c) => c.name === '足')
     assert.ok(target, '『足』が見つかりません')
     assert.match(target.url, /\/master\/core\/src\/plugin_system_math\.mts#L\d+$/)
+  })
+
+  it('JS連携命令はplugin_jsとしてcnako/wnako向けに生成する (#2577)', () => {
+    const systemNames = pluginNames('core/src/plugin_system.mts')
+    const jsNames = pluginNames('src/plugin_js.mts')
+    const commandList = JSON.parse(fs.readFileSync(commandListPath, 'utf8'))
+    for (const name of ['JS実行', 'JSオブジェクト取得', 'JS関数実行', 'JSメソッド実行', 'AWAIT実行']) {
+      assert.equal(systemNames.has(name), false, name)
+      assert.ok(jsNames.has(name), name)
+      const entries = commandList.filter((c) => c.name === name)
+      assert.equal(entries.length, 1, name)
+      assert.equal(entries[0].plugin, 'plugin_js')
+      assert.deepEqual(entries[0].target, ['wnako', 'cnako'])
+      assert.match(entries[0].url, /\/master\/src\/plugin_js\.mts#L\d+$/)
+    }
   })
 
   // 「無いこと」だけを確かめると、命令一覧の生成が壊れて空になってもテストが通ってしまう。
