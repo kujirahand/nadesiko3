@@ -139,6 +139,105 @@ ${condition ? '新宣言値' : '偽宣言値'}を表示`, condition ? '7\n8' : '
     await cmp('A=もし0なら10、違えば(もし1なら20、違えば30)。Aを表示', '20')
   })
 
+  it('両分岐に複数行のもし式を入れ子にして全経路を選べる', async () => {
+    for (const [outer, inner, expected] of [[1, 1, '11'], [1, 0, '12'], [0, 1, '21'], [0, 0, '22']]) {
+      await cmp(`A=もし${outer}なら
+  もし${inner}なら
+    11
+  違えば
+    12
+  ここまで
+違えば
+  もし${inner}なら
+    21
+  違えば
+    22
+  ここまで
+ここまで
+Aを表示
+「後続」を表示`, `${expected}\n後続`)
+    }
+  })
+
+  it('もし式の結果を外側のもし式の条件に使える', async () => {
+    for (const [condition, expected] of [[1, '真'], [0, '偽']]) {
+      await cmp(`A=もし(もし${condition}なら1、違えば0)なら「真」、違えば「偽」。Aを表示`, expected)
+    }
+  })
+
+  it('三段の入れ子を同期実行し各条件で値を選べる', () => {
+    for (const [outer, middle, inner, expected] of [
+      [1, 1, 1, '11'], [1, 1, 0, '12'], [1, 0, 1, '20'], [1, 0, 0, '20'],
+      [0, 1, 1, '30'], [0, 1, 0, '30'], [0, 0, 1, '30'], [0, 0, 0, '30']
+    ]) {
+      const nako = new NakoCompiler()
+      const code = `A=もし${outer}なら(もし${middle}なら(もし${inner}なら11、違えば12)、違えば20)、違えば30。Aを表示`
+      assert.equal(nako.run(code, 'main.nako3').log, expected)
+    }
+  })
+
+  it('入れ子でも選択した経路の条件と副作用だけを実行する', async () => {
+    for (const [outer, inner, expected] of [[1, 1, '11'], [1, 0, '12'], [0, 1, '21'], [0, 0, '22']]) {
+      await cmp(`判定回数=0
+記録回数=0
+●(値の)判定処理
+  判定回数=判定回数+1
+  値を戻す
+ここまで
+●(値の)記録処理
+  記録回数=記録回数+1
+  値を戻す
+ここまで
+A=もし${outer}の判定処理なら
+  もし${inner}の判定処理なら
+    11の記録処理
+  違えば
+    12の記録処理
+  ここまで
+違えば
+  もし${inner}の判定処理なら
+    21の記録処理
+  違えば
+    22の記録処理
+  ここまで
+ここまで
+Aを表示
+判定回数を表示
+記録回数を表示`, `${expected}\n2\n1`)
+    }
+  })
+
+  it('入れ子の非同期分岐を待ち未選択の非同期処理は呼ばない', async () => {
+    for (const [outer, inner, expected, expectedCalls] of [
+      [1, 1, '7', 1], [1, 0, '8', 0], [0, 1, '9', 0], [0, 0, '7', 1]
+    ]) {
+      const nako = new NakoCompiler()
+      let calls = 0
+      nako.addPluginObject('test_nested_if_async', {
+        meta: { type: 'const', value: { pluginName: 'test_nested_if_async', pluginVersion: '3.6.0', nakoRuntime: ['cnako', 'wnako'], nakoVersion: '3.6.0' } },
+        非同期値取得: { type: 'func', josi: [], asyncFn: true, fn: async () => { calls++; return 7 } }
+      })
+      assert.equal((await nako.runAsync(`●選択処理
+  A=もし${outer}なら
+    もし${inner}なら
+      非同期値取得
+    違えば
+      8
+    ここまで
+  違えば
+    もし${inner}なら
+      9
+    違えば
+      非同期値取得
+    ここまで
+  ここまで
+  Aを戻す
+ここまで
+選択処理を表示`, 'main.nako3')).log, expected)
+      assert.equal(calls, expectedCalls)
+    }
+  })
+
   it('選んだ分岐だけ実行し末尾の式を返す', async () => {
     for (const [condition, expected] of [[1, '真\n5\n1'], [0, '偽\n2\n2']]) {
       await cmp(`回数=0
