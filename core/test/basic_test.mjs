@@ -2,11 +2,13 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
+import { registerJSForTest } from './helpers/js_plugin.mjs'
 
 describe('basic', async () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = async (/** @type {string} */code, /** @type {string} */res) => {
     const nako = new NakoCompiler()
+    registerJSForTest(nako, code)
     // nako.logger.debug('code=' + code)
     assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }

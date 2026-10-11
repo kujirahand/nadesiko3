@@ -8,6 +8,26 @@
 なお、(1)のプラグインは、なでしこ自身で関数を定義するもの。
 以下では、(2)のJavaScriptで開発したプラグインについて解説する。
 
+## JavaScript連携の標準プラグイン
+
+`JS実行`、`JSオブジェクト取得`、`JS関数実行`、`JSメソッド実行`、`AWAIT実行`は、
+`src/plugin_js.mts`で定義するJavaScript固有の命令です (#2577)。
+cnako/wnakoでは標準登録されるため、なでしこのプログラムに取り込み指定を追加する必要はありません。
+マニュアルは`manual/plugin_js/`にあります。
+
+コアの`NakoCompiler`を直接使う場合は、必要に応じて明示登録してください。
+
+```js
+import { NakoCompiler } from '../core/src/nako3.mjs'
+import PluginJS from '../src/plugin_js.mjs'
+
+const nako = new NakoCompiler()
+nako.addPlugin(PluginJS)
+await nako.runAsync('「3*7」をJS実行して表示', 'main.nako3')
+```
+
+`ハテナ関数設定`は共通命令ですが、配列内の`JS:`指定には`plugin_js`が必要です。
+
 ## JSプラグインを利用する手順
 
 次の2つの方法で利用ができる。

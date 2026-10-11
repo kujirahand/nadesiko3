@@ -8,6 +8,7 @@ import { Token } from '../core/src/nako_types.mjs'
 import { setupEditor } from './wnako3_editor.mjs'
 import nakoVersion, { NakoVersion } from './nako_version.mjs'
 import PluginBrowser from './plugin_browser.mjs'
+import PluginJS from './plugin_js.mjs'
 
 const NAKO_SCRIPT_RE = /^(なでしこ|nako|nadesiko)3?$/
 
@@ -21,6 +22,7 @@ export class WebNakoCompiler extends NakoCompiler {
     this.wnakoVersion = nakoVersion
     this.localFiles = {}
     // プラグインを追加
+    this.addPluginObject('PluginJS', PluginJS)
     this.addPluginObject('PluginBrowser', PluginBrowser)
     // 必要な定数を設定
     this.addListener('beforeRun', (g: NakoGlobal) => {

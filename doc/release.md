@@ -70,6 +70,8 @@ PRでは、差分が意図したファイルだけであることと、CIがす�
 
 PRをマージしたら、[GitHubのReleases](https://github.com/kujirahand/nadesiko3/releases)で`vX.Y.Z`のリリースを作成します。変更点と関連Issueをリリースノートに記載します。
 
+[リリースノート](release_notes.md)の未リリース欄を確認し、互換性に関する変更と移行方法も記載してください。
+
 ## 4. npmへ公開
 
 `master`を最新にし、`package.json`のバージョンとテスト結果を再確認してから公開します。

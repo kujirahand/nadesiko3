@@ -8,12 +8,15 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
+import PluginJS from '../../src/plugin_js.mjs'
+import { registerJSForTest } from './helpers/js_plugin.mjs'
 import PluginSystem from '../src/plugin_system.mjs'
 import PluginSystemDebug from '../src/plugin_system_debug.mjs'
 
 describe('plugin_system_debug_test', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
+    registerJSForTest(nako, code)
     nako.getLogger().debug('code=' + code)
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
@@ -59,12 +62,14 @@ describe('plugin_system_debug_test', async () => {
   })
   it('特殊命令 - AWAIT実行', async () => {
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     const code = 'F=「a=>a*2」をJS実行\nFを[21]でAWAIT実行して表示'
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, '42')
   })
   it('特殊命令 - AWAIT実行（配列以外の引数）', async () => {
     const nako = new NakoCompiler()
+    nako.addPlugin(PluginJS)
     const code = 'F=「a=>a*2」をJS実行\nFを21でAWAIT実行して表示'
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, '42')
