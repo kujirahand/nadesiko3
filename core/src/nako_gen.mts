@@ -6,6 +6,7 @@
  */
 
 import { NakoSyntaxError } from './nako_errors.mjs'
+import { validateIfExpressionBranch } from './nako_if_expression.mjs'
 import { FuncList, FuncArgs, FuncListItem, NakoDebugOption } from './nako_types.mjs'
 import { Ast, AstEol, AstStrValue, AstBlocks, AstOperator, AstConst, AstInc, AstLet, AstLetArray, AstIf, AstWhile, AstAtohantei, AstFor, AstForeach, AstSwitch, AstRepeatTimes, AstDefFunc, AstCallFunc, AstDefVar, AstDefVarList } from './nako_ast.mjs'
 import { NakoCompiler } from './nako3.mjs'
@@ -654,6 +655,9 @@ export class NakoGen {
       break
     case 'if':
       code += this.convIf(node as AstIf)
+      break
+    case 'if_expr':
+      code += this.convIfExpression(node as AstIf)
       break
     case 'for':
       code += this.convFor(node as AstFor)
@@ -1723,6 +1727,23 @@ export class NakoGen {
     }
     code += '\n// [/convIf]\n'
     return code
+  }
+
+  /** 分岐内の処理を実行し、末尾の式だけを返す。 (#2591) */
+  convIfExpression(node: AstIf): string {
+    const asyncCount = this.numAsyncFn
+    const cond = this._convGen(node.blocks[0], true)
+    const branch = (block: Ast): string => {
+      validateIfExpressionBranch(block as AstBlocks, name => this.__self.getFunc(name))
+      const values = (block as AstBlocks).blocks
+      const last = values[values.length - 1]
+      const body = values.slice(0, -1).map(value => this._convGen(value, false) + ';\n').join('')
+      return body + `return (${this._convGen(last, true)});\n`
+    }
+    const yes = branch(node.blocks[1])
+    const no = branch(node.blocks[2])
+    const isAsync = this.numAsyncFn > asyncCount || this.debugOption.useDebug
+    return `(${isAsync ? 'await ' : ''}(${isAsync ? 'async ' : ''}() => {\nif (${cond}) {\n${yes}} else {\n${no}}\n})())`
   }
 
   convFuncGetArgsCalcType(_funcName: string, _func: any, node: AstCallFunc): [any, any] {
