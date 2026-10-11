@@ -359,7 +359,7 @@ export default {
         }
         dom = domList
       }
-      if (dom instanceof window.HTMLElement) { dom = [dom] }
+      if (dom instanceof window.Element) { dom = [dom] }
       const wa = sys.__getSysVar('DOM和スタイル')
       // 列挙したDOM一覧を全てスタイル変更する
       for (let i = 0; i < dom.length; i++) {

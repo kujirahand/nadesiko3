@@ -101,4 +101,22 @@ describe('plugin_browser_test', () => {
     PluginBrowser['DOM属性一括設定'].fn('#c', { fill: 'blue' }, g)
     assert.strictEqual(circle.attrs.fill, 'blue')
   })
+
+  it('DOMスタイル一括設定はSVG要素を直接渡しても、セレクタで渡しても設定できる #2609', async () => {
+    // SVGElement は HTMLElement ではなく Element を継承する
+    class StubElement { constructor () { this.style = {} } }
+    class StubSVGElement extends StubElement {}
+    globalThis.window.Element = StubElement
+    const circle = new StubSVGElement()
+    globalThis.document.querySelectorAll = (sel) => (sel === '#c' ? [circle] : [])
+    const nako = new NakoCompiler()
+    const g = await nako.runAsync('', 'main.nako3')
+    PluginBrowser['初期化'].fn(g)
+    g.__addPropMethod = () => {}
+    g.__getSysVar = () => ({})
+    PluginBrowser['DOMスタイル一括設定'].fn(circle, { fill: 'red' }, g)
+    assert.strictEqual(circle.style.fill, 'red')
+    PluginBrowser['DOMスタイル一括設定'].fn('#c', { fill: 'blue' }, g)
+    assert.strictEqual(circle.style.fill, 'blue')
+  })
 })
