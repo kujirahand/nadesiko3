@@ -772,9 +772,19 @@ const PluginHttpServer = {
       if (dp.curRes === null) {
         throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
       }
-      console.error(`${HTTPSERVER_LOGID} 移動=${url}`)
-      dp.curRes.writeHead(302, { 'Location': url })
-      dp.curRes.end(`<html><body><a href="${url}">JUMP</a></body></html>`)
+      const loc = String(url ?? '')
+      // Location は http(s)/相対のみ。CRLF でヘッダ注入しない
+      if (/[\r\n]/.test(loc) || (loc.includes(':') && !/^(https?:)/i.test(loc) && !loc.startsWith('/'))) {
+        throw new Error('リダイレクト先URLが不正です。')
+      }
+      const safeHref = loc
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+      console.error(`${HTTPSERVER_LOGID} 移動=${loc}`)
+      dp.curRes.writeHead(302, { 'Location': loc })
+      dp.curRes.end(`<html><body><a href="${safeHref}">JUMP</a></body></html>`)
       dp.isEnd = true
     }
   }
