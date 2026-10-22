@@ -793,6 +793,9 @@ export class NakoLexer {
       filename = a[a.length - 1]
     }
     filename = filename.replace(/\.nako3?$/, '')
+    // 『…』に名前空間設定 等へ埋め込まれるため、構文メタ文字を識別子相当へ正規化する
+    filename = filename.replace(/[^\p{L}\p{N}_]/gu, '_')
+    if (!filename) { return 'main' }
     return filename
   }
 }
