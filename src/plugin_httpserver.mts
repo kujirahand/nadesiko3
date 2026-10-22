@@ -773,9 +773,17 @@ const PluginHttpServer = {
         throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
       }
       const loc = String(url ?? '')
-      // Location は http(s)/相対のみ。CRLF でヘッダ注入しない
-      if (/[\r\n]/.test(loc) || (loc.includes(':') && !/^(https?:)/i.test(loc) && !loc.startsWith('/'))) {
+      // CRLF で Location ヘッダ注入しない。javascript:/data: 等の危険スキームを拒否。
+      // クエリ内のコロン（?t=12:30）や相対パスは許可。
+      if (/[\r\n]/.test(loc)) {
         throw new Error('リダイレクト先URLが不正です。')
+      }
+      const schemeM = loc.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/)
+      if (schemeM) {
+        const scheme = schemeM[1].toLowerCase()
+        if (scheme !== 'http' && scheme !== 'https') {
+          throw new Error('リダイレクト先URLが不正です。')
+        }
       }
       const safeHref = loc
         .replace(/&/g, '&amp;')
