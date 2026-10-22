@@ -21,11 +21,15 @@ type HttpReqCtx = {
   res: any
   isEnd: boolean
   usedHeader: boolean
+  method: string
   getData: any
   postData: any
   filesData: any
 }
 const httpReqStore = new AsyncLocalStorage<HttpReqCtx>()
+
+/** リクエストごとに分離するシステム変数名 */
+const REQ_SCOPED_VARS = new Set(['HTTPメソッド', 'GETデータ', 'POSTデータ', 'FILESデータ'])
 
 function getHttpReqCtx (): HttpReqCtx {
   const ctx = httpReqStore.getStore()
@@ -33,6 +37,45 @@ function getHttpReqCtx (): HttpReqCtx {
     throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
   }
   return ctx
+}
+
+/**
+ * __v0 / __varslist[0] の get/set を ALS 経由にする。
+ * 生成コードは __v0.get('GETデータ') を使うため、__setSysVar だけでは
+ * 非同期交差時に共有 Map が混ざる。
+ */
+function installReqScopedVarMap (sys: any): void {
+  if (sys.__httpserverReqScopedInstalled) { return }
+  const v0: Map<string, any> | undefined = sys.__varslist?.[0] ?? sys.__v0
+  if (!v0 || typeof v0.get !== 'function' || typeof v0.set !== 'function') { return }
+  sys.__httpserverReqScopedInstalled = true
+  const origGet = v0.get.bind(v0)
+  const origSet = v0.set.bind(v0)
+  v0.get = (key: any) => {
+    const ctx = httpReqStore.getStore()
+    if (ctx && REQ_SCOPED_VARS.has(String(key))) {
+      switch (String(key)) {
+        case 'HTTPメソッド': return ctx.method
+        case 'GETデータ': return ctx.getData
+        case 'POSTデータ': return ctx.postData
+        case 'FILESデータ': return ctx.filesData
+      }
+    }
+    return origGet(key)
+  }
+  v0.set = (key: any, value: any) => {
+    const ctx = httpReqStore.getStore()
+    if (ctx && REQ_SCOPED_VARS.has(String(key))) {
+      switch (String(key)) {
+        case 'HTTPメソッド': ctx.method = value; break
+        case 'GETデータ': ctx.getData = value; break
+        case 'POSTデータ': ctx.postData = value; break
+        case 'FILESデータ': ctx.filesData = value; break
+      }
+      return v0
+    }
+    return origSet(key, value)
+  }
 }
 
 // オブジェクト
@@ -61,6 +104,7 @@ class EasyURLDispather {
     this.server = null
     this.items = []
     this.sys = sys
+    installReqScopedVarMap(sys)
   }
 
   doRequest(req: any, res: any) {
@@ -69,6 +113,7 @@ class EasyURLDispather {
       res,
       isEnd: false,
       usedHeader: false,
+      method: '',
       getData: {},
       postData: {},
       filesData: []
@@ -78,6 +123,8 @@ class EasyURLDispather {
 
     enter(() => {
       const method = String(req.method || '').toUpperCase()
+      ctx.method = method
+      // ALS 経由 Map 経由で反映（共有 Map には書かない）
       this.sys.__setSysVar('HTTPメソッド', method)
       console.error(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
       const params = this.parseURL(req.url)
@@ -250,7 +297,8 @@ class EasyURLDispather {
     const ctx = getHttpReqCtx()
     ctx.isEnd = false
     ctx.usedHeader = false
-    // コールバック直前にこのリクエストの sysvar を載せ直す
+    // ALS 経由でこのリクエストの値を公開（共有 Map には書かない）
+    this.sys.__setSysVar('HTTPメソッド', ctx.method)
     this.sys.__setSysVar('GETデータ', ctx.getData)
     this.sys.__setSysVar('POSTデータ', ctx.postData)
     this.sys.__setSysVar('FILESデータ', ctx.filesData)
