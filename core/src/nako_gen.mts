@@ -857,8 +857,8 @@ export class NakoGen {
 
   convComment(node: AstEol): string {
     let commentSrc = String(node.comment)
-    // コメントの改行や空行を無効化
-    commentSrc = commentSrc.replace(/\n/g, '¶')
+    // コメントの改行や空行を無効化（CR/LS/PS も // コメント終端になるため中和）
+    commentSrc = commentSrc.replace(/[\n\r\u2028\u2029]/g, '¶')
     commentSrc = commentSrc.replace(/\*\//g, '＊／')
     commentSrc = commentSrc.replace(/(^\s+|\s+$)/g, '')
     // コメントの行番号を得る
