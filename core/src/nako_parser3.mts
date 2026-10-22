@@ -55,6 +55,9 @@ import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
 export class NakoParser extends NakoParserBase {
   private originalVarNames = new WeakMap<object, string>()
   private ifExpressionDepth = 0
+  /** 入れ子の「もし」文の深さ (DoS 防止) */
+  private ifNestDepth = 0
+  private static readonly MAX_IF_NEST_DEPTH = 64
 
   /**
    * 構文解析を実行する
@@ -63,6 +66,7 @@ export class NakoParser extends NakoParserBase {
     this.reset()
     this.originalVarNames = new WeakMap<object, string>()
     this.ifExpressionDepth = 0
+    this.ifNestDepth = 0
     this.tokens = tokens
     this.modName = NakoLexer.filenameToModName(filename)
     this.modList.push(this.modName)
@@ -504,17 +508,26 @@ export class NakoParser extends NakoParserBase {
     const map = this.peekSourceMap()
     // 「もし」があれば「もし」文である
     if (!this.check('もし')) { return null }
-    const mosi:Token|null = this.get() // skip もし
-    if (mosi === null) { return null }
-    while (this.check('comma')) { this.get() } // skip comma
-    // 「もし」文の条件を取得
-    let expr: Ast | null = null
-    try {
-      expr = this.yIFCond()
-    } catch (err: any) {
-      throw NakoSyntaxError.fromNode('『もし』文の条件で次のエラーがあります。\n' + String(err.message), mosi)
+    if (this.ifNestDepth >= NakoParser.MAX_IF_NEST_DEPTH) {
+      throw NakoSyntaxError.fromNode(
+        `「もし」文の入れ子が深すぎます（上限 ${NakoParser.MAX_IF_NEST_DEPTH}）。`, map)
     }
-    return this.yIfThen(expr, map)
+    this.ifNestDepth++
+    try {
+      const mosi:Token|null = this.get() // skip もし
+      if (mosi === null) { return null }
+      while (this.check('comma')) { this.get() } // skip comma
+      // 「もし」文の条件を取得
+      let expr: Ast | null = null
+      try {
+        expr = this.yIFCond()
+      } catch (err: any) {
+        throw NakoSyntaxError.fromNode('『もし』文の条件で次のエラーがあります。\n' + String(err.message), mosi)
+      }
+      return this.yIfThen(expr, map)
+    } finally {
+      this.ifNestDepth--
+    }
   }
 
   /** 値として使う条件分岐。各分岐の末尾の式を結果にする。 (#2591) */
