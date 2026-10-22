@@ -424,7 +424,8 @@ export class NakoGen {
       const f = trim(cleanGeneratedCode(String(value.fn), 1))
       const isAsync = value.asyncFn ? 'true' : 'false'
       // 関数名は JSON 文字列として埋め込み、「」等による string-literal breakout を防ぐ
-      const keyLit = JSON.stringify(key)
+      // U+2028/U+2029 は古い JSON.stringify でも // コメント行を破るため明示中和
+      const keyLit = JSON.stringify(key).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
       nakoFuncCode += '' +
         `//[DEF_FUNC name=${keyLit} asyncFn=${isAsync}]\n` +
         `__self.__varslist[1].set(${keyLit}, ${f});\n` +
