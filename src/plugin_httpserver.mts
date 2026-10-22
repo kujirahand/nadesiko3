@@ -43,18 +43,35 @@ function getHttpReqCtx (): HttpReqCtx {
  * __v0 / __varslist[0] の get/set を ALS 経由にする。
  * 生成コードは __v0.get('GETデータ') を使うため、__setSysVar だけでは
  * 非同期交差時に共有 Map が混ざる。
+ * パッチ不能時は throw（fail-closed）。REQ_SCOPED_VARS は ALS 外で共有 Map に落とさない。
  */
 function installReqScopedVarMap (sys: any): void {
   if (sys.__httpserverReqScopedInstalled) { return }
   const v0: Map<string, any> | undefined = sys.__varslist?.[0] ?? sys.__v0
-  if (!v0 || typeof v0.get !== 'function' || typeof v0.set !== 'function') { return }
+  if (!v0 || typeof v0.get !== 'function' || typeof v0.set !== 'function') {
+    throw new Error('簡易HTTPサーバ: リクエスト変数の分離を初期化できません。')
+  }
   sys.__httpserverReqScopedInstalled = true
   const origGet = v0.get.bind(v0)
   const origSet = v0.set.bind(v0)
+  const emptyFor = (key: string): any => {
+    switch (key) {
+      case 'HTTPメソッド': return ''
+      case 'GETデータ': return {}
+      case 'POSTデータ': return {}
+      case 'FILESデータ': return []
+      default: return undefined
+    }
+  }
   v0.get = (key: any) => {
-    const ctx = httpReqStore.getStore()
-    if (ctx && REQ_SCOPED_VARS.has(String(key))) {
-      switch (String(key)) {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      const ctx = httpReqStore.getStore()
+      if (!ctx) {
+        // ALS 外: 共有 Map を読まず空を返す（他リクエスト値の漏洩防止）
+        return emptyFor(k)
+      }
+      switch (k) {
         case 'HTTPメソッド': return ctx.method
         case 'GETデータ': return ctx.getData
         case 'POSTデータ': return ctx.postData
@@ -64,9 +81,14 @@ function installReqScopedVarMap (sys: any): void {
     return origGet(key)
   }
   v0.set = (key: any, value: any) => {
-    const ctx = httpReqStore.getStore()
-    if (ctx && REQ_SCOPED_VARS.has(String(key))) {
-      switch (String(key)) {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      const ctx = httpReqStore.getStore()
+      if (!ctx) {
+        // ALS 外: 共有 Map に書かない（fail-closed）
+        return v0
+      }
+      switch (k) {
         case 'HTTPメソッド': ctx.method = value; break
         case 'GETデータ': ctx.getData = value; break
         case 'POSTデータ': ctx.postData = value; break
