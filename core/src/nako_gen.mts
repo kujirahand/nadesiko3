@@ -831,7 +831,15 @@ export class NakoGen {
     // システム関数・変数の場合
     if (i === 0) {
       const pv = this.__self.getNakoFunc(name)
-      if (!pv) { return `${res.js}/*[link_error]l${lno}:${position.file ?? 'unknown'}*/` }
+      // ファイル識別子を生成コメントに埋める前に中和する
+      // (*/ によるコメント脱出と任意JSの注入を防ぐ。行終端はブロックコメントを
+      //  終了させないが、生成コードの行構造を保つため ¶ に置換する)
+      if (!pv) {
+        const safeFile = String(position.file ?? 'unknown')
+          .replace(/\*\//g, '＊／')
+          .replace(/[\r\n\u2028\u2029]/g, '¶')
+        return `${res.js}/*[link_error]l${lno}:${safeFile}*/`
+      }
       if (pv.type === 'const' || pv.type === 'var') { return res.js }
       if (pv.type === 'func') {
         if (!pv.josi || pv.josi.length === 0) { return `(${res.js}())` }
