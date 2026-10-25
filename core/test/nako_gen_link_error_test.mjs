@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // PR #2624 の回帰テスト。
-// genVar が未定義のシステム関数・変数への参照で生成する
+// genVar がリンクできない (実体のない) システム関数・変数への参照で生成する
 // `/*[link_error]l行:ファイル*/` コメントに、`*/` や行終端文字を含むファイル名を
 // 埋め込んでも、生成された JavaScript を破壊(コメント脱出・任意JS注入)できないことを検証する。
 import { describe, it } from 'node:test'
@@ -46,8 +46,7 @@ describe('nako_gen_link_error_test (PR #2624)', () => {
   for (const [title, file, expected] of cases) {
     it(`${title}: 出力が無害化される`, () => {
       const code = genLinkError(file)
-      assert.ok(code.startsWith(PREFIX), code)
-      assert.ok(code.endsWith(commentOf(expected)), code)
+      assert.strictEqual(code, PREFIX + commentOf(expected))
       // 末尾の正規の */ を除いて、*/ が現れない
       const body = code.slice(0, -2)
       assert.ok(!body.includes('*/'), code)
