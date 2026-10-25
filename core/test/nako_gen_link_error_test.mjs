@@ -17,11 +17,11 @@ const DUMMY_NAME = 'リンクエラー検証用'
  */
 const genLinkError = (file) => {
   const nako = new NakoCompiler()
-  const gen = new NakoGen(nako)
-  // システム変数スコープ (varslistSet[0]) に名前だけを登録する。
+  // システム変数スコープ (__varslist[0]) に名前だけを登録する。
+  // NakoGen は生成時に __varslist のキーから varslistSet を作るため findVar が i=0 を返し、
   // getNakoFunc() が undefined を返すため genVar が link_error 経路に入る。
-  // varslistSet は TS の private だが、コンパイル後の JS では通常のプロパティとして触れる。
-  gen.varslistSet[0].names.add(DUMMY_NAME)
+  nako.__varslist[0].set(DUMMY_NAME, undefined)
+  const gen = new NakoGen(nako)
   const position = { type: 'word', line: 5 }
   if (file !== undefined) { position.file = file }
   return gen.genVar(DUMMY_NAME, position)
