@@ -44,9 +44,8 @@ export const rules: NakoLexRule[] = [
   // eslint-disable-next-line no-irregular-whitespace
   { name: 'space', pattern: /^(\x20|\t|　|・|⎿ |└|｜)+/ }, // #877,#1015
   { name: 'comma', pattern: /^,/ },
-  // LS/PS/CR は JS の行終端でもあるためコメント本文に取り込まない
-  { name: 'line_comment', pattern: /^#[^\n\r\u2028\u2029]*/ },
-  { name: 'line_comment', pattern: /^\/\/[^\n\r\u2028\u2029]*/ },
+  { name: 'line_comment', pattern: /^#[^\n]*/ },
+  { name: 'line_comment', pattern: /^\/\/[^\n]*/ },
   { name: 'range_comment', pattern: /^\/\*/, cbParser: cbRangeComment },
   { name: 'def_test', pattern: /^●テスト:/ },
   { name: 'def_func', pattern: /^●/ },
@@ -83,7 +82,7 @@ export const rules: NakoLexRule[] = [
   { name: '←', pattern: /^(←|<--)/ }, // 矢印 --- ただし(core#140)で廃止された演算子(#891,#899)
   { name: 'eq', pattern: /^(==|🟰🟰)/ },
   { name: 'eq', pattern: /^(=|🟰)/ },
-  { name: 'line_comment', pattern: /^(!|💡)(インデント構文|ここまでだるい|DNCLモード|DNCL2モード|DNCL2)[^\n\r\u2028\u2029]*/ }, // #1184
+  { name: 'line_comment', pattern: /^(!|💡)(インデント構文|ここまでだるい|DNCLモード|DNCL2モード|DNCL2)[^\n]*/ }, // #1184
   { name: 'not', pattern: /^(!|💡)/ }, // #1184 #1457
   { name: 'gt', pattern: /^>/ },
   { name: 'lt', pattern: /^</ },
