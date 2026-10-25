@@ -932,6 +932,7 @@ const PluginHttpServer = {
       const ctx = getHttpReqCtx()
       const raw = String(url ?? '')
       // C0/DEL と前後空白を正規化。タブ混入 javascript: 等のスキームすり抜けを防ぐ。
+      // eslint-disable-next-line no-control-regex -- 制御文字を含むURLを拒否するため
       if (/[\u0000-\u001F\u007F]/.test(raw)) {
         throw new Error('リダイレクト先URLが不正です。')
       }
