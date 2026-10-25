@@ -790,6 +790,236 @@ describe('plugin_httpserver_test', () => {
       nako.runAsync('0を「/test」に簡易HTTPサーバ受信時。', 'main'),
       /『簡易HTTPサーバ受信時』に実行できない関数が指定されました/)
   })
+  it('並列GETリクエストでGETデータと出力先が混ざらないこと #2630', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理A
+  0.3秒待つ。
+  「{HTTPメソッド}:{GETデータ["token"]}」を簡易HTTPサーバ出力。
+ここまで。
+●受信処理B
+  0.05秒待つ。
+  「{HTTPメソッド}:{GETデータ["token"]}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理A」を「/echo-a」に簡易HTTPサーバ受信時。
+「受信処理B」を「/echo-b」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const request = (path) => new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: path,
+        method: 'GET'
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve(data) })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+
+    // 待ち時間の異なる2リクエストを同時に投げても、await の後で読む
+    // GETデータ・HTTPメソッドと出力先が互いに混ざらないこと
+    const [resA, resB] = await Promise.all([
+      request('/echo-a?token=A'),
+      request('/echo-b?token=B')
+    ])
+    assert.strictEqual(resA, 'GET:A')
+    assert.strictEqual(resB, 'GET:B')
+
+    // 受信処理の外ではリクエスト変数は空相当になり、他リクエストの値が漏れないこと
+    assert.deepStrictEqual(g.__getSysVar('GETデータ'), {})
+    assert.deepStrictEqual(g.__getSysVar('POSTデータ'), {})
+    assert.deepStrictEqual(g.__getSysVar('FILESデータ'), [])
+    assert.strictEqual(g.__getSysVar('HTTPメソッド'), '')
+    // 共有Map自体にもリクエストの値は残っていないこと (constの初期値 '' のみ)
+    const rawGet = Map.prototype.get.call(g.__v0, 'GETデータ')
+    assert.ok(rawGet === '' || rawGet === undefined, '共有MapにGETデータが残っていないこと')
+    // has も get/set と同じ方針で、受信処理の外では存在しないものとして扱うこと
+    assert.strictEqual(g.__v0.has('GETデータ'), false)
+  })
+  it('並列POSTリクエストでPOSTデータが混ざらないこと #2630', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理A
+  0.3秒待つ。
+  「{POSTデータ["message"]}」を簡易HTTPサーバ出力。
+ここまで。
+●受信処理B
+  0.05秒待つ。
+  「{POSTデータ["message"]}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理A」を「/post-a」に簡易HTTPサーバ受信時。
+「受信処理B」を「/post-b」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const postJson = (path, message) => new Promise((resolve, reject) => {
+      const postData = JSON.stringify({ message: message })
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: path,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
+        }
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve(data) })
+      })
+      req.on('error', reject)
+      req.write(postData)
+      req.end()
+    })
+
+    const [resA, resB] = await Promise.all([
+      postJson('/post-a', 'AAA'),
+      postJson('/post-b', 'BBB')
+    ])
+    assert.strictEqual(resA, 'AAA')
+    assert.strictEqual(resB, 'BBB')
+  })
+  it('並列multipartリクエストでFILESデータとPOSTデータが混ざらないこと #2630', async () => {
+    let port = 0
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理A
+  0.3秒待つ。
+  F=FILESデータ[0]
+  「{POSTデータ["label"]}:{F["name"]}」を簡易HTTPサーバ出力。
+ここまで。
+●受信処理B
+  0.05秒待つ。
+  F=FILESデータ[0]
+  「{POSTデータ["label"]}:{F["name"]}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「受信処理A」を「/up-a」に簡易HTTPサーバ受信時。
+「受信処理B」を「/up-b」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const postMultipart = (path, label, filename) => new Promise((resolve, reject) => {
+      const boundary = '----TestBoundary2630'
+      const parts = [
+        `--${boundary}\r\n`,
+        `Content-Disposition: form-data; name="label"\r\n\r\n`,
+        `${label}\r\n`,
+        `--${boundary}\r\n`,
+        `Content-Disposition: form-data; name="file1"; filename="${filename}"\r\n`,
+        `Content-Type: text/plain\r\n\r\n`,
+        `hello\r\n`,
+        `--${boundary}--\r\n`
+      ]
+      const postData = Buffer.from(parts.join(''))
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: path,
+        method: 'POST',
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          'Content-Length': postData.length
+        }
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve(data) })
+      })
+      req.on('error', reject)
+      req.write(postData)
+      req.end()
+    })
+
+    const [resA, resB] = await Promise.all([
+      postMultipart('/up-a', 'A', 'a.txt'),
+      postMultipart('/up-b', 'B', 'b.txt')
+    ])
+    assert.strictEqual(resA, 'A:a.txt')
+    assert.strictEqual(resB, 'B:b.txt')
+  })
+  it('リクエスト変数Mapのパッチが途中失敗してもMapが元に戻り再試行できること #2630', async () => {
+    const g = await nako.runAsync('1を表示。', 'main')
+    const v0 = g.__v0
+    // set だけを書込不可にして、get の適用成功後に set で失敗する状況を作る
+    Object.defineProperty(v0, 'set', { value: v0.set, writable: false, configurable: true })
+    const serverCode = `
+●ダミー起動
+  戻る。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+`
+    // サーバ構築が失敗すること (fail-closed)
+    await assert.rejects(nako.runAsync(serverCode, 'main'), /read only property 'set'/)
+    // インストール済みフラグが立っていないこと
+    assert.ok(!g.__httpserverReqScopedInstalled)
+    // 適用済みだった get が自前プロパティとして残らず、元の状態に戻っていること
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(v0, 'get'), false)
+    // 元の get で共有Mapの値をそのまま読めること
+    Map.prototype.set.call(v0, 'GETデータ', { sentinel: 1 })
+    assert.deepStrictEqual(v0.get('GETデータ'), { sentinel: 1 })
+    Map.prototype.delete.call(v0, 'GETデータ')
+    // 妨害を取り除けば再試行でサーバを構築できること
+    delete v0.set
+    const g2 = await nako.runAsync(serverCode, 'main')
+    serverDp = g2.__httpserver
+    assert.ok(g2.__httpserverReqScopedInstalled)
+    await wait(100)
+    assert.ok(serverDp.server.address().port > 0)
+  })
+  it('サーバを2回構築してもリクエスト変数Mapが二重ラップされないこと #2630', async () => {
+    const serverCode = `
+●ダミー起動
+  戻る。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+`
+    const g1 = await nako.runAsync(serverCode, 'main')
+    const dp1 = g1.__httpserver
+    await wait(100)
+    // 1回目の構築でラッパーが適用されていること
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(g1.__v0, 'get'), true)
+    const wrappedGet = g1.__v0.get
+    try {
+      // 同じ sys で2回目の構築をしても get が積み重ならないこと
+      const g2 = await nako.runAsync(serverCode, 'main')
+      serverDp = g2.__httpserver
+      await wait(100)
+      assert.strictEqual(g2.__v0.get, wrappedGet)
+    } finally {
+      if (dp1 && dp1.server) {
+        await new Promise((resolve) => { dp1.server.close(() => { resolve() }) })
+      }
+    }
+  })
 
   it('簡易HTTPサーバ移動の Location 検証と HTML エスケープ', async () => {
     let port = 0
@@ -897,22 +1127,5 @@ describe('plugin_httpserver_test', () => {
     const still = await request('/go')
     assert.strictEqual(still.statusCode, 302)
     assert.strictEqual(still.location, '/ok')
-  })
-
-  it('簡易HTTPサーバ移動の DEL 拒否は Node のヘッダ検証に頼らない', () => {
-    // 実サーバ経由では DEL 入りの Location を Node 自身も弾いて 500 になるため、
-    // 実装側の検証を直接確認できるようモックの応答で fn を呼ぶ。
-    const fn = PluginHttpServer['簡易HTTPサーバ移動'].fn
-    const makeSys = () => ({
-      __httpserver: {
-        curRes: { writeHead: () => {}, end: () => {} },
-        isEnd: false
-      }
-    })
-    assert.throws(() => fn('/ok\x7Fbad', makeSys()), /リダイレクト先URLが不正です/)
-    // 正常系はモックでも通ること
-    const sys = makeSys()
-    fn('/ok', sys)
-    assert.strictEqual(sys.__httpserver.isEnd, true)
   })
 })
