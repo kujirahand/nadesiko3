@@ -31,6 +31,9 @@ const httpReqStore = new AsyncLocalStorage<HttpReqCtx>()
 /** リクエストごとに分離するシステム変数名 */
 const REQ_SCOPED_VARS = new Set(['HTTPメソッド', 'GETデータ', 'POSTデータ', 'FILESデータ'])
 
+/** ラッパーを適用済みの Map (sys ではなく Map 自体をキーにして二重ラップを防ぐ) */
+const reqScopedPatchedMaps = new WeakSet<object>()
+
 function getHttpReqCtx (): HttpReqCtx {
   const ctx = httpReqStore.getStore()
   if (!ctx || !ctx.res) {
@@ -40,19 +43,44 @@ function getHttpReqCtx (): HttpReqCtx {
 }
 
 /**
- * __v0 / __varslist[0] の get/set を ALS 経由にする。
+ * __v0 / __varslist[0] の get/set/has/delete を ALS 経由にする。
  * 生成コードは __v0.get('GETデータ') を使うため、__setSysVar だけでは
  * 非同期交差時に共有 Map が混ざる。
  * パッチ不能時は throw（fail-closed）。REQ_SCOPED_VARS は ALS 外で共有 Map に落とさない。
+ * 適用済み判定は Map 自体をキーにする (複数の sys が同じ Map を共有しても
+ * 二重ラップにならず、Map が差し替わった場合は新しい Map に適用できる)。
+ * なお clear やイテレーション等のその他の Map 操作は対象外とする
+ * (生成コードはリクエスト変数の読み書きに get/set しか使わない)。
  */
 function installReqScopedVarMap (sys: any): void {
-  if (sys.__httpserverReqScopedInstalled) { return }
   const v0: Map<string, any> | undefined = sys.__varslist?.[0] ?? sys.__v0
   if (!v0 || typeof v0.get !== 'function' || typeof v0.set !== 'function') {
     throw new Error('簡易HTTPサーバ: リクエスト変数の分離を初期化できません。')
   }
+  if (reqScopedPatchedMaps.has(v0)) {
+    sys.__httpserverReqScopedInstalled = true
+    return
+  }
   const origGet = v0.get.bind(v0)
   const origSet = v0.set.bind(v0)
+  const origHas = v0.has.bind(v0)
+  const origDelete = v0.delete.bind(v0)
+  // 復元用に、適用前の自前プロパティの descriptor を記録しておく
+  // (通常の Map には無いが、既に自前プロパティがある場合はそれを正確に戻すため)
+  const ownDescriptors: { [key: string]: PropertyDescriptor | undefined } = {}
+  for (const name of ['get', 'set', 'has', 'delete']) {
+    ownDescriptors[name] = Object.getOwnPropertyDescriptor(v0, name)
+  }
+  const restoreProp = (name: string) => {
+    const desc = ownDescriptors[name]
+    try {
+      if (desc) {
+        Object.defineProperty(v0, name, desc)
+      } else {
+        delete (v0 as any)[name]
+      }
+    } catch { /* 復元不能でもフラグは立てない */ }
+  }
   const emptyFor = (key: string): any => {
     switch (key) {
       case 'HTTPメソッド': return ''
@@ -97,15 +125,52 @@ function installReqScopedVarMap (sys: any): void {
     }
     return origSet(key, value)
   }
-  // 両方のラッパーが載ってからインストール済みにする。途中失敗で再試行不能にしない。
+  const wrappedHas = (key: any) => {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      // get/set と同じ方針: リクエスト処理中だけ存在するものとして扱い、
+      // ALS 外では共有 Map の残留値を見せない。
+      // なお delete の後も true のままになる (delete はフィールドを空相当へ
+      // 戻すだけで、変数自体はリクエスト処理中は常に存在するものとして扱う)
+      return httpReqStore.getStore() !== undefined
+    }
+    return origHas(key)
+  }
+  const wrappedDelete = (key: any) => {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      const ctx = httpReqStore.getStore()
+      if (!ctx) {
+        // ALS 外: 共有 Map からは消さない（fail-closed）
+        return false
+      }
+      switch (k) {
+        case 'HTTPメソッド': ctx.method = ''; break
+        case 'GETデータ': ctx.getData = {}; break
+        case 'POSTデータ': ctx.postData = {}; break
+        case 'FILESデータ': ctx.filesData = []; break
+      }
+      return true
+    }
+    return origDelete(key)
+  }
+  // 全てのラッパーが載ってからインストール済みにする。途中失敗で再試行不能にしない。
+  // 復元は適用前の状態へ戻す (自前プロパティが元々あれば descriptor で復元し、
+  // 無ければ delete で除去してプロトタイプメソッドだけの状態に戻す)。
   try {
     v0.get = wrappedGet
     v0.set = wrappedSet
+    v0.has = wrappedHas
+    v0.delete = wrappedDelete
   } catch (e) {
-    try { v0.get = origGet } catch { /* 復元不能でもフラグは立てない */ }
-    try { v0.set = origSet } catch { /* 同上 */ }
+    restoreProp('get')
+    restoreProp('set')
+    restoreProp('has')
+    restoreProp('delete')
     throw e
   }
+  reqScopedPatchedMaps.add(v0)
+  // 適用済み判定の正は reqScopedPatchedMaps 側。sys 側フラグは状態確認用に併せて立てる
   sys.__httpserverReqScopedInstalled = true
 }
 
