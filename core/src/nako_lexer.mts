@@ -793,6 +793,12 @@ export class NakoLexer {
       filename = a[a.length - 1]
     }
     filename = filename.replace(/\.nako3?$/, '')
+    // 『…』に名前空間設定 等へ文字列として埋め込まれるため、終端記号や構文区切り文字・改行が
+    // 境界を壊さないよう、識別子相当の文字以外を '_' へ正規化する。
+    // 分解形式 (NFD) のファイル名でも合成済みと同じ名前になるよう NFC 正規化し、
+    // NFC でも合成できない結合文字 (\p{M}) はそのまま保持する (結合文字は終端記号にはならない)。
+    filename = filename.normalize('NFC').replace(/[^\p{L}\p{N}\p{M}_]/gu, '_')
+    if (!filename) { return 'main' }
     return filename
   }
 }
