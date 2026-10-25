@@ -53,9 +53,9 @@ const convertColorTextFormat = (text: string) => {
   // nodeConsoleからhtmlを作る
   let htmlColor = 'inherit' // 文字色
   let htmlFontWeight = 'inherit' // 文字の太さ
-  // textが色情報を含まないならそれをそのまま使い、含むなら全体を <span>で囲んで、更に、ANSI escape code で囲まれた部分を対応する style を付けた <span> で囲む。
-   
-  const html = text === noColor ? noColor : ('<span>' + escapeHTML(text)
+  // textが色情報を含まないなら escape して使い、含むなら全体を <span>で囲んで、更に、ANSI escape code で囲まれた部分を対応する style を付けた <span> で囲む。
+  // no-ANSI 経路も HTML コンテキストへ出すため必ず escape する (表示→editor innerHTML 経路の XSS 防止)
+  const html = text === noColor ? escapeHTML(noColor) : ('<span>' + escapeHTML(text)
     // eslint-disable-next-line no-control-regex
     .replace(/\x1b\[(\d+)m/g, (_, m1str) => { // ANSI escape code（の一部）にマッチして置換
       const m1 = +m1str
