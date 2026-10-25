@@ -51,7 +51,6 @@ function installReqScopedVarMap (sys: any): void {
   if (!v0 || typeof v0.get !== 'function' || typeof v0.set !== 'function') {
     throw new Error('簡易HTTPサーバ: リクエスト変数の分離を初期化できません。')
   }
-  sys.__httpserverReqScopedInstalled = true
   const origGet = v0.get.bind(v0)
   const origSet = v0.set.bind(v0)
   const emptyFor = (key: string): any => {
@@ -63,7 +62,7 @@ function installReqScopedVarMap (sys: any): void {
       default: return undefined
     }
   }
-  v0.get = (key: any) => {
+  const wrappedGet = (key: any) => {
     const k = String(key)
     if (REQ_SCOPED_VARS.has(k)) {
       const ctx = httpReqStore.getStore()
@@ -80,7 +79,7 @@ function installReqScopedVarMap (sys: any): void {
     }
     return origGet(key)
   }
-  v0.set = (key: any, value: any) => {
+  const wrappedSet = (key: any, value: any) => {
     const k = String(key)
     if (REQ_SCOPED_VARS.has(k)) {
       const ctx = httpReqStore.getStore()
@@ -98,6 +97,16 @@ function installReqScopedVarMap (sys: any): void {
     }
     return origSet(key, value)
   }
+  // 両方のラッパーが載ってからインストール済みにする。途中失敗で再試行不能にしない。
+  try {
+    v0.get = wrappedGet
+    v0.set = wrappedSet
+  } catch (e) {
+    try { v0.get = origGet } catch { /* 復元不能でもフラグは立てない */ }
+    try { v0.set = origSet } catch { /* 同上 */ }
+    throw e
+  }
+  sys.__httpserverReqScopedInstalled = true
 }
 
 // オブジェクト
