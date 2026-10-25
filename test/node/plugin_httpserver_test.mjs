@@ -850,15 +850,28 @@ describe('plugin_httpserver_test', () => {
     const httpsOk = await request('/go-u?u=' + encodeURIComponent('https://example.com/a'))
     assert.strictEqual(httpsOk.statusCode, 302)
     assert.strictEqual(httpsOk.location, 'https://example.com/a')
+    // スキームの大文字・小文字は区別しないこと（toLowerCase の除去を検出するため）
+    const httpsUpper = await request('/go-u?u=' + encodeURIComponent('HTTPS://example.com/a'))
+    assert.strictEqual(httpsUpper.statusCode, 302)
+    assert.strictEqual(httpsUpper.location, 'HTTPS://example.com/a')
     const relColon = await request('/go-u?u=' + encodeURIComponent('/path:with:colons'))
     assert.strictEqual(relColon.statusCode, 302)
     assert.strictEqual(relColon.location, '/path:with:colons')
+    // PR説明にあるクエリ内の時刻コロン（?t=12:30）も相対URLとして許可
+    const queryColon = await request('/go-u?u=' + encodeURIComponent('?t=12:30'))
+    assert.strictEqual(queryColon.statusCode, 302)
+    assert.strictEqual(queryColon.location, '?t=12:30')
 
     // HTML 属性エスケープ（" < > &）
     const esc = await request('/go-u?u=' + encodeURIComponent('/x"y<z>&a'))
     assert.strictEqual(esc.statusCode, 302)
     assert.strictEqual(esc.location, '/x"y<z>&a')
     assert.match(esc.body, /href="\/x&quot;y&lt;z&gt;&amp;a"/)
+    // HTML 属性エスケープ（' も &#39; になること。5文字そろえて固定する）
+    const escSq = await request('/go-u?u=' + encodeURIComponent("/x'y"))
+    assert.strictEqual(escSq.statusCode, 302)
+    assert.strictEqual(escSq.location, "/x'y")
+    assert.match(escSq.body, /href="\/x&#39;y"/)
 
     // 危険スキーム・空・制御文字は 500（コールバック例外）
     const bad = async (u) => {
@@ -868,13 +881,38 @@ describe('plugin_httpserver_test', () => {
     await bad('javascript:alert(1)')
     await bad('data:text/html,hi')
     await bad('   ')
+    await bad('')
+    // 大文字スキームも小文字化して判定すること
+    await bad('JaVaScRiPt:alert(1)')
+    await bad('DATA:text/html,hi')
+    // 前後空白で隠した危険スキームも trim 後に判定すること
+    await bad('  javascript:alert(1)')
     await bad('java\tscript:alert(1)')
     await bad('http://example.com/\x0d\x0aX-Injected: 1')
     await bad('\x00/null')
+    // DEL (0x7F) も制御文字として拒否すること
+    await bad('/ok\x7Fbad')
 
     // 拒否のあとでもサーバが生きている
     const still = await request('/go')
     assert.strictEqual(still.statusCode, 302)
     assert.strictEqual(still.location, '/ok')
+  })
+
+  it('簡易HTTPサーバ移動の DEL 拒否は Node のヘッダ検証に頼らない', () => {
+    // 実サーバ経由では DEL 入りの Location を Node 自身も弾いて 500 になるため、
+    // 実装側の検証を直接確認できるようモックの応答で fn を呼ぶ。
+    const fn = PluginHttpServer['簡易HTTPサーバ移動'].fn
+    const makeSys = () => ({
+      __httpserver: {
+        curRes: { writeHead: () => {}, end: () => {} },
+        isEnd: false
+      }
+    })
+    assert.throws(() => fn('/ok\x7Fbad', makeSys()), /リダイレクト先URLが不正です/)
+    // 正常系はモックでも通ること
+    const sys = makeSys()
+    fn('/ok', sys)
+    assert.strictEqual(sys.__httpserver.isEnd, true)
   })
 })
