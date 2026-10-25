@@ -30,7 +30,7 @@ describe('nako_gen_def_func_test', async () => {
     })
     const gen = new NakoGen(nako)
     const code = gen.getDefFuncCode(nako, new NakoGenOptions())
-    const lines = code.split('\n').filter((l) => l.includes('DEF_FUNC') || l.includes('__varslist[1].set('))
+    const lines = code.split('\n').filter((l) => l.startsWith('//[DEF_FUNC ') || l.startsWith('//[/DEF_FUNC ') || l.startsWith('__self.__varslist[1].set('))
     return lines
   }
 
@@ -62,7 +62,8 @@ describe('nako_gen_def_func_test', async () => {
     ['リテラルの \\u2028 文字並び', '\\u2028'],
     ['絵文字(サロゲートペア)入り', 'テスト😀'],
     ['孤立サロゲート', '\ud800'],
-    ['《》とクォート入り', '《悪意"》']
+    ['《》とクォート入り', '《悪意"》'],
+    ['DEF_FUNCやset(を含む名前', 'x DEF_FUNC __varslist[1].set(']
   ]
 
   for (const [label, name] of cases) {
