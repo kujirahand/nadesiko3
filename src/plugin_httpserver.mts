@@ -930,9 +930,33 @@ const PluginHttpServer = {
         throw new Error(ERR_NOHTTPSERVER)
       }
       const ctx = getHttpReqCtx()
-      console.error(`${HTTPSERVER_LOGID} 移動=${url}`)
-      ctx.res.writeHead(302, { 'Location': url })
-      ctx.res.end(`<html><body><a href="${url}">JUMP</a></body></html>`)
+      const raw = String(url ?? '')
+      // C0/DEL と前後空白を正規化。タブ混入 javascript: 等のスキームすり抜けを防ぐ。
+      // eslint-disable-next-line no-control-regex -- 制御文字を含むURLを拒否するため
+      if (/[\u0000-\u001F\u007F]/.test(raw)) {
+        throw new Error('リダイレクト先URLが不正です。')
+      }
+      const loc = raw.trim()
+      if (loc === '') {
+        throw new Error('リダイレクト先URLが不正です。')
+      }
+      // 先頭スキームのみ検査（クエリ内コロンは許可）。http(s) 以外のスキームは拒否。
+      const schemeM = loc.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/)
+      if (schemeM) {
+        const scheme = schemeM[1].toLowerCase()
+        if (scheme !== 'http' && scheme !== 'https') {
+          throw new Error('リダイレクト先URLが不正です。')
+        }
+      }
+      const safeHref = loc
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+      console.error(`${HTTPSERVER_LOGID} 移動=${loc}`)
+      ctx.res.writeHead(302, { 'Location': loc })
+      ctx.res.end(`<html><body><a href="${safeHref}">JUMP</a></body></html>`)
       ctx.isEnd = true
     }
   }

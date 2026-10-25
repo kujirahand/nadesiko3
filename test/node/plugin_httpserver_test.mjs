@@ -1020,4 +1020,112 @@ describe('plugin_httpserver_test', () => {
       }
     }
   })
+
+  it('簡易HTTPサーバ移動の Location 検証と HTML エスケープ', async () => {
+    let port = 0
+    // 固定先とクエリ渡し先を分ける。制御文字はクエリ経由で渡す。
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●固定移動
+  「/ok」へ簡易HTTPサーバ移動。
+ここまで。
+●クエリ移動
+  GETデータ["u"]へ簡易HTTPサーバ移動。
+ここまで。
+「ダミー起動」を${port}で簡易HTTPサーバ起動時。
+「固定移動」を「/go」に簡易HTTPサーバ受信時。
+「クエリ移動」を「/go-u」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    port = serverDp.server.address().port
+
+    const request = (path) => new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: path,
+        method: 'GET'
+      }, (res) => {
+        let data = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => {
+          resolve({
+            statusCode: res.statusCode,
+            location: res.headers.location,
+            body: data
+          })
+        })
+      })
+      req.on('error', reject)
+      req.end()
+    })
+
+    // 正常: 相対パス。Location と本文 href。
+    const ok = await request('/go')
+    assert.strictEqual(ok.statusCode, 302)
+    assert.strictEqual(ok.location, '/ok')
+    assert.match(ok.body, /href="\/ok"/)
+
+    // 前後空白は trim されて Location に入る
+    const trimmed = await request('/go-u?u=' + encodeURIComponent('  /trim-me  '))
+    assert.strictEqual(trimmed.statusCode, 302)
+    assert.strictEqual(trimmed.location, '/trim-me')
+
+    // http(s) は許可。相対パス内のコロンも可。
+    const httpsOk = await request('/go-u?u=' + encodeURIComponent('https://example.com/a'))
+    assert.strictEqual(httpsOk.statusCode, 302)
+    assert.strictEqual(httpsOk.location, 'https://example.com/a')
+    // スキームの大文字・小文字は区別しないこと（toLowerCase の除去を検出するため）
+    const httpsUpper = await request('/go-u?u=' + encodeURIComponent('HTTPS://example.com/a'))
+    assert.strictEqual(httpsUpper.statusCode, 302)
+    assert.strictEqual(httpsUpper.location, 'HTTPS://example.com/a')
+    const relColon = await request('/go-u?u=' + encodeURIComponent('/path:with:colons'))
+    assert.strictEqual(relColon.statusCode, 302)
+    assert.strictEqual(relColon.location, '/path:with:colons')
+    // PR説明にあるクエリ内の時刻コロン（?t=12:30）も相対URLとして許可
+    const queryColon = await request('/go-u?u=' + encodeURIComponent('?t=12:30'))
+    assert.strictEqual(queryColon.statusCode, 302)
+    assert.strictEqual(queryColon.location, '?t=12:30')
+
+    // HTML 属性エスケープ（" < > &）
+    const esc = await request('/go-u?u=' + encodeURIComponent('/x"y<z>&a'))
+    assert.strictEqual(esc.statusCode, 302)
+    assert.strictEqual(esc.location, '/x"y<z>&a')
+    assert.match(esc.body, /href="\/x&quot;y&lt;z&gt;&amp;a"/)
+    // HTML 属性エスケープ（' も &#39; になること。5文字そろえて固定する）
+    const escSq = await request('/go-u?u=' + encodeURIComponent("/x'y"))
+    assert.strictEqual(escSq.statusCode, 302)
+    assert.strictEqual(escSq.location, "/x'y")
+    assert.match(escSq.body, /href="\/x&#39;y"/)
+
+    // 危険スキーム・空・制御文字は 500（コールバック例外）
+    const bad = async (u) => {
+      const r = await request('/go-u?u=' + encodeURIComponent(u))
+      assert.strictEqual(r.statusCode, 500, `expected 500 for ${JSON.stringify(u)}`)
+    }
+    await bad('javascript:alert(1)')
+    await bad('data:text/html,hi')
+    await bad('   ')
+    await bad('')
+    // 大文字スキームも小文字化して判定すること
+    await bad('JaVaScRiPt:alert(1)')
+    await bad('DATA:text/html,hi')
+    // 前後空白で隠した危険スキームも trim 後に判定すること
+    await bad('  javascript:alert(1)')
+    await bad('java\tscript:alert(1)')
+    await bad('http://example.com/\x0d\x0aX-Injected: 1')
+    await bad('\x00/null')
+    // DEL (0x7F) も制御文字として拒否すること
+    await bad('/ok\x7Fbad')
+
+    // 拒否のあとでもサーバが生きている
+    const still = await request('/go')
+    assert.strictEqual(still.statusCode, 302)
+    assert.strictEqual(still.location, '/ok')
+  })
 })
