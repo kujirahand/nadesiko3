@@ -17,6 +17,14 @@ describe('nako_logger_test', () => {
       'color: inherit; font-weight: inherit;'
     ])
   })
+  it('no-ANSI 経路でも HTML を escapeHTML する', () => {
+    // text === noColor のとき span を付けず escape のみ
+    const out = NakoColors.convertColorTextFormat('<script>x</script>')
+    assert.strictEqual(out.noColor, '<script>x</script>')
+    assert.strictEqual(out.nodeConsole, '<script>x</script>')
+    assert.strictEqual(out.html, '&lt;script&gt;x&lt;/script&gt;')
+    assert.deepStrictEqual(out.browserConsole, ['<script>x</script>'])
+  })
   it('ログの取得のテスト', () => {
     const logger = new NakoLogger()
     logger.addListener('info', (data) => {
