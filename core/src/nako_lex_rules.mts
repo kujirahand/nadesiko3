@@ -15,8 +15,8 @@ const errorRead = (ch: string): any => {
   return function() { throw new Error('突然の『' + ch + '』があります。') }
 }
 
-// 数値の後の単位は自動的に省略されるルール (#994)
-export const unitRE = /^(円|ドル|元|歩|㎡|坪|度|℃|°|個|つ|本|冊|才|歳|匹|枚|皿|セット|羽|人|件|行|列|機|品|m|mm|cm|km|g|kg|t|b|mb|kb|gb)/
+// 数値の後の単位は自動的に省略されるルール (#994, #2637)
+export const unitRE = /^(円|ドル|元|歩|㎡|㎜|㎝|㎞|坪|度|℃|°|個|つ|本|冊|才|歳|匹|枚|皿|セット|羽|人|件|行|列|機|品|mm|cm|km|kg|mb|kb|gb|m|g|t|b)/
 // CSSの単位であれば自動的に文字列に変換するルール (#1811)
 export const cssUnitRE = /^(px|em|ex|rem|vw|vh|vmin|vmax)/
 
