@@ -423,10 +423,13 @@ export class NakoGen {
     this.nakoFuncList.forEach((value, key) => {
       const f = trim(cleanGeneratedCode(String(value.fn), 1))
       const isAsync = value.asyncFn ? 'true' : 'false'
+      // 関数名は JSON 文字列として埋め込み、「」等による string-literal breakout を防ぐ
+      // JSON.stringify は U+2028/U+2029 をエスケープしないため、// コメントの行終端にならないよう明示的に置換する
+      const keyLit = JSON.stringify(key).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
       nakoFuncCode += '' +
-        `//[DEF_FUNC name='${key}' asyncFn=${isAsync}]\n` +
-        `__self.__varslist[1].set("${key}", ${f});\n` +
-        `//[/DEF_FUNC name='${key}']\n`
+        `//[DEF_FUNC name=${keyLit} asyncFn=${isAsync}]\n` +
+        `__self.__varslist[1].set(${keyLit}, ${f});\n` +
+        `//[/DEF_FUNC name=${keyLit}]\n`
     })
     if (nakoFuncCode !== '') { code += '__v0.set(\'__line\', \'関数の定義\');\n' + nakoFuncCode }
 
