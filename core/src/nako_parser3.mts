@@ -55,6 +55,9 @@ import { Token, TokenDefFunc, TokenCallFunc } from './nako_token.mjs'
 export class NakoParser extends NakoParserBase {
   private originalVarNames = new WeakMap<object, string>()
   private ifExpressionDepth = 0
+  /** 入れ子の「もし」文の深さ (DoS 防止) */
+  private ifNestDepth = 0
+  private static readonly MAX_IF_NEST_DEPTH = 64
 
   /**
    * 構文解析を実行する
@@ -63,6 +66,7 @@ export class NakoParser extends NakoParserBase {
     this.reset()
     this.originalVarNames = new WeakMap<object, string>()
     this.ifExpressionDepth = 0
+    this.ifNestDepth = 0
     this.tokens = tokens
     this.modName = NakoLexer.filenameToModName(filename)
     this.modList.push(this.modName)
@@ -191,9 +195,12 @@ export class NakoParser extends NakoParserBase {
       if (nextToken && nextToken.type === 'ならば') {
         const map = this.peekSourceMap()
         const cond = c1
-        this.get() // skip ならば
         // もし文の条件として関数呼び出しがある場合
-        return this.yIfThen(cond, map)
+        // (「もし」形式と同じカウンタで入れ子深さを数える)
+        return this.withIfNestDepth<AstIf | null>(map, () => {
+          this.get() // skip ならば
+          return this.yIfThen(cond, map)
+        })
       } else if (RenbunJosi.indexOf(c1.josi || '') >= 0) { // 連文をblockとして接続する(もし構文などのため)
         if (this.stack.length >= 1) { // スタックの余剰をチェック
           const report = this.makeStackBalanceReport()
@@ -498,23 +505,43 @@ export class NakoParser extends NakoParserBase {
     return a
   }
 
+  /** 「もし」文の入れ子深さを数えながら fn を実行する
+   * 上限を超える場合は NakoSyntaxError を投げる。例外時も finally で深さを戻す。
+   * (「もし」形式と「ならば」形式で共通のカウンタを使い、入れ子を合算して数える)
+   */
+  private withIfNestDepth<T>(map: SourceMap, fn: () => T): T {
+    if (this.ifNestDepth >= NakoParser.MAX_IF_NEST_DEPTH) {
+      throw NakoSyntaxError.fromNode(
+        `「もし」文の入れ子が深すぎます（上限 ${NakoParser.MAX_IF_NEST_DEPTH}）。`, map)
+    }
+    this.ifNestDepth++
+    try {
+      return fn()
+    } finally {
+      this.ifNestDepth--
+    }
+  }
+
   /** もし文
    * @returns {AstIf | null} */
   yIF(): AstIf | null {
     const map = this.peekSourceMap()
     // 「もし」があれば「もし」文である
     if (!this.check('もし')) { return null }
-    const mosi:Token|null = this.get() // skip もし
-    if (mosi === null) { return null }
-    while (this.check('comma')) { this.get() } // skip comma
-    // 「もし」文の条件を取得
-    let expr: Ast | null = null
-    try {
-      expr = this.yIFCond()
-    } catch (err: any) {
-      throw NakoSyntaxError.fromNode('『もし』文の条件で次のエラーがあります。\n' + String(err.message), mosi)
-    }
-    return this.yIfThen(expr, map)
+    // 条件解析も含めて入れ子深さに数える
+    return this.withIfNestDepth<AstIf | null>(map, () => {
+      const mosi:Token|null = this.get() // skip もし
+      if (mosi === null) { return null }
+      while (this.check('comma')) { this.get() } // skip comma
+      // 「もし」文の条件を取得
+      let expr: Ast | null = null
+      try {
+        expr = this.yIFCond()
+      } catch (err: any) {
+        throw NakoSyntaxError.fromNode('『もし』文の条件で次のエラーがあります。\n' + String(err.message), mosi)
+      }
+      return this.yIfThen(expr, map)
+    })
   }
 
   /** 値として使う条件分岐。各分岐の末尾の式を結果にする。 (#2591) */
