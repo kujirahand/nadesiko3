@@ -104,7 +104,6 @@
     "@types/opener": "^1.4.3",
     "@types/shell-quote": "^1.7.5",
     "ace-builds": "^1.44.0",
-    "body-parser": "^2.3.0",
     "browserslist": "4.29.5",
     "buffer": "^6.0.3",
     "chai": "^6.2.2",
