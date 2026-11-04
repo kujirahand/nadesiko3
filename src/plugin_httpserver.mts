@@ -10,6 +10,24 @@ import { parseQueryString } from '../core/src/url_util.mjs'
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
 const ERR_NOHTTPSERVER = '最初に『簡易HTTPサーバ起動時』を実行してサーバを起動する必要があります。'
 const MAX_BODY_SIZE_POST = 10 * 1024 * 1024 // 10MB
+const DEFAULT_HTTP_HOST = '127.0.0.1'
+const DEFAULT_UPLOAD_MAX_SIZE = MAX_BODY_SIZE_POST
+let uploadDirPromise: Promise<string> | null = null
+
+/** 待受ホストを環境変数から解決する。NAKO3_HTTP_HOST を優先し、未設定なら
+ * nako3server/nako3edit が使うツール別環境変数にフォールバックする
+ * (Dockerfile が NAKO3SERVER_HOST/NAKO3EDIT_HOST=0.0.0.0 を設定しているため)。
+ * どれも未設定なら 127.0.0.1 のみで待ち受ける。 */
+function resolveHttpHost(): string {
+  const hostNames = ['NAKO3_HTTP_HOST', 'NAKO3SERVER_HOST', 'NAKO3EDIT_HOST']
+  for (const hostName of hostNames) {
+    const host = (process.env[hostName] || '').trim()
+    if (host !== '') {
+      return host
+    }
+  }
+  return DEFAULT_HTTP_HOST
+}
 // RFC 2046 の boundary 文法: 0*69<bchars> bcharsnospace
 // bcharsnospace = DIGIT / ALPHA / "'" / "(" / ")" / "+" / "_" / "," / "-" / "." / "/" / ":" / "=" / "?"
 // bchars は bcharsnospace に空白を加えたもので、末尾1文字は空白以外(bcharsnospace)でなければならない
@@ -195,11 +213,16 @@ class EasyURLDispather {
   server: any
   sys: any
   items: EasyURLItem[]
+  host: string
+  maxUploadSize: number
 
   constructor(sys: any) {
     this.server = null
     this.items = []
     this.sys = sys
+    this.host = DEFAULT_HTTP_HOST
+    const maxUploadSize = Number(process.env.NAKO3_HTTP_UPLOAD_MAX_SIZE)
+    this.maxUploadSize = Number.isSafeInteger(maxUploadSize) && maxUploadSize > 0 ? maxUploadSize : DEFAULT_UPLOAD_MAX_SIZE
     installReqScopedVarMap(sys)
   }
 
@@ -285,7 +308,7 @@ class EasyURLDispather {
                     res.end('Bad Request.')
                     return
                   }
-                  const parsed = await parseMultipart(bodyBuffer, boundary)
+                  const parsed = await parseMultipart(bodyBuffer, boundary, this.maxUploadSize)
                   postData = parsed.fields
                   filesData = parsed.files
                 } else if (mediaType === 'application/json' || mediaType.startsWith('application/json-') || mediaType.endsWith('+json')) {
@@ -303,8 +326,13 @@ class EasyURLDispather {
                 }
               } catch (err: any) {
                 console.error(`${HTTPSERVER_LOGID} アップロード保存エラー: ${err.message}`)
-                res.statusCode = 500
-                res.end('Failed to save upload file.')
+                if (err.code === 'NAKO3_UPLOAD_TOO_LARGE') {
+                  res.statusCode = 413
+                  res.end('Request entity too large.')
+                } else {
+                  res.statusCode = 500
+                  res.end('Failed to save upload file.')
+                }
                 return
               }
               try {
@@ -613,10 +641,58 @@ function setDictValue(obj: any, key: string, value: any) {
   })
 }
 
-async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: any[], fields: any }> {
+/** アップロード一時ディレクトリとして安全に使えるかを検証する。
+ * シンボリックリンクへの置き換えや権限の緩和を検出するため、再利用時にも毎回確認する。 */
+async function isSafeUploadDir(dir: string): Promise<boolean> {
+  try {
+    const stats = await fs.promises.lstat(dir)
+    if (stats.isSymbolicLink() || !stats.isDirectory()) {
+      return false
+    }
+    return process.platform === 'win32' || (stats.mode & 0o777) === 0o700
+  } catch {
+    return false
+  }
+}
+
+async function getUploadDir(): Promise<string> {
+  if (uploadDirPromise !== null) {
+    const uploadDir = await uploadDirPromise
+    // 一時ディレクトリが外部から変更・削除されていたら作り直す
+    // (条件を満たさないパス自体は他者のものの可能性があるため削除しない)
+    if (await isSafeUploadDir(uploadDir)) {
+      return uploadDir
+    }
+    uploadDirPromise = null
+  }
+  let uploadDir = ''
+  uploadDirPromise = (async () => {
+    try {
+      uploadDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload-'))
+      if (process.platform !== 'win32') {
+        await fs.promises.chmod(uploadDir, 0o700)
+      }
+      if (!(await isSafeUploadDir(uploadDir))) {
+        throw new Error('アップロード一時ディレクトリを安全に設定できません。')
+      }
+      return uploadDir
+    } catch (err) {
+      uploadDirPromise = null
+      if (uploadDir !== '') {
+        try { await fs.promises.rm(uploadDir, { recursive: true, force: true }) } catch {}
+      }
+      throw err
+    }
+  })()
+  return await uploadDirPromise
+}
+
+async function parseMultipart(body: Buffer, boundary: string, maxFileSize: number): Promise<{ files: any[], fields: any }> {
   const fields: any = {}
   const files: any[] = []
+  const savedFilepaths: string[] = []
 
+  try {
   const boundaryBuffer = Buffer.from('--' + boundary)
   let pos = 0
   const parts: Buffer[] = []
@@ -740,13 +816,28 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
         }
         const contentType = headers['content-type'] || 'application/octet-stream'
 
-        const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
-        if (!fs.existsSync(uploadDir)) {
-          await fs.promises.mkdir(uploadDir, { recursive: true })
+        if (partBody.length > maxFileSize) {
+          const err: any = new Error(`アップロードファイルのサイズ(${partBody.length}バイト)が上限(${maxFileSize}バイト)を超えています。`)
+          err.code = 'NAKO3_UPLOAD_TOO_LARGE'
+          throw err
         }
+        const uploadDir = await getUploadDir()
         const uniqueName = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '_' + safeFilename
         const filepath = path.join(uploadDir, uniqueName)
-        await fs.promises.writeFile(filepath, partBody)
+        try {
+          await fs.promises.writeFile(filepath, partBody, { mode: 0o600, flag: 'wx' })
+          if (process.platform !== 'win32') {
+            await fs.promises.chmod(filepath, 0o600)
+            const stats = await fs.promises.stat(filepath)
+            if ((stats.mode & 0o777) !== 0o600) {
+              throw new Error('アップロードファイルの権限を安全に設定できません。')
+            }
+          }
+        } catch (err) {
+          try { await fs.promises.unlink(filepath) } catch {}
+          throw err
+        }
+        savedFilepaths.push(filepath)
 
         files.push({
           fieldName: name,
@@ -774,6 +865,14 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
   }
 
   return { files, fields }
+  } catch (err) {
+    for (const filepath of savedFilepaths) {
+      try {
+        await fs.promises.unlink(filepath)
+      } catch {}
+    }
+    throw err
+  }
 }
 // MIMEタイプ
 const MimeTypes: any = {
@@ -830,7 +929,7 @@ const PluginHttpServer = {
   'GETデータ': { type: 'const', value: '' }, // @GETでーた
   'POSTデータ': { type: 'const', value: '' }, // @POSTでーた
   'FILESデータ': { type: 'const', value: '' }, // @FILESでーた
-  '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。 // @かんいHTTPさーばきどうしたとき
+  '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。既定では127.0.0.1(このマシンからだけ接続可能)に待受けする。他のマシンから接続させたい場合は環境変数NAKO3_HTTP_HOSTに0.0.0.0を指定する。NAKO3_HTTP_HOSTが未設定の場合はNAKO3SERVER_HOST/NAKO3EDIT_HOSTも参照する。 // @かんいHTTPさーばきどうしたとき
     type: 'func',
     josi: [['を'], ['の', 'で']],
     pure: true,
@@ -838,6 +937,8 @@ const PluginHttpServer = {
       callback = sys.__findFunc(callback, '簡易HTTPサーバ起動時') // 文字列指定なら関数に変換
       // 管理オブジェクトを作成する
       const dp = sys.__httpserver = new EasyURLDispather(sys)
+      const host = resolveHttpHost()
+      dp.host = host
       // サーバオブジェクトを生成
       dp.server = http.createServer((req: any, res: any) => {
         try {
@@ -851,10 +952,26 @@ const PluginHttpServer = {
         console.error(`${HTTPSERVER_LOGID} エラー: ${err.message}`)
       })
       // サーバ起動
-      dp.server.listen(port, () => {
-        console.error(`${HTTPSERVER_LOGID} ポート番号(${port})で監視開始`)
+      dp.server.listen(port, host, () => {
+        console.error(`${HTTPSERVER_LOGID} ${host}:${port} で監視開始`)
         callback(sys)
       })
+    }
+  },
+  '簡易HTTPサーバアップロード最大サイズ設定': { // @アップロードファイル1件の最大サイズSIZE(バイト)を設定する。 // @かんいHTTPさーばあっぷろーどさいだいさいずせってい
+    type: 'func',
+    josi: [['を', 'に']],
+    pure: true,
+    fn: function(size: number, sys: any) {
+      if (sys.__httpserver === null) {
+        throw new Error(ERR_NOHTTPSERVER)
+      }
+      const maxUploadSize = Number(size)
+      if (!Number.isSafeInteger(maxUploadSize) || maxUploadSize <= 0) {
+        throw new Error('簡易HTTPサーバアップロード最大サイズ設定: サイズは正の整数(バイト)で指定してください。')
+      }
+      const dp: EasyURLDispather = sys.__httpserver
+      dp.maxUploadSize = maxUploadSize
     }
   },
   '簡易HTTPサーバ静的パス指定': { // @静的コンテンツのパスを指定。URLをPATHへマップする。 // @かんいHTTPさーばせいてきぱすしてい

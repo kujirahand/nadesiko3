@@ -15,8 +15,21 @@ const __dirname = path.dirname(__filename)
 describe('plugin_httpserver_test', () => {
   let nako
   let serverDp
-  let uploadSnapshot = []
-  const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
+  let uploadSnapshot = new Map()
+  const uploadDirPrefix = 'nako3-plugin_httpserver_upload'
+
+  const listUploadEntries = () => {
+    const entries = new Map()
+    try {
+      for (const name of fs.readdirSync(os.tmpdir())) {
+        if (!name.startsWith(uploadDirPrefix)) { continue }
+        const dir = path.join(os.tmpdir(), name)
+        if (!fs.statSync(dir).isDirectory()) { continue }
+        entries.set(name, fs.readdirSync(dir))
+      }
+    } catch (e) {}
+    return entries
+  }
 
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -25,11 +38,7 @@ describe('plugin_httpserver_test', () => {
     nako = new NakoCompiler()
     // PluginHttpServerの登録。名前は 'plugin_httpserver.js' とする。
     nako.addPluginFile('PluginHttpServer', 'plugin_httpserver.js', PluginHttpServer)
-    try {
-      uploadSnapshot = fs.existsSync(uploadDir) ? fs.readdirSync(uploadDir) : []
-    } catch (e) {
-      uploadSnapshot = []
-    }
+    uploadSnapshot = listUploadEntries()
   })
 
   afterEach(async () => {
@@ -42,12 +51,17 @@ describe('plugin_httpserver_test', () => {
       // 次のテストで古いサーバを参照しないよう null に戻す
       serverDp = null
     }
-    // このテストで作ったアップロードファイルだけを消す
+    // このテストで作ったアップロード一時ディレクトリとファイルだけを消す
     try {
-      if (fs.existsSync(uploadDir)) {
-        for (const file of fs.readdirSync(uploadDir)) {
-          if (!uploadSnapshot.includes(file)) {
-            try { fs.unlinkSync(path.join(uploadDir, file)) } catch (e) {}
+      for (const [dirName, files] of listUploadEntries()) {
+        const dir = path.join(os.tmpdir(), dirName)
+        if (!uploadSnapshot.has(dirName)) {
+          fs.rmSync(dir, { recursive: true, force: true })
+          continue
+        }
+        for (const file of files) {
+          if (!uploadSnapshot.get(dirName).includes(file)) {
+            try { fs.unlinkSync(path.join(dir, file)) } catch (e) {}
           }
         }
       }
@@ -1127,5 +1141,421 @@ describe('plugin_httpserver_test', () => {
     const still = await request('/go')
     assert.strictEqual(still.statusCode, 302)
     assert.strictEqual(still.location, '/ok')
+  })
+
+  it('既定では127.0.0.1でのみ待ち受けること #2632', async () => {
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+
+    assert.strictEqual(serverDp.server.address().address, '127.0.0.1')
+  })
+
+  it('環境変数NAKO3_HTTP_HOSTで待受ホストを変更できること #2632', async () => {
+    const originalHost = process.env.NAKO3_HTTP_HOST
+    process.env.NAKO3_HTTP_HOST = '0.0.0.0'
+    try {
+      const code = `
+●ダミー起動
+  戻る。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+`
+      const g = await nako.runAsync(code, 'main')
+      serverDp = g.__httpserver
+      await wait(100)
+
+      assert.strictEqual(serverDp.server.address().address, '0.0.0.0')
+    } finally {
+      if (originalHost === undefined) {
+        delete process.env.NAKO3_HTTP_HOST
+      } else {
+        process.env.NAKO3_HTTP_HOST = originalHost
+      }
+    }
+  })
+
+  it('アップロードファイルがmkdtempディレクトリに0700/0600で保存されること #2633', async () => {
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  FILESデータ[0]["path"]を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+「受信処理」を「/upload」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    const port = serverDp.server.address().port
+    const boundary = '----TestBoundary'
+    const uploadData = 'hello world nako3 upload'
+    const postData = Buffer.from([
+      `--${boundary}\r\n`,
+      `Content-Disposition: form-data; name="file1"; filename="hello.txt"\r\n`,
+      `Content-Type: text/plain\r\n\r\n`,
+      `${uploadData}\r\n`,
+      `--${boundary}--\r\n`
+    ].join(''))
+
+    const filepath = await new Promise((resolve, reject) => {
+      const req = http.request({
+        hostname: 'localhost',
+        port: port,
+        path: '/upload',
+        method: 'POST',
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          'Content-Length': postData.length
+        }
+      }, (res) => {
+        let data = ''
+        res.on('data', (chunk) => { data += chunk })
+        res.on('end', () => { resolve(data) })
+      })
+      req.on('error', reject)
+      req.write(postData)
+      req.end()
+    })
+
+    const uploadDir = path.dirname(filepath)
+    assert.ok(path.basename(uploadDir).startsWith('nako3-plugin_httpserver_upload-'))
+    assert.notStrictEqual(path.basename(uploadDir), 'nako3-plugin_httpserver_upload')
+    if (process.platform !== 'win32') {
+      assert.strictEqual(fs.statSync(uploadDir).mode & 0o777, 0o700)
+      assert.strictEqual(fs.statSync(filepath).mode & 0o777, 0o600)
+    }
+    assert.strictEqual(fs.readFileSync(filepath, 'utf8'), uploadData)
+  })
+
+  it('アップロード最大サイズを設定でき、超過すると413を返すこと #2650', async () => {
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  ファイル情報＝FILESデータ[0]
+  ファイル名＝ファイル情報["name"]
+  ファイルサイズ＝ファイル情報["size"]
+  「OK:{ファイル名}:{ファイルサイズ}」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+10を簡易HTTPサーバアップロード最大サイズ設定。
+「受信処理」を「/upload」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    const port = serverDp.server.address().port
+    const boundary = '----TestBoundary'
+    const requestUpload = async (filename, data) => {
+      const postData = Buffer.from([
+        `--${boundary}\r\n`,
+        `Content-Disposition: form-data; name="file1"; filename="${filename}"\r\n`,
+        `Content-Type: text/plain\r\n\r\n`,
+        `${data}\r\n`,
+        `--${boundary}--\r\n`
+      ].join(''))
+      return await new Promise((resolve, reject) => {
+        const req = http.request({
+          hostname: 'localhost',
+          port: port,
+          path: '/upload',
+          method: 'POST',
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${boundary}`,
+            'Content-Length': postData.length
+          }
+        }, (res) => {
+          let body = ''
+          res.on('data', (chunk) => { body += chunk })
+          res.on('end', () => { resolve({ statusCode: res.statusCode, body }) })
+        })
+        req.on('error', reject)
+        req.write(postData)
+        req.end()
+      })
+    }
+
+    const tooLarge = await requestUpload('large.txt', 'hello world nako3 upload')
+    assert.strictEqual(tooLarge.statusCode, 413)
+    assert.strictEqual(tooLarge.body, 'Request entity too large.')
+    assert.deepStrictEqual(listUploadEntries(), uploadSnapshot)
+
+    const small = await requestUpload('small.txt', 'hello')
+    assert.strictEqual(small.statusCode, 200)
+    assert.strictEqual(small.body, 'OK:small.txt:5')
+
+    await assert.rejects(
+      nako.runAsync('0を簡易HTTPサーバアップロード最大サイズ設定。', 'main'),
+      /正の整数/
+    )
+  })
+
+  it('環境変数NAKO3SERVER_HOST/NAKO3EDIT_HOSTでも待受ホストを変更できること #2632', async () => {
+    const originalHttpHost = process.env.NAKO3_HTTP_HOST
+    const originalServerHost = process.env.NAKO3SERVER_HOST
+    const originalEditHost = process.env.NAKO3EDIT_HOST
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+`
+    const closeServer = async () => {
+      await new Promise((resolve) => {
+        serverDp.server.close(resolve)
+      })
+      serverDp = null
+    }
+    try {
+      delete process.env.NAKO3_HTTP_HOST
+      process.env.NAKO3SERVER_HOST = '0.0.0.0'
+      delete process.env.NAKO3EDIT_HOST
+      let g = await nako.runAsync(code, 'main')
+      serverDp = g.__httpserver
+      await wait(100)
+      assert.strictEqual(serverDp.server.address().address, '0.0.0.0')
+
+      await closeServer()
+      delete process.env.NAKO3SERVER_HOST
+      process.env.NAKO3EDIT_HOST = '0.0.0.0'
+      g = await nako.runAsync(code, 'main')
+      serverDp = g.__httpserver
+      await wait(100)
+      assert.strictEqual(serverDp.server.address().address, '0.0.0.0')
+
+      await closeServer()
+      process.env.NAKO3_HTTP_HOST = '127.0.0.1'
+      process.env.NAKO3SERVER_HOST = '0.0.0.0'
+      g = await nako.runAsync(code, 'main')
+      serverDp = g.__httpserver
+      await wait(100)
+      assert.strictEqual(serverDp.server.address().address, '127.0.0.1')
+    } finally {
+      if (originalHttpHost === undefined) {
+        delete process.env.NAKO3_HTTP_HOST
+      } else {
+        process.env.NAKO3_HTTP_HOST = originalHttpHost
+      }
+      if (originalServerHost === undefined) {
+        delete process.env.NAKO3SERVER_HOST
+      } else {
+        process.env.NAKO3SERVER_HOST = originalServerHost
+      }
+      if (originalEditHost === undefined) {
+        delete process.env.NAKO3EDIT_HOST
+      } else {
+        process.env.NAKO3EDIT_HOST = originalEditHost
+      }
+    }
+  })
+
+  it('アップロード一時ディレクトリの権限が変更されたら作り直すこと #2633', async () => {
+    if (process.platform === 'win32') { return }
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  FILESデータ[0]["path"]を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+「受信処理」を「/upload」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    const port = serverDp.server.address().port
+    const boundary = '----TestBoundary'
+    const requestUpload = async (filename, data) => {
+      const postData = Buffer.from([
+        `--${boundary}\r\n`,
+        `Content-Disposition: form-data; name="file1"; filename="${filename}"\r\n`,
+        `Content-Type: text/plain\r\n\r\n`,
+        `${data}\r\n`,
+        `--${boundary}--\r\n`
+      ].join(''))
+      return await new Promise((resolve, reject) => {
+        const req = http.request({
+          hostname: 'localhost',
+          port: port,
+          path: '/upload',
+          method: 'POST',
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${boundary}`,
+            'Content-Length': postData.length
+          }
+        }, (res) => {
+          let body = ''
+          res.on('data', (chunk) => { body += chunk })
+          res.on('end', () => { resolve(body) })
+        })
+        req.on('error', reject)
+        req.write(postData)
+        req.end()
+      })
+    }
+
+    const filepath1 = await requestUpload('first.txt', 'first upload')
+    const dir1 = path.dirname(filepath1)
+    fs.chmodSync(dir1, 0o755)
+
+    const filepath2 = await requestUpload('second.txt', 'second upload')
+    const dir2 = path.dirname(filepath2)
+    assert.notStrictEqual(dir2, dir1)
+    assert.strictEqual(fs.statSync(dir2).mode & 0o777, 0o700)
+  })
+
+  it('アップロード一時ディレクトリがシンボリックリンクに置き換えられたら作り直すこと #2633', async () => {
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  FILESデータ[0]["path"]を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+「受信処理」を「/upload」に簡易HTTPサーバ受信時。
+`
+    const g = await nako.runAsync(code, 'main')
+    serverDp = g.__httpserver
+    await wait(100)
+    const port = serverDp.server.address().port
+    const boundary = '----TestBoundary'
+    const requestUpload = async (filename, data) => {
+      const postData = Buffer.from([
+        `--${boundary}\r\n`,
+        `Content-Disposition: form-data; name="file1"; filename="${filename}"\r\n`,
+        `Content-Type: text/plain\r\n\r\n`,
+        `${data}\r\n`,
+        `--${boundary}--\r\n`
+      ].join(''))
+      return await new Promise((resolve, reject) => {
+        const req = http.request({
+          hostname: 'localhost',
+          port: port,
+          path: '/upload',
+          method: 'POST',
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${boundary}`,
+            'Content-Length': postData.length
+          }
+        }, (res) => {
+          let body = ''
+          res.on('data', (chunk) => { body += chunk })
+          res.on('end', () => { resolve(body) })
+        })
+        req.on('error', reject)
+        req.write(postData)
+        req.end()
+      })
+    }
+
+    const filepath1 = await requestUpload('first.txt', 'first upload')
+    const dir1 = path.dirname(filepath1)
+    let targetDir = ''
+    let linked = false
+    try {
+      fs.rmSync(dir1, { recursive: true, force: true })
+      targetDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-link-target-'))
+      try {
+        fs.symlinkSync(targetDir, dir1, 'dir')
+        linked = true
+      } catch (e) {
+        fs.rmSync(targetDir, { recursive: true, force: true })
+        return
+      }
+
+      const filepath2 = await requestUpload('second.txt', 'second upload')
+      assert.notStrictEqual(path.dirname(filepath2), dir1)
+      assert.deepStrictEqual(fs.readdirSync(targetDir), [])
+    } finally {
+      if (linked) {
+        try { fs.unlinkSync(dir1) } catch (e) {}
+      }
+      if (targetDir !== '') {
+        fs.rmSync(targetDir, { recursive: true, force: true })
+      }
+    }
+  })
+
+  it('環境変数NAKO3_HTTP_UPLOAD_MAX_SIZEで最大サイズの初期値を設定できること #2650', async () => {
+    const originalMaxUploadSize = process.env.NAKO3_HTTP_UPLOAD_MAX_SIZE
+    const code = `
+●ダミー起動
+  戻る。
+ここまで。
+●受信処理
+  「OK」を簡易HTTPサーバ出力。
+ここまで。
+「ダミー起動」を0で簡易HTTPサーバ起動時。
+「受信処理」を「/upload」に簡易HTTPサーバ受信時。
+`
+    try {
+      process.env.NAKO3_HTTP_UPLOAD_MAX_SIZE = '10'
+      let g = await nako.runAsync(code, 'main')
+      serverDp = g.__httpserver
+      await wait(100)
+      assert.strictEqual(serverDp.maxUploadSize, 10)
+      const port = serverDp.server.address().port
+      const boundary = '----TestBoundary'
+      const requestUpload = async (filename, data) => {
+        const postData = Buffer.from([
+          `--${boundary}\r\n`,
+          `Content-Disposition: form-data; name="file1"; filename="${filename}"\r\n`,
+          `Content-Type: text/plain\r\n\r\n`,
+          `${data}\r\n`,
+          `--${boundary}--\r\n`
+        ].join(''))
+        return await new Promise((resolve, reject) => {
+          const req = http.request({
+            hostname: 'localhost',
+            port: port,
+            path: '/upload',
+            method: 'POST',
+            headers: {
+              'Content-Type': `multipart/form-data; boundary=${boundary}`,
+              'Content-Length': postData.length
+            }
+          }, (res) => {
+            let body = ''
+            res.on('data', (chunk) => { body += chunk })
+            res.on('end', () => { resolve({ statusCode: res.statusCode, body }) })
+          })
+          req.on('error', reject)
+          req.write(postData)
+          req.end()
+        })
+      }
+
+      const tooLarge = await requestUpload('large.txt', 'hello world nako3 upload')
+      assert.strictEqual(tooLarge.statusCode, 413)
+
+      await new Promise((resolve) => {
+        serverDp.server.close(resolve)
+      })
+      serverDp = null
+
+      process.env.NAKO3_HTTP_UPLOAD_MAX_SIZE = 'abc'
+      g = await nako.runAsync(code, 'main')
+      serverDp = g.__httpserver
+      await wait(100)
+      assert.strictEqual(serverDp.maxUploadSize, 10 * 1024 * 1024)
+    } finally {
+      if (originalMaxUploadSize === undefined) {
+        delete process.env.NAKO3_HTTP_UPLOAD_MAX_SIZE
+      } else {
+        process.env.NAKO3_HTTP_UPLOAD_MAX_SIZE = originalMaxUploadSize
+      }
+    }
   })
 })

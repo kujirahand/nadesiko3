@@ -11846,7 +11846,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L662",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L928",
     "value": "''"
   },
   {
@@ -11860,7 +11860,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L663",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L929",
     "value": "''"
   },
   {
@@ -11874,7 +11874,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L664",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L930",
     "value": "''"
   },
   {
@@ -11888,7 +11888,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L665",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L931",
     "value": "''"
   },
   {
@@ -11902,8 +11902,22 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L670",
-    "description": "ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。"
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L936",
+    "description": "ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。既定では127.0.0.1(このマシンからだけ接続可能)に待受けする。他のマシンから接続させたい場合は環境変数NAKO3_HTTP_HOSTに0.0.0.0を指定する。NAKO3_HTTP_HOSTが未設定の場合はNAKO3SERVER_HOST/NAKO3EDIT_HOSTも参照する。"
+  },
+  {
+    "type": "関数",
+    "name": "簡易HTTPサーバアップロード最大サイズ設定",
+    "args": "SIZEを/SIZEに",
+    "yomi": "かんいHTTPさーばあっぷろーどさいだいさいずせってい",
+    "plugin": "plugin_httpserver",
+    "group": "基本プラグイン",
+    "target": [
+      "cnako"
+    ],
+    "category": "簡易HTTPサーバ",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L965",
+    "description": "アップロードファイル1件の最大サイズSIZE(バイト)を設定する。"
   },
   {
     "type": "関数",
@@ -11916,7 +11930,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L697",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L981",
     "description": "静的コンテンツのパスを指定。URLをPATHへマップする。"
   },
   {
@@ -11930,7 +11944,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L712",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L996",
     "description": "URLを指定して合致するリクエストが来たら処理を実行する。"
   },
   {
@@ -11944,7 +11958,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L730",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L1014",
     "description": "受信時に、データSを出力する。"
   },
   {
@@ -11958,7 +11972,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L750",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L1031",
     "description": "受信時にステータスコードNOで、ヘッダHEAD(辞書形式)を出力する。"
   },
   {
@@ -11972,7 +11986,7 @@
       "cnako"
     ],
     "category": "簡易HTTPサーバ",
-    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L767",
+    "url": "https://github.com/kujirahand/nadesiko3/tree/master/src/plugin_httpserver.mts#L1045",
     "description": "受信時にヘッダ302(リダイレクト)を出力してURLへページを移動力する。"
   },
   {
