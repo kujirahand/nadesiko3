@@ -13,6 +13,21 @@ const MAX_BODY_SIZE_POST = 10 * 1024 * 1024 // 10MB
 const DEFAULT_HTTP_HOST = '127.0.0.1'
 const DEFAULT_UPLOAD_MAX_SIZE = MAX_BODY_SIZE_POST
 let uploadDirPromise: Promise<string> | null = null
+
+/** 待受ホストを環境変数から解決する。NAKO3_HTTP_HOST を優先し、未設定なら
+ * nako3server/nako3edit が使うツール別環境変数にフォールバックする
+ * (Dockerfile が NAKO3SERVER_HOST/NAKO3EDIT_HOST=0.0.0.0 を設定しているため)。
+ * どれも未設定なら 127.0.0.1 のみで待ち受ける。 */
+function resolveHttpHost(): string {
+  const hostNames = ['NAKO3_HTTP_HOST', 'NAKO3SERVER_HOST', 'NAKO3EDIT_HOST']
+  for (const hostName of hostNames) {
+    const host = (process.env[hostName] || '').trim()
+    if (host !== '') {
+      return host
+    }
+  }
+  return DEFAULT_HTTP_HOST
+}
 // RFC 2046 の boundary 文法: 0*69<bchars> bcharsnospace
 // bcharsnospace = DIGIT / ALPHA / "'" / "(" / ")" / "+" / "_" / "," / "-" / "." / "/" / ":" / "=" / "?"
 // bchars は bcharsnospace に空白を加えたもので、末尾1文字は空白以外(bcharsnospace)でなければならない
@@ -626,11 +641,26 @@ function setDictValue(obj: any, key: string, value: any) {
   })
 }
 
+/** アップロード一時ディレクトリとして安全に使えるかを検証する。
+ * シンボリックリンクへの置き換えや権限の緩和を検出するため、再利用時にも毎回確認する。 */
+async function isSafeUploadDir(dir: string): Promise<boolean> {
+  try {
+    const stats = await fs.promises.lstat(dir)
+    if (stats.isSymbolicLink() || !stats.isDirectory()) {
+      return false
+    }
+    return process.platform === 'win32' || (stats.mode & 0o777) === 0o700
+  } catch {
+    return false
+  }
+}
+
 async function getUploadDir(): Promise<string> {
   if (uploadDirPromise !== null) {
     const uploadDir = await uploadDirPromise
-    // 一時ディレクトリが外部から削除されていたら作り直す
-    if (fs.existsSync(uploadDir)) {
+    // 一時ディレクトリが外部から変更・削除されていたら作り直す
+    // (条件を満たさないパス自体は他者のものの可能性があるため削除しない)
+    if (await isSafeUploadDir(uploadDir)) {
       return uploadDir
     }
     uploadDirPromise = null
@@ -641,10 +671,9 @@ async function getUploadDir(): Promise<string> {
       uploadDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload-'))
       if (process.platform !== 'win32') {
         await fs.promises.chmod(uploadDir, 0o700)
-        const stats = await fs.promises.stat(uploadDir)
-        if ((stats.mode & 0o777) !== 0o700) {
-          throw new Error('アップロード一時ディレクトリの権限を安全に設定できません。')
-        }
+      }
+      if (!(await isSafeUploadDir(uploadDir))) {
+        throw new Error('アップロード一時ディレクトリを安全に設定できません。')
       }
       return uploadDir
     } catch (err) {
@@ -900,7 +929,7 @@ const PluginHttpServer = {
   'GETデータ': { type: 'const', value: '' }, // @GETでーた
   'POSTデータ': { type: 'const', value: '' }, // @POSTでーた
   'FILESデータ': { type: 'const', value: '' }, // @FILESでーた
-  '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。既定では127.0.0.1(このマシンからだけ接続可能)に待受けする。他のマシンから接続させたい場合は環境変数NAKO3_HTTP_HOSTに0.0.0.0を指定する。 // @かんいHTTPさーばきどうしたとき
+  '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。既定では127.0.0.1(このマシンからだけ接続可能)に待受けする。他のマシンから接続させたい場合は環境変数NAKO3_HTTP_HOSTに0.0.0.0を指定する。NAKO3_HTTP_HOSTが未設定の場合はNAKO3SERVER_HOST/NAKO3EDIT_HOSTも参照する。 // @かんいHTTPさーばきどうしたとき
     type: 'func',
     josi: [['を'], ['の', 'で']],
     pure: true,
@@ -908,7 +937,7 @@ const PluginHttpServer = {
       callback = sys.__findFunc(callback, '簡易HTTPサーバ起動時') // 文字列指定なら関数に変換
       // 管理オブジェクトを作成する
       const dp = sys.__httpserver = new EasyURLDispather(sys)
-      const host = (process.env.NAKO3_HTTP_HOST || '').trim() || DEFAULT_HTTP_HOST
+      const host = resolveHttpHost()
       dp.host = host
       // サーバオブジェクトを生成
       dp.server = http.createServer((req: any, res: any) => {
