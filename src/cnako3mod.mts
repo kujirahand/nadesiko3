@@ -55,6 +55,9 @@ interface CNako3Options {
 /** リダイレクトを手動でたどる回数の上限 (#2634) */
 const MAX_IMPORT_REDIRECTS = 10
 
+/** http(s) のURLかどうか (スキームの大文字小文字は区別しない #2634) */
+const isHttpUrl = (s: string): boolean => /^https?:\/\//i.test(s)
+
 /**
  * 取り込み用に URL を取得する。リダイレクトは手動でたどり、各ホップのスキームを検証する (#2634)
  * - https は常に許可
@@ -501,7 +504,7 @@ export class CNako3 extends NakoCompiler {
         // なでしこプラグインか？
         if (/\.(nako3|nako)(\.txt)?$/.test(name)) {
           // ファイルかHTTPか
-          if (name.startsWith('http://') || name.startsWith('https://')) {
+          if (isHttpUrl(name)) {
             return { filePath: name, type: 'nako3' }
           }
           if (path.isAbsolute(name)) {
@@ -523,7 +526,7 @@ export class CNako3 extends NakoCompiler {
       readNako3: (name, token, options) => {
         const loader:any = { task: null }
         // ファイルかHTTPか
-        if (name.startsWith('http://') || name.startsWith('https://')) {
+        if (isHttpUrl(name)) {
           // Webのファイルを非同期で読み込む (リダイレクト先も検証する #2634)
           loader.task = (async() => {
             const res = await fetchImportUrl(name, options, token)
@@ -557,7 +560,7 @@ export class CNako3 extends NakoCompiler {
         }
         // + プラグインの読み込みタスクを生成する
         // | プラグインがWeb(https?://...)に配置されている場合
-        if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+        if (isHttpUrl(filePath)) {
           // 動的 import が http 未対応のため、一度、Webのファイルを非同期で読み込んで/tmpに保存してから動的importを行う
           loader.task = (
             new Promise((resolve, reject) => {
@@ -708,7 +711,7 @@ export class CNako3 extends NakoCompiler {
 
     // URL指定か?
     // (http:// の可否は、解決後のパスに対して nako_require.mts が判定する #2634)
-    if (/^https?:\/\//.test(pname)) {
+    if (isHttpUrl(pname)) {
       return pname
     }
     // 各パスを検索していく

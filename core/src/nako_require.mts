@@ -30,7 +30,9 @@ export interface LoaderTool {
 }
 
 /** 平文 http を許可する指令 `!互換性重視:取込` にマッチする正規表現 (#2634) */
-const REQUIRE_HTTP_DIRECTIVE = /^(!|💡)互換性重視[:：]取込/
+/* 「取込」の後ろは行末・空白・区切り文字で終わる場合だけを指令とみなす(「取込禁止」などの前方一致を防ぐ) */
+const REQUIRE_HTTP_DIRECTIVE = /^(!|💡)互換性重視[:：]取込(?=$|[\s;。])/
+
 
 /** 平文 http のURLかどうか (スキームの大文字小文字は区別しない) */
 const isPlainHttpUrl = (filePath: string): boolean => /^http:\/\//i.test(filePath)

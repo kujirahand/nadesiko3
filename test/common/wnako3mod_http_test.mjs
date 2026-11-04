@@ -81,6 +81,17 @@ describe('wnako3mod_http_test', () => {
     assert.strictEqual(text, 'EMPTY-OK')
   })
 
+  it('readNako3: 相対パス(同一オリジン)の取り込みが http へリダイレクトされるとダウングレードとしてエラーになる', async () => {
+    // window は before() で https://localhost:8888/index.html に設定されている
+    stubFetch('http://evil.example.com/lib.nako3')
+    const compiler = new WebNakoCompiler()
+    await assert.rejects(compiler.readNako3('/dir/lib.nako3', token, {}).task, (err) => {
+      assert.ok(err instanceof NakoImportError)
+      assert.ok(/ダウングレード/.test(err.msg))
+      return true
+    })
+  })
+
   describe('resolvePath', () => {
     const resolve = (name, fromFile, href) => {
       globalThis.window = { location: { href } }
@@ -107,6 +118,16 @@ describe('wnako3mod_http_test', () => {
     it('明示した同一オリジンのhttp URLもそのまま返る', () => {
       const r = resolve('http://localhost:8888/dir/x.nako3', '', pageHref)
       assert.strictEqual(r.filePath, 'http://localhost:8888/dir/x.nako3')
+    })
+
+    it('大文字の HTTP URL も明示URLとしてそのまま返る', () => {
+      const r = resolve('HTTP://example.com/x.nako3', 'http://localhost:8888/dir/index.html#s.nako3', pageHref)
+      assert.strictEqual(r.filePath, 'HTTP://example.com/x.nako3')
+    })
+
+    it('オリジンが前方一致するだけの別オリジンは同一オリジンとして扱わない', () => {
+      const r = resolve('b.nako3', 'https://example.com.evil/lib/a.nako3', 'https://example.com/dir/index.html')
+      assert.strictEqual(r.filePath, 'https://example.com.evil/lib/b.nako3')
     })
   })
 

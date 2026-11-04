@@ -85,6 +85,24 @@ describe('require_http_policy_test', () => {
     assert.strictEqual(calls.readNako3.length, 1)
   })
 
+  it('「!互換性重視:取込禁止」は指令として扱わない(末尾境界の確認)', () => {
+    const { loader } = createLoader()
+    const { tools, calls } = createTools()
+    assertHttpForbidden(() => loader.load('!互換性重視:取込禁止\n!「http://example.com/lib.nako3」を取り込む\n', 'main.nako3', '', tools))
+    assert.strictEqual(calls.readNako3.length, 0)
+  })
+
+  it('指令の後ろに句点やコメントがあっても許可される', async () => {
+    const { loader } = createLoader()
+    const { tools, calls } = createTools()
+    await loader.load('!互換性重視:取込。\n!「http://example.com/lib.nako3」を取り込む\n', 'main.nako3', '', tools)
+    assert.strictEqual(calls.readNako3.length, 1)
+    const { loader: loader2 } = createLoader()
+    const { tools: tools2, calls: calls2 } = createTools()
+    await loader2.load('!互換性重視:取込 # 互換性のための指定\n!「http://example.com/lib.nako3」を取り込む\n', 'main.nako3', '', tools2)
+    assert.strictEqual(calls2.readNako3.length, 1)
+  })
+
   it('指令が取り込み文より後ろにある場合は禁止のまま', () => {
     const { loader } = createLoader()
     const { tools, calls } = createTools()

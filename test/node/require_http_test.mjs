@@ -151,6 +151,19 @@ describe('require_http_test', () => {
       assert.strictEqual(g.log, 'ライブラリ:あ')
     })
 
+    it('大文字の HTTP:// でも既定では禁止され、指令があれば取り込める', async () => {
+      const upperBase = base.replace('http://', 'HTTP://')
+      const nako = new CNako3()
+      await assert.rejects(nako.runAsync(`!「${upperBase}/lib.nako3」を取り込む\n`, 'main.nako3'), (err) => {
+        assert.ok(err instanceof NakoImportError)
+        assert.ok(/互換性重視:取込/.test(err.msg))
+        return true
+      })
+      const nako2 = new CNako3()
+      const g = await nako2.runAsync(`!互換性重視:取込\n!「${upperBase}/lib.nako3」を取り込む\n「あ」をライブラリ関数\n`, 'main.nako3')
+      assert.strictEqual(g.log, 'ライブラリ:あ')
+    })
+
     it('既定では http の JSプラグインの取り込みは NakoImportError になる', async () => {
       const nako = new CNako3()
       const code = `!「${base}/plugin.mjs」を取り込む\nHTTPプラグイン値を表示\n`

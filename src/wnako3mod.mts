@@ -27,10 +27,22 @@ async function fetchImportUrl(filePath: string, token: Token, options?: LoaderOp
   if (/^http:\/\//i.test(filePath) && !allowHttp) {
     throw new NakoImportError(`平文のhttp『${filePath}』からの取り込みは既定で禁止されています。${HTTP_POLICY_HINT}`, token.file, token.line)
   }
+  // 相対パスで指定された取り込みは、ページURLを基準に実効初回URLを求める
+  // (resolvePath が同一オリジンの相対取り込みをパスに変換したケースでも、ダウングレードを検出できるようにするため #2634)
+  let initialUrl = filePath
+  if (!/^https?:\/\//i.test(filePath)) {
+    try {
+      if (typeof window !== 'undefined') {
+        initialUrl = new URL(filePath, window.location.href).href
+      }
+    } catch {
+      // 解決できない場合は filePath による従来判定にフォールバックする
+    }
+  }
   const res = await fetch(filePath)
-  // 初回URLがhttpsで最終URLがhttpなら、httpsからhttpへのダウングレード
+  // 実効初回URLがhttpsで最終URLがhttpなら、httpsからhttpへのダウングレード
   // (res.url が空文字のときは確認できないのでスキップする)
-  if (!allowHttp && /^https:\/\//i.test(filePath) && /^http:\/\//i.test(res.url || '')) {
+  if (!allowHttp && /^https:\/\//i.test(initialUrl) && /^http:\/\//i.test(res.url || '')) {
     throw new NakoImportError(`『${filePath}』のリダイレクト先『${res.url}』は平文のhttpです(httpsからhttpへのダウングレード)。既定で禁止されています。${HTTP_POLICY_HINT}`, token.file, token.line)
   }
   return res
@@ -216,7 +228,7 @@ export class WebNakoCompiler extends NakoCompiler {
     // 明示的に http(s) URL が書かれているか (#2634)
     const isAbsoluteUrl = /^https?:\/\//i.test(name)
     // http から始まっていれば解決は不要
-    if (pathname.match(/^https?:\/\//)) { // フルパスなら解決不要
+    if (isAbsoluteUrl) { // フルパスなら解決不要
     } else if (this.localFiles && this.localFiles[name]) {
       pathname = this.localFiles[name]
     } else {
@@ -241,16 +253,17 @@ export class WebNakoCompiler extends NakoCompiler {
     // 同一オリジンの相対取り込みはページと同じ信頼境界なので、コア側のhttp禁止チェックの対象外にする。
     // 明示的に書かれた http(s) URL や他オリジンのURLは、従来どおりチェック対象のまま残す。
     if (!isAbsoluteUrl && /^https?:\/\//i.test(pathname)) {
-      let origin = ''
       try {
-        origin = new URL(window.location.href).origin
+        // オリジンは文字列の前方一致ではなく、URLとして解析して完全一致で比較する
+        // (https://example.com のページで https://example.com.evil/... を同一オリジンと誤認しないため #2634)
+        const pageOrigin = new URL(window.location.href).origin
+        const url = new URL(pathname)
+        if (url.origin === pageOrigin) {
+          pathname = url.pathname + url.search
+          if (pathname === '') { pathname = '/' }
+        }
       } catch {
-        origin = ''
-      }
-      if (origin !== '' && pathname.toLowerCase().startsWith(origin.toLowerCase())) {
-        pathname = pathname.substring(origin.length)
-        if (pathname === '') { pathname = '/' }
-        if (!pathname.startsWith('/')) { pathname = '/' + pathname }
+        // URLを解析できない場合は、そのまま扱う
       }
     }
     // 拡張子によってプラグインタイプを分岐する
