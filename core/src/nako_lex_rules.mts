@@ -82,7 +82,7 @@ export const rules: NakoLexRule[] = [
   { name: '←', pattern: /^(←|<--)/ }, // 矢印 --- ただし(core#140)で廃止された演算子(#891,#899)
   { name: 'eq', pattern: /^(==|🟰🟰)/ },
   { name: 'eq', pattern: /^(=|🟰)/ },
-  { name: 'line_comment', pattern: /^(!|💡)(インデント構文|ここまでだるい|DNCLモード|DNCL2モード|DNCL2)[^\n]*/ }, // #1184
+  { name: 'line_comment', pattern: /^(!|💡)(インデント構文|ここまでだるい|DNCLモード|DNCL2モード|DNCL2|互換性重視[:：]取込)[^\n]*/ }, // #1184 #2634
   { name: 'not', pattern: /^(!|💡)/ }, // #1184 #1457
   { name: 'gt', pattern: /^>/ },
   { name: 'lt', pattern: /^</ },
