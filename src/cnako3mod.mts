@@ -11,7 +11,7 @@ import path from 'node:path'
 import url from 'node:url'
 import fse from 'fs-extra'
 
-import { NakoCompiler, LoaderTool, newCompilerOptions } from '../core/src/nako3.mjs'
+import { NakoCompiler, LoaderTool, LoaderOptions, newCompilerOptions } from '../core/src/nako3.mjs'
 import { NakoImportError } from '../core/src/nako_errors.mjs'
 
 import { Ast, CompilerOptions } from '../core/src/nako_types.mjs'
@@ -50,6 +50,72 @@ interface CNako3ArgOptions {
 
 interface CNako3Options {
   nostd: boolean
+}
+
+/** リダイレクトを手動でたどる回数の上限 (#2634) */
+const MAX_IMPORT_REDIRECTS = 10
+
+/**
+ * 取り込み用に URL を取得する。リダイレクトは手動でたどり、各ホップのスキームを検証する (#2634)
+ * - https は常に許可
+ * - http は options.allowHttp のときだけ許可 (https から http へのダウングレードは禁止)
+ * - それ以外のスキームは不可
+ * @param url 取得するURL
+ * @param options 取り込みオプション
+ * @param token エラー表示用のトークン
+ * @param fetchImpl fetch の実装 (テストで差し替える。既定は globalThis.fetch)
+ * @returns 最終的なレスポンス(呼び出し側で res.ok のチェックと res.text() を行う)
+ */
+export async function fetchImportUrl(
+  url: string,
+  options: LoaderOptions | undefined,
+  token: { file?: string, line?: number },
+  fetchImpl: typeof fetch = globalThis.fetch
+): Promise<Response> {
+  const file = token.file || ''
+  const line = token.line || 0
+  const allowHttp = !!(options && options.allowHttp)
+  let current = url
+  for (let hop = 0; hop <= MAX_IMPORT_REDIRECTS; hop++) {
+    let protocol: string
+    try {
+      protocol = new URL(current).protocol
+    } catch {
+      throw new NakoImportError(`URL『${current}』が正しくありません。`, file, line)
+    }
+    if (protocol === 'http:') {
+      if (!allowHttp) {
+        const detail = hop === 0
+          ? `平文のhttp『${current}』からの取り込みは既定で禁止されています。`
+          : `『${url}』のリダイレクト先『${current}』は平文のhttpです(httpsからhttpへのダウングレード)。既定で禁止されています。`
+        throw new NakoImportError(`${detail}httpsを使ってください。どうしてもhttpが必要な場合は、取り込み文の前に『!互換性重視:取込』と書くと許可されます。`, file, line)
+      }
+    } else if (protocol !== 'https:') {
+      throw new NakoImportError(`URL『${current}』は取り込めません。httpsのURLを指定してください。`, file, line)
+    }
+    const res = await fetchImpl(current, { redirect: 'manual' })
+    if ([301, 302, 303, 307, 308].includes(res.status)) {
+      const location = res.headers.get('location')
+      if (location) {
+        let next: string
+        try {
+          next = new URL(location, current).toString()
+        } catch {
+          throw new NakoImportError(`『${url}』のリダイレクト先URL『${location}』が正しくありません。`, file, line)
+        }
+        // 途中レスポンスのbodyを解放する
+        try {
+          await res.body?.cancel()
+        } catch {
+          // 解放に失敗しても無視する
+        }
+        current = next
+        continue
+      }
+    }
+    return res
+  }
+  throw new NakoImportError(`『${url}』のリダイレクトが${MAX_IMPORT_REDIRECTS}回を超えたため、取り込みを中止しました。`, file, line)
 }
 
 /** CNako3 */
@@ -454,13 +520,13 @@ export class CNako3 extends NakoCompiler {
         }
         return { filePath: jspath2, type: 'js' }
       },
-      readNako3: (name, token) => {
+      readNako3: (name, token, options) => {
         const loader:any = { task: null }
         // ファイルかHTTPか
         if (name.startsWith('http://') || name.startsWith('https://')) {
-          // Webのファイルを非同期で読み込む
+          // Webのファイルを非同期で読み込む (リダイレクト先も検証する #2634)
           loader.task = (async() => {
-            const res = await fetch(name)
+            const res = await fetchImportUrl(name, options, token)
             if (!res.ok) {
               throw new NakoImportError(`『${name}』からのダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
             }
@@ -482,7 +548,7 @@ export class CNako3 extends NakoCompiler {
         // 非同期で読み込む
         return loader
       },
-      readJs: (filePath, token) => {
+      readJs: (filePath, token, options) => {
         const loader: any = { task: null }
         if (isWindows()) {
           if (filePath.substring(1, 3) === ':\\') {
@@ -503,8 +569,11 @@ export class CNako3 extends NakoCompiler {
               const tmpFile = path.join(tmpDir, filePath.replace(/[^a-zA-Z0-9_.]/g, '_'))
               if (!fs.existsSync(tmpDir)) { fs.mkdirSync(tmpDir, { recursive: true }) }
               // WEBからダウンロード
-              fetch(filePath)
-                .then((res: any) => {
+              fetchImportUrl(filePath, options, token)
+                .then((res) => {
+                  if (!res.ok) {
+                    throw new NakoImportError(`『${filePath}』からのダウンロードに失敗しました: ${res.status} ${res.statusText}`, token.file, token.line)
+                  }
                   return res.text()
                 })
                 .then((txt: string) => {
@@ -638,7 +707,8 @@ export class CNako3 extends NakoCompiler {
     }
 
     // URL指定か?
-    if (pname.substring(0, 8) === 'https://') {
+    // (http:// の可否は、解決後のパスに対して nako_require.mts が判定する #2634)
+    if (/^https?:\/\//.test(pname)) {
       return pname
     }
     // 各パスを検索していく

@@ -31,7 +31,7 @@ export interface NakoCompilerOption {
 }
 
 // 分離したモジュールの型・関数は、外部から `nako3.mjs` 経由で参照されているため再エクスポートする (#2360)
-export type { LoaderTool, LoaderToolTask, Dependencies, DependenciesItem } from './nako_require.mjs'
+export type { LoaderTool, LoaderToolTask, LoaderOptions, Dependencies, DependenciesItem } from './nako_require.mjs'
 export { newCompilerOptions } from './nako_runner.mjs'
 
 type NakoVars = Map<string, any>
