@@ -10,10 +10,10 @@ import { basicPlugins, registerBasicPlugins } from '../src/nako_basic_plugins.mj
  */
 describe('nako_basic_plugins_test', () => {
   it('基本プラグインの一覧を取得できる', () => {
-    assert.strictEqual(basicPlugins.length, 6)
+    assert.strictEqual(basicPlugins.length, 7)
     const names = basicPlugins.map((po) => po.meta.value.pluginName)
     assert.deepStrictEqual(names, [
-      'plugin_system', 'plugin_math', 'plugin_promise', 'plugin_test', 'plugin_csv', 'plugin_toml'
+      'plugin_system', 'plugin_math', 'plugin_promise', 'plugin_test', 'plugin_csv', 'plugin_toml', 'plugin_ini'
     ])
   })
 
