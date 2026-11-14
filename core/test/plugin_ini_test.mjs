@@ -185,6 +185,14 @@ describe('plugin_ini_test', () => {
     await err('a={"a]b":{"k":"v"}};aのINI変換', 'セクション名「a]b」はINIで表せません。')
   })
 
+  // --- スタンドアロン生成 ---
+  it('スタンドアロン生成コードに plugin_ini が含まれる', () => {
+    const nako = new NakoCompiler()
+    const js = nako.compileStandalone('a=「k=1」のINI取得。a["k"]を表示', 'main.nako3')
+    assert.ok(js.includes('plugin_ini.mjs'), '生成コードが plugin_ini.mjs を import する')
+    assert.ok(js.includes('nako3runtime_plugin_ini'), '生成コードに plugin_ini の登録名が含まれる')
+  })
+
   // --- マニュアルのサンプル相当 ---
   it('マニュアル - INI取得して整形JSONで表示', async () => {
     await cmp('データ=『[window]\ntitle=Hello\nwidth=640』\nデータをINI取得して、JSONエンコード整形して表示', JSON.stringify({ window: { title: 'Hello', width: '640' } }, null, 2))

@@ -102,7 +102,7 @@ export class NakoGenOptions {
     this.isTest = isTest
     this.codeStandalone = codeStandalone
     this.codeEnv = convEnv
-    this.importFiles = ['plugin_system.mjs', 'plugin_math.mjs', 'plugin_csv.mjs', 'plugin_promise.mjs', 'plugin_test.mjs']
+    this.importFiles = ['plugin_system.mjs', 'plugin_math.mjs', 'plugin_csv.mjs', 'plugin_promise.mjs', 'plugin_test.mjs', 'plugin_ini.mjs']
     for (const fname of importFiles) {
       this.importFiles.push(fname)
     }
