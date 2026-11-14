@@ -9,3 +9,8 @@ updates:
   - dependency-name: commander
     versions:
     - 7.0.0
+- package-ecosystem: npm
+  directory: "/test-browser"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
