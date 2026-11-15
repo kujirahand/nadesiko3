@@ -109,6 +109,43 @@ TIDのタイマー停止
 3の五 倍を表示
 `, '15')
   })
+  it('チェーン呼び出しの直後に演算子が続く場合 #2671', async () => {
+    await cmp(`
+curry_add = 関数(あ)
+  inner = 関数(い)
+    それはあ + い
+  ここまで
+  innerを戻す
+ここまで
+curry_add(1)(2)-1を表示
+`, '2')
+    await cmp(`
+curry_add = 関数(あ)
+  inner = 関数(い)
+    それはあ + い
+  ここまで
+  innerを戻す
+ここまで
+curry_add(1)(2)+1を表示
+`, '4')
+  })
+  it('既存の引数がある状態でチェーン呼び出しの直後に演算子が続く場合 #2671', async () => {
+    const curryAdd = `
+curry_add = 関数(あ)
+  inner = 関数(い)
+    それはあ + い
+  ここまで
+  innerを戻す
+ここまで
+`
+    await cmp(curryAdd + '10にcurry_add(1)(2)+1を足して表示', '14')
+    await cmp(curryAdd + '10にcurry_add(1)(2)-1を足して表示', '12')
+    await cmp(curryAdd + '10にcurry_add(1)(2)+1を足して2を掛けて表示', '28')
+    // チェーン呼び出しの引数にC言語風関数呼び出しを渡す
+    await cmp(curryAdd + '10にcurry_add(INT(3.7))(2)+1を足して表示', '16')
+    // 代入の右辺
+    await cmp(curryAdd + 'Aにcurry_add(1)(2)+1を代入;Aを表示', '4')
+  })
   it('階乗計算 - 再帰', async () => {
     await cmp('●(VをAのBで)階乗計算とは;' +
       'もし、Bが0以下ならば、Vを戻す。;(V*A)をAの(B-1)で階乗計算して戻す。' +
