@@ -494,6 +494,31 @@ describe('flow_test', async () => {
     await cmp('N=「」;1から3の範囲を繰り返す\nN=N&それ;\nここまで;Nを表示。', '123')
     await cmp('N=「」;0…9を繰り返す\nN=N&それ;\nここまで;Nを表示。', '0123456789')
   })
+  it('範囲オブジェクトを変数に入れた繰り返し #2674', async () => {
+    // 昇順・降順（連結で順序まで確認する）
+    await cmp('A=1…3;N=「」;Aを繰り返す\nN=N&それ;\nここまで;Nを表示。', '123')
+    await cmp('A=3…1;N=「」;Aを繰り返す\nN=N&それ;\nここまで;Nを表示。', '321')
+    // 関数から返された範囲オブジェクト
+    await cmp('●区間取得とは\n1…3を戻す\nここまで\nN=0;区間取得を繰り返す\nN=N+それ;\nここまで;Nを表示。', '6')
+    // ループ変数を指定する形
+    await cmp('A=1…3;IでAを繰り返す\nIを表示\nここまで', '1\n2\n3')
+    // ずつ増やしながら繰り返す形
+    await cmp('A=1…5;N=「」;Aを2ずつ増やし繰り返す\nN=N&それ;\nここまで;Nを表示。', '135')
+    // 範囲でない値を繰り返すと、分かりやすいエラーになる
+    const errTest = async (/** @type {string} */ code, /** @type {string} */ part) => {
+      const nako = new NakoCompiler()
+      let errMsg = ''
+      try {
+        await nako.runAsync(code, 'main.nako3')
+      } catch (err) {
+        errMsg = String(err.message || err)
+      }
+      assert.ok(errMsg.includes(part), '実際のエラー: ' + errMsg)
+    }
+    await errTest('A=[1,2,3];Aを繰り返す\nそれを表示\nここまで', '範囲オブジェクトではありません')
+    // 『から』のない『Bまで繰り返す』は文法エラーになる
+    await errTest('3まで繰り返す\nそれを表示\nここまで', 'AからBまでの指定がありません')
+  })
   it('対象がローカル変数になっていた問題 #1723', async () => {
     await cmp('関数 Fとは; [1]を反復; ここまで。対象=1;ここまで；対象＝50;F；対象を表示。', '1')
   })

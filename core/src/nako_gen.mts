@@ -1395,10 +1395,20 @@ export class NakoGen {
     let kara = '0'
     let made = '0'
     let temp = '0'
+    let rangeCheck = ''
     if (astTo && astTo.type === 'func' && astTo.name === '範囲') {
       temp = this._convGen(astTo, true)
       kara = `${varTemp}['先頭'] || 0`
       made = `${varTemp}['末尾'] || 0`
+    } else if (astFrom && astFrom.type === 'nop') {
+      // 「Xを繰り返す」形式で X が範囲リテラルではない場合(変数や関数の戻り値など) #2674
+      temp = this._convGen(astTo, true)
+      kara = `${varTemp}['先頭'] || 0`
+      made = `${varTemp}['末尾'] || 0`
+      // 実行時に範囲オブジェクトかどうかを確認する
+      rangeCheck =
+        `if (${varTemp} === null || typeof ${varTemp} !== 'object' || ${varTemp}['先頭'] === undefined || ${varTemp}['末尾'] === undefined) { ` +
+        "throw new Error('『繰り返す』文で指定した値が範囲オブジェクトではありません。『A…B』の形で指定してください。') }\n"
     } else {
       kara = this._convGen(astFrom, true)
       made = this._convGen(astTo, true)
@@ -1415,6 +1425,7 @@ export class NakoGen {
       this.convLineno(node, false) + '\n' +
       `/*[convFor id=${idLoop}]*/\n` +
       `const ${varTemp} = ${temp};\n` +
+      rangeCheck +
       `const ${varFrom} = ${kara};\n` +
       `const ${varTo} = ${made};\n` +
       `if (${varFrom} < ${varTo}) { // up\n` +

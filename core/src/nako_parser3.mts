@@ -1107,6 +1107,10 @@ export class NakoParser extends NakoParserBase {
         throw NakoSyntaxError.fromNode(errorForArguments, kurikaesu)
       }
     }
+    // 『Bまで繰り返す』(『から』なし)は構文エラーにする (#2674)
+    if (vFrom.type === 'nop' && vTo && vTo.josi === 'まで') {
+      throw NakoSyntaxError.fromNode(errorForArguments, kurikaesu)
+    }
     if (this.check('comma')) { this.get() } // skip comma
     let multiline = false
     if (this.check('ここから')) {
