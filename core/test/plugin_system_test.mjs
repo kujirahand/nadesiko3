@@ -1230,7 +1230,7 @@ describe('plugin_system_test', async () => {
     // トップレベルからも残留したローカル変数は見えない
     await cmp('●テストA\n　変数 A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテストA()。\n「A」のJSオブジェクト取得を表示', '99')
     // グローバル変数も無ければ null (JSオブジェクト取得のデフォルト値) を返す
-    await cmp('●テストA\n　変数 A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nテストA()。\n「A」のJSオブジェクト取得を表示', 'null')
+    await cmp('●テストA\n　A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nテストA()。\n「A」のJSオブジェクト取得を表示', 'null')
     // 関数内では従来どおり自身のローカル変数が見える(回帰確認)
     await cmp('●テストA\n　変数 A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nA=99\nテストA()を表示', '0')
   })
@@ -1243,7 +1243,7 @@ describe('plugin_system_test', async () => {
     // Map.has で構造的に検証する (falsy値の__findVar経由の遮蔽確認は #2500 の修正後に実効性を持つ)
     const nako = new NakoCompiler()
     nako.addPlugin(PluginJS)
-    const g = await nako.runAsync('●テストA\n　変数 A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nテストA()。', 'main.nako3')
+    const g = await nako.runAsync('●テストA\n　A=0\n　「A」のJSオブジェクト取得を戻す\nここまで\nテストA()。', 'main.nako3')
     // 関数のローカル変数がトップレベルのスコープ __varslist[2] に書き込まれない
     assert.strictEqual(g.__varslist[2].has('A'), false)
     // __self.__locals も呼び出し前の値に復元され、関数のスコープを指したまま残らない
@@ -1261,7 +1261,7 @@ describe('plugin_system_test', async () => {
         fn: (v, sys) => { sys.__locals.set('W', v) }
       }
     })
-    const g = await nako.runAsync('●テストA\n　変数 A=0\n　42をローカル書込。\nここまで\n●テストB\n　「W」のJSオブジェクト取得を戻す\nここまで\nテストA()。\nテストB()を表示。', 'main.nako3')
+    const g = await nako.runAsync('●テストA\n　A=0\n　42をローカル書込。\nここまで\n●テストB\n　「W」のJSオブジェクト取得を戻す\nここまで\nテストA()。\nテストB()を表示。', 'main.nako3')
     // テストBからはテストAのローカル変数もプラグインが書き込んだ値も見えない
     assert.strictEqual(g.log, 'null')
     assert.strictEqual(g.__varslist[2].has('A'), false)
@@ -1302,7 +1302,7 @@ describe('plugin_system_test', async () => {
     const nako = new NakoCompiler()
     nako.addPlugin(PluginJS)
     try {
-      await nako.runAsync('●テストA\n　変数 A=0\n　「XXX」を[]でJS関数実行\nここまで\nテストA()。', 'main.nako3')
+      await nako.runAsync('●テストA\n　A=0\n　「XXX」を[]でJS関数実行\nここまで\nテストA()。', 'main.nako3')
       assert.fail('実行時エラーになるはずです')
     } catch (err) {
       // JS関数実行が投げる実行時エラー(想定内のエラーであることを固定)
@@ -1325,7 +1325,7 @@ describe('plugin_system_test', async () => {
         fn: (v, sys) => { sys.__locals.set('W', v) }
       }
     })
-    const g = await nako.runAsync('●テストA\n　変数 A=0\n　42をローカル書込。\n　B=「A」のJSオブジェクト取得\n　1をローカル書込。\n　Wを戻す\nここまで\nテストA()を表示。', 'main.nako3')
+    const g = await nako.runAsync('●テストA\n　A=0\n　42をローカル書込。\n　B=「A」のJSオブジェクト取得\n　1をローカル書込。\n　Wを戻す\nここまで\nテストA()を表示。', 'main.nako3')
     // 3箇所の呼出それぞれで同期が機能し、W=1・B=0 が正しく読める
     assert.strictEqual(g.log, '1')
     assert.strictEqual(g.__varslist[2].has('A'), false)
@@ -1345,7 +1345,7 @@ describe('plugin_system_test', async () => {
         fn: (sys) => { sys.__locals = new Map([['A', 42], ['それ', 'X']]) }
       }
     })
-    const g = await nako.runAsync('●テストA\n　変数 A=0\n　それ=「元」\n　ローカル差替。\n　「{A}/{それ}」を戻す\nここまで\nテストA()を表示。', 'main.nako3')
+    const g = await nako.runAsync('●テストA\n　A=0\n　それ=「元」\n　ローカル差替。\n　「{A}/{それ}」を戻す\nここまで\nテストA()を表示。', 'main.nako3')
     // 差し替えた __locals の A=42 が呼出元スコープへ書き戻され、それ=「元」は「X」で上書きされない
     assert.strictEqual(g.log, '42/元')
   })
@@ -1375,7 +1375,7 @@ describe('plugin_system_test', async () => {
         fn: (sys) => { sys.__locals = 'not a map' }
       }
     })
-    const g = await nako.runAsync('●テストA\n　変数 A=0\n　ローカル破壊。\n　Aを戻す\nここまで\nテストA()を表示。', 'main.nako3')
+    const g = await nako.runAsync('●テストA\n　A=0\n　ローカル破壊。\n　Aを戻す\nここまで\nテストA()を表示。', 'main.nako3')
     assert.strictEqual(g.log, '0')
     assert.strictEqual(g.__varslist[2].has('A'), false)
     assert.ok(g.__locals instanceof Map)
@@ -1420,7 +1420,7 @@ describe('plugin_system_test', async () => {
       }
     })
     try {
-      await nako.runAsync('●テストA\n　変数 A=0\n　破壊例外2。\nここまで\nテストA()。', 'main.nako3')
+      await nako.runAsync('●テストA\n　A=0\n　破壊例外2。\nここまで\nテストA()。', 'main.nako3')
       assert.fail('実行時エラーになるはずです')
     } catch (err) {
       // 書き戻しの失敗('has fail')ではなく、プラグインが投げた元の例外が伝播すること
@@ -1445,7 +1445,7 @@ describe('plugin_system_test', async () => {
       }
     })
     try {
-      await nako.runAsync('●テストA\n　変数 A=0\n　差替例外。\nここまで\nテストA()。', 'main.nako3')
+      await nako.runAsync('●テストA\n　A=0\n　差替例外。\nここまで\nテストA()。', 'main.nako3')
       assert.fail('実行時エラーになるはずです')
     } catch (err) {
       assert.ok(err instanceof Error)
@@ -1474,7 +1474,7 @@ describe('plugin_system_test', async () => {
       }
     })
     try {
-      await nako.runAsync('●テストA\n　変数 A=0\n　破壊正常。\nここまで\nテストA()。', 'main.nako3')
+      await nako.runAsync('●テストA\n　A=0\n　破壊正常。\nここまで\nテストA()。', 'main.nako3')
       assert.fail('実行時エラーになるはずです')
     } catch (err) {
       // 書き戻しの失敗がエラーとして検出できること
