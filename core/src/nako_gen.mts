@@ -133,6 +133,8 @@ export class NakoGen {
   // 変数管理
   private varslistSet: VarsSet[] // [システム変数一覧, グローバル変数一覧, ローカル変数一覧]で変数セットを記録
   private varsSet: VarsSet // ローカルな変数を記録
+  private globalVarNames: Set<string> = new Set() // トップレベルで宣言・代入される変数名 (registerFunctionで収集) #2665
+  private globalConstNames: Set<string> = new Set() // トップレベルで宣言される定数名 (registerFunctionで収集) #2665
   private functionContextStack: FunctionContext[] // 関数生成時のレキシカルスコープ情報
   public debugOption: NakoDebugOption
   // public
@@ -549,6 +551,61 @@ export class NakoGen {
     this.varsSet = { isFunction: false, names: initialNames, readonly: new Set() }
     this.varslistSet = this.setVarslistSet(this.__self.__varslist)
     this.varslistSet[2] = this.varsSet
+
+    // トップレベルで宣言・代入される変数名を事前に収集する #2665
+    // (関数本体が先に生成されても、後方のグローバル変数をローカル扱いにしないため)
+    // システム変数・プラグイン変数と同名のものは収集しない (PI等のシステム定数を
+    // ユーザー変数として扱うと、DNCLの自動初期化などで定数を上書きしてしまうため)
+    this.globalVarNames = new Set()
+    this.globalConstNames = new Set()
+    const isSystemOrPluginName = (name: string): boolean => {
+      return this.varslistSet[0].names.has(name) || this.varslistSet[1].names.has(name)
+    }
+    const addGlobalName = (name: string, isConst: boolean) => {
+      if (isSystemOrPluginName(name)) { return }
+      this.globalVarNames.add(name)
+      // 定数名は readonly へは入れない (宣言自体の生成時に二重定義と誤認されるため)。
+      // 関数内からの代入チェックは checkVarWritable で globalConstNames を見る
+      if (isConst) { this.globalConstNames.add(name) }
+    }
+    const addIncTarget = (n: any) => {
+      if (!n || typeof n !== 'object') { return }
+      if ((n.type === 'word' || n.type === 'variable') && typeof n.value === 'string') {
+        addGlobalName(n.value, false)
+      } else if (n.type === 'ref_array' || n.type === 'ref_prop') {
+        addIncTarget(n.name)
+      }
+    }
+    const collectGlobals = (node: Ast) => {
+      const n = node as any
+      switch (node.type) {
+        case 'def_func':
+        case 'def_test':
+        case 'func_obj':
+          return // 関数の中には入らない
+        case 'let':
+        case 'let_array':
+        case 'let_prop':
+          if (typeof n.name === 'string') { addGlobalName(n.name, false) }
+          break
+        case 'def_local_var':
+          if (typeof n.name === 'string') { addGlobalName(n.name, n.vartype === '定数') }
+          break
+        case 'def_local_varlist':
+          for (const nm of (n.names ?? []) as any[]) {
+            if (typeof nm?.value !== 'string') { continue }
+            addGlobalName(nm.value, n.vartype === '定数')
+          }
+          break
+        case 'inc':
+          addIncTarget(n.name)
+          break
+      }
+      if (Array.isArray(n.blocks)) {
+        for (const b of n.blocks) { if (b && typeof b === 'object') { collectGlobals(b) } }
+      }
+    }
+    collectGlobals(ast)
   }
 
   /**
@@ -767,7 +824,12 @@ export class NakoGen {
     }
     // __varslist ?
     for (let i = 2; i >= 0; i--) {
-      if (this.varslistSet[i].names.has(name)) {
+      if (this.varslistSet[i].names.has(name) || (i === 2 && this.globalVarNames.has(name))) {
+        // 事前収集したグローバル変数をトップレベルで使う場合は、定義済みとして
+        // 記録しておく (後続の二重定義チェックなどが従来どおり働くように) #2665
+        if (i === 2 && this.varslistSet.length === 3 && !this.varslistSet[2].names.has(name)) {
+          this.varslistSet[2].names.add(name)
+        }
         // ユーザーの定義したグローバル変数 (__varslist[2]) は、変数展開されている（そのままの名前で定義されている）可能性がある。
         // それ以外の変数は、必ず__varslistに入っている。
         return {
@@ -797,8 +859,15 @@ export class NakoGen {
   checkVarWritable (name: string, node: Ast, reason: string): void {
     const res = this.findVar(name)
     if (res === null) { return }
-    if (!this.varslistSet[res.i].readonly.has(name)) { return }
-    throw NakoSyntaxError.fromNode(`定数『${NakoGen.getDispVarName(name)}』${reason}`, node)
+    if (this.varslistSet[res.i].readonly.has(name)) {
+      throw NakoSyntaxError.fromNode(`定数『${NakoGen.getDispVarName(name)}』${reason}`, node)
+    }
+    // 関数定義より後で宣言される定数は、関数本体の生成時点では readonly に
+    // 登録されていないことがある。その場合は事前収集した定数名で判定する #2665
+    // (トップレベルでの宣言・代入は対象にしない)
+    if (res.i === 2 && this.varslistSet.length > 3 && this.globalConstNames.has(name)) {
+      throw NakoSyntaxError.fromNode(`定数『${NakoGen.getDispVarName(name)}』${reason}`, node)
+    }
   }
 
   /**

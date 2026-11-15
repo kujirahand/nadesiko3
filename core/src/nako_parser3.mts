@@ -74,11 +74,151 @@ export class NakoParser extends NakoParserBase {
     // 解析処理 - 先頭から解析開始
     const result = this.startParser()
 
+    // 関数定義より後で宣言されたグローバル変数を、関数内から参照できるように解決する #2665
+    this.resolveLateGlobalVars(result)
+
     // 関数毎に非同期処理が必要かどうかを判定する
     // 「非同期関数を呼ぶ関数もまた非同期」と伝播していくので、変化が無くなるまで繰り返す
     while (checkAsyncFn(result, this.funclist)) { /* 変化が無くなるまで繰り返す */ }
 
     return result
+  }
+
+  /**
+   * 関数本体のパース時点で未登録だったグローバル変数名を、完全名に置き換える後処理 #2665
+   * (関数定義より後で代入・宣言されたグローバル変数が、関数内でローカル扱いになるのを防ぐ)
+   */
+  private resolveLateGlobalVars(root: Ast): void {
+    // グローバル表: モジュール名 → (plain名 → {完全名, 公開設定})
+    // 解決順序と公開判定はパーサの findVar に合わせる (自モジュール → 取り込み順に公開変数)
+    const mods: string[] = []
+    for (const m of this.modList) { if (!mods.includes(m)) { mods.push(m) } }
+    const globalsByMod = new Map<string, Map<string, { full: string, isExport: boolean | null | undefined }>>()
+    for (const [fullName, item] of this.funclist) {
+      if (item.type !== 'var' && item.type !== 'const') { continue }
+      // 既知のモジュール名のうち最長一致するものを接頭辞として剥がす
+      let mod: string | null = null
+      for (const m of mods) {
+        if (fullName.startsWith(m + '__') && (mod === null || m.length > mod.length)) { mod = m }
+      }
+      if (mod === null) { continue }
+      const plain = fullName.substring(mod.length + 2)
+      let mm = globalsByMod.get(mod)
+      if (mm === undefined) { mm = new Map(); globalsByMod.set(mod, mm) }
+      mm.set(plain, { full: fullName, isExport: item.isExport })
+    }
+    if (globalsByMod.size === 0) { return }
+    const resolveGlobal = (plain: string, funcMod: string): string | null => {
+      const own = globalsByMod.get(funcMod)?.get(plain)
+      if (own !== undefined) { return own.full }
+      for (const mod of mods) {
+        if (mod === funcMod) { continue }
+        const e = globalsByMod.get(mod)?.get(plain)
+        if (e === undefined) { continue }
+        if (e.isExport === true || (e.isExport !== false && this.moduleExport.get(mod) !== false)) { return e.full }
+      }
+      return null
+    }
+    // ノードの所属モジュール (ソースファイル名から求める。不明なら null)
+    // null の場合は外側の関数のモジュール (トップレベルではメインモジュール) を引き継ぐ
+    const modOfNode = (node: Ast): string | null => {
+      const f = (node as any).file
+      if (typeof f === 'string' && f !== '') {
+        const m = NakoLexer.filenameToModName(f)
+        if (mods.includes(m)) { return m }
+      }
+      return null
+    }
+
+    const isFuncNode = (t: string) => t === 'def_func' || t === 'def_test' || t === 'func_obj'
+    const childrenOf = (node: Ast): Ast[] => {
+      const res: Ast[] = []
+      const n = node as any
+      if (Array.isArray(n.blocks)) { for (const b of n.blocks) { if (b && typeof b === 'object') { res.push(b) } } }
+      // ref_prop / let_prop の index はプロパティ名 (リテラルのキー) なので走査しない
+      if (node.type !== 'ref_prop' && node.type !== 'let_prop' && Array.isArray(n.index)) { for (const b of n.index) { if (b && typeof b === 'object') { res.push(b) } } }
+      if (n.name && typeof n.name === 'object') { res.push(n.name as Ast) }
+      return res
+    }
+
+    // 関数のローカル集合 (引数 + 明示的なローカル宣言 + for/foreach の変数)
+    // 明示宣言は宣言位置によらず関数全体のローカルとして扱う。そのため
+    // 「暗黙代入の後に同じ名前を明示宣言する」書き方では、代入もローカル側に
+    // 寄る (定義順で意味が変わる問題がこの形に限って残る)
+    const collectLocals = (func: Ast): Set<string> => {
+      const locals = new Set<string>()
+      for (const a of ((func as any).args ?? []) as Ast[]) {
+        const v = (a as any)?.value
+        if (typeof v === 'string') { locals.add(v) }
+      }
+      const walk = (node: Ast) => {
+        if (isFuncNode(node.type)) { return } // ネストした関数の中には入らない
+        const n = node as any
+        if (node.type === 'def_local_var' && typeof n.name === 'string') { locals.add(n.name) }
+        if (node.type === 'def_local_varlist' && Array.isArray(n.names)) {
+          for (const nm of n.names) { if (typeof nm?.value === 'string') { locals.add(nm.value) } }
+        }
+        if ((node.type === 'for' || node.type === 'foreach') && typeof n.word === 'string' && n.word !== '') {
+          locals.add(n.word)
+        }
+        for (const c of childrenOf(node)) { walk(c) }
+      }
+      for (const b of ((func as any).blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { walk(b) } }
+      return locals
+    }
+
+    const resolveName = (name: unknown, locals: Set<string>, funcMod: string): string | null => {
+      if (typeof name !== 'string' || name.includes('__')) { return null }
+      if (locals.has(name)) { return null }
+      return resolveGlobal(name, funcMod)
+    }
+
+    // scopes: 外側から順のローカル集合の配列。空ならトップレベル
+    // funcMod: 現在の関数が属するモジュール名
+    const visit = (node: Ast, scopes: Set<string>[], funcMod: string) => {
+      const n = node as any
+      if (node.type === 'def_func' || node.type === 'def_test' || node.type === 'func_obj') {
+        const own = collectLocals(node)
+        const fmod = modOfNode(node) ?? funcMod
+        let scope: Set<string>
+        let inner: Set<string>[]
+        if (node.type === 'func_obj') {
+          scope = new Set<string>()
+          for (const s of scopes) { for (const v of s) { scope.add(v) } }
+          for (const v of own) { scope.add(v) }
+          inner = [...scopes, scope]
+        } else {
+          // 名前付き関数は外側のローカルを見ないので、スコープ履歴もここで切る
+          // (内側の無名関数が、遮断されたはずの外側ローカルを合算しないため)
+          scope = own
+          inner = [scope]
+        }
+        for (const b of (n.blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { visit(b, inner, fmod) } }
+        return
+      }
+      if (scopes.length > 0) {
+        const locals = scopes[scopes.length - 1]
+        if (node.type === 'word' || node.type === 'variable') {
+          const full = resolveName(n.value, locals, funcMod)
+          if (full !== null) { n.value = full }
+        } else if (node.type === 'let' || node.type === 'let_array' || node.type === 'let_prop') {
+          const full = resolveName(n.name, locals, funcMod)
+          if (full !== null) { n.name = full }
+        }
+      }
+      if (node.type === 'def_local_var' || node.type === 'def_local_varlist') {
+        // 宣言名は書き換えず、初期値だけ走査する
+        for (const b of (n.blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { visit(b, scopes, funcMod) } }
+        return
+      }
+      if (node.type === 'func') {
+        // 関数名は書き換えない
+        for (const b of (n.blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { visit(b, scopes, funcMod) } }
+        return
+      }
+      for (const c of childrenOf(node)) { visit(c, scopes, funcMod) }
+    }
+    visit(root, [], mods[0])
   }
 
   /** パーサーの一番最初に呼び出す構文規則 */
