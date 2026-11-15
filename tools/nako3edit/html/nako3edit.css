@@ -3,6 +3,17 @@ h1 {
   margin: 0;
   font-size: 1em;
 }
+/* #2623 サポート終了の告知バナー */
+.eol-notice {
+  background-color: #fff3cd;
+  border: 1px solid #e6c200;
+  color: #664d03;
+  padding: 8px;
+  margin: 4px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 0.4em;
+}
 .btn {
   text-transform: none;
 }

@@ -3,16 +3,194 @@ import fs from 'fs'
 import http from 'http'
 import path from 'path'
 import os from 'os'
+import { AsyncLocalStorage } from 'async_hooks'
 import { parseQueryString } from '../core/src/url_util.mjs'
 
 // 定数
 const HTTPSERVER_LOGID = '[簡易HTTPサーバ]'
 const ERR_NOHTTPSERVER = '最初に『簡易HTTPサーバ起動時』を実行してサーバを起動する必要があります。'
 const MAX_BODY_SIZE_POST = 10 * 1024 * 1024 // 10MB
+const DEFAULT_HTTP_HOST = '127.0.0.1'
+const DEFAULT_UPLOAD_MAX_SIZE = MAX_BODY_SIZE_POST
+let uploadDirPromise: Promise<string> | null = null
+
+/** 待受ホストを環境変数から解決する。NAKO3_HTTP_HOST を優先し、未設定なら
+ * nako3server/nako3edit が使うツール別環境変数にフォールバックする
+ * (Dockerfile が NAKO3SERVER_HOST/NAKO3EDIT_HOST=0.0.0.0 を設定しているため)。
+ * どれも未設定なら 127.0.0.1 のみで待ち受ける。 */
+function resolveHttpHost(): string {
+  const hostNames = ['NAKO3_HTTP_HOST', 'NAKO3SERVER_HOST', 'NAKO3EDIT_HOST']
+  for (const hostName of hostNames) {
+    const host = (process.env[hostName] || '').trim()
+    if (host !== '') {
+      return host
+    }
+  }
+  return DEFAULT_HTTP_HOST
+}
 // RFC 2046 の boundary 文法: 0*69<bchars> bcharsnospace
 // bcharsnospace = DIGIT / ALPHA / "'" / "(" / ")" / "+" / "_" / "," / "-" / "." / "/" / ":" / "=" / "?"
 // bchars は bcharsnospace に空白を加えたもので、末尾1文字は空白以外(bcharsnospace)でなければならない
 const MULTIPART_BOUNDARY_RE = /^[0-9A-Za-z'()+_,\-./:=? ]{0,69}[0-9A-Za-z'()+_,\-./:=?]$/
+
+/** 1リクエスト分の出力・状態 (並列リクエストで共有しない) */
+type HttpReqCtx = {
+  req: any
+  res: any
+  isEnd: boolean
+  usedHeader: boolean
+  method: string
+  getData: any
+  postData: any
+  filesData: any
+}
+const httpReqStore = new AsyncLocalStorage<HttpReqCtx>()
+
+/** リクエストごとに分離するシステム変数名 */
+const REQ_SCOPED_VARS = new Set(['HTTPメソッド', 'GETデータ', 'POSTデータ', 'FILESデータ'])
+
+/** ラッパーを適用済みの Map (sys ではなく Map 自体をキーにして二重ラップを防ぐ) */
+const reqScopedPatchedMaps = new WeakSet<object>()
+
+function getHttpReqCtx (): HttpReqCtx {
+  const ctx = httpReqStore.getStore()
+  if (!ctx || !ctx.res) {
+    throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
+  }
+  return ctx
+}
+
+/**
+ * __v0 / __varslist[0] の get/set/has/delete を ALS 経由にする。
+ * 生成コードは __v0.get('GETデータ') を使うため、__setSysVar だけでは
+ * 非同期交差時に共有 Map が混ざる。
+ * パッチ不能時は throw（fail-closed）。REQ_SCOPED_VARS は ALS 外で共有 Map に落とさない。
+ * 適用済み判定は Map 自体をキーにする (複数の sys が同じ Map を共有しても
+ * 二重ラップにならず、Map が差し替わった場合は新しい Map に適用できる)。
+ * なお clear やイテレーション等のその他の Map 操作は対象外とする
+ * (生成コードはリクエスト変数の読み書きに get/set しか使わない)。
+ */
+function installReqScopedVarMap (sys: any): void {
+  const v0: Map<string, any> | undefined = sys.__varslist?.[0] ?? sys.__v0
+  if (!v0 || typeof v0.get !== 'function' || typeof v0.set !== 'function') {
+    throw new Error('簡易HTTPサーバ: リクエスト変数の分離を初期化できません。')
+  }
+  if (reqScopedPatchedMaps.has(v0)) {
+    sys.__httpserverReqScopedInstalled = true
+    return
+  }
+  const origGet = v0.get.bind(v0)
+  const origSet = v0.set.bind(v0)
+  const origHas = v0.has.bind(v0)
+  const origDelete = v0.delete.bind(v0)
+  // 復元用に、適用前の自前プロパティの descriptor を記録しておく
+  // (通常の Map には無いが、既に自前プロパティがある場合はそれを正確に戻すため)
+  const ownDescriptors: { [key: string]: PropertyDescriptor | undefined } = {}
+  for (const name of ['get', 'set', 'has', 'delete']) {
+    ownDescriptors[name] = Object.getOwnPropertyDescriptor(v0, name)
+  }
+  const restoreProp = (name: string) => {
+    const desc = ownDescriptors[name]
+    try {
+      if (desc) {
+        Object.defineProperty(v0, name, desc)
+      } else {
+        delete (v0 as any)[name]
+      }
+    } catch { /* 復元不能でもフラグは立てない */ }
+  }
+  const emptyFor = (key: string): any => {
+    switch (key) {
+      case 'HTTPメソッド': return ''
+      case 'GETデータ': return {}
+      case 'POSTデータ': return {}
+      case 'FILESデータ': return []
+      default: return undefined
+    }
+  }
+  const wrappedGet = (key: any) => {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      const ctx = httpReqStore.getStore()
+      if (!ctx) {
+        // ALS 外: 共有 Map を読まず空を返す（他リクエスト値の漏洩防止）
+        return emptyFor(k)
+      }
+      switch (k) {
+        case 'HTTPメソッド': return ctx.method
+        case 'GETデータ': return ctx.getData
+        case 'POSTデータ': return ctx.postData
+        case 'FILESデータ': return ctx.filesData
+      }
+    }
+    return origGet(key)
+  }
+  const wrappedSet = (key: any, value: any) => {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      const ctx = httpReqStore.getStore()
+      if (!ctx) {
+        // ALS 外: 共有 Map に書かない（fail-closed）
+        return v0
+      }
+      switch (k) {
+        case 'HTTPメソッド': ctx.method = value; break
+        case 'GETデータ': ctx.getData = value; break
+        case 'POSTデータ': ctx.postData = value; break
+        case 'FILESデータ': ctx.filesData = value; break
+      }
+      return v0
+    }
+    return origSet(key, value)
+  }
+  const wrappedHas = (key: any) => {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      // get/set と同じ方針: リクエスト処理中だけ存在するものとして扱い、
+      // ALS 外では共有 Map の残留値を見せない。
+      // なお delete の後も true のままになる (delete はフィールドを空相当へ
+      // 戻すだけで、変数自体はリクエスト処理中は常に存在するものとして扱う)
+      return httpReqStore.getStore() !== undefined
+    }
+    return origHas(key)
+  }
+  const wrappedDelete = (key: any) => {
+    const k = String(key)
+    if (REQ_SCOPED_VARS.has(k)) {
+      const ctx = httpReqStore.getStore()
+      if (!ctx) {
+        // ALS 外: 共有 Map からは消さない（fail-closed）
+        return false
+      }
+      switch (k) {
+        case 'HTTPメソッド': ctx.method = ''; break
+        case 'GETデータ': ctx.getData = {}; break
+        case 'POSTデータ': ctx.postData = {}; break
+        case 'FILESデータ': ctx.filesData = []; break
+      }
+      return true
+    }
+    return origDelete(key)
+  }
+  // 全てのラッパーが載ってからインストール済みにする。途中失敗で再試行不能にしない。
+  // 復元は適用前の状態へ戻す (自前プロパティが元々あれば descriptor で復元し、
+  // 無ければ delete で除去してプロトタイプメソッドだけの状態に戻す)。
+  try {
+    v0.get = wrappedGet
+    v0.set = wrappedSet
+    v0.has = wrappedHas
+    v0.delete = wrappedDelete
+  } catch (e) {
+    restoreProp('get')
+    restoreProp('set')
+    restoreProp('has')
+    restoreProp('delete')
+    throw e
+  }
+  reqScopedPatchedMaps.add(v0)
+  // 適用済み判定の正は reqScopedPatchedMaps 側。sys 側フラグは状態確認用に併せて立てる
+  sys.__httpserverReqScopedInstalled = true
+}
 
 // オブジェクト
 type EasyURLActionType = 'static' | 'callback'
@@ -35,134 +213,145 @@ class EasyURLDispather {
   server: any
   sys: any
   items: EasyURLItem[]
-  curReq: any
-  curRes: any
-  isEnd: boolean
-  usedHeader: boolean
+  host: string
+  maxUploadSize: number
 
   constructor(sys: any) {
     this.server = null
     this.items = []
     this.sys = sys
-    this.curReq = null
-    this.curRes = null
-    this.isEnd = false
-    this.usedHeader = false
+    this.host = DEFAULT_HTTP_HOST
+    const maxUploadSize = Number(process.env.NAKO3_HTTP_UPLOAD_MAX_SIZE)
+    this.maxUploadSize = Number.isSafeInteger(maxUploadSize) && maxUploadSize > 0 ? maxUploadSize : DEFAULT_UPLOAD_MAX_SIZE
+    installReqScopedVarMap(sys)
   }
 
   doRequest(req: any, res: any) {
-    this.curReq = req
-    this.curRes = res
-    // HTTPメソッド(GET/POST/PUT/DELETEなど)を設定
-    const method = String(req.method || '').toUpperCase()
-    this.sys.__setSysVar('HTTPメソッド', method)
-    // 診断ログはstdoutではなくstderrへ出力する(Node.js test runner #64061 で
-    // 子プロセスのstdoutがIPCメッセージ枠組みと競合する問題があるため)
-    console.error(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
-    const params = this.parseURL(req.url)
-    const url = params['?URL']
-    this.sys.__setSysVar('GETデータ', params)
-
-    const runDispatcher = (postData: any) => {
-      try {
-        this.sys.__setSysVar('POSTデータ', postData)
-        // URLの一致を調べてアクションを実行
-        const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
-        let matched = false
-        for (const it of filtered) {
-          let isBreak = false
-          if (it.action === 'static') {
-            isBreak = this.doRequestStatic(req, res, it)
-          } else if (it.action === 'callback') {
-            isBreak = this.doRequestCallback(req, res, it)
-          }
-          if (isBreak) {
-            matched = true
-            break
-          }
-        }
-        if (!matched) {
-          this.return404(res)
-        }
-      } catch (err: any) {
-        // ここで捕まえないとサーバのプロセスごと落ちてしまう
-        this.returnError(res, err)
-      }
+    const ctx: HttpReqCtx = {
+      req,
+      res,
+      isEnd: false,
+      usedHeader: false,
+      method: '',
+      getData: {},
+      postData: {},
+      filesData: []
     }
+    // イベントコールバックは ALS を継承しないことがあるため、各入口で run し直す
+    const enter = (fn: () => void) => { httpReqStore.run(ctx, fn) }
 
-    if (method === 'POST') {
-      let bodySize = 0
-      const chunks: Buffer[] = []
-      req.on('data', (chunk: Buffer) => {
-        bodySize += chunk.length
-        if (bodySize > MAX_BODY_SIZE_POST) {
-          res.statusCode = 413
-          res.end('Request entity too large.')
-          req.destroy()
-          return
-        }
-        chunks.push(chunk)
-      })
-      req.on('end', async() => {
-        const bodyBuffer = Buffer.concat(chunks)
-        let postData: any = {}
-        let filesData: any[] = []
-        const contentType = req.headers['content-type'] || ''
+    enter(() => {
+      const method = String(req.method || '').toUpperCase()
+      ctx.method = method
+      // ALS 経由 Map 経由で反映（共有 Map には書かない）
+      this.sys.__setSysVar('HTTPメソッド', method)
+      console.error(`${HTTPSERVER_LOGID} 要求あり METHOD=${method} URL=` + req.url)
+      const params = this.parseURL(req.url)
+      const url = params['?URL']
+      ctx.getData = params
+      this.sys.__setSysVar('GETデータ', params)
+
+      const runDispatcher = (postData: any) => {
         try {
-          // メディア型は大小文字を区別しない(RFC 2045)ため小文字化して比較する。
-          // パラメータ部(;以降)を除いたメディア型本体で判定する
-          const mediaType = contentType.split(';', 1)[0].trim().toLowerCase()
-          if (mediaType === 'multipart/form-data') {
-            // boundaryパラメータは quoted-string とエスケープを認識するパーサ(parseContentDisposition)で取得する。
-            // パラメータ名は大小文字を区別せず、`=`前後の空白・引用符付き値も許容する(非引用値はtokenとして解釈)。
-            // 正規表現だと他パラメータの引用値内に現れる '; boundary=' に誤マッチするため。
-            // strictモードを有効にし、前のパラメータとの `;` 区切りがないboundaryは採用しない
-            // (区切り欠落の不正要求を400にするため)。重複パラメータは常に最後の値を採用する(後勝ち)。
-            // boundaryの値は空白を含み得るためtrimせず、RFC 2046の文法(1〜70文字・許可文字・末尾空白禁止)で検証する
-            const boundary = parseContentDisposition(contentType, true)['boundary'] ?? ''
-            if (!MULTIPART_BOUNDARY_RE.test(boundary)) {
-              // boundaryが得られない・文法上不正なmultipart要求は、フィールドを静かに消さず400を返す(#2495)
-              console.error(`${HTTPSERVER_LOGID} multipart/form-data 要求の boundary が取得できないか文法上不正です`)
-              res.statusCode = 400
-              res.end('Bad Request.')
-              return
+          ctx.postData = postData
+          this.sys.__setSysVar('POSTデータ', postData)
+          this.sys.__setSysVar('FILESデータ', ctx.filesData)
+          const filtered = this.items.filter(v => url.startsWith(v.url)).sort((a, b) => { return b.url.length - a.url.length })
+          let matched = false
+          for (const it of filtered) {
+            let isBreak = false
+            if (it.action === 'static') {
+              isBreak = this.doRequestStatic(req, res, it)
+            } else if (it.action === 'callback') {
+              isBreak = this.doRequestCallback(req, res, it)
             }
-            const parsed = await parseMultipart(bodyBuffer, boundary)
-            postData = parsed.fields
-            filesData = parsed.files
-          } else if (mediaType === 'application/json' || mediaType.startsWith('application/json-') || mediaType.endsWith('+json')) {
-            // application/json-patch+json 等の +json 接尾辞(RFC 6839)や、application/json-home 等の
-            // application/json- で始まるIANA登録済みメディア型も JSON として解析する(旧来の部分一致判定との互換維持)
-            const bodyStr = bodyBuffer.toString('utf-8')
-            try {
-              postData = JSON.parse(bodyStr)
-            } catch {
-              postData = bodyStr
+            if (isBreak) {
+              matched = true
+              break
             }
-          } else if (mediaType === 'application/x-www-form-urlencoded') {
-            const bodyStr = bodyBuffer.toString('utf-8')
-            postData = parseQueryString(bodyStr)
-          } else {
-            postData = bodyBuffer.toString('utf-8')
           }
-        } catch (err: any) {
-          console.error(`${HTTPSERVER_LOGID} アップロード保存エラー: ${err.message}`)
-          res.statusCode = 500
-          res.end('Failed to save upload file.')
-          return
-        }
-        try {
-          this.sys.__setSysVar('FILESデータ', filesData)
+          if (!matched) {
+            this.return404(res)
+          }
         } catch (err: any) {
           this.returnError(res, err)
-          return
         }
-        runDispatcher(postData)
-      })
-    } else {
-      this.sys.__setSysVar('FILESデータ', [])
-      runDispatcher({})
-    }
+      }
+
+      if (method === 'POST') {
+        let bodySize = 0
+        const chunks: Buffer[] = []
+        req.on('data', (chunk: Buffer) => {
+          bodySize += chunk.length
+          if (bodySize > MAX_BODY_SIZE_POST) {
+            res.statusCode = 413
+            res.end('Request entity too large.')
+            req.destroy()
+            return
+          }
+          chunks.push(chunk)
+        })
+        req.on('end', () => {
+          enter(() => {
+            void (async () => {
+              const bodyBuffer = Buffer.concat(chunks)
+              let postData: any = {}
+              let filesData: any[] = []
+              const contentType = req.headers['content-type'] || ''
+              try {
+                const mediaType = contentType.split(';', 1)[0].trim().toLowerCase()
+                if (mediaType === 'multipart/form-data') {
+                  const boundary = parseContentDisposition(contentType, true)['boundary'] ?? ''
+                  if (!MULTIPART_BOUNDARY_RE.test(boundary)) {
+                    console.error(`${HTTPSERVER_LOGID} multipart/form-data 要求の boundary が取得できないか文法上不正です`)
+                    res.statusCode = 400
+                    res.end('Bad Request.')
+                    return
+                  }
+                  const parsed = await parseMultipart(bodyBuffer, boundary, this.maxUploadSize)
+                  postData = parsed.fields
+                  filesData = parsed.files
+                } else if (mediaType === 'application/json' || mediaType.startsWith('application/json-') || mediaType.endsWith('+json')) {
+                  const bodyStr = bodyBuffer.toString('utf-8')
+                  try {
+                    postData = JSON.parse(bodyStr)
+                  } catch {
+                    postData = bodyStr
+                  }
+                } else if (mediaType === 'application/x-www-form-urlencoded') {
+                  const bodyStr = bodyBuffer.toString('utf-8')
+                  postData = parseQueryString(bodyStr)
+                } else {
+                  postData = bodyBuffer.toString('utf-8')
+                }
+              } catch (err: any) {
+                console.error(`${HTTPSERVER_LOGID} アップロード保存エラー: ${err.message}`)
+                if (err.code === 'NAKO3_UPLOAD_TOO_LARGE') {
+                  res.statusCode = 413
+                  res.end('Request entity too large.')
+                } else {
+                  res.statusCode = 500
+                  res.end('Failed to save upload file.')
+                }
+                return
+              }
+              try {
+                ctx.filesData = filesData
+                this.sys.__setSysVar('FILESデータ', filesData)
+              } catch (err: any) {
+                this.returnError(res, err)
+                return
+              }
+              runDispatcher(postData)
+            })()
+          })
+        })
+      } else {
+        ctx.filesData = []
+        this.sys.__setSysVar('FILESデータ', [])
+        runDispatcher({})
+      }
+    })
   }
 
   /** リクエスト処理中に発生した例外を500として返す。
@@ -229,14 +418,20 @@ class EasyURLDispather {
   }
 
   doRequestCallback(req: any, res: any, it: EasyURLItem): boolean {
-    this.isEnd = false
-    this.usedHeader = false
+    const ctx = getHttpReqCtx()
+    ctx.isEnd = false
+    ctx.usedHeader = false
+    // ALS 経由でこのリクエストの値を公開（共有 Map には書かない）
+    this.sys.__setSysVar('HTTPメソッド', ctx.method)
+    this.sys.__setSysVar('GETデータ', ctx.getData)
+    this.sys.__setSysVar('POSTデータ', ctx.postData)
+    this.sys.__setSysVar('FILESデータ', ctx.filesData)
     const ret: any = it.callback(req, res)
     // コールバックが非同期関数だった場合、拒否をここで捕まえる
     if (ret && typeof ret.then === 'function') {
       ret.then(undefined, (err: any) => { this.returnError(res, err) })
     }
-    if (!this.isEnd) {
+    if (!ctx.isEnd) {
       return true
     }
     return true
@@ -446,10 +641,58 @@ function setDictValue(obj: any, key: string, value: any) {
   })
 }
 
-async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: any[], fields: any }> {
+/** アップロード一時ディレクトリとして安全に使えるかを検証する。
+ * シンボリックリンクへの置き換えや権限の緩和を検出するため、再利用時にも毎回確認する。 */
+async function isSafeUploadDir(dir: string): Promise<boolean> {
+  try {
+    const stats = await fs.promises.lstat(dir)
+    if (stats.isSymbolicLink() || !stats.isDirectory()) {
+      return false
+    }
+    return process.platform === 'win32' || (stats.mode & 0o777) === 0o700
+  } catch {
+    return false
+  }
+}
+
+async function getUploadDir(): Promise<string> {
+  if (uploadDirPromise !== null) {
+    const uploadDir = await uploadDirPromise
+    // 一時ディレクトリが外部から変更・削除されていたら作り直す
+    // (条件を満たさないパス自体は他者のものの可能性があるため削除しない)
+    if (await isSafeUploadDir(uploadDir)) {
+      return uploadDir
+    }
+    uploadDirPromise = null
+  }
+  let uploadDir = ''
+  uploadDirPromise = (async () => {
+    try {
+      uploadDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload-'))
+      if (process.platform !== 'win32') {
+        await fs.promises.chmod(uploadDir, 0o700)
+      }
+      if (!(await isSafeUploadDir(uploadDir))) {
+        throw new Error('アップロード一時ディレクトリを安全に設定できません。')
+      }
+      return uploadDir
+    } catch (err) {
+      uploadDirPromise = null
+      if (uploadDir !== '') {
+        try { await fs.promises.rm(uploadDir, { recursive: true, force: true }) } catch {}
+      }
+      throw err
+    }
+  })()
+  return await uploadDirPromise
+}
+
+async function parseMultipart(body: Buffer, boundary: string, maxFileSize: number): Promise<{ files: any[], fields: any }> {
   const fields: any = {}
   const files: any[] = []
+  const savedFilepaths: string[] = []
 
+  try {
   const boundaryBuffer = Buffer.from('--' + boundary)
   let pos = 0
   const parts: Buffer[] = []
@@ -573,13 +816,28 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
         }
         const contentType = headers['content-type'] || 'application/octet-stream'
 
-        const uploadDir = path.join(os.tmpdir(), 'nako3-plugin_httpserver_upload')
-        if (!fs.existsSync(uploadDir)) {
-          await fs.promises.mkdir(uploadDir, { recursive: true })
+        if (partBody.length > maxFileSize) {
+          const err: any = new Error(`アップロードファイルのサイズ(${partBody.length}バイト)が上限(${maxFileSize}バイト)を超えています。`)
+          err.code = 'NAKO3_UPLOAD_TOO_LARGE'
+          throw err
         }
+        const uploadDir = await getUploadDir()
         const uniqueName = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '_' + safeFilename
         const filepath = path.join(uploadDir, uniqueName)
-        await fs.promises.writeFile(filepath, partBody)
+        try {
+          await fs.promises.writeFile(filepath, partBody, { mode: 0o600, flag: 'wx' })
+          if (process.platform !== 'win32') {
+            await fs.promises.chmod(filepath, 0o600)
+            const stats = await fs.promises.stat(filepath)
+            if ((stats.mode & 0o777) !== 0o600) {
+              throw new Error('アップロードファイルの権限を安全に設定できません。')
+            }
+          }
+        } catch (err) {
+          try { await fs.promises.unlink(filepath) } catch {}
+          throw err
+        }
+        savedFilepaths.push(filepath)
 
         files.push({
           fieldName: name,
@@ -607,6 +865,14 @@ async function parseMultipart(body: Buffer, boundary: string): Promise<{ files: 
   }
 
   return { files, fields }
+  } catch (err) {
+    for (const filepath of savedFilepaths) {
+      try {
+        await fs.promises.unlink(filepath)
+      } catch {}
+    }
+    throw err
+  }
 }
 // MIMEタイプ
 const MimeTypes: any = {
@@ -663,7 +929,7 @@ const PluginHttpServer = {
   'GETデータ': { type: 'const', value: '' }, // @GETでーた
   'POSTデータ': { type: 'const', value: '' }, // @POSTでーた
   'FILESデータ': { type: 'const', value: '' }, // @FILESでーた
-  '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。 // @かんいHTTPさーばきどうしたとき
+  '簡易HTTPサーバ起動時': { // @ポート番号PORTを指定して簡易HTTPサーバを起動して、CALLBACKを実行する。既定では127.0.0.1(このマシンからだけ接続可能)に待受けする。他のマシンから接続させたい場合は環境変数NAKO3_HTTP_HOSTに0.0.0.0を指定する。NAKO3_HTTP_HOSTが未設定の場合はNAKO3SERVER_HOST/NAKO3EDIT_HOSTも参照する。 // @かんいHTTPさーばきどうしたとき
     type: 'func',
     josi: [['を'], ['の', 'で']],
     pure: true,
@@ -671,6 +937,8 @@ const PluginHttpServer = {
       callback = sys.__findFunc(callback, '簡易HTTPサーバ起動時') // 文字列指定なら関数に変換
       // 管理オブジェクトを作成する
       const dp = sys.__httpserver = new EasyURLDispather(sys)
+      const host = resolveHttpHost()
+      dp.host = host
       // サーバオブジェクトを生成
       dp.server = http.createServer((req: any, res: any) => {
         try {
@@ -684,10 +952,26 @@ const PluginHttpServer = {
         console.error(`${HTTPSERVER_LOGID} エラー: ${err.message}`)
       })
       // サーバ起動
-      dp.server.listen(port, () => {
-        console.error(`${HTTPSERVER_LOGID} ポート番号(${port})で監視開始`)
+      dp.server.listen(port, host, () => {
+        console.error(`${HTTPSERVER_LOGID} ${host}:${port} で監視開始`)
         callback(sys)
       })
+    }
+  },
+  '簡易HTTPサーバアップロード最大サイズ設定': { // @アップロードファイル1件の最大サイズSIZE(バイト)を設定する。 // @かんいHTTPさーばあっぷろーどさいだいさいずせってい
+    type: 'func',
+    josi: [['を', 'に']],
+    pure: true,
+    fn: function(size: number, sys: any) {
+      if (sys.__httpserver === null) {
+        throw new Error(ERR_NOHTTPSERVER)
+      }
+      const maxUploadSize = Number(size)
+      if (!Number.isSafeInteger(maxUploadSize) || maxUploadSize <= 0) {
+        throw new Error('簡易HTTPサーバアップロード最大サイズ設定: サイズは正の整数(バイト)で指定してください。')
+      }
+      const dp: EasyURLDispather = sys.__httpserver
+      dp.maxUploadSize = maxUploadSize
     }
   },
   '簡易HTTPサーバ静的パス指定': { // @静的コンテンツのパスを指定。URLをPATHへマップする。 // @かんいHTTPさーばせいてきぱすしてい
@@ -731,16 +1015,13 @@ const PluginHttpServer = {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
-      const dp: EasyURLDispather = sys.__httpserver
-      if (dp.curRes === null) {
-        throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
+      const ctx = getHttpReqCtx()
+      if (!ctx.usedHeader) {
+        ctx.usedHeader = true
+        ctx.res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
       }
-      if (!dp.usedHeader) {
-        dp.usedHeader = true
-        dp.curRes.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
-      }
-      dp.curRes.end(s)
-      dp.isEnd = true
+      ctx.res.end(s)
+      ctx.isEnd = true
     }
   },
   '簡易HTTPサーバヘッダ出力': { // @受信時にステータスコードNOで、ヘッダHEAD(辞書形式)を出力する。 // @かんいHTTPさーばへっだしゅつりょく
@@ -751,13 +1032,10 @@ const PluginHttpServer = {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
-      const dp: EasyURLDispather = sys.__httpserver
-      if (dp.curRes === null) {
-        throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
-      }
-      dp.curRes.writeHead(no, head)
-      dp.isEnd = true
-      dp.usedHeader = true
+      const ctx = getHttpReqCtx()
+      ctx.res.writeHead(no, head)
+      ctx.isEnd = true
+      ctx.usedHeader = true
     }
   },
   '簡易HTTPサーバ移動': { // @受信時にヘッダ302(リダイレクト)を出力してURLへページを移動力する。 // @かんいHTTPさーばいどう
@@ -768,14 +1046,35 @@ const PluginHttpServer = {
       if (sys.__httpserver === null) {
         throw new Error(ERR_NOHTTPSERVER)
       }
-      const dp: EasyURLDispather = sys.__httpserver
-      if (dp.curRes === null) {
-        throw new Error('『簡易HTTPサーバ受信時』のみ出力が可能です。')
+      const ctx = getHttpReqCtx()
+      const raw = String(url ?? '')
+      // C0/DEL と前後空白を正規化。タブ混入 javascript: 等のスキームすり抜けを防ぐ。
+      // eslint-disable-next-line no-control-regex -- 制御文字を含むURLを拒否するため
+      if (/[\u0000-\u001F\u007F]/.test(raw)) {
+        throw new Error('リダイレクト先URLが不正です。')
       }
-      console.error(`${HTTPSERVER_LOGID} 移動=${url}`)
-      dp.curRes.writeHead(302, { 'Location': url })
-      dp.curRes.end(`<html><body><a href="${url}">JUMP</a></body></html>`)
-      dp.isEnd = true
+      const loc = raw.trim()
+      if (loc === '') {
+        throw new Error('リダイレクト先URLが不正です。')
+      }
+      // 先頭スキームのみ検査（クエリ内コロンは許可）。http(s) 以外のスキームは拒否。
+      const schemeM = loc.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/)
+      if (schemeM) {
+        const scheme = schemeM[1].toLowerCase()
+        if (scheme !== 'http' && scheme !== 'https') {
+          throw new Error('リダイレクト先URLが不正です。')
+        }
+      }
+      const safeHref = loc
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+      console.error(`${HTTPSERVER_LOGID} 移動=${loc}`)
+      ctx.res.writeHead(302, { 'Location': loc })
+      ctx.res.end(`<html><body><a href="${safeHref}">JUMP</a></body></html>`)
+      ctx.isEnd = true
     }
   }
 }

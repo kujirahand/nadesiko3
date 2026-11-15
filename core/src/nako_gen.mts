@@ -423,10 +423,13 @@ export class NakoGen {
     this.nakoFuncList.forEach((value, key) => {
       const f = trim(cleanGeneratedCode(String(value.fn), 1))
       const isAsync = value.asyncFn ? 'true' : 'false'
+      // 関数名は JSON 文字列として埋め込み、「」等による string-literal breakout を防ぐ
+      // JSON.stringify は U+2028/U+2029 をエスケープしないため、// コメントの行終端にならないよう明示的に置換する
+      const keyLit = JSON.stringify(key).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
       nakoFuncCode += '' +
-        `//[DEF_FUNC name='${key}' asyncFn=${isAsync}]\n` +
-        `__self.__varslist[1].set("${key}", ${f});\n` +
-        `//[/DEF_FUNC name='${key}']\n`
+        `//[DEF_FUNC name=${keyLit} asyncFn=${isAsync}]\n` +
+        `__self.__varslist[1].set(${keyLit}, ${f});\n` +
+        `//[/DEF_FUNC name=${keyLit}]\n`
     })
     if (nakoFuncCode !== '') { code += '__v0.set(\'__line\', \'関数の定義\');\n' + nakoFuncCode }
 
@@ -828,7 +831,15 @@ export class NakoGen {
     // システム関数・変数の場合
     if (i === 0) {
       const pv = this.__self.getNakoFunc(name)
-      if (!pv) { return `${res.js}/*[link_error]l${lno}:${position.file ?? 'unknown'}*/` }
+      // ファイル識別子を生成コメントに埋める前に中和する
+      // (*/ によるコメント脱出と任意JSの注入を防ぐ。行終端はブロックコメントを
+      //  終了させないが、生成コードの行構造を保つため ¶ に置換する)
+      if (!pv) {
+        const safeFile = String(position.file ?? 'unknown')
+          .replace(/\*\//g, '＊／')
+          .replace(/[\r\n\u2028\u2029]/g, '¶')
+        return `${res.js}/*[link_error]l${lno}:${safeFile}*/`
+      }
       if (pv.type === 'const' || pv.type === 'var') { return res.js }
       if (pv.type === 'func') {
         if (!pv.josi || pv.josi.length === 0) { return `(${res.js}())` }
@@ -857,8 +868,8 @@ export class NakoGen {
 
   convComment(node: AstEol): string {
     let commentSrc = String(node.comment)
-    // コメントの改行や空行を無効化
-    commentSrc = commentSrc.replace(/\n/g, '¶')
+    // コメントの改行や空行を無効化（CR/LS/PS も // コメント終端になるため中和）
+    commentSrc = commentSrc.replace(/[\n\r\u2028\u2029]/g, '¶')
     commentSrc = commentSrc.replace(/\*\//g, '＊／')
     commentSrc = commentSrc.replace(/(^\s+|\s+$)/g, '')
     // コメントの行番号を得る

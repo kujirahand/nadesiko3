@@ -17,12 +17,25 @@ const cloneAsJSON = (x: any): any => JSON.parse(JSON.stringify(x))
 export interface LoaderToolTask<T> {
   task: Promise<T>;
 }
+/** 取り込み時のオプション (#2634) */
+export interface LoaderOptions {
+  /** 平文 http での取り込みを許可するか(`!互換性重視:取込` 指令の後ろの取り込み文のみ true) */
+  allowHttp?: boolean;
+}
 export interface LoaderTool {
   // type: 'nako3' | 'js' | 'invalid' | 'mjs'
-  resolvePath: (name: string, token: Token, fromFile: string) => { type: string, filePath: string };
-  readNako3: (filePath: string, token: Token) => LoaderToolTask<string>;
-  readJs: (filePath: string, token: Token) => LoaderToolTask<any>;
+  resolvePath: (name: string, token: Token, fromFile: string, options?: LoaderOptions) => { type: string, filePath: string };
+  readNako3: (filePath: string, token: Token, options?: LoaderOptions) => LoaderToolTask<string>;
+  readJs: (filePath: string, token: Token, options?: LoaderOptions) => LoaderToolTask<any>;
 }
+
+/** 平文 http を許可する指令 `!互換性重視:取込` にマッチする正規表現 (#2634) */
+/* 「取込」の後ろは行末・空白・区切り文字で終わる場合だけを指令とみなす(「取込禁止」などの前方一致を防ぐ) */
+const REQUIRE_HTTP_DIRECTIVE = /^(!|💡)互換性重視[:：]取込(?=$|[\s;。])/
+
+
+/** 平文 http のURLかどうか (スキームの大文字小文字は区別しない) */
+const isPlainHttpUrl = (filePath: string): boolean => /^http:\/\//i.test(filePath)
 
 export interface DependenciesItem {
   tokens: Token[];
@@ -152,7 +165,7 @@ export class NakoRequireLoader {
      */
     const loadJS = (item: any, tasks: any) => {
       // jsならプラグインとして読み込む。(ESMでは必ず動的に読む)
-      const obj = tools.readJs(item.filePath, item.firstToken)
+      const obj = tools.readJs(item.filePath, item.firstToken, { allowHttp: item.allowHttp })
       tasks.push(obj.task.then((res: any) => {
         const pluginFuncs = res()
         host.addPluginFromFile(item.filePath, pluginFuncs)
@@ -163,7 +176,7 @@ export class NakoRequireLoader {
     }
     const loadNako3 = (item: any, tasks: any) => {
       // nako3ならファイルを読んでdependenciesに保存する。
-      const content = tools.readNako3(item.filePath, item.firstToken)
+      const content = tools.readNako3(item.filePath, item.firstToken, { allowHttp: item.allowHttp })
       const registerFile = (code: string) => {
         // シンタックスハイライトの高速化のために、事前にファイルが定義する関数名のリストを取り出しておく。
         // preDefineFuncはトークン列に変更を加えるため、事前にクローンしておく。
@@ -186,9 +199,28 @@ export class NakoRequireLoader {
     const loadRec = (code: string, filename: string, preCode: string): Promise<unknown>|void => {
       const tasks: Promise<unknown>[] = []
       // 取り込みが必要な情報一覧を調べる(トークン分割して、取り込みタグを得る)
-      const tags = listRequireStatements(scanner.rawtokenize(code, 0, filename, preCode))
-      // パスを解決する
-      const tagsResolvePath = tags.map((v) => ({ ...v, ...tools.resolvePath(v.value, v.firstToken as Token, filename) }))
+      const rawTokens = scanner.rawtokenize(code, 0, filename, preCode)
+      const tags = listRequireStatements(rawTokens)
+      // 平文httpを許可する指令(!互換性重視:取込)のトークン位置を集める (#2634)
+      const directiveIndexes: number[] = []
+      rawTokens.forEach((t, i) => {
+        if (t.type === 'line_comment' && REQUIRE_HTTP_DIRECTIVE.test(String(t.value))) {
+          directiveIndexes.push(i)
+        }
+      })
+      // パスを解決する(指令より後ろの取り込み文だけ allowHttp になる)
+      const tagsResolvePath = tags.map((v) => {
+        const allowHttp = directiveIndexes.some((idx) => idx < (v.start || 0))
+        const token = v.firstToken as Token
+        const resolved = tools.resolvePath(v.value, token, filename, { allowHttp })
+        // 平文httpは既定で禁止する (#2634)
+        if (isPlainHttpUrl(resolved.filePath) && !allowHttp) {
+          throw new NakoImportError(
+            `平文のhttp『${String(v.value)}』からの取り込みは既定で禁止されています(改ざんの危険があるため)。httpsを使ってください。どうしてもhttpが必要な場合は、取り込み文の前に『!互換性重視:取込』と書くと許可されます。`,
+            token.file, token.line)
+        }
+        return { ...v, ...resolved, allowHttp }
+      })
       // 取り込み開始
       for (const item of tagsResolvePath) {
         // 2回目以降の読み込み

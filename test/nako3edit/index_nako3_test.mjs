@@ -232,6 +232,16 @@ describe('nako3edit/index.nako3', () => {
     assert.ok(release.body.equals(fs.readFileSync(path.join(rootDir, 'release/wnako3.js'))))
   })
 
+  it('各HTMLページにサポート終了の告知が表示されること(#2623)', async () => {
+    for (const page of ['files.html', 'edit.html', 'plugins.html']) {
+      const res = await httpGet(port, `/html/${page}`)
+      assert.strictEqual(res.status, 200)
+      const body = res.body.toString('utf-8')
+      assert.ok(body.includes('2027年3月でサポートが終了します'), `${page}にサポート終了の告知が含まれること`)
+      assert.ok(body.includes('gonako-guiへの移行をお願いします'), `${page}に移行案内が含まれること`)
+    }
+  })
+
   it('存在しないファイルは404を返し、上位パス参照を除去すること', async () => {
     const missing = await httpGet(port, '/no-such-file.txt')
     assert.strictEqual(missing.status, 404)
@@ -252,6 +262,18 @@ describe('nako3edit/index.nako3 - ポート番号の指定', () => {
   after(() => {
     if (tempHome && fs.existsSync(tempHome)) {
       fs.rmSync(tempHome, { recursive: true, force: true })
+    }
+  })
+
+  it('起動時にサポート終了の告知を表示すること(#2623)', async () => {
+    const port = await getFreePort()
+    const child = spawnServer(tempHome, { NAKO3EDIT_PORT: String(port) })
+    try {
+      const out = await waitForOutput(child, '[URL] http://')
+      assert.ok(out.includes('2027年3月でサポートが終了します'), `起動出力にサポート終了の告知が含まれること 出力=${out}`)
+      assert.ok(out.includes('gonako-guiへの移行をお願いします'), `起動出力に移行案内が含まれること 出力=${out}`)
+    } finally {
+      await killServer(child)
     }
   })
 
@@ -279,4 +301,43 @@ describe('nako3edit/index.nako3 - ポート番号の指定', () => {
       assert.ok(out.includes('環境変数 NAKO3EDIT_PORT'), `出力=${out}`)
     })
   }
+})
+
+describe('nako3edit/index.mjs (Node版)', () => {
+  let tempHome = ''
+
+  before(() => {
+    tempHome = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3edit-mjs-test-'))
+  })
+
+  after(() => {
+    if (tempHome && fs.existsSync(tempHome)) {
+      fs.rmSync(tempHome, { recursive: true, force: true })
+    }
+  })
+
+  it('起動時にサポート終了の告知を表示し、HTMLページにも告知が含まれること(#2623)', async () => {
+    const port = await getFreePort()
+    const child = spawn(process.execPath, [path.join(editorDir, 'index.mjs')], {
+      cwd: editorDir,
+      env: {
+        ...process.env,
+        HOME: tempHome,
+        USERPROFILE: tempHome,
+        NAKO3EDIT_HOST: '127.0.0.1',
+        NAKO3EDIT_PORT: String(port),
+        NAKO3EDIT_OPEN: '0'
+      }
+    })
+    try {
+      const out = await waitForOutput(child, '[URL]')
+      assert.ok(out.includes('2027年3月でサポートが終了します'), `起動出力にサポート終了の告知が含まれること 出力=${out}`)
+      assert.ok(out.includes('gonako-guiへの移行をお願いします'), `起動出力に移行案内が含まれること 出力=${out}`)
+      const res = await httpGet(port, '/html/files.html')
+      assert.strictEqual(res.status, 200)
+      assert.ok(res.body.toString('utf-8').includes('2027年3月でサポートが終了します'), 'files.htmlにサポート終了の告知が含まれること')
+    } finally {
+      await killServer(child)
+    }
+  })
 })

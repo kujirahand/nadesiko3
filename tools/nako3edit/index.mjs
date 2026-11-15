@@ -12,6 +12,8 @@ const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // CONST
+// #2623: nako3editは2027年3月でサポート終了。起動時に告知を表示する。
+const SUPPORT_END_NOTICE = '【お知らせ】nako3editは2027年3月でサポートが終了します。gonako-guiへの移行をお願いします。'
 const SERVER_PORT = resolveServerPort(8888)
 const SERVER_HOST = process.env.NAKO3EDIT_HOST || 'localhost'
 const rootDir = path.resolve(__dirname)
@@ -134,6 +136,7 @@ const server = http.createServer(function (req, res) {
 server.listen(SERVER_PORT, SERVER_HOST, function () {
   const url = 'http://' + SERVER_HOST + ':' + SERVER_PORT
   console.log('### 超簡易Webサーバが起動しました')
+  console.log(SUPPORT_END_NOTICE)
   console.log('[URL]', url)
   if (process.env.NAKO3EDIT_OPEN !== '0') {
     opener(url)
