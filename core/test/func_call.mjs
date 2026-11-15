@@ -146,6 +146,17 @@ curry_add = 関数(あ)
     // 代入の右辺
     await cmp(curryAdd + 'Aにcurry_add(1)(2)+1を代入;Aを表示', '4')
   })
+  it('チェーン呼び出しの直後に範囲が続く場合 #2673', async () => {
+    const curryAdd = `
+curry_add = 関数(あ)
+  inner = 関数(い)
+    それはあ + い
+  ここまで
+  innerを戻す
+ここまで
+`
+    await cmp(curryAdd + 'N=0;curry_add(1)(2)…5を繰り返す\nN=N+それ;\nここまで;Nを表示', '12')
+  })
   it('階乗計算 - 再帰', async () => {
     await cmp('●(VをAのBで)階乗計算とは;' +
       'もし、Bが0以下ならば、Vを戻す。;(V*A)をAの(B-1)で階乗計算して戻す。' +
