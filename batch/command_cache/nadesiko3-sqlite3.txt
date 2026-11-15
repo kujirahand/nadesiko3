@@ -1,0 +1,12 @@
+■nadesiko3-sqlite3(拡張プラグイン,cnako)
+●SQLite3
+| 定数 | SQLITE3今挿入ID | |  '?' | SQLITE3いまそうにゅうID | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L89
+| 関数 | SQLITE3開 | Sを/Sの | SQlite3のデータベースを開いて、データベースオブジェクトを返す | SQLITE3ひらく | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L93
+| 関数 | SQLITE3閉 |  | アクティブなSQlite3のデータベースを閉じる | SQLITE3とじる | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L102
+| 関数 | SQLITE3切替 | DBに/DBへ | アクティブなSQlite3のデータベースをDB(SQLITE3開くで開いたもの)に切り替える | SQLITE3きりかえる | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L110
+| 関数 | SQLITE3実行時 | FにSQLをPARAMSで | SQLをパラメータPARAMSで実行する。完了するとコールバック関数Fを実行する。 | SQLITE3じっこうしたとき | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L118
+| 関数 | SQLITE3実行後 | FにSQLをPARAMSで | 『SQLITE3実行時』と同じ。 | SQLITE3じっこうしたあと | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L131
+| 関数 | SQLITE3取得時 | FにSQLをPARAMSで | SQLをパラメータPARAMSで取得実行する。完了するとコールバック関数Fが実行され、結果は第一引数に与えられる。 | SQLITE3しゅとくしたとき | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L138
+| 関数 | SQLITE3実行 | SQLをPARAMSで | SQLをパラメータPARAMSで実行する。(非同期関数) | SQLITE3じっこう | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L151
+| 関数 | SQLITE3取得 | SQLをPARAMSで | SQLをパラメータPARAMSで取得する。(非同期関数) | SQLITE3しゅとく | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L178
+| 関数 | SQLITE3全取得 | SQLをPARAMSで | SQLをパラメータPARAMSで全部取得する。(非同期関数) | SQLITE3ぜんしゅとく | https://github.com/kujirahand/nadesiko3-sqlite3/blob/master/nadesiko3-sqlite3.js#L200

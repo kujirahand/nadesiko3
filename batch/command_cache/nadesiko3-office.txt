@@ -1,0 +1,24 @@
+■nadesiko3-office(拡張プラグイン,cnako)
+●OFFICE定数
+| 定数 | OFFICEバージョン | | '?' | OFFICEばーじょん | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L41
+●エクセル(Excel)
+| 関数 | エクセル新規ブック |  | Excelの新規ワークブックを生成してオブジェクトを返す | えくせるしんきぶっく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L47
+| 関数 | エクセル開 | FILEを/FILEの/FILEから | ファイルFILEからExcelワークブックを読んで返す(非同期関数) | えくせるひらく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L58
+| 関数 | エクセル保存 | FILEへ/FILEに | ファイルFILEへ作業中のExcelワークブックを保存する(非同期関数) | えくせるほぞん | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L72
+| 関数 | エクセルCSV保存 | FILEへ/FILEに | ファイルFILEへ作業中のExcelワークブックをCSVで保存する(ただしUTF-8のCSVとなる)(非同期関数) | えくせるCSVほぞん | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L84
+| 関数 | エクセル新規シート | NAMEの/NAMEで | Excelの作業中のワークブックに新規シートNAMEを追加して返す | えくせるしんきしーと | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L95
+| 関数 | エクセルシート取得 | NAMEの | NAMEのシートを取得して返す | えくせるしーとしゅとく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L107
+| 関数 | エクセルシート注目 | NAMEの/NAMEに/NAMEを | NAMEのシートを取得して返す | えくせるしーとちゅうもく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L118
+| 関数 | エクセルセル設定 | CELLへVを/CELLに | セル(例えば「A1」)へVを設定する | えくせるせるせってい | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L130
+| 関数 | エクセル設定 | CELLへVを/CELLに | セル(例えば「A1」)へVを設定する | えくせるせってい | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L146
+| 関数 | エクセル一括設定 | CELLへVALUESを/CELLに | 左上のセル(例えば「A1」)を起点にして、二次元配列変数VALUESを一括設定する | えくせるいっかつせってい | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L154
+| 関数 | エクセルセル取得 | CELLから/CELLを/CELLの | セル(例えば「A1」)の値を取得して返す | えくせるせるしゅとく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L179
+| 関数 | エクセル取得 | CELLから/CELLを/CELLの | セル(例えば「A1」)の値を取得して返す | えくせるしゅとく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L190
+| 関数 | エクセル一括取得 | C1からC2までの/C2まで/C2の | 左上のセルC1(例えば「A1」)から右下のC2までの値を取得して二次元配列変数で返す | えくせるいっかつしゅとく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L197
+| 関数 | エクセル行数取得 |  | 作業中のシートの最終行番号を返す | えくせるぎょうすうしゅとく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L220
+| 関数 | エクセルシート全取得 |  | 作業中のシートの全セルを二次元配列で返す | えくせるしーとぜんしゅとく | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L229
+| 関数 | エクセルシート列挙 |  | 作業中のブックのシート一覧取得して返す | えくせるしーとれっきょ | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L255
+| 関数 | エクセルシート削除 | NAMEの/NAMEを | 作業中のブックのシートNAMEを削除する | えくせるしーとさくじょ | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L269
+| 関数 | エクセルセル幅設定 | COLをWに/Wへ | 作業中のシートcol列目の幅をWに設定する | えくせるせるはばせってい | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L282
+| 関数 | エクセル背景色設定 | CELLSをCOLORに/COLORへ | 作業中シートのセルcells(例「A1」「A1:C3」)の背景色をcolorに設定 | えくせるはいけいしょくせってい | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L293
+| 関数 | エクセル文字色設定 | CELLSをCOLORに/COLORへ | 作業中シートのセルcells(例「A1」「A1:C3」)の文字色をcolorに設定 | えくせるもじいろせってい | https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L319

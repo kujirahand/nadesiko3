@@ -1,0 +1,8 @@
+■nadesiko3-mecab(拡張プラグイン,cnako)
+●形態素解析(MECAB)定数
+| 定数 | MECABバージョン | | '?' | MECABばーじょん | https://github.com/kujirahand/nadesiko3-mecab/blob/master/nadesiko3-mecab.js#L22
+| 定数 | MECABオプション | |  '' | MECABおぷしょん | https://github.com/kujirahand/nadesiko3-mecab/blob/master/nadesiko3-mecab.js#L23
+| 関数 | MECABオプション設定 | OPTで/OPTを | Mecab実行時のオプションを指定する | MECABおぷしょんせってい | https://github.com/kujirahand/nadesiko3-mecab/blob/master/nadesiko3-mecab.js#L27
+●形態素解析(MECAB)
+| 関数 | MECAB | Sで/Sを | Sについて形態素解析を行って結果を二次元配列で返す | MECAB | https://github.com/kujirahand/nadesiko3-mecab/blob/master/nadesiko3-mecab.js#L35
+| 関数 | MECABヨミガナ取得 | Sの/Sを/Sから | Sについてヨミガナを取得する | MECABよみがなしゅとく | https://github.com/kujirahand/nadesiko3-mecab/blob/master/nadesiko3-mecab.js#L64

@@ -1,0 +1,12 @@
+■nadesiko3-websocket(拡張プラグイン,cnako)
+●WebSocketサーバ
+| 関数 | WSサーバ起動 | PORTNOの/PORTNOで | ポートPORTNOでサーバを起動して成功したら『WSサーバ起動成功した時』を実行する | WSさーばきどう | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L70
+| 関数 | WSSサーバ起動 | CONFの/CONFで | 設定CONF{cert:サーバ証明書,key:キーファイル,port:ポート番号}を指定してWSSサーバを起動して成功したら『WSサーバ起動成功した時』を実行する | WSSさーばきどう | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L79
+| 関数 | WSサーバ起動成功時 | CALLBACKを | WSサーバ起動が成功した時にcallbackを実行 | WSさーばきどうせいこうしたとき | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L108
+| 関数 | WSサーバ起動失敗時 | CALLBACKを | WSサーバ起動が失敗した時にcallbackを実行 | WSさーばきどうしっぱいしたとき | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L116
+| 関数 | WSサーバ接続時 | CALLBACKを | WSサーバにクライアントが接続してきた時callbackを実行。接続情報は、変数『対象』に入る | WSさーばせつぞくしたとき | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L124
+| 関数 | WSサーバ受信時 | CALLBACKで | WSサーバでメッセージを受信した時に実行される。クライアントのIPアドレスとポートは『WSサーバー相手』に受信データは『対象』に代入される | WSさーばじゅしんしたとき | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L132
+| 関数 | WSサーバ全送信 | Sを | WSサーバで全員にメッセージSを送信する | WSさーばぜんそうしん | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L140
+| 定数 | WSサーバ相手 | |  '' | WSさーばあいて | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L148
+| 関数 | WSサーバ個別送信 | Sを | WSサーバで個別にメッセージSを送信する | WSさーばこべつそうしん | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L152
+| 関数 | WSクライアント一覧取得 | Sを | WSサーバに接続しているクライアントの一覧を返す | WSくらいあんといちらんしゅとく | https://github.com/kujirahand/nadesiko3-websocket/blob/master/nadesiko3-websocket.js#L161

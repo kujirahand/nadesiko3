@@ -1,0 +1,2 @@
+# 命令一覧のキャッシュは LF で統一する（Windows の autocrlf で CRLF になると生成結果に混入するため）
+batch/command_cache/*.txt text eol=lf

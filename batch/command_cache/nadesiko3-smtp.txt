@@ -1,0 +1,4 @@
+■nadesiko3-smtp(拡張プラグイン,cnako)
+●SMTP
+| 関数 | メール送信 | DATAの/DATAで | 辞書型のデータ{host:'xxx',port:xxx,secure:true,auth:{user:'xxx',pass:'xxx'},from:'xxx',to:'xxx',subject:'xxx',text:'xxx',html:'xxx'}を指定してメールを送信して情報を返す(非同期関数) | めーるそうしん | https://github.com/kujirahand/nadesiko3-smtp/blob/master/nadesiko3-smtp.js#L32
+| 関数 | GMAIL送信 | DATAの/DATAで | 辞書型のデータ{user:'xxx',pass:'xxx',宛先:'xxx',件名:'xxx',本文:'xxx',html:'xxx',添付:[{filename:'xxx', path:'xxx'}]}を指定してGMAILからメール送信して情報を返す(非同期関数) | GMAILそうしん | https://github.com/kujirahand/nadesiko3-smtp/blob/master/nadesiko3-smtp.js#L53

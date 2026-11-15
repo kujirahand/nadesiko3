@@ -1,0 +1,10 @@
+■plugin_odbc(拡張プラグイン,cnako)
+●ODBC
+| 関数 | ODBC逐次開 | Sを/Sの/Sで | 逐次実行構文にて、ODBCのデータベースを開く | ODBCちくじひらく | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L17
+| 関数 | ODBC開 | Sを/Sの/Sで | ODBCのデータベースを同期的に開いてオブジェクトを返す | ODBCひらく | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L34
+| 関数 | ODBC逐次実行 | SQLをPARAMSで | 逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。 | ODBCちくじじっこう | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L45
+| 関数 | ODBC実行 | SQLをPARAMSで | 逐次実行構文内で、SQLとパラメータPARAMSでSQLを実行して結果を得る。 | ODBCじっこう | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L63
+| 関数 | ODBC閉 |  | ODBCで開いているデータベースを閉じる | ODBCとじる | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L72
+| 関数 | ODBC逐次閉 |  | 逐次実行構文でODBCで開いているデータベースを閉じる | ODBCちくじとじる | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L81
+| 関数 | ODBCトランザクション開始 |  | ODBCでトランザクションを開始する | ODBCとらんざくしょんかいし | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L96
+| 関数 | ODBCトランザクション終了 |  | ODBCでトランザクションを終了する | ODBCとらんざくしょんしゅうりょう | https://github.com/kujirahand/nadesiko3-odbc/blob/master/src/plugin_odbc.js#L105

@@ -1,0 +1,6 @@
+■plugin_postgresql(拡張プラグイン,cnako)
+●PostgreSQL
+| 関数 | PG開 | Sを/Sの/Sで | データベースを開く | PGひらく | https://github.com/kujirahand/nadesiko3-postgresql/blob/master/src/plugin_postgresql.js#L17
+| 関数 | PG閉 |  | データベースを閉じる | PGとじる | https://github.com/kujirahand/nadesiko3-postgresql/blob/master/src/plugin_postgresql.js#L32
+| 関数 | PG実行 | SQLをPARAMSで | SQLとパラメータPARAMSでSQLを実行し、戻り値に結果を得る。(非同期関数) | PGじっこう | https://github.com/kujirahand/nadesiko3-postgresql/blob/master/src/plugin_postgresql.js#L40
+| 関数 | PG逐次実行 | SQLをPARAMSで | (非推奨) 逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。SELECT句以外を実行した時も情報が『対象』に入る。 | PGちくじじっこう | https://github.com/kujirahand/nadesiko3-postgresql/blob/master/src/plugin_postgresql.js#L62

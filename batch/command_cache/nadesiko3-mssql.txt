@@ -1,0 +1,5 @@
+■plugin_mssql(拡張プラグイン,cnako)
+●SQLServer
+| 関数 | MSSQL開 | Sを/Sの/Sで | データベースを開く(非同期関数) | MSSQLひらく | https://github.com/kujirahand/nadesiko3-mssql/blob/master/src/plugin_mssql.mjs#L18
+| 関数 | MSSQL実行 | SQLをPARAMSで | SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。(非同期関数) | MSSQLじっこう | https://github.com/kujirahand/nadesiko3-mssql/blob/master/src/plugin_mssql.mjs#L36
+| 関数 | MSSQL閉 |  | 開いているデータベースを閉じる(非同期関数) | MSSQLとじる | https://github.com/kujirahand/nadesiko3-mssql/blob/master/src/plugin_mssql.mjs#L66

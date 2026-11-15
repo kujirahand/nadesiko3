@@ -45,6 +45,69 @@ describe('命令一覧の生成 (#2575)', () => {
   })
 })
 
+describe('命令一覧の生成 (#2681)', () => {
+  it('拡張プラグインのクローンがなくてもキャッシュから補完する', () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-command-cache-'))
+    try {
+      const fixtureRoot = path.join(tmpRoot, 'nadesiko3')
+      const batchDir = path.join(fixtureRoot, 'batch')
+      fs.mkdirSync(batchDir, { recursive: true })
+      fs.symlinkSync(path.join(projectRoot, 'core'), path.join(fixtureRoot, 'core'), 'dir')
+      fs.symlinkSync(path.join(projectRoot, 'src'), path.join(fixtureRoot, 'src'), 'dir')
+      for (const name of ['pickup_command.nako3', 'jsplugin2text.nako3', 'merge_gonako_commands.nako3']) {
+        fs.copyFileSync(path.join(projectRoot, 'batch', name), path.join(batchDir, name))
+      }
+      fs.cpSync(path.join(projectRoot, 'batch/command_cache'), path.join(batchDir, 'command_cache'), { recursive: true })
+
+      const result = spawnSync(process.execPath, [cnako3Path, path.join(batchDir, 'pickup_command.nako3')], {
+        cwd: fixtureRoot,
+        encoding: 'utf8',
+        env: { ...process.env, REPORT_ERR: '' }
+      })
+      assert.strictEqual(result.status, 0, result.stdout + result.stderr)
+      const commands = fs.readFileSync(path.join(batchDir, 'command.txt'), 'utf8')
+      // 兄弟クローンがない環境でも、キャッシュから拡張プラグインの命令が入る
+      assert.match(commands, /■nadesiko3-music/)
+      assert.match(commands, /■plugin_mysql/)
+      // キャッシュで全て補完できたので、欠落の注意は出ない
+      assert.doesNotMatch(result.stdout, /\[注意\]/)
+      assert.match(result.stdout, /\[情報\] 拡張プラグイン17件をキャッシュから補完しました/)
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('クローンもキャッシュもないプラグインは欠落として知らせる', () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-command-cache-'))
+    try {
+      const fixtureRoot = path.join(tmpRoot, 'nadesiko3')
+      const batchDir = path.join(fixtureRoot, 'batch')
+      fs.mkdirSync(batchDir, { recursive: true })
+      fs.symlinkSync(path.join(projectRoot, 'core'), path.join(fixtureRoot, 'core'), 'dir')
+      fs.symlinkSync(path.join(projectRoot, 'src'), path.join(fixtureRoot, 'src'), 'dir')
+      for (const name of ['pickup_command.nako3', 'jsplugin2text.nako3', 'merge_gonako_commands.nako3']) {
+        fs.copyFileSync(path.join(projectRoot, 'batch', name), path.join(batchDir, name))
+      }
+      fs.cpSync(path.join(projectRoot, 'batch/command_cache'), path.join(batchDir, 'command_cache'), { recursive: true })
+      // nadesiko3-ml のキャッシュだけを消して、欠落の経路を通す
+      fs.rmSync(path.join(batchDir, 'command_cache/nadesiko3-ml.txt'))
+
+      const result = spawnSync(process.execPath, [cnako3Path, path.join(batchDir, 'pickup_command.nako3')], {
+        cwd: fixtureRoot,
+        encoding: 'utf8',
+        env: { ...process.env, REPORT_ERR: '' }
+      })
+      assert.strictEqual(result.status, 0, result.stdout + result.stderr)
+      const commands = fs.readFileSync(path.join(batchDir, 'command.txt'), 'utf8')
+      assert.match(commands, /■nadesiko3-music/)
+      assert.doesNotMatch(commands, /■nadesiko3-ml/)
+      assert.match(result.stdout, /\[注意\] 拡張プラグイン『nadesiko3-ml』/)
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true })
+    }
+  })
+})
+
 /** summarizePlugin の結果を覚えておくキャッシュ(同じプラグインを何度も解析しないため) */
 const summaryCache = new Map()
 
@@ -207,6 +270,18 @@ describe('doc/command_list.json', () => {
       const item = commandList.find((c) => c.name === name && c.plugin === 'plugin_system')
       assert.ok(item, `command_list.json に『${name}』がありません`)
     }
+  })
+
+  it('拡張プラグインの命令が欠落していない (#2681)', () => {
+    // 関連ライブラリをクローンしていない環境で生成すると拡張プラグインの命令が
+    // 欠落した一覧ができてしまうため、batch/command_cache で補完する仕組みを入れた。
+    // 欠落した一覧がコミットされていないことを、ここで確認する
+    const plugins = new Set(commandList.map((c) => c.plugin))
+    for (const name of ['nadesiko3-music', 'nadesiko3-tools', 'nadesiko3-sqlite3', 'plugin_mysql', 'plugin_odbc']) {
+      assert.ok(plugins.has(name), `拡張プラグイン『${name}』の命令が command_list.json にありません`)
+    }
+    // 1141件 (2026-11時点) から大きく減っていたら、欠落した一覧がコミットされた疑いがある
+    assert.ok(commandList.length >= 1100, `命令数が少なすぎます: ${commandList.length}`)
   })
 
   it('廃止した命令と定数を含まない (#2234)', () => {

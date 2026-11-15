@@ -1,0 +1,14 @@
+■nadesiko3-music(拡張プラグイン,wnako)
+●音楽
+| 関数 | MML演奏 | MMLを/MMLの | MMLを演奏する | MMLえんそう | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L54
+| 関数 | MML停止 |  | MML演奏で開始した演奏を停止する | MMLていし | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L66
+| 関数 | MIDI演奏 | URLを/URLの | MIDIファイルのあるURLを指定して演奏する(非同期関数) | MIDIえんそう | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L77
+| 関数 | MIDI停止 |  | MIDI演奏で開始した演奏を停止する | MIDIていし | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L93
+| 関数 | MIDIループ再生設定 | Vに/Vへ | V(オン/オフ)にMML演奏/MIDI演奏で再生をループするように指定 | MIDIるーぷさいせいせってい | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L103
+| 関数 | MMLコンパイル | MMLを/MMLの | MMLをコンパイルしてMIDIファイルに変換する(非同期関数) | MMLこんぱいる | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L111
+●サウンドフォント
+| 関数 | サウンドフォント読 | URLから/URLの | サウンドフォントのURLを指定して読み込む。URLに「デフォルト」を指定可能(非同期関数) | さうんどふぉんとよむ | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L120
+| 関数 | サウンドフォントMIDI演奏 | BINを/BINの | MIDIデータ(バイナリ)を指定して演奏する(非同期関数) | さうんどふぉんとMIDIえんそう | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L128
+| 関数 | サウンドフォントMIDI演奏停止 |  | 再生中のMIDI演奏を停止する(非同期関数) | さうんどふぉんとえんそうていし | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L140
+| 関数 | サウンドフォントMML演奏 | MMLを/MMLの | MMLをサウンドフォントで演奏する(非同期関数) | さうんどふぉんとMMLえんそう | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L148
+| 関数 | サウンドフォント待時間設定 | Vに/Vへ | 再生前の待機時間をミリ秒で指定(エラーが出るときに指定)(非同期関数) | さうんどふぉんとまちじかんせってい | https://github.com/kujirahand/nadesiko3-music/blob/master/nadesiko3-music.js#L162
