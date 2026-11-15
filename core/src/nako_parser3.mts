@@ -1480,8 +1480,18 @@ export class NakoParser extends NakoParserBase {
                 this.pushStack(t)
                 continue
               }
+              // 関数呼び出しの直後に二項演算子が続く場合は、関数呼び出しを値として計算式を読み続ける (#2671)
+              if (t.josi === '' && this.checkTypes(operatorList)) {
+                this.pushStack(this.yGetArgOperator(t))
+                continue
+              }
               t.josi = ''
               return t // 関数なら値とする
+            }
+            // チェーン呼び出し『F(1)(2)』などの値でも、直後に二項演算子が続く場合は計算式を読み続ける (#2671)
+            if (t.josi === '' && this.checkTypes(operatorList)) {
+              this.pushStack(this.yGetArgOperator(t))
+              continue
             }
             this.pushStack(t)
           }
