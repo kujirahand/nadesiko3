@@ -184,6 +184,39 @@ describe('calc_test.js', async () => {
     await cmp('3の5倍×2を表示', '30')
     await cmp('1+3の2倍×2を表示', '16')
   })
+  it('C言語風関数呼び出しの直後に演算子が続く場合の処理 (#2671)', async () => {
+    // Issue #2671 の再現ケース
+    await cmp('INT(3.7)-1を表示', '2')
+    await cmp('ABS(-5)-1を表示', '4')
+    await cmp('INT(8)/2を表示', '4')
+    await cmp('INT(3.7)+1を表示', '4')
+    // 各種の二項演算子
+    await cmp('INT(3.7)*2を表示', '6')
+    await cmp('INT(3.7)%2を表示', '1')
+    await cmp('INT(3.7)^2を表示', '9')
+    await cmp('INT(3.7)==3を表示', 'true')
+    await cmp('INT(3.7)<4を表示', 'true')
+    // 関数内の『戻す』
+    await cmp(`
+●三
+　INT(3.7)-1を戻す
+ここまで
+三を表示
+`, '2')
+    // 単独文・助詞付き・代入の右辺
+    await cmp('INT(3.7)\n「次」を表示', '次')
+    await cmp('INT(3.7)を表示', '3')
+    await cmp('A=INT(3.7)-1;Aを表示', '2')
+    // 連続したC言語風関数呼び出し・優先順位・単項演算子
+    await cmp('INT(1)+INT(2)を表示', '3')
+    await cmp('MAX(1,2)+MAX(3,4)を表示', '6')
+    await cmp('INT(3.7)-1*2を表示', '1')
+    await cmp('(INT(3.7)-1)を表示', '2')
+    await cmp('-INT(3.7)を表示', '-3')
+    await cmp('INT(3.7)*-1を表示', '-3')
+    // 条件式の中のC言語風関数呼び出し
+    await cmp('もしINT(3.7)-1=2ならば「OK」を表示', 'OK')
+  })
   it('連文呼び出しにおけるスタックの余剰チェックを厳しくする #87', async () => {
     await cmp('3に5を足して2を掛けて表示', '16')
     await cmp('「  あああ  」の「あ」を「え」に置換して空白除去して表示', 'えええ')
