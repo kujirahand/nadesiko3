@@ -15,6 +15,7 @@ CORE="core/src"
     ["plugin_system.mts", 'wnako,cnako,phpnako'],
     ["plugin_csv.mts", 'wnako,cnako'],
     ["plugin_toml.mts", 'wnako,cnako'],
+    ["plugin_ini.mts", 'wnako,cnako'],
     ["plugin_math.mts", 'wnako,cnako'],
     ["plugin_promise.mts", 'wnako,cnako']
 ]

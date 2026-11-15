@@ -9,6 +9,7 @@ import PluginMath from './plugin_math.mjs'
 import PluginCSV from './plugin_csv.mjs'
 import PluginPromise from './plugin_promise.mjs'
 import PluginTOML from './plugin_toml.mjs'
+import PluginINI from './plugin_ini.mjs'
 import PluginTest from './plugin_test.mjs'
 
 /** 基本プラグインを登録する対象 */
@@ -25,7 +26,8 @@ export const basicPlugins: {[key: string]: any}[] = [
   PluginPromise,
   PluginTest,
   PluginCSV,
-  PluginTOML
+  PluginTOML,
+  PluginINI
 ]
 
 /**

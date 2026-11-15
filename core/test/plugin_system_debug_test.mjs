@@ -35,7 +35,7 @@ describe('plugin_system_debug_test', async () => {
   })
   it('分割してもプラグインは plugin_system のまま', async () => {
     assert.strictEqual(PluginSystem.meta.value.pluginName, 'plugin_system')
-    await cmp('プラグイン一覧取得して「:」で配列結合して表示', 'plugin_system:plugin_math:plugin_promise:plugin_test:plugin_csv:plugin_toml')
+    await cmp('プラグイン一覧取得して「:」で配列結合して表示', 'plugin_system:plugin_math:plugin_promise:plugin_test:plugin_csv:plugin_toml:plugin_ini')
   })
 
   // --- 特殊命令 ---
