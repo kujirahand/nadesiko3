@@ -1,0 +1,64 @@
+■plugin_electron_node(拡張プラグイン,enako)
+●システム定数
+| 定数 | Eアプリ | |  app  | Eあぷり | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L206
+| 定数 | IPCメイン | |  ipcMain  | IPCめいん | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L207
+●Electronアプリ
+| 関数 | アプリID設定 | APPIDに/APPIDを | アプリIDを設定する | あぷりIDせってい | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L213
+| 関数 | QUIT |  | Electronのアプリを終了する | QUIT | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L222
+| 関数 | 終了 |  | Electronのアプリを終了する | しゅうりょう | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L231
+| 関数 | 強制終了 | CODEで | Electronのアプリを強制終了する | きょうせいしゅうりょう | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L240
+| 関数 | 再起動予約 | POPTSで | アプリが終了した際に自動的に起動する | さいきどうよやく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L249
+| 関数 | Eアプリ準備完了 |  | アプリの準備が完了していれば真を返す | Eあぷりじゅんびかんりょう | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L261
+| 関数 | Eアプリ準備完了時 | CALLBACKで | アプリの準備が完了した際に呼び去られる処理を登録する | Eあぷりじゅんびかんりょうしたとき | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L269
+| 関数 | Eアプリフォーカス獲得 |  | アプリがフォーカスの獲得を試みる | Eあぷりふぉーかすかくとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L280
+| 関数 | Eアプリバージョン取得 |  | package.jsonで設定しているアプリのバージョンを返す | Eあぷりばーじょんしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L289
+| 関数 | Eアプリ名取得 |  | package.jsonで設定しているアプリの名前(name,productName)を返す | Eあぷりめいしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L297
+●ElectronのBrowserWindow
+| 関数 | ブラウザウインドウ作成 | POPTSで/POPTSから | オプションに従いブラウザウインドウを作成して返す | ぶらうざういんどうさくせい | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L306
+| 関数 | ブラウザ読込 | WINにPURLから/WINへPURLを | ウインドウに指定のURLから読み込みを行う | ぶらうざよみこみ | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L335
+| 関数 | 全ウインドウ数取得 |  | アプリに存在する全てのWindowの数を返す | ぜんういんどうすうしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L350
+| 関数 | フォーカスウインドウ取得 |  | フォーカスを獲得しているWindowを返す | ふぉーかすういんどうしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L358
+| 関数 | ウインドウ再読込 | WINを | 指定したウインドウの再読み込みを行う | ういんどうさいよみこみ | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L366
+| 関数 | ウインドウ表示 | WINを/WINの | 指定したウインドウを表示状態にする | ういんどうひょうじ | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L375
+| 関数 | 開発ツールトグル | WINを/WINの | 指定したウインドウの開発者ツールの表示状態をトグルする | かいはつつーるとぐる | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L384
+| 関数 | メニュー設定 | WINにMENUを | menuをウインドウのメニューに設定する | めにゅーせってい | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L393
+●Electronのメニュー
+| 関数 | アプリメニュー設定 | MENUを | menuをアプリのメインメニューに設定する | あぷりめにゅーせってい | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L403
+| 関数 | アプリメニュー取得 |  | アプリのメインメニューに取得して返す | あぷりめにゅーしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L421
+| 関数 | メニュー一括作成 | TEMPLATEから | メニューをテンプレートから一括作成し作成したメニューを返す | めにゅーいっかつさくせい | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L437
+| 関数 | メニューポップアップ開 | MENUをPOPTSで | メニューをポップアップメニューとして開く | めにゅーぽっぷあっぷひらく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L460
+| 関数 | メニューポップアップ閉 | MENUをWINの | ポップアップメニューとして開かれたこのメニューを閉じる | めにゅーぽっぷあっぷとじる | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L472
+| 関数 | メニューアイテム追加 | MENUにITEMを | メニューにメニュー項目を追加する | めにゅーあいてむついか | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L482
+| 関数 | メニュー項目追加 | MENUにITEMを | メニューにメニュー項目を追加する | めにゅーこうもくついか | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L491
+| 関数 | メニューアイテム挿入 | MENUのPOSにITEMを | メニューの指定位置にメニュー項目を挿入する | めにゅーあいてむそうにゅう | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L500
+| 関数 | メニュー項目挿入 | MENUのPOSにITEMを | メニューの指定位置にメニュー項目を挿入する | めにゅーこうもくそうにゅう | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L509
+| 関数 | メニューアイテム取得 | MENUからIDを/IDの | メニューから指定したIDを持つメニューアイテムを返す | めにゅーあいてむしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L518
+| 関数 | メニューIDクリック時 | CALLBACKでMENUのIDを | メニューから指定したIDを持つ項目をクリックした時の処理を登録する | めにゅーIDくりっくしたとき | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L526
+| 関数 | メニュー項目作成 | POPTSから/POPTSの | メニュー項目を作成して返す | めにゅーこうもくさくせい | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L536
+●Electronのイベント処理
+| 関数 | 発生時 | CALLBACKでOBJのTYPE | 対象にて指定のイベントが発生した時の処理を登録する | はっせいしたとき | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L560
+| 関数 | 単発発生時 | CALLBACKでOBJのTYPE | 対象にて指定のイベントが発生した時の処理を登録する。イベント発生時に自動削除される | たんぱつはっせいしたとき | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L573
+| 関数 | 呼出時 | CALLBACKでOBJのTYPE | 対象にて指定のInvoke呼び出しを受けた時の処理を登録する(evt, ...args) | よびだされたとき | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L582
+| 関数 | 呼出 | OBJのTYPEARGSで/TYPEを | 対象のInvokeを呼び出す | よびだす | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L591
+●Electronのshell
+●Electronのdialog
+| 関数 | ファイル選択 | WINにPOPTSで | ファイルを選択するダイアログを表示して結果を返す(非同期関数) | ふぁいるせんたく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L611
+| 関数 | フォルダ選択 | WINにPOPTSで | フォルダを選択するダイアログを表示して結果を返す(非同期関数) | ふぉるだせんたく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L622
+| 関数 | 保存ファイル選択 | WINにOPTSで | ファイルを保存するためのダイアログを表示して結果を返す(非同期関数) | ほぞんふぁいるせんたく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L633
+●Electronのscreen
+| 関数 | カーソル絶対位置取得 |  | マウスポインタの絶対位置をDIPポイント単位で返す | かーそるぜったいいちしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L642
+| 関数 | 主モニター取得 |  | 主画面に指定されているモニターのDisplayを返す | しゅもにたーしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L650
+| 関数 | 全モニター取得 |  | 全てのモニターをDisplayの配列で返す | ぜんもにたーしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L658
+| 関数 | 付近モニター取得 | Pの/Pから | 指定した点に最も近いモニターのDisplayを返す | ふきんもにたーしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L666
+| 関数 | 該当モニター取得 | Rの/Rから | 指定した矩形に最も近いモニターのDisplayを返す | がいとうもにたーしゅとく | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L675
+| 関数 | PX2DIP点変換 | Pの/Pから | Pointを物理的な単位からDIP単位に変換して返す | PX2DIPてんへんかん | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L684
+| 関数 | DIP2PX点変換 | Pの/Pから | PointをDIP単位から物理的な単位に変換して返す | DIP2PXてんへんかん | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L693
+| 関数 | PX2DIP矩形変換 | RのWINで/Rから | Rectangleを物理的な単位からDIP単位に変換して返す。DPIは指定したウインドウと相対的に計算する | PX2DIPくけいへんかん | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L702
+| 関数 | DIP2PX矩形変換 | RのWINで/Rから | RectangleをDIP単位から物理的な単位に変換して返す。DPIは指定したウインドウと相対的に計算する | DIP2PXくけいへんかん | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L711
+| 関数 | DIP2PXP矩形変換 | RのWINで/Rから | 『DIP2PX矩形変換』命令の誤字。互換性のために存在する。 | DIP2PXPくけいへんかん | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L720
+●Electronのユーザ用IPC通信
+| 関数 | データ受信時 | CALLBACKで | レンダラからのデータ送信を受けた時の処理を登録する(evt, key, msg) | でーたじゅしんしたとき | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L729
+| 関数 | データ呼出時 | CALLBACKで/CALLBACKの | レンダラからの呼び出しを受けた時の処理を登録する(evt, key, msg) | でーたよびだされたとき | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L738
+| 関数 | データ送信 | OBJにKEYでDATAを | レンダラにデータを送信する(webContent, key, data) | でーたそうしん | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L747
+| 関数 | データ呼出 | OBJにKEYでDATAを | レンダラにデータを呼び出す(webContent, key, data) | でーたよびだし | https://github.com/kujirahand/nadesiko3electron/blob/master/src/plugin_electron_node.mjs#L756
+●ElectronのNode側の標準機能セット

@@ -1,0 +1,21 @@
+■nadesiko3-htmlparser(拡張プラグイン,cnako)
+●HTMLパーサ(コンソール)
+| 関数 | HTML_URL開 | URLを | 任意のURLを開いてパースする。(非同期関数) | HTML_URLひらく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L51
+| 関数 | HTMLパース | HTMLを | 任意のHTML文字列をパースする。 | HTMLぱーす | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L68
+| 関数 | DOM検索 | DOMからQを/DOMの | DOMからクエリQを利用して合致するものを検索して配列で返す | DOMちゅうしゅつ | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L78
+| 関数 | DOM要素取得 | Qを/Qの/Qから | パース済みHTMLからクエリQに該当するDOMを取得して返す | DOMようそしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L92
+| 関数 | DOM子要素全取得 | DOMの/DOMから | DOMの子要素を全部取得する | DOMこようそぜんしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L99
+| 関数 | DOM親要素取得 | Qを/Qの/Qから | DOMの親要素を取得する | DOMおやようそしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L107
+| 関数 | DOM次要素取得 | Qを/Qの/Qから | DOMの親要素を取得する | DOMおやようそしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L114
+| 関数 | DOM抽出 | DOMからQを/DOMの | DOMからクエリQを利用して合致するものを抽出して配列で返す | DOMちゅうしゅつ | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L121
+| 関数 | 属性取得 | DOMからKを/DOMの | DOMの属性Kを取得する | ぞくせいしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L128
+| 関数 | テキスト取得 | DOMから/DOMの | DOMのテキストを取得する | てきすとしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L136
+| 関数 | HTML取得 | DOMから/DOMの | DOMのHTMLを取得する | HTMLしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L148
+| 関数 | HTML設定 | DOMにSを/DOMへ | DOMにSを設定する | HTML設定 | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L156
+| 関数 | プロパティ取得 | DOMからPROPを/DOMの | DOMのプロパティPROPを取得する | ぷろぱてぃしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L164
+| 関数 | 値取得 | DOMから/DOMの | DOMの値を取得する | あたいしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L172
+| 関数 | 値設定 | DOMにVを/DOMへ | DOMの値vを設定する | あたいせってい | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L180
+| 関数 | スタイル取得 | DOMからKを/DOMの | DOMのスタイルKを取得する | すたいるしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L188
+| 関数 | データ取得 | DOMからKを/DOMの | DOMのデータkを取得する | でーたしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L196
+| 関数 | DOM配列変換 | DOMから/DOMを | DOMを配列に変換する | DOMはいれつへんかん | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L204
+| 関数 | タグ名取得 | DOMから/DOMの | DOMのタグ名を取得する | たぐめいしゅとく | https://github.com/kujirahand/nadesiko3-htmlparser/blob/master/nadesiko3-htmlparser.js#L212

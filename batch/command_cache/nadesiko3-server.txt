@@ -1,0 +1,18 @@
+■nadesiko3-server(拡張プラグイン,cnako)
+●HTTPサーバ(Express)
+| 定数 | GETデータ | |  ''  | GETでーた | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L39
+| 定数 | POSTデータ | |  ''  | POSTでーた | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L40
+| 関数 | WEBサーバ名前設定 | NAMEに/NAMEへ | Webサーバの名前を変更する | WEBさーばなまえへんこう | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L45
+| 関数 | WEBサーバ起動 | PORTNOの/PORTNOで | ポートPORTNOでWebサーバを起動して成功したら『WEBサーバ起動成功した時』を実行する | WEBさーばきどう | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L55
+| 関数 | WEBサーバ起動時 | CALLBACKをPORTNOの/PORTNOで | ポートPORTNOでWebサーバを起動して成功したらCALLBACKを実行する | WEBさーばきどうしたとき | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L92
+| 関数 | WEBサーバ起動成功時 | CALLBACKを | WEBサーバ起動が成功した時にcallbackを実行 | WEBさーばきどうせいこうしたとき | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L101
+| 関数 | WEBサーバ起動失敗時 | CALLBACKを | WEBサーバ起動が失敗した時にcallbackを実行 | WEBさーばきどうしっぱいしたとき | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L110
+| 関数 | WEBサーバ静的パス指定 | URLをPATHに/PATHへ | サーバのHTMLや画像などを配置する静的パスを指定する | WEBさーばせいてきぱすしてい | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L119
+| 関数 | WEBサーバGET時 | CALLBACKをURIに/URIへ | URIにGETメソッドがあった時の処理を指定 | WEBさーばGETしたとき | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L130
+| 関数 | WEBサーバPOST時 | CALLBACKをURIに/URIへ | URIにPOSTメソッドがあった時の処理を指定 | WEBさーばPOSTしたとき | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L144
+| 関数 | WEBサーバPUT時 | CALLBACKをURIに/URIへ | URIにPOSTメソッドがあった時の処理を指定 | WEBさーばPUTしたとき | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L153
+| 関数 | WEBサーバDELETE時 | CALLBACKをURIに/URIへ | URIにPOSTメソッドがあった時の処理を指定 | WEBさーばDELETEしたとき | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L162
+| 関数 | WEBサーバヘッダ出力 | OBJを/OBJの | クライアントにヘッダOBJを出力 | WEBさーばへっだしゅつりょく | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L171
+| 関数 | WEBサーバステータス出力 | NOを/NOの | クライアントにステータスNOを出力 | WEBさーばすてーたすしゅつりょく | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L183
+| 関数 | WEBサーバ出力 | Sを/Sと | クライアントにSを出力 | WEBさーばしゅつりょく | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L193
+| 関数 | WEBサーバリダイレクト | URLへ/URLに | URLにリダイレクトする | WEBさーばりだいれくと | https://github.com/kujirahand/nadesiko3-server/blob/master/nadesiko3-server.mjs#L203

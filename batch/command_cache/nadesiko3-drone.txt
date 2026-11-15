@@ -1,0 +1,14 @@
+■nadesiko3-drone(拡張プラグイン,cnako)
+●ドローン
+| 関数 | ドローン接続 |  | ドローンに接続する(非同期関数) | どろーんせつぞく | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L90
+| 関数 | ドローンバッテリ残量取得 |  | ドローンからバッテリ残量を得る(非同期関数) | どろーんばってりざんりょうしゅとく | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L139
+| 関数 | ドローン緊急停止 |  | ドローン緊急停止する | どろーんきんきゅうていし | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L156
+| 関数 | ドローン送信 | CMDを/CMDの | コマンドをドローンに送信する(非同期関数) | どろーんそうしん | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L165
+| 関数 | ドローン接続時 | Fを | ドローンに接続した時にFを実行する | どろーんせつぞくしたとき | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L173
+| 関数 | ドローン受信時 | Fを | ドローンからデータを受信した時にFを実行する | どろーんじゅしんしたとき | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L184
+| 関数 | ドローン離陸 |  | 離陸コマンドをドローンに送信する(非同期関数) | どろーんりりく | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L197
+| 関数 | ドローン着陸 |  | 着陸コマンドをドローンに送信する(非同期関数) | どろーんちゃくりく | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L206
+| 関数 | ドローン移動 | DIRにNだけ/DIRへ | ドローンを方向(上下左右前後)にN(20-500cm)だけ動かす(非同期関数) | どろーんいどう | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L215
+| 関数 | ドローン回転 | Nだけ | ドローンをN(1から360/-1から-360)度だけ右回転させる(非同期関数) | どろーんかいてん | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L237
+| 関数 | ドローン速度設定 | Nに/Nへ | ドローンの速度をN(10-100)に設定 | どろーんそくどせってい | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L253
+| 関数 | ドローンWIFI設定 | SSIDのPASSに/PASSへ | ドローンのWi-FiをSSIDのPASSに設定 | どろーんWIFIせってい | https://github.com/kujirahand/nadesiko3-drone/blob/master/nadesiko3-drone.js#L263

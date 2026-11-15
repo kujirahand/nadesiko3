@@ -1,0 +1,5 @@
+■plugin_mysql(拡張プラグイン,cnako)
+●MySQL
+| 関数 | MYSQL開 | Sを/Sの/Sで | データベースを開く | MYSQLひらく | https://github.com/kujirahand/nadesiko3-mysql/blob/master/src/plugin_mysql.js#L17
+| 関数 | MYSQL閉 |  | データベースを閉じる | MYSQLとじる | https://github.com/kujirahand/nadesiko3-mysql/blob/master/src/plugin_mysql.js#L26
+| 関数 | MYSQL逐次実行 | SQLをPARAMSで | 逐次実行構文にて、SQLとパラメータPARAMSでSQLを実行し、変数『対象』に結果を得る。INSERT句の場合は『対象[insertId]』でIDが得られる。 | MYSQLちくじじっこう | https://github.com/kujirahand/nadesiko3-mysql/blob/master/src/plugin_mysql.js#L33

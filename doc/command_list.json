@@ -5144,6 +5144,36 @@
   },
   {
     "type": "関数",
+    "name": "INI取得",
+    "args": "Sを/Sの/Sから",
+    "yomi": "INIしゅとく",
+    "plugin": "plugin_ini",
+    "group": "基本プラグイン",
+    "target": [
+      "wnako",
+      "cnako"
+    ],
+    "category": "INI",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_ini.mts#L180",
+    "description": "INI文字列を辞書に変換して返す"
+  },
+  {
+    "type": "関数",
+    "name": "INI変換",
+    "args": "Vを/Vから/Vの",
+    "yomi": "INIへんかん",
+    "plugin": "plugin_ini",
+    "group": "基本プラグイン",
+    "target": [
+      "wnako",
+      "cnako"
+    ],
+    "category": "INI",
+    "url": "https://github.com/kujirahand/nadesiko3/blob/master/core/src/plugin_ini.mts#L188",
+    "description": "辞書をINI文字列に変換して返す"
+  },
+  {
+    "type": "関数",
     "name": "SIN",
     "args": "Vの",
     "yomi": "SIN",
@@ -14848,7 +14878,7 @@
       "cnako"
     ],
     "category": "OFFICE定数",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L36",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L41",
     "value": "'?'"
   },
   {
@@ -14862,7 +14892,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L42",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L47",
     "description": "Excelの新規ワークブックを生成してオブジェクトを返す"
   },
   {
@@ -14876,7 +14906,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L53",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L58",
     "description": "ファイルFILEからExcelワークブックを読んで返す(非同期関数)"
   },
   {
@@ -14890,7 +14920,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L67",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L72",
     "description": "ファイルFILEへ作業中のExcelワークブックを保存する(非同期関数)"
   },
   {
@@ -14904,7 +14934,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L79",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L84",
     "description": "ファイルFILEへ作業中のExcelワークブックをCSVで保存する(ただしUTF-8のCSVとなる)(非同期関数)"
   },
   {
@@ -14918,7 +14948,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L90",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L95",
     "description": "Excelの作業中のワークブックに新規シートNAMEを追加して返す"
   },
   {
@@ -14932,7 +14962,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L102",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L107",
     "description": "NAMEのシートを取得して返す"
   },
   {
@@ -14946,7 +14976,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L113",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L118",
     "description": "NAMEのシートを取得して返す"
   },
   {
@@ -14960,7 +14990,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L125",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L130",
     "description": "セル(例えば「A1」)へVを設定する"
   },
   {
@@ -14974,7 +15004,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L141",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L146",
     "description": "セル(例えば「A1」)へVを設定する"
   },
   {
@@ -14988,7 +15018,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L149",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L154",
     "description": "左上のセル(例えば「A1」)を起点にして、二次元配列変数VALUESを一括設定する"
   },
   {
@@ -15002,7 +15032,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L174",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L179",
     "description": "セル(例えば「A1」)の値を取得して返す"
   },
   {
@@ -15016,7 +15046,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L185",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L190",
     "description": "セル(例えば「A1」)の値を取得して返す"
   },
   {
@@ -15030,8 +15060,36 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L192",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L197",
     "description": "左上のセルC1(例えば「A1」)から右下のC2までの値を取得して二次元配列変数で返す"
+  },
+  {
+    "type": "関数",
+    "name": "エクセル行数取得",
+    "args": "",
+    "yomi": "えくせるぎょうすうしゅとく",
+    "plugin": "nadesiko3-office",
+    "group": "拡張プラグイン",
+    "target": [
+      "cnako"
+    ],
+    "category": "エクセル(Excel)",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L220",
+    "description": "作業中のシートの最終行番号を返す"
+  },
+  {
+    "type": "関数",
+    "name": "エクセルシート全取得",
+    "args": "",
+    "yomi": "えくせるしーとぜんしゅとく",
+    "plugin": "nadesiko3-office",
+    "group": "拡張プラグイン",
+    "target": [
+      "cnako"
+    ],
+    "category": "エクセル(Excel)",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L229",
+    "description": "作業中のシートの全セルを二次元配列で返す"
   },
   {
     "type": "関数",
@@ -15044,7 +15102,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L215",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L255",
     "description": "作業中のブックのシート一覧取得して返す"
   },
   {
@@ -15058,7 +15116,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L229",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L269",
     "description": "作業中のブックのシートNAMEを削除する"
   },
   {
@@ -15072,7 +15130,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L242",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L282",
     "description": "作業中のシートcol列目の幅をWに設定する"
   },
   {
@@ -15086,7 +15144,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L253",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L293",
     "description": "作業中シートのセルcells(例「A1」「A1:C3」)の背景色をcolorに設定"
   },
   {
@@ -15100,7 +15158,7 @@
       "cnako"
     ],
     "category": "エクセル(Excel)",
-    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L279",
+    "url": "https://github.com/kujirahand/nadesiko3-office/blob/master/nadesiko3-office.js#L319",
     "description": "作業中シートのセルcells(例「A1」「A1:C3」)の文字色をcolorに設定"
   },
   {

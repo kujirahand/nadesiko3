@@ -1,0 +1,7 @@
+■nadesiko3-tools(拡張プラグイン,cnako)
+●クリップボード操作
+| 関数 | クリップボード取得 |  | クリップボードを取得する | くりっぷぼーどしゅとく | https://github.com/kujirahand/nadesiko3-tools/blob/master/nadesiko3-tools.mjs#L10
+| 関数 | クリップボード設定 | Vを/Vの | クリップボードを設定する | くりっぷぼーどせってい | https://github.com/kujirahand/nadesiko3-tools/blob/master/nadesiko3-tools.mjs#L19
+●マウスとキーボード操作
+| 関数 | キー送信 | Sを/Sの | Sのキーを送信 | きーそうしん | https://github.com/kujirahand/nadesiko3-tools/blob/master/nadesiko3-tools.mjs#L29
+| 関数 | 窓アクティブ | Sを/Sの | Sの窓をアクティブにする | まどあくてぃぶ | https://github.com/kujirahand/nadesiko3-tools/blob/master/nadesiko3-tools.mjs#L38

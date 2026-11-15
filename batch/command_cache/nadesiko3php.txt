@@ -1,0 +1,44 @@
+■plugin_php(基本プラグイン,phpnako)
+●PHP定数
+| 定数 | PHPバージョン | |  phpversion() | PHPばーじょん | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 定数 | PLUGIN_PHPバージョン | |  '0.0.1' | PLUGIN_PHPばーじょん | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+●PHPシステム
+| 関数 | PHP取込 | FILEを/FILEの/FILEから | PHPファイルを取り込む。 | PHPとりこむ | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | PHP関数実行 | FをARGSで/ARGSにて | PHPの関数Fを引数ARGSで実行する。 | PHPかんすうじっこう | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | セッション開始 |  | PHPセッションを開始する。 | せっしょんかいし | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | クッキー取得 | KEYをDEFで/DEFにて | cookieパラメータのKEYを、省略値DEFで取得する | くっきーしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | クッキー設定 | KEYをVへ/Vに | cookieのKEYをVに設定する | くっきーせってい | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 定数 | クッキーオプション | | [] | くっきーおぷしょん | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | クッキーオプション設定 | Vを/Vへ/Vに | cookieのオプションを辞書型で設定する | くっきーおぷしょんせってい | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 定数 | GET | | [] | GET | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 定数 | POST | | [] | POST | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 定数 | SERVER | | [] | SERVER | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 定数 | FILES | | [] | FILES | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 定数 | SESSION | | [] | SESSION | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | GET取得 | KEYをDEFで/DEFにて | GETパラメータのKEYを、省略値DEFで取得する | GETしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | POST取得 | KEYをDEFで/DEFにて | POSTパラメータのKEYを、省略値DEFで取得する | POSTしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | セッション取得 | KEYをDEFで/DEFにて | セッションパラメータのKEYを、省略値DEFで取得する | せっしょんしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | セッション設定 | KEYをVに/Vで/Vへ | セッションパラメータのKEYをVに設定する | せっしょんせってい | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | ヘッダ設定 | Vに/Vへ/Vの | HTTPヘッダをVに設定する | へっだせってい | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+●PDO
+| 定数 | PDOオブジェクト | |  null | PDOおぶじぇくと | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | PDO生成 | DSNで/DSNの/DSNを | DSNを指定してPDOを生成して返す | PDOせいせい | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | PDO設定 | PDOに/PDOへ | 生成済みのPDOオブジェクトを切り替える。 | PDOせいせい | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | PDO実行 | SQLをAで/Aの | SQLコマンドをデータ配列Aで実行して結果を返す | PDOじっこう | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | PDO全取得 | SQLをAで/Aの | SQLコマンドをデータ配列Aで実行して結果を全部取得して返す | PDOぜんしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | PDO一行取得 | SQLをAで/Aの | SQLコマンドをデータ配列Aで実行して結果を一行取得して返す | PDOいちぎょうしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | PDO挿入ID取得 |  | PDO実行の結果、挿入したIDを得る。 | PDOそうにゅうIDしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+●HTML
+| 関数 | HTML変換 | Sを/Sから | 文字列SをHTMLに変換して返す | HTMLへんかん | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | HTML埋込 | SにDICを/Sへ | 文字列Sの中に辞書型データDICの値を埋め込んで返す。書式は「xxx[[変数名]]xx」のように書く。展開時に安全にHTML変換する。変換したくないものには[[変数名/raw]]と書く。改行を変換したい場合は[[変数名/br]]と書く。または[[変数名/書式]]を記述(書式はsprintfかdate/time/datetime)。 | HTMLうめこむ | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+●KUDB
+| 関数 | KUDB接続 | DBFILEに/DBFILEへ/DBFILEの | 簡易ドキュメントデータベースKUDBに接続する。DBにはファイルパスを指定する。 | KUDBせつぞく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDB全取得 |  | KUDBに挿入したドキュメントを全部返す | KUDBぜんしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDB部分取得 | INDEXからCOUNTだけ/COUNTを | KUDBの(0起点)INDEXからCOUNT件だけ取得 | KUDBぶぶんしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDB末尾取得 | INDEXからCOUNTだけ/COUNTを | KUDBの(0起点)末尾から数えてINDEXからCOUNT件取得 | KUDBまつびしゅとく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDB挿入 | Vを | KUDBにオブジェクトVを挿入する(TAGプロパティを指定すると検索などに使える) | KUDBそうにゅう | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDB更新 | IDをVに/Vへ | KUDBのIDをVに更新 | KUDBこうしん | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDB削除 | IDを | KUDBのIDを削除する | KUDBさくじょ | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDBタグ検索 | TAGの/TAGを | KUDBでデータ一覧からTAGプロパティを検索する | KUDBたぐけんさく | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDBタグ削除 | TAGの/TAGを | KUDBでTAGを指定して削除 | KUDBたぐさくじょ | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90
+| 関数 | KUDBタグ更新 | TAGをVに/Vへ | KUDBで指定TAGの内容をVに更新 | KUDBたぐこうしん | https://github.com/kujirahand/nadesiko3php/blob/master/src/plugin_php.php#L90

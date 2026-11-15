@@ -1,0 +1,12 @@
+■nadesiko3-ml(拡張プラグイン,cnako)
+●機械学習
+| 関数 | SVM開 | OPTIONで | 機械学習のアルゴリズムSVMをパラメータOPTIONで開く。 OPTION={type,kernel,gamma,cost} | SVMひらく | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L27
+| 関数 | ランダムフォレスト開 | OPTIONで | 機械学習のアルゴリズムRandom ForestをOPTIONで開く。OPTION={seed,maxFeatures,replacement=(true/false),nEstimators} | らんだむふぉれすとひらく | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L54
+| 関数 | ランダムフォレスト回帰開 | PARAMSで | 機械学習のアルゴリズムRandom Forestの回帰をパラメータPARAMSで開く | らんだむふぉれすとかいきひらく | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L73
+| 関数 | 学習 | INPUTSとLABELSで | 入力配列inputsとラベル配列labelsで機械学習する | がくしゅう | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L91
+| 関数 | 予測 | INPUTSを/INPUTSで | 入力配列inputsで予測し機械学習の結果を配列で返す | よそく | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L102
+| 関数 | アヤメデータ取得 |  | アヤメデータをJSON形式で取得して返す | あやめでーたしゅとく | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L113
+| 関数 | モデル取得 |  | 現在学習済みのモデルを取得する | もでるしゅとく | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L125
+| 関数 | モデル設定 | Mを/Mの | 現在学習済みのモデルMを設定する | もでるせってい | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L135
+| 関数 | データランダム分割 | DATAとLABELをRATEで | データとラベルの組をRATEで分割して{学習:{データ:[..],ラベル:[..]},テスト:{データ:[..],ラベル:[..]}}の形式で返す | でーたらんだむぶんかつ | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L146
+| 関数 | 正解率計算 | TとPの/Pで | 配列T(正解)とP(予測)の正解率を計算して返す | せいかいりつけいさん | https://github.com/kujirahand/nadesiko3-ml/blob/master/nadesiko3-ml.js#L180
