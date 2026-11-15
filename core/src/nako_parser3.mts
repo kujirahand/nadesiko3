@@ -74,11 +74,120 @@ export class NakoParser extends NakoParserBase {
     // 解析処理 - 先頭から解析開始
     const result = this.startParser()
 
+    // 関数定義より後で宣言されたグローバル変数を、関数内から参照できるように解決する #2665
+    this.resolveLateGlobalVars(result)
+
     // 関数毎に非同期処理が必要かどうかを判定する
     // 「非同期関数を呼ぶ関数もまた非同期」と伝播していくので、変化が無くなるまで繰り返す
     while (checkAsyncFn(result, this.funclist)) { /* 変化が無くなるまで繰り返す */ }
 
     return result
+  }
+
+  /**
+   * 関数本体のパース時点で未登録だったグローバル変数名を、完全名に置き換える後処理 #2665
+   * (関数定義より後で代入・宣言されたグローバル変数が、関数内でローカル扱いになるのを防ぐ)
+   */
+  private resolveLateGlobalVars(root: Ast): void {
+    // グローバル表: plain名 → 完全名 (曖昧なものは除外)
+    const table = new Map<string, string>()
+    const ambiguous = new Set<string>()
+    for (const [fullName, item] of this.funclist) {
+      if (item.type !== 'var' && item.type !== 'const') { continue }
+      const pos = fullName.indexOf('__')
+      if (pos < 0) { continue }
+      const plain = fullName.substring(pos + 2)
+      const old = table.get(plain)
+      if (old !== undefined && old !== fullName) { ambiguous.add(plain) }
+      table.set(plain, fullName)
+    }
+    for (const plain of ambiguous) { table.delete(plain) }
+    if (table.size === 0) { return }
+
+    const isFuncNode = (t: string) => t === 'def_func' || t === 'def_test' || t === 'func_obj'
+    const childrenOf = (node: Ast): Ast[] => {
+      const res: Ast[] = []
+      const n = node as any
+      if (Array.isArray(n.blocks)) { for (const b of n.blocks) { if (b && typeof b === 'object') { res.push(b) } } }
+      if (Array.isArray(n.index)) { for (const b of n.index) { if (b && typeof b === 'object') { res.push(b) } } }
+      if (n.name && typeof n.name === 'object') { res.push(n.name as Ast) }
+      return res
+    }
+
+    // 関数のローカル集合 (引数 + 明示的なローカル宣言 + for/foreach の変数)
+    const collectLocals = (func: Ast): Set<string> => {
+      const locals = new Set<string>()
+      for (const a of ((func as any).args ?? []) as Ast[]) {
+        const v = (a as any)?.value
+        if (typeof v === 'string') { locals.add(v) }
+      }
+      const walk = (node: Ast) => {
+        if (isFuncNode(node.type)) { return } // ネストした関数の中には入らない
+        const n = node as any
+        if (node.type === 'def_local_var' && typeof n.name === 'string') { locals.add(n.name) }
+        if (node.type === 'def_local_varlist' && Array.isArray(n.names)) {
+          for (const nm of n.names) { if (typeof nm?.value === 'string') { locals.add(nm.value) } }
+        }
+        if ((node.type === 'for' || node.type === 'foreach') && typeof n.word === 'string' && n.word !== '') {
+          locals.add(n.word)
+        }
+        for (const c of childrenOf(node)) { walk(c) }
+      }
+      for (const b of ((func as any).blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { walk(b) } }
+      return locals
+    }
+
+    const resolveName = (name: unknown, locals: Set<string>): string | null => {
+      if (typeof name !== 'string' || name.includes('__')) { return null }
+      const full = table.get(name)
+      if (full === undefined || locals.has(name)) { return null }
+      return full
+    }
+
+    // scopes: 外側から順のローカル集合の配列。空ならトップレベル
+    const visit = (node: Ast, scopes: Set<string>[]) => {
+      const n = node as any
+      if (node.type === 'def_func' || node.type === 'def_test' || node.type === 'func_obj') {
+        const own = collectLocals(node)
+        let scope: Set<string>
+        let inner: Set<string>[]
+        if (node.type === 'func_obj') {
+          scope = new Set<string>()
+          for (const s of scopes) { for (const v of s) { scope.add(v) } }
+          for (const v of own) { scope.add(v) }
+          inner = [...scopes, scope]
+        } else {
+          // 名前付き関数は外側のローカルを見ないので、スコープ履歴もここで切る
+          // (内側の無名関数が、遮断されたはずの外側ローカルを合算しないため)
+          scope = own
+          inner = [scope]
+        }
+        for (const b of (n.blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { visit(b, inner) } }
+        return
+      }
+      if (scopes.length > 0) {
+        const locals = scopes[scopes.length - 1]
+        if (node.type === 'word' || node.type === 'variable') {
+          const full = resolveName(n.value, locals)
+          if (full !== null) { n.value = full }
+        } else if (node.type === 'let' || node.type === 'let_array' || node.type === 'let_prop') {
+          const full = resolveName(n.name, locals)
+          if (full !== null) { n.name = full }
+        }
+      }
+      if (node.type === 'def_local_var' || node.type === 'def_local_varlist') {
+        // 宣言名は書き換えず、初期値だけ走査する
+        for (const b of (n.blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { visit(b, scopes) } }
+        return
+      }
+      if (node.type === 'func') {
+        // 関数名は書き換えない
+        for (const b of (n.blocks ?? []) as Ast[]) { if (b && typeof b === 'object') { visit(b, scopes) } }
+        return
+      }
+      for (const c of childrenOf(node)) { visit(c, scopes) }
+    }
+    visit(root, [])
   }
 
   /** パーサーの一番最初に呼び出す構文規則 */
