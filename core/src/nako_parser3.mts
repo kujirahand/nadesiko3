@@ -120,6 +120,7 @@ export class NakoParser extends NakoParserBase {
       return null
     }
     // ノードの所属モジュール (ソースファイル名から求める。不明なら null)
+    // null の場合は外側の関数のモジュール (トップレベルではメインモジュール) を引き継ぐ
     const modOfNode = (node: Ast): string | null => {
       const f = (node as any).file
       if (typeof f === 'string' && f !== '') {

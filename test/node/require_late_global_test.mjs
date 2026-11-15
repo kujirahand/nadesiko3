@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import assert from 'assert'
+import { after } from 'node:test'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
@@ -10,6 +11,7 @@ import { CNako3 } from '../../src/cnako3mod.mjs'
 // 公開設定に従うことを確認する (#2665)
 describe('require_late_global_test', async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'nako3-late-global-'))
+  after(() => { fs.rmSync(dir, { recursive: true, force: true }) })
   const writeLib = (name, code) => {
     const p = path.join(dir, name)
     fs.writeFileSync(p, code, 'utf-8')
