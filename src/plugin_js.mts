@@ -7,9 +7,9 @@ const PluginJS = {
     value: {
       pluginName: 'plugin_js',
       description: 'JavaScriptとの連携命令を提供するプラグイン',
-      pluginVersion: '3.8.10',
+      pluginVersion: '3.8.12',
       nakoRuntime: ['wnako', 'cnako'],
-      nakoVersion: '3.8.10'
+      nakoVersion: '3.8.12'
     }
   },
   '初期化': {
