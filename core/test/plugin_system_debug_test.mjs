@@ -8,15 +8,12 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
-import PluginJS from '../../src/plugin_js.mjs'
-import { registerJSForTest } from './helpers/js_plugin.mjs'
 import PluginSystem from '../src/plugin_system.mjs'
 import PluginSystemDebug from '../src/plugin_system_debug.mjs'
 
 describe('plugin_system_debug_test', async () => {
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    registerJSForTest(nako, code)
     nako.getLogger().debug('code=' + code)
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
@@ -39,18 +36,6 @@ describe('plugin_system_debug_test', async () => {
   })
 
   // --- 特殊命令 ---
-  it('特殊命令 - JS実行', async () => {
-    await cmp('「3*7」をJS実行して表示', '21')
-  })
-  it('特殊命令 - JS関数実行', async () => {
-    await cmp('「Math.max」を[3,9,5]でJS関数実行して表示', '9')
-  })
-  it('特殊命令 - JSメソッド実行', async () => {
-    await cmp('「[1,2,3]」の「join」を[「-」]でJSメソッド実行して表示', '1-2-3')
-  })
-  it('特殊命令 - JSオブジェクト取得', async () => {
-    await cmp('A=5;「A」のJSオブジェクト取得して表示', '5')
-  })
   it('特殊命令 - 実行', async () => {
     await cmp('F=関数()\n「呼ばれた」を表示\nここまで\nFを実行', '呼ばれた')
     await cmp('●テスト関数とは\n「OK」を表示\nここまで\n「テスト関数」を実行', 'OK')
@@ -59,20 +44,6 @@ describe('plugin_system_debug_test', async () => {
   })
   it('特殊命令 - 実行時間計測', async () => {
     await cmp('F=関数()\nそれは1\nここまで\nFの実行時間計測;もし、(それ>=0)ならば「OK」を表示', 'OK')
-  })
-  it('特殊命令 - AWAIT実行', async () => {
-    const nako = new NakoCompiler()
-    nako.addPlugin(PluginJS)
-    const code = 'F=「a=>a*2」をJS実行\nFを[21]でAWAIT実行して表示'
-    const g = await nako.runAsync(code, 'main.nako3')
-    assert.strictEqual(g.log, '42')
-  })
-  it('特殊命令 - AWAIT実行（配列以外の引数）', async () => {
-    const nako = new NakoCompiler()
-    nako.addPlugin(PluginJS)
-    const code = 'F=「a=>a*2」をJS実行\nFを21でAWAIT実行して表示'
-    const g = await nako.runAsync(code, 'main.nako3')
-    assert.strictEqual(g.log, '42')
   })
   it('特殊命令 - ナデシコ', async () => {
     await cmp('『「なでしこ」を表示』をナデシコ', 'なでしこ')

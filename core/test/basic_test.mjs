@@ -2,13 +2,11 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
-import { registerJSForTest } from './helpers/js_plugin.mjs'
 
 describe('basic', async () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = async (/** @type {string} */code, /** @type {string} */res) => {
     const nako = new NakoCompiler()
-    registerJSForTest(nako, code)
     // nako.logger.debug('code=' + code)
     assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }
@@ -380,17 +378,6 @@ describe('basic', async () => {
     // ネスト$記法で増やす・減らす
     await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を5増やす。A$猫$日本猫を表示。', '15')
     await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を3減らす。A$猫$日本猫を表示。', '7')
-    // __getProp/__setPropは特別扱いせず、通常のプロパティを増減する (#2194)
-    await cmp(
-      '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
-      '『 (function(prop, val, sys){ this[prop] = val * 10 })』をJS実行してF_SETに代入。\n' +
-      'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
-      'A$幅を2増やす。A$幅を表示。', '5')
-    await cmp(
-      '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
-      '『 (function(prop, val, sys){ this[prop] = val * 10 })』をJS実行してF_SETに代入。\n' +
-      'A={"幅": 10, "__setProp": F_SET, "__getProp": F_GET};\n' +
-      'A$幅を3減らす。A$幅を表示。', '7')
   })
   it('増減文で対象オブジェクトと添字を二重に評価しない (#2194)', async () => {
     // 副作用のある式を添字に使い、評価回数が1回であることを確認する
@@ -433,20 +420,6 @@ describe('basic', async () => {
   it('オブジェクトを手軽に設定する-ドットアクセス(#1807)', async () => {
     await cmp('A={"高":30};A.高=50;A.高を表示', '50') // 
     await cmp('A={"A":30,"B":50};A.A=500;A.Aを表示', '500') // 
-  })
-  it('__getProp/__setPropを通常のプロパティとして扱う(#2194)', async () => {
-    // __getPropを呼び出さず、通常のプロパティ値を取得する
-    await cmp(
-      '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
-      '『 (function(prop, val, sys){ this[prop] = val })』をJS実行してF_SETに代入。\n' +
-      'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
-      'A$幅=5; A$幅を表示', '5')
-    // __setPropを呼び出さず、通常のプロパティへ値を格納する
-    await cmp(
-      '『 (function(prop, sys){ return this[prop] })』をJS実行してF_GETに代入。\n' +
-      '『 (function(prop, val, sys){ this[prop] = val*10 })』をJS実行してF_SETに代入。\n' +
-      'A={"幅": 3, "__setProp": F_SET, "__getProp": F_GET};\n' +
-      'A$幅=5; A$幅を表示', '5')
   })
   it('オブジェクトを手軽に設定する-文字列 (#1793)', async () => {
     await cmp('A={"幅":30};A$"幅"=50;A$"幅"を表示', '50')

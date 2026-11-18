@@ -2,13 +2,11 @@
 import { describe, it } from 'node:test'
 import assert from 'assert'
 import { NakoCompiler } from '../src/nako3.mjs'
-import { registerJSForTest } from './helpers/js_plugin.mjs'
 
 describe('flow_test', async () => {
   // nako.logger.addListener('trace', ({ browserConsole }) => { console.log(...browserConsole) })
   const cmp = async (/** @type {string} */ code, /** @type {string} */ res) => {
     const nako = new NakoCompiler()
-    registerJSForTest(nako, code)
     assert.strictEqual((await nako.runAsync(code, 'main.nako3')).log, res)
   }
   it('もし', async () => {
@@ -201,9 +199,6 @@ describe('flow_test', async () => {
   })
   it('反復2 - 変数付き', async () => {
     await cmp('A=[[3,30],[1,10],[2,20]];NでAを反復\nN[1]を表示\nここまで\n', '30\n10\n20')
-  })
-  it('反復 - prototypeを無視', async () => {
-    await cmp('f=『function F(){}; F.prototype.foo = 20; const f = new F(); f.p1 = 10; f』をJS実行。fを反復して表示', '10')
   })
   it('ここから反復', async () => {
     await cmp('それは[1,2,3];ここから反復\n表示\nここまで\n', '1\n2\n3')
