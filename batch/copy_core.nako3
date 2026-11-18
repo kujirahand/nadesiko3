@@ -10,7 +10,8 @@ NAKO3CORE_DIR=REPOS_DIR&「/nadesiko3core」
 ＃＃＃
 「{NAKO3_DIR}/core/src/*.mts」を「{NAKO3CORE_DIR}/src」へ列挙コピー。
 「{NAKO3_DIR}/core/*.mts」を「{NAKO3CORE_DIR}」へ列挙コピー。
-「{NAKO3_DIR}/core/test/*」を「{NAKO3CORE_DIR}/test」へ列挙コピー。
+「{NAKO3_DIR}/core/test」を「{NAKO3CORE_DIR}/test」へ再帰コピー。
+「{NAKO3_DIR}/core/sample」を「{NAKO3CORE_DIR}/sample」へ再帰コピー。
 「{NAKO3_DIR}/core/batch/*」を「{NAKO3CORE_DIR}/batch」へ列挙コピー。
 「{NAKO3_DIR}/core/package.json」を「{NAKO3CORE_DIR}/package.json」へファイル上書コピー。
 「{NAKO3_DIR}/core/tsconfig.json」を「{NAKO3CORE_DIR}/tsconfig.json」へファイル上書コピー。
@@ -19,7 +20,7 @@ NAKO3CORE_DIR=REPOS_DIR&「/nadesiko3core」
 MSG="auto commit ver{ナデシコバージョン}"
 エラー監視
 　　「echo "=== GIT ==="」を起動待機。
-　　CMD=「cd "{NAKO3CORE_DIR}" && cd src && git add *.mts」
+　　CMD=「cd "{NAKO3CORE_DIR}" && git add src/*.mts test sample batch」
 　　CMDを起動待機。
 　　CMD=「cd "{NAKO3CORE_DIR}" && git commit -a -m "{MSG}" && git push」
 　　CMDを起動待機。
@@ -36,5 +37,16 @@ CMDを起動待機
 　　　　A＝「{BASE}/{対象}」
 　　　　B＝「{DES}/{対象}」
 　　　　「- {A}」を表示。
+　　　　AからBへファイル上書きコピー。
+
+●(SRCをDESへ)再帰コピーとは:
+　　SRC_LEN=(SRCの文字数)
+　　SRCを全ファイル列挙して反復：
+　　　　A=対象
+　　　　REL=AでSRC_LEN+1から9999文字抜出
+　　　　B=DES&REL
+　　　　「- {A}」を表示。
+　　　　BIN=Bからパス抽出
+　　　　BINをフォルダ作成。
 　　　　AからBへファイル上書きコピー。
 
