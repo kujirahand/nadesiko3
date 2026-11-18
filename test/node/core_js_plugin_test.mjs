@@ -20,18 +20,6 @@ describe('core_js_plugin_test', async () => {
     const g = await nako.runAsync(code, 'main.nako3')
     assert.strictEqual(g.log, res)
   }
-  const cmpex = async (/** @type {string} */ code, /** @type {{name: string, message: string}} */ exinfo) => {
-    const nako = new NakoCompiler()
-    nako.addPlugin(PluginJS)
-    try {
-      await nako.runAsync(code, 'main.nako3')
-    } catch (err) {
-      assert.strictEqual(err.name, exinfo.name)
-      assert.notStrictEqual(err.message.indexOf(exinfo.message), -1)
-      return
-    }
-    assert.fail(`${exinfo.name} が発生しませんでした`)
-  }
   it('配列＋オブジェクトプロパティで__getProp/__setPropを特別扱いしない #2194', async () => {
     // __getProp/__setPropがあっても「犬」は「dog」に変換されない
     await cmp(`
@@ -55,16 +43,7 @@ describe('core_js_plugin_test', async () => {
       A[0][0]$犬=200; A[0][0]$dogを表示;
     `, '30')
   })
-  it('オブジェクトプロパティ構文に増減文を使う', async () => {
-    // $記法で増やす
-    await cmp('A＝{"a":0};A$aを1増やす。A$aを表示。', '1')
-    await cmp('A＝{"a":5};A$aを3だけ増やす。A$aを表示。', '8')
-    // $記法で減らす
-    await cmp('A＝{"a":10};A$aを1減らす。A$aを表示。', '9')
-    await cmp('A＝{"a":10};A$aを5だけ減らす。A$aを表示。', '5')
-    // ネスト$記法で増やす・減らす
-    await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を5増やす。A$猫$日本猫を表示。', '15')
-    await cmp('A={"猫":{"日本猫":10}};A$猫$日本猫を3減らす。A$猫$日本猫を表示。', '7')
+  it('オブジェクトプロパティ構文に増減文を使う(JS連携)', async () => {
     // __getProp/__setPropは特別扱いせず、通常のプロパティを増減する (#2194)
     await cmp(
       '『 (function(prop, sys){ return this[prop] * 10 })』をJS実行してF_GETに代入。\n' +
@@ -146,9 +125,7 @@ describe('core_js_plugin_test', async () => {
     globalScope.jstest_mul = (/** @type {number} */ a, /** @type {number} */ b) => { return a * b }
     await cmp('「' + globalName + '」の「jstest_mul」を[30,30]でJSメソッド実行して表示。', '900')
   })
-  it('「??」のカスタマイズ機能を追加 #1852', async () => {
-    await cmp('["JSONエンコード","表示"]をハテナ関数設定; ?? [1,2,3]', '[1,2,3]')
-    await cmp('["文字列分解", "ASC", "JSONエンコード","表示"]をハテナ関数設定; ?? "abc"', '[97,98,99]')
+  it('「??」のカスタマイズ機能でJS:を使う #1852', async () => {
     await cmp('["JS:Math.ceil","表示"]をハテナ関数設定; ?? 3.2', '4')
     await cmp('[『JS:(function(v,sys){return Math.ceil(v);})』,"表示"]をハテナ関数設定; ?? 3.2', '4')
   })
