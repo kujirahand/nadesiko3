@@ -2964,10 +2964,21 @@ export class NakoParser extends NakoParserBase {
       } else if (this.accept(['string', ':', this.yCalc])) { // 'key' : value
         a.push(this.y[0])
         a.push(this.y[2])
+      } else if (this.accept(['number', ':', this.yCalc])) { // 数値キー : value (#2686)
+        // 数値キーは文字列キーとして扱う ({1:10} は {"1":10})
+        // 元のトークンは書き換えずコピーで作る (巻き戻し後の再パースで結果が変わらないように)
+        const key = { ...this.y[0], type: 'string', value: String(this.y[0].value) } as Ast
+        a.push(key)
+        a.push(this.y[2])
       } else if (this.accept(['word'])) { // key
-        const key = this.y[0]
-        const val = JSON.parse(JSON.stringify(key)) as Ast
-        key.type = 'string' // キー名の文字列記号省略の場合
+        // キーと値はコピーで作り、元のトークンは書き換えない (#2686)
+        // 元を文字列化すると、巻き戻し後の再パースで文字列の省略記法と誤認される
+        const tok = this.y[0]
+        const key = { ...tok, type: 'string' } as Ast // キー名の文字列記号省略の場合
+        const val = { ...tok } as Ast
+        // 値側のコピーにも通常の変数参照と同じ名前解決を行う (#2686)
+        // これをしないとトップレベルでだけ素の名前のままになり未定義参照になる
+        this.getVarNameRef(val as Token)
         a.push(key)
         a.push(val)
       } else if (this.checkTypes(['string', 'number'])) { // str or num
