@@ -2964,10 +2964,19 @@ export class NakoParser extends NakoParserBase {
       } else if (this.accept(['string', ':', this.yCalc])) { // 'key' : value
         a.push(this.y[0])
         a.push(this.y[2])
+      } else if (this.accept(['number', ':', this.yCalc])) { // 数値キー : value (#2686)
+        // 数値キーは文字列キーとして扱う ({1:10} は {"1":10})
+        this.y[0].type = 'string'
+        this.y[0].value = String(this.y[0].value)
+        a.push(this.y[0])
+        a.push(this.y[2])
       } else if (this.accept(['word'])) { // key
         const key = this.y[0]
         const val = JSON.parse(JSON.stringify(key)) as Ast
         key.type = 'string' // キー名の文字列記号省略の場合
+        // 値側のコピーにも通常の変数参照と同じ名前解決を行う (#2686)
+        // これをしないとトップレベルでだけ素の名前のままになり未定義参照になる
+        this.getVarNameRef(val as Token)
         a.push(key)
         a.push(val)
       } else if (this.checkTypes(['string', 'number'])) { // str or num
