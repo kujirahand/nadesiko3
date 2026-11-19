@@ -72,6 +72,32 @@ describe('dict_shorthand #2686', async () => {
     await cmp('A=1\n●テストとは\n{1:10,A,10}をJSON変換して戻る\nここまで\nテストを表示', '{"1":10,"10":10,"A":1}')
   })
 
+  // --- 巻き戻し後の再パースでも結果が変わらない (レビュー指摘) ---
+  it('添字の中の省略記法 (再パースされる位置)', async () => {
+    // 配列の添字は解析が巻き戻されて読み直されることがある。
+    // その場合も {A} が {"A":"A"} にならず変数を参照すること。
+    await cmp('A=1;B=[100,200];B[({A}$A)-1]を表示', '100')
+    await cmp('A=1;B=[100,200];B[({A:A}$A)-1]を表示', '100')
+  })
+  it('同名のローカル変数がグローバルを隠す', async () => {
+    await cmp('A=1\n●テストとは\nA=2\n{A}をJSON変換して戻る\nここまで\nテストを表示', '{"A":2}')
+  })
+  it('入れ子の辞書でも省略記法が使える', async () => {
+    await cmp('A=5;{1:{A}}をJSON変換して表示', '{"1":{"A":5}}')
+    await cmp('A=5;{A:{1:2}}をJSON変換して表示', '{"A":{"1":2}}')
+  })
+  it('16進数の数値キー', async () => {
+    await cmp('{0xFF:1}をJSON変換して表示', '{"255":1}')
+  })
+  it('値のない数値キーや余分なコロンはエラー', async () => {
+    const err = async (/** @type {string} */code) => {
+      const nako = new NakoCompiler()
+      await assert.rejects(async () => { await nako.runAsync(code, 'main.nako3') }, /文法エラー/)
+    }
+    await err('{1:}をJSON変換して表示')
+    await err('{1:10:20}をJSON変換して表示')
+  })
+
   // --- 既存記法の回帰確認 ---
   it('既存の辞書記法は変わらない', async () => {
     await cmp('A=1;{A:A}をJSON変換して表示', '{"A":1}')
