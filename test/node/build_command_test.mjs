@@ -236,6 +236,9 @@ describe('release/command_cnako3.json', () => {
   }
 
   it('URL欄にソースコードのURLが入る', () => {
+    // release/ はgit管理外なので、clone直後の環境には存在しない。
+    // 保存命令は親フォルダを作らないため、先に作っておく
+    fs.mkdirSync(path.join(projectRoot, 'release'), { recursive: true })
     runBatch('pickup_command.nako3')
     runBatch('cmd_txt2json.nako3')
     const commands = JSON.parse(
