@@ -78,6 +78,52 @@ describe('error_message', () => {
         'main.nako3'
       ], NakoSyntaxError)
     })
+    it('プロパティ参照が未解決のとき内部型名ではなくソース表記で表示する (#2692)', () => {
+      cmp('ホゲは{hoge:1}。ホゲ$hoge', [
+        '不完全な文です。',
+        'プロパティ参照『ホゲ$hoge』が解決していません。',
+        'main.nako3'
+      ], NakoSyntaxError)
+    })
+    it('配列参照が未解決のとき内部型名ではなくソース表記で表示する (#2692)', () => {
+      cmp('Aは[1,2]。A@0', [
+        '不完全な文です。',
+        '配列参照『A@0』が解決していません。',
+        'main.nako3'
+      ], NakoSyntaxError)
+    })
+    it('値への後置参照が未解決のとき内部型名ではなくソース表記で表示する (#2692)', () => {
+      cmp('Aは[[9]]。A@0@0', [
+        '不完全な文です。',
+        '配列参照『A@0@0』が解決していません。',
+        'main.nako3'
+      ], NakoSyntaxError)
+    })
+    it('未解決の単語レポートでもプロパティ参照をソース表記で表示する (#2692)', () => {
+      cmp('ホゲは{hoge:1}。ホゲ$hoge ホゲ$hogeを表示', [
+        '未解決の単語があります: [プロパティ参照『ホゲ$hoge』]',
+        'main.nako3'
+      ], NakoSyntaxError)
+    })
+    it('関数定義の『ここまで』エラーで次の語句が記号のときは直前の文の確認を促す (#2692)', () => {
+      cmp('●テストとは\n  1を表示。\n@0を表示。', [
+        '『ここまで』がありません。関数定義の末尾に必要です。『@』の前に『ここまで』を記述してください。',
+        'なお、直前の文が正しく解析できていない場合にもこのエラーになります。直前の文を確認してください。',
+        'main.nako3'
+      ], NakoSyntaxError)
+    })
+    it('関数定義の『ここまで』エラーでファイル末尾のときはトークンのJSONを出さない (#2692)', () => {
+      const nako2 = new NakoCompiler()
+      assert.throws(
+        () => nako2.runSync('●テストとは\n  1を表示。', 'main.nako3'),
+        (err) => {
+          assert(err instanceof NakoSyntaxError)
+          assert(err.message.includes('ファイルの末尾の前に『ここまで』を記述してください。'), err.message)
+          assert(!err.message.includes('"type":"eof"'), err.message)
+          return true
+        }
+      )
+    })
     it('複数のノードが使われていない場合', () => {
       cmp('あ「こんにちは」はは表示', [
         '不完全な文です。',

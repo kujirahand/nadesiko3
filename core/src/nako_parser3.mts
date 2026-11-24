@@ -528,7 +528,17 @@ export class NakoParser extends NakoParserBase {
           const nextWordO = this.peek()
           let nextWord = JSON.stringify(nextWordO)
           if (nextWordO && nextWordO.type && nextWordO.value) { nextWord = nextWordO.value }
-          throw NakoSyntaxError.fromNode(`『ここまで』がありません。関数定義の末尾に必要です。『${nextWord}』の前に『ここまで』を記述してください。`, def)
+          let msg = `『ここまで』がありません。関数定義の末尾に必要です。『${nextWord}』の前に『ここまで』を記述してください。`
+          if (nextWordO && nextWordO.type === 'eof') {
+            // ファイル末尾では次の語句がないので、トークンのJSONを出さず末尾と表示する (#2692)
+            msg = '『ここまで』がありません。関数定義の末尾に必要です。ファイルの末尾の前に『ここまで』を記述してください。'
+          } else if (typeof nextWord === 'string' && /^[^0-9a-zA-Zぁ-んァ-ヶー一-龥]+$/.test(nextWord)) {
+            // 次の語句が『@』のような記号だけの場合、その記号自体が関数本体の
+            // 文で解決できずに残った可能性が高い (#2692)。記号の前に『ここまで』を
+            // 書くよう案内しても直らないので、直前の文の確認を促す
+            msg += 'なお、直前の文が正しく解析できていない場合にもこのエラーになります。直前の文を確認してください。'
+          }
+          throw NakoSyntaxError.fromNode(msg, def)
         }
         this.loadStack()
       } else {
@@ -2779,7 +2789,7 @@ export class NakoParser extends NakoParserBase {
           propList.push(prop as Ast)
           josi = prop.josi
         }
-        return {
+        const astProp: Ast = {
           type: 'ref_prop', // プロパティ参照
           name: word,
           index: propList,
@@ -2787,6 +2797,10 @@ export class NakoParser extends NakoParserBase {
           ...map,
           end: this.peekSourceMap()
         }
+        // 『A$prop@0』のように、後ろに続く添字アクセスも読む (#2692)
+        // ref_array 分岐 (#2396) と対称にする。これがないと『@』が文中に
+        // 取り残され、『ref_prop』が解決していません等の不可解なエラーになる
+        return this.yRefArrayValue(astProp) as Ast
       }
       return word as any // Token to Ast
     }
