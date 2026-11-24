@@ -80,6 +80,7 @@ export interface Ast {
   }
   options?: { [key: string]: boolean };
   checkInit?: boolean; // DNCLモードのとき、初期化されていない配列へのアクセスで自動的に配列を初期化する (#1140)
+  checkInitKeepObject?: boolean; // 自動初期化で、起点の変数が辞書などのオブジェクトなら置き換えない (#2697)
 }
 
 /** 複数ブロックを持つAST */
@@ -129,6 +130,7 @@ export interface AstLet extends AstBlocks {
 export interface AstLetArray extends AstBlocks {
   name: string;
   checkInit: boolean; // DNCLモードの場合
+  checkInitKeepObject?: boolean; // 起点の変数がオブジェクトなら自動初期化で置き換えない (#2697)
   // blocks[0] ... value
   // blocks[1] ... index0
   // blocks[2] ... index1

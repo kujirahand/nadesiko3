@@ -1323,8 +1323,9 @@ export class NakoGen {
    * @param getter 配列の取得用JavaScriptコード
    * @param checkInit 自動初期化を行うかどうか
    * @param isWrite 書き込み(増減)の場合はtrue。配列でない値を既定配列で置き換える
+   * @param keepObject 書き込みでも、辞書などのオブジェクトは置き換えない (#2697)
    */
-  genCheckInitArrayCode(nameNode: Ast, getter: string, checkInit: boolean, isWrite = false): string {
+  genCheckInitArrayCode(nameNode: Ast, getter: string, checkInit: boolean, isWrite = false, keepObject = false): string {
     if (!checkInit || !nameNode || nameNode.type !== 'word') { return getter }
     const varName = String((nameNode as AstStrValue).value)
     const res = this.ensureVarForDNCL(varName)
@@ -1336,7 +1337,7 @@ export class NakoGen {
     // 文字列や辞書を保持する変数への A[n] アクセス(文字の取得等)を壊さないため、
     // 書き込み側(convLetArray・増減)の instanceof Array 判定とは意図的に異なる。
     // 取得式はIIFEで一度だけ評価する (初期化時のみset後に再取得する)
-    const cond = isWrite ? '!(__v instanceof Array)' : '__v == null'
+    const cond = (isWrite && !keepObject) ? '!(__v instanceof Array)' : (isWrite ? "(__v === null || typeof __v !== 'object')" : '__v == null')
     return `((__v) => (${cond} ? (${res.js_set}, ${getter}) : __v))(${getter})`
   }
 
@@ -1388,7 +1389,9 @@ export class NakoGen {
         // PI等のシステム定数と同名の変数への添字代入で定数を配列で上書きしないため
         if (res === null || res.i !== 0) {
           const initArrayCode = res ? res.js_set : this.varname_set(word, arrayDefCode)
-          codeInit += `\n/*配列初期化*/if (!(${name} instanceof Array)) { ${initArrayCode} };\n`
+          // 『ホゲ$a@0=値』のようにプロパティから始まる場合は、辞書を配列で置き換えない (#2697)
+          const needInit = node.checkInitKeepObject ? `(${name} === null || typeof ${name} !== 'object')` : `!(${name} instanceof Array)`
+          codeInit += `\n/*配列初期化*/if (${needInit}) { ${initArrayCode} };\n`
         }
         // tmpVar は中間次元の初期化(添字2個以上)でのみ使う
         if (indexNodes.length > 1) { codeInit += `let ${tmpVar} = ${name};\n` }
@@ -2238,7 +2241,7 @@ export class NakoGen {
         () => this._convGen(nn, true))
       // DNCLのための初期化処理 ... 初期化していない配列の要素を増減する場合に配列を自動初期化する (#1140)
       // (増減は書き込みなので代入と同じく配列でない値を既定配列で置き換える)
-      const baseName = this.genCheckInitArrayCode(nodeName.name as Ast, baseNameRaw, nodeName.checkInit === true, true)
+      const baseName = this.genCheckInitArrayCode(nodeName.name as Ast, baseNameRaw, nodeName.checkInit === true, true, nodeName.checkInitKeepObject === true)
       const indexList: Ast[] = nodeName.index || []
       preCode = `const ${objVar} = ${baseName};\n`
       let indexCode = ''
