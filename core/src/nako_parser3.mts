@@ -527,12 +527,13 @@ export class NakoParser extends NakoParserBase {
           // 「ここまで」が見当たらない
           const nextWordO = this.peek()
           let nextWord = JSON.stringify(nextWordO)
-          if (nextWordO && nextWordO.type && nextWordO.value) { nextWord = nextWordO.value }
+          // 数値の0など、valueがfalsyなトークンでもJSONを出さず値で表示する (#2692)
+          if (nextWordO && nextWordO.type && nextWordO.value !== undefined && nextWordO.value !== null) { nextWord = String(nextWordO.value) }
           let msg = `『ここまで』がありません。関数定義の末尾に必要です。『${nextWord}』の前に『ここまで』を記述してください。`
           if (nextWordO && nextWordO.type === 'eof') {
             // ファイル末尾では次の語句がないので、トークンのJSONを出さず末尾と表示する (#2692)
             msg = '『ここまで』がありません。関数定義の末尾に必要です。ファイルの末尾の前に『ここまで』を記述してください。'
-          } else if (typeof nextWord === 'string' && /^[^0-9a-zA-Zぁ-んァ-ヶー一-龥]+$/.test(nextWord)) {
+          } else if (nextWordO && nextWordO.type !== 'string' && typeof nextWord === 'string' && /^[^0-9a-zA-Zぁ-んァ-ヶー一-龥]+$/.test(nextWord)) {
             // 次の語句が『@』のような記号だけの場合、その記号自体が関数本体の
             // 文で解決できずに残った可能性が高い (#2692)。記号の前に『ここまで』を
             // 書くよう案内しても直らないので、直前の文の確認を促す

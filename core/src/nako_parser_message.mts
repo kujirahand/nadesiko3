@@ -21,6 +21,9 @@ function refPartToStr (node: Ast | Token | string | null | undefined): string {
   if (typeof node === 'string') { return node }
   switch (node.type) {
   case 'word':
+    // 変数名のモジュール接頭辞 (main__ 等) は表示では省く。
+    // 『』の直後でない位置では NakoError 側の置換が効かないため、ここで落とす (#2692)
+    return String((node as AstConst).value ?? '').replace(/^main__/, '')
   case 'string':
   case 'number':
   case 'bigint':
@@ -29,9 +32,30 @@ function refPartToStr (node: Ast | Token | string | null | undefined): string {
   case 'ref_array':
   case 'ref_array_value':
     return refNodeToSource(node as Ast)
+  case 'op': {
+    // 添字が式のときは、演算子記号でつないだソース表記にする (#2692)
+    const nodeOp = node as AstOperator
+    const table: {[key: string]: string} = { eq: '＝', not: '!', gt: '>', lt: '<', and: 'かつ', or: 'または' }
+    const opStr = table[nodeOp.operator] || nodeOp.operator || ''
+    if (nodeOp.blocks.length === 1) { return `${opStr}${refPartToStr(nodeOp.blocks[0])}` }
+    if (nodeOp.blocks.length === 2) { return `${refPartToStr(nodeOp.blocks[0])}${opStr}${refPartToStr(nodeOp.blocks[1])}` }
+    return nodeToStr(node as Ast, { depth: 0 }, false)
+  }
   default:
     return nodeToStr(node as Ast, { depth: 0 }, false)
   }
+}
+
+/**
+ * ref_array / ref_array_value の添字1要素をソース表記にする (#2692)
+ * 『A@0$b』の『$b』は、プロパティ名を文字列ノードに変換して添字と同じ
+ * index 配列に入れる実装 (#2396) なので、文字列ノードは『$名前』に戻す。
+ * 『A@"名前"』のような文字列キーも辞書キーとして等価なので同じ表示になる
+ * @param node 添字1要素
+ */
+function refIndexToStr (node: Ast): string {
+  if (node.type === 'string') { return '$' + String((node as AstConst).value ?? '') }
+  return '@' + refPartToStr(node)
 }
 
 /**
@@ -47,13 +71,13 @@ function refNodeToSource (node: Ast): string {
   }
   if (node.type === 'ref_array') {
     const base = refPartToStr(node.name as Ast)
-    const indexes = (node.index || []).map((i) => '@' + refPartToStr(i)).join('')
+    const indexes = (node.index || []).map((i) => refIndexToStr(i)).join('')
     return `${base}${indexes}`
   }
   // ref_array_value: index[0] が土台、残りが添字 (name が '@'/'[') かプロパティ (name が '$')
-  const sep = node.name === '$' ? '$' : '@'
+  const isProp = node.name === '$'
   const [base, ...rest] = node.index || []
-  return refPartToStr(base) + rest.map((i) => sep + refPartToStr(i)).join('')
+  return refPartToStr(base) + rest.map((i) => isProp ? '$' + refPartToStr(i) : refIndexToStr(i)).join('')
 }
 
 /**
