@@ -1572,8 +1572,8 @@ export class NakoParser extends NakoParserBase {
         indexes: target.index,
         blocks,
         josi: '',
-        // 辞書を起点とする代入先は自動初期化しない (#2697)
-        checkInit: target.checkInit ?? this.flagCheckArrayInit,
+        checkInit: this.flagCheckArrayInit,
+        checkInitKeepObject: target.checkInitKeepObject, // (#2697)
         ...map,
         end: this.peekSourceMap()
       } as AstLetArray
@@ -2012,6 +2012,7 @@ export class NakoParser extends NakoParserBase {
           blocks: [astValue, ...(resolved.index || [])],
           josi: '',
           checkInit: target.checkInit,
+          checkInitKeepObject: target.checkInitKeepObject, // (#2697)
           ...map,
           end: this.peekSourceMap()
         } as AstLetArray
@@ -2980,6 +2981,8 @@ export class NakoParser extends NakoParserBase {
         if (token.type === 'eq') { return true }
         // @直後の単項演算子は添字の一部。値の後ろの二項演算子とは区別する。
         const unaryIndex = ['-', 'not'].includes(token.type) && ['@', 'not'].includes(this.tokens[i - 1]?.type)
+        // 『A$a@、0=値』のように『@』の直後の読点は読み飛ばす (#2697)
+        if (allowProp && token.type === 'comma' && this.tokens[i - 1]?.type === '@') { continue }
         // 『$』の直後はプロパティ名。『表示』のような関数名もキーとして読む (#2697)
         const propName = allowProp && this.tokens[i - 1]?.type === '$'
         const allowed = ['(', '[', '{', '@', 'word', 'func', 'func_pointer', 'number', 'bigint', 'string']
@@ -3030,9 +3033,10 @@ export class NakoParser extends NakoParserBase {
       type: 'ref_array',
       name: chain.word,
       index: chain.indexes,
+      checkInit: this.flagCheckArrayInit,
       // 辞書を起点とする場合、DNCLモードの配列自動初期化で辞書全体を
-      // 配列に置き換えてしまわないよう、自動初期化はしない (#2697)
-      checkInit: chain.rootIsProp ? false : this.flagCheckArrayInit
+      // 配列に置き換えないようにする。中間の配列の自動初期化は行う (#2697)
+      checkInitKeepObject: chain.rootIsProp
     }
   }
 
@@ -3068,7 +3072,8 @@ export class NakoParser extends NakoParserBase {
     const keys: Ast[] = []
     for (const p of props) {
       const v = (p as AstStrValue).value as unknown
-      if (typeof v !== 'string' && typeof v !== 'number') { return null }
+      // 非有限の数値は参照時(JSON.stringify)と代入時でキーが変わるため対象外
+      if (typeof v !== 'string' && !(typeof v === 'number' && Number.isFinite(v))) { return null }
       keys.push({ ...p, type: 'string', value: String(v) } as Ast)
     }
     return keys
