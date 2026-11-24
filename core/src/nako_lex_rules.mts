@@ -67,6 +67,7 @@ export const rules: NakoLexRule[] = [
   { name: 'ここから', pattern: /^(ここから),?/ },
   { name: 'ここまで', pattern: /^(ここまで|💧)/ },
   { name: 'もし', pattern: /^もしも?/ },
+  { name: 'ずっと', pattern: /^ずっと/ },
   // 「ならば」は助詞として定義している
   { name: '違えば', pattern: /^違(えば)?/ },
   // 「回」「間」「繰返」「反復」「抜」「続」「戻」「代入」「条件分岐」などは NakoLexer._replaceWord で word から変換

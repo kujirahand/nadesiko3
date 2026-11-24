@@ -82,6 +82,7 @@ export function getScope(token: Token): string {
   case 'ここから':
   case 'ここまで':
   case 'もし':
+  case 'ずっと':
   case '違えば':
   case 'require':
     return 'keyword.control'
