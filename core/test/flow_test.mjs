@@ -157,6 +157,125 @@ describe('flow_test', async () => {
     // ---
     '0\n1\n2\n3')
   })
+  it('ずっと〜の間 - 基本と等号比較 (#2694)', async () => {
+    // Issue #2691 の発端ケース
+    await cmp(
+      '●試すとは\n' +
+      '　済み = オフ\n' +
+      '　N = 0\n' +
+      '　ずっと、済み = オフ の間\n' +
+      '　　N = N + 1\n' +
+      '　　もし、N >= 3 ならば\n' +
+      '　　　済み = オン\n' +
+      '　　ここまで\n' +
+      '　ここまで\n' +
+      '　Nを表示\n' +
+      'ここまで\n' +
+      '試す',
+      '3')
+    // スペース・読点なし、全角イコール
+    await cmp(
+      'N=5\n' +
+      'ずっとN＝5の間\n' +
+      '　Nを表示\n' +
+      '　N=N+1\n' +
+      'ここまで\n' +
+      '「OK」と表示',
+      '5\nOK')
+    // 読点・スペース・==・===・括弧付き
+    await cmp('N=1\nずっと N == 1 の間\nNを表示\nN=2\nここまで', '1')
+    await cmp('N=1\nずっと N === 1 の間\nNを表示\nN=2\nここまで', '1')
+    await cmp('N=1\nずっと(N = 1)の間\nNを表示\nN=2\nここまで', '1')
+  })
+  it('ずっと〜の間 - 末尾バリエーション・複合条件・日本語比較 (#2694)', async () => {
+    await cmp('N=5\nずっとN＝5の間繰り返す\nNを表示\nN=N+1\nここまで', '5')
+    await cmp('N=5\nずっとN＝5の間、繰り返す\nNを表示\nN=N+1\nここまで', '5')
+    await cmp('N=5\nずっとN＝5の間、ここから\nNを表示\nN=N+1\nここまで', '5')
+    await cmp('N=5\nずっとN＝5の間ここから\nNを表示\nN=N+1\nここまで', '5')
+    // 複合条件 (かつ / または)
+    await cmp(
+      'A=1;B=2;C=0\n' +
+      'ずっと A = 1 かつ B = 2 の間\n' +
+      '　C=C+1\n' +
+      '　もし C = 2 ならば A = 0\n' +
+      'ここまで\n' +
+      'Cを表示',
+      '2')
+    await cmp(
+      'A=1;B=0;C=0\n' +
+      'ずっと A = 1 または B = 1 の間\n' +
+      '　C=C+1\n' +
+      '　もし C = 1 ならば\n' +
+      '　　A = 0; B = 1\n' +
+      '　違えば\n' +
+      '　　B = 0\n' +
+      '　ここまで\n' +
+      'ここまで\n' +
+      'Cを表示',
+      '2')
+    // 比較演算子・C風関数・日本語比較
+    await cmp('N=0\nずっと N < 3 の間\nNを表示\nN=N+1\nここまで', '0\n1\n2')
+    await cmp('X=0\nずっと INT(X) = 0 の間\nX=1\n「OK」を表示\nここまで', 'OK')
+    await cmp('i=0\nずっと iが3未満の間\niを表示\ni=i+1\nここまで', '0\n1\n2')
+    await cmp(
+      'a=1;i=0\n' +
+      'ずっと aと1が等しい間\n' +
+      '　iを表示\n' +
+      '　i=i+1\n' +
+      '　もし i >= 2 ならば a = 0\n' +
+      'ここまで',
+      '0\n1')
+    // 抜ける・続ける・入れ子
+    await cmp(
+      'A=1;N=0\n' +
+      'ずっと A = 1 の間\n' +
+      '　N=N+1\n' +
+      '　もし N = 2 ならば 続ける\n' +
+      '　Nを表示\n' +
+      '　もし N = 3 ならば 抜ける\n' +
+      'ここまで',
+      '1\n3')
+    // 単一変数を条件にする (仕様: ずっと フラグの間)
+    await cmp(
+      'フラグ=オン;N=0\n' +
+      'ずっと フラグの間\n' +
+      '　N=N+1\n' +
+      '　フラグ=オフ\n' +
+      'ここまで\n' +
+      'Nを表示',
+      '1')
+    // ずっと の入れ子
+    await cmp(
+      'A=1;N=0\n' +
+      'ずっと A = 1 の間\n' +
+      '　B=1\n' +
+      '　ずっと B = 1 の間\n' +
+      '　　B=0\n' +
+      '　　N=N+1\n' +
+      '　ここまで\n' +
+      '　A=0\n' +
+      'ここまで\n' +
+      'Nを表示',
+      '1')
+  })
+  it('ずっと〜の間 - エラーケース (#2694)', async () => {
+    const nako = new NakoCompiler()
+    await assert.rejects(async () => {
+      await nako.runAsync('ずっとの間\n1を表示\nここまで', 'main.nako3')
+    }, /条件がありません/)
+    await assert.rejects(async () => {
+      await nako.runAsync('ずっと間\n1を表示\nここまで', 'main.nako3')
+    }, /条件がありません/)
+    await assert.rejects(async () => {
+      await nako.runAsync('N=1\nずっと N = 1\n1を表示\nここまで', 'main.nako3')
+    }, /『間』がありません/)
+    await assert.rejects(async () => {
+      await nako.runAsync('N=1\nずっと N = 1 の間\n1を表示', 'main.nako3')
+    }, /『ここまで』がありません/)
+    await assert.rejects(async () => {
+      await nako.runAsync('N=1\nずっと N = 1 の間 1を表示\nここまで', 'main.nako3')
+    }, /改行が必要/)
+  })
   it('繰り返す', async () => {
     await cmp('Nを1から3まで繰り返す\nNを表示\nここまで', '1\n2\n3')
     await cmp('Nを１から３まで繰り返す\n　　Nを表示\nここまで', '1\n2\n3')

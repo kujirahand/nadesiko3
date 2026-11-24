@@ -298,6 +298,7 @@ export class NakoParser extends NakoParserBase {
     // 最初の語句が決まっている構文
     if (this.check('eol')) { return this.yEOL() }
     if (this.check('もし')) { return this.yIF() }
+    if (this.check('ずっと')) { return this.yZuttoWhile() }
     if (this.check('後判定')) { return this.yAtohantei() }
     if (this.check('エラー監視')) { return this.yTryExcept() }
     if (this.accept(['抜ける'])) { return { type: 'break', josi: '', ...map, end: this.peekSourceMap() } }
@@ -1129,10 +1130,46 @@ export class NakoParser extends NakoParserBase {
   yWhile(): AstWhile | null { // 「＊の間」文
     const map = this.peekSourceMap()
     if (!this.check('間')) { return null }
+    const expr = this.popStack()
+    return this.yWhileBody(expr, map)
+  }
+
+  /** 「ずっと（比較式）の間…ここまで」文 (#2694)
+   * @returns {AstWhile | null} */
+  yZuttoWhile(): AstWhile | null {
+    const map = this.peekSourceMap()
+    if (!this.check('ずっと')) { return null }
+    this.get() // skip 'ずっと'
+    while (this.check('comma')) { this.get() } // skip ','
+    if (this.check('間') || this.check('eol') || this.isEOF() ||
+        (this.check('word') && this.peek()?.value === 'の' && this.peek(1)?.type === '間')) {
+      throw NakoSyntaxError.fromNode('『ずっと』文で条件がありません。', map)
+    }
+    // 代入文(yLet)を経由せず式として解析することで '=' を比較演算子として扱う
+    const expr = this.yGetArg()
+    if (expr === null) {
+      throw NakoSyntaxError.fromNode('『ずっと』文の条件式に間違いがあります。', map)
+    }
+    if (this.check('間')) {
+      return this.yWhileBody(expr, map)
+    }
+    if (this.check('eol') || this.isEOF()) {
+      throw NakoSyntaxError.fromNode('『ずっと』文に『間』がありません。', map)
+    }
+    // なでしこ式関数呼び出しを含む条件式(例: ずっと iが3未満の間)に対応
+    this.pushStack(expr)
+    const res = this.yCall()
+    if (res && res.type === 'while') {
+      return res as AstWhile
+    }
+    throw NakoSyntaxError.fromNode('『ずっと』文に『間』がありません。', map)
+  }
+
+  /** 「間」以降のブロックを解析して AstWhile を生成する */
+  yWhileBody(expr: Ast | null, map: SourceMap): AstWhile {
     this.get() // skip '間'
     while (this.check('comma')) { this.get() } // skip ','
     if (this.check('繰返')) { this.get() } // skip '繰り返す' #927
-    const expr = this.popStack()
     if (expr === null) {
       throw NakoSyntaxError.fromNode('『間』で条件がありません。', map)
     }
