@@ -1639,7 +1639,14 @@ export class NakoParser extends NakoParserBase {
     }
 
     // スタックから引数をポップ
-    const word = this.popStack(['を'])
+    const popped = this.popStack(['を'])
+    // 『ホゲ$hoge@0を増やす』のような、プロパティ→添字の増減に対応する (#2697)
+    const word = (popped && popped.type === 'ref_array_value') ? (this.normalizeArrayAssignmentTarget(popped) || popped) : popped
+    if (word && word.type === 'ref_array_value') {
+      throw NakoSyntaxError.fromNode(
+        `『${action.type}』文の対象には、変数を起点とする配列要素やプロパティを指定してください。`,
+        action)
+    }
     if (!word || (word.type !== 'word' && word.type !== 'ref_array' && word.type !== 'ref_prop')) {
       throw NakoSyntaxError.fromNode(
         `『${action.type}』文で定数が見当たりません。『(変数名)を(値)だけ${action.type}』のように使います。`,
@@ -1986,6 +1993,30 @@ export class NakoParser extends NakoParserBase {
       } as AstLet
     }
     // オブジェクトプロパティ構文：代入文：：ここまで
+
+    // プロパティの後ろに添字が続く代入文『ホゲ$hoge@0=値』『ホゲ$a@0$b=値』 (#2697)
+    if (this.isPropIndexStart()) {
+      const tmpIndex = this.index
+      const value = this.yValue()
+      const target = value ? this.normalizeArrayAssignmentTarget(value) : null
+      if (target?.type === 'ref_array' && this.check('eq')) {
+        this.get() // skip '=' / 'は'
+        const astValue = this.yCalc()
+        if (!astValue) { throw NakoSyntaxError.fromNode('配列への代入文で値がありません。', map) }
+        const resolved = this.getAssignmentVarName(target)
+        if (this.check('comma')) { this.get() } // skip comma (ex) name1=val1, name2=val2
+        return {
+          type: 'let_array',
+          name: (resolved.name as AstStrValue).value,
+          blocks: [astValue, ...(resolved.index || [])],
+          josi: '',
+          checkInit: target.checkInit,
+          ...map,
+          end: this.peekSourceMap()
+        } as AstLetArray
+      }
+      this.index = tmpIndex // 代入文でなければ巻き戻す
+    }
 
     // let_array ? (『A@1=値』『A[1][2]=値』『A@1[2]$名前=値』など) (#2396)
     if (this.check2(['word', '@']) || this.check2(['word', '['])) {
@@ -2951,6 +2982,22 @@ export class NakoParser extends NakoParserBase {
     return false
   }
 
+  /** 『word$prop...』の直後に『@』や『[』が続くか (#2697) */
+  private isPropIndexStart(): boolean {
+    let i = this.index
+    const first = this.tokens[i]
+    if (!first || first.type !== 'word' || first.josi !== '') { return false }
+    i++
+    let propCount = 0
+    while (this.tokens[i]?.type === '$' && ['word', 'string'].includes(this.tokens[i + 1]?.type)) {
+      propCount++
+      if (this.tokens[i + 1].josi !== '') { return false }
+      i += 2
+    }
+    if (propCount === 0) { return false }
+    return ['@', '['].includes(this.tokens[i]?.type)
+  }
+
   /** 括弧付きの配列参照を、変数を起点とする代入先へ変換する。(#2583)
    * 添字は内側から順に連結し、参照用のASTは書き換えない。
    * 関数の戻り値やリテラルなど、変数を起点としない参照は対象外。
@@ -2963,6 +3010,19 @@ export class NakoParser extends NakoParserBase {
     }
     if (node.type !== 'ref_array_value' || (node.name !== '@' && node.name !== '[')) { return null }
     const [base, ...indexes] = node.index || []
+    // 『ホゲ$hoge@0』のように、プロパティ参照を土台とする添字アクセス (#2697)
+    // プロパティ名を文字列の添字として、変数を起点とする配列参照にまとめる。
+    // 『A@0$b@1』が1つの ref_array になるのと同じ形にする。
+    if (base && base.type === 'ref_prop' && typeof base.name !== 'string' && base.name?.type === 'word') {
+      const props = (base.index || []).map((p) => ({ ...p, type: 'string' } as Ast))
+      return {
+        ...node,
+        type: 'ref_array',
+        name: base.name,
+        index: [...props, ...indexes],
+        checkInit: this.flagCheckArrayInit
+      }
+    }
     const target = base ? this.normalizeArrayAssignmentTarget(base) : null
     if (!target) { return null }
     return {
