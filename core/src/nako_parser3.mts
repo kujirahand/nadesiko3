@@ -1572,7 +1572,8 @@ export class NakoParser extends NakoParserBase {
         indexes: target.index,
         blocks,
         josi: '',
-        checkInit: this.flagCheckArrayInit,
+        // 辞書を起点とする代入先は自動初期化しない (#2697)
+        checkInit: target.checkInit ?? this.flagCheckArrayInit,
         ...map,
         end: this.peekSourceMap()
       } as AstLetArray
@@ -1995,7 +1996,7 @@ export class NakoParser extends NakoParserBase {
     // オブジェクトプロパティ構文：代入文：：ここまで
 
     // プロパティの後ろに添字が続く代入文『ホゲ$hoge@0=値』『ホゲ$a@0$b=値』 (#2697)
-    if (this.isPropIndexStart()) {
+    if (this.isPropIndexAssignment()) {
       const tmpIndex = this.index
       const value = this.yValue()
       const target = value ? this.normalizeArrayAssignmentTarget(value) : null
@@ -2965,14 +2966,25 @@ export class NakoParser extends NakoParserBase {
    * 括弧内の比較は無視し、外側の助詞・演算子・文末で探索を終了する。
    */
   private hasParenthesizedAssignment(): boolean {
+    return this.hasAssignmentAhead(this.index, false)
+  }
+
+  /** start位置から括弧の外側に『=』(eq)があり、そこまでが代入先として読める並びか (#2583 #2697)
+   * @param allowProp 『$』によるプロパティ指定を許可するか
+   */
+  private hasAssignmentAhead(start: number, allowProp: boolean): boolean {
     const closings: string[] = []
-    for (let i = this.index; i < this.tokens.length; i++) {
+    for (let i = start; i < this.tokens.length; i++) {
       const token = this.tokens[i]
       if (closings.length === 0) {
         if (token.type === 'eq') { return true }
         // @直後の単項演算子は添字の一部。値の後ろの二項演算子とは区別する。
         const unaryIndex = ['-', 'not'].includes(token.type) && ['@', 'not'].includes(this.tokens[i - 1]?.type)
-        if (!unaryIndex && !['(', '[', '{', '@', 'word', 'func', 'func_pointer', 'number', 'bigint', 'string'].includes(token.type)) { return false }
+        // 『$』の直後はプロパティ名。『表示』のような関数名もキーとして読む (#2697)
+        const propName = allowProp && this.tokens[i - 1]?.type === '$'
+        const allowed = ['(', '[', '{', '@', 'word', 'func', 'func_pointer', 'number', 'bigint', 'string']
+        if (allowProp) { allowed.push('$') }
+        if (!unaryIndex && !propName && !allowed.includes(token.type)) { return false }
       }
       if (token.type === '(') { closings.push(')') } else if (token.type === '[') { closings.push(']') } else if (token.type === '{') { closings.push('}') } else if ([')', ']', '}'].includes(token.type)) {
         if (closings.pop() !== token.type) { return false }
@@ -2982,56 +2994,84 @@ export class NakoParser extends NakoParserBase {
     return false
   }
 
-  /** 『word$prop...』の直後に『@』や『[』が続くか (#2697) */
-  private isPropIndexStart(): boolean {
+  /** 『word$prop...@添字...=値』のような、プロパティの後ろに添字が続く代入文か (#2697)
+   * yValue()で読んでから巻き戻すと入れ子の式で再解析が増えるため、トークンだけで判定する。
+   */
+  private isPropIndexAssignment(): boolean {
     let i = this.index
     const first = this.tokens[i]
     if (!first || first.type !== 'word' || first.josi !== '') { return false }
     i++
-    let propCount = 0
-    while (this.tokens[i]?.type === '$' && ['word', 'string'].includes(this.tokens[i + 1]?.type)) {
-      propCount++
+    // 先頭のプロパティは参照構文(yValueWord)と同じく『$word』『$string』のみ
+    if (this.tokens[i]?.type !== '$' || !['word', 'string'].includes(this.tokens[i + 1]?.type)) { return false }
+    // 続くプロパティは参照構文と同じく『$』の直後のトークンをキーとして読む
+    while (this.tokens[i]?.type === '$' && this.tokens[i + 1]) {
       if (this.tokens[i + 1].josi !== '') { return false }
       i += 2
     }
-    if (propCount === 0) { return false }
-    return ['@', '['].includes(this.tokens[i]?.type)
+    if (!['@', '['].includes(this.tokens[i]?.type)) { return false }
+    return this.hasAssignmentAhead(i, true)
   }
 
   /** 括弧付きの配列参照を、変数を起点とする代入先へ変換する。(#2583)
    * 添字は内側から順に連結し、参照用のASTは書き換えない。
    * 関数の戻り値やリテラルなど、変数を起点としない参照は対象外。
+   * 『ホゲ$hoge@0』『ホゲ$a[0,0]$b』のようにプロパティを含む参照は、
+   * プロパティ名を文字列の添字として1つの ref_array にまとめる。(#2697)
    */
   private normalizeArrayAssignmentTarget(node: Ast): Ast | null {
     if (node.type === 'word') { return node }
-    // ref_array の name は文字列の場合もあるが、ここでは変数トークンを持つ参照だけを扱う。
-    if (node.type === 'ref_array' && typeof node.name !== 'string' && node.name?.type === 'word') {
-      return { ...node, index: [...(node.index || [])] }
-    }
-    if (node.type !== 'ref_array_value' || (node.name !== '@' && node.name !== '[')) { return null }
-    const [base, ...indexes] = node.index || []
-    // 『ホゲ$hoge@0』のように、プロパティ参照を土台とする添字アクセス (#2697)
-    // プロパティ名を文字列の添字として、変数を起点とする配列参照にまとめる。
-    // 『A@0$b@1』が1つの ref_array になるのと同じ形にする。
-    if (base && base.type === 'ref_prop' && typeof base.name !== 'string' && base.name?.type === 'word') {
-      const props = (base.index || []).map((p) => ({ ...p, type: 'string' } as Ast))
-      return {
-        ...node,
-        type: 'ref_array',
-        name: base.name,
-        index: [...props, ...indexes],
-        checkInit: this.flagCheckArrayInit
-      }
-    }
-    const target = base ? this.normalizeArrayAssignmentTarget(base) : null
-    if (!target) { return null }
+    const chain = this.collectAssignmentChain(node)
+    if (!chain) { return null }
+    if (node.type === 'ref_array') { return { ...node, index: chain.indexes } }
+    if (chain.indexes.length === 0) { return null }
     return {
       ...node,
       type: 'ref_array',
-      name: target.type === 'word' ? target : target.name,
-      index: [...(target.index || []), ...indexes],
-      checkInit: this.flagCheckArrayInit
+      name: chain.word,
+      index: chain.indexes,
+      // 辞書を起点とする場合、DNCLモードの配列自動初期化で辞書全体を
+      // 配列に置き換えてしまわないよう、自動初期化はしない (#2697)
+      checkInit: chain.rootIsProp ? false : this.flagCheckArrayInit
     }
+  }
+
+  /** 代入先の参照を、起点の変数と添字の並びに分解する (#2697) */
+  private collectAssignmentChain(node: Ast): { word: Ast, indexes: Ast[], rootIsProp: boolean } | null {
+    if (node.type === 'word') { return { word: node, indexes: [], rootIsProp: false } }
+    // ref_array / ref_prop の name は文字列の場合もあるが、ここでは変数トークンを持つ参照だけを扱う。
+    if (node.type === 'ref_array' && typeof node.name !== 'string' && node.name?.type === 'word') {
+      return { word: node.name as Ast, indexes: [...(node.index || [])], rootIsProp: false }
+    }
+    if (node.type === 'ref_prop' && typeof node.name !== 'string' && node.name?.type === 'word') {
+      const keys = this.toPropertyKeys(node.index || [])
+      return keys ? { word: node.name as Ast, indexes: keys, rootIsProp: true } : null
+    }
+    if (node.type !== 'ref_array_value') { return null }
+    const [base, ...rest] = node.index || []
+    const chain = base ? this.collectAssignmentChain(base) : null
+    if (!chain) { return null }
+    if (node.name === '@' || node.name === '[') {
+      return { ...chain, indexes: [...chain.indexes, ...rest] }
+    }
+    if (node.name === '$') {
+      const keys = this.toPropertyKeys(rest)
+      return keys ? { ...chain, indexes: [...chain.indexes, ...keys] } : null
+    }
+    return null
+  }
+
+  /** プロパティ名のトークンを、文字列の添字に変換する。静的なキーでなければnull (#2697)
+   * 参照時(convRefProp_genCode)と同じく、トークンの値をそのままキーとして使う。
+   */
+  private toPropertyKeys(props: Ast[]): Ast[] | null {
+    const keys: Ast[] = []
+    for (const p of props) {
+      const v = (p as AstStrValue).value as unknown
+      if (typeof v !== 'string' && typeof v !== 'number') { return null }
+      keys.push({ ...p, type: 'string', value: String(v) } as Ast)
+    }
+    return keys
   }
 
   /** 代入・増減対象の変数名を、元の無修飾名を考慮して解決する */
